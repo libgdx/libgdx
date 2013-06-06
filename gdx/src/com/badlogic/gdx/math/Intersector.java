@@ -369,7 +369,7 @@ public final class Intersector {
 		Vector3.tmp.set(ray.origin);
 		Vector3.tmp2.set(ray.origin);
 		Vector3.tmp.sub(box.min);
-		Vector3.tmp.sub(box.max);
+		Vector3.tmp2.sub(box.max);
 		if (Vector3.tmp.x > 0 && Vector3.tmp.y > 0 && Vector3.tmp.z > 0 && Vector3.tmp2.x < 0 && Vector3.tmp2.y < 0
 			&& Vector3.tmp2.z < 0) {
 			return true;

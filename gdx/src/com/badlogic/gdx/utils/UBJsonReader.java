@@ -77,14 +77,26 @@ public class UBJsonReader implements BaseJsonReader {
 			return new JsonValue(din.readDouble());
 		else if (type == 's' || type == 'S')
 			return new JsonValue(parseString(din, type));
-		return null;
+		else if (type == 'a' || type == 'A')
+			return parseData(din, type);
+		else
+			throw new GdxRuntimeException("Unrecognized data type");
 	}
 	
 	protected JsonValue parseArray(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.array);
 		byte type = din.readByte();
+		JsonValue prev = null;
 		while (din.available() > 0 && type != ']') {
-			result.addChild(parse(din, type));
+			final JsonValue val = parse(din, type);
+			if (prev != null) {
+				prev.next = val;
+				result.size++;
+			} else {
+				result.child = val;
+				result.size = 1;
+			}
+			prev = val;
 			type = din.readByte();
 		}
 		return result;
@@ -93,14 +105,43 @@ public class UBJsonReader implements BaseJsonReader {
 	protected JsonValue parseObject(final DataInputStream din) throws IOException {
 		JsonValue result = new JsonValue(JsonValue.ValueType.object);
 		byte type = din.readByte();
+		JsonValue prev = null;
 		while (din.available() > 0 && type != '}') {
 			if (type != 's' && type != 'S')
 				throw new GdxRuntimeException("Only string key are currently supported");
 			final String key = parseString(din, type);
 			final JsonValue child = parse(din);
 			child.setName(key);
-			result.addChild(child);
+			if (prev != null) {
+				prev.next = child;
+				result.size++;
+			} else {
+				result.child = child;
+				result.size = 1;
+			}
+			prev = child;
 			type = din.readByte();
+		}
+		return result;
+	}
+	
+	protected JsonValue parseData(final DataInputStream din, final byte blockType) throws IOException {
+		// FIXME: h/H is currently not following the specs because it lacks strong typed, fixed sized containers, 
+		// see: https://github.com/thebuzzmedia/universal-binary-json/issues/27
+		final byte dataType = din.readByte();
+		final long size = blockType == 'A' ? readUInt(din) : (long)readUChar(din);
+		final JsonValue result = new JsonValue(JsonValue.ValueType.array);
+		JsonValue prev = null;
+		for (long i = 0; i < size; i++) {
+			final JsonValue val = parse(din, dataType);
+			if (prev != null) {
+				prev.next = val;
+				result.size++;
+			} else {
+				result.child = val;
+				result.size = 1;
+			}
+			prev = val;
 		}
 		return result;
 	}

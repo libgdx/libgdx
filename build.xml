@@ -42,6 +42,8 @@
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<fileset id="resourcefiles" dir="gdx/src">
+			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl"/>
 			<include name="com/badlogic/gdx/utils/arial-15.png"/>
 			<include name="com/badlogic/gdx/utils/arial-15.fnt"/>
 		</fileset>

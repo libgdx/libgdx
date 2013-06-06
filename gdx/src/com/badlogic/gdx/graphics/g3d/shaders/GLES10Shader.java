@@ -13,9 +13,11 @@ import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -28,6 +30,9 @@ public class GLES10Shader implements Shader{
 	private Material currentMaterial;
 	private Texture currentTexture0;
 	private Mesh currentMesh;
+	
+	/** Set to 0 to disable culling */
+	public static int defaultCullFace = GL10.GL_BACK;
 
 	public GLES10Shader() {
 		if (Gdx.gl10 == null)
@@ -66,15 +71,16 @@ public class GLES10Shader implements Shader{
 
 	private final float[] lightVal = {0,0,0,0};
 	private final float[] zeroVal4 = {0,0,0,0};
+	private final float[] oneVal4  = {1,1,1,1};
 	private void bindLights(Lights lights) {
 		if (lights == null) {
 			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
 			return;
 		}
 		Gdx.gl10.glEnable(GL10.GL_LIGHTING);
-		Gdx.gl10.glEnable(GL10.GL_LIGHT0);
-		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, getValues(lightVal, lights.ambientLight), 0);
-		int idx=1;
+		Gdx.gl10.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, getValues(lightVal, lights.ambientLight), 0);
+		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, zeroVal4, 0);
+		int idx=0;
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glLoadIdentity();
 		for (int i = 0; i < lights.directionalLights.size && idx < 8; i++) {
@@ -95,7 +101,8 @@ public class GLES10Shader implements Shader{
 			Gdx.gl10.glLightfv(GL10.GL_LIGHT0+idx, GL10.GL_POSITION, getValues(lightVal, light.position.x, light.position.y, light.position.z, 1f), 0);
 			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_SPOT_CUTOFF, 180f);
 			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_CONSTANT_ATTENUATION, 0f);
-			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_LINEAR_ATTENUATION, 1f/light.intensity);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_LINEAR_ATTENUATION, 0f);
+			Gdx.gl10.glLightf(GL10.GL_LIGHT0+idx, GL10.GL_QUADRATIC_ATTENUATION, 1f/light.intensity);
 			idx++;
 		}
 		while(idx < 8)
@@ -121,26 +128,42 @@ public class GLES10Shader implements Shader{
 			currentMaterial = renderable.material;
 			if (!currentMaterial.has(BlendingAttribute.Type))
 				context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-			if (!currentMaterial.has(ColorAttribute.Diffuse))
+			if (!currentMaterial.has(ColorAttribute.Diffuse)) {
 				Gdx.gl10.glColor4f(1,1,1,1);
-			if (!currentMaterial.has(TextureAttribute.Diffuse))
+				if (renderable.lights != null)
+					Gdx.gl10.glDisable(GL10.GL_COLOR_MATERIAL);
+			} if (!currentMaterial.has(TextureAttribute.Diffuse))
 				Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
+			int cullFace = defaultCullFace;
 			for (final Material.Attribute attribute : currentMaterial) {
 				if (attribute.type == BlendingAttribute.Type)
 					context.setBlending(true, ((BlendingAttribute)attribute).sourceFunction, ((BlendingAttribute)attribute).destFunction);
-				else if (attribute.type == ColorAttribute.Diffuse)
+				else if (attribute.type == ColorAttribute.Diffuse) {
 					Gdx.gl10.glColor4f(((ColorAttribute)attribute).color.r, ((ColorAttribute)attribute).color.g, ((ColorAttribute)attribute).color.b, ((ColorAttribute)attribute).color.a);
-				else if (attribute.type == TextureAttribute.Diffuse) {
-					if (currentTexture0 != ((TextureAttribute)attribute).textureDescription.texture)
-						(currentTexture0 = ((TextureAttribute)attribute).textureDescription.texture).bind(0);
+					if (renderable.lights != null) {
+						Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
+						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, zeroVal4, 0);
+						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
+					}
+				} else if (attribute.type == TextureAttribute.Diffuse) {
+					TextureDescriptor textureDesc = ((TextureAttribute)attribute).textureDescription;
+					if (currentTexture0 != textureDesc.texture)
+						(currentTexture0 = textureDesc.texture).bind(0);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, textureDesc.minFilter);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, textureDesc.magFilter);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, textureDesc.uWrap);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, textureDesc.vWrap);
 					Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 				}
+				else if ((attribute.type & IntAttribute.CullFace) == IntAttribute.CullFace)
+					cullFace = ((IntAttribute)attribute).value;
 			}
+			context.setCullFace(cullFace);
 		}
-		if (currentTransform != renderable.modelTransform) { // FIXME mul localtransform
+		if (currentTransform != renderable.worldTransform) { // FIXME mul localtransform
 			if (currentTransform != null)
 				Gdx.gl10.glPopMatrix();
-			currentTransform = renderable.modelTransform;
+			currentTransform = renderable.worldTransform;
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glLoadMatrixf(currentTransform.val, 0);
 		}

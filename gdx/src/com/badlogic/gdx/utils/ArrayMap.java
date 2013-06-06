@@ -102,11 +102,11 @@ public class ArrayMap<K, V> {
 		size++;
 	}
 
-	public void addAll (ArrayMap map) {
-		addAll(map, 0, map.size);
+	public void putAll (ArrayMap map) {
+		putAll(map, 0, map.size);
 	}
 
-	public void addAll (ArrayMap map, int offset, int length) {
+	public void putAll (ArrayMap map, int offset, int length) {
 		if (offset + length > map.size)
 			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + map.size);
 		int sizeNeeded = size + length - offset;

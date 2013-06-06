@@ -38,14 +38,18 @@ public class Color {
 	public static final Color MAGENTA = new Color(1, 0, 1, 1);
 	public static final Color CYAN = new Color(0, 1, 1, 1);
 
-	@Deprecated
-	public static Color tmp = new Color();
+	@Deprecated public static Color tmp = new Color();
 
 	/** the red, green, blue and alpha components **/
 	public float r, g, b, a;
 
 	/** Constructs a new Color with all components set to 0. */
 	public Color () {
+	}
+
+	/** @see #rgba8888ToColor(Color, int) */
+	public Color (int rgba8888) {
+		rgba8888ToColor(this, rgba8888);
 	}
 
 	/** Constructor, sets the components of the color
@@ -157,6 +161,13 @@ public class Color {
 		return clamp();
 	}
 
+	/** @return this Color for chaining
+	 * @see #rgba8888ToColor(Color, int) */
+	public Color set (int rgba) {
+		rgba8888ToColor(this, rgba);
+		return this;
+	}
+
 	/** @return this Color for chaining */
 	public Color add (float r, float g, float b, float a) {
 		this.r += r;
@@ -183,29 +194,29 @@ public class Color {
 		this.a *= a;
 		return clamp();
 	}
-	
-	/** Linearly interpolates between this color and the target color by t which is in the range [0,1]. 
-	 * The result is stored in this color.
+
+	/** Linearly interpolates between this color and the target color by t which is in the range [0,1]. The result is stored in this
+	 * color.
 	 * @param target The target color
 	 * @param t The interpolation coefficient
 	 * @return This color for chaining. */
-	public Color lerp(final Color target, final float t) {
+	public Color lerp (final Color target, final float t) {
 		this.r += t * (target.r - this.r);
 		this.g += t * (target.g - this.g);
 		this.b += t * (target.b - this.b);
 		this.a += t * (target.a - this.a);
 		return clamp();
 	}
-	
-	/** Linearly interpolates between this color and the target color by t which is in the range [0,1]. 
-	 * The result is stored in this color.
+
+	/** Linearly interpolates between this color and the target color by t which is in the range [0,1]. The result is stored in this
+	 * color.
 	 * @param r The red component of the target color
 	 * @param g The green component of the target color
 	 * @param b The blue component of the target color
 	 * @param a The alpha component of the target color
 	 * @param t The interpolation coefficient
 	 * @return This color for chaining. */
-	public Color lerp(final float r, final float g, final float b, final float a, final float t) {
+	public Color lerp (final float r, final float g, final float b, final float a, final float t) {
 		this.r += t * (r - this.r);
 		this.g += t * (g - this.g);
 		this.b += t * (b - this.b);
@@ -371,7 +382,7 @@ public class Color {
 		color.b = ((value & 0x000000ff)) / 255f;
 	}
 
-	/** Sets the Color components using the specified integer value in the format RGBA8888. This is inverse to the rgb8888(r, g, b,
+	/** Sets the Color components using the specified integer value in the format RGBA8888. This is inverse to the rgba8888(r, g, b,
 	 * a) method.
 	 * 
 	 * @param color The Color to be modified.

@@ -28,7 +28,9 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
@@ -49,10 +51,10 @@ public class SelectBox extends Widget {
 	String[] items;
 	int selectedIndex = 0;
 	private final TextBounds bounds = new TextBounds();
-	final Vector2 screenCoords = new Vector2();
 	SelectList list;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
+	int maxListCount;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -71,17 +73,23 @@ public class SelectBox extends Widget {
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
-				if (list != null && list.getParent() != null) {
-					hideList();
-					return true;
-				}
 				Stage stage = getStage();
-				stage.screenToStageCoordinates(tmpCoords.set(screenCoords));
-				list = new SelectList(tmpCoords.x, tmpCoords.y);
-				stage.addActor(list);
+				if (list == null) list = new SelectList();
+				list.show(stage);
 				return true;
 			}
 		});
+	}
+
+	/** Set the max number of items to display when the select box is opened. Set to 0 (the default) to display as many as fit in
+	 * the stage height. */
+	public void setMaxListCount (int maxListCount) {
+		this.maxListCount = maxListCount;
+	}
+
+	/** @return Max number of dropdown List items to display when the box is opened, or <= 0 to display them all. */
+	public int getMaxListCount () {
+		return maxListCount;
 	}
 
 	public void setStyle (SelectBoxStyle style) {
@@ -122,8 +130,8 @@ public class SelectBox extends Widget {
 		for (int i = 0; i < items.length; i++)
 			max = Math.max(font.getBounds(items[i]).width, max);
 		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + max;
-		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth() + 2
-			* style.itemSpacing);
+		prefWidth = Math.max(prefWidth, max + style.listBackground.getLeftWidth() + style.listBackground.getRightWidth()
+			+ style.listSelection.getLeftWidth() + style.listSelection.getRightWidth());
 
 		if (items.length > 0) {
 			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
@@ -167,9 +175,6 @@ public class SelectBox extends Widget {
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
 			font.draw(batch, items[selectedIndex], x + background.getLeftWidth(), y + textY, 0, numGlyphs);
 		}
-
-		// calculate screen coords where list should be displayed
-		getStage().toScreenCoordinates(screenCoords.set(x, y), batch.getTransformMatrix());
 	}
 
 	/** Sets the selected item via it's index
@@ -206,121 +211,103 @@ public class SelectBox extends Widget {
 
 	public void hideList () {
 		if (list == null || list.getParent() == null) return;
-
-		getStage().removeCaptureListener(list.stageListener);
 		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
-	class SelectList extends Actor {
-		final Vector2 oldScreenCoords = new Vector2();
-		float itemHeight;
-		float textOffsetX, textOffsetY;
-		int listSelectedIndex = SelectBox.this.selectedIndex;
+	class SelectList extends ScrollPane {
+		final List list;
+		final Vector2 screenCoords = new Vector2();
 
-		InputListener stageListener = new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer == 0 && button != 0) return false;
-				stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
-				x = tmpCoords.x;
-				y = tmpCoords.y;
-				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					listSelectedIndex = (int)((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
-					listSelectedIndex = Math.max(0, listSelectedIndex);
-					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
-					selectedIndex = listSelectedIndex;
-					if (items.length > 0) {
+		public SelectList () {
+			super(null);
+
+			getStyle().background = style.listBackground;
+			setOverscroll(false, false);
+
+			ListStyle listStyle = new ListStyle();
+			listStyle.font = style.font;
+			listStyle.fontColorSelected = style.fontColor;
+			listStyle.fontColorUnselected = style.fontColor;
+			listStyle.selection = style.listSelection;
+			list = new List(new Object[0], listStyle);
+			setWidget(list);
+			list.addListener(new InputListener() {
+				public boolean mouseMoved (InputEvent event, float x, float y) {
+					list.setSelectedIndex(Math.min(items.length - 1, (int)((list.getHeight() - y) / list.getItemHeight())));
+					return true;
+				}
+			});
+
+			addListener(new InputListener() {
+				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+					if (event.getTarget() == list) return true;
+					hideList();
+					return false;
+				}
+
+				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+					if (hit(x, y, true) == list) {
+						setSelection(list.getSelectedIndex());
 						ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 						SelectBox.this.fire(changeEvent);
 						Pools.free(changeEvent);
+						hideList();
 					}
 				}
-				return true;
+			});
+		}
+
+		public void show (Stage stage) {
+			stage.addActor(this);
+
+			SelectBox.this.localToStageCoordinates(tmpCoords.set(0, 0));
+			screenCoords.set(tmpCoords);
+
+			list.setItems(items);
+			list.setSelectedIndex(selectedIndex);
+
+			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
+			float itemHeight = list.getItemHeight();
+			float height = itemHeight * (maxListCount <= 0 ? items.length : Math.min(maxListCount, items.length));
+			Drawable background = getStyle().background;
+			if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+
+			float heightBelow = tmpCoords.y;
+			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
+			boolean below = true;
+			if (height > heightBelow) {
+				if (heightAbove > heightBelow) {
+					below = false;
+					height = Math.min(height, heightAbove);
+				} else
+					height = heightBelow;
 			}
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				hideList();
-			}
-
-			public boolean mouseMoved (InputEvent event, float x, float y) {
-				stageToLocalCoordinates(tmpCoords.set(event.getStageX(), event.getStageY()));
-				x = tmpCoords.x;
-				y = tmpCoords.y;
-				if (x > 0 && x < getWidth() && y > 0 && y < getHeight()) {
-					listSelectedIndex = (int)((getHeight() - style.listBackground.getTopHeight() - y) / itemHeight);
-					listSelectedIndex = Math.max(0, listSelectedIndex);
-					listSelectedIndex = Math.min(items.length - 1, listSelectedIndex);
-				}
-				return true;
-			}
-		};
-
-		public SelectList (float x, float y) {
-			setBounds(x, 0, SelectBox.this.getWidth(), 100);
-			this.oldScreenCoords.set(screenCoords);
-			layout();
-			Stage stage = SelectBox.this.getStage();
-			float height = getHeight();
-			if (y - height < 0 && y + SelectBox.this.getHeight() + height < stage.getCamera().viewportHeight)
-				setY(y + SelectBox.this.getHeight());
+			if (below)
+				setY(tmpCoords.y - height);
 			else
-				setY(y - height);
-			stage.addCaptureListener(stageListener);
+				setY(tmpCoords.y + SelectBox.this.getHeight());
+			setX(tmpCoords.x);
+			setWidth(SelectBox.this.getWidth());
+			setHeight(height);
+
+			scrollToCenter(0, list.getHeight() - selectedIndex * itemHeight - itemHeight / 2, 0, 0);
+			updateVisualScroll();
+
 			getColor().a = 0;
 			addAction(fadeIn(0.3f, Interpolation.fade));
 		}
 
-		private void layout () {
-			final BitmapFont font = style.font;
-			final Drawable listSelection = style.listSelection;
-			final Drawable listBackground = style.listBackground;
-
-			itemHeight = font.getCapHeight() + -font.getDescent() * 2 + style.itemSpacing;
-			itemHeight += listSelection.getTopHeight() + listSelection.getBottomHeight();
-
-			textOffsetX = listSelection.getLeftWidth() + style.itemSpacing;
-			textOffsetY = listSelection.getTopHeight() + -font.getDescent() + style.itemSpacing / 2;
-
-			setWidth(SelectBox.this.getWidth());
-			setHeight(items.length * itemHeight + listBackground.getTopHeight() + listBackground.getBottomHeight());
-		}
-
-		@Override
-		public void draw (SpriteBatch batch, float parentAlpha) {
-			final Drawable listBackground = style.listBackground;
-			final Drawable listSelection = style.listSelection;
-			final BitmapFont font = style.font;
-			final Color fontColor = style.fontColor;
-
-			float x = getX();
-			float y = getY();
-			float width = getWidth();
-			float height = getHeight();
-
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			listBackground.draw(batch, x, y, width, height);
-
-			width -= listBackground.getLeftWidth() + listBackground.getRightWidth();
-			x += listBackground.getLeftWidth();
-			float posY = height - listBackground.getTopHeight();
-			for (int i = 0; i < items.length; i++) {
-				if (listSelectedIndex == i) {
-					listSelection.draw(batch, x, y + posY - itemHeight, width, itemHeight);
-				}
-				font.setColor(fontColor.r, fontColor.g, fontColor.b, color.a * fontColor.a * parentAlpha);
-				font.draw(batch, items[i], x + textOffsetX, y + posY - textOffsetY);
-				posY -= itemHeight;
-			}
-		}
-
 		@Override
 		public Actor hit (float x, float y, boolean touchable) {
-			return this;
+			Actor actor = super.hit(x, y, touchable);
+			return actor != null ? actor : this;
 		}
 
 		public void act (float delta) {
 			super.act(delta);
-			if (screenCoords.x != oldScreenCoords.x || screenCoords.y != oldScreenCoords.y) hideList();
+			SelectBox.this.localToStageCoordinates(tmpCoords.set(0, 0));
+			if (tmpCoords.x != screenCoords.x || tmpCoords.y != screenCoords.y) hideList();
 		}
 	}
 
@@ -335,7 +322,6 @@ public class SelectBox extends Widget {
 		public Drawable listSelection;
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
-		public float itemSpacing = 10;
 
 		public SelectBoxStyle () {
 		}

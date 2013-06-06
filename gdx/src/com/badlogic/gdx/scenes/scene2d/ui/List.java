@@ -43,6 +43,7 @@ public class List extends Widget implements Cullable {
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
+	private boolean selectable = true;
 
 	public List (Object[] items, Skin skin) {
 		this(items, skin.get(ListStyle.class));
@@ -61,10 +62,21 @@ public class List extends Widget implements Cullable {
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
+				if (!isSelectable()) return false; // don't eat touch event when NOT selectable
 				List.this.touchDown(y);
 				return true;
 			}
 		});
+	}
+
+	/** Sets whether this List's items are selectable. If not selectable, touch events will not be consumed. */
+	public void setSelectable (boolean selectable) {
+		this.selectable = selectable;
+	}
+
+	/** @return True if items are selectable. */
+	public boolean isSelectable () {
+		return selectable;
 	}
 
 	void touchDown (float y) {
@@ -126,24 +138,26 @@ public class List extends Widget implements Cullable {
 		}
 	}
 
-	/** @return The index of the currently selected item. The top item has an index of 0. */
+	/** @return The index of the currently selected item. The top item has an index of 0. Nothing selected has an index of -1. */
 	public int getSelectedIndex () {
 		return selectedIndex;
 	}
 
+	/** @param index Set to -1 for nothing selected. */
 	public void setSelectedIndex (int index) {
-		if (index < 0 || index >= items.length)
-			throw new GdxRuntimeException("index must be >= 0 and < " + items.length + ": " + index);
+		if (index < -1 || index >= items.length)
+			throw new GdxRuntimeException("index must be >= -1 and < " + items.length + ": " + index);
 		selectedIndex = index;
 	}
 
-	/** @return The text of the currently selected item or null if the list is empty. */
+	/** @return The text of the currently selected item, or null if the list is empty or nothing is selected. */
 	public String getSelection () {
-		if (items.length == 0) return null;
+		if (items.length == 0 || selectedIndex == -1) return null;
 		return items[selectedIndex];
 	}
 
-	/** @return The index of the item that was selected, or -1. */
+	/** Sets the selection to the item if found, else sets the selection to nothing.
+	 * @return The new selected index. */
 	public int setSelection (String item) {
 		selectedIndex = -1;
 		for (int i = 0, n = items.length; i < n; i++) {
@@ -189,6 +203,10 @@ public class List extends Widget implements Cullable {
 
 	public String[] getItems () {
 		return items;
+	}
+
+	public float getItemHeight () {
+		return itemHeight;
 	}
 
 	public float getPrefWidth () {

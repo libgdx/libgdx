@@ -17,7 +17,7 @@
 
 package java.nio;
 
-import com.google.gwt.typedarrays.client.ArrayBuffer;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
 
 /** HeapByteBuffer, ReadWriteHeapByteBuffer and ReadOnlyHeapByteBuffer compose the implementation of array based byte buffers.
  * <p>
@@ -29,8 +29,8 @@ import com.google.gwt.typedarrays.client.ArrayBuffer;
 final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
 
 	static DirectReadOnlyByteBuffer copy (DirectByteBuffer other, int markOfOther) {
-		DirectReadOnlyByteBuffer buf = new DirectReadOnlyByteBuffer(other.byteArray.getBuffer(), other.capacity(),
-			other.byteArray.getByteOffset());
+		DirectReadOnlyByteBuffer buf = new DirectReadOnlyByteBuffer(other.byteArray.buffer(), other.capacity(),
+			other.byteArray.byteOffset());
 		buf.limit = other.limit();
 		buf.position = other.position();
 		buf.mark = markOfOther;
@@ -139,7 +139,7 @@ final class DirectReadOnlyByteBuffer extends DirectByteBuffer {
 	}
 
 	public ByteBuffer slice () {
-		DirectReadOnlyByteBuffer slice = new DirectReadOnlyByteBuffer(byteArray.getBuffer(), remaining(), byteArray.getByteOffset()
+		DirectReadOnlyByteBuffer slice = new DirectReadOnlyByteBuffer(byteArray.buffer(), remaining(), byteArray.byteOffset()
 			+ position);
 		slice.order = order;
 		return slice;

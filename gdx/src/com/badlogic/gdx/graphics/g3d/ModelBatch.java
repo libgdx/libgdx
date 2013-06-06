@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
@@ -48,6 +49,23 @@ public class ModelBatch implements Disposable {
 		this.context = context;
 		this.shaderProvider = shaderProvider;
 		this.sorter = sorter;
+	}
+	
+	/** Construct a BaseRenderBatch with the default implementation and the specified shader provider*/
+	public ModelBatch(ShaderProvider shaderProvider) {
+		this(new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN, 1)),
+			  shaderProvider,
+			  new DefaultRenderableSorter());
+	}
+	
+	/** Construct a BaseRenderBatch with the default implementation and the specified uber shader*/
+	public ModelBatch(final FileHandle vertexShader, final FileHandle fragmentShader) {
+		this(new DefaultShaderProvider(vertexShader, fragmentShader));
+	}
+	
+	/** Construct a BaseRenderBatch with the default implementation and the specified uber shader*/
+	public ModelBatch(final String vertexShader, final String fragmentShader) {
+		this(new DefaultShaderProvider(vertexShader, fragmentShader));
 	}
 	
 	/** Construct a BaseRenderBatch with the default implementation */

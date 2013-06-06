@@ -85,6 +85,7 @@ LOCAL_SRC_FILES := Box2D/Collision/b2BroadPhase.cpp\
 	etc1/etc1_utils.cpp\
 	gdx2d/gdx2d.c\
 	gdx2d/stb_image.c\
+	iosgl/iosgl20.cpp\
 	memcpy_wrap.c
  
 include $(BUILD_SHARED_LIBRARY)

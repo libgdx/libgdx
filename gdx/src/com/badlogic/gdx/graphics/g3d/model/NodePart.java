@@ -13,7 +13,8 @@ import com.badlogic.gdx.utils.ArrayMap;
 public class NodePart {
 	public MeshPart meshPart;
 	public Material material;
-	public ArrayMap<Node, Matrix4> bones;
+	public ArrayMap<Node, Matrix4> invBoneBindTransforms;
+	public Matrix4[] bones;
 	
 	public NodePart() {}
 	

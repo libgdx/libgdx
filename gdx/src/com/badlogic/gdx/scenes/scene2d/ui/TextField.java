@@ -311,17 +311,18 @@ public class TextField extends Widget {
 
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
-					if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
-						if (!hasSelection) {
-							text = text.substring(0, cursor - 1) + text.substring(cursor);
-							updateDisplayText();
-							cursor--;
-							renderOffset = 0;
-						} else {
-							delete();
+					if (character == BACKSPACE) {
+						if (cursor > 0 || hasSelection) {
+							if (!hasSelection) {
+								text = text.substring(0, cursor - 1) + text.substring(cursor);
+								updateDisplayText();
+								cursor--;
+								renderOffset = 0;
+							} else {
+								delete();
+							}
 						}
-					}
-					if (character == DELETE) {
+					} else if (character == DELETE) {
 						if (cursor < text.length() || hasSelection) {
 							if (!hasSelection) {
 								text = text.substring(0, cursor) + text.substring(cursor + 1);
@@ -330,17 +331,14 @@ public class TextField extends Widget {
 								delete();
 							}
 						}
-						return true;
-					}
-					if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
-						if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
-					}
-					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
+					} else if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-					if (font.containsCharacter(character)) {
-						if (maxLength > 0 && text.length() + 1 > maxLength) {
-							return true;
+					} else if (font.containsCharacter(character)) {
+						// Character may be added to the text.
+						if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
+							if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						}
+						if (maxLength > 0 && text.length() + 1 > maxLength) return true;
 						if (!hasSelection) {
 							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 							updateDisplayText();
@@ -634,6 +632,8 @@ public class TextField extends Widget {
 			Actor actor = actors.get(i);
 			if (actor == this) continue;
 			if (actor instanceof TextField) {
+				TextField textField = (TextField)actor;
+				if (textField.isDisabled() || !textField.focusTraversal) continue;
 				Vector2 actorCoords = actor.getParent().localToStageCoordinates(tmp3.set(actor.getX(), actor.getY()));
 				if ((actorCoords.y < currentCoords.y || (actorCoords.y == currentCoords.y && actorCoords.x > currentCoords.x)) ^ up) {
 					if (best == null
@@ -642,8 +642,8 @@ public class TextField extends Widget {
 						bestCoords.set(actorCoords);
 					}
 				}
-			}
-			if (actor instanceof Group) best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
+			} else if (actor instanceof Group)
+				best = findNextTextField(((Group)actor).getChildren(), best, bestCoords, currentCoords, up);
 		}
 		return best;
 	}

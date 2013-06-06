@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
@@ -57,6 +58,10 @@ public class DefaultShader extends BaseShader {
 		ColorAttribute.Specular | FloatAttribute.Shininess;
 	
 	public static boolean ignoreUnimplemented = true;
+	/** Set to 0 to disable culling */
+	public static int defaultCullFace = GL10.GL_BACK;
+	/** Set to 0 to disable depth test */
+	public static int defaultDepthFunc = GL10.GL_LEQUAL;
 	
 	// Global uniforms
 	protected final int u_projTrans					= registerUniform("u_projTrans");
@@ -64,18 +69,18 @@ public class DefaultShader extends BaseShader {
 	protected final int u_cameraDirection			= registerUniform("u_cameraDirection");
 	protected final int u_cameraUp					= registerUniform("u_cameraUp");
 	// Object uniforms
-	protected final int u_modelTrans					= registerUniform("u_modelTrans");
-	protected final int u_localTrans					= registerUniform("u_localTrans");
 	protected final int u_worldTrans					= registerUniform("u_worldTrans");
 	protected final int u_normalMatrix				= registerUniform("u_normalMatrix", 0, Usage.Normal);
 	protected final int u_bones						= registerUniform("u_bones");
 	// Material uniforms
 	protected final int u_shininess					= registerUniform("u_shininess", FloatAttribute.Shininess);
+	protected final int u_opacity						= registerUniform("u_opacity", BlendingAttribute.Type);
 	protected final int u_diffuseColor				= registerUniform("u_diffuseColor", ColorAttribute.Diffuse);
 	protected final int u_diffuseTexture			= registerUniform("u_diffuseTexture", TextureAttribute.Diffuse);
 	protected final int u_specularColor				= registerUniform("u_specularColor", ColorAttribute.Specular);
 	protected final int u_specularTexture			= registerUniform("u_specularTexture", TextureAttribute.Specular);
 	protected final int u_normalTexture				= registerUniform("u_normalTexture", TextureAttribute.Normal);
+	protected final int u_alphaTest					= registerUniform("u_alphaTest", FloatAttribute.AlphaTest);
 	// Lighting uniforms
 	protected final int u_ambientLight				= registerUniform("u_ambientLight");
 	protected final int u_ambientCubemap			= registerUniform("u_ambientCubemap");
@@ -125,7 +130,6 @@ public class DefaultShader extends BaseShader {
 
 	public DefaultShader(final String vertexShader, final String fragmentShader, final long mask, final long attributes, boolean lighting, int numDirectional, int numPoint, int numSpot, int numBones) {
 		final String prefix = createPrefix(mask, attributes, lighting, numDirectional, numPoint, numSpot, numBones);
-		Gdx.app.log("Test", "Prefix:\n"+prefix);
 		program = new ShaderProgram(prefix + vertexShader, prefix + fragmentShader);
 		if(!program.isCompiled()) {
 			throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
@@ -212,6 +216,8 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
 		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
+		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
+			prefix += "#define "+FloatAttribute.AlphaTestAlias+"Flag\n";
 		if (numBones > 0)
 			prefix += "#define numBones "+numBones+"\n";
 		return prefix;
@@ -245,10 +251,6 @@ public class DefaultShader extends BaseShader {
 	}
 
 	private Mesh currentMesh;
-	private Matrix4 currentModelTransform;
-	private Matrix4 currentLocalTransform;
-	private Matrix4 currentWorldTransform;
-	private Matrix4 combinedWorldTransform = new Matrix4();
 	private Matrix3 normalMatrix = new Matrix3();
 	private Camera camera;
 	private final static Matrix4 idtMatrix = new Matrix4();
@@ -258,7 +260,11 @@ public class DefaultShader extends BaseShader {
 		this.context = context;
 		this.camera = camera;
 		program.begin();
-		context.setDepthTest(true, GL10.GL_LEQUAL);
+		// FIXME add DepthTest Material Attribute ?
+		if (defaultDepthFunc == 0)
+			context.setDepthTest(false, GL10.GL_LEQUAL);
+		else
+			context.setDepthTest(true, defaultDepthFunc);
 		
 		set(u_projTrans, camera.combined);
 		set(u_cameraPosition, camera.position);
@@ -273,29 +279,16 @@ public class DefaultShader extends BaseShader {
 			bones[i] = idtMatrix.val[i%16];
 	}
 
-	private void setWorldTransform(final Matrix4 value, final boolean force) {
-		if (force || ((currentWorldTransform == null) != (value == null)) || !currentWorldTransform.equals(value)) { // FIXME implement Matrix4#equals
-			set(u_worldTrans, (currentWorldTransform = value) == null ? idtMatrix : value);
-			set(u_normalMatrix, normalMatrix.set(currentWorldTransform == null ? idtMatrix : currentWorldTransform));
-		}
+	private void setWorldTransform(final Matrix4 value) {
+		set(u_worldTrans, value);
+		set(u_normalMatrix, normalMatrix.set(value)); // FIXME normalize Matrix3 to remove scale component
 	}
 	
 	@Override
 	public void render (final Renderable renderable) {
 		if (!renderable.material.has(BlendingAttribute.Type))
 			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-		if (currentLocalTransform != renderable.localTransform)
-			set(u_localTrans, (currentLocalTransform = renderable.localTransform) == null ? idtMatrix : renderable.localTransform);
-		if (currentModelTransform != renderable.modelTransform)
-			set(u_modelTrans, (currentModelTransform = renderable.modelTransform) == null ? idtMatrix : renderable.modelTransform);
-		if (currentLocalTransform == null && currentModelTransform == null)
-			setWorldTransform(idtMatrix, false);
-		else if (currentLocalTransform == null)
-			setWorldTransform(currentModelTransform, false);
-		else if (currentModelTransform == null)
-			setWorldTransform(currentLocalTransform, false);
-		else
-			setWorldTransform(combinedWorldTransform.set(currentLocalTransform).mul(currentModelTransform), true);
+		setWorldTransform(renderable.worldTransform);
 		bindMaterial(renderable);
 		if (lighting)
 			bindLights(renderable);
@@ -322,7 +315,6 @@ public class DefaultShader extends BaseShader {
 			currentMesh.unbind(program);
 			currentMesh = null;
 		}
-		currentModelTransform = null;
 		currentTextureAttribute = null;
 		currentMaterial = null;
 		program.end();
@@ -332,12 +324,14 @@ public class DefaultShader extends BaseShader {
 	private final void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
+		int cullFace = defaultCullFace;
 		currentMaterial = renderable.material;
 		for (final Material.Attribute attr : currentMaterial) {
 			final long t = attr.type;
-			if (BlendingAttribute.is(t))
+			if (BlendingAttribute.is(t)) {
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
-			else if (ColorAttribute.is(t)) {
+				set(u_opacity, ((BlendingAttribute)attr).opacity);
+			} else if (ColorAttribute.is(t)) {
 				ColorAttribute col = (ColorAttribute)attr;
 				if ((t & ColorAttribute.Diffuse) == ColorAttribute.Diffuse)
 					set(u_diffuseColor, col.color);
@@ -354,9 +348,14 @@ public class DefaultShader extends BaseShader {
 			}
 			else if ((t & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 				set(u_shininess, ((FloatAttribute)attr).value);
+			else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
+				cullFace = ((IntAttribute)attr).value;
+			else if ((t & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
+				set(u_alphaTest, ((FloatAttribute)attr).value);
 			else if(!ignoreUnimplemented)
 					throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
+		context.setCullFace(cullFace);
 	}
 
 	TextureAttribute currentTextureAttribute;
@@ -373,7 +372,7 @@ public class DefaultShader extends BaseShader {
 		final Array<PointLight> points = lights.pointLights;
 		
 		if (hasUniform(u_ambientCubemap)) {
-			renderable.modelTransform.getTranslation(tmpV1);
+			renderable.worldTransform.getTranslation(tmpV1);
 			ambientCubemap.set(lights.ambientLight);
 			
 			for (int i = directionalLights.length; i < dirs.size; i++)

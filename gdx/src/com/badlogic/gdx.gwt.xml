@@ -134,6 +134,7 @@
 		<include name="graphics/g3d/materials/BlendingAttribute.java"/>
 		<include name="graphics/g3d/materials/ColorAttribute.java"/>
 		<include name="graphics/g3d/materials/FloatAttribute.java"/>
+		<include name="graphics/g3d/materials/IntAttribute.java"/>
 		<include name="graphics/g3d/materials/Material.java"/>
 		<include name="graphics/g3d/materials/TextureAttribute.java"/>
 		
@@ -159,13 +160,20 @@
 				
 	<!-- graphics/g3d/shaders -->
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
+		<include name="graphics/g3d/shaders/CompositeShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
 		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
 		
+	<!-- graphics/g3d/shaders/subshaders -->
+		<include name="graphics/g3d/shaders/subshaders/BaseSubShader.java"/>
+		<include name="graphics/g3d/shaders/subshaders/DiffuseColorTextureShader.java"/>
+		<include name="graphics/g3d/shaders/subshaders/SubShader.java"/>
+		<include name="graphics/g3d/shaders/subshaders/TransformShader.java"/>
 		
 	<!-- graphics/g3d/utils -->
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
+		<include name="graphics/g3d/utils/CompositeShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
@@ -419,6 +427,7 @@
 		<include name="utils/LongArray.java"/>
 		<include name="utils/LongMap.java"/>
 		<include name="utils/NumberUtils.java"/> <!-- Emulated -->
+		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/OrderedMap.java"/>
@@ -475,4 +484,10 @@
 		<include name="utils/reflect/Reflection.java"/>
 		<include name="utils/reflect/ReflectionException.java"/>		
 	</source>
+	
+	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.fnt" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.png" />
 </module>

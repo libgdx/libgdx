@@ -369,7 +369,13 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {
+	synchronized void injectDependencies(String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
+		for(AssetDescriptor desc: dependendAssetDescs) {
+			injectDependency(parentAssetFilename, desc);
+		}
+	}
+	
+	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {
 		// add the asset as a dependency of the parent asset
 		Array<String> dependencies = assetDependencies.get(parentAssetFilename);
 		if (dependencies == null) {

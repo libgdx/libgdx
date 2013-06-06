@@ -19,6 +19,7 @@
 		<get src="${domain}/armeabi-v7a/libgdx.so" dest="tmp/armeabi-v7a"/>
 		<get src="${domain}/ios/gdx.dll" dest="gdx/libs/ios32"/>
 		<get src="${domain}/ios/gdx.dll.mdb" dest="gdx/libs/ios32"/>
+        <get src="${domain}/ios/libgdx.a" dest="gdx/libs/ios32"/>
 		<get src="${domain}/ios/libgdx.a" dest="tmp/ios"/>
 		<get src="${domain}/ios/ikvm/bin/libikvm-natives.a" dest="tmp/ios"/>
 		

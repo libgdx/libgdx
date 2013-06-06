@@ -117,7 +117,7 @@ public class ModelInstance implements RenderableProvider {
 		return new ModelInstance(this);
 	}
 
-	private ObjectMap<NodePart, String[]> nodePartBones = new ObjectMap<NodePart, String[]>();
+	private ObjectMap<NodePart, ArrayMap<Node, Matrix4>> nodePartBones = new ObjectMap<NodePart, ArrayMap<Node, Matrix4>>();
 	private void copyNodes (Array<Node> nodes) {
 		nodePartBones.clear();
 		for(Node node: nodes) {
@@ -153,14 +153,17 @@ public class ModelInstance implements RenderableProvider {
 	}
 	
 	private void setBones() {
-		for (ObjectMap.Entry<NodePart,String[]> e : nodePartBones.entries()) {
-			if (e.key.bones == null)
-				e.key.bones = new ArrayMap<Node, Matrix4>(true, e.value.length, Node.class, Matrix4.class);
-			e.key.bones.clear();
-			for (final String n : e.value) {
-				final Node node = getNode(n);
-				e.key.bones.put(node, node == null ? null : node.boneTransform);
-			}
+		for (ObjectMap.Entry<NodePart,ArrayMap<Node, Matrix4>> e : nodePartBones.entries()) {
+			if (e.key.invBoneBindTransforms == null)
+				e.key.invBoneBindTransforms = new ArrayMap<Node, Matrix4>(true, e.value.size, Node.class, Matrix4.class);
+			e.key.invBoneBindTransforms.clear();
+			
+			for (final ObjectMap.Entry<Node, Matrix4> b : e.value.entries())
+				e.key.invBoneBindTransforms.put(getNode(b.key.id), b.value); // Share the inv bind matrix with the model
+			
+			e.key.bones = new Matrix4[e.value.size];
+			for (int i = 0; i < e.key.bones.length; i++)
+				e.key.bones[i] = new Matrix4();
 		}
 	}
 	
@@ -174,7 +177,6 @@ public class ModelInstance implements RenderableProvider {
 		copy.scale.set(node.scale);
 		copy.localTransform.set(node.localTransform);
 		copy.globalTransform.set(node.globalTransform);
-		copy.invInitialTransform.set(node.invInitialTransform);
 		for(NodePart nodePart: node.parts) {
 			copy.parts.add(copyNodePart(nodePart));
 		}
@@ -193,12 +195,8 @@ public class ModelInstance implements RenderableProvider {
 		copy.meshPart.primitiveType = nodePart.meshPart.primitiveType;
 		copy.meshPart.mesh = nodePart.meshPart.mesh;
 		
-		if (nodePart.bones != null) {
-			final String bones[] = new String[nodePart.bones.size];
-			for (int i = 0; i < nodePart.bones.size; i++)
-				bones[i] = nodePart.bones.getKeyAt(i).id;
-			nodePartBones.put(copy, bones);
-		}
+		if (nodePart.invBoneBindTransforms != null)
+			nodePartBones.put(copy, nodePart.invBoneBindTransforms);
 		
 		final int index = materials.indexOf(nodePart.material, false);
 		if (index < 0)
@@ -240,7 +238,8 @@ public class ModelInstance implements RenderableProvider {
 	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
 	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
-	 * is calculated, based on the parent's world transform and the local transform of each Node.</p>
+	 * is calculated, based on the parent's world transform and the local transform of each Node.
+	 * Finally, the animation bone matrices are updated accordingly.</p>
 	 * 
 	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
 	 * was modified.
@@ -249,12 +248,21 @@ public class ModelInstance implements RenderableProvider {
 		for(Node node: nodes) {
 			node.calculateTransforms(true);
 		}
+		for(Node node: nodes) {
+			node.calculateBoneTransforms(true);
+		}
 	}
 	
 	/** Calculate the bounding box of this model instance.
 	 * This is a potential slow operation, it is advised to cache the result. */
 	public BoundingBox calculateBoundingBox(final BoundingBox out) {
 		out.inf();
+		return extendBoundingBox(out);
+	}
+	
+	/** Extends the bounding box with the bounds of this model instance.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox extendBoundingBox(final BoundingBox out) {
 		for (final Node node : nodes)
 			calculateBoundingBox(out, node);
 		return out;
@@ -262,7 +270,7 @@ public class ModelInstance implements RenderableProvider {
 	
 	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
 		for (final NodePart mpm : node.parts)
-			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices);
+			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices, node.globalTransform);
 		for (final Node child : node.children)
 			calculateBoundingBox(out, child);
 	}
@@ -274,17 +282,26 @@ public class ModelInstance implements RenderableProvider {
 		return null;
 	}
 	
-	public Node getNode(final String id) {
-		return getNode(id, nodes);
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive) {
+		return getNode(id, nodes, recursive);
 	}
 	
-	protected Node getNode(final String id, final Iterable<Node> nodes) {
+	/** @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id) {
+		return getNode(id, true);
+	}
+	
+	protected Node getNode(final String id, final Iterable<Node> nodes, boolean recursive) {
 		for (final Node node : nodes) {
 			if (node.id.equals(id))
 				return node;
-			final Node n = getNode(id, node.children);
-			if (n != null)
-				return n;
+			if (recursive) {
+				final Node n = getNode(id, node.children, recursive);
+				if (n != null)
+					return n;
+			}
 		}
 		return null;
 	}
@@ -312,12 +329,13 @@ public class ModelInstance implements RenderableProvider {
 				renderable.meshPartOffset = nodePart.meshPart.indexOffset;
 				renderable.meshPartSize = nodePart.meshPart.numVertices;
 				renderable.primitiveType = nodePart.meshPart.primitiveType;
-				renderable.bones = nodePart.bones == null ? null : nodePart.bones.values;
-				if (transform == null)
-					renderable.modelTransform.idt();
+				renderable.bones = nodePart.bones;
+				if (nodePart.bones == null && transform != null)
+				renderable.worldTransform.set(transform).mul(node.globalTransform);
+				else if (transform != null)
+					renderable.worldTransform.set(transform);
 				else
-					renderable.modelTransform.set(transform);
-				renderable.localTransform = node.globalTransform;
+					renderable.worldTransform.idt();
 				renderable.userData = userData;
 				renderables.add(renderable);
 			}

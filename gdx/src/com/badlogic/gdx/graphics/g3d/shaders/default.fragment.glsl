@@ -20,6 +20,13 @@ varying vec3 v_normal;
 varying vec4 v_color;
 #endif
 
+#ifdef blendedFlag
+varying float v_opacity;
+#ifdef alphaTestFlag
+varying float v_alphaTest;
+#endif //alphaTestFlag
+#endif //blendedFlag
+
 #if defined(diffuseTextureFlag) || defined(specularTextureFlag)
 #define textureFlag
 varying MED vec2 v_texCoords0;
@@ -61,7 +68,7 @@ void main() {
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
 		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor * v_color;
 	#elif defined(diffuseTextureFlag) && defined(diffuseColorFlag)
-		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0);
+		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * u_diffuseColor;
 	#elif defined(diffuseTextureFlag) && defined(colorFlag)
 		vec4 diffuse = texture2D(u_diffuseTexture, v_texCoords0) * v_color;
 	#elif defined(diffuseTextureFlag)
@@ -95,6 +102,10 @@ void main() {
 	#endif //lightingFlag
 
 	#ifdef blendedFlag
-		gl_FragColor.a = diffuse.a;
+		gl_FragColor.a = diffuse.a * v_opacity;
+		#ifdef alphaTestFlag
+			if (gl_FragColor.a <= v_alphaTest)
+				discard;
+		#endif
 	#endif
 }
