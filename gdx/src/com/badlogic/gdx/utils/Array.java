@@ -61,7 +61,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
 	public Array (boolean ordered, int capacity, Class<T> arrayType) {
 		this.ordered = ordered;
-		items = (T[])Reflection.newArray(arrayType, capacity);
+		items = (T[])Reflection.ArrayReflection.newInstance(arrayType, capacity);
 	}
 
 	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
@@ -315,7 +315,7 @@ public class Array<T> implements Iterable<T> {
 	/** Creates a new backing array with the specified size containing the current items. */
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
-		T[] newItems = (T[]) Reflection.newArray(items.getClass().getComponentType(), newSize);
+		T[] newItems = (T[]) Reflection.ArrayReflection.newInstance(items.getClass().getComponentType(), newSize);
 		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
@@ -400,7 +400,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public <V> V[] toArray (Class<V> type) {
-		V[] result = (V[])Reflection.newArray(type, size);
+		V[] result = (V[])Reflection.ArrayReflection.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
 	}

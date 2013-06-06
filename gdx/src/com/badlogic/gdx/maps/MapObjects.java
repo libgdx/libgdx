@@ -84,7 +84,7 @@ public class MapObjects implements Iterable<MapObject> {
 	public <T extends MapObject> Array<T> getByType(Class<T> type, Array<T> fill) {
 		fill.clear();
 		for (MapObject object : objects) {
-			if (Reflection.isInstance(type, object)) {
+			if (Reflection.ClassReflection.isInstance(type, object)) {
 				fill.add((T) object);
 			}
 		}
