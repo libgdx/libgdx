@@ -1688,6 +1688,12 @@ typedef btDiscreteCollisionDetectorInterface::ClosestPointInput ClosestPointInpu
 
 #include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
 
+SWIGINTERN btHeightfieldTerrainShape *new_btHeightfieldTerrainShape__SWIG_0(int heightStickWidth,int heightStickLength,float const *heightfieldData,btScalar heightScale,btScalar minHeight,btScalar maxHeight,int upAxis,bool flipQuadEdges){
+		return new btHeightfieldTerrainShape(heightStickWidth, heightStickLength, (void *)heightfieldData, heightScale, minHeight, maxHeight, upAxis, PHY_FLOAT, flipQuadEdges);
+	}
+SWIGINTERN btHeightfieldTerrainShape *new_btHeightfieldTerrainShape__SWIG_1(int heightStickWidth,int heightStickLength,short const *heightfieldData,btScalar heightScale,btScalar minHeight,btScalar maxHeight,int upAxis,bool flipQuadEdges){
+		return new btHeightfieldTerrainShape(heightStickWidth, heightStickLength, (void *)heightfieldData, heightScale, minHeight, maxHeight, upAxis, PHY_SHORT, flipQuadEdges);
+	}
 
 #include <BulletCollision/CollisionShapes/btTriangleMeshShape.h>
 
@@ -24445,62 +24451,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btHeightfieldTerrainShape_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2, jlong jarg3, jfloat jarg4, jfloat jarg5, jfloat jarg6, jint jarg7, jint jarg8, jboolean jarg9) {
-  jlong jresult = 0 ;
-  int arg1 ;
-  int arg2 ;
-  void *arg3 = (void *) 0 ;
-  btScalar arg4 ;
-  btScalar arg5 ;
-  btScalar arg6 ;
-  int arg7 ;
-  PHY_ScalarType arg8 ;
-  bool arg9 ;
-  btHeightfieldTerrainShape *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = (int)jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = *(void **)&jarg3; 
-  arg4 = (btScalar)jarg4; 
-  arg5 = (btScalar)jarg5; 
-  arg6 = (btScalar)jarg6; 
-  arg7 = (int)jarg7; 
-  arg8 = (PHY_ScalarType)jarg8; 
-  arg9 = jarg9 ? true : false; 
-  result = (btHeightfieldTerrainShape *)new btHeightfieldTerrainShape(arg1,arg2,(void const *)arg3,arg4,arg5,arg6,arg7,arg8,arg9);
-  *(btHeightfieldTerrainShape **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btHeightfieldTerrainShape_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2, jlong jarg3, jfloat jarg4, jint jarg5, jboolean jarg6, jboolean jarg7) {
-  jlong jresult = 0 ;
-  int arg1 ;
-  int arg2 ;
-  void *arg3 = (void *) 0 ;
-  btScalar arg4 ;
-  int arg5 ;
-  bool arg6 ;
-  bool arg7 ;
-  btHeightfieldTerrainShape *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = (int)jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = *(void **)&jarg3; 
-  arg4 = (btScalar)jarg4; 
-  arg5 = (int)jarg5; 
-  arg6 = jarg6 ? true : false; 
-  arg7 = jarg7 ? true : false; 
-  result = (btHeightfieldTerrainShape *)new btHeightfieldTerrainShape(arg1,arg2,(void const *)arg3,arg4,arg5,arg6,arg7);
-  *(btHeightfieldTerrainShape **)&jresult = result; 
-  return jresult;
-}
-
-
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btHeightfieldTerrainShape(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   btHeightfieldTerrainShape *arg1 = (btHeightfieldTerrainShape *) 0 ;
   
@@ -24532,6 +24482,74 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btHeig
   (void)jarg1_;
   arg1 = *(btHeightfieldTerrainShape **)&jarg1; 
   (arg1)->setUseDiamondSubdivision();
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btHeightfieldTerrainShape_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2, jobject jarg3, jfloat jarg4, jfloat jarg5, jfloat jarg6, jint jarg7, jboolean jarg8) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  int arg2 ;
+  float *arg3 = (float *) 0 ;
+  btScalar arg4 ;
+  btScalar arg5 ;
+  btScalar arg6 ;
+  int arg7 ;
+  bool arg8 ;
+  btHeightfieldTerrainShape *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  arg2 = (int)jarg2; 
+  {
+    arg3 = (float*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg4 = (btScalar)jarg4; 
+  arg5 = (btScalar)jarg5; 
+  arg6 = (btScalar)jarg6; 
+  arg7 = (int)jarg7; 
+  arg8 = jarg8 ? true : false; 
+  result = (btHeightfieldTerrainShape *)new_btHeightfieldTerrainShape__SWIG_0(arg1,arg2,(float const *)arg3,arg4,arg5,arg6,arg7,arg8);
+  *(btHeightfieldTerrainShape **)&jresult = result; 
+  
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btHeightfieldTerrainShape_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jint jarg1, jint jarg2, jobject jarg3, jfloat jarg4, jfloat jarg5, jfloat jarg6, jint jarg7, jboolean jarg8) {
+  jlong jresult = 0 ;
+  int arg1 ;
+  int arg2 ;
+  short *arg3 = (short *) 0 ;
+  btScalar arg4 ;
+  btScalar arg5 ;
+  btScalar arg6 ;
+  int arg7 ;
+  bool arg8 ;
+  btHeightfieldTerrainShape *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  arg2 = (int)jarg2; 
+  {
+    arg3 = (short*)jenv->GetDirectBufferAddress(jarg3);
+    if (arg3 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg4 = (btScalar)jarg4; 
+  arg5 = (btScalar)jarg5; 
+  arg6 = (btScalar)jarg6; 
+  arg7 = (int)jarg7; 
+  arg8 = jarg8 ? true : false; 
+  result = (btHeightfieldTerrainShape *)new_btHeightfieldTerrainShape__SWIG_1(arg1,arg2,(short const *)arg3,arg4,arg5,arg6,arg7,arg8);
+  *(btHeightfieldTerrainShape **)&jresult = result; 
+  
+  return jresult;
 }
 
 

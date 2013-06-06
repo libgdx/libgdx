@@ -1226,11 +1226,11 @@ public class gdxBulletJNI {
   public final static native String btStaticPlaneShapeData_m_pad_get(long jarg1, btStaticPlaneShapeData jarg1_);
   public final static native long new_btStaticPlaneShapeData();
   public final static native void delete_btStaticPlaneShapeData(long jarg1);
-  public final static native long new_btHeightfieldTerrainShape__SWIG_0(int jarg1, int jarg2, long jarg3, float jarg4, float jarg5, float jarg6, int jarg7, int jarg8, boolean jarg9);
-  public final static native long new_btHeightfieldTerrainShape__SWIG_1(int jarg1, int jarg2, long jarg3, float jarg4, int jarg5, boolean jarg6, boolean jarg7);
   public final static native void delete_btHeightfieldTerrainShape(long jarg1);
   public final static native void btHeightfieldTerrainShape_setUseDiamondSubdivision__SWIG_0(long jarg1, btHeightfieldTerrainShape jarg1_, boolean jarg2);
   public final static native void btHeightfieldTerrainShape_setUseDiamondSubdivision__SWIG_1(long jarg1, btHeightfieldTerrainShape jarg1_);
+  public final static native long new_btHeightfieldTerrainShape__SWIG_0(int jarg1, int jarg2, java.nio.FloatBuffer jarg3, float jarg4, float jarg5, float jarg6, int jarg7, boolean jarg8);
+  public final static native long new_btHeightfieldTerrainShape__SWIG_1(int jarg1, int jarg2, java.nio.ShortBuffer jarg3, float jarg4, float jarg5, float jarg6, int jarg7, boolean jarg8);
   public final static native void delete_btTriangleMeshShape(long jarg1);
   public final static native Vector3 btTriangleMeshShape_localGetSupportingVertex(long jarg1, btTriangleMeshShape jarg1_, Vector3 jarg2);
   public final static native Vector3 btTriangleMeshShape_localGetSupportingVertexWithoutMargin(long jarg1, btTriangleMeshShape jarg1_, Vector3 jarg2);
