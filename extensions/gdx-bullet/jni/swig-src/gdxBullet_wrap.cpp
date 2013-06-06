@@ -1799,7 +1799,7 @@ SWIGINTERN btConvexHullShape *new_btConvexHullShape__SWIG_4(btShapeHull const *h
 
 
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
-#include <GdxCustom/GdxCollisionObjectBridge.h>
+#include <gdx/GdxCollisionObjectBridge.h>
 
 SWIGINTERN void btCollisionObject_internalSetGdxBridge(btCollisionObject *self,GdxCollisionObjectBridge *bridge){
 		self->setUserPointer(bridge);
@@ -1891,10 +1891,10 @@ typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallbac
 typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
 
 
-#include <GdxCustom/ClosestNotMeConvexResultCallback.h>
+#include <gdx/ClosestNotMeConvexResultCallback.h>
 
 
-#include <GdxCustom/ClosestNotMeRayResultCallback.h>
+#include <gdx/ClosestNotMeRayResultCallback.h>
 
 
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
@@ -2026,12 +2026,12 @@ typedef btTypedConstraint::btConstraintInfo2 btConstraintInfo2;
 #include <BulletDynamics/Dynamics/btDynamicsWorld.h>
 
 
-#include <GdxCustom/InternalTickCallback.h>
+#include <gdx/InternalTickCallback.h>
 
 
-#include <GdxCustom/ContactAddedListener.h>
-#include <GdxCustom/ContactProcessedListener.h>
-#include <GdxCustom/ContactDestroyedListener.h>
+#include <gdx/ContactAddedListener.h>
+#include <gdx/ContactProcessedListener.h>
+#include <gdx/ContactDestroyedListener.h>
 
 
 	// Inline (cached) method to retrieve the type's jclass

@@ -10,10 +10,10 @@
 %feature("director") ContactDestroyedListener;
 
 %{
-#include <GdxCustom/ContactAddedListener.h>
-#include <GdxCustom/ContactProcessedListener.h>
-#include <GdxCustom/ContactDestroyedListener.h>
+#include <gdx/ContactAddedListener.h>
+#include <gdx/ContactProcessedListener.h>
+#include <gdx/ContactDestroyedListener.h>
 %}
-%include "GdxCustom/ContactAddedListener.h"
-%include "GdxCustom/ContactProcessedListener.h"
-%include "GdxCustom/ContactDestroyedListener.h"
+%include "gdx/ContactAddedListener.h"
+%include "gdx/ContactProcessedListener.h"
+%include "gdx/ContactDestroyedListener.h"

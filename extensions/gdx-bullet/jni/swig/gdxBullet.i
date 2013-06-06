@@ -544,14 +544,14 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "custom/btCollisionWorld.i"
 
 %{
-#include <GdxCustom/ClosestNotMeConvexResultCallback.h>
+#include <gdx/ClosestNotMeConvexResultCallback.h>
 %}
-%include "GdxCustom/ClosestNotMeConvexResultCallback.h"
+%include "gdx/ClosestNotMeConvexResultCallback.h"
 
 %{
-#include <GdxCustom/ClosestNotMeRayResultCallback.h>
+#include <gdx/ClosestNotMeRayResultCallback.h>
 %}
-%include "GdxCustom/ClosestNotMeRayResultCallback.h"
+%include "gdx/ClosestNotMeRayResultCallback.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>
@@ -681,9 +681,9 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "BulletDynamics/Dynamics/btDynamicsWorld.h"
 
 %{
-#include <GdxCustom/InternalTickCallback.h>
+#include <gdx/InternalTickCallback.h>
 %}
-%include "GdxCustom/InternalTickCallback.h"
+%include "gdx/InternalTickCallback.h"
 
 %include "custom/ContactListener.i"
 

@@ -77,10 +77,10 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 
 %{
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
-#include <GdxCustom/GdxCollisionObjectBridge.h>
+#include <gdx/GdxCollisionObjectBridge.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-%include "GdxCustom/GdxCollisionObjectBridge.h"
+%include "gdx/GdxCollisionObjectBridge.h"
 
 %extend btCollisionObject {
 	void internalSetGdxBridge(GdxCollisionObjectBridge *bridge) {
