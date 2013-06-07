@@ -123,8 +123,8 @@ public class btConvexPolyhedron {
     return gdxBulletJNI.btConvexPolyhedron_testContainment(swigCPtr, this);
   }
 
-  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float min, SWIGTYPE_p_float max) {
-    gdxBulletJNI.btConvexPolyhedron_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(min), SWIGTYPE_p_float.getCPtr(max));
+  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin, Vector3 witnesPtMax) {
+    gdxBulletJNI.btConvexPolyhedron_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj), SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
   }
 
 }

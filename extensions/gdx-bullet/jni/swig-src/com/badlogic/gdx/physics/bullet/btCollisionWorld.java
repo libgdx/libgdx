@@ -71,6 +71,10 @@ public class btCollisionWorld {
     gdxBulletJNI.btCollisionWorld_updateAabbs(swigCPtr, this);
   }
 
+  public void computeOverlappingPairs() {
+    gdxBulletJNI.btCollisionWorld_computeOverlappingPairs(swigCPtr, this);
+  }
+
   public void setDebugDrawer(btIDebugDraw debugDrawer) {
     gdxBulletJNI.btCollisionWorld_setDebugDrawer(swigCPtr, this, btIDebugDraw.getCPtr(debugDrawer), debugDrawer);
   }

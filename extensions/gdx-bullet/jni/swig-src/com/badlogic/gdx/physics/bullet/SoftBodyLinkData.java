@@ -55,7 +55,7 @@ public class SoftBodyLinkData {
 
   public int[] getM_nodeIndices() {
     return gdxBulletJNI.SoftBodyLinkData_m_nodeIndices_get(swigCPtr, this);
-  }
+}
 
   public void setM_restLength(float value) {
     gdxBulletJNI.SoftBodyLinkData_m_restLength_set(swigCPtr, this, value);

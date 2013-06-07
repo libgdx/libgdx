@@ -202,6 +202,10 @@ public class btCollisionShape {
     return gdxBulletJNI.btCollisionShape_getShapeType(swigCPtr, this);
   }
 
+  public Vector3 getAnisotropicRollingFrictionDirection() {
+	return gdxBulletJNI.btCollisionShape_getAnisotropicRollingFrictionDirection(swigCPtr, this);
+}
+
   public void setMargin(float margin) {
     gdxBulletJNI.btCollisionShape_setMargin(swigCPtr, this, margin);
   }

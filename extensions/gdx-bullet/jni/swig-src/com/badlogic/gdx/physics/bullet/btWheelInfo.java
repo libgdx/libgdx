@@ -218,12 +218,12 @@ public class btWheelInfo {
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public btWheelInfo(btWheelInfoConstructionInfo ci) {
-    this(gdxBulletJNI.new_btWheelInfo__SWIG_0(btWheelInfoConstructionInfo.getCPtr(ci), ci), true);
+  public btWheelInfo() {
+    this(gdxBulletJNI.new_btWheelInfo__SWIG_0(), true);
   }
 
-  public btWheelInfo() {
-    this(gdxBulletJNI.new_btWheelInfo__SWIG_1(), true);
+  public btWheelInfo(btWheelInfoConstructionInfo ci) {
+    this(gdxBulletJNI.new_btWheelInfo__SWIG_1(btWheelInfoConstructionInfo.getCPtr(ci), ci), true);
   }
 
   public void updateWheel(btRigidBody chassis, SWIGTYPE_p_btWheelInfo__RaycastInfo raycastInfo) {

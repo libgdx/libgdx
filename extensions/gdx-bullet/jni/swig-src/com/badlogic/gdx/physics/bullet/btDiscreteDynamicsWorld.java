@@ -127,4 +127,12 @@ public class btDiscreteDynamicsWorld extends btDynamicsWorld {
     return gdxBulletJNI.btDiscreteDynamicsWorld_getSynchronizeAllMotionStates(swigCPtr, this);
   }
 
+  public void setApplySpeculativeContactRestitution(boolean enable) {
+    gdxBulletJNI.btDiscreteDynamicsWorld_setApplySpeculativeContactRestitution(swigCPtr, this, enable);
+  }
+
+  public boolean getApplySpeculativeContactRestitution() {
+    return gdxBulletJNI.btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(swigCPtr, this);
+  }
+
 }

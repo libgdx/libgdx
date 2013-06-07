@@ -144,6 +144,14 @@ public class btCollisionObjectDoubleData {
     return gdxBulletJNI.btCollisionObjectDoubleData_m_friction_get(swigCPtr, this);
   }
 
+  public void setM_rollingFriction(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_m_rollingFriction_set(swigCPtr, this, value);
+  }
+
+  public double getM_rollingFriction() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_m_rollingFriction_get(swigCPtr, this);
+  }
+
   public void setM_restitution(double value) {
     gdxBulletJNI.btCollisionObjectDoubleData_m_restitution_set(swigCPtr, this, value);
   }

@@ -40,8 +40,12 @@ public class btPolyhedralConvexShape extends btConvexInternalShape {
     super.delete();
   }
 
+  public boolean initializePolyhedralFeatures(int shiftVerticesByMargin) {
+    return gdxBulletJNI.btPolyhedralConvexShape_initializePolyhedralFeatures__SWIG_0(swigCPtr, this, shiftVerticesByMargin);
+  }
+
   public boolean initializePolyhedralFeatures() {
-    return gdxBulletJNI.btPolyhedralConvexShape_initializePolyhedralFeatures(swigCPtr, this);
+    return gdxBulletJNI.btPolyhedralConvexShape_initializePolyhedralFeatures__SWIG_1(swigCPtr, this);
   }
 
   public btConvexPolyhedron getConvexPolyhedron() {

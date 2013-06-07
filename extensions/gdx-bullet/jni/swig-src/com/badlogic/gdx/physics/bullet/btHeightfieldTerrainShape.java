@@ -48,6 +48,14 @@ public class btHeightfieldTerrainShape extends btConcaveShape {
     gdxBulletJNI.btHeightfieldTerrainShape_setUseDiamondSubdivision__SWIG_1(swigCPtr, this);
   }
 
+  public void setUseZigzagSubdivision(boolean useZigzagSubdivision) {
+    gdxBulletJNI.btHeightfieldTerrainShape_setUseZigzagSubdivision__SWIG_0(swigCPtr, this, useZigzagSubdivision);
+  }
+
+  public void setUseZigzagSubdivision() {
+    gdxBulletJNI.btHeightfieldTerrainShape_setUseZigzagSubdivision__SWIG_1(swigCPtr, this);
+  }
+
   static private long SwigConstructbtHeightfieldTerrainShape(int heightStickWidth, int heightStickLength, java.nio.FloatBuffer heightfieldData, float heightScale, float minHeight, float maxHeight, int upAxis, boolean flipQuadEdges) {
     assert heightfieldData.isDirect() : "Buffer must be allocated direct.";
     return gdxBulletJNI.new_btHeightfieldTerrainShape__SWIG_0(heightStickWidth, heightStickLength, heightfieldData, heightScale, minHeight, maxHeight, upAxis, flipQuadEdges);

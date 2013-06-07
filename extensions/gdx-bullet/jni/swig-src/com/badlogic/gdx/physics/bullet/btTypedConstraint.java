@@ -92,8 +92,8 @@ public class btTypedConstraint extends btTypedObject {
     gdxBulletJNI.btTypedConstraint_setEnabled(swigCPtr, this, enabled);
   }
 
-  public void solveConstraintObsolete(btRigidBody arg0, btRigidBody arg1, float arg2) {
-    gdxBulletJNI.btTypedConstraint_solveConstraintObsolete(swigCPtr, this, btRigidBody.getCPtr(arg0), arg0, btRigidBody.getCPtr(arg1), arg1, arg2);
+  public void solveConstraintObsolete(btSolverBody arg0, btSolverBody arg1, float arg2) {
+    gdxBulletJNI.btTypedConstraint_solveConstraintObsolete(swigCPtr, this, btSolverBody.getCPtr(arg0), arg0, btSolverBody.getCPtr(arg1), arg1, arg2);
   }
 
   public btRigidBody getRigidBodyA() {
@@ -127,6 +127,15 @@ public class btTypedConstraint extends btTypedObject {
   public SWIGTYPE_p_void getUserConstraintPtr() {
     long cPtr = gdxBulletJNI.btTypedConstraint_getUserConstraintPtr(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  }
+
+  public void setJointFeedback(btJointFeedback jointFeedback) {
+    gdxBulletJNI.btTypedConstraint_setJointFeedback(swigCPtr, this, btJointFeedback.getCPtr(jointFeedback), jointFeedback);
+  }
+
+  public btJointFeedback getJointFeedback() {
+    long cPtr = gdxBulletJNI.btTypedConstraint_getJointFeedback__SWIG_0(swigCPtr, this);
+    return (cPtr == 0) ? null : new btJointFeedback(cPtr, false);
   }
 
   public int getUid() {

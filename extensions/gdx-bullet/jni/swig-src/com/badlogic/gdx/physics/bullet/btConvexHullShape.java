@@ -93,6 +93,10 @@ public class btConvexHullShape extends btPolyhedralConvexAabbCachingShape {
     return gdxBulletJNI.btConvexHullShape_getNumPoints(swigCPtr, this);
   }
 
+  public void project(Matrix4 trans, Vector3 dir, SWIGTYPE_p_float minProj, SWIGTYPE_p_float maxProj, Vector3 witnesPtMin, Vector3 witnesPtMax) {
+    gdxBulletJNI.btConvexHullShape_project(swigCPtr, this, trans, dir, SWIGTYPE_p_float.getCPtr(minProj), SWIGTYPE_p_float.getCPtr(maxProj), witnesPtMin, witnesPtMax);
+  }
+
   public btConvexHullShape(btShapeHull hull) {
     this(gdxBulletJNI.new_btConvexHullShape__SWIG_4(btShapeHull.getCPtr(hull), hull), true);
   }

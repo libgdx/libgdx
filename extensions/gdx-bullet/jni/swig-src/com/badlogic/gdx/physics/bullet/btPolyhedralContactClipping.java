@@ -48,8 +48,8 @@ public class btPolyhedralContactClipping {
     gdxBulletJNI.btPolyhedralContactClipping_clipFaceAgainstHull(separatingNormal, btConvexPolyhedron.getCPtr(hullA), hullA, transA, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(worldVertsB1), minDist, maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));
   }
 
-  public static boolean findSeparatingAxis(btConvexPolyhedron hullA, btConvexPolyhedron hullB, Matrix4 transA, Matrix4 transB, Vector3 sep) {
-    return gdxBulletJNI.btPolyhedralContactClipping_findSeparatingAxis(btConvexPolyhedron.getCPtr(hullA), hullA, btConvexPolyhedron.getCPtr(hullB), hullB, transA, transB, sep);
+  public static boolean findSeparatingAxis(btConvexPolyhedron hullA, btConvexPolyhedron hullB, Matrix4 transA, Matrix4 transB, Vector3 sep, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result resultOut) {
+    return gdxBulletJNI.btPolyhedralContactClipping_findSeparatingAxis(btConvexPolyhedron.getCPtr(hullA), hullA, btConvexPolyhedron.getCPtr(hullB), hullB, transA, transB, sep, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));
   }
 
   public static void clipFace(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t pVtxIn, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t ppVtxOut, Vector3 planeNormalWS, float planeEqWS) {

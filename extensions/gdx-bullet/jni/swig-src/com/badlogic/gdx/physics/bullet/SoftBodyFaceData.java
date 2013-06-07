@@ -64,7 +64,7 @@ public class SoftBodyFaceData {
 
   public int[] getM_nodeIndices() {
     return gdxBulletJNI.SoftBodyFaceData_m_nodeIndices_get(swigCPtr, this);
-  }
+}
 
   public void setM_restArea(float value) {
     gdxBulletJNI.SoftBodyFaceData_m_restArea_set(swigCPtr, this, value);

@@ -124,7 +124,7 @@ public class btTranslationalLimitMotor {
 
   public boolean[] getM_enableMotor() {
     return gdxBulletJNI.btTranslationalLimitMotor_m_enableMotor_get(swigCPtr, this);
-  }
+}
 
   public void setM_targetVelocity(btVector3 value) {
     gdxBulletJNI.btTranslationalLimitMotor_m_targetVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
@@ -168,7 +168,7 @@ public class btTranslationalLimitMotor {
 
   public int[] getM_currentLimit() {
     return gdxBulletJNI.btTranslationalLimitMotor_m_currentLimit_get(swigCPtr, this);
-  }
+}
 
   public btTranslationalLimitMotor() {
     this(gdxBulletJNI.new_btTranslationalLimitMotor__SWIG_0(), true);

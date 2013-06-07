@@ -64,7 +64,7 @@ public class SoftBodyTetraData {
 
   public int[] getM_nodeIndices() {
     return gdxBulletJNI.SoftBodyTetraData_m_nodeIndices_get(swigCPtr, this);
-  }
+}
 
   public void setM_restVolume(float value) {
     gdxBulletJNI.SoftBodyTetraData_m_restVolume_set(swigCPtr, this, value);

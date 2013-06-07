@@ -281,6 +281,14 @@ public class btSoftBody extends btCollisionObject {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
+  public void setM_restLengthScale(float value) {
+    gdxBulletJNI.btSoftBody_m_restLengthScale_set(swigCPtr, this, value);
+  }
+
+  public float getM_restLengthScale() {
+    return gdxBulletJNI.btSoftBody_m_restLengthScale_get(swigCPtr, this);
+  }
+
   static private long SwigConstructbtSoftBody(btSoftBodyWorldInfo worldInfo, int node_count, btVector3 x, java.nio.FloatBuffer m) {
     assert m.isDirect() : "Buffer must be allocated direct.";
     return gdxBulletJNI.new_btSoftBody__SWIG_0(btSoftBodyWorldInfo.getCPtr(worldInfo), worldInfo, node_count, btVector3.getCPtr(x), x, m);
@@ -569,8 +577,20 @@ public class btSoftBody extends btCollisionObject {
     gdxBulletJNI.btSoftBody_scale(swigCPtr, this, scl);
   }
 
+  public float getRestLengthScale() {
+    return gdxBulletJNI.btSoftBody_getRestLengthScale(swigCPtr, this);
+  }
+
+  public void setRestLengthScale(float restLength) {
+    gdxBulletJNI.btSoftBody_setRestLengthScale(swigCPtr, this, restLength);
+  }
+
   public void setPose(boolean bvolume, boolean bframe) {
     gdxBulletJNI.btSoftBody_setPose(swigCPtr, this, bvolume, bframe);
+  }
+
+  public void resetLinkRestLengths() {
+    gdxBulletJNI.btSoftBody_resetLinkRestLengths(swigCPtr, this);
   }
 
   public float getVolume() {
@@ -772,6 +792,18 @@ public class btSoftBody extends btCollisionObject {
 
   public void updateConstants() {
     gdxBulletJNI.btSoftBody_updateConstants(swigCPtr, this);
+  }
+
+  public void updateLinkConstants() {
+    gdxBulletJNI.btSoftBody_updateLinkConstants(swigCPtr, this);
+  }
+
+  public void updateArea(boolean averageArea) {
+    gdxBulletJNI.btSoftBody_updateArea__SWIG_0(swigCPtr, this, averageArea);
+  }
+
+  public void updateArea() {
+    gdxBulletJNI.btSoftBody_updateArea__SWIG_1(swigCPtr, this);
   }
 
   public void initializeClusters() {
