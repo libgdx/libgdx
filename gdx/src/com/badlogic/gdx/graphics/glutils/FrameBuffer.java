@@ -85,7 +85,7 @@ public class FrameBuffer implements Disposable {
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 * 
 	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only
-   * RGB565, RGBA4444 and RGB5_A1 are color-renderable
+	 * RGB565, RGBA4444 and RGB5_A1 are color-renderable
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
@@ -182,7 +182,7 @@ public class FrameBuffer implements Disposable {
 				throw new IllegalStateException("frame buffer couldn't be constructed: missing attachment");
 			if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED)
 				throw new IllegalStateException("frame buffer couldn't be constructed: unsupported combination of formats");
-      throw new IllegalStateException(String.format("frame buffer couldn't be constructed: unknown error 0x%04x", result));
+			throw new IllegalStateException("frame buffer couldn't be constructed: unknown error " + result);
 		}
 	}
 
