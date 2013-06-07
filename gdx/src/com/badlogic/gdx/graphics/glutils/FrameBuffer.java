@@ -182,7 +182,7 @@ public class FrameBuffer implements Disposable {
 				throw new IllegalStateException("frame buffer couldn't be constructed: missing attachment");
 			if (result == GL20.GL_FRAMEBUFFER_UNSUPPORTED)
 				throw new IllegalStateException("frame buffer couldn't be constructed: unsupported combination of formats");
-      throw new IllegalStateException(String.format("frame buffer couldn't be constructed: unknown error 0x%04x", result));
+			throw new IllegalStateException("frame buffer couldn't be constructed: unknown error " + result);
 		}
 	}
 
