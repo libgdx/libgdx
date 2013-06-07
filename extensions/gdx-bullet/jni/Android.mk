@@ -105,6 +105,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Character/btKinematicCharacterController.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btConeTwistConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btContactConstraint.cpp\
+	src/bullet/BulletDynamics/ConstraintSolver/btGearConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btHinge2Constraint.cpp\
@@ -121,25 +122,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Dynamics/Bullet-C-API.cpp\
 	src/bullet/BulletDynamics/Vehicle/btRaycastVehicle.cpp\
 	src/bullet/BulletDynamics/Vehicle/btWheelInfo.cpp\
-	src/bullet/BulletMultiThreaded/btGpu3DGridBroadphase.cpp\
-	src/bullet/BulletMultiThreaded/btParallelConstraintSolver.cpp\
-	src/bullet/BulletMultiThreaded/btThreadSupportInterface.cpp\
-	src/bullet/BulletMultiThreaded/PosixThreadSupport.cpp\
-	src/bullet/BulletMultiThreaded/SequentialThreadSupport.cpp\
-	src/bullet/BulletMultiThreaded/SpuCollisionObjectWrapper.cpp\
-	src/bullet/BulletMultiThreaded/SpuCollisionTaskProcess.cpp\
-	src/bullet/BulletMultiThreaded/SpuContactManifoldCollisionAlgorithm.cpp\
-	src/bullet/BulletMultiThreaded/SpuFakeDma.cpp\
-	src/bullet/BulletMultiThreaded/SpuGatheringCollisionDispatcher.cpp\
-	src/bullet/BulletMultiThreaded/SpuLibspe2Support.cpp\
-	src/bullet/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/boxBoxDistance.cpp\
-	src/bullet/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuCollisionShapes.cpp\
-	src/bullet/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuContactResult.cpp\
-	src/bullet/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuGatheringCollisionTask.cpp\
-	src/bullet/BulletMultiThreaded/SpuNarrowPhaseCollisionTask/SpuMinkowskiPenetrationDepthSolver.cpp\
-	src/bullet/BulletMultiThreaded/SpuSampleTask/SpuSampleTask.cpp\
-	src/bullet/BulletMultiThreaded/SpuSampleTaskProcess.cpp\
-	src/bullet/BulletMultiThreaded/Win32ThreadSupport.cpp\
 	src/bullet/BulletSoftBody/btDefaultSoftBodySolver.cpp\
 	src/bullet/BulletSoftBody/btSoftBody.cpp\
 	src/bullet/BulletSoftBody/btSoftBodyConcaveCollisionAlgorithm.cpp\
@@ -152,12 +134,10 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/LinearMath/btConvexHull.cpp\
 	src/bullet/LinearMath/btConvexHullComputer.cpp\
 	src/bullet/LinearMath/btGeometryUtil.cpp\
+	src/bullet/LinearMath/btPolarDecomposition.cpp\
 	src/bullet/LinearMath/btQuickprof.cpp\
 	src/bullet/LinearMath/btSerializer.cpp\
 	src/bullet/LinearMath/btVector3.cpp\
-	src/bullet/MiniCL/MiniCL.cpp\
-	src/bullet/MiniCL/MiniCLTask/MiniCLTask.cpp\
-	src/bullet/MiniCL/MiniCLTaskScheduler.cpp\
 	src/custom/gdx/vector.cpp\
 	swig-src/gdxBullet_wrap.cpp
  

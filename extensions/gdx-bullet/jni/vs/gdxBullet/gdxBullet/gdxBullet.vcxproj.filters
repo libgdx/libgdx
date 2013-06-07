@@ -446,5 +446,8 @@
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btPolarDecomposition.cpp">
       <Filter>Source Files\LinearMath</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp">
+      <Filter>Source Files\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

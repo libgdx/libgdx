@@ -212,6 +212,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btContactConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHinge2Constraint.cpp" />
