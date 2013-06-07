@@ -210,7 +210,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						String fileName = texture.getString("filename", null);
 						if(fileName == null)
 							throw new GdxRuntimeException("Texture needs filename.");
-						jsonTexture.fileName = materialDir + (materialDir.endsWith("/") ? "" : "/") + fileName;
+						jsonTexture.fileName = materialDir + (materialDir.length() == 0 || materialDir.endsWith("/") ? "" : "/") + fileName;
 						
 						jsonTexture.uvTranslation = readVector2(texture.get("uvTranslation"), 0f, 0f);
 						jsonTexture.uvScaling = readVector2(texture.get("uvScaling"), 1f, 1f);
