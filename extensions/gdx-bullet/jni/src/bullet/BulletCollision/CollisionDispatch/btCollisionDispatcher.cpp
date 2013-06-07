@@ -84,7 +84,7 @@ btPersistentManifold*	btCollisionDispatcher::getNewManifold(const btCollisionObj
 
 	btScalar contactProcessingThreshold = btMin(body0->getContactProcessingThreshold(),body1->getContactProcessingThreshold());
 		
-	void* mem = 0;
+ 	void* mem = 0;
 	
 	if (m_persistentManifoldPoolAllocator->getFreeCount())
 	{

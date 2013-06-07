@@ -353,6 +353,8 @@ void	btSoftRigidDynamicsWorld::serialize(btSerializer* serializer)
 
 	serializer->startSerialization();
 
+	serializeDynamicsWorldInfo( serializer);
+
 	serializeSoftBodies(serializer);
 
 	serializeRigidBodies(serializer);

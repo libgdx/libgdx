@@ -274,23 +274,29 @@ void	btConvexPolyhedron::initialize()
 #endif
 }
 
-
-void btConvexPolyhedron::project(const btTransform& trans, const btVector3& dir, btScalar& min, btScalar& max) const
+void btConvexPolyhedron::project(const btTransform& trans, const btVector3& dir, btScalar& minProj, btScalar& maxProj, btVector3& witnesPtMin,btVector3& witnesPtMax) const
 {
-	min = FLT_MAX;
-	max = -FLT_MAX;
+	minProj = FLT_MAX;
+	maxProj = -FLT_MAX;
 	int numVerts = m_vertices.size();
 	for(int i=0;i<numVerts;i++)
 	{
 		btVector3 pt = trans * m_vertices[i];
 		btScalar dp = pt.dot(dir);
-		if(dp < min)	min = dp;
-		if(dp > max)	max = dp;
+		if(dp < minProj)
+		{
+			minProj = dp;
+			witnesPtMin = pt;
+		}
+		if(dp > maxProj)
+		{
+			maxProj = dp;
+			witnesPtMax = pt;
+		}
 	}
-	if(min>max)
+	if(minProj>maxProj)
 	{
-		btScalar tmp = min;
-		min = max;
-		max = tmp;
+		btSwap(minProj,maxProj);
+		btSwap(witnesPtMin,witnesPtMax);
 	}
 }

@@ -482,7 +482,7 @@ void btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectWr
 	tri_shape->getVertex(1,v1);
 	tri_shape->getVertex(2,v2);
 
-	btVector3 center = (v0+v1+v2)*btScalar(1./3.);
+	//btVector3 center = (v0+v1+v2)*btScalar(1./3.);
 
 	btVector3 red(1,0,0), green(0,1,0),blue(0,0,1),white(1,1,1),black(0,0,0);
 	btVector3 tri_normal;

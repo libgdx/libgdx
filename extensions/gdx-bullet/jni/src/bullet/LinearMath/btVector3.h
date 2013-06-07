@@ -472,15 +472,19 @@ public:
 		return absolute().maxAxis();
 	}
 
+	
 	SIMD_FORCE_INLINE void setInterpolate3(const btVector3& v0, const btVector3& v1, btScalar rt)
 	{
 #if defined(BT_USE_SSE_IN_API) && defined (BT_USE_SSE)
 		__m128	vrt = _mm_load_ss(&rt);	//	(rt 0 0 0)
+		btScalar s = btScalar(1.0) - rt;
+		__m128	vs = _mm_load_ss(&s);	//	(S 0 0 0)
+		vs = bt_pshufd_ps(vs, 0x80);	//	(S S S 0.0)
+		__m128 r0 = _mm_mul_ps(v0.mVec128, vs);
 		vrt = bt_pshufd_ps(vrt, 0x80);	//	(rt rt rt 0.0)
-		
-		mVec128 = _mm_sub_ps(v1.mVec128, v0.mVec128);
-		mVec128 = _mm_mul_ps(mVec128, vrt);
-		mVec128 = _mm_add_ps(mVec128, v0.mVec128);
+		__m128 r1 = _mm_mul_ps(v1.mVec128, vrt);
+		__m128 tmp3 = _mm_add_ps(r0,r1);
+		mVec128 = tmp3;
 #elif defined(BT_USE_NEON)
 		mVec128 = vsubq_f32(v1.mVec128, v0.mVec128);
 		mVec128 = vmulq_n_f32(mVec128, rt);

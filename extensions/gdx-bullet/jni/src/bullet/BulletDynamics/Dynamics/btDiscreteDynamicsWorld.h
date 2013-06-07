@@ -25,7 +25,7 @@ class btConstraintSolver;
 class btSimulationIslandManager;
 class btTypedConstraint;
 class btActionInterface;
-
+class btPersistentManifold;
 class btIDebugDraw;
 struct InplaceSolverIslandCallback;
 
@@ -58,10 +58,13 @@ protected:
 	bool	m_ownsIslandManager;
 	bool	m_ownsConstraintSolver;
 	bool	m_synchronizeAllMotionStates;
+	bool	m_applySpeculativeContactRestitution;
 
 	btAlignedObjectArray<btActionInterface*>	m_actions;
 	
 	int	m_profileTimings;
+
+	btAlignedObjectArray<btPersistentManifold*>	m_predictiveManifolds;
 
 	virtual void	predictUnconstraintMotion(btScalar timeStep);
 	
@@ -79,10 +82,13 @@ protected:
 
 	virtual void	internalSingleStepSimulation( btScalar timeStep);
 
+	void	createPredictiveContacts(btScalar timeStep);
 
 	virtual void	saveKinematicState(btScalar timeStep);
 
 	void	serializeRigidBodies(btSerializer* serializer);
+
+	void	serializeDynamicsWorldInfo(btSerializer* serializer);
 
 public:
 
@@ -195,6 +201,16 @@ public:
 	bool getSynchronizeAllMotionStates() const
 	{
 		return m_synchronizeAllMotionStates;
+	}
+
+	void setApplySpeculativeContactRestitution(bool enable)
+	{
+		m_applySpeculativeContactRestitution = enable;
+	}
+	
+	bool getApplySpeculativeContactRestitution() const
+	{
+		return m_applySpeculativeContactRestitution;
 	}
 
 	///Preliminary serialization test for Bullet 2.76. Loading those files requires a separate parser (see Bullet/Demos/SerializeDemo)

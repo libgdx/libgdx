@@ -158,12 +158,14 @@ public:
 
 			m_childCollisionAlgorithms[index]->processCollision(&compoundWrap,m_otherObjWrap,m_dispatchInfo,m_resultOut);
 
+#if 0
 			if (m_dispatchInfo.m_debugDraw && (m_dispatchInfo.m_debugDraw->getDebugMode() & btIDebugDraw::DBG_DrawAabb))
 			{
 				btVector3 worldAabbMin,worldAabbMax;
 				m_dispatchInfo.m_debugDraw->drawAabb(aabbMin0,aabbMax0,btVector3(1,1,1));
 				m_dispatchInfo.m_debugDraw->drawAabb(aabbMin1,aabbMax1,btVector3(1,1,1));
 			}
+#endif
 
 			if (m_resultOut->getBody0Internal() == m_compoundColObjWrap->getCollisionObject())
 			{
@@ -182,6 +184,7 @@ public:
 		const btCompoundShape* compoundShape = static_cast<const btCompoundShape*>(m_compoundColObjWrap->getCollisionShape());
 		const btCollisionShape* childShape = compoundShape->getChildShape(index);
 
+#if 0
 		if (m_dispatchInfo.m_debugDraw && (m_dispatchInfo.m_debugDraw->getDebugMode() & btIDebugDraw::DBG_DrawAabb))
 		{
 			btVector3 worldAabbMin,worldAabbMax;
@@ -189,6 +192,8 @@ public:
 			btTransformAabb(leaf->volume.Mins(),leaf->volume.Maxs(),0.,orgTrans,worldAabbMin,worldAabbMax);
 			m_dispatchInfo.m_debugDraw->drawAabb(worldAabbMin,worldAabbMax,btVector3(1,0,0));
 		}
+#endif
+
 		ProcessChildShape(childShape,index);
 
 	}

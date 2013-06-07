@@ -33,6 +33,7 @@ enum btTypedConstraintType
 	SLIDER_CONSTRAINT_TYPE,
 	CONTACT_CONSTRAINT_TYPE,
 	D6_SPRING_CONSTRAINT_TYPE,
+	GEAR_CONSTRAINT_TYPE,
 	MAX_CONSTRAINT_TYPE
 };
 
@@ -50,6 +51,15 @@ enum btConstraintParams
 #else
 	#define btAssertConstrParams(_par)
 #endif
+
+
+ATTRIBUTE_ALIGNED16(struct)	btJointFeedback
+{
+	btVector3	m_appliedForceBodyA;
+	btVector3	m_appliedTorqueBodyA;
+	btVector3	m_appliedForceBodyB;
+	btVector3	m_appliedTorqueBodyB;
+};
 
 
 ///TypedConstraint is the baseclass for Bullet constraints and vehicles
@@ -81,6 +91,7 @@ protected:
 	btRigidBody&	m_rbB;
 	btScalar	m_appliedImpulse;
 	btScalar	m_dbgDrawSize;
+	btJointFeedback*	m_jointFeedback;
 
 	///internal method used by the constraint solver, don't use them directly
 	btScalar getMotorFactor(btScalar pos, btScalar lowLim, btScalar uppLim, btScalar vel, btScalar timeFact);
@@ -198,7 +209,7 @@ public:
 
 
 	///internal method used by the constraint solver, don't use them directly
-	virtual	void	solveConstraintObsolete(btRigidBody& /*bodyA*/,btRigidBody& /*bodyB*/,btScalar	/*timeStep*/) {};
+	virtual	void	solveConstraintObsolete(btSolverBody& /*bodyA*/,btSolverBody& /*bodyB*/,btScalar	/*timeStep*/) {};
 
 	
 	const btRigidBody& getRigidBodyA() const
@@ -248,6 +259,22 @@ public:
 	{
 		return m_userConstraintPtr;
 	}
+
+	void	setJointFeedback(btJointFeedback* jointFeedback)
+	{
+		m_jointFeedback = jointFeedback;
+	}
+
+	const btJointFeedback* getJointFeedback() const
+	{
+		return m_jointFeedback;
+	}
+
+	btJointFeedback* getJointFeedback()
+	{
+		return m_jointFeedback;
+	}
+
 
 	int getUid() const
 	{

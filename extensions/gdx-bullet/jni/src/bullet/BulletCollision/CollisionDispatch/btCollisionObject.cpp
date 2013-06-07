@@ -31,6 +31,7 @@ btCollisionObject::btCollisionObject()
 		m_activationState1(1),
 		m_deactivationTime(btScalar(0.)),
 		m_friction(btScalar(0.5)),
+		m_rollingFriction(0.0f),
 		m_restitution(btScalar(0.)),
 		m_internalType(CO_COLLISION_OBJECT),
 		m_userObjectPointer(0),
@@ -87,6 +88,7 @@ const char* btCollisionObject::serialize(void* dataBuffer, btSerializer* seriali
 	dataOut->m_activationState1 = m_activationState1;
 	dataOut->m_deactivationTime = m_deactivationTime;
 	dataOut->m_friction = m_friction;
+	dataOut->m_rollingFriction = m_rollingFriction;
 	dataOut->m_restitution = m_restitution;
 	dataOut->m_internalType = m_internalType;
 	

@@ -671,6 +671,9 @@ public:
 	btTransform			m_initialWorldTransform;
 
 	btVector3			m_windVelocity;
+	
+	btScalar        m_restLengthScale;
+	
 	//
 	// Api
 	//
@@ -810,9 +813,15 @@ public:
 	void				rotate(	const btQuaternion& rot);
 	/* Scale																*/ 
 	void				scale(	const btVector3& scl);
+	/* Get link resting lengths scale										*/
+	btScalar			getRestLengthScale();
+	/* Scale resting length of all springs									*/
+	void				setRestLengthScale(btScalar restLength);
 	/* Set current state as pose											*/ 
 	void				setPose(		bool bvolume,
 		bool bframe);
+	/* Set current link lengths as resting lengths							*/ 
+	void				resetLinkRestLengths();
 	/* Return the volume													*/ 
 	btScalar			getVolume() const;
 	/* Cluster count														*/ 
@@ -954,6 +963,8 @@ public:
 	void				updateBounds();
 	void				updatePose();
 	void				updateConstants();
+	void				updateLinkConstants();
+	void				updateArea(bool averageArea = true);
 	void				initializeClusters();
 	void				updateClusters();
 	void				cleanupClusters();

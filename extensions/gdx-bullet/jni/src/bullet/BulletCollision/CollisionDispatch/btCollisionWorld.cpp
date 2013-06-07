@@ -208,6 +208,11 @@ void	btCollisionWorld::updateAabbs()
 }
 
 
+void	btCollisionWorld::computeOverlappingPairs()
+{
+	BT_PROFILE("calculateOverlappingPairs");
+	m_broadphasePairCache->calculateOverlappingPairs(m_dispatcher1);
+}
 
 void	btCollisionWorld::performDiscreteCollisionDetection()
 {
@@ -217,11 +222,7 @@ void	btCollisionWorld::performDiscreteCollisionDetection()
 
 	updateAabbs();
 
-	{
-		BT_PROFILE("calculateOverlappingPairs");
-		m_broadphasePairCache->calculateOverlappingPairs(m_dispatcher1);
-	}
-
+	computeOverlappingPairs();
 
 	btDispatcher* dispatcher = getDispatcher();
 	{
@@ -456,6 +457,7 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 						: m_userCallback(user), m_i(i)
 					{ 
 						m_closestHitFraction = m_userCallback->m_closestHitFraction;
+						m_flags = m_userCallback->m_flags;
 					}
 					virtual bool needsCollision(btBroadphaseProxy* p) const
 					{
@@ -501,7 +503,7 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 						
 					}
 					
-					void Process(int i)
+					void ProcessLeaf(int i)
 					{
 						const btCollisionShape* childCollisionShape = m_compoundShape->getChildShape(i);
 						const btTransform& childTrans = m_compoundShape->getChildTransform(i);
@@ -521,10 +523,10 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 							my_cb);
 						
 					}
-					
+				
 					void Process(const btDbvtNode* leaf)
 					{
-						Process(leaf->dataAsInt);
+						ProcessLeaf(leaf->dataAsInt);
 					}
 				};
 				
@@ -551,7 +553,7 @@ void	btCollisionWorld::rayTestSingleInternal(const btTransform& rayFromTrans,con
 				{
 					for (int i = 0, n = compoundShape->getNumChildShapes(); i < n; ++i)
 					{
-						rayCB.Process(i);
+						rayCB.ProcessLeaf(i);
 					}	
 				}
 			}
@@ -1251,163 +1253,162 @@ void btCollisionWorld::debugDrawObject(const btTransform& worldTransform, const 
 	} else
 	{
 
-		/// for polyhedral shapes
-		if (shape->isPolyhedral())
-		{
-			btPolyhedralConvexShape* polyshape = (btPolyhedralConvexShape*) shape;
+        switch (shape->getShapeType())
+        {
 
-			int i;
-			if (polyshape->getConvexPolyhedron())
-			{
-				const btConvexPolyhedron* poly = polyshape->getConvexPolyhedron();
-				for (i=0;i<poly->m_faces.size();i++)
-				{
-					btVector3 centroid(0,0,0);
-					int numVerts = poly->m_faces[i].m_indices.size();
-					if (numVerts)
-					{
-						int lastV = poly->m_faces[i].m_indices[numVerts-1];
-						for (int v=0;v<poly->m_faces[i].m_indices.size();v++)
-						{
-							int curVert = poly->m_faces[i].m_indices[v];
-							centroid+=poly->m_vertices[curVert];
-							getDebugDrawer()->drawLine(worldTransform*poly->m_vertices[lastV],worldTransform*poly->m_vertices[curVert],color);
-							lastV = curVert;
-						}
-					}
-					centroid*= btScalar(1.f)/btScalar(numVerts);
-                    if (getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawNormals)
+        case BOX_SHAPE_PROXYTYPE:
+            {
+                const btBoxShape* boxShape = static_cast<const btBoxShape*>(shape);
+                btVector3 halfExtents = boxShape->getHalfExtentsWithMargin();
+                getDebugDrawer()->drawBox(-halfExtents,halfExtents,worldTransform,color);
+                break;
+            }
+
+        case SPHERE_SHAPE_PROXYTYPE:
+            {
+                const btSphereShape* sphereShape = static_cast<const btSphereShape*>(shape);
+                btScalar radius = sphereShape->getMargin();//radius doesn't include the margin, so draw with margin
+
+                getDebugDrawer()->drawSphere(radius, worldTransform, color);
+                break;
+            }
+        case MULTI_SPHERE_SHAPE_PROXYTYPE:
+            {
+                const btMultiSphereShape* multiSphereShape = static_cast<const btMultiSphereShape*>(shape);
+
+                btTransform childTransform;
+                childTransform.setIdentity();
+
+                for (int i = multiSphereShape->getSphereCount()-1; i>=0;i--)
+                {
+                    childTransform.setOrigin(multiSphereShape->getSpherePosition(i));
+                    getDebugDrawer()->drawSphere(multiSphereShape->getSphereRadius(i), worldTransform*childTransform, color);
+                }
+
+                break;
+            }
+        case CAPSULE_SHAPE_PROXYTYPE:
+            {
+                const btCapsuleShape* capsuleShape = static_cast<const btCapsuleShape*>(shape);
+
+                btScalar radius = capsuleShape->getRadius();
+                btScalar halfHeight = capsuleShape->getHalfHeight();
+
+                int upAxis = capsuleShape->getUpAxis();
+                getDebugDrawer()->drawCapsule(radius, halfHeight, upAxis, worldTransform, color);
+                break;
+            }
+        case CONE_SHAPE_PROXYTYPE:
+            {
+                const btConeShape* coneShape = static_cast<const btConeShape*>(shape);
+                btScalar radius = coneShape->getRadius();//+coneShape->getMargin();
+                btScalar height = coneShape->getHeight();//+coneShape->getMargin();
+
+                int upAxis= coneShape->getConeUpIndex();
+                getDebugDrawer()->drawCone(radius, height, upAxis, worldTransform, color);
+                break;
+
+            }
+        case CYLINDER_SHAPE_PROXYTYPE:
+            {
+                const btCylinderShape* cylinder = static_cast<const btCylinderShape*>(shape);
+                int upAxis = cylinder->getUpAxis();
+                btScalar radius = cylinder->getRadius();
+                btScalar halfHeight = cylinder->getHalfExtentsWithMargin()[upAxis];
+                getDebugDrawer()->drawCylinder(radius, halfHeight, upAxis, worldTransform, color);
+                break;
+            }
+
+        case STATIC_PLANE_PROXYTYPE:
+            {
+                const btStaticPlaneShape* staticPlaneShape = static_cast<const btStaticPlaneShape*>(shape);
+                btScalar planeConst = staticPlaneShape->getPlaneConstant();
+                const btVector3& planeNormal = staticPlaneShape->getPlaneNormal();
+                getDebugDrawer()->drawPlane(planeNormal, planeConst,worldTransform, color);
+                break;
+
+            }
+        default:
+            {
+
+                /// for polyhedral shapes
+                if (shape->isPolyhedral())
+                {
+                    btPolyhedralConvexShape* polyshape = (btPolyhedralConvexShape*) shape;
+                    
+                    int i;
+                    if (polyshape->getConvexPolyhedron())
                     {
-					  btVector3 normalColor(1,1,0);
-					  btVector3 faceNormal(poly->m_faces[i].m_plane[0],poly->m_faces[i].m_plane[1],poly->m_faces[i].m_plane[2]);
-					  getDebugDrawer()->drawLine(worldTransform*centroid,worldTransform*(centroid+faceNormal),normalColor);
+                        const btConvexPolyhedron* poly = polyshape->getConvexPolyhedron();
+                        for (i=0;i<poly->m_faces.size();i++)
+                        {
+                            btVector3 centroid(0,0,0);
+                            int numVerts = poly->m_faces[i].m_indices.size();
+                            if (numVerts)
+                            {
+                                int lastV = poly->m_faces[i].m_indices[numVerts-1];
+                                for (int v=0;v<poly->m_faces[i].m_indices.size();v++)
+                                {
+                                    int curVert = poly->m_faces[i].m_indices[v];
+                                    centroid+=poly->m_vertices[curVert];
+                                    getDebugDrawer()->drawLine(worldTransform*poly->m_vertices[lastV],worldTransform*poly->m_vertices[curVert],color);
+                                    lastV = curVert;
+                                }
+                            }
+                            centroid*= btScalar(1.f)/btScalar(numVerts);
+                            if (getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawNormals)
+                            {
+                                btVector3 normalColor(1,1,0);
+                                btVector3 faceNormal(poly->m_faces[i].m_plane[0],poly->m_faces[i].m_plane[1],poly->m_faces[i].m_plane[2]);
+                                getDebugDrawer()->drawLine(worldTransform*centroid,worldTransform*(centroid+faceNormal),normalColor);
+                            }
+                            
+                        }
+                        
+                        
+                    } else
+                    {
+                        for (i=0;i<polyshape->getNumEdges();i++)
+                        {
+                            btVector3 a,b;
+                            polyshape->getEdge(i,a,b);
+                            btVector3 wa = worldTransform * a;
+                            btVector3 wb = worldTransform * b;
+                            getDebugDrawer()->drawLine(wa,wb,color);
+                        }
                     }
-					
-				}
+                    
+                    
+                }
+                    
+                if (shape->isConcave())
+                {
+                    btConcaveShape* concaveMesh = (btConcaveShape*) shape;
 
-				
-			} else
-			{
-				for (i=0;i<polyshape->getNumEdges();i++)
-				{
-					btVector3 a,b;
-					polyshape->getEdge(i,a,b);
-					btVector3 wa = worldTransform * a;
-					btVector3 wb = worldTransform * b;
-					getDebugDrawer()->drawLine(wa,wb,color);
-				}
-			}
+                    ///@todo pass camera, for some culling? no -> we are not a graphics lib
+                    btVector3 aabbMax(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT));
+                    btVector3 aabbMin(btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT));
 
+                    DebugDrawcallback drawCallback(getDebugDrawer(),worldTransform,color);
+                    concaveMesh->processAllTriangles(&drawCallback,aabbMin,aabbMax);
 
-		}
-		else
-		{
-			switch (shape->getShapeType())
-			{
+                }
 
-			case BOX_SHAPE_PROXYTYPE:
-				{
-					const btBoxShape* boxShape = static_cast<const btBoxShape*>(shape);
-					btVector3 halfExtents = boxShape->getHalfExtentsWithMargin();
-					getDebugDrawer()->drawBox(-halfExtents,halfExtents,worldTransform,color);
-					break;
-				}
-
-			case SPHERE_SHAPE_PROXYTYPE:
-				{
-					const btSphereShape* sphereShape = static_cast<const btSphereShape*>(shape);
-					btScalar radius = sphereShape->getMargin();//radius doesn't include the margin, so draw with margin
-
-					getDebugDrawer()->drawSphere(radius, worldTransform, color);
-					break;
-				}
-			case MULTI_SPHERE_SHAPE_PROXYTYPE:
-				{
-					const btMultiSphereShape* multiSphereShape = static_cast<const btMultiSphereShape*>(shape);
-
-					btTransform childTransform;
-					childTransform.setIdentity();
-
-					for (int i = multiSphereShape->getSphereCount()-1; i>=0;i--)
-					{
-						childTransform.setOrigin(multiSphereShape->getSpherePosition(i));
-						getDebugDrawer()->drawSphere(multiSphereShape->getSphereRadius(i), worldTransform*childTransform, color);
-					}
-
-					break;
-				}
-			case CAPSULE_SHAPE_PROXYTYPE:
-				{
-					const btCapsuleShape* capsuleShape = static_cast<const btCapsuleShape*>(shape);
-
-					btScalar radius = capsuleShape->getRadius();
-					btScalar halfHeight = capsuleShape->getHalfHeight();
-
-					int upAxis = capsuleShape->getUpAxis();
-					getDebugDrawer()->drawCapsule(radius, halfHeight, upAxis, worldTransform, color);
-					break;
-				}
-			case CONE_SHAPE_PROXYTYPE:
-				{
-					const btConeShape* coneShape = static_cast<const btConeShape*>(shape);
-					btScalar radius = coneShape->getRadius();//+coneShape->getMargin();
-					btScalar height = coneShape->getHeight();//+coneShape->getMargin();
-
-					int upAxis= coneShape->getConeUpIndex();
-					getDebugDrawer()->drawCone(radius, height, upAxis, worldTransform, color);
-					break;
-
-				}
-			case CYLINDER_SHAPE_PROXYTYPE:
-				{
-					const btCylinderShape* cylinder = static_cast<const btCylinderShape*>(shape);
-					int upAxis = cylinder->getUpAxis();
-					btScalar radius = cylinder->getRadius();
-					btScalar halfHeight = cylinder->getHalfExtentsWithMargin()[upAxis];
-					getDebugDrawer()->drawCylinder(radius, halfHeight, upAxis, worldTransform, color);
-					break;
-				}
-
-			case STATIC_PLANE_PROXYTYPE:
-				{
-					const btStaticPlaneShape* staticPlaneShape = static_cast<const btStaticPlaneShape*>(shape);
-					btScalar planeConst = staticPlaneShape->getPlaneConstant();
-					const btVector3& planeNormal = staticPlaneShape->getPlaneNormal();
-					getDebugDrawer()->drawPlane(planeNormal, planeConst,worldTransform, color);
-					break;
-
-				}
-			default:
-				{
-
-					if (shape->isConcave())
-					{
-						btConcaveShape* concaveMesh = (btConcaveShape*) shape;
-
-						///@todo pass camera, for some culling? no -> we are not a graphics lib
-						btVector3 aabbMax(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT));
-						btVector3 aabbMin(btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT));
-
-						DebugDrawcallback drawCallback(getDebugDrawer(),worldTransform,color);
-						concaveMesh->processAllTriangles(&drawCallback,aabbMin,aabbMax);
-
-					}
-
-					if (shape->getShapeType() == CONVEX_TRIANGLEMESH_SHAPE_PROXYTYPE)
-					{
-						btConvexTriangleMeshShape* convexMesh = (btConvexTriangleMeshShape*) shape;
-						//todo: pass camera for some culling			
-						btVector3 aabbMax(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT));
-						btVector3 aabbMin(btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT));
-						//DebugDrawcallback drawCallback;
-						DebugDrawcallback drawCallback(getDebugDrawer(),worldTransform,color);
-						convexMesh->getMeshInterface()->InternalProcessAllTriangles(&drawCallback,aabbMin,aabbMax);
-					}
+                if (shape->getShapeType() == CONVEX_TRIANGLEMESH_SHAPE_PROXYTYPE)
+                {
+                    btConvexTriangleMeshShape* convexMesh = (btConvexTriangleMeshShape*) shape;
+                    //todo: pass camera for some culling			
+                    btVector3 aabbMax(btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT),btScalar(BT_LARGE_FLOAT));
+                    btVector3 aabbMin(btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT),btScalar(-BT_LARGE_FLOAT));
+                    //DebugDrawcallback drawCallback;
+                    DebugDrawcallback drawCallback(getDebugDrawer(),worldTransform,color);
+                    convexMesh->getMeshInterface()->InternalProcessAllTriangles(&drawCallback,aabbMin,aabbMax);
+                }
 
 
-					
-				}
-			}
+                
+            }
+       
 		}
 	}
 }
@@ -1418,7 +1419,7 @@ void	btCollisionWorld::debugDrawWorld()
 	if (getDebugDrawer() && getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawContactPoints)
 	{
 		int numManifolds = getDispatcher()->getNumManifolds();
-		btVector3 color(1,0.65,0);
+		btVector3 color(1,1,0);
 		for (int i=0;i<numManifolds;i++)
 		{
 			btPersistentManifold* contactManifold = getDispatcher()->getManifoldByIndexInternal(i);

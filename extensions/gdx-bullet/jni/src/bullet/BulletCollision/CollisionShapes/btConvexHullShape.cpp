@@ -201,13 +201,11 @@ const char*	btConvexHullShape::serialize(void* dataBuffer, btSerializer* seriali
 	return "btConvexHullShapeData";
 }
 
-void btConvexHullShape::project(const btTransform& trans, const btVector3& dir, btScalar& min, btScalar& max) const
+void btConvexHullShape::project(const btTransform& trans, const btVector3& dir, btScalar& minProj, btScalar& maxProj, btVector3& witnesPtMin,btVector3& witnesPtMax) const
 {
 #if 1
-	min = FLT_MAX;
-	max = -FLT_MAX;
-	btVector3 witnesPtMin;
-	btVector3 witnesPtMax;
+	minProj = FLT_MAX;
+	maxProj = -FLT_MAX;
 
 	int numVerts = m_unscaledPoints.size();
 	for(int i=0;i<numVerts;i++)
@@ -215,31 +213,30 @@ void btConvexHullShape::project(const btTransform& trans, const btVector3& dir, 
 		btVector3 vtx = m_unscaledPoints[i] * m_localScaling;
 		btVector3 pt = trans * vtx;
 		btScalar dp = pt.dot(dir);
-		if(dp < min)	
+		if(dp < minProj)	
 		{
-			min = dp;
+			minProj = dp;
 			witnesPtMin = pt;
 		}
-		if(dp > max)	
+		if(dp > maxProj)	
 		{
-			max = dp;
+			maxProj = dp;
 			witnesPtMax=pt;
 		}
 	}
 #else
 	btVector3 localAxis = dir*trans.getBasis();
-	btVector3 vtx1 = trans(localGetSupportingVertex(localAxis));
-	btVector3 vtx2 = trans(localGetSupportingVertex(-localAxis));
+	witnesPtMin  = trans(localGetSupportingVertex(localAxis));
+	witnesPtMax = trans(localGetSupportingVertex(-localAxis));
 
-	min = vtx1.dot(dir);
-	max = vtx2.dot(dir);
+	minProj = witnesPtMin.dot(dir);
+	maxProj = witnesPtMax.dot(dir);
 #endif
 
-	if(min>max)
+	if(minProj>maxProj)
 	{
-		btScalar tmp = min;
-		min = max;
-		max = tmp;
+		btSwap(minProj,maxProj);
+		btSwap(witnesPtMin,witnesPtMax);
 	}
 
 

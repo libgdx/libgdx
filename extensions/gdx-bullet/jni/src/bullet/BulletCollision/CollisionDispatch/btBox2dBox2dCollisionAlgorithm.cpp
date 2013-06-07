@@ -354,7 +354,7 @@ void b2CollidePolygons(btManifoldResult* manifold,
 	btVector3 v11 = vertices1[edge1];
 	btVector3 v12 = edge1 + 1 < count1 ? vertices1[edge1+1] : vertices1[0];
 
-	btVector3 dv = v12 - v11;
+	//btVector3 dv = v12 - v11;
 	btVector3 sideNormal = b2Mul(xf1.getBasis(), v12 - v11);
 	sideNormal.normalize();
 	btVector3 frontNormal = btCrossS(sideNormal, 1.0f);

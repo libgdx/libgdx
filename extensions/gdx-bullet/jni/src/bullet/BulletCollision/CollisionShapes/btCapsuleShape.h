@@ -104,6 +104,14 @@ public:
 
 	}
 
+	virtual btVector3	getAnisotropicRollingFrictionDirection() const
+	{
+		btVector3 aniDir(0,0,0);
+		aniDir[getUpAxis()]=1;
+		return aniDir;
+	}
+
+
 	virtual	int	calculateSerializeBufferSize() const;
 
 	///fills the dataBuffer and returns the struct name (and 0 on failure)

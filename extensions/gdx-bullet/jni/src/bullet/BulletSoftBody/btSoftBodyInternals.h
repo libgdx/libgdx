@@ -21,6 +21,7 @@ subject to the following restrictions:
 
 
 #include "LinearMath/btQuickprof.h"
+#include "LinearMath/btPolarDecomposition.h"
 #include "BulletCollision/BroadphaseCollision/btBroadphaseInterface.h"
 #include "BulletCollision/CollisionDispatch/btCollisionDispatcher.h"
 #include "BulletCollision/CollisionShapes/btConvexInternalShape.h"
@@ -614,32 +615,8 @@ private:
 //
 static inline int			PolarDecompose(	const btMatrix3x3& m,btMatrix3x3& q,btMatrix3x3& s)
 {
-	static const btScalar	half=(btScalar)0.5;
-	static const btScalar	accuracy=(btScalar)0.0001;
-	static const int		maxiterations=16;
-	int						i=0;
-	btScalar				det=0;
-	q	=	Mul(m,1/btVector3(m[0][0],m[1][1],m[2][2]).length());
-	det	=	q.determinant();
-	if(!btFuzzyZero(det))
-	{
-		for(;i<maxiterations;++i)
-		{
-			q=Mul(Add(q,Mul(q.adjoint(),1/det).transpose()),half);
-			const btScalar	ndet=q.determinant();
-			if(Sq(ndet-det)>accuracy) det=ndet; else break;
-		}
-		/* Final orthogonalization	*/ 
-		Orthogonalize(q);
-		/* Compute 'S'				*/ 
-		s=q.transpose()*m;
-	}
-	else
-	{
-		q.setIdentity();
-		s.setIdentity();
-	}
-	return(i);
+	static const btPolarDecomposition polar;  
+	return polar.decompose(m, q, s);
 }
 
 //
@@ -753,7 +730,7 @@ struct btSoftColliders
 				}
 			}
 		}
-		void		Process(btSoftBody* ps,const btCollisionObjectWrapper* colObWrap)
+		void		ProcessColObj(btSoftBody* ps,const btCollisionObjectWrapper* colObWrap)
 		{
 			psb			=	ps;
 			m_colObjWrap			=	colObWrap;
@@ -815,7 +792,7 @@ struct btSoftColliders
 				
 			}
 		}
-		void		Process(btSoftBody* psa,btSoftBody* psb)
+		void		ProcessSoftSoft(btSoftBody* psa,btSoftBody* psb)
 		{
 			idt			=	psa->m_sst.isdt;
 			//m_margin		=	(psa->getCollisionShape()->getMargin()+psb->getCollisionShape()->getMargin())/2;

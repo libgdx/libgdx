@@ -118,7 +118,7 @@ void btGeneric6DofSpringConstraint::internalUpdateSprings(btConstraintInfo2* inf
 {
 	// it is assumed that calculateTransforms() have been called before this call
 	int i;
-	btVector3 relVel = m_rbB.getLinearVelocity() - m_rbA.getLinearVelocity();
+	//btVector3 relVel = m_rbB.getLinearVelocity() - m_rbA.getLinearVelocity();
 	for(i = 0; i < 3; i++)
 	{
 		if(m_springEnabled[i])

@@ -84,6 +84,11 @@ public:
 			return m_coneIndices[1];
 		}
 
+	virtual btVector3	getAnisotropicRollingFrictionDirection() const
+	{
+		return btVector3 (0,1,0);
+	}
+
 	virtual void	setLocalScaling(const btVector3& scaling);
 
 };
@@ -93,6 +98,12 @@ class btConeShapeX : public btConeShape
 {
 	public:
 		btConeShapeX(btScalar radius,btScalar height);
+
+	virtual btVector3	getAnisotropicRollingFrictionDirection() const
+	{
+		return btVector3 (1,0,0);
+	}
+
 };
 
 ///btConeShapeZ implements a Cone shape, around the Z axis
@@ -100,6 +111,12 @@ class btConeShapeZ : public btConeShape
 {
 	public:
 		btConeShapeZ(btScalar radius,btScalar height);
+
+	virtual btVector3	getAnisotropicRollingFrictionDirection() const
+	{
+		return btVector3 (0,0,1);
+	}
+
 };
 #endif //BT_CONE_MINKOWSKI_H
 

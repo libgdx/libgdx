@@ -124,7 +124,7 @@ void btPoint2PointConstraint::getInfo2NonVirtual (btConstraintInfo2* info, const
 	btVector3 a2 = body1_trans.getBasis()*getPivotInB();
    
 	{
-		btVector3 a2n = -a2;
+	//	btVector3 a2n = -a2;
 		btVector3* angular0 = (btVector3*)(info->m_J2angularAxis);
 		btVector3* angular1 = (btVector3*)(info->m_J2angularAxis+info->rowskip);
 		btVector3* angular2 = (btVector3*)(info->m_J2angularAxis+2*info->rowskip);

@@ -146,6 +146,21 @@ public:
 
 };
 
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct btDynamicsWorldDoubleData
+{
+	btContactSolverInfoDoubleData	m_solverInfo;
+	btVector3DoubleData	m_gravity;
+};
+
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct btDynamicsWorldFloatData
+{
+	btContactSolverInfoFloatData	m_solverInfo;
+	btVector3FloatData	m_gravity;
+};
+
+
 #endif //BT_DYNAMICS_WORLD_H
 
 

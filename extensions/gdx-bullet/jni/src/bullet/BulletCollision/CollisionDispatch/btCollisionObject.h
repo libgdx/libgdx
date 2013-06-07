@@ -85,6 +85,7 @@ protected:
 
 	btScalar		m_friction;
 	btScalar		m_restitution;
+	btScalar		m_rollingFriction;
 
 	///m_internalType is reserved to distinguish Bullet's btCollisionObject, btRigidBody, btSoftBody, btGhostObject etc.
 	///do not assign your own m_internalType unless you write a new dynamics object class.
@@ -137,6 +138,13 @@ public:
 		CO_USER_TYPE=32
 	};
 
+	enum AnisotropicFrictionFlags
+	{
+		CF_ANISOTROPIC_FRICTION_DISABLED=0,
+		CF_ANISOTROPIC_FRICTION = 1,
+		CF_ANISOTROPIC_ROLLING_FRICTION = 2
+	};
+
 	SIMD_FORCE_INLINE bool mergesSimulationIslands() const
 	{
 		///static objects, kinematic and object without contact response don't merge islands
@@ -147,14 +155,15 @@ public:
 	{
 		return m_anisotropicFriction;
 	}
-	void	setAnisotropicFriction(const btVector3& anisotropicFriction)
+	void	setAnisotropicFriction(const btVector3& anisotropicFriction, int frictionMode = CF_ANISOTROPIC_FRICTION)
 	{
 		m_anisotropicFriction = anisotropicFriction;
-		m_hasAnisotropicFriction = (anisotropicFriction[0]!=1.f) || (anisotropicFriction[1]!=1.f) || (anisotropicFriction[2]!=1.f);
+		bool isUnity = (anisotropicFriction[0]!=1.f) || (anisotropicFriction[1]!=1.f) || (anisotropicFriction[2]!=1.f);
+		m_hasAnisotropicFriction = isUnity?frictionMode : 0;
 	}
-	bool	hasAnisotropicFriction() const
+	bool	hasAnisotropicFriction(int frictionMode = CF_ANISOTROPIC_FRICTION) const
 	{
-		return m_hasAnisotropicFriction!=0;
+		return (m_hasAnisotropicFriction&frictionMode)!=0;
 	}
 
 	///the constraint solver can discard solving contacts, if the distance is above this threshold. 0 by default.
@@ -262,6 +271,16 @@ public:
 	{
 		return m_friction;
 	}
+
+	void	setRollingFriction(btScalar frict)
+	{
+		m_rollingFriction = frict;
+	}
+	btScalar	getRollingFriction() const
+	{
+		return m_rollingFriction;
+	}
+
 
 	///reserved for Bullet internal usage
 	int	getInternalType() const
@@ -453,6 +472,7 @@ struct	btCollisionObjectDoubleData
 	double					m_contactProcessingThreshold;	
 	double					m_deactivationTime;
 	double					m_friction;
+	double					m_rollingFriction;
 	double					m_restitution;
 	double					m_hitFraction; 
 	double					m_ccdSweptSphereRadius;
@@ -485,6 +505,8 @@ struct	btCollisionObjectFloatData
 	float					m_contactProcessingThreshold;	
 	float					m_deactivationTime;
 	float					m_friction;
+	float					m_rollingFriction;
+
 	float					m_restitution;
 	float					m_hitFraction; 
 	float					m_ccdSweptSphereRadius;
@@ -497,6 +519,7 @@ struct	btCollisionObjectFloatData
 	int						m_activationState1;
 	int						m_internalType;
 	int						m_checkCollideWith;
+	char					m_padding[4];
 };
 
 

@@ -15,22 +15,6 @@ subject to the following restrictions:
 
 #include "btAlignedAllocator.h"
 
-#ifdef BT_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-#ifdef BT_HAVE_UINTPTR_T
-typedef uintptr_t uintptr;
-#else
-	#ifdef BT_HAVE_ULONG_PTR
-	typedef ULONG_PTR uintptr;
-	#else
-	#warning 'i don't have anything'
-	typedef unsigned long long uintptr;
-	#endif
-#endif
-
-
 int gNumAlignedAllocs = 0;
 int gNumAlignedFree = 0;
 int gTotalBytesAlignedAllocs = 0;//detect memory leaks
@@ -74,16 +58,18 @@ static inline void btAlignedFreeDefault(void *ptr)
 	free(ptr);
 }
 #else
+
+
+
+
+
 static inline void *btAlignedAllocDefault(size_t size, int alignment)
 {
   void *ret;
   char *real;
-  uintptr offset;
-
   real = (char *)sAllocFunc(size + sizeof(void *) + (alignment-1));
   if (real) {
-    offset = (alignment - (uintptr)(real + sizeof(void *))) & (alignment-1);
-    ret = (void *)((real + sizeof(void *)) + offset);
+	ret = btAlignPointer(real + sizeof(void *),alignment);
     *((void **)(ret)-1) = (void *)(real);
   } else {
     ret = (void *)(real);
@@ -126,7 +112,6 @@ void*   btAlignedAllocInternal  (size_t size, int alignment,int line,char* filen
 {
  void *ret;
  char *real;
- uintptr offset;
 
  gTotalBytesAlignedAllocs += size;
  gNumAlignedAllocs++;
@@ -134,9 +119,7 @@ void*   btAlignedAllocInternal  (size_t size, int alignment,int line,char* filen
  
  real = (char *)sAllocFunc(size + 2*sizeof(void *) + (alignment-1));
  if (real) {
-   offset = (alignment - (uintptr)(real + 2*sizeof(void *))) &
-(alignment-1);
-   ret = (void *)((real + 2*sizeof(void *)) + offset);
+   ret = (void*) btAlignPointer(real + 2*sizeof(void *), alignment);
    *((void **)(ret)-1) = (void *)(real);
        *((int*)(ret)-2) = size;
 

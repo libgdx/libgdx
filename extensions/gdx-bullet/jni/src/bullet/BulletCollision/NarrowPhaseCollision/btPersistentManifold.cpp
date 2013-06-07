@@ -205,10 +205,13 @@ int btPersistentManifold::getCacheEntry(const btManifoldPoint& newPoint) const
 	return nearestPoint;
 }
 
-int btPersistentManifold::addManifoldPoint(const btManifoldPoint& newPoint)
+int btPersistentManifold::addManifoldPoint(const btManifoldPoint& newPoint, bool isPredictive)
 {
-	btAssert(validContactDistance(newPoint));
-
+	if (!isPredictive)
+	{
+		btAssert(validContactDistance(newPoint));
+	}
+	
 	int insertIndex = getNumContacts();
 	if (insertIndex == MANIFOLD_CACHE_SIZE)
 	{

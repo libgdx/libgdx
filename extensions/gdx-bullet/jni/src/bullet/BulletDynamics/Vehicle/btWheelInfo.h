@@ -105,8 +105,6 @@ struct btWheelInfo
 
 	}
 
-	btWheelInfo() { }
-
 	void	updateWheel(const btRigidBody& chassis,RaycastInfo& raycastInfo);
 
 	btScalar	m_clippedInvContactDotSuspension;

@@ -58,8 +58,8 @@ void btSoftRigidCollisionAlgorithm::processCollision (const btCollisionObjectWra
 	(void)dispatchInfo;
 	(void)resultOut;
 	//printf("btSoftRigidCollisionAlgorithm\n");
-	const btCollisionObjectWrapper* softWrap = m_isSwapped?body1Wrap:body0Wrap;
-	const btCollisionObjectWrapper* rigidWrap = m_isSwapped?body0Wrap:body1Wrap;
+//	const btCollisionObjectWrapper* softWrap = m_isSwapped?body1Wrap:body0Wrap;
+//	const btCollisionObjectWrapper* rigidWrap = m_isSwapped?body0Wrap:body1Wrap;
 	btSoftBody* softBody =  m_isSwapped? (btSoftBody*)body1Wrap->getCollisionObject() : (btSoftBody*)body0Wrap->getCollisionObject();
 	const btCollisionObjectWrapper* rigidCollisionObjectWrap = m_isSwapped? body0Wrap : body1Wrap;
 	

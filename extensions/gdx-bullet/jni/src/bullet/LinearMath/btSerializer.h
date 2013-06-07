@@ -25,25 +25,12 @@ subject to the following restrictions:
 #endif
 #include <string.h>
 
-#ifdef BT_HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-#ifdef BT_HAVE_UINTPTR_T
-typedef uintptr_t uintptr;
-#else
-	#ifdef BT_HAVE_ULONG_PTR
-	typedef ULONG_PTR uintptr;
-	#else
-	typedef unsigned long long uintptr;
-	#endif
-#endif
 
 
 ///only the 32bit versions for now
-extern unsigned char sBulletDNAstr[];
+extern char sBulletDNAstr[];
 extern int sBulletDNAlen;
-extern unsigned char sBulletDNAstr64[];
+extern char sBulletDNAstr64[];
 extern int sBulletDNAlen64;
 
 SIMD_FORCE_INLINE	int btStrLen(const char* str) 
@@ -119,23 +106,24 @@ public:
 
 #define BT_HEADER_LENGTH 12
 #if defined(__sgi) || defined (__sparc) || defined (__sparc__) || defined (__PPC__) || defined (__ppc__) || defined (__BIG_ENDIAN__)
-#	define MAKE_ID(a,b,c,d) ( (int)(a)<<24 | (int)(b)<<16 | (c)<<8 | (d) )
+#	define BT_MAKE_ID(a,b,c,d) ( (int)(a)<<24 | (int)(b)<<16 | (c)<<8 | (d) )
 #else
-#	define MAKE_ID(a,b,c,d) ( (int)(d)<<24 | (int)(c)<<16 | (b)<<8 | (a) )
+#	define BT_MAKE_ID(a,b,c,d) ( (int)(d)<<24 | (int)(c)<<16 | (b)<<8 | (a) )
 #endif
 
-#define BT_SOFTBODY_CODE		MAKE_ID('S','B','D','Y')
-#define BT_COLLISIONOBJECT_CODE MAKE_ID('C','O','B','J')
-#define BT_RIGIDBODY_CODE		MAKE_ID('R','B','D','Y')
-#define BT_CONSTRAINT_CODE		MAKE_ID('C','O','N','S')
-#define BT_BOXSHAPE_CODE		MAKE_ID('B','O','X','S')
-#define BT_QUANTIZED_BVH_CODE	MAKE_ID('Q','B','V','H')
-#define BT_TRIANLGE_INFO_MAP	MAKE_ID('T','M','A','P')
-#define BT_SHAPE_CODE			MAKE_ID('S','H','A','P')
-#define BT_ARRAY_CODE			MAKE_ID('A','R','A','Y')
-#define BT_SBMATERIAL_CODE		MAKE_ID('S','B','M','T')
-#define BT_SBNODE_CODE			MAKE_ID('S','B','N','D')
-#define BT_DNA_CODE				MAKE_ID('D','N','A','1')
+#define BT_SOFTBODY_CODE		BT_MAKE_ID('S','B','D','Y')
+#define BT_COLLISIONOBJECT_CODE BT_MAKE_ID('C','O','B','J')
+#define BT_RIGIDBODY_CODE		BT_MAKE_ID('R','B','D','Y')
+#define BT_CONSTRAINT_CODE		BT_MAKE_ID('C','O','N','S')
+#define BT_BOXSHAPE_CODE		BT_MAKE_ID('B','O','X','S')
+#define BT_QUANTIZED_BVH_CODE	BT_MAKE_ID('Q','B','V','H')
+#define BT_TRIANLGE_INFO_MAP	BT_MAKE_ID('T','M','A','P')
+#define BT_SHAPE_CODE			BT_MAKE_ID('S','H','A','P')
+#define BT_ARRAY_CODE			BT_MAKE_ID('A','R','A','Y')
+#define BT_SBMATERIAL_CODE		BT_MAKE_ID('S','B','M','T')
+#define BT_SBNODE_CODE			BT_MAKE_ID('S','B','N','D')
+#define BT_DYNAMICSWORLD_CODE	BT_MAKE_ID('D','W','L','D')
+#define BT_DNA_CODE				BT_MAKE_ID('D','N','A','1')
 
 
 struct	btPointerUid
@@ -226,7 +214,7 @@ protected:
 
 			int *intPtr=0;
 			short *shtPtr=0;
-			char *cp = 0;int dataLen =0;long nr=0;
+			char *cp = 0;int dataLen =0;
 			intPtr = (int*)m_dna;
 
 			/*
@@ -259,15 +247,7 @@ protected:
 				while (*cp)cp++;
 				cp++;
 			}
-			{
-				nr= (uintptr)cp;
-			//	long mask=3;
-				nr= ((nr+3)&~3)-nr;
-				while (nr--)
-				{
-					cp++;
-				}
-			}
+			cp = btAlignPointer(cp,4);
 
 			/*
 				TYPE (4 bytes)
@@ -277,7 +257,7 @@ protected:
 			*/
 
 			intPtr = (int*)cp;
-			assert(strncmp(cp, "TYPE", 4)==0); intPtr++;
+			btAssert(strncmp(cp, "TYPE", 4)==0); intPtr++;
 
 			if (!littleEndian)
 				*intPtr =  btSwapEndian(*intPtr);
@@ -294,15 +274,7 @@ protected:
 				cp++;
 			}
 
-		{
-				nr= (uintptr)cp;
-			//	long mask=3;
-				nr= ((nr+3)&~3)-nr;
-				while (nr--)
-				{
-					cp++;
-				}
-			}
+			cp = btAlignPointer(cp,4);
 
 
 			/*
@@ -313,7 +285,7 @@ protected:
 
 			// Parse type lens
 			intPtr = (int*)cp;
-			assert(strncmp(cp, "TLEN", 4)==0); intPtr++;
+			btAssert(strncmp(cp, "TLEN", 4)==0); intPtr++;
 
 			dataLen = (int)mTypes.size();
 
@@ -340,7 +312,7 @@ protected:
 
 			intPtr = (int*)shtPtr;
 			cp = (char*)intPtr;
-			assert(strncmp(cp, "STRC", 4)==0); intPtr++;
+			btAssert(strncmp(cp, "STRC", 4)==0); intPtr++;
 
 			if (!littleEndian)
 				*intPtr = btSwapEndian(*intPtr);
@@ -466,8 +438,8 @@ public:
 
 
 			buffer[9] = '2';
-			buffer[10] = '7';
-			buffer[11] = '8';
+			buffer[10] = '8';
+			buffer[11] = '1';
 
 		}
 

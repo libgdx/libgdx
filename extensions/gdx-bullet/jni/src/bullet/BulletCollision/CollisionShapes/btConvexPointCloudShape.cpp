@@ -44,7 +44,7 @@ btVector3	btConvexPointCloudShape::localGetSupportingVertexWithoutMargin(const b
     if( m_numPoints > 0 )
     {
         // Here we take advantage of dot(a*b, c) = dot( a, b*c) to do less work. Note this transformation is true mathematically, not numerically.
-        btVector3 scaled = vec * m_localScaling;
+    //    btVector3 scaled = vec * m_localScaling;
         int index = (int) vec.maxDot( &m_unscaledPoints[0], m_numPoints, maxDot);   //FIXME: may violate encapsulation of m_unscaledPoints
         return getScaledPoint(index);
     }

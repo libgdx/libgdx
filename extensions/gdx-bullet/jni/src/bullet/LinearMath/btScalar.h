@@ -28,7 +28,7 @@ subject to the following restrictions:
 #include <float.h>
 
 /* SVN $Revision$ on $Date$ from http://bullet.googlecode.com*/
-#define BT_BULLET_VERSION 280
+#define BT_BULLET_VERSION 281
 
 inline int	btGetVersion()
 {
@@ -85,9 +85,14 @@ inline int	btGetVersion()
 
 		#endif //__MINGW32__
 
-		#include <assert.h>
 #ifdef BT_DEBUG
+	#ifdef _MSC_VER
+		#include <stdio.h>
+		#define btAssert(x) { if(!(x)){printf("Assert "__FILE__ ":%u ("#x")\n", __LINE__);__debugbreak();	}}
+	#else//_MSC_VER
+		#include <assert.h>
 		#define btAssert assert
+	#endif//_MSC_VER
 #else
 		#define btAssert(x)
 #endif
@@ -170,17 +175,13 @@ inline int	btGetVersion()
                 #include <emmintrin.h>
             #endif
         #endif //BT_USE_SSE
-    #elif defined( __arm__ )
+    #elif defined( __armv7__ )
         #ifdef __clang__
-        #define BT_USE_NEON 1
-        #if defined BT_USE_NEON && defined (__clang__)
-            #if! defined( ARM_NEON_GCC_COMPATIBILITY )
-                // -DARM_NEON_GCC_COMPATIBILITY=1 changes neon vector types to raw vectors, syntactically similar to SSE and AltiVec
-                // instead of vectors wrapped up in structs. This code base assumes GCC style raw vectors are used.
-                #error The C preprocessor macro ARM_NEON_GCC_COMPATIBILITY must be defined. Pass -DARM_NEON_GCC_COMPATIBILITY=1 to the compiler.
-            #endif//!ARM_NEON_GCC_COMPATIBILITY
-            #include <arm_neon.h>
-        #endif//BT_USE_NEON
+            #define BT_USE_NEON 1
+
+            #if defined BT_USE_NEON && defined (__clang__)
+                #include <arm_neon.h>
+            #endif//BT_USE_NEON
        #endif //__clang__
     #endif//__arm__
 
@@ -194,10 +195,23 @@ inline int	btGetVersion()
 	#endif
 
 	#if defined(DEBUG) || defined (_DEBUG)
+	 #if defined (__i386__) || defined (__x86_64__)
+	#include <stdio.h>
+	 #define btAssert(x)\
+	{\
+	if(!(x))\
+	{\
+		printf("Assert %s in line %d, file %s\n",#x, __LINE__, __FILE__);\
+		asm volatile ("int3");\
+	}\
+	}
+	#else//defined (__i386__) || defined (__x86_64__)
 		#define btAssert assert
-	#else
-		#define btAssert(x)
+	#end//defined (__i386__) || defined (__x86_64__)
 	#endif
+	#else//defined(DEBUG) || defined (_DEBUG)
+		#define btAssert(x)
+	#endif//defined(DEBUG) || defined (_DEBUG)
 
 	//btFullAssert is optional, slows down a lot
 	#define btFullAssert(x)

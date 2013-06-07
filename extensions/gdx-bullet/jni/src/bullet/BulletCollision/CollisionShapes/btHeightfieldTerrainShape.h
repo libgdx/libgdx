@@ -93,7 +93,8 @@ protected:
 
 	PHY_ScalarType	m_heightDataType;	
 	bool	m_flipQuadEdges;
-  bool  m_useDiamondSubdivision;
+  	bool  m_useDiamondSubdivision;
+	bool m_useZigzagSubdivision;
 
 	int	m_upAxis;
 	
@@ -145,6 +146,8 @@ public:
 
 	void setUseDiamondSubdivision(bool useDiamondSubdivision=true) { m_useDiamondSubdivision = useDiamondSubdivision;}
 
+	///could help compatibility with Ogre heightfields. See https://code.google.com/p/bullet/issues/detail?id=625	
+	void setUseZigzagSubdivision(bool useZigzagSubdivision=true) { m_useZigzagSubdivision = useZigzagSubdivision;}
 
 	virtual void getAabb(const btTransform& t,btVector3& aabbMin,btVector3& aabbMax) const;
 

@@ -563,7 +563,7 @@ int HullLibrary::calchullgen(btVector3 *verts,int verts_count, int vlimit)
 	vlimit-=4;
 	while(vlimit >0 && ((te=extrudable(epsilon)) != 0))
 	{
-		int3 ti=*te;
+		//int3 ti=*te;
 		int v=te->vmax;
 		btAssert(v != -1);
 		btAssert(!isextreme[v]);  // wtf we've already done this vertex

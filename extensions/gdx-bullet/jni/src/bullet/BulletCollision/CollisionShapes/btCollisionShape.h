@@ -109,6 +109,13 @@ public:
 
 	
 	int		getShapeType() const { return m_shapeType; }
+
+	///the getAnisotropicRollingFrictionDirection can be used in combination with setAnisotropicFriction
+	///See Bullet/Demos/RollingFrictionDemo for an example
+	virtual btVector3	getAnisotropicRollingFrictionDirection() const
+	{
+		return btVector3(1,1,1);
+	}
 	virtual void	setMargin(btScalar margin) = 0;
 	virtual btScalar	getMargin() const = 0;
 

@@ -31,16 +31,20 @@ btPolyhedralConvexShape::~btPolyhedralConvexShape()
 {
 	if (m_polyhedron)
 	{
+		m_polyhedron->~btConvexPolyhedron();
 		btAlignedFree(m_polyhedron);
 	}
 }
 
 
-bool	btPolyhedralConvexShape::initializePolyhedralFeatures()
+bool	btPolyhedralConvexShape::initializePolyhedralFeatures(int shiftVerticesByMargin)
 {
 
 	if (m_polyhedron)
+	{
+		m_polyhedron->~btConvexPolyhedron();
 		btAlignedFree(m_polyhedron);
+	}
 	
 	void* mem = btAlignedAlloc(sizeof(btConvexPolyhedron),16);
 	m_polyhedron = new (mem) btConvexPolyhedron;
@@ -52,30 +56,33 @@ bool	btPolyhedralConvexShape::initializePolyhedralFeatures()
 		btVector3& newVertex = orgVertices.expand();
 		getVertex(i,newVertex);
 	}
-
-#if 0
-	btAlignedObjectArray<btVector3> planeEquations;
-	btGeometryUtil::getPlaneEquationsFromVertices(orgVertices,planeEquations);
-
-	btAlignedObjectArray<btVector3> shiftedPlaneEquations;
-	for (int p=0;p<planeEquations.size();p++)
+	
+	btConvexHullComputer conv;
+	
+	if (shiftVerticesByMargin)
 	{
-		   btVector3 plane = planeEquations[p];
-		   plane[3] -= getMargin();
-		   shiftedPlaneEquations.push_back(plane);
+		btAlignedObjectArray<btVector3> planeEquations;
+		btGeometryUtil::getPlaneEquationsFromVertices(orgVertices,planeEquations);
+
+		btAlignedObjectArray<btVector3> shiftedPlaneEquations;
+		for (int p=0;p<planeEquations.size();p++)
+		{
+			   btVector3 plane = planeEquations[p];
+		//	   btScalar margin = getMargin();
+			   plane[3] -= getMargin();
+			   shiftedPlaneEquations.push_back(plane);
+		}
+
+		btAlignedObjectArray<btVector3> tmpVertices;
+
+		btGeometryUtil::getVerticesFromPlaneEquations(shiftedPlaneEquations,tmpVertices);
+	
+		conv.compute(&tmpVertices[0].getX(), sizeof(btVector3),tmpVertices.size(),0.f,0.f);
+	} else
+	{
+		
+		conv.compute(&orgVertices[0].getX(), sizeof(btVector3),orgVertices.size(),0.f,0.f);
 	}
-
-	btAlignedObjectArray<btVector3> tmpVertices;
-
-	btGeometryUtil::getVerticesFromPlaneEquations(shiftedPlaneEquations,tmpVertices);
-	btConvexHullComputer conv;
-	conv.compute(&tmpVertices[0].getX(), sizeof(btVector3),tmpVertices.size(),0.f,0.f);
-
-#else
-	btConvexHullComputer conv;
-	conv.compute(&orgVertices[0].getX(), sizeof(btVector3),orgVertices.size(),0.f,0.f);
-
-#endif
 
 
 
@@ -189,7 +196,8 @@ bool	btPolyhedralConvexShape::initializePolyhedralFeatures()
 		{
 			//do the merge: use Graham Scan 2d convex hull
 
-			btAlignedObjectArray<GrahamVector2> orgpoints;
+			btAlignedObjectArray<GrahamVector3> orgpoints;
+			btVector3 averageFaceNormal(0,0,0);
 
 			for (int i=0;i<coplanarFaceGroup.size();i++)
 			{
@@ -197,16 +205,12 @@ bool	btPolyhedralConvexShape::initializePolyhedralFeatures()
 
 				btFace& face = tmpFaces[coplanarFaceGroup[i]];
 				btVector3 faceNormal(face.m_plane[0],face.m_plane[1],face.m_plane[2]);
-				btVector3 xyPlaneNormal(0,0,1);
-
-				btQuaternion rotationArc = shortestArcQuat(faceNormal,xyPlaneNormal);
-				
+				averageFaceNormal+=faceNormal;
 				for (int f=0;f<face.m_indices.size();f++)
 				{
 					int orgIndex = face.m_indices[f];
 					btVector3 pt = m_polyhedron->m_vertices[orgIndex];
-					btVector3 rotatedPt =  quatRotate(rotationArc,pt);
-					rotatedPt.setZ(0);
+					
 					bool found = false;
 
 					for (int i=0;i<orgpoints.size();i++)
@@ -219,34 +223,45 @@ bool	btPolyhedralConvexShape::initializePolyhedralFeatures()
 						}
 					}
 					if (!found)
-						orgpoints.push_back(GrahamVector2(rotatedPt,orgIndex));
+						orgpoints.push_back(GrahamVector3(pt,orgIndex));
 				}
 			}
+
+			
 
 			btFace combinedFace;
 			for (int i=0;i<4;i++)
 				combinedFace.m_plane[i] = tmpFaces[coplanarFaceGroup[0]].m_plane[i];
 
-			btAlignedObjectArray<GrahamVector2> hull;
-			GrahamScanConvexHull2D(orgpoints,hull);
+			btAlignedObjectArray<GrahamVector3> hull;
+
+			averageFaceNormal.normalize();
+			GrahamScanConvexHull2D(orgpoints,hull,averageFaceNormal);
 
 			for (int i=0;i<hull.size();i++)
 			{
 				combinedFace.m_indices.push_back(hull[i].m_orgIndex);
-				for(int k = 0; k < orgpoints.size(); k++) {
-					if(orgpoints[k].m_orgIndex == hull[i].m_orgIndex) {
+				for(int k = 0; k < orgpoints.size(); k++) 
+				{
+					if(orgpoints[k].m_orgIndex == hull[i].m_orgIndex) 
+					{
 						orgpoints[k].m_orgIndex = -1; // invalidate...
 						break;
-			}
+					}
 				}
 			}
+
 			// are there rejected vertices?
 			bool reject_merge = false;
+			
+
+
 			for(int i = 0; i < orgpoints.size(); i++) {
 				if(orgpoints[i].m_orgIndex == -1)
 					continue; // this is in the hull...
 				// this vertex is rejected -- is anybody else using this vertex?
 				for(int j = 0; j < tmpFaces.size(); j++) {
+					
 					btFace& face = tmpFaces[j];
 					// is this a face of the current coplanar group?
 					bool is_in_current_group = false;
@@ -272,20 +287,23 @@ bool	btPolyhedralConvexShape::initializePolyhedralFeatures()
 				if(reject_merge)
 					break;
 			}
-			if(!reject_merge) {
+
+			if (!reject_merge)
+			{
 				// do this merge!
 				did_merge = true;
-			m_polyhedron->m_faces.push_back(combinedFace);
+				m_polyhedron->m_faces.push_back(combinedFace);
 			}
 		}
 		if(!did_merge)
 		{
 			for (int i=0;i<coplanarFaceGroup.size();i++)
 			{
-				m_polyhedron->m_faces.push_back(tmpFaces[coplanarFaceGroup[i]]);
+				btFace face = tmpFaces[coplanarFaceGroup[i]];
+				m_polyhedron->m_faces.push_back(face);
 			}
 
-		}
+		} 
 
 
 

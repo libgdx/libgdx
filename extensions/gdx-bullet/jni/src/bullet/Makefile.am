@@ -95,6 +95,7 @@ libLinearMath_la_SOURCES	= \
 		LinearMath/btAlignedAllocator.cpp \
 		LinearMath/btSerializer.cpp \
 		LinearMath/btConvexHull.cpp \
+		LinearMath/btPolarDecomposition.cpp \
 		LinearMath/btVector3.cpp \
 		LinearMath/btConvexHullComputer.cpp \
 		LinearMath/btHashMap.h \
@@ -103,6 +104,7 @@ libLinearMath_la_SOURCES	= \
 		LinearMath/btGeometryUtil.h \
 		LinearMath/btQuadWord.h \
 		LinearMath/btPoolAllocator.h \
+		LinearMath/btPolarDecomposition.h \
 		LinearMath/btScalar.h \
 		LinearMath/btMinMax.h \
 		LinearMath/btVector3.h \
@@ -311,6 +313,7 @@ libBulletDynamics_la_SOURCES = \
 		BulletDynamics/Dynamics/btSimpleDynamicsWorld.cpp \
 		BulletDynamics/Dynamics/Bullet-C-API.cpp \
 		BulletDynamics/Dynamics/btDiscreteDynamicsWorld.cpp \
+		BulletDynamics/ConstraintSolver/btGearConstraint.cpp \
 		BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.cpp \
 		BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.cpp \
 		BulletDynamics/ConstraintSolver/btSolve2LinearConstraint.cpp \
@@ -343,6 +346,7 @@ libBulletDynamics_la_SOURCES = \
 		BulletDynamics/ConstraintSolver/btJacobianEntry.h \
 		BulletDynamics/ConstraintSolver/btSolverConstraint.h \
 		BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h \
+		BulletDynamics/ConstraintSolver/btGearConstraint.h \
 		BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h \
 		BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h \
 		BulletDynamics/ConstraintSolver/btSliderConstraint.h \
@@ -401,6 +405,7 @@ nobase_bullet_include_HEADERS += \
 	BulletDynamics/ConstraintSolver/btConstraintSolver.h \
 	BulletDynamics/ConstraintSolver/btContactConstraint.h \
 	BulletDynamics/ConstraintSolver/btContactSolverInfo.h \
+	BulletDynamics/ConstraintSolver/btGearConstraint.h \
 	BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h \
 	BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.h \
 	BulletDynamics/ConstraintSolver/btJacobianEntry.h \
@@ -538,6 +543,7 @@ nobase_bullet_include_HEADERS += \
 	LinearMath/btMatrix3x3.h \
 	LinearMath/btVector3.h \
 	LinearMath/btPoolAllocator.h \
+	LinearMath/btPolarDecomposition.h \
 	LinearMath/btScalar.h \
 	LinearMath/btDefaultMotionState.h \
 	LinearMath/btTransform.h \

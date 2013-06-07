@@ -57,12 +57,13 @@ void btTriangleRaycastCallback::processTriangle(btVector3* triangle,int partId, 
 	{
 		return ; // same sign
 	}
-   //@BP Mod - Backface filtering
-   if (((m_flags & kF_FilterBackfaces) != 0) && (dist_a > btScalar(0.0)))
-   {
-      // Backface, skip check
-      return;
-   }
+
+	if (((m_flags & kF_FilterBackfaces) != 0) && (dist_a <= btScalar(0.0)))
+	{
+		// Backface, skip check
+		return;
+	}
+
 	
 	const btScalar proj_length=dist_a-dist_b;
 	const btScalar distance = (dist_a)/(proj_length);
@@ -97,18 +98,18 @@ void btTriangleRaycastCallback::processTriangle(btVector3* triangle,int partId, 
 					
 					if ( (btScalar)(cp2.dot(triangleNormal)) >=edge_tolerance) 
 					{
-                  //@BP Mod
-                  // Triangle normal isn't normalized
+					  //@BP Mod
+					  // Triangle normal isn't normalized
 				      triangleNormal.normalize();
 
-                  //@BP Mod - Allow for unflipped normal when raycasting against backfaces
-                  if (((m_flags & kF_KeepUnflippedNormal) != 0) || (dist_a <= btScalar(0.0)))
+					 //@BP Mod - Allow for unflipped normal when raycasting against backfaces
+						if (((m_flags & kF_KeepUnflippedNormal) == 0) && (dist_a <= btScalar(0.0)))
 						{
 							m_hitFraction = reportHit(-triangleNormal,distance,partId,triangleIndex);
 						}
 						else
 						{
-                     m_hitFraction = reportHit(triangleNormal,distance,partId,triangleIndex);
+							m_hitFraction = reportHit(triangleNormal,distance,partId,triangleIndex);
 						}
 					}
 				}

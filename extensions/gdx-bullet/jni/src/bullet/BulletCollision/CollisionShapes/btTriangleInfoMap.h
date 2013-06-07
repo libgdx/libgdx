@@ -123,11 +123,11 @@ SIMD_FORCE_INLINE	int	btTriangleInfoMap::calculateSerializeBufferSize() const
 SIMD_FORCE_INLINE	const char*	btTriangleInfoMap::serialize(void* dataBuffer, btSerializer* serializer) const
 {
 	btTriangleInfoMapData* tmapData = (btTriangleInfoMapData*) dataBuffer;
-	tmapData->m_convexEpsilon = m_convexEpsilon;
-	tmapData->m_planarEpsilon = m_planarEpsilon;
-	tmapData->m_equalVertexThreshold = m_equalVertexThreshold;
-	tmapData->m_edgeDistanceThreshold = m_edgeDistanceThreshold;
-	tmapData->m_zeroAreaThreshold = m_zeroAreaThreshold;
+	tmapData->m_convexEpsilon = (float)m_convexEpsilon;
+	tmapData->m_planarEpsilon = (float)m_planarEpsilon;
+	tmapData->m_equalVertexThreshold =(float) m_equalVertexThreshold;
+	tmapData->m_edgeDistanceThreshold = (float)m_edgeDistanceThreshold;
+	tmapData->m_zeroAreaThreshold = (float)m_zeroAreaThreshold;
 	
 	tmapData->m_hashTableSize = m_hashTable.size();
 
@@ -172,9 +172,9 @@ SIMD_FORCE_INLINE	const char*	btTriangleInfoMap::serialize(void* dataBuffer, btS
 		btTriangleInfoData* memPtr = (btTriangleInfoData*)chunk->m_oldPtr;
 		for (int i=0;i<numElem;i++,memPtr++)
 		{
-			memPtr->m_edgeV0V1Angle = m_valueArray[i].m_edgeV0V1Angle;
-			memPtr->m_edgeV1V2Angle = m_valueArray[i].m_edgeV1V2Angle;
-			memPtr->m_edgeV2V0Angle = m_valueArray[i].m_edgeV2V0Angle;
+			memPtr->m_edgeV0V1Angle = (float)m_valueArray[i].m_edgeV0V1Angle;
+			memPtr->m_edgeV1V2Angle = (float)m_valueArray[i].m_edgeV1V2Angle;
+			memPtr->m_edgeV2V0Angle = (float)m_valueArray[i].m_edgeV2V0Angle;
 			memPtr->m_flags = m_valueArray[i].m_flags;
 		}
 		serializer->finalizeChunk(chunk,"btTriangleInfoData",BT_ARRAY_CODE,(void*) &m_valueArray[0]);

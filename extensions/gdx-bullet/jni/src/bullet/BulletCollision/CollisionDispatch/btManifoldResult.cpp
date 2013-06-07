@@ -22,8 +22,25 @@ subject to the following restrictions:
 ///This is to allow MaterialCombiner/Custom Friction/Restitution values
 ContactAddedCallback		gContactAddedCallback=0;
 
+
+
 ///User can override this material combiner by implementing gContactAddedCallback and setting body0->m_collisionFlags |= btCollisionObject::customMaterialCallback;
-inline btScalar	calculateCombinedFriction(const btCollisionObject* body0,const btCollisionObject* body1)
+inline btScalar	calculateCombinedRollingFriction(const btCollisionObject* body0,const btCollisionObject* body1)
+{
+	btScalar friction = body0->getRollingFriction() * body1->getRollingFriction();
+
+	const btScalar MAX_FRICTION  = btScalar(10.);
+	if (friction < -MAX_FRICTION)
+		friction = -MAX_FRICTION;
+	if (friction > MAX_FRICTION)
+		friction = MAX_FRICTION;
+	return friction;
+
+}
+
+
+///User can override this material combiner by implementing gContactAddedCallback and setting body0->m_collisionFlags |= btCollisionObject::customMaterialCallback;
+btScalar	btManifoldResult::calculateCombinedFriction(const btCollisionObject* body0,const btCollisionObject* body1)
 {
 	btScalar friction = body0->getFriction() * body1->getFriction();
 
@@ -36,7 +53,7 @@ inline btScalar	calculateCombinedFriction(const btCollisionObject* body0,const b
 
 }
 
-inline btScalar	calculateCombinedRestitution(const btCollisionObject* body0,const btCollisionObject* body1)
+btScalar	btManifoldResult::calculateCombinedRestitution(const btCollisionObject* body0,const btCollisionObject* body1)
 {
 	return body0->getRestitution() * body1->getRestitution();
 }
@@ -91,7 +108,11 @@ void btManifoldResult::addContactPoint(const btVector3& normalOnBInWorld,const b
 
 	newPt.m_combinedFriction = calculateCombinedFriction(m_body0Wrap->getCollisionObject(),m_body1Wrap->getCollisionObject());
 	newPt.m_combinedRestitution = calculateCombinedRestitution(m_body0Wrap->getCollisionObject(),m_body1Wrap->getCollisionObject());
+	newPt.m_combinedRollingFriction = calculateCombinedRollingFriction(m_body0Wrap->getCollisionObject(),m_body1Wrap->getCollisionObject());
+	btPlaneSpace1(newPt.m_normalWorldOnB,newPt.m_lateralFrictionDir1,newPt.m_lateralFrictionDir2);
+	
 
+	
    //BP mod, store contact triangles.
 	if (isSwapped)
 	{

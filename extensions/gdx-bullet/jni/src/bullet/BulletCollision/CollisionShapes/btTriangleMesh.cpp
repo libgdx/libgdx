@@ -138,3 +138,25 @@ int btTriangleMesh::getNumTriangles() const
 	}
 	return m_16bitIndices.size() / 3;
 }
+
+void btTriangleMesh::preallocateVertices(int numverts)
+{
+	if (m_use4componentVertices)
+	{
+		m_4componentVertices.reserve(numverts);
+	} else
+	{
+		m_3componentVertices.reserve(numverts);
+	}
+}
+
+void btTriangleMesh::preallocateIndices(int numindices)
+{
+	if (m_use32bitIndices)
+	{
+		m_32bitIndices.reserve(numindices);
+	} else
+	{
+		m_16bitIndices.reserve(numindices);
+	}
+}

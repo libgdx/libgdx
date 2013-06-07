@@ -142,8 +142,9 @@ public:
 	
 	void	getInfo2NonVirtual(btConstraintInfo2* info,const btTransform& transA,const btTransform& transB,const btMatrix3x3& invInertiaWorldA,const btMatrix3x3& invInertiaWorldB);
 
-	virtual	void	solveConstraintObsolete(btRigidBody& bodyA,btRigidBody& bodyB,btScalar	timeStep);
+	virtual	void	solveConstraintObsolete(btSolverBody& bodyA,btSolverBody& bodyB,btScalar	timeStep);
 
+    
 	void	updateRHS(btScalar	timeStep);
 
 

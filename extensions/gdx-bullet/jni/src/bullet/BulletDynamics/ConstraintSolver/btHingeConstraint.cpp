@@ -702,8 +702,8 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 	btTransform trA = transA*m_rbAFrame;
 	btTransform trB = transB*m_rbBFrame;
 	// pivot point
-	btVector3 pivotAInW = trA.getOrigin();
-	btVector3 pivotBInW = trB.getOrigin();
+//	btVector3 pivotAInW = trA.getOrigin();
+//	btVector3 pivotBInW = trB.getOrigin();
 #if 1
 	// difference between frames in WCS
 	btVector3 ofs = trB.getOrigin() - trA.getOrigin();

@@ -132,7 +132,7 @@ bool btSphereBoxCollisionAlgorithm::getSphereDistance(const btCollisionObjectWra
 	btScalar distance;
 
 	//special case if the sphere center is inside the box
-	if (dist2 == 0.0f)
+	if (dist2 <= SIMD_EPSILON)
 	{
 		distance = -getSpherePenetration(boxHalfExtent, sphereRelPos, closestPoint, normal);
 	}

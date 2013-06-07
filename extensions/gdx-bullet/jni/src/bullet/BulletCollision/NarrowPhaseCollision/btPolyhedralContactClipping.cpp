@@ -77,21 +77,36 @@ void btPolyhedralContactClipping::clipFace(const btVertexArray& pVtxIn, btVertex
 }
 
 
-static bool TestSepAxis(const btConvexPolyhedron& hullA, const btConvexPolyhedron& hullB, const btTransform& transA,const btTransform& transB, const btVector3& sep_axis, btScalar& depth)
+static bool TestSepAxis(const btConvexPolyhedron& hullA, const btConvexPolyhedron& hullB, const btTransform& transA,const btTransform& transB, const btVector3& sep_axis, btScalar& depth, btVector3& witnessPointA, btVector3& witnessPointB)
 {
 	btScalar Min0,Max0;
 	btScalar Min1,Max1;
-	hullA.project(transA,sep_axis, Min0, Max0);
-	hullB.project(transB, sep_axis, Min1, Max1);
+	btVector3 witnesPtMinA,witnesPtMaxA;
+	btVector3 witnesPtMinB,witnesPtMaxB;
+
+	hullA.project(transA,sep_axis, Min0, Max0,witnesPtMinA,witnesPtMaxA);
+	hullB.project(transB, sep_axis, Min1, Max1,witnesPtMinB,witnesPtMaxB);
 
 	if(Max0<Min1 || Max1<Min0)
 		return false;
 
 	btScalar d0 = Max0 - Min1;
-	assert(d0>=0.0f);
+	btAssert(d0>=0.0f);
 	btScalar d1 = Max1 - Min0;
-	assert(d1>=0.0f);
-	depth = d0<d1 ? d0:d1;
+	btAssert(d1>=0.0f);
+	if (d0<d1)
+	{
+		depth = d0;
+		witnessPointA = witnesPtMaxA;
+		witnessPointB = witnesPtMinB;
+
+	} else
+	{
+		depth = d1;
+		witnessPointA = witnesPtMinA;
+		witnessPointB = witnesPtMaxB;
+	}
+	
 	return true;
 }
 
@@ -163,8 +178,66 @@ void InverseTransformPoint3x3(btVector3& out, const btVector3& in, const btTrans
 }
 #endif //TEST_INTERNAL_OBJECTS
 
+ 
+ 
+ SIMD_FORCE_INLINE void btSegmentsClosestPoints(
+	btVector3& ptsVector,
+	btVector3& offsetA,
+	btVector3& offsetB,
+	btScalar& tA, btScalar& tB,
+	const btVector3& translation,
+	const btVector3& dirA, btScalar hlenA,
+	const btVector3& dirB, btScalar hlenB )
+{
+	// compute the parameters of the closest points on each line segment
 
-bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& hullA, const btConvexPolyhedron& hullB, const btTransform& transA,const btTransform& transB, btVector3& sep)
+	btScalar dirA_dot_dirB = btDot(dirA,dirB);
+	btScalar dirA_dot_trans = btDot(dirA,translation);
+	btScalar dirB_dot_trans = btDot(dirB,translation);
+
+	btScalar denom = 1.0f - dirA_dot_dirB * dirA_dot_dirB;
+
+	if ( denom == 0.0f ) {
+		tA = 0.0f;
+	} else {
+		tA = ( dirA_dot_trans - dirB_dot_trans * dirA_dot_dirB ) / denom;
+		if ( tA < -hlenA )
+			tA = -hlenA;
+		else if ( tA > hlenA )
+			tA = hlenA;
+	}
+
+	tB = tA * dirA_dot_dirB - dirB_dot_trans;
+
+	if ( tB < -hlenB ) {
+		tB = -hlenB;
+		tA = tB * dirA_dot_dirB + dirA_dot_trans;
+
+		if ( tA < -hlenA )
+			tA = -hlenA;
+		else if ( tA > hlenA )
+			tA = hlenA;
+	} else if ( tB > hlenB ) {
+		tB = hlenB;
+		tA = tB * dirA_dot_dirB + dirA_dot_trans;
+
+		if ( tA < -hlenA )
+			tA = -hlenA;
+		else if ( tA > hlenA )
+			tA = hlenA;
+	}
+
+	// compute the closest points relative to segment centers.
+
+	offsetA = dirA * tA;
+	offsetB = dirB * tB;
+
+	ptsVector = translation - offsetA + offsetB;
+}
+
+
+
+bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& hullA, const btConvexPolyhedron& hullB, const btTransform& transA,const btTransform& transB, btVector3& sep, btDiscreteCollisionDetectorInterface::Result& resultOut)
 {
 	gActualSATPairTests++;
 
@@ -182,9 +255,9 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 	for(int i=0;i<numFacesA;i++)
 	{
 		const btVector3 Normal(hullA.m_faces[i].m_plane[0], hullA.m_faces[i].m_plane[1], hullA.m_faces[i].m_plane[2]);
-		const btVector3 faceANormalWS = transA.getBasis() * Normal;
+		btVector3 faceANormalWS = transA.getBasis() * Normal;
 		if (DeltaC2.dot(faceANormalWS)<0)
-			continue;
+			faceANormalWS*=-1.f;
 
 		curPlaneTests++;
 #ifdef TEST_INTERNAL_OBJECTS
@@ -195,7 +268,8 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 #endif
 
 		btScalar d;
-		if(!TestSepAxis( hullA, hullB, transA,transB, faceANormalWS, d))
+		btVector3 wA,wB;
+		if(!TestSepAxis( hullA, hullB, transA,transB, faceANormalWS, d,wA,wB))
 			return false;
 
 		if(d<dmin)
@@ -210,9 +284,9 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 	for(int i=0;i<numFacesB;i++)
 	{
 		const btVector3 Normal(hullB.m_faces[i].m_plane[0], hullB.m_faces[i].m_plane[1], hullB.m_faces[i].m_plane[2]);
-		const btVector3 WorldNormal = transB.getBasis() * Normal;
+		btVector3 WorldNormal = transB.getBasis() * Normal;
 		if (DeltaC2.dot(WorldNormal)<0)
-			continue;
+			WorldNormal *=-1.f;
 
 		curPlaneTests++;
 #ifdef TEST_INTERNAL_OBJECTS
@@ -223,7 +297,8 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 #endif
 
 		btScalar d;
-		if(!TestSepAxis(hullA, hullB,transA,transB, WorldNormal,d))
+		btVector3 wA,wB;
+		if(!TestSepAxis(hullA, hullB,transA,transB, WorldNormal,d,wA,wB))
 			return false;
 
 		if(d<dmin)
@@ -234,6 +309,12 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 	}
 
 	btVector3 edgeAstart,edgeAend,edgeBstart,edgeBend;
+	int edgeA=-1;
+	int edgeB=-1;
+	btVector3 worldEdgeA;
+	btVector3 worldEdgeB;
+	btVector3 witnessPointA,witnessPointB;
+	
 
 	int curEdgeEdge = 0;
 	// Test edges
@@ -252,7 +333,7 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 			{
 				Cross = Cross.normalize();
 				if (DeltaC2.dot(Cross)<0)
-					continue;
+					Cross *= -1.f;
 
 
 #ifdef TEST_INTERNAL_OBJECTS
@@ -263,21 +344,68 @@ bool btPolyhedralContactClipping::findSeparatingAxis(	const btConvexPolyhedron& 
 #endif
 
 				btScalar dist;
-				if(!TestSepAxis( hullA, hullB, transA,transB, Cross, dist))
+				btVector3 wA,wB;
+				if(!TestSepAxis( hullA, hullB, transA,transB, Cross, dist,wA,wB))
 					return false;
 
 				if(dist<dmin)
 				{
 					dmin = dist;
 					sep = Cross;
+					edgeA=e0;
+					edgeB=e1;
+					worldEdgeA = WorldEdge0;
+					worldEdgeB = WorldEdge1;
+					witnessPointA=wA;
+					witnessPointB=wB;
 				}
 			}
 		}
 
 	}
 
-	const btVector3 deltaC = transB.getOrigin() - transA.getOrigin();
-	if((deltaC.dot(sep))>0.0f)
+	if (edgeA>=0&&edgeB>=0)
+	{
+//		printf("edge-edge\n");
+		//add an edge-edge contact
+
+		btVector3 ptsVector;
+		btVector3 offsetA;
+		btVector3 offsetB;
+		btScalar tA;
+		btScalar tB;
+
+		btVector3 translation = witnessPointB-witnessPointA;
+
+		btVector3 dirA = worldEdgeA;
+		btVector3 dirB = worldEdgeB;
+		
+		btScalar hlenB = 1e30f;
+		btScalar hlenA = 1e30f;
+
+		btSegmentsClosestPoints(ptsVector,offsetA,offsetB,tA,tB,
+			translation,
+			dirA, hlenA,
+			dirB,hlenB);
+
+		btScalar nlSqrt = ptsVector.length2();
+		if (nlSqrt>SIMD_EPSILON)
+		{
+			btScalar nl = btSqrt(nlSqrt);
+			ptsVector *= 1.f/nl;
+			if (ptsVector.dot(DeltaC2)<0.f)
+			{
+				ptsVector*=-1.f;
+			}
+			btVector3 ptOnB = witnessPointB + offsetB;
+			btScalar distance = nl;
+			resultOut.addContactPoint(ptsVector, ptOnB,-distance);
+		}
+
+	}
+
+
+	if((DeltaC2.dot(sep))<0.0f)
 		sep = -sep;
 
 	return true;
@@ -360,8 +488,8 @@ void	btPolyhedralContactClipping::clipFaceAgainstHull(const btVector3& separatin
 		btScalar planeEqWS=localPlaneEq-planeNormalWS.dot(transA.getOrigin());
 		for (int i=0;i<pVtxIn->size();i++)
 		{
-			
-			btScalar depth = planeNormalWS.dot(pVtxIn->at(i))+planeEqWS;
+			btVector3 vtx = pVtxIn->at(i);
+			btScalar depth = planeNormalWS.dot(vtx)+planeEqWS;
 			if (depth <=minDist)
 			{
 //				printf("clamped: depth=%f to minDist=%f\n",depth,minDist);
@@ -396,13 +524,17 @@ void	btPolyhedralContactClipping::clipFaceAgainstHull(const btVector3& separatin
 }
 
 
+
+
+
 void	btPolyhedralContactClipping::clipHullAgainstHull(const btVector3& separatingNormal1, const btConvexPolyhedron& hullA, const btConvexPolyhedron& hullB, const btTransform& transA,const btTransform& transB, const btScalar minDist, btScalar maxDist,btDiscreteCollisionDetectorInterface::Result& resultOut)
 {
 
 	btVector3 separatingNormal = separatingNormal1.normalized();
-	const btVector3 c0 = transA * hullA.m_localCenter;
-	const btVector3 c1 = transB * hullB.m_localCenter;
-	const btVector3 DeltaC2 = c0 - c1;
+//	const btVector3 c0 = transA * hullA.m_localCenter;
+//	const btVector3 c1 = transB * hullB.m_localCenter;
+	//const btVector3 DeltaC2 = c0 - c1;
+
 
 
 	int closestFaceB=-1;

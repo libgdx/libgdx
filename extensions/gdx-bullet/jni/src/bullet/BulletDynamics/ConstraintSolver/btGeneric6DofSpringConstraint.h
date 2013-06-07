@@ -90,10 +90,10 @@ SIMD_FORCE_INLINE	const char*	btGeneric6DofSpringConstraint::serialize(void* dat
 	int i;
 	for (i=0;i<6;i++)
 	{
-		dof->m_equilibriumPoint[i] = m_equilibriumPoint[i];
-		dof->m_springDamping[i] = m_springDamping[i];
+		dof->m_equilibriumPoint[i] = (float)m_equilibriumPoint[i];
+		dof->m_springDamping[i] = (float)m_springDamping[i];
 		dof->m_springEnabled[i] = m_springEnabled[i]? 1 : 0;
-		dof->m_springStiffness[i] = m_springStiffness[i];
+		dof->m_springStiffness[i] = (float)m_springStiffness[i];
 	}
 	return "btGeneric6DofSpringConstraintData";
 }

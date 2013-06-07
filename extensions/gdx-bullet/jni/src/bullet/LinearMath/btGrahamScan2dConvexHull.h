@@ -21,9 +21,9 @@ subject to the following restrictions:
 #include "btVector3.h"
 #include "btAlignedObjectArray.h"
 
-struct GrahamVector2 : public btVector3
+struct GrahamVector3 : public btVector3
 {
-	GrahamVector2(const btVector3& org, int orgIndex)
+	GrahamVector3(const btVector3& org, int orgIndex)
 		:btVector3(org),
 			m_orgIndex(orgIndex)
 	{
@@ -39,7 +39,7 @@ struct btAngleCompareFunc {
 	: m_anchor(anchor) 
 	{
 	}
-	bool operator()(const GrahamVector2& a, const GrahamVector2& b) const {
+	bool operator()(const GrahamVector3& a, const GrahamVector3& b) const {
 		if (a.m_angle != b.m_angle)
 			return a.m_angle < b.m_angle;
 		else
@@ -56,32 +56,38 @@ struct btAngleCompareFunc {
 	}
 };
 
-inline void GrahamScanConvexHull2D(btAlignedObjectArray<GrahamVector2>& originalPoints, btAlignedObjectArray<GrahamVector2>& hull)
+inline void GrahamScanConvexHull2D(btAlignedObjectArray<GrahamVector3>& originalPoints, btAlignedObjectArray<GrahamVector3>& hull, const btVector3& normalAxis)
 {
+	btVector3 axis0,axis1;
+	btPlaneSpace1(normalAxis,axis0,axis1);
+	
+
 	if (originalPoints.size()<=1)
 	{
 		for (int i=0;i<originalPoints.size();i++)
 			hull.push_back(originalPoints[0]);
 		return;
 	}
-	//step1 : find anchor point with smallest x/y and move it to first location
-	//also precompute angles
+	//step1 : find anchor point with smallest projection on axis0 and move it to first location
 	for (int i=0;i<originalPoints.size();i++)
 	{
-		const btVector3& left = originalPoints[i];
-		const btVector3& right = originalPoints[0];
-		if (left.x() < right.x() || 
-            (!(right.x() < left.x()) && left.y() < right.y()))
+//		const btVector3& left = originalPoints[i];
+//		const btVector3& right = originalPoints[0];
+		btScalar projL = originalPoints[i].dot(axis0);
+		btScalar projR = originalPoints[0].dot(axis0);
+		if (projL < projR)
 		{
 			originalPoints.swap(0,i);
 		}
 	}
 
-	for (int i=0;i<originalPoints.size();i++)
+	//also precompute angles
+	originalPoints[0].m_angle = -1e30f;
+	for (int i=1;i<originalPoints.size();i++)
 	{
-		btVector3 xvec(1,0,0);
+		btVector3 xvec = axis0;
 		btVector3 ar = originalPoints[i]-originalPoints[0];
-		originalPoints[i].m_angle = btCross(xvec, ar).dot(btVector3(0,0,1)) / ar.length();
+		originalPoints[i].m_angle = btCross(xvec, ar).dot(normalAxis) / ar.length();
 	}
 
 	//step 2: sort all points, based on 'angle' with this anchor
@@ -99,7 +105,7 @@ inline void GrahamScanConvexHull2D(btAlignedObjectArray<GrahamVector2>& original
 		while (!isConvex&& hull.size()>1) {
 			btVector3& a = hull[hull.size()-2];
 			btVector3& b = hull[hull.size()-1];
-			isConvex = btCross(a-b,a-originalPoints[i]).dot(btVector3(0,0,1))> 0;
+			isConvex = btCross(a-b,a-originalPoints[i]).dot(normalAxis)> 0;
 			if (!isConvex)
 				hull.pop_back();
 			else 

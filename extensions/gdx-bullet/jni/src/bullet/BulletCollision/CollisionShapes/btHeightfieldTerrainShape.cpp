@@ -82,6 +82,7 @@ PHY_ScalarType hdt, bool flipQuadEdges
 	m_heightDataType = hdt;
 	m_flipQuadEdges = flipQuadEdges;
 	m_useDiamondSubdivision = false;
+	m_useZigzagSubdivision = false;
 	m_upAxis = upAxis;
 	m_localScaling.setValue(btScalar(1.), btScalar(1.), btScalar(1.));
 
@@ -360,7 +361,7 @@ void	btHeightfieldTerrainShape::processAllTriangles(btTriangleCallback* callback
 		for(int x=startX; x<endX; x++)
 		{
 			btVector3 vertices[3];
-			if (m_flipQuadEdges || (m_useDiamondSubdivision && !((j+x) & 1)))
+			if (m_flipQuadEdges || (m_useDiamondSubdivision && !((j+x) & 1))|| (m_useZigzagSubdivision  && !(j & 1)))
 			{
         //first triangle
         getVertex(x,j,vertices[0]);
