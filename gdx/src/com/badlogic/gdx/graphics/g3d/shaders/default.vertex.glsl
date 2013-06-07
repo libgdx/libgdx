@@ -222,8 +222,8 @@ void main() {
 	#endif // normalFlag
 
     #ifdef fogFlag
-        float fog  = length(u_cameraPosition.xyz - pos.xyz) * u_cameraPosition.w;
-              fog *= fog;
+        vec3 flen = u_cameraPosition.xyz - pos.xyz;
+        float fog = dot(flen, flen) * u_cameraPosition.w;
         v_fog = min(fog, 1.0);
     #endif
 

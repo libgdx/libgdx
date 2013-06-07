@@ -266,9 +266,12 @@ public class DefaultShader extends BaseShader {
 			context.setDepthTest(false, GL10.GL_LEQUAL);
 		else
 			context.setDepthTest(true, defaultDepthFunc);
-		
+
+        float fogDist  = 1.09f / camera.far;
+              fogDist *= fogDist;
+
 		set(u_projTrans, camera.combined);
-		set(u_cameraPosition, camera.position.x, camera.position.y, camera.position.z, 1.09f / camera.far);
+		set(u_cameraPosition, camera.position.x, camera.position.y, camera.position.z, fogDist);
 		set(u_cameraDirection, camera.direction);
 		set(u_cameraUp, camera.up);
 		
