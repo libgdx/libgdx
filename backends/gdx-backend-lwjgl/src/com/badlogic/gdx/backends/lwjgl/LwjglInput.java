@@ -539,6 +539,8 @@ final class LwjglInput implements Input {
 
 	public static int getLwjglKeyCode (int gdxKeyCode) {
 		switch (gdxKeyCode) {
+		case Input.Keys.APOSTROPHE:
+			return Keyboard.KEY_APOSTROPHE;
 		case Input.Keys.LEFT_BRACKET:
 			return Keyboard.KEY_LBRACKET;
 		case Input.Keys.RIGHT_BRACKET:
@@ -649,6 +651,14 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_RETURN;
 		case Input.Keys.HOME:
 			return Keyboard.KEY_HOME;
+		case Input.Keys.END:
+			return Keyboard.KEY_END;
+		case Input.Keys.PAGE_DOWN:
+			return Keyboard.KEY_NEXT;
+		case Input.Keys.PAGE_UP:
+			return Keyboard.KEY_PRIOR;
+		case Input.Keys.INSERT:
+			return Keyboard.KEY_INSERT;
 		case Input.Keys.MINUS:
 			return Keyboard.KEY_MINUS;
 		case Input.Keys.PERIOD:

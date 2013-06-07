@@ -267,7 +267,8 @@ public class SelectBox extends Widget {
 			list.setSelectedIndex(selectedIndex);
 
 			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
-			float height = list.getItemHeight() * (maxListCount <= 0 ? items.length : Math.min(maxListCount, items.length));
+			float itemHeight = list.getItemHeight();
+			float height = itemHeight * (maxListCount <= 0 ? items.length : Math.min(maxListCount, items.length));
 			Drawable background = getStyle().background;
 			if (background != null) height += background.getTopHeight() + background.getBottomHeight();
 
@@ -281,13 +282,6 @@ public class SelectBox extends Widget {
 				} else
 					height = heightBelow;
 			}
-
-			// Fit items evenly.
-			float itemHeight = list.getItemHeight();
-			float backgroundPadding = getStyle().background.getTopHeight() + getStyle().background.getBottomHeight();
-			height -= backgroundPadding;
-			height -= height % itemHeight;
-			height += backgroundPadding;
 
 			if (below)
 				setY(tmpCoords.y - height);
