@@ -58,6 +58,9 @@ struct btRigidBodyConstructionInfo
 
 %nestedworkaround btRigidBody::btRigidBodyConstructionInfo;
 
+%ignore btRigidBody::upcast(const btCollisionObject*);
+%ignore btRigidBody::upcast(btCollisionObject*);
+
 %{
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 %}

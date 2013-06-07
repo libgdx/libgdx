@@ -74,6 +74,15 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 	}
 %}
 
+%typemap(javaimports) btTriangleIndexVertexArray %{
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.Model;
+%}
+
 %typemap(javacode) btTriangleIndexVertexArray %{
 	com.badlogic.gdx.utils.Array<btIndexedMesh> meshes = null;
 	
@@ -85,10 +94,10 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 		addMesh(meshes);
 	}
 	
-	/** Construct a new btTriangleIndexVertexArray based on one or more {@link com.badlogic.gdx.graphics.g3d.model.Model} instances.
+	/** Construct a new btTriangleIndexVertexArray based on one or more {@link Model} instances.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amongst both. */
-	public btTriangleIndexVertexArray(final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public btTriangleIndexVertexArray(final Model... models) {
 		this();
 		addModel(models);
 	}
@@ -101,10 +110,10 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 			addIndexedMesh(new btIndexedMesh(meshes[i]), PHY_ScalarType.PHY_SHORT, true);
 	}
 	
-	/** Add one or more {@link com.badlogic.gdx.graphics.g3d.model.Model} instances to this btTriangleIndexVertexArray.
+	/** Add one or more {@link Model} instances to this btTriangleIndexVertexArray.
 	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
      * The buffers for the vertices and indices are shared amongst both. */
-	public void addModel(final com.badlogic.gdx.graphics.g3d.model.Model... models) {
+	public void addModel(final Model... models) {
 		for (int i = 0; i < models.length; i++) {
 			for (int j = 0; j < models[i].meshParts.size; j++) {
 				com.badlogic.gdx.graphics.g3d.model.MeshPart mp = models[i].meshParts.get(j);
