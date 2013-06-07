@@ -36,7 +36,7 @@ public class InternalTickTest extends BaseBulletTest {
 			dynamicsWorld.clearForces();
 			int idx = 0;
 			for (int i = 0; i < objs.size(); i++) {
-				btRigidBody body = btRigidBody.upcast(objs.at(i));
+				btRigidBody body = (btRigidBody)(objs.at(i));
 				if (body == null || body.isStaticOrKinematicObject())
 					continue;
 				body.applyGravity();
