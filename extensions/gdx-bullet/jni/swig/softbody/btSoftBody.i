@@ -199,7 +199,7 @@ struct	Config
 	/*
 	 * buffer: must be at least vertexCount*vertexSize big
 	 * vertexCount: the amount of vertices to copy (must be equal to or less than getNodeCount())
-	 * vertexSize: the size in byes of one vertex (must be dividable by sizeof(btScalar))
+	 * vertexSize: the size in bytes of one vertex (must be dividable by sizeof(btScalar))
 	 * posOffset: the offset within a vertex to the position (must be dividable by sizeof(btScalar))
 	 */
 	void getVertices(btScalar *buffer, int vertexCount, int vertexSize, int posOffset) {
@@ -232,8 +232,7 @@ struct	Config
 			buffer[idx+2] = ((intptr_t)(self->m_faces[i].m_n[2]) - nodeOffset) / nodeSize;
 		}
 	}
-	
-	
+
 	void setConfig_kVCF(btScalar v) { $self->m_cfg.kVCF = v; }
 	void setConfig_kDP(btScalar v) { $self->m_cfg.kDP = v; }
 	void setConfig_kDG(btScalar v) { $self->m_cfg.kDG = v; }

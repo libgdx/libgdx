@@ -1,7 +1,7 @@
 %module btBroadphasePairArray
 
-%include "gdxDisableBuffers.i"
-%include "gdxEnableCriticalArrays.i"
+%include "../common/gdxDisableBuffers.i"
+%include "../common/gdxEnableCriticalArrays.i"
 
 %typemap(javacode) btAlignedObjectArray<btBroadphasePair> %{
 	/**
@@ -95,4 +95,4 @@ public:
 	}
 };
 
-%include "gdxEnableBuffers.i"
+%include "../common/gdxEnableBuffers.i"

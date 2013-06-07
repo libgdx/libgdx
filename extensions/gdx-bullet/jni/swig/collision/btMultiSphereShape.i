@@ -1,7 +1,7 @@
 %module btMultiSphereShape
 
-%include "../gdxDisableBuffers.i"
-%include "../gdxEnableArrays.i"
+%include "../common/gdxDisableBuffers.i"
+%include "../common/gdxEnableArrays.i"
 
 %fragment("gdxBulletHelpersVector3Array", "header") {
 	btVector3* Vector3ArrayToBtVector3Array(JNIEnv * jenv, jobjectArray source) {
@@ -58,5 +58,5 @@
 %include "BulletCollision/CollisionShapes/btMultiSphereShape.h"
 
 %clear btVector3*;
-%include "../gdxDisableArrays.i"
-%include "../gdxEnableBuffers.i"
+%include "../common/gdxDisableArrays.i"
+%include "../common/gdxEnableBuffers.i"

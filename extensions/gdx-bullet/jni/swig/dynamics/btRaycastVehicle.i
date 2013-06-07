@@ -1,7 +1,7 @@
-/*
- *	Interface module for a class with inner structs or classes.
- */
- 
+// NOTE: In BulletDynamics/Vehicle/btRaycastVehicle.h on line 22 the global class btVehicleTuning must be removed,
+// It is never used by bullet (btVehicleTuning is a subclass of btRaycastVehicle),
+// but it conflicts with swig because swig can't handle nested structs.
+
 %module btRaycastVehicle
 
 class btVehicleTuning
@@ -29,9 +29,6 @@ public:
 
 %{
 #include <BulletDynamics/Vehicle/btRaycastVehicle.h>
+typedef btRaycastVehicle::btVehicleTuning btVehicleTuning; // FIXME This should be done by nestedworkaround
 %}
 %include "BulletDynamics/Vehicle/btRaycastVehicle.h"
-
-%{
-typedef btRaycastVehicle::btVehicleTuning btVehicleTuning;
-%}
