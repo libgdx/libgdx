@@ -40,14 +40,15 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner */
 public final class AndroidAudio implements Audio {
-	private final SoundPool soundPool;
 	private final AudioManager manager;
 	protected final List<AndroidMusic> musics = new ArrayList<AndroidMusic>();
+	private final List<SoundPoolContainer> containers = new ArrayList<SoundPoolContainer>();
+	int MAX_STREAMS_PER_POOL;
 
 	public AndroidAudio (Context context, AndroidApplicationConfiguration config) {
-		soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);
 		manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-		if(context instanceof Activity) {
+		MAX_STREAMS_PER_POOL = config.maxSimultaneousSounds;
+		if (context instanceof Activity) {
 			((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		}
 	}
@@ -124,7 +125,16 @@ public final class AndroidAudio implements Audio {
 		if (aHandle.type() == FileType.Internal) {
 			try {
 				AssetFileDescriptor descriptor = aHandle.assets.openFd(aHandle.path());
-				AndroidSound sound = new AndroidSound(soundPool, manager, soundPool.load(descriptor, 1));
+
+				for (SoundPoolContainer container : containers) {
+					if (!container.isFull()) {
+						return container.loadSound(manager, container.soundPool.load(descriptor, 1));
+					}
+				}
+				SoundPoolContainer container = new SoundPoolContainer();
+				containers.add(container);
+				AndroidSound sound = container.loadSound(manager, container.soundPool.load(descriptor, 1));
+
 				descriptor.close();
 				return sound;
 			} catch (IOException ex) {
@@ -133,11 +143,23 @@ public final class AndroidAudio implements Audio {
 			}
 		} else {
 			try {
-				return new AndroidSound(soundPool, manager, soundPool.load(aHandle.file().getPath(), 1));
+
+				for (SoundPoolContainer container : containers) {
+					if (!container.isFull()) {
+						return container.loadSound(manager, container.soundPool.load(aHandle.file().getPath(), 1));
+					}
+				}
+				SoundPoolContainer container = new SoundPoolContainer();
+				containers.add(container);
+				return container.loadSound(manager, container.soundPool.load(aHandle.file().getPath(), 1));
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading audio file: " + file, ex);
 			}
 		}
+	}
+
+	private Sound loadSound () {
+		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -155,6 +177,39 @@ public final class AndroidAudio implements Audio {
 				music.dispose();
 			}
 		}
-		soundPool.release();
+		for (SoundPoolContainer container : containers) {
+			container.dispose();
+		}
+	}
+
+	/** A private class that holds the <code>SoundPool</code>. */
+	private class SoundPoolContainer {
+		public SoundPool soundPool;
+		private int size;
+
+		public SoundPoolContainer () {
+			soundPool = new SoundPool(MAX_STREAMS_PER_POOL, AudioManager.STREAM_MUSIC, 100);
+			size = 0;
+		}
+
+		/** Creates a new AndroidSound and put it in the map.
+		 * @param manager Android AudioManager
+		 * @param soundId The id of the sound isntance.
+		 * @return The sound that just got created. */
+		public AndroidSound loadSound (AudioManager manager, int soundId) {
+			size++;
+			return new AndroidSound(soundPool, manager, soundId);
+		}
+
+		/** Check if the SoundPool is full or not.
+		 * @return Whether the SoundPool is full or not. */
+		public boolean isFull () {
+			return size >= MAX_STREAMS_PER_POOL;
+		}
+
+		/** Dispose the sound pool and clear the soundmap. */
+		public void dispose () {
+			soundPool.release();
+		}
 	}
 }
