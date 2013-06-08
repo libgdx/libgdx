@@ -4,20 +4,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 /**
- * Returned by {@link AsynchExecutor#submit(AsynchTask)}, allows to poll
+ * Returned by {@link AsyncExecutor#submit(AsyncTask)}, allows to poll
  * for the result of the asynch workload.
  * @author badlogic
  *
  */
-public class AsynchResult<T> {
+public class AsyncResult<T> {
 	private final T result;
 	
-	AsynchResult(T result) {
+	AsyncResult(T result) {
 		this.result = result;
 	}
 	
 	/**
-	 * @return whether the {@link AsynchTask} is done
+	 * @return whether the {@link AsyncTask} is done
 	 */
 	public boolean isDone() {
 		return true;

@@ -23,33 +23,33 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.asynch.AsynchExecutor;
-import com.badlogic.gdx.utils.asynch.AsynchResult;
-import com.badlogic.gdx.utils.asynch.AsynchTask;
+import com.badlogic.gdx.utils.asynch.AsyncExecutor;
+import com.badlogic.gdx.utils.asynch.AsyncResult;
+import com.badlogic.gdx.utils.asynch.AsyncTask;
 
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}. Implements
  * {@link Callable} and is used with an {@link ExecutorService threadpool} to load parts of an asset asynchronously if the asset is
  * loaded with an {@link AsynchronousAssetLoader}.
  * 
  * @author mzechner */
-class AssetLoadingTask implements AsynchTask<Void> {
+class AssetLoadingTask implements AsyncTask<Void> {
 	AssetManager manager;
 	final AssetDescriptor assetDesc;
 	final AssetLoader loader;
-	final AsynchExecutor executor;
+	final AsyncExecutor executor;
 	final long startTime;
 
 	volatile boolean asyncDone = false;
 	volatile boolean dependenciesLoaded = false;
 	volatile Array<AssetDescriptor> dependencies;
-	volatile AsynchResult<Void> depsFuture = null;
-	volatile AsynchResult<Void> loadFuture = null;
+	volatile AsyncResult<Void> depsFuture = null;
+	volatile AsyncResult<Void> loadFuture = null;
 	volatile Object asset = null;
 
 	int ticks = 0;
 	volatile boolean cancel = false;
 
-	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, AsynchExecutor threadPool) {
+	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, AsyncExecutor threadPool) {
 		this.manager = manager;
 		this.assetDesc = assetDesc;
 		this.loader = loader;

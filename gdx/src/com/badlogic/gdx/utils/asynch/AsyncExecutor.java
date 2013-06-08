@@ -10,14 +10,14 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Allows asnynchronous execution of {@link AsynchTask} instances on a separate thread.
+ * Allows asnynchronous execution of {@link AsyncTask} instances on a separate thread.
  * Needs to be disposed via a call to {@link #dispose()} when no longer used, in which
  * case the executor waits for running tasks to finish. Scheduled but not yet
  * running tasks will not be executed. 
  * @author badlogic
  *
  */
-public class AsynchExecutor implements Disposable {
+public class AsyncExecutor implements Disposable {
 	private final ExecutorService executor;
 	
 	/**
@@ -25,7 +25,7 @@ public class AsynchExecutor implements Disposable {
 	 * {@link Runnable} instances to run in parallel.
 	 * @param maxConcurrent
 	 */
-	public AsynchExecutor(int maxConcurrent) {
+	public AsyncExecutor(int maxConcurrent) {
 		executor = Executors.newFixedThreadPool(maxConcurrent, new ThreadFactory() {
 			@Override
 			public Thread newThread (Runnable r) {
@@ -42,8 +42,8 @@ public class AsynchExecutor implements Disposable {
 	 * will be queued.
 	 * @param task the task to execute asynchronously
 	 */
-	public <T> AsynchResult<T> submit(final AsynchTask<T> task) {
-		return new AsynchResult(executor.submit(new Callable<T>() {
+	public <T> AsyncResult<T> submit(final AsyncTask<T> task) {
+		return new AsyncResult(executor.submit(new Callable<T>() {
 			@Override
 			public T call () throws Exception {
 				return task.call();
@@ -52,7 +52,7 @@ public class AsynchExecutor implements Disposable {
 	}
 	
 	/**
-	 * Waits for running {@link AsynchTask} instances to finish,
+	 * Waits for running {@link AsyncTask} instances to finish,
 	 * then destroys any resources like threads. Can not be used
 	 * after this method is called.
 	 */

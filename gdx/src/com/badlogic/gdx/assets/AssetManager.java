@@ -53,7 +53,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.UBJsonReader;
-import com.badlogic.gdx.utils.asynch.AsynchExecutor;
+import com.badlogic.gdx.utils.asynch.AsyncExecutor;
 
 /** Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
  * @author mzechner */
@@ -64,7 +64,7 @@ public class AssetManager implements Disposable {
 
 	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<Class, ObjectMap<String, AssetLoader>>();
 	final Array<AssetDescriptor> loadQueue = new Array<AssetDescriptor>();
-	final AsynchExecutor executor;
+	final AsyncExecutor executor;
 
 	Stack<AssetLoadingTask> tasks = new Stack<AssetLoadingTask>();
 	AssetErrorListener listener = null;
@@ -90,7 +90,7 @@ public class AssetManager implements Disposable {
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
-		executor = new AsynchExecutor(1);
+		executor = new AsyncExecutor(1);
 	}
 
 	/** @param fileName the asset file name

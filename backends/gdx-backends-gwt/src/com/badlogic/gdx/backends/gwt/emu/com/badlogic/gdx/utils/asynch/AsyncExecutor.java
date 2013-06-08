@@ -14,14 +14,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogic
  *
  */
-public class AsynchExecutor implements Disposable {
+public class AsyncExecutor implements Disposable {
 	
 	/**
 	 * Creates a new AsynchExecutor that allows maxConcurrent
 	 * {@link Runnable} instances to run in parallel.
 	 * @param maxConcurrent
 	 */
-	public AsynchExecutor(int maxConcurrent) {
+	public AsyncExecutor(int maxConcurrent) {
 	}
 	
 	/**
@@ -30,7 +30,7 @@ public class AsynchExecutor implements Disposable {
 	 * will be queued.
 	 * @param task the task to execute asynchronously
 	 */
-	public <T> AsynchResult<T> submit(final AsynchTask<T> task) {
+	public <T> AsyncResult<T> submit(final AsyncTask<T> task) {
 		T result = null;
 		boolean error = false;
 		try {
@@ -38,11 +38,11 @@ public class AsynchExecutor implements Disposable {
 		} catch(Throwable t) {
 			error = true;
 		}
-		return new AsynchResult(result);
+		return new AsyncResult(result);
 	}
 	
 	/**
-	 * Waits for running {@link AsynchTask} instances to finish,
+	 * Waits for running {@link AsyncTask} instances to finish,
 	 * then destroys any resources like threads. Can not be used
 	 * after this method is called.
 	 */
