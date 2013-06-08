@@ -324,7 +324,7 @@ public class TexturePacker2 {
 	}
 
 	/** @author Nathan Sweet */
-	static class Page {
+	public static class Page {
 		public String imageName;
 		public Array<Rect> outputRects, remainingRects;
 		public float occupancy;
@@ -332,7 +332,7 @@ public class TexturePacker2 {
 	}
 
 	/** @author Nathan Sweet */
-	static class Rect {
+	public static class Rect {
 		public String name;
 		public BufferedImage image;
 		public int offsetX, offsetY, originalWidth, originalHeight;
