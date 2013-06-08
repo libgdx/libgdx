@@ -1,6 +1,9 @@
 
 package com.badlogic.gdx.utils.reflect;
 
+/** Thrown when an exception occurs during reflection.
+ * @author nexsoftware
+ */
 public class ReflectionException extends Exception {
 
 	public ReflectionException () {
