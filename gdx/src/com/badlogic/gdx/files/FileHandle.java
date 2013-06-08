@@ -576,6 +576,7 @@ public class FileHandle {
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
 		copyTo(dest);
 		delete();
+		if (exists () && isDirectory()) deleteDirectory();
 	}
 
 	/** Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
