@@ -140,6 +140,10 @@ public class Reflection {
 				throw new ReflectionException("", e); // TODO: Real Message
 			}
 		}
+		
+		static public String getSimpleName(Class c) {
+			return c.getName();
+		}
 
 	}
 

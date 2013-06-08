@@ -171,6 +171,8 @@
 		<include name="graphics/g3d/shaders/subshaders/TransformShader.java"/>
 		
 	<!-- graphics/g3d/utils -->
+	  <include name="graphics/g3d/utils/AnimationController.java"/>
+	  <include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
 		<include name="graphics/g3d/utils/CompositeShaderProvider.java"/>
