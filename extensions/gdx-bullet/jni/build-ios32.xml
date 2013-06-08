@@ -18,24 +18,24 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
 		<include name="**/*.c"/>
 
-				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+				<exclude name="src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
 
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
+	<property name="g++-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
-				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+				<exclude name="src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
 
 	</fileset>
 
@@ -82,7 +82,8 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
+						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/custom/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -98,7 +99,8 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
+						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/custom/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -135,7 +137,8 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
+						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/custom/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -151,7 +154,8 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
+						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/custom/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
