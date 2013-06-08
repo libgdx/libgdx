@@ -53,6 +53,7 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.UBJsonReader;
+import com.badlogic.gdx.utils.asynch.AsynchExecutor;
 
 /** Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
  * @author mzechner */
@@ -63,7 +64,7 @@ public class AssetManager implements Disposable {
 
 	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<Class, ObjectMap<String, AssetLoader>>();
 	final Array<AssetDescriptor> loadQueue = new Array<AssetDescriptor>();
-	final ExecutorService threadPool;
+	final AsynchExecutor executor;
 
 	Stack<AssetLoadingTask> tasks = new Stack<AssetLoadingTask>();
 	AssetErrorListener listener = null;
@@ -89,14 +90,7 @@ public class AssetManager implements Disposable {
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
-		threadPool = Executors.newFixedThreadPool(1, new ThreadFactory() {
-			@Override
-			public Thread newThread (Runnable r) {
-				Thread thread = new Thread(r, "AssetManager-Loader-Thread");
-				thread.setDaemon(true);
-				return thread;
-			}
-		});
+		executor = new AsynchExecutor(1);
 	}
 
 	/** @param fileName the asset file name
@@ -424,7 +418,7 @@ public class AssetManager implements Disposable {
 	private void addTask (AssetDescriptor assetDesc) {
 		AssetLoader loader = getLoader(assetDesc.type, assetDesc.fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + assetDesc.type.getSimpleName());
-		tasks.push(new AssetLoadingTask(this, assetDesc, loader, threadPool));
+		tasks.push(new AssetLoadingTask(this, assetDesc, loader, executor));
 	}
 
 	/** Adds an asset to this AssetManager */
@@ -560,12 +554,7 @@ public class AssetManager implements Disposable {
 	public synchronized void dispose () {
 		log.debug("Disposing.");
 		clear();
-		threadPool.shutdown();
-		try {
-			threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			new GdxRuntimeException("Couldn't shutdown loading thread");
-		}
+		executor.dispose();
 	}
 
 	/** Clears and disposes all assets and the preloading queue. */
