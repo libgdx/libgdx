@@ -3,7 +3,7 @@ package com.badlogic.gdx.maps;
 import java.util.Iterator;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.reflect.Reflection;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /**
  * Ordered list of {@link MapLayer} instances owned by a {@link Map}
@@ -75,7 +75,7 @@ public class MapLayers implements Iterable<MapLayer> {
 	public <T extends MapLayer> Array<T> getByType(Class<T> type, Array<T> fill) {
 		fill.clear();
 		for (MapLayer layer : layers) {
-			if (Reflection.ClassReflection.isInstance(type, layer)) {
+			if (ClassReflection.isInstance(type, layer)) {
 				fill.add((T) layer);
 			}
 		}

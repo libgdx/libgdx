@@ -1,4 +1,4 @@
-package com.badlogic.gdx.utils.asynch;
+package com.badlogic.gdx.utils.async;
 
 /**
  * Task to be submitted to an {@link AsyncExecutor}, returning a result of type T.

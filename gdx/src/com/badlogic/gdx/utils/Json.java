@@ -20,9 +20,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectMap.Values;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Field;
-import com.badlogic.gdx.utils.reflect.Reflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 import java.io.IOException;
@@ -80,7 +81,7 @@ public class Json {
 		Class type = tagToClass.get(tag);
 		if (type != null) return type;
 		try {
-			return Reflection.ClassReflection.forName(tag);
+			return ClassReflection.forName(tag);
 		} catch (ReflectionException ex) {
 			throw new SerializationException(ex);
 		}
@@ -122,7 +123,7 @@ public class Json {
 		ArrayList<Field> allFields = new ArrayList();
 		Class nextClass = type;
 		while (nextClass != Object.class) {
-			Collections.addAll(allFields, Reflection.ClassReflection.getDeclaredFields(nextClass));
+			Collections.addAll(allFields, ClassReflection.getDeclaredFields(nextClass));
 			nextClass = nextClass.getSuperclass();
 		}
 
@@ -450,10 +451,10 @@ public class Json {
 
 			if (actualType.isArray()) {
 				if (elementType == null) elementType = actualType.getComponentType();
-				int length = Reflection.ArrayReflection.getLength(value);
+				int length = ArrayReflection.getLength(value);
 				writeArrayStart();
 				for (int i = 0; i < length; i++)
-					writeValue(Reflection.ArrayReflection.get(value, i), elementType, null);
+					writeValue(ArrayReflection.get(value, i), elementType, null);
 				writeArrayEnd();
 				return;
 			}
@@ -504,7 +505,7 @@ public class Json {
 				return;
 			}
 
-			if (Reflection.ClassReflection.isAssignableFrom(Enum.class, actualType)) {
+			if (ClassReflection.isAssignableFrom(Enum.class, actualType)) {
 				writer.value(value);
 				return;
 			}
@@ -792,7 +793,7 @@ public class Json {
 			if (className != null) {
 				jsonData.remove(typeName);
 				try {
-					type = (Class<T>)Reflection.ClassReflection.forName(className);
+					type = (Class<T>)ClassReflection.forName(className);
 				} catch (ReflectionException ex) {
 					type = tagToClass.get(className);
 					if (type == null) throw new SerializationException(ex);
@@ -842,13 +843,13 @@ public class Json {
 		}
 
 		if (jsonData.isArray()) {
-			if (type == null || Reflection.ClassReflection.isAssignableFrom(Array.class, type)) {
+			if (type == null || ClassReflection.isAssignableFrom(Array.class, type)) {
 				Array newArray = type == null ? new Array() : (Array)newInstance(type);
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					newArray.add(readValue(elementType, null, child));
 				return (T)newArray;
 			}
-			if (Reflection.ClassReflection.isAssignableFrom(List.class, type)) {
+			if (ClassReflection.isAssignableFrom(List.class, type)) {
 				List newArray = type == null ? new ArrayList() : (List)newInstance(type);
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					newArray.add(readValue(elementType, null, child));
@@ -857,10 +858,10 @@ public class Json {
 			if (type.isArray()) {
 				Class componentType = type.getComponentType();
 				if (elementType == null) elementType = componentType;
-				Object newArray = Reflection.ArrayReflection.newInstance(componentType, jsonData.size());
+				Object newArray = ArrayReflection.newInstance(componentType, jsonData.size());
 				int i = 0;
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
-					Reflection.ArrayReflection.set(newArray, i++, readValue(elementType, null, child));
+					ArrayReflection.set(newArray, i++, readValue(elementType, null, child));
 				return (T)newArray;
 			}
 			throw new SerializationException("Unable to convert value to required type: " + jsonData + " (" + type.getName() + ")");
@@ -902,7 +903,7 @@ public class Json {
 			}
 			if (type == boolean.class || type == Boolean.class) return (T)Boolean.valueOf(string);
 			if (type == char.class || type == Character.class) return (T)(Character)string.charAt(0);
-			if (Reflection.ClassReflection.isAssignableFrom(Enum.class, type)) {
+			if (ClassReflection.isAssignableFrom(Enum.class, type)) {
 				Object[] constants = type.getEnumConstants();
 				for (int i = 0, n = constants.length; i < n; i++)
 					if (string.equals(constants[i].toString())) return (T)constants[i];
@@ -921,18 +922,18 @@ public class Json {
 
 	private Object newInstance (Class type) {
 		try {
-			return Reflection.ClassReflection.newInstance(type);
+			return ClassReflection.newInstance(type);
 		} catch (Exception ex) {
 			try {
 				// Try a private constructor.
-				Constructor constructor = Reflection.ClassReflection.getDeclaredConstructor(type);
+				Constructor constructor = ClassReflection.getDeclaredConstructor(type);
 				constructor.setAccessible(true);
 				return constructor.newInstance();
 			} catch (SecurityException ignored) {
 			} catch (ReflectionException ignored) {
 				if (type.isArray())
 					throw new SerializationException("Encountered JSON object when expected array of type: " + type.getName(), ex);
-				else if (Reflection.ClassReflection.isMemberClass(type) && !Reflection.ClassReflection.isStaticClass(type))
+				else if (ClassReflection.isMemberClass(type) && !ClassReflection.isStaticClass(type))
 					throw new SerializationException("Class cannot be created (non-static member class): " + type.getName(), ex);
 				else
 					throw new SerializationException("Class cannot be created (missing no-arg constructor): " + type.getName(), ex);

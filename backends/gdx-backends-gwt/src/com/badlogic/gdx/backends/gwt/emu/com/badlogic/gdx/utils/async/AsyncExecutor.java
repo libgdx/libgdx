@@ -1,4 +1,4 @@
-package com.badlogic.gdx.utils.asynch;
+package com.badlogic.gdx.utils.async;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -8,17 +8,15 @@ import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.async.AsyncResult;
+import com.badlogic.gdx.utils.async.AsyncTask;
 
 /**
- * Allows asnynchronous execution of {@link AsyncTask} instances on a separate thread.
- * Needs to be disposed via a call to {@link #dispose()} when no longer used, in which
- * case the executor waits for running tasks to finish. Scheduled but not yet
- * running tasks will not be executed. 
+ * GWT emulation of AsynchExecutor, will call tasks immediately :D
  * @author badlogic
  *
  */
 public class AsyncExecutor implements Disposable {
-	private final ExecutorService executor;
 	
 	/**
 	 * Creates a new AsynchExecutor that allows maxConcurrent
@@ -26,14 +24,6 @@ public class AsyncExecutor implements Disposable {
 	 * @param maxConcurrent
 	 */
 	public AsyncExecutor(int maxConcurrent) {
-		executor = Executors.newFixedThreadPool(maxConcurrent, new ThreadFactory() {
-			@Override
-			public Thread newThread (Runnable r) {
-				Thread thread = new Thread(r, "AsynchExecutor-Thread");
-				thread.setDaemon(true);
-				return thread;
-			}
-		});
 	}
 	
 	/**
@@ -43,12 +33,14 @@ public class AsyncExecutor implements Disposable {
 	 * @param task the task to execute asynchronously
 	 */
 	public <T> AsyncResult<T> submit(final AsyncTask<T> task) {
-		return new AsyncResult(executor.submit(new Callable<T>() {
-			@Override
-			public T call () throws Exception {
-				return task.call();
-			}
-		}));
+		T result = null;
+		boolean error = false;
+		try {
+			result = task.call();
+		} catch(Throwable t) {
+			error = true;
+		}
+		return new AsyncResult(result);
 	}
 	
 	/**
@@ -58,11 +50,5 @@ public class AsyncExecutor implements Disposable {
 	 */
 	@Override
 	public void dispose () {
-		executor.shutdown();
-		try {
-			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			new GdxRuntimeException("Couldn't shutdown loading thread");
-		}
 	}
 }

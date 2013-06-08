@@ -1,7 +1,10 @@
-package com.badlogic.gdx.utils.asynch;
+package com.badlogic.gdx.utils.async;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.AsyncTask;
 
 /**
  * Returned by {@link AsyncExecutor#submit(AsyncTask)}, allows to poll

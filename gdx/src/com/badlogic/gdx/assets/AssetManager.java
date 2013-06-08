@@ -53,9 +53,9 @@ import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.UBJsonReader;
-import com.badlogic.gdx.utils.asynch.AsyncExecutor;
-import com.badlogic.gdx.utils.asynch.ThreadUtils;
-import com.badlogic.gdx.utils.reflect.Reflection.ClassReflection;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.ThreadUtils;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
  * @author mzechner */

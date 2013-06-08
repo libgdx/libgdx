@@ -23,9 +23,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.asynch.AsyncExecutor;
-import com.badlogic.gdx.utils.asynch.AsyncResult;
-import com.badlogic.gdx.utils.asynch.AsyncTask;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.AsyncResult;
+import com.badlogic.gdx.utils.async.AsyncTask;
 
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}. Implements
  * {@link Callable} and is used with an {@link ExecutorService threadpool} to load parts of an asset asynchronously if the asset is

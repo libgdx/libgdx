@@ -1,4 +1,4 @@
-package com.badlogic.gdx.utils.asynch;
+package com.badlogic.gdx.utils.async;
 
 /**
  * GWT emulation of ThreadUtils, does nothing.

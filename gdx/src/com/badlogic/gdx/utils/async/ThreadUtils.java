@@ -1,4 +1,4 @@
-package com.badlogic.gdx.utils.asynch;
+package com.badlogic.gdx.utils.async;
 
 /**
  * Utilities for threaded programming.

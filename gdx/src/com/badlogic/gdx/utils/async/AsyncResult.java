@@ -1,4 +1,4 @@
-package com.badlogic.gdx.utils.asynch;
+package com.badlogic.gdx.utils.async;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
