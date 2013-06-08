@@ -36,6 +36,7 @@ import java.util.List;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
+import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
@@ -83,7 +84,7 @@ public class GdxTests {
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
-		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class, Basic3DSceneTest.class,
+		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class, Basic3DSceneTest.class, Animation3DTest.class,
 		ModelTest.class, Basic3DTest.class, ShaderTest.class, SkeletonTest.class, HexagonalTiledMapTest.class));
 	
 	public static List<String> getNames () {
