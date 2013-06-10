@@ -47,7 +47,7 @@ public class ObjTest extends GdxTest implements InputProcessor {
 		model =  objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
 		
 		BoundingBox bbox = new BoundingBox();
-		model.getBoundingBox(bbox);
+		model.calculateBoundingBox(bbox);
 		
 		Gdx.app.log("ObjTest", "obj bounds: " + bbox);
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
