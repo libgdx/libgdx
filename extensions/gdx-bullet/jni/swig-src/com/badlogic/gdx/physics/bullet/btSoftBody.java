@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 
 public class btSoftBody extends btCollisionObject {
   private long swigCPtr;
@@ -868,14 +870,15 @@ public class btSoftBody extends btCollisionObject {
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_btSoftBody_float__void(cPtr, false);
   }
 
-  static private long SwigConstructbtSoftBody(btSoftBodyWorldInfo worldInfo, java.nio.FloatBuffer vertices, int vertexCount, int vertexSize, int posOffset, java.nio.ShortBuffer indices, int triangleCount) {
+  static private long SwigConstructbtSoftBody(btSoftBodyWorldInfo worldInfo, java.nio.FloatBuffer vertices, int vertexSize, int posOffset, java.nio.ShortBuffer indices, int indexOffset, int numVertices, java.nio.ShortBuffer indexMap, int indexMapOffset) {
     assert vertices.isDirect() : "Buffer must be allocated direct.";
     assert indices.isDirect() : "Buffer must be allocated direct.";
-    return gdxBulletJNI.new_btSoftBody__SWIG_2(btSoftBodyWorldInfo.getCPtr(worldInfo), worldInfo, vertices, vertexCount, vertexSize, posOffset, indices, triangleCount);
+    assert indexMap.isDirect() : "Buffer must be allocated direct.";
+    return gdxBulletJNI.new_btSoftBody__SWIG_2(btSoftBodyWorldInfo.getCPtr(worldInfo), worldInfo, vertices, vertexSize, posOffset, indices, indexOffset, numVertices, indexMap, indexMapOffset);
   }
 
-  public btSoftBody(btSoftBodyWorldInfo worldInfo, java.nio.FloatBuffer vertices, int vertexCount, int vertexSize, int posOffset, java.nio.ShortBuffer indices, int triangleCount) {
-    this(btSoftBody.SwigConstructbtSoftBody(worldInfo, vertices, vertexCount, vertexSize, posOffset, indices, triangleCount), true);
+  public btSoftBody(btSoftBodyWorldInfo worldInfo, java.nio.FloatBuffer vertices, int vertexSize, int posOffset, java.nio.ShortBuffer indices, int indexOffset, int numVertices, java.nio.ShortBuffer indexMap, int indexMapOffset) {
+    this(btSoftBody.SwigConstructbtSoftBody(worldInfo, vertices, vertexSize, posOffset, indices, indexOffset, numVertices, indexMap, indexMapOffset), true);
   }
 
   public int getNodeCount() {
@@ -890,7 +893,16 @@ public class btSoftBody extends btCollisionObject {
   public void getVertices(java.nio.FloatBuffer buffer, int vertexCount, int vertexSize, int posOffset) {
     assert buffer.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.btSoftBody_getVertices(swigCPtr, this, buffer, vertexCount, vertexSize, posOffset);
+      gdxBulletJNI.btSoftBody_getVertices__SWIG_0(swigCPtr, this, buffer, vertexCount, vertexSize, posOffset);
+    }
+  }
+
+  public void getVertices(java.nio.FloatBuffer vertices, int vertexSize, int posOffset, java.nio.ShortBuffer indices, int indexOffset, int numVertices, java.nio.ShortBuffer indexMap, int indexMapOffset) {
+    assert vertices.isDirect() : "Buffer must be allocated direct.";
+    assert indices.isDirect() : "Buffer must be allocated direct.";
+    assert indexMap.isDirect() : "Buffer must be allocated direct.";
+    {
+      gdxBulletJNI.btSoftBody_getVertices__SWIG_1(swigCPtr, this, vertices, vertexSize, posOffset, indices, indexOffset, numVertices, indexMap, indexMapOffset);
     }
   }
 
@@ -986,8 +998,8 @@ public class btSoftBody extends btCollisionObject {
     gdxBulletJNI.btSoftBody_setConfig_maxvolume(swigCPtr, this, v);
   }
 
-  public void setConfig_ktimescale(float v) {
-    gdxBulletJNI.btSoftBody_setConfig_ktimescale(swigCPtr, this, v);
+  public void setConfig_timescale(float v) {
+    gdxBulletJNI.btSoftBody_setConfig_timescale(swigCPtr, this, v);
   }
 
   public void setConfig_viterations(int v) {

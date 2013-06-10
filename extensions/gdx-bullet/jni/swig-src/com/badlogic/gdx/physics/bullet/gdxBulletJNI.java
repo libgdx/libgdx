@@ -4298,10 +4298,11 @@ public class gdxBulletJNI {
   public final static native void btSoftBody_VSolve_Links(long jarg1, btSoftBody jarg1_, float jarg2);
   public final static native long btSoftBody_getSolver__SWIG_0(long jarg1);
   public final static native long btSoftBody_getSolver__SWIG_1(long jarg1);
-  public final static native long new_btSoftBody__SWIG_2(long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5, java.nio.ShortBuffer jarg6, int jarg7);
+  public final static native long new_btSoftBody__SWIG_2(long jarg1, btSoftBodyWorldInfo jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, java.nio.ShortBuffer jarg5, int jarg6, int jarg7, java.nio.ShortBuffer jarg8, int jarg9);
   public final static native int btSoftBody_getNodeCount(long jarg1, btSoftBody jarg1_);
   public final static native long btSoftBody_getNode(long jarg1, btSoftBody jarg1_, int jarg2);
-  public final static native void btSoftBody_getVertices(long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5);
+  public final static native void btSoftBody_getVertices__SWIG_0(long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, int jarg5);
+  public final static native void btSoftBody_getVertices__SWIG_1(long jarg1, btSoftBody jarg1_, java.nio.FloatBuffer jarg2, int jarg3, int jarg4, java.nio.ShortBuffer jarg5, int jarg6, int jarg7, java.nio.ShortBuffer jarg8, int jarg9);
   public final static native int btSoftBody_getFaceCount(long jarg1, btSoftBody jarg1_);
   public final static native long btSoftBody_getFace(long jarg1, btSoftBody jarg1_, int jarg2);
   public final static native void btSoftBody_getIndices(long jarg1, btSoftBody jarg1_, java.nio.ShortBuffer jarg2, int jarg3);
@@ -4324,7 +4325,7 @@ public class gdxBulletJNI {
   public final static native void btSoftBody_setConfig_kSK_SPLT_CL(long jarg1, btSoftBody jarg1_, float jarg2);
   public final static native void btSoftBody_setConfig_kSS_SPLT_CL(long jarg1, btSoftBody jarg1_, float jarg2);
   public final static native void btSoftBody_setConfig_maxvolume(long jarg1, btSoftBody jarg1_, float jarg2);
-  public final static native void btSoftBody_setConfig_ktimescale(long jarg1, btSoftBody jarg1_, float jarg2);
+  public final static native void btSoftBody_setConfig_timescale(long jarg1, btSoftBody jarg1_, float jarg2);
   public final static native void btSoftBody_setConfig_viterations(long jarg1, btSoftBody jarg1_, int jarg2);
   public final static native void btSoftBody_setConfig_piterations(long jarg1, btSoftBody jarg1_, int jarg2);
   public final static native void btSoftBody_setConfig_diterations(long jarg1, btSoftBody jarg1_, int jarg2);
