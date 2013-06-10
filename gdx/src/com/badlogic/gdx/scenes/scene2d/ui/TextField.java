@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -176,7 +177,11 @@ public class TextField extends Widget {
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
 					boolean repeat = false;
-					boolean ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+					boolean ctrl;
+					if (SharedLibraryLoader.isMac)
+						ctrl = Gdx.input.isKeyPressed(Keys.SYM);
+					else
+						ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
 					if (ctrl) {
 						// paste
 						if (keycode == Keys.V) {
