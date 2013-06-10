@@ -27,8 +27,8 @@ public class RunnableAction extends Action {
 
 	public boolean act (float delta) {
 		if (!ran) {
-			run();
 			ran = true;
+			run();
 		}
 		return true;
 	}
