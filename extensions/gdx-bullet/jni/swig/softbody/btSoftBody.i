@@ -132,16 +132,6 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 %}
 
-%typemap(javacode) btSoftBody %{
-	public Mesh mesh;
-	public int indexOffset;
-	public int numVertices;
-	
-	public btSoftBody(final MeshPart meshPart) {
-		
-	}
-%}
-
 %{
 #include <BulletSoftBody/btSoftBody.h>
 %}
