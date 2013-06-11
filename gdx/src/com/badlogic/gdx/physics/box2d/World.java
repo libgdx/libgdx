@@ -53,6 +53,7 @@ public final class World implements Disposable {
 	// @off
 	/*JNI
 #include <Box2D/Box2D.h>
+#include <Box2D/Collision/LightCalculus.h>
 
 static jclass worldClass = 0;
 static jmethodID shouldCollideID = 0;
@@ -942,4 +943,14 @@ b2ContactFilter defaultFilter;
 			return 0.0f;
 		}
 	}
+	
+	public long createPointLight( int rays )
+	{
+		return jniCreatePointLight(addr, rays);
+	}
+
+	private native long jniCreatePointLight(long addr, int rays); /*
+	return (jlong) new PointLight( (b2World *)addr, rays );
+*/
+
 }
