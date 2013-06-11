@@ -4,8 +4,7 @@ package com.badlogic.gdx.utils.reflect;
 import java.lang.reflect.InvocationTargetException;
 
 /** Provides information about, and access to, a single constructor for a Class.
- * @author nexsoftware
- */
+ * @author nexsoftware */
 public final class Constructor {
 
 	private final java.lang.reflect.Constructor constructor;
@@ -37,13 +36,13 @@ public final class Constructor {
 		try {
 			return constructor.newInstance(args);
 		} catch (IllegalArgumentException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
+			throw new ReflectionException("Illegal argument(s) supplied to constructor for class: " + constructor.getDeclaringClass().getName(), e);
 		} catch (InstantiationException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
+			throw new ReflectionException("Could not instantiate instance of class: " + constructor.getDeclaringClass().getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
+			throw new ReflectionException("Could not instantiate instance of class: " + constructor.getDeclaringClass().getName(), e);
 		} catch (InvocationTargetException e) {
-			throw new ReflectionException("", e); // TODO: Real Message
+			throw new ReflectionException("Exception occurred in constructor for class: " + constructor.getDeclaringClass().getName(), e);
 		}
 	}
 

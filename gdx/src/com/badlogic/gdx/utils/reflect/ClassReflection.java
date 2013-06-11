@@ -12,7 +12,7 @@ public final class ClassReflection {
 		try {
 			return Class.forName(name);
 		} catch (ClassNotFoundException e) {
-			throw new ReflectionException("Class " + name + "could not be found.", e); // TODO: Real Message
+			throw new ReflectionException("Class not found: " + name, e);
 		}
 	}
 
@@ -47,9 +47,9 @@ public final class ClassReflection {
 		try {
 			return c.newInstance();
 		} catch (InstantiationException e) {
-			throw new ReflectionException("Could not instantiate instance of class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Could not instantiate instance of class: " + c.getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ReflectionException("Could not instantiate instance of class: '"  + c.getName() + "'.", e);
+			throw new ReflectionException("Could not instantiate instance of class: " + c.getName(), e);
 		}
 	}
 
@@ -70,7 +70,7 @@ public final class ClassReflection {
 		} catch (SecurityException e) {
 			throw new ReflectionException("Security violation occurred while getting constructor for class: '" + c.getName() + "'.", e);
 		} catch (NoSuchMethodException e) {
-			throw new ReflectionException("No constructor for class " + c.getName() + " with the supplied parameter types.", e);
+			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
 	}
 
@@ -79,9 +79,9 @@ public final class ClassReflection {
 		try {
 			return new Constructor(c.getDeclaredConstructor(parameterTypes));
 		} catch (SecurityException e) {
-			throw new ReflectionException("Security violation occurred while getting constructor for class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Security violation while getting constructor for class: " + c.getName(), e);
 		} catch (NoSuchMethodException e) {
-			throw new ReflectionException("No constructor for class " + c.getName() + " with the supplied parameter types.", e);
+			throw new ReflectionException("Constructor not found for class: " + c.getName(), e);
 		}
 	}
 
@@ -100,9 +100,9 @@ public final class ClassReflection {
 		try {
 			return new Method(c.getMethod(name, parameterTypes));
 		} catch (SecurityException e) {
-			throw new ReflectionException("Security violation occurred while getting method '" + name + "' for class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Security violation while getting method: " + name + ", for class: " + c.getName(), e);
 		} catch (NoSuchMethodException e) {
-			throw new ReflectionException("No method with name '" + name + "' for class '" + c.getName() + "' with the supplied parameter types.", e);
+			throw new ReflectionException("Method not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
 
@@ -121,9 +121,9 @@ public final class ClassReflection {
 		try {
 			return new Method(c.getDeclaredMethod(name, parameterTypes));
 		} catch (SecurityException e) {
-			throw new ReflectionException("Security violation occurred while getting method '" + name + "' for class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Security violation while getting method: " + name + ", for class: " + c.getName(), e);
 		} catch (NoSuchMethodException e) {
-			throw new ReflectionException("No method with name '" + name + "' for class '" + c.getName() + "' with the supplied parameter types.", e);
+			throw new ReflectionException("Method not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
 
@@ -142,9 +142,9 @@ public final class ClassReflection {
 		try {
 			return new Field(c.getField(name));
 		} catch (SecurityException e) {
-			throw new ReflectionException("Security violation occurred while getting field '" + name + "' for class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Security violation while getting field: " + name + ", for class: " + c.getName(), e);
 		} catch (NoSuchFieldException e) {
-			throw new ReflectionException("No field with name '" + name + "' for class '" + c.getName() + "'.", e);
+			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
 
@@ -163,9 +163,9 @@ public final class ClassReflection {
 		try {
 			return new Field(c.getDeclaredField(name));
 		} catch (SecurityException e) {
-			throw new ReflectionException("Security violation occurred while getting field '" + name + "' for class: '" + c.getName() + "'.", e);
+			throw new ReflectionException("Security violation while getting field: " + name + ", for class: " + c.getName(), e);
 		} catch (NoSuchFieldException e) {
-			throw new ReflectionException("No field with name '" + name + "' for class '" + c.getName() + "'.", e);
+			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
 
