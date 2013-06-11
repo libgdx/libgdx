@@ -57,11 +57,10 @@ public class SequenceAction extends ParallelAction {
 	}
 
 	public boolean act (float delta) {
-		if (index >= actions.size) return true;
-		if (actions.get(index).act(delta)) {
-			index++;
-			if (index > actions.size) return true;
-		}
+		int current = index;
+		if (current >= actions.size) return true;
+		index++;
+		if (actions.get(current).act(delta)) return index >= actions.size;
 		return false;
 	}
 
