@@ -16,11 +16,13 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-package com.badlogic.gdx.physics.box2d;
+package com.box2dLight.box2dLight;
 
+import com.badlogic.gdx.physics.box2d.Filter;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 
-public class PointLight implements Disposable {
+public class Box2dLight implements Disposable {
 	// @off
 	/*JNI
 #include <Box2D/Collision/LightCalculus.h>
@@ -30,7 +32,7 @@ public class PointLight implements Disposable {
 	
 	final int nbRays;
 	
-	public PointLight(World world, int nbRays)
+	public Box2dLight(World world, int nbRays)
 	{
 		this.world = world;
 		this.nbRays= nbRays;
@@ -85,6 +87,7 @@ public class PointLight implements Disposable {
 	 * Used to set sensor transparent or opaque for this light
 	 * @param shouldCollide if true, sensor stop ray of light
 	 */
+	
 	public void setSensorFilter(boolean shouldCollide) {
 		jniSetSensorFilter(pointAddr, shouldCollide);
 	}

@@ -10,12 +10,11 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.PointLight;
 import com.badlogic.gdx.utils.NumberUtils;
 
 public abstract class PositionalLight extends Light {
 
-  protected com.badlogic.gdx.physics.box2d.PointLight nativeLight;
+  protected com.box2dLight.box2dLight.Box2dLight nativeLight;
 
   protected Body body;
   protected float bodyOffsetX;
@@ -232,7 +231,7 @@ public abstract class PositionalLight extends Light {
       float distance, float x, float y, float directionDegree) {
     super(rayHandler, rays, color, directionDegree, distance);
 
-    nativeLight = new PointLight(rayHandler.world, rays);
+    nativeLight = new Box2dLight(rayHandler.world, rays);
 
     start.x = x;
     start.y = y;
