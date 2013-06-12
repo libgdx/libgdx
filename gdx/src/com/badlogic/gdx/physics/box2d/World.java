@@ -55,6 +55,9 @@ public final class World implements Disposable {
 #include <Box2D/Box2D.h>
 #include <Box2D/Collision/LightCalculus.h>
 
+b2Filter *PointLight::rayFilter = NULL;
+
+
 static jclass worldClass = 0;
 static jmethodID shouldCollideID = 0;
 static jmethodID beginContactID = 0;

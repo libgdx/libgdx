@@ -279,6 +279,14 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_World_getVelocityTh
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast
   (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreatePointLight
+ * Signature: (JI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePointLight
+  (JNIEnv *, jobject, jlong, jint);
+
 #ifdef __cplusplus
 }
 #endif

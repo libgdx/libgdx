@@ -78,6 +78,7 @@ LOCAL_SRC_FILES := Box2D/Collision/b2BroadPhase.cpp\
 	com.badlogic.gdx.physics.box2d.joints.WeldJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.WheelJoint.cpp\
 	com.badlogic.gdx.physics.box2d.Manifold.cpp\
+	com.badlogic.gdx.physics.box2d.PointLight.cpp\
 	com.badlogic.gdx.physics.box2d.PolygonShape.cpp\
 	com.badlogic.gdx.physics.box2d.Shape.cpp\
 	com.badlogic.gdx.physics.box2d.World.cpp\

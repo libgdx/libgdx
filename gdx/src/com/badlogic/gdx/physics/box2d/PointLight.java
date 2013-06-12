@@ -43,11 +43,11 @@ public class PointLight implements Disposable {
 			jniReleaseLight( pointAddr );
 		pointAddr = 0;
 	}
-	
-	
-	private native void jniReleaseLight(long map); /*
-	delete ((PointLight*) map);
-*/
+
+	@Override
+	public void dispose () {
+		releaseLight();
+	}
 
 	public void update(float[] points, float x, float y, float distance)
 	{
@@ -59,19 +59,56 @@ public class PointLight implements Disposable {
 	{
 		jniComputeOcclusionMap(pointAddr, points, points.length, x, y, distance, direction, coneSize);
 	}
+	
+	/**
+	 * set given contact filter for ALL LIGHTS
+	 * 
+	 * @param filter
+	 */
+	static public void setContactFilter(Filter filter) {
+		jniSetContactFilter(filter.categoryBits, filter.groupIndex, filter.maskBits);
+	}
 
-	private native void jniComputeOcclusionMap(long map, float[] points, int nbPoints, float x, float y, float distance,
-		float direction, float coneSize); /*
-	((PointLight*) map)->computePoints(points, nbPoints, x, y, distance, direction, coneSize);
+	/**
+	 * create new contact filter for ALL LIGHTS with give parameters
+	 * 
+	 * @param categoryBits
+	 * @param groupIndex
+	 * @param maskBits
+	 */
+	static public void setContactFilter(short categoryBits, short groupIndex,
+			short maskBits) {
+		jniSetContactFilter(categoryBits, groupIndex, maskBits);
+	}
+
+	/**
+	 * Used to set sensor transparent or opaque for this light
+	 * @param shouldCollide if true, sensor stop ray of light
+	 */
+	public void setSensorFilter(boolean shouldCollide) {
+		jniSetSensorFilter(pointAddr, shouldCollide);
+	}
+
+	private native void jniSetSensorFilter(long addr, boolean shouldCollide);/*
+	((PointLight*) addr)->setSensorFilter(shouldCollide);
 */
 
-	private native void jniComputeOcclusionMap(long map, float[] points, int nbPoints, float x, float y, float distance); /*
-	((PointLight*) map)->computePoints(points, nbPoints, x, y, distance);
+	static private native void jniSetContactFilter(short categoryBits, short groupIndex,
+		short maskBits);/*
+	PointLight::setContactFilter((short)categoryBits,(short)groupIndex,(short)maskBits);
+*/
+
+	private native void jniComputeOcclusionMap(long addr, float[] points, int nbPoints, float x, float y, float distance,
+		float direction, float coneSize); /*
+	((PointLight*) addr)->computePoints(points, nbPoints, x, y, distance, direction, coneSize);
+*/
+
+	private native void jniComputeOcclusionMap(long addr, float[] points, int nbPoints, float x, float y, float distance); /*
+	((PointLight*) addr)->computePoints(points, nbPoints, x, y, distance);
 */
 	
-	@Override
-	public void dispose () {
-		releaseLight();
-	}
+	private native void jniReleaseLight(long addr); /*
+	delete ((PointLight*) addr);
+*/
 
 }

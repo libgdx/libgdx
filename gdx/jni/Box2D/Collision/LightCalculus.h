@@ -27,6 +27,8 @@
 
 class PointLight: public b2RayCastCallback
 {
+  static b2Filter *rayFilter;
+  bool collideSensor;
   float *sin;
   float *cos;
 
@@ -47,10 +49,18 @@ class PointLight: public b2RayCastCallback
   b2World *world;
 
 public:
+	/**
+	 * create a new Point Light
+	 * 
+	 * @param world current Box2D world
+	 * @param rays nb of raycast to perform
+	 */
   PointLight(  b2World *world, int rays )
   {
     this->world = world;
     nbRays = rays;
+
+    collideSensor = false;
 
     sin = new float[rays];
     cos = new float[rays];
@@ -69,11 +79,12 @@ public:
 
     distance = -1.f;
   }
+
   ~PointLight(){
     delete[] sin;
     delete[] cos;
     delete[] endX;
-    delete[] endY;;
+    delete[] endY;
   }
 
   void computePoints( float* pointsCast, int nbValues, float x, float y, float d, float dir, float coneSize )
@@ -138,10 +149,45 @@ public:
 
   }
 
+  void setSensorFilter( bool shouldCollide )
+  {
+    collideSensor = shouldCollide;
+  }
+  
+	/**
+	 * create new contact filter for ALL LIGHTS with give parameters
+	 * 
+	 * @param categoryBits
+	 * @param groupIndex
+	 * @param maskBits
+	 */
+  static void setContactFilter(short categoryBits, short groupIndex,
+    short maskBits)
+  {
+    if( rayFilter!=NULL )
+      delete rayFilter;
+    rayFilter = new b2Filter();
+    rayFilter->categoryBits = categoryBits;
+    rayFilter->groupIndex = groupIndex;
+    rayFilter->maskBits = maskBits;
+  }
+
   virtual float32 ReportFixture( b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction)
   {
-    if( fixture->IsSensor() )
+    if( !collideSensor && fixture->IsSensor() )
       return -1;
+
+    const b2Filter& filterB = fixture->GetFilterData();
+
+    if( rayFilter!=NULL )
+    {
+      if ( rayFilter->groupIndex == filterB.groupIndex && rayFilter->groupIndex < 0 )
+        return -1;
+
+      if(  (rayFilter->maskBits & filterB.categoryBits) == 0
+        || (filterB.maskBits & rayFilter->categoryBits) == 0)
+        return -1;
+    }
 
     pointsCast[m_index*3] = point.x;
     pointsCast[m_index*3+1] = point.y;
