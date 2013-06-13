@@ -63,7 +63,7 @@ public class ModelInstance implements RenderableProvider {
 		this.model = model;
 		this.transform = transform == null ? new Matrix4() : transform; 
 		nodePartBones.clear();
-		Node copy, node = model.getNode(nodeId /*, recursive*/); // FIXME need to pull another PR first
+		Node copy, node = model.getNode(nodeId, recursive);
 		this.nodes.add(copy = copyNode(null, node));
 		if (mergeTransform) {
 			this.transform.mul(parentTransform ? node.globalTransform : node.localTransform);

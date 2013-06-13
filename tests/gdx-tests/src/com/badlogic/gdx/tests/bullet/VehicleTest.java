@@ -70,8 +70,8 @@ public class VehicleTest extends BaseBulletTest {
 			ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(128));
 
 		BoundingBox bounds = new BoundingBox();
-		Vector3 chassisHalfExtents = new Vector3(chassisModel.getBoundingBox(bounds).getDimensions()).scl(0.5f);
-		Vector3 wheelHalfExtents = new Vector3(wheelModel.getBoundingBox(bounds).getDimensions()).scl(0.5f);
+		Vector3 chassisHalfExtents = new Vector3(chassisModel.calculateBoundingBox(bounds).getDimensions()).scl(0.5f);
+		Vector3 wheelHalfExtents = new Vector3(wheelModel.calculateBoundingBox(bounds).getDimensions()).scl(0.5f);
 
 		world.addConstructor("chassis", new BulletConstructor(chassisModel, 5f, new btBoxShape(chassisHalfExtents)));
 		world.addConstructor("wheel", new BulletConstructor(wheelModel, 0, null));
