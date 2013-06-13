@@ -36,7 +36,7 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		public Model model = null;
 		public abstract T construct(final float x, final float y, final float z);
 		public abstract T construct(final Matrix4 transform);
-	}	
+	}
 	
 	private final ObjectMap<String, Constructor<T>> constructors = new ObjectMap<String, Constructor<T>>();
 	protected final Array<T> entities = new Array<T>();

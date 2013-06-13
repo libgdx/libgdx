@@ -163,6 +163,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		overviewCam.update();
 		
 		final Model frustumModel = createFrustumModel(frustumCam.frustum.planePoints);
+		disposables.add(frustumModel);
 		frustumObject = createFrustumObject(frustumCam.frustum.planePoints);
 		world.add(frustumEntity = new BulletEntity(frustumModel, frustumObject, 0, 0, 0));
 		frustumEntity.setColor(Color.BLUE);

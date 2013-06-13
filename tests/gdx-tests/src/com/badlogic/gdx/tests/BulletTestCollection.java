@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.bullet.ConstraintsTest;
 import com.badlogic.gdx.tests.bullet.ContactCallbackTest;
 import com.badlogic.gdx.tests.bullet.ConvexHullTest;
 import com.badlogic.gdx.tests.bullet.FrustumCullingTest;
+import com.badlogic.gdx.tests.bullet.ImportTest;
 import com.badlogic.gdx.tests.bullet.InternalTickTest;
 import com.badlogic.gdx.tests.bullet.KinematicTest;
 import com.badlogic.gdx.tests.bullet.MeshShapeTest;
@@ -48,6 +49,7 @@ import com.badlogic.gdx.tests.bullet.RayCastTest;
 import com.badlogic.gdx.tests.bullet.ShootTest;
 import com.badlogic.gdx.tests.bullet.SoftBodyTest;
 import com.badlogic.gdx.tests.bullet.SoftMeshTest;
+import com.badlogic.gdx.tests.bullet.VehicleTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
@@ -55,7 +57,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	protected final BulletTest[] tests = {new ShootTest(), new BasicShapesTest(), new KinematicTest(), new ConstraintsTest(), 
 		new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), 
 		new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(), new ContactCallbackTest(),
-		new SoftBodyTest(), new SoftMeshTest()};
+		new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new ImportTest()};
 	
 	protected int testIndex = 0;
 	
