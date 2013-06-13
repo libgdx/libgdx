@@ -9,6 +9,22 @@ extern "C" {
 #endif
 /*
  * Class:     com_box2dLight_box2dLight_Box2dLight
+ * Method:    jniSetLightMesh
+ * Signature: (J[FFZ)V
+ */
+JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniSetLightMesh
+  (JNIEnv *, jobject, jlong, jfloatArray, jfloat, jboolean);
+
+/*
+ * Class:     com_box2dLight_box2dLight_Box2dLight
+ * Method:    jniSetShadowMesh
+ * Signature: (J[FFFZ)V
+ */
+JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniSetShadowMesh
+  (JNIEnv *, jobject, jlong, jfloatArray, jfloat, jfloat, jboolean);
+
+/*
+ * Class:     com_box2dLight_box2dLight_Box2dLight
  * Method:    jniSetSensorFilter
  * Signature: (JZ)V
  */
@@ -25,19 +41,19 @@ JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniSetContactFi
 
 /*
  * Class:     com_box2dLight_box2dLight_Box2dLight
- * Method:    jniComputeOcclusionMap
- * Signature: (J[FIFFFFF)V
+ * Method:    jniComputeOcclusion
+ * Signature: (JFFFFF)V
  */
-JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniComputeOcclusionMap__J_3FIFFFFF
-  (JNIEnv *, jobject, jlong, jfloatArray, jint, jfloat, jfloat, jfloat, jfloat, jfloat);
+JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniComputeOcclusion__JFFFFF
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     com_box2dLight_box2dLight_Box2dLight
- * Method:    jniComputeOcclusionMap
- * Signature: (J[FIFFF)V
+ * Method:    jniComputeOcclusion
+ * Signature: (JFFF)V
  */
-JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniComputeOcclusionMap__J_3FIFFF
-  (JNIEnv *, jobject, jlong, jfloatArray, jint, jfloat, jfloat, jfloat);
+JNIEXPORT void JNICALL Java_com_box2dLight_box2dLight_Box2dLight_jniComputeOcclusion__JFFF
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat);
 
 /*
  * Class:     com_box2dLight_box2dLight_Box2dLight

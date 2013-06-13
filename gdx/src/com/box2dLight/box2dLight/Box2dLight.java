@@ -51,16 +51,34 @@ public class Box2dLight implements Disposable {
 		releaseLight();
 	}
 
-	public void update(float[] points, float x, float y, float distance)
+	public void update(float x, float y, float distance)
 	{
-		jniComputeOcclusionMap(pointAddr, points, points.length, x, y, distance);
+		jniComputeOcclusion(pointAddr, x, y, distance);
 	}
 
-	public void update_cone(float[] points, float x, float y, float distance,
+	public void update_cone(float x, float y, float distance,
 		float direction, float coneSize)
 	{
-		jniComputeOcclusionMap(pointAddr, points, points.length, x, y, distance, direction, coneSize);
+		jniComputeOcclusion(pointAddr, x, y, distance, direction, coneSize);
 	}
+
+	public void setLightMesh( float[] segments, float colorF, boolean isGL20 )
+	{
+		jniSetLightMesh(pointAddr, segments, colorF, isGL20);
+	}
+
+	public void setShadowMesh( float[] segments, float colorF, float softShadowLenght, boolean isGL20 )
+	{
+		jniSetShadowMesh(pointAddr, segments, colorF, softShadowLenght, isGL20);
+	}
+
+	private native void jniSetLightMesh( long addr, float[] segments, float colorF, boolean isGL20 );/*
+	((PointLight*) addr)->setLightMesh(segments,colorF,isGL20);
+	*/
+
+	private native void jniSetShadowMesh( long addr, float[] segments, float colorF, float softShadowLenght, boolean isGL20 );/*
+	((PointLight*) addr)->setShadowMesh(segments,colorF,softShadowLenght,isGL20);
+	*/
 	
 	/**
 	 * set given contact filter for ALL LIGHTS
@@ -101,13 +119,13 @@ public class Box2dLight implements Disposable {
 	PointLight::setContactFilter((short)categoryBits,(short)groupIndex,(short)maskBits);
 */
 
-	private native void jniComputeOcclusionMap(long addr, float[] points, int nbPoints, float x, float y, float distance,
+	private native void jniComputeOcclusion(long addr, float x, float y, float distance,
 		float direction, float coneSize); /*
-	((PointLight*) addr)->computePoints(points, nbPoints, x, y, distance, direction, coneSize);
+	((PointLight*) addr)->computePoints(x, y, distance, direction, coneSize);
 */
 
-	private native void jniComputeOcclusionMap(long addr, float[] points, int nbPoints, float x, float y, float distance); /*
-	((PointLight*) addr)->computePoints(points, nbPoints, x, y, distance);
+	private native void jniComputeOcclusion(long addr, float x, float y, float distance); /*
+	((PointLight*) addr)->computePoints(x, y, distance);
 */
 	
 	private native void jniReleaseLight(long addr); /*

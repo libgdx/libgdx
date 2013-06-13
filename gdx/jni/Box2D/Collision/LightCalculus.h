@@ -24,6 +24,12 @@
 #include <Box2D/Common/b2Settings.h>
 
 #include <stdio.h>
+#include <stdint.h>
+
+union int_float_bits {
+  int32_t int_bits;
+  float float_bits;
+};
 
 class PointLight: public b2RayCastCallback
 {
@@ -48,13 +54,24 @@ class PointLight: public b2RayCastCallback
 
   b2World *world;
 
+  void convertColor( float colorF, float& r, float& g, float b, float& a)
+  {
+    int_float_bits color;
+    color.float_bits = colorF;
+    int32_t colorI = color.int_bits;
+    r = (float)(colorI>>24);
+    g = (float)(0xFF&(colorI>>16));
+    b = (float)(0xFF&(colorI>>8));
+    a = (float)(0xFF&(colorI));
+  }
+
 public:
-	/**
-	 * create a new Point Light
-	 * 
-	 * @param world current Box2D world
-	 * @param rays nb of raycast to perform
-	 */
+  /**
+  * create a new Point Light
+  * 
+  * @param world current Box2D world
+  * @param rays nb of raycast to perform
+  */
   PointLight(  b2World *world, int rays )
   {
     this->world = world;
@@ -66,6 +83,8 @@ public:
     cos = new float[rays];
     endX = new float[rays];
     endY = new float[rays];
+
+    pointsCast = new float[rays*3];
 
     directionDegree = 0;
     coneDegree = 360;
@@ -85,9 +104,10 @@ public:
     delete[] cos;
     delete[] endX;
     delete[] endY;
+    delete[] pointsCast;
   }
 
-  void computePoints( float* pointsCast, int nbValues, float x, float y, float d, float dir, float coneSize )
+  void computePoints( float x, float y, float d, float dir, float coneSize )
   {
 
     bool update = false;
@@ -110,18 +130,11 @@ public:
         cos[i] = cosf(angle);
       }
     }
-    computePoints(pointsCast, nbValues, x, y, d);
+    computePoints(x, y, d);
   }
 
-  void computePoints( float* pC, int nbValues, float x, float y, float d )
+  void computePoints( float x, float y, float d )
   {
-    b2Assert((nbValues-3)==nbRays*3);
-    this->pointsCast = pC;
-
-    pointsCast[nbValues-3] = start.x;
-    pointsCast[nbValues-2] = start.y;
-    pointsCast[nbValues-1] = 1;
-
     if(distance != d)
     {
       distance = d;
@@ -143,24 +156,23 @@ public:
       pointsCast[m_index*3] = tmpEnd.x;//in case the ray don't find shape!
       pointsCast[m_index*3+1] = tmpEnd.y;
       pointsCast[m_index*3+2] = 1;
-      
+
       world->RayCast(this, start, tmpEnd);
     }
-
   }
 
   void setSensorFilter( bool shouldCollide )
   {
     collideSensor = shouldCollide;
   }
-  
-	/**
-	 * create new contact filter for ALL LIGHTS with give parameters
-	 * 
-	 * @param categoryBits
-	 * @param groupIndex
-	 * @param maskBits
-	 */
+
+  /**
+  * create new contact filter for ALL LIGHTS with give parameters
+  * 
+  * @param categoryBits
+  * @param groupIndex
+  * @param maskBits
+  */
   static void setContactFilter(short categoryBits, short groupIndex,
     short maskBits)
   {
@@ -194,6 +206,91 @@ public:
     pointsCast[m_index*3+2] = fraction;
 
     return fraction;
+  }
+
+
+  void setLightMesh( float* segments, float colorF, bool isGL20 ) {
+    // ray starting point
+    int size = 0, point = 0;
+
+    segments[size++] = start.x;
+    segments[size++] = start.y;
+    segments[size++] = colorF;
+    segments[size++] = 1;
+    if( isGL20 )
+    {
+      // rays ending points.
+      for (int i = 0; i < nbRays; i++) {
+        segments[size++] = pointsCast[point++];
+        segments[size++] = pointsCast[point++];
+        segments[size++] = colorF;
+        segments[size++] = 1.f - pointsCast[point++];
+      }
+    }
+    else
+    {
+      float r,g,b,a;
+      r=g=b=a=0.f;
+      convertColor(colorF, r,g,b,a);
+      int_float_bits colorCvt;
+
+      // rays ending points.
+      for (int i = 0; i < nbRays; i++) {
+        segments[size++] = pointsCast[point++];
+        segments[size++] = pointsCast[point++];
+        float s = 1.f - pointsCast[point++];
+        // ugly inlining
+        colorCvt.int_bits = ((int) (a * s) << 24)
+          | ((int) (b * s) << 16) | ((int) (g * s) << 8)
+          | ((int) (r * s));
+        segments[size++] = colorCvt.float_bits;
+      }
+    }
+  }
+
+  void setShadowMesh( float* segments, float colorF, float softShadowLenght, bool isGL20 ) {
+    int size = 0, point = 0;
+    // rays ending points.
+
+    if( isGL20 )
+    {
+      for (int i = 0; i < nbRays; i++) {
+        point = i*3;
+        segments[size++] = pointsCast[point];
+        segments[size++] = pointsCast[point+1];
+        segments[size++] = colorF;
+        float s = (1.f - pointsCast[point+2]);
+        segments[size++] = s;
+
+        s = s * softShadowLenght;
+        segments[size++] = pointsCast[point] + s * cos[i];
+        segments[size++] = pointsCast[point+1] + s * sin[i];
+        segments[size++] = 0.f;
+        segments[size++] = 0.f;
+      }
+    }else{
+      float r,g,b,a;
+      r=g=b=a=0.f;
+      convertColor(colorF, r,g,b,a);
+      int_float_bits colorCvt;
+      for (int i = 0; i < nbRays; i++) {
+        point = i*3;
+        segments[size++] = pointsCast[point];
+        segments[size++] = pointsCast[point+1];
+        // color value is cached.
+        float s = 1.f - pointsCast[point+2];
+        // ugly inlining
+        colorCvt.int_bits = ((int) (a * s) << 24)
+          | ((int) (b * s) << 16) | ((int) (g * s) << 8)
+          | ((int) (r * s));
+        segments[size++] = colorCvt.float_bits;
+
+        s = s * softShadowLenght;
+        segments[size++] = pointsCast[point] + s * cos[i];
+        segments[size++] = pointsCast[point+1] + s * sin[i];
+        segments[size++] = 0.f;
+      }
+    }
   }
 };
 

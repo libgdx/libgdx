@@ -16,13 +16,7 @@ public class PointLight extends PositionalLight {
 	public PointLight(RayHandler rayHandler, int rays, Color color,
 			float distance, float x, float y) {
 		super(rayHandler, rays, color, distance, x, y, 0f);
-    float angleNum = 360f / (rayNum - 1);
-    for (int i = 0; i < rayNum; i++) {
-      final float angle = angleNum * i;
-      sin[i] = MathUtils.sinDeg(angle);
-      cos[i] = MathUtils.cosDeg(angle);
-    }
-		update();
+		//nothing to do...
 	}
 
 	/**

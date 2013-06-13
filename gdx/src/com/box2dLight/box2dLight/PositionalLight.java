@@ -21,8 +21,6 @@ public abstract class PositionalLight extends Light {
   protected float bodyOffsetY;
 
   final Vector2 start = new Vector2();
-  final float sin[];
-  final float cos[];
 
   /**
    * attach positional light to automatically follow body. Position is fixed
@@ -105,7 +103,7 @@ public abstract class PositionalLight extends Light {
       return;
 
 
-    nativeLight.update(ptVals, start.x, start.y, distance);
+    nativeLight.update(start.x, start.y, distance);
 
     setMesh();
   }
@@ -123,86 +121,20 @@ public abstract class PositionalLight extends Light {
   }
 
   void setMesh() {
-    if (rayHandler.isGL20) {
-      // ray starting point
-      int size = 0;
+	  nativeLight.setLightMesh(segments, colorF, rayHandler.isGL20);
+	  if( rayHandler.isGL20 )
+		  lightMesh.setVertices(segments, 0, (rayNum+1)*4);
+	  else
+		  lightMesh.setVertices(segments, 0, (rayNum+1)*3);
 
-      segments[size++] = start.x;
-      segments[size++] = start.y;
-      segments[size++] = colorF;
-      segments[size++] = 1;
-      // rays ending points.
-      for (int i = 0; i < rayNum; i++) {
-        segments[size++] = ptVals[i*3];
-        segments[size++] = ptVals[i*3+1];
-        segments[size++] = colorF;
-        segments[size++] = 1 - ptVals[i*3+2];
-      }
-      lightMesh.setVertices(segments, 0, size);
+	  if (!soft || xray)
+		  return;
 
-      if (!soft || xray)
-        return;
-
-      size = 0;
-      // rays ending points.
-
-      for (int i = 0; i < rayNum; i++) {
-        segments[size++] = ptVals[i*3];
-        segments[size++] = ptVals[i*3+1];
-        segments[size++] = colorF;
-        final float s = (1 - ptVals[i*3+2]);
-        segments[size++] = s;
-        segments[size++] = ptVals[i*3] + s * softShadowLenght * cos[i];
-        segments[size++] = ptVals[i*3+1] + s * softShadowLenght * sin[i];
-        segments[size++] = zero;
-        segments[size++] = 0f;
-      }
-      softShadowMesh.setVertices(segments, 0, size);
-    } else {
-      final float r = color.r * 255;
-      final float g = color.g * 255;
-      final float b = color.b * 255;
-      final float a = color.a * 255;
-      // ray starting point
-
-      int size = 0;
-      segments[size++] = start.x;
-      segments[size++] = start.y;
-      segments[size++] = colorF;
-      // rays ending points.
-      for (int i = 0; i < rayNum; i++) {
-        segments[size++] = ptVals[i*3];
-        segments[size++] = ptVals[i*3+1];
-        final float s = 1f - ptVals[i*3+2];
-        // ugly inlining
-        segments[size++] = NumberUtils.intToFloatColor(((int) (a * s) << 24)
-            | ((int) (b * s) << 16) | ((int) (g * s) << 8)
-            | ((int) (r * s)));
-      }
-      lightMesh.setVertices(segments, 0, size);
-
-      if (!soft || xray)
-        return;
-
-      size = 0;
-      for (int i = 0; i < rayNum; i++) {
-        segments[size++] = ptVals[i*3];
-        segments[size++] = ptVals[i*3+1];
-        // color value is cached.
-        final float s = 1f - ptVals[i*3+2];
-        // ugly inlining
-        segments[size++] = NumberUtils
-            .intToFloatColor(((int) (a * s) << 24)
-                | ((int) (b * s) << 16) | ((int) (g * s) << 8)
-                | ((int) (r * s)));
-
-        segments[size++] = ptVals[i*3] + s * softShadowLenght * cos[i];
-        segments[size++] = ptVals[i*3+1] + s * softShadowLenght * sin[i];
-        segments[size++] = zero;
-      }
-      softShadowMesh.setVertices(segments, 0, size);
-    }
-
+	  nativeLight.setShadowMesh(segments, colorF, softShadowLenght, rayHandler.isGL20);
+	  if( rayHandler.isGL20 )
+		  softShadowMesh.setVertices(segments, 0, segments.length-4);
+	  else
+		  softShadowMesh.setVertices(segments, 0, segments.length-3);
   }
 
   @Override
@@ -235,8 +167,6 @@ public abstract class PositionalLight extends Light {
 
     start.x = x;
     start.y = y;
-    sin = new float[rays];
-    cos = new float[rays];
 
     if (rayHandler.isGL20) {
       lightMesh = new Mesh(VertexDataType.VertexArray, false, vertexNum, 0,
@@ -255,7 +185,6 @@ public abstract class PositionalLight extends Light {
           new VertexAttribute(Usage.Position, 2, "vertex_positions"),
           new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"));
     }
-    setMesh();
   }
 
   @Override

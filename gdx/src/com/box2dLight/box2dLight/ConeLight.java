@@ -29,17 +29,10 @@ public class ConeLight extends PositionalLight {
 		super(rayHandler, rays, color, distance, x, y, directionDegree);
 		setConeDegree(coneDegree);
 		setDirection(direction);
-		update();
 	}
 
 	public void setDirection(float direction) {
 		this.direction = direction;
-		for (int i = 0; i < rayNum; i++) {
-			float angle = direction + coneDegree - 2f * coneDegree * i
-					/ (rayNum - 1f);
-			sin[i] = MathUtils.sinDeg(angle);
-			cos[i] = MathUtils.cosDeg(angle);
-		}
 		if (staticLight)
 			staticUpdate();
 			
@@ -93,7 +86,7 @@ public class ConeLight extends PositionalLight {
       return;
 
 
-    nativeLight.update_cone(ptVals, start.x, start.y, distance, direction, coneDegree);
+    nativeLight.update_cone(start.x, start.y, distance, direction, coneDegree);
     
     setMesh();
   }

@@ -23,7 +23,7 @@ public abstract class Light {
 	protected boolean culled = false;
 	protected int rayNum;
 
-  protected int vertexNum;
+	protected int vertexNum;
 	protected float distance;
 	protected float direction;
 
@@ -37,24 +37,27 @@ public abstract class Light {
 
 	float segments[];
 	int m_index = 0;
-  
-  final float ptVals[];
+
+	final float ptVals[];
 
 	public Light(RayHandler rayHandler, int rays, Color color, float directionDegree,
-			float distance) {
+		float distance) {
 
 		rayHandler.lightList.add(this);
 		this.rayHandler = rayHandler;
 
-    if (rays < MIN_RAYS)
-      rays = MIN_RAYS;
+		if (rays < MIN_RAYS)
+			rays = MIN_RAYS;
 
-    rayNum = rays;
-    vertexNum = rays + 1;
+		rayNum = rays;
+		vertexNum = rays + 1;
 
-    segments = new float[vertexNum * 8];
-    ptVals = new float[vertexNum*3];
-    
+		if( rayHandler.isGL20 )
+			segments = new float[vertexNum * 8];
+		else
+			segments = new float[vertexNum * 6];
+		ptVals = new float[vertexNum*3];
+
 		this.direction = directionDegree;
 		distance *= RayHandler.gammaCorrectionParameter;
 		this.distance = distance < 0.01f ? 0.01f : distance;
@@ -62,7 +65,7 @@ public abstract class Light {
 	}
 
 	/**
-	 * setColor(Color newColor) { rgb set the color and alpha set intesity NOTE:
+	 * setColor(Color newColor) { rgb set the color and alpha set intensity NOTE:
 	 * you can also use colorless light with shadows(EG 0,0,0,1)
 	 * 
 	 * @param newColor
@@ -95,9 +98,9 @@ public abstract class Light {
 	 */
 	public void setColor(float r, float g, float b, float a) {
 		color.r = r;
-    color.g = g;
-    color.b = b;
-    color.a = a;
+		color.g = g;
+		color.b = b;
+		color.a = a;
 		colorF = color.toFloatBits();
 		if (staticLight)
 			staticUpdate();
@@ -109,21 +112,21 @@ public abstract class Light {
 	 * @param dist
 	 */
 	public void setDistance(float dist) {
-	  distance = dist;
+		distance = dist;
 	}
-  public int getRayNum() {
-    return rayNum;
-  }
+	public int getRayNum() {
+		return rayNum;
+	}
 
 	abstract void update();
 
 	abstract void render();
 
 	public abstract void setDirection(float directionDegree);
-  
-  public final float getDirection() {
-    return direction;
-  }
+
+	public final float getDirection() {
+		return direction;
+	}
 
 	public void remove() {
 		rayHandler.lightList.removeValue(this, false);
