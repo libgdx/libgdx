@@ -50,6 +50,36 @@ public class ModelInstance implements RenderableProvider {
 		this(model, (String[])null);
 	}
 	
+	public ModelInstance(Model model, final String nodeId, boolean recursive, boolean parentTransform, boolean mergeTransform) {
+		this(model, null, nodeId, recursive, parentTransform, mergeTransform);
+	}
+	
+	/**
+	 * @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param recursive True to recursively search the Model's node tree, false to only search for a root node
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. 
+	 */
+	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean recursive, boolean parentTransform, boolean mergeTransform) {
+		this.model = model;
+		this.transform = transform == null ? new Matrix4() : transform; 
+		nodePartBones.clear();
+		Node copy, node = model.getNode(nodeId /*, recursive*/); // FIXME need to pull another PR first
+		this.nodes.add(copy = copyNode(null, node));
+		if (mergeTransform) {
+			this.transform.mul(parentTransform ? node.globalTransform : node.localTransform);
+			copy.translation.set(0,0,0);
+			copy.rotation.idt();
+			copy.scale.set(1,1,1);
+		} else if (parentTransform && copy.parent != null)
+			this.transform.mul(node.parent.globalTransform);
+		setBones();
+		copyAnimations(model.animations);
+		calculateTransforms();
+	}
+	
 	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
 	public ModelInstance(Model model, final String... rootNodeIds) {
 		this(model, null, rootNodeIds);
