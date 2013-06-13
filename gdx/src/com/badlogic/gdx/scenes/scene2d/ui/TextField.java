@@ -35,7 +35,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -67,6 +66,8 @@ public class TextField extends Widget {
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
+
+	static boolean isMac = System.getProperty("os.name").contains("Mac");
 
 	TextFieldStyle style;
 	String text, messageText;
@@ -178,7 +179,7 @@ public class TextField extends Widget {
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
 					boolean repeat = false;
 					boolean ctrl;
-					if (SharedLibraryLoader.isMac)
+					if (isMac)
 						ctrl = Gdx.input.isKeyPressed(Keys.SYM);
 					else
 						ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
