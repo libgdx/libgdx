@@ -65,13 +65,12 @@
     <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_MINICL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -81,7 +80,6 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_MINICL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -245,6 +243,18 @@
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btVector3.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bFile.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\btBulletFile.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btBulletWorldImporter.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\btBulletXmlWorldImporter.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\string_split.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinystr.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinyxml.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\..\swig-src\gdxBullet_wrap.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
