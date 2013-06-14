@@ -68,7 +68,6 @@ public class UnicodeFont {
 	private final DisplayList emptyDisplayList = new DisplayList();
 	private boolean nativeRendering;
 
-	private boolean displayListCaching = true;
 	private int baseDisplayListID = -1;
 	int eldestDisplayListID;
 	private final LinkedHashMap displayLists = new LinkedHashMap(DISPLAY_LIST_CACHE_SIZE, 1, true) {
@@ -276,9 +275,9 @@ public class UnicodeFont {
 
 	/** Identical to {@link #drawString(float, float, String, Color, int, int)} but returns a DisplayList which provides access to
 	 * the width and height of the text drawn. */
-	public DisplayList drawDisplayList (float x, float y, String text, Color color, int startIndex, int endIndex) {
+	public void drawDisplayList (float x, float y, String text, Color color, int startIndex, int endIndex) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
-		if (text.length() == 0) return emptyDisplayList;
+		if (text.length() == 0) return;
 		if (color == null) throw new IllegalArgumentException("color cannot be null.");
 
 		x -= paddingLeft;
@@ -288,42 +287,7 @@ public class UnicodeFont {
 
 		GL11.glColor4f(color.r, color.g, color.b, color.a);
 
-		DisplayList displayList = null;
-		if (displayListCaching && queuedGlyphs.isEmpty()) {
-			if (baseDisplayListID == -1) {
-				baseDisplayListID = GL11.glGenLists(DISPLAY_LIST_CACHE_SIZE);
-				if (baseDisplayListID == 0) {
-					baseDisplayListID = -1;
-					displayListCaching = false;
-					return new DisplayList();
-				}
-			}
-			// Try to use a display list compiled for this text.
-			displayList = (DisplayList)displayLists.get(displayListKey);
-			if (displayList != null) {
-				if (displayList.invalid)
-					displayList.invalid = false;
-				else {
-					GL11.glTranslatef(x, y, 0);
-					GL11.glCallList(displayList.id);
-					GL11.glTranslatef(-x, -y, 0);
-					return displayList;
-				}
-			} else if (displayList == null) {
-				// Compile a new display list.
-				displayList = new DisplayList();
-				int displayListCount = displayLists.size();
-				displayLists.put(displayListKey, displayList);
-				if (displayListCount < DISPLAY_LIST_CACHE_SIZE)
-					displayList.id = baseDisplayListID + displayListCount;
-				else
-					displayList.id = eldestDisplayListID;
-			}
-		}
-
 		GL11.glTranslatef(x, y, 0);
-
-		if (displayList != null) GL11.glNewList(displayList.id, GL11.GL_COMPILE_AND_EXECUTE);
 
 		char[] chars = text.substring(0, endIndex).toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
@@ -387,18 +351,7 @@ public class UnicodeFont {
 		}
 		if (lastBind != null) GL11.glEnd();
 
-		if (displayList != null) {
-			GL11.glEndList();
-			// Invalidate the display list if it had glyphs that need to be loaded.
-			if (!queuedGlyphs.isEmpty()) displayList.invalid = true;
-		}
-
 		GL11.glTranslatef(-x, -y, 0);
-
-		if (displayList == null) displayList = new DisplayList();
-		displayList.width = (short)maxWidth;
-		displayList.height = (short)(lines * getLineHeight() + totalHeight);
-		return displayList;
 	}
 
 	public void drawString (float x, float y, String text, Color color, int startIndex, int endIndex) {
@@ -459,11 +412,6 @@ public class UnicodeFont {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		if (text.length() == 0) return 0;
 
-		if (displayListCaching) {
-			DisplayList displayList = (DisplayList)displayLists.get(text);
-			if (displayList != null) return displayList.width;
-		}
-
 		char[] chars = text.toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 
@@ -490,11 +438,6 @@ public class UnicodeFont {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 		if (text.length() == 0) return 0;
 
-		if (displayListCaching) {
-			DisplayList displayList = (DisplayList)displayLists.get(text);
-			if (displayList != null) return displayList.height;
-		}
-
 		char[] chars = text.toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 
@@ -519,19 +462,11 @@ public class UnicodeFont {
 	public int getYOffset (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
 
-		DisplayList displayList = null;
-		if (displayListCaching) {
-			displayList = (DisplayList)displayLists.get(text);
-			if (displayList != null && displayList.yOffset != null) return displayList.yOffset.intValue();
-		}
-
 		int index = text.indexOf('\n');
 		if (index != -1) text = text.substring(0, index);
 		char[] chars = text.toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 		int yOffset = ascent + vector.getPixelBounds(null, 0, 0).y;
-
-		if (displayList != null) displayList.yOffset = new Short((short)yOffset);
 
 		return yOffset;
 	}
@@ -652,17 +587,6 @@ public class UnicodeFont {
 	/** Returns a list of {@link Effect}s that will be applied to the glyphs. */
 	public List getEffects () {
 		return effects;
-	}
-
-	/** Returns true if this UnicodeFont caches the glyph drawing instructions to improve performance. */
-	public boolean isCaching () {
-		return displayListCaching;
-	}
-
-	/** Sets if this UnicodeFont caches the glyph drawing instructions to improve performance. Default is true. Text rendering is
-	 * very slow without display list caching. */
-	public void setDisplayListCaching (boolean displayListCaching) {
-		this.displayListCaching = displayListCaching;
 	}
 
 	public void setNativeRendering (boolean nativeRendering) {
