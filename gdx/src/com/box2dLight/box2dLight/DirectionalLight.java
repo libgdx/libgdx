@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author kalle_h
+ ******************************************************************************/
+
 package com.box2dLight.box2dLight;
 
 import com.badlogic.gdx.graphics.Color;
@@ -18,89 +36,79 @@ public class DirectionalLight extends Light {
 	protected com.box2dLight.box2dLight.Box2dLight nativeLight;
 
 	final Vector2 start = new Vector2();
-	
+
 	float lightWidth;
 
-
-	/**
-	 * Directional lights simulate light source that locations is at infinite
-	 * distance. Direction and intensity is same everywhere. -90 direction is
-	 * straight from up.
+	/** Directional lights simulate light source that locations is at infinite distance. Direction and intensity is same everywhere.
+	 * -90 direction is straight from up.
 	 * 
 	 * @param rayHandler
 	 * @param rays
 	 * @param color
-	 * @param directionDegree
-	 */
-	public DirectionalLight(RayHandler rayHandler, int rays, Color color,
-		float distance, float x, float y, float directionDegree, float lightWidth) {
+	 * @param directionDegree */
+	public DirectionalLight (RayHandler rayHandler, int rays, Color color, float distance, float x, float y,
+		float directionDegree, float lightWidth) {
 
 		super(rayHandler, rays, color, directionDegree, distance);
 
 		start.x = x;
 		start.y = y;
-		
+
 		this.lightWidth = lightWidth;
-		
+
 		vertexNum = (vertexNum - 1) * 2;
 
 		setDirection(direction);
 
 		nativeLight = new Box2dLight(rayHandler.world, rays, false);
 
-		lightMesh = new Mesh(VertexDataType.VertexArray, staticLight, vertexNum, 0, new VertexAttribute(
-			Usage.Position, 2, "vertex_positions"), new VertexAttribute(
-				Usage.ColorPacked, 4, "quad_colors"), new VertexAttribute(
-					Usage.Generic, 1, "s"));
-		softShadowMesh = new Mesh(VertexDataType.VertexArray,staticLight, vertexNum, 0,
-			new VertexAttribute(Usage.Position, 2, "vertex_positions"),
-			new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
+		lightMesh = new Mesh(VertexDataType.VertexArray, staticLight, vertexNum, 0, new VertexAttribute(Usage.Position, 2,
+			"vertex_positions"), new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
+			new VertexAttribute(Usage.Generic, 1, "s"));
+		softShadowMesh = new Mesh(VertexDataType.VertexArray, staticLight, vertexNum, 0, new VertexAttribute(Usage.Position, 2,
+			"vertex_positions"), new VertexAttribute(Usage.ColorPacked, 4, "quad_colors"),
 			new VertexAttribute(Usage.Generic, 1, "s"));
 
 	}
 
 	@Override
-	public void setDirection(float direction) {
+	public void setDirection (float direction) {
 		super.direction = direction;
-		if (staticLight)
-			staticUpdate();
+		if (staticLight) staticUpdate();
 	}
 
 	float lastX;
 
 	@Override
-	void update() {
-		if (staticLight)
-			return;
+	void update () {
+		if (staticLight) return;
 
 		nativeLight.update_cone(start.x, start.y, distance, direction, lightWidth);
 
 		nativeLight.setLightMesh(segments, colorF, rayHandler.isGL20);
-		if( rayHandler.isGL20 )
-			lightMesh.setVertices(segments, 0, (rayNum*2)*4);
-		else
-			lightMesh.setVertices(segments, 0, (rayNum*2)*3);
+		if (rayHandler.isGL20) {
+			lightMesh.setVertices(segments, 0, (rayNum * 2) * 4);
+		} else {
+			lightMesh.setVertices(segments, 0, (rayNum * 2) * 3);
+		}
 
-		if (!soft || xray)
-			return;
+		if (!soft || xray) return;
 
 		nativeLight.setShadowMesh(segments, colorF, softShadowLenght, rayHandler.isGL20);
-		if( rayHandler.isGL20 )
-			softShadowMesh.setVertices(segments, 0, (rayNum*2)*4);
-		else
-			softShadowMesh.setVertices(segments, 0, (rayNum*2)*3);
-
+		if (rayHandler.isGL20) {
+			softShadowMesh.setVertices(segments, 0, (rayNum * 2) * 4);
+		} else {
+			softShadowMesh.setVertices(segments, 0, (rayNum * 2) * 3);
+		}
 	}
 
 	@Override
-	void render() {
+	void render () {
 		rayHandler.lightRenderedLastFrame++;
 		if (rayHandler.isGL20) {
-			lightMesh.render(rayHandler.lightShader, GL20.GL_TRIANGLE_STRIP, 0,
-				vertexNum);
+			lightMesh.render(rayHandler.lightShader, GL20.GL_TRIANGLE_STRIP, 0, vertexNum);
 			if (soft && !xray) {
-				softShadowMesh.render(rayHandler.lightShader,
-					GL20.GL_TRIANGLE_STRIP, 0, vertexNum);
+				softShadowMesh.render(rayHandler.lightShader, GL20.GL_TRIANGLE_STRIP, 0, vertexNum);
 			}
 		} else {
 			lightMesh.render(GL10.GL_TRIANGLE_STRIP, 0, vertexNum);
@@ -131,8 +139,7 @@ public class DirectionalLight extends Light {
 	public void setPosition (float x, float y) {
 		start.x = x;
 		start.y = y;
-		if (staticLight)
-			staticUpdate();
+		if (staticLight) staticUpdate();
 		start.set(x, y);
 	}
 
@@ -142,12 +149,11 @@ public class DirectionalLight extends Light {
 	}
 
 	@Override
-	public Vector2 getPosition() {
+	public Vector2 getPosition () {
 		tmpPosition.x = start.x;
 		tmpPosition.y = start.y;
 		return tmpPosition;
 	}
-
 
 	@Override
 	public float getX () {

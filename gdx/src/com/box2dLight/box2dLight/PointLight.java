@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author kalle_h
+ ******************************************************************************/
+
 package com.box2dLight.box2dLight;
 
 import com.badlogic.gdx.graphics.Color;
@@ -5,42 +23,34 @@ import com.badlogic.gdx.math.MathUtils;
 
 public class PointLight extends PositionalLight {
 
-	/**
-	 * @param rayHandler
+	/** @param rayHandler
 	 * @param rays
 	 * @param color
 	 * @param distance
 	 * @param x
-	 * @param y
-	 */
-	public PointLight(RayHandler rayHandler, int rays, Color color,
-			float distance, float x, float y) {
+	 * @param y */
+	public PointLight (RayHandler rayHandler, int rays, Color color, float distance, float x, float y) {
 		super(rayHandler, rays, color, distance, x, y, 0f);
-		//nothing to do...
+		// nothing to do...
 	}
 
-	/**
-	 * @param rayHandler
-	 * @param rays
-	 */
-	public PointLight(RayHandler rayHandler, int rays) {
+	/** @param rayHandler
+	 * @param rays */
+	public PointLight (RayHandler rayHandler, int rays) {
 		this(rayHandler, rays, Light.DefaultColor, 15f, 0f, 0f);
 	}
 
 	@Override
-	public void setDirection(float directionDegree) {
+	public void setDirection (float directionDegree) {
 	}
 
-	/**
-	 * setDistance(float dist) MIN capped to 1cm
+	/** setDistance(float dist) MIN capped to 1cm
 	 * 
-	 * @param dist
-	 */
-	public void setDistance(float dist) {
+	 * @param dist */
+	public void setDistance (float dist) {
 		dist *= RayHandler.gammaCorrectionParameter;
 		this.distance = dist < 0.01f ? 0.01f : dist;
-		if (staticLight)
-			staticUpdate();
+		if (staticLight) staticUpdate();
 	}
 
 }

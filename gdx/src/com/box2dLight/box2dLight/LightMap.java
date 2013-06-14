@@ -1,5 +1,22 @@
-package com.box2dLight.box2dLight;
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author kalle_h
+ ******************************************************************************/
 
+package com.box2dLight.box2dLight;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -29,15 +46,15 @@ class LightMap {
 
 	boolean lightMapDrawingDisabled;
 
-	public void render() {
+	public void render () {
 
 		boolean needed = rayHandler.lightRenderedLastFrame > 0;
 		// this way lot less binding
-		if (needed && rayHandler.blur)
-			gaussianBlur();
+		if (needed && rayHandler.blur) gaussianBlur();
 
-		if (lightMapDrawingDisabled)
+		if (lightMapDrawingDisabled) {
 			return;
+		}
 		frameBuffer.getColorBufferTexture().bind(0);
 
 		// at last lights are rendered over scene
@@ -53,17 +70,16 @@ class LightMap {
 			} else {
 				shader.begin();
 				Gdx.gl20.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
-				shader.setUniformf("ambient", c.r * c.a, c.g * c.a,
-						c.b * c.a, 1f - c.a);
+				shader.setUniformf("ambient", c.r * c.a, c.g * c.a, c.b * c.a, 1f - c.a);
 			}
-		//	shader.setUniformi("u_texture", 0);
+
 			lightMapMesh.render(shader, GL20.GL_TRIANGLE_FAN);
 			shader.end();
 		} else if (needed) {
 
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 			withoutShadowShader.begin();
-		//	withoutShadowShader.setUniformi("u_texture", 0);
+			// withoutShadowShader.setUniformi("u_texture", 0);
 			lightMapMesh.render(withoutShadowShader, GL20.GL_TRIANGLE_FAN);
 			withoutShadowShader.end();
 		}
@@ -71,7 +87,7 @@ class LightMap {
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
 	}
 
-	public void gaussianBlur() {
+	public void gaussianBlur () {
 
 		Gdx.gl20.glDisable(GL20.GL_BLEND);
 		for (int i = 0; i < rayHandler.blurNum; i++) {
@@ -80,7 +96,7 @@ class LightMap {
 			pingPongBuffer.begin();
 			{
 				blurShader.begin();
-		//		blurShader.setUniformi("u_texture", 0);
+				// blurShader.setUniformi("u_texture", 0);
 				blurShader.setUniformf("dir", 1f, 0f);
 				lightMapMesh.render(blurShader, GL20.GL_TRIANGLE_FAN, 0, 4);
 				blurShader.end();
@@ -92,7 +108,7 @@ class LightMap {
 			frameBuffer.begin();
 			{
 				blurShader.begin();
-			//	blurShader.setUniformi("u_texture", 0);
+				// blurShader.setUniformi("u_texture", 0);
 				blurShader.setUniformf("dir", 0f, 1f);
 				lightMapMesh.render(blurShader, GL20.GL_TRIANGLE_FAN, 0, 4);
 				blurShader.end();
@@ -105,17 +121,13 @@ class LightMap {
 
 	}
 
-	public LightMap(RayHandler rayHandler, int fboWidth, int fboHeight) {
+	public LightMap (RayHandler rayHandler, int fboWidth, int fboHeight) {
 		this.rayHandler = rayHandler;
 
-		if (fboWidth <= 0)
-			fboWidth = 1;
-		if (fboHeight <= 0)
-			fboHeight = 1;
-		frameBuffer = new FrameBuffer(Format.RGBA8888, fboWidth,
-				fboHeight, false);
-		pingPongBuffer = new FrameBuffer(Format.RGBA8888, fboWidth,
-				fboHeight, false);
+		if (fboWidth <= 0) fboWidth = 1;
+		if (fboHeight <= 0) fboHeight = 1;
+		frameBuffer = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false);
+		pingPongBuffer = new FrameBuffer(Format.RGBA8888, fboWidth, fboHeight, false);
 
 		lightMapMesh = createLightMapMesh();
 
@@ -128,7 +140,7 @@ class LightMap {
 
 	}
 
-	void dispose() {
+	void dispose () {
 		shadowShader.dispose();
 		blurShader.dispose();
 		lightMapMesh.dispose();
@@ -137,7 +149,7 @@ class LightMap {
 
 	}
 
-	private Mesh createLightMapMesh() {
+	private Mesh createLightMapMesh () {
 		float[] verts = new float[VERT_SIZE];
 		// vertex coord
 		verts[X1] = -1;
@@ -165,9 +177,8 @@ class LightMap {
 		verts[U4] = 0f;
 		verts[V4] = 1f;
 
-		Mesh tmpMesh = new Mesh(true, 4, 0, new VertexAttribute(
-				Usage.Position, 2, "a_position"), new VertexAttribute(
-				Usage.TextureCoordinates, 2, "a_texCoord"));
+		Mesh tmpMesh = new Mesh(true, 4, 0, new VertexAttribute(Usage.Position, 2, "a_position"), new VertexAttribute(
+			Usage.TextureCoordinates, 2, "a_texCoord"));
 
 		tmpMesh.setVertices(verts);
 		return tmpMesh;
