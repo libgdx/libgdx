@@ -946,7 +946,16 @@ b2ContactFilter defaultFilter;
 			return 0.0f;
 		}
 	}
-	
+
+	public long createDirectionalLight( int rays )
+	{
+		return jniCreateDirectionalLight(addr, rays);
+	}
+
+	private native long jniCreateDirectionalLight(long addr, int rays); /*
+	return (jlong) new DirectionalLight( (b2World *)addr, rays );
+*/
+
 	public long createPointLight( int rays )
 	{
 		return jniCreatePointLight(addr, rays);

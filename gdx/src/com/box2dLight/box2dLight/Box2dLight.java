@@ -32,11 +32,14 @@ public class Box2dLight implements Disposable {
 	
 	final int nbRays;
 	
-	public Box2dLight(World world, int nbRays)
+	public Box2dLight(World world, int nbRays, boolean isPoint)
 	{
 		this.world = world;
 		this.nbRays= nbRays;
-		pointAddr  = world.createPointLight(nbRays);
+		if( isPoint )
+			pointAddr = world.createPointLight(nbRays);
+		else
+			pointAddr = world.createDirectionalLight(nbRays);
 	}
 
 	public void releaseLight()
@@ -59,7 +62,10 @@ public class Box2dLight implements Disposable {
 	public void update_cone(float x, float y, float distance,
 		float direction, float coneSize)
 	{
-		jniComputeOcclusion(pointAddr, x, y, distance, direction, coneSize);
+		if( pointAddr==0 )
+			jniComputeOcclusion(pointAddr, x, y, distance, direction, coneSize);
+		else
+			jniComputeOcclusion(pointAddr, x, y, distance, direction, coneSize);
 	}
 
 	public void setLightMesh( float[] segments, float colorF, boolean isGL20 )

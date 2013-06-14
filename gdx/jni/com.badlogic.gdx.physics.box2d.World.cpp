@@ -661,10 +661,20 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast(JNIE
 
 }
 
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePointLight(JNIEnv* env, jobject object, jlong addr, jint rays) {
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateDirectionalLight(JNIEnv* env, jobject object, jlong addr, jint rays) {
 
 
 //@line:955
+
+	return (jlong) new DirectionalLight( (b2World *)addr, rays );
+
+
+}
+
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreatePointLight(JNIEnv* env, jobject object, jlong addr, jint rays) {
+
+
+//@line:964
 
 	return (jlong) new PointLight( (b2World *)addr, rays );
 

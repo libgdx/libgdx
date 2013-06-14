@@ -281,6 +281,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniRayCast
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateDirectionalLight
+ * Signature: (JI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateDirectionalLight
+  (JNIEnv *, jobject, jlong, jint);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreatePointLight
  * Signature: (JI)J
  */
