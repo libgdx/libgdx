@@ -56,7 +56,7 @@ LOCAL_SRC_FILES := Box2D/Collision/b2BroadPhase.cpp\
 	Box2D/Dynamics/Joints/b2WheelJoint.cpp\
 	Box2D/Rope/b2Rope.cpp\
 	com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp\
-	com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp\
+    com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp\
 	com.badlogic.gdx.graphics.glutils.ETC1.cpp\
 	com.badlogic.gdx.math.Matrix4.cpp\
 	com.badlogic.gdx.physics.box2d.Body.cpp\
@@ -82,6 +82,7 @@ LOCAL_SRC_FILES := Box2D/Collision/b2BroadPhase.cpp\
 	com.badlogic.gdx.physics.box2d.Shape.cpp\
 	com.badlogic.gdx.physics.box2d.World.cpp\
 	com.badlogic.gdx.utils.BufferUtils.cpp\
+	com.box2dLight.box2dLight.Box2dLight.cpp\
 	etc1/etc1_utils.cpp\
 	gdx2d/gdx2d.c\
 	gdx2d/stb_image.c\
