@@ -42,42 +42,42 @@ public final class Method {
 		method.setAccessible(accessible);
 	}
 
-	/** Return true if the method includes the abstract modifier. */
+	/** Return true if the method includes the {@code abstract} modifier. */
 	public boolean isAbstract () {
 		return Modifier.isAbstract(method.getModifiers());
 	}
 
-	/** Return true if the method does not include any of the private, protected, or public modifiers. */
+	/** Return true if the method does not include any of the {@code private}, {@code protected}, or {@code public} modifiers. */
 	public boolean isDefaultAccess () {
 		return !isPrivate() && !isProtected() && !isPublic();
 	}
 
-	/** Return true if the method includes the final modifier. */
+	/** Return true if the method includes the {@code final} modifier. */
 	public boolean isFinal () {
 		return Modifier.isFinal(method.getModifiers());
 	}
 
-	/** Return true if the method includes the private modifier. */
+	/** Return true if the method includes the {@code private} modifier. */
 	public boolean isPrivate () {
 		return Modifier.isPrivate(method.getModifiers());
 	}
 
-	/** Return true if the method includes the protected modifier. */
+	/** Return true if the method includes the {@code protected} modifier. */
 	public boolean isProtected () {
 		return Modifier.isProtected(method.getModifiers());
 	}
 
-	/** Return true if the method includes the public modifier. */
+	/** Return true if the method includes the {@code public} modifier. */
 	public boolean isPublic () {
 		return Modifier.isPublic(method.getModifiers());
 	}
 
-	/** Return true if the method includes the native modifier. */
+	/** Return true if the method includes the {@code native} modifier. */
 	public boolean isNative () {
 		return Modifier.isNative(method.getModifiers());
 	}
 
-	/** Return true if the method includes the static modifier. */
+	/** Return true if the method includes the {@code static} modifier. */
 	public boolean isStatic () {
 		return Modifier.isStatic(method.getModifiers());
 	}

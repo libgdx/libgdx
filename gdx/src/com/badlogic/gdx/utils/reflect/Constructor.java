@@ -36,13 +36,13 @@ public final class Constructor {
 		try {
 			return constructor.newInstance(args);
 		} catch (IllegalArgumentException e) {
-			throw new ReflectionException("Illegal argument(s) supplied to constructor for class: " + constructor.getDeclaringClass().getName(), e);
+			throw new ReflectionException("Illegal argument(s) supplied to constructor for class: " + getDeclaringClass().getName(), e);
 		} catch (InstantiationException e) {
-			throw new ReflectionException("Could not instantiate instance of class: " + constructor.getDeclaringClass().getName(), e);
+			throw new ReflectionException("Could not instantiate instance of class: " + getDeclaringClass().getName(), e);
 		} catch (IllegalAccessException e) {
-			throw new ReflectionException("Could not instantiate instance of class: " + constructor.getDeclaringClass().getName(), e);
+			throw new ReflectionException("Could not instantiate instance of class: " + getDeclaringClass().getName(), e);
 		} catch (InvocationTargetException e) {
-			throw new ReflectionException("Exception occurred in constructor for class: " + constructor.getDeclaringClass().getName(), e);
+			throw new ReflectionException("Exception occurred in constructor for class: " + getDeclaringClass().getName(), e);
 		}
 	}
 
