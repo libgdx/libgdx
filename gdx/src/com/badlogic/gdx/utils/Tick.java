@@ -18,7 +18,8 @@ package com.badlogic.gdx.utils;
 
 /** @author semtiko */
 public class Tick {
-  private long delay, time;
+	private long delay;
+	private long time;
 
 	/**
 	 * @param delay Delay time in milliseconds
@@ -33,6 +34,13 @@ public class Tick {
 	 */
 	public void setCurrentTime() {
 		this.time = TimeUtils.millis();
+	}
+
+	/**
+	 * @param delay Sets new delay value in milliseconds
+	 */
+	public void setDelay(long delay) {
+		this.delay = delay;
 	}
 
 	public boolean ready() {
