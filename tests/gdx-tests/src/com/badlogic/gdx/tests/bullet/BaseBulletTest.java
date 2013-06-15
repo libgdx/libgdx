@@ -101,7 +101,7 @@ public class BaseBulletTest extends BulletTest {
 		camera.lookAt(0, 0, 0);
 		camera.update();
 		
-		// Create some simple meshes
+		// Create some simple models
 		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
 			Usage.Position | Usage.Normal);

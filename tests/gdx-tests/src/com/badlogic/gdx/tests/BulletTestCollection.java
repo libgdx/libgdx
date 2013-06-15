@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.tests.box2d.Box2DTest;
+import com.badlogic.gdx.tests.bullet.BasicBulletTest;
 import com.badlogic.gdx.tests.bullet.BasicShapesTest;
 import com.badlogic.gdx.tests.bullet.BulletTest;
 import com.badlogic.gdx.tests.bullet.CollisionTest;
@@ -54,9 +55,9 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
 public class BulletTestCollection extends GdxTest implements InputProcessor, GestureListener {
-	protected final BulletTest[] tests = {new ShootTest(), new BasicShapesTest(), new KinematicTest(), new ConstraintsTest(), 
-		new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), new InternalTickTest(), 
-		new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(), new ContactCallbackTest(),
+	protected final BulletTest[] tests = {new BasicBulletTest(), new ShootTest(), new BasicShapesTest(), new KinematicTest(), 
+		new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new RayCastTest(), new RayPickRagdollTest(), 
+		new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(), new ContactCallbackTest(),
 		new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new ImportTest()};
 	
 	protected int testIndex = 0;
