@@ -114,7 +114,7 @@ public class BasicBulletTest extends BulletTest {
 			Usage.Position | Usage.Normal);
 		models.add(sphereModel);
 		// Load the bullet library
-		Bullet.init();
+		BaseBulletTest.init(); // Normally use: Bullet.init();
 		// Create the bullet world
 		collisionConfiguration = new btDefaultCollisionConfiguration();
 		dispatcher = new btCollisionDispatcher(collisionConfiguration);

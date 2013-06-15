@@ -57,7 +57,7 @@ public class BaseBulletTest extends BulletTest {
 	private final static String customDesktopLib = null;//"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 	
 	private static boolean initialized = false;
-	private static void init() {
+	public static void init() {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
 		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null)
