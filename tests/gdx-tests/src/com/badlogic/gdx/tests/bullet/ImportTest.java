@@ -40,7 +40,7 @@ public class ImportTest extends BaseBulletTest {
 			btRigidBody result = new btRigidBody(mass, null, shape, localInertia);
 			
 			String nodeName = bodyName.split("_", 2)[0]+"_model";
-			ModelInstance instance = new ModelInstance(model, nodeName, true, true, true);
+			ModelInstance instance = new ModelInstance(model, nodeName, true, true);
 			instance.transform.set(startTransform);
 			
 			BulletEntity entity = new BulletEntity(instance, result);

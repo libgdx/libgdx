@@ -47,18 +47,55 @@ public class ModelInstance implements RenderableProvider {
 		this(model, (String[])null);
 	}
 	
+	/** @param model The source {@link Model}
+	 * @param nodeId The ID of the root {@link Node} of the {@link Model} for the instance to contain
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final String nodeId, boolean mergeTransform) {
+		this(model, null, nodeId, false, false, mergeTransform);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
+	 * @param nodeId The ID of the root {@link Node} of the {@link Model} for the instance to contain
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean mergeTransform) {
+		this(model, transform, nodeId, false, false, mergeTransform);
+	}
+
+	/** Recursively searches the mode for the specified node.
+	 * @param model The source {@link Model}
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final String nodeId, boolean parentTransform, boolean mergeTransform) {
+		this(model, null, nodeId, true, parentTransform, mergeTransform);
+	}
+	
+	/** Recursively searches the mode for the specified node.
+	 * @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean parentTransform, boolean mergeTransform) {
+		this(model, transform, nodeId, true, parentTransform, mergeTransform);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param recursive True to recursively search the Model's node tree, false to only search for a root node
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
 	public ModelInstance(Model model, final String nodeId, boolean recursive, boolean parentTransform, boolean mergeTransform) {
 		this(model, null, nodeId, recursive, parentTransform, mergeTransform);
 	}
 	
-	/**
-	 * @param model The source {@link Model}
+	/** @param model The source {@link Model}
 	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
 	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
 	 * @param recursive True to recursively search the Model's node tree, false to only search for a root node
 	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
-	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. 
-	 */
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
 	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean recursive, boolean parentTransform, boolean mergeTransform) {
 		this.model = model;
 		this.transform = transform == null ? new Matrix4() : transform; 
