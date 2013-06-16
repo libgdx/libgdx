@@ -48,7 +48,7 @@ public class BaseAnimationController {
 			out.idt();
 			out.translate(translation);
 			out.rotate(rotation);
-			out.scl(scale);
+			out.scale(scale.x, scale.y, scale.z);
 			return out;
 		}
 		@Override

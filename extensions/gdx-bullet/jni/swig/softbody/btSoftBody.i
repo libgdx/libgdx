@@ -123,53 +123,58 @@ struct	Config
 
 %template(btSparseSdf3) btSparseSdf<3>;
 
+%typemap(javaimports) btSoftBody %{
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+%}
+
 %{
 #include <BulletSoftBody/btSoftBody.h>
 %}
 %include "BulletSoftBody/btSoftBody.h"
 
 %extend btSoftBody {
-	
-	/*int offset = posOffset / sizeof(btScalar);
-			int size = vertexSize / sizeof(btScalar);
-			btAlignedObjectArray<btVector3>	vtx;
-			vtx.resize(vertexCount);
-			for (int i = 0; i < vertexCount; i++) {
-				const int o = i*size+offset;
-				vtx[i] = btVector3(vertices[o], vertices[o+1], vertices[o+2]);
-			}
-			btSoftBody *result = new btSoftBody(worldInfo, vtx.size(), &vtx[0], 0);*/
-	
 	/**
 	 * vertexCount: the amount of vertices
 	 * vertexSize: the size in bytes of one vertex
 	 * posOffset: the offset within a vertex to the position
 	 * triangleCount: the amount of triangle (size per triangle = 3 * sizeof(short))
 	 */
-	btSoftBody(btSoftBodyWorldInfo *worldInfo, float *vertices, int vertexCount, int vertexSize, int posOffset, short *indices, int triangleCount) {
+	btSoftBody(btSoftBodyWorldInfo *worldInfo, float *vertices, int vertexSize, int posOffset, short *indices, int indexOffset, int numVertices, short *indexMap, int indexMapOffset) {		
 		int offset = posOffset / sizeof(btScalar);
 		int size = vertexSize / sizeof(btScalar);
-		btAlignedObjectArray<btVector3>	vtx;
-		vtx.resize(vertexCount);
-		for (int i = 0; i < vertexCount; i++) {
-			const int o = i*size+offset;
-			vtx[i] = btVector3(vertices[o], vertices[o+1], vertices[o+2]);
-		}
-		btSoftBody *result = new btSoftBody(worldInfo, vtx.size(), &vtx[0], 0);
+		btAlignedObjectArray<btVector3>	points;
 		
-		/*btSoftBody *result = new btSoftBody(worldInfo, vertexCount, 0, 0);
-		for (int i = 0; i < vertexCount; i++) {
-			const int o = i*size+offset;
-			result->m_nodes[i].m_x.m_floats[0] = vertices[o];
-			result->m_nodes[i].m_x.m_floats[1] = vertices[o+1];
-			result->m_nodes[i].m_x.m_floats[2] = vertices[o+2];
-		}*/
+		for (int i = 0; i < numVertices; i++) {
+			const float * const &verts = &vertices[indices[indexOffset+i]*size+offset];
+			btVector3 point(verts[0], verts[1], verts[2]);
+			const int n = points.size();
+			int idx = -1;
+			for (int j = 0; j < n; j++) {
+				if (points[j]==point) {
+					idx = j;
+					break;
+				}
+			}
+			if (idx < 0) {
+				points.push_back(point);
+				idx = n;
+			}
+			indexMap[indexMapOffset+i] = (short)idx; 
+		}
+		
+		const int vertexCount = points.size();
+		btSoftBody *result = new btSoftBody(worldInfo, vertexCount, &points[0], 0);
 		
 		btAlignedObjectArray<bool> chks;
 		chks.resize(vertexCount * vertexCount, false);
-		for(int i=0, ni=triangleCount*3;i<ni;i+=3)
+		for(int i=0; i<numVertices; i+=3)
 		{
-			const int idx[]={indices[i],indices[i+1],indices[i+2]};
+			const int idx[]={indexMap[indexMapOffset+i],indexMap[indexMapOffset+i+1],indexMap[indexMapOffset+i+2]};
 #define IDX(_x_,_y_) ((_y_)*vertexCount+(_x_))
 			for(int j=2,k=0;k<3;j=k++)
 			{
@@ -214,6 +219,19 @@ struct	Config
 		}
 	}
 	
+	void getVertices(float *vertices, int vertexSize, int posOffset, short *indices, int indexOffset, int numVertices, short *indexMap, int indexMapOffset) {
+		int offset = posOffset / (sizeof(btScalar));
+		int size = vertexSize / (sizeof(btScalar));
+		for (int i = 0; i < numVertices; i++) {
+			const int vidx = indices[indexOffset+i]*size+offset;
+			const int pidx = indexMap[indexMapOffset+i];
+			const float * const &point = $self->m_nodes[pidx].m_x.m_floats;
+			vertices[vidx  ] = point[0];
+			vertices[vidx+1] = point[1];
+			vertices[vidx+2] = point[2];
+		}
+	}
+	
 	int getFaceCount() {
 		return $self->m_faces.size();
 	}
@@ -252,7 +270,7 @@ struct	Config
 	void setConfig_kSK_SPLT_CL(btScalar v) { $self->m_cfg.kSK_SPLT_CL = v; }
 	void setConfig_kSS_SPLT_CL(btScalar v) { $self->m_cfg.kSS_SPLT_CL = v; }
 	void setConfig_maxvolume(btScalar v) { $self->m_cfg.maxvolume = v; }
-	void setConfig_ktimescale(btScalar v) { $self->m_cfg.timescale = v; }
+	void setConfig_timescale(btScalar v) { $self->m_cfg.timescale = v; }
 	void setConfig_viterations(int v) { $self->m_cfg.viterations = v; }
 	void setConfig_piterations(int v) { $self->m_cfg.piterations = v; }
 	void setConfig_diterations(int v) { $self->m_cfg.diterations = v; }
