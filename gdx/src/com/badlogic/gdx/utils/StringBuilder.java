@@ -423,7 +423,7 @@ public class StringBuilder implements Appendable, CharSequence {
 	}
 
 	/** Sets the current length to a new value. If the new length is larger than the current length, then the new characters at the
-	 * end of this object will contain the {@code char} value of {@code \u0000}.
+	 * end of this object will contain the {@code char} value of {@code null}.
 	 * 
 	 * @param newLength the new length of this StringBuilder.
 	 * @exception IndexOutOfBoundsException if {@code length < 0}.
