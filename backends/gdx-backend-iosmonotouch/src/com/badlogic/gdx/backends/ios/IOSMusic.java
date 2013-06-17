@@ -82,6 +82,13 @@ public class IOSMusic implements Music {
 	public float getVolume () {
 		return volume;
 	}
+	
+	@Override
+	public void setPan (float pan, float volume) {
+		player.set_Pan(pan);
+		player.set_Volume(volume);
+		this.volume = volume;
+	}
 
 	@Override
 	public float getPosition () {

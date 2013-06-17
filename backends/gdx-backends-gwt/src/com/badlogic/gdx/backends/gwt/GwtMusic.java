@@ -80,6 +80,11 @@ public class GwtMusic implements Music {
 	public float getVolume () {
 		return volume;
 	}
+	
+	@Override
+	public void setPan (float pan, float volume) {
+		//FIXME
+	}
 
 	@Override
 	public float getPosition () {

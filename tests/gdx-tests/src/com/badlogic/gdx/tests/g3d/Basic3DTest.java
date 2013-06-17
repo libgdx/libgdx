@@ -12,12 +12,16 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.shaders.CompositeShader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.g3d.utils.CompositeShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.UBJsonReader;
 
 public class Basic3DTest extends GdxTest implements ApplicationListener {
 	public PerspectiveCamera cam;
@@ -26,10 +30,12 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 	public Model model;
 	public ModelInstance instance;
 	public Lights lights;
+	public CompositeShader shader;
 	
 	@Override
 	public void create () {
-		modelBatch = new ModelBatch();
+		modelBatch = new ModelBatch(new CompositeShaderProvider());
+//		modelBatch = new ModelBatch();
 		lights = new Lights();
 		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
@@ -44,6 +50,9 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
+		
+//		model = new G3dModelLoader(new UBJsonReader()).loadModel(Gdx.files.internal("data/g3d/knight.g3db"));
+//		instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
@@ -56,7 +65,7 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);
-		modelBatch.render(instance, lights);
+		modelBatch.render(instance, lights, shader);
 		modelBatch.end();
 	}
 	

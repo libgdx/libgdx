@@ -41,6 +41,9 @@ public final class VertexAttributes {
 
 	/** the size of a single vertex in bytes **/
 	public final int vertexSize;
+	
+	/** cache of the value calculated by {@link #getMask()} **/
+	private long mask = -1;
 
 	/** Constructor, sets the vertex attributes in a specific order */
 	public VertexAttributes (VertexAttribute... attributes) {
@@ -153,5 +156,21 @@ public final class VertexAttributes {
 			if (!attributes[i].equals(other.attributes[i])) return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Calculates a mask based on the contained {@link VertexAttribute} instances. The mask
+	 * is a bit-wise or of each attributes {@link VertexAttribute#usage}.
+	 * @return the mask
+	 */
+	public long getMask () {
+		if(mask == -1) {
+			long result = 0;
+			for(int i = 0; i < attributes.length; i++) {
+				result |= attributes[i].usage;
+			}
+			mask = result;
+		}
+		return mask;
 	}
 }

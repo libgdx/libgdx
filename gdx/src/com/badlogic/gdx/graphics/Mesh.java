@@ -296,9 +296,12 @@ public class Mesh implements Disposable {
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
 	 * fixed point an IllegalArgumentException will be thrown.
 	 * 
-	 * @param vertices the vertices. */
-	public void setVertices (float[] vertices) {
+	 * @param vertices the vertices.
+	 * @return the mesh for invocation chaining.*/
+	public Mesh setVertices (float[] vertices) {
 		this.vertices.setVertices(vertices, 0, vertices.length);
+		
+		return this;
 	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
@@ -306,9 +309,12 @@ public class Mesh implements Disposable {
 	 * 
 	 * @param vertices the vertices.
 	 * @param offset the offset into the vertices array
-	 * @param count the number of floats to use */
-	public void setVertices (float[] vertices, int offset, int count) {
+	 * @param count the number of floats to use 
+	 * @return the mesh for invocation chaining.*/
+	public Mesh setVertices (float[] vertices, int offset, int count) {
 		this.vertices.setVertices(vertices, offset, count);
+		
+		return this;
 	}
 
 	/** Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
@@ -357,18 +363,24 @@ public class Mesh implements Disposable {
 
 	/** Sets the indices of this Mesh
 	 * 
-	 * @param indices the indices */
-	public void setIndices (short[] indices) {
+	 * @param indices the indices
+	 * @return the mesh for invocation chaining. */
+	public Mesh setIndices (short[] indices) {
 		this.indices.setIndices(indices, 0, indices.length);
+		
+		return this;
 	}
 
 	/** Sets the indices of this Mesh.
 	 * 
 	 * @param indices the indices
 	 * @param offset the offset into the indices array
-	 * @param count the number of indices to copy */
-	public void setIndices (short[] indices, int offset, int count) {
+	 * @param count the number of indices to copy
+	 * @return the mesh for invocation chaining. */
+	public Mesh setIndices (short[] indices, int offset, int count) {
 		this.indices.setIndices(indices, offset, count);
+		
+		return this;
 	}
 
 	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold all the Mesh's indices.
@@ -680,12 +692,31 @@ public class Mesh implements Disposable {
 		return extendBoundingBox(out.inf(), offset, count);
 	}
 	
+	/** Calculate the {@link BoundingBox} of the specified part.
+	 * @param out the bounding box to store the result in. 
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the value specified by out. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out, int offset, int count, final Matrix4 transform) {
+		return extendBoundingBox(out.inf(), offset, count, transform);
+	}
+
 	/** Extends the specified {@link BoundingBox} with the specified part.
 	 * @param out the bounding box to store the result in. 
 	 * @param offset the start index of the part.
 	 * @param count the amount of indices the part contains. 
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox(final BoundingBox out, int offset, int count) {
+		return extendBoundingBox(out, offset, count, null);
+	}
+	
+	private final Vector3 tmpV = new Vector3();
+	/** Extends the specified {@link BoundingBox} with the specified part.
+	 * @param out the bounding box to store the result in. 
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the value specified by out. */
+	public BoundingBox extendBoundingBox(final BoundingBox out, int offset, int count, final Matrix4 transform) {
 		int numIndices = getNumIndices();
 		if (offset < 0 || count < 1 || offset + count > numIndices)
 			throw new GdxRuntimeException("Not enough indices");
@@ -701,19 +732,28 @@ public class Mesh implements Disposable {
 		case 1:
 			for (int i = offset; i < end; i++) {
 				final int idx = index.get(i) * vertexSize + posoff;
-				out.ext(verts.get(idx), 0, 0);
+				tmpV.set(verts.get(idx), 0, 0);
+				if (transform != null)
+					tmpV.mul(transform);
+				out.ext(tmpV);
 			}
 			break;
 		case 2:
 			for (int i = offset; i < end; i++) {
 				final int idx = index.get(i) * vertexSize + posoff;
-				out.ext(verts.get(idx), verts.get(idx + 1), 0);
+				tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+				if (transform != null)
+					tmpV.mul(transform);
+				out.ext(tmpV);
 			}
 			break;
 		case 3:
 			for (int i = offset; i < end; i++) {
 				final int idx = index.get(i) * vertexSize + posoff;
-				out.ext(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+				tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+				if (transform != null)
+					tmpV.mul(transform);
+				out.ext(tmpV);
 			}
 			break;
 		}

@@ -63,7 +63,7 @@ public class ParallelAction extends Action {
 		if (complete) return true;
 		complete = true;
 		Array<Action> actions = this.actions;
-		for (int i = 0, n = actions.size; i < n; i++)
+		for (int i = 0, n = actions.size; i < n && actor != null; i++)
 			if (!actions.get(i).act(delta)) complete = false;
 		return complete;
 	}

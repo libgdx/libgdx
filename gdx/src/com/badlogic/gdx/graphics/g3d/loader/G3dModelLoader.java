@@ -112,7 +112,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				short[] partIndices = new short[indices.size()];
 				int k = 0;
 				for (JsonValue value = indices.child(); value != null; value = value.next(), k++) {
-					partIndices[k] = (short)indices.getInt(k);
+					partIndices[k] = (short)value.asInt();
 				}
 				jsonPart.indices = partIndices;
 				parts.add(jsonPart);
@@ -185,12 +185,18 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				jsonMaterial.id = id;
 							
 				// Read material colors
-				jsonMaterial.diffuse = parseColor(material.get("diffuse"), Color.WHITE);
-				jsonMaterial.ambient = parseColor(material.get("ambient"), Color.BLACK);
-				jsonMaterial.emissive = parseColor(material.get("emissive"), Color.BLACK);
-				
-			   // Read specular
-				jsonMaterial.specular = parseColor(material.get("specular"), Color.BLACK);
+				final JsonValue diffuse = material.get("diffuse");
+				if (diffuse != null)
+					jsonMaterial.diffuse = parseColor(diffuse);
+				final JsonValue ambient = material.get("ambient");
+				if (ambient != null)
+					jsonMaterial.ambient = parseColor(ambient);
+				final JsonValue emissive= material.get("emissive");
+				if (emissive!= null)
+					jsonMaterial.emissive = parseColor(emissive);
+				final JsonValue specular= material.get("specular");
+				if (specular!= null)
+					jsonMaterial.specular = parseColor(specular);
 				// Read shininess
 				jsonMaterial.shininess = material.getFloat("shininess", 0.0f);
 				// Read opacity
@@ -210,7 +216,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						String fileName = texture.getString("filename", null);
 						if(fileName == null)
 							throw new GdxRuntimeException("Texture needs filename.");
-						jsonTexture.fileName = materialDir + (materialDir.endsWith("/") ? "" : "/") + fileName;
+						jsonTexture.fileName = materialDir + (materialDir.length() == 0 || materialDir.endsWith("/") ? "" : "/") + fileName;
 						
 						jsonTexture.uvTranslation = readVector2(texture.get("uvTranslation"), 0f, 0f);
 						jsonTexture.uvScaling = readVector2(texture.get("uvScaling"), 1f, 1f);
@@ -256,11 +262,8 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		return ModelTexture.USAGE_UNKNOWN;
 	}
 
-	private Color parseColor (JsonValue colorArray, Color defaultColor) {
-		if(colorArray == null) {
-			return defaultColor;
-		}
-		else if(colorArray.size() == 3)
+	private Color parseColor (JsonValue colorArray) {
+		if(colorArray.size >= 3)
 			return new Color(colorArray.getFloat(0), colorArray.getFloat(1), colorArray.getFloat(2), 1.0f);
 		else
 			throw new GdxRuntimeException("Expected Color values <> than three.");
@@ -269,7 +272,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	private Vector2 readVector2 (JsonValue vectorArray, float x, float y) {
 		if(vectorArray == null)
 			return new Vector2(x, y);
-		else if(vectorArray.size() == 2)
+		else if(vectorArray.size == 2)
 			return new Vector2(vectorArray.getFloat(0), vectorArray.getFloat(1));
 		else
 			throw new GdxRuntimeException("Expected Vector2 values <> than two.");

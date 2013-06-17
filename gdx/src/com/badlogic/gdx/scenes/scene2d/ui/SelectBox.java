@@ -54,6 +54,7 @@ public class SelectBox extends Widget {
 	SelectList list;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
+	int maxListCount;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -78,6 +79,17 @@ public class SelectBox extends Widget {
 				return true;
 			}
 		});
+	}
+
+	/** Set the max number of items to display when the select box is opened. Set to 0 (the default) to display as many as fit in
+	 * the stage height. */
+	public void setMaxListCount (int maxListCount) {
+		this.maxListCount = maxListCount;
+	}
+
+	/** @return Max number of dropdown List items to display when the box is opened, or <= 0 to display them all. */
+	public int getMaxListCount () {
+		return maxListCount;
 	}
 
 	public void setStyle (SelectBoxStyle style) {
@@ -254,8 +266,12 @@ public class SelectBox extends Widget {
 			list.setItems(items);
 			list.setSelectedIndex(selectedIndex);
 
-			// Show the list above or below the select box, limited to the available height.
-			float height = getPrefHeight();
+			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
+			float itemHeight = list.getItemHeight();
+			float height = itemHeight * (maxListCount <= 0 ? items.length : Math.min(maxListCount, items.length));
+			Drawable background = getStyle().background;
+			if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
 			boolean below = true;
@@ -266,13 +282,6 @@ public class SelectBox extends Widget {
 				} else
 					height = heightBelow;
 			}
-
-			// Fit items evenly.
-			float itemHeight = list.getItemHeight();
-			float backgroundPadding = getStyle().background.getTopHeight() + getStyle().background.getBottomHeight();
-			height -= backgroundPadding;
-			height -= height % itemHeight;
-			height += backgroundPadding;
 
 			if (below)
 				setY(tmpCoords.y - height);

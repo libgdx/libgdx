@@ -65,7 +65,7 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	 */
 	public BulletConstructor (final Model model, final float mass) {
 		final BoundingBox boundingBox = new BoundingBox(); 
-		model.getBoundingBox(boundingBox);
+		model.calculateBoundingBox(boundingBox);
 		final Vector3 dimensions = boundingBox.getDimensions();
 		create(model, mass, dimensions.x, dimensions.y, dimensions.z);
 	}

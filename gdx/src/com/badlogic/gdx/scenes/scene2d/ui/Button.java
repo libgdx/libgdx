@@ -72,8 +72,6 @@ public class Button extends Table {
 	public Button (ButtonStyle style) {
 		initialize();
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
 	}
 
 	private void initialize () {

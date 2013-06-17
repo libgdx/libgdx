@@ -16,10 +16,6 @@
 
 package com.badlogic.gdx.assets;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
@@ -27,35 +23,37 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.async.AsyncExecutor;
+import com.badlogic.gdx.utils.async.AsyncResult;
+import com.badlogic.gdx.utils.async.AsyncTask;
 
 /** Responsible for loading an asset through an {@link AssetLoader} based on an {@link AssetDescriptor}. Implements
  * {@link Callable} and is used with an {@link ExecutorService threadpool} to load parts of an asset asynchronously if the asset is
  * loaded with an {@link AsynchronousAssetLoader}.
  * 
  * @author mzechner */
-class AssetLoadingTask implements Callable<Void> {
+class AssetLoadingTask implements AsyncTask<Void> {
 	AssetManager manager;
 	final AssetDescriptor assetDesc;
 	final AssetLoader loader;
-	final ExecutorService threadPool;
+	final AsyncExecutor executor;
 	final long startTime;
 
 	volatile boolean asyncDone = false;
-	boolean dependenciesLoaded = false;
-	Array<AssetDescriptor> dependencies;
-	Future<Void> depsFuture = null;
-
-	Future<Void> loadFuture = null;
-	Object asset = null;
+	volatile boolean dependenciesLoaded = false;
+	volatile Array<AssetDescriptor> dependencies;
+	volatile AsyncResult<Void> depsFuture = null;
+	volatile AsyncResult<Void> loadFuture = null;
+	volatile Object asset = null;
 
 	int ticks = 0;
-	boolean cancel = false;
+	volatile boolean cancel = false;
 
-	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, ExecutorService threadPool) {
+	public AssetLoadingTask (AssetManager manager, AssetDescriptor assetDesc, AssetLoader loader, AsyncExecutor threadPool) {
 		this.manager = manager;
 		this.assetDesc = assetDesc;
 		this.loader = loader;
-		this.threadPool = threadPool;
+		this.executor = threadPool;
 		startTime = manager.log.getLevel() == Logger.DEBUG ? TimeUtils.nanoTime() : 0;
 	}
 
@@ -66,9 +64,7 @@ class AssetLoadingTask implements Callable<Void> {
 		if (dependenciesLoaded == false) {
 			dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
 			if (dependencies != null) {
-				for (AssetDescriptor desc : dependencies) {
-					manager.injectDependency(assetDesc.fileName, desc);
-				}
+				manager.injectDependencies(assetDesc.fileName, dependencies);
 			} else {
 				// if we have no dependencies, we load the async part of the task immediately.
 				asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
@@ -105,9 +101,7 @@ class AssetLoadingTask implements Callable<Void> {
 				asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
 				return;
 			}
-			for (AssetDescriptor desc : dependencies) {
-				manager.injectDependency(assetDesc.fileName, desc);
-			}
+			manager.injectDependencies(assetDesc.fileName, dependencies);
 		} else {
 			asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
 		}
@@ -117,7 +111,7 @@ class AssetLoadingTask implements Callable<Void> {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
 		if (!dependenciesLoaded) {
 			if (depsFuture == null) {
-				depsFuture = threadPool.submit(this);
+				depsFuture = executor.submit(this);
 			} else {
 				if (depsFuture.isDone()) {
 					try {
@@ -133,7 +127,7 @@ class AssetLoadingTask implements Callable<Void> {
 			}
 		} else {
 			if (loadFuture == null && !asyncDone) {
-				loadFuture = threadPool.submit(this);
+				loadFuture = executor.submit(this);
 			} else {
 				if (asyncDone) {
 					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);

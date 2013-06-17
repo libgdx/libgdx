@@ -101,6 +101,21 @@ public class AndroidMusic implements Music {
 	public float getVolume () {
 		return volume;
 	}
+	
+	@Override
+	public void setPan (float pan, float volume) {
+		float leftVolume = volume;
+		float rightVolume = volume;
+
+		if (pan < 0) {
+			rightVolume *= (1 - Math.abs(pan));
+		} else if (pan > 0) {
+			leftVolume *= (1 - Math.abs(pan));
+		}
+
+		player.setVolume(leftVolume, rightVolume);
+		this.volume = volume;
+	}
 
 	@Override
 	public void stop () {

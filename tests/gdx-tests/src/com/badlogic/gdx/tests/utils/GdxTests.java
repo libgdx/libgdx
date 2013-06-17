@@ -36,12 +36,15 @@ import java.util.List;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
+
+import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -83,8 +86,8 @@ public class GdxTests {
 		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
-		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class, Basic3DSceneTest.class,
-		ModelTest.class, Basic3DTest.class, ShaderTest.class, SkeletonTest.class, HexagonalTiledMapTest.class));
+		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class, Basic3DSceneTest.class, Animation3DTest.class,
+		ModelTest.class, Basic3DTest.class, ShaderTest.class, SkeletonTest.class, HexagonalTiledMapTest.class, FogTest.class));
 	
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());

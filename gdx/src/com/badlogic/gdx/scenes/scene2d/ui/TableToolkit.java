@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.ReflectionPool;
 
 /** The libgdx implementation of the table layout functionality.
  * @author Nathan Sweet */
-class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
+public class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
 	static boolean drawDebug;
 	static Pool<Cell> cellPool = new Pool() {
 		protected Cell newObject () {

@@ -54,7 +54,7 @@ import java.util.List;
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	static {
-		Toolkit.instance = new TableToolkit();
+		if (Toolkit.instance == null) Toolkit.instance = new TableToolkit();
 	}
 
 	private final TableLayout layout;

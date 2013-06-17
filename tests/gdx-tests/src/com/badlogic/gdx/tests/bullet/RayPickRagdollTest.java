@@ -97,7 +97,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, Vector3.tmp);
 			world.collisionWorld.rayTest(ray.origin, Vector3.tmp, cb);
 			if (cb.hasHit()) {
-				btRigidBody body = btRigidBody.upcast(cb.getM_collisionObject());
+				btRigidBody body = (btRigidBody)(cb.getM_collisionObject());
 				if (body != null && !body.isStaticObject() && !body.isKinematicObject()) {
 					pickedBody = body;
 					body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
@@ -255,8 +255,10 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	
 	protected Model createCapsuleModel(float radius, float height) {
 		final float hh = radius + 0.5f * height;
-		return modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, 
+		Model result = modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
 			Usage.Position | Usage.Normal);
+		disposables.add(result);
+		return result;
 	}
 }
