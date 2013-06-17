@@ -84,7 +84,7 @@
 			<arg value="-I."/>
 						<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
-			<arg value="-Isrc/extras/serialize"/>
+			<arg value="-Isrc/extras/serialize/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -102,7 +102,7 @@
 			<arg value="-I."/>
 						<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
-			<arg value="-Isrc/extras/serialize"/>
+			<arg value="-Isrc/extras/serialize/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -141,7 +141,7 @@
 			<arg value="-I."/>
 						<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
-			<arg value="-Isrc/extras/serialize"/>
+			<arg value="-Isrc/extras/serialize/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -159,7 +159,7 @@
 			<arg value="-I."/>
 						<arg value="-Isrc/bullet/"/>
 			<arg value="-Isrc/custom/"/>
-			<arg value="-Isrc/extras/serialize"/>
+			<arg value="-Isrc/extras/serialize/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
