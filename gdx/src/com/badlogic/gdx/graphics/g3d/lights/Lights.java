@@ -1,12 +1,12 @@
 package com.badlogic.gdx.graphics.g3d.lights;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Lights {
 	public final Color ambientLight = new Color(0,0,0,1);
+    public Color fog;
 	public final Array<DirectionalLight> directionalLights = new Array<DirectionalLight>();
 	public final Array<PointLight> pointLights = new Array<PointLight>();
 	
