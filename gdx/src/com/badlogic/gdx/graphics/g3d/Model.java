@@ -61,16 +61,16 @@ import com.badlogic.gdx.utils.Pool;
  *
  */
 public class Model implements Disposable {
-	/** the meshes of the model **/
-	public final Array<Mesh> meshes = new Array<Mesh>();
-	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
-	public final Array<MeshPart> meshParts = new Array<MeshPart>();
-	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes**/
+	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes **/
 	public final Array<Material> materials = new Array<Material>();
 	/** root nodes of the model **/
 	public final Array<Node> nodes = new Array<Node>();
 	/** animations of the model, modifying node transformations **/
 	public final Array<Animation> animations = new Array<Animation>();
+	/** the meshes of the model **/
+	public final Array<Mesh> meshes = new Array<Mesh>();
+	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
+	public final Array<MeshPart> meshParts = new Array<MeshPart>();
 	/** List of disposable resources like textures or meshes the Model is responsible for disposing **/
 	protected final Array<Disposable> disposables = new Array<Disposable>();
 	
@@ -294,21 +294,6 @@ public class Model implements Disposable {
 	}
 	
 	/**
-	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
-	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
-	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
-	 * is calculated, based on the parent's world transform and the local transform of each Node.</p>
-	 * 
-	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
-	 * was modified.
-	 */
-	public void calculateTransforms() {
-		for(Node node: nodes) {
-			node.calculateTransforms(true);
-		}
-	}
-	
-	/**
 	 * Adds a {@link Disposable} to be managed and disposed by this Model. Can
 	 * be used to keep track of manually loaded textures for {@link ModelInstance}.
 	 * @param disposable the Disposable
@@ -328,28 +313,82 @@ public class Model implements Disposable {
 			disposable.dispose();
 		}
 	}
-
-	private final BoundingBox meshBounds = new BoundingBox();
-	public BoundingBox getBoundingBox(final BoundingBox out) {
-		out.inf();
-		for (Mesh mesh : meshes) {
-			mesh.calculateBoundingBox(meshBounds);
-			out.ext(meshBounds);
+	
+	/**
+	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
+	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
+	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
+	 * is calculated, based on the parent's world transform and the local transform of each Node.
+	 * Finally, the animation bone matrices are updated accordingly.</p>
+	 * 
+	 * This method can be used to recalculate all transforms if any of the Node's local properties (translation, rotation, scale)
+	 * was modified.
+	 */
+	public void calculateTransforms() {
+		for(Node node: nodes) {
+			node.calculateTransforms(true);
 		}
+		for(Node node: nodes) {
+			node.calculateBoneTransforms(true);
+		}
+	}
+	
+	/** Calculate the bounding box of this model instance.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out) {
+		out.inf();
+		return extendBoundingBox(out);
+	}
+	
+	/** Extends the bounding box with the bounds of this model instance.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox extendBoundingBox(final BoundingBox out) {
+		for (final Node node : nodes)
+			calculateBoundingBox(out, node);
 		return out;
 	}
 	
-	public Node getNode(final String id) {
-		return getNode(id, nodes);
+	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
+		for (final NodePart mpm : node.parts)
+			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices, node.globalTransform);
+		for (final Node child : node.children)
+			calculateBoundingBox(out, child);
 	}
 	
-	private Node getNode(final String id, final Iterable<Node> nodes) {
+	public Animation getAnimation(final String id) {
+		for (final Animation anim : animations)
+			if (anim.id.compareTo(id)==0)
+				return anim;
+		return null;
+	}
+	
+	public Material getMaterial(final String id) {
+		for (final Material mtl : materials)
+			if (mtl.id.compareTo(id)==0)
+				return mtl;
+		return null;
+	}
+	
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive) {
+		return getNode(id, nodes, recursive);
+	}
+	
+	/** @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id) {
+		return getNode(id, true);
+	}
+	
+	protected Node getNode(final String id, final Iterable<Node> nodes, boolean recursive) {
 		for (final Node node : nodes) {
 			if (node.id.equals(id))
 				return node;
-			final Node n = getNode(id, node.children);
-			if (n != null)
-				return n;
+			if (recursive) {
+				final Node n = getNode(id, node.children, recursive);
+				if (n != null)
+					return n;
+			}
 		}
 		return null;
 	}

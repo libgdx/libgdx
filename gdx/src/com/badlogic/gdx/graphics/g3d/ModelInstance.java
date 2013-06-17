@@ -29,25 +29,89 @@ import com.badlogic.gdx.utils.Pool;
  *
  */
 public class ModelInstance implements RenderableProvider {
+	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes **/
+	public final Array<Material> materials = new Array<Material>();
+	/** root nodes of the model **/
+	public final Array<Node> nodes = new Array<Node>();
+	/** animations of the model, modifying node transformations **/
+	public final Array<Animation> animations = new Array<Animation>();
 	/** the {@link Model} this instances derives from **/
 	public final Model model;
 	/** the world transform **/
 	public Matrix4 transform;
-	/** a copy of the materials of the original model **/
-	public final Array<Material> materials = new Array<Material>();
-	/** a copy of the nodes of the original model, referencing the copied materials in their {@link NodePart} instances **/
-	public final Array<Node> nodes = new Array<Node>();
-	/** a copy of the animations of the original model **/
-	public final Array<Animation> animations = new Array<Animation>();
 	/** user definable value, which is passed to the shader. */
 	public Object userData;
-	
-	public Animation currentAnimation; // FIXME should allow multiple animations or at least transition?
-	public float currentAnimTime; // FIXME should allow multiple animations or at least transition?
 	
 	/** Constructs a new ModelInstance with all nodes and materials of the given model. */
 	public ModelInstance(Model model) {
 		this(model, (String[])null);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param nodeId The ID of the root {@link Node} of the {@link Model} for the instance to contain
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final String nodeId, boolean mergeTransform) {
+		this(model, null, nodeId, false, false, mergeTransform);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
+	 * @param nodeId The ID of the root {@link Node} of the {@link Model} for the instance to contain
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean mergeTransform) {
+		this(model, transform, nodeId, false, false, mergeTransform);
+	}
+
+	/** Recursively searches the mode for the specified node.
+	 * @param model The source {@link Model}
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final String nodeId, boolean parentTransform, boolean mergeTransform) {
+		this(model, null, nodeId, true, parentTransform, mergeTransform);
+	}
+	
+	/** Recursively searches the mode for the specified node.
+	 * @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean parentTransform, boolean mergeTransform) {
+		this(model, transform, nodeId, true, parentTransform, mergeTransform);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param recursive True to recursively search the Model's node tree, false to only search for a root node
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final String nodeId, boolean recursive, boolean parentTransform, boolean mergeTransform) {
+		this(model, null, nodeId, recursive, parentTransform, mergeTransform);
+	}
+	
+	/** @param model The source {@link Model}
+	 * @param transform The {@link Matrix4} instance for this ModelInstance to reference or null to create a new matrix. 
+	 * @param nodeId The ID of the {@link Node} within the {@link Model} for the instance to contain
+	 * @param recursive True to recursively search the Model's node tree, false to only search for a root node
+	 * @param parentTransform True to apply the parent's node transform to the instance (only applicable if recursive is true).
+	 * @param mergeTransform True to apply the source node transform to the instance transform, resetting the node transform. */
+	public ModelInstance(Model model, final Matrix4 transform, final String nodeId, boolean recursive, boolean parentTransform, boolean mergeTransform) {
+		this.model = model;
+		this.transform = transform == null ? new Matrix4() : transform; 
+		nodePartBones.clear();
+		Node copy, node = model.getNode(nodeId, recursive);
+		this.nodes.add(copy = copyNode(null, node));
+		if (mergeTransform) {
+			this.transform.mul(parentTransform ? node.globalTransform : node.localTransform);
+			copy.translation.set(0,0,0);
+			copy.rotation.idt();
+			copy.scale.set(1,1,1);
+		} else if (parentTransform && copy.parent != null)
+			this.transform.mul(node.parent.globalTransform);
+		setBones();
+		copyAnimations(model.animations);
+		calculateTransforms();
 	}
 	
 	/** Constructs a new ModelInstance with only the specified nodes and materials of the given model. */
@@ -233,7 +297,48 @@ public class ModelInstance implements RenderableProvider {
 				animations.add(animation);
 		}
 	}
-
+	
+	
+	/**
+	 * Traverses the Node hierarchy and collects {@link Renderable} instances for every
+	 * node with a graphical representation. Renderables are obtained from the provided
+	 * pool. The resulting array can be rendered via a {@link ModelBatch}.
+	 * 
+	 * @param renderables the output array
+	 * @param pool the pool to obtain Renderables from
+	 */
+	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
+		for(Node node: nodes) {
+			getRenderables(node, renderables, pool);
+		}
+	}
+	
+	protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
+		if(node.parts.size > 0) {
+			for(NodePart nodePart: node.parts) {
+				Renderable renderable = pool.obtain();
+				renderable.material = nodePart.material;
+				renderable.mesh = nodePart.meshPart.mesh;
+				renderable.meshPartOffset = nodePart.meshPart.indexOffset;
+				renderable.meshPartSize = nodePart.meshPart.numVertices;
+				renderable.primitiveType = nodePart.meshPart.primitiveType;
+				renderable.bones = nodePart.bones;
+				if (nodePart.bones == null && transform != null)
+					renderable.worldTransform.set(transform).mul(node.globalTransform);
+				else if (transform != null)
+					renderable.worldTransform.set(transform);
+				else
+					renderable.worldTransform.idt();
+				renderable.userData = userData;
+				renderables.add(renderable);
+			}
+		}
+		
+		for(Node child: node.children) {
+			getRenderables(child, renderables, pool);
+		}
+	}
+	
 	/**
 	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
@@ -282,6 +387,13 @@ public class ModelInstance implements RenderableProvider {
 		return null;
 	}
 	
+	public Material getMaterial(final String id) {
+		for (final Material mtl : materials)
+			if (mtl.id.compareTo(id)==0)
+				return mtl;
+		return null;
+	}
+	
 	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
 	 * @return The node with the specified id, or null if not found. */
 	public Node getNode(final String id, boolean recursive) {
@@ -304,45 +416,5 @@ public class ModelInstance implements RenderableProvider {
 			}
 		}
 		return null;
-	}
-	
-	/**
-	 * Traverses the Node hierarchy and collects {@link Renderable} instances for every
-	 * node with a graphical representation. Renderables are obtained from the provided
-	 * pool. The resulting array can be rendered via a {@link ModelBatch}.
-	 * 
-	 * @param renderables the output array
-	 * @param pool the pool to obtain Renderables from
-	 */
-	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
-		for(Node node: nodes) {
-			getRenderables(node, renderables, pool);
-		}
-	}
-	
-	private void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
-		if(node.parts.size > 0) {
-			for(NodePart nodePart: node.parts) {
-				Renderable renderable = pool.obtain();
-				renderable.material = nodePart.material;
-				renderable.mesh = nodePart.meshPart.mesh;
-				renderable.meshPartOffset = nodePart.meshPart.indexOffset;
-				renderable.meshPartSize = nodePart.meshPart.numVertices;
-				renderable.primitiveType = nodePart.meshPart.primitiveType;
-				renderable.bones = nodePart.bones;
-				if (nodePart.bones == null && transform != null)
-				renderable.worldTransform.set(transform).mul(node.globalTransform);
-				else if (transform != null)
-					renderable.worldTransform.set(transform);
-				else
-					renderable.worldTransform.idt();
-				renderable.userData = userData;
-				renderables.add(renderable);
-			}
-		}
-		
-		for(Node child: node.children) {
-			getRenderables(child, renderables, pool);
-		}
 	}
 }

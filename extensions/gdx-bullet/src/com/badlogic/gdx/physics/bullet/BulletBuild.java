@@ -45,7 +45,7 @@ public class BulletBuild {
 
 		// generate build scripts
 		String[] excludes = {"src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"};
-		String[] headers = {"src/bullet/", "src/custom/"};
+		String[] headers = {"src/bullet/", "src/custom/", "src/extras/serialize"};
 
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";

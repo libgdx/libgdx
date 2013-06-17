@@ -59,8 +59,6 @@ public class ContactCallbackTest extends BaseBulletTest {
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = -5f;
 	
-	protected BulletEntity ground;
-	
 	TestContactProcessedListener contactProcessedListener;
 	
 	@Override
@@ -68,7 +66,7 @@ public class ContactCallbackTest extends BaseBulletTest {
 		super.create();
 		
 		// Create the entities
-		(ground = world.add("ground", 0f, 0f, 0f))
+		world.add("ground", 0f, 0f, 0f)
 			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		for (int x = 0; x < BOXCOUNT_X; x++) {
@@ -101,6 +99,5 @@ public class ContactCallbackTest extends BaseBulletTest {
 			contactProcessedListener.delete();
 		contactProcessedListener = null;
 		super.dispose();
-		ground = null;
 	}
 }
