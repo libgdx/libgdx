@@ -46,8 +46,8 @@ public final class ClassReflection {
 	}
 
 	/** Creates a new instance of the class represented by the supplied Class. */
-	static public Object newInstance (Class c) throws ReflectionException {
-		return ReflectionCache.getType(c).newInstance();
+	static public <T> T newInstance (Class<T> c) throws ReflectionException {
+		return (T)ReflectionCache.getType(c).newInstance();
 	}
 
 	/** Returns an array of {@link Constructor} containing the public constructors of the class represented by the supplied Class. */
