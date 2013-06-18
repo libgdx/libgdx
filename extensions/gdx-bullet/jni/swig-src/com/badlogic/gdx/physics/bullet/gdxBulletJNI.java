@@ -4829,9 +4829,6 @@ public class gdxBulletJNI {
   public final static native boolean btBulletWorldImporter_loadFileFromMemory__SWIG_1(long jarg1, btBulletWorldImporter jarg1_, java.nio.ByteBuffer jarg2, int jarg3);
   public final static native void btBulletWorldImporter_director_connect(btBulletWorldImporter obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btBulletWorldImporter_change_ownership(btBulletWorldImporter obj, long cptr, boolean take_or_release);
-  public final static native long new_btBulletXmlWorldImporter(long jarg1, btDynamicsWorld jarg1_);
-  public final static native void delete_btBulletXmlWorldImporter(long jarg1);
-  public final static native boolean btBulletXmlWorldImporter_loadFile(long jarg1, btBulletXmlWorldImporter jarg1_, String jarg2);
   public final static native long btVector4_SWIGUpcast(long jarg1);
   public final static native long GrahamVector3_SWIGUpcast(long jarg1);
   public final static native long btDefaultMotionState_SWIGUpcast(long jarg1);
@@ -4957,7 +4954,6 @@ public class gdxBulletJNI {
   public final static native long btSoftRigidDynamicsWorld_SWIGUpcast(long jarg1);
   public final static native long btSoftSoftCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btBulletWorldImporter_SWIGUpcast(long jarg1);
-  public final static native long btBulletXmlWorldImporter_SWIGUpcast(long jarg1);
 
   public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0(btIDebugDraw self, long from, long to, long color) {
     self.drawLine(new btVector3(from, false), new btVector3(to, false), new btVector3(color, false));
