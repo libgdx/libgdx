@@ -145,12 +145,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/extras/Serialize/BulletFileLoader/btBulletFile.cpp\
 	src/extras/Serialize/BulletWorldImporter/btBulletWorldImporter.cpp\
 	src/extras/Serialize/BulletWorldImporter/btWorldImporter.cpp\
-	src/extras/Serialize/BulletXmlWorldImporter/btBulletXmlWorldImporter.cpp\
-	src/extras/Serialize/BulletXmlWorldImporter/string_split.cpp\
-	src/extras/Serialize/BulletXmlWorldImporter/tinystr.cpp\
-	src/extras/Serialize/BulletXmlWorldImporter/tinyxml.cpp\
-	src/extras/Serialize/BulletXmlWorldImporter/tinyxmlerror.cpp\
-	src/extras/Serialize/BulletXmlWorldImporter/tinyxmlparser.cpp\
 	swig-src/gdxBullet_wrap.cpp
  
 include $(BUILD_SHARED_LIBRARY)

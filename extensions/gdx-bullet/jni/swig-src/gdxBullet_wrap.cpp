@@ -2434,11 +2434,8 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 
 
 
-//#include <BulletFileLoader/bFile.h>
-//#include <BulletFileLoader/btBulletFile.h>
 #include <BulletWorldImporter/btWorldImporter.h>
 #include <BulletWorldImporter/btBulletWorldImporter.h>
-#include <BulletXmlWorldImporter/btBulletXmlWorldImporter.h>
 
 SWIGINTERN char const *btWorldImporter_getNameForPointer__SWIG_1(btWorldImporter *self,unsigned long cPtr){
 		return self->getNameForPointer((void*)cPtr);
@@ -82595,53 +82592,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBull
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btBulletXmlWorldImporter(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btDynamicsWorld *arg1 = (btDynamicsWorld *) 0 ;
-  btBulletXmlWorldImporter *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btDynamicsWorld **)&jarg1; 
-  result = (btBulletXmlWorldImporter *)new btBulletXmlWorldImporter(arg1);
-  *(btBulletXmlWorldImporter **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btBulletXmlWorldImporter(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btBulletXmlWorldImporter *arg1 = (btBulletXmlWorldImporter *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btBulletXmlWorldImporter **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBulletXmlWorldImporter_1loadFile(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
-  jboolean jresult = 0 ;
-  btBulletXmlWorldImporter *arg1 = (btBulletXmlWorldImporter *) 0 ;
-  char *arg2 = (char *) 0 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btBulletXmlWorldImporter **)&jarg1; 
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
-    if (!arg2) return 0;
-  }
-  result = (bool)(arg1)->loadFile((char const *)arg2);
-  jresult = (jboolean)result; 
-  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
-  return jresult;
-}
-
-
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btVector4_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
@@ -83639,14 +83589,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBul
     (void)jenv;
     (void)jcls;
     *(btWorldImporter **)&baseptr = *(btBulletWorldImporter **)&jarg1;
-    return baseptr;
-}
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btBulletXmlWorldImporter_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-    jlong baseptr = 0;
-    (void)jenv;
-    (void)jcls;
-    *(btWorldImporter **)&baseptr = *(btBulletXmlWorldImporter **)&jarg1;
     return baseptr;
 }
 
