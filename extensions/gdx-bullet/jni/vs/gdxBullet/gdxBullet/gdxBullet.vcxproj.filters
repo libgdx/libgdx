@@ -67,9 +67,6 @@
     <Filter Include="Source Files\serialize\BulletWorldImporter">
       <UniqueIdentifier>{f280eaee-44db-41d8-8c43-31c91c59cca9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\serialize\BulletXmlWorldImporter">
-      <UniqueIdentifier>{831a64f3-2cc6-4c64-b035-d834654ae112}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\swig-src\gdxBullet_wrap.h">
@@ -481,24 +478,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp">
       <Filter>Source Files\serialize\BulletWorldImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\btBulletXmlWorldImporter.cpp">
-      <Filter>Source Files\serialize\BulletXmlWorldImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\string_split.cpp">
-      <Filter>Source Files\serialize\BulletXmlWorldImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinystr.cpp">
-      <Filter>Source Files\serialize\BulletXmlWorldImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinyxml.cpp">
-      <Filter>Source Files\serialize\BulletXmlWorldImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinyxmlerror.cpp">
-      <Filter>Source Files\serialize\BulletXmlWorldImporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletXmlWorldImporter\tinyxmlparser.cpp">
-      <Filter>Source Files\serialize\BulletXmlWorldImporter</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
