@@ -171,6 +171,8 @@
 		<include name="graphics/g3d/shaders/subshaders/TransformShader.java"/>
 		
 	<!-- graphics/g3d/utils -->
+	  <include name="graphics/g3d/utils/AnimationController.java"/>
+	  <include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
 		<include name="graphics/g3d/utils/CompositeShaderProvider.java"/>
@@ -476,7 +478,13 @@
 		<include name="utils/compression/rangecoder/BitTreeEncoder.java"/>
 		<include name="utils/compression/rangecoder/Decoder.java"/>
 		<include name="utils/compression/rangecoder/Encoder.java"/>
-
+		
+	<!-- utils/compression/rangecoder -->
+		<include name="utils/reflect/Constructor.java"/>
+		<include name="utils/reflect/Field.java"/>
+		<include name="utils/reflect/Method.java"/>
+		<include name="utils/reflect/Reflection.java"/>
+		<include name="utils/reflect/ReflectionException.java"/>		
 	</source>
 	
 	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />

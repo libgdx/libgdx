@@ -188,3 +188,5 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "softbody/gdxBulletSoftbody.i"
 
 %include "gdxMissingBulletMethods.i"
+
+%include "extras/serialize/gdxBulletSerialize.i"

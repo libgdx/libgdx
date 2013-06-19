@@ -1,13 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.shaders;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -121,6 +115,13 @@ public abstract class BaseShader implements Shader {
 		program.setUniformf(uniformLocations[what], value);
 		return true;
 	}
+
+    protected boolean set(int what, final float v1, final float v2, final float v3, final float v4) {
+        if (uniformLocations[what] < 0)
+            return false;
+        program.setUniformf(uniformLocations[what], v1, v2, v3, v4);
+        return true;
+    }
 	
 	protected boolean set(int what, final Color value) {
 		if (uniformLocations[what] < 0)

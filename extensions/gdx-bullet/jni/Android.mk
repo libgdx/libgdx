@@ -2,7 +2,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
  
 LOCAL_MODULE    := gdx-bullet
-LOCAL_C_INCLUDES := src/bullet/ src/custom/ 
+LOCAL_C_INCLUDES := src/bullet/ src/custom/ src/extras/serialize/ 
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
 LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__ -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE
@@ -139,6 +139,12 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/LinearMath/btSerializer.cpp\
 	src/bullet/LinearMath/btVector3.cpp\
 	src/custom/gdx/vector.cpp\
+	src/extras/Serialize/BulletFileLoader/bChunk.cpp\
+	src/extras/Serialize/BulletFileLoader/bDNA.cpp\
+	src/extras/Serialize/BulletFileLoader/bFile.cpp\
+	src/extras/Serialize/BulletFileLoader/btBulletFile.cpp\
+	src/extras/Serialize/BulletWorldImporter/btBulletWorldImporter.cpp\
+	src/extras/Serialize/BulletWorldImporter/btWorldImporter.cpp\
 	swig-src/gdxBullet_wrap.cpp
  
 include $(BUILD_SHARED_LIBRARY)

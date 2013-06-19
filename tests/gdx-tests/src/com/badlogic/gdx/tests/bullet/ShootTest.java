@@ -43,7 +43,7 @@ public class ShootTest extends BaseBulletTest {
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = 0f;
 	
-	protected BulletEntity ground;
+	BulletEntity ground;
 	
 	@Override
 	public void create () {

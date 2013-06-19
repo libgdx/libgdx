@@ -3,6 +3,7 @@ package com.badlogic.gdx.maps;
 import java.util.Iterator;
 
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /**
  * @brief Collection of MapObject instances
@@ -83,7 +84,7 @@ public class MapObjects implements Iterable<MapObject> {
 	public <T extends MapObject> Array<T> getByType(Class<T> type, Array<T> fill) {
 		fill.clear();
 		for (MapObject object : objects) {
-			if (type.isInstance(object)) {
+			if (ClassReflection.isInstance(type, object)) {
 				fill.add((T) object);
 			}
 		}

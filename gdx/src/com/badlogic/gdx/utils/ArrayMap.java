@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
  * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This may be acceptable for small maps and has the
@@ -62,8 +63,8 @@ public class ArrayMap<K, V> {
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
 	public ArrayMap (boolean ordered, int capacity, Class<K> keyArrayType, Class<V> valueArrayType) {
 		this.ordered = ordered;
-		keys = (K[])java.lang.reflect.Array.newInstance(keyArrayType, capacity);
-		values = (V[])java.lang.reflect.Array.newInstance(valueArrayType, capacity);
+		keys = (K[])ArrayReflection.newInstance(keyArrayType, capacity);
+		values = (V[])ArrayReflection.newInstance(valueArrayType, capacity);
 	}
 
 	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
@@ -334,11 +335,11 @@ public class ArrayMap<K, V> {
 	}
 
 	protected void resize (int newSize) {
-		K[] newKeys = (K[])java.lang.reflect.Array.newInstance(keys.getClass().getComponentType(), newSize);
+		K[] newKeys = (K[])ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
 		System.arraycopy(keys, 0, newKeys, 0, Math.min(keys.length, newKeys.length));
 		this.keys = newKeys;
 
-		V[] newValues = (V[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
+		V[] newValues = (V[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
 		System.arraycopy(values, 0, newValues, 0, Math.min(values.length, newValues.length));
 		this.values = newValues;
 	}
