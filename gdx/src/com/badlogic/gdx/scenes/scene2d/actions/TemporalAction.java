@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.utils.Pool;
 
 /** Base class for actions that transition over time using the percent complete.
  * @author Nathan Sweet */
@@ -40,19 +41,25 @@ abstract public class TemporalAction extends Action {
 
 	public boolean act (float delta) {
 		if (complete) return true;
-		if (time == 0) begin();
-		time += delta;
-		complete = time >= duration;
-		float percent;
-		if (complete)
-			percent = 1;
-		else {
-			percent = time / duration;
-			if (interpolation != null) percent = interpolation.apply(percent);
+		Pool pool = getPool();
+		setPool(null); // Ensure this action can't be returned to the pool while executing.
+		try {
+			if (time == 0) begin();
+			time += delta;
+			complete = time >= duration;
+			float percent;
+			if (complete)
+				percent = 1;
+			else {
+				percent = time / duration;
+				if (interpolation != null) percent = interpolation.apply(percent);
+			}
+			update(reverse ? 1 - percent : percent);
+			if (complete) end();
+			return complete;
+		} finally {
+			setPool(pool);
 		}
-		update(reverse ? 1 - percent : percent);
-		if (complete) end();
-		return complete;
 	}
 
 	/** Called the first time {@link #act(float)} is called. This is a good place to query the {@link #actor actor's} starting

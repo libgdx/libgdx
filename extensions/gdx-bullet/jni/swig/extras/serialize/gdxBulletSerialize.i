@@ -4,11 +4,8 @@
 %feature("nodirector") btBulletWorldImporter::createMultiSphereShape;
 
 %{
-//#include <BulletFileLoader/bFile.h>
-//#include <BulletFileLoader/btBulletFile.h>
 #include <BulletWorldImporter/btWorldImporter.h>
 #include <BulletWorldImporter/btBulletWorldImporter.h>
-#include <BulletXmlWorldImporter/btBulletXmlWorldImporter.h>
 %}
 
 %template(btStringArray) btAlignedObjectArray<char*>;
@@ -41,8 +38,5 @@
 	}
 %}
 
-//%include "BulletFileLoader/bFile.h"
-//%include "BulletFileLoader/btBulletFile.h"
 %include "BulletWorldImporter/btWorldImporter.h"
 %include "BulletWorldImporter/btBulletWorldImporter.h"
-%include "BulletXmlWorldImporter/btBulletXmlWorldImporter.h"

@@ -28,7 +28,7 @@ public class DelayAction extends DelegateAction {
 		this.duration = duration;
 	}
 
-	public boolean act (float delta) {
+	protected boolean delegate (float delta) {
 		if (time < duration) {
 			time += delta;
 			if (time < duration) return false;

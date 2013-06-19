@@ -19,6 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
 
 /** Executes a number of actions at the same time.
  * @author Nathan Sweet */
@@ -62,10 +63,18 @@ public class ParallelAction extends Action {
 	public boolean act (float delta) {
 		if (complete) return true;
 		complete = true;
-		Array<Action> actions = this.actions;
-		for (int i = 0, n = actions.size; i < n && actor != null; i++)
-			if (!actions.get(i).act(delta)) complete = false;
-		return complete;
+		Pool pool = getPool();
+		setPool(null); // Ensure this action can't be returned to the pool while executing.
+		try {
+			Array<Action> actions = this.actions;
+			for (int i = 0, n = actions.size; i < n && actor != null; i++) {
+				if (!actions.get(i).act(delta)) complete = false;
+				if (actor == null) return true; // This action was removed.
+			}
+			return complete;
+		} finally {
+			setPool(pool);
+		}
 	}
 
 	public void restart () {
