@@ -81,7 +81,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void onModuleLoad () {
-		consoleLog("onModuleLoad");
 		this.agentInfo = computeAgentInfo();
 		this.listener = getApplicationListener();
 		this.config = getConfig();
@@ -113,7 +112,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 
 		// initialize SoundManager2
-		SoundManager.init(GWT.getModuleBaseURL(), 9);
+		SoundManager.init(GWT.getModuleBaseURL(), 9, true);
 
 		// wait for soundmanager to load, this is fugly, but for
 		// some reason the ontimeout and onerror callbacks are never
@@ -147,7 +146,6 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	private void setupLoop () {
 		// setup modules
-		consoleLog("setupLoop");
 		try {			
 			graphics = new GwtGraphics(root, config);			
 		} catch (Throwable e) {
@@ -488,7 +486,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}		
 	}
 	
-	native void consoleLog(String message) /*-{
-		console.log( "GWT:" + message );
+	native static void consoleLog(String message) /*-{
+		console.log( "GWT: " + message );
 	}-*/;
 }
