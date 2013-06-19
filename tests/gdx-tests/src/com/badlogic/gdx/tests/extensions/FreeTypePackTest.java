@@ -34,9 +34,10 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * An example of packing many glyphs into a single texture atlas, using FreeTypeFontGenerator. 
- * This example also uses enum ordinals for fast access to a two-dimensional array, which stores BitmapFonts
- * by size and style. 
+ * An advanced example of packing many glyphs into a single texture atlas, using FreeTypeFontGenerator. 
+ * 
+ * This example uses enum ordinals for fast access to a two-dimensional array, which stores BitmapFonts
+ * by size and style. A more flexible solution might be to use an OjectMap and and IntMap instead.  
  * 
  * @author mattdesl AKA davedes
  */
