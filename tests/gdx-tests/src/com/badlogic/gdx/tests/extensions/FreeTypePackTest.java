@@ -136,6 +136,7 @@ public class FreeTypePackTest extends GdxTest {
 	public void dispose () {
 		super.dispose();
 		fontAtlasTexture.dispose(); //dispose the texture since we own it
+		batch.dispose();
 	}
 	
 	public BitmapFont getFont(FontStyle style, FontSize size) {
