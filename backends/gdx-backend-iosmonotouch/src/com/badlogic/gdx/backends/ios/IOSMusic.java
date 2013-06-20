@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.ios;
 
 import cli.MonoTouch.AVFoundation.AVAudioPlayer;
+import cli.MonoTouch.AVFoundation.AVAudioPlayerDelegate;
 
 import com.badlogic.gdx.audio.Music;
 
@@ -29,9 +30,13 @@ public class IOSMusic implements Music {
 
 	private AVAudioPlayer player;
 	private float volume = 1f;
+	
+	private AudioDelegate audioDelegate;
 
 	public IOSMusic (AVAudioPlayer player) {
 		this.player = player;
+		audioDelegate = new AudioDelegate(this);
+		this.player.set_Delegate(audioDelegate);
 	}
 
 	@Override
@@ -77,6 +82,13 @@ public class IOSMusic implements Music {
 	public float getVolume () {
 		return volume;
 	}
+	
+	@Override
+	public void setPan (float pan, float volume) {
+		player.set_Pan(pan);
+		player.set_Volume(volume);
+		this.volume = volume;
+	}
 
 	@Override
 	public float getPosition () {
@@ -88,5 +100,27 @@ public class IOSMusic implements Music {
 		stop();
 		player.Dispose();
 		player = null;
+	}
+	
+	@Override
+	public void setOnCompletionListener(OnCompletionListener listener) {
+		audioDelegate.listener = listener;
+	}
+	
+	private class AudioDelegate extends AVAudioPlayerDelegate {
+		
+		public OnCompletionListener listener;
+		private IOSMusic music;
+		
+		public AudioDelegate (IOSMusic music) {
+			this.music = music;
+			listener = null;
+		}
+		
+		@Override
+		public void FinishedPlaying(AVAudioPlayer player, boolean successful) {
+			if (listener != null)
+				listener.onCompletion(music);
+		}
 	}
 }

@@ -160,13 +160,22 @@
 				
 	<!-- graphics/g3d/shaders -->
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
+		<include name="graphics/g3d/shaders/CompositeShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
 		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
 		
+	<!-- graphics/g3d/shaders/subshaders -->
+		<include name="graphics/g3d/shaders/subshaders/BaseSubShader.java"/>
+		<include name="graphics/g3d/shaders/subshaders/DiffuseColorTextureShader.java"/>
+		<include name="graphics/g3d/shaders/subshaders/SubShader.java"/>
+		<include name="graphics/g3d/shaders/subshaders/TransformShader.java"/>
 		
 	<!-- graphics/g3d/utils -->
+	  <include name="graphics/g3d/utils/AnimationController.java"/>
+	  <include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
+		<include name="graphics/g3d/utils/CompositeShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
@@ -469,7 +478,13 @@
 		<include name="utils/compression/rangecoder/BitTreeEncoder.java"/>
 		<include name="utils/compression/rangecoder/Decoder.java"/>
 		<include name="utils/compression/rangecoder/Encoder.java"/>
-
+		
+	<!-- utils/compression/rangecoder -->
+		<include name="utils/reflect/Constructor.java"/>
+		<include name="utils/reflect/Field.java"/>
+		<include name="utils/reflect/Method.java"/>
+		<include name="utils/reflect/Reflection.java"/>
+		<include name="utils/reflect/ReflectionException.java"/>		
 	</source>
 	
 	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />

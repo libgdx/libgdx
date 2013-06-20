@@ -29,10 +29,13 @@ public class AndroidMusic implements Music {
 	private boolean isPrepared = true;
 	protected boolean wasPlaying = false;
 	private float volume = 1f;
+	private AndroidOnCompletionListener onCompletionListener;
 
 	AndroidMusic (AndroidAudio audio, MediaPlayer player) {
 		this.audio = audio;
 		this.player = player;
+		onCompletionListener = new AndroidOnCompletionListener(this);
+		this.player.setOnCompletionListener(onCompletionListener);
 	}
 
 	@Override
@@ -98,6 +101,21 @@ public class AndroidMusic implements Music {
 	public float getVolume () {
 		return volume;
 	}
+	
+	@Override
+	public void setPan (float pan, float volume) {
+		float leftVolume = volume;
+		float rightVolume = volume;
+
+		if (pan < 0) {
+			rightVolume *= (1 - Math.abs(pan));
+		} else if (pan > 0) {
+			leftVolume *= (1 - Math.abs(pan));
+		}
+
+		player.setVolume(leftVolume, rightVolume);
+		this.volume = volume;
+	}
 
 	@Override
 	public void stop () {
@@ -108,7 +126,30 @@ public class AndroidMusic implements Music {
 		isPrepared = false;
 	}
 
+	@Override
 	public float getPosition () {
 		return player.getCurrentPosition() / 1000f;
 	}
+	
+	@Override
+	public void setOnCompletionListener(OnCompletionListener listener) {
+		onCompletionListener.listener = listener;
+	}
+	
+	private class AndroidOnCompletionListener implements MediaPlayer.OnCompletionListener {
+		
+		public OnCompletionListener listener;
+		private AndroidMusic music;
+		
+		public AndroidOnCompletionListener (AndroidMusic music) {
+			this.music = music;
+			listener = null;
+		}
+
+		@Override
+		public void onCompletion (MediaPlayer mp) {
+			if (listener != null)
+				listener.onCompletion(music);
+		}
+	};
 }

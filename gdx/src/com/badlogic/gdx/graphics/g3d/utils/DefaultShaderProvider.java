@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
 	public String vertexShader;
@@ -29,8 +27,9 @@ public class DefaultShaderProvider extends BaseShaderProvider {
 	@Override
 	protected Shader createShader(final Renderable renderable) {
 		Gdx.app.log("DefaultShaderProvider", "Creating new shader");
-		if (Gdx.graphics.isGL20Available())
-			return new DefaultShader(vertexShader, fragmentShader, renderable.material, renderable.mesh.getVertexAttributes(), renderable.lights != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
+		if (Gdx.graphics.isGL20Available()) {
+            return new DefaultShader(vertexShader, fragmentShader, renderable.material, renderable.mesh.getVertexAttributes(), renderable.lights != null, renderable.lights != null && renderable.lights.fog != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
+        }
 		return new GLES10Shader();
 	}
 }

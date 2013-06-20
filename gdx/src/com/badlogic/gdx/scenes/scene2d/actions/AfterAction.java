@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -34,7 +35,7 @@ public class AfterAction extends DelegateAction {
 		waitForActions.clear();
 	}
 
-	public boolean act (float delta) {
+	protected boolean delegate (float delta) {
 		Array<Action> currentActions = actor.getActions();
 		if (currentActions.size == 1) waitForActions.clear();
 		for (int i = waitForActions.size - 1; i >= 0; i--) {

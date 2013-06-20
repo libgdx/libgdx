@@ -42,11 +42,13 @@ public class MeshShapeTest extends BaseBulletTest {
 		final Model sphereModel = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 8, 8, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
 			Usage.Position | Usage.Normal); 
+		disposables.add(sphereModel);
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(0.25f));
 		sphereConstructor.bodyInfo.setM_restitution(1f);
 		world.addConstructor("sphere", sphereConstructor);
 		
-		final Model sceneModel = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
+		final Model sceneModel = objLoader.loadModel(Gdx.files.internal("data/scene.obj"));
+		disposables.add(sceneModel);
 		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
 		sceneConstructor.bodyInfo.setM_restitution(0.25f);
 		world.addConstructor("scene", sceneConstructor);
@@ -63,11 +65,6 @@ public class MeshShapeTest extends BaseBulletTest {
 					.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 			}
 		}
-	}
-	
-	@Override
-	public void dispose () {
-		super.dispose();
 	}
 	
 	@Override

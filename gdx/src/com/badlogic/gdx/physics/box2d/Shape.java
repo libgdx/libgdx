@@ -30,7 +30,7 @@ public abstract class Shape {
 	/** Enum describing the type of a shape
 	 * @author mzechner */
 	public enum Type {
-		Circle, Polygon, Edge, Chain,
+		Circle, Edge, Polygon, Chain,
 	};
 
 	/** the address of the shape **/

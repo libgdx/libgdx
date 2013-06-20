@@ -69,4 +69,16 @@ public class IOSMusic implements Music {
 		return 0;
 	}
 
+	@Override
+	public void setPan(float pan, float volume) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setOnCompletionListener (OnCompletionListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -296,9 +296,12 @@ public class Mesh implements Disposable {
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
 	 * fixed point an IllegalArgumentException will be thrown.
 	 * 
-	 * @param vertices the vertices. */
-	public void setVertices (float[] vertices) {
+	 * @param vertices the vertices.
+	 * @return the mesh for invocation chaining.*/
+	public Mesh setVertices (float[] vertices) {
 		this.vertices.setVertices(vertices, 0, vertices.length);
+		
+		return this;
 	}
 
 	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
@@ -306,9 +309,12 @@ public class Mesh implements Disposable {
 	 * 
 	 * @param vertices the vertices.
 	 * @param offset the offset into the vertices array
-	 * @param count the number of floats to use */
-	public void setVertices (float[] vertices, int offset, int count) {
+	 * @param count the number of floats to use 
+	 * @return the mesh for invocation chaining.*/
+	public Mesh setVertices (float[] vertices, int offset, int count) {
 		this.vertices.setVertices(vertices, offset, count);
+		
+		return this;
 	}
 
 	/** Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
@@ -357,18 +363,24 @@ public class Mesh implements Disposable {
 
 	/** Sets the indices of this Mesh
 	 * 
-	 * @param indices the indices */
-	public void setIndices (short[] indices) {
+	 * @param indices the indices
+	 * @return the mesh for invocation chaining. */
+	public Mesh setIndices (short[] indices) {
 		this.indices.setIndices(indices, 0, indices.length);
+		
+		return this;
 	}
 
 	/** Sets the indices of this Mesh.
 	 * 
 	 * @param indices the indices
 	 * @param offset the offset into the indices array
-	 * @param count the number of indices to copy */
-	public void setIndices (short[] indices, int offset, int count) {
+	 * @param count the number of indices to copy
+	 * @return the mesh for invocation chaining. */
+	public Mesh setIndices (short[] indices, int offset, int count) {
 		this.indices.setIndices(indices, offset, count);
+		
+		return this;
 	}
 
 	/** Copies the indices from the Mesh to the short array. The short array must be large enough to hold all the Mesh's indices.

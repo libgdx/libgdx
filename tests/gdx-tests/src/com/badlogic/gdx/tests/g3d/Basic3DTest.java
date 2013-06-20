@@ -47,12 +47,12 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 		cam.far = 300f;
 		cam.update();
 
-//		ModelBuilder modelBuilder = new ModelBuilder();
-//		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
-//		instance = new ModelInstance(model);
-		
-		model = new G3dModelLoader(new UBJsonReader()).loadModel(Gdx.files.internal("data/g3d/knight.g3db"));
+		ModelBuilder modelBuilder = new ModelBuilder();
+		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
+		
+//		model = new G3dModelLoader(new UBJsonReader()).loadModel(Gdx.files.internal("data/g3d/knight.g3db"));
+//		instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}

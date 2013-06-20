@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -36,6 +37,10 @@ public class GLES10Shader implements Shader{
 	public GLES10Shader() {
 		if (Gdx.gl10 == null)
 			throw new GdxRuntimeException("This shader requires OpenGL ES 1.x");
+	}
+	
+	@Override
+	public void init () {
 	}
 	
 	@Override
@@ -145,8 +150,13 @@ public class GLES10Shader implements Shader{
 						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
 					}
 				} else if (attribute.type == TextureAttribute.Diffuse) {
-					if (currentTexture0 != ((TextureAttribute)attribute).textureDescription.texture)
-						(currentTexture0 = ((TextureAttribute)attribute).textureDescription.texture).bind(0);
+					TextureDescriptor textureDesc = ((TextureAttribute)attribute).textureDescription;
+					if (currentTexture0 != textureDesc.texture)
+						(currentTexture0 = textureDesc.texture).bind(0);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, textureDesc.minFilter);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, textureDesc.magFilter);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, textureDesc.uWrap);
+					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, textureDesc.vWrap);
 					Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 				}
 				else if ((attribute.type & IntAttribute.CullFace) == IntAttribute.CullFace)
