@@ -135,6 +135,10 @@ public class CompositeShader implements Shader {
 	}
 	
 	@Override
+	public void init () {
+	}
+
+	@Override
 	public int compareTo (Shader other) {
 		return 0;
 	}
