@@ -46,6 +46,7 @@
 - Added Music#setPan.
 - Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 - DelegateAction subclasses need to implement delegate() instead of act(). http://www.badlogicgames.com/forum/viewtopic.php?p=43576#p43576
+- FreeTypeFontGenerator allows you to specify the PixmapPacker now, to create an atlas with many different fonts (see FreeTypePackTest)
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
