@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +33,9 @@ import com.google.gwt.canvas.dom.client.Context2d;
 import com.google.gwt.canvas.dom.client.Context2d.Composite;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.typedarrays.shared.ArrayBuffer;
+import com.google.gwt.typedarrays.shared.Int8Array;
+import com.google.gwt.typedarrays.shared.TypedArrays;
 
 public class Pixmap implements Disposable {
 	public static Map<Integer, Pixmap> pixmaps = new HashMap<Integer, Pixmap>();
@@ -92,6 +96,22 @@ public class Pixmap implements Disposable {
 	public Pixmap (int width, int height, Format format) {
 		create(width, height, format);
 	}
+
+	public Pixmap (byte[] encodedData, int offset, int len) {
+		Int8Array data = TypedArrays.createInt8Array(encodedData.length);
+		data.set(encodedData);
+		ByteBuffer bytesBuff = ByteBuffer.wrap(encodedData, 16, 8);
+		int w = bytesBuff.getInt();
+		int h = bytesBuff.getInt();
+		create(w, h, Format.RGBA8888);
+		context.setGlobalCompositeOperation(Composite.COPY);
+		loadDataReader(data.buffer(), context);
+		context.setGlobalCompositeOperation(getComposite());
+	}
+
+	public static native void loadDataReader (ArrayBuffer data, Context2d context)/*-{
+		$wnd.loadDataImage(data, context);
+	}-*/;
 
 	private void create (int width, int height, Format format2) {
 		this.width = width;
@@ -329,10 +349,10 @@ public class Pixmap implements Disposable {
 	 * @param y3 The y-coordinate of vertex 3 */
 	public void fillTriangle (int x1, int y1, int x2, int y2, int x3, int y3) {
 		context.beginPath();
-		context.moveTo(x1,y1);
-		context.lineTo(x2,y2);
-		context.lineTo(x3,y3);
-		context.lineTo(x1,y1);
+		context.moveTo(x1, y1);
+		context.lineTo(x2, y2);
+		context.lineTo(x3, y3);
+		context.lineTo(x1, y1);
 		context.fill();
 		context.closePath();
 	}
