@@ -59,13 +59,13 @@ public class Array<T> implements Iterable<T> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
-	public Array (boolean ordered, int capacity, Class<T> arrayType) {
+	public Array (boolean ordered, int capacity, Class arrayType) {
 		this.ordered = ordered;
 		items = (T[])ArrayReflection.newInstance(arrayType, capacity);
 	}
 
 	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
-	public Array (Class<T> arrayType) {
+	public Array (Class arrayType) {
 		this(true, 16, arrayType);
 	}
 
@@ -73,7 +73,7 @@ public class Array<T> implements Iterable<T> {
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
 	 * elements added will cause the backing array to be grown. */
 	public Array (Array<? extends T> array) {
-		this(array.ordered, array.size, (Class<T>)array.items.getClass().getComponentType());
+		this(array.ordered, array.size, array.items.getClass().getComponentType());
 		size = array.size;
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
@@ -401,7 +401,7 @@ public class Array<T> implements Iterable<T> {
 		return (T[])toArray(items.getClass().getComponentType());
 	}
 
-	public <V> V[] toArray (Class<V> type) {
+	public <V> V[] toArray (Class type) {
 		V[] result = (V[])ArrayReflection.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
