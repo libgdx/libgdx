@@ -44,7 +44,7 @@ public abstract class BaseShader implements Shader {
 		/** The flags the userMask must contain for this Input to be applicable */
 		public final long userFlags;
 		/** The setter (if any, null otherwise) is responsible for setting the input with the appropriate value */ 
-		public final Setter setter;
+		public Setter setter;
 		/** The location within the ShaderProgram of this input */ 
 		public int location = -1;
 		
