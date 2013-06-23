@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.gwt.soundmanager2;
 
+import com.badlogic.gdx.audio.Music.OnCompletionListener;
+import com.badlogic.gdx.backends.gwt.GwtMusic;
 import com.google.gwt.core.client.JavaScriptObject;
 
 public class SMSound extends JavaScriptObject {
@@ -34,19 +36,26 @@ public class SMSound extends JavaScriptObject {
 													this.pause();
 													}-*/;
 
-	public native final void play () /*-{
-												if(this.loops) {
-												var sound = this;		
-												function loopSound(soundID) { 
-												sound.play({onfinish:function(){ 
-												loopSound(soundID); 
-												}}); 
-												}
-												loopSound(this);
-												} else {
-												this.play();
-												}
-												}-*/;
+	public final void play () {
+		play(null,null);
+	};
+	
+	public native final void play (OnCompletionListener listener, GwtMusic music) /*-{
+		 															if(this.loops) {
+																		var sound = this;		
+																		function loopSound(soundID) { 
+																			sound.play({onfinish:function(){ 
+																			loopSound(soundID); 
+																			}}); 
+																		}
+																		loopSound(this);
+																	} else {
+																		this.play({onfinish:function(){
+																			if(listener != null)
+																				listener.@com.badlogic.gdx.audio.Music.OnCompletionListener::onCompletion(Lcom/badlogic/gdx/audio/Music;)(music);
+																		}});
+																	}
+																					}-*/;
 
 	public native final void resume () /*-{
 													this.resume();

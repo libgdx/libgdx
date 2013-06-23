@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.backends.gwt.soundmanager2.SMSound;
 import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.files.FileHandle;
@@ -27,6 +28,7 @@ public class GwtMusic implements Music {
 	boolean isLooping = false;
 	SMSound sound;
 	private float volume = 1f;
+	private OnCompletionListener onCompletionListener;
 
 	public GwtMusic (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();
@@ -37,7 +39,7 @@ public class GwtMusic implements Music {
 	@Override
 	public void play () {
 		if (isPlaying()) return;
-		sound.play();
+		sound.play(onCompletionListener, this);
 		isPlaying = true;
 	}
 
@@ -94,5 +96,10 @@ public class GwtMusic implements Music {
 	@Override
 	public void dispose () {
 		sound.destruct();
+	}
+	
+	@Override
+	public void setOnCompletionListener (OnCompletionListener listener) {
+		onCompletionListener = listener;
 	}
 }

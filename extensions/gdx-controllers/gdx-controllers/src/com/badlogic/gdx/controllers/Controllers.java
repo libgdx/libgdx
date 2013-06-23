@@ -35,7 +35,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Nathan Sweet */
 public class Controllers {
 	private static final String TAG = "Controllers";
-	static private final ObjectMap<Application, ControllerManager> managers = new ObjectMap<Application, ControllerManager>();
+	static final ObjectMap<Application, ControllerManager> managers = new ObjectMap<Application, ControllerManager>();
 
 	/**
 	 * Returns an array of connected {@link Controller} instances. This

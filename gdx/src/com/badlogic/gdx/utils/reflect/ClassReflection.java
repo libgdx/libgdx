@@ -43,7 +43,7 @@ public final class ClassReflection {
 	}
 
 	/** Creates a new instance of the class represented by the supplied Class. */
-	static public Object newInstance (Class c) throws ReflectionException {
+	static public <T> T newInstance (Class<T> c) throws ReflectionException {
 		try {
 			return c.newInstance();
 		} catch (InstantiationException e) {
