@@ -122,6 +122,12 @@ public class ObjectSet<T> implements Iterable<T> {
 		return true;
 	}
 
+	public void addAll (Array<T> array) {
+		ensureCapacity(array.size);
+		for (int i = 0, n = array.size; i < n; i++)
+			add(array.get(i));
+	}
+
 	public void addAll (ObjectSet<T> set) {
 		ensureCapacity(set.size);
 		for (T key : set)
