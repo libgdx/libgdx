@@ -451,11 +451,17 @@ public class Array<T> implements Iterable<T> {
 
 	static public class ArrayIterator<T> implements Iterator<T> {
 		private final Array<T> array;
+		private final boolean allowRemove;
 		int index;
 		boolean valid = true;
 
 		public ArrayIterator (Array<T> array) {
+			this(array, true);
+		}
+		
+		public ArrayIterator (Array<T> array, boolean allowRemove) {
 			this.array = array;
+			this.allowRemove = allowRemove;
 		}
 
 		public boolean hasNext () {
@@ -469,12 +475,45 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public void remove () {
+			if (!allowRemove) throw new GdxRuntimeException("Remove not allowed.");
 			index--;
 			array.removeIndex(index);
 		}
 
 		public void reset () {
 			index = 0;
+		}
+	}
+	
+	static public class ArrayIterable<T> implements Iterable<T> {
+		private final Array<T> array;
+		private final boolean allowRemove;
+		private ArrayIterator iterator1, iterator2;
+		
+		public ArrayIterable (Array<T> array) {
+			this(array, true);
+		}
+		
+		public ArrayIterable (Array<T> array, boolean allowRemove) {
+			this.array = array;
+			this.allowRemove = allowRemove;
+		}
+
+		public Iterator<T> iterator () {
+			if (iterator1 == null) {
+				iterator1 = new ArrayIterator(array, allowRemove);
+				iterator2 = new ArrayIterator(array, allowRemove);
+			}
+			if (!iterator1.valid) {
+				iterator1.index = 0;
+				iterator1.valid = true;
+				iterator2.valid = false;
+				return iterator1;
+			}
+			iterator2.index = 0;
+			iterator2.valid = true;
+			iterator1.valid = false;
+			return iterator2;
 		}
 	}
 }
