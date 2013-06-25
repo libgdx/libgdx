@@ -71,7 +71,6 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 	public String id;
 	protected long mask;
 	protected final Array<Attribute> attributes = new Array<Attribute>();
-	protected final Array.ArrayIterator<Attribute> readOnlyIterator = new Array.ArrayIterator<Material.Attribute>(attributes, false);
 	protected boolean sorted = true;
 	
 	/** Create an empty material */
@@ -161,7 +160,7 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 
 	/** Add an array of attributes to this material.
 	 * If the material already contains an attribute of the same type it is overwritten. */
-	public final void set(final Iterable<Attribute> attributes) {
+	public final void set(final Array<Attribute> attributes) {
 		for (final Attribute attr : attributes)
 			set(attr);
 	}
@@ -256,7 +255,6 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 	/** Used for iterating through the attributes */
 	@Override
 	public final Iterator<Attribute> iterator () {
-		readOnlyIterator.reset();
-		return readOnlyIterator;
+		return attributes.iterator();
 	}
 }
