@@ -297,7 +297,7 @@ public class TexturePacker2 {
 			writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
 		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY) + "\n");
+		writer.write("  offset: " + rect.offsetX + ", " + rect.offsetY + "\n");
 		writer.write("  index: " + rect.index + "\n");
 	}
 
