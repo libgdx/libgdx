@@ -211,6 +211,8 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-gwt.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
