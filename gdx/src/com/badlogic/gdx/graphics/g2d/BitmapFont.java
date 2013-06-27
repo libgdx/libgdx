@@ -85,6 +85,19 @@ public class BitmapFont implements Disposable {
 
 	/** Creates a BitmapFont with the glyphs relative to the specified region. If the region is null, the glyph textures are loaded
 	 * from the image file given in the font file. The {@link #dispose()} method will not dispose the region's texture in this
+	 * case! 
+	 * 
+	 * The font data is not flipped.
+	 * 
+	 * @param fontFile the font definition file
+	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
+	 *           should not be flipped). If the region is null the glyph images are loaded from the image path in the font file. */
+	public BitmapFont (FileHandle fontFile, TextureRegion region) {
+		this(fontFile, region, false);
+	}
+	
+	/** Creates a BitmapFont with the glyphs relative to the specified region. If the region is null, the glyph textures are loaded
+	 * from the image file given in the font file. The {@link #dispose()} method will not dispose the region's texture in this
 	 * case!
 	 * @param region The texture region containing the glyphs. The glyphs must be relative to the lower left corner (ie, the region
 	 *           should not be flipped). If the region is null the glyph images are loaded from the image path in the font file.
@@ -133,8 +146,9 @@ public class BitmapFont implements Disposable {
 		if (region==null) {
 			//load each path
 			this.regions = new TextureRegion[data.imagePaths.length];
-			for (int i=0; i<this.regions.length; i++) 
+			for (int i=0; i<this.regions.length; i++) {
 				this.regions[i] = new TextureRegion(new Texture(Gdx.files.internal(data.imagePaths[i]), false));
+			}
 		} else {
 			this.regions = new TextureRegion[] {
 				region

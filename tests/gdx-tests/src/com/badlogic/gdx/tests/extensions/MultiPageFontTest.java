@@ -67,7 +67,7 @@ public class MultiPageFontTest extends GdxTest {
 		batch.begin();
 		smallFont.draw(batch, "Render Calls for above string: "+r, 20, Gdx.graphics.getHeight()-100);
 		smallFont.drawMultiLine(batch, "Texture pages used for big TTF font: "+ttfFont.getRegions().length
-							+"\nMax Generated Texture Size: "+FreeTypeFontGenerator.maxTextureSize, 20, smallFont.getLineHeight()*2+10);
+							+"\nMax Generated Texture Size: "+FreeTypeFontGenerator.getMaxTextureSize(), 20, smallFont.getLineHeight()*2+10);
 		
 		batch.end();
 		

@@ -59,10 +59,35 @@ public class FreeTypeFontGenerator implements Disposable {
 	final Library library;
 	final Face face;
 	final String filePath;
-	
+
 	/** The maximum texture size allowed by generateData, when storing in a texture atlas. 
 	 * Multiple texture pages will be created if necessary. */
-	public static int maxTextureSize = 1024;
+	private static int maxTextureSize = 1024;
+
+	/** A hint to scale the texture as needed, without capping it at any maximum size */
+	public static final int NO_MAXIMUM = -1; 
+	
+	/** Sets the maximum size that will be used when generating texture atlases for glyphs with <tt>generateData()</tt>.
+	 * The default is 1024. By specifying NO_MAXIMUM, the texture atlas will scale as needed. 
+	 * 
+	 * The power-of-two square texture size will be capped to the given <tt>texSize</tt>. It's recommended that
+	 * a power-of-two value be used here. 
+	 * 
+	 * Multiple pages may be used to fit all the generated glyphs. You can query the resulting number of pages
+	 * by calling <tt>bitmapFont.getRegions().length</tt> or <tt>freeTypeBitmapFontData.getTextureRegions().length</tt>. 
+	 * 
+	 * If PixmapPacker is specified when calling generateData, this parameter is ignored.
+	 * 
+	 * @param texSize the maximum texture size for one page of glyphs */
+	public static void setMaxTextureSize (int texSize) {
+		maxTextureSize = texSize;
+	}
+
+	/** Returns the maximum texture size that will be used by generateData() when creating a texture atlas for the glyphs. 
+	 * @return the power-of-two max texture size */
+	public static int getMaxTextureSize() {
+		return maxTextureSize;
+	}
 	
 	/** Creates a new generator from the given TrueType font file. Throws a {@link GdxRuntimeException} in case loading did not
 	 * succeed.
@@ -242,13 +267,16 @@ public class FreeTypeFontGenerator implements Disposable {
 			data.down = -data.down;
 		}
 
-		// generate the glyphs
-		int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
-		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
-		pageWidth = Math.min(pageWidth, maxTextureSize);
-
+			
 		boolean ownsAtlas = false;
 		if (packer==null) {
+			// generate the glyphs
+			int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
+			int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
+				
+			if (maxTextureSize > 0)
+				pageWidth = Math.min(pageWidth, maxTextureSize);
+
 			ownsAtlas = true;
 			packer = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
 		}
