@@ -9,6 +9,5 @@ public class UniformNode extends ShaderNode {
 		this.requires = new Array<String>();
 		this.inputs = new Array<ShaderInput>();
 		this.outputs = new Array<ShaderOutput>();
-		this.
 	}
 }
