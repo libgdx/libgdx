@@ -202,14 +202,19 @@ public class TexturePacker2 {
 				g.drawRect(0, 0, width - 1, height - 1);
 			}
 
+			ImageOutputStream ios = null;
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
+					BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+					newImage.getGraphics().drawImage(canvas, 0, 0, null);
+					canvas = newImage;
+
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
 					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 					param.setCompressionQuality(settings.jpegQuality);
-					ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
+					ios = ImageIO.createImageOutputStream(outputFile);
 					writer.setOutput(ios);
 					writer.write(null, new IIOImage(canvas, null, null), param);
 				} else {
@@ -218,6 +223,13 @@ public class TexturePacker2 {
 				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
+			} finally {
+				if (ios != null) {
+					try {
+						ios.close();
+					} catch (Exception ignored) {
+					}
+				}
 			}
 		}
 	}
