@@ -358,6 +358,14 @@ public class ImageProcessor {
 					digest.update((byte)rgba);
 				}
 			}
+			digest.update((byte)(width >> 24));
+			digest.update((byte)(width >> 16));
+			digest.update((byte)(width >> 8));
+			digest.update((byte)width);
+			digest.update((byte)(height >> 24));
+			digest.update((byte)(height >> 16));
+			digest.update((byte)(height >> 8));
+			digest.update((byte)height);
 			return new BigInteger(1, digest.digest()).toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 			throw new RuntimeException(ex);
