@@ -34,7 +34,7 @@ public class Array<T> implements Iterable<T> {
 	public int size;
 	public boolean ordered;
 
-	private ArrayIterator iterator1, iterator2;
+	private ArrayIterable iterable;
 	private Predicate.PredicateIterable<T> predicateIterable;
 
 	/** Creates an ordered array with a capacity of 16. */
@@ -59,13 +59,13 @@ public class Array<T> implements Iterable<T> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
-	public Array (boolean ordered, int capacity, Class<T> arrayType) {
+	public Array (boolean ordered, int capacity, Class arrayType) {
 		this.ordered = ordered;
 		items = (T[])ArrayReflection.newInstance(arrayType, capacity);
 	}
 
 	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
-	public Array (Class<T> arrayType) {
+	public Array (Class arrayType) {
 		this(true, 16, arrayType);
 	}
 
@@ -73,7 +73,7 @@ public class Array<T> implements Iterable<T> {
 	 * and will be ordered if the specified array is ordered. The capacity is set to the number of elements, so any subsequent
 	 * elements added will cause the backing array to be grown. */
 	public Array (Array<? extends T> array) {
-		this(array.ordered, array.size, (Class<T>)array.items.getClass().getComponentType());
+		this(array.ordered, array.size, array.items.getClass().getComponentType());
 		size = array.size;
 		System.arraycopy(array.items, 0, items, 0, size);
 	}
@@ -353,20 +353,9 @@ public class Array<T> implements Iterable<T> {
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (iterator1 == null) {
-			iterator1 = new ArrayIterator(this);
-			iterator2 = new ArrayIterator(this);
-		}
-		if (!iterator1.valid) {
-			iterator1.index = 0;
-			iterator1.valid = true;
-			iterator2.valid = false;
-			return iterator1;
-		}
-		iterator2.index = 0;
-		iterator2.valid = true;
-		iterator1.valid = false;
-		return iterator2;
+		if (iterable == null) 
+			iterable = new ArrayIterable(this);
+		return iterable.iterator();
 	}
 
 	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next(). Note
@@ -401,7 +390,7 @@ public class Array<T> implements Iterable<T> {
 		return (T[])toArray(items.getClass().getComponentType());
 	}
 
-	public <V> V[] toArray (Class<V> type) {
+	public <V> V[] toArray (Class type) {
 		V[] result = (V[])ArrayReflection.newInstance(type, size);
 		System.arraycopy(items, 0, result, 0, size);
 		return result;
@@ -451,11 +440,17 @@ public class Array<T> implements Iterable<T> {
 
 	static public class ArrayIterator<T> implements Iterator<T> {
 		private final Array<T> array;
+		private final boolean allowRemove;
 		int index;
 		boolean valid = true;
 
 		public ArrayIterator (Array<T> array) {
+			this(array, true);
+		}
+		
+		public ArrayIterator (Array<T> array, boolean allowRemove) {
 			this.array = array;
+			this.allowRemove = allowRemove;
 		}
 
 		public boolean hasNext () {
@@ -469,12 +464,45 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public void remove () {
+			if (!allowRemove) throw new GdxRuntimeException("Remove not allowed.");
 			index--;
 			array.removeIndex(index);
 		}
 
 		public void reset () {
 			index = 0;
+		}
+	}
+	
+	static public class ArrayIterable<T> implements Iterable<T> {
+		private final Array<T> array;
+		private final boolean allowRemove;
+		private ArrayIterator iterator1, iterator2;
+		
+		public ArrayIterable (Array<T> array) {
+			this(array, true);
+		}
+		
+		public ArrayIterable (Array<T> array, boolean allowRemove) {
+			this.array = array;
+			this.allowRemove = allowRemove;
+		}
+
+		public Iterator<T> iterator () {
+			if (iterator1 == null) {
+				iterator1 = new ArrayIterator(array, allowRemove);
+				iterator2 = new ArrayIterator(array, allowRemove);
+			}
+			if (!iterator1.valid) {
+				iterator1.index = 0;
+				iterator1.valid = true;
+				iterator2.valid = false;
+				return iterator1;
+			}
+			iterator2.index = 0;
+			iterator2.valid = true;
+			iterator1.valid = false;
+			return iterator2;
 		}
 	}
 }

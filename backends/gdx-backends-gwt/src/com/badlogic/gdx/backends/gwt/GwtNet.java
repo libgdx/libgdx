@@ -16,6 +16,9 @@
 package com.badlogic.gdx.backends.gwt;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -31,6 +34,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -71,6 +75,26 @@ public class GwtNet implements Net {
 			return status;
 		}
 
+		@Override
+		public Map<String, List<String>> getHeaders () {
+			Map<String, List<String>> headers = new HashMap<String, List<String>>();
+			Header[] responseHeaders = response.getHeaders();
+			for (int i = 0; i < responseHeaders.length; i++) {
+				String headerName = responseHeaders[i].getName();
+				List<String> headerValues = headers.get(headerName);
+				if (headerValues == null) {
+					headerValues = new ArrayList<String>();
+					headers.put(headerName, headerValues);
+				}
+				headerValues.add(responseHeaders[i].getValue());
+			}
+			return headers;			
+		}
+		
+		@Override
+		public String getHeader (String name) {
+			return response.getHeader(name);
+		}
 	}
 
 	@Override

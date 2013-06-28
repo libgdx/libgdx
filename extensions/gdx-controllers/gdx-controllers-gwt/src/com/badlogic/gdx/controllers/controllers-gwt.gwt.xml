@@ -4,4 +4,6 @@
 	<inherits name='com.badlogic.gdx.controllers'/>
 	<source path="gwt"/>
 	<super-source path="gwt/emu" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.controllers.gwt.GwtControllers" />
 </module>

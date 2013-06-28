@@ -101,7 +101,7 @@ public class Preloader {
 	public final String baseUrl;
 
 	public Preloader () {
-		baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "") + "assets/";
+		baseUrl = GWT.getHostPageBaseURL() + "assets/";
 		// trigger copying of assets and creation of assets.txt
 		GWT.create(PreloaderBundle.class);
 	}

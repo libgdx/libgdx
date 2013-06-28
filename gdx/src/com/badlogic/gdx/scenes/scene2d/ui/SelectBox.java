@@ -294,6 +294,7 @@ public class SelectBox extends Widget {
 			scrollToCenter(0, list.getHeight() - selectedIndex * itemHeight - itemHeight / 2, 0, 0);
 			updateVisualScroll();
 
+			clearActions();
 			getColor().a = 0;
 			addAction(fadeIn(0.3f, Interpolation.fade));
 		}
