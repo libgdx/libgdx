@@ -79,6 +79,12 @@ public class ImageProcessor {
 	}
 
 	public void addImage (BufferedImage image, String name) {
+		if (image.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
+			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+			newImage.getGraphics().drawImage(image, 0, 0, null);
+			image = newImage;
+		}
+
 		Rect rect = null;
 
 		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
