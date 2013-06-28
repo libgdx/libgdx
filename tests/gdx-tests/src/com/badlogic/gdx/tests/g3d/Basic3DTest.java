@@ -1,5 +1,6 @@
 package com.badlogic.gdx.tests.g3d;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
@@ -9,18 +10,27 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultTestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.TestShader;
+import com.badlogic.gdx.graphics.g3d.shaders.TestShader.Location;
+import com.badlogic.gdx.graphics.g3d.shaders.TestShader.Part;
+import com.badlogic.gdx.graphics.g3d.shaders.TestShader.Variable;
+import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.UBJsonReader;
 
-public class Basic3DTest extends GdxTest {
+public class Basic3DTest extends GdxTest implements ApplicationListener {
 	public PerspectiveCamera cam;
 	public CameraInputController inputController;
 	public ModelBatch modelBatch;
@@ -30,8 +40,13 @@ public class Basic3DTest extends GdxTest {
 	
 	@Override
 	public void create () {
-		modelBatch = new ModelBatch(new DefaultShaderProvider());
-//		modelBatch = new ModelBatch();
+
+		modelBatch = new ModelBatch(new BaseShaderProvider() {
+			@Override
+			protected Shader createShader (Renderable renderable) {
+				return new DefaultTestShader(renderable, -1);
+			}
+		});
 		lights = new Lights();
 		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
 		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));

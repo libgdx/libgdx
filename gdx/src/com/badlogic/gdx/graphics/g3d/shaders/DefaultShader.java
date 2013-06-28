@@ -140,7 +140,7 @@ public class DefaultShader extends BaseShader {
 		this.fog = fog;
 		this.materialMask = materialMask;
 		this.vertexMask = vertexMask;
-		
+
 		this.directionalLights = new DirectionalLight[lighting && numDirectional > 0 ? numDirectional : 0];
 		for (int i = 0; i < directionalLights.length; i++)
 			directionalLights[i] = new DirectionalLight();
@@ -279,7 +279,7 @@ public class DefaultShader extends BaseShader {
 			context.setDepthTest(true, defaultDepthFunc);
 
 		float fogDist  = 1.09f / camera.far;
-			fogDist *= fogDist;
+		fogDist *= fogDist;
 
 		set(u_projTrans, camera.combined);
 		set(u_cameraPosition, camera.position.x, camera.position.y, camera.position.z, fogDist);
