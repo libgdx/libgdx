@@ -19,6 +19,9 @@ package com.badlogic.gdx.backends.ios;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,6 +106,30 @@ public class IOSNet implements Net {
 			byte[] result = new byte[length];
 			webResponse.GetResponseStream().Read(result, 0, length);
 			return result;
+		}
+
+		@Override
+		public String getHeader (String name) {
+			return webResponse.get_Headers().Get(name);
+		}
+
+		@Override
+		public Map<String, List<String>> getHeaders () {
+			WebHeaderCollection responseHeaders = webResponse.get_Headers();
+			Map<String, List<String>> headers = new HashMap<String, List<String>>();
+			for (int i = 0, j = responseHeaders.get_Count(); i < j; i++) {
+				String headerName = responseHeaders.GetKey(i);
+				List<String> headerValues = headers.get(headerName);
+				if (headerValues == null) {
+					headerValues = new ArrayList<String>();
+					headers.put(headerName, headerValues);
+				}
+				String[] responseHeaderValues = responseHeaders.GetValues(i);
+				for (int k = 0; k < responseHeaderValues.length; k++) {
+					headerValues.add(responseHeaderValues[k]);
+				}				
+			}
+			return headers;
 		}
 
 	}

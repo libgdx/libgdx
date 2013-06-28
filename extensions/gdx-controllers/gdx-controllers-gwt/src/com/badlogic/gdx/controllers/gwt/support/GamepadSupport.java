@@ -103,7 +103,7 @@ public class GamepadSupport {
         if (gamepadSupportAvailable) {
             $wnd.addEventListener('MozGamepadConnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadConnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
             $wnd.addEventListener('MozGamepadDisconnected', @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::handleGamepadDisconnect(Lcom/badlogic/gdx/controllers/gwt/support/GamepadSupport$GamepadEvent;), false);
-            if ( !! navigator.getGamepads !! navigator.webkitGamepads || !! navigator.webkitGetGamepads) {
+            if ( !! navigator.getGamepads || !! navigator.webkitGamepads || !! navigator.webkitGetGamepads) {
                 @com.badlogic.gdx.controllers.gwt.support.GamepadSupport::startPolling()();
             }
         }
