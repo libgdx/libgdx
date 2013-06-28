@@ -786,6 +786,7 @@ public class BitmapFont implements Disposable {
 		public float ascent;
 		public float descent;
 		public float down;
+		public float baseLine;
 		public float scaleX = 1, scaleY = 1;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
@@ -815,7 +816,7 @@ public class BitmapFont implements Disposable {
 				lineHeight = Integer.parseInt(common[1].substring(11));
 
 				if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				int baseLine = Integer.parseInt(common[2].substring(5));
+				baseLine = Integer.parseInt(common[2].substring(5));
 				
 				//parse the pages count
 				int imgPageCount = 1;

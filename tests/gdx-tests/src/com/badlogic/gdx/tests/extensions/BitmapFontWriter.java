@@ -32,8 +32,8 @@ public class BitmapFontWriter {
 		public int stretchH = 100;
 		public boolean smooth = true;
 		public int aa = 2;
-		public Padding padding;
-		public Spacing spacing;
+		public Padding padding = new Padding();
+		public Spacing spacing = new Spacing();
 		public int outline = 0;
 	}
 	
@@ -56,7 +56,47 @@ public class BitmapFontWriter {
 			
 		}
 		
-		System.out.println(info.face);
+		int lineHeight = (int)fontData.lineHeight;
+		
+//		int base = fontData.get
+		
+		StringBuffer buf = new StringBuffer();
+		//INFO LINE
+		buf.append("info face=\"")
+			.append(info.face==null ? "" : info.face.replaceAll("\"", "'"))
+			.append("\" size=").append(info.size)
+			.append(" bold=").append(info.bold ? 1 : 0)
+			.append(" italic=").append(info.italic ? 1 : 0)
+			.append(" charset=\"").append(info.charset==null ? "" : info.charset)
+			.append("\" unicode=").append(info.unicode ? 1 : 0)
+			.append(" stretchH=").append(info.stretchH)
+			.append(" smooth=").append(info.smooth)
+			.append(" aa=").append(info.aa)
+			.append(" padding=")
+				.append(info.padding.up).append(",")
+				.append(info.padding.down).append(",")
+				.append(info.padding.left).append(",")
+				.append(info.padding.right)
+			.append(" spacing=")
+				.append(info.spacing.horizontal).append(",")
+				.append(info.spacing.vertical)
+			.append("\n");
+		//COMMON line
+		buf.append("common lineHeight=")
+			.append(common.lineHeight)
+			.append(" base=").append(common.base)
+			.append(" scaleW=").append(common.scaleW)
+			.append(" scaleH=").append(common.scaleH)
+			.append(" pages=").append(common.pages)
+			.append(" packed=").append(common.packed)
+			.append("\n");
+		
+		//common lineHeight=37 base=29 scaleW=256 scaleH=256 pages=2 packed=0
+		
+		String charset = info.charset;
+		if (charset!=null&&charset.length()==0)
+			charset = null;
+		outFntFile.writeString(buf.toString(), false, charset);
 	}
 	
 	public static void write (BitmapFontData fontData, Pixmap[] pages, FileHandle outFntFile, FontInfo info) {

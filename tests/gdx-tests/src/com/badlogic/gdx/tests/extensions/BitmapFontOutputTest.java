@@ -40,11 +40,21 @@ public class BitmapFontOutputTest extends GdxTest {
 			FileHandle img = new FileHandle("../gdx-tests-android/assets/data/default.png");
 			FileHandle fnt = new FileHandle("../gdx-tests-android/assets/data/default.fnt");
 			
-			FileHandle out = new FileHandle("TestFont.fnt");
-			System.out.println(out.file().getCanonicalPath());
+			FileHandle out = new FileHandle(new File("TestFont.fnt").getCanonicalPath());
+			
 			Pixmap p = new Pixmap(img);
 			
 			BitmapFont.BitmapFontData data = new BitmapFont.BitmapFontData(fnt, false);
+			
+			System.out.println(data.lineHeight);
+			System.out.println(data.descent);
+			System.out.println(data.ascent);
+			System.out.println(data.capHeight);
+			System.out.println(data.baseLine);
+			System.out.println(data.flipped);
+			
+			
+			int baseLine = (data.flipped ? -data.ascent : data.ascent)
 			
 			BitmapFontWriter.write(data, new Pixmap[] {p}, out, null);
 			
