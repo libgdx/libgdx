@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -47,6 +48,7 @@ public class NetJavaImpl {
 			} catch (IOException e) {
 				this.status = new HttpStatus(-1);
 			}
+			
 		}
 
 		@Override
@@ -91,6 +93,16 @@ public class NetJavaImpl {
 			return status;
 		}
 
+		@Override
+		public String getHeader (String name) {
+			return connection.getHeaderField(name);
+		}
+
+		@Override
+		public Map<String, List<String>> getHeaders () {
+			return connection.getHeaderFields();
+		}
+		
 	}
 
 	private final ExecutorService executorService;
