@@ -159,6 +159,11 @@ public class Animation {
 		return frameNumber;
 	}
 
+	/** Returns the animation play mode. Will be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP,
+	 * Animation.LOOP_REVERSED, Animation.LOOP_PINGPONG, Animation.LOOP_RANDOM */
+	public int getPlayMode() {
+		return playMode;
+	}
 	/** Sets the animation play mode.
 	 * 
 	 * @param playMode can be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP, Animation.LOOP_REVERSED,

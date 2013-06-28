@@ -65,6 +65,18 @@ public class Circle implements Serializable {
 		this.y = y;
 	}
 
+	/** Sets the x-coordinate of circle center
+	 * @param x The x-coordinate */
+	public void setX (float x) {
+		this.x = x;
+	}
+
+	/** Sets the y-coordinate of circle center
+	 * @param y The y-coordinate */
+	public void setY (float y) {
+		this.y = y;
+	}
+
 	/** Sets the radius of circle
 	 * @param radius The radius */
 	public void setRadius (float radius) {
