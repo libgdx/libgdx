@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
-/** Interface wrapping all standard OpenGL ES 1.0 methods. Note that this excludes and fixed point OpenGL ES 1.0 methods!
+/** Interface wrapping all standard OpenGL ES 1.0 methods. Note that this excludes any fixed point OpenGL ES 1.0 methods!
  * 
  * @author mzechner */
 public interface GL10 extends GLCommon {
