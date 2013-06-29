@@ -115,7 +115,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 					try {
 						depsFuture.get();
 					} catch (Exception e) {
-						throw new GdxRuntimeException("Couldn't load dependencies of asset '" + assetDesc.fileName + "'", e);
+						throw new GdxRuntimeException("Couldn't load dependencies of asset: " + assetDesc.fileName, e);
 					}
 					dependenciesLoaded = true;
 					if (asyncDone) {
@@ -133,7 +133,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 					try {
 						loadFuture.get();
 					} catch (Exception e) {
-						throw new GdxRuntimeException("Couldn't load asset '" + assetDesc.fileName + "'", e);
+						throw new GdxRuntimeException("Couldn't load asset: " + assetDesc.fileName, e);
 					}
 					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
 				}

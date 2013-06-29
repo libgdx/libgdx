@@ -79,6 +79,12 @@ public class ImageProcessor {
 	}
 
 	public void addImage (BufferedImage image, String name) {
+		if (image.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
+			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+			newImage.getGraphics().drawImage(image, 0, 0, null);
+			image = newImage;
+		}
+
 		Rect rect = null;
 
 		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
@@ -358,6 +364,14 @@ public class ImageProcessor {
 					digest.update((byte)rgba);
 				}
 			}
+			digest.update((byte)(width >> 24));
+			digest.update((byte)(width >> 16));
+			digest.update((byte)(width >> 8));
+			digest.update((byte)width);
+			digest.update((byte)(height >> 24));
+			digest.update((byte)(height >> 16));
+			digest.update((byte)(height >> 8));
+			digest.update((byte)height);
 			return new BigInteger(1, digest.digest()).toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 			throw new RuntimeException(ex);
