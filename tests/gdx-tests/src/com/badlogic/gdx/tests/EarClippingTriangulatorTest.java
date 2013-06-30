@@ -191,7 +191,6 @@ public class EarClippingTriangulatorTest extends GdxTest {
 
 		// Issue 207, comment #11, http://code.google.com/p/libgdx/issues/detail?id=207#c11
 		// Also on issue 1081, http://code.google.com/p/libgdx/issues/detail?id=1081
-		/*
 		testCases.add(new TestCase(new float[] {
 			2400.0f, 480.0f,
 			2400.0f, 176.0f,
@@ -229,12 +228,17 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			1935.9541f, 480.13623f,
 			1936.0f, 480.0f,
 		}));
-		//*/
 		
 		// Issue 1407, http://code.google.com/p/libgdx/issues/detail?id=1407
-		// The last point is not in the issue description, but it ensures we start with
-		// a non-self-intersecting polygon and still reproduces the issue.
-		/*
+		testCases.add(new TestCase(new float[] {
+			3.914329f, 1.9008259f,
+			4.414321f, 1.903619f,
+			4.8973203f, 1.9063174f,
+			5.4979978f, 1.9096732f,
+		}));
+		
+		// Issue 1407, http://code.google.com/p/libgdx/issues/detail?id=1407,
+		// with an additional point to show what is happening.
 		testCases.add(new TestCase(new float[] {
 			3.914329f, 1.9008259f,
 			4.414321f, 1.903619f,
@@ -242,7 +246,6 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			5.4979978f, 1.9096732f,
 			4, 4,
 		}));
-		//*/
 		
 		casesX = (int) Math.ceil(Math.sqrt(testCases.size()));
 		casesY = (int) Math.ceil((float) testCases.size() / casesX);

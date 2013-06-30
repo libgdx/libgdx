@@ -61,13 +61,8 @@ public final class EarClippingTriangulator {
 			// ear change! --> Improve
 			final int vertexTypes[] = this.classifyVertices(vertices);
 
-			final int vertexCount = vertices.size();
-			for (int index = 0; index < vertexCount; index++) {
-				if (this.isEarTip(vertices, index, vertexTypes)) {
-					this.cutEarTip(vertices, index, triangles);
-					break;
-				}
-			}
+			int earTipIndex = findEarTip(vertices, vertexTypes);
+			cutEarTip(vertices, earTipIndex, triangles);
 		}
 
 		/*
@@ -146,6 +141,35 @@ public final class EarClippingTriangulator {
 		area += (double)p3.x * (p2.y - p1.y);
 
 		return (int)Math.signum(area);
+	}
+	
+	private int findEarTip (final ArrayList<Vector2> pVertices, final int[] pVertexTypes) {
+		final int vertexCount = pVertices.size();
+		for (int index = 0; index < vertexCount; index++) {
+			if (isEarTip(pVertices, index, pVertexTypes)) {
+				return index;
+			}
+		}
+		return desperatelyFindEarTip(pVertices, pVertexTypes);
+	}
+	
+	private int desperatelyFindEarTip (final ArrayList<Vector2> pVertices, final int[] pVertexTypes) {
+		// Desperate mode: if no vertex is an ear tip, we are dealing with a degenerate polygon (e.g. nearly collinear).
+		// Note that the input was not necessarily degenerate, but we could have made it so by clipping some valid ears.
+		
+		// Idea taken from Martin Held, "FIST: Fast industrial-strength triangulation of polygons", Algorithmica (1998),
+		// http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.115.291
+		
+		// Return a convex vertex if one exists
+		final int vertexCount = pVertices.size();
+		for (int index = 0; index < vertexCount; index++) {
+			if (pVertexTypes[index] == CONVEX_OR_TANGENTIAL) {
+				return index;
+			}
+		}
+		
+		// If all vertices are concave, just return the first one
+		return 0;
 	}
 
 	private boolean isEarTip (final ArrayList<Vector2> pVertices, final int pEarTipIndex, final int[] pVertexTypes) {
