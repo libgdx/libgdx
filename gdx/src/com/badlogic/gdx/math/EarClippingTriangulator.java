@@ -111,10 +111,8 @@ public final class EarClippingTriangulator {
 		}
 	}
 
-	/**
-	 * Sets {code vertexTypes[index]} to either {@link EarClippingTriangulator#CONCAVE} or
-	 * {@link EarClippingTriangulator#CONVEX_OR_TANGENTIAL} and updates {@link #concaveVertexCount} accordingly.
-	 */
+	/** Sets {code vertexTypes[index]} to either {@link EarClippingTriangulator#CONCAVE} or
+	 * {@link EarClippingTriangulator#CONVEX_OR_TANGENTIAL} and updates {@link #concaveVertexCount} accordingly. */
 	private void classifyVertex (int index) {
 		final Vector2 previousVertex = vertices.get(computePreviousIndex(index));
 		final Vector2 currentVertex = vertices.get(index);
@@ -184,7 +182,7 @@ public final class EarClippingTriangulator {
 		if (vertexTypes[pEarTipIndex] != CONVEX_OR_TANGENTIAL) {
 			return false;
 		}
-		if (this.concaveVertexCount == 0 ) {
+		if (this.concaveVertexCount == 0) {
 			return true;
 		}
 		final int previousIndex = computePreviousIndex(pEarTipIndex);
