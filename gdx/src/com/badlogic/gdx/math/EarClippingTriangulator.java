@@ -115,8 +115,7 @@ public final class EarClippingTriangulator {
 			final Vector2 currentVertex = pVertices.get(index);
 			final Vector2 nextVertex = pVertices.get(nextIndex);
 
-			if (EarClippingTriangulator.isTriangleConvex(previousVertex.x, previousVertex.y, currentVertex.x, currentVertex.y,
-				nextVertex.x, nextVertex.y)) {
+			if (EarClippingTriangulator.isTriangleConvex(previousVertex, currentVertex, nextVertex)) {
 				vertexTypes[index] = CONVEX;
 			} else {
 				vertexTypes[index] = CONCAVE;
@@ -127,33 +126,31 @@ public final class EarClippingTriangulator {
 		return vertexTypes;
 	}
 
-	private static boolean isTriangleConvex (final float pX1, final float pY1, final float pX2, final float pY2, final float pX3,
-		final float pY3) {
-		if (EarClippingTriangulator.computeSpannedAreaSign(pX1, pY1, pX2, pY2, pX3, pY3) < 0) {
+	private static boolean isTriangleConvex (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
+		if (EarClippingTriangulator.computeSpannedAreaSign(p1, p2, p3) < 0) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	private static int computeSpannedAreaSign (final float pX1, final float pY1, final float pX2, final float pY2,
-		final float pX3, final float pY3) {
+	private static int computeSpannedAreaSign (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
 		/*
 		 * Espitz: using doubles corrects for very rare cases where we run into floating point imprecision in the area test, causing
 		 * the method to return a 0 when it should have returned -1 or 1.
 		 */
 		double area = 0;
 
-		area += (double)pX1 * (pY3 - pY2);
-		area += (double)pX2 * (pY1 - pY3);
-		area += (double)pX3 * (pY2 - pY1);
+		area += (double)p1.x * (p3.y - p2.y);
+		area += (double)p2.x * (p1.y - p3.y);
+		area += (double)p3.x * (p2.y - p1.y);
 
 		return (int)Math.signum(area);
 	}
 
 	/** @return <code>true</code> when the Triangles contains one or more vertices, <code>false</code> otherwise. */
-	private static boolean isAnyVertexInTriangle (final ArrayList<Vector2> pVertices, final int[] pVertexTypes, final float pX1,
-		final float pY1, final float pX2, final float pY2, final float pX3, final float pY3) {
+	private static boolean isAnyVertexInTriangle (final ArrayList<Vector2> pVertices, final int[] pVertexTypes, final Vector2 p1,
+		final Vector2 p2, final Vector2 p3) {
 		int i = 0;
 
 		final int vertexCount = pVertices.size();
@@ -161,15 +158,9 @@ public final class EarClippingTriangulator {
 			if ((pVertexTypes[i] == CONCAVE)) {
 				final Vector2 currentVertex = pVertices.get(i);
 
-				final float currentVertexX = currentVertex.x;
-				final float currentVertexY = currentVertex.y;
-
-				final int areaSign1 = EarClippingTriangulator.computeSpannedAreaSign(pX1, pY1, pX2, pY2, currentVertexX,
-					currentVertexY);
-				final int areaSign2 = EarClippingTriangulator.computeSpannedAreaSign(pX2, pY2, pX3, pY3, currentVertexX,
-					currentVertexY);
-				final int areaSign3 = EarClippingTriangulator.computeSpannedAreaSign(pX3, pY3, pX1, pY1, currentVertexX,
-					currentVertexY);
+				final int areaSign1 = EarClippingTriangulator.computeSpannedAreaSign(p1, p2, currentVertex);
+				final int areaSign2 = EarClippingTriangulator.computeSpannedAreaSign(p2, p3, currentVertex);
+				final int areaSign3 = EarClippingTriangulator.computeSpannedAreaSign(p3, p1, currentVertex);
 
 				if (areaSign1 > 0 && areaSign2 > 0 && areaSign3 > 0) {
 					return true;
@@ -188,8 +179,7 @@ public final class EarClippingTriangulator {
 			final Vector2 currentVertex = pVertices.get(pEarTipIndex);
 			final Vector2 nextVertex = pVertices.get(EarClippingTriangulator.computeNextIndex(pVertices, pEarTipIndex));
 
-			if (EarClippingTriangulator.isAnyVertexInTriangle(pVertices, pVertexTypes, previousVertex.x, previousVertex.y,
-				currentVertex.x, currentVertex.y, nextVertex.x, nextVertex.y)) {
+			if (EarClippingTriangulator.isAnyVertexInTriangle(pVertices, pVertexTypes, previousVertex, currentVertex, nextVertex)) {
 				return false;
 			} else {
 				return true;
@@ -248,8 +238,7 @@ public final class EarClippingTriangulator {
 		final Vector2 vertex = pVertices.get(pIndex);
 		final Vector2 nextVertex = pVertices.get(pNextIndex);
 
-		return EarClippingTriangulator.computeSpannedAreaSign(previousVertex.x, previousVertex.y, vertex.x, vertex.y, nextVertex.x,
-			nextVertex.y) == 0;
+		return EarClippingTriangulator.computeSpannedAreaSign(previousVertex, vertex, nextVertex) == 0;
 	}
 
 	private static int computePreviousIndex (final List<Vector2> pVertices, final int pIndex) {
