@@ -32,7 +32,7 @@ import java.util.List;
 public final class EarClippingTriangulator {
 
 	private static final int CONCAVE = 1;
-	private static final int CONVEX = -1;
+	private static final int CONVEX_OR_TANGENTIAL = -1;
 
 	private int concaveVertexCount;
 
@@ -95,7 +95,7 @@ public final class EarClippingTriangulator {
 
 	/** @param pVertices
 	 * @return An array of length <code>pVertices.size()</code> filled with either {@link EarClippingTriangulator#CONCAVE} or
-	 *         {@link EarClippingTriangulator#CONVEX}. */
+	 *         {@link EarClippingTriangulator#CONVEX_OR_TANGENTIAL}. */
 	private int[] classifyVertices (final ArrayList<Vector2> pVertices) {
 		final int vertexCount = pVertices.size();
 
@@ -103,6 +103,7 @@ public final class EarClippingTriangulator {
 		this.concaveVertexCount = 0;
 
 		/* Ensure vertices are in clockwise order. */
+		// TODO only do this once; clipping an ear does not change winding order of the remaining points
 		if (!areVerticesClockwise(pVertices)) {
 			Collections.reverse(pVertices);
 		}
@@ -116,7 +117,7 @@ public final class EarClippingTriangulator {
 			final Vector2 nextVertex = pVertices.get(nextIndex);
 
 			if (isTriangleConvex(previousVertex, currentVertex, nextVertex)) {
-				vertexTypes[index] = CONVEX;
+				vertexTypes[index] = CONVEX_OR_TANGENTIAL;
 			} else {
 				vertexTypes[index] = CONCAVE;
 				this.concaveVertexCount++;
@@ -149,28 +150,35 @@ public final class EarClippingTriangulator {
 	}
 
 	private boolean isEarTip (final ArrayList<Vector2> pVertices, final int pEarTipIndex, final int[] pVertexTypes) {
-		// TODO ear tips can only be convex (or maybe tangential) so don't bother checking points-in-triangle unless convex
-		if (this.concaveVertexCount != 0) {
-			final Vector2 p1 = pVertices.get(computePreviousIndex(pVertices, pEarTipIndex));
-			final Vector2 p2 = pVertices.get(pEarTipIndex);
-			final Vector2 p3 = pVertices.get(computeNextIndex(pVertices, pEarTipIndex));
-			
-			final int vertexCount = pVertices.size();
-			for (int i = 0; i < vertexCount; i++) {
-				if ((pVertexTypes[i] == CONCAVE)) {
-					final Vector2 v = pVertices.get(i);
+		if (pVertexTypes[pEarTipIndex] != CONVEX_OR_TANGENTIAL) {
+			return false;
+		}
+		if (this.concaveVertexCount == 0 ) {
+			return true;
+		}
+		final int previousIndex = computePreviousIndex(pVertices, pEarTipIndex);
+		final int nextIndex = computeNextIndex(pVertices, pEarTipIndex);
+		final Vector2 p1 = pVertices.get(previousIndex);
+		final Vector2 p2 = pVertices.get(pEarTipIndex);
+		final Vector2 p3 = pVertices.get(nextIndex);
+		
+		final int vertexCount = pVertices.size();
+		// Check if any point is inside the triangle formed by previous, current and next vertices.
+		// Only consider vertices that are not part of this triangle, or else we'll always find one inside.
+		for (int i = computeNextIndex(pVertices, nextIndex); i != previousIndex; i = computeNextIndex(pVertices, i)) {
+			if ((pVertexTypes[i] == CONCAVE)) {
+				final Vector2 v = pVertices.get(i);
 
-					final int areaSign1 = computeSpannedAreaSign(p1, p2, v);
-					final int areaSign2 = computeSpannedAreaSign(p2, p3, v);
-					final int areaSign3 = computeSpannedAreaSign(p3, p1, v);
+				final int areaSign1 = computeSpannedAreaSign(p1, p2, v);
+				final int areaSign2 = computeSpannedAreaSign(p2, p3, v);
+				final int areaSign3 = computeSpannedAreaSign(p3, p1, v);
 
-					if (areaSign1 > 0 && areaSign2 > 0 && areaSign3 > 0) {
-						return false;
-					} else if (areaSign1 <= 0 && areaSign2 <= 0 && areaSign3 <= 0) {
-						return false;
-					}
+				// The vertex is strictly inside the triangle if all three signs are the same.
+				// If it's on one or more edges, one or more of the signs will be 0.
+				// So it's inside or on the edge if no two signs are opposite.
+				if (!((areaSign1 > 0 || areaSign2 > 0 || areaSign3 > 0) && (areaSign1 < 0 || areaSign2 < 0 || areaSign3 < 0))) {
+					return false;
 				}
-				i++;
 			}
 		}
 		return true;
