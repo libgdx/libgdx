@@ -137,15 +137,11 @@ public final class EarClippingTriangulator {
 	}
 
 	private static int computeSpannedAreaSign (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
-		/*
-		 * Espitz: using doubles corrects for very rare cases where we run into floating point imprecision in the area test, causing
-		 * the method to return a 0 when it should have returned -1 or 1.
-		 */
-		double area = 0;
+		float area = 0;
 
-		area += (double)p1.x * (p3.y - p2.y);
-		area += (double)p2.x * (p1.y - p3.y);
-		area += (double)p3.x * (p2.y - p1.y);
+		area += p1.x * (p3.y - p2.y);
+		area += p2.x * (p1.y - p3.y);
+		area += p3.x * (p2.y - p1.y);
 
 		return (int)Math.signum(area);
 	}
