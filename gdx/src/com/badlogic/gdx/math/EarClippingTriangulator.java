@@ -28,7 +28,9 @@ import java.util.List;
  * 
  * @author badlogicgames@gmail.com
  * @author Nicolas Gramlich (Improved performance. Collinear edges are now supported.)
- * @author Eric Spitz */
+ * @author Eric Spitz
+ * @author Thomas ten Cate (Several bugfixes and performance improvements.)
+ */
 public final class EarClippingTriangulator {
 
 	private static final int CONCAVE = 1;
@@ -196,9 +198,9 @@ public final class EarClippingTriangulator {
 				final int areaSign2 = computeSpannedAreaSign(p2, p3, v);
 				final int areaSign3 = computeSpannedAreaSign(p3, p1, v);
 
-				// The vertex is strictly inside the triangle if all three signs are the same.
-				// If it's on one or more edges, one or more of the signs will be 0.
-				// So it's inside or on the edge if no two signs are opposite.
+				// Because the polygon has clockwise winding order, the area sign will be positive if the point is strictly inside.
+				// It will be 0 on the edge, which we want to include as well, because incorrect results can happen if we don't
+				// (http://code.google.com/p/libgdx/issues/detail?id=815).
 				if (areaSign1 >= 0 && areaSign2 >= 0 && areaSign3 >= 0) {
 					return false;
 				}
