@@ -63,16 +63,48 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			1, 0,
 			0.5f, 1,
 		}));
+
+		// A Starfleet insigna, different vertex order
+		testCases.add(new TestCase(new float[] {
+			1, 0,
+			0.5f, 1,
+			0, 0,
+			0.6f, 0.4f,
+		}));
+		
+		// Three collinear points
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			1, 0,
+			2, 0,
+		}));
+		
+		// Four collinear points
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			1, 0,
+			2, 0,
+			3, 0,
+		}));
+		
+		// Non-consecutive collinear points
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			1, 1,
+			2, 0,
+			3, 1,
+			4, 0,
+		}));
 		
 		// Issue 815, http://code.google.com/p/libgdx/issues/detail?id=815
 		testCases.add(new TestCase(new float[] {
-			//-2.0f, 0.0f,
+			-2.0f, 0.0f,
 			-2.0f, 0.5f,
 			0.0f, 1.0f,
 			0.5f, 2.875f,
 			1.0f, 0.5f,
 			1.5f, 1.0f,
-			//2.0f, 1.0f,
+			2.0f, 1.0f,
 			2.0f, 0.0f,
 		}));
 		
@@ -92,6 +124,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		}));
 
 		// Issue 207, comment #11, http://code.google.com/p/libgdx/issues/detail?id=207#c11
+		// Also on issue 1081, http://code.google.com/p/libgdx/issues/detail?id=1081
 		/*
 		testCases.add(new TestCase(new float[] {
 			2400.0f, 480.0f,
@@ -130,7 +163,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			1935.9541f, 480.13623f,
 			1936.0f, 480.0f,
 		}));
-		*/
+		//*/
 		
 		// Issue 1407, http://code.google.com/p/libgdx/issues/detail?id=1407
 		// The last point is not in the issue description, but it ensures we start with
@@ -143,7 +176,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			5.4979978f, 1.9096732f,
 			4, 4,
 		}));
-		*/
+		//*/
 		
 		casesX = (int) Math.ceil(Math.sqrt(testCases.size()));
 		casesY = (int) Math.ceil((float) testCases.size() / casesX);
@@ -206,7 +239,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 				max.x = Math.max(max.x, v.x);
 				max.y = Math.max(max.y, v.y);
 			}
-			boundingRect = new Rectangle(min.x, min.y, max.x - min.x, max.y - min.y);
+			boundingRect = new Rectangle(min.x, min.y, Math.max(0.001f, max.x - min.x), Math.max(0.001f, max.y - min.y));
 			
 			List<Vector2> triangles = new EarClippingTriangulator().computeTriangles(polygon);
 
