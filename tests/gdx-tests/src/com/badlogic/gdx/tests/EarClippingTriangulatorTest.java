@@ -7,7 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -60,9 +60,18 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			0, 1,
 		}));
 
-		// A Starfleet insigna
+		// Starfleet insigna
 		testCases.add(new TestCase(new float[] {
 			0, 0,
+			0.6f, 0.4f,
+			1, 0,
+			0.5f, 1,
+		}));
+
+		// Starfleet insigna with repeated point
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			0.6f, 0.4f,
 			0.6f, 0.4f,
 			1, 0,
 			0.5f, 1,
@@ -213,6 +222,35 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			3, 4,
 			0, 4,
 		}, true));
+		
+		// Test case from http://www.davdata.nl/math/polygons.html
+		testCases.add(new TestCase(new float[] {
+			190, 480,
+			140, 180,
+			310, 100,
+			330, 390,
+			290, 390,
+			280, 260,
+			220, 260,
+			220, 430,
+			370, 430,
+			350, 30,
+			50, 30,
+			160, 560,
+			730, 510,
+			710, 20,
+			410, 30,
+			470, 440,
+			640, 410,
+			630, 140,
+			590, 140,
+			580, 360,
+			510, 370,
+			510, 60,
+			650, 70,
+			660, 450,
+			// 190, 480,
+		}));
 		
 		// Issue 815, http://code.google.com/p/libgdx/issues/detail?id=815
 		testCases.add(new TestCase(new float[] {
@@ -374,6 +412,9 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		}
 	}
 	
+	static final Color VALID_COLOR = new Color(0.8f, 1.0f, 0.8f, 1.0f);
+	static final Color INVALID_COLOR = new Color(1.0f, 0.8f, 0.8f, 1.0f);
+	
 	private class TestCase implements Disposable {
 		final List<Vector2> polygon;
 		final boolean invalid;
@@ -404,10 +445,14 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			boundingRect = new Rectangle(min.x, min.y, Math.max(0.001f, max.x - min.x), Math.max(0.001f, max.y - min.y));
 			
 			int numTriangles = Math.max(0, polygon.size() - 2);
-			VertexAttributes attributes = new VertexAttributes(new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE));
-			polygonMesh = new Mesh(true, polygon.size(), 0, attributes);
-			interiorMesh = new Mesh(true, 3 * numTriangles, 0, attributes);
-			triangleOutlineMesh = new Mesh(true, 6 * numTriangles, 0, attributes);
+			VertexAttributes position = new VertexAttributes(
+				new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE));
+			VertexAttributes positionAndColor = new VertexAttributes(
+				new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE),
+				new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
+			polygonMesh = new Mesh(true, polygon.size(), 0, position);
+			interiorMesh = new Mesh(true, 3 * numTriangles, 0, positionAndColor);
+			triangleOutlineMesh = new Mesh(true, 6 * numTriangles, 0, position);
 
 			triangulate();
 		}
@@ -430,7 +475,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			}
 			
 			polygonMesh.setVertices(listToVertexArray(polygon));
-			interiorMesh.setVertices(listToVertexArray(triangles));
+			interiorMesh.setVertices(listToColoredVertexArray(triangles, getColor()));
 			triangleOutlineMesh.setVertices(listToVertexArray(triangleOutlines));
 		}
 		
@@ -453,15 +498,18 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			Collections.reverse(polygon);
 		}
 		
+		private Color getColor() {
+			if (invalid) {
+				return INVALID_COLOR;
+			} else {
+				return VALID_COLOR;
+			}
+		}
+		
 		public void render() {
 			Gdx.gl10.glScalef(1 / boundingRect.width, 1 / boundingRect.height, 1);
 			Gdx.gl10.glTranslatef(-boundingRect.x, -boundingRect.y, 0);
 			
-			if (invalid) {
-				Gdx.gl10.glColor4f(1.0f, 0.8f, 0.8f, 1.0f);
-			} else {
-				Gdx.gl10.glColor4f(0.8f, 0.8f, 0.9f, 1.0f);
-			}
 			interiorMesh.render(GL10.GL_TRIANGLES);
 			
 			Gdx.gl10.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
@@ -497,6 +545,26 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		for (Vector2 v : list) {
 			array[i++] = v.x;
 			array[i++] = v.y;
+		}
+		return array;
+	}
+	
+	static float[] listToColoredVertexArray(List<Vector2> list, Color color) {
+		int n = list.size();
+		float[] array = new float[n * 6];
+		int i = 0;
+		int j = 0;
+		for (Vector2 v : list) {
+			array[i++] = v.x;
+			array[i++] = v.y;
+			
+			float brightness = 0.3f + 0.6f * (j / 3) * 3 / list.size();
+			array[i++] = color.r * brightness;
+			array[i++] = color.g * brightness;
+			array[i++] = color.b * brightness;
+			array[i++] = 1;
+			
+			j++;
 		}
 		return array;
 	}
