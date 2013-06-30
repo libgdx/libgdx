@@ -80,7 +80,7 @@ public final class EarClippingTriangulator {
 			// Only the type of the two vertices adjacent to the clipped vertex can have changed,
 			// so no need to reclassify all of them.
 			classifyVertex(computePreviousIndex(earTipIndex));
-			classifyVertex(earTipIndex);
+			classifyVertex(earTipIndex == vertexCount ? 0 : earTipIndex);
 		}
 
 		/*

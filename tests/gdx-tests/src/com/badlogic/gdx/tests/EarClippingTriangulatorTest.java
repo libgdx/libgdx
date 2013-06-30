@@ -29,13 +29,13 @@ public class EarClippingTriangulatorTest extends GdxTest {
 	@Override
 	public void create() {
 		// An empty "polygon"
-		testCases.add(new TestCase(new float[] {}));
+		testCases.add(new TestCase(new float[] {}, true));
 		
 		// A point
-		testCases.add(new TestCase(new float[] {0, 0}));
+		testCases.add(new TestCase(new float[] {0, 0}, true));
 		
 		// A line segment
-		testCases.add(new TestCase(new float[] {0, 0, 1, 1}));
+		testCases.add(new TestCase(new float[] {0, 0, 1, 1}, true));
 		
 		// A counterclockwise triangle
 		testCases.add(new TestCase(new float[] {
@@ -67,14 +67,6 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			1, 0,
 			0.5f, 1,
 		}));
-
-		// A Starfleet insigna, different vertex order
-		testCases.add(new TestCase(new float[] {
-			1, 0,
-			0.5f, 1,
-			0, 0,
-			0.6f, 0.4f,
-		}));
 		
 		// Three collinear points
 		testCases.add(new TestCase(new float[] {
@@ -98,7 +90,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			2, 0,
 			3, 1,
 			4, 0,
-		}));
+		}, true));
 		
 		// Plus shape
 		testCases.add(new TestCase(new float[] {
@@ -161,6 +153,66 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			4, 1,
 			0, 1,
 		}));
+		
+		// Test case from http://www.flipcode.com/archives/Efficient_Polygon_Triangulation.shtml
+		testCases.add(new TestCase(new float[] {
+			0, 6,
+			0, 0,
+			3, 0,
+			4, 1,
+			6, 1,
+			8, 0,
+			12, 0,
+			13, 2,
+			8, 2,
+			8, 4,
+			11, 4,
+			11, 6,
+			6, 6,
+			4, 3,
+			2, 6,
+		}));
+		
+		// Self-intersection
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			1, 1,
+			2, -1,
+			3, 1,
+			4, 0,
+		}, true));
+		
+		// Self-touching
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			4, 0,
+			4, 4,
+			2, 4,
+			2, 3,
+			3, 3,
+			3, 1,
+			1, 1,
+			1, 3,
+			2, 3,
+			2, 4,
+			0, 4,
+		}, true));
+		
+		// Self-overlapping
+		testCases.add(new TestCase(new float[] {
+			0, 0,
+			4, 0,
+			4, 4,
+			1, 4,
+			1, 3,
+			3, 3,
+			3, 1,
+			1, 1,
+			1, 3,
+			3, 3,
+			3, 4,
+			0, 4,
+		}, true));
 		
 		// Issue 815, http://code.google.com/p/libgdx/issues/detail?id=815
 		testCases.add(new TestCase(new float[] {
@@ -235,7 +287,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			4.414321f, 1.903619f,
 			4.8973203f, 1.9063174f,
 			5.4979978f, 1.9096732f,
-		}));
+		}, true));
 		
 		// Issue 1407, http://code.google.com/p/libgdx/issues/detail?id=1407,
 		// with an additional point to show what is happening.
@@ -324,6 +376,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 	
 	private class TestCase implements Disposable {
 		final List<Vector2> polygon;
+		final boolean invalid;
 		
 		final Mesh polygonMesh;
 		final Mesh interiorMesh;
@@ -331,6 +384,11 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		final Rectangle boundingRect;
 		
 		public TestCase(float[] p) {
+			this(p, false);
+		}
+		
+		public TestCase(float[] p, boolean invalid) {
+			this.invalid = invalid;
 			polygon = vertexArrayToList(p);
 			
 			int numPolygonVertices = polygon.size();
@@ -399,7 +457,11 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			Gdx.gl10.glScalef(1 / boundingRect.width, 1 / boundingRect.height, 1);
 			Gdx.gl10.glTranslatef(-boundingRect.x, -boundingRect.y, 0);
 			
-			Gdx.gl10.glColor4f(0.8f, 0.8f, 0.9f, 1.0f);
+			if (invalid) {
+				Gdx.gl10.glColor4f(1.0f, 0.8f, 0.8f, 1.0f);
+			} else {
+				Gdx.gl10.glColor4f(0.8f, 0.8f, 0.9f, 1.0f);
+			}
 			interiorMesh.render(GL10.GL_TRIANGLES);
 			
 			Gdx.gl10.glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
