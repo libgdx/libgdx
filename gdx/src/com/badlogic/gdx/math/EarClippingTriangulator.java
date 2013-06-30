@@ -26,11 +26,13 @@ import java.util.List;
  * <li><a href="http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf</a></li>
  * </ul>
  *
+ * If the input polygon is not simple (i.e. has self-intersections), there will be output but it is of unspecified quality
+ * (garbage in, garbage out).
+ *
  * @author badlogicgames@gmail.com
  * @author Nicolas Gramlich (Improved performance. Collinear edges are now supported.)
  * @author Eric Spitz
- * @author Thomas ten Cate (Several bugfixes and performance improvements.)
- */
+ * @author Thomas ten Cate (Several bugfixes and performance improvements.) */
 public final class EarClippingTriangulator {
 
 	private static final int CONCAVE = 1;
@@ -42,10 +44,10 @@ public final class EarClippingTriangulator {
 	private int[] vertexTypes;
 	private int concaveVertexCount;
 
-	/** Triangulates the given (concave) polygon to a list of triangles. The resulting triangles have clockwise order.
+	/** Triangulates the given (convex or concave) polygon to a list of triangles.
 	 *
-	 * @param polygon the polygon
-	 * @return the triangles */
+	 * @param polygon a list of points describing a simple polygon, in either clockwise or counterclockwise order
+	 * @return the triangles, as triples of points in clockwise order */
 	public List<Vector2> computeTriangles (final List<Vector2> polygon) {
 		// TODO Check if LinkedList performs better
 		triangles = new ArrayList<Vector2>();
