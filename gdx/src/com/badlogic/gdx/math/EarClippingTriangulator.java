@@ -58,18 +58,25 @@ public final class EarClippingTriangulator {
 			Collections.reverse(vertices);
 		}
 
+		vertexTypes = new int[vertexCount];
+		concaveVertexCount = 0;
+		for (int i = 0; i < vertexCount; ++i) {
+			classifyVertex(i);
+		}
+
 		/*
 		 * ESpitz: For the sake of performance, we only need to test for eartips while the polygon has more than three verts. If
 		 * there are only three verts left to test, or there were only three verts to begin with, there is no need to continue with
 		 * this loop.
 		 */
 		while (vertexCount > 3) {
-			// TODO Usually(Always?) only the Types of the vertices next to the
-			// ear change! --> Improve
-			vertexTypes = classifyVertices();
-
 			int earTipIndex = findEarTip();
 			cutEarTip(earTipIndex);
+
+			// Only the type of the two vertices adjacent to the clipped vertex can have changed,
+			// so no need to reclassify all of them.
+			classifyVertex(computePreviousIndex(earTipIndex));
+			classifyVertex(earTipIndex);
 		}
 
 		/*
@@ -103,29 +110,27 @@ public final class EarClippingTriangulator {
 	}
 
 	/**
-	 * @return An array of length <code>vertices.size()</code> filled with either {@link EarClippingTriangulator#CONCAVE} or
-	 *         {@link EarClippingTriangulator#CONVEX_OR_TANGENTIAL}. */
-	private int[] classifyVertices () {
-		final int[] vertexTypes = new int[vertexCount];
-		this.concaveVertexCount = 0;
+	 * Sets {code vertexTypes[index]} to either {@link EarClippingTriangulator#CONCAVE} or
+	 * {@link EarClippingTriangulator#CONVEX_OR_TANGENTIAL} and updates {@link #concaveVertexCount} accordingly.
+	 */
+	private void classifyVertex (int index) {
+		final Vector2 previousVertex = vertices.get(computePreviousIndex(index));
+		final Vector2 currentVertex = vertices.get(index);
+		final Vector2 nextVertex = vertices.get(computeNextIndex(index));
 
-		for (int index = 0; index < vertexCount; index++) {
-			final int previousIndex = computePreviousIndex(index);
-			final int nextIndex = computeNextIndex(index);
-
-			final Vector2 previousVertex = vertices.get(previousIndex);
-			final Vector2 currentVertex = vertices.get(index);
-			final Vector2 nextVertex = vertices.get(nextIndex);
-
-			if (isTriangleConvex(previousVertex, currentVertex, nextVertex)) {
-				vertexTypes[index] = CONVEX_OR_TANGENTIAL;
-			} else {
-				vertexTypes[index] = CONCAVE;
-				this.concaveVertexCount++;
-			}
+		int vertexType = vertexTypes[index];
+		if (vertexTypes[index] == CONCAVE) {
+			concaveVertexCount--;
 		}
-
-		return vertexTypes;
+		if (isTriangleConvex(previousVertex, currentVertex, nextVertex)) {
+			vertexType = CONVEX_OR_TANGENTIAL;
+		} else {
+			vertexType = CONCAVE;
+		}
+		if (vertexType == CONCAVE) {
+			concaveVertexCount++;
+		}
+		vertexTypes[index] = vertexType;
 	}
 
 	private static boolean isTriangleConvex (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
@@ -216,6 +221,7 @@ public final class EarClippingTriangulator {
 		triangles.add(new Vector2(vertices.get(nextIndex)));
 
 		vertices.remove(pEarTipIndex);
+		System.arraycopy(vertexTypes, pEarTipIndex + 1, vertexTypes, pEarTipIndex, vertexCount - pEarTipIndex - 1);
 		vertexCount--;
 	}
 
