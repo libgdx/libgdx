@@ -40,9 +40,9 @@ public final class EarClippingTriangulator {
 
 	private List<Vector2> vertices;
 	private int vertexCount;
-	private List<Vector2> triangles;
 	private int[] vertexTypes;
 	private int concaveVertexCount;
+	private List<Vector2> triangles;
 
 	/** Triangulates the given (convex or concave) polygon to a list of triangles.
 	 *
@@ -50,7 +50,6 @@ public final class EarClippingTriangulator {
 	 * @return the triangles, as triples of points in clockwise order */
 	public List<Vector2> computeTriangles (final List<Vector2> polygon) {
 		// TODO Check if LinkedList performs better
-		triangles = new ArrayList<Vector2>();
 		vertices = new ArrayList<Vector2>(polygon.size());
 		vertices.addAll(polygon);
 		vertexCount = vertices.size();
@@ -65,6 +64,9 @@ public final class EarClippingTriangulator {
 		for (int i = 0; i < vertexCount; ++i) {
 			classifyVertex(i);
 		}
+
+		// A polygon with n vertices has a triangulation of n-2 triangles
+		triangles = new ArrayList<Vector2>(3 * Math.max(0, vertexCount - 2));
 
 		/*
 		 * ESpitz: For the sake of performance, we only need to test for eartips while the polygon has more than three verts. If
