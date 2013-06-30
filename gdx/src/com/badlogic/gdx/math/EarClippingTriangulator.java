@@ -148,45 +148,32 @@ public final class EarClippingTriangulator {
 		return (int)Math.signum(area);
 	}
 
-	/** @return <code>true</code> when the Triangles contains one or more vertices, <code>false</code> otherwise. */
-	private static boolean isAnyVertexInTriangle (final ArrayList<Vector2> pVertices, final int[] pVertexTypes, final Vector2 p1,
-		final Vector2 p2, final Vector2 p3) {
-		int i = 0;
-
-		final int vertexCount = pVertices.size();
-		while (i < vertexCount - 1) {
-			if ((pVertexTypes[i] == CONCAVE)) {
-				final Vector2 currentVertex = pVertices.get(i);
-
-				final int areaSign1 = EarClippingTriangulator.computeSpannedAreaSign(p1, p2, currentVertex);
-				final int areaSign2 = EarClippingTriangulator.computeSpannedAreaSign(p2, p3, currentVertex);
-				final int areaSign3 = EarClippingTriangulator.computeSpannedAreaSign(p3, p1, currentVertex);
-
-				if (areaSign1 > 0 && areaSign2 > 0 && areaSign3 > 0) {
-					return true;
-				} else if (areaSign1 <= 0 && areaSign2 <= 0 && areaSign3 <= 0) {
-					return true;
-				}
-			}
-			i++;
-		}
-		return false;
-	}
-
 	private boolean isEarTip (final ArrayList<Vector2> pVertices, final int pEarTipIndex, final int[] pVertexTypes) {
+		// TODO ear tips can only be convex (or maybe tangential) so don't bother checking points-in-triangle unless convex
 		if (this.concaveVertexCount != 0) {
-			final Vector2 previousVertex = pVertices.get(EarClippingTriangulator.computePreviousIndex(pVertices, pEarTipIndex));
-			final Vector2 currentVertex = pVertices.get(pEarTipIndex);
-			final Vector2 nextVertex = pVertices.get(EarClippingTriangulator.computeNextIndex(pVertices, pEarTipIndex));
+			final Vector2 p1 = pVertices.get(EarClippingTriangulator.computePreviousIndex(pVertices, pEarTipIndex));
+			final Vector2 p2 = pVertices.get(pEarTipIndex);
+			final Vector2 p3 = pVertices.get(EarClippingTriangulator.computeNextIndex(pVertices, pEarTipIndex));
+			
+			final int vertexCount = pVertices.size();
+			for (int i = 0; i < vertexCount; i++) {
+				if ((pVertexTypes[i] == CONCAVE)) {
+					final Vector2 v = pVertices.get(i);
 
-			if (EarClippingTriangulator.isAnyVertexInTriangle(pVertices, pVertexTypes, previousVertex, currentVertex, nextVertex)) {
-				return false;
-			} else {
-				return true;
+					final int areaSign1 = EarClippingTriangulator.computeSpannedAreaSign(p1, p2, v);
+					final int areaSign2 = EarClippingTriangulator.computeSpannedAreaSign(p2, p3, v);
+					final int areaSign3 = EarClippingTriangulator.computeSpannedAreaSign(p3, p1, v);
+
+					if (areaSign1 > 0 && areaSign2 > 0 && areaSign3 > 0) {
+						return false;
+					} else if (areaSign1 <= 0 && areaSign2 <= 0 && areaSign3 <= 0) {
+						return false;
+					}
+				}
+				i++;
 			}
-		} else {
-			return true;
 		}
+		return true;
 	}
 
 	private void cutEarTip (final ArrayList<Vector2> pVertices, final int pEarTipIndex, final ArrayList<Vector2> pTriangles) {
