@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tools.imagepacker;
 
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Alias;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
@@ -126,7 +127,7 @@ public class ImageProcessor {
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
-				existing.aliases.add(rect.name);
+				existing.aliases.add(new Alias(rect.name, rect.index));
 				return;
 			}
 			crcs.put(crc, rect);

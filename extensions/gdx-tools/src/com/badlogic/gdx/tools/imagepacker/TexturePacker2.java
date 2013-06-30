@@ -275,8 +275,10 @@ public class TexturePacker2 {
 
 			for (Rect rect : page.outputRects) {
 				writeRect(writer, page, rect, rect.name);
-				for (String alias : rect.aliases)
-					writeRect(writer, page, rect, alias);
+				for (Alias alias : rect.aliases) {
+					rect.index = alias.index;
+					writeRect(writer, page, rect, alias.name);
+				}
 			}
 		}
 // }
@@ -331,6 +333,17 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 	}
 
+	/** @author Regnarock */
+	public static class Alias {
+		public String name;
+		public int index;
+		
+		public Alias(String name, int index) {
+			this.name = name;
+			this.index = index;
+		}
+	}
+	
 	/** @author Nathan Sweet */
 	public static class Rect {
 		public String name;
@@ -339,7 +352,7 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 		public int index;
 		public boolean rotated;
-		public Set<String> aliases = new HashSet<String>();
+		public Set<Alias> aliases = new HashSet<Alias>();
 		public int[] splits;
 		public int[] pads;
 		public boolean canRotate = true;
