@@ -46,6 +46,11 @@ public final class EarClippingTriangulator {
 		final ArrayList<Vector2> vertices = new ArrayList<Vector2>(polygon.size());
 		vertices.addAll(polygon);
 
+		/* Ensure vertices are in clockwise order. */
+		if (!areVerticesClockwise(vertices)) {
+			Collections.reverse(vertices);
+		}
+
 		/*
 		 * ESpitz: For the sake of performance, we only need to test for eartips while the polygon has more than three verts. If
 		 * there are only three verts left to test, or there were only three verts to begin with, there is no need to continue with
@@ -101,12 +106,6 @@ public final class EarClippingTriangulator {
 
 		final int[] vertexTypes = new int[vertexCount];
 		this.concaveVertexCount = 0;
-
-		/* Ensure vertices are in clockwise order. */
-		// TODO only do this once; clipping an ear does not change winding order of the remaining points
-		if (!areVerticesClockwise(pVertices)) {
-			Collections.reverse(pVertices);
-		}
 
 		for (int index = 0; index < vertexCount; index++) {
 			final int previousIndex = computePreviousIndex(pVertices, index);
