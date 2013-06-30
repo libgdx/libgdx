@@ -118,10 +118,6 @@ public final class EarClippingTriangulator {
 		return computeSpannedAreaSign(previousVertex, currentVertex, nextVertex);
 	}
 
-	private static boolean isTriangleConvex (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
-		return computeSpannedAreaSign(p1, p2, p3) >= 0;
-	}
-
 	private static int computeSpannedAreaSign (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
 		float area = 0;
 		area += p1.x * (p3.y - p2.y);
