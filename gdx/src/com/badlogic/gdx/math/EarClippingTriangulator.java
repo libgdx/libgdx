@@ -176,6 +176,7 @@ public final class EarClippingTriangulator {
 				// The vertex is strictly inside the triangle if all three signs are the same.
 				// If it's on one or more edges, one or more of the signs will be 0.
 				// So it's inside or on the edge if no two signs are opposite.
+				// TODO The winding order of the triangle is known, so only one of the signs ever occurs. Simplify.
 				if (!((areaSign1 > 0 || areaSign2 > 0 || areaSign3 > 0) && (areaSign1 < 0 || areaSign2 < 0 || areaSign3 < 0))) {
 					return false;
 				}
