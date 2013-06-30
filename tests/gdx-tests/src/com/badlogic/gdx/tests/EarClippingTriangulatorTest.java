@@ -249,7 +249,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			510, 60,
 			650, 70,
 			660, 450,
-			// 190, 480,
+			190, 480,
 		}));
 		
 		// Issue 815, http://code.google.com/p/libgdx/issues/detail?id=815
