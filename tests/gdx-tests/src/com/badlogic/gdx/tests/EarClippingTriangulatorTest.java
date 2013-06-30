@@ -96,6 +96,68 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			4, 0,
 		}));
 		
+		// Plus shape
+		testCases.add(new TestCase(new float[] {
+			1, 0,
+			2, 0,
+			2, 1,
+			3, 1,
+			3, 2,
+			2, 2,
+			2, 3,
+			1, 3,
+			1, 2,
+			0, 2,
+			0, 1,
+			1, 1,
+		}));
+		
+		// Star shape
+		testCases.add(new TestCase(new float[] {
+			4, 0,
+			5, 3,
+			8, 4,
+			5, 5,
+			4, 8,
+			3, 5,
+			0, 4,
+			3, 3,
+		}));
+		
+		// U shape
+		testCases.add(new TestCase(new float[] {
+			1, 0,
+			2, 0,
+			3, 1,
+			3, 3,
+			2, 3,
+			2, 1,
+			1, 1,
+			1, 3,
+			0, 3,
+			0, 1,
+		}));
+		
+		// Spiral
+		testCases.add(new TestCase(new float[] {
+			1, 0,
+			4, 0,
+			5, 1,
+			5, 4,
+			4, 5,
+			1, 5,
+			0, 4,
+			0, 3,
+			1, 2,
+			2, 2,
+			3, 3,
+			1, 3,
+			1, 4,
+			4, 4,
+			4, 1,
+			0, 1,
+		}));
+		
 		// Issue 815, http://code.google.com/p/libgdx/issues/detail?id=815
 		testCases.add(new TestCase(new float[] {
 			-2.0f, 0.0f,
@@ -278,7 +340,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			triangleOutlineMesh.render(GL10.GL_LINES);
 			
 			Gdx.gl10.glColor4f(0.3f, 0.0f, 0.0f, 1.0f);
-			Gdx.gl10.glLineWidth(3.0f);
+			Gdx.gl10.glLineWidth(2.0f);
 			polygonMesh.render(GL10.GL_LINE_LOOP);
 		}
 		
