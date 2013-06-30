@@ -60,7 +60,7 @@ public class GdxTests {
 		GroupCullingTest.class, GestureDetectorTest.class, LabelTest.class, BitmapFontMetricsTest.class, BlitTest.class, TableTest.class,
 		BobTest.class, ImageScaleTest.class, TableLayoutTest.class, Box2DTest.class, BulletTestCollection.class, InterpolationTest.class, TouchpadTest.class,
 		Box2DTestCollection.class, BufferUtilsTest.class, ImageTest.class, CompassTest.class, ComplexActionTest.class,
-		CullTest.class, DeltaTimeTest.class, EdgeDetectionTest.class, ETC1Test.class, ExitTest.class, FilesTest.class,
+		CullTest.class, DeltaTimeTest.class, EarClippingTriangulatorTest.class, EdgeDetectionTest.class, ETC1Test.class, ExitTest.class, FilesTest.class,
 		ScrollPaneTest.class, FloatTest.class, FloatTextureTest.class, FrameBufferTest.class, FramebufferToTextureTest.class, FrustumTest.class,
 		FullscreenTest.class, Gdx2DTest.class, GroupFadeTest.class, ImmediateModeRendererTest.class, Scene2dTest.class,
 		ImmediateModeRendererAlphaTest.class, IndexBufferObjectClassTest.class, TreeTest.class, IndexBufferObjectShaderTest.class,
