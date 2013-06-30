@@ -1,9 +1,13 @@
 package com.badlogic.gdx.tests;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -242,6 +246,26 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		
 		casesX = (int) Math.ceil(Math.sqrt(testCases.size()));
 		casesY = (int) Math.ceil((float) testCases.size() / casesX);
+		
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean keyDown (int keycode) {
+				switch (keycode) {
+				case Keys.RIGHT:
+					cycle(1);
+					break;
+				case Keys.LEFT:
+					cycle(-1);
+					break;
+				case Keys.SPACE:
+					reverse();
+					break;
+				default:
+					return super.keyDown(keycode);
+				}
+				return true;
+			}
+		});
 	}
 	
 	@Override
@@ -283,14 +307,29 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		}
 	}
 	
+	void cycle(int step) {
+		for (TestCase testCase : testCases) {
+			testCase.cycle(step);
+		}
+	}
+	
+	void reverse() {
+		for (TestCase testCase : testCases) {
+			testCase.reverse();
+		}
+	}
+	
 	private class TestCase implements Disposable {
+		final List<Vector2> polygon;
+		
 		final Mesh polygonMesh;
 		final Mesh interiorMesh;
 		final Mesh triangleOutlineMesh;
 		final Rectangle boundingRect;
 		
 		public TestCase(float[] p) {
-			List<Vector2> polygon = vertexArrayToList(p);
+			polygon = vertexArrayToList(p);
+			
 			int numPolygonVertices = polygon.size();
 			Vector2 min = new Vector2(Float.MAX_VALUE, Float.MAX_VALUE);
 			Vector2 max = new Vector2(-Float.MAX_VALUE, -Float.MAX_VALUE);
@@ -303,6 +342,16 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			}
 			boundingRect = new Rectangle(min.x, min.y, Math.max(0.001f, max.x - min.x), Math.max(0.001f, max.y - min.y));
 			
+			int numTriangles = Math.max(0, polygon.size() - 2);
+			VertexAttributes attributes = new VertexAttributes(new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE));
+			polygonMesh = new Mesh(true, polygon.size(), 0, attributes);
+			interiorMesh = new Mesh(true, 3 * numTriangles, 0, attributes);
+			triangleOutlineMesh = new Mesh(true, 6 * numTriangles, 0, attributes);
+
+			triangulate();
+		}
+		
+		private void triangulate() {
 			List<Vector2> triangles = new EarClippingTriangulator().computeTriangles(polygon);
 
 			int numTriangleVertices = triangles.size();
@@ -319,13 +368,28 @@ public class EarClippingTriangulatorTest extends GdxTest {
 				triangleOutlines.add(a);
 			}
 			
-			VertexAttributes attributes = new VertexAttributes(new VertexAttribute(Usage.Position, 2, ShaderProgram.POSITION_ATTRIBUTE));
-			polygonMesh = new Mesh(true, polygon.size(), 0, attributes);
 			polygonMesh.setVertices(listToVertexArray(polygon));
-			interiorMesh = new Mesh(true, triangles.size(), 0, attributes);
 			interiorMesh.setVertices(listToVertexArray(triangles));
-			triangleOutlineMesh = new Mesh(true, triangleOutlines.size(), 0, attributes);
 			triangleOutlineMesh.setVertices(listToVertexArray(triangleOutlines));
+		}
+		
+		public void cycle(int step) {
+			if (polygon.isEmpty()) {
+				return;
+			}
+			while (step > 0) {
+				polygon.add(0, polygon.remove(polygon.size() - 1));
+				--step;
+			}
+			while (step < 0) {
+				polygon.add(polygon.remove(0));
+				++step;
+			}
+			triangulate();
+		}
+		
+		public void reverse() {
+			Collections.reverse(polygon);
 		}
 		
 		public void render() {
