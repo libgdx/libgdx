@@ -213,52 +213,11 @@ public final class EarClippingTriangulator {
 		final int previousIndex = computePreviousIndex(pVertices, pEarTipIndex);
 		final int nextIndex = computeNextIndex(pVertices, pEarTipIndex);
 
-		if (!isCollinear(pVertices, previousIndex, pEarTipIndex, nextIndex)) {
-			pTriangles.add(new Vector2(pVertices.get(previousIndex)));
-			pTriangles.add(new Vector2(pVertices.get(pEarTipIndex)));
-			pTriangles.add(new Vector2(pVertices.get(nextIndex)));
-		}
+		pTriangles.add(new Vector2(pVertices.get(previousIndex)));
+		pTriangles.add(new Vector2(pVertices.get(pEarTipIndex)));
+		pTriangles.add(new Vector2(pVertices.get(nextIndex)));
 
 		pVertices.remove(pEarTipIndex);
-		if (pVertices.size() >= 3) {
-			removeCollinearNeighborEarsAfterRemovingEarTip(pVertices, pEarTipIndex);
-		}
-	}
-
-	private static void removeCollinearNeighborEarsAfterRemovingEarTip (final ArrayList<Vector2> pVertices,
-		final int pEarTipCutIndex) {
-		final int collinearityCheckNextIndex = pEarTipCutIndex % pVertices.size();
-		int collinearCheckPreviousIndex = computePreviousIndex(pVertices, collinearityCheckNextIndex);
-
-		if (isCollinear(pVertices, collinearityCheckNextIndex)) {
-			pVertices.remove(collinearityCheckNextIndex);
-
-			if (pVertices.size() > 3) {
-				/* Update */
-				collinearCheckPreviousIndex = computePreviousIndex(pVertices, collinearityCheckNextIndex);
-				if (isCollinear(pVertices, collinearCheckPreviousIndex)) {
-					pVertices.remove(collinearCheckPreviousIndex);
-				}
-			}
-		} else if (isCollinear(pVertices, collinearCheckPreviousIndex)) {
-			pVertices.remove(collinearCheckPreviousIndex);
-		}
-	}
-
-	private static boolean isCollinear (final ArrayList<Vector2> pVertices, final int pIndex) {
-		final int previousIndex = computePreviousIndex(pVertices, pIndex);
-		final int nextIndex = computeNextIndex(pVertices, pIndex);
-
-		return isCollinear(pVertices, previousIndex, pIndex, nextIndex);
-	}
-
-	private static boolean isCollinear (final ArrayList<Vector2> pVertices, final int pPreviousIndex, final int pIndex,
-		final int pNextIndex) {
-		final Vector2 previousVertex = pVertices.get(pPreviousIndex);
-		final Vector2 vertex = pVertices.get(pIndex);
-		final Vector2 nextVertex = pVertices.get(pNextIndex);
-
-		return computeSpannedAreaSign(previousVertex, vertex, nextVertex) == 0;
 	}
 
 	private static int computePreviousIndex (final List<Vector2> pVertices, final int pIndex) {
