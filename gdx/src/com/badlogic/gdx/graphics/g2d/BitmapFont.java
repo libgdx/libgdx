@@ -700,6 +700,7 @@ public class BitmapFont implements Disposable {
 	}
 
 	public static class Glyph {
+		public int id;
 		public int srcX;
 		public int srcY;
 		public int width, height;
@@ -710,7 +711,7 @@ public class BitmapFont implements Disposable {
 		
 		/** The index to the texture page that holds this glyph. */
 		public int page = 0;
-
+		
 		public int getKerning (char ch) {
 			if (kerning != null) {
 				byte[] page = kerning[ch >>> LOG2_PAGE_SIZE];
@@ -786,7 +787,6 @@ public class BitmapFont implements Disposable {
 		public float ascent;
 		public float descent;
 		public float down;
-		public float baseLine;
 		public float scaleX = 1, scaleY = 1;
 
 		public final Glyph[][] glyphs = new Glyph[PAGES][];
@@ -816,7 +816,7 @@ public class BitmapFont implements Disposable {
 				lineHeight = Integer.parseInt(common[1].substring(11));
 
 				if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				baseLine = Integer.parseInt(common[2].substring(5));
+				float baseLine = Integer.parseInt(common[2].substring(5));
 				
 				//parse the pages count
 				int imgPageCount = 1;
@@ -881,6 +881,7 @@ public class BitmapFont implements Disposable {
 						setGlyph(ch, glyph);
 					else
 						continue;
+					glyph.id = ch;
 					tokens.nextToken();
 					glyph.srcX = Integer.parseInt(tokens.nextToken());
 					tokens.nextToken();
@@ -932,6 +933,7 @@ public class BitmapFont implements Disposable {
 				Glyph spaceGlyph = getGlyph(' ');
 				if (spaceGlyph == null) {
 					spaceGlyph = new Glyph();
+					spaceGlyph.id = (int)' ';
 					Glyph xadvanceGlyph = getGlyph('l');
 					if (xadvanceGlyph == null) xadvanceGlyph = getFirstGlyph();
 					spaceGlyph.xadvance = xadvanceGlyph.xadvance;
@@ -984,7 +986,7 @@ public class BitmapFont implements Disposable {
 			if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
 			page[ch & PAGE_SIZE - 1] = glyph;
 		}
-
+		
 		public Glyph getFirstGlyph () {
 			for (Glyph[] page : this.glyphs) {
 				if (page == null) continue;
@@ -1020,6 +1022,10 @@ public class BitmapFont implements Disposable {
 		 */
 		public String getImagePath(int index) {
 			return imagePaths[index];
+		}
+		
+		public String[] getImagePaths() {
+			return imagePaths;
 		}
 
 		public FileHandle getFontFile () {

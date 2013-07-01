@@ -184,6 +184,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
 		glyph.srcX = 0;
 		glyph.srcY = 0;
+		glyph.id = c;
 
 		GlyphAndBitmap result = new GlyphAndBitmap();
 		result.glyph = glyph;
@@ -243,6 +244,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 		Glyph spaceGlyph = new Glyph();
 		spaceGlyph.xadvance = (int)data.spaceWidth;
+		spaceGlyph.id = (int)' ';
 		data.setGlyph(' ', spaceGlyph);
 
 		// determine x-height
@@ -298,8 +300,17 @@ public class FreeTypeFontGenerator implements Disposable {
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
 			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
-			Rectangle rect = packer.pack(packPrefix + c, pixmap);
+			String name = packPrefix + c;
+			Rectangle rect = packer.pack(name, pixmap);
+			
+			//determine which page it was packed into
+			int pIndex = packer.getPageIndex(name);
+			if (pIndex==-1) //we should not get here
+				throw new IllegalStateException("packer was not able to insert '"+name+"' into a page");
+			
 			Glyph glyph = new Glyph();
+			glyph.id = (int)c;
+			glyph.page = pIndex;
 			glyph.width = pixmap.getWidth();
 			glyph.height = pixmap.getHeight();
 			glyph.xoffset = slot.getBitmapLeft();
