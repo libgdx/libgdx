@@ -18,9 +18,7 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.BitmapFontMetricsTest;
 import com.badlogic.gdx.tests.extensions.FreeTypePackTest;
-import com.badlogic.gdx.tests.extensions.FreeTypeTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
