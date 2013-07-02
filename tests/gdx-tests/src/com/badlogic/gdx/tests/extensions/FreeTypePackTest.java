@@ -16,8 +16,9 @@
 
 package com.badlogic.gdx.tests.extensions;
 
+import java.util.EnumMap;
+
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -48,8 +49,10 @@ public class FreeTypePackTest extends GdxTest {
 		Tiny(10),
 		Small(12),
 		Medium(16),
-		Large(18),
-		Huge(24);
+		Large(20),
+		Huge(24),
+		ReallyHuge(28),
+		JustTooBig(64);
 		
 		public final int size;
 		
@@ -69,18 +72,27 @@ public class FreeTypePackTest extends GdxTest {
 			this.path = path;
 		}
 	}
-
+	
 	
 	OrthographicCamera camera;
 	SpriteBatch batch;
-	Texture fontAtlasTexture;
-	BitmapFont[][] fonts;
+	TextureRegion[] regions;
 	String text;
+	
+	FontMap<BitmapFont> fontMap;
 	
 	public static final int FONT_ATLAS_WIDTH = 1024;
 	public static final int FONT_ATLAS_HEIGHT = 512;
+	
+	//whether to use integer coords for BitmapFont...
 	private static final boolean INTEGER = false;
 	
+	//Our demo doesn't need any fancy characters.
+	//Note: the set in FreeTypeFontGenerator.DEFAULT_CHARS is more extensive
+	//Also note that this string must be contained of unique characters; no duplicates!
+	public static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+									+ "abcdefghijklmnopqrstuvwxyz\n1234567890" 
+									+ "\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*";
 	
 	@Override
 	public void create () {
@@ -90,7 +102,8 @@ public class FreeTypePackTest extends GdxTest {
 		long start = System.currentTimeMillis();
 		int glyphCount = createFonts();
 		long time = System.currentTimeMillis() - start;
-		text = glyphCount+" glyphs packed in "+time+" ms";
+		text = glyphCount+" glyphs packed in "+regions.length+" page(s) in "+time+" ms";
+		
 	}
 
 	@Override
@@ -110,10 +123,11 @@ public class FreeTypePackTest extends GdxTest {
 		for (FontStyle style : FontStyle.values()) {
 			for (FontSize size : FontSize.values()) {
 				BitmapFont fnt = getFont(style, size);
+				
 				fnt.draw(batch, style.name()+" "+size.size+"pt: The quick brown fox jumps over the lazy dog", x, y);
 				y -= fnt.getLineHeight() + 10;
 			}
-			y -= 50;
+			y -= 20;
 		}
 		
 		BitmapFont font = getFont(FontStyle.Regular, FontSize.Medium);
@@ -121,7 +135,7 @@ public class FreeTypePackTest extends GdxTest {
 		
 		//draw all glyphs in background
 		batch.setColor(1f,1f,1f,0.15f);
-		batch.draw(fontAtlasTexture, 0, 0);
+		batch.draw(regions[0], 0, 0);
 		batch.setColor(1f,1f,1f,1f);
 		batch.end();
 	}
@@ -135,33 +149,36 @@ public class FreeTypePackTest extends GdxTest {
 	@Override
 	public void dispose () {
 		super.dispose();
-		fontAtlasTexture.dispose(); //dispose the texture since we own it
+		for (TextureRegion r : regions)
+			r.getTexture().dispose(); //dispose the texture since we own it
 		batch.dispose();
 	}
 	
+	//Utility method to grab a font by style/size pair
 	public BitmapFont getFont(FontStyle style, FontSize size) {
-		return fonts[style.ordinal()][size.ordinal()];
+		return fontMap.get(style).get(size);
 	}
 	
 	protected int createFonts() {
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//////// Steps to use multiple FreeTypeFontGenerators with a single texture atlas://////////////////////
-		// 1. Create a new PixmapPacker big enough to fit all your desired glyphs
-		// 2. Create a new FreeTypeFontGenerator for each file (i.e. font styles/families)
-		// 3. Pack the data by specifying the PixmapPacker parameter to generateData
-		//    Keep hold of the returned BitmapFontData for later
-		// 4. Repeat for other sizes.
-		// 5. Dispose the generator and repeat for other font styles/families
-		// 6. Create a new Texture and TextureRegion from the Pixmap object from pixmapPacker.getPages().get(0).getPixmap()
-		// 7. Dispose the PixmapPacker
-		// 8. Use each BitmapFontData to construct a new BitmapFont, and specify your TextureRegion to the font constructor
-		// 9. Dispose of the Texture upon application exit or when you are done using the font atlas
+		////////Steps to use multiple FreeTypeFontGenerators with a single texture atlas://////////////////////
+		//1. Create a new PixmapPacker big enough to fit all your desired glyphs
+		//2. Create a new FreeTypeFontGenerator for each file (i.e. font styles/families)
+		//3. Pack the data by specifying the PixmapPacker parameter to generateData
+		//Keep hold of the returned BitmapFontData for later
+		//4. Repeat for other sizes.
+		//5. Dispose the generator and repeat for other font styles/families
+		//6. Create new Texture(s) and TextureRegion(s) from the Pixmap object from pixmapPacker.getPages()
+		//7. Dispose the PixmapPacker
+		//8. Use each BitmapFontData to construct a new BitmapFont, and specify your TextureRegion(s) to the font constructor
+		//9. Dispose of the Texture upon application exit or when you are done using the font atlas
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
 		//create the pixmap packer
 		PixmapPacker packer = new PixmapPacker(FONT_ATLAS_WIDTH, FONT_ATLAS_HEIGHT, Format.RGBA8888, 2, false);
 		
-		Array<DataInfo> infoList = new Array<DataInfo>();
+		//we need to load all the BitmapFontDatas before we can start loading BitmapFonts
+		FontMap<BitmapFontData> dataMap = new FontMap<BitmapFontData>();
 		
 		//for each style...
 		for (FontStyle style : FontStyle.values()) {
@@ -169,61 +186,74 @@ public class FreeTypePackTest extends GdxTest {
 			FreeTypeFontGenerator gen = new FreeTypeFontGenerator(Gdx.files.internal(style.path));
 			
 			//For each size...
-			for (FontSize s : FontSize.values()) {
-				//we will use this later when generating the texture atlas
-				DataInfo info = new DataInfo();
-				info.size = s;
-				info.style = style;
-				
+			for (FontSize size : FontSize.values()) {
 				//pack the glyphs into the atlas using the default chars
-				info.data = gen.generateData(s.size, FreeTypeFontGenerator.DEFAULT_CHARS, false, packer);
+				BitmapFontData data = gen.generateData(size.size, CHARACTERS, false, packer);
 				
 				//store the info for later, when we generate the texture
-				infoList.add(info);
+				dataMap.get(style).put(size, data);
 			}
 			
 			//dispose of the generator once we're finished with this family
 			gen.dispose();
 		}
 		
-		//our app only supports a max of one page!
-		if (packer.getPages().size > 1)
-			Gdx.app.log("FreeTypePakcTest", "Could not fit all fonts into a single texture page");
+		//The pages of pixmaps from our packer
+		Array<Page> pages = packer.getPages();
 		
+		//our resulting regions
+		regions = new TextureRegion[pages.size];
 		
-		Page p = packer.getPages().get(0);
+		//Now generate a TextureRegion from each pixmap page
+		for (int i=0; i<regions.length; i++) {
+			Page page = pages.get(i);
+			
+			//create a Texture from the pixmap
+			Texture tex = new Texture(page.getPixmap());
+			tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+			
+			regions[i] = new TextureRegion(tex);
+		}
 		
-		//generate texture from pixmap packer
-		fontAtlasTexture = new Texture(p.getPixmap(), p.getPixmap().getFormat(), false);
-		fontAtlasTexture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		
-		//get a region for our bitmap font constructor
-		TextureRegion reg = new TextureRegion(fontAtlasTexture);
-		
-		//no more need for the PixmapPacker.. we can dispose it
+		//No more need for our CPU-based pixmap packer, as our textures are now on GPU
 		packer.dispose();
 		
-		int styleCount = FontStyle.values().length;
-		int sizeCount = FontSize.values().length;
+		//Now we can create our fonts...
+		fontMap = new FontMap<BitmapFont>();
 		
-		fonts = new BitmapFont[styleCount][];
+		int fontCount = 0;
 		
-		//now we need to generate BitmapFonts ... 
-		for (int i=0; i<infoList.size; i++) {
-			DataInfo info = infoList.get(i);
-			int styleIndex = info.style.ordinal();
-			int sizeIndex = info.size.ordinal();
-			if (fonts[styleIndex]==null)
-				fonts[styleIndex] = new BitmapFont[sizeCount];
-			fonts[styleIndex][sizeIndex] = new BitmapFont(info.data, reg, INTEGER);
+		//for each style...
+		for (FontStyle style : FontStyle.values()) {
+			//For each size...
+			for (FontSize size : FontSize.values()) {
+				//get the data for this style/size pair
+				BitmapFontData data = dataMap.get(style).get(size);
+				
+				//create a BitmapFont from the data and shared texture
+				BitmapFont bmFont = new BitmapFont(data, regions, INTEGER);
+				
+				//place the font into our map of loaded fonts
+				fontMap.get(style).put(size, bmFont);
+				
+				fontCount++;
+			}
 		}
-		return styleCount * sizeCount * FreeTypeFontGenerator.DEFAULT_CHARS.length();
+		
+		//for the demo, show how many glyphs we loaded
+		return fontCount * FreeTypeFontGenerator.DEFAULT_CHARS.length();
 	}
 	
-	class DataInfo {
-		FontSize size;
-		FontStyle style;
-		BitmapFontData data;
+	//We use a nested EnumMap for fast access
+	class FontMap<T> extends EnumMap<FontStyle, EnumMap<FontSize, T>> {
+		
+		public FontMap() {
+			super(FontStyle.class);
+			
+			//create the enum map for each FontSize
+			for (FontStyle style : FontStyle.values()) {
+				put(style, new EnumMap<FontSize, T>(FontSize.class));
+			}
+		}
 	}
-	
 }

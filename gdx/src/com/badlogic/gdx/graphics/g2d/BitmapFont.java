@@ -107,6 +107,12 @@ public class BitmapFont implements Disposable {
 	}
 
 	/** Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
+	 * same directory. The font data is not flipped. */
+	public BitmapFont (FileHandle fontFile) {
+		this(fontFile, false);
+	}
+	
+	/** Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
 	 * same directory.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
 	public BitmapFont (FileHandle fontFile, boolean flip) {
@@ -678,6 +684,14 @@ public class BitmapFont implements Disposable {
 		return integer;
 	}
 
+	/** For expert usage -- returns the BitmapFontCache used by this font, for rendering to a sprite batch.
+	 * This can be used, for example, to manipulate glyph colors within a specific index. 
+	 * @return the bitmap font cache used by this font
+	 */
+	public BitmapFontCache getCache() {
+		return cache;
+	}
+	
 	public BitmapFontData getData () {
 		return data;
 	}

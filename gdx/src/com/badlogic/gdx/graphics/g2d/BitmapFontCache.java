@@ -32,7 +32,6 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class BitmapFontCache {
 	private final BitmapFont font;
 	
-	//TODO: Use a one-dimensional array instead?
 	private float[][] vertexData;
 	
 	private int[] idx;
@@ -64,8 +63,12 @@ public class BitmapFontCache {
 		this.font = font;
 		this.integer = integer;
 		this.vertexData = new float[font.regions.length][];
+		
+		if (font.regions==null || font.regions.length==0)
+			throw new IllegalArgumentException("The specified font must be non-null and contain at least 1 texture page");
+		
 		this.idx = new int[font.regions.length];
-		if (vertexData.length>1) {
+		if (vertexData.length>1) { //if we have multiple pages...
 			//contains the indices of the glyph in the Cache as they are added
 			glyphIndices = new IntArray[vertexData.length];
 			for (int i=0; i<glyphIndices.length; i++) {
