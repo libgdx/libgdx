@@ -241,7 +241,7 @@ public class FreeTypePackTest extends GdxTest {
 		}
 		
 		//for the demo, show how many glyphs we loaded
-		return fontCount * FreeTypeFontGenerator.DEFAULT_CHARS.length();
+		return fontCount * CHARACTERS.length();
 	}
 	
 	//We use a nested EnumMap for fast access
