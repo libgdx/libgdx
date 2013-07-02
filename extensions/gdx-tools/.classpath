@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="libs/jna.jar"/>
 	<classpathentry kind="lib" path="libs/TWLThemeEditor.jar"/>
 	<classpathentry kind="lib" path="libs/xpp3-1.1.4c.jar"/>
+	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
+	<classpathentry kind="lib" path="forms-1.3.0.jar" sourcepath="forms-1.3.0-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

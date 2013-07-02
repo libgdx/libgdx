@@ -59,7 +59,7 @@ public class BitmapFontOutputTest extends GdxTest {
 		}
 		
 	}
-	   
+	
 	@Override
 	public void create () {
 		camera = new OrthographicCamera();
@@ -117,7 +117,13 @@ public class BitmapFontOutputTest extends GdxTest {
 		if (fntResult.exists())
 			ttfFont2 = new BitmapFont(fntResult, false);
 	}
-
+	
+	//TODO:
+	//1. Make a tool that loads a definition of fonts and spits out FNT and PNG files
+	//   ------ i.e. A command-line Hiero
+	//2. Move BitmapFontWriter to tools
+	//3. Make a FontPack type of utililty for loading multiple fonts on the fly, and then generating a file
+	
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
