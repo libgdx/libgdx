@@ -44,13 +44,13 @@ public class MeshShapeTest extends BaseBulletTest {
 			Usage.Position | Usage.Normal); 
 		disposables.add(sphereModel);
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(0.25f));
-		sphereConstructor.bodyInfo.setM_restitution(1f);
+		sphereConstructor.bodyInfo.setRestitution(1f);
 		world.addConstructor("sphere", sphereConstructor);
 		
 		final Model sceneModel = objLoader.loadModel(Gdx.files.internal("data/scene.obj"));
 		disposables.add(sceneModel);
 		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
-		sceneConstructor.bodyInfo.setM_restitution(0.25f);
+		sceneConstructor.bodyInfo.setRestitution(0.25f);
 		world.addConstructor("scene", sceneConstructor);
 		
 		world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
