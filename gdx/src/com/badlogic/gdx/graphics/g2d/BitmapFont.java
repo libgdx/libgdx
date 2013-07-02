@@ -597,10 +597,14 @@ public class BitmapFont implements Disposable {
 	 * for convenience since most fonts only use one texture page. For multi-page fonts, use
 	 * getRegions().
 	 * @return the first texture region */
+	//TODO: deprecate?
 	public TextureRegion getRegion () {
 		return regions[0];
 	}
 	
+	/** 
+	 * Returns a list of TextureRegions that represents each texture page of glyphs. 
+	 * @return the first texture region */
 	public TextureRegion[] getRegions () {
 		return regions;
 	}

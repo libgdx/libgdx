@@ -371,6 +371,12 @@ public class FreeTypeFontGenerator implements Disposable {
 	public static class FreeTypeBitmapFontData extends BitmapFontData {
 		TextureRegion[] regions;
 
+		/**
+		 * Returns the first texture region. Use getTextureRegions() instead
+		 * @return the first texture region in the array
+		 * @deprecated use getTextureRegions() instead
+		 */
+		@Deprecated
 		public TextureRegion getTextureRegion () {
 			return regions[0];
 		}

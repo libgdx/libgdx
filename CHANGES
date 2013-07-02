@@ -45,7 +45,13 @@
 - Added Music#setPan.
 - Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 - DelegateAction subclasses need to implement delegate() instead of act(). http://www.badlogicgames.com/forum/viewtopic.php?p=43576#p43576
-- FreeTypeFontGenerator allows you to specify the PixmapPacker now, to create an atlas with many different fonts (see FreeTypePackTest)
+- Bitmap Font changes:
+	- FreeTypeFontGenerator allows you to specify the PixmapPacker now, to create an atlas with many different fonts (see FreeTypePackTest)
+	- BitmapFont, BitmapFontCache and FreeTypeFontGenerator now support fonts with multiple texture pages. (see BitmapFontTest and FreeTypePackTest)
+	- BitmapFontData.imagePath and getImagePath() is depreacted, use imagePaths[] and getImagePath(int) instead
+	- Added two BitmapFont constructors for convenience; no need to specify flip boolean
+	- Added getCache() to BitmapFont, for expert users who wish to use the BitmapFontCache (see BitmapFontTest)
+	- FreeTypeFontGenerator now includes setMaxTextureSize and getMaxTextureSize to cap the generated glyph atlas size (default 1024)
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
