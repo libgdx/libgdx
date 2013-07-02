@@ -124,7 +124,7 @@ public class Image extends Widget {
 		float scaleY = getScaleY();
 
 		if (drawable != null) {
-			if (drawable.getClass() == TextureRegionDrawable.class) {
+			if (drawable instanceof TextureRegionDrawable) {
 				TextureRegion region = ((TextureRegionDrawable)drawable).getRegion();
 				float rotation = getRotation();
 				if (scaleX == 1 && scaleY == 1 && rotation == 0)
