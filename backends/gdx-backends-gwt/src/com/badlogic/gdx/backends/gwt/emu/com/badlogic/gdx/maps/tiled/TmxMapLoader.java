@@ -330,6 +330,14 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile != null) {
+					String terrain = tileElement.getAttribute("terrain", null);
+					if (terrain != null) {
+						tile.getProperties().put("terrain", terrain);
+					}
+					String probability = tileElement.getAttribute("probability", null);
+					if (probability != null) {
+						tile.getProperties().put("probability", probability);
+					}
 					Element properties = tileElement.getChildByName("properties");
 					if (properties != null) {
 						loadProperties(tile.getProperties(), properties);
