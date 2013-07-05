@@ -35,7 +35,7 @@ public class IOSMusic implements Music {
 
 	public IOSMusic (AVAudioPlayer player) {
 		this.player = player;
-		audioDelegate = new AudioDelegate(this);
+		audioDelegate = new AudioDelegate();
 		this.player.set_Delegate(audioDelegate);
 	}
 
@@ -100,27 +100,26 @@ public class IOSMusic implements Music {
 		stop();
 		player.Dispose();
 		player = null;
+		audioDelegate = null;
 	}
 	
 	@Override
 	public void setOnCompletionListener(OnCompletionListener listener) {
-		audioDelegate.listener = listener;
+		audioDelegate.onCompletionListener = listener;
 	}
 	
 	private class AudioDelegate extends AVAudioPlayerDelegate {
 		
-		public OnCompletionListener listener;
-		private IOSMusic music;
+		public OnCompletionListener onCompletionListener;
 		
-		public AudioDelegate (IOSMusic music) {
-			this.music = music;
-			listener = null;
+		public AudioDelegate () {
+			onCompletionListener = null;
 		}
 		
 		@Override
 		public void FinishedPlaying(AVAudioPlayer player, boolean successful) {
-			if (listener != null)
-				listener.onCompletion(music);
+			if (onCompletionListener != null)
+				onCompletionListener.onCompletion(IOSMusic.this);
 		}
 	}
 }
