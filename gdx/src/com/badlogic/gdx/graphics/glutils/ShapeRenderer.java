@@ -510,6 +510,67 @@ public class ShapeRenderer {
 		line(x - radius, y + radius, x + radius, y - radius);
 	}
 
+	/** Calls {@link #arc(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth arc. */
+	public void arc (float x, float y, float radius, float start, float angle) {
+		arc(x, y, radius, start, angle, Math.max(1, (int)(6 * (float)Math.cbrt(radius) * (angle / 360.0f))));
+	}
+	
+	public void arc (float x, float y, float radius, float start, float angle, int segments) {
+		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
+		if (currType != ShapeType.Filled && currType != ShapeType.Line)
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+		checkDirty();
+
+		float theta = (2 * 3.1415926f * (angle / 360.0f)) / segments;
+		float cos = MathUtils.cos(theta);
+		float sin = MathUtils.sin(theta);
+		float cx = radius * MathUtils.cos(start * MathUtils.degreesToRadians);
+		float cy = radius * MathUtils.sin(start * MathUtils.degreesToRadians);
+		
+		if (currType == ShapeType.Line) {
+			checkFlush(segments * 2 + 2);
+			
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, 0);
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+				float temp = cx;
+				cx = cos * cx - sin * cy;
+				cy = sin * temp + cos * cy;
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+			}
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, 0);
+		} else {
+			checkFlush(segments * 3 + 3);
+			for (int i = 0; i < segments; i++) {
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x, y, 0);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+				float temp = cx;
+				cx = cos * cx - sin * cy;
+				cy = sin * temp + cos * cy;
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x + cx, y + cy, 0);
+			}
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x, y, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x + cx, y + cy, 0);
+		}
+
+		float temp = cx;
+		cx = 0;
+		cy = 0;
+		renderer.color(color.r, color.g, color.b, color.a);
+		renderer.vertex(x + cx, y + cy, 0);
+	}
+	
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
 		circle(x, y, radius, Math.max(1, (int)(6 * (float)Math.cbrt(radius))));
