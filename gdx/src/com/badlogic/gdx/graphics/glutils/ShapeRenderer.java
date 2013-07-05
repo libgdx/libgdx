@@ -20,9 +20,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Renders points, lines, rectangles, filled rectangles and boxes.</p>
@@ -202,39 +207,52 @@ public class ShapeRenderer {
 	}
 
 	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
-	public void line (float x, float y, float z, float x2, float y2, float z2) {
-		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
-		checkDirty();
-		checkFlush(2);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, z);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x2, y2, z2);
+	public final void line (float x, float y, float z, float x2, float y2, float z2) {
+	
+		line( x, y, z, x2, y2, z2, color, color );
+	}
+
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
+	 * Lazy method that "just" calls the "other" method and unpacks the Vector3 for you */
+	public final void line (Vector3 v0, Vector3 v1) {
+		
+		line( v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color );
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
-	public void line (float x, float y, float x2, float y2) {
-		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
-		checkDirty();
-		checkFlush(2);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x, y, 0);
-		renderer.color(color.r, color.g, color.b, color.a);
-		renderer.vertex(x2, y2, 0);
+	public final void line (float x, float y, float x2, float y2) {
+		
+		line( x, y, 0.0f, x2, y2, 0.0f, color, color );
+	}
+
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
+	 * Lazy method that "just" calls the "other" method and unpacks the Vector2 for you */
+	public final void line (Vector2 v0, Vector2 v1) {
+		
+		line( v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color );
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
 	 * with 2 colors interpolated between start & end point.
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
-	public void line (float x, float y, float x2, float y2, Color c1, Color c2) {
+	public final void line (float x, float y, float x2, float y2, Color c1, Color c2) {
+		
+		line( x, y, 0.0f, x2, y2, 0.0f, c1, c2 );
+	}
+
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
+	 * with 2 colors interpolated between start & end point.
+	 * @param c1 Color at start of the line
+	 * @param c2 Color at end of the line */
+	public void line (float x, float y, float z, float x2, float y2, float z2, Color c1, Color c2) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(2);
 		renderer.color(c1.r, c1.g, c1.b, c1.a);
-		renderer.vertex(x, y, 0);
+		renderer.vertex(x, y, z);
 		renderer.color(c2.r, c2.g, c2.b, c2.a);
-		renderer.vertex(x2, y2, 0);
+		renderer.vertex(x2, y2, z2);
 	}
 
 	public void curve (float x1, float y1, float cx1, float cy1, float cx2, float cy2, float x2, float y2, int segments) {
