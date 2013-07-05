@@ -44,6 +44,8 @@
         <directory>src</directory>
 		<includes>
 		  <include>**/*.glsl</include>
+		  <include>**/*.fnt</include>
+		  <include>**/*.png</include>
 		</includes>
       </resource>
     </resources>
