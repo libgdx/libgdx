@@ -131,6 +131,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		super.OnLoad(arg0);
 		MakeCurrent();
 		app.listener.create();
+		app.listener.resize(width, height);
 		created = true;
 	}
 	
@@ -201,7 +202,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	@Override
 	protected void OnResize (EventArgs event) {
 		super.OnResize(event);
-
+		MakeCurrent();
 		// not used on iOS
 		// FIXME resize could happen if app supports both portrait and landscape, so this should be implemented
 		Gdx.app.debug("IOSGraphics", "iOS OnResize(...) is not implement (don't think it is needed?).");
