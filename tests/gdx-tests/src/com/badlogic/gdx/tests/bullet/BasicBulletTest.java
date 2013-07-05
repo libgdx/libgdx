@@ -138,7 +138,7 @@ public class BasicBulletTest extends BulletTest {
 		MotionState groundMotionState = new MotionState(ground.transform);
 		motionStates.add(groundMotionState);
 		btRigidBody groundBody = new btRigidBody(groundInfo);
-		groundInfo.setM_motionState(groundMotionState);
+		groundInfo.setMotionState(groundMotionState);
 		bodies.add(groundBody);
 		collisionWorld.addRigidBody(groundBody);
 		// Create the spheres
@@ -151,7 +151,7 @@ public class BasicBulletTest extends BulletTest {
 					MotionState sphereMotionState = new MotionState(sphere.transform);
 					motionStates.add(sphereMotionState);
 					btRigidBody sphereBody = new btRigidBody(sphereInfo);
-					sphereInfo.setM_motionState(sphereMotionState);
+					sphereInfo.setMotionState(sphereMotionState);
 					bodies.add(sphereBody);
 					collisionWorld.addRigidBody(sphereBody);
 				}
