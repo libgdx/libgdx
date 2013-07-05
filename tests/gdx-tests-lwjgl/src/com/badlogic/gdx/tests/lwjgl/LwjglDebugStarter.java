@@ -16,9 +16,14 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.tests.MeshShaderTest;
@@ -41,8 +46,8 @@ public class LwjglDebugStarter {
 		GdxTest test = new MeshShaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		config.width = 480;
-		config.height = 320;
+		config.width = 1024;
+		config.height = 768;
 		new LwjglApplication(test, config);
 	}
 }
