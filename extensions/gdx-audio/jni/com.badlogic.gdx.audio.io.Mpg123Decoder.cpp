@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.audio.io.Mpg123Decoder.h>
 
-//@line:85
+//@line:100
 
 	extern "C" {
 	#include "libmpg123/mpg123.h"
@@ -44,7 +44,7 @@
 	static inline jlong wrapped_Java_com_badlogic_gdx_audio_io_Mpg123Decoder_openFile
 (JNIEnv* env, jobject object, jstring obj_filename, char* filename) {
 
-//@line:127
+//@line:142
 
 		mpg123_handle *mh = NULL;
 		int  channels = 0, encoding = 0;
@@ -107,7 +107,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_openFile(JN
 static inline jint wrapped_Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples
 (JNIEnv* env, jobject object, jlong handle, jshortArray obj_buffer, jint offset, jint numSamples, short* buffer) {
 
-//@line:175
+//@line:190
 	
 		Mp3File* mp3 = (Mp3File*)handle;
 		short* target = buffer + offset;
@@ -152,7 +152,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_readSamples(
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_skipSamples(JNIEnv* env, jobject object, jlong handle, jint numSamples) {
 
 
-//@line:205
+//@line:220
 
 		Mp3File* mp3 = (Mp3File*)handle;
 		off_t skipped = mpg123_seek( mp3->handle, numSamples, SEEK_SET );
@@ -164,7 +164,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_skipSamples(
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getNumChannels(JNIEnv* env, jobject object, jlong handle) {
 
 
-//@line:211
+//@line:226
 
 		Mp3File* mp3 = (Mp3File*)handle;
 		return mp3->channels;
@@ -175,7 +175,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getNumChanne
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getRate(JNIEnv* env, jobject object, jlong handle) {
 
 
-//@line:216
+//@line:231
 
 		Mp3File* mp3 = (Mp3File*)handle;
 		return mp3->rate;
@@ -186,7 +186,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getRate(JNIE
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getLength(JNIEnv* env, jobject object, jlong handle) {
 
 
-//@line:221
+//@line:236
 
 		Mp3File* mp3 = (Mp3File*)handle;
 		return mp3->length;
@@ -197,7 +197,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_getLength(
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_audio_io_Mpg123Decoder_closeFile(JNIEnv* env, jobject object, jlong handle) {
 
 
-//@line:226
+//@line:241
 
 		Mp3File* mp3 = (Mp3File*)handle;
 		free(mp3->buffer);
