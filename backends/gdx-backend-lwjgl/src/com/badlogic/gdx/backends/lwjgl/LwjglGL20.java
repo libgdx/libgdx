@@ -383,10 +383,6 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 		throw new UnsupportedOperationException("unsupported, won't implement");
 	}
 
-	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		throw new UnsupportedOperationException("unsupported, won't implement.");
-	}
-
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {
 		GL20.glGetShader(shader, pname, params);
 	}
