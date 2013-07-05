@@ -27,7 +27,8 @@ public class Rectangle implements Serializable {
 	private static final long serialVersionUID = 5733252015138115702L;
 	public float x, y;
 	public float width, height;
-	private Vector2 position = new Vector2();
+
+	static public final Vector2 tmpVector = new Vector2();
 
 	/** Constructs a new rectangle with all values set to zero */
 	public Rectangle () {
@@ -89,6 +90,11 @@ public class Rectangle implements Serializable {
 		return width;
 	}
 
+	/** @return the Vector2 with size of this rectangle */
+	public Vector2 getSize () {
+		return tmpVector.set(width, height);
+	}
+
 	/** Sets the width of this rectangle
 	 * @param width The width */
 	public void setWidth (float width) {
@@ -118,7 +124,7 @@ public class Rectangle implements Serializable {
 
 	/** @return the Vector2 with coordinates of this rectangle */
 	public Vector2 getPosition () {
-		return position.set(x, y);
+		return tmpVector.set(x, y);
 	}
 
 	/** @return the height */
