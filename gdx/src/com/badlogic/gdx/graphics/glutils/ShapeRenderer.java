@@ -216,9 +216,6 @@ public class ShapeRenderer {
 	 * Lazy method that "just" calls the "other" method and unpacks the Vector3 for you */
 	public final void line (Vector3 v0, Vector3 v1) {
 		
-		assert v0 != null;
-		assert v1 != null;
-		
 		line( v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color );
 	}
 
@@ -232,9 +229,6 @@ public class ShapeRenderer {
 	 * Lazy method that "just" calls the "other" method and unpacks the Vector2 for you */
 	public final void line (Vector2 v0, Vector2 v1) {
 		
-		assert v0 != null;
-		assert v1 != null;
-		
 		line( v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color );
 	}
 
@@ -243,9 +237,6 @@ public class ShapeRenderer {
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
 	public final void line (float x, float y, float x2, float y2, Color c1, Color c2) {
-		
-		assert c1 != null;
-		assert c2 != null;
 		
 		line( x, y, 0.0f, x2, y2, 0.0f, c1, c2 );
 	}
