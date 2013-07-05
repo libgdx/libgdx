@@ -212,6 +212,12 @@ public class ShapeRenderer {
 		renderer.vertex(x2, y2, z2);
 	}
 
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
+	 * Lazy method that "just" calls the "other" method and unpacks the Vector3 for you */
+	public final void line (Vector3 v0, Vector3 v1) {
+		line( v0.x, v0,y, v0.z, v1.x, v1.y, v1.z );
+	}
+
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public void line (float x, float y, float x2, float y2) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
