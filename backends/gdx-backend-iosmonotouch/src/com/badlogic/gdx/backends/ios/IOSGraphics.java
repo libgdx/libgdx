@@ -66,6 +66,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	private float ppcY = 0;
 	private float density = 1;
 	
+	volatile boolean created;
 	volatile boolean paused;
 	boolean wasPaused;
 
@@ -130,6 +131,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 		super.OnLoad(arg0);
 		MakeCurrent();
 		app.listener.create();
+		created = true;
 	}
 	
 	public void resume() {
@@ -143,7 +145,6 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 	@Override
 	protected void OnRenderFrame (FrameEventArgs arg0) {
 		super.OnRenderFrame(arg0);
-		
 		if (paused) {
 			if (!wasPaused) {
 				Array<LifecycleListener> listeners = app.lifecycleListeners;
@@ -157,7 +158,7 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 			}
 			return;
 		} else {
-			if (wasPaused) {
+			if (wasPaused && !created) {
 				Array<LifecycleListener> listeners = app.lifecycleListeners;
 				synchronized(listeners) {
 					for(LifecycleListener listener: listeners) {
@@ -166,6 +167,11 @@ public class IOSGraphics extends iPhoneOSGameView implements Graphics {
 				}
 				app.listener.resume();
 				wasPaused = false;
+			} else {
+				if(created) {
+					wasPaused = false;
+					created = false;
+				}
 			}
 		}
 
