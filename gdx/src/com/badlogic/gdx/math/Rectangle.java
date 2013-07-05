@@ -27,6 +27,7 @@ public class Rectangle implements Serializable {
 	private static final long serialVersionUID = 5733252015138115702L;
 	public float x, y;
 	public float width, height;
+	private Vector2 position = new Vector2();
 
 	/** Constructs a new rectangle with all values set to zero */
 	public Rectangle () {
@@ -94,11 +95,6 @@ public class Rectangle implements Serializable {
 		this.width = width;
 	}
 
-	/** @return the height */
-	public float getHeight () {
-		return height;
-	}
-
 	/** Sets the height of this rectangle
 	 * @param height The height */
 	public void setHeight (float height) {
@@ -118,6 +114,16 @@ public class Rectangle implements Serializable {
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	/** @return the Vector2 with coordinates of this rectangle */
+	public Vector2 getPosition () {
+		return position.set(x, y);
+	}
+
+	/** @return the height */
+	public float getHeight () {
+		return height;
 	}
 
 	/** Sets the width and height of this rectangle
