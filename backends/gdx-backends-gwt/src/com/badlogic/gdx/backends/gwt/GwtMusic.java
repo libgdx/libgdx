@@ -20,26 +20,35 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Music.OnCompletionListener;
 import com.badlogic.gdx.backends.gwt.soundmanager2.SMSound;
+import com.badlogic.gdx.backends.gwt.soundmanager2.SMSound.SMSoundCallback;
+import com.badlogic.gdx.backends.gwt.soundmanager2.SMSoundOptions;
 import com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager;
 import com.badlogic.gdx.files.FileHandle;
 
-public class GwtMusic implements Music {
-	boolean isPlaying = false;
-	boolean isLooping = false;
-	SMSound sound;
+public class GwtMusic implements Music, SMSoundCallback {
+	private boolean isPlaying = false;
+	private boolean isLooping = false;
+	private SMSound sound;
 	private float volume = 1f;
-	private OnCompletionListener onCompletionListener;
+	private float pan = 0f;
+	private SMSoundOptions soundOptions;
+	protected OnCompletionListener onCompletionListener;
 
 	public GwtMusic (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();
-		sound = SoundManager.createSound(url, url);
-		sound.loops(0);
+		sound = SoundManager.createSound(url);
+		soundOptions = new SMSoundOptions();
+		soundOptions.callback = this;
 	}
 
 	@Override
 	public void play () {
 		if (isPlaying()) return;
-		sound.play(onCompletionListener, this);
+		soundOptions.volume = (int)(volume * 100);
+		soundOptions.pan = (int)(pan * 100);
+		soundOptions.loops = 1;
+		soundOptions.from = 0;
+		sound.play(soundOptions);
 		isPlaying = true;
 	}
 
@@ -63,7 +72,6 @@ public class GwtMusic implements Music {
 
 	@Override
 	public void setLooping (boolean isLooping) {
-		sound.loops(isLooping ? 999 : 0);
 		this.isLooping = isLooping;
 	}
 
@@ -85,7 +93,10 @@ public class GwtMusic implements Music {
 	
 	@Override
 	public void setPan (float pan, float volume) {
-		//FIXME
+		sound.setPan((int)(pan * 100));
+		sound.setVolume((int)(volume * 100));
+		this.pan = pan;
+		this.volume = volume;
 	}
 
 	@Override
@@ -101,5 +112,14 @@ public class GwtMusic implements Music {
 	@Override
 	public void setOnCompletionListener (OnCompletionListener listener) {
 		onCompletionListener = listener;
+	}
+
+	@Override
+	public void onfinish () {
+		if (isLooping)
+			play();
+			
+		if (onCompletionListener != null)
+			onCompletionListener.onCompletion(this);
 	}
 }
