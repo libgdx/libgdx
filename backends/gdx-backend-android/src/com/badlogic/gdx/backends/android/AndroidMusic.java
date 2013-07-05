@@ -23,19 +23,19 @@ import android.media.MediaPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
-public class AndroidMusic implements Music {
+public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	private final AndroidAudio audio;
 	private MediaPlayer player;
 	private boolean isPrepared = true;
 	protected boolean wasPlaying = false;
 	private float volume = 1f;
-	private AndroidOnCompletionListener onCompletionListener;
+	private OnCompletionListener onCompletionListener;
 
 	AndroidMusic (AndroidAudio audio, MediaPlayer player) {
 		this.audio = audio;
 		this.player = player;
-		onCompletionListener = new AndroidOnCompletionListener(this);
-		this.player.setOnCompletionListener(onCompletionListener);
+		this.onCompletionListener = null;
+		this.player.setOnCompletionListener(this);
 	}
 
 	@Override
@@ -48,6 +48,7 @@ public class AndroidMusic implements Music {
 			Gdx.app.log("AndroidMusic", "error while disposing AndroidMusic instance, non-fatal");
 		} finally {
 			player = null;
+			onCompletionListener = null;
 			synchronized (audio.musics) {
 				audio.musics.remove(this);
 			}
@@ -133,23 +134,12 @@ public class AndroidMusic implements Music {
 	
 	@Override
 	public void setOnCompletionListener(OnCompletionListener listener) {
-		onCompletionListener.listener = listener;
+		onCompletionListener = listener;
 	}
-	
-	private class AndroidOnCompletionListener implements MediaPlayer.OnCompletionListener {
-		
-		public OnCompletionListener listener;
-		private AndroidMusic music;
-		
-		public AndroidOnCompletionListener (AndroidMusic music) {
-			this.music = music;
-			listener = null;
-		}
 
-		@Override
-		public void onCompletion (MediaPlayer mp) {
-			if (listener != null)
-				listener.onCompletion(music);
-		}
+	@Override
+	public void onCompletion (MediaPlayer mp) {
+		if (onCompletionListener != null)
+				onCompletionListener.onCompletion(this);
 	};
 }
