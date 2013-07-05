@@ -28,8 +28,6 @@ public class Rectangle implements Serializable {
 	public float x, y;
 	public float width, height;
 
-	static public final Vector2 tmpVector = new Vector2();
-
 	/** Constructs a new rectangle with all values set to zero */
 	public Rectangle () {
 
@@ -90,21 +88,27 @@ public class Rectangle implements Serializable {
 		return width;
 	}
 
-	/** @return the Vector2 with size of this rectangle */
-	public Vector2 getSize () {
-		return tmpVector.set(width, height);
-	}
-
 	/** Sets the width of this rectangle
 	 * @param width The width */
 	public void setWidth (float width) {
 		this.width = width;
 	}
 
+	/** @return the height */
+	public float getHeight () {
+		return height;
+	}
+
 	/** Sets the height of this rectangle
 	 * @param height The height */
 	public void setHeight (float height) {
 		this.height = height;
+	}
+
+	/** return the Vector2 with coordinates of this rectangle
+	 * @param position The Vector2 */
+	public Vector2 getPosition (Vector2 position) {
+		return position.set(x, y);
 	}
 
 	/** Sets the x and y-coordinates of the bottom left corner from vector
@@ -122,16 +126,6 @@ public class Rectangle implements Serializable {
 		this.y = y;
 	}
 
-	/** @return the Vector2 with coordinates of this rectangle */
-	public Vector2 getPosition () {
-		return tmpVector.set(x, y);
-	}
-
-	/** @return the height */
-	public float getHeight () {
-		return height;
-	}
-
 	/** Sets the width and height of this rectangle
 	 * @param width The width
 	 * @param height The height */
@@ -145,6 +139,11 @@ public class Rectangle implements Serializable {
 	public void setSize (float sizeXY) {
 		this.width = sizeXY;
 		this.height = sizeXY;
+	}
+
+	/** @return the Vector2 with size of this rectangle */
+	public Vector2 getSize (Vector2 size) {
+		return size.set(width, height);
 	}
 
 	/** @param x point x coordinate
