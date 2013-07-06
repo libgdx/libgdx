@@ -1,4 +1,6 @@
 [0.9.9]
+- changed method signature on Box2D World#getBodies and World#getJoints, pass in an Array to fill
+- removed glGetShaderSource from GL20, use ShaderProgram#getVertexShaderSource/getFragmentShaderSource instead
 - added reflection api
 - added AsynchExecutor, execute tasks asynchronously. Used for GWT mainly.
 - removed FileHandle#file(), has no business in there.

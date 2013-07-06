@@ -131,6 +131,10 @@ public class AndroidLiveWallpaper implements Application {
 
 		input.unregisterSensorListeners();
 		
+		int[] realId = input.realId;
+		for (int i = 0; i < realId.length; i++)
+			realId[i] = -1;
+		
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
 			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();

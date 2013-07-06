@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -74,6 +75,13 @@ public interface Net {
 
 		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
 		HttpStatus getStatus ();
+		
+		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
+		String getHeader(String name);
+
+		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings
+		 * that represent the corresponding header values. */
+		Map<String, List<String>> getHeaders ();
 	}
 
 	/** Provides common HTTP methods to use when creating a {@link HttpRequest}.
