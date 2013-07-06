@@ -118,6 +118,8 @@ public class FreeTypePackTest extends GdxTest {
 		float x = 10;
 		float y = Gdx.graphics.getHeight()-10;
 		
+		int renderCalls = 0;
+		
 		//NOTE: Before production release on mobile, you should cache the array from values() 
 		//inside the Enum in order to reduce allocations in the render loop.
 		for (FontStyle style : FontStyle.values()) {

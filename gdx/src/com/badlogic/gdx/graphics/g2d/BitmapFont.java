@@ -208,6 +208,11 @@ public class BitmapFont implements Disposable {
 				
 				TextureRegion region = regions[glyph.page];
 				
+				if (region==null) {
+					//TODO: support null regions by parsing scaleW / scaleH ?
+					throw new IllegalArgumentException("BitmapFont texture region array cannot contain null elements");
+				}
+				
 				float invTexWidth = 1.0f / region.getTexture().getWidth();
 				float invTexHeight = 1.0f / region.getTexture().getHeight();
 				

@@ -61,7 +61,8 @@ public class BitmapFontTest extends GdxTest {
 
 		float x = 100, y = 20;
 		float alignmentWidth;
-
+		
+		
 		if (false) {
 			alignmentWidth = 0;
 			font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
@@ -79,11 +80,14 @@ public class BitmapFontTest extends GdxTest {
 			font.drawWrapped(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
 		}
 
-		String txt2 = "this font uses "+multiPageFont.getRegions().length+" texture pages: RPdbUJNML";
+		//'R' and 'p' are in different pages
+		String txt2 = "this font uses "+multiPageFont.getRegions().length+" texture pages: RpRpRpRpRpNM";
+		spriteBatch.renderCalls = 0;
 		
 		//regular draw function
 		multiPageFont.setColor(Color.BLUE);
 		multiPageFont.draw(spriteBatch, txt2, 10, 100);
+		
 		
 		//expert usage.. drawing with bitmap font cache
 		BitmapFontCache cache = multiPageFont.getCache();
@@ -96,7 +100,8 @@ public class BitmapFontTest extends GdxTest {
 		cache.draw(spriteBatch, 5, txt2.length()-5);
 		
 		spriteBatch.end();
-
+//		System.out.println(spriteBatch.renderCalls);
+		
 		renderer.begin(ShapeType.Line);
 		renderer.setColor(Color.BLACK);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
