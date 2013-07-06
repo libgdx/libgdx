@@ -608,10 +608,17 @@ public class BitmapFont implements Disposable {
 	}
 	
 	/** 
-	 * Returns a list of TextureRegions that represents each texture page of glyphs. 
-	 * @return the first texture region */
+	 * Returns the array of TextureRegions that represents each texture page of glyphs. 
+	 * @return the array of texture regions; modifying it may produce undesirable results  */
 	public TextureRegion[] getRegions () {
 		return regions;
+	}
+	
+	/** 
+	 * Returns the texture page at the given index.
+	 * @return the texture page at the given index */
+	public TextureRegion getRegion(int index) {
+		return regions[index];
 	}
 	
 	/** Returns the line height, which is the distance from one line of text to the next. */
