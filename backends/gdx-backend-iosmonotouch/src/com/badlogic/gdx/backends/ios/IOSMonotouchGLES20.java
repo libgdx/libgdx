@@ -608,13 +608,6 @@ public class IOSMonotouchGLES20 implements GL20, GLCommon {
 	}
 
 	@Override
-	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		// FIXME: we can't even delegate to native implementation of iosgles20.cpp since it is not implemented there either.
-		throw new UnsupportedOperationException(
-			"Can't implement if source is not a modifiable string, we need a char* for the source");
-	}
-
-	@Override
 	public void glGetTexParameterfv (int target, int pname, FloatBuffer params) {
 		GL.GetTexParameter(TextureTarget.wrap(target), GetTextureParameter.wrap(pname), floatArray);
 		params.position(0);

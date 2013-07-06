@@ -16,27 +16,38 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.tests.AssetManagerTest;
-import com.badlogic.gdx.tests.BitmapFontDistanceFieldTest;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.tests.MeshShaderTest;
+import com.badlogic.gdx.tests.TimerTest;
+import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
+import com.badlogic.gdx.tests.g3d.Basic3DTest;
+import com.badlogic.gdx.tests.g3d.ModelLoaderTest;
+import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class LwjglDebugStarter {
 	public static void main (String[] argv) {
 		// this is only here for me to debug native code faster
 //		new SharedLibraryLoader("../../extensions/gdx-audio/libs/gdx-audio-natives.jar").load("gdx-audio");
 //		new SharedLibraryLoader("../../extensions/gdx-image/libs/gdx-image-natives.jar").load("gdx-image");
-		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
+//		new SharedLibraryLoader("../../extensions/gdx-freetype/libs/gdx-freetype-natives.jar").load("gdx-freetype");
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
-		 
-		GdxTest test = new BitmapFontDistanceFieldTest();
+
+		GdxTest test = new MeshShaderTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		config.width = 800;
-		config.height = 600;
+		config.width = 1024;
+		config.height = 768;
 		new LwjglApplication(test, config);
 	}
 }

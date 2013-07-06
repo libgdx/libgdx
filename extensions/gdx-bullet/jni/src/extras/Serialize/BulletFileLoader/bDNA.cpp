@@ -19,6 +19,7 @@ subject to the following restrictions:
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
 
 //this define will force traversal of structures, to check backward (and forward) compatibility
 //#define TEST_BACKWARD_FORWARD_COMPATIBILITY

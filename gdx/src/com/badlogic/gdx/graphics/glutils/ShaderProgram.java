@@ -985,4 +985,18 @@ public class ShaderProgram implements Disposable {
 	public String[] getUniforms () {
 		return uniformNames;
 	}
+	
+	/**
+	 * @return the source of the vertex shader
+	 */
+	public String getVertexShaderSource() {
+		return vertexShaderSource;
+	}
+	
+	/**
+	 * @return the source of the fragment shader
+	 */
+	public String getFragmentShaderSource() {
+		return fragmentShaderSource;
+	}
 }

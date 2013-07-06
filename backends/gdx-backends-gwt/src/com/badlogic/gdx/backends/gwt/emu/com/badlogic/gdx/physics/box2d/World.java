@@ -35,6 +35,7 @@ import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -300,13 +301,21 @@ public final class World implements Disposable {
 	}
 
 	/** @return all bodies currently in the simulation */
-	public Iterator<Body> getBodies () {
-		return bodies.values().iterator();
+	public void getBodies (Array<Body> bodies) {
+		bodies.clear();
+		bodies.ensureCapacity(this.bodies.size);
+		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
+			bodies.add(iter.next());
+		}		
 	}
 
 	/** @return all joints currently in the simulation */
-	public Iterator<Joint> getJoints () {
-		return joints.values().iterator();
+	public void getJoints (Array<Joint> joints) {
+		joints.clear();
+		joints.ensureCapacity(this.joints.size);
+		for (Iterator<Joint> iter = this.joints.values(); iter.hasNext();) {
+			joints.add(iter.next());
+		}
 	}
 
 	public void dispose () {

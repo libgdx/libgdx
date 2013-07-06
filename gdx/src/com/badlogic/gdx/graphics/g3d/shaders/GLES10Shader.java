@@ -40,6 +40,10 @@ public class GLES10Shader implements Shader{
 	}
 	
 	@Override
+	public void init () {
+	}
+	
+	@Override
 	public boolean canRender(final Renderable renderable) {
 		return true;
 	}

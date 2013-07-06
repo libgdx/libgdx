@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,238 +25,186 @@ import java.util.List;
  * <li><a href="http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html">http://cgm.cs.mcgill.ca/~godfried/teaching/cg-projects/97/Ian/algorithm2.html</a></li>
  * <li><a href="http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf">http://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf</a></li>
  * </ul>
- * 
+ *
+ * If the input polygon is not simple (i.e. has self-intersections), there will be output but it is of unspecified quality
+ * (garbage in, garbage out).
+ *
  * @author badlogicgames@gmail.com
  * @author Nicolas Gramlich (Improved performance. Collinear edges are now supported.)
- * @author Eric Spitz */
+ * @author Eric Spitz
+ * @author Thomas ten Cate (Several bugfixes and performance improvements.) */
 public final class EarClippingTriangulator {
 
-	private static final int CONCAVE = 1;
-	private static final int CONVEX = -1;
+	private static final int CONCAVE = -1;
+	private static final int TANGENTIAL = 0;
+	private static final int CONVEX = 1;
 
-	private int concaveVertexCount;
+	private List<Vector2> vertices;
+	private int vertexCount;
+	private int[] vertexTypes;
+	private List<Vector2> triangles;
 
-	/** Triangulates the given (concave) polygon to a list of triangles. The resulting triangles have clockwise order.
-	 * 
-	 * @param polygon the polygon
-	 * @return the triangles */
+	/** Triangulates the given (convex or concave) polygon to a list of triangles.
+	 *
+	 * @param polygon a list of points describing a simple polygon, in either clockwise or counterclockwise order
+	 * @return the triangles, as triples of points in clockwise order */
 	public List<Vector2> computeTriangles (final List<Vector2> polygon) {
 		// TODO Check if LinkedList performs better
-		final ArrayList<Vector2> triangles = new ArrayList<Vector2>();
-		final ArrayList<Vector2> vertices = new ArrayList<Vector2>(polygon.size());
+		vertices = new ArrayList<Vector2>(polygon.size());
 		vertices.addAll(polygon);
+		vertexCount = vertices.size();
+
+		/* Ensure vertices are in clockwise order. */
+		if (!areVerticesClockwise()) {
+			Collections.reverse(vertices);
+		}
+
+		vertexTypes = new int[vertexCount];
+		for (int i = 0; i < vertexCount; ++i) {
+			vertexTypes[i] = classifyVertex(i);
+		}
+
+		// A polygon with n vertices has a triangulation of n-2 triangles
+		triangles = new ArrayList<Vector2>(3 * Math.max(0, vertexCount - 2));
 
 		/*
 		 * ESpitz: For the sake of performance, we only need to test for eartips while the polygon has more than three verts. If
 		 * there are only three verts left to test, or there were only three verts to begin with, there is no need to continue with
 		 * this loop.
 		 */
-		while (vertices.size() > 3) {
-			// TODO Usually(Always?) only the Types of the vertices next to the
-			// ear change! --> Improve
-			final int vertexTypes[] = this.classifyVertices(vertices);
+		while (vertexCount > 3) {
+			int earTipIndex = findEarTip();
+			cutEarTip(earTipIndex);
 
-			final int vertexCount = vertices.size();
-			for (int index = 0; index < vertexCount; index++) {
-				if (this.isEarTip(vertices, index, vertexTypes)) {
-					this.cutEarTip(vertices, index, triangles);
-					break;
-				}
-			}
+			// Only the type of the two vertices adjacent to the clipped vertex can have changed,
+			// so no need to reclassify all of them.
+			int previousIndex = computePreviousIndex(earTipIndex);
+			int nextIndex = earTipIndex == vertexCount ? 0 : earTipIndex;
+			vertexTypes[previousIndex] = classifyVertex(previousIndex);
+			vertexTypes[nextIndex] = classifyVertex(nextIndex);
 		}
 
 		/*
 		 * ESpitz: If there are only three verts left to test, or there were only three verts to begin with, we have the final
 		 * triangle.
 		 */
-		if (vertices.size() == 3) {
+		if (vertexCount == 3) {
 			triangles.addAll(vertices);
 		}
 
-		return triangles;
+		List<Vector2> result = triangles;
+		vertices = null;
+		triangles = null;
+		vertexTypes = null;
+		return result;
 	}
 
-	private static boolean areVerticesClockwise (final ArrayList<Vector2> pVertices) {
-		final int vertexCount = pVertices.size();
-
+	private boolean areVerticesClockwise () {
 		float area = 0;
 		for (int i = 0; i < vertexCount; i++) {
-			final Vector2 p1 = pVertices.get(i);
-			final Vector2 p2 = pVertices.get(EarClippingTriangulator.computeNextIndex(pVertices, i));
+			final Vector2 p1 = vertices.get(i);
+			final Vector2 p2 = vertices.get(computeNextIndex(i));
 			area += p1.x * p2.y - p2.x * p1.y;
 		}
-
-		if (area < 0) {
-			return true;
-		} else {
-			return false;
-		}
+		return area < 0;
 	}
 
-	/** @param pVertices
-	 * @return An array of length <code>pVertices.size()</code> filled with either {@link EarClippingTriangulator#CONCAVE} or
-	 *         {@link EarClippingTriangulator#CONVEX}. */
-	private int[] classifyVertices (final ArrayList<Vector2> pVertices) {
-		final int vertexCount = pVertices.size();
+	/** @return one of {@link #CONCAVE}, {@link #TANGENTIAL} or {@link #CONVEX} */
+	private int classifyVertex (int index) {
+		final Vector2 previousVertex = vertices.get(computePreviousIndex(index));
+		final Vector2 currentVertex = vertices.get(index);
+		final Vector2 nextVertex = vertices.get(computeNextIndex(index));
 
-		final int[] vertexTypes = new int[vertexCount];
-		this.concaveVertexCount = 0;
-
-		/* Ensure vertices are in clockwise order. */
-		if (!EarClippingTriangulator.areVerticesClockwise(pVertices)) {
-			Collections.reverse(pVertices);
-		}
-
-		for (int index = 0; index < vertexCount; index++) {
-			final int previousIndex = EarClippingTriangulator.computePreviousIndex(pVertices, index);
-			final int nextIndex = EarClippingTriangulator.computeNextIndex(pVertices, index);
-
-			final Vector2 previousVertex = pVertices.get(previousIndex);
-			final Vector2 currentVertex = pVertices.get(index);
-			final Vector2 nextVertex = pVertices.get(nextIndex);
-
-			if (EarClippingTriangulator.isTriangleConvex(previousVertex.x, previousVertex.y, currentVertex.x, currentVertex.y,
-				nextVertex.x, nextVertex.y)) {
-				vertexTypes[index] = CONVEX;
-			} else {
-				vertexTypes[index] = CONCAVE;
-				this.concaveVertexCount++;
-			}
-		}
-
-		return vertexTypes;
+		return computeSpannedAreaSign(previousVertex, currentVertex, nextVertex);
 	}
 
-	private static boolean isTriangleConvex (final float pX1, final float pY1, final float pX2, final float pY2, final float pX3,
-		final float pY3) {
-		if (EarClippingTriangulator.computeSpannedAreaSign(pX1, pY1, pX2, pY2, pX3, pY3) < 0) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	private static int computeSpannedAreaSign (final float pX1, final float pY1, final float pX2, final float pY2,
-		final float pX3, final float pY3) {
-		/*
-		 * Espitz: using doubles corrects for very rare cases where we run into floating point imprecision in the area test, causing
-		 * the method to return a 0 when it should have returned -1 or 1.
-		 */
-		double area = 0;
-
-		area += (double)pX1 * (pY3 - pY2);
-		area += (double)pX2 * (pY1 - pY3);
-		area += (double)pX3 * (pY2 - pY1);
-
+	private static int computeSpannedAreaSign (final Vector2 p1, final Vector2 p2, final Vector2 p3) {
+		float area = 0;
+		area += p1.x * (p3.y - p2.y);
+		area += p2.x * (p1.y - p3.y);
+		area += p3.x * (p2.y - p1.y);
 		return (int)Math.signum(area);
 	}
 
-	/** @return <code>true</code> when the Triangles contains one or more vertices, <code>false</code> otherwise. */
-	private static boolean isAnyVertexInTriangle (final ArrayList<Vector2> pVertices, final int[] pVertexTypes, final float pX1,
-		final float pY1, final float pX2, final float pY2, final float pX3, final float pY3) {
-		int i = 0;
+	private int findEarTip () {
+		for (int index = 0; index < vertexCount; index++) {
+			if (isEarTip(index)) {
+				return index;
+			}
+		}
+		return desperatelyFindEarTip();
+	}
 
-		final int vertexCount = pVertices.size();
-		while (i < vertexCount - 1) {
-			if ((pVertexTypes[i] == CONCAVE)) {
-				final Vector2 currentVertex = pVertices.get(i);
+	private int desperatelyFindEarTip () {
+		// Desperate mode: if no vertex is an ear tip, we are dealing with a degenerate polygon (e.g. nearly collinear).
+		// Note that the input was not necessarily degenerate, but we could have made it so by clipping some valid ears.
 
-				final float currentVertexX = currentVertex.x;
-				final float currentVertexY = currentVertex.y;
+		// Idea taken from Martin Held, "FIST: Fast industrial-strength triangulation of polygons", Algorithmica (1998),
+		// http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.115.291
 
-				final int areaSign1 = EarClippingTriangulator.computeSpannedAreaSign(pX1, pY1, pX2, pY2, currentVertexX,
-					currentVertexY);
-				final int areaSign2 = EarClippingTriangulator.computeSpannedAreaSign(pX2, pY2, pX3, pY3, currentVertexX,
-					currentVertexY);
-				final int areaSign3 = EarClippingTriangulator.computeSpannedAreaSign(pX3, pY3, pX1, pY1, currentVertexX,
-					currentVertexY);
+		// Return a convex or tangential vertex if one exists
+		for (int index = 0; index < vertexCount; index++) {
+			if (vertexTypes[index] != CONCAVE) {
+				return index;
+			}
+		}
 
-				if (areaSign1 > 0 && areaSign2 > 0 && areaSign3 > 0) {
-					return true;
-				} else if (areaSign1 <= 0 && areaSign2 <= 0 && areaSign3 <= 0) {
-					return true;
+		// If all vertices are concave, just return the first one
+		return 0;
+	}
+
+	private boolean isEarTip (final int pEarTipIndex) {
+		if (vertexTypes[pEarTipIndex] == CONCAVE) {
+			return false;
+		}
+
+		final int previousIndex = computePreviousIndex(pEarTipIndex);
+		final int nextIndex = computeNextIndex(pEarTipIndex);
+		final Vector2 p1 = vertices.get(previousIndex);
+		final Vector2 p2 = vertices.get(pEarTipIndex);
+		final Vector2 p3 = vertices.get(nextIndex);
+
+		// Check if any point is inside the triangle formed by previous, current and next vertices.
+		// Only consider vertices that are not part of this triangle, or else we'll always find one inside.
+		for (int i = computeNextIndex(nextIndex); i != previousIndex; i = computeNextIndex(i)) {
+			// Concave vertices can obviously be inside the candidate ear, but so can tangential vertices
+			// if they coincide with one of the triangle's vertices.
+			if (vertexTypes[i] != CONVEX) {
+				final Vector2 v = vertices.get(i);
+
+				final int areaSign1 = computeSpannedAreaSign(p1, p2, v);
+				final int areaSign2 = computeSpannedAreaSign(p2, p3, v);
+				final int areaSign3 = computeSpannedAreaSign(p3, p1, v);
+
+				// Because the polygon has clockwise winding order, the area sign will be positive if the point is strictly inside.
+				// It will be 0 on the edge, which we want to include as well, because incorrect results can happen if we don't
+				// (http://code.google.com/p/libgdx/issues/detail?id=815).
+				if (areaSign1 >= 0 && areaSign2 >= 0 && areaSign3 >= 0) {
+					return false;
 				}
 			}
-			i++;
 		}
-		return false;
+		return true;
 	}
 
-	private boolean isEarTip (final ArrayList<Vector2> pVertices, final int pEarTipIndex, final int[] pVertexTypes) {
-		if (this.concaveVertexCount != 0) {
-			final Vector2 previousVertex = pVertices.get(EarClippingTriangulator.computePreviousIndex(pVertices, pEarTipIndex));
-			final Vector2 currentVertex = pVertices.get(pEarTipIndex);
-			final Vector2 nextVertex = pVertices.get(EarClippingTriangulator.computeNextIndex(pVertices, pEarTipIndex));
+	private void cutEarTip (final int pEarTipIndex) {
+		final int previousIndex = computePreviousIndex(pEarTipIndex);
+		final int nextIndex = computeNextIndex(pEarTipIndex);
 
-			if (EarClippingTriangulator.isAnyVertexInTriangle(pVertices, pVertexTypes, previousVertex.x, previousVertex.y,
-				currentVertex.x, currentVertex.y, nextVertex.x, nextVertex.y)) {
-				return false;
-			} else {
-				return true;
-			}
-		} else {
-			return true;
-		}
+		triangles.add(new Vector2(vertices.get(previousIndex)));
+		triangles.add(new Vector2(vertices.get(pEarTipIndex)));
+		triangles.add(new Vector2(vertices.get(nextIndex)));
+
+		vertices.remove(pEarTipIndex);
+		System.arraycopy(vertexTypes, pEarTipIndex + 1, vertexTypes, pEarTipIndex, vertexCount - pEarTipIndex - 1);
+		vertexCount--;
 	}
 
-	private void cutEarTip (final ArrayList<Vector2> pVertices, final int pEarTipIndex, final ArrayList<Vector2> pTriangles) {
-		final int previousIndex = EarClippingTriangulator.computePreviousIndex(pVertices, pEarTipIndex);
-		final int nextIndex = EarClippingTriangulator.computeNextIndex(pVertices, pEarTipIndex);
-
-		if (!EarClippingTriangulator.isCollinear(pVertices, previousIndex, pEarTipIndex, nextIndex)) {
-			pTriangles.add(new Vector2(pVertices.get(previousIndex)));
-			pTriangles.add(new Vector2(pVertices.get(pEarTipIndex)));
-			pTriangles.add(new Vector2(pVertices.get(nextIndex)));
-		}
-
-		pVertices.remove(pEarTipIndex);
-		if (pVertices.size() >= 3) {
-			EarClippingTriangulator.removeCollinearNeighborEarsAfterRemovingEarTip(pVertices, pEarTipIndex);
-		}
+	private int computePreviousIndex (final int pIndex) {
+		return pIndex == 0 ? vertexCount - 1 : pIndex - 1;
 	}
 
-	private static void removeCollinearNeighborEarsAfterRemovingEarTip (final ArrayList<Vector2> pVertices,
-		final int pEarTipCutIndex) {
-		final int collinearityCheckNextIndex = pEarTipCutIndex % pVertices.size();
-		int collinearCheckPreviousIndex = EarClippingTriangulator.computePreviousIndex(pVertices, collinearityCheckNextIndex);
-
-		if (EarClippingTriangulator.isCollinear(pVertices, collinearityCheckNextIndex)) {
-			pVertices.remove(collinearityCheckNextIndex);
-
-			if (pVertices.size() > 3) {
-				/* Update */
-				collinearCheckPreviousIndex = EarClippingTriangulator.computePreviousIndex(pVertices, collinearityCheckNextIndex);
-				if (EarClippingTriangulator.isCollinear(pVertices, collinearCheckPreviousIndex)) {
-					pVertices.remove(collinearCheckPreviousIndex);
-				}
-			}
-		} else if (EarClippingTriangulator.isCollinear(pVertices, collinearCheckPreviousIndex)) {
-			pVertices.remove(collinearCheckPreviousIndex);
-		}
-	}
-
-	private static boolean isCollinear (final ArrayList<Vector2> pVertices, final int pIndex) {
-		final int previousIndex = EarClippingTriangulator.computePreviousIndex(pVertices, pIndex);
-		final int nextIndex = EarClippingTriangulator.computeNextIndex(pVertices, pIndex);
-
-		return EarClippingTriangulator.isCollinear(pVertices, previousIndex, pIndex, nextIndex);
-	}
-
-	private static boolean isCollinear (final ArrayList<Vector2> pVertices, final int pPreviousIndex, final int pIndex,
-		final int pNextIndex) {
-		final Vector2 previousVertex = pVertices.get(pPreviousIndex);
-		final Vector2 vertex = pVertices.get(pIndex);
-		final Vector2 nextVertex = pVertices.get(pNextIndex);
-
-		return EarClippingTriangulator.computeSpannedAreaSign(previousVertex.x, previousVertex.y, vertex.x, vertex.y, nextVertex.x,
-			nextVertex.y) == 0;
-	}
-
-	private static int computePreviousIndex (final List<Vector2> pVertices, final int pIndex) {
-		return pIndex == 0 ? pVertices.size() - 1 : pIndex - 1;
-	}
-
-	private static int computeNextIndex (final List<Vector2> pVertices, final int pIndex) {
-		return pIndex == pVertices.size() - 1 ? 0 : pIndex + 1;
+	private int computeNextIndex (final int pIndex) {
+		return pIndex == vertexCount - 1 ? 0 : pIndex + 1;
 	}
 }

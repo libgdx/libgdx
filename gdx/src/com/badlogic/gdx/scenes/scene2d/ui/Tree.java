@@ -613,6 +613,20 @@ public class Tree extends WidgetGroup {
 		public void setSelectable (boolean selectable) {
 			this.selectable = selectable;
 		}
+
+		public void findExpandedObjects (Array objects) {
+			if (expanded && !Tree.findExpandedObjects(children, objects)) objects.add(object);
+		}
+
+		public void restoreExpandedObjects (Array objects) {
+			for (int i = 0, n = objects.size; i < n; i++) {
+				Node node = findNode(objects.get(i));
+				if (node != null) {
+					node.setExpanded(true);
+					node.expandTo();
+				}
+			}
+		}
 	}
 
 	/** The style for a {@link Tree}.
