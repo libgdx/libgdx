@@ -218,8 +218,26 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCylinder(float width, float height, float depth, int divisions, int primitiveType, final Material material, final long attributes) {
+		return createCylinder(width, height, depth, divisions, primitiveType, material, attributes, 0, 360);
+	}
+	
+	/** Convenience method to create a model with a single node containing a cylinder shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createCylinder(float width, float height, float depth, int divisions, final Material material, final long attributes, float angleFrom, float angleTo) {
+		return createCylinder(width, height, depth, divisions, GL10.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
+	}
+	
+	/** Convenience method to create a model with a single node containing a cylinder shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createCylinder(float width, float height, float depth, int divisions, int primitiveType, final Material material, final long attributes, float angleFrom, float angleTo) {
 		begin();
-		part("cylinder", primitiveType, attributes, material).cylinder(width, height, depth, divisions);
+		part("cylinder", primitiveType, attributes, material).cylinder(width, height, depth, divisions, angleFrom, angleTo);
 		return end();
 	}
 	
@@ -238,8 +256,26 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCone(float width, float height, float depth, int divisions, int primitiveType, final Material material, final long attributes) {
+		return createCone(width, height, depth, divisions, primitiveType, material, attributes, 0, 360);
+	}
+	
+	/** Convenience method to create a model with a single node containing a cone shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createCone(float width, float height, float depth, int divisions, final Material material, final long attributes, float angleFrom, float angleTo) {
+		return createCone(width, height, depth, divisions, GL10.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
+	}
+		
+	/** Convenience method to create a model with a single node containing a cone shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createCone(float width, float height, float depth, int divisions, int primitiveType, final Material material, final long attributes, float angleFrom, float angleTo) {
 		begin();
-		part("cone", primitiveType, attributes, material).cone(width, height, depth, divisions);
+		part("cone", primitiveType, attributes, material).cone(width, height, depth, divisions, angleFrom, angleTo);
 		return end();
 	}
 
@@ -258,8 +294,46 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, int primitiveType, final Material material, final long attributes) {
+		return createSphere(width, height, depth, divisionsU, divisionsV, primitiveType, material, attributes, 0, 360, 0, 180);
+	}
+	
+	/** Convenience method to create a model with a single node containing a sphere shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final Material material, final long attributes, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
+		return createSphere(width, height, depth, divisionsU, divisionsV, GL10.GL_TRIANGLES, material, attributes, angleUFrom, angleUTo, angleVFrom, angleVTo);
+	}
+	
+	/** Convenience method to create a model with a single node containing a sphere shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, int primitiveType, final Material material, final long attributes, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
 		begin();
-		part("cylinder", primitiveType, attributes, material).sphere(width, height, depth, divisionsU, divisionsV);
+		part("cylinder", primitiveType, attributes, material).sphere(width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
+		return end();
+	}
+	
+	/** Convenience method to create a model with a single node containing a capsule shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createCapsule(float radius, float height, int divisions, final Material material, final long attributes) {
+		return createCapsule(radius, height, divisions, GL10.GL_TRIANGLES, material, attributes);
+	}
+	
+	/** Convenience method to create a model with a single node containing a capsule shape.
+	 * The resources the Material might contain are not managed, 
+	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
+	 * only Position, Color, Normal and TextureCoordinates is supported. */
+	public Model createCapsule(float radius, float height, int divisions, int primitiveType, final Material material, final long attributes) {
+		begin();
+		part("capsule", primitiveType, attributes, material).capsule(radius, height, divisions);
 		return end();
 	}
 	

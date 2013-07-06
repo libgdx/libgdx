@@ -312,25 +312,33 @@ public class ModelInstance implements RenderableProvider {
 			getRenderables(node, renderables, pool);
 		}
 	}
+
+	/** @return The renderable of the first node's first part. */
+	public Renderable getRenderable(final Renderable out) {
+		return getRenderable(out, nodes.get(0));
+	}
+	
+	/** @return The renderable of the node's first part. */
+	public Renderable getRenderable(final Renderable out, final Node node) {
+		return getRenderable(out, node, node.parts.get(0));
+	}
+	
+	public Renderable getRenderable(final Renderable out, final Node node, final NodePart nodePart) {
+		nodePart.setRenderable(out);
+		if (nodePart.bones == null && transform != null)
+			out.worldTransform.set(transform).mul(node.globalTransform);
+		else if (transform != null)
+			out.worldTransform.set(transform);
+		else
+			out.worldTransform.idt();
+		out.userData = userData;
+		return out;
+	}
 	
 	protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
 		if(node.parts.size > 0) {
 			for(NodePart nodePart: node.parts) {
-				Renderable renderable = pool.obtain();
-				renderable.material = nodePart.material;
-				renderable.mesh = nodePart.meshPart.mesh;
-				renderable.meshPartOffset = nodePart.meshPart.indexOffset;
-				renderable.meshPartSize = nodePart.meshPart.numVertices;
-				renderable.primitiveType = nodePart.meshPart.primitiveType;
-				renderable.bones = nodePart.bones;
-				if (nodePart.bones == null && transform != null)
-					renderable.worldTransform.set(transform).mul(node.globalTransform);
-				else if (transform != null)
-					renderable.worldTransform.set(transform);
-				else
-					renderable.worldTransform.idt();
-				renderable.userData = userData;
-				renderables.add(renderable);
+				renderables.add(getRenderable(pool.obtain(), node, nodePart));
 			}
 		}
 		
