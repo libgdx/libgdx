@@ -140,6 +140,9 @@ public class Preloader {
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
 					final Asset asset = assets.get(i);
+					
+					if (contains(asset.url)) continue;
+					
 					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 						@Override
 						public void onProgress (double amount) {
