@@ -142,40 +142,65 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 	 * vertexCount: the amount of vertices
 	 * vertexSize: the size in bytes of one vertex
 	 * posOffset: the offset within a vertex to the position
+	 * normalOffset: the offset within a vertex to the normal or negative if none
 	 * triangleCount: the amount of triangle (size per triangle = 3 * sizeof(short))
 	 */
-	btSoftBody(btSoftBodyWorldInfo *worldInfo, float *vertices, int vertexSize, int posOffset, short *indices, int indexOffset, int numVertices, short *indexMap, int indexMapOffset) {		
-		int offset = posOffset / sizeof(btScalar);
+	btSoftBody(btSoftBodyWorldInfo *worldInfo, float *vertices, int vertexSize, int posOffset, int normalOffset, short *indices, int indexOffset, int numVertices, short *indexMap, int indexMapOffset) {		
+		int poffset = posOffset / sizeof(btScalar);
+		int noffset = normalOffset / sizeof(btScalar);
 		int size = vertexSize / sizeof(btScalar);
 		btAlignedObjectArray<btVector3>	points;
 		
+		btSoftBody *result = new btSoftBody(worldInfo);
+		btSoftBody::Material* pm = result->appendMaterial();
+		pm->m_kLST = 1;
+		pm->m_kAST = 1;
+		pm->m_kVST = 1;
+		pm->m_flags = btSoftBody::fMaterial::Default;
+		
+		const btScalar margin = result->getCollisionShape()->getMargin();
+		int nodeCount = 0;
+		result->m_nodes.resize(numVertices);
 		for (int i = 0; i < numVertices; i++) {
-			const float * const &verts = &vertices[indices[indexOffset+i]*size+offset];
+			const float * const &verts = &vertices[indices[indexOffset+i]*size+poffset];
 			btVector3 point(verts[0], verts[1], verts[2]);
-			const int n = points.size();
 			int idx = -1;
-			for (int j = 0; j < n; j++) {
-				if (points[j]==point) {
+			for (int j = 0; j < nodeCount; j++) {
+				if (result->m_nodes[j].m_x==point) {
 					idx = j;
 					break;
 				}
 			}
 			if (idx < 0) {
+				btSoftBody::Node &node = result->m_nodes[nodeCount];
+				memset(&node,0,sizeof(btSoftBody::Node));
+				node.m_x = point;
+				node.m_q = node.m_x;
+				node.m_im = 1;
+				node.m_leaf = result->m_ndbvt.insert(btDbvtVolume::FromCR(node.m_x,margin),&node);
+				node.m_material = pm;
+				if (noffset >= 0) {
+					node.m_n.m_floats[0] = vertices[indices[indexOffset+i]*size+noffset];
+					node.m_n.m_floats[1] = vertices[indices[indexOffset+i]*size+noffset+1];
+					node.m_n.m_floats[2] = vertices[indices[indexOffset+i]*size+noffset+2];
+				}
 				points.push_back(point);
-				idx = n;
+				idx = nodeCount;
+				nodeCount++;
 			}
 			indexMap[indexMapOffset+i] = (short)idx; 
 		}
+		result->m_nodes.resize(nodeCount);
 		
-		const int vertexCount = points.size();
-		btSoftBody *result = new btSoftBody(worldInfo, vertexCount, &points[0], 0);
+		//const int vertexCount = points.size();
+		//btSoftBody *result = new btSoftBody(worldInfo, vertexCount, &points[0], 0);
 		
 		btAlignedObjectArray<bool> chks;
-		chks.resize(vertexCount * vertexCount, false);
+		chks.resize(nodeCount * nodeCount, false);
 		for(int i=0; i<numVertices; i+=3)
 		{
 			const int idx[]={indexMap[indexMapOffset+i],indexMap[indexMapOffset+i+1],indexMap[indexMapOffset+i+2]};
-#define IDX(_x_,_y_) ((_y_)*vertexCount+(_x_))
+#define IDX(_x_,_y_) ((_y_)*nodeCount+(_x_))
 			for(int j=2,k=0;k<3;j=k++)
 			{
 				if(!chks[IDX(idx[j],idx[k])])
@@ -220,15 +245,34 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 	}
 	
 	void getVertices(float *vertices, int vertexSize, int posOffset, short *indices, int indexOffset, int numVertices, short *indexMap, int indexMapOffset) {
-		int offset = posOffset / (sizeof(btScalar));
+		int poffset = posOffset / (sizeof(btScalar));
 		int size = vertexSize / (sizeof(btScalar));
 		for (int i = 0; i < numVertices; i++) {
-			const int vidx = indices[indexOffset+i]*size+offset;
+			const int vidx = indices[indexOffset+i]*size+poffset;
 			const int pidx = indexMap[indexMapOffset+i];
 			const float * const &point = $self->m_nodes[pidx].m_x.m_floats;
 			vertices[vidx  ] = point[0];
 			vertices[vidx+1] = point[1];
 			vertices[vidx+2] = point[2];
+		}
+	}
+	
+	void getVertices(float *vertices, int vertexSize, int posOffset, int normalOffset, short *indices, int indexOffset, int numVertices, short *indexMap, int indexMapOffset) {
+		int poffset = posOffset / (sizeof(btScalar));
+		int noffset = normalOffset / (sizeof(btScalar));
+		int size = vertexSize / (sizeof(btScalar));
+		for (int i = 0; i < numVertices; i++) {
+			const int vidx = indices[indexOffset+i]*size+poffset;
+			const int nidx = indices[indexOffset+i]*size+noffset;
+			const int pidx = indexMap[indexMapOffset+i];
+			const float * const &point = $self->m_nodes[pidx].m_x.m_floats;
+			const float * const &normal = $self->m_nodes[pidx].m_n.m_floats;
+			vertices[vidx  ] = point[0];
+			vertices[vidx+1] = point[1];
+			vertices[vidx+2] = point[2];
+			vertices[nidx  ] = normal[0];
+			vertices[nidx+1] = normal[1];
+			vertices[nidx+2] = normal[2];
 		}
 	}
 	

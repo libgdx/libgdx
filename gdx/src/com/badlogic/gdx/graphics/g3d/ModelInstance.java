@@ -350,11 +350,12 @@ public class ModelInstance implements RenderableProvider {
 	 * was modified.
 	 */
 	public void calculateTransforms() {
-		for(Node node: nodes) {
-			node.calculateTransforms(true);
+		final int n = nodes.size;
+		for(int i = 0; i < n; i++) {
+			nodes.get(i).calculateTransforms(true);
 		}
-		for(Node node: nodes) {
-			node.calculateBoneTransforms(true);
+		for(int i = 0; i < n; i++) {
+			nodes.get(i).calculateBoneTransforms(true);
 		}
 	}
 	
@@ -368,36 +369,52 @@ public class ModelInstance implements RenderableProvider {
 	/** Extends the bounding box with the bounds of this model instance.
 	 * This is a potential slow operation, it is advised to cache the result. */
 	public BoundingBox extendBoundingBox(final BoundingBox out) {
-		for (final Node node : nodes)
-			calculateBoundingBox(out, node);
+		final int n = nodes.size;
+		for(int i = 0; i < n; i++)
+			nodes.get(i).extendBoundingBox(out);
 		return out;
 	}
-	
-	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
-		for (final NodePart mpm : node.parts)
-			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices, node.globalTransform);
-		for (final Node child : node.children)
-			calculateBoundingBox(out, child);
-	}
-	
+
+	/** @return The animation with the specified id, or null if not available. */
 	public Animation getAnimation(final String id) {
-		for (final Animation anim : animations)
-			if (anim.id.compareTo(id)==0)
-				return anim;
+		return getAnimation(id, true);
+	}
+	
+	/** @return The animation with the specified id, or null if not available. */
+	public Animation getAnimation(final String id, boolean ignoreCase) {
+		final int n = animations.size;
+		Animation animation;
+		if (ignoreCase) {
+			for (int i = 0; i < n; i++)
+				if ((animation = animations.get(i)).id.equalsIgnoreCase(id))
+					return animation;
+		} else {
+			for (int i = 0; i < n; i++)
+				if ((animation = animations.get(i)).id.equals(id))
+					return animation;
+		}
 		return null;
 	}
 	
+	/** @return The material with the specified id, or null if not available. */
 	public Material getMaterial(final String id) {
-		for (final Material mtl : materials)
-			if (mtl.id.compareTo(id)==0)
-				return mtl;
-		return null;
+		return getMaterial(id, true);
 	}
 	
-	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
-	 * @return The node with the specified id, or null if not found. */
-	public Node getNode(final String id, boolean recursive) {
-		return getNode(id, nodes, recursive);
+	/** @return The material with the specified id, or null if not available. */
+	public Material getMaterial(final String id, boolean ignoreCase) {
+		final int n = materials.size;
+		Material material;
+		if (ignoreCase) {
+			for (int i = 0; i < n; i++)
+				if ((material = materials.get(i)).id.equalsIgnoreCase(id))
+					return material;
+		} else {
+			for (int i = 0; i < n; i++)
+				if ((material = materials.get(i)).id.equals(id))
+					return material;
+		}
+		return null;
 	}
 	
 	/** @return The node with the specified id, or null if not found. */
@@ -405,16 +422,15 @@ public class ModelInstance implements RenderableProvider {
 		return getNode(id, true);
 	}
 	
-	protected Node getNode(final String id, final Iterable<Node> nodes, boolean recursive) {
-		for (final Node node : nodes) {
-			if (node.id.equals(id))
-				return node;
-			if (recursive) {
-				final Node n = getNode(id, node.children, recursive);
-				if (n != null)
-					return n;
-			}
-		}
-		return null;
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive) {
+		return getNode(id, recursive, false);
+	}
+	
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive, boolean ignoreCase) {
+		return Node.getNode(nodes, id, recursive, ignoreCase);
 	}
 }

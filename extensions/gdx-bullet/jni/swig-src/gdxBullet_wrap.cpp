@@ -2261,44 +2261,68 @@ typedef btRaycastVehicle::btVehicleTuning btVehicleTuning; // FIXME This should 
 
 #include <BulletSoftBody/btSoftBody.h>
 
-SWIGINTERN btSoftBody *new_btSoftBody__SWIG_2(btSoftBodyWorldInfo *worldInfo,float *vertices,int vertexSize,int posOffset,short *indices,int indexOffset,int numVertices,short *indexMap,int indexMapOffset){		
-		int offset = posOffset / sizeof(btScalar);
+SWIGINTERN btSoftBody *new_btSoftBody__SWIG_2(btSoftBodyWorldInfo *worldInfo,float *vertices,int vertexSize,int posOffset,int normalOffset,short *indices,int indexOffset,int numVertices,short *indexMap,int indexMapOffset){		
+		int poffset = posOffset / sizeof(btScalar);
+		int noffset = normalOffset / sizeof(btScalar);
 		int size = vertexSize / sizeof(btScalar);
 		btAlignedObjectArray<btVector3>	points;
 		
+		btSoftBody *result = new btSoftBody(worldInfo);
+		btSoftBody::Material* pm = result->appendMaterial();
+		pm->m_kLST = 1;
+		pm->m_kAST = 1;
+		pm->m_kVST = 1;
+		pm->m_flags = btSoftBody::fMaterial::Default;
+		
+		const btScalar margin = result->getCollisionShape()->getMargin();
+		int nodeCount = 0;
+		result->m_nodes.resize(numVertices);
 		for (int i = 0; i < numVertices; i++) {
-			const float * const &verts = &vertices[indices[indexOffset+i]*size+offset];
+			const float * const &verts = &vertices[indices[indexOffset+i]*size+poffset];
 			btVector3 point(verts[0], verts[1], verts[2]);
-			const int n = points.size();
 			int idx = -1;
-			for (int j = 0; j < n; j++) {
-				if (points[j]==point) {
+			for (int j = 0; j < nodeCount; j++) {
+				if (result->m_nodes[j].m_x==point) {
 					idx = j;
 					break;
 				}
 			}
 			if (idx < 0) {
+				btSoftBody::Node &node = result->m_nodes[nodeCount];
+				memset(&node,0,sizeof(btSoftBody::Node));
+				node.m_x = point;
+				node.m_q = node.m_x;
+				node.m_im = 1;
+				node.m_leaf = result->m_ndbvt.insert(btDbvtVolume::FromCR(node.m_x,margin),&node);
+				node.m_material = pm;
+				if (noffset >= 0) {
+					node.m_n.m_floats[0] = vertices[indices[indexOffset+i]*size+noffset];
+					node.m_n.m_floats[1] = vertices[indices[indexOffset+i]*size+noffset+1];
+					node.m_n.m_floats[2] = vertices[indices[indexOffset+i]*size+noffset+2];
+				}
 				points.push_back(point);
-				idx = n;
+				idx = nodeCount;
+				nodeCount++;
 			}
 			indexMap[indexMapOffset+i] = (short)idx; 
 		}
+		result->m_nodes.resize(nodeCount);
 		
-		const int vertexCount = points.size();
-		btSoftBody *result = new btSoftBody(worldInfo, vertexCount, &points[0], 0);
+		//const int vertexCount = points.size();
+		//btSoftBody *result = new btSoftBody(worldInfo, vertexCount, &points[0], 0);
 		
 		btAlignedObjectArray<bool> chks;
-		chks.resize(vertexCount * vertexCount, false);
+		chks.resize(nodeCount * nodeCount, false);
 		for(int i=0; i<numVertices; i+=3)
 		{
 			const int idx[]={indexMap[indexMapOffset+i],indexMap[indexMapOffset+i+1],indexMap[indexMapOffset+i+2]};
 
 			for(int j=2,k=0;k<3;j=k++)
 			{
-				if(!chks[((idx[k])*vertexCount+(idx[j]))])
+				if(!chks[((idx[k])*nodeCount+(idx[j]))])
 				{
-					chks[((idx[k])*vertexCount+(idx[j]))]=true;
-					chks[((idx[j])*vertexCount+(idx[k]))]=true;
+					chks[((idx[k])*nodeCount+(idx[j]))]=true;
+					chks[((idx[j])*nodeCount+(idx[k]))]=true;
 					result->appendLink(idx[j],idx[k]);
 				}
 			}
@@ -2327,15 +2351,33 @@ SWIGINTERN void btSoftBody_getVertices__SWIG_0(btSoftBody *self,btScalar *buffer
 		}
 	}
 SWIGINTERN void btSoftBody_getVertices__SWIG_1(btSoftBody *self,float *vertices,int vertexSize,int posOffset,short *indices,int indexOffset,int numVertices,short *indexMap,int indexMapOffset){
-		int offset = posOffset / (sizeof(btScalar));
+		int poffset = posOffset / (sizeof(btScalar));
 		int size = vertexSize / (sizeof(btScalar));
 		for (int i = 0; i < numVertices; i++) {
-			const int vidx = indices[indexOffset+i]*size+offset;
+			const int vidx = indices[indexOffset+i]*size+poffset;
 			const int pidx = indexMap[indexMapOffset+i];
 			const float * const &point = self->m_nodes[pidx].m_x.m_floats;
 			vertices[vidx  ] = point[0];
 			vertices[vidx+1] = point[1];
 			vertices[vidx+2] = point[2];
+		}
+	}
+SWIGINTERN void btSoftBody_getVertices__SWIG_2(btSoftBody *self,float *vertices,int vertexSize,int posOffset,int normalOffset,short *indices,int indexOffset,int numVertices,short *indexMap,int indexMapOffset){
+		int poffset = posOffset / (sizeof(btScalar));
+		int noffset = normalOffset / (sizeof(btScalar));
+		int size = vertexSize / (sizeof(btScalar));
+		for (int i = 0; i < numVertices; i++) {
+			const int vidx = indices[indexOffset+i]*size+poffset;
+			const int nidx = indices[indexOffset+i]*size+noffset;
+			const int pidx = indexMap[indexMapOffset+i];
+			const float * const &point = self->m_nodes[pidx].m_x.m_floats;
+			const float * const &normal = self->m_nodes[pidx].m_n.m_floats;
+			vertices[vidx  ] = point[0];
+			vertices[vidx+1] = point[1];
+			vertices[vidx+2] = point[2];
+			vertices[nidx  ] = normal[0];
+			vertices[nidx+1] = normal[1];
+			vertices[nidx+2] = normal[2];
 		}
 	}
 SWIGINTERN int btSoftBody_getFaceCount(btSoftBody *self){
@@ -73778,17 +73820,18 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btSof
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btSoftBody_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jobject jarg5, jint jarg6, jint jarg7, jobject jarg8, jint jarg9) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1btSoftBody_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jint jarg5, jobject jarg6, jint jarg7, jint jarg8, jobject jarg9, jint jarg10) {
   jlong jresult = 0 ;
   btSoftBodyWorldInfo *arg1 = (btSoftBodyWorldInfo *) 0 ;
   float *arg2 = (float *) 0 ;
   int arg3 ;
   int arg4 ;
-  short *arg5 = (short *) 0 ;
-  int arg6 ;
+  int arg5 ;
+  short *arg6 = (short *) 0 ;
   int arg7 ;
-  short *arg8 = (short *) 0 ;
-  int arg9 ;
+  int arg8 ;
+  short *arg9 = (short *) 0 ;
+  int arg10 ;
   btSoftBody *result = 0 ;
   
   (void)jenv;
@@ -73803,22 +73846,23 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_new_1
   }
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
+  arg5 = (int)jarg5; 
   {
-    arg5 = (short*)jenv->GetDirectBufferAddress(jarg5);
-    if (arg5 == NULL) {
+    arg6 = (short*)jenv->GetDirectBufferAddress(jarg6);
+    if (arg6 == NULL) {
       SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
     }
   }
-  arg6 = (int)jarg6; 
   arg7 = (int)jarg7; 
+  arg8 = (int)jarg8; 
   {
-    arg8 = (short*)jenv->GetDirectBufferAddress(jarg8);
-    if (arg8 == NULL) {
+    arg9 = (short*)jenv->GetDirectBufferAddress(jarg9);
+    if (arg9 == NULL) {
       SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
     }
   }
-  arg9 = (int)jarg9; 
-  result = (btSoftBody *)new_btSoftBody__SWIG_2(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
+  arg10 = (int)jarg10; 
+  result = (btSoftBody *)new_btSoftBody__SWIG_2(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
   *(btSoftBody **)&jresult = result; 
   
   
@@ -73923,6 +73967,53 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btSoft
   }
   arg9 = (int)jarg9; 
   btSoftBody_getVertices__SWIG_1(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9);
+  
+  
+  
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btSoftBody_1getVertices_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jint jarg3, jint jarg4, jint jarg5, jobject jarg6, jint jarg7, jint jarg8, jobject jarg9, jint jarg10) {
+  btSoftBody *arg1 = (btSoftBody *) 0 ;
+  float *arg2 = (float *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  int arg5 ;
+  short *arg6 = (short *) 0 ;
+  int arg7 ;
+  int arg8 ;
+  short *arg9 = (short *) 0 ;
+  int arg10 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSoftBody **)&jarg1; 
+  {
+    arg2 = (float*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  arg5 = (int)jarg5; 
+  {
+    arg6 = (short*)jenv->GetDirectBufferAddress(jarg6);
+    if (arg6 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg7 = (int)jarg7; 
+  arg8 = (int)jarg8; 
+  {
+    arg9 = (short*)jenv->GetDirectBufferAddress(jarg9);
+    if (arg9 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg10 = (int)jarg10; 
+  btSoftBody_getVertices__SWIG_2(arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10);
   
   
   
