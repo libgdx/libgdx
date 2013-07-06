@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
@@ -21,5 +22,16 @@ public class NodePart {
 	public NodePart(final MeshPart meshPart, final Material material) {
 		this.meshPart = meshPart;
 		this.material = material;
+	}
+	
+	/** Convenience method to set the material, meshpart and bones values of the renderable. */
+	public Renderable setRenderable(final Renderable out) {
+		out.material = material;
+		out.mesh = meshPart.mesh;
+		out.meshPartOffset = meshPart.indexOffset;
+		out.meshPartSize = meshPart.numVertices;
+		out.primitiveType = meshPart.primitiveType;
+		out.bones = bones;
+		return out;
 	}
 }
