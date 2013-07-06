@@ -39,6 +39,7 @@ public class btCollisionObject implements
 	protected int userValue;
 	protected int contactCallbackFlag = 1;
 	protected int contactCallbackFilter;
+	protected btCollisionShape collisionShape;
 	
 	/** User definable data, not used by Bullet itself. */
 	public Object userData;
@@ -77,6 +78,15 @@ public class btCollisionObject implements
 	/** @param filter The new filter that is used to match the flag of the other object for a contact callback to be triggered */
 	public void setContactCallbackFilter(int filter) {
 		gdxBridge.setContactCallbackFilter(contactCallbackFilter = filter);
+	}
+	
+	public void setCollisionShape(btCollisionShape shape) {
+		collisionShape = shape;
+		internalSetCollisionShape(shape);
+	}
+	
+	public btCollisionShape getCollisionShape() {
+		return collisionShape != null ? collisionShape : (collisionShape = internalGetCollisionShape()); 
 	}
 
   protected void finalize() {
@@ -196,12 +206,12 @@ public class btCollisionObject implements
     this(gdxBulletJNI.new_btCollisionObject(), true);
   }
 
-  public void setCollisionShape(btCollisionShape collisionShape) {
-    gdxBulletJNI.btCollisionObject_setCollisionShape(swigCPtr, this, btCollisionShape.getCPtr(collisionShape), collisionShape);
+  private void internalSetCollisionShape(btCollisionShape collisionShape) {
+    gdxBulletJNI.btCollisionObject_internalSetCollisionShape(swigCPtr, this, btCollisionShape.getCPtr(collisionShape), collisionShape);
   }
 
-  public btCollisionShape getCollisionShape() {
-    long cPtr = gdxBulletJNI.btCollisionObject_getCollisionShape__SWIG_0(swigCPtr, this);
+  private btCollisionShape internalGetCollisionShape() {
+    long cPtr = gdxBulletJNI.btCollisionObject_internalGetCollisionShape__SWIG_0(swigCPtr, this);
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 

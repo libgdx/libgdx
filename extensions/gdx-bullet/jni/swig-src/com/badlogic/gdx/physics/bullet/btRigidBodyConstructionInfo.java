@@ -40,144 +40,177 @@ public class btRigidBodyConstructionInfo {
     }
   }
 
-  public void setM_mass(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_mass_set(swigCPtr, this, value);
+	protected btMotionState motionState;
+	protected btCollisionShape collisionShape;
+	
+	public void setMotionState(btMotionState motionState) {
+		this.motionState = motionState;
+		setM_motionState(motionState);
+	}
+	
+	public btMotionState getMotionState() {
+		return motionState != null ? motionState : (motionState = getM_motionState());
+	}
+	
+	public void setCollisionShape(btCollisionShape collisionShape) {
+		this.collisionShape = collisionShape;
+		setM_collisionShape(collisionShape);
+	}
+	
+	public btCollisionShape getCollisionShape() {
+		return collisionShape != null ? collisionShape : (collisionShape = getM_collisionShape());
+	}
+	
+	public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
+		this(false, mass, motionState, collisionShape, localInertia);
+		this.motionState = motionState;
+		this.collisionShape = collisionShape;
+	}
+	
+	public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape) {
+		this(false, mass, motionState, collisionShape);
+		this.motionState = motionState;
+		this.collisionShape = collisionShape;
+	}
+
+  public void setMass(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_mass_set(swigCPtr, this, value);
   }
 
-  public float getM_mass() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_mass_get(swigCPtr, this);
+  public float getMass() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_mass_get(swigCPtr, this);
   }
 
-  public void setM_motionState(btMotionState value) {
+  private void setM_motionState(btMotionState value) {
     gdxBulletJNI.btRigidBodyConstructionInfo_m_motionState_set(swigCPtr, this, btMotionState.getCPtr(value), value);
   }
 
-  public btMotionState getM_motionState() {
+  private btMotionState getM_motionState() {
     long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_m_motionState_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btMotionState(cPtr, false);
   }
 
-  public void setM_startWorldTransform(btTransform value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_startWorldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setStartWorldTransform(btTransform value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_startWorldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_startWorldTransform() {
-    long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_m_startWorldTransform_get(swigCPtr, this);
+  public btTransform getStartWorldTransform() {
+    long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_startWorldTransform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_collisionShape(btCollisionShape value) {
+  private void setM_collisionShape(btCollisionShape value) {
     gdxBulletJNI.btRigidBodyConstructionInfo_m_collisionShape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
   }
 
-  public btCollisionShape getM_collisionShape() {
+  private btCollisionShape getM_collisionShape() {
     long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_m_collisionShape_get(swigCPtr, this);
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
-  public void setM_localInertia(btVector3 value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_localInertia_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLocalInertia(btVector3 value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_localInertia_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_localInertia() {
-    long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_m_localInertia_get(swigCPtr, this);
+  public btVector3 getLocalInertia() {
+    long cPtr = gdxBulletJNI.btRigidBodyConstructionInfo_localInertia_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_linearDamping(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_linearDamping_set(swigCPtr, this, value);
+  public void setLinearDamping(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_linearDamping_set(swigCPtr, this, value);
   }
 
-  public float getM_linearDamping() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_linearDamping_get(swigCPtr, this);
+  public float getLinearDamping() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_linearDamping_get(swigCPtr, this);
   }
 
-  public void setM_angularDamping(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_angularDamping_set(swigCPtr, this, value);
+  public void setAngularDamping(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_angularDamping_set(swigCPtr, this, value);
   }
 
-  public float getM_angularDamping() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_angularDamping_get(swigCPtr, this);
+  public float getAngularDamping() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_angularDamping_get(swigCPtr, this);
   }
 
-  public void setM_friction(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_friction_set(swigCPtr, this, value);
+  public void setFriction(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_friction_set(swigCPtr, this, value);
   }
 
-  public float getM_friction() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_friction_get(swigCPtr, this);
+  public float getFriction() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_friction_get(swigCPtr, this);
   }
 
-  public void setM_restitution(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_restitution_set(swigCPtr, this, value);
+  public void setRestitution(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_restitution_set(swigCPtr, this, value);
   }
 
-  public float getM_restitution() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_restitution_get(swigCPtr, this);
+  public float getRestitution() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_restitution_get(swigCPtr, this);
   }
 
-  public void setM_linearSleepingThreshold(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_linearSleepingThreshold_set(swigCPtr, this, value);
+  public void setLinearSleepingThreshold(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_linearSleepingThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_linearSleepingThreshold() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_linearSleepingThreshold_get(swigCPtr, this);
+  public float getLinearSleepingThreshold() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_linearSleepingThreshold_get(swigCPtr, this);
   }
 
-  public void setM_angularSleepingThreshold(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_angularSleepingThreshold_set(swigCPtr, this, value);
+  public void setAngularSleepingThreshold(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_angularSleepingThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_angularSleepingThreshold() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_angularSleepingThreshold_get(swigCPtr, this);
+  public float getAngularSleepingThreshold() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_angularSleepingThreshold_get(swigCPtr, this);
   }
 
-  public void setM_additionalDamping(boolean value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalDamping_set(swigCPtr, this, value);
+  public void setAdditionalDamping(boolean value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_additionalDamping_set(swigCPtr, this, value);
   }
 
-  public boolean getM_additionalDamping() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalDamping_get(swigCPtr, this);
+  public boolean getAdditionalDamping() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_additionalDamping_get(swigCPtr, this);
   }
 
-  public void setM_additionalDampingFactor(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalDampingFactor_set(swigCPtr, this, value);
+  public void setAdditionalDampingFactor(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_additionalDampingFactor_set(swigCPtr, this, value);
   }
 
-  public float getM_additionalDampingFactor() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalDampingFactor_get(swigCPtr, this);
+  public float getAdditionalDampingFactor() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_additionalDampingFactor_get(swigCPtr, this);
   }
 
-  public void setM_additionalLinearDampingThresholdSqr(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalLinearDampingThresholdSqr_set(swigCPtr, this, value);
+  public void setAdditionalLinearDampingThresholdSqr(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_additionalLinearDampingThresholdSqr_set(swigCPtr, this, value);
   }
 
-  public float getM_additionalLinearDampingThresholdSqr() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalLinearDampingThresholdSqr_get(swigCPtr, this);
+  public float getAdditionalLinearDampingThresholdSqr() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_additionalLinearDampingThresholdSqr_get(swigCPtr, this);
   }
 
-  public void setM_additionalAngularDampingThresholdSqr(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalAngularDampingThresholdSqr_set(swigCPtr, this, value);
+  public void setAdditionalAngularDampingThresholdSqr(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_additionalAngularDampingThresholdSqr_set(swigCPtr, this, value);
   }
 
-  public float getM_additionalAngularDampingThresholdSqr() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalAngularDampingThresholdSqr_get(swigCPtr, this);
+  public float getAdditionalAngularDampingThresholdSqr() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_additionalAngularDampingThresholdSqr_get(swigCPtr, this);
   }
 
-  public void setM_additionalAngularDampingFactor(float value) {
-    gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalAngularDampingFactor_set(swigCPtr, this, value);
+  public void setAdditionalAngularDampingFactor(float value) {
+    gdxBulletJNI.btRigidBodyConstructionInfo_additionalAngularDampingFactor_set(swigCPtr, this, value);
   }
 
-  public float getM_additionalAngularDampingFactor() {
-    return gdxBulletJNI.btRigidBodyConstructionInfo_m_additionalAngularDampingFactor_get(swigCPtr, this);
+  public float getAdditionalAngularDampingFactor() {
+    return gdxBulletJNI.btRigidBodyConstructionInfo_additionalAngularDampingFactor_get(swigCPtr, this);
   }
 
-  public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
-    this(gdxBulletJNI.new_btRigidBodyConstructionInfo__SWIG_0(mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape, localInertia), true);
+  private btRigidBodyConstructionInfo(boolean dummy, float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
+    this(gdxBulletJNI.new_btRigidBodyConstructionInfo__SWIG_0(dummy, mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape, localInertia), true);
   }
 
-  public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape) {
-    this(gdxBulletJNI.new_btRigidBodyConstructionInfo__SWIG_1(mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape), true);
+  private btRigidBodyConstructionInfo(boolean dummy, float mass, btMotionState motionState, btCollisionShape collisionShape) {
+    this(gdxBulletJNI.new_btRigidBodyConstructionInfo__SWIG_1(dummy, mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape), true);
   }
 
 }
