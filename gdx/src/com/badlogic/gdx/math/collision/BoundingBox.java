@@ -200,6 +200,23 @@ public class BoundingBox implements Serializable {
 			max.set(max(max.x, a_bounds.max.x), max(max.y, a_bounds.max.y), max(max.z, a_bounds.max.z)));
 	}
 
+	/** Extends this bounding box by the given transformed bounding box.
+	 * 
+	 * @param bounds The bounding box
+	 * @param transform The transformation matrix to apply to bounds, before using it to extend this bounding box. 
+	 * @return This bounding box for chaining. */
+	public BoundingBox ext (BoundingBox bounds, Matrix4 transform) {
+		bounds.updateCorners();
+		for (Vector3 pnt : crn) {
+			pnt.mul(transform);
+			min.set(min(min.x, pnt.x), min(min.y, pnt.y), min(min.z, pnt.z));
+			max.set(max(max.x, pnt.x), max(max.y, pnt.y), max(max.z, pnt.z));
+		}
+		crn_dirty = true;
+		bounds.crn_dirty = true;
+		return this.set(min, max);
+	}
+	
 	/** Multiplies the bounding box by the given matrix. This is achieved by multiplying the 8 corner points and then calculating
 	 * the minimum and maximum vectors from the transformed points.
 	 * 
