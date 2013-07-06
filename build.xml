@@ -370,11 +370,11 @@ depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jg
 
 	<target name="all" depends="jars,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
-		<copy tofile="${distDir}/README" file="gdx/dist/README"/>
-		<copy tofile="${distDir}/LICENSE" file="gdx/dist/LICENSE"/>
-		<copy tofile="${distDir}/CC-LICENSE" file="gdx/dist/CC-LICENSE"/>
-		<copy tofile="${distDir}/AUTHORS" file="gdx/dist/AUTHORS"/>
-		<copy tofile="${distDir}/CONTRIBUTORS" file="gdx/dist/CONTRIBUTORS"/>
+		<copy tofile="${distDir}/README" file="README.md"/>
+		<copy tofile="${distDir}/LICENSE" file="LICENSE"/>
+		<copy tofile="${distDir}/CC-LICENSE" file="CC-LICENSE"/>
+		<copy tofile="${distDir}/AUTHORS" file="AUTHORS"/>
+		<copy tofile="${distDir}/CONTRIBUTORS" file="CONTRIBUTORS"/>
 
 		<!-- zip dist dir -->
 		<zip destfile="libgdx-${version}.zip" basedir="${distDir}"/>
