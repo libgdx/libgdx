@@ -42,11 +42,12 @@
 	<resources>
       <resource>
         <directory>src</directory>
-		<includes>
-		  <include>**/*.glsl</include>
-		  <include>**/*.fnt</include>
-		  <include>**/*.png</include>
-		</includes>
+        <includes>
+          <include>**/*</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
       </resource>
     </resources>
   </build>
