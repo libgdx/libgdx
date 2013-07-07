@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntIntMap;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
@@ -216,35 +217,42 @@ public class VertexBufferObjectSubData implements VertexData {
 	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
 	 * 
 	 * @param shader the shader */
-	public void bind (ShaderProgram shader) {
-		GL20 gl = Gdx.gl20;
+	@Override
+	public void bind (final ShaderProgram shader) {
+		bind(shader, null);
+	}
+	
+	@Override
+	public void bind (final ShaderProgram shader, final IntIntMap locations) {
+		final GL20 gl = Gdx.gl20;
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
 			byteBuffer.limit(buffer.limit() * 4);
-			gl.glBufferSubData(GL11.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-// gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(),
-// byteBuffer, usage);
+			gl.glBufferData(GL20.GL_ARRAY_BUFFER, byteBuffer.limit(), byteBuffer, usage);
 			isDirty = false;
 		}
 
-		int numAttributes = attributes.size();
+		final int numAttributes = attributes.size();
 		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			shader.enableVertexAttribute(attribute.alias);
-			int colorType = GL20.GL_FLOAT;
-			boolean normalize = false;
-			if (attribute.usage == Usage.ColorPacked) {
-				colorType = GL20.GL_UNSIGNED_BYTE;
-				normalize = true;
-			}
-			shader.setVertexAttribute(attribute.alias, attribute.numComponents, colorType, normalize, attributes.vertexSize,
-				attribute.offset);
+			final VertexAttribute attribute = attributes.get(i);
+			final int location = locations != null 
+				? locations.get(attribute.getKey(), -1)
+				: shader.getAttributeLocation(attribute.alias);
+			if (location < 0)
+				continue;
+			shader.enableVertexAttribute(location);
+
+			if (attribute.usage == Usage.ColorPacked)
+				shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+					attribute.offset);
+			else
+				shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+					attribute.offset);
 		}
 		isBound = true;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void unbind () {
 		GL11 gl = Gdx.gl11;
@@ -281,12 +289,25 @@ public class VertexBufferObjectSubData implements VertexData {
 	/** Unbinds this VertexBufferObject.
 	 * 
 	 * @param shader the shader */
-	public void unbind (ShaderProgram shader) {
-		GL20 gl = Gdx.gl20;
-		int numAttributes = attributes.size();
-		for (int i = 0; i < numAttributes; i++) {
-			VertexAttribute attribute = attributes.get(i);
-			shader.disableVertexAttribute(attribute.alias);
+	@Override
+	public void unbind (final ShaderProgram shader) {
+		unbind(shader, null);
+	}
+	
+	@Override
+	public void unbind (final ShaderProgram shader, final IntIntMap locations) {
+		final GL20 gl = Gdx.gl20;
+		final int numAttributes = attributes.size();
+		if (locations == null) {
+			for (int i = 0; i < numAttributes; i++) {
+				shader.disableVertexAttribute(attributes.get(i).alias);
+			}
+		} else {
+			for (int i = 0; i < numAttributes; i++) {
+				final int location = locations.get(attributes.get(i).getKey(), -1);
+				if (location >= 0)
+					shader.disableVertexAttribute(location);
+			}
 		}
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, 0);
 		isBound = false;
