@@ -234,21 +234,36 @@ public class VertexBufferObjectSubData implements VertexData {
 		}
 
 		final int numAttributes = attributes.size();
-		for (int i = 0; i < numAttributes; i++) {
-			final VertexAttribute attribute = attributes.get(i);
-			final int location = locations != null 
-				? locations.get(attribute.getKey(), -1)
-				: shader.getAttributeLocation(attribute.alias);
-			if (location < 0)
-				continue;
-			shader.enableVertexAttribute(location);
-
-			if (attribute.usage == Usage.ColorPacked)
-				shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
-					attribute.offset);
-			else
-				shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
-					attribute.offset);
+		if (locations == null) {
+			for (int i = 0; i < numAttributes; i++) {
+				final VertexAttribute attribute = attributes.get(i);
+				final int location = shader.getAttributeLocation(attribute.alias);
+				if (location < 0)
+					continue;
+				shader.enableVertexAttribute(location);
+	
+				if (attribute.usage == Usage.ColorPacked)
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+						attribute.offset);
+				else
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+						attribute.offset);
+			}
+		} else {
+			for (int i = 0; i < numAttributes; i++) {
+				final VertexAttribute attribute = attributes.get(i);
+				final int location = locations.get(attribute.getKey(), -1);
+				if (location < 0)
+					continue;
+				shader.enableVertexAttribute(location);
+	
+				if (attribute.usage == Usage.ColorPacked)
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+						attribute.offset);
+				else
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+						attribute.offset);
+			}
 		}
 		isBound = true;
 	}

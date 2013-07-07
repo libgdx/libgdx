@@ -188,22 +188,38 @@ public class VertexArray implements VertexData {
 		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		byteBuffer.limit(buffer.limit() * 4);
-		for (int i = 0; i < numAttributes; i++) {
-			final VertexAttribute attribute = attributes.get(i);
-			final int location = locations != null 
-				? locations.get(attribute.getKey(), -1)
-				: shader.getAttributeLocation(attribute.alias);
-			if (location < 0)
-				continue;
-			shader.enableVertexAttribute(location);
-			
-			byteBuffer.position(attribute.offset);
-			if (attribute.usage == Usage.ColorPacked)
-				shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
-					attributes.vertexSize, byteBuffer);
-			else
-				shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
-					attributes.vertexSize, byteBuffer);
+		if (locations == null) {
+			for (int i = 0; i < numAttributes; i++) {
+				final VertexAttribute attribute = attributes.get(i);
+				final int location = shader.getAttributeLocation(attribute.alias);
+				if (location < 0)
+					continue;
+				shader.enableVertexAttribute(location);
+				
+				byteBuffer.position(attribute.offset);
+				if (attribute.usage == Usage.ColorPacked)
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
+						attributes.vertexSize, byteBuffer);
+				else
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
+						attributes.vertexSize, byteBuffer);
+			}
+		} else {
+			for (int i = 0; i < numAttributes; i++) {
+				final VertexAttribute attribute = attributes.get(i);
+				final int location = locations.get(attribute.getKey(), -1);
+				if (location < 0)
+					continue;
+				shader.enableVertexAttribute(location);
+				
+				byteBuffer.position(attribute.offset);
+				if (attribute.usage == Usage.ColorPacked)
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
+						attributes.vertexSize, byteBuffer);
+				else
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
+						attributes.vertexSize, byteBuffer);
+			}
 		}
 		isBound = true;
 	}
