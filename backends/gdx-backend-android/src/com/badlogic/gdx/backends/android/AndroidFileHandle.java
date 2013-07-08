@@ -74,11 +74,10 @@ public class AndroidFileHandle extends FileHandle {
 	}
 
 	public InputStream read () {
-		if (type == FileType.Internal && existsAndroidAsset()) {
+		if (type == FileType.Internal) {
 			try {
 				return assets.open(file.getPath());
 			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error reading file: " + file + " (" + type + ")", ex);
 			}
 		}
 		return super.read();
@@ -175,7 +174,7 @@ public class AndroidFileHandle extends FileHandle {
 	}
 
 	public long length () {
-		if (type == FileType.Internal && existsAndroidAsset()) {
+		if (type == FileType.Internal) {
 			AssetFileDescriptor fileDescriptor = null;
 			try {
 				fileDescriptor = assets.openFd(file.getPath());
