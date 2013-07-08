@@ -297,7 +297,8 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 		// FIXME this is less than ideal of course...
 		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
 		String name = GL20.glGetActiveAttrib(program, index, 256, typeTmp);
-		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		size.put(typeTmp.get(0));
+		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(1));
 		return name;
 	}
 
@@ -305,6 +306,7 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 		// FIXME this is less than ideal of course...
 		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
 		String name = GL20.glGetActiveUniform(program, index, 256, typeTmp);
+		size.put(typeTmp.get(0));
 		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
 		return name;
 	}
@@ -379,10 +381,6 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
 		throw new UnsupportedOperationException("unsupported, won't implement");
-	}
-
-	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		throw new UnsupportedOperationException("unsupported, won't implement.");
 	}
 
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {

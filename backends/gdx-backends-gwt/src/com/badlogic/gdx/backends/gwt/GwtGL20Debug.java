@@ -639,13 +639,6 @@ public class GwtGL20Debug extends GwtGL20 {
 	}
 
 	@Override
-	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		 
-		super.glGetShaderSource(shader, bufsize, length, source);
-		checkError();
-	}
-
-	@Override
 	public void glGetTexParameterfv (int target, int pname, FloatBuffer params) {
 		 
 		super.glGetTexParameterfv(target, pname, params);

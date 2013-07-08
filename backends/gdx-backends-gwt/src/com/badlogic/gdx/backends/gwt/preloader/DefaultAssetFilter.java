@@ -52,4 +52,9 @@ public class DefaultAssetFilter implements AssetFilter {
 	private boolean isAudio (String extension) {
 		return extension.equals("mp3") || extension.equals("ogg") || extension.equals("wav");
 	}
+
+	@Override
+	public String getBundleName (String file) {
+		return "assets";
+	}
 }

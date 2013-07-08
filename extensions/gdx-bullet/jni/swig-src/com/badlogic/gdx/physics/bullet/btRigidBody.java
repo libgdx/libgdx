@@ -40,16 +40,33 @@ public class btRigidBody extends btCollisionObject {
     super.delete();
   }
 
+	protected btMotionState motionState;
+	
   public btRigidBody(btRigidBodyConstructionInfo constructionInfo) {
-    this(gdxBulletJNI.new_btRigidBody__SWIG_0(btRigidBodyConstructionInfo.getCPtr(constructionInfo), constructionInfo), true);
+    this(false, constructionInfo);
+    this.collisionShape = constructionInfo.getCollisionShape();
+    this.motionState = constructionInfo.getMotionState();
   }
 
   public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
-    this(gdxBulletJNI.new_btRigidBody__SWIG_1(mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape, localInertia), true);
+    this(false, mass, motionState, collisionShape, localInertia);
+    this.collisionShape = collisionShape;
+    this.motionState = motionState;
   }
 
   public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape) {
-    this(gdxBulletJNI.new_btRigidBody__SWIG_2(mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape), true);
+	  this(false, mass, motionState, collisionShape);
+	    this.collisionShape = collisionShape;
+	    this.motionState = motionState;
+  }
+  
+  public btMotionState getMotionState() {
+	  return motionState != null ? motionState : (motionState = internalGetMotionState());
+  }
+  
+  public void setMotionState(btMotionState motionState) {
+	  this.motionState = motionState;
+	  internalSetMotionState(motionState);
   }
 
   public void proceedToTransform(Matrix4 newTrans) {
@@ -98,11 +115,6 @@ public class btRigidBody extends btCollisionObject {
 
   public void applyDamping(float timeStep) {
     gdxBulletJNI.btRigidBody_applyDamping(swigCPtr, this, timeStep);
-  }
-
-  public btCollisionShape getCollisionShape() {
-    long cPtr = gdxBulletJNI.btRigidBody_getCollisionShape__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
   public void setMassProps(float mass, Vector3 inertia) {
@@ -250,13 +262,13 @@ public class btRigidBody extends btCollisionObject {
     gdxBulletJNI.btRigidBody_setNewBroadphaseProxy(swigCPtr, this, btBroadphaseProxy.getCPtr(broadphaseProxy), broadphaseProxy);
   }
 
-  public btMotionState getMotionState() {
-    long cPtr = gdxBulletJNI.btRigidBody_getMotionState__SWIG_0(swigCPtr, this);
+  private btMotionState internalGetMotionState() {
+    long cPtr = gdxBulletJNI.btRigidBody_internalGetMotionState__SWIG_0(swigCPtr, this);
     return (cPtr == 0) ? null : new btMotionState(cPtr, false);
   }
 
-  public void setMotionState(btMotionState motionState) {
-    gdxBulletJNI.btRigidBody_setMotionState(swigCPtr, this, btMotionState.getCPtr(motionState), motionState);
+  private void internalSetMotionState(btMotionState motionState) {
+    gdxBulletJNI.btRigidBody_internalSetMotionState(swigCPtr, this, btMotionState.getCPtr(motionState), motionState);
   }
 
   public void setM_contactSolverType(int value) {
@@ -323,5 +335,17 @@ public class btRigidBody extends btCollisionObject {
   public Vector3 computeGyroscopicForce(float maxGyroscopicForce) {
 	return gdxBulletJNI.btRigidBody_computeGyroscopicForce(swigCPtr, this, maxGyroscopicForce);
 }
+
+  private btRigidBody(boolean dummy, btRigidBodyConstructionInfo constructionInfo) {
+    this(gdxBulletJNI.new_btRigidBody__SWIG_0(dummy, btRigidBodyConstructionInfo.getCPtr(constructionInfo), constructionInfo), true);
+  }
+
+  private btRigidBody(boolean dummy, float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
+    this(gdxBulletJNI.new_btRigidBody__SWIG_1(dummy, mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape, localInertia), true);
+  }
+
+  private btRigidBody(boolean dummy, float mass, btMotionState motionState, btCollisionShape collisionShape) {
+    this(gdxBulletJNI.new_btRigidBody__SWIG_2(dummy, mass, btMotionState.getCPtr(motionState), motionState, btCollisionShape.getCPtr(collisionShape), collisionShape), true);
+  }
 
 }

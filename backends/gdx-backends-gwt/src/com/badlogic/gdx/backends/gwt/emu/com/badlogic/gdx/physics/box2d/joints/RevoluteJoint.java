@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d.joints;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -25,6 +26,8 @@ import com.badlogic.gdx.physics.box2d.World;
  * provided so that infinite forces are not generated. */
 public class RevoluteJoint extends Joint {
 	org.jbox2d.dynamics.joints.RevoluteJoint joint;
+	private final Vector2 localAnchorA = new Vector2();
+	private final Vector2 localAnchorB = new Vector2();
 
 	public RevoluteJoint (World world, org.jbox2d.dynamics.joints.RevoluteJoint joint) {
 		super(world, joint);
@@ -98,5 +101,22 @@ public class RevoluteJoint extends Joint {
 	/** Get the current motor torque, usually in N-m. */
 	public float getMotorTorque (float invDt) {
 		return joint.getMotorTorque(invDt);
+	}
+	
+	public Vector2 getLocalAnchorA () {
+		return localAnchorA.set(joint.m_localAnchorA.x, joint.m_localAnchorA.y);
+	}
+
+	public Vector2 getLocalAnchorB () {
+		return localAnchorA.set(joint.m_localAnchorB.x, joint.m_localAnchorB.y);
+	}
+
+	/** Get the current motor torque, usually in N-m. */
+	public float getReferenceAngle () {
+		return joint.m_referenceAngle;
+	}
+
+	public float getMaxMotorTorque () {
+		return joint.m_maxMotorTorque;
 	}
 }

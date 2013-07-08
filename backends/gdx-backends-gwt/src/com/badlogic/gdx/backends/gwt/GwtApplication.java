@@ -122,7 +122,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 			public void run () {
 				if (SoundManager.ok()) {
 					final PreloaderCallback callback = getPreloaderCallback();
-					preloader = new Preloader();
+					preloader = createPreloader();
 					preloader.preload("assets.txt", new PreloaderCallback() {
 						@Override
 						public void error (String file) {
@@ -209,6 +209,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	long loadStart = TimeUtils.nanoTime();
+
+	public Preloader createPreloader() {
+		return new Preloader();
+	}
 
 	public PreloaderCallback getPreloaderCallback () {
 		final Panel preloaderPanel = new VerticalPanel();

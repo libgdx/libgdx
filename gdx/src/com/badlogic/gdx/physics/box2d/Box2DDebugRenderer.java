@@ -29,6 +29,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
+import com.badlogic.gdx.utils.Array;
 
 public class Box2DDebugRenderer {
 
@@ -41,6 +42,9 @@ public class Box2DDebugRenderer {
 	private final static Vector2 lower = new Vector2();
 	private final static Vector2 upper = new Vector2();
 
+	private final static Array<Body> bodies = new Array<Body>();
+	private final static Array<Joint> joints = new Array<Joint>();
+	
 	private boolean drawBodies;
 	private boolean drawJoints;
 	private boolean drawAABBs;
@@ -88,14 +92,16 @@ public class Box2DDebugRenderer {
 		renderer.begin(ShapeType.Line);
 
 		if (drawBodies || drawAABBs) {
-			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
+			world.getBodies(bodies);
+			for (Iterator<Body> iter = bodies.iterator(); iter.hasNext();) {
 				Body body = iter.next();
 				if (body.isActive() || drawInactiveBodies) renderBody(body);
 			}
 		}
 
 		if (drawJoints) {
-			for (Iterator<Joint> iter = world.getJoints(); iter.hasNext();) {
+			world.getJoints(joints);
+			for (Iterator<Joint> iter = joints.iterator(); iter.hasNext();) {
 				Joint joint = iter.next();
 				drawJoint(joint);
 			}

@@ -163,6 +163,9 @@
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
 		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
 		
+	<!-- graphics/g3d/shaders/graph -->
+		<include name="graphics/g3d/shaders/graph/*.java"/>
+
 	<!-- graphics/g3d/utils -->
 	  <include name="graphics/g3d/utils/AnimationController.java"/>
 	  <include name="graphics/g3d/utils/BaseAnimationController.java"/>
@@ -424,6 +427,7 @@
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
 		<include name="utils/ObjectMap.java"/>
+		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
 		<include name="utils/PausableThread.java"/>
 		<include name="utils/PerformanceCounter.java"/>

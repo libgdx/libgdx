@@ -10,6 +10,12 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 	com.badlogic.gdx.utils.Disposable
 %}
 
+%rename(internalSetCollisionShape) btCollisionObject::setCollisionShape;
+%javamethodmodifiers btCollisionObject::setCollisionShape "private";
+%rename(internalGetCollisionShape) btCollisionObject::getCollisionShape;
+%javamethodmodifiers btCollisionObject::getCollisionShape "private";
+
+
 %typemap(javabody) btCollisionObject %{
 	private long swigCPtr;
 	protected boolean swigCMemOwn;
@@ -34,6 +40,7 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 	protected int userValue;
 	protected int contactCallbackFlag = 1;
 	protected int contactCallbackFilter;
+	protected btCollisionShape collisionShape;
 	
 	/** User definable data, not used by Bullet itself. */
 	public Object userData;
@@ -72,6 +79,15 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 	/** @param filter The new filter that is used to match the flag of the other object for a contact callback to be triggered */
 	public void setContactCallbackFilter(int filter) {
 		gdxBridge.setContactCallbackFilter(contactCallbackFilter = filter);
+	}
+	
+	public void setCollisionShape(btCollisionShape shape) {
+		collisionShape = shape;
+		internalSetCollisionShape(shape);
+	}
+	
+	public btCollisionShape getCollisionShape() {
+		return collisionShape != null ? collisionShape : (collisionShape = internalGetCollisionShape()); 
 	}
 %}
 
