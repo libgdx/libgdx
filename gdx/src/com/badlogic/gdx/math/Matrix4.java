@@ -730,6 +730,12 @@ public class Matrix4 implements Serializable {
 	public void getRotation (Quaternion rotation) {
 		rotation.setFromMatrix(this);
 	}
+	
+	public void getScale (Vector3 scale) {
+		scale.x = val[M00];
+		scale.y = val[M11];
+		scale.z = val[M22];
+	}
 
 	/** removes the translational part and transposes the matrix. */
 	public Matrix4 toNormalMatrix () {
