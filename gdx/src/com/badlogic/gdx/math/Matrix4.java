@@ -731,10 +731,10 @@ public class Matrix4 implements Serializable {
 		rotation.setFromMatrix(this);
 	}
 	
-	public void getScale (Vector3 scale) {
-		scale.x = val[M00];
-		scale.y = val[M11];
-		scale.z = val[M22];
+	public void getScale (Vector3 scale) {		
+		scale.x = (float)Math.sqrt(val[M00]*val[M00] + val[M01]*val[M01] + val[M02]*val[M02]);
+		scale.y = (float)Math.sqrt(val[M10]*val[M10] + val[M11]*val[M11] + val[M12]*val[M12]);
+		scale.z = (float)Math.sqrt(val[M20]*val[M20] + val[M21]*val[M21] + val[M22]*val[M22]);
 	}
 
 	/** removes the translational part and transposes the matrix. */
