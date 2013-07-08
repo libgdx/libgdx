@@ -141,7 +141,11 @@ public class Preloader {
 				for (int i = 0; i < assets.size; i++) {
 					final Asset asset = assets.get(i);
 					
-					if (contains(asset.url)) continue;
+					if (contains(asset.url)) {
+						asset.loaded = asset.size;
+						asset.succeed = true;
+						continue;
+					}
 					
 					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 						@Override
@@ -178,6 +182,7 @@ public class Preloader {
 						}
 					});
 				}
+				callback.update(state);
 			}
 		});
 	}
