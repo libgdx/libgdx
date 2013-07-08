@@ -27,8 +27,15 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** @author mzechner
- * @author Nathan Sweet */
+/**
+ * Performs libGDX file operations against an instance of
+ * `android.content.res.AssetManager` when possible; acts like "default libGDX"
+ * otherwise 
+ * 
+ * @author mzechner
+ * @author Nathan Sweet
+ *
+ */
 public class AndroidFileHandle extends FileHandle {
 	// The asset manager, or null if this is not an internal file.
 	final AssetManager assets;
@@ -67,7 +74,7 @@ public class AndroidFileHandle extends FileHandle {
 	}
 
 	public InputStream read () {
-		if (type == FileType.Internal) {
+		if (type == FileType.Internal && existsAndroidAsset()) {
 			try {
 				return assets.open(file.getPath());
 			} catch (IOException ex) {
@@ -92,6 +99,10 @@ public class AndroidFileHandle extends FileHandle {
 		return super.list();
 	}
 
+	/**
+	 * If the file isn't an asset - we're going to pretend that it's classpath.
+	 * There's no need to do anything special to handle "fallback to classpath" here
+	 */
 	public FileHandle[] list (String suffix) {
 		if (type == FileType.Internal) {
 			try {
@@ -117,6 +128,10 @@ public class AndroidFileHandle extends FileHandle {
 		return super.list(suffix);
 	}
 
+	/**
+	 * If the file isn't an asset - we're going to pretend that it's classpath.
+	 * There's no need to do anything special to handle "fallback to classpath" here
+	 */
 	public boolean isDirectory () {
 		if (type == FileType.Internal) {
 			try {
@@ -127,27 +142,40 @@ public class AndroidFileHandle extends FileHandle {
 		}
 		return super.isDirectory();
 	}
-
-	public boolean exists () {
-		if (type == FileType.Internal) {
-			String fileName = file.getPath();
-			try {
-				assets.open(fileName).close(); // Check if file exists.
-				return true;
-			} catch (Exception ex) {
-				// This is SUPER slow! but we need it for directories.
-				try {
-					return assets.list(fileName).length > 0;
-				} catch (Exception ignored) {
-				}
-				return false;
-			}
+	
+	/**
+	 * Does the file exist as an asset?
+	 */
+	private boolean existsAndroidAsset() {
+		// slow ... but most everything will be slow with files right?
+		assert(type == FileType.Internal);
+		assert(assets != null);
+		
+		String fileName = file.getPath();
+		try {
+			assets.open(fileName).close(); // Check if file exists.
+			return true;
+		} catch (Exception ex) {
 		}
+		return false;
+	}
+
+	/**
+	 * Does the file exist at all?
+	 */
+	public boolean exists () {
+		
+		// if the file is internal, and it's either an android asset or an asset folder - it exists
+		if ( type == FileType.Internal && (existsAndroidAsset() || isDirectory()) ){
+			return true;
+		}
+		
+		// if the file doesn't exist in the Android asset stuff; fallback to "normal" GDX
 		return super.exists();
 	}
 
 	public long length () {
-		if (type == FileType.Internal) {
+		if (type == FileType.Internal && existsAndroidAsset()) {
 			AssetFileDescriptor fileDescriptor = null;
 			try {
 				fileDescriptor = assets.openFd(file.getPath());
@@ -160,9 +188,5 @@ public class AndroidFileHandle extends FileHandle {
 			}
 		}
 		return super.length();
-	}
-
-	public long lastModified () {
-		return super.lastModified();
 	}
 }
