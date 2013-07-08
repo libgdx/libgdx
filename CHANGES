@@ -48,6 +48,7 @@
 - Added Music#setPan.
 - Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 - DelegateAction subclasses need to implement delegate() instead of act(). http://www.badlogicgames.com/forum/viewtopic.php?p=43576#p43576
+- scene2d, ScrollPane. Active/Passive scrollbars, default to active. Added setActiveScrollbars(boolean), isActiveScrollbars()
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

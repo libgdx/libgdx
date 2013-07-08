@@ -77,6 +77,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean clamp = true;
 	private boolean scrollbarsOnTop;
 	int draggingPointer = -1;
+	boolean activeScrollbars = true;
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget) {
@@ -113,6 +114,7 @@ public class ScrollPane extends WidgetGroup {
 
 				if (fadeAlpha == 0) return false;
 
+				if (activeScrollbars) {
 				if (scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
 					resetFade();
@@ -138,6 +140,7 @@ public class ScrollPane extends WidgetGroup {
 					}
 					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) * (y < vKnobBounds.y ? 1 : -1));
 					return true;
+				}
 				}
 				return false;
 			}
@@ -616,8 +619,10 @@ public class ScrollPane extends WidgetGroup {
 
 	public Actor hit (float x, float y, boolean touchable) {
 		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
+		if (activeScrollbars) {
 		if (scrollX && hScrollBounds.contains(x, y)) return this;
 		if (scrollY && vScrollBounds.contains(x, y)) return this;
+		}
 		return super.hit(x, y, touchable);
 	}
 
@@ -861,6 +866,17 @@ public class ScrollPane extends WidgetGroup {
 	 * widgets inside the scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
 	public void setCancelTouchFocus (boolean cancelTouchFocus) {
 		this.cancelTouchFocus = cancelTouchFocus;
+	}
+
+	/** When true (default), the scrollbars can be used to scroll the pane. When false the scrollbars are mere scroll position indicators
+	 * that cannot be interacted with
+	 */
+	public void setActiveScrollbars (boolean activeScrollbars) {
+		this.activeScrollbars = activeScrollbars;
+	}
+
+	public boolean isActiveScrollbars () {
+		return activeScrollbars;
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.
