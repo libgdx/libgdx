@@ -1,4 +1,5 @@
 [0.9.9]
+- added attribute location caching for VertexData/Mesh. Hand vertex attribs to a ShaderProgram, get back int[], pass that to Mesh
 - added Android x86 builds, removed libandroidgl20.so, it's now build as part of gdx-core for Android
 - changed method signature on Box2D World#getBodies and World#getJoints, pass in an Array to fill
 - removed glGetShaderSource from GL20, use ShaderProgram#getVertexShaderSource/getFragmentShaderSource instead
