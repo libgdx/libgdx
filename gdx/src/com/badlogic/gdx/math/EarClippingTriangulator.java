@@ -106,7 +106,7 @@ public class EarClippingTriangulator {
 				fillTempArray(i, temparr, vert);
 				if (getCrsArea(temparr) == 0) {
 					vert.remove(i--);
-					if(vert.size() == 3)
+					if(vert.size() <= 3)
 						return vert;
 					continue;
 				}
