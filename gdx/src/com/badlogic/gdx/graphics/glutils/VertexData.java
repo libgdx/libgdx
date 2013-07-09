@@ -69,15 +69,15 @@ public interface VertexData extends Disposable {
 	public void bind (ShaderProgram shader);
 	
 	/** Binds this VertexData for rendering via glDrawArrays or glDrawElements.
-	 * @param locations map containing the attribute locations. */
-	public void bind (ShaderProgram shader, IntIntMap locations);
+	 * @param locations array containing the attribute locations. */
+	public void bind (ShaderProgram shader, int[] locations);
 
 	/** Unbinds this VertexData. */
 	public void unbind (ShaderProgram shader);
 	
 	/** Unbinds this VertexData. 
-	 * @param locations map containing the attribute locations. */
-	public void unbind (ShaderProgram shader, IntIntMap locations);
+	 * @param locations array containing the attribute locations. */
+	public void unbind (ShaderProgram shader, int[] locations);
 
 	/** Disposes this VertexData and all its associated OpenGL resources. */
 	public void dispose ();

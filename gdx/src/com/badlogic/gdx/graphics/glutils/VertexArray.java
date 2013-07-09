@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.IntIntMap;
 
 /** <p>
  * Convenience class for working with OpenGL vertex arrays. It interleaves all data in the order you specified in the constructor
@@ -184,7 +183,7 @@ public class VertexArray implements VertexData {
 	}
 	
 	@Override
-	public void bind (final ShaderProgram shader, final IntIntMap locations) {
+	public void bind (final ShaderProgram shader, final int[] locations) {
 		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		byteBuffer.limit(buffer.limit() * 4);
@@ -207,7 +206,7 @@ public class VertexArray implements VertexData {
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
-				final int location = locations.get(attribute.getKey(), -1);
+				final int location = locations[i];
 				if (location < 0)
 					continue;
 				shader.enableVertexAttribute(location);
@@ -233,7 +232,7 @@ public class VertexArray implements VertexData {
 	}
 	
 	@Override
-	public void unbind (ShaderProgram shader, IntIntMap locations) {
+	public void unbind (ShaderProgram shader, int[] locations) {
 		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		if (locations == null) {
@@ -242,7 +241,7 @@ public class VertexArray implements VertexData {
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
-				final int location = locations.get(attributes.get(i).getKey(), -1);
+				final int location = locations[i];
 				if (location >= 0)
 					shader.disableVertexAttribute(location);
 			}

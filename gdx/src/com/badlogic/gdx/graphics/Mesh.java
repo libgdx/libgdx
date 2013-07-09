@@ -42,7 +42,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntIntMap;
 
 /** <p>
  * A Mesh holds vertices composed of attributes specified by a {@link VertexAttributes} instance. The vertices are held either in
@@ -466,8 +465,8 @@ public class Mesh implements Disposable {
 	 * ES 2.0 and when auto-bind is disabled.
 	 * 
 	 * @param shader the shader (does not bind the shader) 
-	 * @param locations map containing the attribute locations. */
-	public void bind (final ShaderProgram shader, final IntIntMap locations) {
+	 * @param locations array containing the attribute locations. */
+	public void bind (final ShaderProgram shader, final int[] locations) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 
 		vertices.bind(shader, locations);
@@ -486,8 +485,8 @@ public class Mesh implements Disposable {
 	 * ES 1.x and when auto-bind is disabled.
 	 * 
 	 * @param shader the shader (does not unbind the shader)
-	 * @param locations map containing the attribute locations. */
-	public void unbind (final ShaderProgram shader, final IntIntMap locations) {
+	 * @param locations array containing the attribute locations. */
+	public void unbind (final ShaderProgram shader, final int[] locations) {
 		if (!Gdx.graphics.isGL20Available()) {
 			throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 		}

@@ -28,7 +28,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.badlogic.gdx.utils.IntIntMap;
 
 /** <p>
  * A {@link VertexData} implementation based on OpenGL vertex buffer objects.
@@ -199,11 +198,13 @@ public class VertexBufferObject implements VertexData {
 	/** Binds this VertexBufferObject for rendering via glDrawArrays or glDrawElements
 	 * 
 	 * @param shader the shader */
+	@Override
 	public void bind (ShaderProgram shader) {
 		bind(shader, null);
 	}
 	
-	public void bind (ShaderProgram shader, IntIntMap locations) {
+	@Override
+	public void bind (ShaderProgram shader, int[] locations) {
 		final GL20 gl = Gdx.gl20;
 
 		gl.glBindBuffer(GL20.GL_ARRAY_BUFFER, bufferHandle);
@@ -232,7 +233,7 @@ public class VertexBufferObject implements VertexData {
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
-				final int location = locations.get(attribute.getKey(), -1);
+				final int location = locations[i];
 				if (location < 0)
 					continue;
 				shader.enableVertexAttribute(location);
@@ -248,7 +249,6 @@ public class VertexBufferObject implements VertexData {
 		isBound = true;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void unbind () {
 		GL11 gl = Gdx.gl11;
@@ -291,7 +291,7 @@ public class VertexBufferObject implements VertexData {
 	}
 	
 	@Override
-	public void unbind (final ShaderProgram shader, final IntIntMap locations) {
+	public void unbind (final ShaderProgram shader, final int[] locations) {
 		final GL20 gl = Gdx.gl20;
 		final int numAttributes = attributes.size();
 		if (locations == null) {
@@ -300,7 +300,7 @@ public class VertexBufferObject implements VertexData {
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
-				final int location = locations.get(attributes.get(i).getKey(), -1);
+				final int location = locations[i];
 				if (location >= 0)
 					shader.disableVertexAttribute(location);
 			}
