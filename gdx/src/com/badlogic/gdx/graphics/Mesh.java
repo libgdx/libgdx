@@ -457,10 +457,19 @@ public class Mesh implements Disposable {
 	 * ES 2.0 and when auto-bind is disabled.
 	 * 
 	 * @param shader the shader (does not bind the shader) */
-	public void bind (ShaderProgram shader) {
+	public void bind (final ShaderProgram shader) {
+		bind(shader, null);
+	}
+
+	/** Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
+	 * ES 2.0 and when auto-bind is disabled.
+	 * 
+	 * @param shader the shader (does not bind the shader) 
+	 * @param locations array containing the attribute locations. */
+	public void bind (final ShaderProgram shader, final int[] locations) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 
-		vertices.bind(shader);
+		vertices.bind(shader, locations);
 		if (indices.getNumIndices() > 0) indices.bind();
 	}
 
@@ -468,12 +477,21 @@ public class Mesh implements Disposable {
 	 * ES 1.x and when auto-bind is disabled.
 	 * 
 	 * @param shader the shader (does not unbind the shader) */
-	public void unbind (ShaderProgram shader) {
+	public void unbind (final ShaderProgram shader) {
+		unbind(shader, null);
+	}
+	
+	/** Unbinds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} is indices were given. Use this with OpenGL
+	 * ES 1.x and when auto-bind is disabled.
+	 * 
+	 * @param shader the shader (does not unbind the shader)
+	 * @param locations array containing the attribute locations. */
+	public void unbind (final ShaderProgram shader, final int[] locations) {
 		if (!Gdx.graphics.isGL20Available()) {
 			throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 		}
 
-		vertices.unbind(shader);
+		vertices.unbind(shader, locations);
 		if (indices.getNumIndices() > 0) indices.unbind();
 	}
 
@@ -488,7 +506,7 @@ public class Mesh implements Disposable {
 	 * 
 	 * @param primitiveType the primitive type */
 	public void render (int primitiveType) {
-		render(primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices());
+		render(primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
 	}
 
 	/** <p>
@@ -505,6 +523,24 @@ public class Mesh implements Disposable {
 	 * @param offset the offset into the vertex buffer, ignored for indexed rendering
 	 * @param count number of vertices or indices to use */
 	public void render (int primitiveType, int offset, int count) {
+		render (primitiveType, offset, count, autoBind);
+	}
+	
+	/** <p>
+	 * Renders the mesh using the given primitive type. offset specifies the offset into vertex buffer and is ignored for the index
+	 * buffer. Count specifies the number of vertices or indices to use thus count / #vertices per primitive primitives are
+	 * rendered.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
+	 * </p>
+	 * 
+	 * @param primitiveType the primitive type
+	 * @param offset the offset into the vertex buffer, ignored for indexed rendering
+	 * @param count number of vertices or indices to use
+	 * @param autoBind overrides the autoBind member of this Mesh */
+	public void render (int primitiveType, int offset, int count, boolean autoBind) {
 		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
 		if (count == 0) return;
 		if (autoBind) bind();
@@ -551,7 +587,7 @@ public class Mesh implements Disposable {
 	 * 
 	 * @param primitiveType the primitive type */
 	public void render (ShaderProgram shader, int primitiveType) {
-		render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices());
+		render(shader, primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
 	}
 
 	/** <p>
@@ -578,6 +614,34 @@ public class Mesh implements Disposable {
 	 * @param offset the offset into the vertex or index buffer
 	 * @param count number of vertices or indices to use */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count) {
+		render (shader, primitiveType, offset, count, autoBind);
+	}
+	
+	/** <p>
+	 * Renders the mesh using the given primitive type. offset specifies the offset into either the vertex buffer or the index
+	 * buffer depending on whether indices are defined. count specifies the number of vertices or indices to use thus count /
+	 * #vertices per primitive primitives are rendered.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method will automatically bind each vertex attribute as specified at construction time via {@link VertexAttributes} to
+	 * the respective shader attributes. The binding is based on the alias defined for each VertexAttribute.
+	 * </p>
+	 * 
+	 * <p>
+	 * This method must only be called after the {@link ShaderProgram#begin()} method has been called!
+	 * </p>
+	 * 
+	 * <p>
+	 * This method is intended for use with OpenGL ES 2.0 and will throw an IllegalStateException when OpenGL ES 1.x is used.
+	 * </p>
+	 * 
+	 * @param shader the shader to be used
+	 * @param primitiveType the primitive type
+	 * @param offset the offset into the vertex or index buffer
+	 * @param count number of vertices or indices to use
+	 * @param autoBind overrides the autoBind member of this Mesh */
+	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind) {
 		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 		if (count == 0) return;
 
