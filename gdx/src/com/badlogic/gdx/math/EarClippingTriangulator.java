@@ -26,16 +26,16 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** A simple implementation of the ear cutting algorithm to triangulate simple polygons without holes.
  * @author badlogicgames@gmail.com
  * @author seroperson */
-public final class EarClippingTriangulator {
+public class EarClippingTriangulator {
 
-	private final static Vector2[] copies = new Vector2[] { new Vector2(), new Vector2(), new Vector2()};
-	private final ArrayList<Vector2> source;
-	private final ArrayList<Vector2> triangles;
+	private final static Vector2[] copies = new Vector2[] { new Vector2(), new Vector2(), new Vector2() };
+	private final List<Vector2> source;
+	private final List<Vector2> triangles;
 	private final float minArea;
 
 	private EarClippingTriangulator (final int size, final float minArea) {
 		source = new ArrayList<Vector2>(size);
-		triangles = new ArrayList<Vector2>(size - 2);
+		triangles = new ArrayList<Vector2>(size-2);
 		this.minArea = minArea;
 	}
 	
@@ -101,15 +101,13 @@ public final class EarClippingTriangulator {
 		final Vector2[] temparr = new Vector2[3];
 		
 		if (level.equals(CollinearTrackingLevel.STRONG)) {
-			float crsarea;
 			for (int i = 0; i < vert.size();) {
 				if (i < 0) i = 0;
 				fillTempArray(i, temparr, vert);
-				crsarea = getCrsArea(temparr);
-				if (crsarea == 0) {
+				if (getCrsArea(temparr) == 0) {
 					vert.remove(i--);
-					if(vert.size() <= 3)
-						return null;
+					if(vert.size() == 3)
+						return vert;
 					continue;
 				}
 				i++;
@@ -127,7 +125,7 @@ public final class EarClippingTriangulator {
 		final int[] indexs = new int[3];
 		
 		triangles.clear();
-		
+
 		while (vert.size() != 3) {
 						
 			fillTempArray(i, temparr, indexs, vert);
@@ -172,7 +170,6 @@ public final class EarClippingTriangulator {
 					if (pointInTriangle(temparr[0], temparr[1], temparr[2], vert.get(ii))) {
 						continuewhile = true;
 						break;
-
 					}
 			} else if (indexs[2] < indexs[1]) for (int ii = 1; ii < size - 2; ii++)
 				if (pointInTriangle(temparr[0], temparr[1], temparr[2], vert.get(ii))) {
@@ -189,37 +186,26 @@ public final class EarClippingTriangulator {
 				continuewhile = false;
 				continue;
 			}
-
-			putTempArray(triangles, temparr);
-
+			
+			
 			vert.remove(i);
 			i--;
 			if (i == -1) {
 				lap++;
 				i = vert.size() - 1;
 			}
+			
+			if(level != CollinearTrackingLevel.IGNORE)
+				if(crsarea == 0)
+					continue;
+			
+			putTempArray(triangles, temparr);
+			
 		}
 
 		fillTempArray(0, temparr, vert);
-
 		putTempArray(triangles, temparr);
-
-		if (!level.equals(CollinearTrackingLevel.IGNORE)) {
-			i = 0;
-			while (i < triangles.size()) {
-				temparr[0] = triangles.get(i);
-				temparr[1] = triangles.get(i + 1);
-				temparr[2] = triangles.get(i + 2);
-				crsarea = getCrsArea(temparr);
-				if (crsarea == 0) {
-					triangles.remove(i);
-					triangles.remove(i);
-					triangles.remove(i);
-				}
-				i += 3;
-			}
-		}
-
+		
 		source.clear();
 		
 		return triangles;
@@ -252,24 +238,22 @@ public final class EarClippingTriangulator {
 		return triangles;
 	}
 	
-	public Vector2[][] getTriangulatedPolygonAsArray () { 
+	public static Vector2[][] getTriangulatedPolygonAsArray (List<Vector2> triangles) { 
 		Vector2[][] triangles_array = new Vector2[triangles.size()/3][3];
-		int i;
-		int ii;
-		for(i = 0; i < triangles_array.length; i++) { 
-			for(ii = 0; ii < 3; ii++)
+		for(int i = 0; i < triangles_array.length; i++) { 
+			for(int ii = 0; ii < 3; ii++)
 				triangles_array[i][ii] = triangles.get(i*3+ii);
 		}
 		return triangles_array;
 	}
 
-	private static void putTempArray (final List<Vector2> triangles, final Vector2[] temparr) {
+	private void putTempArray (final List<Vector2> triangles, final Vector2[] temparr) {
 		triangles.add(temparr[0]);
 		triangles.add(temparr[1]);
 		triangles.add(temparr[2]);
 	}
 
-	private static void fillTempArray (final int index, final Vector2[] temparr, final int[] indexarr, final List<Vector2> vert) {
+	private void fillTempArray (final int index, final Vector2[] temparr, final int[] indexarr, final List<Vector2> vert) {
 		if (index == 0) {
 			indexarr[0] = vert.size() - 1;
 			indexarr[1] = index;
@@ -295,7 +279,7 @@ public final class EarClippingTriangulator {
 		}
 	}
 
-	private static void fillTempArray (final int index, final Vector2[] temparr, final List<Vector2> vert) {
+	private void fillTempArray (final int index, final Vector2[] temparr, final List<Vector2> vert) {
 		if (index == 0) {
 			temparr[0] = vert.get(vert.size() - 1);
 			temparr[1] = vert.get(index);
@@ -311,21 +295,28 @@ public final class EarClippingTriangulator {
 		}
 	}
 
-	private static boolean pointInTriangle (final Vector2 f, final Vector2 t, final Vector2 th, final Vector2 p) {
+	private boolean pointInTriangle (final Vector2 f, final Vector2 t, final Vector2 th, final Vector2 p) {
+		if(p.x < f.x && p.x < t.x && p.x < th.x
+		||	p.x > f.x && p.x > t.x && p.x > th.x
+		||	p.y < f.y && p.y < t.y && p.y < th.y
+		||	p.y > f.y && p.y > t.y && p.y > th.y)
+			return false;
+		
 		int c = 0;
 		if (calculateIncrement(f, t, p)) c++;
 		if (calculateIncrement(t, th, p)) c++;
 		if (calculateIncrement(th, f, p)) c++;
+		
 		return c == 1;
 	}
 
-	private static boolean calculateIncrement (final Vector2 v, final Vector2 V, final Vector2 p) {
+	private boolean calculateIncrement (final Vector2 v, final Vector2 V, final Vector2 p) {
 		if (((v.y <= p.y && p.y < V.y) || (V.y <= p.y && p.y < v.y)))
 			if (p.x < ((V.x - v.x) / (V.y - v.y) * (p.y - v.y) + v.x)) return true;
 		return false;
 	}
 
-	private static float getCrsArea (final Vector2[] triangle) {
+	private float getCrsArea (final Vector2[] triangle) {
 		copies[0].set(triangle[0]);
 		copies[1].set(triangle[1]);
 		copies[2].set(triangle[2]);
@@ -336,17 +327,6 @@ public final class EarClippingTriangulator {
 
 	/** Sets a level of handling of collinear vectors for {@link #computeTriangles(CollinearTrackingLevel)} */
 	public enum CollinearTrackingLevel {
-		STRONG(0), MEDIUM(1), IGNORE(2);
-
-		final int level;
-
-		CollinearTrackingLevel (int l) {
-			level = l;
-		}
-
-		public int getID () {
-			return level;
-		}
+		STRONG, MEDIUM, IGNORE;
 	}
-
 }
