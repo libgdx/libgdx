@@ -29,7 +29,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	private boolean isPrepared = true;
 	protected boolean wasPlaying = false;
 	private float volume = 1f;
-	private OnCompletionListener onCompletionListener;
+	protected OnCompletionListener onCompletionListener;
 
 	AndroidMusic (AndroidAudio audio, MediaPlayer player) {
 		this.audio = audio;
@@ -139,7 +139,13 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public void onCompletion (MediaPlayer mp) {
-		if (onCompletionListener != null)
-				onCompletionListener.onCompletion(this);
+		if (onCompletionListener != null) {
+			Gdx.app.postRunnable(new Runnable() {
+				@Override
+				public void run () {
+					onCompletionListener.onCompletion(AndroidMusic.this);
+				}
+			});
+		}
 	};
 }

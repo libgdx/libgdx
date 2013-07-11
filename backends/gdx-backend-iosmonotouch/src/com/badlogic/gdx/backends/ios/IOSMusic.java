@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.ios;
 import cli.MonoTouch.AVFoundation.AVAudioPlayer;
 import cli.MonoTouch.AVFoundation.AVAudioPlayerDelegate;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 /** A music player, suitable for background music. Supports MP3 and WAV files which are played via hardware on iOS.
@@ -118,8 +119,14 @@ public class IOSMusic implements Music {
 		
 		@Override
 		public void FinishedPlaying(AVAudioPlayer player, boolean successful) {
-			if (onCompletionListener != null)
-				onCompletionListener.onCompletion(IOSMusic.this);
+			if (onCompletionListener != null) {
+				Gdx.app.postRunnable(new Runnable() {
+					@Override
+					public void run () {
+						onCompletionListener.onCompletion(IOSMusic.this);
+					}
+				});
+			}
 		}
 	}
 }
