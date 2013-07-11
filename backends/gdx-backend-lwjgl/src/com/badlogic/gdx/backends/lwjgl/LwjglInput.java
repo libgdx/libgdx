@@ -513,25 +513,25 @@ final class LwjglInput implements Input {
 		case Keyboard.KEY_COLON:
 			return Input.Keys.COLON;
 		case Keyboard.KEY_NUMPAD0:
-			return Input.Keys.NUM_0;
+			return Input.Keys.NUMPAD_0;
 		case Keyboard.KEY_NUMPAD1:
-			return Input.Keys.NUM_1;
+			return Input.Keys.NUMPAD_1;
 		case Keyboard.KEY_NUMPAD2:
-			return Input.Keys.NUM_2;
+			return Input.Keys.NUMPAD_2;
 		case Keyboard.KEY_NUMPAD3:
-			return Input.Keys.NUM_3;
+			return Input.Keys.NUMPAD_3;
 		case Keyboard.KEY_NUMPAD4:
-			return Input.Keys.NUM_4;
+			return Input.Keys.NUMPAD_4;
 		case Keyboard.KEY_NUMPAD5:
-			return Input.Keys.NUM_5;
+			return Input.Keys.NUMPAD_5;
 		case Keyboard.KEY_NUMPAD6:
-			return Input.Keys.NUM_6;
+			return Input.Keys.NUMPAD_6;
 		case Keyboard.KEY_NUMPAD7:
-			return Input.Keys.NUM_7;
+			return Input.Keys.NUMPAD_7;
 		case Keyboard.KEY_NUMPAD8:
-			return Input.Keys.NUM_8;
+			return Input.Keys.NUMPAD_8;
 		case Keyboard.KEY_NUMPAD9:
-			return Input.Keys.NUM_9;
+			return Input.Keys.NUMPAD_9;
 		default:
 			return Input.Keys.UNKNOWN;
 		}
@@ -711,6 +711,26 @@ final class LwjglInput implements Input {
 			return Keyboard.KEY_F12;
 		case Input.Keys.COLON:
 			return Keyboard.KEY_COLON;
+		case Input.Keys.NUMPAD_0:
+			return Keyboard.KEY_NUMPAD0;
+		case Input.Keys.NUMPAD_1:
+			return Keyboard.KEY_NUMPAD1;
+		case Input.Keys.NUMPAD_2:
+			return Keyboard.KEY_NUMPAD2;
+		case Input.Keys.NUMPAD_3:
+			return Keyboard.KEY_NUMPAD3;
+		case Input.Keys.NUMPAD_4:
+			return Keyboard.KEY_NUMPAD4;
+		case Input.Keys.NUMPAD_5:
+			return Keyboard.KEY_NUMPAD5;
+		case Input.Keys.NUMPAD_6:
+			return Keyboard.KEY_NUMPAD6;
+		case Input.Keys.NUMPAD_7:
+			return Keyboard.KEY_NUMPAD7;
+		case Input.Keys.NUMPAD_8:
+			return Keyboard.KEY_NUMPAD8;
+		case Input.Keys.NUMPAD_9:
+			return Keyboard.KEY_NUMPAD9;
 		default:
 			return Keyboard.KEY_NONE;
 		}
