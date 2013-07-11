@@ -146,7 +146,7 @@ public class RandomAccessFile /* implements DataOutput, DataInput, Closeable */{
 		}
 	}
 
-	private void consolidate () {
+	protected void consolidate () {
 		if (newData == null) {
 			return;
 		}

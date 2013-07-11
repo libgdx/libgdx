@@ -118,8 +118,7 @@ public class GwtMusic implements Music, SMSoundCallback {
 	public void onfinish () {
 		if (isLooping)
 			play();
-			
-		if (onCompletionListener != null)
+		else if (onCompletionListener != null)
 			onCompletionListener.onCompletion(this);
 	}
 }

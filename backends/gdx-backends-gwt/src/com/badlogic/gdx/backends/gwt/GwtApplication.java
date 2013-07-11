@@ -60,19 +60,20 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
-	private ApplicationListener listener;
+	protected ApplicationListener listener;
 	private GwtApplicationConfiguration config;
-	private GwtGraphics graphics;
-	private GwtInput input;
+	protected GwtGraphics graphics;
+	protected GwtInput input;
 	private GwtNet net;
-	private Panel root = null;
+	protected Panel root = null;
 	private TextArea log = null;
 	private int logLevel = LOG_ERROR;
-	private Array<Runnable> runnables = new Array<Runnable>();
-	private Array<Runnable> runnablesHelper = new Array<Runnable>();
+	protected Array<Runnable> runnables = new Array<Runnable>();
+	protected Array<Runnable> runnablesHelper = new Array<Runnable>();
 	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	private int lastWidth, lastHeight;
-	private Preloader preloader;
+	protected int lastWidth;
+	protected int lastHeight;
+	protected Preloader preloader;
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
 
@@ -81,7 +82,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	@Override
 	public void onModuleLoad () {
-		this.agentInfo = computeAgentInfo();
+		GwtApplication.agentInfo = computeAgentInfo();
 		this.listener = getApplicationListener();
 		this.config = getConfig();
 		this.log = config.log;
@@ -144,7 +145,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}.scheduleRepeating(100);
 	}
 
-	private void setupLoop () {
+	protected void setupLoop () {
 		// setup modules
 		try {			
 			graphics = new GwtGraphics(root, config);			

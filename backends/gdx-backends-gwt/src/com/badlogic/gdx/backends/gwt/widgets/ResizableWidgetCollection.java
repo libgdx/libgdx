@@ -130,19 +130,19 @@ public class ResizableWidgetCollection implements WindowResizeListener, Iterable
 	private Map<ResizableWidget, ResizableWidgetInfo> widgets = new HashMap<ResizableWidget, ResizableWidgetInfo>();
 
 	/** The current window height. */
-	private int windowHeight = 0;
+	protected int windowHeight = 0;
 
 	/** The current window width. */
-	private int windowWidth = 0;
+	protected int windowWidth = 0;
 
 	/** The hook used to remove the window handler. */
 	private HandlerRegistration windowHandler;
 
 	/** The delay between resize checks. */
-	private int resizeCheckDelay = DEFAULT_RESIZE_CHECK_DELAY;
+	protected int resizeCheckDelay = DEFAULT_RESIZE_CHECK_DELAY;
 
 	/** A boolean indicating that resize checking should run. */
-	private boolean resizeCheckingEnabled;
+	protected boolean resizeCheckingEnabled;
 
 	/** Create a ResizableWidget. */
 	public ResizableWidgetCollection () {
