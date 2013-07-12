@@ -105,6 +105,12 @@ public class Rectangle implements Serializable {
 		this.height = height;
 	}
 
+	/** return the Vector2 with coordinates of this rectangle
+	 * @param position The Vector2 */
+	public Vector2 getPosition (Vector2 position) {
+		return position.set(x, y);
+	}
+
 	/** Sets the x and y-coordinates of the bottom left corner from vector
 	 * @param position The position vector */
 	public void setPosition (Vector2 position) {
@@ -133,6 +139,12 @@ public class Rectangle implements Serializable {
 	public void setSize (float sizeXY) {
 		this.width = sizeXY;
 		this.height = sizeXY;
+	}
+
+	/** @return the Vector2 with size of this rectangle
+	 * @param size The Vector2 */
+	public Vector2 getSize (Vector2 size) {
+		return size.set(width, height);
 	}
 
 	/** @param x point x coordinate

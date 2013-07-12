@@ -1,5 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.shaders.graph;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.graphics.g3d.shaders.graph.ShaderNode.ShaderNodeType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;

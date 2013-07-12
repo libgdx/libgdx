@@ -47,6 +47,7 @@ import com.badlogic.gdx.physics.bullet.btIDebugDraw;
 import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.physics.bullet.btRigidBody;
 import com.badlogic.gdx.physics.bullet.btTransform;
+import com.badlogic.gdx.physics.bullet.gdxBullet;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -64,7 +65,7 @@ public class BaseBulletTest extends BulletTest {
 			System.load(customDesktopLib);
 		else
 			Bullet.init();
-
+		Gdx.app.log("Bullet", "Version = "+gdxBullet.btGetVersion());
 		initialized = true;
 	}
 	

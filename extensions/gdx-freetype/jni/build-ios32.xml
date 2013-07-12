@@ -18,7 +18,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -std=c99 -DFT2_BUILD_LIBRARY"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -72,7 +72,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -std=c99 -DFT2_BUILD_LIBRARY"/>
+	<property name="g++-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1 -std=c99 -DFT2_BUILD_LIBRARY"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>

@@ -1,4 +1,4 @@
-package com.badlogic.gdx.tests.g3d.nodes;
+package com.badlogic.gdx.tests.g3d.graph;
 
 import com.badlogic.gdx.graphics.g3d.shaders.graph.ShaderGraph;
 import com.badlogic.gdx.graphics.g3d.shaders.graph.ShaderNode;

@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 
 /** Executes tasks in the future on the main loop thread.
  * @author Nathan Sweet */
@@ -45,7 +44,7 @@ public class Timer {
 				}
 			}
 		};
-		thread.setDaemon(true);
+//		thread.setDaemon(true);
 		thread.start();
 	}
 

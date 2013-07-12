@@ -41,16 +41,7 @@
                         </configuration>
                     </execution>
                     
-                    <execution>
-                        <id>armeabi-gl20</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi</cacheDirectory>
-                            <url>${base.url}/armeabi/libandroidgl20.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi</outputDirectory>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>armeabi-gdx</id>
                         <phase>process-resources</phase>
@@ -62,16 +53,6 @@
                         </configuration>
                     </execution>
                     
-                    <execution>
-                        <id>armeabi-v7a-gl20</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
-                            <url>${base.url}/armeabi-v7a/libandroidgl20.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>armeabi-v7a-gdx</id>
                         <phase>process-resources</phase>

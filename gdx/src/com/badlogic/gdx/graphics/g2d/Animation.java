@@ -92,6 +92,7 @@ public class Animation {
 	public TextureRegion getKeyFrame (float stateTime, boolean looping) {
 		// we set the play mode by overriding the previous mode based on looping
 		// parameter value
+		int oldPlayMode = playMode;
 		if (looping && (playMode == NORMAL || playMode == REVERSED)) {
 			if (playMode == NORMAL)
 				playMode = LOOP;
@@ -104,7 +105,9 @@ public class Animation {
 				playMode = LOOP;
 		}
 
-		return getKeyFrame(stateTime);
+		TextureRegion frame = getKeyFrame(stateTime);
+		playMode = oldPlayMode;
+		return frame;
 	}
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
