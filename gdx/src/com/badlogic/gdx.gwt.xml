@@ -253,6 +253,7 @@
 	
 	<!-- math -->
 		<include name="math/Bezier.java"/>
+		<include name="math/Bresenham2.java"/>
 		<include name="math/BSpline.java"/>
 		<include name="math/CatmullRomSpline.java"/>
 		<include name="math/Circle.java"/>
