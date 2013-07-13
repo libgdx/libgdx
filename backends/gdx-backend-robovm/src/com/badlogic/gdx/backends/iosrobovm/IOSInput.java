@@ -3,6 +3,9 @@ package com.badlogic.gdx.backends.iosrobovm;
 import org.robovm.cocoatouch.coregraphics.CGPoint;
 import org.robovm.cocoatouch.foundation.NSArray;
 import org.robovm.cocoatouch.foundation.NSSet;
+import org.robovm.cocoatouch.uikit.UIAcceleration;
+import org.robovm.cocoatouch.uikit.UIAccelerometer;
+import org.robovm.cocoatouch.uikit.UIAccelerometerDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertView;
 import org.robovm.cocoatouch.uikit.UIAlertViewDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertViewStyle;
@@ -47,6 +50,9 @@ public class IOSInput implements Input {
 	TouchEvent currentEvent = null;
 	float[] acceleration = new float[3];
 	InputProcessor inputProcessor = null;
+	// We need to hold on to the reference to this delegate or else its
+	// ObjC peer will get released when the Java peer is GCed.
+	UIAccelerometerDelegate accelerometerDelegate;
 	
 	public IOSInput(IOSApplication app) {
 		this.app = app;
@@ -58,20 +64,21 @@ public class IOSInput implements Input {
 	}
 
 	private void setupAccelerometer() {
-//		if(config.useAccelerometer) {
-//			UIAccelerometer.get_SharedAccelerometer().set_Delegate(new UIAccelerometerDelegate() {
-//
-//				@Override
-//				public void DidAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
-//					//super.DidAccelerate(accelerometer, values);
-//					// FIXME take orientation into account, these values here get flipped by iOS...
-//					acceleration[0] = (float)values.get_X() * 10;
-//					acceleration[1] = (float)values.get_Y() * 10;
-//					acceleration[2] = (float)values.get_Z() * 10;
-//				}
-//			});
-//			UIAccelerometer.get_SharedAccelerometer().set_UpdateInterval(config.accelerometerUpdate);
-//		}
+		if(config.useAccelerometer) {
+			accelerometerDelegate = new UIAccelerometerDelegate.Adapter() {
+
+				@Override
+				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
+					//super.DidAccelerate(accelerometer, values);
+					// FIXME take orientation into account, these values here get flipped by iOS...
+					acceleration[0] = (float)values.getX() * 10;
+					acceleration[1] = (float)values.getY() * 10;
+					acceleration[2] = (float)values.getZ() * 10;
+				}
+			};
+			UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
+			UIAccelerometer.getSharedAccelerometer().setUpdateInterval(config.accelerometerUpdate);
+		}
 	}
 
 	@Override
