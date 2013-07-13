@@ -51,7 +51,7 @@ public class GdxBuild {
 		BuildTarget lin64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		lin64.cppExcludes = excludeCpp;
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
-		android.linkerFlags += " -lGLESv2";
+		android.linkerFlags += " -lGLESv2 -llog";
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppExcludes = excludeCpp;
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
