@@ -261,6 +261,8 @@
 		<include name="math/Ellipse.java"/>
 		<include name="math/FloatCounter.java"/>
 		<include name="math/Frustum.java"/>
+		<include name="math/GridPoint2.java"/>
+		<include name="math/GridPoint3.java"/>
 		<include name="math/Interpolation.java"/>
 		<include name="math/Intersector.java"/>
 		<include name="math/MathUtils.java"/>
