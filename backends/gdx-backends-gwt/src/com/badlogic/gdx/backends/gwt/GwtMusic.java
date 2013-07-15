@@ -32,7 +32,7 @@ public class GwtMusic implements Music, SMSoundCallback {
 	private float volume = 1f;
 	private float pan = 0f;
 	private SMSoundOptions soundOptions;
-	protected OnCompletionListener onCompletionListener;
+	private OnCompletionListener onCompletionListener;
 
 	public GwtMusic (FileHandle file) {
 		String url = ((GwtApplication)Gdx.app).getBaseUrl() + file.path();

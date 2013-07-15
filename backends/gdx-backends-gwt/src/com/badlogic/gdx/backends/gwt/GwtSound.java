@@ -31,7 +31,7 @@ public class GwtSound implements Sound {
 	private static final int MAX_SOUNDS = 8;
 	
 	/** Our sounds. */
-	protected GwtMusic[] sounds;
+	private GwtMusic[] sounds;
 	/** The next player we think should be available for play - we circle through them to find a free one. */
 	private int soundIndex;
 	/** The path to the sound file. */

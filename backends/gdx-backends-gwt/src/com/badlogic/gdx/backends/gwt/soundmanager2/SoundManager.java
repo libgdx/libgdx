@@ -73,14 +73,19 @@ public class SoundManager {
 		return $wnd.soundManager.ok();
 	}-*/;
 
-	public static native void init (String moduleBaseURL, int flashVersion, boolean preferFlash) /*-{
+	public static native void init (String moduleBaseURL, int flashVersion, boolean preferFlash, SoundManagerCallback callback) /*-{
 		$wnd.soundManager = new $wnd.SoundManager();
 		$wnd.soundManager.setup({
 			url: moduleBaseURL,
 			flashVersion: flashVersion,
-			preferFlash: preferFlash
+			preferFlash: preferFlash,
+			onready: function() { 
+				callback.@com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback::onready()();
+			},
+			ontimeout: function(status) {
+				callback.@com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback::ontimeout(Ljava/lang/String;Ljava/lang/String;)(status.success, status.error.type);
+			}		
 		});
-		$wnd.soundManager.beginDelayedInit()
 	}-*/;
 
 }
