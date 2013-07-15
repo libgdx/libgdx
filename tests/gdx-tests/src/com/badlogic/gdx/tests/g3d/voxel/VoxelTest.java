@@ -46,7 +46,7 @@ public class VoxelTest extends GdxTest {
 		DefaultShader.defaultCullFace = GL20.GL_FRONT;
 		GLES10Shader.defaultCullFace = GL20.GL_FRONT;
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.near = 1;
+		camera.near = 0.5f;
 		camera.far = 1000;
 		controller = new FirstPersonCameraController(camera);
 		Gdx.input.setInputProcessor(controller);
@@ -59,12 +59,11 @@ public class VoxelTest extends GdxTest {
 		TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
 		
 		MathUtils.random.setSeed(0);
-		voxelWorld = new VoxelWorld(tiles[0], 10, 4, 10);
+		voxelWorld = new VoxelWorld(tiles[0], 20, 4, 20);
 		PerlinNoiseGenerator.generateVoxels(voxelWorld, 0, 63, 10);
-//		voxelWorld.setCube(0, 0, 0, 16, 16, 16, (byte)1);
 		float camX = voxelWorld.voxelsX / 2f;
 		float camZ = voxelWorld.voxelsZ / 2f;
-		float camY = voxelWorld.getHighest(camX, camZ);
+		float camY = voxelWorld.getHighest(camX, camZ) + 1.5f;
 		camera.position.set(camX, camY, camZ);
 	}
 
@@ -78,7 +77,7 @@ public class VoxelTest extends GdxTest {
 		controller.update();
 		
 		spriteBatch.begin();
-		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond(), 0, 20);
+		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks + "/" + voxelWorld.numChunks, 0, 20);
 		spriteBatch.end();
 	}
 	

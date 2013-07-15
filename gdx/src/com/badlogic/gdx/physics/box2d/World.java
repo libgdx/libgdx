@@ -325,7 +325,13 @@ b2ContactFilter defaultFilter;
 	private native void jniDestroyBody (long addr, long bodyAddr); /*
 		b2World* world = (b2World*)addr;
 		b2Body* body = (b2Body*)bodyAddr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
 		world->DestroyBody(body);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
 	*/
 
 	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
@@ -592,7 +598,13 @@ b2ContactFilter defaultFilter;
 	private native void jniDestroyJoint (long addr, long jointAddr); /*
 		b2World* world = (b2World*)addr;
 		b2Joint* joint = (b2Joint*)jointAddr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
 		world->DestroyJoint( joint );
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
 	*/
 
 	/** Take a time step. This performs collision detection, integration, and constraint solution.

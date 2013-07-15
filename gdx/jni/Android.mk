@@ -6,7 +6,7 @@ LOCAL_C_INCLUDES :=
  
 LOCAL_CFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
 LOCAL_CPPFLAGS := $(LOCAL_C_INCLUDES:%=-I%) -O2 -Wall -D__ANDROID__
-LOCAL_LDLIBS := -lm -llog -lGLESv2
+LOCAL_LDLIBS := -lm -lGLESv2 -llog
 LOCAL_ARM_MODE  := arm
  
 LOCAL_SRC_FILES := android/AndroidGL20.cpp\

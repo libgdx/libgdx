@@ -31,6 +31,8 @@ public class VoxelWorld implements RenderableProvider {
 	public final int voxelsX;
 	public final int voxelsY;
 	public final int voxelsZ;
+	public int renderedChunks;
+	public int numChunks;
 	private final TextureRegion[] tiles;
 	
 	public VoxelWorld(TextureRegion[] tiles, int chunksX, int chunksY, int chunksZ) {
@@ -39,6 +41,7 @@ public class VoxelWorld implements RenderableProvider {
 		this.chunksX = chunksX;
 		this.chunksY = chunksY;
 		this.chunksZ = chunksZ;
+		this.numChunks = chunksX * chunksY * chunksZ;
 		this.voxelsX = chunksX * CHUNK_SIZE_X;
 		this.voxelsY = chunksY * CHUNK_SIZE_Y;
 		this.voxelsZ = chunksZ * CHUNK_SIZE_Z;
@@ -160,6 +163,7 @@ public class VoxelWorld implements RenderableProvider {
 	
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
+		renderedChunks = 0;
 		for(int i = 0; i < chunks.length; i++) {
 			VoxelChunk chunk = chunks[i];
 			Mesh mesh = meshes[i];
@@ -169,6 +173,7 @@ public class VoxelWorld implements RenderableProvider {
 				mesh.setVertices(vertices, 0, numVerts * VoxelChunk.VERTEX_SIZE);
 				dirty[i] = false;
 			}
+			if(numVertices[i] == 0) continue;
 			Renderable renderable = pool.obtain();
 			renderable.material = materials[i];
 			renderable.mesh = mesh;
@@ -176,6 +181,7 @@ public class VoxelWorld implements RenderableProvider {
 			renderable.meshPartSize = numVertices[i];
 			renderable.primitiveType = GL20.GL_TRIANGLES;
 			renderables.add(renderable);
+			renderedChunks++;
 		}
 	}
 }
