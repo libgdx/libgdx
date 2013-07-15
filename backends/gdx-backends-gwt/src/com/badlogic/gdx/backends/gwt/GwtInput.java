@@ -733,25 +733,25 @@ public class GwtInput implements Input {
 			return Keys.UNKNOWN; // FIXME
 			// case KEY_SELECT_KEY: return Keys.SELECT_KEY;
 		case KEY_NUMPAD0:
-			return Keys.NUM_0;
+			return Keys.NUMPAD_0;
 		case KEY_NUMPAD1:
-			return Keys.NUM_1;
+			return Keys.NUMPAD_1;
 		case KEY_NUMPAD2:
-			return Keys.NUM_2;
+			return Keys.NUMPAD_2;
 		case KEY_NUMPAD3:
-			return Keys.NUM_3;
+			return Keys.NUMPAD_3;
 		case KEY_NUMPAD4:
-			return Keys.NUM_4;
+			return Keys.NUMPAD_4;
 		case KEY_NUMPAD5:
-			return Keys.NUM_5;
+			return Keys.NUMPAD_5;
 		case KEY_NUMPAD6:
-			return Keys.NUM_6;
+			return Keys.NUMPAD_6;
 		case KEY_NUMPAD7:
-			return Keys.NUM_7;
+			return Keys.NUMPAD_7;
 		case KEY_NUMPAD8:
-			return Keys.NUM_8;
+			return Keys.NUMPAD_8;
 		case KEY_NUMPAD9:
-			return Keys.NUM_9;
+			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
 			return Keys.UNKNOWN; // FIXME
 		case KEY_ADD:

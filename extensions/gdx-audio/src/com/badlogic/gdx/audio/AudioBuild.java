@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.audio;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildTarget;
@@ -108,6 +109,9 @@ public class AudioBuild {
 		android.preCompileTask = precompileTask;
 
 		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, android);
+		// we don't support x86 for the audio extension on Android. Dirty hack that disables x86 build...
+		String androidMakeFile = new FileHandle("jni/Application.mk").readString();
+		new FileHandle("jni/Application.mk").writeString(androidMakeFile.replaceAll("x86", ""), false);
 
 // BuildExecutor.executeAnt("jni/build-linux64.xml", "clean postcompile -v");
 // BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");

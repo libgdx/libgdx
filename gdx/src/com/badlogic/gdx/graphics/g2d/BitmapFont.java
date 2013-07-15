@@ -22,6 +22,11 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -31,11 +36,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
  * the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
@@ -122,7 +122,15 @@ public class BitmapFont implements Disposable {
 	 * @param region
 	 * @param integer */
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
-		this.region = region == null ? new TextureRegion(new Texture(Gdx.files.internal(data.imagePath), false)) : region;
+		if (region != null) {
+			this.region = region;
+		} else {
+			if (data.fontFile == null) {
+				this.region = new TextureRegion(new Texture(Gdx.files.internal(data.imagePath), false));
+			} else {
+				this.region = new TextureRegion(new Texture(Gdx.files.getFileHandle(data.imagePath, data.fontFile.type()), false));
+			}			
+		}		
 		this.flipped = data.flipped;
 		this.data = data;
 		this.integer = integer;

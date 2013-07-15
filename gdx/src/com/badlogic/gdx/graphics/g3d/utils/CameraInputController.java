@@ -36,13 +36,13 @@ public class CameraInputController extends InputAdapter {
 	public boolean forwardTarget = true;
 	/** Whether to update the target on scroll */
 	public boolean scrollTarget = false;
-	public int forwardKey = Keys.UP;
+	public int forwardKey = Keys.W;
 	protected boolean forwardPressed;
-	public int backwardKey = Keys.DOWN;
+	public int backwardKey = Keys.S;
 	protected boolean backwardPressed;
-	public int rotateRightKey = Keys.RIGHT;
+	public int rotateRightKey = Keys.A;
 	protected boolean rotateRightPressed;
-	public int rotateLeftKey = Keys.LEFT;
+	public int rotateLeftKey = Keys.D;
 	protected boolean rotateLeftPressed;
 	/** The camera. */
 	public Camera camera;

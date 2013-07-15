@@ -35,7 +35,7 @@ public class GwtApplicationConfiguration {
 	public Panel rootPanel;
 	/** the id of a canvas element to be used as the drawing area, can be null in which case a Panel and Canvas are added to the
 	 * body element of the DOM **/
-	public String canavsId;
+	public String canvasId;
 	/** a TextArea to log messages to, can be null in which case a TextArea will be added to the body element of the DOM. */
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */

@@ -36,6 +36,7 @@ public final class VertexAttribute {
 	public String alias;
 	/** optional unit/index specifier, used for texture coordinates and bone weights **/
 	public int unit;
+	private final int usageIndex;
 
 	/** Constructs a new VertexAttribute.
 	 * 
@@ -60,6 +61,7 @@ public final class VertexAttribute {
 		this.numComponents = numComponents;
 		this.alias = alias;
 		this.unit = index;
+		this.usageIndex = Integer.numberOfTrailingZeros(usage);
 	}
 
 	public static VertexAttribute Position () {
@@ -105,5 +107,10 @@ public final class VertexAttribute {
 	
 	public boolean equals (final VertexAttribute other) {
 		return other != null && usage == other.usage && numComponents == other.numComponents && alias.equals(other.alias) && unit == other.unit; 
+	}
+	
+	/** @return A unique number specifying the usage index (3 MSB) and unit (1 LSB). */ 
+	public int getKey() {
+		return (usageIndex << 8) + (unit & 0xFF);
 	}
 }

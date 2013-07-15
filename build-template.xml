@@ -76,6 +76,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/android32" />
 		<mkdir dir="${libs}/armeabi" />
 		<mkdir dir="${libs}/armeabi-v7a" />
+        <mkdir dir="${libs}/x86" />
 		<mkdir dir="${libs}/linux32" />
 		<mkdir dir="${libs}/linux64" />
 		<mkdir dir="${libs}/macosx32" />
@@ -93,6 +94,11 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</copy>
 		<copy failonerror="false" todir="${distDir}/armeabi-v7a">
 			<fileset dir="${libs}/armeabi-v7a">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+        <copy failonerror="false" todir="${distDir}/x86">
+			<fileset dir="${libs}/x86">
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
@@ -122,6 +128,11 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		</copy>
 		<copy failonerror="false" todir="${distDir}/armeabi-v7a">
 			<fileset dir="${libs}/armeabi-v7a">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+        <copy failonerror="false" todir="${distDir}/x86">
+			<fileset dir="${libs}/x86">
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
