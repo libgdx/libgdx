@@ -144,7 +144,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		});
 	}
 
-	protected void setupLoop () {
+	void setupLoop () {
 		// setup modules
 		try {			
 			graphics = new GwtGraphics(root, config);			
