@@ -56,6 +56,7 @@ public abstract class OpenALMusic implements Music {
 		if (audio != null) {
 			if (!audio.noDevice) audio.music.add(this);
 		}
+		this.onCompletionListener = null;
 	}
 
 	protected void setup (int channels, int sampleRate) {
@@ -214,6 +215,7 @@ public abstract class OpenALMusic implements Music {
 		}
 		alDeleteBuffers(buffers);
 		buffers = null;
+		onCompletionListener = null;
 	}
 	
 	public void setOnCompletionListener (OnCompletionListener listener) {
