@@ -57,6 +57,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="java.lang.CharSequence" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="java.lang.Enum" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="java.lang.Object" />
 	<generate-with class="com.badlogic.gwtref.gen.ReflectionCacheGenerator">
 		<when-type-assignable class="com.badlogic.gwtref.client.IReflectionCache" />

@@ -145,8 +145,8 @@ public class Model implements Disposable {
 	private Node loadNode (Node parent, ModelNode modelNode) {
 		Node node = new Node();
 		node.id = modelNode.id;
-		// node.boneId = modelNode.boneId; // FIXME check meaning of this, breadth first index of node hierarchy?
 		node.parent = parent;
+		
 		if (modelNode.translation != null)
 			node.translation.set(modelNode.translation);
 		if (modelNode.rotation != null)
@@ -158,15 +158,16 @@ public class Model implements Disposable {
 			for(ModelNodePart modelNodePart: modelNode.parts) {
 				MeshPart meshPart = null;
 				Material meshMaterial = null;
+				
 				if(modelNodePart.meshPartId != null) {
 					for(MeshPart part: meshParts) {
-						// FIXME need to make sure this is unique by adding mesh id to mesh part id!
 						if(modelNodePart.meshPartId.equals(part.id)) {
 							meshPart = part;
 							break;
 						}
 					}
 				}
+				
 				if(modelNodePart.materialId != null) {
 					for(Material material: materials) {
 						if(modelNodePart.materialId.equals(material.id)) {
@@ -176,7 +177,9 @@ public class Model implements Disposable {
 					}
 				}
 				
-				// FIXME what if meshPart is set but meshMaterial isn't and vice versa?
+				if (meshPart == null || meshMaterial == null)
+					throw new GdxRuntimeException("Invalid node: "+node.id);
+				
 				if(meshPart != null && meshMaterial != null) {
 					NodePart nodePart = new NodePart();
 					nodePart.meshPart = meshPart;
@@ -220,7 +223,7 @@ public class Model implements Disposable {
 		mesh.getIndicesBuffer().clear();
 		for(ModelMeshPart part: modelMesh.parts) {
 			MeshPart meshPart = new MeshPart();
-			meshPart.id = part.id; // FIXME not storing the mesh name, part ids may collide!
+			meshPart.id = part.id;
 			meshPart.primitiveType = part.primitiveType;
 			meshPart.indexOffset = offset;
 			meshPart.numVertices = part.indices.length;
@@ -325,11 +328,12 @@ public class Model implements Disposable {
 	 * was modified.
 	 */
 	public void calculateTransforms() {
-		for(Node node: nodes) {
-			node.calculateTransforms(true);
+		final int n = nodes.size;
+		for(int i = 0; i < n; i++) {
+			nodes.get(i).calculateTransforms(true);
 		}
-		for(Node node: nodes) {
-			node.calculateBoneTransforms(true);
+		for(int i = 0; i < n; i++) {
+			nodes.get(i).calculateBoneTransforms(true);
 		}
 	}
 	
@@ -343,36 +347,52 @@ public class Model implements Disposable {
 	/** Extends the bounding box with the bounds of this model instance.
 	 * This is a potential slow operation, it is advised to cache the result. */
 	public BoundingBox extendBoundingBox(final BoundingBox out) {
-		for (final Node node : nodes)
-			calculateBoundingBox(out, node);
+		final int n = nodes.size;
+		for(int i = 0; i < n; i++)
+			nodes.get(i).extendBoundingBox(out);
 		return out;
 	}
-	
-	protected void calculateBoundingBox(final BoundingBox out, final Node node) {
-		for (final NodePart mpm : node.parts)
-			mpm.meshPart.mesh.calculateBoundingBox(out, mpm.meshPart.indexOffset, mpm.meshPart.numVertices, node.globalTransform);
-		for (final Node child : node.children)
-			calculateBoundingBox(out, child);
-	}
-	
+
+	/** @return The animation with the specified id, or null if not available. */
 	public Animation getAnimation(final String id) {
-		for (final Animation anim : animations)
-			if (anim.id.compareTo(id)==0)
-				return anim;
+		return getAnimation(id, true);
+	}
+	
+	/** @return The animation with the specified id, or null if not available. */
+	public Animation getAnimation(final String id, boolean ignoreCase) {
+		final int n = animations.size;
+		Animation animation;
+		if (ignoreCase) {
+			for (int i = 0; i < n; i++)
+				if ((animation = animations.get(i)).id.equalsIgnoreCase(id))
+					return animation;
+		} else {
+			for (int i = 0; i < n; i++)
+				if ((animation = animations.get(i)).id.equals(id))
+					return animation;
+		}
 		return null;
 	}
 	
+	/** @return The material with the specified id, or null if not available. */
 	public Material getMaterial(final String id) {
-		for (final Material mtl : materials)
-			if (mtl.id.compareTo(id)==0)
-				return mtl;
-		return null;
+		return getMaterial(id, true);
 	}
 	
-	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
-	 * @return The node with the specified id, or null if not found. */
-	public Node getNode(final String id, boolean recursive) {
-		return getNode(id, nodes, recursive);
+	/** @return The material with the specified id, or null if not available. */
+	public Material getMaterial(final String id, boolean ignoreCase) {
+		final int n = materials.size;
+		Material material;
+		if (ignoreCase) {
+			for (int i = 0; i < n; i++)
+				if ((material = materials.get(i)).id.equalsIgnoreCase(id))
+					return material;
+		} else {
+			for (int i = 0; i < n; i++)
+				if ((material = materials.get(i)).id.equals(id))
+					return material;
+		}
+		return null;
 	}
 	
 	/** @return The node with the specified id, or null if not found. */
@@ -380,16 +400,15 @@ public class Model implements Disposable {
 		return getNode(id, true);
 	}
 	
-	protected Node getNode(final String id, final Iterable<Node> nodes, boolean recursive) {
-		for (final Node node : nodes) {
-			if (node.id.equals(id))
-				return node;
-			if (recursive) {
-				final Node n = getNode(id, node.children, recursive);
-				if (n != null)
-					return n;
-			}
-		}
-		return null;
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive) {
+		return getNode(id, recursive, false);
+	}
+	
+	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getNode(final String id, boolean recursive, boolean ignoreCase) {
+		return Node.getNode(nodes, id, recursive, ignoreCase);
 	}
 }

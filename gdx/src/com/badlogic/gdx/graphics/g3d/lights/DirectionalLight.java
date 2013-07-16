@@ -14,14 +14,14 @@ public class DirectionalLight extends BaseLight {
 		if (color != null)
 			this.color.set(color);
 		if (direction != null)
-			this.direction.set(direction);
+			this.direction.set(direction).nor();
 		return this;
 	}
 	
 	public DirectionalLight set(final float r, final float g, final float b, final Vector3 direction) {
 		this.color.set(r,g,b,1f);
 		if (direction != null)
-			this.direction.set(direction);
+			this.direction.set(direction).nor();
 		return this;
 	}
 	

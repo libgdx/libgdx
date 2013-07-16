@@ -10,10 +10,6 @@ DIFFERENCES TO MAIN APIs/UNSUSPECTED BEHAVIOUR
 - mapping of a couple of (minor) keys is bad, see FIXMEs
 - getTextInput and getPlaceholderTextInput need to be implemented
 
-[GwtSound]
-- GwtSound#play()/loop() return 0, you can not modify the properties of a sound id returned by those methods, 
-e.g. via Sound#setLooping() or Sound#setPanning().
-
 [GwtFileHandle]
 - only internal files are supported.
 - FileHandle#list will not work.

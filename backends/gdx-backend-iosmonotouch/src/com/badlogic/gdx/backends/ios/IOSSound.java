@@ -122,8 +122,10 @@ public class IOSSound implements Sound {
 			}
 		}
 		
-		// all are busy playing... :/
-		return -1;
+		// all are busy playing, stop the next sound in the queue and reuse it
+		int index = playerIndex % players.length;
+		playerIndex = (index + 1) % players.length;
+		return index;
 	}
 	
 	@Override
@@ -151,6 +153,7 @@ public class IOSSound implements Sound {
 		int soundId = findAvailablePlayer();
 		if (soundId >= 0) {
 			AVAudioPlayer player = players[soundId];
+			player.Stop();
 			player.set_NumberOfLoops(looping ? -1 : 0);  // Note: -1 for looping!
 			player.set_Volume(volume);
 			player.set_Pan(pan);
