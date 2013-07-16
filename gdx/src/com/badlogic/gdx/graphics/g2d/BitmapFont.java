@@ -148,27 +148,7 @@ public class BitmapFont implements Disposable {
 	 * @param region
 	 * @param integer */
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
-		//use the regions from the data
-		if (region==null) {
-			//load each path
-			this.regions = new TextureRegion[data.imagePaths.length];
-			for (int i=0; i<this.regions.length; i++) {
-				this.regions[i] = new TextureRegion(new Texture(Gdx.files.internal(data.imagePaths[i]), false));
-			}
-		} else {
-			this.regions = new TextureRegion[] {
-				region
-			};
-		}
-		
-		cache = new BitmapFontCache(this);
-		cache.setUseIntegerPositions(integer);
-		
-		this.flipped = data.flipped;
-		this.data = data;
-		this.integer = integer;
-		load(data);
-		ownsTexture = region == null;
+		this(data, region!=null ? new TextureRegion[] { region } : null, integer);
 	}
 
 
@@ -183,8 +163,13 @@ public class BitmapFont implements Disposable {
 		if (regions==null || regions.length==0) {
 			//load each path
 			this.regions = new TextureRegion[data.imagePaths.length];
-			for (int i=0; i<this.regions.length; i++) 
-				this.regions[i] = new TextureRegion(new Texture(Gdx.files.internal(data.imagePaths[i]), false));
+			for (int i=0; i<this.regions.length; i++) {
+				if (data.fontFile == null) {
+					this.regions[i] = new TextureRegion(new Texture(Gdx.files.internal(data.imagePaths[i]), false));
+				} else {
+					this.regions[i] = new TextureRegion(new Texture(Gdx.files.getFileHandle(data.imagePaths[i], data.fontFile.type()), false));
+				}
+			}
 			ownsTexture = true;
 		} else {
 			this.regions = regions;
