@@ -196,6 +196,26 @@ public class OpenALAudio implements Audio {
 			}
 		}
 	}
+	
+	void pauseSourcesWithBuffer (int bufferID) {
+		if (noDevice) return;
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID)
+				alSourcePause(sourceID);
+		}
+	}
+	
+	void resumeSourcesWithBuffer (int bufferID) {
+		if (noDevice) return;
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+				if (alGetSourcei(sourceID, AL_SOURCE_STATE) == AL_PAUSED)
+					alSourcePlay(sourceID);
+			}
+		}
+	}
 
 	public void update () {
 		if (noDevice) return;
@@ -212,6 +232,19 @@ public class OpenALAudio implements Audio {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		alSourceStop(sourceId);
+	}
+	
+	public void pauseSound (long soundId) {
+		if (!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		alSourcePause(sourceId);
+	}
+	
+	public void resumeSound (long soundId) {
+		if (!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		if (alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PAUSED)
+			alSourcePlay(sourceId);
 	}
 
 	public void setSoundGain (long soundId, float volume) {

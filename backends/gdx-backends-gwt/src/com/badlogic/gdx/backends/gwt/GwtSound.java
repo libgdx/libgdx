@@ -135,6 +135,34 @@ public class GwtSound implements Sound {
 	}
 
 	@Override
+	public void pause () {
+		for (int i = 0; i < sounds.length; i++) {
+			if (sounds[i] != null)
+				sounds[i].pause();
+		}
+	}
+	
+	@Override
+	public void pause (long soundId) {
+		if (soundId >= 0 && sounds[(int)soundId] != null)
+			sounds[(int)soundId].pause();
+	}
+	
+	@Override
+	public void resume () {
+		for (int i = 0; i < sounds.length; i++) {
+			if (sounds[i] != null)
+				sounds[i].resume();
+		}
+	}
+	
+	@Override
+	public void resume (long soundId) {
+		if (soundId >= 0 && sounds[(int)soundId] != null)
+			sounds[(int)soundId].resume();
+	}
+	
+	@Override
 	public void setLooping (long soundId, boolean looping) {
 		if (soundId >= 0 && sounds[(int)soundId] != null)
 			sounds[(int)soundId].setLooping(looping);
