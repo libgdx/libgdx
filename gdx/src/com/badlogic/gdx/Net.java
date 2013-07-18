@@ -228,8 +228,9 @@ public interface Net {
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
-		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready. {@link HttpResponse}
-		 * contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
+		 * Passing data to the rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} 
+		 * {@link HttpResponse} contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
 		 * {@link HttpStatus#getStatusCode()}). For example:
 		 * 
 		 * <pre>
