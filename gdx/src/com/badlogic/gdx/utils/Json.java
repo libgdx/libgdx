@@ -387,7 +387,7 @@ public class Json {
 	/** @param value May be null.
 	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
-	public void writeValue (Object value, Class knownType, Class elementType) {		
+	public void writeValue (Object value, Class knownType, Class elementType) {
 		try {
 			if (value == null) {
 				writer.value(null);
@@ -806,13 +806,14 @@ public class Json {
 				}
 			}
 
-			if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class || type == Long.class
-				|| type == Double.class || type == Short.class || type == Byte.class || type == Character.class || type.isEnum()) {
-				return readValue("value", type, jsonData);
-			}
-
 			Object object;
 			if (type != null) {
+				if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class
+					|| type == Long.class || type == Double.class || type == Short.class || type == Byte.class
+					|| type == Character.class || type.isEnum()) {
+					return readValue("value", type, jsonData);
+				}
+
 				Serializer serializer = classToSerializer.get(type);
 				if (serializer != null) return (T)serializer.read(this, jsonData, type);
 
