@@ -64,6 +64,26 @@ final class AndroidSound implements Sound {
 	public void stop (long soundId) {
 		soundPool.stop((int)soundId);
 	}
+	
+	@Override
+	public void pause () {
+		soundPool.autoPause();
+	}
+	
+	@Override
+	public void pause (long soundId) {
+		soundPool.pause((int)soundId);
+	}
+	
+	@Override
+	public void resume () {
+		soundPool.autoResume();
+	}
+	
+	@Override
+	public void resume (long soundId) {
+		soundPool.resume((int)soundId);
+	}
 
 	@Override
 	public void setPitch (long soundId, float pitch) {

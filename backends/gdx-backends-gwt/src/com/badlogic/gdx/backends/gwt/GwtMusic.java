@@ -44,12 +44,20 @@ public class GwtMusic implements Music, SMSoundCallback {
 	@Override
 	public void play () {
 		if (isPlaying()) return;
+		if (sound.getPaused()) {
+			resume();
+			return;
+		}
 		soundOptions.volume = (int)(volume * 100);
 		soundOptions.pan = (int)(pan * 100);
 		soundOptions.loops = 1;
 		soundOptions.from = 0;
 		sound.play(soundOptions);
 		isPlaying = true;
+	}
+	
+	public void resume () {
+		sound.resume();
 	}
 
 	@Override
@@ -66,7 +74,7 @@ public class GwtMusic implements Music, SMSoundCallback {
 
 	@Override
 	public boolean isPlaying () {
-		isPlaying &= sound.playState() == 1;
+		isPlaying &= sound.getPlayState() == 1;
 		return isPlaying;
 	}
 
