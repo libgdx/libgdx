@@ -997,23 +997,4 @@ public class Json {
 
 		public void read (Json json, JsonValue jsonData);
 	}
-
-	public static void main (String[] args) throws Exception {
-
-		Json json = new Json();
-
-		Graph graph = new Graph();
-		graph.data = new Array();
-
-		String jsonString = json.toJson(graph);
-
-		System.out.println(jsonString);
-
-		Graph graph2 = json.fromJson(Graph.class, jsonString);
-	}
-
-	public static class Graph<E> {
-		E data;
-	}
-
 }
