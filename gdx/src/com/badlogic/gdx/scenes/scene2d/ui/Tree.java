@@ -514,8 +514,10 @@ public class Tree extends WidgetGroup {
 
 		public void remove () {
 			Tree tree = getTree();
-			if (tree == null) return;
-			tree.remove(this);
+			if (tree != null)
+				tree.remove(this);
+			else if (parent != null) //
+				parent.remove(this);
 		}
 
 		public void remove (Node node) {
