@@ -503,7 +503,7 @@ public class AssetManager implements Disposable {
 
 		// inform the listener that something bad happened
 		if (listener != null) {
-			listener.error(assetDesc.fileName, assetDesc.type, t);
+			listener.error(assetDesc, t);
 		} else {
 			throw new GdxRuntimeException(t);
 		}
