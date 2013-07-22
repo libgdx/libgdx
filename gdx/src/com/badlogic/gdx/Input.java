@@ -194,6 +194,17 @@ public interface Input {
 		public static final int BUTTON_SELECT = 109;
 		public static final int BUTTON_MODE = 110;
 
+		public static final int NUMPAD_0 = 144;
+		public static final int NUMPAD_1 = 145;
+		public static final int NUMPAD_2 = 146;
+		public static final int NUMPAD_3 = 147;
+		public static final int NUMPAD_4 = 148;
+		public static final int NUMPAD_5 = 149;
+		public static final int NUMPAD_6 = 150;
+		public static final int NUMPAD_7 = 151;
+		public static final int NUMPAD_8 = 152;
+		public static final int NUMPAD_9 = 153;
+		
 // public static final int BACKTICK = 0;
 // public static final int TILDE = 0;
 // public static final int UNDERSCORE = 0;

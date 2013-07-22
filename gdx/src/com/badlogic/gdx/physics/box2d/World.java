@@ -42,6 +42,7 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
 import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.Pool;
@@ -324,7 +325,13 @@ b2ContactFilter defaultFilter;
 	private native void jniDestroyBody (long addr, long bodyAddr); /*
 		b2World* world = (b2World*)addr;
 		b2Body* body = (b2Body*)bodyAddr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
 		world->DestroyBody(body);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
 	*/
 
 	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
@@ -591,7 +598,13 @@ b2ContactFilter defaultFilter;
 	private native void jniDestroyJoint (long addr, long jointAddr); /*
 		b2World* world = (b2World*)addr;
 		b2Joint* joint = (b2Joint*)jointAddr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
 		world->DestroyJoint( joint );
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
 	*/
 
 	/** Take a time step. This performs collision detection, integration, and constraint solution.
@@ -816,14 +829,22 @@ b2ContactFilter defaultFilter;
 		return contacts;
 	}
 
-	/** @return all bodies currently in the simulation */
-	public Iterator<Body> getBodies () {
-		return bodies.values();
+	/** @param bodies an Array in which to place all bodies currently in the simulation */
+	public void getBodies (Array<Body> bodies) {
+		bodies.clear();
+		bodies.ensureCapacity(this.bodies.size);
+		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
+			bodies.add(iter.next());
+		}		
 	}
 
-	/** @return all joints currently in the simulation */
-	public Iterator<Joint> getJoints () {
-		return joints.values();
+	/** @param joints an Array in which to place all joints currently in the simulation */
+	public void getJoints (Array<Joint> joints) {
+		joints.clear();
+		joints.ensureCapacity(this.joints.size);
+		for (Iterator<Joint> iter = this.joints.values(); iter.hasNext();) {
+			joints.add(iter.next());
+		}
 	}
 
 	private native void jniGetContactList (long addr, long[] contacts); /*

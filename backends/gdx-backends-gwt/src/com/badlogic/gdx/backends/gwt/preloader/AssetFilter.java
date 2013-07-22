@@ -39,4 +39,9 @@ public interface AssetFilter {
 	/** @param file the file to get the type for
 	 * @return the type of the file, one of {@link AssetType} */
 	public AssetType getType (String file);
+
+	/** @param file the file to get the bundle name for
+	 * @return the name of the bundle to which this file should be added */	
+	public String getBundleName(String file);
+
 }

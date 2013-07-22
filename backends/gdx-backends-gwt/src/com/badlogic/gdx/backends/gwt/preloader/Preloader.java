@@ -101,7 +101,7 @@ public class Preloader {
 	public final String baseUrl;
 
 	public Preloader () {
-		baseUrl = GWT.getModuleBaseURL().replace(GWT.getModuleName() + "/", "") + "assets/";
+		baseUrl = GWT.getHostPageBaseURL() + "assets/";
 		// trigger copying of assets and creation of assets.txt
 		GWT.create(PreloaderBundle.class);
 	}
@@ -140,6 +140,13 @@ public class Preloader {
 				final PreloaderState state = new PreloaderState(assets);
 				for (int i = 0; i < assets.size; i++) {
 					final Asset asset = assets.get(i);
+					
+					if (contains(asset.url)) {
+						asset.loaded = asset.size;
+						asset.succeed = true;
+						continue;
+					}
+					
 					loader.load(baseUrl + asset.url, asset.type, asset.mimeType, new AssetLoaderListener<Object>() {
 						@Override
 						public void onProgress (double amount) {
@@ -175,6 +182,7 @@ public class Preloader {
 						}
 					});
 				}
+				callback.update(state);
 			}
 		});
 	}

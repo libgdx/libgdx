@@ -75,4 +75,10 @@ public class IOSMusic implements Music {
 		
 	}
 
+	@Override
+	public void setOnCompletionListener (OnCompletionListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

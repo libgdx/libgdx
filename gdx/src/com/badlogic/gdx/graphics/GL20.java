@@ -424,8 +424,6 @@ public interface GL20 extends GLCommon {
 
 	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision);
 
-	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source);
-
 	public void glGetTexParameterfv (int target, int pname, FloatBuffer params);
 
 	public void glGetTexParameteriv (int target, int pname, IntBuffer params);

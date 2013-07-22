@@ -1,4 +1,10 @@
 [0.9.9]
+- added Bresenham2, for drawing lines on an integer 2D grid
+- added GridPoint2 and GridPoint3, representing integer points in a 2D or 3D grid
+- added attribute location caching for VertexData/Mesh. Hand vertex attribs to a ShaderProgram, get back int[], pass that to Mesh
+- added Android x86 builds, removed libandroidgl20.so, it's now build as part of gdx-core for Android
+- changed method signature on Box2D World#getBodies and World#getJoints, pass in an Array to fill
+- removed glGetShaderSource from GL20, use ShaderProgram#getVertexShaderSource/getFragmentShaderSource instead
 - added reflection api
 - added AsynchExecutor, execute tasks asynchronously. Used for GWT mainly.
 - removed FileHandle#file(), has no business in there.
@@ -42,10 +48,12 @@
 - ScrollBar#setForceOverscroll renamed to setForceScroll, as it affects more than just overscroll.
 - ArrayMap#addAll renamed to putAll to match the other maps.
 - Added ObjectSet and IntSet.
+- Added completion listener to Music.
 - Added Music#setPan.
 - Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 - DelegateAction subclasses need to implement delegate() instead of act(). http://www.badlogicgames.com/forum/viewtopic.php?p=43576#p43576
-- FreeTypeFontGenerator allows you to specify the PixmapPacker now, to create an atlas with many different fonts (see FreeTypePackTest)
+- Added pause and resume methods to Sound.
+- Changed AssetErrorListener#error to have AssetDescriptor to enable access to parameters of failed asset.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

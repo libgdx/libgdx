@@ -431,6 +431,29 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 	
 	@Override
+	public void patch(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU, int divisionsV) {
+		for (int u = 0; u <= divisionsU; u++) {
+			final float alphaU = (float)u / (float)divisionsU; 
+			vertTmp5.set(corner00).lerp(corner10, alphaU);
+			vertTmp6.set(corner01).lerp(corner11, alphaU);
+			for (int v = 0; v <= divisionsV; v++) {
+				final short idx = vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float)v / (float)divisionsV));
+				if (u > 0 && v > 0)
+					rect((short)(idx-divisionsV-1), (short)(idx-1), idx, (short)(idx-divisionsV));
+			}
+		}
+	}
+	
+	@Override
+	public void patch(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU, int divisionsV) {
+		patch(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMin),
+			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMin),
+			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMax),
+			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMax),
+			divisionsU, divisionsV);
+	}
+	
+	@Override
 	public void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
 						VertexInfo corner001, VertexInfo corner011, VertexInfo corner101, VertexInfo corner111) {
 		final short i000 = vertex(corner000);
@@ -491,14 +514,90 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void box(float x, float y, float z, float width, float height, float depth) {
 		box(matTmp1.setToScaling(width, height, depth).trn(x, y, z));
 	}
+	
+	@Override
+	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions) {
+		circle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, divisions, 0, 360);
+	}
 
 	@Override
+	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions) {
+		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions);
+	}
+
+	@Override
+	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions) {
+		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions);
+	}
+	
+	@Override
+	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions) {
+		circle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, 0, 360);		
+	}
+	
+	@Override
+	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo) {
+		tempV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
+		tempV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
+		if (tempV2.len2() > tempV1.len2())
+			tempV1.set(tempV2);
+		tempV2.set(tempV1.nor()).crs(normalX, normalY, normalZ).nor();
+		circle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tempV1.x, tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, divisions, angleFrom, angleTo);
+	}
+
+	@Override
+	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo) {
+		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions, angleFrom, angleTo);
+	}
+	
+	@Override
+	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo) {
+		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions, angleFrom, angleTo);
+	}
+
+	@Override
+	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
+		final float ao = MathUtils.degreesToRadians * angleFrom;
+		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
+		final Vector3 sx = tempV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
+		final Vector3 sy = tempV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
+		VertexInfo curr = vertTmp3.set(null, null, null, null);
+		curr.hasUV = curr.hasPosition = curr.hasNormal = true;
+		curr.uv.set(.5f, .5f);
+		curr.position.set(centerX, centerY, centerZ);
+		curr.normal.set(normalX, normalY, normalZ);
+		final short center = vertex(curr);
+		float angle = 0f;
+		for (int i = 0; i <= divisions; i++) {
+			angle = ao + step * i;
+			final float x = MathUtils.cos(angle);
+			final float y = MathUtils.sin(angle);
+			curr.uv.set(.5f + .5f * x, .5f + .5f * y);
+			curr.position.set(centerX, centerY, centerZ).add(sx.x*x+sy.x*y, sx.y*x+sy.y*y, sx.z*x+sy.z*y);
+			vertex(curr);
+			if (i != 0)
+				triangle((short)(vindex - 1), (short)(vindex - 2), center);
+		}
+	}
+	
+	@Override
 	public void cylinder(float width, float height, float depth, int divisions) {
-		// FIXME create better cylinder method (- fill the sides, - axis on which to create the cylinder (matrix?), - partial cylinder)
+		cylinder(width, height, depth, divisions, 0, 360);
+	}
+	
+	@Override
+	public void cylinder(float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
+		cylinder(width, height, depth, divisions, angleFrom, angleTo, true);
+	}
+	
+	/** Add a cylinder */
+	public void cylinder(float width, float height, float depth, int divisions, float angleFrom, float angleTo, boolean close) {
+		// FIXME create better cylinder method (- axis on which to create the cylinder (matrix?))
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
 		final float hd = depth * 0.5f;
-		final float step = MathUtils.PI2 / divisions;
+		final float ao = MathUtils.degreesToRadians * angleFrom;
+		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
 		final float us = 1f / divisions;
 		float u = 0f;
 		float angle = 0f;
@@ -506,8 +605,9 @@ public class MeshBuilder implements MeshPartBuilder {
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
 		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
+			
 		for (int i = 0; i <= divisions; i++) {
-			angle = step * i;
+			angle = ao + step * i;
 			u = 1f - us * i;
 			curr1.position.set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd);
 			curr1.normal.set(curr1.position).nor();
@@ -523,15 +623,25 @@ public class MeshBuilder implements MeshPartBuilder {
 				continue;
 			rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
 		}
+		if (close) {
+			circle(width, depth, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, divisions, angleFrom, angleTo);
+			circle(width, depth, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, divisions, 180f-angleTo, 180f-angleFrom);
+		}
 	}
 	
 	@Override
 	public void cone(float width, float height, float depth, int divisions) {
-		// FIXME create better cylinder method (- fill the side, - axis on which to create the cone (matrix?), - partial cone)
+		cone(width, height, depth, divisions, 0, 360);
+	}
+	
+	@Override
+	public void cone(float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
+		// FIXME create better cylinder method (- axis on which to create the cone (matrix?))
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
 		final float hd = depth * 0.5f;
-		final float step = MathUtils.PI2 / divisions;
+		final float ao = MathUtils.degreesToRadians * angleFrom;
+		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
 		final float us = 1f / divisions;
 		float u = 0f;
 		float angle = 0f;
@@ -540,7 +650,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0,hh,0).setNor(0,1,0).setUV(0.5f, 0);
 		final int base = vertex(curr2);
 		for (int i = 0; i <= divisions; i++) {
-			angle = step * i;
+			angle = ao + step * i;
 			u = 1f - us * i;
 			curr1.position.set(MathUtils.cos(angle) * hw, 0f, MathUtils.sin(angle) * hd);
 			curr1.normal.set(curr1.position).nor();
@@ -551,16 +661,34 @@ public class MeshBuilder implements MeshPartBuilder {
 				continue;
 			triangle((short)base, (short)(vindex-1), (short)(vindex-2)); // FIXME don't duplicate lines and points
 		}
+		circle(width, depth, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, divisions, 180f-angleTo, 180f-angleFrom);
 	}
 	
 	@Override
 	public void sphere(float width, float height, float depth, int divisionsU, int divisionsV) {
-		// FIXME create better sphere method (- only one vertex for each pole, - partial sphere, - position)
+		sphere(width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
+	}
+	
+	@Override
+	public void sphere(final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV) {
+		sphere(transform, width, height, depth, divisionsU, divisionsV, 0, 360, 0, 180);
+	}
+
+	@Override
+	public void sphere(float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
+		sphere(matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
+	}
+
+	@Override
+	public void sphere(final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
+		// FIXME create better sphere method (- only one vertex for each pole, - position)
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
 		final float hd = depth * 0.5f;
-		final float stepU = MathUtils.PI2 / divisionsU;
-		final float stepV = MathUtils.PI / divisionsV;
+		final float auo = MathUtils.degreesToRadians * angleUFrom;
+		final float stepU = (MathUtils.degreesToRadians * (angleUTo - angleUFrom)) / divisionsU;
+		final float avo = MathUtils.degreesToRadians * angleVFrom;
+		final float stepV = (MathUtils.degreesToRadians * (angleVTo - angleVFrom)) / divisionsV;
 		final float us = 1f / divisionsU;
 		final float vs = 1f / divisionsV;
 		float u = 0f;
@@ -569,24 +697,31 @@ public class MeshBuilder implements MeshPartBuilder {
 		float angleV = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
-		for (int i = 0; i <= divisionsU; i++) {
-			angleU = stepU * i;
-			u = 1f - us * i;
-			tempV1.set(MathUtils.cos(angleU) * hw, 0f, MathUtils.sin(angleU) * hd);
-			for (int j = 0; j <= divisionsV; j++) {
-				angleV = stepV * j;
-				v = vs * j;
-				final float t = MathUtils.sin(angleV);
-				curr1.position.set(tempV1.x * t, MathUtils.cos(angleV) * hh, tempV1.z * t);
+		for (int iv = 0; iv <= divisionsV; iv++) {
+			angleV = avo + stepV * iv;
+			v = vs * iv;
+			final float t = MathUtils.sin(angleV);
+			final float h = MathUtils.cos(angleV) * hh;
+			for (int iu = 0; iu <= divisionsU; iu++) {
+				angleU = auo + stepU * iu;
+				u = 1f - us * iu;
+				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t).mul(transform);
 				curr1.normal.set(curr1.position).nor();
 				curr1.uv.set(u, v);
 				vertex(curr1);
-				if (i == 0 || j == 0)
-					continue;
-				// FIXME don't duplicate lines and points
-				index((short)(vindex-2), (short)(vindex-1), (short)(vindex-(divisionsV+2)), 
-					(short)(vindex-1), (short)(vindex-(divisionsV+1)), (short)(vindex-(divisionsV+2))); 
+				if ((iv > 0) && (iu > 0)) // FIXME don't duplicate lines and points
+					rect((short)(vindex-1), (short)(vindex-2), (short)(vindex-(divisionsU+3)), (short)(vindex-(divisionsU+2))); 
 			}
 		}
+	}
+	
+	@Override
+	public void capsule(float radius, float height, int divisions) {
+		if (height < 2f * radius)
+			throw new GdxRuntimeException("Height must be at least twice the radius");
+		final float d = 2f * radius;
+		cylinder(d, height - d, d, divisions, 0, 360, false);
+		sphere(matTmp1.setToTranslation(0, .5f*(height-d), 0), d, d, d, divisions, divisions, 0, 360, 0, 90);
+		sphere(matTmp1.setToTranslation(0, -.5f*(height-d), 0), d, d, d, divisions, divisions, 0, 360, 90, 180);
 	}
 }

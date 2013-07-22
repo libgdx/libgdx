@@ -238,7 +238,6 @@ public class Json {
 			Field field = metadata.field;
 			try {
 				Object value = field.get(object);
-
 				if (defaultValues != null) {
 					Object defaultValue = defaultValues[i++];
 					if (value == null && defaultValue == null) continue;
@@ -506,7 +505,14 @@ public class Json {
 			}
 
 			if (ClassReflection.isAssignableFrom(Enum.class, actualType)) {
-				writer.value(value);
+				if (knownType == null || !knownType.equals(actualType)) {
+					writeObjectStart(actualType, null);
+					writer.name("value");
+					writer.value(value);
+					writeObjectEnd();
+				} else {
+					writer.value(value);
+				}
 				return;
 			}
 
@@ -800,13 +806,14 @@ public class Json {
 				}
 			}
 
-			if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class || type == Long.class
-				|| type == Double.class || type == Short.class || type == Byte.class || type == Character.class) {
-				return readValue("value", type, jsonData);
-			}
-
 			Object object;
 			if (type != null) {
+				if (type == String.class || type == Integer.class || type == Boolean.class || type == Float.class
+					|| type == Long.class || type == Double.class || type == Short.class || type == Byte.class
+					|| type == Character.class || type.isEnum()) {
+					return readValue("value", type, jsonData);
+				}
+
 				Serializer serializer = classToSerializer.get(type);
 				if (serializer != null) return (T)serializer.read(this, jsonData, type);
 
@@ -832,7 +839,6 @@ public class Json {
 					result.put(child.name(), readValue(elementType, null, child));
 				return (T)result;
 			}
-
 			readFields(object, jsonData);
 			return (T)object;
 		}
@@ -843,8 +849,8 @@ public class Json {
 		}
 
 		if (jsonData.isArray()) {
-			if (type == null || ClassReflection.isAssignableFrom(Array.class, type)) {
-				Array newArray = type == null ? new Array() : (Array)newInstance(type);
+			if ((type == null || type == Object.class) || ClassReflection.isAssignableFrom(Array.class, type)) {
+				Array newArray = (type == null || type == Object.class) ? new Array() : (Array)newInstance(type);
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					newArray.add(readValue(elementType, null, child));
 				return (T)newArray;
@@ -931,6 +937,9 @@ public class Json {
 				return constructor.newInstance();
 			} catch (SecurityException ignored) {
 			} catch (ReflectionException ignored) {
+				if (type.isEnum()) {
+					return type.getEnumConstants()[0];
+				}
 				if (type.isArray())
 					throw new SerializationException("Encountered JSON object when expected array of type: " + type.getName(), ex);
 				else if (ClassReflection.isMemberClass(type) && !ClassReflection.isStaticClass(type))

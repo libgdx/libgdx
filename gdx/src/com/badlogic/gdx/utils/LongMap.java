@@ -285,7 +285,10 @@ public class LongMap<V> {
 	}
 
 	public V get (long key) {
-		if (key == 0) return zeroValue;
+		if (key == 0) {
+			if (!hasZeroValue) return null;
+			return zeroValue;
+		}
 		int index = (int)(key & mask);
 		if (keyTable[index] != key) {
 			index = hash2(key);
@@ -298,7 +301,10 @@ public class LongMap<V> {
 	}
 
 	public V get (long key, V defaultValue) {
-		if (key == 0) return zeroValue;
+		if (key == 0) {
+			if (!hasZeroValue) return defaultValue;
+			return zeroValue;
+		}
 		int index = (int)(key & mask);
 		if (keyTable[index] != key) {
 			index = hash2(key);

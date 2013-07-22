@@ -123,6 +123,8 @@ public class LwjglApplication implements Application {
 	}
 
 	void mainLoop () {
+		Array<LifecycleListener> lifecycleListeners = this.lifecycleListeners;
+
 		try {
 			graphics.setupDisplay();
 		} catch (LWJGLException e) {
@@ -145,11 +147,19 @@ public class LwjglApplication implements Application {
 			boolean isActive = Display.isActive();
 			if (wasActive && !isActive) { // if it's just recently minimized from active state
 				wasActive = false;
+				synchronized (lifecycleListeners) {
+					for (LifecycleListener listener : lifecycleListeners)
+						listener.pause();
+				}
 				listener.pause();
 			}
 			if (!wasActive && isActive) { // if it's just recently focused from minimized state
 				wasActive = true;
 				listener.resume();
+				synchronized (lifecycleListeners) {
+					for (LifecycleListener listener : lifecycleListeners)
+						listener.resume();
+				}
 			}
 
 			boolean shouldRender = false;
@@ -212,9 +222,8 @@ public class LwjglApplication implements Application {
 			if (frameRate > 0) Display.sync(frameRate);
 		}
 
-		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized (listeners) {
-			for (LifecycleListener listener : listeners) {
+		synchronized (lifecycleListeners) {
+			for (LifecycleListener listener : lifecycleListeners) {
 				listener.pause();
 				listener.dispose();
 			}

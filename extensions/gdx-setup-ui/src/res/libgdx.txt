@@ -44,10 +44,9 @@ gdx-backend-lwjgl-sources.jar
 gdx-natives.jar
 
 [libs-android]
-armeabi/libandroidgl20.so
 armeabi/libgdx.so
-armeabi-v7a/libandroidgl20.so
 armeabi-v7a/libgdx.so
+x86/libgdx.so
 gdx-backend-android.jar
 gdx-backend-android-sources.jar
 

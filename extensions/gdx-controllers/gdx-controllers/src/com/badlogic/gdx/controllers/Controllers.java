@@ -23,6 +23,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** Provides access to connected {@link Controller} instances. Query
  * the available controllers via {@link #getControllers()}, add and remove
@@ -89,6 +90,8 @@ public class Controllers {
 			}
 		} else if(type == ApplicationType.Desktop) {
 			className = "com.badlogic.gdx.controllers.desktop.DesktopControllerManager";
+		} else if(type == ApplicationType.WebGL) {
+			className = "com.badlogic.gdx.controllers.gwt.GwtControllers";
 		} else {
 			Gdx.app.log(TAG, "No controller manager is available for: " + Gdx.app.getType());
 			manager = new ControllerManagerStub();
@@ -96,7 +99,8 @@ public class Controllers {
 		
 		if(manager == null) {
 			try {
-				manager = (ControllerManager)Class.forName(className).newInstance();
+				Class controllerManagerClass = ClassReflection.forName(className);
+				manager = (ControllerManager)ClassReflection.newInstance(controllerManagerClass);
 			} catch (Throwable ex) {
 				throw new GdxRuntimeException("Error creating controller manager: " + className, ex);
 			}

@@ -22,21 +22,28 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Touch;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.logging.client.ConsoleLogHandler;
 
 public class GwtInput implements Input {
-	boolean touched = false;
-	int mouseX, mouseY;
-	int deltaX, deltaY;
 	boolean justTouched = false;
+	private boolean[] touched = new boolean[20];
+	private int[] touchX = new int[20];
+	private int[] touchY = new int[20];
+	private int[] deltaX = new int[20];
+	private int[] deltaY = new int[20];
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	Set<Integer> pressedKeys = new HashSet<Integer>();
 	InputProcessor processor;
@@ -68,51 +75,47 @@ public class GwtInput implements Input {
 
 	@Override
 	public int getX () {
-		return mouseX;
+		return touchX[0];
 	}
 
 	@Override
 	public int getX (int pointer) {
-		if (pointer != 0) return 0;
-		return mouseX;
+		return touchX[pointer];
 	}
 
 	@Override
 	public int getDeltaX () {
-		return deltaX;
+		return deltaX[0];
 	}
 
 	@Override
 	public int getDeltaX (int pointer) {
-		if (pointer != 0) return 0;
-		return deltaX;
+		return deltaX[pointer];
 	}
 
 	@Override
 	public int getY () {
-		return mouseY;
+		return touchY[0];
 	}
 
 	@Override
 	public int getY (int pointer) {
-		if (pointer != 0) return 0;
-		return mouseY;
+		return touchY[pointer];
 	}
 
 	@Override
 	public int getDeltaY () {
-		return deltaY;
+		return deltaY[0];
 	}
 
 	@Override
 	public int getDeltaY (int pointer) {
-		if (pointer != 0) return 0;
-		return deltaY;
+		return deltaY[pointer];
 	}
 
 	@Override
 	public boolean isTouched () {
-		return touched;
+		return touched[0];
 	}
 
 	@Override
@@ -122,13 +125,12 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isTouched (int pointer) {
-		if (pointer != 0) return false;
-		return touched;
+		return touched[pointer];
 	}
 
 	@Override
 	public boolean isButtonPressed (int button) {
-		return button == Buttons.LEFT && touched;
+		return button == Buttons.LEFT && touched[0];
 	}
 
 	@Override
@@ -242,7 +244,7 @@ public class GwtInput implements Input {
 		if (peripheral == Peripheral.Accelerometer) return false;
 		if (peripheral == Peripheral.Compass) return false;
 		if (peripheral == Peripheral.HardwareKeyboard) return true;
-		if (peripheral == Peripheral.MultitouchScreen) return false;
+		if (peripheral == Peripheral.MultitouchScreen) return isTouchScreen();
 		if (peripheral == Peripheral.OnscreenKeyboard) return false;
 		if (peripheral == Peripheral.Vibrator) return false;
 		return false;
@@ -332,6 +334,10 @@ public class GwtInput implements Input {
 																					return event.movementY || event.webkitMovementY || 0;
 																					}-*/;
 
+	private static native boolean isTouchScreen() /*-{
+		return (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+	}-*/;
+	
 	/** works only for Chrome > Version 18 with enabled Mouse Lock enable in about:flags or start Chrome with the
 	 * --enable-pointer-lock flag */
 	@Override
@@ -423,6 +429,12 @@ public class GwtInput implements Input {
 		addEventListener(Document.get(), "keydown", this, false);
 		addEventListener(Document.get(), "keyup", this, false);
 		addEventListener(Document.get(), "keypress", this, false);
+		
+		addEventListener(canvas, "touchstart", this, true);
+		addEventListener(canvas, "touchmove", this, true);
+		addEventListener(canvas, "touchcancel", this, true);
+		addEventListener(canvas, "touchend", this, true);
+		
 	}
 
 	private int getButton (int button) {
@@ -433,9 +445,8 @@ public class GwtInput implements Input {
 	}
 
 	private void handleEvent (NativeEvent e) {
-
 		if (e.getType().equals("mousedown")) {
-			if (!e.getEventTarget().equals(canvas) || touched) {
+			if (!e.getEventTarget().equals(canvas) || touched[0]) {
 				float mouseX = (int)getRelativeX(e, canvas);
 				float mouseY = (int)getRelativeY(e, canvas);
 				if (mouseX < 0 || mouseX > Gdx.graphics.getWidth() || mouseY < 0 || mouseY > Gdx.graphics.getHeight()) {
@@ -445,60 +456,60 @@ public class GwtInput implements Input {
 			}
 			hasFocus = true;
 			this.justTouched = true;
-			this.touched = true;
+			this.touched[0] = true;
 			this.pressedButtons.add(getButton(e.getButton()));
-			this.deltaX = 0;
-			this.deltaY = 0;
+			this.deltaX[0] = 0;
+			this.deltaY[0] = 0;
 			if (isCursorCatched()) {
-				this.mouseX += getMovementXJSNI(e);
-				this.mouseY += getMovementYJSNI(e);
+				this.touchX[0] += getMovementXJSNI(e);
+				this.touchY[0] += getMovementYJSNI(e);
 			} else {
-				this.mouseX = (int)getRelativeX(e, canvas);
-				this.mouseY = (int)getRelativeY(e, canvas);
+				this.touchX[0] = (int)getRelativeX(e, canvas);
+				this.touchY[0] = (int)getRelativeY(e, canvas);
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
-			if (processor != null) processor.touchDown(mouseX, mouseY, 0, getButton(e.getButton()));
+			if (processor != null) processor.touchDown(touchX[0], touchY[0], 0, getButton(e.getButton()));
 		}
 
 		if (e.getType().equals("mousemove")) {
 			if (isCursorCatched()) {
-				this.deltaX = (int)getMovementXJSNI(e);
-				this.deltaY = (int)getMovementYJSNI(e);
-				this.mouseX += getMovementXJSNI(e);
-				this.mouseY += getMovementYJSNI(e);
+				this.deltaX[0] = (int)getMovementXJSNI(e);
+				this.deltaY[0] = (int)getMovementYJSNI(e);
+				this.touchX[0] += getMovementXJSNI(e);
+				this.touchY[0] += getMovementYJSNI(e);
 			} else {
-				this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
-				this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
-				this.mouseX = (int)getRelativeX(e, canvas);
-				this.mouseY = (int)getRelativeY(e, canvas);
+				this.deltaX[0] = (int)getRelativeX(e, canvas) - touchX[0];
+				this.deltaY[0] = (int)getRelativeY(e, canvas) - touchY[0];
+				this.touchX[0] = (int)getRelativeX(e, canvas);
+				this.touchY[0] = (int)getRelativeY(e, canvas);
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
 			if (processor != null) {
-				if (touched)
-					processor.touchDragged(mouseX, mouseY, 0);
+				if (touched[0])
+					processor.touchDragged(touchX[0], touchY[0], 0);
 				else
-					processor.mouseMoved(mouseX, mouseY);
+					processor.mouseMoved(touchX[0], touchY[0]);
 			}
 		}
 
 		if (e.getType().equals("mouseup")) {
-			if (!touched) return;
+			if (!touched[0]) return;
 			this.pressedButtons.remove(getButton(e.getButton()));
-			this.touched = pressedButtons.size() > 0;
+			this.touched[0] = pressedButtons.size() > 0;
 			if (isCursorCatched()) {
-				this.deltaX = (int)getMovementXJSNI(e);
-				this.deltaY = (int)getMovementYJSNI(e);
-				this.mouseX += getMovementXJSNI(e);
-				this.mouseY += getMovementYJSNI(e);
+				this.deltaX[0] = (int)getMovementXJSNI(e);
+				this.deltaY[0] = (int)getMovementYJSNI(e);
+				this.touchX[0] += getMovementXJSNI(e);
+				this.touchY[0] += getMovementYJSNI(e);
 			} else {
-				this.deltaX = (int)getRelativeX(e, canvas) - mouseX;
-				this.deltaY = (int)getRelativeY(e, canvas) - mouseY;
-				this.mouseX = (int)getRelativeX(e, canvas);
-				this.mouseY = (int)getRelativeY(e, canvas);
+				this.deltaX[0] = (int)getRelativeX(e, canvas) - touchX[0];
+				this.deltaY[0] = (int)getRelativeY(e, canvas) - touchY[0];
+				this.touchX[0] = (int)getRelativeX(e, canvas);
+				this.touchY[0] = (int)getRelativeY(e, canvas);
 			}
 			this.currentEventTimeStamp = TimeUtils.nanoTime();
-			this.touched = false;
-			if (processor != null) processor.touchUp(mouseX, mouseY, 0, getButton(e.getButton()));
+			this.touched[0] = false;
+			if (processor != null) processor.touchUp(touchX[0], touchY[0], 0, getButton(e.getButton()));
 		}
 
 		if (e.getType().equals("keydown") && hasFocus) {
@@ -529,6 +540,74 @@ public class GwtInput implements Input {
 			if (processor != null) processor.keyUp(code);
 		}
 
+		if (e.getType().equals("touchstart")) {
+			this.justTouched = true;
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int touchId = touch.getIdentifier();
+				touched[touchId] = true;
+				touchX[touchId] = touch.getRelativeX(canvas);
+				touchY[touchId] = touch.getRelativeY(canvas);
+				deltaX[touchId] = 0;
+				deltaY[touchId] = 0;
+				if (processor != null) {
+					processor.touchDown(touchX[touchId], touchY[touchId], touchId, Buttons.LEFT);
+				}				
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
+		if (e.getType().equals("touchmove")) {
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int touchId = touch.getIdentifier();
+				deltaX[touchId] = touch.getRelativeX(canvas) - touchX[touchId];
+				deltaY[touchId] = touch.getRelativeY(canvas) - touchY[touchId];
+				touchX[touchId] = touch.getRelativeX(canvas);
+				touchY[touchId] = touch.getRelativeY(canvas);
+				if (processor != null) {
+					processor.touchDragged(touchX[touchId], touchY[touchId], touchId);
+				}
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
+		if (e.getType().equals("touchcancel")) {
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int touchId = touch.getIdentifier();
+				touched[touchId] = false;
+				deltaX[touchId] = touch.getRelativeX(canvas) - touchX[touchId];
+				deltaY[touchId] = touch.getRelativeY(canvas) - touchY[touchId];				
+				touchX[touchId] = touch.getRelativeX(canvas);
+				touchY[touchId] = touch.getRelativeY(canvas);
+				if (processor != null) {
+					processor.touchUp(touchX[touchId], touchY[touchId], touchId, Buttons.LEFT);
+				}					
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
+		if (e.getType().equals("touchend")) {			
+			JsArray<Touch> touches = e.getChangedTouches();
+			for (int i = 0, j = touches.length(); i < j; i++) {
+				Touch touch = touches.get(i);
+				int touchId = touch.getIdentifier();
+				touched[touchId] = false;
+				deltaX[touchId] = touch.getRelativeX(canvas) - touchX[touchId];
+				deltaY[touchId] = touch.getRelativeY(canvas) - touchY[touchId];				
+				touchX[touchId] = touch.getRelativeX(canvas);
+				touchY[touchId] = touch.getRelativeY(canvas);
+				if (processor != null) {
+					processor.touchUp(touchX[touchId], touchY[touchId], touchId, Buttons.LEFT);
+				}					
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
 // if(hasFocus) e.preventDefault();
 	}
 
@@ -654,25 +733,25 @@ public class GwtInput implements Input {
 			return Keys.UNKNOWN; // FIXME
 			// case KEY_SELECT_KEY: return Keys.SELECT_KEY;
 		case KEY_NUMPAD0:
-			return Keys.NUM_0;
+			return Keys.NUMPAD_0;
 		case KEY_NUMPAD1:
-			return Keys.NUM_1;
+			return Keys.NUMPAD_1;
 		case KEY_NUMPAD2:
-			return Keys.NUM_2;
+			return Keys.NUMPAD_2;
 		case KEY_NUMPAD3:
-			return Keys.NUM_3;
+			return Keys.NUMPAD_3;
 		case KEY_NUMPAD4:
-			return Keys.NUM_4;
+			return Keys.NUMPAD_4;
 		case KEY_NUMPAD5:
-			return Keys.NUM_5;
+			return Keys.NUMPAD_5;
 		case KEY_NUMPAD6:
-			return Keys.NUM_6;
+			return Keys.NUMPAD_6;
 		case KEY_NUMPAD7:
-			return Keys.NUM_7;
+			return Keys.NUMPAD_7;
 		case KEY_NUMPAD8:
-			return Keys.NUM_8;
+			return Keys.NUMPAD_8;
 		case KEY_NUMPAD9:
-			return Keys.NUM_9;
+			return Keys.NUMPAD_9;
 		case KEY_MULTIPLY:
 			return Keys.UNKNOWN; // FIXME
 		case KEY_ADD:

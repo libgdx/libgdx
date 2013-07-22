@@ -72,6 +72,11 @@ public class LwjglFrame extends JFrame {
 			protected void exception (Throwable t) {
 				LwjglFrame.this.exception(t);
 			}
+
+			protected int getFrameRate () {
+				int frameRate = LwjglFrame.this.getFrameRate();
+				return frameRate == 0 ? super.getFrameRate() : frameRate;
+			}
 		};
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -97,6 +102,10 @@ public class LwjglFrame extends JFrame {
 				lwjglCanvas.getCanvas().requestFocus();
 			}
 		});
+	}
+
+	protected int getFrameRate () {
+		return 0;
 	}
 
 	protected void exception (Throwable ex) {

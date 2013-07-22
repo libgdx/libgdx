@@ -202,14 +202,19 @@ public class TexturePacker2 {
 				g.drawRect(0, 0, width - 1, height - 1);
 			}
 
+			ImageOutputStream ios = null;
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
+					BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+					newImage.getGraphics().drawImage(canvas, 0, 0, null);
+					canvas = newImage;
+
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
 					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 					param.setCompressionQuality(settings.jpegQuality);
-					ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
+					ios = ImageIO.createImageOutputStream(outputFile);
 					writer.setOutput(ios);
 					writer.write(null, new IIOImage(canvas, null, null), param);
 				} else {
@@ -218,6 +223,13 @@ public class TexturePacker2 {
 				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
+			} finally {
+				if (ios != null) {
+					try {
+						ios.close();
+					} catch (Exception ignored) {
+					}
+				}
 			}
 		}
 	}
@@ -253,7 +265,6 @@ public class TexturePacker2 {
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
-					System.out.println(rectName);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
 							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
@@ -275,8 +286,12 @@ public class TexturePacker2 {
 
 			for (Rect rect : page.outputRects) {
 				writeRect(writer, page, rect, rect.name);
-				for (String alias : rect.aliases)
-					writeRect(writer, page, rect, alias);
+				for (Alias alias : rect.aliases) {
+					Rect aliasRect = new Rect();
+					aliasRect.set(rect);
+					alias.apply(aliasRect);
+					writeRect(writer, page, aliasRect, alias.name);
+				}
 			}
 		}
 // }
@@ -331,6 +346,29 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 	}
 
+	/** @author Regnarock
+	 * @author Nathan Sweet */
+	public static class Alias {
+		public String name;
+		public int index;
+		public int[] splits;
+		public int[] pads;
+
+		public Alias (Rect rect) {
+			name = rect.name;
+			index = rect.index;
+			splits = rect.splits;
+			pads = rect.pads;
+		}
+
+		public void apply (Rect rect) {
+			rect.name = name;
+			rect.index = index;
+			rect.splits = splits;
+			rect.pads = pads;
+		}
+	}
+
 	/** @author Nathan Sweet */
 	public static class Rect {
 		public String name;
@@ -339,7 +377,7 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 		public int index;
 		public boolean rotated;
-		public Set<String> aliases = new HashSet<String>();
+		public Set<Alias> aliases = new HashSet<Alias>();
 		public int[] splits;
 		public int[] pads;
 		public boolean canRotate = true;

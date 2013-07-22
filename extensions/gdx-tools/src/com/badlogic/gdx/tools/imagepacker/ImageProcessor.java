@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.tools.imagepacker;
 
+import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Alias;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
@@ -79,6 +80,12 @@ public class ImageProcessor {
 	}
 
 	public void addImage (BufferedImage image, String name) {
+		if (image.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
+			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+			newImage.getGraphics().drawImage(image, 0, 0, null);
+			image = newImage;
+		}
+
 		Rect rect = null;
 
 		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
@@ -126,7 +133,7 @@ public class ImageProcessor {
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
-				existing.aliases.add(rect.name);
+				existing.aliases.add(new Alias(rect));
 				return;
 			}
 			crcs.put(crc, rect);
@@ -339,6 +346,8 @@ public class ImageProcessor {
 	static private String hash (BufferedImage image) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
+
+			// Ensure image is the correct format.
 			int width = image.getWidth();
 			int height = image.getHeight();
 			if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
@@ -346,21 +355,28 @@ public class ImageProcessor {
 				newImage.getGraphics().drawImage(image, 0, 0, null);
 				image = newImage;
 			}
+
 			WritableRaster raster = image.getRaster();
 			int[] pixels = new int[width];
 			for (int y = 0; y < height; y++) {
 				raster.getDataElements(0, y, width, 1, pixels);
-				for (int x = 0; x < width; x++) {
-					int rgba = pixels[x];
-					digest.update((byte)(rgba >> 24));
-					digest.update((byte)(rgba >> 16));
-					digest.update((byte)(rgba >> 8));
-					digest.update((byte)rgba);
-				}
+				for (int x = 0; x < width; x++)
+					hash(digest, pixels[x]);
 			}
+
+			hash(digest, width);
+			hash(digest, height);
+
 			return new BigInteger(1, digest.digest()).toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	static private void hash (MessageDigest digest, int value) {
+		digest.update((byte)(value >> 24));
+		digest.update((byte)(value >> 16));
+		digest.update((byte)(value >> 8));
+		digest.update((byte)value);
 	}
 }

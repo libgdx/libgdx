@@ -152,6 +152,7 @@
 			<fileset refid="gcc-files"/>
 			<compositemapper>
 				<mapper type="glob" from="*.c" to="*.o"/>
+				<mapper type="glob" from="*.m" to="*.o"/>
 			</compositemapper>
 		</apply>
 	</target>	

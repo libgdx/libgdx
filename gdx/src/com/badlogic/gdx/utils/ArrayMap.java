@@ -61,14 +61,14 @@ public class ArrayMap<K, V> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the arrays, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
-	public ArrayMap (boolean ordered, int capacity, Class<K> keyArrayType, Class<V> valueArrayType) {
+	public ArrayMap (boolean ordered, int capacity, Class keyArrayType, Class valueArrayType) {
 		this.ordered = ordered;
 		keys = (K[])ArrayReflection.newInstance(keyArrayType, capacity);
 		values = (V[])ArrayReflection.newInstance(valueArrayType, capacity);
 	}
 
 	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
-	public ArrayMap (Class<K> keyArrayType, Class<V> valueArrayType) {
+	public ArrayMap (Class keyArrayType, Class valueArrayType) {
 		this(false, 16, keyArrayType, valueArrayType);
 	}
 
@@ -76,8 +76,7 @@ public class ArrayMap<K, V> {
 	 * will be ordered if the specified map is ordered. The capacity is set to the number of elements, so any subsequent elements
 	 * added will cause the backing arrays to be grown. */
 	public ArrayMap (ArrayMap array) {
-		this(array.ordered, array.size, (Class<K>)array.keys.getClass().getComponentType(), (Class<V>)array.values.getClass()
-			.getComponentType());
+		this(array.ordered, array.size, array.keys.getClass().getComponentType(), array.values.getClass().getComponentType());
 		size = array.size;
 		System.arraycopy(array.keys, 0, keys, 0, size);
 		System.arraycopy(array.values, 0, values, 0, size);
@@ -137,12 +136,12 @@ public class ArrayMap<K, V> {
 	public K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
-		if (identity || values == null) {
+		if (identity || value == null) {
 			for (; i >= 0; i--)
-				if (values[i] == values) return keys[i];
+				if (values[i] == value) return keys[i];
 		} else {
 			for (; i >= 0; i--)
-				if (values.equals(values[i])) return keys[i];
+				if (value.equals(values[i])) return keys[i];
 		}
 		return null;
 	}

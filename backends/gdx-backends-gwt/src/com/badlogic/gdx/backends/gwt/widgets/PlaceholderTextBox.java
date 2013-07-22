@@ -35,7 +35,7 @@ public class PlaceholderTextBox extends TextBox {
 
 	/** Sets the placeholder text displayed in the text box.
 	 * 
-	 * @param placeholder the placeholder text */
+	 * @param text the placeholder text */
 	public void setPlaceholder (String text) {
 		placeholder = (text != null ? text : "");
 		getElement().setPropertyString("placeholder", placeholder);

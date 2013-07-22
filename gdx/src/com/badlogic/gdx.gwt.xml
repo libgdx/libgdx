@@ -160,22 +160,17 @@
 				
 	<!-- graphics/g3d/shaders -->
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
-		<include name="graphics/g3d/shaders/CompositeShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
 		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
 		
-	<!-- graphics/g3d/shaders/subshaders -->
-		<include name="graphics/g3d/shaders/subshaders/BaseSubShader.java"/>
-		<include name="graphics/g3d/shaders/subshaders/DiffuseColorTextureShader.java"/>
-		<include name="graphics/g3d/shaders/subshaders/SubShader.java"/>
-		<include name="graphics/g3d/shaders/subshaders/TransformShader.java"/>
-		
+	<!-- graphics/g3d/shaders/graph -->
+		<include name="graphics/g3d/shaders/graph/*.java"/>
+
 	<!-- graphics/g3d/utils -->
 	  <include name="graphics/g3d/utils/AnimationController.java"/>
 	  <include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
-		<include name="graphics/g3d/utils/CompositeShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
@@ -258,6 +253,7 @@
 	
 	<!-- math -->
 		<include name="math/Bezier.java"/>
+		<include name="math/Bresenham2.java"/>
 		<include name="math/BSpline.java"/>
 		<include name="math/CatmullRomSpline.java"/>
 		<include name="math/Circle.java"/>
@@ -265,6 +261,8 @@
 		<include name="math/Ellipse.java"/>
 		<include name="math/FloatCounter.java"/>
 		<include name="math/Frustum.java"/>
+		<include name="math/GridPoint2.java"/>
+		<include name="math/GridPoint3.java"/>
 		<include name="math/Interpolation.java"/>
 		<include name="math/Intersector.java"/>
 		<include name="math/MathUtils.java"/>
@@ -432,6 +430,7 @@
 		<include name="utils/ObjectFloatMap.java"/>
 		<include name="utils/ObjectIntMap.java"/>
 		<include name="utils/ObjectMap.java"/>
+		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
 		<include name="utils/PausableThread.java"/>
 		<include name="utils/PerformanceCounter.java"/>
