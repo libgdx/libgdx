@@ -37,6 +37,8 @@ import com.badlogic.gdx.utils.Pools;
  * {@link ChangeEvent} is fired when the selected node changes.
  * @author Nathan Sweet */
 public class Tree extends WidgetGroup {
+	static boolean isMac = System.getProperty("os.name").contains("Mac");
+
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Array<Node> selectedNodes = new Array();
@@ -64,6 +66,13 @@ public class Tree extends WidgetGroup {
 
 	private void initialize () {
 		addListener(clickListener = new ClickListener() {
+			private boolean isCtrlPressed () {
+				if (isMac)
+					return Gdx.input.isKeyPressed(Keys.SYM);
+				else
+					return Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+			}
+
 			public void clicked (InputEvent event, float x, float y) {
 				Node node = getNodeAt(y);
 				if (node == null) return;
@@ -73,7 +82,7 @@ public class Tree extends WidgetGroup {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().actor.getY();
 					float high = node.actor.getY();
-					if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))
+					if (!isCtrlPressed())
 						selectedNodes.clear();
 					if (low > high)
 						selectNodes(rootNodes, high, low);
@@ -82,7 +91,7 @@ public class Tree extends WidgetGroup {
 					fireChangeEvent();
 					return;
 				}
-				if (!multiSelect || (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && !Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT))) {
+				if (!multiSelect || !isCtrlPressed()) {
 					if (node.children.size > 0) {
 						// Toggle expanded.
 						float rowX = node.actor.getX();
