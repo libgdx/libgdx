@@ -62,9 +62,9 @@ public class Stage extends InputAdapter implements Disposable {
 	private float gutterWidth, gutterHeight;
 	private float centerX, centerY;
 	private Camera camera;
-	public final SpriteBatch batch;
-	public final boolean ownsBatch;
-	public final Group root;
+	private final SpriteBatch batch;
+	private final boolean ownsBatch;
+	private final Group root;
 	private final Vector2 stageCoords = new Vector2();
 	private final Actor[] pointerOverActors = new Actor[20];
 	private final boolean[] pointerTouched = new boolean[20];
