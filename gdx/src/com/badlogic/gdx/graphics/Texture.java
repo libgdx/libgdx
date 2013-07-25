@@ -345,10 +345,10 @@ public class Texture implements Disposable {
 	}
 
 	private static void addManagedTexture (Application app, Texture texture) {
-		List<Texture> managedTexureList = managedTextures.get(app);
-		if (managedTexureList == null) managedTexureList = new ArrayList<Texture>();
-		managedTexureList.add(texture);
-		managedTextures.put(app, managedTexureList);
+		List<Texture> managedTextureList = managedTextures.get(app);
+		if (managedTextureList == null) managedTextureList = new ArrayList<Texture>();
+		managedTextureList.add(texture);
+		managedTextures.put(app, managedTextureList);
 	}
 
 	/** Clears all managed textures. This is an internal method. Do not use it! */
@@ -358,12 +358,12 @@ public class Texture implements Disposable {
 
 	/** Invalidate all managed textures. This is an internal method. Do not use it! */
 	public static void invalidateAllTextures (Application app) {
-		List<Texture> managedTexureList = managedTextures.get(app);
-		if (managedTexureList == null) return;
+		List<Texture> managedTextureList = managedTextures.get(app);
+		if (managedTextureList == null) return;
 
 		if (assetManager == null) {
-			for (int i = 0; i < managedTexureList.size(); i++) {
-				Texture texture = managedTexureList.get(i);
+			for (int i = 0; i < managedTextureList.size(); i++) {
+				Texture texture = managedTextureList.get(i);
 				texture.reload();
 			}
 		} else {
@@ -374,7 +374,7 @@ public class Texture implements Disposable {
 
 			// next we go through each texture and reload either directly or via the
 			// asset manager.
-			List<Texture> textures = new ArrayList<Texture>(managedTexureList);
+			List<Texture> textures = new ArrayList<Texture>(managedTextureList);
 			for (Texture texture : textures) {
 				String fileName = assetManager.getAssetFileName(texture);
 				if (fileName == null) {
@@ -411,8 +411,8 @@ public class Texture implements Disposable {
 					assetManager.load(fileName, Texture.class, params);
 				}
 			}
-			managedTexureList.clear();
-			managedTexureList.addAll(textures);
+			managedTextureList.clear();
+			managedTextureList.addAll(textures);
 		}
 	}
 

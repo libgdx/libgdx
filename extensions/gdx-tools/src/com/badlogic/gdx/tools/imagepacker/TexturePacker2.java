@@ -265,7 +265,6 @@ public class TexturePacker2 {
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
-					System.out.println(rectName);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
 							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
@@ -288,8 +287,10 @@ public class TexturePacker2 {
 			for (Rect rect : page.outputRects) {
 				writeRect(writer, page, rect, rect.name);
 				for (Alias alias : rect.aliases) {
-					rect.index = alias.index;
-					writeRect(writer, page, rect, alias.name);
+					Rect aliasRect = new Rect();
+					aliasRect.set(rect);
+					alias.apply(aliasRect);
+					writeRect(writer, page, aliasRect, alias.name);
 				}
 			}
 		}
@@ -345,17 +346,29 @@ public class TexturePacker2 {
 		public int x, y, width, height;
 	}
 
-	/** @author Regnarock */
+	/** @author Regnarock
+	 * @author Nathan Sweet */
 	public static class Alias {
 		public String name;
 		public int index;
-		
-		public Alias(String name, int index) {
-			this.name = name;
-			this.index = index;
+		public int[] splits;
+		public int[] pads;
+
+		public Alias (Rect rect) {
+			name = rect.name;
+			index = rect.index;
+			splits = rect.splits;
+			pads = rect.pads;
+		}
+
+		public void apply (Rect rect) {
+			rect.name = name;
+			rect.index = index;
+			rect.splits = splits;
+			rect.pads = pads;
 		}
 	}
-	
+
 	/** @author Nathan Sweet */
 	public static class Rect {
 		public String name;

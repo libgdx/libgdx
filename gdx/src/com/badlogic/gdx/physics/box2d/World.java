@@ -829,7 +829,7 @@ b2ContactFilter defaultFilter;
 		return contacts;
 	}
 
-	/** @return all bodies currently in the simulation */
+	/** @param bodies an Array in which to place all bodies currently in the simulation */
 	public void getBodies (Array<Body> bodies) {
 		bodies.clear();
 		bodies.ensureCapacity(this.bodies.size);
@@ -838,7 +838,7 @@ b2ContactFilter defaultFilter;
 		}		
 	}
 
-	/** @return all joints currently in the simulation */
+	/** @param joints an Array in which to place all joints currently in the simulation */
 	public void getJoints (Array<Joint> joints) {
 		joints.clear();
 		joints.ensureCapacity(this.joints.size);

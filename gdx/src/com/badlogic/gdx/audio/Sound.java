@@ -72,6 +72,12 @@ public interface Sound extends Disposable {
 
 	/** Stops playing all instances of this sound. */
 	public void stop ();
+	
+	/** Pauses all instances of this sound. */
+	public void pause ();
+	
+	/** Resumes all paused instances of this sound. */
+	public void resume ();
 
 	/** Releases all the resources. */
 	public void dispose ();
@@ -81,6 +87,16 @@ public interface Sound extends Disposable {
 	 * @param soundId the sound id */
 	public void stop (long soundId);
 
+	/** Pauses the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is no longer
+	 * playing, this has no effect.
+	 * @param soundId the sound id */
+	public void pause (long soundId);
+	
+	/** Resumes the sound instance with the given id as returned by {@link #play()} or {@link #play(float)}. If the sound is not
+	 * paused, this has no effect.
+	 * @param soundId the sound id */
+	public void resume (long soundId);
+	
 	/** Sets the sound instance with the given id to be looping. If the sound is no longer playing this has no effect.s
 	 * @param soundId the sound id
 	 * @param looping whether to loop or not. */

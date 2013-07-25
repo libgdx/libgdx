@@ -218,6 +218,38 @@ public class IOSSound implements Sound {
 			players[(int)soundId].Stop();
 		}
 	}
+	
+	@Override
+	public void pause() {
+		for (int i = 0; i < players.length; i++) {
+			players[i].Pause();
+		}
+	}
+	
+	@Override
+	public void pause(long soundId) {
+		if (soundId >= 0) {
+			players[(int)soundId].Pause();
+		}
+	}
+	
+	@Override
+	public void resume() {
+		for (int i = 0; i < players.length; i++) {
+			AVAudioPlayer player = players[i];
+			 if (!player.get_Playing() && player.get_CurrentTime() > 0)
+				 playQueue.offer(player);
+		}
+	}
+	
+	@Override
+	public void resume(long soundId) {
+		if (soundId >= 0) {
+			 AVAudioPlayer player = players[(int)soundId];
+			 if (!player.get_Playing() && player.get_CurrentTime() > 0)
+				 playQueue.offer(player);
+		}
+	}
 
 	@Override
 	public void setLooping(long soundId, boolean looping) {

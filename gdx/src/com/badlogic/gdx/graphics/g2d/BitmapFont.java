@@ -129,8 +129,8 @@ public class BitmapFont implements Disposable {
 				this.region = new TextureRegion(new Texture(Gdx.files.internal(data.imagePath), false));
 			} else {
 				this.region = new TextureRegion(new Texture(Gdx.files.getFileHandle(data.imagePath, data.fontFile.type()), false));
-			}			
-		}		
+			}
+		}
 		this.flipped = data.flipped;
 		this.data = data;
 		this.integer = integer;
@@ -387,7 +387,7 @@ public class BitmapFont implements Disposable {
 			start = nextStart;
 			numLines++;
 		}
-		textBounds.width = maxWidth;
+		textBounds.width = maxWidth * data.scaleX;
 		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
@@ -445,6 +445,7 @@ public class BitmapFont implements Disposable {
 		int index = start;
 		float width = 0;
 		Glyph lastGlyph = null;
+		availableWidth /= data.scaleX;
 
 		if (data.scaleX == 1) {
 			for (; index < end; index++) {
@@ -611,21 +612,16 @@ public class BitmapFont implements Disposable {
 	public BitmapFontData getData () {
 		return data;
 	}
-	
-	/**
-	 * @return whether the texture is owned by the font, font disposes the texture itself if true
-	 */
-	public boolean ownsTexture() {
+
+	/** @return whether the texture is owned by the font, font disposes the texture itself if true */
+	public boolean ownsTexture () {
 		return ownsTexture;
 	}
-	
-	/**
-	 * Sets whether the font owns the texture or not. In case it does,
-	 * the font will also dispose of the texture when {@link #dispose()}
-	 * is called. Use with care!
-	 * @param ownsTexture whether the font owns the texture
-	 */
-	public void setOwnsTexture(boolean ownsTexture) {
+
+	/** Sets whether the font owns the texture or not. In case it does, the font will also dispose of the texture when
+	 * {@link #dispose()} is called. Use with care!
+	 * @param ownsTexture whether the font owns the texture */
+	public void setOwnsTexture (boolean ownsTexture) {
 		this.ownsTexture = ownsTexture;
 	}
 

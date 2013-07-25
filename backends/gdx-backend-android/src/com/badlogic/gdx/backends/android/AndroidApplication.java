@@ -222,6 +222,11 @@ public class AndroidApplication extends Activity implements Application {
 		for (int i = 0; i < realId.length; i++)
 			realId[i] = -1;
 
+		// erase touched state. this also sucks donkeyballs...
+		boolean[] touched = input.touched;
+		for (int i = 0; i < touched.length; i++)
+			touched[i] = false;
+
 		if (isFinishing()) {
 			graphics.clearManagedCaches();
 			graphics.destroy();

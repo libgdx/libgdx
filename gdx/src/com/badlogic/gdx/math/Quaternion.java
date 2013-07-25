@@ -384,17 +384,8 @@ public class Quaternion implements Serializable {
 	 * @param alpha alpha in the range [0,1]
 	 * @return this quaternion for chaining */
 	public Quaternion slerp (Quaternion end, float alpha) {
-		if (this.equals(end)) {
-			return this;
-		}
-
-		float result = dot(end);
-
-		if (result < 0.0) {
-			// Negate the second quaternion and the result of the dot product
-			end.mul(-1);
-			result = -result;
-		}
+		final float dot = dot(end);
+		float absDot = dot < 0.f ? -dot : dot;
 
 		// Set the first and second scale for the interpolation
 		float scale0 = 1 - alpha;
@@ -402,24 +393,26 @@ public class Quaternion implements Serializable {
 
 		// Check if the angle between the 2 quaternions was big enough to
 		// warrant such calculations
-		if ((1 - result) > 0.1) {// Get the angle between the 2 quaternions,
+		if ((1 - absDot) > 0.1) {// Get the angle between the 2 quaternions,
 			// and then store the sin() of that angle
-			final double theta = Math.acos(result);
-			final double invSinTheta = 1f / Math.sin(theta);
+			final double angle = Math.acos(absDot);
+			final double invSinTheta = 1f / Math.sin(angle);
 
 			// Calculate the scale for q1 and q2, according to the angle and
 			// it's sine value
-			scale0 = (float)(Math.sin((1 - alpha) * theta) * invSinTheta);
-			scale1 = (float)(Math.sin((alpha * theta)) * invSinTheta);
+			scale0 = (float)(Math.sin((1 - alpha) * angle) * invSinTheta);
+			scale1 = (float)(Math.sin((alpha * angle)) * invSinTheta);
 		}
 
+		if (dot < 0.f)
+			scale1 = -scale1;
+		
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.
-		final float x = (scale0 * this.x) + (scale1 * end.x);
-		final float y = (scale0 * this.y) + (scale1 * end.y);
-		final float z = (scale0 * this.z) + (scale1 * end.z);
-		final float w = (scale0 * this.w) + (scale1 * end.w);
-		set(x, y, z, w);
+		x = (scale0 * x) + (scale1 * end.x);
+		y = (scale0 * y) + (scale1 * end.y);
+		z = (scale0 * z) + (scale1 * end.z);
+		w = (scale0 * w) + (scale1 * end.w);
 
 		// Return the interpolated quaternion
 		return this;

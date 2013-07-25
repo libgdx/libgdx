@@ -116,4 +116,28 @@ public class IOSObjectALSound implements Sound {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void pause () {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume () {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause (long soundId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume (long soundId) {
+		// TODO Auto-generated method stub
+		
+	}
 }
