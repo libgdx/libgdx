@@ -22,7 +22,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class InternalFileHandleResolver implements FileHandleResolver {
 	@Override
-	public FileHandle resolve (String fileName) {
+	public FileHandle resolve (String fileName, boolean relative) {
 		return Gdx.files.internal(fileName);
 	}
 }

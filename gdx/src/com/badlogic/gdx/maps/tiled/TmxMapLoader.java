@@ -96,7 +96,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	public TiledMap load (String fileName, TmxMapLoader.Parameters parameters) {
 		try {
 			this.yUp = parameters.yUp;
-			FileHandle tmxFile = resolve(fileName);
+			FileHandle tmxFile = resolve(fileName, false);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 			for (FileHandle textureFile : loadTilesets(root, tmxFile)) {
@@ -117,7 +117,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	public void loadAsync (AssetManager manager, String fileName, TmxMapLoader.Parameters parameter) {
 		map = null;
 
-		FileHandle tmxFile = resolve(fileName);
+		FileHandle tmxFile = resolve(fileName, false);
 		if (parameter != null) {
 			yUp = parameter.yUp;
 		} else {
@@ -144,7 +144,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
-			FileHandle tmxFile = resolve(fileName);
+			FileHandle tmxFile = resolve(fileName, false);
 			root = xml.parse(tmxFile);
 			boolean generateMipMaps = (parameter != null ? parameter.generateMipMaps : false);
 			TextureLoader.TextureParameter texParams = new TextureParameter();

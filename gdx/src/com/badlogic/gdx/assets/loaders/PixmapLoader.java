@@ -34,7 +34,7 @@ public class PixmapLoader extends AsynchronousAssetLoader<Pixmap, PixmapLoader.P
 	@Override
 	public void loadAsync (AssetManager manager, String fileName, PixmapParameter parameter) {
 		pixmap = null;
-		pixmap = new Pixmap(resolve(fileName));
+		pixmap = new Pixmap(resolve(fileName, false));
 	}
 
 	@Override

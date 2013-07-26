@@ -45,7 +45,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 			data = parameter.bitmapFontData;
 			return deps;
 		}
-		FileHandle handle = resolve(fileName);
+		FileHandle handle = resolve(fileName, false);
 		data = new BitmapFontData(handle, parameter != null ? parameter.flip : false);
 		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class));
 		return deps;
@@ -57,7 +57,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
-		FileHandle handle = resolve(fileName);
+		FileHandle handle = resolve(fileName, false);
 		TextureRegion region = new TextureRegion(manager.get(data.getImagePath(), Texture.class));
 		if (parameter != null) region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
 		return new BitmapFont(data, region, true);

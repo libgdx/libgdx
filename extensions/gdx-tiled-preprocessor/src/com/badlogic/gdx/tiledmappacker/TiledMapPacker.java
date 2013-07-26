@@ -47,6 +47,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
@@ -59,7 +60,7 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Given one or more TMX tilemaps, packs all tileset resources used across the maps into a <b>single</b> {@link TextureAtlas} and
- * produces a new TMX file to be loaded with an {@link AtlasTiledMapLoader} loader. Optionally, it can keep track of unused tiles
+ * produces a new TMX file to be loaded with an {@link AtlasTmxMapLoader} loader. Optionally, it can keep track of unused tiles
  * and omit them from the generated atlas, reducing the resource size.
  * 
  * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
@@ -106,7 +107,7 @@ public class TiledMapPacker {
 		}
 
 		@Override
-		public FileHandle resolve (String fileName) {
+		public FileHandle resolve (String fileName, boolean relative) {
 			return new FileHandle(fileName);
 		}
 	}

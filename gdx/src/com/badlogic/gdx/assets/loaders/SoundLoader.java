@@ -32,7 +32,7 @@ public class SoundLoader extends SynchronousAssetLoader<Sound, SoundLoader.Sound
 
 	@Override
 	public Sound load (AssetManager assetManager, String fileName, SoundParameter parameter) {
-		return Gdx.audio.newSound(resolve(fileName));
+		return Gdx.audio.newSound(resolve(fileName, false));
 	}
 
 	@Override

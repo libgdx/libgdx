@@ -23,5 +23,5 @@ import com.badlogic.gdx.files.FileHandle;
  * from anywhere or implement caching strategies.
  * @author mzechner */
 public interface FileHandleResolver {
-	public FileHandle resolve (String fileName);
+	public FileHandle resolve (String fileName, boolean relative);
 }

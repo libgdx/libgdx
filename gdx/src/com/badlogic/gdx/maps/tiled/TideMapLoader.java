@@ -44,7 +44,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 
 	public TiledMap load (String fileName) {
 		try {
-			FileHandle tideFile = resolve(fileName);
+			FileHandle tideFile = resolve(fileName, false);
 			root = xml.parse(tideFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 			for(FileHandle textureFile: loadTileSheets(root, tideFile)) {
@@ -62,7 +62,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 	
 	@Override
 	public TiledMap load (AssetManager assetManager, String fileName, Parameters parameter) {
-		FileHandle tideFile = resolve(fileName);
+		FileHandle tideFile = resolve(fileName, false);
 		try {
 			return loadMap(root, tideFile, new AssetManagerImageResolver(assetManager));
 		} catch (Exception e) {
@@ -74,7 +74,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
-			FileHandle tmxFile = resolve(fileName);
+			FileHandle tmxFile = resolve(fileName, false);
 			root = xml.parse(tmxFile);
 			for(FileHandle image: loadTileSheets(root, tmxFile)) {
 				dependencies.add(new AssetDescriptor(image.path(), Texture.class));

@@ -55,7 +55,7 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, P parameters) {
 		final Array<AssetDescriptor> deps = new Array();
-		ModelData data = loadModelData(resolve(fileName), parameters);
+		ModelData data = loadModelData(resolve(fileName, true), parameters);
 		if (data == null)
 			return deps;
 		
