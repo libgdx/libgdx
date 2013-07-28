@@ -72,6 +72,13 @@ public class Button extends Table {
 	public Button (ButtonStyle style) {
 		initialize();
 		setStyle(style);
+		setWidth(getPrefWidth());
+		setHeight(getPrefHeight());
+	}
+
+	/** Creates a button without setting the style or size. Subclasses must at least set the style. */
+	protected Button () {
+		initialize();
 	}
 
 	private void initialize () {
