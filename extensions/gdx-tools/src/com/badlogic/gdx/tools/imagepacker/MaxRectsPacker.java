@@ -90,12 +90,22 @@ public class MaxRectsPacker {
 			Rect rect = inputRects.get(i);
 			minWidth = Math.min(minWidth, rect.width);
 			minHeight = Math.min(minHeight, rect.height);
-			if (rect.width > settings.maxWidth && (!settings.rotation || rect.height > settings.maxWidth))
-				throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + " and paddingX "
-					+ settings.paddingX + ": " + rect);
-			if (rect.height > settings.maxHeight && (!settings.rotation || rect.width > settings.maxHeight))
-				throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + " and paddingY "
-					+ settings.paddingY + ": " + rect);
+			if (settings.rotation) {
+				if ((rect.width > settings.maxWidth || rect.height > settings.maxHeight)
+					&& (rect.width > settings.maxHeight || rect.height > settings.maxWidth)) {
+					throw new RuntimeException("Image does not fit with max page size " + settings.maxWidth + "x" + settings.maxHeight
+						+ " and padding " + settings.paddingX + "," + settings.paddingY + ": " + rect);
+				}
+			} else {
+				if (rect.width > settings.maxWidth) {
+					throw new RuntimeException("Image does not fit with max page width " + settings.maxWidth + " and paddingX "
+						+ settings.paddingX + ": " + rect);
+				}
+				if (rect.height > settings.maxHeight && (!settings.rotation || rect.width > settings.maxHeight)) {
+					throw new RuntimeException("Image does not fit in max page height " + settings.maxHeight + " and paddingY "
+						+ settings.paddingY + ": " + rect);
+				}
+			}
 		}
 		minWidth = Math.max(minWidth, settings.minWidth);
 		minHeight = Math.max(minHeight, settings.minHeight);

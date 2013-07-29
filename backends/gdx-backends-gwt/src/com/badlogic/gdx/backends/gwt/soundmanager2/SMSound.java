@@ -122,12 +122,17 @@ public class SMSound {
 	 * 1 = playing or buffering sound (play has been called, waiting for data etc.).
 	 * Note that a 1 may not always guarantee that sound is being heard, given buffering and autoPlay status.
 	 * @return the current playing state. */
-	public native final int playState () /*-{
+	public native final int getPlayState () /*-{
 		return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.playState;
 	}-*/;
 	
+	/** Boolean indicating pause status. True/False. */
+	public native final boolean getPaused () /*-{
+		return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.paused;
+	}-*/;
+	
 	/** Number of times to loop the sound. */
-	public native final int loops () /*-{
+	public native final int getLoops () /*-{
 		return this.@com.badlogic.gdx.backends.gwt.soundmanager2.SMSound::jsSound.loops;
 	}-*/;
 }

@@ -133,7 +133,7 @@ public class ImageProcessor {
 			Rect existing = crcs.get(crc);
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
-				existing.aliases.add(new Alias(rect.name, rect.index));
+				existing.aliases.add(new Alias(rect));
 				return;
 			}
 			crcs.put(crc, rect);
@@ -346,6 +346,8 @@ public class ImageProcessor {
 	static private String hash (BufferedImage image) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA1");
+
+			// Ensure image is the correct format.
 			int width = image.getWidth();
 			int height = image.getHeight();
 			if (image.getType() != BufferedImage.TYPE_INT_ARGB) {
@@ -353,29 +355,28 @@ public class ImageProcessor {
 				newImage.getGraphics().drawImage(image, 0, 0, null);
 				image = newImage;
 			}
+
 			WritableRaster raster = image.getRaster();
 			int[] pixels = new int[width];
 			for (int y = 0; y < height; y++) {
 				raster.getDataElements(0, y, width, 1, pixels);
-				for (int x = 0; x < width; x++) {
-					int rgba = pixels[x];
-					digest.update((byte)(rgba >> 24));
-					digest.update((byte)(rgba >> 16));
-					digest.update((byte)(rgba >> 8));
-					digest.update((byte)rgba);
-				}
+				for (int x = 0; x < width; x++)
+					hash(digest, pixels[x]);
 			}
-			digest.update((byte)(width >> 24));
-			digest.update((byte)(width >> 16));
-			digest.update((byte)(width >> 8));
-			digest.update((byte)width);
-			digest.update((byte)(height >> 24));
-			digest.update((byte)(height >> 16));
-			digest.update((byte)(height >> 8));
-			digest.update((byte)height);
+
+			hash(digest, width);
+			hash(digest, height);
+
 			return new BigInteger(1, digest.digest()).toString(16);
 		} catch (NoSuchAlgorithmException ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+
+	static private void hash (MessageDigest digest, int value) {
+		digest.update((byte)(value >> 24));
+		digest.update((byte)(value >> 16));
+		digest.update((byte)(value >> 8));
+		digest.update((byte)value);
 	}
 }

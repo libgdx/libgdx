@@ -351,9 +351,12 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	public String toString () {
-		if (size == 0) return "{}";
+		return '{' + toString(", ") + '}';
+	}
+
+	public String toString (String separator) {
+		if (size == 0) return "";
 		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('{');
 		T[] keyTable = this.keyTable;
 		int i = keyTable.length;
 		while (i-- > 0) {
@@ -365,10 +368,9 @@ public class ObjectSet<T> implements Iterable<T> {
 		while (i-- > 0) {
 			T key = keyTable[i];
 			if (key == null) continue;
-			buffer.append(", ");
+			buffer.append(separator);
 			buffer.append(key);
 		}
-		buffer.append('}');
 		return buffer.toString();
 	}
 

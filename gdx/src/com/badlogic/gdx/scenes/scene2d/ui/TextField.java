@@ -199,6 +199,11 @@ public class TextField extends Widget {
 							cut();
 							return true;
 						}
+						// select all
+						if (keycode == Keys.A) {
+							selectAll();
+							return true;
+						}
 					}
 					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
 						// paste

@@ -100,7 +100,31 @@ public class OpenALSound implements Sound {
 		if (audio.noDevice) return;
 		audio.stopSound(soundId);
 	}
+	
+	@Override
+	public void pause () {
+		if (audio.noDevice) return;
+		audio.pauseSourcesWithBuffer(bufferID);
+	}
+	
+	@Override
+	public void pause (long soundId) {
+		if (audio.noDevice) return;
+		audio.pauseSound(soundId);
+	}
 
+	@Override
+	public void resume () {
+		if (audio.noDevice) return;
+		audio.resumeSourcesWithBuffer(bufferID);
+	}
+	
+	@Override
+	public void resume (long soundId) {
+		if (audio.noDevice) return;
+		audio.resumeSound(soundId);
+	}
+	
 	@Override
 	public void setPitch (long soundId, float pitch) {
 		if (audio.noDevice) return;

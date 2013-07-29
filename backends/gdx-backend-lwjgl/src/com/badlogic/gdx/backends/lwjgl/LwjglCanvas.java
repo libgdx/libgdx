@@ -140,7 +140,7 @@ public class LwjglCanvas implements Application {
 
 	protected void setTitle (String title) {
 	}
-	
+
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
@@ -242,13 +242,21 @@ public class LwjglCanvas implements Application {
 					if (audio != null) audio.update();
 					Display.update();
 					canvas.setCursor(cursor);
-					if (graphics.vsync) Display.sync(60);
+					Display.sync(getFrameRate());
 				} catch (Throwable ex) {
 					exception(ex);
 				}
 				EventQueue.invokeLater(this);
 			}
 		});
+	}
+
+	protected int getFrameRate () {
+		int frameRate = Display.isActive() ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
+		if (frameRate == -1) frameRate = 10;
+		if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
+		if (frameRate == 0) frameRate = 30;
+		return frameRate;
 	}
 
 	protected void exception (Throwable ex) {
