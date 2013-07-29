@@ -6,7 +6,13 @@
   <target>ios</target>
   <iosInfoPList>Info.plist.xml</iosInfoPList>
   <resources>
-    <resource>../gdx-vectorpinball/data/</resource>
+    <resource>
+      <directory>../gdx-vectorpinball</directory>
+      <includes>
+        <include>data/**</include>
+      </includes>
+      <skipPngCrush>true</skipPngCrush>
+    </resource>
   </resources>
   <libs>
     <lib>../../../gdx/libs/ios32/libgdx.a</lib>
