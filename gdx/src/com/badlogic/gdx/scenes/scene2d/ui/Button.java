@@ -76,8 +76,8 @@ public class Button extends Table {
 		setHeight(getPrefHeight());
 	}
 
-	/** Creates a button without setting the style or size. Subclasses must at least set the style. */
-	protected Button () {
+	/** Creates a button without setting the style or size. At least a style must be set before using this button. */
+	public Button () {
 		initialize();
 	}
 
