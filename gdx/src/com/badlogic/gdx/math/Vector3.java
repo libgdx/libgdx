@@ -45,9 +45,24 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @see #tmp() **/
 	public final static Vector3 tmp3 = new Vector3();
 
+	/** @deprecated
+	 * Use {@link #unitX()} instead.
+	 */
 	public final static Vector3 X = new Vector3(1, 0, 0);
+	
+	/** @deprecated
+	 * Use {@link #unitY()} instead.
+	 */
 	public final static Vector3 Y = new Vector3(0, 1, 0);
+	
+	/** @deprecated
+	 * Use {@link #unitZ()} instead.
+	 */
 	public final static Vector3 Z = new Vector3(0, 0, 1);
+	
+	/** @deprecated
+	 * Use {@link #zero()} instead.
+	 */
 	public final static Vector3 Zero = new Vector3(0, 0, 0);
 	
 	private final static Matrix4 tmpMat = new Matrix4();
@@ -565,4 +580,33 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		if (Math.abs(z - this.z) > epsilon) return false;
 		return true;
 	}
+	
+	/**
+	 * @return The unit X vector.
+	 */
+	public static Vector3 unitX() {
+		return new Vector3(1, 0, 0);
+	}
+	
+	/**
+	 * @return The unit Y vector.
+	 */
+	public static Vector3 unitY() {
+		return new Vector3(0, 1, 0);
+	}
+	
+	/**
+	 * @return The unit Z vector.
+	 */
+	public static Vector3 unitZ() {
+		return new Vector3(0, 0, 1);
+	}
+	
+	/**
+	 * @return The zero vector.
+	 */
+	public static Vector3 zero() {
+		return new Vector3();
+	}
+	
 }

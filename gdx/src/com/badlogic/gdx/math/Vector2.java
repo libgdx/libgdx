@@ -25,8 +25,20 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class Vector2 implements Serializable, Vector<Vector2> {
 	private static final long serialVersionUID = 913902788239530931L;
 
+	/** @deprecated
+	 * Use {@link #unitX()} instead.
+	 */
+	
 	public final static Vector2 X = new Vector2(1, 0);
+	
+	/** @deprecated
+	 * Use {@link #unitY()} instead.
+	 */
 	public final static Vector2 Y = new Vector2(0, 1);
+	
+	/** @deprecated
+	 * Use {@link #zero()} instead.
+	 */
 	public final static Vector2 Zero = new Vector2(0, 0);
 
 	/** the x-component of this vector **/
@@ -368,4 +380,26 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (Math.abs(y - this.y) > epsilon) return false;
 		return true;
 	}
+	
+	/**
+	 * @return The unit X vector.
+	 */
+	public static Vector2 unitX() {
+		return new Vector2(1, 0);
+	}
+	
+	/**
+	 * @return The unit Y vector.
+	 */
+	public static Vector2 unitY() {
+		return new Vector2(0, 1);
+	}
+	
+	/**
+	 * @return The zero vector.
+	 */
+	public static Vector2 zero() {
+		return new Vector2();
+	}
+	
 }
