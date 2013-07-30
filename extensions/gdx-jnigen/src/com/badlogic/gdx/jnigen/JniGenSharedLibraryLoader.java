@@ -100,7 +100,9 @@ public class JniGenSharedLibraryLoader {
 	private InputStream getFromJar (String jarFile, String sharedLibrary) throws IOException {
 		ZipFile file = new ZipFile(nativesJar);
 		ZipEntry entry = file.getEntry(sharedLibrary);
-		return file.getInputStream(entry);
+		InputStream stream =  file.getInputStream(entry);
+		file.close();
+		return stream;
 	}
 
 	/** Loads a shared library with the given name for the platform the application is running on. The name should not contain a
