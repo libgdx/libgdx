@@ -1,5 +1,7 @@
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 /**
  * A constant Vector3 that throws a RuntimeException if a mutator is called.
  * @author Natman64
@@ -36,162 +38,162 @@ public class ConstVector3 extends Vector3 {
 
 	@Override
 	public Vector3 set (float x, float y, float z) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 set (Vector3 vector) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 set (float[] values) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 add (Vector3 vector) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 add (float x, float y, float z) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 add (float values) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 sub (Vector3 a_vec) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 sub (float x, float y, float z) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 sub (float value) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 scl (float value) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 mul (float value) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 scl (Vector3 other) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 mul (Vector3 other) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 scl (float vx, float vy, float vz) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 mul (float vx, float vy, float vz) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 scale (float scalarX, float scalarY, float scalarZ) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 div (float value) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 div (float vx, float vy, float vz) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 div (Vector3 other) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 nor () {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 crs (Vector3 vector) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 crs (float x, float y, float z) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 mul (Matrix4 matrix) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 mul (Quaternion quat) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 prj (Matrix4 matrix) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 rot (Matrix4 matrix) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 rotate (float angle, float axisX, float axisY, float axisZ) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 rotate (Vector3 axis, float angle) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 lerp (Vector3 target, float alpha) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 slerp (Vector3 target, float alpha) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 limit (float limit) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 
 	@Override
 	public Vector3 clamp (float min, float max) {
-		throw new RuntimeException("ERROR_MESSAGE");
+		throw new GdxRuntimeException("ERROR_MESSAGE");
 	}
 	
 }
