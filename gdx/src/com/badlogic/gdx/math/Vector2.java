@@ -293,9 +293,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** Sets the angle of the vector in degrees.
 	 * @param angle The angle to set. */
-	public void setAngle (float angle) {
+	public Vector2 setAngle (float angle) {
 		this.set(len(), 0f);
 		this.rotate(angle);
+		
+		return this;
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise.
