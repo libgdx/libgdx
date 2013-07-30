@@ -45,25 +45,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @see #tmp() **/
 	public final static Vector3 tmp3 = new Vector3();
 
-	/** @deprecated
-	 * Use {@link #unitX()} instead.
-	 */
-	public final static Vector3 X = new Vector3(1, 0, 0);
 	
-	/** @deprecated
-	 * Use {@link #unitY()} instead.
-	 */
-	public final static Vector3 Y = new Vector3(0, 1, 0);
 	
-	/** @deprecated
-	 * Use {@link #unitZ()} instead.
-	 */
-	public final static Vector3 Z = new Vector3(0, 0, 1);
-	
-	/** @deprecated
-	 * Use {@link #zero()} instead.
-	 */
-	public final static Vector3 Zero = new Vector3(0, 0, 0);
+	public final static ConstVector3 X = new ConstVector3(1, 0, 0);
+	public final static ConstVector3 Y = new ConstVector3(0, 1, 0);
+	public final static ConstVector3 Z = new ConstVector3(0, 0, 1);
+	public final static ConstVector3 Zero = new ConstVector3(0, 0, 0);
 	
 	private final static Matrix4 tmpMat = new Matrix4();
 
@@ -86,7 +73,6 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Creates a vector from the given array. The array must have at least 3 elements.
-	 * 
 	 * @param values The array */
 	public Vector3 (final float[] values) {
 		this.set(values[0], values[1], values[2]);
@@ -585,28 +571,28 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @return The unit X vector.
 	 */
 	public static Vector3 unitX() {
-		return new Vector3(1, 0, 0);
+		return X.cpy();
 	}
 	
 	/**
 	 * @return The unit Y vector.
 	 */
 	public static Vector3 unitY() {
-		return new Vector3(0, 1, 0);
+		return Y.cpy();
 	}
 	
 	/**
 	 * @return The unit Z vector.
 	 */
 	public static Vector3 unitZ() {
-		return new Vector3(0, 0, 1);
+		return Z.cpy();
 	}
 	
 	/**
 	 * @return The zero vector.
 	 */
 	public static Vector3 zero() {
-		return new Vector3();
+		return Zero.cpy();
 	}
 	
 }
