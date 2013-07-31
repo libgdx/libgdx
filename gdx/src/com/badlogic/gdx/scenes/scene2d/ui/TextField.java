@@ -558,7 +558,7 @@ public class TextField extends Widget {
 
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
 	public void copy () {
-		if (hasSelection) {
+		if (hasSelection && !passwordMode) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
 			clipboard.setContents(text.substring(minIndex, maxIndex));
@@ -568,7 +568,7 @@ public class TextField extends Widget {
 	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField, then removes
 	 * it. */
 	public void cut () {
-		if (hasSelection) {
+		if (hasSelection && !passwordMode) {
 			copy();
 			delete();
 		}
