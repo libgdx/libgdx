@@ -52,6 +52,7 @@ public class RemoteSender implements InputProcessor {
 			out.writeBoolean(Gdx.input.isPeripheralAvailable(Peripheral.MultitouchScreen));
 			connected = true;
 			Gdx.input.setInputProcessor(this);
+			socket.close();
 		} catch (Exception e) {
 			Gdx.app.log("RemoteSender", "couldn't connect to " + ip + ":" + port);
 		}

@@ -23,11 +23,12 @@ import com.badlogic.gdx.utils.NumberUtils;
 /** Encapsulates a 2D vector. Allows chaining methods by returning a reference to itself
  * @author badlogicgames@gmail.com */
 public class Vector2 implements Serializable, Vector<Vector2> {
+	
 	private static final long serialVersionUID = 913902788239530931L;
 
-	public final static Vector2 X = new Vector2(1, 0);
-	public final static Vector2 Y = new Vector2(0, 1);
-	public final static Vector2 Zero = new Vector2(0, 0);
+	public final static ConstVector2 X = new ConstVector2(1, 0);
+	public final static ConstVector2 Y = new ConstVector2(0, 1);
+	public final static ConstVector2 Zero = new ConstVector2(0, 0);
 
 	/** the x-component of this vector **/
 	public float x;
@@ -370,4 +371,26 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (Math.abs(y - this.y) > epsilon) return false;
 		return true;
 	}
+	
+	/**
+	 * @return A copy of the unit X vector.
+	 */
+	public static Vector2 unitX() {
+		return X.cpy();
+	}
+	
+	/**
+	 * @return A copy of the unit Y vector.
+	 */
+	public static Vector2 unitY() {
+		return Y.cpy();
+	}
+	
+	/**
+	 * @return A copy of the zero vector.
+	 */
+	public static Vector2 zero() {
+		return Zero.cpy();
+	}
+	
 }

@@ -127,8 +127,13 @@ public class SharedLibraryLoader {
 		try {
 			ZipFile file = new ZipFile(nativesJar);
 			ZipEntry entry = file.getEntry(path);
-			if (entry == null) throw new GdxRuntimeException("Couldn't find '" + path + "' in JAR: " + nativesJar);
-			return file.getInputStream(entry);
+			if (entry == null) {
+				file.close();
+				throw new GdxRuntimeException("Couldn't find '" + path + "' in JAR: " + nativesJar);
+			}
+			InputStream stream =  file.getInputStream(entry);
+			file.close();
+			return stream;
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading '" + path + "' in JAR: " + nativesJar, ex);
 		}
