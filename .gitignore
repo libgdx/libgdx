@@ -21,6 +21,7 @@ ios32/
 Debug/
 Release/
 x64/
+x86/
 ipch/
 /dist
 
