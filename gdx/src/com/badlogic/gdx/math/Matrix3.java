@@ -17,6 +17,7 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -452,5 +453,22 @@ public class Matrix3 implements Serializable {
 		mata[M02] = v02;
 		mata[M12] = v12;
 		mata[M22] = v22;
+	}
+
+	@Override
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(val);
+		return result;
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof Matrix3)) return false;
+		Matrix3 other = (Matrix3)obj;
+		return Arrays.equals(val, other.val);
 	}
 }

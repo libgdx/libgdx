@@ -172,6 +172,24 @@ public class Plane implements Serializable {
 		this.d = plane.d;
 	}
 
+	@Override
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(d);
+		result = prime * result + ((normal == null) ? 0 : normal.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof Plane)) return false;
+		Plane other = (Plane)obj;
+		return (Float.floatToIntBits(d) == Float.floatToIntBits(other.d) && ((normal == null && other.normal == null) || normal.equals(other.normal)));
+	}
+
 	public String toString () {
 		return normal.toString() + ", " + d;
 	}
