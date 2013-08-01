@@ -99,6 +99,8 @@ public class TextField extends Widget {
 	boolean hasSelection;
 	int selectionStart;
 	private float selectionX, selectionWidth;
+	
+	private int leftOffsetX = 0, rightOffsetX = 0;
 
 	private char passwordCharacter = BULLET;
 
@@ -407,9 +409,17 @@ public class TextField extends Widget {
 	public TextFieldStyle getStyle () {
 		return style;
 	}
+	
+	public void setLeftOffsetX(int offset){
+		offsetLeftX = offset;
+	}
+	
+	public void setRightOffsetX(int offset){
+		offsetRightX = offset;
+	}
 
 	private void calculateOffsets () {
-		float visibleWidth = getWidth();
+		float visibleWidth = getWidth() - offsetLeftX - offsetRightX;
 		if (style.background != null) visibleWidth -= style.background.getLeftWidth() + style.background.getRightWidth();
 
 		// Check if the cursor has gone out the left or right side of the visible area and adjust renderoffset.
@@ -477,9 +487,9 @@ public class TextField extends Widget {
 			: ((focused && style.focusedBackground != null) ? style.focusedBackground : style.background);
 
 		Color color = getColor();
-		float x = getX();
+		float x = getX() + offsetLeftX;
 		float y = getY();
-		float width = getWidth();
+		float width = getWidth() - offsetLeftX - offsetRightX;
 		float height = getHeight();
 		float textY = textBounds.height / 2 + font.getDescent();
 
