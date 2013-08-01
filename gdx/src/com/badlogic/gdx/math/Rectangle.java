@@ -201,6 +201,68 @@ public class Rectangle implements Serializable {
 		y = minY;
 		height = maxY - minY;
 	}
+	
+	/** @return the aspect ratio ( width / height ) of this rectangle.
+	 * Returns Float.NaN if height is 0 to avoid ArithmeticException */
+	public float calculateAspectRatio () {
+		return (height == 0) ? Float.NaN : width / height;
+	}
+	
+	/** Calculates the center of the rectangle. Results are located in the given Vector2
+	 * @param vector the Vector2 to use */
+	public void calculateCenter (Vector2 vector) {
+		vector.x = x + width / 2;
+		vector.y = y + height / 2;
+	}
+
+	/** Moves this rectangle so that its center point is located at a given position
+	 * @param x the position's x
+	 * @param y the position's y */
+	public void centerTo (float x, float y) {
+		setPosition(x - width / 2, y - height / 2);
+	}
+
+	/** Moves this rectangle so that its center point is located at a given position
+	 * @param position the position */
+	public void centerTo (Vector2 position) {
+		setPosition(position.x - width / 2, position.y - height / 2);
+	}
+
+	/** Fits this rectangle around another rectangle while maintaining aspect ratio
+	 * This scales and centers the rectangle to the other rectangle
+	 * (e.g. Having a camera translate and scale to show a given area)
+	 * @param rect the other rectangle to fit this rectangle around */
+	public void fitOutside (Rectangle rect) {
+		float ratio = calculateAspectRatio();
+
+		if (ratio > rect.calculateAspectRatio()) {
+			// Wider than tall
+			setSize(rect.height * ratio, rect.height);
+		} else {
+			// Taller than wide
+			setSize(rect.width, rect.width / ratio);
+		}
+
+		setPosition((rect.x + rect.width / 2) - width / 2, (rect.y + rect.height / 2) - height / 2);
+	}
+
+	/** Fits this rectangle into another rectangle while maintaining aspect ratio.
+	 * This scales and centers the rectangle to the other rectangle
+	 * (e.g. Scaling a texture within a arbitrary cell without squeezing)
+	 * @param rect the other rectangle to fit this rectangle inside */
+	public void fitInside (Rectangle rect) {
+		float ratio = calculateAspectRatio();
+
+		if (ratio < rect.calculateAspectRatio()) {
+			// Taller than wide
+			setSize(rect.height * ratio, rect.height);
+		} else {
+			// Wider than tall
+			setSize(rect.width, rect.width / ratio);
+		}
+
+		setPosition((rect.x + rect.width / 2) - width / 2, (rect.y + rect.height / 2) - height / 2);
+	}
 
 	public String toString () {
 		return x + "," + y + "," + width + "," + height;
