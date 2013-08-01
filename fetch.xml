@@ -143,7 +143,7 @@
 		<!-- gdx remote -->
 		<copy todir="extensions/gdx-remote/libs/armeabi"><fileset refid="gdx-armeabi"/></copy>
 		<copy todir="extensions/gdx-remote/libs/armeabi-v7a"><fileset refid="gdx-armeabi-v7a"/></copy>
-        <copy todir="extensions/gdx-remote/libs/x96"><fileset refid="gdx-x86"/></copy>
+        <copy todir="extensions/gdx-remote/libs/x86"><fileset refid="gdx-x86"/></copy>
 	</target>
 	
 	<target name="all" depends="fetch,copy"/>
