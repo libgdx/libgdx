@@ -416,7 +416,7 @@ public class IntSet {
 		}
 	}
 
-	static private class IntSetIterator {
+	static public class IntSetIterator {
 		static final int INDEX_ILLEGAL = -2;
 		static final int INDEX_ZERO = -1;
 
