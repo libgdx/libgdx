@@ -42,11 +42,11 @@ public class ResolutionFileResolver implements FileHandleResolver {
 	}
 
 	@Override
-	public FileHandle resolve (String fileName) {
+	public FileHandle resolve (String fileName, boolean relative) {
 		Resolution bestDesc = choose(descriptors);
 		FileHandle originalHandle = new FileHandle(fileName);
-		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.suffix));
-		if (!handle.exists()) handle = baseResolver.resolve(fileName);
+		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.suffix), relative);
+		if (!handle.exists()) handle = baseResolver.resolve(fileName, relative);
 		return handle;
 	}
 

@@ -65,7 +65,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 				info.texture = parameter.texture;
 			}
 
-			FileHandle handle = resolve(fileName);
+			FileHandle handle = resolve(fileName, true);
 			if (!fileName.contains(".etc1")) {
 				if (fileName.contains(".cim"))
 					pixmap = PixmapIO.readCIM(handle);

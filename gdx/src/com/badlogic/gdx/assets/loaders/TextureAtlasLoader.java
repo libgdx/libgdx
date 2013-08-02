@@ -50,7 +50,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, TextureAtlasParameter parameter) {
-		FileHandle atlasFile = resolve(fileName);
+		FileHandle atlasFile = resolve(fileName, false);
 		FileHandle imgDir = atlasFile.parent();
 
 		if (parameter != null)
@@ -61,7 +61,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		for (Page page : data.getPages()) {
-			FileHandle handle = resolve(page.textureFile.path());
+			FileHandle handle = resolve(page.textureFile.path(), true);
 			TextureParameter params = new TextureParameter();
 			params.format = page.format;
 			params.genMipMaps = page.useMipMaps;

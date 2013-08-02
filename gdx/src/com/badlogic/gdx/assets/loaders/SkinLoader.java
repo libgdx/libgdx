@@ -38,7 +38,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	public Array<AssetDescriptor> getDependencies (String fileName, SkinParameter parameter) {
 		Array<AssetDescriptor> deps = new Array();
 		if (parameter == null)
-			deps.add(new AssetDescriptor(resolve(fileName).pathWithoutExtension() + ".atlas", TextureAtlas.class));
+			deps.add(new AssetDescriptor(resolve(fileName, true).pathWithoutExtension() + ".atlas", TextureAtlas.class));
 		else
 			deps.add(new AssetDescriptor(parameter.textureAtlasPath, TextureAtlas.class));
 		return deps;
@@ -52,11 +52,11 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	public Skin loadSync (AssetManager manager, String fileName, SkinParameter parameter) {
 		String textureAtlasPath;
 		if (parameter == null)
-			textureAtlasPath = resolve(fileName).pathWithoutExtension() + ".atlas";
+			textureAtlasPath = resolve(fileName, true).pathWithoutExtension() + ".atlas";
 		else
 			textureAtlasPath = parameter.textureAtlasPath;
 		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
-		return new Skin(resolve(fileName), atlas);
+		return new Skin(resolve(fileName, false), atlas);
 	}
 
 	static public class SkinParameter extends AssetLoaderParameters<Skin> {

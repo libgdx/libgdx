@@ -124,7 +124,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, AtlasTiledMapLoaderParameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
-		FileHandle tmxFile = resolve(fileName);
+		FileHandle tmxFile = resolve(fileName, false);
 		try {
 			root = xml.parse(tmxFile);
 
@@ -135,7 +135,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					String value = property.getAttribute("value");
 					if (name.startsWith("atlas")) {
 						FileHandle atlasHandle = getRelativeFileHandle(tmxFile, value);
-						atlasHandle = resolve(atlasHandle.path());
+						atlasHandle = resolve(atlasHandle.path(), true);
 						dependencies.add(new AssetDescriptor(atlasHandle.path(), TextureAtlas.class));
 					}
 				}
@@ -154,7 +154,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				yUp = true;
 			}
 
-			FileHandle tmxFile = resolve(fileName);
+			FileHandle tmxFile = resolve(fileName, false);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, TextureAtlas> atlases = new ObjectMap<String, TextureAtlas>();
 			FileHandle atlasFile = loadAtlas(root, tmxFile);
@@ -213,7 +213,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	public void loadAsync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
 		map = null;
 
-		FileHandle tmxFile = resolve(fileName);
+		FileHandle tmxFile = resolve(fileName, false);
 		if (parameter != null) {
 			yUp = parameter.yUp;
 		} else {
@@ -317,7 +317,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			String regionsName = "";
 			if (map.getProperties().containsKey("atlas")) {
 				FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
-				atlasHandle = resolve(atlasHandle.path());
+				atlasHandle = resolve(atlasHandle.path(), true);
 				atlas = resolver.getAtlas(atlasHandle.path());
 				regionsName = atlasHandle.nameWithoutExtension();
 
