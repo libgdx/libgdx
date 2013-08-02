@@ -21,6 +21,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
 /** {@link AssetLoader} to load {@link Sound} instances.
@@ -31,12 +32,12 @@ public class SoundLoader extends SynchronousAssetLoader<Sound, SoundLoader.Sound
 	}
 
 	@Override
-	public Sound load (AssetManager assetManager, String fileName, SoundParameter parameter) {
-		return Gdx.audio.newSound(resolve(fileName));
+	public Sound load (AssetManager assetManager, String fileName, FileHandle file, SoundParameter parameter) {
+		return Gdx.audio.newSound(file);
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, SoundParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, SoundParameter parameter) {
 		return null;
 	}
 

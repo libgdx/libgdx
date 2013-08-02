@@ -1065,6 +1065,14 @@ public class SpriteBatch implements Disposable {
 		blendDstFunc = dstFunc;
 	}
 
+	public int getBlendSrcFunc () {
+		return blendSrcFunc;
+	}
+
+	public int getBlendDstFunc () {
+		return blendDstFunc;
+	}
+
 	/** Disposes all resources associated with this SpriteBatch */
 	public void dispose () {
 		for (int i = 0; i < buffers.length; i++)

@@ -43,7 +43,8 @@ public abstract class AssetLoader<T, P extends AssetLoaderParameters<T>> {
 	}
 
 	/** @param fileName name of the asset to load
+	 * @param file the resolved file to load
 	 * @param parameter parameters for loading the asset
 	 * @return other assets that the asset depends on and need to be loaded first or null if there are no dependencies. */
-	public abstract Array<AssetDescriptor> getDependencies (String fileName, P parameter);
+	public abstract Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, P parameter);
 }
