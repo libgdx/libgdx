@@ -120,7 +120,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle fileHandle, AtlasTiledMapLoaderParameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		FileHandle tmxFile = resolve(fileName);
 		try {
@@ -208,7 +208,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle fileHandle, AtlasTiledMapLoaderParameters parameter) {
 		map = null;
 
 		FileHandle tmxFile = resolve(fileName);
@@ -226,7 +226,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle fileHandle, AtlasTiledMapLoaderParameters parameter) {
 		if (parameter != null) {
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
