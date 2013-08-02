@@ -20,6 +20,7 @@ import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetErrorListener;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
@@ -152,8 +153,8 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 	}
 
 	@Override
-	public void error (String fileName, Class type, Throwable t) {
-		Gdx.app.error("AssetManagerTest", "couldn't load asset '" + fileName + "'", (Exception)t);
+	public void error (AssetDescriptor asset, Throwable throwable) {
+		Gdx.app.error("AssetManagerTest", "Couldn't load asset: " + asset, (Exception)throwable);
 	}
 
 	@Override

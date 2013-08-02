@@ -52,6 +52,9 @@
 - Added Music#setPan.
 - Sound#play and Sound#loop on Android now return -1 on failure, to match other backends.
 - DelegateAction subclasses need to implement delegate() instead of act(). http://www.badlogicgames.com/forum/viewtopic.php?p=43576#p43576
+- Added pause and resume methods to Sound.
+- Changed AssetErrorListener#error to have AssetDescriptor to enable access to parameters of failed asset.
+- Changed SelectBoxStyle to have ScrollPaneStyle and ListStyle for fully customizing the drop down list. http://www.badlogicgames.com/wordpress/?p=3110
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

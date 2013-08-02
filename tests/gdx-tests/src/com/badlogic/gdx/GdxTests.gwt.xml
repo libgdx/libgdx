@@ -32,5 +32,6 @@
 		<exclude name="**/FloatTextureTest.java"/> <!-- GLES 2.0 extension -->
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
 		
+		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->
 	</source>
 </module>
