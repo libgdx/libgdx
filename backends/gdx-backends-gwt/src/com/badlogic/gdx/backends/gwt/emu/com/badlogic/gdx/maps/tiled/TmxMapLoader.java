@@ -110,7 +110,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, TmxMapLoader.Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle fileHandle, TmxMapLoader.Parameters parameter) {
 		map = null;
 
 		FileHandle tmxFile = resolve(fileName);
@@ -127,7 +127,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, TmxMapLoader.Parameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle fileHandle, TmxMapLoader.Parameters parameter) {
 		return map;
 	}
 
@@ -137,7 +137,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	 * @param parameter not used for now
 	 * @return dependencies for the given .tmx file */
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle fileHandle, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
 			FileHandle tmxFile = resolve(fileName);
