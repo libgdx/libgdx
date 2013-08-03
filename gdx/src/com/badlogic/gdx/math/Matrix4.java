@@ -673,9 +673,11 @@ public class Matrix4 implements Serializable {
 	/** Linearly interpolates between this matrix and the given matrix mixing by alpha
 	 * @param matrix the matrix
 	 * @param alpha the alpha value in the range [0,1] */
-	public void lerp (Matrix4 matrix, float alpha) {
+	public Matrix4 lerp (Matrix4 matrix, float alpha) {
 		for (int i = 0; i < 16; i++)
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
+		
+		return this;
 	}
 
 	/** Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
