@@ -26,6 +26,8 @@ public interface MeshPartBuilder {
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
 	/** Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available. */
 	public short vertex(final VertexInfo info);
+	/** @return The index of the last added vertex. */
+	public short lastIndex();
 	/** Add an index, MeshPartBuilder expects all meshes to be indexed. */
 	public void index(final short value);
 	/** Add multiple indices, MeshPartBuilder expects all meshes to be indexed. */

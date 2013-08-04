@@ -33,7 +33,7 @@ public class ModelBuilder {
 	
 	private MeshBuilder getBuilder(final VertexAttributes attributes) {
 		for (final MeshBuilder mb : builders)
-			if (mb.getAttributes().equals(attributes))
+			if (mb.getAttributes().equals(attributes) && mb.lastIndex() < Short.MAX_VALUE/2)
 				return mb;
 		final MeshBuilder result = new MeshBuilder();
 		result.begin(attributes);
@@ -90,8 +90,9 @@ public class ModelBuilder {
 	 * @return The node being created. */
 	public Node node() {
 		final Node node = new Node();
+		node(node);
 		node.id = "node"+model.nodes.size;
-		return node(node);
+		return node;
 	}
 	
 	/** Adds the nodes of the specified model to a new node the model being build.
@@ -101,9 +102,10 @@ public class ModelBuilder {
 		final Node node = new Node();
 		node.id = id;
 		node.children.addAll(model.nodes);
+		node(node);
 		for (final Disposable disposable : model.getManagedDisposables())
 			manage(disposable);
-		return node(node);
+		return node;
 	}
 	
 	/** Add the {@link Disposable} object to the model, causing it to be disposed when the model is disposed. */
