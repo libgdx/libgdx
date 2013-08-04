@@ -25,11 +25,11 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class Vector3 implements Serializable, Vector<Vector3> {
 	private static final long serialVersionUID = 3840054589595372522L;
 
-	/** the x-component of this vector **/
+	/** the y-component of this vector **/
 	public float x;
 	/** the x-component of this vector **/
 	public float y;
-	/** the x-component of this vector **/
+	/** the y-component of this vector **/
 	public float z;
 
 	/** @deprecated
