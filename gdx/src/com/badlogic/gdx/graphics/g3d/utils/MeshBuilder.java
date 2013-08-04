@@ -250,6 +250,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
+		if (vindex >= Short.MAX_VALUE)
+			throw new GdxRuntimeException("Too many vertices used");
 		if (col == null && colorSet)
 			col = color;
 		if (pos != null) {
@@ -277,7 +279,12 @@ public class MeshBuilder implements MeshPartBuilder {
 		}
 		vertices.addAll(vertex);
 		return (short)(vindex++);
-	}	
+	}
+	
+	@Override
+	public short lastIndex() {
+		return (short)(vindex-1);
+	}
 
 	@Override
 	public short vertex(final float[] values) {
