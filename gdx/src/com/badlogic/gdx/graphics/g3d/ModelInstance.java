@@ -184,7 +184,8 @@ public class ModelInstance implements RenderableProvider {
 	private ObjectMap<NodePart, ArrayMap<Node, Matrix4>> nodePartBones = new ObjectMap<NodePart, ArrayMap<Node, Matrix4>>();
 	private void copyNodes (Array<Node> nodes) {
 		nodePartBones.clear();
-		for(Node node: nodes) {
+		for(int i = 0, n = nodes.size; i<n; ++i) {
+			final Node node = nodes.get(i);
 			this.nodes.add(copyNode(null, node));
 		}
 		setBones();
@@ -192,7 +193,8 @@ public class ModelInstance implements RenderableProvider {
 	
 	private void copyNodes (Array<Node> nodes, final String... nodeIds) {
 		nodePartBones.clear();
-		for(Node node: nodes) {
+		for(int i = 0, n = nodes.size; i<n; ++i) {
+			final Node node = nodes.get(i);
 			for (final String nodeId : nodeIds) {
 				if (nodeId.equals(node.id)) {
 					this.nodes.add(copyNode(null, node));
@@ -205,7 +207,8 @@ public class ModelInstance implements RenderableProvider {
 	
 	private void copyNodes (Array<Node> nodes, final Array<String> nodeIds) {
 		nodePartBones.clear();
-		for(Node node: nodes) {
+		for(int i = 0, n = nodes.size; i<n; ++i) {
+			final Node node = nodes.get(i);
 			for (final String nodeId : nodeIds) {
 				if (nodeId.equals(node.id)) {
 					this.nodes.add(copyNode(null, node));
