@@ -181,7 +181,7 @@ public class TextureAtlas implements Disposable {
 				}
 			}
 
-			new Sort().sort(regions.items, indexComparator, 0, regions.size);
+			new Sort().sort((Object[])regions.items, (Comparator)indexComparator, 0, regions.size);
 		}
 
 		public Array<Page> getPages () {
