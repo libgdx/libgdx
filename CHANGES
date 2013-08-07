@@ -1,4 +1,5 @@
 [0.9.9]
+- changed behaviour of Net#sendHttpRequest() so HttpResponseListener#handleHttpResponse() callback is executed in worker thread instead of main thread
 - added Bresenham2, for drawing lines on an integer 2D grid
 - added GridPoint2 and GridPoint3, representing integer points in a 2D or 3D grid
 - added attribute location caching for VertexData/Mesh. Hand vertex attribs to a ShaderProgram, get back int[], pass that to Mesh

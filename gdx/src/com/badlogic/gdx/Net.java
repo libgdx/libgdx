@@ -70,6 +70,9 @@ public interface Net {
 		String getResultAsString ();
 
 		/** Returns the data of the HTTP response as an {@link InputStream}.
+		 * <b><br>Warning:</b> Do not store a reference to this InputStream outside of {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. 
+		 * The underlying HTTP connection will be closed after that callback finishes executing. 
+		 * Reading from the InputStream after it's connection has been closed will lead to exception.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
 

@@ -175,14 +175,12 @@ public class NetJavaImpl {
 						connection.connect();
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
-						// post a runnable to sync the handler with the main thread
 								try {
 									httpResponseListener.handleHttpResponse(clientResponse);
 								} finally {
 									connection.disconnect();
 								}
 					} catch (final Exception e) {
-						// post a runnable to sync the handler with the main thread
 								connection.disconnect();
 								httpResponseListener.failed(e);
 					}
