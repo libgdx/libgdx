@@ -198,20 +198,9 @@ public class IOSNet implements Net {
 					}
 
 					final HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
 							httpResultListener.handleHttpResponse(new IosHttpResponse(httpWebResponse));
-						}
-					});
 				} catch (final Exception e) {
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
 							httpResultListener.failed(e);
-						}
-					});
 				}
 			}
 		});
