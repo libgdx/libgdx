@@ -70,6 +70,9 @@ public interface Net {
 		String getResultAsString ();
 
 		/** Returns the data of the HTTP response as an {@link InputStream}.
+		 * <b><br>Warning:</b> Do not store a reference to this InputStream outside of {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. 
+		 * The underlying HTTP connection will be closed after that callback finishes executing. 
+		 * Reading from the InputStream after it's connection has been closed will lead to exception.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
 
@@ -228,8 +231,9 @@ public interface Net {
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
-		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready. {@link HttpResponse}
-		 * contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
+		 * Passing data to the rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} 
+		 * {@link HttpResponse} contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
 		 * {@link HttpStatus#getStatusCode()}). For example:
 		 * 
 		 * <pre>
