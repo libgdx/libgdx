@@ -20,6 +20,8 @@ public interface MeshPartBuilder {
 	public void setColor(final Color color);
 	/** Set the color used if no vertex color is provided. */
 	public void setColor(float r, float g, float b, float a);
+	/** Set range of texture coordinates used (default is 0,0,1,1). */
+	public void setUVRange(float u1, float v1, float u2, float v2);
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
 	public short vertex(final float[] values);
 	/** Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are available. */

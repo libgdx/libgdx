@@ -249,6 +249,14 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 	
 	@Override
+	public void setUVRange(float u1, float v1, float u2, float v2) {
+		uMin = u1;
+		vMin = v1;
+		uMax = u2;
+		vMax = v2;
+	}
+	
+	@Override
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 		if (vindex >= Short.MAX_VALUE)
 			throw new GdxRuntimeException("Too many vertices used");
