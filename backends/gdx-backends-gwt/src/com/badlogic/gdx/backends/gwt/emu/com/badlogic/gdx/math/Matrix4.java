@@ -201,24 +201,24 @@ public class Matrix4 implements Serializable {
 		final float xx = orientation.x * xs,	xy = orientation.x * ys, 	xz = orientation.x * zs;
 		final float yy = orientation.y * ys,	yz = orientation.y * zs,	zz = orientation.z * zs;
 	
-		val[M00] = scale.x * (1.0f - (yy + zz));
-		val[M01] = scale.x * (xy - wz);
-		val[M02] = scale.x * (xz + wy);
-		val[M03] = 0.0f;
+		val[M00] = scale.x * (1.0f - 2 * (yy + zz));
+		val[M01] = scale.x * 2 * (xy - wz);
+		val[M02] = scale.x * 2 * (xz + wy);
+		val[M03] = position.x;
 		
-		val[M10] = scale.y * (xy + wz);
-		val[M11] = scale.y * (1.0f - (xx + zz));
-		val[M12] = scale.y * (yz - wx);
-		val[M13] = 0.0f;
+		val[M10] = scale.y * 2 * (xy + wz);
+		val[M11] = scale.y * (1.0f - 2 * (xx + zz));
+		val[M12] = scale.y * 2 * (yz - wx);
+		val[M13] = position.y;
 		
-		val[M20] = scale.z * (xz - wy);
-		val[M21] = scale.z * (yz + wx);
-		val[M22] = scale.z * (1.0f - (xx + yy));
-		val[M23] = 0.0f;
+		val[M20] = scale.z * 2 * (xz - wy);
+		val[M21] = scale.z * 2 * (yz + wx);
+		val[M22] = scale.z * (1.0f - 2 * (xx + yy));
+		val[M23] = position.z;
 		
-		val[M30] = position.x;
-		val[M31] = position.y;
-		val[M32] = position.z;
+		val[M30] = 0.0f;
+		val[M31] = 0.0f;
+		val[M32] = 0.0f;
 		val[M33] = 1.0f;
 		
 		return this;
