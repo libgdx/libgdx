@@ -16,16 +16,13 @@
 
 package com.badlogic.gdx.tests.net;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -46,7 +43,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	TextButton textButton;
 	Label statusLabel;
 	Texture texture;
-	
+
 	public boolean needsGL20 () {
 		// just because the non pot, we could change the image instead...
 		return true;
@@ -108,33 +105,32 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	@Override
 	public void handleHttpResponse (HttpResponse httpResponse) {
-		textButton.setDisabled(false);
-		textButton.setTouchable(Touchable.enabled);
-		int statusCode = httpResponse.getStatus().getStatusCode();
-		statusLabel.setText("HTTP Request status: " + statusCode);
+
+		final int statusCode = httpResponse.getStatus().getStatusCode();
+		// We are not in main thread right now so we need to post to main thread for ui updates
+		Gdx.app.postRunnable(new Runnable() {
+			@Override
+			public void run () {
+				statusLabel.setText("HTTP Request status: " + statusCode);
+				textButton.setDisabled(false);
+				textButton.setTouchable(Touchable.enabled);
+			}
+		});
 
 		if (statusCode != 200) {
 			Gdx.app.log("NetAPITest", "An error ocurred since statusCode is not OK");
 			return;
 		}
-		
-		final InputStream resultAsStream = httpResponse.getResultAsStream();
-		try {
-			Texture.setEnforcePotImages(false);
-			texture = new Texture(new FileHandle("image.jpg") {
-				@Override
-				public InputStream read () {
-					return resultAsStream;
-				}
-			});
-			Texture.setEnforcePotImages(true);
-		} finally {
-			if (resultAsStream != null) try {
-				resultAsStream.close();
-			} catch (IOException e) {
-				
+
+		final byte[] rawImageBytes = httpResponse.getResult();
+		Gdx.app.postRunnable(new Runnable() {
+			public void run () {
+				Texture.setEnforcePotImages(false);
+				Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
+				texture = new Texture(pixmap);
+				Texture.setEnforcePotImages(true);
 			}
-		}
+		});
 	}
 
 	@Override

@@ -75,6 +75,14 @@ public class Matrix4 implements Serializable {
 	public Matrix4 (Quaternion quaternion) {
 		this.set(quaternion);
 	}
+	
+	/** Construct a matrix from the given translation, rotation and scale.
+	 * @param position The translation
+	 * @param rotation The rotation, must be normalized
+	 * @param scale The scale */
+	public Matrix4 (Vector3 position, Quaternion rotation, Vector3 scale) {
+		set(position, rotation, scale);
+	}
 
 	/** Sets the matrix to the given matrix.
 	 * 
@@ -137,6 +145,40 @@ public class Matrix4 implements Serializable {
 		val[M31] = 0;
 		val[M32] = 0;
 		val[M33] = 1;
+		return this;
+	}
+	
+	/** Set this matrix to the specified translation, rotation and scale.
+	 * @param position The translation
+	 * @param orientation The rotation, must be normalized
+	 * @param scale The scale
+	 * @return This matrix for chaining */
+	public Matrix4 set (Vector3 position, Quaternion orientation, Vector3 scale) {
+		final float xs = orientation.x * 2f,	ys = orientation.y * 2f,	zs = orientation.z * 2f;
+		final float wx = orientation.w * xs,	wy = orientation.w * ys, 	wz = orientation.w * zs;
+		final float xx = orientation.x * xs,	xy = orientation.x * ys, 	xz = orientation.x * zs;
+		final float yy = orientation.y * ys,	yz = orientation.y * zs,	zz = orientation.z * zs;
+
+		val[M00] = scale.x * (1.0f - (yy + zz));
+		val[M01] = scale.x * (xy - wz);
+		val[M02] = scale.x * (xz + wy);
+		val[M03] = position.x;
+		
+		val[M10] = scale.y * (xy + wz);
+		val[M11] = scale.y * (1.0f - (xx + zz));
+		val[M12] = scale.y * (yz - wx);
+		val[M13] = position.y;
+		
+		val[M20] = scale.z * (xz - wy);
+		val[M21] = scale.z * (yz + wx);
+		val[M22] = scale.z * (1.0f - (xx + yy));
+		val[M23] = position.z;
+		
+		val[M30] = 0.0f;
+		val[M31] = 0.0f;
+		val[M32] = 0.0f;
+		val[M33] = 1.0f;
+		
 		return this;
 	}
 
@@ -672,11 +714,11 @@ public class Matrix4 implements Serializable {
 
 	/** Linearly interpolates between this matrix and the given matrix mixing by alpha
 	 * @param matrix the matrix
-	 * @param alpha the alpha value in the range [0,1] */
+	 * @param alpha the alpha value in the range [0,1] 
+	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 lerp (Matrix4 matrix, float alpha) {
 		for (int i = 0; i < 16; i++)
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
-		
 		return this;
 	}
 
@@ -723,20 +765,22 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	public void getTranslation (Vector3 position) {
+	public Vector3 getTranslation (Vector3 position) {
 		position.x = val[M03];
 		position.y = val[M13];
 		position.z = val[M23];
+		return position;
 	}
 
-	public void getRotation (Quaternion rotation) {
-		rotation.setFromMatrix(this);
+	public Quaternion getRotation (Quaternion rotation) {
+		return rotation.setFromMatrix(this);
 	}
 	
-	public void getScale (Vector3 scale) {		
+	public Vector3 getScale (Vector3 scale) {		
 		scale.x = (float)Math.sqrt(val[M00]*val[M00] + val[M01]*val[M01] + val[M02]*val[M02]);
 		scale.y = (float)Math.sqrt(val[M10]*val[M10] + val[M11]*val[M11] + val[M12]*val[M12]);
 		scale.z = (float)Math.sqrt(val[M20]*val[M20] + val[M21]*val[M21] + val[M22]*val[M22]);
+		return scale;
 	}
 
 	/** removes the translational part and transposes the matrix. */
@@ -891,7 +935,7 @@ public class Matrix4 implements Serializable {
 
 	/** Multiplies the matrix mata with matrix matb, storing the result in mata. The arrays are assumed to hold 4x4 column major
 	 * matrices as you can get from {@link Matrix4#val}. This is the same as {@link Matrix4#mul(Matrix4)}.
-	 * 
+	 *
 	 * @param mata the first matrix.
 	 * @param matb the second matrix. */
 	public static native void mul (float[] mata, float[] matb) /*-{ }-*/; /*
