@@ -119,37 +119,22 @@ public class GwtNet implements Net {
 		builder.setTimeoutMillis(httpRequest.getTimeOut());
 
 		try {
-			// post a runnable to sync the handler with the main thread
-			Gdx.app.postRunnable(new Runnable() {
+			builder.sendRequest(is_get ? null : value, new RequestCallback() {
+
 				@Override
-				public void run () {
-					try {
-						builder.sendRequest(is_get ? null : value, new RequestCallback() {
+				public void onResponseReceived (Request request, Response response) {
+					httpResultListener.handleHttpResponse(new HttpClientResponse(response));
+				}
 
-							@Override
-							public void onResponseReceived (Request request, Response response) {
-								httpResultListener.handleHttpResponse(new HttpClientResponse(response));
-							}
-
-							@Override
-							public void onError (Request request, Throwable exception) {
-								httpResultListener.failed(exception);
-							}
-						});
-					} catch (RequestException e) {
-						httpResultListener.failed(e);
-					}
+				@Override
+				public void onError (Request request, Throwable exception) {
+					httpResultListener.failed(exception);
 				}
 			});
-		} catch (final Exception e) {
-			// post a runnable to sync the handler with the main thread
-			Gdx.app.postRunnable(new Runnable() {
-				@Override
-				public void run () {
-					httpResultListener.failed(e);
-				}
-			});
+		} catch (RequestException e) {
+			httpResultListener.failed(e);
 		}
+
 	}
 
 	@Override
