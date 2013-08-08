@@ -45,7 +45,7 @@ public abstract class BaseShader implements Shader {
 			this(alias, 0);
 		}
 		public boolean validate(final BaseShader shader, final int inputID, final Renderable renderable) {
-			return (renderable.material.getMask() & materialMask) == materialMask;
+			return (renderable == null ? 0 : (renderable.material.getMask() & materialMask)) == materialMask;
 		}
 	}
 	
@@ -138,13 +138,15 @@ public abstract class BaseShader implements Shader {
 				setters.set(i, null);
 			}
 		}
-		final VertexAttributes attrs = renderable.mesh.getVertexAttributes();
-		final int c = attrs.size();
-		for (int i = 0; i < c; i++) {
-			final VertexAttribute attr = attrs.get(i);
-			final int location = program.getAttributeLocation(attr.alias);
-			if (location >= 0)
-				attributes.put(attr.getKey(), location);
+		if (renderable != null) {
+			final VertexAttributes attrs = renderable.mesh.getVertexAttributes();
+			final int c = attrs.size();
+			for (int i = 0; i < c; i++) {
+				final VertexAttribute attr = attrs.get(i);
+				final int location = program.getAttributeLocation(attr.alias);
+				if (location >= 0)
+					attributes.put(attr.getKey(), location);
+			}
 		}
 	}
 	
