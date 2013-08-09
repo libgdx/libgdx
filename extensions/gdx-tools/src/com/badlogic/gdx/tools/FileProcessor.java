@@ -103,6 +103,11 @@ public class FileProcessor {
 		return this;
 	}
 
+	/** @see #process(File, File) */
+	public ArrayList<Entry> process (String inputFile, String outputRoot) throws Exception {
+		return process(new File(inputFile), new File(outputRoot));
+	}
+
 	/** Processes the specified input file or directory.
 	 * @param outputRoot May be null if there is no output from processing the files.
 	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */

@@ -21,6 +21,7 @@ import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Page;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
 import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Sort;
 
 import java.util.Comparator;
 
@@ -32,6 +33,7 @@ public class MaxRectsPacker {
 	private FreeRectChoiceHeuristic[] methods = FreeRectChoiceHeuristic.values();
 	private MaxRects maxRects = new MaxRects();
 	Settings settings;
+	private Sort sort = new Sort();
 
 	public MaxRectsPacker (Settings settings) {
 		this.settings = settings;
@@ -50,7 +52,7 @@ public class MaxRectsPacker {
 		if (settings.fast) {
 			if (settings.rotation) {
 				// Sort by longest side if rotation is enabled.
-				inputRects.sort(new Comparator<Rect>() {
+				sort.sort(inputRects, new Comparator<Rect>() {
 					public int compare (Rect o1, Rect o2) {
 						int n1 = o1.width > o1.height ? o1.width : o1.height;
 						int n2 = o2.width > o2.height ? o2.width : o2.height;
@@ -59,7 +61,7 @@ public class MaxRectsPacker {
 				});
 			} else {
 				// Sort only by width (largest to smallest) if rotation is disabled.
-				inputRects.sort(new Comparator<Rect>() {
+				sort.sort(inputRects, new Comparator<Rect>() {
 					public int compare (Rect o1, Rect o2) {
 						return o2.width - o1.width;
 					}
@@ -134,7 +136,7 @@ public class MaxRectsPacker {
 		if (bestResult == null)
 			bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
 
-		bestResult.outputRects.sort(rectComparator);
+		sort.sort(bestResult.outputRects, rectComparator);
 
 		return bestResult;
 	}

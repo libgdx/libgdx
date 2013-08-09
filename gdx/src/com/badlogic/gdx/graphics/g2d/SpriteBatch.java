@@ -1060,6 +1060,7 @@ public class SpriteBatch implements Disposable {
 	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, SpriteBatch won't change the blending function.
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
+		if (blendSrcFunc == srcFunc && blendDstFunc == dstFunc) return;
 		renderMesh();
 		blendSrcFunc = srcFunc;
 		blendDstFunc = dstFunc;

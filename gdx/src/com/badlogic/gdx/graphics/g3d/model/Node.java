@@ -34,7 +34,7 @@ public class Node {
 	public final Matrix4 localTransform = new Matrix4();
 	/** the global transform, product of local transform and transform of the parent node, calculated via {@link #calculateWorldTransform()}**/
 	public final Matrix4 globalTransform = new Matrix4();
-	
+
 	public Array<NodePart> parts = new Array<NodePart>(2);
 	
 	/**
@@ -95,7 +95,7 @@ public class Node {
 			}
 		}
 	}
-	
+
 	/** Calculate the bounding box of this Node.
 	 * This is a potential slow operation, it is advised to cache the result. */
 	public BoundingBox calculateBoundingBox(final BoundingBox out) {
@@ -103,13 +103,29 @@ public class Node {
 		return extendBoundingBox(out);
 	}
 	
+	/** Calculate the bounding box of this Node.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out, boolean transform) {
+		out.inf();
+		return extendBoundingBox(out, transform);
+	}
+
 	/** Extends the bounding box with the bounds of this Node.
 	 * This is a potential slow operation, it is advised to cache the result. */
 	public BoundingBox extendBoundingBox(final BoundingBox out) {
+		return extendBoundingBox(out, true);
+	}
+	
+	/** Extends the bounding box with the bounds of this Node.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox extendBoundingBox(final BoundingBox out, boolean transform) {
 		final int partCount = parts.size;
 		for (int i = 0; i < partCount; i++) {
 			final MeshPart meshPart = parts.get(i).meshPart;
-			meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices, globalTransform);
+			if (transform)
+				meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices, globalTransform);
+			else
+				meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices);
 		}
 		final int childCount = children.size;
 		for (int i = 0; i < childCount; i++)

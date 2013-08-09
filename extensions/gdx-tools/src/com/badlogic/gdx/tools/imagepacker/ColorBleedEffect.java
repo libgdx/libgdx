@@ -87,8 +87,7 @@ public class ColorBleedEffect {
 			changing = new int[rgb.length];
 			ARGBColor color = new ARGBColor();
 			for (int i = 0; i < rgb.length; i++) {
-				int pixel = rgb[i];
-				color.argb = pixel;
+				color.argb = rgb[i];
 				if (color.alpha() == 0) {
 					data[i] = TO_PROCESS;
 					pending[pendingSize] = i;
