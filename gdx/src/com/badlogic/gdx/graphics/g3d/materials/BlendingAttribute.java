@@ -12,27 +12,47 @@ public class BlendingAttribute extends Material.Attribute {
 		return (mask & Type) == mask;
 	}
  
+	/** Whether this material should be considered blended (default: true). 
+	 * This is used for sorting (back to front instead of front to back). */  
+	public boolean blended;
+	/** Specifies how the (incoming) red, green, blue, and alpha source blending factors are computed (default: GL_SRC_ALPHA)  */
 	public int sourceFunction;
+	/** Specifies how the (existing) red, green, blue, and alpha destination blending factors are computed (default: GL_ONE_MINUS_SRC_ALPHA) */
 	public int destFunction;
+	/** The opacity used as source alpha value, ranging from 0 (fully transparent) to 1 (fully opaque), (default: 1). */
 	public float opacity = 1.f;
 
 	public BlendingAttribute() { 
 		this(null); 
 	}
 
-	public BlendingAttribute(final int sourceFunc, final int destFunc, final float opacity) {
+	public BlendingAttribute(final boolean blended, final int sourceFunc, final int destFunc, final float opacity) {
 		super(Type);
-		sourceFunction = sourceFunc;
-		destFunction = destFunc;
+		this.blended = blended;
+		this.sourceFunction = sourceFunc;
+		this.destFunction = destFunc;
 		this.opacity = opacity; 
+	}
+	
+	public BlendingAttribute(final int sourceFunc, final int destFunc, final float opacity) {
+		this(true, sourceFunc, destFunc, opacity);
 	}
 	
 	public BlendingAttribute(final int sourceFunc, final int destFunc) {
 		this(sourceFunc, destFunc, 1.f);
 	}
 	
+	public BlendingAttribute(final boolean blended, final float opacity) {
+		this(blended, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, opacity);
+	}
+	
+	public BlendingAttribute(final float opacity) {
+		this(true, opacity);
+	}
+	
 	public BlendingAttribute(final BlendingAttribute copyFrom) {
-		this(copyFrom == null ? GL10.GL_SRC_ALPHA : copyFrom.sourceFunction,
+		this(copyFrom == null ? true : copyFrom.blended,
+			copyFrom == null ? GL10.GL_SRC_ALPHA : copyFrom.sourceFunction,
 			copyFrom == null ? GL10.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunction,
 			copyFrom == null ? 1.f : copyFrom.opacity);
 	}
