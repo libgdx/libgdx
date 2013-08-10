@@ -146,7 +146,7 @@ public class GLES10Shader implements Shader{
 					Gdx.gl10.glColor4f(((ColorAttribute)attribute).color.r, ((ColorAttribute)attribute).color.g, ((ColorAttribute)attribute).color.b, ((ColorAttribute)attribute).color.a);
 					if (renderable.lights != null) {
 						Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
-						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, zeroVal4, 0);
+						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
 						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
 					}
 				} else if (attribute.type == TextureAttribute.Diffuse) {
