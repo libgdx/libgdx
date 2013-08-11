@@ -66,9 +66,9 @@ public class RenderContext {
 				Gdx.gl.glDepthFunc(depthFunc = depthFunction);
 			if (!wasEnabled || this.depthRangeNear != depthRangeNear || this.depthRangeFar != depthRangeFar)
 				Gdx.gl.glDepthRangef(this.depthRangeNear = depthRangeNear, this.depthRangeFar = depthRangeFar);
-			if (!wasEnabled || this.depthMask != depthMask)
-				Gdx.gl.glDepthMask(this.depthMask = depthMask);
 		}
+		if (this.depthMask != depthMask)
+			Gdx.gl.glDepthMask(this.depthMask = depthMask);
 	}
 	
 	public final void setBlending(final boolean enabled, final int sFactor, final int dFactor) {
