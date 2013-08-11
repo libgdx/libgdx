@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.io.File;
+
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -36,7 +38,11 @@ public final class LwjglFiles implements Files {
 
 	@Override
 	public FileHandle internal (String path) {
+		if(new File("./bin/" + path).exists()){
 		return new LwjglFileHandle("./bin/" + path, FileType.Internal);
+		} else{
+			return new LwjglFileHandle(path, FileType.Internal);
+		}
 	}
 
 	@Override
