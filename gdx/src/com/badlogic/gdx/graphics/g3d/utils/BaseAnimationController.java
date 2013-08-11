@@ -45,11 +45,7 @@ public class BaseAnimationController {
 			return this;
 		}
 		public Matrix4 toMatrix4(final Matrix4 out) {
-			out.idt();
-			out.translate(translation);
-			out.rotate(rotation);
-			out.scale(scale.x, scale.y, scale.z);
-			return out;
+			return out.set(translation, rotation, scale);
 		}
 		@Override
 		public void reset () {

@@ -464,7 +464,7 @@ public class TiledMapPacker {
 		final Settings texturePackerSettings = new Settings();
 		texturePackerSettings.paddingX = 2;
 		texturePackerSettings.paddingY = 2;
-		texturePackerSettings.duplicatePadding = true;
+		texturePackerSettings.bleed = true;
 		texturePackerSettings.alias = true;
 		texturePackerSettings.useIndexes = true;
 

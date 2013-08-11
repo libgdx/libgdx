@@ -175,26 +175,14 @@ public class NetJavaImpl {
 						connection.connect();
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
-						// post a runnable to sync the handler with the main thread
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
 								try {
 									httpResponseListener.handleHttpResponse(clientResponse);
 								} finally {
 									connection.disconnect();
 								}
-							}
-						});
 					} catch (final Exception e) {
-						// post a runnable to sync the handler with the main thread
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
 								connection.disconnect();
 								httpResponseListener.failed(e);
-							}
-						});
 					}
 // finally {
 // connection.disconnect();

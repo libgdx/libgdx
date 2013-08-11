@@ -83,9 +83,11 @@ public class SoundManager {
 				callback.@com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback::onready()();
 			},
 			ontimeout: function(status) {
-				callback.@com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback::ontimeout(Ljava/lang/String;Ljava/lang/String;)(status.success, status.error.type);
-			}		
+				callback.@com.badlogic.gdx.backends.gwt.soundmanager2.SoundManager.SoundManagerCallback::ontimeout(Ljava/lang/String;Ljava/lang/String;)(status.success, (typeof status.error === 'undefined') ? '' : status.error.type);
+			}
+					
 		});
+		$wnd.soundManager.beginDelayedInit();
 	}-*/;
 
 }

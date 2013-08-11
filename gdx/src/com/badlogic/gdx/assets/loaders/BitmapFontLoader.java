@@ -39,25 +39,23 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	BitmapFontData data;
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, BitmapFontParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, BitmapFontParameter parameter) {
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
 		if (parameter != null && parameter.bitmapFontData != null) {
 			data = parameter.bitmapFontData;
 			return deps;
 		}
-		FileHandle handle = resolve(fileName);
-		data = new BitmapFontData(handle, parameter != null ? parameter.flip : false);
+		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
 		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class));
 		return deps;
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
 	}
 
 	@Override
-	public BitmapFont loadSync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
-		FileHandle handle = resolve(fileName);
+	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
 		TextureRegion region = new TextureRegion(manager.get(data.getImagePath(), Texture.class));
 		if (parameter != null) region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
 		return new BitmapFont(data, region, true);

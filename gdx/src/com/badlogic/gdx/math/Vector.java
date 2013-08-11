@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /** Encapsulates a general vector. Allows chaining operations by returning a reference to itself in all modification methods. See
  * {@link Vector2} and {@link Vector3} for specific implementations.
  * @author Xoppa */
-public interface Vector<T extends Vector> {
+public interface Vector<T extends Vector<T>> {
 	/** @return a copy of this vector */
 	T cpy ();
 

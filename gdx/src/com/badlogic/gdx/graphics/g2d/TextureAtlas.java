@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Sort;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -180,7 +181,7 @@ public class TextureAtlas implements Disposable {
 				}
 			}
 
-			regions.sort(indexComparator);
+			new Sort().sort((Object[])regions.items, (Comparator)indexComparator, 0, regions.size);
 		}
 
 		public Array<Page> getPages () {

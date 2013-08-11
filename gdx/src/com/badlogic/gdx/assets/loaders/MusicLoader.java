@@ -21,6 +21,7 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 
 /** {@link AssetLoader} for {@link Music} instances. The Music instance is loaded synchronously.
@@ -31,12 +32,12 @@ public class MusicLoader extends SynchronousAssetLoader<Music, MusicLoader.Music
 	}
 
 	@Override
-	public Music load (AssetManager assetManager, String fileName, MusicParameter parameter) {
-		return Gdx.audio.newMusic(resolve(fileName));
+	public Music load (AssetManager assetManager, String fileName, FileHandle file, MusicParameter parameter) {
+		return Gdx.audio.newMusic(file);
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, MusicParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, MusicParameter parameter) {
 		return null;
 	}
 

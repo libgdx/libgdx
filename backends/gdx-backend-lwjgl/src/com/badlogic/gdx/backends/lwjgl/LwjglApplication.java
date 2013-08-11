@@ -16,6 +16,13 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.Canvas;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.lwjgl.LWJGLException;
+import org.lwjgl.opengl.Display;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -29,13 +36,6 @@ import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.awt.Canvas;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
@@ -79,7 +79,8 @@ public class LwjglApplication implements Application {
 
 		this.graphics = graphics;
 		if (!LwjglApplicationConfiguration.disableAudio)
-			audio = new OpenALAudio(16, config.audioDeviceBufferCount, config.audioDeviceBufferSize);
+			audio = new OpenALAudio(config.audioDeviceSimultaneousSources, config.audioDeviceBufferCount,
+				config.audioDeviceBufferSize);
 		files = new LwjglFiles();
 		input = new LwjglInput();
 		net = new LwjglNet();
@@ -106,6 +107,7 @@ public class LwjglApplication implements Application {
 
 	private void initialize () {
 		mainLoopThread = new Thread("LWJGL Application") {
+			@Override
 			public void run () {
 				graphics.setVSync(graphics.config.vSyncEnabled);
 				try {
@@ -334,6 +336,7 @@ public class LwjglApplication implements Application {
 		}
 	}
 
+	@Override
 	public void log (String tag, String message) {
 		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ": " + message);

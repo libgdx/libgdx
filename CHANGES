@@ -1,4 +1,5 @@
 [0.9.9]
+- changed behaviour of Net#sendHttpRequest() so HttpResponseListener#handleHttpResponse() callback is executed in worker thread instead of main thread
 - added Bresenham2, for drawing lines on an integer 2D grid
 - added GridPoint2 and GridPoint3, representing integer points in a 2D or 3D grid
 - added attribute location caching for VertexData/Mesh. Hand vertex attribs to a ShaderProgram, get back int[], pass that to Mesh
@@ -55,6 +56,7 @@
 - Added pause and resume methods to Sound.
 - Changed AssetErrorListener#error to have AssetDescriptor to enable access to parameters of failed asset.
 - Changed SelectBoxStyle to have ScrollPaneStyle and ListStyle for fully customizing the drop down list. http://www.badlogicgames.com/wordpress/?p=3110
+- AssetLoader now takes a FileHandle that is the resolved file name. The AssetLoader no longer has to resolve the file name, so we can prevent it from being resolved twice.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

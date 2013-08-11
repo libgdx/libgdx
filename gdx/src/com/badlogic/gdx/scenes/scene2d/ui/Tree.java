@@ -82,8 +82,7 @@ public class Tree extends WidgetGroup {
 					// Select range (shift/ctrl).
 					float low = selectedNodes.first().actor.getY();
 					float high = node.actor.getY();
-					if (!isCtrlPressed())
-						selectedNodes.clear();
+					if (!isCtrlPressed()) selectedNodes.clear();
 					if (low > high)
 						selectNodes(rootNodes, high, low);
 					else
@@ -318,7 +317,7 @@ public class Tree extends WidgetGroup {
 
 	public void setSelection (Node node) {
 		selectedNodes.clear();
-		selectedNodes.add(node);
+		if (node != null) selectedNodes.add(node);
 		fireChangeEvent();
 	}
 
@@ -329,6 +328,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	public void addSelection (Node node) {
+		if (node == null) return;
 		selectedNodes.add(node);
 		fireChangeEvent();
 	}

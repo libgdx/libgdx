@@ -21,8 +21,10 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
 	
 	@Override
 	public int compare (final Renderable o1, final Renderable o2) {
-		final boolean b1 = o1.material.has(BlendingAttribute.Type);
-		final boolean b2 = o2.material.has(BlendingAttribute.Type);
+		final boolean b1 = o1.material.has(BlendingAttribute.Type) ? 
+			((BlendingAttribute)o1.material.get(BlendingAttribute.Type)).blended : false;
+		final boolean b2 = o2.material.has(BlendingAttribute.Type) ?
+			((BlendingAttribute)o2.material.get(BlendingAttribute.Type)).blended : false;
 		if (b1 != b2) 
 			return b1 ? 1 : -1;
 		// FIXME implement better sorting algorithm
@@ -31,6 +33,7 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
 		o1.worldTransform.getTranslation(tmpV1);
 		o2.worldTransform.getTranslation(tmpV2);
 		final float dst = camera.position.dst2(tmpV1) - camera.position.dst2(tmpV2);
-		return dst < 0f ? -1 : (dst > 0f ? 1 : 0);
+		final int result = dst < 0f ? -1 : (dst > 0f ? 1 : 0);
+		return b1 ? -result : result;
 	}
 }

@@ -19,6 +19,7 @@ package com.badlogic.gdx.assets;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Logger;
@@ -60,24 +61,24 @@ class AssetLoadingTask implements AsyncTask<Void> {
 	public Void call () throws Exception {
 		AsynchronousAssetLoader asyncLoader = (AsynchronousAssetLoader)loader;
 		if (dependenciesLoaded == false) {
-			dependencies = asyncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
+			dependencies = asyncLoader.getDependencies(assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 			if (dependencies != null) {
 				manager.injectDependencies(assetDesc.fileName, dependencies);
 			} else {
 				// if we have no dependencies, we load the async part of the task immediately.
-				asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
+				asyncLoader.loadAsync(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 				asyncDone = true;
 			}
 		} else {
-			asyncLoader.loadAsync(manager, assetDesc.fileName, assetDesc.params);
+			asyncLoader.loadAsync(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 		}
 		return null;
 	}
 
 	/** Updates the loading of the asset. In case the asset is loaded with an {@link AsynchronousAssetLoader}, the loaders
-	 * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, AssetLoaderParameters)} method is first called on a worker
-	 * thread. Once this method returns, the rest of the asset is loaded on the rendering thread via
-	 * {@link AsynchronousAssetLoader#loadSync(AssetManager, String, AssetLoaderParameters)}.
+	 * {@link AsynchronousAssetLoader#loadAsync(AssetManager, String, FileHandle, AssetLoaderParameters)} method is first called on
+	 * a worker thread. Once this method returns, the rest of the asset is loaded on the rendering thread via
+	 * {@link AsynchronousAssetLoader#loadSync(AssetManager, String, FileHandle, AssetLoaderParameters)}.
 	 * @return true in case the asset was fully loaded, false otherwise
 	 * @throws GdxRuntimeException */
 	public boolean update () {
@@ -94,14 +95,14 @@ class AssetLoadingTask implements AsyncTask<Void> {
 		SynchronousAssetLoader syncLoader = (SynchronousAssetLoader)loader;
 		if (!dependenciesLoaded) {
 			dependenciesLoaded = true;
-			dependencies = syncLoader.getDependencies(assetDesc.fileName, assetDesc.params);
+			dependencies = syncLoader.getDependencies(assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 			if (dependencies == null) {
-				asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
+				asset = syncLoader.load(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 				return;
 			}
 			manager.injectDependencies(assetDesc.fileName, dependencies);
 		} else {
-			asset = syncLoader.load(manager, assetDesc.fileName, assetDesc.params);
+			asset = syncLoader.load(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 		}
 	}
 
@@ -119,7 +120,7 @@ class AssetLoadingTask implements AsyncTask<Void> {
 					}
 					dependenciesLoaded = true;
 					if (asyncDone) {
-						asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
+						asset = asyncLoader.loadSync(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 					}
 				}
 			}
@@ -128,17 +129,22 @@ class AssetLoadingTask implements AsyncTask<Void> {
 				loadFuture = executor.submit(this);
 			} else {
 				if (asyncDone) {
-					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
+					asset = asyncLoader.loadSync(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 				} else if (loadFuture.isDone()) {
 					try {
 						loadFuture.get();
 					} catch (Exception e) {
 						throw new GdxRuntimeException("Couldn't load asset: " + assetDesc.fileName, e);
 					}
-					asset = asyncLoader.loadSync(manager, assetDesc.fileName, assetDesc.params);
+					asset = asyncLoader.loadSync(manager, assetDesc.fileName, resolve(loader, assetDesc), assetDesc.params);
 				}
 			}
 		}
+	}
+
+	private FileHandle resolve (AssetLoader loader, AssetDescriptor assetDesc) {
+		if (assetDesc.file == null) assetDesc.file = loader.resolve(assetDesc.fileName);
+		return assetDesc.file;
 	}
 
 	public Object getAsset () {

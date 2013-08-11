@@ -99,10 +99,6 @@ public class TexturePacker2 {
 			int width = page.width, height = page.height;
 			int paddingX = settings.paddingX;
 			int paddingY = settings.paddingY;
-			if (settings.duplicatePadding) {
-				paddingX /= 2;
-				paddingY /= 2;
-			}
 			width -= settings.paddingX;
 			height -= settings.paddingY;
 			if (settings.edgePadding) {
@@ -143,58 +139,16 @@ public class TexturePacker2 {
 				int iw = image.getWidth();
 				int ih = image.getHeight();
 				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
-				if (settings.duplicatePadding) {
-					int amountX = settings.paddingX / 2;
-					int amountY = settings.paddingY / 2;
-					if (rect.rotated) {
-						// Copy corner pixels to fill corners of the padding.
-						for (int i = 1; i <= amountX; i++) {
-							for (int j = 1; j <= amountY; j++) {
-								plot(canvas, rectX - j, rectY + iw - 1 + i, image.getRGB(0, 0));
-								plot(canvas, rectX + ih - 1 + j, rectY + iw - 1 + i, image.getRGB(0, ih - 1));
-								plot(canvas, rectX - j, rectY - i, image.getRGB(iw - 1, 0));
-								plot(canvas, rectX + ih - 1 + j, rectY - i, image.getRGB(iw - 1, ih - 1));
-							}
-						}
-						// Copy edge pixels into padding.
-						for (int i = 1; i <= amountY; i++) {
-							for (int j = 0; j < iw; j++) {
-								plot(canvas, rectX - i, rectY + iw - 1 - j, image.getRGB(j, 0));
-								plot(canvas, rectX + ih - 1 + i, rectY + iw - 1 - j, image.getRGB(j, ih - 1));
-							}
-						}
-						for (int i = 1; i <= amountX; i++) {
-							for (int j = 0; j < ih; j++) {
-								plot(canvas, rectX + j, rectY - i, image.getRGB(iw - 1, j));
-								plot(canvas, rectX + j, rectY + iw - 1 + i, image.getRGB(0, j));
-							}
-						}
-					} else {
-						// Copy corner pixels to fill corners of the padding.
-						for (int i = 1; i <= amountX; i++) {
-							for (int j = 1; j <= amountY; j++) {
-								canvas.setRGB(rectX - i, rectY - j, image.getRGB(0, 0));
-								canvas.setRGB(rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
-								canvas.setRGB(rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
-								canvas.setRGB(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
-							}
-						}
-						// Copy edge pixels into padding.
-						for (int i = 1; i <= amountY; i++) {
-							copy(image, 0, 0, iw, 1, canvas, rectX, rectY - i, rect.rotated);
-							copy(image, 0, ih - 1, iw, 1, canvas, rectX, rectY + ih - 1 + i, rect.rotated);
-						}
-						for (int i = 1; i <= amountX; i++) {
-							copy(image, 0, 0, 1, ih, canvas, rectX - i, rectY, rect.rotated);
-							copy(image, iw - 1, 0, 1, ih, canvas, rectX + iw - 1 + i, rectY, rect.rotated);
-						}
-					}
-				}
 				copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
 				if (settings.debug) {
 					g.setColor(Color.magenta);
 					g.drawRect(rectX, rectY, rect.width - settings.paddingX - 1, rect.height - settings.paddingY - 1);
 				}
+			}
+
+			if (settings.bleed && !settings.premultiplyAlpha && !settings.outputFormat.equalsIgnoreCase("jpg")) {
+				canvas = new ColorBleedEffect().processImage(canvas, 2);
+				g = (Graphics2D)canvas.getGraphics();
 			}
 
 			if (settings.debug) {
@@ -235,24 +189,18 @@ public class TexturePacker2 {
 	}
 
 	private static void plot (BufferedImage dst, int x, int y, int argb) {
-		if (0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) {
-			dst.setRGB(x, y, argb);
-		}
+		if (0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) dst.setRGB(x, y, argb);
 	}
 
 	private static void copy (BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated) {
 		if (rotated) {
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++)
+				for (int j = 0; j < h; j++)
 					dst.setRGB(dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
-				}
-			}
 		} else {
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++)
+				for (int j = 0; j < h; j++)
 					dst.setRGB(dx + i, dy + j, src.getRGB(x + i, y + j));
-				}
-			}
 		}
 	}
 
@@ -457,7 +405,6 @@ public class TexturePacker2 {
 		public boolean pot = true;
 		public int paddingX = 2, paddingY = 2;
 		public boolean edgePadding = true;
-		public boolean duplicatePadding = true;
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
@@ -477,6 +424,7 @@ public class TexturePacker2 {
 		public boolean flattenPaths;
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
+		public boolean bleed = true;
 
 		public Settings () {
 		}
@@ -504,7 +452,6 @@ public class TexturePacker2 {
 			filterMag = settings.filterMag;
 			wrapX = settings.wrapX;
 			wrapY = settings.wrapY;
-			duplicatePadding = settings.duplicatePadding;
 			debug = settings.debug;
 			combineSubdirectories = settings.combineSubdirectories;
 			flattenPaths = settings.flattenPaths;

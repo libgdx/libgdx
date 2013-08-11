@@ -295,7 +295,8 @@ public class Label extends Widget {
 
 		public LabelStyle (LabelStyle style) {
 			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.fontColor != null) fontColor = new Color(style.fontColor);
+			background = style.background;
 		}
 	}
 }
