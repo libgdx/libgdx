@@ -36,7 +36,7 @@ public final class LwjglFiles implements Files {
 
 	@Override
 	public FileHandle internal (String path) {
-		return new LwjglFileHandle(path, FileType.Internal);
+		return new LwjglFileHandle("./bin/" + path, FileType.Internal);
 	}
 
 	@Override
