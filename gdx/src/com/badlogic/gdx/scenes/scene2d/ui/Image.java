@@ -138,6 +138,10 @@ public class Image extends Widget {
 		}
 	}
 
+	public void setDrawable (Skin skin, String drawableName) {
+		setDrawable(skin.getDrawable(drawableName));
+	}
+
 	public void setDrawable (Drawable drawable) {
 		if (drawable != null) {
 			if (this.drawable == drawable) return;

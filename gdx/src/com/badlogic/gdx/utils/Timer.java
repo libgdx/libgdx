@@ -29,8 +29,13 @@ public class Timer {
 	static private final int FOREVER = -2;
 
 	/** Timer instance for general application wide usage. Static methods on {@link Timer} make convenient use of this instance. */
-	static public final Timer instance = new Timer();
-
+	static Timer instance = new Timer();
+	static public Timer instance() {
+		if (instance == null) {
+			instance = new Timer();
+		}
+		return instance;
+	}
 	private final Array<Task> tasks = new Array(false, 8);
 
 	public Timer () {
@@ -138,25 +143,25 @@ public class Timer {
 	/** Schedules a task on {@link #instance}.
 	 * @see #postTask(Task) */
 	static public void post (Task task) {
-		instance.postTask(task);
+		instance().postTask(task);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float) */
 	static public void schedule (Task task, float delaySeconds) {
-		instance.scheduleTask(task, delaySeconds);
+		instance().scheduleTask(task, delaySeconds);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float, float) */
 	static public void schedule (Task task, float delaySeconds, float intervalSeconds) {
-		instance.scheduleTask(task, delaySeconds, intervalSeconds);
+		instance().scheduleTask(task, delaySeconds, intervalSeconds);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float, float, int) */
 	static public void schedule (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
-		instance.scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
+		instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
 	}
 
 	/** Runnable with a cancel method.
@@ -241,6 +246,7 @@ public class Timer {
 			Gdx.app.removeLifecycleListener(this);
 			thread = null;
 			instances.clear();
+			instance = null;
 		}
 	}
 }

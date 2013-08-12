@@ -494,7 +494,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}		
 	}
 	
-	native static void consoleLog(String message) /*-{
+	native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
 }

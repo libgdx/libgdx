@@ -6,7 +6,13 @@
   <target>ios</target>
   <iosInfoPList>Info.plist.xml</iosInfoPList>
    <resources>
-    <resource>../gdx-tests-android/assets/data</resource>
+    <resource>
+      <directory>../gdx-tests-android/assets</directory>
+      <includes>
+        <include>data/**</include>
+      </includes>
+      <skipPngCrush>true</skipPngCrush>
+    </resource>
   </resources>
   <libs>
     <lib>../../gdx/libs/ios32/libgdx.a</lib>

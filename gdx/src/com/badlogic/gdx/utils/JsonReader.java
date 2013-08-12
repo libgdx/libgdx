@@ -69,6 +69,11 @@ public class JsonReader implements BaseJsonReader {
 			return parse(new InputStreamReader(input, "ISO-8859-1"));
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
+		} finally {
+			try {
+				input.close();
+			} catch (IOException ignored) {
+			}
 		}
 	}
 
