@@ -357,7 +357,7 @@
 		<include name="scenes/scene2d/ui/List.java"/>
 		<include name="scenes/scene2d/ui/ScrollPane.java"/>
 		<include name="scenes/scene2d/ui/SelectBox.java"/>
-		<include name="scenes/scene2d/ui/Skin.java"/> <!-- Emulated: Reflection -->
+		<include name="scenes/scene2d/ui/Skin.java"/>
 		<include name="scenes/scene2d/ui/Slider.java"/>
 		<include name="scenes/scene2d/ui/SplitPane.java"/>
 		<include name="scenes/scene2d/ui/Stack.java"/>
