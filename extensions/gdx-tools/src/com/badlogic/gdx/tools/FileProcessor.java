@@ -103,9 +103,10 @@ public class FileProcessor {
 		return this;
 	}
 
-	/** @see #process(File, File) */
+	/** @param outputRoot May be null.
+	 * @see #process(File, File) */
 	public ArrayList<Entry> process (String inputFile, String outputRoot) throws Exception {
-		return process(new File(inputFile), new File(outputRoot));
+		return process(new File(inputFile), outputRoot == null ? null : new File(outputRoot));
 	}
 
 	/** Processes the specified input file or directory.
