@@ -383,6 +383,16 @@ public class ObjectMap<K, V> {
 		resize(maximumCapacity);
 	}
 
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	public void clear (int maximumCapacity) {
+		if (capacity <= maximumCapacity) {
+			clear();
+			return;
+		}
+		size = 0;
+		resize(maximumCapacity);
+	}
+
 	public void clear () {
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
@@ -477,11 +487,14 @@ public class ObjectMap<K, V> {
 		keyTable = (K[])new Object[newSize + stashCapacity];
 		valueTable = (V[])new Object[newSize + stashCapacity];
 
+		int oldSize = size;
 		size = 0;
 		stashSize = 0;
-		for (int i = 0; i < oldEndIndex; i++) {
-			K key = oldKeyTable[i];
-			if (key != null) putResize(key, oldValueTable[i]);
+		if (oldSize > 0) {
+			for (int i = 0; i < oldEndIndex; i++) {
+				K key = oldKeyTable[i];
+				if (key != null) putResize(key, oldValueTable[i]);
+			}
 		}
 	}
 

@@ -304,6 +304,17 @@ public class IntSet {
 		resize(maximumCapacity);
 	}
 
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	public void clear (int maximumCapacity) {
+		if (capacity <= maximumCapacity) {
+			clear();
+			return;
+		}
+		hasZeroValue = false;
+		size = 0;
+		resize(maximumCapacity);
+	}
+
 	public void clear () {
 		int[] keyTable = this.keyTable;
 		for (int i = capacity + stashSize; i-- > 0;)
@@ -354,11 +365,14 @@ public class IntSet {
 
 		keyTable = new int[newSize + stashCapacity];
 
+		int oldSize = size;
 		size = hasZeroValue ? 1 : 0;
 		stashSize = 0;
-		for (int i = 0; i < oldEndIndex; i++) {
-			int key = oldKeyTable[i];
-			if (key != EMPTY) addResize(key);
+		if (oldSize > 0) {
+			for (int i = 0; i < oldEndIndex; i++) {
+				int key = oldKeyTable[i];
+				if (key != EMPTY) addResize(key);
+			}
 		}
 	}
 
