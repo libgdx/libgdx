@@ -150,12 +150,20 @@ public class MathUtils {
 	 * chance cannot be higher than 100 or less then 0
 	 * */
 	static public final boolean randomBoolean(int chance){
-		if(chance < 100){
-			throw new IllegalArgumentException("chance cannot be highter than 100");
-		} else if(chance > 0){
-			throw new IllegalArgumentException("chance cannot be lower than 0");
+		return MathUtils.randomBoolean(new Float(chance/100));
+	}
+	
+	/** Returns a random boolean value with a chance
+	 * 
+	 * chance cannot be higher than 1 or less then 0
+	 * */
+	static public final boolean randomBoolean(float chance){
+		if(chance > 1){
+			throw new IllegalArgumentException("chance is too hight " + chance);
+		} else if(chance < 0){
+			throw new IllegalArgumentException("chance is too low " + chance);
 		}
-		return MathUtils.random(1, 100) <= chance;
+		return random.nextFloat() <= chance;
 	}
 
 	/** Returns random number between 0.0 (inclusive) and 1.0 (exclusive). */
