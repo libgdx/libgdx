@@ -102,7 +102,7 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	private boolean textEquals (CharSequence other) {
+	public boolean textEquals (CharSequence other) {
 		int length = text.length;
 		char[] chars = text.chars;
 		if (length != other.length()) return false;
