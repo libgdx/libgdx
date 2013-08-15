@@ -125,10 +125,10 @@ public class Slider extends Widget {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		SliderStyle style = this.style;
 		boolean disabled = this.disabled;
-		final Drawable knob = disabled ? style.knob : style.disabledKnob;
-		final Drawable bg = disabled ? style.background : style.disabledBackground;
-		final Drawable knobBefore = disabled ? style.knobBefore : style.disabledKnobBefore;
-		final Drawable knobAfter = disabled ? style.knobAfter : style.disabledKnobAfter;
+		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		final Drawable knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
+		final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
 
 		Color color = getColor();
 		float x = getX();
@@ -186,8 +186,8 @@ public class Slider extends Widget {
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
-		final Drawable knob = disabled ? style.knob : style.disabledKnob;
-		final Drawable bg = disabled ? style.background : style.disabledBackground;
+		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
 		float oldPosition = sliderPos;
@@ -274,8 +274,8 @@ public class Slider extends Widget {
 
 	public float getPrefWidth () {
 		if (vertical) {
-			final Drawable knob = disabled ? style.knob : style.disabledKnob;
-			final Drawable bg = disabled ? style.background : style.disabledBackground;
+			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
 		} else
 			return 140;
@@ -285,8 +285,8 @@ public class Slider extends Widget {
 		if (vertical)
 			return 140;
 		else {
-			final Drawable knob = disabled ? style.knob : style.disabledKnob;
-			final Drawable bg = disabled ? style.background : style.disabledBackground;
+			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 			return Math.max(knob == null ? 0 : knob.getMinHeight(), bg.getMinHeight());
 		}
 	}
