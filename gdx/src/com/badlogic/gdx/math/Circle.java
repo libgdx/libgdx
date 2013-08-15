@@ -117,6 +117,27 @@ public class Circle implements Serializable {
 		return distance < radiusSum * radiusSum;
 	}
 
+	@Override
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(radius);
+		result = prime * result + Float.floatToIntBits(x);
+		result = prime * result + Float.floatToIntBits(y);
+		return result;
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof Circle)) return false;
+		Circle other = (Circle)obj;
+		return (Float.floatToIntBits(radius) == Float.floatToIntBits(other.radius))
+			&& (Float.floatToIntBits(x) == Float.floatToIntBits(other.x))
+			&& (Float.floatToIntBits(y) == Float.floatToIntBits(other.y));
+	}
+
 	public String toString () {
 		return x + "," + y + "," + radius;
 	}

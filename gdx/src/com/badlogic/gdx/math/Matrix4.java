@@ -17,6 +17,7 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> 4 by 4 matrix. Like the {@link Vector3}
  * class it allows the chaining of methods by returning a reference to itself. For example:
@@ -1152,5 +1153,22 @@ public class Matrix4 implements Serializable {
 
 		mul(val, tmp);
 		return this;
+	}
+
+	@Override
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(val);
+		return result;
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (!(obj instanceof Matrix4)) return false;
+		Matrix4 other = (Matrix4)obj;
+		return Arrays.equals(val, other.val);
 	}
 }
