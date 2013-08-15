@@ -82,5 +82,3 @@ TileMapRendererLoader.java
 AtomicQueue.java
 LittleEndianInputStream.java
 PauseableThread.java
-DesktopClipboard.java
-AndroidClipboard.java
