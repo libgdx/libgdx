@@ -174,7 +174,7 @@ public class Plane implements Serializable {
 
 	@Override
 	public int hashCode () {
-		final int prime = 31;
+		final int prime = 61;
 		int result = 1;
 		result = prime * result + Float.floatToIntBits(d);
 		result = prime * result + ((normal == null) ? 0 : normal.hashCode());

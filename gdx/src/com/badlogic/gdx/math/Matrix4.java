@@ -1111,7 +1111,7 @@ public class Matrix4 implements Serializable {
 
 	@Override
 	public int hashCode () {
-		final int prime = 31;
+		final int prime = 59;
 		int result = 1;
 		result = prime * result + Arrays.hashCode(val);
 		return result;

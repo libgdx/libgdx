@@ -420,7 +420,7 @@ public class Quaternion implements Serializable {
 
 	@Override
 	public int hashCode () {
-		final int prime = 31;
+		final int prime = 67;
 		int result = 1;
 		result = prime * result + Float.floatToIntBits(x);
 		result = prime * result + Float.floatToIntBits(y);
