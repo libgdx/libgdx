@@ -52,20 +52,20 @@ public class MaxRectsPacker {
 		if (settings.fast) {
 			if (settings.rotation) {
 				// Sort by longest side if rotation is enabled.
-				sort.sort(inputRects.items, new Comparator<Rect>() {
+				sort.sort(inputRects, new Comparator<Rect>() {
 					public int compare (Rect o1, Rect o2) {
 						int n1 = o1.width > o1.height ? o1.width : o1.height;
 						int n2 = o2.width > o2.height ? o2.width : o2.height;
 						return n2 - n1;
 					}
-				}, 0, inputRects.size);
+				});
 			} else {
 				// Sort only by width (largest to smallest) if rotation is disabled.
-				sort.sort(inputRects.items, new Comparator<Rect>() {
+				sort.sort(inputRects, new Comparator<Rect>() {
 					public int compare (Rect o1, Rect o2) {
 						return o2.width - o1.width;
 					}
-				}, 0, inputRects.size);
+				});
 			}
 		}
 
@@ -136,7 +136,7 @@ public class MaxRectsPacker {
 		if (bestResult == null)
 			bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
 
-		bestResult.outputRects.sort(rectComparator);
+		sort.sort(bestResult.outputRects, rectComparator);
 
 		return bestResult;
 	}

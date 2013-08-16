@@ -102,7 +102,7 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	private boolean textEquals (CharSequence other) {
+	public boolean textEquals (CharSequence other) {
 		int length = text.length;
 		char[] chars = text.chars;
 		if (length != other.length()) return false;
@@ -295,7 +295,8 @@ public class Label extends Widget {
 
 		public LabelStyle (LabelStyle style) {
 			this.font = style.font;
-			if (style.fontColor != null) this.fontColor = new Color(style.fontColor);
+			if (style.fontColor != null) fontColor = new Color(style.fontColor);
+			background = style.background;
 		}
 	}
 }

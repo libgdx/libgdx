@@ -16,16 +16,16 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
-
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.util.ArrayList;
 
 public class LwjglApplicationConfiguration {
 	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
@@ -54,6 +54,8 @@ public class LwjglApplicationConfiguration {
 	public boolean forceExit = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
+	/** the maximum number of sources that can be played simultaneously */
+	public int audioDeviceSimultaneousSources = 16;
 	/** the audio device buffer size in samples **/
 	public int audioDeviceBufferSize = 512;
 	/** the audio device buffer count **/

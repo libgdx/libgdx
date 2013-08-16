@@ -22,7 +22,7 @@ public class JsonValue {
 	private long longValue;
 
 	public String name;
-	/** May be null */
+	/** May be null. */
 	public JsonValue child, next, prev;
 	public int size;
 

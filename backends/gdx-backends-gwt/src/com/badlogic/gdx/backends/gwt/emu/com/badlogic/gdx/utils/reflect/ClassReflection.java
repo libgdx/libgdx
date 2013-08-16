@@ -10,11 +10,11 @@ public final class ClassReflection {
 
 	/** Returns the Class object associated with the class or interface with the supplied string name. */
 	static public Class forName (String name) throws ReflectionException {
-		Type type = ReflectionCache.instance.forName(name);
-		if (type != null) {
-			return type.getClassOfType();
+		try {
+			return ReflectionCache.forName(name).getClassOfType();
+		} catch (ClassNotFoundException e) {
+			throw new ReflectionException("Class not found: " + name);
 		}
-		throw new ReflectionException("Class not found: " + name);
 	}
 
 	/** Returns the simple name of the underlying class as supplied in the source code. */
@@ -32,7 +32,7 @@ public final class ClassReflection {
 	static public boolean isAssignableFrom (Class c1, Class c2) {
 		Type c1Type = ReflectionCache.getType(c1);
 		Type c2Type = ReflectionCache.getType(c2);
-		return c1Type.isAssignableFrom(c2Type);
+		return c2Type.isAssignableFrom(c1Type);
 	}
 
 	/** Returns true if the class or interface represented by the supplied Class is a member class. */

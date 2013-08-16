@@ -110,10 +110,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, FileHandle fileHandle, TmxMapLoader.Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, TmxMapLoader.Parameters parameter) {
 		map = null;
 
-		FileHandle tmxFile = resolve(fileName);
 		if (parameter != null) {
 			yUp = parameter.yUp;
 		} else {
@@ -137,10 +136,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	 * @param parameter not used for now
 	 * @return dependencies for the given .tmx file */
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle fileHandle, Parameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle tmxFile, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
-			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			boolean generateMipMaps = (parameter != null ? parameter.generateMipMaps : false);
 			TextureLoader.TextureParameter texParams = new TextureParameter();
@@ -150,7 +148,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				texParams.magFilter = parameter.textureMagFilter;
 			}
 			for (FileHandle image : loadTilesets(root, tmxFile)) {
-				dependencies.add(new AssetDescriptor(image.path(), Texture.class, texParams));
+				dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
 			}
 			return dependencies;
 		} catch (IOException e) {
