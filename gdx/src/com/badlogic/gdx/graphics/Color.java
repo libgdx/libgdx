@@ -224,6 +224,14 @@ public class Color {
 		return clamp();
 	}
 
+	/** Multiplies the RGB values by the alpha. */
+	public Color premultiplyAlpha () {
+		r *= a;
+		g *= a;
+		b *= a;
+		return this;
+	}
+
 	@Override
 	public boolean equals (Object o) {
 		if (this == o) return true;

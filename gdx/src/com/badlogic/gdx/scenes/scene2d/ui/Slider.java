@@ -48,6 +48,7 @@ public class Slider extends Widget {
 	private Interpolation animateInterpolation = Interpolation.linear;
 	private float[] snapValues;
 	private float threshold;
+	boolean disabled;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -79,6 +80,7 @@ public class Slider extends Widget {
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if (disabled) return false;
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
@@ -121,10 +123,12 @@ public class Slider extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final Drawable knob = style.knob;
-		final Drawable bg = style.background;
-		final Drawable knobBefore = style.knobBefore;
-		final Drawable knobAfter = style.knobAfter;
+		SliderStyle style = this.style;
+		boolean disabled = this.disabled;
+		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		final Drawable knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
+		final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
 
 		Color color = getColor();
 		float x = getX();
@@ -182,8 +186,8 @@ public class Slider extends Widget {
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
-		final Drawable knob = style.knob;
-		final Drawable bg = style.background;
+		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
 		float oldPosition = sliderPos;
@@ -269,17 +273,22 @@ public class Slider extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (vertical)
-			return Math.max(style.knob == null ? 0 : style.knob.getMinWidth(), style.background.getMinWidth());
-		else
+		if (vertical) {
+			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
+		} else
 			return 140;
 	}
 
 	public float getPrefHeight () {
 		if (vertical)
 			return 140;
-		else
-			return Math.max(style.knob == null ? 0 : style.knob.getMinHeight(), style.background.getMinHeight());
+		else {
+			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+			return Math.max(knob == null ? 0 : knob.getMinHeight(), bg.getMinHeight());
+		}
 	}
 
 	public float getMinValue () {
@@ -320,16 +329,26 @@ public class Slider extends Widget {
 		return value;
 	}
 
+	public void setDisabled (boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public boolean isDisabled () {
+		return disabled;
+	}
+
 	/** The style for a slider, see {@link Slider}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class SliderStyle {
 		/** The slider background, stretched only in one direction. */
 		public Drawable background;
+		/** Optional. **/
+		public Drawable disabledBackground;
 		/** Optional, centered on the background. */
-		public Drawable knob;
+		public Drawable knob, disabledKnob;
 		/** Optional. */
-		public Drawable knobBefore, knobAfter;
+		public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
 
 		public SliderStyle () {
 		}
