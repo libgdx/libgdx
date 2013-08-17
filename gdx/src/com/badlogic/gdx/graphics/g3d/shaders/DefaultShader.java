@@ -466,7 +466,8 @@ public class DefaultShader extends BaseShader {
 		}
 		
 		context.setCullFace(cullFace);
-		context.setDepthTest(depthFunc, depthRangeNear, depthRangeFar, depthMask);
+		context.setDepthTest(depthFunc, depthRangeNear, depthRangeFar);
+		context.setDepthMask(depthMask);
 	}
 
 	private final Vector3 tmpV1 = new Vector3();
