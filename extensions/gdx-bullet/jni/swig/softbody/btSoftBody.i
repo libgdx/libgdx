@@ -135,6 +135,14 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 %{
 #include <BulletSoftBody/btSoftBody.h>
 %}
+
+%ignore btSoftBody::getWorldInfo;
+%ignore btSoftBody::getRestLengthScale;
+%ignore btSoftBody::setRestLengthScale;
+%ignore btSoftBody::getWindVelocity;
+%ignore btSoftBody::setSoftBodySolver;
+%ignore btSoftBody::getSoftBodySolver;
+
 %include "BulletSoftBody/btSoftBody.h"
 
 %extend btSoftBody {
