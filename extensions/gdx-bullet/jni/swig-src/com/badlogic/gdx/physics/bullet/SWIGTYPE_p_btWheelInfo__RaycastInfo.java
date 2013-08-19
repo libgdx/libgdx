@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btWheelInfo__RaycastInfo {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btWheelInfo__RaycastInfo obj) {
+  protected static long getCPtr(SWIGTYPE_p_btWheelInfo__RaycastInfo obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

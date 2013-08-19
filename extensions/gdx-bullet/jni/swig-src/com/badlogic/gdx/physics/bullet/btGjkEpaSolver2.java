@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btGjkEpaSolver2 {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btGjkEpaSolver2 extends BulletBase {
+	private long swigCPtr;
+	
+	protected btGjkEpaSolver2(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btGjkEpaSolver2(long cPtr, boolean cMemoryOwn) {
+		this("btGjkEpaSolver2", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btGjkEpaSolver2 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btGjkEpaSolver2(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btGjkEpaSolver2 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btGjkEpaSolver2(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btGjkEpaSolver2(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public static int StackSizeRequirement() {
     return gdxBulletJNI.btGjkEpaSolver2_StackSizeRequirement();

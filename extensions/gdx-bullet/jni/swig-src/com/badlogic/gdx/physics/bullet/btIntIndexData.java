@@ -13,39 +13,47 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btIntIndexData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btIntIndexData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btIntIndexData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btIntIndexData(long cPtr, boolean cMemoryOwn) {
+		this("btIntIndexData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btIntIndexData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btIntIndexData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btIntIndexData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setValue(int value) {
+    gdxBulletJNI.btIntIndexData_value_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btIntIndexData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btIntIndexData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_value(int value) {
-    gdxBulletJNI.btIntIndexData_m_value_set(swigCPtr, this, value);
-  }
-
-  public int getM_value() {
-    return gdxBulletJNI.btIntIndexData_m_value_get(swigCPtr, this);
+  public int getValue() {
+    return gdxBulletJNI.btIntIndexData_value_get(swigCPtr, this);
   }
 
   public btIntIndexData() {

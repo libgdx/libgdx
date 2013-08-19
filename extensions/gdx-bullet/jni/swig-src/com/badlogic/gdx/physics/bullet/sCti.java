@@ -13,56 +13,64 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class sCti {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class sCti extends BulletBase {
+	private long swigCPtr;
+	
+	protected sCti(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected sCti(long cPtr, boolean cMemoryOwn) {
+		this("sCti", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(sCti obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected sCti(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_sCti(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setColObj(btCollisionObject value) {
+    gdxBulletJNI.sCti_colObj_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
   }
 
-  public static long getCPtr(sCti obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_sCti(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_colObj(btCollisionObject value) {
-    gdxBulletJNI.sCti_m_colObj_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
-  }
-
-  public btCollisionObject getM_colObj() {
-	return btCollisionObject.getInstance(gdxBulletJNI.sCti_m_colObj_get(swigCPtr, this), false);
+  public btCollisionObject getColObj() {
+	return btCollisionObject.getInstance(gdxBulletJNI.sCti_colObj_get(swigCPtr, this), false);
 }
 
-  public void setM_normal(btVector3 value) {
-    gdxBulletJNI.sCti_m_normal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setNormal(btVector3 value) {
+    gdxBulletJNI.sCti_normal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_normal() {
-    long cPtr = gdxBulletJNI.sCti_m_normal_get(swigCPtr, this);
+  public btVector3 getNormal() {
+    long cPtr = gdxBulletJNI.sCti_normal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_offset(float value) {
-    gdxBulletJNI.sCti_m_offset_set(swigCPtr, this, value);
+  public void setOffset(float value) {
+    gdxBulletJNI.sCti_offset_set(swigCPtr, this, value);
   }
 
-  public float getM_offset() {
-    return gdxBulletJNI.sCti_m_offset_get(swigCPtr, this);
+  public float getOffset() {
+    return gdxBulletJNI.sCti_offset_get(swigCPtr, this);
   }
 
   public sCti() {

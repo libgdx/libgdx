@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btEmptyShape extends btConcaveShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btEmptyShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btEmptyShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btEmptyShape(long cPtr, boolean cMemoryOwn) {
+		this("btEmptyShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btEmptyShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btEmptyShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btEmptyShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btEmptyShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btEmptyShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btEmptyShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btEmptyShape() {
     this(gdxBulletJNI.new_btEmptyShape(), true);

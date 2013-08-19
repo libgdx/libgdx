@@ -13,161 +13,169 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTranslationalLimitMotor {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTranslationalLimitMotor extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTranslationalLimitMotor(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTranslationalLimitMotor(long cPtr, boolean cMemoryOwn) {
+		this("btTranslationalLimitMotor", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTranslationalLimitMotor obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTranslationalLimitMotor(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTranslationalLimitMotor(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setLowerLimit(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_lowerLimit_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btTranslationalLimitMotor obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTranslationalLimitMotor(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_lowerLimit(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_lowerLimit_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_lowerLimit() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_lowerLimit_get(swigCPtr, this);
+  public btVector3 getLowerLimit() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_lowerLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_upperLimit(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_upperLimit_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setUpperLimit(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_upperLimit_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_upperLimit() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_upperLimit_get(swigCPtr, this);
+  public btVector3 getUpperLimit() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_upperLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_accumulatedImpulse(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_accumulatedImpulse_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAccumulatedImpulse(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_accumulatedImpulse_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_accumulatedImpulse() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_accumulatedImpulse_get(swigCPtr, this);
+  public btVector3 getAccumulatedImpulse() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_accumulatedImpulse_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_limitSoftness(float value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_limitSoftness_set(swigCPtr, this, value);
+  public void setLimitSoftness(float value) {
+    gdxBulletJNI.btTranslationalLimitMotor_limitSoftness_set(swigCPtr, this, value);
   }
 
-  public float getM_limitSoftness() {
-    return gdxBulletJNI.btTranslationalLimitMotor_m_limitSoftness_get(swigCPtr, this);
+  public float getLimitSoftness() {
+    return gdxBulletJNI.btTranslationalLimitMotor_limitSoftness_get(swigCPtr, this);
   }
 
-  public void setM_damping(float value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_damping_set(swigCPtr, this, value);
+  public void setDamping(float value) {
+    gdxBulletJNI.btTranslationalLimitMotor_damping_set(swigCPtr, this, value);
   }
 
-  public float getM_damping() {
-    return gdxBulletJNI.btTranslationalLimitMotor_m_damping_get(swigCPtr, this);
+  public float getDamping() {
+    return gdxBulletJNI.btTranslationalLimitMotor_damping_get(swigCPtr, this);
   }
 
-  public void setM_restitution(float value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_restitution_set(swigCPtr, this, value);
+  public void setRestitution(float value) {
+    gdxBulletJNI.btTranslationalLimitMotor_restitution_set(swigCPtr, this, value);
   }
 
-  public float getM_restitution() {
-    return gdxBulletJNI.btTranslationalLimitMotor_m_restitution_get(swigCPtr, this);
+  public float getRestitution() {
+    return gdxBulletJNI.btTranslationalLimitMotor_restitution_get(swigCPtr, this);
   }
 
-  public void setM_normalCFM(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_normalCFM_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setNormalCFM(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_normalCFM_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_normalCFM() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_normalCFM_get(swigCPtr, this);
+  public btVector3 getNormalCFM() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_normalCFM_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_stopERP(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_stopERP_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setStopERP(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_stopERP_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_stopERP() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_stopERP_get(swigCPtr, this);
+  public btVector3 getStopERP() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_stopERP_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_stopCFM(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_stopCFM_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setStopCFM(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_stopCFM_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_stopCFM() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_stopCFM_get(swigCPtr, this);
+  public btVector3 getStopCFM() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_stopCFM_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_enableMotor(boolean[] value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_enableMotor_set(swigCPtr, this, value);
+  public void setEnableMotor(boolean[] value) {
+    gdxBulletJNI.btTranslationalLimitMotor_enableMotor_set(swigCPtr, this, value);
   }
 
-  public boolean[] getM_enableMotor() {
-    return gdxBulletJNI.btTranslationalLimitMotor_m_enableMotor_get(swigCPtr, this);
+  public boolean[] getEnableMotor() {
+    return gdxBulletJNI.btTranslationalLimitMotor_enableMotor_get(swigCPtr, this);
 }
 
-  public void setM_targetVelocity(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_targetVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setTargetVelocity(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_targetVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_targetVelocity() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_targetVelocity_get(swigCPtr, this);
+  public btVector3 getTargetVelocity() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_targetVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_maxMotorForce(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_maxMotorForce_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setMaxMotorForce(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_maxMotorForce_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_maxMotorForce() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_maxMotorForce_get(swigCPtr, this);
+  public btVector3 getMaxMotorForce() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_maxMotorForce_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_currentLimitError(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_currentLimitError_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setCurrentLimitError(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_currentLimitError_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_currentLimitError() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_currentLimitError_get(swigCPtr, this);
+  public btVector3 getCurrentLimitError() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_currentLimitError_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_currentLinearDiff(btVector3 value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_currentLinearDiff_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setCurrentLinearDiff(btVector3 value) {
+    gdxBulletJNI.btTranslationalLimitMotor_currentLinearDiff_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_currentLinearDiff() {
-    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_m_currentLinearDiff_get(swigCPtr, this);
+  public btVector3 getCurrentLinearDiff() {
+    long cPtr = gdxBulletJNI.btTranslationalLimitMotor_currentLinearDiff_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_currentLimit(int[] value) {
-    gdxBulletJNI.btTranslationalLimitMotor_m_currentLimit_set(swigCPtr, this, value);
+  public void setCurrentLimit(int[] value) {
+    gdxBulletJNI.btTranslationalLimitMotor_currentLimit_set(swigCPtr, this, value);
   }
 
-  public int[] getM_currentLimit() {
-    return gdxBulletJNI.btTranslationalLimitMotor_m_currentLimit_get(swigCPtr, this);
+  public int[] getCurrentLimit() {
+    return gdxBulletJNI.btTranslationalLimitMotor_currentLimit_get(swigCPtr, this);
 }
 
   public btTranslationalLimitMotor() {

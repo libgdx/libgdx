@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConstraintSolver {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConstraintSolver extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConstraintSolver(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConstraintSolver(long cPtr, boolean cMemoryOwn) {
+		this("btConstraintSolver", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConstraintSolver obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConstraintSolver(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConstraintSolver obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConstraintSolver(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConstraintSolver(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void prepareSolve(int arg0, int arg1) {
     gdxBulletJNI.btConstraintSolver_prepareSolve(swigCPtr, this, arg0, arg1);

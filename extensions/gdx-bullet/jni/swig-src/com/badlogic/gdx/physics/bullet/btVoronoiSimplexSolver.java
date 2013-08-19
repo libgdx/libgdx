@@ -13,135 +13,143 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btVoronoiSimplexSolver {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btVoronoiSimplexSolver extends BulletBase {
+	private long swigCPtr;
+	
+	protected btVoronoiSimplexSolver(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btVoronoiSimplexSolver(long cPtr, boolean cMemoryOwn) {
+		this("btVoronoiSimplexSolver", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btVoronoiSimplexSolver obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btVoronoiSimplexSolver(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btVoronoiSimplexSolver(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setNumVertices(int value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_numVertices_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btVoronoiSimplexSolver obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getNumVertices() {
+    return gdxBulletJNI.btVoronoiSimplexSolver_numVertices_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setSimplexVectorW(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_simplexVectorW_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btVoronoiSimplexSolver(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_numVertices(int value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_numVertices_set(swigCPtr, this, value);
-  }
-
-  public int getM_numVertices() {
-    return gdxBulletJNI.btVoronoiSimplexSolver_m_numVertices_get(swigCPtr, this);
-  }
-
-  public void setM_simplexVectorW(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_simplexVectorW_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_simplexVectorW() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_simplexVectorW_get(swigCPtr, this);
+  public btVector3 getSimplexVectorW() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_simplexVectorW_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_simplexPointsP(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_simplexPointsP_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setSimplexPointsP(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_simplexPointsP_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_simplexPointsP() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_simplexPointsP_get(swigCPtr, this);
+  public btVector3 getSimplexPointsP() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_simplexPointsP_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_simplexPointsQ(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_simplexPointsQ_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setSimplexPointsQ(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_simplexPointsQ_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_simplexPointsQ() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_simplexPointsQ_get(swigCPtr, this);
+  public btVector3 getSimplexPointsQ() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_simplexPointsQ_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_cachedP1(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_cachedP1_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setCachedP1(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_cachedP1_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_cachedP1() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_cachedP1_get(swigCPtr, this);
+  public btVector3 getCachedP1() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_cachedP1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_cachedP2(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_cachedP2_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setCachedP2(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_cachedP2_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_cachedP2() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_cachedP2_get(swigCPtr, this);
+  public btVector3 getCachedP2() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_cachedP2_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_cachedV(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_cachedV_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setCachedV(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_cachedV_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_cachedV() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_cachedV_get(swigCPtr, this);
+  public btVector3 getCachedV() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_cachedV_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_lastW(btVector3 value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_lastW_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLastW(btVector3 value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_lastW_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_lastW() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_lastW_get(swigCPtr, this);
+  public btVector3 getLastW() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_lastW_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_equalVertexThreshold(float value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_equalVertexThreshold_set(swigCPtr, this, value);
+  public void setEqualVertexThreshold(float value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_equalVertexThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_equalVertexThreshold() {
-    return gdxBulletJNI.btVoronoiSimplexSolver_m_equalVertexThreshold_get(swigCPtr, this);
+  public float getEqualVertexThreshold() {
+    return gdxBulletJNI.btVoronoiSimplexSolver_equalVertexThreshold_get(swigCPtr, this);
   }
 
-  public void setM_cachedValidClosest(boolean value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_cachedValidClosest_set(swigCPtr, this, value);
+  public void setCachedValidClosest(boolean value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_cachedValidClosest_set(swigCPtr, this, value);
   }
 
-  public boolean getM_cachedValidClosest() {
-    return gdxBulletJNI.btVoronoiSimplexSolver_m_cachedValidClosest_get(swigCPtr, this);
+  public boolean getCachedValidClosest() {
+    return gdxBulletJNI.btVoronoiSimplexSolver_cachedValidClosest_get(swigCPtr, this);
   }
 
-  public void setM_cachedBC(btSubSimplexClosestResult value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_cachedBC_set(swigCPtr, this, btSubSimplexClosestResult.getCPtr(value), value);
+  public void setCachedBC(btSubSimplexClosestResult value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_cachedBC_set(swigCPtr, this, btSubSimplexClosestResult.getCPtr(value), value);
   }
 
-  public btSubSimplexClosestResult getM_cachedBC() {
-    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_m_cachedBC_get(swigCPtr, this);
+  public btSubSimplexClosestResult getCachedBC() {
+    long cPtr = gdxBulletJNI.btVoronoiSimplexSolver_cachedBC_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btSubSimplexClosestResult(cPtr, false);
   }
 
-  public void setM_needsUpdate(boolean value) {
-    gdxBulletJNI.btVoronoiSimplexSolver_m_needsUpdate_set(swigCPtr, this, value);
+  public void setNeedsUpdate(boolean value) {
+    gdxBulletJNI.btVoronoiSimplexSolver_needsUpdate_set(swigCPtr, this, value);
   }
 
-  public boolean getM_needsUpdate() {
-    return gdxBulletJNI.btVoronoiSimplexSolver_m_needsUpdate_get(swigCPtr, this);
+  public boolean getNeedsUpdate() {
+    return gdxBulletJNI.btVoronoiSimplexSolver_needsUpdate_get(swigCPtr, this);
   }
 
   public void removeVertex(int index) {
@@ -180,14 +188,6 @@ public class btVoronoiSimplexSolver {
     gdxBulletJNI.btVoronoiSimplexSolver_addVertex(swigCPtr, this, w, p, q);
   }
 
-  public void setEqualVertexThreshold(float threshold) {
-    gdxBulletJNI.btVoronoiSimplexSolver_setEqualVertexThreshold(swigCPtr, this, threshold);
-  }
-
-  public float getEqualVertexThreshold() {
-    return gdxBulletJNI.btVoronoiSimplexSolver_getEqualVertexThreshold(swigCPtr, this);
-  }
-
   public boolean closest(Vector3 v) {
     return gdxBulletJNI.btVoronoiSimplexSolver_closest(swigCPtr, this, v);
   }
@@ -218,10 +218,6 @@ public class btVoronoiSimplexSolver {
 
   public void compute_points(Vector3 p1, Vector3 p2) {
     gdxBulletJNI.btVoronoiSimplexSolver_compute_points(swigCPtr, this, p1, p2);
-  }
-
-  public int numVertices() {
-    return gdxBulletJNI.btVoronoiSimplexSolver_numVertices(swigCPtr, this);
   }
 
 }

@@ -13,159 +13,167 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btRotationalLimitMotor {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btRotationalLimitMotor extends BulletBase {
+	private long swigCPtr;
+	
+	protected btRotationalLimitMotor(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btRotationalLimitMotor(long cPtr, boolean cMemoryOwn) {
+		this("btRotationalLimitMotor", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btRotationalLimitMotor obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btRotationalLimitMotor(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btRotationalLimitMotor(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setLoLimit(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_loLimit_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btRotationalLimitMotor obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float getLoLimit() {
+    return gdxBulletJNI.btRotationalLimitMotor_loLimit_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setHiLimit(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_hiLimit_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btRotationalLimitMotor(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public float getHiLimit() {
+    return gdxBulletJNI.btRotationalLimitMotor_hiLimit_get(swigCPtr, this);
   }
 
-  public void setM_loLimit(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_loLimit_set(swigCPtr, this, value);
+  public void setTargetVelocity(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_targetVelocity_set(swigCPtr, this, value);
   }
 
-  public float getM_loLimit() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_loLimit_get(swigCPtr, this);
+  public float getTargetVelocity() {
+    return gdxBulletJNI.btRotationalLimitMotor_targetVelocity_get(swigCPtr, this);
   }
 
-  public void setM_hiLimit(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_hiLimit_set(swigCPtr, this, value);
+  public void setMaxMotorForce(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_maxMotorForce_set(swigCPtr, this, value);
   }
 
-  public float getM_hiLimit() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_hiLimit_get(swigCPtr, this);
+  public float getMaxMotorForce() {
+    return gdxBulletJNI.btRotationalLimitMotor_maxMotorForce_get(swigCPtr, this);
   }
 
-  public void setM_targetVelocity(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_targetVelocity_set(swigCPtr, this, value);
+  public void setMaxLimitForce(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_maxLimitForce_set(swigCPtr, this, value);
   }
 
-  public float getM_targetVelocity() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_targetVelocity_get(swigCPtr, this);
+  public float getMaxLimitForce() {
+    return gdxBulletJNI.btRotationalLimitMotor_maxLimitForce_get(swigCPtr, this);
   }
 
-  public void setM_maxMotorForce(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_maxMotorForce_set(swigCPtr, this, value);
+  public void setDamping(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_damping_set(swigCPtr, this, value);
   }
 
-  public float getM_maxMotorForce() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_maxMotorForce_get(swigCPtr, this);
+  public float getDamping() {
+    return gdxBulletJNI.btRotationalLimitMotor_damping_get(swigCPtr, this);
   }
 
-  public void setM_maxLimitForce(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_maxLimitForce_set(swigCPtr, this, value);
+  public void setLimitSoftness(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_limitSoftness_set(swigCPtr, this, value);
   }
 
-  public float getM_maxLimitForce() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_maxLimitForce_get(swigCPtr, this);
+  public float getLimitSoftness() {
+    return gdxBulletJNI.btRotationalLimitMotor_limitSoftness_get(swigCPtr, this);
   }
 
-  public void setM_damping(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_damping_set(swigCPtr, this, value);
+  public void setNormalCFM(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_normalCFM_set(swigCPtr, this, value);
   }
 
-  public float getM_damping() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_damping_get(swigCPtr, this);
+  public float getNormalCFM() {
+    return gdxBulletJNI.btRotationalLimitMotor_normalCFM_get(swigCPtr, this);
   }
 
-  public void setM_limitSoftness(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_limitSoftness_set(swigCPtr, this, value);
+  public void setStopERP(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_stopERP_set(swigCPtr, this, value);
   }
 
-  public float getM_limitSoftness() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_limitSoftness_get(swigCPtr, this);
+  public float getStopERP() {
+    return gdxBulletJNI.btRotationalLimitMotor_stopERP_get(swigCPtr, this);
   }
 
-  public void setM_normalCFM(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_normalCFM_set(swigCPtr, this, value);
+  public void setStopCFM(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_stopCFM_set(swigCPtr, this, value);
   }
 
-  public float getM_normalCFM() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_normalCFM_get(swigCPtr, this);
+  public float getStopCFM() {
+    return gdxBulletJNI.btRotationalLimitMotor_stopCFM_get(swigCPtr, this);
   }
 
-  public void setM_stopERP(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_stopERP_set(swigCPtr, this, value);
+  public void setBounce(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_bounce_set(swigCPtr, this, value);
   }
 
-  public float getM_stopERP() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_stopERP_get(swigCPtr, this);
+  public float getBounce() {
+    return gdxBulletJNI.btRotationalLimitMotor_bounce_get(swigCPtr, this);
   }
 
-  public void setM_stopCFM(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_stopCFM_set(swigCPtr, this, value);
+  public void setEnableMotor(boolean value) {
+    gdxBulletJNI.btRotationalLimitMotor_enableMotor_set(swigCPtr, this, value);
   }
 
-  public float getM_stopCFM() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_stopCFM_get(swigCPtr, this);
+  public boolean getEnableMotor() {
+    return gdxBulletJNI.btRotationalLimitMotor_enableMotor_get(swigCPtr, this);
   }
 
-  public void setM_bounce(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_bounce_set(swigCPtr, this, value);
+  public void setCurrentLimitError(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_currentLimitError_set(swigCPtr, this, value);
   }
 
-  public float getM_bounce() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_bounce_get(swigCPtr, this);
+  public float getCurrentLimitError() {
+    return gdxBulletJNI.btRotationalLimitMotor_currentLimitError_get(swigCPtr, this);
   }
 
-  public void setM_enableMotor(boolean value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_enableMotor_set(swigCPtr, this, value);
+  public void setCurrentPosition(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_currentPosition_set(swigCPtr, this, value);
   }
 
-  public boolean getM_enableMotor() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_enableMotor_get(swigCPtr, this);
+  public float getCurrentPosition() {
+    return gdxBulletJNI.btRotationalLimitMotor_currentPosition_get(swigCPtr, this);
   }
 
-  public void setM_currentLimitError(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_currentLimitError_set(swigCPtr, this, value);
+  public void setCurrentLimit(int value) {
+    gdxBulletJNI.btRotationalLimitMotor_currentLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_currentLimitError() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_currentLimitError_get(swigCPtr, this);
+  public int getCurrentLimit() {
+    return gdxBulletJNI.btRotationalLimitMotor_currentLimit_get(swigCPtr, this);
   }
 
-  public void setM_currentPosition(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_currentPosition_set(swigCPtr, this, value);
+  public void setAccumulatedImpulse(float value) {
+    gdxBulletJNI.btRotationalLimitMotor_accumulatedImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_currentPosition() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_currentPosition_get(swigCPtr, this);
-  }
-
-  public void setM_currentLimit(int value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_currentLimit_set(swigCPtr, this, value);
-  }
-
-  public int getM_currentLimit() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_currentLimit_get(swigCPtr, this);
-  }
-
-  public void setM_accumulatedImpulse(float value) {
-    gdxBulletJNI.btRotationalLimitMotor_m_accumulatedImpulse_set(swigCPtr, this, value);
-  }
-
-  public float getM_accumulatedImpulse() {
-    return gdxBulletJNI.btRotationalLimitMotor_m_accumulatedImpulse_get(swigCPtr, this);
+  public float getAccumulatedImpulse() {
+    return gdxBulletJNI.btRotationalLimitMotor_accumulatedImpulse_get(swigCPtr, this);
   }
 
   public btRotationalLimitMotor() {

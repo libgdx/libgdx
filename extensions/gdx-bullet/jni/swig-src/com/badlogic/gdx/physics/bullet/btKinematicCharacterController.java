@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btKinematicCharacterController extends btCharacterControllerInterface {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btKinematicCharacterController(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btKinematicCharacterController_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btKinematicCharacterController(long cPtr, boolean cMemoryOwn) {
+		this("btKinematicCharacterController", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btKinematicCharacterController obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btKinematicCharacterController(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btKinematicCharacterController_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btKinematicCharacterController obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btKinematicCharacterController(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btKinematicCharacterController(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btKinematicCharacterController(btPairCachingGhostObject ghostObject, btConvexShape convexShape, float stepHeight, int upAxis) {
     this(gdxBulletJNI.new_btKinematicCharacterController__SWIG_0(btPairCachingGhostObject.getCPtr(ghostObject), ghostObject, btConvexShape.getCPtr(convexShape), convexShape, stepHeight, upAxis), true);

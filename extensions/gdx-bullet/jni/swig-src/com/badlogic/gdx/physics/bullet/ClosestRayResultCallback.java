@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class ClosestRayResultCallback extends RayResultCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected ClosestRayResultCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.ClosestRayResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected ClosestRayResultCallback(long cPtr, boolean cMemoryOwn) {
+		this("ClosestRayResultCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(ClosestRayResultCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected ClosestRayResultCallback(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.ClosestRayResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(ClosestRayResultCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_ClosestRayResultCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_ClosestRayResultCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   protected void swigDirectorDisconnect() {
     swigCMemOwn = false;
@@ -60,39 +68,39 @@ public class ClosestRayResultCallback extends RayResultCallback {
     gdxBulletJNI.ClosestRayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
-  public void setM_rayFromWorld(btVector3 value) {
-    gdxBulletJNI.ClosestRayResultCallback_m_rayFromWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setRayFromWorld(btVector3 value) {
+    gdxBulletJNI.ClosestRayResultCallback_rayFromWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_rayFromWorld() {
-    long cPtr = gdxBulletJNI.ClosestRayResultCallback_m_rayFromWorld_get(swigCPtr, this);
+  public btVector3 getRayFromWorld() {
+    long cPtr = gdxBulletJNI.ClosestRayResultCallback_rayFromWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_rayToWorld(btVector3 value) {
-    gdxBulletJNI.ClosestRayResultCallback_m_rayToWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setRayToWorld(btVector3 value) {
+    gdxBulletJNI.ClosestRayResultCallback_rayToWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_rayToWorld() {
-    long cPtr = gdxBulletJNI.ClosestRayResultCallback_m_rayToWorld_get(swigCPtr, this);
+  public btVector3 getRayToWorld() {
+    long cPtr = gdxBulletJNI.ClosestRayResultCallback_rayToWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitNormalWorld(btVector3 value) {
-    gdxBulletJNI.ClosestRayResultCallback_m_hitNormalWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitNormalWorld(btVector3 value) {
+    gdxBulletJNI.ClosestRayResultCallback_hitNormalWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitNormalWorld() {
-    long cPtr = gdxBulletJNI.ClosestRayResultCallback_m_hitNormalWorld_get(swigCPtr, this);
+  public btVector3 getHitNormalWorld() {
+    long cPtr = gdxBulletJNI.ClosestRayResultCallback_hitNormalWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitPointWorld(btVector3 value) {
-    gdxBulletJNI.ClosestRayResultCallback_m_hitPointWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitPointWorld(btVector3 value) {
+    gdxBulletJNI.ClosestRayResultCallback_hitPointWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitPointWorld() {
-    long cPtr = gdxBulletJNI.ClosestRayResultCallback_m_hitPointWorld_get(swigCPtr, this);
+  public btVector3 getHitPointWorld() {
+    long cPtr = gdxBulletJNI.ClosestRayResultCallback_hitPointWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 

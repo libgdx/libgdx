@@ -14,55 +14,63 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btBroadphaseRayCallback extends btBroadphaseAabbCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btBroadphaseRayCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btBroadphaseRayCallback_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btBroadphaseRayCallback(long cPtr, boolean cMemoryOwn) {
+		this("btBroadphaseRayCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btBroadphaseRayCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btBroadphaseRayCallback(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btBroadphaseRayCallback_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBroadphaseRayCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setRayDirectionInverse(btVector3 value) {
+    gdxBulletJNI.btBroadphaseRayCallback_rayDirectionInverse_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btBroadphaseRayCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBroadphaseRayCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_rayDirectionInverse(btVector3 value) {
-    gdxBulletJNI.btBroadphaseRayCallback_m_rayDirectionInverse_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_rayDirectionInverse() {
-    long cPtr = gdxBulletJNI.btBroadphaseRayCallback_m_rayDirectionInverse_get(swigCPtr, this);
+  public btVector3 getRayDirectionInverse() {
+    long cPtr = gdxBulletJNI.btBroadphaseRayCallback_rayDirectionInverse_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_signs(long[] value) {
-    gdxBulletJNI.btBroadphaseRayCallback_m_signs_set(swigCPtr, this, value);
+  public void setSigns(long[] value) {
+    gdxBulletJNI.btBroadphaseRayCallback_signs_set(swigCPtr, this, value);
   }
 
-  public long[] getM_signs() {
-    return gdxBulletJNI.btBroadphaseRayCallback_m_signs_get(swigCPtr, this);
+  public long[] getSigns() {
+    return gdxBulletJNI.btBroadphaseRayCallback_signs_get(swigCPtr, this);
   }
 
-  public void setM_lambda_max(float value) {
-    gdxBulletJNI.btBroadphaseRayCallback_m_lambda_max_set(swigCPtr, this, value);
+  public void setLambda_max(float value) {
+    gdxBulletJNI.btBroadphaseRayCallback_lambda_max_set(swigCPtr, this, value);
   }
 
-  public float getM_lambda_max() {
-    return gdxBulletJNI.btBroadphaseRayCallback_m_lambda_max_get(swigCPtr, this);
+  public float getLambda_max() {
+    return gdxBulletJNI.btBroadphaseRayCallback_lambda_max_get(swigCPtr, this);
   }
 
 }

@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btBroadphaseInterface {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btBroadphaseInterface extends BulletBase {
+	private long swigCPtr;
+	
+	protected btBroadphaseInterface(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btBroadphaseInterface(long cPtr, boolean cMemoryOwn) {
+		this("btBroadphaseInterface", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btBroadphaseInterface obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btBroadphaseInterface(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btBroadphaseInterface obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBroadphaseInterface(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBroadphaseInterface(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btBroadphaseProxy createProxy(Vector3 aabbMin, Vector3 aabbMax, int shapeType, SWIGTYPE_p_void userPtr, short collisionFilterGroup, short collisionFilterMask, btDispatcher dispatcher, SWIGTYPE_p_void multiSapProxy) {
     long cPtr = gdxBulletJNI.btBroadphaseInterface_createProxy(swigCPtr, this, aabbMin, aabbMax, shapeType, SWIGTYPE_p_void.getCPtr(userPtr), collisionFilterGroup, collisionFilterMask, btDispatcher.getCPtr(dispatcher), dispatcher, SWIGTYPE_p_void.getCPtr(multiSapProxy));

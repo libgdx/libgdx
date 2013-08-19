@@ -13,56 +13,64 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCapsuleShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCapsuleShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCapsuleShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCapsuleShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btCapsuleShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCapsuleShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCapsuleShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCapsuleShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setConvexInternalShapeData(btConvexInternalShapeData value) {
+    gdxBulletJNI.btCapsuleShapeData_convexInternalShapeData_set(swigCPtr, this, btConvexInternalShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btCapsuleShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCapsuleShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_convexInternalShapeData(btConvexInternalShapeData value) {
-    gdxBulletJNI.btCapsuleShapeData_m_convexInternalShapeData_set(swigCPtr, this, btConvexInternalShapeData.getCPtr(value), value);
-  }
-
-  public btConvexInternalShapeData getM_convexInternalShapeData() {
-    long cPtr = gdxBulletJNI.btCapsuleShapeData_m_convexInternalShapeData_get(swigCPtr, this);
+  public btConvexInternalShapeData getConvexInternalShapeData() {
+    long cPtr = gdxBulletJNI.btCapsuleShapeData_convexInternalShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btConvexInternalShapeData(cPtr, false);
   }
 
-  public void setM_upAxis(int value) {
-    gdxBulletJNI.btCapsuleShapeData_m_upAxis_set(swigCPtr, this, value);
+  public void setUpAxis(int value) {
+    gdxBulletJNI.btCapsuleShapeData_upAxis_set(swigCPtr, this, value);
   }
 
-  public int getM_upAxis() {
-    return gdxBulletJNI.btCapsuleShapeData_m_upAxis_get(swigCPtr, this);
+  public int getUpAxis() {
+    return gdxBulletJNI.btCapsuleShapeData_upAxis_get(swigCPtr, this);
   }
 
-  public void setM_padding(String value) {
-    gdxBulletJNI.btCapsuleShapeData_m_padding_set(swigCPtr, this, value);
+  public void setPadding(String value) {
+    gdxBulletJNI.btCapsuleShapeData_padding_set(swigCPtr, this, value);
   }
 
-  public String getM_padding() {
-    return gdxBulletJNI.btCapsuleShapeData_m_padding_get(swigCPtr, this);
+  public String getPadding() {
+    return gdxBulletJNI.btCapsuleShapeData_padding_get(swigCPtr, this);
   }
 
   public btCapsuleShapeData() {

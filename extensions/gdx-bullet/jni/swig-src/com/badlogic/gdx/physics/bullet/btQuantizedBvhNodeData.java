@@ -13,55 +13,63 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btQuantizedBvhNodeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btQuantizedBvhNodeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btQuantizedBvhNodeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btQuantizedBvhNodeData(long cPtr, boolean cMemoryOwn) {
+		this("btQuantizedBvhNodeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btQuantizedBvhNodeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btQuantizedBvhNodeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btQuantizedBvhNodeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setQuantizedAabbMin(int[] value) {
+    gdxBulletJNI.btQuantizedBvhNodeData_quantizedAabbMin_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btQuantizedBvhNodeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int[] getQuantizedAabbMin() {
+    return gdxBulletJNI.btQuantizedBvhNodeData_quantizedAabbMin_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setQuantizedAabbMax(int[] value) {
+    gdxBulletJNI.btQuantizedBvhNodeData_quantizedAabbMax_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btQuantizedBvhNodeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public int[] getQuantizedAabbMax() {
+    return gdxBulletJNI.btQuantizedBvhNodeData_quantizedAabbMax_get(swigCPtr, this);
   }
 
-  public void setM_quantizedAabbMin(int[] value) {
-    gdxBulletJNI.btQuantizedBvhNodeData_m_quantizedAabbMin_set(swigCPtr, this, value);
+  public void setEscapeIndexOrTriangleIndex(int value) {
+    gdxBulletJNI.btQuantizedBvhNodeData_escapeIndexOrTriangleIndex_set(swigCPtr, this, value);
   }
 
-  public int[] getM_quantizedAabbMin() {
-    return gdxBulletJNI.btQuantizedBvhNodeData_m_quantizedAabbMin_get(swigCPtr, this);
-  }
-
-  public void setM_quantizedAabbMax(int[] value) {
-    gdxBulletJNI.btQuantizedBvhNodeData_m_quantizedAabbMax_set(swigCPtr, this, value);
-  }
-
-  public int[] getM_quantizedAabbMax() {
-    return gdxBulletJNI.btQuantizedBvhNodeData_m_quantizedAabbMax_get(swigCPtr, this);
-  }
-
-  public void setM_escapeIndexOrTriangleIndex(int value) {
-    gdxBulletJNI.btQuantizedBvhNodeData_m_escapeIndexOrTriangleIndex_set(swigCPtr, this, value);
-  }
-
-  public int getM_escapeIndexOrTriangleIndex() {
-    return gdxBulletJNI.btQuantizedBvhNodeData_m_escapeIndexOrTriangleIndex_get(swigCPtr, this);
+  public int getEscapeIndexOrTriangleIndex() {
+    return gdxBulletJNI.btQuantizedBvhNodeData_escapeIndexOrTriangleIndex_get(swigCPtr, this);
   }
 
   public btQuantizedBvhNodeData() {

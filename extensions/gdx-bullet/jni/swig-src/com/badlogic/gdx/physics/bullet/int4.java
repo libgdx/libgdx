@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class int4 {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class int4 extends BulletBase {
+	private long swigCPtr;
+	
+	protected int4(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected int4(long cPtr, boolean cMemoryOwn) {
+		this("int4", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(int4 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected int4(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(int4 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_int4(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_int4(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void setX(int value) {
     gdxBulletJNI.int4_x_set(swigCPtr, this, value);

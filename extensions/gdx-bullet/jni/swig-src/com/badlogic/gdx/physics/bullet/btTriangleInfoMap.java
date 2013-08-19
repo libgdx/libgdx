@@ -13,79 +13,87 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTriangleInfoMap {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTriangleInfoMap extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTriangleInfoMap(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleInfoMap(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleInfoMap", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleInfoMap obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleInfoMap(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleInfoMap(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setConvexEpsilon(float value) {
+    gdxBulletJNI.btTriangleInfoMap_convexEpsilon_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btTriangleInfoMap obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float getConvexEpsilon() {
+    return gdxBulletJNI.btTriangleInfoMap_convexEpsilon_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setPlanarEpsilon(float value) {
+    gdxBulletJNI.btTriangleInfoMap_planarEpsilon_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleInfoMap(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public float getPlanarEpsilon() {
+    return gdxBulletJNI.btTriangleInfoMap_planarEpsilon_get(swigCPtr, this);
   }
 
-  public void setM_convexEpsilon(float value) {
-    gdxBulletJNI.btTriangleInfoMap_m_convexEpsilon_set(swigCPtr, this, value);
+  public void setEqualVertexThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMap_equalVertexThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_convexEpsilon() {
-    return gdxBulletJNI.btTriangleInfoMap_m_convexEpsilon_get(swigCPtr, this);
+  public float getEqualVertexThreshold() {
+    return gdxBulletJNI.btTriangleInfoMap_equalVertexThreshold_get(swigCPtr, this);
   }
 
-  public void setM_planarEpsilon(float value) {
-    gdxBulletJNI.btTriangleInfoMap_m_planarEpsilon_set(swigCPtr, this, value);
+  public void setEdgeDistanceThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMap_edgeDistanceThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_planarEpsilon() {
-    return gdxBulletJNI.btTriangleInfoMap_m_planarEpsilon_get(swigCPtr, this);
+  public float getEdgeDistanceThreshold() {
+    return gdxBulletJNI.btTriangleInfoMap_edgeDistanceThreshold_get(swigCPtr, this);
   }
 
-  public void setM_equalVertexThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMap_m_equalVertexThreshold_set(swigCPtr, this, value);
+  public void setMaxEdgeAngleThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMap_maxEdgeAngleThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_equalVertexThreshold() {
-    return gdxBulletJNI.btTriangleInfoMap_m_equalVertexThreshold_get(swigCPtr, this);
+  public float getMaxEdgeAngleThreshold() {
+    return gdxBulletJNI.btTriangleInfoMap_maxEdgeAngleThreshold_get(swigCPtr, this);
   }
 
-  public void setM_edgeDistanceThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMap_m_edgeDistanceThreshold_set(swigCPtr, this, value);
+  public void setZeroAreaThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMap_zeroAreaThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_edgeDistanceThreshold() {
-    return gdxBulletJNI.btTriangleInfoMap_m_edgeDistanceThreshold_get(swigCPtr, this);
-  }
-
-  public void setM_maxEdgeAngleThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMap_m_maxEdgeAngleThreshold_set(swigCPtr, this, value);
-  }
-
-  public float getM_maxEdgeAngleThreshold() {
-    return gdxBulletJNI.btTriangleInfoMap_m_maxEdgeAngleThreshold_get(swigCPtr, this);
-  }
-
-  public void setM_zeroAreaThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMap_m_zeroAreaThreshold_set(swigCPtr, this, value);
-  }
-
-  public float getM_zeroAreaThreshold() {
-    return gdxBulletJNI.btTriangleInfoMap_m_zeroAreaThreshold_get(swigCPtr, this);
+  public float getZeroAreaThreshold() {
+    return gdxBulletJNI.btTriangleInfoMap_zeroAreaThreshold_get(swigCPtr, this);
   }
 
   public btTriangleInfoMap() {

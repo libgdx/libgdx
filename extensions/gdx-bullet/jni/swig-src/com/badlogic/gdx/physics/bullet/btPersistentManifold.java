@@ -14,54 +14,62 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btPersistentManifold extends btTypedObject {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btPersistentManifold(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btPersistentManifold_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPersistentManifold(long cPtr, boolean cMemoryOwn) {
+		this("btPersistentManifold", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPersistentManifold obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPersistentManifold(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btPersistentManifold_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPersistentManifold(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setCompanionIdA(int value) {
+    gdxBulletJNI.btPersistentManifold_companionIdA_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btPersistentManifold obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getCompanionIdA() {
+    return gdxBulletJNI.btPersistentManifold_companionIdA_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setCompanionIdB(int value) {
+    gdxBulletJNI.btPersistentManifold_companionIdB_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPersistentManifold(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
+  public int getCompanionIdB() {
+    return gdxBulletJNI.btPersistentManifold_companionIdB_get(swigCPtr, this);
   }
 
-  public void setM_companionIdA(int value) {
-    gdxBulletJNI.btPersistentManifold_m_companionIdA_set(swigCPtr, this, value);
+  public void setIndex1a(int value) {
+    gdxBulletJNI.btPersistentManifold_index1a_set(swigCPtr, this, value);
   }
 
-  public int getM_companionIdA() {
-    return gdxBulletJNI.btPersistentManifold_m_companionIdA_get(swigCPtr, this);
-  }
-
-  public void setM_companionIdB(int value) {
-    gdxBulletJNI.btPersistentManifold_m_companionIdB_set(swigCPtr, this, value);
-  }
-
-  public int getM_companionIdB() {
-    return gdxBulletJNI.btPersistentManifold_m_companionIdB_get(swigCPtr, this);
-  }
-
-  public void setM_index1a(int value) {
-    gdxBulletJNI.btPersistentManifold_m_index1a_set(swigCPtr, this, value);
-  }
-
-  public int getM_index1a() {
-    return gdxBulletJNI.btPersistentManifold_m_index1a_get(swigCPtr, this);
+  public int getIndex1a() {
+    return gdxBulletJNI.btPersistentManifold_index1a_get(swigCPtr, this);
   }
 
   public btPersistentManifold() {

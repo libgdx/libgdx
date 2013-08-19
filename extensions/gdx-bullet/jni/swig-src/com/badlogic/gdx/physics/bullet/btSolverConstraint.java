@@ -13,180 +13,188 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSolverConstraint {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSolverConstraint extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSolverConstraint(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSolverConstraint(long cPtr, boolean cMemoryOwn) {
+		this("btSolverConstraint", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSolverConstraint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSolverConstraint(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSolverConstraint(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setRelpos1CrossNormal(btVector3 value) {
+    gdxBulletJNI.btSolverConstraint_relpos1CrossNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btSolverConstraint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSolverConstraint(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_relpos1CrossNormal(btVector3 value) {
-    gdxBulletJNI.btSolverConstraint_m_relpos1CrossNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_relpos1CrossNormal() {
-    long cPtr = gdxBulletJNI.btSolverConstraint_m_relpos1CrossNormal_get(swigCPtr, this);
+  public btVector3 getRelpos1CrossNormal() {
+    long cPtr = gdxBulletJNI.btSolverConstraint_relpos1CrossNormal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_contactNormal(btVector3 value) {
-    gdxBulletJNI.btSolverConstraint_m_contactNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setContactNormal(btVector3 value) {
+    gdxBulletJNI.btSolverConstraint_contactNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_contactNormal() {
-    long cPtr = gdxBulletJNI.btSolverConstraint_m_contactNormal_get(swigCPtr, this);
+  public btVector3 getContactNormal() {
+    long cPtr = gdxBulletJNI.btSolverConstraint_contactNormal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_relpos2CrossNormal(btVector3 value) {
-    gdxBulletJNI.btSolverConstraint_m_relpos2CrossNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setRelpos2CrossNormal(btVector3 value) {
+    gdxBulletJNI.btSolverConstraint_relpos2CrossNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_relpos2CrossNormal() {
-    long cPtr = gdxBulletJNI.btSolverConstraint_m_relpos2CrossNormal_get(swigCPtr, this);
+  public btVector3 getRelpos2CrossNormal() {
+    long cPtr = gdxBulletJNI.btSolverConstraint_relpos2CrossNormal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_angularComponentA(btVector3 value) {
-    gdxBulletJNI.btSolverConstraint_m_angularComponentA_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAngularComponentA(btVector3 value) {
+    gdxBulletJNI.btSolverConstraint_angularComponentA_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_angularComponentA() {
-    long cPtr = gdxBulletJNI.btSolverConstraint_m_angularComponentA_get(swigCPtr, this);
+  public btVector3 getAngularComponentA() {
+    long cPtr = gdxBulletJNI.btSolverConstraint_angularComponentA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_angularComponentB(btVector3 value) {
-    gdxBulletJNI.btSolverConstraint_m_angularComponentB_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAngularComponentB(btVector3 value) {
+    gdxBulletJNI.btSolverConstraint_angularComponentB_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_angularComponentB() {
-    long cPtr = gdxBulletJNI.btSolverConstraint_m_angularComponentB_get(swigCPtr, this);
+  public btVector3 getAngularComponentB() {
+    long cPtr = gdxBulletJNI.btSolverConstraint_angularComponentB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_appliedPushImpulse(float value) {
-    gdxBulletJNI.btSolverConstraint_m_appliedPushImpulse_set(swigCPtr, this, value);
+  public void setAppliedPushImpulse(float value) {
+    gdxBulletJNI.btSolverConstraint_appliedPushImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_appliedPushImpulse() {
-    return gdxBulletJNI.btSolverConstraint_m_appliedPushImpulse_get(swigCPtr, this);
+  public float getAppliedPushImpulse() {
+    return gdxBulletJNI.btSolverConstraint_appliedPushImpulse_get(swigCPtr, this);
   }
 
-  public void setM_appliedImpulse(float value) {
-    gdxBulletJNI.btSolverConstraint_m_appliedImpulse_set(swigCPtr, this, value);
+  public void setAppliedImpulse(float value) {
+    gdxBulletJNI.btSolverConstraint_appliedImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_appliedImpulse() {
-    return gdxBulletJNI.btSolverConstraint_m_appliedImpulse_get(swigCPtr, this);
+  public float getAppliedImpulse() {
+    return gdxBulletJNI.btSolverConstraint_appliedImpulse_get(swigCPtr, this);
   }
 
-  public void setM_friction(float value) {
-    gdxBulletJNI.btSolverConstraint_m_friction_set(swigCPtr, this, value);
+  public void setFriction(float value) {
+    gdxBulletJNI.btSolverConstraint_friction_set(swigCPtr, this, value);
   }
 
-  public float getM_friction() {
-    return gdxBulletJNI.btSolverConstraint_m_friction_get(swigCPtr, this);
+  public float getFriction() {
+    return gdxBulletJNI.btSolverConstraint_friction_get(swigCPtr, this);
   }
 
-  public void setM_jacDiagABInv(float value) {
-    gdxBulletJNI.btSolverConstraint_m_jacDiagABInv_set(swigCPtr, this, value);
+  public void setJacDiagABInv(float value) {
+    gdxBulletJNI.btSolverConstraint_jacDiagABInv_set(swigCPtr, this, value);
   }
 
-  public float getM_jacDiagABInv() {
-    return gdxBulletJNI.btSolverConstraint_m_jacDiagABInv_get(swigCPtr, this);
+  public float getJacDiagABInv() {
+    return gdxBulletJNI.btSolverConstraint_jacDiagABInv_get(swigCPtr, this);
   }
 
-  public void setM_rhs(float value) {
-    gdxBulletJNI.btSolverConstraint_m_rhs_set(swigCPtr, this, value);
+  public void setRhs(float value) {
+    gdxBulletJNI.btSolverConstraint_rhs_set(swigCPtr, this, value);
   }
 
-  public float getM_rhs() {
-    return gdxBulletJNI.btSolverConstraint_m_rhs_get(swigCPtr, this);
+  public float getRhs() {
+    return gdxBulletJNI.btSolverConstraint_rhs_get(swigCPtr, this);
   }
 
-  public void setM_cfm(float value) {
-    gdxBulletJNI.btSolverConstraint_m_cfm_set(swigCPtr, this, value);
+  public void setCfm(float value) {
+    gdxBulletJNI.btSolverConstraint_cfm_set(swigCPtr, this, value);
   }
 
-  public float getM_cfm() {
-    return gdxBulletJNI.btSolverConstraint_m_cfm_get(swigCPtr, this);
+  public float getCfm() {
+    return gdxBulletJNI.btSolverConstraint_cfm_get(swigCPtr, this);
   }
 
-  public void setM_lowerLimit(float value) {
-    gdxBulletJNI.btSolverConstraint_m_lowerLimit_set(swigCPtr, this, value);
+  public void setLowerLimit(float value) {
+    gdxBulletJNI.btSolverConstraint_lowerLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_lowerLimit() {
-    return gdxBulletJNI.btSolverConstraint_m_lowerLimit_get(swigCPtr, this);
+  public float getLowerLimit() {
+    return gdxBulletJNI.btSolverConstraint_lowerLimit_get(swigCPtr, this);
   }
 
-  public void setM_upperLimit(float value) {
-    gdxBulletJNI.btSolverConstraint_m_upperLimit_set(swigCPtr, this, value);
+  public void setUpperLimit(float value) {
+    gdxBulletJNI.btSolverConstraint_upperLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_upperLimit() {
-    return gdxBulletJNI.btSolverConstraint_m_upperLimit_get(swigCPtr, this);
+  public float getUpperLimit() {
+    return gdxBulletJNI.btSolverConstraint_upperLimit_get(swigCPtr, this);
   }
 
-  public void setM_rhsPenetration(float value) {
-    gdxBulletJNI.btSolverConstraint_m_rhsPenetration_set(swigCPtr, this, value);
+  public void setRhsPenetration(float value) {
+    gdxBulletJNI.btSolverConstraint_rhsPenetration_set(swigCPtr, this, value);
   }
 
-  public float getM_rhsPenetration() {
-    return gdxBulletJNI.btSolverConstraint_m_rhsPenetration_get(swigCPtr, this);
+  public float getRhsPenetration() {
+    return gdxBulletJNI.btSolverConstraint_rhsPenetration_get(swigCPtr, this);
   }
 
-  public void setM_overrideNumSolverIterations(int value) {
-    gdxBulletJNI.btSolverConstraint_m_overrideNumSolverIterations_set(swigCPtr, this, value);
+  public void setOverrideNumSolverIterations(int value) {
+    gdxBulletJNI.btSolverConstraint_overrideNumSolverIterations_set(swigCPtr, this, value);
   }
 
-  public int getM_overrideNumSolverIterations() {
-    return gdxBulletJNI.btSolverConstraint_m_overrideNumSolverIterations_get(swigCPtr, this);
+  public int getOverrideNumSolverIterations() {
+    return gdxBulletJNI.btSolverConstraint_overrideNumSolverIterations_get(swigCPtr, this);
   }
 
-  public void setM_frictionIndex(int value) {
-    gdxBulletJNI.btSolverConstraint_m_frictionIndex_set(swigCPtr, this, value);
+  public void setFrictionIndex(int value) {
+    gdxBulletJNI.btSolverConstraint_frictionIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_frictionIndex() {
-    return gdxBulletJNI.btSolverConstraint_m_frictionIndex_get(swigCPtr, this);
+  public int getFrictionIndex() {
+    return gdxBulletJNI.btSolverConstraint_frictionIndex_get(swigCPtr, this);
   }
 
-  public void setM_solverBodyIdA(int value) {
-    gdxBulletJNI.btSolverConstraint_m_solverBodyIdA_set(swigCPtr, this, value);
+  public void setSolverBodyIdA(int value) {
+    gdxBulletJNI.btSolverConstraint_solverBodyIdA_set(swigCPtr, this, value);
   }
 
-  public int getM_solverBodyIdA() {
-    return gdxBulletJNI.btSolverConstraint_m_solverBodyIdA_get(swigCPtr, this);
+  public int getSolverBodyIdA() {
+    return gdxBulletJNI.btSolverConstraint_solverBodyIdA_get(swigCPtr, this);
   }
 
-  public void setM_solverBodyIdB(int value) {
-    gdxBulletJNI.btSolverConstraint_m_solverBodyIdB_set(swigCPtr, this, value);
+  public void setSolverBodyIdB(int value) {
+    gdxBulletJNI.btSolverConstraint_solverBodyIdB_set(swigCPtr, this, value);
   }
 
-  public int getM_solverBodyIdB() {
-    return gdxBulletJNI.btSolverConstraint_m_solverBodyIdB_get(swigCPtr, this);
+  public int getSolverBodyIdB() {
+    return gdxBulletJNI.btSolverConstraint_solverBodyIdB_get(swigCPtr, this);
   }
 
   public btSolverConstraint() {

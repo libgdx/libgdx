@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btOverlappingPairCallback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btOverlappingPairCallback extends BulletBase {
+	private long swigCPtr;
+	
+	protected btOverlappingPairCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btOverlappingPairCallback(long cPtr, boolean cMemoryOwn) {
+		this("btOverlappingPairCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btOverlappingPairCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btOverlappingPairCallback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btOverlappingPairCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btOverlappingPairCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btOverlappingPairCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btBroadphasePair addOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
     long cPtr = gdxBulletJNI.btOverlappingPairCallback_addOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1);

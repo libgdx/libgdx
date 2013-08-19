@@ -13,92 +13,100 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTriangleMeshShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTriangleMeshShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTriangleMeshShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleMeshShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleMeshShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleMeshShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleMeshShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleMeshShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setCollisionShapeData(btCollisionShapeData value) {
+    gdxBulletJNI.btTriangleMeshShapeData_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btTriangleMeshShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleMeshShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_collisionShapeData(btCollisionShapeData value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
-  }
-
-  public btCollisionShapeData getM_collisionShapeData() {
-    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_m_collisionShapeData_get(swigCPtr, this);
+  public btCollisionShapeData getCollisionShapeData() {
+    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_collisionShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
   }
 
-  public void setM_meshInterface(btStridingMeshInterfaceData value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_meshInterface_set(swigCPtr, this, btStridingMeshInterfaceData.getCPtr(value), value);
+  public void setMeshInterface(btStridingMeshInterfaceData value) {
+    gdxBulletJNI.btTriangleMeshShapeData_meshInterface_set(swigCPtr, this, btStridingMeshInterfaceData.getCPtr(value), value);
   }
 
-  public btStridingMeshInterfaceData getM_meshInterface() {
-    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_m_meshInterface_get(swigCPtr, this);
+  public btStridingMeshInterfaceData getMeshInterface() {
+    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_meshInterface_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btStridingMeshInterfaceData(cPtr, false);
   }
 
-  public void setM_quantizedFloatBvh(btQuantizedBvhFloatData value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_quantizedFloatBvh_set(swigCPtr, this, btQuantizedBvhFloatData.getCPtr(value), value);
+  public void setQuantizedFloatBvh(btQuantizedBvhFloatData value) {
+    gdxBulletJNI.btTriangleMeshShapeData_quantizedFloatBvh_set(swigCPtr, this, btQuantizedBvhFloatData.getCPtr(value), value);
   }
 
-  public btQuantizedBvhFloatData getM_quantizedFloatBvh() {
-    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_m_quantizedFloatBvh_get(swigCPtr, this);
+  public btQuantizedBvhFloatData getQuantizedFloatBvh() {
+    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_quantizedFloatBvh_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btQuantizedBvhFloatData(cPtr, false);
   }
 
-  public void setM_quantizedDoubleBvh(btQuantizedBvhDoubleData value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_quantizedDoubleBvh_set(swigCPtr, this, btQuantizedBvhDoubleData.getCPtr(value), value);
+  public void setQuantizedDoubleBvh(btQuantizedBvhDoubleData value) {
+    gdxBulletJNI.btTriangleMeshShapeData_quantizedDoubleBvh_set(swigCPtr, this, btQuantizedBvhDoubleData.getCPtr(value), value);
   }
 
-  public btQuantizedBvhDoubleData getM_quantizedDoubleBvh() {
-    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_m_quantizedDoubleBvh_get(swigCPtr, this);
+  public btQuantizedBvhDoubleData getQuantizedDoubleBvh() {
+    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_quantizedDoubleBvh_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btQuantizedBvhDoubleData(cPtr, false);
   }
 
-  public void setM_triangleInfoMap(btTriangleInfoMapData value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_triangleInfoMap_set(swigCPtr, this, btTriangleInfoMapData.getCPtr(value), value);
+  public void setTriangleInfoMap(btTriangleInfoMapData value) {
+    gdxBulletJNI.btTriangleMeshShapeData_triangleInfoMap_set(swigCPtr, this, btTriangleInfoMapData.getCPtr(value), value);
   }
 
-  public btTriangleInfoMapData getM_triangleInfoMap() {
-    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_m_triangleInfoMap_get(swigCPtr, this);
+  public btTriangleInfoMapData getTriangleInfoMap() {
+    long cPtr = gdxBulletJNI.btTriangleMeshShapeData_triangleInfoMap_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTriangleInfoMapData(cPtr, false);
   }
 
-  public void setM_collisionMargin(float value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_collisionMargin_set(swigCPtr, this, value);
+  public void setCollisionMargin(float value) {
+    gdxBulletJNI.btTriangleMeshShapeData_collisionMargin_set(swigCPtr, this, value);
   }
 
-  public float getM_collisionMargin() {
-    return gdxBulletJNI.btTriangleMeshShapeData_m_collisionMargin_get(swigCPtr, this);
+  public float getCollisionMargin() {
+    return gdxBulletJNI.btTriangleMeshShapeData_collisionMargin_get(swigCPtr, this);
   }
 
-  public void setM_pad3(String value) {
-    gdxBulletJNI.btTriangleMeshShapeData_m_pad3_set(swigCPtr, this, value);
+  public void setPad3(String value) {
+    gdxBulletJNI.btTriangleMeshShapeData_pad3_set(swigCPtr, this, value);
   }
 
-  public String getM_pad3() {
-    return gdxBulletJNI.btTriangleMeshShapeData_m_pad3_get(swigCPtr, this);
+  public String getPad3() {
+    return gdxBulletJNI.btTriangleMeshShapeData_pad3_get(swigCPtr, this);
   }
 
   public btTriangleMeshShapeData() {

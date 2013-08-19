@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btGImpactMeshShape {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btGImpactMeshShape obj) {
+  protected static long getCPtr(SWIGTYPE_p_btGImpactMeshShape obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }
