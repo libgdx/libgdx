@@ -82,7 +82,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	public void dispose () {
 		for (int i = 0; i < constraints.size; i++) {
 			((btDynamicsWorld)world.collisionWorld).removeConstraint(constraints.get(i));
-			constraints.get(i).delete();
+			constraints.get(i).dispose();
 		}
 		constraints.clear();
 		super.dispose();
@@ -97,20 +97,20 @@ public class RayPickRagdollTest extends BaseBulletTest {
 			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, Vector3.tmp);
 			world.collisionWorld.rayTest(ray.origin, Vector3.tmp, cb);
 			if (cb.hasHit()) {
-				btRigidBody body = (btRigidBody)(cb.getM_collisionObject());
+				btRigidBody body = (btRigidBody)(cb.getCollisionObject());
 				if (body != null && !body.isStaticObject() && !body.isKinematicObject()) {
 					pickedBody = body;
 					body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
 					
-					btVector3 hitpoint = cb.getM_hitPointWorld();
+					btVector3 hitpoint = cb.getHitPointWorld();
 					Vector3.tmp.set(hitpoint.getX(), hitpoint.getY(), hitpoint.getZ());
 					Vector3.tmp.mul(body.getCenterOfMassTransform().inv());
 					
 					pickConstraint = new btPoint2PointConstraint(body,Vector3.tmp);
-					btConstraintSetting setting = pickConstraint.getM_setting();
-					setting.setM_impulseClamp(30f);
-					setting.setM_tau(0.001f);
-					pickConstraint.setM_setting(setting);
+					btConstraintSetting setting = pickConstraint.getSetting();
+					setting.setImpulseClamp(30f);
+					setting.setTau(0.001f);
+					pickConstraint.setSetting(setting);
 					
 					((btDynamicsWorld)world.collisionWorld).addConstraint(pickConstraint);
 		
@@ -118,7 +118,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 					result = true;
 				}
 			}
-			cb.delete();
+			cb.dispose();
 		}
 		return result ? result : super.touchDown(screenX, screenY, pointer, button);
 	}
@@ -129,7 +129,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		if (button == Buttons.LEFT) {
 			if (pickConstraint != null) {
 				((btDynamicsWorld)world.collisionWorld).removeConstraint(pickConstraint);
-				pickConstraint.delete();
+				pickConstraint.dispose();
 				pickConstraint = null;
 				result = true;
 			}
@@ -254,8 +254,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	}
 	
 	protected Model createCapsuleModel(float radius, float height) {
-		final float hh = radius + 0.5f * height;
-		Model result = modelBuilder.createCylinder(radius * 2, hh * 2f, radius * 2f, 16, 
+		final Model result = modelBuilder.createCapsule(radius, height + radius * 2f, 16, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
 			Usage.Position | Usage.Normal);
 		disposables.add(result);

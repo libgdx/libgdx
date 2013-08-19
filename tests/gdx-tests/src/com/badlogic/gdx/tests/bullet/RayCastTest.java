@@ -66,7 +66,7 @@ public class RayCastTest extends BaseBulletTest {
 	@Override
 	public void dispose () {
 		if (rayTestCB != null)
-			rayTestCB.delete();
+			rayTestCB.dispose();
 		rayTestCB = null;
 		super.dispose();
 	}
@@ -78,15 +78,15 @@ public class RayCastTest extends BaseBulletTest {
 		rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
 
 		// Because we reuse the ClosestRayResultCallback, we need reset it's values
-		rayTestCB.setM_collisionObject(null);
-		rayTestCB.setM_closestHitFraction(1f);
-		rayTestCB.getM_rayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
-		rayTestCB.getM_rayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
+		rayTestCB.setCollisionObject(null);
+		rayTestCB.setClosestHitFraction(1f);
+		rayTestCB.getRayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
+		rayTestCB.getRayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
 		
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 		
 		if (rayTestCB.hasHit()) {
-			final btCollisionObject obj = rayTestCB.getM_collisionObject();
+			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			if (!obj.isStaticOrKinematicObject()) {
 				final btRigidBody body = (btRigidBody)(obj);
 				body.activate();
