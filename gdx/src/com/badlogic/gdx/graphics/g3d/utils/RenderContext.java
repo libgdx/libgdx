@@ -45,12 +45,22 @@ public class RenderContext {
 	 */
 	public final void end() {
 		if(depthFunc != 0) Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
+		if (!depthMask) Gdx.gl.glDepthMask(true);
 		if(blending) Gdx.gl.glDisable(GL10.GL_BLEND);
 		if(cullFace>0) Gdx.gl.glDisable(GL10.GL_CULL_FACE);
 		textureBinder.end();
 	}
 	
-	public final void setDepthTest(final int depthFunction, final float depthRangeNear, final float depthRangeFar, final boolean depthMask) {
+	public final void setDepthMask(final boolean depthMask) {
+		if (this.depthMask != depthMask)
+			Gdx.gl.glDepthMask(this.depthMask = depthMask);
+	}
+	
+	public final void setDepthTest(final int depthFunction) {
+		setDepthTest(depthFunction, 0f, 1f);
+	}
+	
+	public final void setDepthTest(final int depthFunction, final float depthRangeNear, final float depthRangeFar) {
 		final boolean wasEnabled = depthFunc != 0;
 		final boolean enabled = depthFunction != 0;
 		if (depthFunc != depthFunction) {
@@ -66,8 +76,6 @@ public class RenderContext {
 				Gdx.gl.glDepthFunc(depthFunc = depthFunction);
 			if (!wasEnabled || this.depthRangeNear != depthRangeNear || this.depthRangeFar != depthRangeFar)
 				Gdx.gl.glDepthRangef(this.depthRangeNear = depthRangeNear, this.depthRangeFar = depthRangeFar);
-			if (!wasEnabled || this.depthMask != depthMask)
-				Gdx.gl.glDepthMask(this.depthMask = depthMask);
 		}
 	}
 	
