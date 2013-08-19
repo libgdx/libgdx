@@ -26,7 +26,8 @@ import com.badlogic.gdx.math.collision.Ray;
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
  * @author badlogicgames@gmail.com
- * @author jan.stria */
+ * @author jan.stria
+ * @author Nathan Sweet */
 public final class Intersector {
 	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
 	 * Float.Nan is returned.
