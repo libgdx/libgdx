@@ -273,6 +273,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Removes and returns the last item. */
 	public T pop () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		--size;
 		T item = items[size];
 		items[size] = null;
@@ -281,6 +282,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns the last item. */
 	public T peek () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
