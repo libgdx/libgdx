@@ -48,6 +48,11 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 		return super.remove(key);
 	}
 
+	public void clear (int maximumCapacity) {
+		keys.clear();
+		super.clear(maximumCapacity);
+	}
+
 	public void clear () {
 		keys.clear();
 		super.clear();

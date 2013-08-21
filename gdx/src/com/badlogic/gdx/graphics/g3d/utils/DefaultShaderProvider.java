@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
 	public String vertexShader;

@@ -67,7 +67,8 @@ public class GLES10Shader implements Shader{
 	public void begin (final Camera camera, final RenderContext context) {
 		this.context = context;
 		this.camera = camera;
-		context.setDepthTest(GL10.GL_LEQUAL, 0, 1, true);
+		context.setDepthTest(GL10.GL_LEQUAL, 0, 1);
+		context.setDepthMask(true);
 		Gdx.gl10.glMatrixMode(GL10.GL_PROJECTION);
 		Gdx.gl10.glLoadMatrixf(camera.combined.val, 0);
 		Gdx.gl10.glMatrixMode(GL10.GL_MODELVIEW);

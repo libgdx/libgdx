@@ -133,6 +133,7 @@
 	<!-- graphics/g3d/materials -->
 		<include name="graphics/g3d/materials/BlendingAttribute.java"/>
 		<include name="graphics/g3d/materials/ColorAttribute.java"/>
+		<include name="graphics/g3d/materials/DepthTestAttribute.java"/>
 		<include name="graphics/g3d/materials/FloatAttribute.java"/>
 		<include name="graphics/g3d/materials/IntAttribute.java"/>
 		<include name="graphics/g3d/materials/Material.java"/>

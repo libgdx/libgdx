@@ -514,11 +514,7 @@ public class Tree extends WidgetGroup {
 		public void insert (int index, Node node) {
 			node.parent = this;
 			children.insert(index, node);
-			if (!expanded) return;
-			Tree tree = getTree();
-			if (tree == null) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).addToTree(tree);
+			updateChildren();
 		}
 
 		public void remove () {
@@ -562,8 +558,17 @@ public class Tree extends WidgetGroup {
 			return expanded;
 		}
 
+		/** If the children order is changed, {@link #updateChildren()} must be called. */
 		public Array<Node> getChildren () {
 			return children;
+		}
+
+		public void updateChildren () {
+			if (!expanded) return;
+			Tree tree = getTree();
+			if (tree == null) return;
+			for (int i = 0, n = children.size; i < n; i++)
+				children.get(i).addToTree(tree);
 		}
 
 		/** @return May be null. */
