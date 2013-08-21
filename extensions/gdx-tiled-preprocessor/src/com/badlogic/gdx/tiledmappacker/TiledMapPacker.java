@@ -44,6 +44,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
@@ -496,7 +497,12 @@ public class TiledMapPacker {
 		}
 
 		TiledMapPacker packer = new TiledMapPacker(packerSettings);
-
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.forceExit = false;
+		config.width = 100;
+		config.height = 50;
+		config.useGL20 = true;
+		config.title = "TiledMapPacker";
 		new LwjglApplication(new ApplicationListener() {
 
 			@Override
@@ -535,7 +541,7 @@ public class TiledMapPacker {
 
 				Gdx.app.exit();
 			}
-		}, "TiledMapPacker", 100, 50, true);
+		}, config);
 	}
 
 	public static class TiledMapPackerSettings {
