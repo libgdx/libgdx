@@ -54,55 +54,7 @@ public class ContactCacheTest extends BaseBulletTest {
 	
 	public static class TestContactCache extends ContactCache {
 		public Array<BulletEntity> entities;
-		
-		/*public boolean checkMatch(btCollisionObject obj1, btCollisionObject obj2) {
-			int filter = obj1.getContactCallbackFilter();
-			int flag = obj2.getContactCallbackFlag();
-			return (filter & flag) == flag;
-		}
-		
-		@Override
-		public void contactStarted (btPersistentManifold manifold) {
-			btCollisionObject obj0 = manifold.getBody0();
-			btCollisionObject obj1 = manifold.getBody1();
-			final int userValue0 = obj0.getUserValue();
-			final int userValue1 = obj1.getUserValue();
-			boolean match0 = checkMatch(obj0, obj1);
-			boolean match1 = checkMatch(obj1, obj0);
-			if (match0) {
-				final BulletEntity e = (BulletEntity)(entities.get(userValue0));
-				e.setColor(Color.RED);
-				Gdx.app.log(Float.toString(time), "Started "+userValue0);
-			}
-			if (match1) {
-				final BulletEntity e = (BulletEntity)(entities.get(userValue1));
-				e.setColor(Color.RED);
-				Gdx.app.log(Float.toString(time), "Started "+userValue1);
-			}
-			super.contactStarted(manifold);
-		}
-		
-		@Override
-		public void contactEnded (btPersistentManifold manifold) {
-			btCollisionObject obj0 = manifold.getBody0();
-			btCollisionObject obj1 = manifold.getBody1();
-			final int userValue0 = obj0.getUserValue();
-			final int userValue1 = obj1.getUserValue();
-			boolean match0 = checkMatch(obj0, obj1);
-			boolean match1 = checkMatch(obj1, obj0);
-			if (match0) {
-				final BulletEntity e = (BulletEntity)(entities.get(userValue0));
-				e.setColor(Color.BLUE);
-				Gdx.app.log(Float.toString(time), "Ended "+userValue0);
-			}
-			if (match1) {
-				final BulletEntity e = (BulletEntity)(entities.get(userValue1));
-				e.setColor(Color.BLUE);
-				Gdx.app.log(Float.toString(time), "Ended "+userValue1);
-			}
-			super.contactEnded(manifold);
-		}*/
-		
+	
 		@Override
 		public void onContactStarted (btPersistentManifold manifold, boolean match0, boolean match1) {
 			final int userValue0 = manifold.getBody0().getUserValue();

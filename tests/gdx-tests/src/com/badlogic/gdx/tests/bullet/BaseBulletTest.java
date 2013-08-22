@@ -55,7 +55,7 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib. 
-	private final static String customDesktopLib = "D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = null;//"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 	
 	private static boolean initialized = false;
 	public static void init() {
