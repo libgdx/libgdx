@@ -387,7 +387,7 @@ public class BitmapFont implements Disposable {
 			start = nextStart;
 			numLines++;
 		}
-		textBounds.width = maxWidth * data.scaleX;
+		textBounds.width = maxWidth;
 		textBounds.height = data.capHeight + (numLines - 1) * data.lineHeight;
 		return textBounds;
 	}
@@ -447,29 +447,14 @@ public class BitmapFont implements Disposable {
 		Glyph lastGlyph = null;
 		availableWidth /= data.scaleX;
 
-		if (data.scaleX == 1) {
-			for (; index < end; index++) {
-				char ch = str.charAt(index);
-				Glyph g = data.getGlyph(ch);
-				if (g != null) {
-					if (lastGlyph != null) width += lastGlyph.getKerning(ch);
-					if ((width + g.xadvance) - availableWidth > 0.001f) break;
-					width += g.xadvance;
-					lastGlyph = g;
-				}
-			}
-		} else {
-			float scaleX = this.data.scaleX;
-			for (; index < end; index++) {
-				char ch = str.charAt(index);
-				Glyph g = data.getGlyph(ch);
-				if (g != null) {
-					if (lastGlyph != null) width += lastGlyph.getKerning(ch) * scaleX;
-					float xadvance = g.xadvance * scaleX;
-					if ((width + xadvance) - availableWidth > 0.001f) break;
-					width += xadvance;
-					lastGlyph = g;
-				}
+		for (; index < end; index++) {
+			char ch = str.charAt(index);
+			Glyph g = data.getGlyph(ch);
+			if (g != null) {
+				if (lastGlyph != null) width += lastGlyph.getKerning(ch);
+				if ((width + g.xadvance) - availableWidth > 0.001f) break;
+				width += g.xadvance;
+				lastGlyph = g;
 			}
 		}
 		return index - start;
