@@ -913,31 +913,19 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the attribute
 	 * @return the type of the attribute, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getAttributeType (String name) {
-		int type = attributeTypes.get(name, -1);
-		if (type == -1)
-			return 0;
-		else
-			return type;
+		return attributeTypes.get(name, 0);
 	}
 
 	/** @param name the name of the attribute
 	 * @return the location of the attribute or -1. */
 	public int getAttributeLocation (String name) {
-		int location = attributes.get(name, -1);
-		if (location == -1)
-			return -1;
-		else
-			return location;
+		return attributes.get(name, -1);
 	}
 
 	/** @param name the name of the attribute
 	 * @return the size of the attribute or 0. */
 	public int getAttributeSize (String name) {
-		int size = attributeSizes.get(name, -1);
-		if (size == -1)
-			return 0;
-		else
-			return size;
+		return attributeSizes.get(name, 0);
 	}
 
 	/** @param name the name of the uniform
