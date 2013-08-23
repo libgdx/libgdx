@@ -301,12 +301,17 @@ public class TexturePacker2 {
 		public int index;
 		public int[] splits;
 		public int[] pads;
+		public int offsetX, offsetY, originalWidth, originalHeight;
 
 		public Alias (Rect rect) {
 			name = rect.name;
 			index = rect.index;
 			splits = rect.splits;
 			pads = rect.pads;
+			offsetX = rect.offsetX;
+			offsetY = rect.offsetY;
+			originalWidth = rect.originalWidth;
+			originalHeight = rect.originalHeight;
 		}
 
 		public void apply (Rect rect) {
@@ -314,6 +319,10 @@ public class TexturePacker2 {
 			rect.index = index;
 			rect.splits = splits;
 			rect.pads = pads;
+			rect.offsetX = offsetX;
+			rect.offsetY = offsetY;
+			rect.originalWidth = originalWidth;
+			rect.originalHeight = originalHeight;
 		}
 	}
 
