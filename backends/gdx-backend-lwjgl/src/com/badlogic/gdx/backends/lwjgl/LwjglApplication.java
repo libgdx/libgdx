@@ -190,16 +190,7 @@ public class LwjglApplication implements Application {
 				}
 			}
 
-			synchronized (runnables) {
-				executedRunnables.clear();
-				executedRunnables.addAll(runnables);
-				runnables.clear();
-			}
-
-			for (int i = 0; i < executedRunnables.size; i++) {
-				shouldRender = true;
-				executedRunnables.get(i).run(); // calls out to random app code that could do anything ...
-			}
+			if (executeRunnables()) shouldRender = true;
 
 			// If one of the runnables set running to false, for example after an exit().
 			if (!running) break;
@@ -235,6 +226,18 @@ public class LwjglApplication implements Application {
 		Display.destroy();
 		if (audio != null) audio.dispose();
 		if (graphics.config.forceExit) System.exit(-1);
+	}
+
+	public boolean executeRunnables () {
+		synchronized (runnables) {
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+		}
+		if (executedRunnables.size == 0) return false;
+		for (int i = 0; i < executedRunnables.size; i++)
+			executedRunnables.get(i).run();
+		executedRunnables.clear();
+		return true;
 	}
 
 	@Override
