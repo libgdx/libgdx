@@ -79,9 +79,11 @@ public class MaxRectsPacker {
 	}
 
 	private Page packPage (Array<Rect> inputRects) {
-		int edgePaddingX = settings.paddingX;
-		int edgePaddingY = settings.paddingY;
-
+		int edgePaddingX = 0, edgePaddingY = 0;
+		if (!settings.duplicatePadding) { // if duplicatePadding, edges get only half padding.
+			edgePaddingX = settings.paddingX;
+			edgePaddingY = settings.paddingY;
+		}
 		// Find min size.
 		int minWidth = Integer.MAX_VALUE;
 		int minHeight = Integer.MAX_VALUE;
