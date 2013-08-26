@@ -225,6 +225,13 @@ public class JsonValue {
 		throw new IllegalStateException("Value cannot be converted to boolean: " + type);
 	}
 
+	/**
+	 * @return whether the child with the name exists or not
+	 */
+	public boolean hasChild(String name) {
+		return getChild(name) != null;
+	}
+	
 	/** Finds the child with the specified name and returns its first child.
 	 * @return May be null. */
 	public JsonValue getChild (String name) {
