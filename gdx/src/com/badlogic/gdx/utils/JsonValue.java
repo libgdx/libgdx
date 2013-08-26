@@ -226,7 +226,7 @@ public class JsonValue {
 	}
 
 	/**
-	 * @return whether the child with the name exists or not
+	 * @return true if the child with the name exists
 	 */
 	public boolean hasChild(String name) {
 		return getChild(name) != null;
