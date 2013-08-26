@@ -2,7 +2,7 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.5.0" />
   <MonoDevelop.Ide.Workbench ActiveDocument="pax-britannica-iosmonotouch/Main.cs">
     <Files>
-      <File FileName="pax-britannica-iosmonotouch/Main.cs" Line="10" Column="1" />
+      <File FileName="pax-britannica-iosmonotouch/Main.cs" Line="8" Column="7" />
       <File FileName="../pax-britannica/src/de/swagner/paxbritannica/GameScreen.java" Line="1" Column="1" />
       <File FileName="../../../gdx/src/com/badlogic/gdx/files/FileHandle.java" Line="1" Column="1" />
       <File FileName="../../../gdx/src/com/badlogic/gdx/graphics/g2d/BitmapFont.java" Line="1" Column="1" />
@@ -12,8 +12,9 @@
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="pax-britannica-iosmonotouch" expanded="True" selected="True">
+          <Node name="pax-britannica-iosmonotouch" expanded="True">
             <Node name="References" expanded="True" />
+            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>
