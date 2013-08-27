@@ -187,17 +187,9 @@ public class JglfwApplication implements Application {
 	protected void frame () {
 		if (!running) return;
 
-		synchronized (runnables) {
-			executedRunnables.clear();
-			executedRunnables.addAll(runnables);
-			runnables.clear();
-		}
-		if (executedRunnables.size > 0) {
-			for (int i = 0; i < executedRunnables.size; i++)
-				executedRunnables.get(i).run();
-			if (!running) return;
-			graphics.requestRendering();
-		}
+		if (executeRunnables()) graphics.requestRendering();
+
+		if (!running) return;
 
 		input.update();
 
@@ -216,6 +208,18 @@ public class JglfwApplication implements Application {
 
 		if (targetFPS != 0)
 			sleep(targetFPS == -1 ? 100 : (int)(1000f / targetFPS - (System.nanoTime() - frameStartTime) / 1000000f));
+	}
+
+	public boolean executeRunnables () {
+		synchronized (runnables) {
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+		}
+		if (executedRunnables.size == 0) return false;
+		for (int i = 0; i < executedRunnables.size; i++)
+			executedRunnables.get(i).run();
+		executedRunnables.clear();
+		return true;
 	}
 
 	void sleep (int millis) {

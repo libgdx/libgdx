@@ -24,6 +24,7 @@ import java.util.List;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Defines a polygon shape on top of a #TextureRegion for minimising pixel drawing. Can either be constructed through a .psh file
@@ -60,25 +61,16 @@ public class PolygonRegion {
 		this.region = region;
 
 		EarClippingTriangulator ect = new EarClippingTriangulator();
-
-		List<Vector2> polygonVectors = new ArrayList<Vector2>();
-		for (int i = 0; i < vertices.length; i += 2) {
-			polygonVectors.add(new Vector2(vertices[i], vertices[i + 1]));
-		}
-
-		List<Vector2> triangulatedVectors = ect.computeTriangles(polygonVectors);
-
-		localVertices = new float[triangulatedVectors.size() * 2];
-		texCoords = new float[triangulatedVectors.size() * 2];
+		localVertices = ect.computeTriangles(vertices).toArray();
+		texCoords = new float[localVertices.length];
 
 		float uvWidth = region.u2 - region.u;
 		float uvHeight = region.v2 - region.v;
 
-		for (int i = 0; i < triangulatedVectors.size(); i++) {
-			localVertices[i * 2] = triangulatedVectors.get(i).x;
-			localVertices[i * 2 + 1] = triangulatedVectors.get(i).y;
-			texCoords[i*2 ] = region.getU() + uvWidth * (localVertices[i*2] / region.getRegionWidth());
-			texCoords[i*2+ 1] = region.getV() + uvHeight * (1-(localVertices[i*2+1] / region.getRegionHeight()));
+		for (int i = 0, n = localVertices.length; i < n; i++) {
+			texCoords[i] = region.getU() + uvWidth * (localVertices[i] / region.getRegionWidth());
+			i++;
+			texCoords[i] = region.getV() + uvHeight * (1 - (localVertices[i] / region.getRegionHeight()));
 		}
 	}
 
