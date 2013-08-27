@@ -310,6 +310,16 @@ public class ArrayMap<K, V> {
 		return values[size - 1];
 	}
 
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	public void clear (int maximumCapacity) {
+		if (keys.length <= maximumCapacity) {
+			clear();
+			return;
+		}
+		size = 0;
+		resize(maximumCapacity);
+	}
+
 	public void clear () {
 		K[] keys = this.keys;
 		V[] values = this.values;
@@ -335,11 +345,11 @@ public class ArrayMap<K, V> {
 
 	protected void resize (int newSize) {
 		K[] newKeys = (K[])ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
-		System.arraycopy(keys, 0, newKeys, 0, Math.min(keys.length, newKeys.length));
+		System.arraycopy(keys, 0, newKeys, 0, Math.min(size, newKeys.length));
 		this.keys = newKeys;
 
 		V[] newValues = (V[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
-		System.arraycopy(values, 0, newValues, 0, Math.min(values.length, newValues.length));
+		System.arraycopy(values, 0, newValues, 0, Math.min(size, newValues.length));
 		this.values = newValues;
 	}
 

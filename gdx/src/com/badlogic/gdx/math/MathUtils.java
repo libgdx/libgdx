@@ -145,6 +145,11 @@ public class MathUtils {
 		return random.nextBoolean();
 	}
 
+	/** Returns true if a random value between 0 and 1 is less than the specified value. */
+	static public final boolean randomBoolean (float chance) {
+		return MathUtils.random() < chance;
+	}
+
 	/** Returns random number between 0.0 (inclusive) and 1.0 (exclusive). */
 	static public final float random () {
 		return random.nextFloat();

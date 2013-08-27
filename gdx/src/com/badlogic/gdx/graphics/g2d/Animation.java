@@ -125,11 +125,10 @@ public class Animation {
 	 * @param stateTime
 	 * @return current frame number */
 	public int getKeyFrameIndex (float stateTime) {
-		int frameNumber = (int)(stateTime / frameDuration);
-
 		if(keyFrames.length == 1)
-         return 0;
-		
+			return 0;
+
+		int frameNumber = (int)(stateTime / frameDuration);
 		switch (playMode) {
 		case NORMAL:
 			frameNumber = Math.min(keyFrames.length - 1, frameNumber);

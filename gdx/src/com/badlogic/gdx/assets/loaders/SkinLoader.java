@@ -16,9 +16,11 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -35,28 +37,28 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, SkinParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, SkinParameter parameter) {
 		Array<AssetDescriptor> deps = new Array();
 		if (parameter == null)
-			deps.add(new AssetDescriptor(resolve(fileName).pathWithoutExtension() + ".atlas", TextureAtlas.class));
-		else
+			deps.add(new AssetDescriptor(file.pathWithoutExtension() + ".atlas", TextureAtlas.class));
+		else if (parameter.textureAtlasPath != null)
 			deps.add(new AssetDescriptor(parameter.textureAtlasPath, TextureAtlas.class));
 		return deps;
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, SkinParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
 	}
 
 	@Override
-	public Skin loadSync (AssetManager manager, String fileName, SkinParameter parameter) {
+	public Skin loadSync (AssetManager manager, String fileName, FileHandle file, SkinParameter parameter) {
 		String textureAtlasPath;
 		if (parameter == null)
-			textureAtlasPath = resolve(fileName).pathWithoutExtension() + ".atlas";
+			textureAtlasPath = file.pathWithoutExtension() + ".atlas";
 		else
 			textureAtlasPath = parameter.textureAtlasPath;
 		TextureAtlas atlas = manager.get(textureAtlasPath, TextureAtlas.class);
-		return new Skin(resolve(fileName), atlas);
+		return new Skin(file, atlas);
 	}
 
 	static public class SkinParameter extends AssetLoaderParameters<Skin> {

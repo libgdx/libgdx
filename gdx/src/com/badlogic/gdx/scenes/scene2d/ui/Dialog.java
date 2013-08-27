@@ -106,7 +106,7 @@ public class Dialog extends Window {
 				if (isModal && stage != null && stage.getRoot().getChildren().size > 0
 					&& stage.getRoot().getChildren().peek() == Dialog.this) { // Dialog is top most actor.
 					Actor newFocusedActor = event.getRelatedActor();
-					if (newFocusedActor == null || !newFocusedActor.isDescendantOf(Dialog.this)) event.cancel();
+					if (newFocusedActor != null && !newFocusedActor.isDescendantOf(Dialog.this)) event.cancel();
 				}
 			}
 		});
@@ -175,8 +175,15 @@ public class Dialog extends Window {
 	public Dialog show (Stage stage) {
 		clearActions();
 		removeCaptureListener(ignoreTouchDown);
-		previousKeyboardFocus = stage.getKeyboardFocus();
-		previousScrollFocus = stage.getScrollFocus();
+
+		previousKeyboardFocus = null;
+		Actor actor = stage.getKeyboardFocus();
+		if (actor != null && !actor.isDescendantOf(this)) previousKeyboardFocus = actor;
+
+		previousScrollFocus = null;
+		actor = stage.getScrollFocus();
+		if (actor != null && !actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
+
 		pack();
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		stage.addActor(this);
@@ -205,10 +212,13 @@ public class Dialog extends Window {
 		if (parent == null) {
 			Stage stage = getStage();
 			if (stage != null) {
+				if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
 				Actor actor = stage.getKeyboardFocus();
-				if (actor == this || actor == null) stage.setKeyboardFocus(previousKeyboardFocus);
+				if (actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);
+
+				if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
 				actor = stage.getScrollFocus();
-				if (actor == this || actor == null) stage.setScrollFocus(previousScrollFocus);
+				if (actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
 			}
 		}
 	}

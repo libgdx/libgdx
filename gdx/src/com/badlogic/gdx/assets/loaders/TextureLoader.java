@@ -51,7 +51,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
 		info.filename = fileName;
 		if (parameter == null || (parameter != null && parameter.textureData == null)) {
 			Pixmap pixmap = null;
@@ -65,15 +65,14 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 				info.texture = parameter.texture;
 			}
 
-			FileHandle handle = resolve(fileName);
 			if (!fileName.contains(".etc1")) {
 				if (fileName.contains(".cim"))
-					pixmap = PixmapIO.readCIM(handle);
+					pixmap = PixmapIO.readCIM(file);
 				else
-					pixmap = new Pixmap(handle);
-				info.data = new FileTextureData(handle, pixmap, format, genMipMaps);
+					pixmap = new Pixmap(file);
+				info.data = new FileTextureData(file, pixmap, format, genMipMaps);
 			} else {
-				info.data = new ETC1TextureData(handle, genMipMaps);
+				info.data = new ETC1TextureData(file, genMipMaps);
 			}
 		} else {
 			info.data = parameter.textureData;
@@ -83,7 +82,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 	}
 
 	@Override
-	public Texture loadSync (AssetManager manager, String fileName, TextureParameter parameter) {
+	public Texture loadSync (AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
 		if (info == null)
 			return null;
 		Texture texture = info.texture;
@@ -100,7 +99,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, TextureParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, TextureParameter parameter) {
 		return null;
 	}
 

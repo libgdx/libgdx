@@ -244,6 +244,7 @@ public class CharArray {
 	}
 
 	public void reverse () {
+		char[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
 			char temp = items[i];
@@ -253,6 +254,7 @@ public class CharArray {
 	}
 
 	public void shuffle () {
+		char[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = MathUtils.random(i);
 			char temp = items[i];

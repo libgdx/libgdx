@@ -195,7 +195,8 @@ public class PreloaderBundleGenerator extends Generator {
 		}
 		String paths = assetPathProperty.getValues().get(0);
 		if(paths == null) {
-			return null;
+			throw new RuntimeException(
+				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		} else {
 			ArrayList<String> existingPaths = new ArrayList<String>();
 			String[] tokens = paths.split(",");
@@ -205,7 +206,8 @@ public class PreloaderBundleGenerator extends Generator {
 					return token;
 				}
 			}
-			return null;
+			throw new RuntimeException(
+				"No valid gdx.assetpath defined. Fix <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> in your GWT projects gwt.xml file");
 		}
 	}
 	

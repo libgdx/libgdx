@@ -279,8 +279,8 @@ public class AssetManager implements Disposable {
 			AssetDescriptor desc = loadQueue.get(i);
 			if (desc.fileName.equals(fileName) && !desc.type.equals(type))
 				throw new GdxRuntimeException("Asset with name '" + fileName
-					+ "' already in preload queue, but has different type (expected: " + ClassReflection.getSimpleName(type) + ", found: "
-					+ ClassReflection.getSimpleName(desc.type) + ")");
+					+ "' already in preload queue, but has different type (expected: " + ClassReflection.getSimpleName(type)
+					+ ", found: " + ClassReflection.getSimpleName(desc.type) + ")");
 		}
 
 		// check task list
@@ -348,7 +348,7 @@ public class AssetManager implements Disposable {
 	 * between updates. This may block for less time if all loading tasks are complete. This may block for more time if the portion
 	 * of a single task that happens in the GL thread takes a long time.
 	 * @return true if all loading is finished. */
-	public synchronized boolean update (int millis) {
+	public boolean update (int millis) {
 		long endTime = System.currentTimeMillis() + millis;
 		while (true) {
 			boolean done = update();
@@ -365,12 +365,12 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	synchronized void injectDependencies(String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
-		for(AssetDescriptor desc: dependendAssetDescs) {
+	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
+		for (AssetDescriptor desc : dependendAssetDescs) {
 			injectDependency(parentAssetFilename, desc);
 		}
 	}
-	
+
 	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {
 		// add the asset as a dependency of the parent asset
 		Array<String> dependencies = assetDependencies.get(parentAssetFilename);

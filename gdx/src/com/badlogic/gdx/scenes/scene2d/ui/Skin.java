@@ -40,10 +40,10 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.ReadOnlySerializer;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.SerializationException;
-
-import java.lang.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Method;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /** A skin stores resources for UI widgets to use (texture regions, ninepatches, fonts, colors, etc). Resources are named and can
  * be looked up by name and type. Resources can be described in JSON. Skin provides useful conversions, such as allowing access to
@@ -406,7 +406,7 @@ public class Skin implements Disposable {
 		final Json json = new Json() {
 			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
-				if (jsonData.isString() && !CharSequence.class.isAssignableFrom(type)) return get(jsonData.asString(), type);
+				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type)) return get(jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
 			}
 		};
@@ -417,8 +417,8 @@ public class Skin implements Disposable {
 			public Skin read (Json json, JsonValue typeToValueMap, Class ignored) {
 				for (JsonValue valueMap = typeToValueMap.child(); valueMap != null; valueMap = valueMap.next()) {
 					try {
-						readNamedObjects(json, Class.forName(valueMap.name()), valueMap);
-					} catch (ClassNotFoundException ex) {
+						readNamedObjects(json, ClassReflection.forName(valueMap.name()), valueMap);
+					} catch (ReflectionException ex) {
 						throw new SerializationException(ex);
 					}
 				}
@@ -433,7 +433,7 @@ public class Skin implements Disposable {
 					try {
 						add(valueEntry.name(), object, addType);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + type.getSimpleName() + ": " + valueEntry.name(), ex);
+						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": " + valueEntry.name(), ex);
 					}
 				}
 			}
@@ -491,7 +491,7 @@ public class Skin implements Disposable {
 	}
 
 	static private Method findMethod (Class type, String name) {
-		Method[] methods = type.getMethods();
+		Method[] methods = ClassReflection.getMethods(type);
 		for (int i = 0, n = methods.length; i < n; i++) {
 			Method method = methods[i];
 			if (method.getName().equals(name)) return method;

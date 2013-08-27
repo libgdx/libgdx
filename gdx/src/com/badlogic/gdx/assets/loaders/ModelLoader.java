@@ -53,9 +53,9 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	}
 	
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, P parameters) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, P parameters) {
 		final Array<AssetDescriptor> deps = new Array();
-		ModelData data = loadModelData(resolve(fileName), parameters);
+		ModelData data = loadModelData(file, parameters);
 		if (data == null)
 			return deps;
 		
@@ -76,11 +76,11 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	}
 	
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, P parameters) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, P parameters) {
 	}
 
 	@Override
-	public Model loadSync (AssetManager manager, String fileName, P parameters) {
+	public Model loadSync (AssetManager manager, String fileName, FileHandle file, P parameters) {
 		ModelData data = null;
 		synchronized(items) {
 			for (int i = 0; i < items.size; i++) {

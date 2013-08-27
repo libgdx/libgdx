@@ -58,6 +58,17 @@ public class IOSNet implements Net {
 		public int read () throws IOException {
 			return stream.ReadByte();
 		}
+		
+		@Override
+		public int read (byte[] b) throws IOException {
+			return read(b, 0, b.length);
+		}
+
+		@Override
+		public int read (byte[] b, int off, int len) throws IOException {
+			return stream.Read(b, off, len);
+		}
+		
 	}
 
 	public static class OutputStreamNetStreamImpl extends OutputStream {
@@ -74,6 +85,16 @@ public class IOSNet implements Net {
 			stream.WriteByte((byte)b);
 		}
 
+		@Override
+		public void write (byte[] b) throws IOException {
+			write(b, 0, b.length);
+		}
+
+		@Override
+		public void write (byte[] b, int off, int len) throws IOException {
+			stream.Write(b, off, len);
+		}
+		
 	}
 
 	static class IosHttpResponse implements HttpResponse {
@@ -198,20 +219,9 @@ public class IOSNet implements Net {
 					}
 
 					final HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
 							httpResultListener.handleHttpResponse(new IosHttpResponse(httpWebResponse));
-						}
-					});
 				} catch (final Exception e) {
-					Gdx.app.postRunnable(new Runnable() {
-						@Override
-						public void run () {
 							httpResultListener.failed(e);
-						}
-					});
 				}
 			}
 		});

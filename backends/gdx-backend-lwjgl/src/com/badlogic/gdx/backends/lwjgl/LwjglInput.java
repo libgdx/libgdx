@@ -48,7 +48,7 @@ import com.badlogic.gdx.utils.Pool;
 /** An implementation of the {@link Input} interface hooking a LWJGL panel for input.
  * 
  * @author mzechner */
-final class LwjglInput implements Input {
+final public class LwjglInput implements Input {
 	static public float keyRepeatInitialTime = 0.4f;
 	static public float keyRepeatTime = 0.1f;
 

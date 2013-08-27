@@ -22,4 +22,14 @@ public class MeshPart {
 	public int numVertices;
 	/** the Mesh the part references, also stored in {@link Model} **/
 	public Mesh mesh;
+	
+	@Override
+	public boolean equals (Object arg0) {
+		if (arg0 == null) return false;
+		if (arg0 == this) return true;
+		if (!(arg0 instanceof MeshPart)) return false;
+		final MeshPart other = (MeshPart)arg0;
+		return other.mesh == mesh && other.primitiveType == primitiveType && 
+			other.indexOffset == indexOffset && other.numVertices == numVertices;
+	}
 }

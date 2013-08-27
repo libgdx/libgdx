@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader.Input;
 import com.badlogic.gdx.graphics.g3d.utils.BaseShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -66,9 +65,9 @@ public class ShaderTest extends GdxTest {
 			"	gl_FragColor.rgb = vec3(v_test);\n" +
 			"}\n";
 		
-		protected final Input u_projTrans	= register(new Input(GLOBAL_UNIFORM, "u_projTrans"));
-		protected final Input u_worldTrans	= register(new Input(GLOBAL_UNIFORM, "u_worldTrans"));
-		protected final Input u_test			= register(new Input(GLOBAL_UNIFORM, "u_test"));
+		protected final int u_projTrans	= register(new Uniform("u_projTrans"));
+		protected final int u_worldTrans	= register(new Uniform("u_worldTrans"));
+		protected final int u_test			= register(new Uniform("u_test"));
 		
 		protected final ShaderProgram program;
 		
@@ -81,7 +80,7 @@ public class ShaderTest extends GdxTest {
 		
 		@Override
 		public void init () {
-			super.init(program, 0, 0, 0);
+			super.init(program, null);
 		}
 		
 		@Override

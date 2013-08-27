@@ -122,9 +122,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
-		FileHandle tmxFile = resolve(fileName);
 		try {
 			root = xml.parse(tmxFile);
 
@@ -135,8 +134,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					String value = property.getAttribute("value");
 					if (name.startsWith("atlas")) {
 						FileHandle atlasHandle = getRelativeFileHandle(tmxFile, value);
-						atlasHandle = resolve(atlasHandle.path());
-						dependencies.add(new AssetDescriptor(atlasHandle.path(), TextureAtlas.class));
+						dependencies.add(new AssetDescriptor(atlasHandle, TextureAtlas.class));
 					}
 				}
 			}
@@ -210,10 +208,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter) {
 		map = null;
 
-		FileHandle tmxFile = resolve(fileName);
 		if (parameter != null) {
 			yUp = parameter.yUp;
 		} else {
@@ -228,7 +225,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, AtlasTiledMapLoaderParameters parameter) {
 		if (parameter != null) {
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
@@ -654,7 +651,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		}
 		return cell;
 	}
-	
+
 	public static FileHandle getRelativeFileHandle (FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();
