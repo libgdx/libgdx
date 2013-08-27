@@ -22,7 +22,7 @@
 #define ContactCache_H
 
 #include "ContactListener.h"
-#include <map>
+#include "../../bullet/LinearMath/btAlignedObjectArray.h"
 
 #ifndef SWIG
 static void ContactCacheStarted_CB(btPersistentManifold* const &manifold);
@@ -34,27 +34,33 @@ ContactCache *currentContactCache = 0;
 struct ContactPair {
 	const btCollisionObject *object0;
 	const btCollisionObject *object1;
+	float time;
 
-	ContactPair() : object0(0), object1(0) {}
+	ContactPair() : object0(0), object1(0), time(0) {}
 
-	ContactPair(const ContactPair &rhs) : object0(rhs.object0), object1(rhs.object1) {}
+	ContactPair(const ContactPair &rhs) : object0(rhs.object0), object1(rhs.object1), time(rhs.time) {}
 
-	ContactPair(const btCollisionObject* const &object0, const btCollisionObject* const &object1) : object0(object0), object1(object1) {}
+	ContactPair(const btCollisionObject* const &object0, const btCollisionObject* const &object1, const float &time) : object0(object0), object1(object1), time(time) {}
 
 	ContactPair &operator=(const ContactPair &rhs) {
 		object0 = rhs.object0;
 		object1 = rhs.object1;
+		time = rhs.time;
 		return *this;
 	}
 
-	bool operator==(const ContactPair &rhs) const {
+	inline bool operator==(const ContactPair &rhs) const {
 		return ((rhs.object0 == object0) && (rhs.object1 == object1)) || ((rhs.object0 == object1) && (rhs.object1 == object0));
 	}
 
-	bool operator<(const ContactPair &rhs) const {
+	inline bool operator<(const ContactPair &rhs) const {
 		if (*this == rhs)
 			return false;
 		return object0 < rhs.object0;
+	}
+
+	inline bool equals(const btCollisionObject* const &obj0, const btCollisionObject* const &obj1) const {
+		return ((obj0 == object0) && (obj1 == object1)) || ((obj0 == object1) && (obj1 == object0));
 	}
 };
 #endif //SWIG
@@ -65,7 +71,8 @@ protected:
 #ifndef SWIG
 	bool filter;
 	int events;
-	std::map<ContactPair, float> cache;
+	btAlignedObjectArray<ContactPair> cache;
+	//std::map<ContactPair, float> cache;
 #endif
 public:
 	float cacheTime;
@@ -124,42 +131,55 @@ public:
 	}
 
 	void update(float delta) {
-		std::map<ContactPair, float>::iterator it = cache.begin();
-		while (it != cache.end()) {
-			if ((it->second -= delta) < 0) {
-				const btCollisionObject* const &object0 = it->first.object0;
-				const btCollisionObject* const &object1 = it->first.object1;
+		for (int i = cache.size() - 1; i >= 0; --i) {
+			ContactPair &pair = cache.at(i);
+			if ((pair.time -= delta) < 0) {
+				const btCollisionObject* const &object0 = pair.object0;
+				const btCollisionObject* const &object1 = pair.object1;
 				const bool match0 = gdxCheckFilter(object0, object1);
 				const bool match1 = gdxCheckFilter(object1, object0);
 				if (!filter || match0 || match1)
 					onContactEnded(object0, match0, object1, match1);
-				cache.erase(it++);
-			} else
-				++it;
+				cache.swap(i, cache.size()-1);
+				cache.pop_back();
+			}
 		}
 	}
 
 #ifndef SWIG
+	int indexOf(const btCollisionObject* const &obj0, const btCollisionObject* const &obj1) {
+		for (int i = cache.size() - 1; i >= 0; --i) {
+			ContactPair &pair = cache.at(i);
+			if (pair.equals(obj0, obj1))
+				return i;
+		}
+		return -1;
+	}
+
 	void contactStarted(btPersistentManifold* manifold) {
 		const bool match0 = gdxCheckFilter(manifold->getBody0(), manifold->getBody1());
 		const bool match1 = gdxCheckFilter(manifold->getBody1(), manifold->getBody0());
 		if (filter && !match0 && !match1)
 			return;
-		const ContactPair pair(manifold->getBody0(), manifold->getBody1());
-		std::map<ContactPair, float>::iterator it = cache.find(pair);
-		if (it != cache.end())
-			cache.erase(it);
-		else {
-			onContactStarted(manifold, match0, match1);
+		const int idx = indexOf(manifold->getBody0(), manifold->getBody1());
+		if (idx >= 0) {
+			cache.swap(idx, cache.size()-1);
+			cache.pop_back();
 		}
+		else
+			onContactStarted(manifold, match0, match1);
 	}
+
 	void contactEnded(btPersistentManifold* manifold) {
 		const bool match0 = gdxCheckFilter(manifold->getBody0(), manifold->getBody1());
 		const bool match1 = gdxCheckFilter(manifold->getBody1(), manifold->getBody0());
 		if (filter && !match0 && !match1)
 			return;
-		const ContactPair pair(manifold->getBody0(), manifold->getBody1());
-		cache[pair] = cacheTime;
+		const int idx = indexOf(manifold->getBody0(), manifold->getBody1());
+		if (idx >= 0)
+			cache[idx].time = cacheTime;
+		else
+			cache.push_back(ContactPair(manifold->getBody0(), manifold->getBody1(), cacheTime));
 	}
 #endif //SWIG
 };
