@@ -378,5 +378,6 @@ depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jg
 
 		<!-- zip dist dir -->
 		<zip destfile="libgdx-${version}.zip" basedir="${distDir}"/>
+		<checksum file="libgdx-${version}.zip" forceOverwrite="yes" />
 	</target>
 </project>
