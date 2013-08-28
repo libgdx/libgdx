@@ -242,6 +242,25 @@ public class BoundingBox implements Serializable {
 			|| (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y && max.z >= b.max.z);
 	}
 
+	/** Returns whether the given bounding box is intersecting this bounding box (at least one point in).
+	 * @param b The bounding box
+	 * @return Whether the given bounding box is intersected  */
+	public boolean intersects (BoundingBox b) {
+		if(!isValid())
+			return false;
+		
+		updateCorners();
+		
+		return 	contains(crn[0]) || 
+					contains(crn[1]) ||
+					contains(crn[2]) ||
+					contains(crn[3]) ||
+					contains(crn[4]) ||
+					contains(crn[5]) ||
+					contains(crn[6]) ||
+					contains(crn[7]);
+	}
+	
 	/** Returns whether the given vector is contained in this bounding box.
 	 * @param v The vector
 	 * @return Whether the vector is contained or not. */
