@@ -30,14 +30,14 @@ import com.badlogic.gdx.utils.IntArray;
  * If the input polygon is not simple (self-intersects), there will be output but it is of unspecified quality (garbage in,
  * garbage out).
  * @author badlogicgames@gmail.com
- * @author Nicolas Gramlich (improved performance, collinear edge support)
+ * @author Nicolas Gramlich (optimizations, collinear edge support)
  * @author Eric Spitz
- * @author Thomas ten Cate (bugfixes, performance improvements)
- * @author Nathan Sweet */
+ * @author Thomas ten Cate (bugfixes, optimizations)
+ * @author Nathan Sweet (rewrite, no allocation, optimizations) */
 public class EarClippingTriangulator {
-	private static final int CONCAVE = -1;
-	private static final int TANGENTIAL = 0;
-	private static final int CONVEX = 1;
+	static private final int CONCAVE = -1;
+	static private final int TANGENTIAL = 0;
+	static private final int CONVEX = 1;
 
 	private final FloatArray verticesArray = new FloatArray();
 	private float[] vertices;
@@ -45,45 +45,46 @@ public class EarClippingTriangulator {
 	private final IntArray vertexTypes = new IntArray();
 	private final FloatArray triangles = new FloatArray();
 
-	/** @see #computeTriangles(float[]) */
+	/** @see #computeTriangles(float[], int, int) */
 	public FloatArray computeTriangles (FloatArray polygon) {
-		verticesArray.addAll(polygon.items, 0, polygon.size);
+		setVertices(polygon.items, 0, polygon.size);
 		return computeTriangles();
 	}
 
-	/** @see #computeTriangles(float[]) */
+	/** @see #computeTriangles(float[], int, int) */
 	public FloatArray computeTriangles (float[] polygon) {
-		verticesArray.addAll(polygon, 0, polygon.length);
+		setVertices(polygon, 0, polygon.length);
 		return computeTriangles();
 	}
 
-	/** Triangulates the given (convex or concave) polygon to a list of triangles.
-	 * @param polygon pairs describing vertices of a simple polygon, in either clockwise or counterclockwise order.
+	/** Triangulates the given (convex or concave) simple polygon to a list of triangle vertices.
+	 * @param polygon pairs describing vertices of the polygon, in either clockwise or counterclockwise order.
 	 * @return triples of pairs describing triangle vertices in clockwise order. Note the returned array is reused for later calls
 	 *         to the same method. */
 	public FloatArray computeTriangles (float[] polygon, int offset, int count) {
-		verticesArray.addAll(polygon, offset, count);
+		setVertices(polygon, offset, count);
 		return computeTriangles();
+	}
+
+	private void setVertices (float[] polygon, int offset, int count) {
+		FloatArray verticesArray = this.verticesArray;
+		if (areVerticesClockwise(polygon, 0, polygon.length)) {
+			verticesArray.addAll(polygon, 0, polygon.length);
+			return;
+		}
+		// Copy reversed.
+		verticesArray.ensureCapacity(count);
+		verticesArray.size = count;
+		float[] vertices = verticesArray.items;
+		for (int v = count - 2, p = offset, n = offset + count; p < n; v -= 2, p += 2) {
+			vertices[v] = polygon[p];
+			vertices[v + 1] = polygon[p + 1];
+		}
 	}
 
 	private FloatArray computeTriangles () {
 		FloatArray verticesArray = this.verticesArray;
 		float[] vertices = this.vertices = verticesArray.items;
-
-		// Ensure vertices are in clockwise order.
-		if (!areVerticesClockwise()) {
-			for (int i = 0, lastIndex = verticesArray.size - 2, n = verticesArray.size / 2; i < n; i++) {
-				int ii = lastIndex - i;
-				float temp = vertices[i];
-				vertices[i] = vertices[ii];
-				vertices[ii] = temp;
-				i++;
-				ii++;
-				temp = vertices[i];
-				vertices[i] = vertices[ii];
-				vertices[ii] = temp;
-			}
-		}
 
 		IntArray vertexTypes = this.vertexTypes;
 		vertexCount = verticesArray.size / 2;
@@ -121,29 +122,7 @@ public class EarClippingTriangulator {
 		return triangles;
 	}
 
-	static int moo;
-
-	private boolean areVerticesClockwise () {
-		float[] vertices = this.vertices;
-		int count = verticesArray.size;
-		if (count <= 2) return false;
-		float area = 0;
-		for (int i = 0, n = count - 3; i < n; i += 2) {
-			float p1x = vertices[i];
-			float p1y = vertices[i + 1];
-			float p2x = vertices[i + 2];
-			float p2y = vertices[i + 3];
-			area += p1x * p2y - p2x * p1y;
-		}
-		float p1x = vertices[count - 2];
-		float p1y = vertices[count - 1];
-		float p2x = vertices[0];
-		float p2y = vertices[1];
-		area += p1x * p2y - p2x * p1y;
-		return area < 0;
-	}
-
-	/** @return one of {@link #CONCAVE}, {@link #TANGENTIAL} or {@link #CONVEX} */
+	/** @return {@link #CONCAVE}, {@link #TANGENTIAL} or {@link #CONVEX} */
 	private int classifyVertex (int index) {
 		float[] vertices = this.vertices;
 		int previousIndex = previousIndex(index) * 2;
@@ -155,13 +134,6 @@ public class EarClippingTriangulator {
 		float nextX = vertices[nextIndex];
 		float nextY = vertices[nextIndex + 1];
 		return computeSpannedAreaSign(previousX, previousY, currentX, currentY, nextX, nextY);
-	}
-
-	private static int computeSpannedAreaSign (float p1x, float p1y, float p2x, float p2y, float p3x, float p3y) {
-		float area = p1x * (p3y - p2y);
-		area += p2x * (p1y - p3y);
-		area += p3x * (p2y - p1y);
-		return (int)Math.signum(area);
 	}
 
 	private int findEarTip () {
@@ -242,10 +214,35 @@ public class EarClippingTriangulator {
 	}
 
 	private int previousIndex (int index) {
-		return index == 0 ? vertexCount - 1 : index - 1;
+		return (index == 0 ? vertexCount : index) - 1;
 	}
 
 	private int nextIndex (int index) {
-		return index == vertexCount - 1 ? 0 : index + 1;
+		return (index + 1) % vertexCount;
+	}
+
+	static private boolean areVerticesClockwise (float[] vertices, int offset, int count) {
+		if (count <= 2) return false;
+		float area = 0;
+		for (int i = offset, n = offset + count - 3; i < n; i += 2) {
+			float p1x = vertices[i];
+			float p1y = vertices[i + 1];
+			float p2x = vertices[i + 2];
+			float p2y = vertices[i + 3];
+			area += p1x * p2y - p2x * p1y;
+		}
+		float p1x = vertices[count - 2];
+		float p1y = vertices[count - 1];
+		float p2x = vertices[0];
+		float p2y = vertices[1];
+		area += p1x * p2y - p2x * p1y;
+		return area < 0;
+	}
+
+	static private int computeSpannedAreaSign (float p1x, float p1y, float p2x, float p2y, float p3x, float p3y) {
+		float area = p1x * (p3y - p2y);
+		area += p2x * (p1y - p3y);
+		area += p3x * (p2y - p1y);
+		return (int)Math.signum(area);
 	}
 }

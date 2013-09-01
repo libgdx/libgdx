@@ -229,7 +229,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		throw new IllegalStateException("Value cannot be converted to boolean: " + type);
 	}
 
-	/** @return true if the child with the name exists */
+	/** Returns true if a child with the specified name exists and has a child. */
 	public boolean hasChild (String name) {
 		return getChild(name) != null;
 	}
