@@ -14,126 +14,179 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class btTriangleIndexVertexArray extends btStridingMeshInterface {
-  private long swigCPtr;
-
-  protected btTriangleIndexVertexArray(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btTriangleIndexVertexArray_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
-
-  public static long getCPtr(btTriangleIndexVertexArray obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete()  {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleIndexVertexArray(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-	dispose();
-  }
-
-
-	com.badlogic.gdx.utils.Array<btIndexedMesh> meshes = null;
+	private long swigCPtr;
 	
-	/** Construct a new btTriangleIndexVertexArray based one or more supplied {@link com.badlogic.gdx.graphics.Mesh} instances.
-	 * The specified meshes must be indexed and triangulated and must outlive this btTriangleIndexVertexArray.
-     * The buffers for the vertices and indices are shared amongst both. */
-	public btTriangleIndexVertexArray(final com.badlogic.gdx.graphics.Mesh... meshes) {
-		this();
-		addMesh(meshes);
+	protected btTriangleIndexVertexArray(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btTriangleIndexVertexArray_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btTriangleIndexVertexArray based on one or more {@link Model} instances.
-	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
-     * The buffers for the vertices and indices are shared amongst both. */
-	public btTriangleIndexVertexArray(final Model... models) {
-		this();
-		addModel(models);
-	}
-
-	/** Add one or more {@link com.badlogic.gdx.graphics.Mesh} instances to this btTriangleIndexVertexArray. 
-	 * The specified meshes must be indexed and triangulated and must outlive this btTriangleIndexVertexArray.
-     * The buffers for the vertices and indices are shared amongst both. */
-	public void addMesh(final com.badlogic.gdx.graphics.Mesh... meshes) {
-		for (int i = 0; i < meshes.length; i++)
-			addIndexedMesh(new btIndexedMesh(meshes[i]), PHY_ScalarType.PHY_SHORT, true);
+	protected btTriangleIndexVertexArray(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleIndexVertexArray", cPtr, cMemoryOwn);
+		construct();
 	}
 	
-	/** Add one or more {@link Model} instances to this btTriangleIndexVertexArray.
-	 * Only the triangulated submeshes are added, which must be indexed. The model must outlive this btTriangleIndexVertexArray.
-     * The buffers for the vertices and indices are shared amongst both. */
-	public void addModel(final Model... models) {
-		for (int i = 0; i < models.length; i++) {
-			for (int j = 0; j < models[i].meshParts.size; j++) {
-				com.badlogic.gdx.graphics.g3d.model.MeshPart mp = models[i].meshParts.get(j);
-				if (mp.primitiveType == com.badlogic.gdx.graphics.GL10.GL_TRIANGLES)
-					addIndexedMesh(new btIndexedMesh(mp.mesh, mp.indexOffset, mp.numVertices), PHY_ScalarType.PHY_SHORT, true);
+	public static long getCPtr(btTriangleIndexVertexArray obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleIndexVertexArray(swigCPtr);
 			}
+			swigCPtr = 0;
 		}
-	}
-	
-	/** @param managed If true this btTriangleIndexVertexArray will maintain a reference to the {@link btIndexedMesh}
-	 * and will delete it when this btTriangleIndexVertexArray is deleted. */
-	public void addIndexedMesh(final btIndexedMesh mesh, int indexType, boolean managed) {
-		addIndexedMesh(mesh, indexType);
-		if (managed) {
-			if (meshes == null)
-				meshes = new com.badlogic.gdx.utils.Array<btIndexedMesh>();
-			meshes.add(mesh);
-		}
+		super.delete();
 	}
 
-	/** @param managed If true this btTriangleIndexVertexArray will maintain a reference to the {@link btIndexedMesh}
-	 * and will delete it when this btTriangleIndexVertexArray is deleted. */
-	public void addIndexedMesh(final btIndexedMesh mesh, boolean managed) {
-		addIndexedMesh(mesh);
-		if (managed) {
-			if (meshes == null)
-				meshes = new com.badlogic.gdx.utils.Array<btIndexedMesh>();
-			meshes.add(mesh);
+	protected final static Array<btTriangleIndexVertexArray> instances = new Array<btTriangleIndexVertexArray>();
+	
+	/** @return Whether the supplied array is contains all specified mesh parts. */
+	public static <T extends MeshPart> boolean compare(final btTriangleIndexVertexArray array, final Array<T> meshParts) {
+		if (array.meshes.size != meshParts.size)
+			return false;
+		for (final btIndexedMesh mesh : array.meshes) {
+			boolean found = false;
+			final MeshPart mp = mesh.getMeshPart();
+			if (mp == null) 
+				return false;
+			for (final MeshPart part : meshParts) {
+				if (mp.equals(part)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				return false;
 		}
+		return true;
+	}
+
+	protected static <T extends MeshPart> btTriangleIndexVertexArray getInstance(final Array<T> meshParts) {
+		for (final btTriangleIndexVertexArray instance : instances) {
+			if (compare(instance, meshParts))
+				return instance;
+		}
+		return null;
 	}
 	
-	protected void dispose() {
-		if (meshes != null) {
-			for (int i = 0; i < meshes.size; i++)
-				meshes.get(i).delete();
-			meshes.clear();
-			meshes = null;
+	/** Create or reuse a btTriangleIndexVertexArray instance based on the specified {@link MeshPart} array.
+	 * Use {@link #release()} to release the mesh when it's no longer needed. */
+	public static <T extends MeshPart> btTriangleIndexVertexArray obtain(final Array<T> meshParts) {
+		btTriangleIndexVertexArray result = getInstance(meshParts);
+		if (result == null) {
+			result = new btTriangleIndexVertexArray(meshParts);
+			instances.add(result);
 		}
+		result.obtain();
+		return result;
+	}
+	
+	protected final Array<btIndexedMesh> meshes = new Array<btIndexedMesh>(1);
+	
+	public btTriangleIndexVertexArray(final MeshPart meshPart) {
+		this();
+		addMeshPart(meshPart);
+	}
+	
+	public <T extends MeshPart> btTriangleIndexVertexArray(final Iterable<T> meshParts) {
+		this();
+		addMeshParts(meshParts);
+	}
+	
+	/** The amount of meshes this array contains. */
+	public int getIndexedMeshCount() {
+		return meshes.size;
+	}
+	
+	/** Return the {@link btIndexedMesh} at the specified index. */
+	public btIndexedMesh getIndexedMesh(int index) {
+		return meshes.get(index);
+	}
+
+	/** Add a {@link MeshPart} instance to this btTriangleIndexVertexArray. 
+	 * The specified mesh must be indexed and triangulated and must outlive this btTriangleIndexVertexArray.
+     * The buffers for the vertices and indices are shared amongst both. */
+	public btTriangleIndexVertexArray addMeshPart(final MeshPart meshPart) {
+		btIndexedMesh mesh = btIndexedMesh.obtain(meshPart);
+		addIndexedMesh(mesh, PHY_ScalarType.PHY_SHORT);
+		mesh.release();
+		return this;
+	}
+
+	/** Add one or more {@link MeshPart} instances to this btTriangleIndexVertexArray. 
+	 * The specified meshes must be indexed and triangulated and must outlive this btTriangleIndexVertexArray.
+     * The buffers for the vertices and indices are shared amongst both. */
+	public btTriangleIndexVertexArray addMeshParts(final MeshPart... meshParts) {
+		for (int i = 0; i < meshParts.length; i++)
+			addMeshPart(meshParts[i]);
+		return this;
+	}
+
+	/** Add one or more {@link MeshPart} instances to this btTriangleIndexVertexArray. 
+	 * The specified meshes must be indexed and triangulated and must outlive this btTriangleIndexVertexArray.
+     * The buffers for the vertices and indices are shared amongst both. */
+	public <T extends MeshPart> btTriangleIndexVertexArray addMeshParts(final Iterable<T> meshParts) {
+		for (final MeshPart meshPart : meshParts)
+			addMeshPart(meshPart);
+		return this;
+	}
+	
+	/** Add one or more {@link NodePart} instances to this btTriangleIndexVertexArray. 
+	 * The specified meshes must be indexed and triangulated and must outlive this btTriangleIndexVertexArray.
+     * The buffers for the vertices and indices are shared amongst both. */
+	public <T extends NodePart> btTriangleIndexVertexArray addNodeParts(final Iterable<T> nodeParts) {
+		for (final NodePart nodePart : nodeParts)
+			addMeshPart(nodePart.meshPart);
+		return this;
+	}
+	
+	/** Add a {@link btIndexedMesh} to this array */
+	public btTriangleIndexVertexArray addIndexedMesh(final btIndexedMesh mesh, int indexType) {
+		mesh.obtain();
+		internalAddIndexedMesh(mesh, indexType);
+		meshes.add(mesh);
+		return this;
+	}
+
+	/** Add a {@link btIndexedMesh} to this array */
+	public btTriangleIndexVertexArray addIndexedMesh(final btIndexedMesh mesh) {
+		return addIndexedMesh(mesh, PHY_ScalarType.PHY_SHORT);
+	}
+	
+	@Override
+	public void dispose() {
+		for (final btIndexedMesh mesh : meshes)
+			mesh.release();
+		meshes.clear();
+		super.dispose();
 	}
 
   public btTriangleIndexVertexArray() {
-    this(gdxBulletJNI.new_btTriangleIndexVertexArray__SWIG_0(), true);
+    this(gdxBulletJNI.new_btTriangleIndexVertexArray(), true);
   }
 
-  static private long SwigConstructbtTriangleIndexVertexArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride) {
-    assert triangleIndexBase.isDirect() : "Buffer must be allocated direct.";
-    assert vertexBase.isDirect() : "Buffer must be allocated direct.";
-    return gdxBulletJNI.new_btTriangleIndexVertexArray__SWIG_1(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride);
+  private void internalAddIndexedMesh(btIndexedMesh mesh, int indexType) {
+    gdxBulletJNI.btTriangleIndexVertexArray_internalAddIndexedMesh__SWIG_0(swigCPtr, this, btIndexedMesh.getCPtr(mesh), mesh, indexType);
   }
 
-  public btTriangleIndexVertexArray(int numTriangles, java.nio.IntBuffer triangleIndexBase, int triangleIndexStride, int numVertices, java.nio.FloatBuffer vertexBase, int vertexStride) {
-    this(btTriangleIndexVertexArray.SwigConstructbtTriangleIndexVertexArray(numTriangles, triangleIndexBase, triangleIndexStride, numVertices, vertexBase, vertexStride), true);
-  }
-
-  public void addIndexedMesh(btIndexedMesh mesh, int indexType) {
-    gdxBulletJNI.btTriangleIndexVertexArray_addIndexedMesh__SWIG_0(swigCPtr, this, btIndexedMesh.getCPtr(mesh), mesh, indexType);
-  }
-
-  public void addIndexedMesh(btIndexedMesh mesh) {
-    gdxBulletJNI.btTriangleIndexVertexArray_addIndexedMesh__SWIG_1(swigCPtr, this, btIndexedMesh.getCPtr(mesh), mesh);
+  private void internalAddIndexedMesh(btIndexedMesh mesh) {
+    gdxBulletJNI.btTriangleIndexVertexArray_internalAddIndexedMesh__SWIG_1(swigCPtr, this, btIndexedMesh.getCPtr(mesh), mesh);
   }
 
   public void getLockedVertexIndexBase(SWIGTYPE_p_p_unsigned_char vertexbase, SWIGTYPE_p_int numverts, SWIGTYPE_p_PHY_ScalarType type, SWIGTYPE_p_int vertexStride, SWIGTYPE_p_p_unsigned_char indexbase, SWIGTYPE_p_int indexstride, SWIGTYPE_p_int numfaces, SWIGTYPE_p_PHY_ScalarType indicestype, int subpart) {
@@ -153,7 +206,7 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
   }
 
   public SWIGTYPE_p_btAlignedObjectArrayT_btIndexedMesh_t getIndexedMeshArray() {
-    return new SWIGTYPE_p_btAlignedObjectArrayT_btIndexedMesh_t(gdxBulletJNI.btTriangleIndexVertexArray_getIndexedMeshArray__SWIG_0(swigCPtr, this), false);
+    return new SWIGTYPE_p_btAlignedObjectArrayT_btIndexedMesh_t(gdxBulletJNI.btTriangleIndexVertexArray_getIndexedMeshArray(swigCPtr, this), false);
   }
 
 }

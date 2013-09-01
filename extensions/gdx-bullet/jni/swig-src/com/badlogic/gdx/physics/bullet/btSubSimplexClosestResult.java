@@ -13,65 +13,73 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSubSimplexClosestResult {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSubSimplexClosestResult extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSubSimplexClosestResult(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSubSimplexClosestResult(long cPtr, boolean cMemoryOwn) {
+		this("btSubSimplexClosestResult", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSubSimplexClosestResult obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSubSimplexClosestResult(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSubSimplexClosestResult(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setClosestPointOnSimplex(btVector3 value) {
+    gdxBulletJNI.btSubSimplexClosestResult_closestPointOnSimplex_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btSubSimplexClosestResult obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSubSimplexClosestResult(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_closestPointOnSimplex(btVector3 value) {
-    gdxBulletJNI.btSubSimplexClosestResult_m_closestPointOnSimplex_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_closestPointOnSimplex() {
-    long cPtr = gdxBulletJNI.btSubSimplexClosestResult_m_closestPointOnSimplex_get(swigCPtr, this);
+  public btVector3 getClosestPointOnSimplex() {
+    long cPtr = gdxBulletJNI.btSubSimplexClosestResult_closestPointOnSimplex_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_usedVertices(btUsageBitfield value) {
-    gdxBulletJNI.btSubSimplexClosestResult_m_usedVertices_set(swigCPtr, this, btUsageBitfield.getCPtr(value), value);
+  public void setUsedVertices(btUsageBitfield value) {
+    gdxBulletJNI.btSubSimplexClosestResult_usedVertices_set(swigCPtr, this, btUsageBitfield.getCPtr(value), value);
   }
 
-  public btUsageBitfield getM_usedVertices() {
-    long cPtr = gdxBulletJNI.btSubSimplexClosestResult_m_usedVertices_get(swigCPtr, this);
+  public btUsageBitfield getUsedVertices() {
+    long cPtr = gdxBulletJNI.btSubSimplexClosestResult_usedVertices_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btUsageBitfield(cPtr, false);
   }
 
-  public void setM_barycentricCoords(float[] value) {
-    gdxBulletJNI.btSubSimplexClosestResult_m_barycentricCoords_set(swigCPtr, this, value);
+  public void setBarycentricCoords(float[] value) {
+    gdxBulletJNI.btSubSimplexClosestResult_barycentricCoords_set(swigCPtr, this, value);
   }
 
-  public float[] getM_barycentricCoords() {
-    return gdxBulletJNI.btSubSimplexClosestResult_m_barycentricCoords_get(swigCPtr, this);
+  public float[] getBarycentricCoords() {
+    return gdxBulletJNI.btSubSimplexClosestResult_barycentricCoords_get(swigCPtr, this);
   }
 
-  public void setM_degenerate(boolean value) {
-    gdxBulletJNI.btSubSimplexClosestResult_m_degenerate_set(swigCPtr, this, value);
+  public void setDegenerate(boolean value) {
+    gdxBulletJNI.btSubSimplexClosestResult_degenerate_set(swigCPtr, this, value);
   }
 
-  public boolean getM_degenerate() {
-    return gdxBulletJNI.btSubSimplexClosestResult_m_degenerate_get(swigCPtr, this);
+  public boolean getDegenerate() {
+    return gdxBulletJNI.btSubSimplexClosestResult_degenerate_get(swigCPtr, this);
   }
 
   public void reset() {

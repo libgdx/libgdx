@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btDynamicsWorld extends btCollisionWorld {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btDynamicsWorld(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btDynamicsWorld_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btDynamicsWorld(long cPtr, boolean cMemoryOwn) {
+		this("btDynamicsWorld", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btDynamicsWorld obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btDynamicsWorld(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btDynamicsWorld_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btDynamicsWorld obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btDynamicsWorld(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btDynamicsWorld(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public int stepSimulation(float timeStep, int maxSubSteps, float fixedTimeStep) {
     return gdxBulletJNI.btDynamicsWorld_stepSimulation__SWIG_0(swigCPtr, this, timeStep, maxSubSteps, fixedTimeStep);

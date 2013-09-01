@@ -18,7 +18,8 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.physics.bullet.ContactProcessedListenerByValue;
+import com.badlogic.gdx.physics.bullet.ContactCallbackEvent;
+import com.badlogic.gdx.physics.bullet.ContactListener;
 import com.badlogic.gdx.physics.bullet.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.btManifoldPoint;
 import com.badlogic.gdx.physics.bullet.gdxBulletJNI;
@@ -29,11 +30,11 @@ public class ContactCallbackTest extends BaseBulletTest {
 	// ContactProcessedListenerXXX is called AFTER the contact is processed.
 	// Use ContactAddedListenerXXX to get a callback BEFORE the contact processed, 
 	// which allows you to alter the objects/manifold before it's processed. 
-	public static class TestContactProcessedListener extends ContactProcessedListenerByValue {
+	public static class TestContactProcessedListener extends ContactListener {
 		public Array<BulletEntity> entities;
 		int c = 0;
 		@Override
-		public void onContactProcessed (btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
+		public void onContactProcessed (int userValue0, boolean match0, int userValue1, boolean match1) {
 			if (match0) {
 				final BulletEntity e = (BulletEntity)(entities.get(userValue0));
 				// Disable future callbacks for this entity
@@ -96,7 +97,7 @@ public class ContactCallbackTest extends BaseBulletTest {
 	public void dispose () {
 		// Deleting the active contact listener, also disables that particular type of contact listener.
 		if (contactProcessedListener != null)
-			contactProcessedListener.delete();
+			contactProcessedListener.dispose();
 		contactProcessedListener = null;
 		super.dispose();
 	}

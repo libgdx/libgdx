@@ -13,239 +13,247 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionObjectDoubleData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCollisionObjectDoubleData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCollisionObjectDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCollisionObjectDoubleData(long cPtr, boolean cMemoryOwn) {
+		this("btCollisionObjectDoubleData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCollisionObjectDoubleData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCollisionObjectDoubleData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCollisionObjectDoubleData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setBroadphaseHandle(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_broadphaseHandle_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public static long getCPtr(btCollisionObjectDoubleData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionObjectDoubleData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_broadphaseHandle(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_broadphaseHandle_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getM_broadphaseHandle() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_broadphaseHandle_get(swigCPtr, this);
+  public SWIGTYPE_p_void getBroadphaseHandle() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_broadphaseHandle_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public void setM_collisionShape(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_collisionShape_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setCollisionShape(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_collisionShape_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_collisionShape() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_collisionShape_get(swigCPtr, this);
+  public SWIGTYPE_p_void getCollisionShape() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_collisionShape_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public void setM_rootCollisionShape(btCollisionShapeData value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_rootCollisionShape_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
+  public void setRootCollisionShape(btCollisionShapeData value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_rootCollisionShape_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
   }
 
-  public btCollisionShapeData getM_rootCollisionShape() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_rootCollisionShape_get(swigCPtr, this);
+  public btCollisionShapeData getRootCollisionShape() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_rootCollisionShape_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
   }
 
-  public void setM_name(String value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_name_set(swigCPtr, this, value);
+  public void setName(String value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_name_set(swigCPtr, this, value);
   }
 
-  public String getM_name() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_name_get(swigCPtr, this);
+  public String getName() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_name_get(swigCPtr, this);
   }
 
-  public void setM_worldTransform(btTransformDoubleData value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_worldTransform_set(swigCPtr, this, btTransformDoubleData.getCPtr(value), value);
+  public void setWorldTransform(btTransformDoubleData value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_worldTransform_set(swigCPtr, this, btTransformDoubleData.getCPtr(value), value);
   }
 
-  public btTransformDoubleData getM_worldTransform() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_worldTransform_get(swigCPtr, this);
+  public btTransformDoubleData getWorldTransform() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_worldTransform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformDoubleData(cPtr, false);
   }
 
-  public void setM_interpolationWorldTransform(btTransformDoubleData value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_interpolationWorldTransform_set(swigCPtr, this, btTransformDoubleData.getCPtr(value), value);
+  public void setInterpolationWorldTransform(btTransformDoubleData value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_interpolationWorldTransform_set(swigCPtr, this, btTransformDoubleData.getCPtr(value), value);
   }
 
-  public btTransformDoubleData getM_interpolationWorldTransform() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_interpolationWorldTransform_get(swigCPtr, this);
+  public btTransformDoubleData getInterpolationWorldTransform() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_interpolationWorldTransform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformDoubleData(cPtr, false);
   }
 
-  public void setM_interpolationLinearVelocity(btVector3DoubleData value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_interpolationLinearVelocity_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setInterpolationLinearVelocity(btVector3DoubleData value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_interpolationLinearVelocity_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_interpolationLinearVelocity() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_interpolationLinearVelocity_get(swigCPtr, this);
+  public btVector3DoubleData getInterpolationLinearVelocity() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_interpolationLinearVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_interpolationAngularVelocity(btVector3DoubleData value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_interpolationAngularVelocity_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setInterpolationAngularVelocity(btVector3DoubleData value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_interpolationAngularVelocity_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_interpolationAngularVelocity() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_interpolationAngularVelocity_get(swigCPtr, this);
+  public btVector3DoubleData getInterpolationAngularVelocity() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_interpolationAngularVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_anisotropicFriction(btVector3DoubleData value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_anisotropicFriction_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setAnisotropicFriction(btVector3DoubleData value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_anisotropicFriction_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_anisotropicFriction() {
-    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_m_anisotropicFriction_get(swigCPtr, this);
+  public btVector3DoubleData getAnisotropicFriction() {
+    long cPtr = gdxBulletJNI.btCollisionObjectDoubleData_anisotropicFriction_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_contactProcessingThreshold(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_contactProcessingThreshold_set(swigCPtr, this, value);
+  public void setContactProcessingThreshold(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_contactProcessingThreshold_set(swigCPtr, this, value);
   }
 
-  public double getM_contactProcessingThreshold() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_contactProcessingThreshold_get(swigCPtr, this);
+  public double getContactProcessingThreshold() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_contactProcessingThreshold_get(swigCPtr, this);
   }
 
-  public void setM_deactivationTime(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_deactivationTime_set(swigCPtr, this, value);
+  public void setDeactivationTime(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_deactivationTime_set(swigCPtr, this, value);
   }
 
-  public double getM_deactivationTime() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_deactivationTime_get(swigCPtr, this);
+  public double getDeactivationTime() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_deactivationTime_get(swigCPtr, this);
   }
 
-  public void setM_friction(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_friction_set(swigCPtr, this, value);
+  public void setFriction(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_friction_set(swigCPtr, this, value);
   }
 
-  public double getM_friction() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_friction_get(swigCPtr, this);
+  public double getFriction() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_friction_get(swigCPtr, this);
   }
 
-  public void setM_rollingFriction(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_rollingFriction_set(swigCPtr, this, value);
+  public void setRollingFriction(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_rollingFriction_set(swigCPtr, this, value);
   }
 
-  public double getM_rollingFriction() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_rollingFriction_get(swigCPtr, this);
+  public double getRollingFriction() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_rollingFriction_get(swigCPtr, this);
   }
 
-  public void setM_restitution(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_restitution_set(swigCPtr, this, value);
+  public void setRestitution(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_restitution_set(swigCPtr, this, value);
   }
 
-  public double getM_restitution() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_restitution_get(swigCPtr, this);
+  public double getRestitution() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_restitution_get(swigCPtr, this);
   }
 
-  public void setM_hitFraction(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_hitFraction_set(swigCPtr, this, value);
+  public void setHitFraction(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_hitFraction_set(swigCPtr, this, value);
   }
 
-  public double getM_hitFraction() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_hitFraction_get(swigCPtr, this);
+  public double getHitFraction() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_hitFraction_get(swigCPtr, this);
   }
 
-  public void setM_ccdSweptSphereRadius(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_ccdSweptSphereRadius_set(swigCPtr, this, value);
+  public void setCcdSweptSphereRadius(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_ccdSweptSphereRadius_set(swigCPtr, this, value);
   }
 
-  public double getM_ccdSweptSphereRadius() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_ccdSweptSphereRadius_get(swigCPtr, this);
+  public double getCcdSweptSphereRadius() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_ccdSweptSphereRadius_get(swigCPtr, this);
   }
 
-  public void setM_ccdMotionThreshold(double value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_ccdMotionThreshold_set(swigCPtr, this, value);
+  public void setCcdMotionThreshold(double value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_ccdMotionThreshold_set(swigCPtr, this, value);
   }
 
-  public double getM_ccdMotionThreshold() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_ccdMotionThreshold_get(swigCPtr, this);
+  public double getCcdMotionThreshold() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_ccdMotionThreshold_get(swigCPtr, this);
   }
 
-  public void setM_hasAnisotropicFriction(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_hasAnisotropicFriction_set(swigCPtr, this, value);
+  public void setHasAnisotropicFriction(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_hasAnisotropicFriction_set(swigCPtr, this, value);
   }
 
-  public int getM_hasAnisotropicFriction() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_hasAnisotropicFriction_get(swigCPtr, this);
+  public int getHasAnisotropicFriction() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_hasAnisotropicFriction_get(swigCPtr, this);
   }
 
-  public void setM_collisionFlags(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_collisionFlags_set(swigCPtr, this, value);
+  public void setCollisionFlags(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_collisionFlags_set(swigCPtr, this, value);
   }
 
-  public int getM_collisionFlags() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_collisionFlags_get(swigCPtr, this);
+  public int getCollisionFlags() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_collisionFlags_get(swigCPtr, this);
   }
 
-  public void setM_islandTag1(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_islandTag1_set(swigCPtr, this, value);
+  public void setIslandTag1(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_islandTag1_set(swigCPtr, this, value);
   }
 
-  public int getM_islandTag1() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_islandTag1_get(swigCPtr, this);
+  public int getIslandTag1() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_islandTag1_get(swigCPtr, this);
   }
 
-  public void setM_companionId(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_companionId_set(swigCPtr, this, value);
+  public void setCompanionId(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_companionId_set(swigCPtr, this, value);
   }
 
-  public int getM_companionId() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_companionId_get(swigCPtr, this);
+  public int getCompanionId() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_companionId_get(swigCPtr, this);
   }
 
-  public void setM_activationState1(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_activationState1_set(swigCPtr, this, value);
+  public void setActivationState1(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_activationState1_set(swigCPtr, this, value);
   }
 
-  public int getM_activationState1() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_activationState1_get(swigCPtr, this);
+  public int getActivationState1() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_activationState1_get(swigCPtr, this);
   }
 
-  public void setM_internalType(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_internalType_set(swigCPtr, this, value);
+  public void setInternalType(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_internalType_set(swigCPtr, this, value);
   }
 
-  public int getM_internalType() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_internalType_get(swigCPtr, this);
+  public int getInternalType() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_internalType_get(swigCPtr, this);
   }
 
-  public void setM_checkCollideWith(int value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_checkCollideWith_set(swigCPtr, this, value);
+  public void setCheckCollideWith(int value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_checkCollideWith_set(swigCPtr, this, value);
   }
 
-  public int getM_checkCollideWith() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_checkCollideWith_get(swigCPtr, this);
+  public int getCheckCollideWith() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_checkCollideWith_get(swigCPtr, this);
   }
 
-  public void setM_padding(String value) {
-    gdxBulletJNI.btCollisionObjectDoubleData_m_padding_set(swigCPtr, this, value);
+  public void setPadding(String value) {
+    gdxBulletJNI.btCollisionObjectDoubleData_padding_set(swigCPtr, this, value);
   }
 
-  public String getM_padding() {
-    return gdxBulletJNI.btCollisionObjectDoubleData_m_padding_get(swigCPtr, this);
+  public String getPadding() {
+    return gdxBulletJNI.btCollisionObjectDoubleData_padding_get(swigCPtr, this);
   }
 
   public btCollisionObjectDoubleData() {

@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btBox2dBox2dCollisionAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btBox2dBox2dCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btBox2dBox2dCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btBox2dBox2dCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+		this("btBox2dBox2dCollisionAlgorithm", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btBox2dBox2dCollisionAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btBox2dBox2dCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btBox2dBox2dCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btBox2dBox2dCollisionAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBox2dBox2dCollisionAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBox2dBox2dCollisionAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btBox2dBox2dCollisionAlgorithm(btCollisionAlgorithmConstructionInfo ci) {
     this(gdxBulletJNI.new_btBox2dBox2dCollisionAlgorithm__SWIG_0(btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci), true);

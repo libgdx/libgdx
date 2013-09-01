@@ -13,59 +13,67 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConstraintSetting {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConstraintSetting extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConstraintSetting(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConstraintSetting(long cPtr, boolean cMemoryOwn) {
+		this("btConstraintSetting", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConstraintSetting obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConstraintSetting(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConstraintSetting obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConstraintSetting(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConstraintSetting(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btConstraintSetting() {
     this(gdxBulletJNI.new_btConstraintSetting(), true);
   }
 
-  public void setM_tau(float value) {
-    gdxBulletJNI.btConstraintSetting_m_tau_set(swigCPtr, this, value);
+  public void setTau(float value) {
+    gdxBulletJNI.btConstraintSetting_tau_set(swigCPtr, this, value);
   }
 
-  public float getM_tau() {
-    return gdxBulletJNI.btConstraintSetting_m_tau_get(swigCPtr, this);
+  public float getTau() {
+    return gdxBulletJNI.btConstraintSetting_tau_get(swigCPtr, this);
   }
 
-  public void setM_damping(float value) {
-    gdxBulletJNI.btConstraintSetting_m_damping_set(swigCPtr, this, value);
+  public void setDamping(float value) {
+    gdxBulletJNI.btConstraintSetting_damping_set(swigCPtr, this, value);
   }
 
-  public float getM_damping() {
-    return gdxBulletJNI.btConstraintSetting_m_damping_get(swigCPtr, this);
+  public float getDamping() {
+    return gdxBulletJNI.btConstraintSetting_damping_get(swigCPtr, this);
   }
 
-  public void setM_impulseClamp(float value) {
-    gdxBulletJNI.btConstraintSetting_m_impulseClamp_set(swigCPtr, this, value);
+  public void setImpulseClamp(float value) {
+    gdxBulletJNI.btConstraintSetting_impulseClamp_set(swigCPtr, this, value);
   }
 
-  public float getM_impulseClamp() {
-    return gdxBulletJNI.btConstraintSetting_m_impulseClamp_get(swigCPtr, this);
+  public float getImpulseClamp() {
+    return gdxBulletJNI.btConstraintSetting_impulseClamp_get(swigCPtr, this);
   }
 
 }

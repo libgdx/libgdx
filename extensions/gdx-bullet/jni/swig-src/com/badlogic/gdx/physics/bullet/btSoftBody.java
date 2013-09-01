@@ -16,279 +16,287 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 
 public class btSoftBody extends btCollisionObject {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSoftBody(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSoftBody_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSoftBody(long cPtr, boolean cMemoryOwn) {
+		this("btSoftBody", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSoftBody obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSoftBody(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSoftBody_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSoftBody(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setCollisionDisabledObjects(SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t value) {
+    gdxBulletJNI.btSoftBody_collisionDisabledObjects_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t.getCPtr(value));
   }
 
-  public static long getCPtr(btSoftBody obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSoftBody(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_collisionDisabledObjects(SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t value) {
-    gdxBulletJNI.btSoftBody_m_collisionDisabledObjects_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t getM_collisionDisabledObjects() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_collisionDisabledObjects_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t getCollisionDisabledObjects() {
+    long cPtr = gdxBulletJNI.btSoftBody_collisionDisabledObjects_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t(cPtr, false);
   }
 
-  public void setM_softBodySolver(btSoftBodySolver value) {
-    gdxBulletJNI.btSoftBody_m_softBodySolver_set(swigCPtr, this, btSoftBodySolver.getCPtr(value), value);
+  public void setSoftBodySolver(btSoftBodySolver value) {
+    gdxBulletJNI.btSoftBody_softBodySolver_set(swigCPtr, this, btSoftBodySolver.getCPtr(value), value);
   }
 
-  public btSoftBodySolver getM_softBodySolver() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_softBodySolver_get(swigCPtr, this);
+  public btSoftBodySolver getSoftBodySolver() {
+    long cPtr = gdxBulletJNI.btSoftBody_softBodySolver_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btSoftBodySolver(cPtr, false);
   }
 
-  public void setM_cfg(SWIGTYPE_p_btSoftBody__Config value) {
-    gdxBulletJNI.btSoftBody_m_cfg_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__Config.getCPtr(value));
+  public void setCfg(SWIGTYPE_p_btSoftBody__Config value) {
+    gdxBulletJNI.btSoftBody_cfg_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__Config.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btSoftBody__Config getM_cfg() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_cfg_get(swigCPtr, this);
+  public SWIGTYPE_p_btSoftBody__Config getCfg() {
+    long cPtr = gdxBulletJNI.btSoftBody_cfg_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btSoftBody__Config(cPtr, false);
   }
 
-  public void setM_sst(SWIGTYPE_p_btSoftBody__SolverState value) {
-    gdxBulletJNI.btSoftBody_m_sst_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__SolverState.getCPtr(value));
+  public void setSst(SWIGTYPE_p_btSoftBody__SolverState value) {
+    gdxBulletJNI.btSoftBody_sst_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__SolverState.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btSoftBody__SolverState getM_sst() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_sst_get(swigCPtr, this);
+  public SWIGTYPE_p_btSoftBody__SolverState getSst() {
+    long cPtr = gdxBulletJNI.btSoftBody_sst_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btSoftBody__SolverState(cPtr, false);
   }
 
-  public void setM_pose(SWIGTYPE_p_btSoftBody__Pose value) {
-    gdxBulletJNI.btSoftBody_m_pose_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__Pose.getCPtr(value));
+  public void setPose(SWIGTYPE_p_btSoftBody__Pose value) {
+    gdxBulletJNI.btSoftBody_pose_set(swigCPtr, this, SWIGTYPE_p_btSoftBody__Pose.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btSoftBody__Pose getM_pose() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_pose_get(swigCPtr, this);
+  public SWIGTYPE_p_btSoftBody__Pose getPose() {
+    long cPtr = gdxBulletJNI.btSoftBody_pose_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btSoftBody__Pose(cPtr, false);
   }
 
-  public void setM_tag(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btSoftBody_m_tag_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setTag(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btSoftBody_tag_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_tag() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_tag_get(swigCPtr, this);
+  public SWIGTYPE_p_void getTag() {
+    long cPtr = gdxBulletJNI.btSoftBody_tag_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public void setM_worldInfo(btSoftBodyWorldInfo value) {
-    gdxBulletJNI.btSoftBody_m_worldInfo_set(swigCPtr, this, btSoftBodyWorldInfo.getCPtr(value), value);
+  public void setWorldInfo(btSoftBodyWorldInfo value) {
+    gdxBulletJNI.btSoftBody_worldInfo_set(swigCPtr, this, btSoftBodyWorldInfo.getCPtr(value), value);
   }
 
-  public btSoftBodyWorldInfo getM_worldInfo() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_worldInfo_get(swigCPtr, this);
+  public btSoftBodyWorldInfo getWorldInfo() {
+    long cPtr = gdxBulletJNI.btSoftBody_worldInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btSoftBodyWorldInfo(cPtr, false);
   }
 
-  public void setM_notes(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t value) {
-    gdxBulletJNI.btSoftBody_m_notes_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t.getCPtr(value));
+  public void setNotes(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t value) {
+    gdxBulletJNI.btSoftBody_notes_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t getM_notes() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_notes_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t getNotes() {
+    long cPtr = gdxBulletJNI.btSoftBody_notes_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Note_t(cPtr, false);
   }
 
-  public void setM_nodes(SWIGTYPE_p_btAlignedObjectArrayT_Node_t value) {
-    gdxBulletJNI.btSoftBody_m_nodes_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Node_t.getCPtr(value));
+  public void setNodes(SWIGTYPE_p_btAlignedObjectArrayT_Node_t value) {
+    gdxBulletJNI.btSoftBody_nodes_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Node_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_Node_t getM_nodes() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_nodes_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_Node_t getNodes() {
+    long cPtr = gdxBulletJNI.btSoftBody_nodes_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_Node_t(cPtr, false);
   }
 
-  public void setM_links(SWIGTYPE_p_btAlignedObjectArrayT_Link_t value) {
-    gdxBulletJNI.btSoftBody_m_links_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Link_t.getCPtr(value));
+  public void setLinks(SWIGTYPE_p_btAlignedObjectArrayT_Link_t value) {
+    gdxBulletJNI.btSoftBody_links_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Link_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_Link_t getM_links() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_links_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_Link_t getLinks() {
+    long cPtr = gdxBulletJNI.btSoftBody_links_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_Link_t(cPtr, false);
   }
 
-  public void setM_faces(SWIGTYPE_p_btAlignedObjectArrayT_Face_t value) {
-    gdxBulletJNI.btSoftBody_m_faces_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Face_t.getCPtr(value));
+  public void setFaces(SWIGTYPE_p_btAlignedObjectArrayT_Face_t value) {
+    gdxBulletJNI.btSoftBody_faces_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Face_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_Face_t getM_faces() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_faces_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_Face_t getFaces() {
+    long cPtr = gdxBulletJNI.btSoftBody_faces_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_Face_t(cPtr, false);
   }
 
-  public void setM_tetras(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t value) {
-    gdxBulletJNI.btSoftBody_m_tetras_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t.getCPtr(value));
+  public void setTetras(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t value) {
+    gdxBulletJNI.btSoftBody_tetras_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t getM_tetras() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_tetras_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t getTetras() {
+    long cPtr = gdxBulletJNI.btSoftBody_tetras_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Tetra_t(cPtr, false);
   }
 
-  public void setM_anchors(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t value) {
-    gdxBulletJNI.btSoftBody_m_anchors_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t.getCPtr(value));
+  public void setAnchors(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t value) {
+    gdxBulletJNI.btSoftBody_anchors_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t getM_anchors() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_anchors_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t getAnchors() {
+    long cPtr = gdxBulletJNI.btSoftBody_anchors_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t(cPtr, false);
   }
 
-  public void setM_rcontacts(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t value) {
-    gdxBulletJNI.btSoftBody_m_rcontacts_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t.getCPtr(value));
+  public void setRcontacts(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t value) {
+    gdxBulletJNI.btSoftBody_rcontacts_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t getM_rcontacts() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_rcontacts_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t getRcontacts() {
+    long cPtr = gdxBulletJNI.btSoftBody_rcontacts_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__RContact_t(cPtr, false);
   }
 
-  public void setM_scontacts(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t value) {
-    gdxBulletJNI.btSoftBody_m_scontacts_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t.getCPtr(value));
+  public void setScontacts(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t value) {
+    gdxBulletJNI.btSoftBody_scontacts_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t getM_scontacts() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_scontacts_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t getScontacts() {
+    long cPtr = gdxBulletJNI.btSoftBody_scontacts_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__SContact_t(cPtr, false);
   }
 
-  public void setM_joints(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t value) {
-    gdxBulletJNI.btSoftBody_m_joints_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t.getCPtr(value));
+  public void setJoints(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t value) {
+    gdxBulletJNI.btSoftBody_joints_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t getM_joints() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_joints_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t getJoints() {
+    long cPtr = gdxBulletJNI.btSoftBody_joints_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t(cPtr, false);
   }
 
-  public void setM_materials(SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t value) {
-    gdxBulletJNI.btSoftBody_m_materials_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t.getCPtr(value));
+  public void setMaterials(SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t value) {
+    gdxBulletJNI.btSoftBody_materials_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t getM_materials() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_materials_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t getMaterials() {
+    long cPtr = gdxBulletJNI.btSoftBody_materials_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t(cPtr, false);
   }
 
-  public void setM_timeacc(float value) {
-    gdxBulletJNI.btSoftBody_m_timeacc_set(swigCPtr, this, value);
+  public void setTimeacc(float value) {
+    gdxBulletJNI.btSoftBody_timeacc_set(swigCPtr, this, value);
   }
 
-  public float getM_timeacc() {
-    return gdxBulletJNI.btSoftBody_m_timeacc_get(swigCPtr, this);
+  public float getTimeacc() {
+    return gdxBulletJNI.btSoftBody_timeacc_get(swigCPtr, this);
   }
 
-  public void setM_bounds(btVector3 value) {
-    gdxBulletJNI.btSoftBody_m_bounds_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setBounds(btVector3 value) {
+    gdxBulletJNI.btSoftBody_bounds_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_bounds() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_bounds_get(swigCPtr, this);
+  public btVector3 getBounds() {
+    long cPtr = gdxBulletJNI.btSoftBody_bounds_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_bUpdateRtCst(boolean value) {
-    gdxBulletJNI.btSoftBody_m_bUpdateRtCst_set(swigCPtr, this, value);
+  public void setBUpdateRtCst(boolean value) {
+    gdxBulletJNI.btSoftBody_bUpdateRtCst_set(swigCPtr, this, value);
   }
 
-  public boolean getM_bUpdateRtCst() {
-    return gdxBulletJNI.btSoftBody_m_bUpdateRtCst_get(swigCPtr, this);
+  public boolean getBUpdateRtCst() {
+    return gdxBulletJNI.btSoftBody_bUpdateRtCst_get(swigCPtr, this);
   }
 
-  public void setM_ndbvt(btDbvt value) {
-    gdxBulletJNI.btSoftBody_m_ndbvt_set(swigCPtr, this, btDbvt.getCPtr(value), value);
+  public void setNdbvt(btDbvt value) {
+    gdxBulletJNI.btSoftBody_ndbvt_set(swigCPtr, this, btDbvt.getCPtr(value), value);
   }
 
-  public btDbvt getM_ndbvt() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_ndbvt_get(swigCPtr, this);
+  public btDbvt getNdbvt() {
+    long cPtr = gdxBulletJNI.btSoftBody_ndbvt_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDbvt(cPtr, false);
   }
 
-  public void setM_fdbvt(btDbvt value) {
-    gdxBulletJNI.btSoftBody_m_fdbvt_set(swigCPtr, this, btDbvt.getCPtr(value), value);
+  public void setFdbvt(btDbvt value) {
+    gdxBulletJNI.btSoftBody_fdbvt_set(swigCPtr, this, btDbvt.getCPtr(value), value);
   }
 
-  public btDbvt getM_fdbvt() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_fdbvt_get(swigCPtr, this);
+  public btDbvt getFdbvt() {
+    long cPtr = gdxBulletJNI.btSoftBody_fdbvt_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDbvt(cPtr, false);
   }
 
-  public void setM_cdbvt(btDbvt value) {
-    gdxBulletJNI.btSoftBody_m_cdbvt_set(swigCPtr, this, btDbvt.getCPtr(value), value);
+  public void setCdbvt(btDbvt value) {
+    gdxBulletJNI.btSoftBody_cdbvt_set(swigCPtr, this, btDbvt.getCPtr(value), value);
   }
 
-  public btDbvt getM_cdbvt() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_cdbvt_get(swigCPtr, this);
+  public btDbvt getCdbvt() {
+    long cPtr = gdxBulletJNI.btSoftBody_cdbvt_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDbvt(cPtr, false);
   }
 
-  public void setM_clusters(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t value) {
-    gdxBulletJNI.btSoftBody_m_clusters_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t.getCPtr(value));
+  public void setClusters(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t value) {
+    gdxBulletJNI.btSoftBody_clusters_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t getM_clusters() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_clusters_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t getClusters() {
+    long cPtr = gdxBulletJNI.btSoftBody_clusters_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t(cPtr, false);
   }
 
-  public void setM_clusterConnectivity(SWIGTYPE_p_btAlignedObjectArrayT_bool_t value) {
-    gdxBulletJNI.btSoftBody_m_clusterConnectivity_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_bool_t.getCPtr(value));
+  public void setClusterConnectivity(SWIGTYPE_p_btAlignedObjectArrayT_bool_t value) {
+    gdxBulletJNI.btSoftBody_clusterConnectivity_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_bool_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_bool_t getM_clusterConnectivity() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_clusterConnectivity_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_bool_t getClusterConnectivity() {
+    long cPtr = gdxBulletJNI.btSoftBody_clusterConnectivity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_bool_t(cPtr, false);
   }
 
-  public void setM_initialWorldTransform(btTransform value) {
-    gdxBulletJNI.btSoftBody_m_initialWorldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setInitialWorldTransform(btTransform value) {
+    gdxBulletJNI.btSoftBody_initialWorldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_initialWorldTransform() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_initialWorldTransform_get(swigCPtr, this);
+  public btTransform getInitialWorldTransform() {
+    long cPtr = gdxBulletJNI.btSoftBody_initialWorldTransform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_windVelocity(btVector3 value) {
-    gdxBulletJNI.btSoftBody_m_windVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setWindVelocity(btVector3 value) {
+    gdxBulletJNI.btSoftBody_windVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_windVelocity() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_windVelocity_get(swigCPtr, this);
+  public btVector3 getWindVelocity() {
+    long cPtr = gdxBulletJNI.btSoftBody_windVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_restLengthScale(float value) {
-    gdxBulletJNI.btSoftBody_m_restLengthScale_set(swigCPtr, this, value);
+  public void setRestLengthScale(float value) {
+    gdxBulletJNI.btSoftBody_restLengthScale_set(swigCPtr, this, value);
   }
 
-  public float getM_restLengthScale() {
-    return gdxBulletJNI.btSoftBody_m_restLengthScale_get(swigCPtr, this);
+  public float getRestLengthScale() {
+    return gdxBulletJNI.btSoftBody_restLengthScale_get(swigCPtr, this);
   }
 
   static private long SwigConstructbtSoftBody(btSoftBodyWorldInfo worldInfo, int node_count, btVector3 x, java.nio.FloatBuffer m) {
@@ -308,18 +316,13 @@ public class btSoftBody extends btCollisionObject {
     gdxBulletJNI.btSoftBody_initDefaults(swigCPtr, this);
   }
 
-  public void setM_userIndexMapping(SWIGTYPE_p_btAlignedObjectArrayT_int_t value) {
-    gdxBulletJNI.btSoftBody_m_userIndexMapping_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(value));
+  public void setUserIndexMapping(SWIGTYPE_p_btAlignedObjectArrayT_int_t value) {
+    gdxBulletJNI.btSoftBody_userIndexMapping_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_int_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_int_t getM_userIndexMapping() {
-    long cPtr = gdxBulletJNI.btSoftBody_m_userIndexMapping_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_int_t getUserIndexMapping() {
+    long cPtr = gdxBulletJNI.btSoftBody_userIndexMapping_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_int_t(cPtr, false);
-  }
-
-  public btSoftBodyWorldInfo getWorldInfo() {
-    long cPtr = gdxBulletJNI.btSoftBody_getWorldInfo(swigCPtr, this);
-    return (cPtr == 0) ? null : new btSoftBodyWorldInfo(cPtr, false);
   }
 
   public boolean checkLink(int node0, int node1) {
@@ -579,14 +582,6 @@ public class btSoftBody extends btCollisionObject {
     gdxBulletJNI.btSoftBody_scale(swigCPtr, this, scl);
   }
 
-  public float getRestLengthScale() {
-    return gdxBulletJNI.btSoftBody_getRestLengthScale(swigCPtr, this);
-  }
-
-  public void setRestLengthScale(float restLength) {
-    gdxBulletJNI.btSoftBody_setRestLengthScale(swigCPtr, this, restLength);
-  }
-
   public void setPose(boolean bvolume, boolean bframe) {
     gdxBulletJNI.btSoftBody_setPose(swigCPtr, this, bvolume, bframe);
   }
@@ -725,19 +720,6 @@ public class btSoftBody extends btCollisionObject {
 
   public void setWindVelocity(Vector3 velocity) {
     gdxBulletJNI.btSoftBody_setWindVelocity(swigCPtr, this, velocity);
-  }
-
-  public Vector3 getWindVelocity() {
-	return gdxBulletJNI.btSoftBody_getWindVelocity(swigCPtr, this);
-}
-
-  public void setSoftBodySolver(btSoftBodySolver softBodySolver) {
-    gdxBulletJNI.btSoftBody_setSoftBodySolver(swigCPtr, this, btSoftBodySolver.getCPtr(softBodySolver), softBodySolver);
-  }
-
-  public btSoftBodySolver getSoftBodySolver() {
-    long cPtr = gdxBulletJNI.btSoftBody_getSoftBodySolver__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btSoftBodySolver(cPtr, false);
   }
 
   public static btSoftBody upcast(btCollisionObject colObj) {

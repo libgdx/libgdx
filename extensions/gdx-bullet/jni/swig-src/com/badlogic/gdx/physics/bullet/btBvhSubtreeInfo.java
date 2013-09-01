@@ -13,71 +13,79 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btBvhSubtreeInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btBvhSubtreeInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected btBvhSubtreeInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btBvhSubtreeInfo(long cPtr, boolean cMemoryOwn) {
+		this("btBvhSubtreeInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btBvhSubtreeInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btBvhSubtreeInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBvhSubtreeInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setQuantizedAabbMin(int[] value) {
+    gdxBulletJNI.btBvhSubtreeInfo_quantizedAabbMin_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btBvhSubtreeInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int[] getQuantizedAabbMin() {
+    return gdxBulletJNI.btBvhSubtreeInfo_quantizedAabbMin_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setQuantizedAabbMax(int[] value) {
+    gdxBulletJNI.btBvhSubtreeInfo_quantizedAabbMax_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBvhSubtreeInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public int[] getQuantizedAabbMax() {
+    return gdxBulletJNI.btBvhSubtreeInfo_quantizedAabbMax_get(swigCPtr, this);
   }
 
-  public void setM_quantizedAabbMin(int[] value) {
-    gdxBulletJNI.btBvhSubtreeInfo_m_quantizedAabbMin_set(swigCPtr, this, value);
+  public void setRootNodeIndex(int value) {
+    gdxBulletJNI.btBvhSubtreeInfo_rootNodeIndex_set(swigCPtr, this, value);
   }
 
-  public int[] getM_quantizedAabbMin() {
-    return gdxBulletJNI.btBvhSubtreeInfo_m_quantizedAabbMin_get(swigCPtr, this);
+  public int getRootNodeIndex() {
+    return gdxBulletJNI.btBvhSubtreeInfo_rootNodeIndex_get(swigCPtr, this);
   }
 
-  public void setM_quantizedAabbMax(int[] value) {
-    gdxBulletJNI.btBvhSubtreeInfo_m_quantizedAabbMax_set(swigCPtr, this, value);
+  public void setSubtreeSize(int value) {
+    gdxBulletJNI.btBvhSubtreeInfo_subtreeSize_set(swigCPtr, this, value);
   }
 
-  public int[] getM_quantizedAabbMax() {
-    return gdxBulletJNI.btBvhSubtreeInfo_m_quantizedAabbMax_get(swigCPtr, this);
+  public int getSubtreeSize() {
+    return gdxBulletJNI.btBvhSubtreeInfo_subtreeSize_get(swigCPtr, this);
   }
 
-  public void setM_rootNodeIndex(int value) {
-    gdxBulletJNI.btBvhSubtreeInfo_m_rootNodeIndex_set(swigCPtr, this, value);
+  public void setPadding(int[] value) {
+    gdxBulletJNI.btBvhSubtreeInfo_padding_set(swigCPtr, this, value);
   }
 
-  public int getM_rootNodeIndex() {
-    return gdxBulletJNI.btBvhSubtreeInfo_m_rootNodeIndex_get(swigCPtr, this);
-  }
-
-  public void setM_subtreeSize(int value) {
-    gdxBulletJNI.btBvhSubtreeInfo_m_subtreeSize_set(swigCPtr, this, value);
-  }
-
-  public int getM_subtreeSize() {
-    return gdxBulletJNI.btBvhSubtreeInfo_m_subtreeSize_get(swigCPtr, this);
-  }
-
-  public void setM_padding(int[] value) {
-    gdxBulletJNI.btBvhSubtreeInfo_m_padding_set(swigCPtr, this, value);
-  }
-
-  public int[] getM_padding() {
-    return gdxBulletJNI.btBvhSubtreeInfo_m_padding_get(swigCPtr, this);
+  public int[] getPadding() {
+    return gdxBulletJNI.btBvhSubtreeInfo_padding_get(swigCPtr, this);
   }
 
   public btBvhSubtreeInfo() {

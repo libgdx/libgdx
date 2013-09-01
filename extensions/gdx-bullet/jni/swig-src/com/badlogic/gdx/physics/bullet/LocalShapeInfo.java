@@ -13,47 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class LocalShapeInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class LocalShapeInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected LocalShapeInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected LocalShapeInfo(long cPtr, boolean cMemoryOwn) {
+		this("LocalShapeInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(LocalShapeInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected LocalShapeInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_LocalShapeInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setShapePart(int value) {
+    gdxBulletJNI.LocalShapeInfo_shapePart_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(LocalShapeInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getShapePart() {
+    return gdxBulletJNI.LocalShapeInfo_shapePart_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setTriangleIndex(int value) {
+    gdxBulletJNI.LocalShapeInfo_triangleIndex_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_LocalShapeInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_shapePart(int value) {
-    gdxBulletJNI.LocalShapeInfo_m_shapePart_set(swigCPtr, this, value);
-  }
-
-  public int getM_shapePart() {
-    return gdxBulletJNI.LocalShapeInfo_m_shapePart_get(swigCPtr, this);
-  }
-
-  public void setM_triangleIndex(int value) {
-    gdxBulletJNI.LocalShapeInfo_m_triangleIndex_set(swigCPtr, this, value);
-  }
-
-  public int getM_triangleIndex() {
-    return gdxBulletJNI.LocalShapeInfo_m_triangleIndex_get(swigCPtr, this);
+  public int getTriangleIndex() {
+    return gdxBulletJNI.LocalShapeInfo_triangleIndex_get(swigCPtr, this);
   }
 
   public LocalShapeInfo() {

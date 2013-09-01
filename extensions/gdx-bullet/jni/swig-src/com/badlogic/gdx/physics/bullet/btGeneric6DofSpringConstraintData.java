@@ -13,72 +13,80 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btGeneric6DofSpringConstraintData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btGeneric6DofSpringConstraintData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btGeneric6DofSpringConstraintData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btGeneric6DofSpringConstraintData(long cPtr, boolean cMemoryOwn) {
+		this("btGeneric6DofSpringConstraintData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btGeneric6DofSpringConstraintData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btGeneric6DofSpringConstraintData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btGeneric6DofSpringConstraintData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void set6dofData(btGeneric6DofConstraintData value) {
+    gdxBulletJNI.btGeneric6DofSpringConstraintData_6dofData_set(swigCPtr, this, btGeneric6DofConstraintData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btGeneric6DofSpringConstraintData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btGeneric6DofSpringConstraintData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_6dofData(btGeneric6DofConstraintData value) {
-    gdxBulletJNI.btGeneric6DofSpringConstraintData_m_6dofData_set(swigCPtr, this, btGeneric6DofConstraintData.getCPtr(value), value);
-  }
-
-  public btGeneric6DofConstraintData getM_6dofData() {
-    long cPtr = gdxBulletJNI.btGeneric6DofSpringConstraintData_m_6dofData_get(swigCPtr, this);
+  public btGeneric6DofConstraintData get6dofData() {
+    long cPtr = gdxBulletJNI.btGeneric6DofSpringConstraintData_6dofData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btGeneric6DofConstraintData(cPtr, false);
   }
 
-  public void setM_springEnabled(int[] value) {
-    gdxBulletJNI.btGeneric6DofSpringConstraintData_m_springEnabled_set(swigCPtr, this, value);
+  public void setSpringEnabled(int[] value) {
+    gdxBulletJNI.btGeneric6DofSpringConstraintData_springEnabled_set(swigCPtr, this, value);
   }
 
-  public int[] getM_springEnabled() {
-    return gdxBulletJNI.btGeneric6DofSpringConstraintData_m_springEnabled_get(swigCPtr, this);
+  public int[] getSpringEnabled() {
+    return gdxBulletJNI.btGeneric6DofSpringConstraintData_springEnabled_get(swigCPtr, this);
 }
 
-  public void setM_equilibriumPoint(float[] value) {
-    gdxBulletJNI.btGeneric6DofSpringConstraintData_m_equilibriumPoint_set(swigCPtr, this, value);
+  public void setEquilibriumPoint(float[] value) {
+    gdxBulletJNI.btGeneric6DofSpringConstraintData_equilibriumPoint_set(swigCPtr, this, value);
   }
 
-  public float[] getM_equilibriumPoint() {
-    return gdxBulletJNI.btGeneric6DofSpringConstraintData_m_equilibriumPoint_get(swigCPtr, this);
+  public float[] getEquilibriumPoint() {
+    return gdxBulletJNI.btGeneric6DofSpringConstraintData_equilibriumPoint_get(swigCPtr, this);
 }
 
-  public void setM_springStiffness(float[] value) {
-    gdxBulletJNI.btGeneric6DofSpringConstraintData_m_springStiffness_set(swigCPtr, this, value);
+  public void setSpringStiffness(float[] value) {
+    gdxBulletJNI.btGeneric6DofSpringConstraintData_springStiffness_set(swigCPtr, this, value);
   }
 
-  public float[] getM_springStiffness() {
-    return gdxBulletJNI.btGeneric6DofSpringConstraintData_m_springStiffness_get(swigCPtr, this);
+  public float[] getSpringStiffness() {
+    return gdxBulletJNI.btGeneric6DofSpringConstraintData_springStiffness_get(swigCPtr, this);
 }
 
-  public void setM_springDamping(float[] value) {
-    gdxBulletJNI.btGeneric6DofSpringConstraintData_m_springDamping_set(swigCPtr, this, value);
+  public void setSpringDamping(float[] value) {
+    gdxBulletJNI.btGeneric6DofSpringConstraintData_springDamping_set(swigCPtr, this, value);
   }
 
-  public float[] getM_springDamping() {
-    return gdxBulletJNI.btGeneric6DofSpringConstraintData_m_springDamping_get(swigCPtr, this);
+  public float[] getSpringDamping() {
+    return gdxBulletJNI.btGeneric6DofSpringConstraintData_springDamping_get(swigCPtr, this);
 }
 
   public btGeneric6DofSpringConstraintData() {

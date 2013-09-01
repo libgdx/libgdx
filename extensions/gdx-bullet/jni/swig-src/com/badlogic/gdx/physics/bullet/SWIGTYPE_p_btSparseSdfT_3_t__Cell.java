@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btSparseSdfT_3_t__Cell {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSparseSdfT_3_t__Cell obj) {
+  protected static long getCPtr(SWIGTYPE_p_btSparseSdfT_3_t__Cell obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

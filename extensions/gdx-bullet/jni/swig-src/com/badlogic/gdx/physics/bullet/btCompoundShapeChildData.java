@@ -13,65 +13,73 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCompoundShapeChildData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCompoundShapeChildData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCompoundShapeChildData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCompoundShapeChildData(long cPtr, boolean cMemoryOwn) {
+		this("btCompoundShapeChildData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCompoundShapeChildData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCompoundShapeChildData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCompoundShapeChildData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTransform(btTransformFloatData value) {
+    gdxBulletJNI.btCompoundShapeChildData_transform_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btCompoundShapeChildData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCompoundShapeChildData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_transform(btTransformFloatData value) {
-    gdxBulletJNI.btCompoundShapeChildData_m_transform_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
-  }
-
-  public btTransformFloatData getM_transform() {
-    long cPtr = gdxBulletJNI.btCompoundShapeChildData_m_transform_get(swigCPtr, this);
+  public btTransformFloatData getTransform() {
+    long cPtr = gdxBulletJNI.btCompoundShapeChildData_transform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
   }
 
-  public void setM_childShape(btCollisionShapeData value) {
-    gdxBulletJNI.btCompoundShapeChildData_m_childShape_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
+  public void setChildShape(btCollisionShapeData value) {
+    gdxBulletJNI.btCompoundShapeChildData_childShape_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
   }
 
-  public btCollisionShapeData getM_childShape() {
-    long cPtr = gdxBulletJNI.btCompoundShapeChildData_m_childShape_get(swigCPtr, this);
+  public btCollisionShapeData getChildShape() {
+    long cPtr = gdxBulletJNI.btCompoundShapeChildData_childShape_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
   }
 
-  public void setM_childShapeType(int value) {
-    gdxBulletJNI.btCompoundShapeChildData_m_childShapeType_set(swigCPtr, this, value);
+  public void setChildShapeType(int value) {
+    gdxBulletJNI.btCompoundShapeChildData_childShapeType_set(swigCPtr, this, value);
   }
 
-  public int getM_childShapeType() {
-    return gdxBulletJNI.btCompoundShapeChildData_m_childShapeType_get(swigCPtr, this);
+  public int getChildShapeType() {
+    return gdxBulletJNI.btCompoundShapeChildData_childShapeType_get(swigCPtr, this);
   }
 
-  public void setM_childMargin(float value) {
-    gdxBulletJNI.btCompoundShapeChildData_m_childMargin_set(swigCPtr, this, value);
+  public void setChildMargin(float value) {
+    gdxBulletJNI.btCompoundShapeChildData_childMargin_set(swigCPtr, this, value);
   }
 
-  public float getM_childMargin() {
-    return gdxBulletJNI.btCompoundShapeChildData_m_childMargin_get(swigCPtr, this);
+  public float getChildMargin() {
+    return gdxBulletJNI.btCompoundShapeChildData_childMargin_get(swigCPtr, this);
   }
 
   public btCompoundShapeChildData() {

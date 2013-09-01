@@ -14,46 +14,54 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btPoint2PointConstraint extends btTypedConstraint {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btPoint2PointConstraint(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btPoint2PointConstraint_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPoint2PointConstraint(long cPtr, boolean cMemoryOwn) {
+		this("btPoint2PointConstraint", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPoint2PointConstraint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPoint2PointConstraint(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btPoint2PointConstraint_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPoint2PointConstraint(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setUseSolveConstraintObsolete(boolean value) {
+    gdxBulletJNI.btPoint2PointConstraint_useSolveConstraintObsolete_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btPoint2PointConstraint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public boolean getUseSolveConstraintObsolete() {
+    return gdxBulletJNI.btPoint2PointConstraint_useSolveConstraintObsolete_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setSetting(btConstraintSetting value) {
+    gdxBulletJNI.btPoint2PointConstraint_setting_set(swigCPtr, this, btConstraintSetting.getCPtr(value), value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPoint2PointConstraint(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_useSolveConstraintObsolete(boolean value) {
-    gdxBulletJNI.btPoint2PointConstraint_m_useSolveConstraintObsolete_set(swigCPtr, this, value);
-  }
-
-  public boolean getM_useSolveConstraintObsolete() {
-    return gdxBulletJNI.btPoint2PointConstraint_m_useSolveConstraintObsolete_get(swigCPtr, this);
-  }
-
-  public void setM_setting(btConstraintSetting value) {
-    gdxBulletJNI.btPoint2PointConstraint_m_setting_set(swigCPtr, this, btConstraintSetting.getCPtr(value), value);
-  }
-
-  public btConstraintSetting getM_setting() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraint_m_setting_get(swigCPtr, this);
+  public btConstraintSetting getSetting() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraint_setting_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btConstraintSetting(cPtr, false);
   }
 

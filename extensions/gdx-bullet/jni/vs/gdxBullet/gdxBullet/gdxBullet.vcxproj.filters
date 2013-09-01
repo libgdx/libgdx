@@ -67,10 +67,37 @@
     <Filter Include="Source Files\serialize\BulletWorldImporter">
       <UniqueIdentifier>{f280eaee-44db-41d8-8c43-31c91c59cca9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gdx">
+      <UniqueIdentifier>{2c6c3385-3601-4f95-9865-1188a8be3d73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\custom">
+      <UniqueIdentifier>{076beb26-8102-4596-becf-2ac71b5f1618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\custom\gdx">
+      <UniqueIdentifier>{d2d3d622-b370-4e5b-aa5b-a73cb5c4fda2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\swig-src\gdxBullet_wrap.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\custom\gdx\GdxCollisionObjectBridge.h">
+      <Filter>Header Files\custom\gdx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\custom\gdx\InternalTickCallback.h">
+      <Filter>Header Files\custom\gdx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeConvexResultCallback.h">
+      <Filter>Header Files\custom\gdx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeRayResultCallback.h">
+      <Filter>Header Files\custom\gdx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\custom\gdx\ContactListener.h">
+      <Filter>Header Files\custom\gdx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\custom\gdx\ContactCache.h">
+      <Filter>Header Files\custom\gdx</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -461,9 +488,6 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp">
-      <Filter>Source Files\serialize\BulletFileLoader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp">
       <Filter>Source Files\serialize\BulletFileLoader</Filter>
     </ClCompile>
@@ -478,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp">
       <Filter>Source Files\serialize\BulletWorldImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

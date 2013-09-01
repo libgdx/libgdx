@@ -13,66 +13,74 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btJointFeedback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btJointFeedback extends BulletBase {
+	private long swigCPtr;
+	
+	protected btJointFeedback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btJointFeedback(long cPtr, boolean cMemoryOwn) {
+		this("btJointFeedback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btJointFeedback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btJointFeedback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btJointFeedback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setAppliedForceBodyA(btVector3 value) {
+    gdxBulletJNI.btJointFeedback_appliedForceBodyA_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btJointFeedback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btJointFeedback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_appliedForceBodyA(btVector3 value) {
-    gdxBulletJNI.btJointFeedback_m_appliedForceBodyA_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_appliedForceBodyA() {
-    long cPtr = gdxBulletJNI.btJointFeedback_m_appliedForceBodyA_get(swigCPtr, this);
+  public btVector3 getAppliedForceBodyA() {
+    long cPtr = gdxBulletJNI.btJointFeedback_appliedForceBodyA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_appliedTorqueBodyA(btVector3 value) {
-    gdxBulletJNI.btJointFeedback_m_appliedTorqueBodyA_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAppliedTorqueBodyA(btVector3 value) {
+    gdxBulletJNI.btJointFeedback_appliedTorqueBodyA_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_appliedTorqueBodyA() {
-    long cPtr = gdxBulletJNI.btJointFeedback_m_appliedTorqueBodyA_get(swigCPtr, this);
+  public btVector3 getAppliedTorqueBodyA() {
+    long cPtr = gdxBulletJNI.btJointFeedback_appliedTorqueBodyA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_appliedForceBodyB(btVector3 value) {
-    gdxBulletJNI.btJointFeedback_m_appliedForceBodyB_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAppliedForceBodyB(btVector3 value) {
+    gdxBulletJNI.btJointFeedback_appliedForceBodyB_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_appliedForceBodyB() {
-    long cPtr = gdxBulletJNI.btJointFeedback_m_appliedForceBodyB_get(swigCPtr, this);
+  public btVector3 getAppliedForceBodyB() {
+    long cPtr = gdxBulletJNI.btJointFeedback_appliedForceBodyB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_appliedTorqueBodyB(btVector3 value) {
-    gdxBulletJNI.btJointFeedback_m_appliedTorqueBodyB_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAppliedTorqueBodyB(btVector3 value) {
+    gdxBulletJNI.btJointFeedback_appliedTorqueBodyB_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_appliedTorqueBodyB() {
-    long cPtr = gdxBulletJNI.btJointFeedback_m_appliedTorqueBodyB_get(swigCPtr, this);
+  public btVector3 getAppliedTorqueBodyB() {
+    long cPtr = gdxBulletJNI.btJointFeedback_appliedTorqueBodyB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 

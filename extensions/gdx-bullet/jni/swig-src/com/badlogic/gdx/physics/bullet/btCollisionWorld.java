@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionWorld {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCollisionWorld extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCollisionWorld(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCollisionWorld(long cPtr, boolean cMemoryOwn) {
+		this("btCollisionWorld", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCollisionWorld obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCollisionWorld(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btCollisionWorld obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionWorld(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCollisionWorld(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btCollisionWorld(btDispatcher dispatcher, btBroadphaseInterface broadphasePairCache, btCollisionConfiguration collisionConfiguration) {
     this(gdxBulletJNI.new_btCollisionWorld(btDispatcher.getCPtr(dispatcher), dispatcher, btBroadphaseInterface.getCPtr(broadphasePairCache), broadphasePairCache, btCollisionConfiguration.getCPtr(collisionConfiguration), collisionConfiguration), true);

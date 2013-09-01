@@ -14,38 +14,46 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSimpleBroadphaseProxy extends btBroadphaseProxy {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSimpleBroadphaseProxy(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSimpleBroadphaseProxy_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSimpleBroadphaseProxy(long cPtr, boolean cMemoryOwn) {
+		this("btSimpleBroadphaseProxy", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSimpleBroadphaseProxy obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSimpleBroadphaseProxy(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSimpleBroadphaseProxy_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSimpleBroadphaseProxy(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setNextFree(int value) {
+    gdxBulletJNI.btSimpleBroadphaseProxy_nextFree_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btSimpleBroadphaseProxy obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSimpleBroadphaseProxy(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_nextFree(int value) {
-    gdxBulletJNI.btSimpleBroadphaseProxy_m_nextFree_set(swigCPtr, this, value);
-  }
-
-  public int getM_nextFree() {
-    return gdxBulletJNI.btSimpleBroadphaseProxy_m_nextFree_get(swigCPtr, this);
+  public int getNextFree() {
+    return gdxBulletJNI.btSimpleBroadphaseProxy_nextFree_get(swigCPtr, this);
   }
 
   public btSimpleBroadphaseProxy() {

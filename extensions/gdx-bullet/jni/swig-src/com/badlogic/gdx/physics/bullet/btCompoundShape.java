@@ -15,46 +15,70 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btCompoundShape extends btCollisionShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btCompoundShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btCompoundShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCompoundShape(long cPtr, boolean cMemoryOwn) {
+		this("btCompoundShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCompoundShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCompoundShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btCompoundShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btCompoundShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete()  {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCompoundShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-	dispose();
-  }
-
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCompoundShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
 	protected Array<btCollisionShape> children = new Array<btCollisionShape>();
 	
-	public void addChildShape(Matrix4 localTransform, btCollisionShape shape, boolean managed) {
-		addChildShape(localTransform, shape);
-		if (managed)
-			children.add(shape);
+	public void addChildShape(Matrix4 localTransform, btCollisionShape shape) {
+		internalAddChildShape(localTransform, shape);
+		children.add(shape);
+		shape.obtain();
 	}
 	
-	protected void dispose() {
-		for (int i = 0; i < children.size; i++)
-			children.get(i).delete();
+	public void removeChildShape(btCollisionShape shape) {
+		internalRemoveChildShape(shape);
+		final int idx = children.indexOf(shape, false);
+		if (idx >= 0)
+			children.removeIndex(idx).release();
+	}
+	
+	public void removeChildShapeByIndex(int index) {
+		internalRemoveChildShapeByIndex(index);
+		children.removeIndex(index).release();
+	}
+	
+	public btCollisionShape getChildShape(int index) {
+		return children.get(index);
+	}
+	
+	@Override
+	public void dispose() {
+		for (btCollisionShape child : children)
+			child.release();
 		children.clear();
+		super.dispose();
 	}
 
   public btCompoundShape(boolean enableDynamicAabbTree) {
@@ -65,25 +89,20 @@ public class btCompoundShape extends btCollisionShape {
     this(gdxBulletJNI.new_btCompoundShape__SWIG_1(), true);
   }
 
-  public void addChildShape(Matrix4 localTransform, btCollisionShape shape) {
-    gdxBulletJNI.btCompoundShape_addChildShape(swigCPtr, this, localTransform, btCollisionShape.getCPtr(shape), shape);
+  private void internalAddChildShape(Matrix4 localTransform, btCollisionShape shape) {
+    gdxBulletJNI.btCompoundShape_internalAddChildShape(swigCPtr, this, localTransform, btCollisionShape.getCPtr(shape), shape);
   }
 
-  public void removeChildShape(btCollisionShape shape) {
-    gdxBulletJNI.btCompoundShape_removeChildShape(swigCPtr, this, btCollisionShape.getCPtr(shape), shape);
+  private void internalRemoveChildShape(btCollisionShape shape) {
+    gdxBulletJNI.btCompoundShape_internalRemoveChildShape(swigCPtr, this, btCollisionShape.getCPtr(shape), shape);
   }
 
-  public void removeChildShapeByIndex(int childShapeindex) {
-    gdxBulletJNI.btCompoundShape_removeChildShapeByIndex(swigCPtr, this, childShapeindex);
+  private void internalRemoveChildShapeByIndex(int childShapeindex) {
+    gdxBulletJNI.btCompoundShape_internalRemoveChildShapeByIndex(swigCPtr, this, childShapeindex);
   }
 
   public int getNumChildShapes() {
     return gdxBulletJNI.btCompoundShape_getNumChildShapes(swigCPtr, this);
-  }
-
-  public btCollisionShape getChildShape(int index) {
-    long cPtr = gdxBulletJNI.btCompoundShape_getChildShape__SWIG_0(swigCPtr, this, index);
-    return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
   public Matrix4 getChildTransform(int index) {

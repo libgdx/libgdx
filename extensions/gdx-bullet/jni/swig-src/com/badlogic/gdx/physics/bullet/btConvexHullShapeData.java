@@ -13,74 +13,82 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConvexHullShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConvexHullShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConvexHullShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexHullShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btConvexHullShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexHullShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexHullShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexHullShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setConvexInternalShapeData(btConvexInternalShapeData value) {
+    gdxBulletJNI.btConvexHullShapeData_convexInternalShapeData_set(swigCPtr, this, btConvexInternalShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btConvexHullShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexHullShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_convexInternalShapeData(btConvexInternalShapeData value) {
-    gdxBulletJNI.btConvexHullShapeData_m_convexInternalShapeData_set(swigCPtr, this, btConvexInternalShapeData.getCPtr(value), value);
-  }
-
-  public btConvexInternalShapeData getM_convexInternalShapeData() {
-    long cPtr = gdxBulletJNI.btConvexHullShapeData_m_convexInternalShapeData_get(swigCPtr, this);
+  public btConvexInternalShapeData getConvexInternalShapeData() {
+    long cPtr = gdxBulletJNI.btConvexHullShapeData_convexInternalShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btConvexInternalShapeData(cPtr, false);
   }
 
-  public void setM_unscaledPointsFloatPtr(btVector3FloatData value) {
-    gdxBulletJNI.btConvexHullShapeData_m_unscaledPointsFloatPtr_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setUnscaledPointsFloatPtr(btVector3FloatData value) {
+    gdxBulletJNI.btConvexHullShapeData_unscaledPointsFloatPtr_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_unscaledPointsFloatPtr() {
-    long cPtr = gdxBulletJNI.btConvexHullShapeData_m_unscaledPointsFloatPtr_get(swigCPtr, this);
+  public btVector3FloatData getUnscaledPointsFloatPtr() {
+    long cPtr = gdxBulletJNI.btConvexHullShapeData_unscaledPointsFloatPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_unscaledPointsDoublePtr(btVector3DoubleData value) {
-    gdxBulletJNI.btConvexHullShapeData_m_unscaledPointsDoublePtr_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setUnscaledPointsDoublePtr(btVector3DoubleData value) {
+    gdxBulletJNI.btConvexHullShapeData_unscaledPointsDoublePtr_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_unscaledPointsDoublePtr() {
-    long cPtr = gdxBulletJNI.btConvexHullShapeData_m_unscaledPointsDoublePtr_get(swigCPtr, this);
+  public btVector3DoubleData getUnscaledPointsDoublePtr() {
+    long cPtr = gdxBulletJNI.btConvexHullShapeData_unscaledPointsDoublePtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_numUnscaledPoints(int value) {
-    gdxBulletJNI.btConvexHullShapeData_m_numUnscaledPoints_set(swigCPtr, this, value);
+  public void setNumUnscaledPoints(int value) {
+    gdxBulletJNI.btConvexHullShapeData_numUnscaledPoints_set(swigCPtr, this, value);
   }
 
-  public int getM_numUnscaledPoints() {
-    return gdxBulletJNI.btConvexHullShapeData_m_numUnscaledPoints_get(swigCPtr, this);
+  public int getNumUnscaledPoints() {
+    return gdxBulletJNI.btConvexHullShapeData_numUnscaledPoints_get(swigCPtr, this);
   }
 
-  public void setM_padding3(String value) {
-    gdxBulletJNI.btConvexHullShapeData_m_padding3_set(swigCPtr, this, value);
+  public void setPadding3(String value) {
+    gdxBulletJNI.btConvexHullShapeData_padding3_set(swigCPtr, this, value);
   }
 
-  public String getM_padding3() {
-    return gdxBulletJNI.btConvexHullShapeData_m_padding3_get(swigCPtr, this);
+  public String getPadding3() {
+    return gdxBulletJNI.btConvexHullShapeData_padding3_get(swigCPtr, this);
   }
 
   public btConvexHullShapeData() {

@@ -13,56 +13,64 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class sMedium {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class sMedium extends BulletBase {
+	private long swigCPtr;
+	
+	protected sMedium(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected sMedium(long cPtr, boolean cMemoryOwn) {
+		this("sMedium", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(sMedium obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected sMedium(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_sMedium(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setVelocity(btVector3 value) {
+    gdxBulletJNI.sMedium_velocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(sMedium obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_sMedium(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_velocity(btVector3 value) {
-    gdxBulletJNI.sMedium_m_velocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_velocity() {
-    long cPtr = gdxBulletJNI.sMedium_m_velocity_get(swigCPtr, this);
+  public btVector3 getVelocity() {
+    long cPtr = gdxBulletJNI.sMedium_velocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_pressure(float value) {
-    gdxBulletJNI.sMedium_m_pressure_set(swigCPtr, this, value);
+  public void setPressure(float value) {
+    gdxBulletJNI.sMedium_pressure_set(swigCPtr, this, value);
   }
 
-  public float getM_pressure() {
-    return gdxBulletJNI.sMedium_m_pressure_get(swigCPtr, this);
+  public float getPressure() {
+    return gdxBulletJNI.sMedium_pressure_get(swigCPtr, this);
   }
 
-  public void setM_density(float value) {
-    gdxBulletJNI.sMedium_m_density_set(swigCPtr, this, value);
+  public void setDensity(float value) {
+    gdxBulletJNI.sMedium_density_set(swigCPtr, this, value);
   }
 
-  public float getM_density() {
-    return gdxBulletJNI.sMedium_m_density_get(swigCPtr, this);
+  public float getDensity() {
+    return gdxBulletJNI.sMedium_density_get(swigCPtr, this);
   }
 
   public sMedium() {
