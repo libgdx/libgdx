@@ -13,57 +13,65 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btPoint2PointConstraintDoubleData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btPoint2PointConstraintDoubleData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btPoint2PointConstraintDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPoint2PointConstraintDoubleData(long cPtr, boolean cMemoryOwn) {
+		this("btPoint2PointConstraintDoubleData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPoint2PointConstraintDoubleData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPoint2PointConstraintDoubleData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPoint2PointConstraintDoubleData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTypeConstraintData(btTypedConstraintData value) {
+    gdxBulletJNI.btPoint2PointConstraintDoubleData_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btPoint2PointConstraintDoubleData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPoint2PointConstraintDoubleData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_typeConstraintData(btTypedConstraintData value) {
-    gdxBulletJNI.btPoint2PointConstraintDoubleData_m_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
-  }
-
-  public btTypedConstraintData getM_typeConstraintData() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraintDoubleData_m_typeConstraintData_get(swigCPtr, this);
+  public btTypedConstraintData getTypeConstraintData() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraintDoubleData_typeConstraintData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTypedConstraintData(cPtr, false);
   }
 
-  public void setM_pivotInA(btVector3DoubleData value) {
-    gdxBulletJNI.btPoint2PointConstraintDoubleData_m_pivotInA_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setPivotInA(btVector3DoubleData value) {
+    gdxBulletJNI.btPoint2PointConstraintDoubleData_pivotInA_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_pivotInA() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraintDoubleData_m_pivotInA_get(swigCPtr, this);
+  public btVector3DoubleData getPivotInA() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraintDoubleData_pivotInA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_pivotInB(btVector3DoubleData value) {
-    gdxBulletJNI.btPoint2PointConstraintDoubleData_m_pivotInB_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setPivotInB(btVector3DoubleData value) {
+    gdxBulletJNI.btPoint2PointConstraintDoubleData_pivotInB_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_pivotInB() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraintDoubleData_m_pivotInB_get(swigCPtr, this);
+  public btVector3DoubleData getPivotInB() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraintDoubleData_pivotInB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 

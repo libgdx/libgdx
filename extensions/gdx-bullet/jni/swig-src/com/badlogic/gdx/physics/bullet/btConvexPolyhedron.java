@@ -13,88 +13,96 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConvexPolyhedron {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConvexPolyhedron extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConvexPolyhedron(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexPolyhedron(long cPtr, boolean cMemoryOwn) {
+		this("btConvexPolyhedron", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexPolyhedron obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexPolyhedron(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConvexPolyhedron obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexPolyhedron(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexPolyhedron(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btConvexPolyhedron() {
     this(gdxBulletJNI.new_btConvexPolyhedron(), true);
   }
 
-  public void setM_vertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    gdxBulletJNI.btConvexPolyhedron_m_vertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
+    gdxBulletJNI.btConvexPolyhedron_vertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getM_vertices() {
-    long cPtr = gdxBulletJNI.btConvexPolyhedron_m_vertices_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getVertices() {
+    long cPtr = gdxBulletJNI.btConvexPolyhedron_vertices_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
   }
 
-  public void setM_faces(SWIGTYPE_p_btAlignedObjectArrayT_btFace_t value) {
-    gdxBulletJNI.btConvexPolyhedron_m_faces_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btFace_t.getCPtr(value));
+  public void setFaces(SWIGTYPE_p_btAlignedObjectArrayT_btFace_t value) {
+    gdxBulletJNI.btConvexPolyhedron_faces_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btFace_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btFace_t getM_faces() {
-    long cPtr = gdxBulletJNI.btConvexPolyhedron_m_faces_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btFace_t getFaces() {
+    long cPtr = gdxBulletJNI.btConvexPolyhedron_faces_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btFace_t(cPtr, false);
   }
 
-  public void setM_uniqueEdges(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    gdxBulletJNI.btConvexPolyhedron_m_uniqueEdges_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setUniqueEdges(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
+    gdxBulletJNI.btConvexPolyhedron_uniqueEdges_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getM_uniqueEdges() {
-    long cPtr = gdxBulletJNI.btConvexPolyhedron_m_uniqueEdges_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getUniqueEdges() {
+    long cPtr = gdxBulletJNI.btConvexPolyhedron_uniqueEdges_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
   }
 
-  public void setM_localCenter(btVector3 value) {
-    gdxBulletJNI.btConvexPolyhedron_m_localCenter_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLocalCenter(btVector3 value) {
+    gdxBulletJNI.btConvexPolyhedron_localCenter_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_localCenter() {
-    long cPtr = gdxBulletJNI.btConvexPolyhedron_m_localCenter_get(swigCPtr, this);
+  public btVector3 getLocalCenter() {
+    long cPtr = gdxBulletJNI.btConvexPolyhedron_localCenter_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_extents(btVector3 value) {
-    gdxBulletJNI.btConvexPolyhedron_m_extents_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setExtents(btVector3 value) {
+    gdxBulletJNI.btConvexPolyhedron_extents_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_extents() {
-    long cPtr = gdxBulletJNI.btConvexPolyhedron_m_extents_get(swigCPtr, this);
+  public btVector3 getExtents() {
+    long cPtr = gdxBulletJNI.btConvexPolyhedron_extents_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_radius(float value) {
-    gdxBulletJNI.btConvexPolyhedron_m_radius_set(swigCPtr, this, value);
+  public void setRadius(float value) {
+    gdxBulletJNI.btConvexPolyhedron_radius_set(swigCPtr, this, value);
   }
 
-  public float getM_radius() {
-    return gdxBulletJNI.btConvexPolyhedron_m_radius_get(swigCPtr, this);
+  public float getRadius() {
+    return gdxBulletJNI.btConvexPolyhedron_radius_get(swigCPtr, this);
   }
 
   public void setMC(btVector3 value) {

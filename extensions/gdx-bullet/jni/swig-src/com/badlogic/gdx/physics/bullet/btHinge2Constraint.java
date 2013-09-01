@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btHinge2Constraint extends btGeneric6DofSpringConstraint {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btHinge2Constraint(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btHinge2Constraint_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btHinge2Constraint(long cPtr, boolean cMemoryOwn) {
+		this("btHinge2Constraint", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btHinge2Constraint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btHinge2Constraint(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btHinge2Constraint_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btHinge2Constraint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btHinge2Constraint(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btHinge2Constraint(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btHinge2Constraint(btRigidBody rbA, btRigidBody rbB, Vector3 anchor, Vector3 axis1, Vector3 axis2) {
     this(gdxBulletJNI.new_btHinge2Constraint(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, anchor, axis1, axis2), true);

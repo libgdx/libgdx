@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle obj) {
+  protected static long getCPtr(SWIGTYPE_p_btAxisSweep3InternalT_unsigned_int_t__Handle obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

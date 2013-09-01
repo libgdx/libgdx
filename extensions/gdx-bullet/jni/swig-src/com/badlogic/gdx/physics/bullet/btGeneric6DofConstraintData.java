@@ -13,110 +13,118 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btGeneric6DofConstraintData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btGeneric6DofConstraintData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btGeneric6DofConstraintData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btGeneric6DofConstraintData(long cPtr, boolean cMemoryOwn) {
+		this("btGeneric6DofConstraintData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btGeneric6DofConstraintData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btGeneric6DofConstraintData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btGeneric6DofConstraintData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTypeConstraintData(btTypedConstraintData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btGeneric6DofConstraintData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btGeneric6DofConstraintData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_typeConstraintData(btTypedConstraintData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
-  }
-
-  public btTypedConstraintData getM_typeConstraintData() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_typeConstraintData_get(swigCPtr, this);
+  public btTypedConstraintData getTypeConstraintData() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_typeConstraintData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTypedConstraintData(cPtr, false);
   }
 
-  public void setM_rbAFrame(btTransformFloatData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_rbAFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
+  public void setRbAFrame(btTransformFloatData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_rbAFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
   }
 
-  public btTransformFloatData getM_rbAFrame() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_rbAFrame_get(swigCPtr, this);
+  public btTransformFloatData getRbAFrame() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_rbAFrame_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
   }
 
-  public void setM_rbBFrame(btTransformFloatData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_rbBFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
+  public void setRbBFrame(btTransformFloatData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_rbBFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
   }
 
-  public btTransformFloatData getM_rbBFrame() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_rbBFrame_get(swigCPtr, this);
+  public btTransformFloatData getRbBFrame() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_rbBFrame_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
   }
 
-  public void setM_linearUpperLimit(btVector3FloatData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_linearUpperLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLinearUpperLimit(btVector3FloatData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_linearUpperLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_linearUpperLimit() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_linearUpperLimit_get(swigCPtr, this);
+  public btVector3FloatData getLinearUpperLimit() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_linearUpperLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_linearLowerLimit(btVector3FloatData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_linearLowerLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLinearLowerLimit(btVector3FloatData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_linearLowerLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_linearLowerLimit() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_linearLowerLimit_get(swigCPtr, this);
+  public btVector3FloatData getLinearLowerLimit() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_linearLowerLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_angularUpperLimit(btVector3FloatData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_angularUpperLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setAngularUpperLimit(btVector3FloatData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_angularUpperLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_angularUpperLimit() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_angularUpperLimit_get(swigCPtr, this);
+  public btVector3FloatData getAngularUpperLimit() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_angularUpperLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_angularLowerLimit(btVector3FloatData value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_angularLowerLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setAngularLowerLimit(btVector3FloatData value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_angularLowerLimit_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_angularLowerLimit() {
-    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_m_angularLowerLimit_get(swigCPtr, this);
+  public btVector3FloatData getAngularLowerLimit() {
+    long cPtr = gdxBulletJNI.btGeneric6DofConstraintData_angularLowerLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_useLinearReferenceFrameA(int value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_useLinearReferenceFrameA_set(swigCPtr, this, value);
+  public void setUseLinearReferenceFrameA(int value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_useLinearReferenceFrameA_set(swigCPtr, this, value);
   }
 
-  public int getM_useLinearReferenceFrameA() {
-    return gdxBulletJNI.btGeneric6DofConstraintData_m_useLinearReferenceFrameA_get(swigCPtr, this);
+  public int getUseLinearReferenceFrameA() {
+    return gdxBulletJNI.btGeneric6DofConstraintData_useLinearReferenceFrameA_get(swigCPtr, this);
   }
 
-  public void setM_useOffsetForConstraintFrame(int value) {
-    gdxBulletJNI.btGeneric6DofConstraintData_m_useOffsetForConstraintFrame_set(swigCPtr, this, value);
+  public void setUseOffsetForConstraintFrame(int value) {
+    gdxBulletJNI.btGeneric6DofConstraintData_useOffsetForConstraintFrame_set(swigCPtr, this, value);
   }
 
-  public int getM_useOffsetForConstraintFrame() {
-    return gdxBulletJNI.btGeneric6DofConstraintData_m_useOffsetForConstraintFrame_get(swigCPtr, this);
+  public int getUseOffsetForConstraintFrame() {
+    return gdxBulletJNI.btGeneric6DofConstraintData_useOffsetForConstraintFrame_get(swigCPtr, this);
   }
 
   public btGeneric6DofConstraintData() {

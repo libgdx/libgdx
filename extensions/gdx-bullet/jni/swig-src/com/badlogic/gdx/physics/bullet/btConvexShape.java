@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexShape extends btCollisionShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btConvexShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btConvexShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexShape(long cPtr, boolean cMemoryOwn) {
+		this("btConvexShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConvexShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConvexShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public Vector3 localGetSupportingVertex(Vector3 vec) {
 	return gdxBulletJNI.btConvexShape_localGetSupportingVertex(swigCPtr, this, vec);

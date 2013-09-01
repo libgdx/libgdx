@@ -14,38 +14,46 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftBodyTriangleCallback extends btTriangleCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSoftBodyTriangleCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSoftBodyTriangleCallback_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSoftBodyTriangleCallback(long cPtr, boolean cMemoryOwn) {
+		this("btSoftBodyTriangleCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSoftBodyTriangleCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSoftBodyTriangleCallback(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSoftBodyTriangleCallback_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSoftBodyTriangleCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTriangleCount(int value) {
+    gdxBulletJNI.btSoftBodyTriangleCallback_triangleCount_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btSoftBodyTriangleCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSoftBodyTriangleCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_triangleCount(int value) {
-    gdxBulletJNI.btSoftBodyTriangleCallback_m_triangleCount_set(swigCPtr, this, value);
-  }
-
-  public int getM_triangleCount() {
-    return gdxBulletJNI.btSoftBodyTriangleCallback_m_triangleCount_get(swigCPtr, this);
+  public int getTriangleCount() {
+    return gdxBulletJNI.btSoftBodyTriangleCallback_triangleCount_get(swigCPtr, this);
   }
 
   public btSoftBodyTriangleCallback(btDispatcher dispatcher, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {

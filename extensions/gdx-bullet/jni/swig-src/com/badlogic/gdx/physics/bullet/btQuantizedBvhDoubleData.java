@@ -13,132 +13,140 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btQuantizedBvhDoubleData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btQuantizedBvhDoubleData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btQuantizedBvhDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btQuantizedBvhDoubleData(long cPtr, boolean cMemoryOwn) {
+		this("btQuantizedBvhDoubleData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btQuantizedBvhDoubleData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btQuantizedBvhDoubleData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btQuantizedBvhDoubleData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setBvhAabbMin(btVector3DoubleData value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_bvhAabbMin_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btQuantizedBvhDoubleData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btQuantizedBvhDoubleData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_bvhAabbMin(btVector3DoubleData value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_bvhAabbMin_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
-  }
-
-  public btVector3DoubleData getM_bvhAabbMin() {
-    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_m_bvhAabbMin_get(swigCPtr, this);
+  public btVector3DoubleData getBvhAabbMin() {
+    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_bvhAabbMin_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_bvhAabbMax(btVector3DoubleData value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_bvhAabbMax_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setBvhAabbMax(btVector3DoubleData value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_bvhAabbMax_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_bvhAabbMax() {
-    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_m_bvhAabbMax_get(swigCPtr, this);
+  public btVector3DoubleData getBvhAabbMax() {
+    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_bvhAabbMax_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_bvhQuantization(btVector3DoubleData value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_bvhQuantization_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setBvhQuantization(btVector3DoubleData value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_bvhQuantization_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_bvhQuantization() {
-    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_m_bvhQuantization_get(swigCPtr, this);
+  public btVector3DoubleData getBvhQuantization() {
+    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_bvhQuantization_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_curNodeIndex(int value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_curNodeIndex_set(swigCPtr, this, value);
+  public void setCurNodeIndex(int value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_curNodeIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_curNodeIndex() {
-    return gdxBulletJNI.btQuantizedBvhDoubleData_m_curNodeIndex_get(swigCPtr, this);
+  public int getCurNodeIndex() {
+    return gdxBulletJNI.btQuantizedBvhDoubleData_curNodeIndex_get(swigCPtr, this);
   }
 
-  public void setM_useQuantization(int value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_useQuantization_set(swigCPtr, this, value);
+  public void setUseQuantization(int value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_useQuantization_set(swigCPtr, this, value);
   }
 
-  public int getM_useQuantization() {
-    return gdxBulletJNI.btQuantizedBvhDoubleData_m_useQuantization_get(swigCPtr, this);
+  public int getUseQuantization() {
+    return gdxBulletJNI.btQuantizedBvhDoubleData_useQuantization_get(swigCPtr, this);
   }
 
-  public void setM_numContiguousLeafNodes(int value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_numContiguousLeafNodes_set(swigCPtr, this, value);
+  public void setNumContiguousLeafNodes(int value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_numContiguousLeafNodes_set(swigCPtr, this, value);
   }
 
-  public int getM_numContiguousLeafNodes() {
-    return gdxBulletJNI.btQuantizedBvhDoubleData_m_numContiguousLeafNodes_get(swigCPtr, this);
+  public int getNumContiguousLeafNodes() {
+    return gdxBulletJNI.btQuantizedBvhDoubleData_numContiguousLeafNodes_get(swigCPtr, this);
   }
 
-  public void setM_numQuantizedContiguousNodes(int value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_numQuantizedContiguousNodes_set(swigCPtr, this, value);
+  public void setNumQuantizedContiguousNodes(int value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_numQuantizedContiguousNodes_set(swigCPtr, this, value);
   }
 
-  public int getM_numQuantizedContiguousNodes() {
-    return gdxBulletJNI.btQuantizedBvhDoubleData_m_numQuantizedContiguousNodes_get(swigCPtr, this);
+  public int getNumQuantizedContiguousNodes() {
+    return gdxBulletJNI.btQuantizedBvhDoubleData_numQuantizedContiguousNodes_get(swigCPtr, this);
   }
 
-  public void setM_contiguousNodesPtr(btOptimizedBvhNodeDoubleData value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_contiguousNodesPtr_set(swigCPtr, this, btOptimizedBvhNodeDoubleData.getCPtr(value), value);
+  public void setContiguousNodesPtr(btOptimizedBvhNodeDoubleData value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_contiguousNodesPtr_set(swigCPtr, this, btOptimizedBvhNodeDoubleData.getCPtr(value), value);
   }
 
-  public btOptimizedBvhNodeDoubleData getM_contiguousNodesPtr() {
-    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_m_contiguousNodesPtr_get(swigCPtr, this);
+  public btOptimizedBvhNodeDoubleData getContiguousNodesPtr() {
+    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_contiguousNodesPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btOptimizedBvhNodeDoubleData(cPtr, false);
   }
 
-  public void setM_quantizedContiguousNodesPtr(btQuantizedBvhNodeData value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_quantizedContiguousNodesPtr_set(swigCPtr, this, btQuantizedBvhNodeData.getCPtr(value), value);
+  public void setQuantizedContiguousNodesPtr(btQuantizedBvhNodeData value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_quantizedContiguousNodesPtr_set(swigCPtr, this, btQuantizedBvhNodeData.getCPtr(value), value);
   }
 
-  public btQuantizedBvhNodeData getM_quantizedContiguousNodesPtr() {
-    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_m_quantizedContiguousNodesPtr_get(swigCPtr, this);
+  public btQuantizedBvhNodeData getQuantizedContiguousNodesPtr() {
+    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_quantizedContiguousNodesPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btQuantizedBvhNodeData(cPtr, false);
   }
 
-  public void setM_traversalMode(int value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_traversalMode_set(swigCPtr, this, value);
+  public void setTraversalMode(int value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_traversalMode_set(swigCPtr, this, value);
   }
 
-  public int getM_traversalMode() {
-    return gdxBulletJNI.btQuantizedBvhDoubleData_m_traversalMode_get(swigCPtr, this);
+  public int getTraversalMode() {
+    return gdxBulletJNI.btQuantizedBvhDoubleData_traversalMode_get(swigCPtr, this);
   }
 
-  public void setM_numSubtreeHeaders(int value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_numSubtreeHeaders_set(swigCPtr, this, value);
+  public void setNumSubtreeHeaders(int value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_numSubtreeHeaders_set(swigCPtr, this, value);
   }
 
-  public int getM_numSubtreeHeaders() {
-    return gdxBulletJNI.btQuantizedBvhDoubleData_m_numSubtreeHeaders_get(swigCPtr, this);
+  public int getNumSubtreeHeaders() {
+    return gdxBulletJNI.btQuantizedBvhDoubleData_numSubtreeHeaders_get(swigCPtr, this);
   }
 
-  public void setM_subTreeInfoPtr(btBvhSubtreeInfoData value) {
-    gdxBulletJNI.btQuantizedBvhDoubleData_m_subTreeInfoPtr_set(swigCPtr, this, btBvhSubtreeInfoData.getCPtr(value), value);
+  public void setSubTreeInfoPtr(btBvhSubtreeInfoData value) {
+    gdxBulletJNI.btQuantizedBvhDoubleData_subTreeInfoPtr_set(swigCPtr, this, btBvhSubtreeInfoData.getCPtr(value), value);
   }
 
-  public btBvhSubtreeInfoData getM_subTreeInfoPtr() {
-    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_m_subTreeInfoPtr_get(swigCPtr, this);
+  public btBvhSubtreeInfoData getSubTreeInfoPtr() {
+    long cPtr = gdxBulletJNI.btQuantizedBvhDoubleData_subTreeInfoPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btBvhSubtreeInfoData(cPtr, false);
   }
 

@@ -13,260 +13,268 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class SoftBodyClusterData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class SoftBodyClusterData extends BulletBase {
+	private long swigCPtr;
+	
+	protected SoftBodyClusterData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected SoftBodyClusterData(long cPtr, boolean cMemoryOwn) {
+		this("SoftBodyClusterData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(SoftBodyClusterData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected SoftBodyClusterData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_SoftBodyClusterData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setFramexform(btTransformFloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_framexform_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
   }
 
-  public static long getCPtr(SoftBodyClusterData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_SoftBodyClusterData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_framexform(btTransformFloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_framexform_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
-  }
-
-  public btTransformFloatData getM_framexform() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_framexform_get(swigCPtr, this);
+  public btTransformFloatData getFramexform() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_framexform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
   }
 
-  public void setM_locii(SWIGTYPE_p_btMatrix3x3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_locii_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
+  public void setLocii(SWIGTYPE_p_btMatrix3x3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_locii_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btMatrix3x3FloatData getM_locii() {
-    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyClusterData_m_locii_get(swigCPtr, this), true);
+  public SWIGTYPE_p_btMatrix3x3FloatData getLocii() {
+    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyClusterData_locii_get(swigCPtr, this), true);
   }
 
-  public void setM_invwi(SWIGTYPE_p_btMatrix3x3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_invwi_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
+  public void setInvwi(SWIGTYPE_p_btMatrix3x3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_invwi_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btMatrix3x3FloatData getM_invwi() {
-    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyClusterData_m_invwi_get(swigCPtr, this), true);
+  public SWIGTYPE_p_btMatrix3x3FloatData getInvwi() {
+    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyClusterData_invwi_get(swigCPtr, this), true);
   }
 
-  public void setM_com(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_com_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setCom(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_com_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_com() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_com_get(swigCPtr, this);
+  public btVector3FloatData getCom() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_com_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_vimpulses(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_vimpulses_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setVimpulses(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_vimpulses_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_vimpulses() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_vimpulses_get(swigCPtr, this);
+  public btVector3FloatData getVimpulses() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_vimpulses_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_dimpulses(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_dimpulses_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setDimpulses(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_dimpulses_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_dimpulses() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_dimpulses_get(swigCPtr, this);
+  public btVector3FloatData getDimpulses() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_dimpulses_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_lv(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_lv_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLv(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_lv_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_lv() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_lv_get(swigCPtr, this);
+  public btVector3FloatData getLv() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_lv_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_av(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_av_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setAv(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_av_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_av() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_av_get(swigCPtr, this);
+  public btVector3FloatData getAv() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_av_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_framerefs(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyClusterData_m_framerefs_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setFramerefs(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyClusterData_framerefs_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_framerefs() {
-    long cPtr = gdxBulletJNI.SoftBodyClusterData_m_framerefs_get(swigCPtr, this);
+  public btVector3FloatData getFramerefs() {
+    long cPtr = gdxBulletJNI.SoftBodyClusterData_framerefs_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_nodeIndices(java.nio.IntBuffer value) {
+  public void setNodeIndices(java.nio.IntBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.SoftBodyClusterData_m_nodeIndices_set(swigCPtr, this, value);
+      gdxBulletJNI.SoftBodyClusterData_nodeIndices_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.IntBuffer getM_nodeIndices() {
-    return gdxBulletJNI.SoftBodyClusterData_m_nodeIndices_get(swigCPtr, this);
+  public java.nio.IntBuffer getNodeIndices() {
+    return gdxBulletJNI.SoftBodyClusterData_nodeIndices_get(swigCPtr, this);
 }
 
-  public void setM_masses(java.nio.FloatBuffer value) {
+  public void setMasses(java.nio.FloatBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.SoftBodyClusterData_m_masses_set(swigCPtr, this, value);
+      gdxBulletJNI.SoftBodyClusterData_masses_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.FloatBuffer getM_masses() {
-    return gdxBulletJNI.SoftBodyClusterData_m_masses_get(swigCPtr, this);
+  public java.nio.FloatBuffer getMasses() {
+    return gdxBulletJNI.SoftBodyClusterData_masses_get(swigCPtr, this);
 }
 
-  public void setM_numFrameRefs(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_numFrameRefs_set(swigCPtr, this, value);
+  public void setNumFrameRefs(int value) {
+    gdxBulletJNI.SoftBodyClusterData_numFrameRefs_set(swigCPtr, this, value);
   }
 
-  public int getM_numFrameRefs() {
-    return gdxBulletJNI.SoftBodyClusterData_m_numFrameRefs_get(swigCPtr, this);
+  public int getNumFrameRefs() {
+    return gdxBulletJNI.SoftBodyClusterData_numFrameRefs_get(swigCPtr, this);
   }
 
-  public void setM_numNodes(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_numNodes_set(swigCPtr, this, value);
+  public void setNumNodes(int value) {
+    gdxBulletJNI.SoftBodyClusterData_numNodes_set(swigCPtr, this, value);
   }
 
-  public int getM_numNodes() {
-    return gdxBulletJNI.SoftBodyClusterData_m_numNodes_get(swigCPtr, this);
+  public int getNumNodes() {
+    return gdxBulletJNI.SoftBodyClusterData_numNodes_get(swigCPtr, this);
   }
 
-  public void setM_numMasses(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_numMasses_set(swigCPtr, this, value);
+  public void setNumMasses(int value) {
+    gdxBulletJNI.SoftBodyClusterData_numMasses_set(swigCPtr, this, value);
   }
 
-  public int getM_numMasses() {
-    return gdxBulletJNI.SoftBodyClusterData_m_numMasses_get(swigCPtr, this);
+  public int getNumMasses() {
+    return gdxBulletJNI.SoftBodyClusterData_numMasses_get(swigCPtr, this);
   }
 
-  public void setM_idmass(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_idmass_set(swigCPtr, this, value);
+  public void setIdmass(float value) {
+    gdxBulletJNI.SoftBodyClusterData_idmass_set(swigCPtr, this, value);
   }
 
-  public float getM_idmass() {
-    return gdxBulletJNI.SoftBodyClusterData_m_idmass_get(swigCPtr, this);
+  public float getIdmass() {
+    return gdxBulletJNI.SoftBodyClusterData_idmass_get(swigCPtr, this);
   }
 
-  public void setM_imass(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_imass_set(swigCPtr, this, value);
+  public void setImass(float value) {
+    gdxBulletJNI.SoftBodyClusterData_imass_set(swigCPtr, this, value);
   }
 
-  public float getM_imass() {
-    return gdxBulletJNI.SoftBodyClusterData_m_imass_get(swigCPtr, this);
+  public float getImass() {
+    return gdxBulletJNI.SoftBodyClusterData_imass_get(swigCPtr, this);
   }
 
-  public void setM_nvimpulses(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_nvimpulses_set(swigCPtr, this, value);
+  public void setNvimpulses(int value) {
+    gdxBulletJNI.SoftBodyClusterData_nvimpulses_set(swigCPtr, this, value);
   }
 
-  public int getM_nvimpulses() {
-    return gdxBulletJNI.SoftBodyClusterData_m_nvimpulses_get(swigCPtr, this);
+  public int getNvimpulses() {
+    return gdxBulletJNI.SoftBodyClusterData_nvimpulses_get(swigCPtr, this);
   }
 
-  public void setM_ndimpulses(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_ndimpulses_set(swigCPtr, this, value);
+  public void setNdimpulses(int value) {
+    gdxBulletJNI.SoftBodyClusterData_ndimpulses_set(swigCPtr, this, value);
   }
 
-  public int getM_ndimpulses() {
-    return gdxBulletJNI.SoftBodyClusterData_m_ndimpulses_get(swigCPtr, this);
+  public int getNdimpulses() {
+    return gdxBulletJNI.SoftBodyClusterData_ndimpulses_get(swigCPtr, this);
   }
 
-  public void setM_ndamping(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_ndamping_set(swigCPtr, this, value);
+  public void setNdamping(float value) {
+    gdxBulletJNI.SoftBodyClusterData_ndamping_set(swigCPtr, this, value);
   }
 
-  public float getM_ndamping() {
-    return gdxBulletJNI.SoftBodyClusterData_m_ndamping_get(swigCPtr, this);
+  public float getNdamping() {
+    return gdxBulletJNI.SoftBodyClusterData_ndamping_get(swigCPtr, this);
   }
 
-  public void setM_ldamping(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_ldamping_set(swigCPtr, this, value);
+  public void setLdamping(float value) {
+    gdxBulletJNI.SoftBodyClusterData_ldamping_set(swigCPtr, this, value);
   }
 
-  public float getM_ldamping() {
-    return gdxBulletJNI.SoftBodyClusterData_m_ldamping_get(swigCPtr, this);
+  public float getLdamping() {
+    return gdxBulletJNI.SoftBodyClusterData_ldamping_get(swigCPtr, this);
   }
 
-  public void setM_adamping(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_adamping_set(swigCPtr, this, value);
+  public void setAdamping(float value) {
+    gdxBulletJNI.SoftBodyClusterData_adamping_set(swigCPtr, this, value);
   }
 
-  public float getM_adamping() {
-    return gdxBulletJNI.SoftBodyClusterData_m_adamping_get(swigCPtr, this);
+  public float getAdamping() {
+    return gdxBulletJNI.SoftBodyClusterData_adamping_get(swigCPtr, this);
   }
 
-  public void setM_matching(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_matching_set(swigCPtr, this, value);
+  public void setMatching(float value) {
+    gdxBulletJNI.SoftBodyClusterData_matching_set(swigCPtr, this, value);
   }
 
-  public float getM_matching() {
-    return gdxBulletJNI.SoftBodyClusterData_m_matching_get(swigCPtr, this);
+  public float getMatching() {
+    return gdxBulletJNI.SoftBodyClusterData_matching_get(swigCPtr, this);
   }
 
-  public void setM_maxSelfCollisionImpulse(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_maxSelfCollisionImpulse_set(swigCPtr, this, value);
+  public void setMaxSelfCollisionImpulse(float value) {
+    gdxBulletJNI.SoftBodyClusterData_maxSelfCollisionImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_maxSelfCollisionImpulse() {
-    return gdxBulletJNI.SoftBodyClusterData_m_maxSelfCollisionImpulse_get(swigCPtr, this);
+  public float getMaxSelfCollisionImpulse() {
+    return gdxBulletJNI.SoftBodyClusterData_maxSelfCollisionImpulse_get(swigCPtr, this);
   }
 
-  public void setM_selfCollisionImpulseFactor(float value) {
-    gdxBulletJNI.SoftBodyClusterData_m_selfCollisionImpulseFactor_set(swigCPtr, this, value);
+  public void setSelfCollisionImpulseFactor(float value) {
+    gdxBulletJNI.SoftBodyClusterData_selfCollisionImpulseFactor_set(swigCPtr, this, value);
   }
 
-  public float getM_selfCollisionImpulseFactor() {
-    return gdxBulletJNI.SoftBodyClusterData_m_selfCollisionImpulseFactor_get(swigCPtr, this);
+  public float getSelfCollisionImpulseFactor() {
+    return gdxBulletJNI.SoftBodyClusterData_selfCollisionImpulseFactor_get(swigCPtr, this);
   }
 
-  public void setM_containsAnchor(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_containsAnchor_set(swigCPtr, this, value);
+  public void setContainsAnchor(int value) {
+    gdxBulletJNI.SoftBodyClusterData_containsAnchor_set(swigCPtr, this, value);
   }
 
-  public int getM_containsAnchor() {
-    return gdxBulletJNI.SoftBodyClusterData_m_containsAnchor_get(swigCPtr, this);
+  public int getContainsAnchor() {
+    return gdxBulletJNI.SoftBodyClusterData_containsAnchor_get(swigCPtr, this);
   }
 
-  public void setM_collide(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_collide_set(swigCPtr, this, value);
+  public void setCollide(int value) {
+    gdxBulletJNI.SoftBodyClusterData_collide_set(swigCPtr, this, value);
   }
 
-  public int getM_collide() {
-    return gdxBulletJNI.SoftBodyClusterData_m_collide_get(swigCPtr, this);
+  public int getCollide() {
+    return gdxBulletJNI.SoftBodyClusterData_collide_get(swigCPtr, this);
   }
 
-  public void setM_clusterIndex(int value) {
-    gdxBulletJNI.SoftBodyClusterData_m_clusterIndex_set(swigCPtr, this, value);
+  public void setClusterIndex(int value) {
+    gdxBulletJNI.SoftBodyClusterData_clusterIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_clusterIndex() {
-    return gdxBulletJNI.SoftBodyClusterData_m_clusterIndex_get(swigCPtr, this);
+  public int getClusterIndex() {
+    return gdxBulletJNI.SoftBodyClusterData_clusterIndex_get(swigCPtr, this);
   }
 
   public SoftBodyClusterData() {

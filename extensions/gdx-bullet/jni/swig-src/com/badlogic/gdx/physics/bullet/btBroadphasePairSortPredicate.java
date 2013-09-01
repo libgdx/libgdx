@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btBroadphasePairSortPredicate {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btBroadphasePairSortPredicate extends BulletBase {
+	private long swigCPtr;
+	
+	protected btBroadphasePairSortPredicate(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btBroadphasePairSortPredicate(long cPtr, boolean cMemoryOwn) {
+		this("btBroadphasePairSortPredicate", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btBroadphasePairSortPredicate obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btBroadphasePairSortPredicate(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btBroadphasePairSortPredicate obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBroadphasePairSortPredicate(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBroadphasePairSortPredicate(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btBroadphasePairSortPredicate() {
     this(gdxBulletJNI.new_btBroadphasePairSortPredicate(), true);

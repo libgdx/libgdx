@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btUsageBitfield {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btUsageBitfield extends BulletBase {
+	private long swigCPtr;
+	
+	protected btUsageBitfield(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btUsageBitfield(long cPtr, boolean cMemoryOwn) {
+		this("btUsageBitfield", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btUsageBitfield obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btUsageBitfield(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btUsageBitfield obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btUsageBitfield(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btUsageBitfield(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btUsageBitfield() {
     this(gdxBulletJNI.new_btUsageBitfield(), true);

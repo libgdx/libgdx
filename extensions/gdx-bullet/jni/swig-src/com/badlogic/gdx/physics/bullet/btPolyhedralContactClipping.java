@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btPolyhedralContactClipping {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btPolyhedralContactClipping extends BulletBase {
+	private long swigCPtr;
+	
+	protected btPolyhedralContactClipping(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPolyhedralContactClipping(long cPtr, boolean cMemoryOwn) {
+		this("btPolyhedralContactClipping", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPolyhedralContactClipping obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPolyhedralContactClipping(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btPolyhedralContactClipping obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPolyhedralContactClipping(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPolyhedralContactClipping(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public static void clipHullAgainstHull(Vector3 separatingNormal, btConvexPolyhedron hullA, btConvexPolyhedron hullB, Matrix4 transA, Matrix4 transB, float minDist, float maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result resultOut) {
     gdxBulletJNI.btPolyhedralContactClipping_clipHullAgainstHull(separatingNormal, btConvexPolyhedron.getCPtr(hullA), hullA, btConvexPolyhedron.getCPtr(hullB), hullB, transA, transB, minDist, maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));

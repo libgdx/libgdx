@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btGjkEpaPenetrationDepthSolver extends btConvexPenetrationDepthSolver {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btGjkEpaPenetrationDepthSolver(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btGjkEpaPenetrationDepthSolver_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btGjkEpaPenetrationDepthSolver(long cPtr, boolean cMemoryOwn) {
+		this("btGjkEpaPenetrationDepthSolver", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btGjkEpaPenetrationDepthSolver obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btGjkEpaPenetrationDepthSolver(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btGjkEpaPenetrationDepthSolver_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btGjkEpaPenetrationDepthSolver obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btGjkEpaPenetrationDepthSolver(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btGjkEpaPenetrationDepthSolver(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btGjkEpaPenetrationDepthSolver() {
     this(gdxBulletJNI.new_btGjkEpaPenetrationDepthSolver(), true);

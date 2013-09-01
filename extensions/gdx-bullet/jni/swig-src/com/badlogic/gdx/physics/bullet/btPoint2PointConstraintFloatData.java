@@ -13,57 +13,65 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btPoint2PointConstraintFloatData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btPoint2PointConstraintFloatData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btPoint2PointConstraintFloatData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPoint2PointConstraintFloatData(long cPtr, boolean cMemoryOwn) {
+		this("btPoint2PointConstraintFloatData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPoint2PointConstraintFloatData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPoint2PointConstraintFloatData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPoint2PointConstraintFloatData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTypeConstraintData(btTypedConstraintData value) {
+    gdxBulletJNI.btPoint2PointConstraintFloatData_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btPoint2PointConstraintFloatData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPoint2PointConstraintFloatData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_typeConstraintData(btTypedConstraintData value) {
-    gdxBulletJNI.btPoint2PointConstraintFloatData_m_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
-  }
-
-  public btTypedConstraintData getM_typeConstraintData() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraintFloatData_m_typeConstraintData_get(swigCPtr, this);
+  public btTypedConstraintData getTypeConstraintData() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraintFloatData_typeConstraintData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTypedConstraintData(cPtr, false);
   }
 
-  public void setM_pivotInA(btVector3FloatData value) {
-    gdxBulletJNI.btPoint2PointConstraintFloatData_m_pivotInA_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setPivotInA(btVector3FloatData value) {
+    gdxBulletJNI.btPoint2PointConstraintFloatData_pivotInA_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_pivotInA() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraintFloatData_m_pivotInA_get(swigCPtr, this);
+  public btVector3FloatData getPivotInA() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraintFloatData_pivotInA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_pivotInB(btVector3FloatData value) {
-    gdxBulletJNI.btPoint2PointConstraintFloatData_m_pivotInB_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setPivotInB(btVector3FloatData value) {
+    gdxBulletJNI.btPoint2PointConstraintFloatData_pivotInB_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_pivotInB() {
-    long cPtr = gdxBulletJNI.btPoint2PointConstraintFloatData_m_pivotInB_get(swigCPtr, this);
+  public btVector3FloatData getPivotInB() {
+    long cPtr = gdxBulletJNI.btPoint2PointConstraintFloatData_pivotInB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 

@@ -13,78 +13,86 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class LocalConvexResult {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class LocalConvexResult extends BulletBase {
+	private long swigCPtr;
+	
+	protected LocalConvexResult(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected LocalConvexResult(long cPtr, boolean cMemoryOwn) {
+		this("LocalConvexResult", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(LocalConvexResult obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected LocalConvexResult(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(LocalConvexResult obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_LocalConvexResult(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_LocalConvexResult(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public LocalConvexResult(btCollisionObject hitCollisionObject, LocalShapeInfo localShapeInfo, Vector3 hitNormalLocal, Vector3 hitPointLocal, float hitFraction) {
     this(gdxBulletJNI.new_LocalConvexResult(btCollisionObject.getCPtr(hitCollisionObject), hitCollisionObject, LocalShapeInfo.getCPtr(localShapeInfo), localShapeInfo, hitNormalLocal, hitPointLocal, hitFraction), true);
   }
 
-  public void setM_hitCollisionObject(btCollisionObject value) {
-    gdxBulletJNI.LocalConvexResult_m_hitCollisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
+  public void setHitCollisionObject(btCollisionObject value) {
+    gdxBulletJNI.LocalConvexResult_hitCollisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
   }
 
-  public btCollisionObject getM_hitCollisionObject() {
-	return btCollisionObject.getInstance(gdxBulletJNI.LocalConvexResult_m_hitCollisionObject_get(swigCPtr, this), false);
+  public btCollisionObject getHitCollisionObject() {
+	return btCollisionObject.getInstance(gdxBulletJNI.LocalConvexResult_hitCollisionObject_get(swigCPtr, this), false);
 }
 
-  public void setM_localShapeInfo(LocalShapeInfo value) {
-    gdxBulletJNI.LocalConvexResult_m_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);
+  public void setLocalShapeInfo(LocalShapeInfo value) {
+    gdxBulletJNI.LocalConvexResult_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);
   }
 
-  public LocalShapeInfo getM_localShapeInfo() {
-    long cPtr = gdxBulletJNI.LocalConvexResult_m_localShapeInfo_get(swigCPtr, this);
+  public LocalShapeInfo getLocalShapeInfo() {
+    long cPtr = gdxBulletJNI.LocalConvexResult_localShapeInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new LocalShapeInfo(cPtr, false);
   }
 
-  public void setM_hitNormalLocal(btVector3 value) {
-    gdxBulletJNI.LocalConvexResult_m_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitNormalLocal(btVector3 value) {
+    gdxBulletJNI.LocalConvexResult_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitNormalLocal() {
-    long cPtr = gdxBulletJNI.LocalConvexResult_m_hitNormalLocal_get(swigCPtr, this);
+  public btVector3 getHitNormalLocal() {
+    long cPtr = gdxBulletJNI.LocalConvexResult_hitNormalLocal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitPointLocal(btVector3 value) {
-    gdxBulletJNI.LocalConvexResult_m_hitPointLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitPointLocal(btVector3 value) {
+    gdxBulletJNI.LocalConvexResult_hitPointLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitPointLocal() {
-    long cPtr = gdxBulletJNI.LocalConvexResult_m_hitPointLocal_get(swigCPtr, this);
+  public btVector3 getHitPointLocal() {
+    long cPtr = gdxBulletJNI.LocalConvexResult_hitPointLocal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitFraction(float value) {
-    gdxBulletJNI.LocalConvexResult_m_hitFraction_set(swigCPtr, this, value);
+  public void setHitFraction(float value) {
+    gdxBulletJNI.LocalConvexResult_hitFraction_set(swigCPtr, this, value);
   }
 
-  public float getM_hitFraction() {
-    return gdxBulletJNI.LocalConvexResult_m_hitFraction_get(swigCPtr, this);
+  public float getHitFraction() {
+    return gdxBulletJNI.LocalConvexResult_hitFraction_get(swigCPtr, this);
   }
 
 }

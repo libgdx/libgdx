@@ -78,7 +78,7 @@ public class ImportTest extends BaseBulletTest {
 		super.dispose();
 
 		importer.deleteAllData();
-		importer.delete();
+		importer.dispose();
 		importer = null;
 	}
 }

@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class RayResultCallback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class RayResultCallback extends BulletBase {
+	private long swigCPtr;
+	
+	protected RayResultCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected RayResultCallback(long cPtr, boolean cMemoryOwn) {
+		this("RayResultCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(RayResultCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected RayResultCallback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(RayResultCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_RayResultCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_RayResultCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   protected void swigDirectorDisconnect() {
     swigCMemOwn = false;
@@ -55,44 +63,44 @@ public class RayResultCallback {
     gdxBulletJNI.RayResultCallback_change_ownership(this, swigCPtr, true);
   }
 
-  public void setM_closestHitFraction(float value) {
-    gdxBulletJNI.RayResultCallback_m_closestHitFraction_set(swigCPtr, this, value);
+  public void setClosestHitFraction(float value) {
+    gdxBulletJNI.RayResultCallback_closestHitFraction_set(swigCPtr, this, value);
   }
 
-  public float getM_closestHitFraction() {
-    return gdxBulletJNI.RayResultCallback_m_closestHitFraction_get(swigCPtr, this);
+  public float getClosestHitFraction() {
+    return gdxBulletJNI.RayResultCallback_closestHitFraction_get(swigCPtr, this);
   }
 
-  public void setM_collisionObject(btCollisionObject value) {
-    gdxBulletJNI.RayResultCallback_m_collisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
+  public void setCollisionObject(btCollisionObject value) {
+    gdxBulletJNI.RayResultCallback_collisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
   }
 
-  public btCollisionObject getM_collisionObject() {
-	return btCollisionObject.getInstance(gdxBulletJNI.RayResultCallback_m_collisionObject_get(swigCPtr, this), false);
+  public btCollisionObject getCollisionObject() {
+	return btCollisionObject.getInstance(gdxBulletJNI.RayResultCallback_collisionObject_get(swigCPtr, this), false);
 }
 
-  public void setM_collisionFilterGroup(short value) {
-    gdxBulletJNI.RayResultCallback_m_collisionFilterGroup_set(swigCPtr, this, value);
+  public void setCollisionFilterGroup(short value) {
+    gdxBulletJNI.RayResultCallback_collisionFilterGroup_set(swigCPtr, this, value);
   }
 
-  public short getM_collisionFilterGroup() {
-    return gdxBulletJNI.RayResultCallback_m_collisionFilterGroup_get(swigCPtr, this);
+  public short getCollisionFilterGroup() {
+    return gdxBulletJNI.RayResultCallback_collisionFilterGroup_get(swigCPtr, this);
   }
 
-  public void setM_collisionFilterMask(short value) {
-    gdxBulletJNI.RayResultCallback_m_collisionFilterMask_set(swigCPtr, this, value);
+  public void setCollisionFilterMask(short value) {
+    gdxBulletJNI.RayResultCallback_collisionFilterMask_set(swigCPtr, this, value);
   }
 
-  public short getM_collisionFilterMask() {
-    return gdxBulletJNI.RayResultCallback_m_collisionFilterMask_get(swigCPtr, this);
+  public short getCollisionFilterMask() {
+    return gdxBulletJNI.RayResultCallback_collisionFilterMask_get(swigCPtr, this);
   }
 
-  public void setM_flags(long value) {
-    gdxBulletJNI.RayResultCallback_m_flags_set(swigCPtr, this, value);
+  public void setFlags(long value) {
+    gdxBulletJNI.RayResultCallback_flags_set(swigCPtr, this, value);
   }
 
-  public long getM_flags() {
-    return gdxBulletJNI.RayResultCallback_m_flags_get(swigCPtr, this);
+  public long getFlags() {
+    return gdxBulletJNI.RayResultCallback_flags_get(swigCPtr, this);
   }
 
   public boolean hasHit() {

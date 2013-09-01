@@ -83,6 +83,10 @@ public class Window extends Table {
 				return dragging || isModal;
 			}
 
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (dragging) dragging = false;
+			}
+
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
 				translate(x - dragOffset.x, y - dragOffset.y);

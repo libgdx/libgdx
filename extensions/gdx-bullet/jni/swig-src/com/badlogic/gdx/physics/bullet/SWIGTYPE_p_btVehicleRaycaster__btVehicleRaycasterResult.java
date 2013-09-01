@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult obj) {
+  protected static long getCPtr(SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

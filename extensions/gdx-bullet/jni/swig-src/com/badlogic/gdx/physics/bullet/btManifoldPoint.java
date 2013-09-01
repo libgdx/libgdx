@@ -13,37 +13,45 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btManifoldPoint {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btManifoldPoint extends BulletBase {
+	private long swigCPtr;
+	
+	protected btManifoldPoint(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btManifoldPoint(long cPtr, boolean cMemoryOwn) {
+		this("btManifoldPoint", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btManifoldPoint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btManifoldPoint(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btManifoldPoint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btManifoldPoint(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btManifoldPoint(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
 	/** Temporary instance, use by native methods that return a btManifoldPoint instance */
 	protected final static btManifoldPoint temp = new btManifoldPoint(0, false);
 	public static btManifoldPoint internalTemp(long cPtr, boolean own) {
-		temp.reuse(cPtr, own);
+		temp.reset(cPtr, own);
 		return temp;
 	}
 	/** Pool of btManifoldPoint instances, used by director interface to provide the arguments. */
@@ -56,19 +64,13 @@ public class btManifoldPoint {
 	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
 	public static btManifoldPoint obtain(long cPtr, boolean own) {
 		final btManifoldPoint result = pool.obtain();
-		result.reuse(cPtr, own);
+		result.reset(cPtr, own);
 		return result;
 	}
 	/** delete the native object if required and allow the instance to be reused by the obtain method */
 	public static void free(final btManifoldPoint inst) {
-		inst.delete();
+		inst.dispose();
 		pool.free(inst);
-	}
-	/** Same as deleting and recreating this object with the new pointer, but without garbage collecting */
-	protected void reuse(final long cPtr, final boolean own) {
-		delete();
-		swigCPtr = cPtr;
-		swigCMemOwn = own;
 	}
 
   public btManifoldPoint() {
@@ -79,211 +81,211 @@ public class btManifoldPoint {
     this(gdxBulletJNI.new_btManifoldPoint__SWIG_1(pointA, pointB, normal, distance), true);
   }
 
-  public void setM_localPointA(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_localPointA_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLocalPointA(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_localPointA_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_localPointA() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_localPointA_get(swigCPtr, this);
+  public btVector3 getLocalPointA() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_localPointA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_localPointB(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_localPointB_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLocalPointB(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_localPointB_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_localPointB() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_localPointB_get(swigCPtr, this);
+  public btVector3 getLocalPointB() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_localPointB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_positionWorldOnB(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_positionWorldOnB_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setPositionWorldOnB(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_positionWorldOnB_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_positionWorldOnB() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_positionWorldOnB_get(swigCPtr, this);
+  public btVector3 getPositionWorldOnB() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_positionWorldOnB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_positionWorldOnA(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_positionWorldOnA_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setPositionWorldOnA(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_positionWorldOnA_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_positionWorldOnA() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_positionWorldOnA_get(swigCPtr, this);
+  public btVector3 getPositionWorldOnA() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_positionWorldOnA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_normalWorldOnB(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_normalWorldOnB_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setNormalWorldOnB(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_normalWorldOnB_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_normalWorldOnB() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_normalWorldOnB_get(swigCPtr, this);
+  public btVector3 getNormalWorldOnB() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_normalWorldOnB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_distance1(float value) {
-    gdxBulletJNI.btManifoldPoint_m_distance1_set(swigCPtr, this, value);
+  public void setDistance1(float value) {
+    gdxBulletJNI.btManifoldPoint_distance1_set(swigCPtr, this, value);
   }
 
-  public float getM_distance1() {
-    return gdxBulletJNI.btManifoldPoint_m_distance1_get(swigCPtr, this);
+  public float getDistance1() {
+    return gdxBulletJNI.btManifoldPoint_distance1_get(swigCPtr, this);
   }
 
-  public void setM_combinedFriction(float value) {
-    gdxBulletJNI.btManifoldPoint_m_combinedFriction_set(swigCPtr, this, value);
+  public void setCombinedFriction(float value) {
+    gdxBulletJNI.btManifoldPoint_combinedFriction_set(swigCPtr, this, value);
   }
 
-  public float getM_combinedFriction() {
-    return gdxBulletJNI.btManifoldPoint_m_combinedFriction_get(swigCPtr, this);
+  public float getCombinedFriction() {
+    return gdxBulletJNI.btManifoldPoint_combinedFriction_get(swigCPtr, this);
   }
 
-  public void setM_combinedRollingFriction(float value) {
-    gdxBulletJNI.btManifoldPoint_m_combinedRollingFriction_set(swigCPtr, this, value);
+  public void setCombinedRollingFriction(float value) {
+    gdxBulletJNI.btManifoldPoint_combinedRollingFriction_set(swigCPtr, this, value);
   }
 
-  public float getM_combinedRollingFriction() {
-    return gdxBulletJNI.btManifoldPoint_m_combinedRollingFriction_get(swigCPtr, this);
+  public float getCombinedRollingFriction() {
+    return gdxBulletJNI.btManifoldPoint_combinedRollingFriction_get(swigCPtr, this);
   }
 
-  public void setM_combinedRestitution(float value) {
-    gdxBulletJNI.btManifoldPoint_m_combinedRestitution_set(swigCPtr, this, value);
+  public void setCombinedRestitution(float value) {
+    gdxBulletJNI.btManifoldPoint_combinedRestitution_set(swigCPtr, this, value);
   }
 
-  public float getM_combinedRestitution() {
-    return gdxBulletJNI.btManifoldPoint_m_combinedRestitution_get(swigCPtr, this);
+  public float getCombinedRestitution() {
+    return gdxBulletJNI.btManifoldPoint_combinedRestitution_get(swigCPtr, this);
   }
 
-  public void setM_partId0(int value) {
-    gdxBulletJNI.btManifoldPoint_m_partId0_set(swigCPtr, this, value);
+  public void setPartId0(int value) {
+    gdxBulletJNI.btManifoldPoint_partId0_set(swigCPtr, this, value);
   }
 
-  public int getM_partId0() {
-    return gdxBulletJNI.btManifoldPoint_m_partId0_get(swigCPtr, this);
+  public int getPartId0() {
+    return gdxBulletJNI.btManifoldPoint_partId0_get(swigCPtr, this);
   }
 
-  public void setM_partId1(int value) {
-    gdxBulletJNI.btManifoldPoint_m_partId1_set(swigCPtr, this, value);
+  public void setPartId1(int value) {
+    gdxBulletJNI.btManifoldPoint_partId1_set(swigCPtr, this, value);
   }
 
-  public int getM_partId1() {
-    return gdxBulletJNI.btManifoldPoint_m_partId1_get(swigCPtr, this);
+  public int getPartId1() {
+    return gdxBulletJNI.btManifoldPoint_partId1_get(swigCPtr, this);
   }
 
-  public void setM_index0(int value) {
-    gdxBulletJNI.btManifoldPoint_m_index0_set(swigCPtr, this, value);
+  public void setIndex0(int value) {
+    gdxBulletJNI.btManifoldPoint_index0_set(swigCPtr, this, value);
   }
 
-  public int getM_index0() {
-    return gdxBulletJNI.btManifoldPoint_m_index0_get(swigCPtr, this);
+  public int getIndex0() {
+    return gdxBulletJNI.btManifoldPoint_index0_get(swigCPtr, this);
   }
 
-  public void setM_index1(int value) {
-    gdxBulletJNI.btManifoldPoint_m_index1_set(swigCPtr, this, value);
+  public void setIndex1(int value) {
+    gdxBulletJNI.btManifoldPoint_index1_set(swigCPtr, this, value);
   }
 
-  public int getM_index1() {
-    return gdxBulletJNI.btManifoldPoint_m_index1_get(swigCPtr, this);
+  public int getIndex1() {
+    return gdxBulletJNI.btManifoldPoint_index1_get(swigCPtr, this);
   }
 
-  public void setM_userPersistentData(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btManifoldPoint_m_userPersistentData_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setUserPersistentData(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btManifoldPoint_userPersistentData_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_userPersistentData() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_userPersistentData_get(swigCPtr, this);
+  public SWIGTYPE_p_void getUserPersistentData() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_userPersistentData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public void setM_lateralFrictionInitialized(boolean value) {
-    gdxBulletJNI.btManifoldPoint_m_lateralFrictionInitialized_set(swigCPtr, this, value);
+  public void setLateralFrictionInitialized(boolean value) {
+    gdxBulletJNI.btManifoldPoint_lateralFrictionInitialized_set(swigCPtr, this, value);
   }
 
-  public boolean getM_lateralFrictionInitialized() {
-    return gdxBulletJNI.btManifoldPoint_m_lateralFrictionInitialized_get(swigCPtr, this);
+  public boolean getLateralFrictionInitialized() {
+    return gdxBulletJNI.btManifoldPoint_lateralFrictionInitialized_get(swigCPtr, this);
   }
 
-  public void setM_appliedImpulse(float value) {
-    gdxBulletJNI.btManifoldPoint_m_appliedImpulse_set(swigCPtr, this, value);
+  public void setAppliedImpulse(float value) {
+    gdxBulletJNI.btManifoldPoint_appliedImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_appliedImpulse() {
-    return gdxBulletJNI.btManifoldPoint_m_appliedImpulse_get(swigCPtr, this);
+  public float getAppliedImpulse() {
+    return gdxBulletJNI.btManifoldPoint_appliedImpulse_get(swigCPtr, this);
   }
 
-  public void setM_appliedImpulseLateral1(float value) {
-    gdxBulletJNI.btManifoldPoint_m_appliedImpulseLateral1_set(swigCPtr, this, value);
+  public void setAppliedImpulseLateral1(float value) {
+    gdxBulletJNI.btManifoldPoint_appliedImpulseLateral1_set(swigCPtr, this, value);
   }
 
-  public float getM_appliedImpulseLateral1() {
-    return gdxBulletJNI.btManifoldPoint_m_appliedImpulseLateral1_get(swigCPtr, this);
+  public float getAppliedImpulseLateral1() {
+    return gdxBulletJNI.btManifoldPoint_appliedImpulseLateral1_get(swigCPtr, this);
   }
 
-  public void setM_appliedImpulseLateral2(float value) {
-    gdxBulletJNI.btManifoldPoint_m_appliedImpulseLateral2_set(swigCPtr, this, value);
+  public void setAppliedImpulseLateral2(float value) {
+    gdxBulletJNI.btManifoldPoint_appliedImpulseLateral2_set(swigCPtr, this, value);
   }
 
-  public float getM_appliedImpulseLateral2() {
-    return gdxBulletJNI.btManifoldPoint_m_appliedImpulseLateral2_get(swigCPtr, this);
+  public float getAppliedImpulseLateral2() {
+    return gdxBulletJNI.btManifoldPoint_appliedImpulseLateral2_get(swigCPtr, this);
   }
 
-  public void setM_contactMotion1(float value) {
-    gdxBulletJNI.btManifoldPoint_m_contactMotion1_set(swigCPtr, this, value);
+  public void setContactMotion1(float value) {
+    gdxBulletJNI.btManifoldPoint_contactMotion1_set(swigCPtr, this, value);
   }
 
-  public float getM_contactMotion1() {
-    return gdxBulletJNI.btManifoldPoint_m_contactMotion1_get(swigCPtr, this);
+  public float getContactMotion1() {
+    return gdxBulletJNI.btManifoldPoint_contactMotion1_get(swigCPtr, this);
   }
 
-  public void setM_contactMotion2(float value) {
-    gdxBulletJNI.btManifoldPoint_m_contactMotion2_set(swigCPtr, this, value);
+  public void setContactMotion2(float value) {
+    gdxBulletJNI.btManifoldPoint_contactMotion2_set(swigCPtr, this, value);
   }
 
-  public float getM_contactMotion2() {
-    return gdxBulletJNI.btManifoldPoint_m_contactMotion2_get(swigCPtr, this);
+  public float getContactMotion2() {
+    return gdxBulletJNI.btManifoldPoint_contactMotion2_get(swigCPtr, this);
   }
 
-  public void setM_contactCFM1(float value) {
-    gdxBulletJNI.btManifoldPoint_m_contactCFM1_set(swigCPtr, this, value);
+  public void setContactCFM1(float value) {
+    gdxBulletJNI.btManifoldPoint_contactCFM1_set(swigCPtr, this, value);
   }
 
-  public float getM_contactCFM1() {
-    return gdxBulletJNI.btManifoldPoint_m_contactCFM1_get(swigCPtr, this);
+  public float getContactCFM1() {
+    return gdxBulletJNI.btManifoldPoint_contactCFM1_get(swigCPtr, this);
   }
 
-  public void setM_contactCFM2(float value) {
-    gdxBulletJNI.btManifoldPoint_m_contactCFM2_set(swigCPtr, this, value);
+  public void setContactCFM2(float value) {
+    gdxBulletJNI.btManifoldPoint_contactCFM2_set(swigCPtr, this, value);
   }
 
-  public float getM_contactCFM2() {
-    return gdxBulletJNI.btManifoldPoint_m_contactCFM2_get(swigCPtr, this);
+  public float getContactCFM2() {
+    return gdxBulletJNI.btManifoldPoint_contactCFM2_get(swigCPtr, this);
   }
 
-  public void setM_lifeTime(int value) {
-    gdxBulletJNI.btManifoldPoint_m_lifeTime_set(swigCPtr, this, value);
+  public void setLifeTime(int value) {
+    gdxBulletJNI.btManifoldPoint_lifeTime_set(swigCPtr, this, value);
   }
 
-  public int getM_lifeTime() {
-    return gdxBulletJNI.btManifoldPoint_m_lifeTime_get(swigCPtr, this);
+  public int getLifeTime() {
+    return gdxBulletJNI.btManifoldPoint_lifeTime_get(swigCPtr, this);
   }
 
-  public void setM_lateralFrictionDir1(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_lateralFrictionDir1_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLateralFrictionDir1(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_lateralFrictionDir1_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_lateralFrictionDir1() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_lateralFrictionDir1_get(swigCPtr, this);
+  public btVector3 getLateralFrictionDir1() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_lateralFrictionDir1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_lateralFrictionDir2(btVector3 value) {
-    gdxBulletJNI.btManifoldPoint_m_lateralFrictionDir2_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLateralFrictionDir2(btVector3 value) {
+    gdxBulletJNI.btManifoldPoint_lateralFrictionDir2_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_lateralFrictionDir2() {
-    long cPtr = gdxBulletJNI.btManifoldPoint_m_lateralFrictionDir2_get(swigCPtr, this);
+  public btVector3 getLateralFrictionDir2() {
+    long cPtr = gdxBulletJNI.btManifoldPoint_lateralFrictionDir2_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
@@ -291,24 +293,8 @@ public class btManifoldPoint {
     return gdxBulletJNI.btManifoldPoint_getDistance(swigCPtr, this);
   }
 
-  public int getLifeTime() {
-    return gdxBulletJNI.btManifoldPoint_getLifeTime(swigCPtr, this);
-  }
-
-  public Vector3 getPositionWorldOnA() {
-	return gdxBulletJNI.btManifoldPoint_getPositionWorldOnA(swigCPtr, this);
-}
-
-  public Vector3 getPositionWorldOnB() {
-	return gdxBulletJNI.btManifoldPoint_getPositionWorldOnB(swigCPtr, this);
-}
-
   public void setDistance(float dist) {
     gdxBulletJNI.btManifoldPoint_setDistance(swigCPtr, this, dist);
-  }
-
-  public float getAppliedImpulse() {
-    return gdxBulletJNI.btManifoldPoint_getAppliedImpulse(swigCPtr, this);
   }
 
   public int getUserValue() {

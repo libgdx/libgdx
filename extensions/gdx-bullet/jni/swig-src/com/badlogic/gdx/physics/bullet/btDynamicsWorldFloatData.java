@@ -13,48 +13,56 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btDynamicsWorldFloatData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btDynamicsWorldFloatData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btDynamicsWorldFloatData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btDynamicsWorldFloatData(long cPtr, boolean cMemoryOwn) {
+		this("btDynamicsWorldFloatData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btDynamicsWorldFloatData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btDynamicsWorldFloatData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btDynamicsWorldFloatData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setSolverInfo(btContactSolverInfoFloatData value) {
+    gdxBulletJNI.btDynamicsWorldFloatData_solverInfo_set(swigCPtr, this, btContactSolverInfoFloatData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btDynamicsWorldFloatData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btDynamicsWorldFloatData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_solverInfo(btContactSolverInfoFloatData value) {
-    gdxBulletJNI.btDynamicsWorldFloatData_m_solverInfo_set(swigCPtr, this, btContactSolverInfoFloatData.getCPtr(value), value);
-  }
-
-  public btContactSolverInfoFloatData getM_solverInfo() {
-    long cPtr = gdxBulletJNI.btDynamicsWorldFloatData_m_solverInfo_get(swigCPtr, this);
+  public btContactSolverInfoFloatData getSolverInfo() {
+    long cPtr = gdxBulletJNI.btDynamicsWorldFloatData_solverInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btContactSolverInfoFloatData(cPtr, false);
   }
 
-  public void setM_gravity(btVector3FloatData value) {
-    gdxBulletJNI.btDynamicsWorldFloatData_m_gravity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setGravity(btVector3FloatData value) {
+    gdxBulletJNI.btDynamicsWorldFloatData_gravity_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_gravity() {
-    long cPtr = gdxBulletJNI.btDynamicsWorldFloatData_m_gravity_get(swigCPtr, this);
+  public btVector3FloatData getGravity() {
+    long cPtr = gdxBulletJNI.btDynamicsWorldFloatData_gravity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 

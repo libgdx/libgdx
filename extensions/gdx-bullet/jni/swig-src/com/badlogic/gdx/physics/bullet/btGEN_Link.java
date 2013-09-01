@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btGEN_Link {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btGEN_Link extends BulletBase {
+	private long swigCPtr;
+	
+	protected btGEN_Link(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btGEN_Link(long cPtr, boolean cMemoryOwn) {
+		this("btGEN_Link", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btGEN_Link obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btGEN_Link(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btGEN_Link obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btGEN_Link(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btGEN_Link(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btGEN_Link() {
     this(gdxBulletJNI.new_btGEN_Link__SWIG_0(), true);
