@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSphereBoxCollisionAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSphereBoxCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSphereBoxCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSphereBoxCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+		this("btSphereBoxCollisionAlgorithm", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSphereBoxCollisionAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSphereBoxCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSphereBoxCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSphereBoxCollisionAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSphereBoxCollisionAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSphereBoxCollisionAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btSphereBoxCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
     this(gdxBulletJNI.new_btSphereBoxCollisionAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);

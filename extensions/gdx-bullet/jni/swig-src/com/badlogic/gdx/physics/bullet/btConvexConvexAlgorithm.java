@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexConvexAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btConvexConvexAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btConvexConvexAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexConvexAlgorithm(long cPtr, boolean cMemoryOwn) {
+		this("btConvexConvexAlgorithm", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexConvexAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexConvexAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConvexConvexAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConvexConvexAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexConvexAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexConvexAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btConvexConvexAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver pdSolver, int numPerturbationIterations, int minimumPointsPerturbationThreshold) {
     this(gdxBulletJNI.new_btConvexConvexAlgorithm(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexPenetrationDepthSolver.getCPtr(pdSolver), pdSolver, numPerturbationIterations, minimumPointsPerturbationThreshold), true);

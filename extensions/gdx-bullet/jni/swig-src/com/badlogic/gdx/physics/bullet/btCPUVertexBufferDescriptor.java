@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btCPUVertexBufferDescriptor extends btVertexBufferDescriptor {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btCPUVertexBufferDescriptor(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btCPUVertexBufferDescriptor_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCPUVertexBufferDescriptor(long cPtr, boolean cMemoryOwn) {
+		this("btCPUVertexBufferDescriptor", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCPUVertexBufferDescriptor obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCPUVertexBufferDescriptor(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btCPUVertexBufferDescriptor_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btCPUVertexBufferDescriptor obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCPUVertexBufferDescriptor(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCPUVertexBufferDescriptor(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   static private long SwigConstructbtCPUVertexBufferDescriptor(java.nio.FloatBuffer basePointer, int vertexOffset, int vertexStride) {
     assert basePointer.isDirect() : "Buffer must be allocated direct.";

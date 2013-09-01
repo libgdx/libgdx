@@ -64,9 +64,9 @@ public class SoftMeshTest extends BaseBulletTest {
 		btSoftRigidDynamicsWorld dynamicsWorld = new btSoftRigidDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		
 		worldInfo = new btSoftBodyWorldInfo();
-		worldInfo.setM_broadphase(broadphase);
-		worldInfo.setM_dispatcher(dispatcher);
-		worldInfo.getM_sparsesdf().Initialize();
+		worldInfo.setBroadphase(broadphase);
+		worldInfo.setDispatcher(dispatcher);
+		worldInfo.getSparsesdf().Initialize();
 		
 		return new BulletWorld(collisionConfiguration, dispatcher, broadphase, solver, dynamicsWorld);
 	}
@@ -97,8 +97,8 @@ public class SoftMeshTest extends BaseBulletTest {
 		// Set mass of the first vertex to zero so its unmovable, comment out this line to make it a fully dynamic body.
 		softBody.setMass(0, 0);
 		com.badlogic.gdx.physics.bullet.Material pm = softBody.appendMaterial();
-		pm.setM_kLST(0.2f);
-		pm.setM_flags(0);
+		pm.setKLST(0.2f);
+		pm.setFlags(0);
 		softBody.generateBendingConstraints(2, pm);
 		// Be careful increasing iterations, it decreases performance (but increases accuracy). 
 		softBody.setConfig_piterations(7);
@@ -114,13 +114,13 @@ public class SoftMeshTest extends BaseBulletTest {
 	@Override
 	public void dispose () {
 		((btSoftRigidDynamicsWorld)(world.collisionWorld)).removeSoftBody(softBody);
-		softBody.delete();
+		softBody.dispose();
 		softBody = null;
 		indexMap = null;
 		
 		super.dispose();
 		
-		worldInfo.delete();
+		worldInfo.dispose();
 		worldInfo = null;
 		model.dispose();
 		model = null;

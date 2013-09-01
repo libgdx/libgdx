@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t obj) {
+  protected static long getCPtr(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

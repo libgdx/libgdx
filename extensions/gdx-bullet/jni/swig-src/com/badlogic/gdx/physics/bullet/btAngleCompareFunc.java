@@ -13,39 +13,47 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btAngleCompareFunc {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btAngleCompareFunc extends BulletBase {
+	private long swigCPtr;
+	
+	protected btAngleCompareFunc(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btAngleCompareFunc(long cPtr, boolean cMemoryOwn) {
+		this("btAngleCompareFunc", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btAngleCompareFunc obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btAngleCompareFunc(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btAngleCompareFunc(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setAnchor(btVector3 value) {
+    gdxBulletJNI.btAngleCompareFunc_anchor_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btAngleCompareFunc obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btAngleCompareFunc(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_anchor(btVector3 value) {
-    gdxBulletJNI.btAngleCompareFunc_m_anchor_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_anchor() {
-    long cPtr = gdxBulletJNI.btAngleCompareFunc_m_anchor_get(swigCPtr, this);
+  public btVector3 getAnchor() {
+    long cPtr = gdxBulletJNI.btAngleCompareFunc_anchor_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 

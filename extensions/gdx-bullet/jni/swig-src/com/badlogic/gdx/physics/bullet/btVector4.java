@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btVector4 extends btVector3 {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btVector4(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btVector4_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btVector4(long cPtr, boolean cMemoryOwn) {
+		this("btVector4", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btVector4 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btVector4(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btVector4_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btVector4 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btVector4(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btVector4(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btVector4() {
     this(gdxBulletJNI.new_btVector4__SWIG_0(), true);

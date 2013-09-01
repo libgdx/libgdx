@@ -13,51 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btHashString {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btHashString extends BulletBase {
+	private long swigCPtr;
+	
+	protected btHashString(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btHashString(long cPtr, boolean cMemoryOwn) {
+		this("btHashString", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btHashString obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btHashString(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btHashString(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setString(String value) {
+    gdxBulletJNI.btHashString_string_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btHashString obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public String getString() {
+    return gdxBulletJNI.btHashString_string_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btHashString(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_string(String value) {
-    gdxBulletJNI.btHashString_m_string_set(swigCPtr, this, value);
-  }
-
-  public String getM_string() {
-    return gdxBulletJNI.btHashString_m_string_get(swigCPtr, this);
-  }
-
-  public void setM_hash(long value) {
-    gdxBulletJNI.btHashString_m_hash_set(swigCPtr, this, value);
-  }
-
-  public long getM_hash() {
-    return gdxBulletJNI.btHashString_m_hash_get(swigCPtr, this);
+  public void setHash(long value) {
+    gdxBulletJNI.btHashString_hash_set(swigCPtr, this, value);
   }
 
   public long getHash() {
-    return gdxBulletJNI.btHashString_getHash(swigCPtr, this);
+    return gdxBulletJNI.btHashString_hash_get(swigCPtr, this);
   }
 
   public btHashString(String name) {

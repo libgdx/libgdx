@@ -13,67 +13,75 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTriangleInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTriangleInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTriangleInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleInfo(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btTriangleInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btTriangleInfo() {
     this(gdxBulletJNI.new_btTriangleInfo(), true);
   }
 
-  public void setM_flags(int value) {
-    gdxBulletJNI.btTriangleInfo_m_flags_set(swigCPtr, this, value);
+  public void setFlags(int value) {
+    gdxBulletJNI.btTriangleInfo_flags_set(swigCPtr, this, value);
   }
 
-  public int getM_flags() {
-    return gdxBulletJNI.btTriangleInfo_m_flags_get(swigCPtr, this);
+  public int getFlags() {
+    return gdxBulletJNI.btTriangleInfo_flags_get(swigCPtr, this);
   }
 
-  public void setM_edgeV0V1Angle(float value) {
-    gdxBulletJNI.btTriangleInfo_m_edgeV0V1Angle_set(swigCPtr, this, value);
+  public void setEdgeV0V1Angle(float value) {
+    gdxBulletJNI.btTriangleInfo_edgeV0V1Angle_set(swigCPtr, this, value);
   }
 
-  public float getM_edgeV0V1Angle() {
-    return gdxBulletJNI.btTriangleInfo_m_edgeV0V1Angle_get(swigCPtr, this);
+  public float getEdgeV0V1Angle() {
+    return gdxBulletJNI.btTriangleInfo_edgeV0V1Angle_get(swigCPtr, this);
   }
 
-  public void setM_edgeV1V2Angle(float value) {
-    gdxBulletJNI.btTriangleInfo_m_edgeV1V2Angle_set(swigCPtr, this, value);
+  public void setEdgeV1V2Angle(float value) {
+    gdxBulletJNI.btTriangleInfo_edgeV1V2Angle_set(swigCPtr, this, value);
   }
 
-  public float getM_edgeV1V2Angle() {
-    return gdxBulletJNI.btTriangleInfo_m_edgeV1V2Angle_get(swigCPtr, this);
+  public float getEdgeV1V2Angle() {
+    return gdxBulletJNI.btTriangleInfo_edgeV1V2Angle_get(swigCPtr, this);
   }
 
-  public void setM_edgeV2V0Angle(float value) {
-    gdxBulletJNI.btTriangleInfo_m_edgeV2V0Angle_set(swigCPtr, this, value);
+  public void setEdgeV2V0Angle(float value) {
+    gdxBulletJNI.btTriangleInfo_edgeV2V0Angle_set(swigCPtr, this, value);
   }
 
-  public float getM_edgeV2V0Angle() {
-    return gdxBulletJNI.btTriangleInfo_m_edgeV2V0Angle_get(swigCPtr, this);
+  public float getEdgeV2V0Angle() {
+    return gdxBulletJNI.btTriangleInfo_edgeV2V0Angle_get(swigCPtr, this);
   }
 
 }

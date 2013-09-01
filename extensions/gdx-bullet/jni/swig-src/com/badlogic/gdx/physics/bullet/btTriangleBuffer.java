@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleBuffer extends btTriangleCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btTriangleBuffer(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btTriangleBuffer_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleBuffer(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleBuffer", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleBuffer obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleBuffer(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btTriangleBuffer_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btTriangleBuffer obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleBuffer(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleBuffer(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public int getNumTriangles() {
     return gdxBulletJNI.btTriangleBuffer_getNumTriangles(swigCPtr, this);

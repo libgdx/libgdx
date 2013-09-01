@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btContactSolverInfo extends btContactSolverInfoData {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btContactSolverInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btContactSolverInfo_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btContactSolverInfo(long cPtr, boolean cMemoryOwn) {
+		this("btContactSolverInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btContactSolverInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btContactSolverInfo(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btContactSolverInfo_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btContactSolverInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btContactSolverInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btContactSolverInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btContactSolverInfo() {
     this(gdxBulletJNI.new_btContactSolverInfo(), true);

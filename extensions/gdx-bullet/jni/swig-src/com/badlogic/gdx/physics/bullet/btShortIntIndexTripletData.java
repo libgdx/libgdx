@@ -13,47 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btShortIntIndexTripletData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btShortIntIndexTripletData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btShortIntIndexTripletData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btShortIntIndexTripletData(long cPtr, boolean cMemoryOwn) {
+		this("btShortIntIndexTripletData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btShortIntIndexTripletData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btShortIntIndexTripletData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btShortIntIndexTripletData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setValues(short[] value) {
+    gdxBulletJNI.btShortIntIndexTripletData_values_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btShortIntIndexTripletData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public short[] getValues() {
+    return gdxBulletJNI.btShortIntIndexTripletData_values_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setPad(String value) {
+    gdxBulletJNI.btShortIntIndexTripletData_pad_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btShortIntIndexTripletData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_values(short[] value) {
-    gdxBulletJNI.btShortIntIndexTripletData_m_values_set(swigCPtr, this, value);
-  }
-
-  public short[] getM_values() {
-    return gdxBulletJNI.btShortIntIndexTripletData_m_values_get(swigCPtr, this);
-  }
-
-  public void setM_pad(String value) {
-    gdxBulletJNI.btShortIntIndexTripletData_m_pad_set(swigCPtr, this, value);
-  }
-
-  public String getM_pad() {
-    return gdxBulletJNI.btShortIntIndexTripletData_m_pad_get(swigCPtr, this);
+  public String getPad() {
+    return gdxBulletJNI.btShortIntIndexTripletData_pad_get(swigCPtr, this);
   }
 
   public btShortIntIndexTripletData() {

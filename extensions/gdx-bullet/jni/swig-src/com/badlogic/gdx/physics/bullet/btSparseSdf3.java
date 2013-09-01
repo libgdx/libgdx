@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSparseSdf3 {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSparseSdf3 extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSparseSdf3(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSparseSdf3(long cPtr, boolean cMemoryOwn) {
+		this("btSparseSdf3", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSparseSdf3 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSparseSdf3(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSparseSdf3 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSparseSdf3(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSparseSdf3(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void setCells(SWIGTYPE_p_btAlignedObjectArrayT_btSparseSdfT_3_t__Cell_p_t value) {
     gdxBulletJNI.btSparseSdf3_cells_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btSparseSdfT_3_t__Cell_p_t.getCPtr(value));

@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConeTwistConstraint extends btTypedConstraint {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btConeTwistConstraint(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btConeTwistConstraint_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConeTwistConstraint(long cPtr, boolean cMemoryOwn) {
+		this("btConeTwistConstraint", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConeTwistConstraint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConeTwistConstraint(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConeTwistConstraint_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConeTwistConstraint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConeTwistConstraint(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConeTwistConstraint(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btConeTwistConstraint(btRigidBody rbA, btRigidBody rbB, Matrix4 rbAFrame, Matrix4 rbBFrame) {
     this(gdxBulletJNI.new_btConeTwistConstraint__SWIG_0(btRigidBody.getCPtr(rbA), rbA, btRigidBody.getCPtr(rbB), rbB, rbAFrame, rbBFrame), true);

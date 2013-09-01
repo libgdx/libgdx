@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btMinkowskiSumShape extends btConvexInternalShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btMinkowskiSumShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btMinkowskiSumShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btMinkowskiSumShape(long cPtr, boolean cMemoryOwn) {
+		this("btMinkowskiSumShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btMinkowskiSumShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btMinkowskiSumShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btMinkowskiSumShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btMinkowskiSumShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btMinkowskiSumShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btMinkowskiSumShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btMinkowskiSumShape(btConvexShape shapeA, btConvexShape shapeB) {
     this(gdxBulletJNI.new_btMinkowskiSumShape(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB), true);

@@ -13,132 +13,140 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class SoftBodyPoseData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class SoftBodyPoseData extends BulletBase {
+	private long swigCPtr;
+	
+	protected SoftBodyPoseData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected SoftBodyPoseData(long cPtr, boolean cMemoryOwn) {
+		this("SoftBodyPoseData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(SoftBodyPoseData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected SoftBodyPoseData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_SoftBodyPoseData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setRot(SWIGTYPE_p_btMatrix3x3FloatData value) {
+    gdxBulletJNI.SoftBodyPoseData_rot_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
   }
 
-  public static long getCPtr(SoftBodyPoseData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public SWIGTYPE_p_btMatrix3x3FloatData getRot() {
+    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyPoseData_rot_get(swigCPtr, this), true);
   }
 
-  protected void finalize() {
-    delete();
+  public void setScale(SWIGTYPE_p_btMatrix3x3FloatData value) {
+    gdxBulletJNI.SoftBodyPoseData_scale_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_SoftBodyPoseData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public SWIGTYPE_p_btMatrix3x3FloatData getScale() {
+    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyPoseData_scale_get(swigCPtr, this), true);
   }
 
-  public void setM_rot(SWIGTYPE_p_btMatrix3x3FloatData value) {
-    gdxBulletJNI.SoftBodyPoseData_m_rot_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
+  public void setAqq(SWIGTYPE_p_btMatrix3x3FloatData value) {
+    gdxBulletJNI.SoftBodyPoseData_aqq_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btMatrix3x3FloatData getM_rot() {
-    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyPoseData_m_rot_get(swigCPtr, this), true);
+  public SWIGTYPE_p_btMatrix3x3FloatData getAqq() {
+    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyPoseData_aqq_get(swigCPtr, this), true);
   }
 
-  public void setM_scale(SWIGTYPE_p_btMatrix3x3FloatData value) {
-    gdxBulletJNI.SoftBodyPoseData_m_scale_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
+  public void setCom(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyPoseData_com_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btMatrix3x3FloatData getM_scale() {
-    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyPoseData_m_scale_get(swigCPtr, this), true);
-  }
-
-  public void setM_aqq(SWIGTYPE_p_btMatrix3x3FloatData value) {
-    gdxBulletJNI.SoftBodyPoseData_m_aqq_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_btMatrix3x3FloatData getM_aqq() {
-    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftBodyPoseData_m_aqq_get(swigCPtr, this), true);
-  }
-
-  public void setM_com(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyPoseData_m_com_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
-
-  public btVector3FloatData getM_com() {
-    long cPtr = gdxBulletJNI.SoftBodyPoseData_m_com_get(swigCPtr, this);
+  public btVector3FloatData getCom() {
+    long cPtr = gdxBulletJNI.SoftBodyPoseData_com_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_positions(btVector3FloatData value) {
-    gdxBulletJNI.SoftBodyPoseData_m_positions_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setPositions(btVector3FloatData value) {
+    gdxBulletJNI.SoftBodyPoseData_positions_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_positions() {
-    long cPtr = gdxBulletJNI.SoftBodyPoseData_m_positions_get(swigCPtr, this);
+  public btVector3FloatData getPositions() {
+    long cPtr = gdxBulletJNI.SoftBodyPoseData_positions_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_weights(java.nio.FloatBuffer value) {
+  public void setWeights(java.nio.FloatBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.SoftBodyPoseData_m_weights_set(swigCPtr, this, value);
+      gdxBulletJNI.SoftBodyPoseData_weights_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.FloatBuffer getM_weights() {
-    return gdxBulletJNI.SoftBodyPoseData_m_weights_get(swigCPtr, this);
+  public java.nio.FloatBuffer getWeights() {
+    return gdxBulletJNI.SoftBodyPoseData_weights_get(swigCPtr, this);
 }
 
-  public void setM_numPositions(int value) {
-    gdxBulletJNI.SoftBodyPoseData_m_numPositions_set(swigCPtr, this, value);
+  public void setNumPositions(int value) {
+    gdxBulletJNI.SoftBodyPoseData_numPositions_set(swigCPtr, this, value);
   }
 
-  public int getM_numPositions() {
-    return gdxBulletJNI.SoftBodyPoseData_m_numPositions_get(swigCPtr, this);
+  public int getNumPositions() {
+    return gdxBulletJNI.SoftBodyPoseData_numPositions_get(swigCPtr, this);
   }
 
-  public void setM_numWeigts(int value) {
-    gdxBulletJNI.SoftBodyPoseData_m_numWeigts_set(swigCPtr, this, value);
+  public void setNumWeigts(int value) {
+    gdxBulletJNI.SoftBodyPoseData_numWeigts_set(swigCPtr, this, value);
   }
 
-  public int getM_numWeigts() {
-    return gdxBulletJNI.SoftBodyPoseData_m_numWeigts_get(swigCPtr, this);
+  public int getNumWeigts() {
+    return gdxBulletJNI.SoftBodyPoseData_numWeigts_get(swigCPtr, this);
   }
 
-  public void setM_bvolume(int value) {
-    gdxBulletJNI.SoftBodyPoseData_m_bvolume_set(swigCPtr, this, value);
+  public void setBvolume(int value) {
+    gdxBulletJNI.SoftBodyPoseData_bvolume_set(swigCPtr, this, value);
   }
 
-  public int getM_bvolume() {
-    return gdxBulletJNI.SoftBodyPoseData_m_bvolume_get(swigCPtr, this);
+  public int getBvolume() {
+    return gdxBulletJNI.SoftBodyPoseData_bvolume_get(swigCPtr, this);
   }
 
-  public void setM_bframe(int value) {
-    gdxBulletJNI.SoftBodyPoseData_m_bframe_set(swigCPtr, this, value);
+  public void setBframe(int value) {
+    gdxBulletJNI.SoftBodyPoseData_bframe_set(swigCPtr, this, value);
   }
 
-  public int getM_bframe() {
-    return gdxBulletJNI.SoftBodyPoseData_m_bframe_get(swigCPtr, this);
+  public int getBframe() {
+    return gdxBulletJNI.SoftBodyPoseData_bframe_get(swigCPtr, this);
   }
 
-  public void setM_restVolume(float value) {
-    gdxBulletJNI.SoftBodyPoseData_m_restVolume_set(swigCPtr, this, value);
+  public void setRestVolume(float value) {
+    gdxBulletJNI.SoftBodyPoseData_restVolume_set(swigCPtr, this, value);
   }
 
-  public float getM_restVolume() {
-    return gdxBulletJNI.SoftBodyPoseData_m_restVolume_get(swigCPtr, this);
+  public float getRestVolume() {
+    return gdxBulletJNI.SoftBodyPoseData_restVolume_get(swigCPtr, this);
   }
 
-  public void setM_pad(int value) {
-    gdxBulletJNI.SoftBodyPoseData_m_pad_set(swigCPtr, this, value);
+  public void setPad(int value) {
+    gdxBulletJNI.SoftBodyPoseData_pad_set(swigCPtr, this, value);
   }
 
-  public int getM_pad() {
-    return gdxBulletJNI.SoftBodyPoseData_m_pad_get(swigCPtr, this);
+  public int getPad() {
+    return gdxBulletJNI.SoftBodyPoseData_pad_get(swigCPtr, this);
   }
 
   public SoftBodyPoseData() {
