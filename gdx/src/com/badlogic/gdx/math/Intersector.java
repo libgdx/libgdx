@@ -772,7 +772,7 @@ public final class Intersector {
 	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
-	 * @param mtv A Minimum Translation Vector to fill in the case of a collision (optional).
+	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
 	 * @return Whether polygons overlap. */
 	public static boolean overlapConvexPolygons (Polygon p1, Polygon p2, MinimumTranslationVector mtv) {
 		return overlapConvexPolygons(p1.getTransformedVertices(), p2.getTransformedVertices(), mtv);
@@ -783,7 +783,7 @@ public final class Intersector {
 	 * 
 	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.
-	 * @param mtv A Minimum Translation Vector to fill in the case of a collision (optional).
+	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
 	 * @return Whether polygons overlap. */
 	public static boolean overlapConvexPolygons (float[] verts1, float[] verts2, MinimumTranslationVector mtv) {
 		float overlap = Float.MAX_VALUE;

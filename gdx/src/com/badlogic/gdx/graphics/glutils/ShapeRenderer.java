@@ -209,27 +209,23 @@ public class ShapeRenderer {
 
 	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public final void line (float x, float y, float z, float x2, float y2, float z2) {
-
 		line(x, y, z, x2, y2, z2, color, color);
 	}
 
 	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. Lazy method that "just" calls the
 	 * "other" method and unpacks the Vector3 for you */
 	public final void line (Vector3 v0, Vector3 v1) {
-
 		line(v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color);
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public final void line (float x, float y, float x2, float y2) {
-
 		line(x, y, 0.0f, x2, y2, 0.0f, color, color);
 	}
 
 	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. Lazy method that "just" calls the
 	 * "other" method and unpacks the Vector2 for you */
 	public final void line (Vector2 v0, Vector2 v1) {
-
 		line(v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color);
 	}
 
@@ -238,7 +234,6 @@ public class ShapeRenderer {
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
 	public final void line (float x, float y, float x2, float y2, Color c1, Color c2) {
-
 		line(x, y, 0.0f, x2, y2, 0.0f, c1, c2);
 	}
 
@@ -836,6 +831,10 @@ public class ShapeRenderer {
 	/** Returns the current {@link ShapeType} used */
 	public ShapeType getCurrentType () {
 		return currType;
+	}
+
+	public ImmediateModeRenderer getRenderer () {
+		return renderer;
 	}
 
 	public void dispose () {
