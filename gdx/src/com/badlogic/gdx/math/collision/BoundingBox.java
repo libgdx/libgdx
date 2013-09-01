@@ -242,6 +242,28 @@ public class BoundingBox implements Serializable {
 			|| (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y && max.z >= b.max.z);
 	}
 
+	/** Returns whether the given bounding box is intersecting this bounding box (at least one point in).
+	 * @param b The bounding box
+	 * @return Whether the given bounding box is intersected  */
+	public boolean intersects (BoundingBox b) {
+		if(!isValid())
+			return false;
+				
+		//test using SAT (separating axis theorem)
+		
+		float lx = Math.abs(this.cnt.x - b.cnt.x);
+		float sumx = (this.dim.x / 2.0f) + (b.dim.x / 2.0f); 
+		
+		float ly = Math.abs(this.cnt.y - b.cnt.y);
+		float sumy = (this.dim.y / 2.0f) + (b.dim.y / 2.0f); 
+		
+		float lz = Math.abs(this.cnt.z - b.cnt.z);
+		float sumz = (this.dim.z / 2.0f) + (b.dim.z / 2.0f); 
+		
+		return (lx <= sumx && ly <= sumy && lz <= sumz);  
+		
+	}
+	
 	/** Returns whether the given vector is contained in this bounding box.
 	 * @param v The vector
 	 * @return Whether the vector is contained or not. */
