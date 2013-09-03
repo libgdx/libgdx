@@ -164,8 +164,40 @@ public final class Intersector {
 		return Math.abs((pointX - startX) * (endY - startY) - (pointY - startY) * (endX - startX)) / normalLength;
 	}
 
+	/** Returns the distance between the given segment and point. */
+	public static float distanceSegmentPoint (float startX, float startY, float endX, float endY, float pointX, float pointY) {
+		return nearestSegmentPoint(startX, startY, endX, endY, pointX, pointY, v2tmp).dst(pointX, pointY);
+	}
+
+	/** Returns the distance between the given segment and point. */
+	public static float distanceSegmentPoint (Vector2 start, Vector2 end, Vector2 point) {
+		return nearestSegmentPoint(start, end, point, v2tmp).dst(point);
+	}
+
+	/** Returns a point on the segment nearest to the specified point. */
+	public static Vector2 nearestSegmentPoint (Vector2 start, Vector2 end, Vector2 point, Vector2 nearest) {
+		float length2 = start.dst2(end);
+		if (length2 == 0) return nearest.set(start);
+		float t = ((point.x - start.x) * (end.x - start.x) + (point.y - start.y) * (end.y - start.y)) / length2;
+		if (t < 0) return nearest.set(start);
+		if (t > 1) return nearest.set(end);
+		return nearest.set(start.x + t * (end.x - start.x), start.y + t * (end.y - start.y));
+	}
+
+	/** Returns a point on the segment nearest to the specified point. */
+	public static Vector2 nearestSegmentPoint (float startX, float startY, float endX, float endY, float pointX, float pointY,
+		Vector2 nearest) {
+		final float xDiff = endX - startX;
+		final float yDiff = endY - startY;
+		float length2 = xDiff * xDiff + yDiff * yDiff;
+		if (length2 == 0) return nearest.set(startX, startY);
+		float t = ((pointX - startX) * (endX - startX) + (pointY - startY) * (endY - startY)) / length2;
+		if (t < 0) return nearest.set(startX, startY);
+		if (t > 1) return nearest.set(endX, endY);
+		return nearest.set(startX + t * (endX - startX), startY + t * (endY - startY));
+	}
+
 	/** Returns whether the given line segment intersects the given circle.
-	 * 
 	 * @param start The start point of the line segment
 	 * @param end The end point of the line segment
 	 * @param center The center of the circle
@@ -503,11 +535,12 @@ public final class Intersector {
 		return max >= 0 && max >= min;
 	}
 
-	static Vector3 tmp = new Vector3();
 	static Vector3 best = new Vector3();
+	static Vector3 tmp = new Vector3();
 	static Vector3 tmp1 = new Vector3();
 	static Vector3 tmp2 = new Vector3();
 	static Vector3 tmp3 = new Vector3();
+	static Vector2 v2tmp = new Vector2();
 
 	/** Intersects the given ray with list of triangles. Returns the nearest intersection point in intersection
 	 * 
