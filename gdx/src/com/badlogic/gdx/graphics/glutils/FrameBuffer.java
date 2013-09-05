@@ -219,7 +219,22 @@ public class FrameBuffer implements Disposable {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 
-	private void addManagedFrameBuffer (Application app, FrameBuffer frameBuffer) {
+	/** @return the color buffer texture */
+	public Texture getColorBufferTexture () {
+		return colorTexture;
+	}
+
+	/** @return the height of the framebuffer in pixels */
+	public int getHeight () {
+		return colorTexture.getHeight();
+	}
+
+	/** @return the width of the framebuffer in pixels */
+	public int getWidth () {
+		return colorTexture.getWidth();
+	}
+
+	private static void addManagedFrameBuffer (Application app, FrameBuffer frameBuffer) {
 		List<FrameBuffer> managedResources = buffers.get(app);
 		if (managedResources == null) managedResources = new ArrayList<FrameBuffer>();
 		managedResources.add(frameBuffer);
@@ -242,30 +257,17 @@ public class FrameBuffer implements Disposable {
 		buffers.remove(app);
 	}
 
-	public static String getManagedStatus () {
-		StringBuilder builder = new StringBuilder();
-		int i = 0;
+	public static StringBuilder getManagedStatus (final StringBuilder builder) {
 		builder.append("Managed buffers/app: { ");
 		for (Application app : buffers.keySet()) {
 			builder.append(buffers.get(app).size());
 			builder.append(" ");
 		}
 		builder.append("}");
-		return builder.toString();
+		return builder;
 	}
-
-	/** @return the color buffer texture */
-	public Texture getColorBufferTexture () {
-		return colorTexture;
-	}
-
-	/** @return the height of the framebuffer in pixels */
-	public int getHeight () {
-		return colorTexture.getHeight();
-	}
-
-	/** @return the width of the framebuffer in pixels */
-	public int getWidth () {
-		return colorTexture.getWidth();
+	
+	public static String getManagedStatus () {
+		return getManagedStatus(new StringBuilder()).toString();
 	}
 }

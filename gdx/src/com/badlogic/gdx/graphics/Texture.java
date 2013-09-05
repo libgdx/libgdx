@@ -174,27 +174,22 @@ public class Texture implements Disposable {
 
 		if (!data.isPrepared()) data.prepare();
 
-		if (data.getType() == TextureDataType.Pixmap) {
+		final TextureDataType type = data.getType(); 
+		if (type == TextureDataType.Pixmap) {
 			Pixmap pixmap = data.consumePixmap();
 			uploadImageData(pixmap);
 			if (data.disposePixmap()) pixmap.dispose();
-			setFilter(minFilter, magFilter);
-			setWrap(uWrap, vWrap);
 		}
-
-		if (data.getType() == TextureDataType.Compressed) {
+		else if (type == TextureDataType.Compressed) {
 			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 			data.consumeCompressedData();
-			setFilter(minFilter, magFilter);
-			setWrap(uWrap, vWrap);
 		}
-		
-		if (data.getType() == TextureDataType.Float) {
+		else if (type == TextureDataType.Float) {
 			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 			data.consumeCompressedData();
-			setFilter(minFilter, magFilter);
-			setWrap(uWrap, vWrap);
 		}
+		setFilter(minFilter, magFilter);
+		setWrap(uWrap, vWrap);
 		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
 	}
 
@@ -304,6 +299,21 @@ public class Texture implements Disposable {
 		return glHandle;
 	}
 
+	/** Sets the {@link TextureWrap} for this texture on the u and v axis. Assumes the texture is bound and active!
+	 * 
+	 * @param u the u wrap
+	 * @param v the v wrap */
+	public void unsafeSetWrap(TextureWrap u, TextureWrap v) {
+		if (u != null && uWrap != u) {
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, u.getGLEnum());
+			uWrap = u;
+		}
+		if (v != null && vWrap != v) {
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, v.getGLEnum());
+			vWrap = v;
+		}
+	}
+	
 	/** Sets the {@link TextureWrap} for this texture on the u and v axis. This will bind this texture!
 	 * 
 	 * @param u the u wrap
@@ -314,6 +324,22 @@ public class Texture implements Disposable {
 		bind();
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, u.getGLEnum());
 		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, v.getGLEnum());
+	}
+	
+	/** Sets the {@link TextureFilter} for this texture for minification and magnification.
+	 * Assumes the texture is bound and active!
+	 * 
+	 * @param minFilter the minification filter
+	 * @param magFilter the magnification filter */
+	public void unsafeSetFilter(TextureFilter minFilter, TextureFilter magFilter) {
+		if (minFilter != null && this.minFilter != minFilter) {
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
+			this.minFilter = minFilter;
+		}
+		if (magFilter != null && this.magFilter != magFilter) {
+			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
+			this.magFilter = magFilter;
+		}
 	}
 
 	public void setFilter (TextureFilter minFilter, TextureFilter magFilter) {

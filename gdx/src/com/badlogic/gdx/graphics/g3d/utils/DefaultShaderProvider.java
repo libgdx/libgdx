@@ -29,8 +29,10 @@ public class DefaultShaderProvider extends BaseShaderProvider {
 	protected Shader createShader(final Renderable renderable) {
 		Gdx.app.log("DefaultShaderProvider", "Creating new shader");
 		if (Gdx.graphics.isGL20Available()) {
-            return new DefaultShader(vertexShader, fragmentShader, renderable, renderable.lights != null, renderable.lights != null && renderable.lights.fog != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
-        }
+            return new DefaultShader(vertexShader, fragmentShader, renderable, renderable.lights != null,
+            	renderable.lights != null && renderable.lights.shadowMap != null, 
+            	renderable.lights != null && renderable.lights.fog != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
+		}
 		return new GLES10Shader();
 	}
 }
