@@ -271,10 +271,10 @@ public class Model implements Disposable {
 				}
 				
 				TextureDescriptor descriptor = new TextureDescriptor(texture);
-				descriptor.minFilter = GL20.GL_LINEAR;
-				descriptor.magFilter = GL20.GL_LINEAR;
-				descriptor.uWrap = GL20.GL_REPEAT;
-				descriptor.vWrap = GL20.GL_REPEAT;
+				descriptor.minFilter = Texture.TextureFilter.Linear;
+				descriptor.magFilter = Texture.TextureFilter.Linear;
+				descriptor.uWrap = Texture.TextureWrap.Repeat;
+				descriptor.vWrap = Texture.TextureWrap.Repeat;
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
 					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
