@@ -96,6 +96,23 @@ public final class Intersector {
 		return true;
 	}
 
+	public static Vector2 triangleCentroid (float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid) {
+		centroid.x = (x1 + x2 + x3) / 3;
+		centroid.y = (x1 + x2 + x3) / 3;
+		return centroid;
+	}
+
+	public static Vector2 quadrilateralCentroid (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+		Vector2 centroid) {
+		float avgX1 = (x1 + x2 + x3) / 3;
+		float avgY1 = (y1 + y2 + y3) / 3;
+		float avgX2 = (x1 + x4 + x3) / 3;
+		float avgY2 = (y1 + y4 + y3) / 3;
+		centroid.x = avgX1 - (avgX1 - avgX2) / 2;
+		centroid.y = avgY1 - (avgY1 - avgY2) / 2;
+		return centroid;
+	}
+
 	/** Determines on which side of the given line the point is. Returns -1 if the point is on the left side of the line, 0 if the
 	 * point is on the line and 1 if the point is on the right side of the line. Left and right are relative to the lines direction
 	 * which is linePoint1 to linePoint2. */
