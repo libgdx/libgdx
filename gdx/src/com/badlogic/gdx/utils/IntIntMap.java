@@ -308,10 +308,12 @@ public class IntIntMap {
 	 * put into the map. */
 	public int getAndIncrement (int key, int defaultValue, int increment) {
 		if (key == 0) {
-			zeroValue = (hasZeroValue ? zeroValue : defaultValue) + increment;
-			if (!hasZeroValue) {
+			if (hasZeroValue) {
+				zeroValue += increment;
+			} else {
 				hasZeroValue = true;
-				size++;
+				zeroValue = defaultValue + increment;
+				++size;
 			}
 			return zeroValue;
 		}

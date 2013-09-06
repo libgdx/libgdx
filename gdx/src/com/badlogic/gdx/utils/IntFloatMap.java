@@ -310,10 +310,12 @@ public class IntFloatMap {
 	 * put into the map. */
 	public float getAndIncrement (int key, float defaultValue, float increment) {
 		if (key == 0) {
-			zeroValue = (hasZeroValue ? zeroValue : defaultValue) + increment;
-			if (!hasZeroValue) {
+			if (hasZeroValue) {
+				zeroValue += increment;
+			} else {
 				hasZeroValue = true;
-				size++;
+				zeroValue = defaultValue + increment;
+				++size;
 			}
 			return zeroValue;
 		}
