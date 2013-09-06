@@ -309,6 +309,16 @@ public class IntFloatMap {
 	/** Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
 	 * put into the map. */
 	public float getAndIncrement (int key, float defaultValue, float increment) {
+		if (key == 0) {
+			if (hasZeroValue) {
+				zeroValue += increment;
+			} else {
+				hasZeroValue = true;
+				zeroValue = defaultValue + increment;
+				++size;
+			}
+			return zeroValue;
+		}
 		int index = key & mask;
 		if (key != keyTable[index]) {
 			index = hash2(key);
