@@ -454,7 +454,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			for (int v = 0; v <= divisionsV; v++) {
 				final short idx = vertex(vertTmp7.set(vertTmp5).lerp(vertTmp6, (float)v / (float)divisionsV));
 				if (u > 0 && v > 0)
-					rect((short)(idx-divisionsV-1), (short)(idx-1), idx, (short)(idx-divisionsV));
+					rect((short)(idx-divisionsV-2), (short)(idx-1), idx, (short)(idx-divisionsV-1));
 			}
 		}
 	}
@@ -465,6 +465,14 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMin),
 			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMax),
 			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMax),
+			divisionsU, divisionsV);
+	}
+	
+	public void patch(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
+		patch(vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uMin,vMin),
+			vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uMax,vMin),
+			vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(uMax,vMax),
+			vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uMin,vMax),
 			divisionsU, divisionsV);
 	}
 	
