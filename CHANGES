@@ -1,4 +1,6 @@
 [0.9.9]
+- added RoboVM backend jar and native libs (libObjectAL, libgdx, in ios/ folder of distribution)
+- added RoboVM backend to build
 - changed Bullet wrapper API, see http://www.badlogicgames.com/wordpress/?p=3150
 - changed MusicLoader and SoundLoader to be asynchronous loaders
 - changed behaviour of Net#sendHttpRequest() so HttpResponseListener#handleHttpResponse() callback is executed in worker thread instead of main thread

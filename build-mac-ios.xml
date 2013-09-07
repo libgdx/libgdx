@@ -39,6 +39,12 @@
 			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/ios32/gdx-backend-ios.dll"/>
 		</ant>
 	</target>
+    
+    <target name="backend-robovm" depends="core">
+        <exec dir="backends/gdx-backend-robovm" executable="/bin/bash">
+            <arg value="build-objectal.sh"/>
+        </exec>
+	</target>
 	
 	<target name="freetype" depends="core">
 		<ant antfile="build-macosx32.xml" dir="extensions/gdx-freetype/jni">
@@ -85,6 +91,6 @@
 		</ant>
 	</target>
 	
-	<target name="all" depends="core,backend-iosmonotouch,freetype,bullet,audio,image,controllers">	
+	<target name="all" depends="core,backend-iosmonotouch,backend-robovm,freetype,bullet,audio,image,controllers">	
 	</target>
 </project>
