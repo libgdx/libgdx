@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btVehicleRaycaster {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btVehicleRaycaster extends BulletBase {
+	private long swigCPtr;
+	
+	protected btVehicleRaycaster(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btVehicleRaycaster(long cPtr, boolean cMemoryOwn) {
+		this("btVehicleRaycaster", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btVehicleRaycaster obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btVehicleRaycaster(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btVehicleRaycaster obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btVehicleRaycaster(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btVehicleRaycaster(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public SWIGTYPE_p_void castRay(Vector3 from, Vector3 to, SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult result) {
     long cPtr = gdxBulletJNI.btVehicleRaycaster_castRay(swigCPtr, this, from, to, SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult.getCPtr(result));

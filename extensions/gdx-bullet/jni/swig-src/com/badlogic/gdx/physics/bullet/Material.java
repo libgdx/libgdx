@@ -14,62 +14,70 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Material extends Element {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected Material(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.Material_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected Material(long cPtr, boolean cMemoryOwn) {
+		this("Material", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(Material obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected Material(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.Material_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_Material(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setKLST(float value) {
+    gdxBulletJNI.Material_kLST_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(Material obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float getKLST() {
+    return gdxBulletJNI.Material_kLST_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setKAST(float value) {
+    gdxBulletJNI.Material_kAST_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_Material(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
+  public float getKAST() {
+    return gdxBulletJNI.Material_kAST_get(swigCPtr, this);
   }
 
-  public void setM_kLST(float value) {
-    gdxBulletJNI.Material_m_kLST_set(swigCPtr, this, value);
+  public void setKVST(float value) {
+    gdxBulletJNI.Material_kVST_set(swigCPtr, this, value);
   }
 
-  public float getM_kLST() {
-    return gdxBulletJNI.Material_m_kLST_get(swigCPtr, this);
+  public float getKVST() {
+    return gdxBulletJNI.Material_kVST_get(swigCPtr, this);
   }
 
-  public void setM_kAST(float value) {
-    gdxBulletJNI.Material_m_kAST_set(swigCPtr, this, value);
+  public void setFlags(int value) {
+    gdxBulletJNI.Material_flags_set(swigCPtr, this, value);
   }
 
-  public float getM_kAST() {
-    return gdxBulletJNI.Material_m_kAST_get(swigCPtr, this);
-  }
-
-  public void setM_kVST(float value) {
-    gdxBulletJNI.Material_m_kVST_set(swigCPtr, this, value);
-  }
-
-  public float getM_kVST() {
-    return gdxBulletJNI.Material_m_kVST_get(swigCPtr, this);
-  }
-
-  public void setM_flags(int value) {
-    gdxBulletJNI.Material_m_flags_set(swigCPtr, this, value);
-  }
-
-  public int getM_flags() {
-    return gdxBulletJNI.Material_m_flags_get(swigCPtr, this);
+  public int getFlags() {
+    return gdxBulletJNI.Material_flags_get(swigCPtr, this);
   }
 
   public Material() {

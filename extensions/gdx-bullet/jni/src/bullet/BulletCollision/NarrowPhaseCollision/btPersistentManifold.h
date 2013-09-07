@@ -28,10 +28,18 @@ struct btCollisionResult;
 ///maximum contact breaking and merging threshold
 extern btScalar gContactBreakingThreshold;
 
+#ifndef SWIG
+class btPersistentManifold;
+
 typedef bool (*ContactDestroyedCallback)(void* userPersistentData);
 typedef bool (*ContactProcessedCallback)(btManifoldPoint& cp,void* body0,void* body1);
+typedef void (*ContactStartedCallback)(btPersistentManifold* const &manifold);
+typedef void (*ContactEndedCallback)(btPersistentManifold* const &manifold);
 extern ContactDestroyedCallback	gContactDestroyedCallback;
 extern ContactProcessedCallback gContactProcessedCallback;
+extern ContactStartedCallback gContactStartedCallback;
+extern ContactEndedCallback gContactEndedCallback;
+#endif //SWIG
 
 //the enum starts at 1024 to avoid type conflicts with btTypedConstraint
 enum btContactManifoldTypes
@@ -171,6 +179,11 @@ public:
 
 		btAssert(m_pointCache[lastUsedIndex].m_userPersistentData==0);
 		m_cachedPoints--;
+
+		if(gContactEndedCallback && m_cachedPoints == 0)
+		{
+			gContactEndedCallback(this);
+		}
 	}
 	void replaceContactPoint(const btManifoldPoint& newPoint,int insertIndex)
 	{
@@ -224,6 +237,11 @@ public:
 		for (i=0;i<m_cachedPoints;i++)
 		{
 			clearUserCache(m_pointCache[i]);
+		}
+
+		if(gContactEndedCallback && m_cachedPoints)
+		{
+			gContactEndedCallback(this);
 		}
 		m_cachedPoints = 0;
 	}

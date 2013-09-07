@@ -66,11 +66,11 @@ public class Field {
 	}
 
 	public Type getEnclosingType () {
-		return ReflectionCache.instance.forName(enclosingType.getName());
+		return ReflectionCache.getType(enclosingType);
 	}
 
 	public Type getType () {
-		return ReflectionCache.instance.forName(type.getName());
+		return ReflectionCache.getType(type);
 	}
 
 	public boolean isSynthetic () {

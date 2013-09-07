@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btSoftBody__eVSolver___ {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSoftBody__eVSolver___ obj) {
+  protected static long getCPtr(SWIGTYPE_p_btSoftBody__eVSolver___ obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

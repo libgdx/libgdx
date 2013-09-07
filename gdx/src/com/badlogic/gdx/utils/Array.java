@@ -273,6 +273,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Removes and returns the last item. */
 	public T pop () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		--size;
 		T item = items[size];
 		items[size] = null;
@@ -281,6 +282,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Returns the last item. */
 	public T peek () {
+		if (size == 0) throw new IllegalStateException("Array is empty.");
 		return items[size - 1];
 	}
 
@@ -315,7 +317,7 @@ public class Array<T> implements Iterable<T> {
 	/** Creates a new backing array with the specified size containing the current items. */
 	protected T[] resize (int newSize) {
 		T[] items = this.items;
-		T[] newItems = (T[]) ArrayReflection.newInstance(items.getClass().getComponentType(), newSize);
+		T[] newItems = (T[])ArrayReflection.newInstance(items.getClass().getComponentType(), newSize);
 		System.arraycopy(items, 0, newItems, 0, Math.min(size, newItems.length));
 		this.items = newItems;
 		return newItems;
@@ -333,6 +335,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void reverse () {
+		T[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
 			T temp = items[i];
@@ -342,6 +345,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void shuffle () {
+		T[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = MathUtils.random(i);
 			T temp = items[i];
@@ -353,8 +357,7 @@ public class Array<T> implements Iterable<T> {
 	/** Returns an iterator for the items in the array. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link ArrayIterator} constructor for nested or multithreaded iteration. */
 	public Iterator<T> iterator () {
-		if (iterable == null) 
-			iterable = new ArrayIterable(this);
+		if (iterable == null) iterable = new ArrayIterable(this);
 		return iterable.iterator();
 	}
 
@@ -447,7 +450,7 @@ public class Array<T> implements Iterable<T> {
 		public ArrayIterator (Array<T> array) {
 			this(array, true);
 		}
-		
+
 		public ArrayIterator (Array<T> array, boolean allowRemove) {
 			this.array = array;
 			this.allowRemove = allowRemove;
@@ -473,16 +476,16 @@ public class Array<T> implements Iterable<T> {
 			index = 0;
 		}
 	}
-	
+
 	static public class ArrayIterable<T> implements Iterable<T> {
 		private final Array<T> array;
 		private final boolean allowRemove;
 		private ArrayIterator iterator1, iterator2;
-		
+
 		public ArrayIterable (Array<T> array) {
 			this(array, true);
 		}
-		
+
 		public ArrayIterable (Array<T> array, boolean allowRemove) {
 			this.array = array;
 			this.allowRemove = allowRemove;

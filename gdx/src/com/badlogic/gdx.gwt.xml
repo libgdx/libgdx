@@ -133,6 +133,7 @@
 	<!-- graphics/g3d/materials -->
 		<include name="graphics/g3d/materials/BlendingAttribute.java"/>
 		<include name="graphics/g3d/materials/ColorAttribute.java"/>
+		<include name="graphics/g3d/materials/DepthTestAttribute.java"/>
 		<include name="graphics/g3d/materials/FloatAttribute.java"/>
 		<include name="graphics/g3d/materials/IntAttribute.java"/>
 		<include name="graphics/g3d/materials/Material.java"/>
@@ -174,6 +175,7 @@
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
+		<include name="graphics/g3d/utils/FirstPersonCameraController.java"/>
 		<include name="graphics/g3d/utils/MeshBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
 		<include name="graphics/g3d/utils/ModelBuilder.java"/>
@@ -356,7 +358,7 @@
 		<include name="scenes/scene2d/ui/List.java"/>
 		<include name="scenes/scene2d/ui/ScrollPane.java"/>
 		<include name="scenes/scene2d/ui/SelectBox.java"/>
-		<include name="scenes/scene2d/ui/Skin.java"/> <!-- Emulated: Reflection -->
+		<include name="scenes/scene2d/ui/Skin.java"/>
 		<include name="scenes/scene2d/ui/Slider.java"/>
 		<include name="scenes/scene2d/ui/SplitPane.java"/>
 		<include name="scenes/scene2d/ui/Stack.java"/>

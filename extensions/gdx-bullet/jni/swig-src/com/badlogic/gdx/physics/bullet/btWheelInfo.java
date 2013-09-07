@@ -13,208 +13,216 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btWheelInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btWheelInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected btWheelInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btWheelInfo(long cPtr, boolean cMemoryOwn) {
+		this("btWheelInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btWheelInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btWheelInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btWheelInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setRaycastInfo(SWIGTYPE_p_btWheelInfo__RaycastInfo value) {
+    gdxBulletJNI.btWheelInfo_raycastInfo_set(swigCPtr, this, SWIGTYPE_p_btWheelInfo__RaycastInfo.getCPtr(value));
   }
 
-  public static long getCPtr(btWheelInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btWheelInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_raycastInfo(SWIGTYPE_p_btWheelInfo__RaycastInfo value) {
-    gdxBulletJNI.btWheelInfo_m_raycastInfo_set(swigCPtr, this, SWIGTYPE_p_btWheelInfo__RaycastInfo.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_btWheelInfo__RaycastInfo getM_raycastInfo() {
-    long cPtr = gdxBulletJNI.btWheelInfo_m_raycastInfo_get(swigCPtr, this);
+  public SWIGTYPE_p_btWheelInfo__RaycastInfo getRaycastInfo() {
+    long cPtr = gdxBulletJNI.btWheelInfo_raycastInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btWheelInfo__RaycastInfo(cPtr, false);
   }
 
-  public void setM_worldTransform(btTransform value) {
-    gdxBulletJNI.btWheelInfo_m_worldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setWorldTransform(btTransform value) {
+    gdxBulletJNI.btWheelInfo_worldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_worldTransform() {
-    long cPtr = gdxBulletJNI.btWheelInfo_m_worldTransform_get(swigCPtr, this);
+  public btTransform getWorldTransform() {
+    long cPtr = gdxBulletJNI.btWheelInfo_worldTransform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_chassisConnectionPointCS(btVector3 value) {
-    gdxBulletJNI.btWheelInfo_m_chassisConnectionPointCS_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setChassisConnectionPointCS(btVector3 value) {
+    gdxBulletJNI.btWheelInfo_chassisConnectionPointCS_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_chassisConnectionPointCS() {
-    long cPtr = gdxBulletJNI.btWheelInfo_m_chassisConnectionPointCS_get(swigCPtr, this);
+  public btVector3 getChassisConnectionPointCS() {
+    long cPtr = gdxBulletJNI.btWheelInfo_chassisConnectionPointCS_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_wheelDirectionCS(btVector3 value) {
-    gdxBulletJNI.btWheelInfo_m_wheelDirectionCS_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setWheelDirectionCS(btVector3 value) {
+    gdxBulletJNI.btWheelInfo_wheelDirectionCS_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_wheelDirectionCS() {
-    long cPtr = gdxBulletJNI.btWheelInfo_m_wheelDirectionCS_get(swigCPtr, this);
+  public btVector3 getWheelDirectionCS() {
+    long cPtr = gdxBulletJNI.btWheelInfo_wheelDirectionCS_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_wheelAxleCS(btVector3 value) {
-    gdxBulletJNI.btWheelInfo_m_wheelAxleCS_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setWheelAxleCS(btVector3 value) {
+    gdxBulletJNI.btWheelInfo_wheelAxleCS_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_wheelAxleCS() {
-    long cPtr = gdxBulletJNI.btWheelInfo_m_wheelAxleCS_get(swigCPtr, this);
+  public btVector3 getWheelAxleCS() {
+    long cPtr = gdxBulletJNI.btWheelInfo_wheelAxleCS_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_suspensionRestLength1(float value) {
-    gdxBulletJNI.btWheelInfo_m_suspensionRestLength1_set(swigCPtr, this, value);
+  public void setSuspensionRestLength1(float value) {
+    gdxBulletJNI.btWheelInfo_suspensionRestLength1_set(swigCPtr, this, value);
   }
 
-  public float getM_suspensionRestLength1() {
-    return gdxBulletJNI.btWheelInfo_m_suspensionRestLength1_get(swigCPtr, this);
+  public float getSuspensionRestLength1() {
+    return gdxBulletJNI.btWheelInfo_suspensionRestLength1_get(swigCPtr, this);
   }
 
-  public void setM_maxSuspensionTravelCm(float value) {
-    gdxBulletJNI.btWheelInfo_m_maxSuspensionTravelCm_set(swigCPtr, this, value);
+  public void setMaxSuspensionTravelCm(float value) {
+    gdxBulletJNI.btWheelInfo_maxSuspensionTravelCm_set(swigCPtr, this, value);
   }
 
-  public float getM_maxSuspensionTravelCm() {
-    return gdxBulletJNI.btWheelInfo_m_maxSuspensionTravelCm_get(swigCPtr, this);
+  public float getMaxSuspensionTravelCm() {
+    return gdxBulletJNI.btWheelInfo_maxSuspensionTravelCm_get(swigCPtr, this);
   }
 
   public float getSuspensionRestLength() {
     return gdxBulletJNI.btWheelInfo_getSuspensionRestLength(swigCPtr, this);
   }
 
-  public void setM_wheelsRadius(float value) {
-    gdxBulletJNI.btWheelInfo_m_wheelsRadius_set(swigCPtr, this, value);
+  public void setWheelsRadius(float value) {
+    gdxBulletJNI.btWheelInfo_wheelsRadius_set(swigCPtr, this, value);
   }
 
-  public float getM_wheelsRadius() {
-    return gdxBulletJNI.btWheelInfo_m_wheelsRadius_get(swigCPtr, this);
+  public float getWheelsRadius() {
+    return gdxBulletJNI.btWheelInfo_wheelsRadius_get(swigCPtr, this);
   }
 
-  public void setM_suspensionStiffness(float value) {
-    gdxBulletJNI.btWheelInfo_m_suspensionStiffness_set(swigCPtr, this, value);
+  public void setSuspensionStiffness(float value) {
+    gdxBulletJNI.btWheelInfo_suspensionStiffness_set(swigCPtr, this, value);
   }
 
-  public float getM_suspensionStiffness() {
-    return gdxBulletJNI.btWheelInfo_m_suspensionStiffness_get(swigCPtr, this);
+  public float getSuspensionStiffness() {
+    return gdxBulletJNI.btWheelInfo_suspensionStiffness_get(swigCPtr, this);
   }
 
-  public void setM_wheelsDampingCompression(float value) {
-    gdxBulletJNI.btWheelInfo_m_wheelsDampingCompression_set(swigCPtr, this, value);
+  public void setWheelsDampingCompression(float value) {
+    gdxBulletJNI.btWheelInfo_wheelsDampingCompression_set(swigCPtr, this, value);
   }
 
-  public float getM_wheelsDampingCompression() {
-    return gdxBulletJNI.btWheelInfo_m_wheelsDampingCompression_get(swigCPtr, this);
+  public float getWheelsDampingCompression() {
+    return gdxBulletJNI.btWheelInfo_wheelsDampingCompression_get(swigCPtr, this);
   }
 
-  public void setM_wheelsDampingRelaxation(float value) {
-    gdxBulletJNI.btWheelInfo_m_wheelsDampingRelaxation_set(swigCPtr, this, value);
+  public void setWheelsDampingRelaxation(float value) {
+    gdxBulletJNI.btWheelInfo_wheelsDampingRelaxation_set(swigCPtr, this, value);
   }
 
-  public float getM_wheelsDampingRelaxation() {
-    return gdxBulletJNI.btWheelInfo_m_wheelsDampingRelaxation_get(swigCPtr, this);
+  public float getWheelsDampingRelaxation() {
+    return gdxBulletJNI.btWheelInfo_wheelsDampingRelaxation_get(swigCPtr, this);
   }
 
-  public void setM_frictionSlip(float value) {
-    gdxBulletJNI.btWheelInfo_m_frictionSlip_set(swigCPtr, this, value);
+  public void setFrictionSlip(float value) {
+    gdxBulletJNI.btWheelInfo_frictionSlip_set(swigCPtr, this, value);
   }
 
-  public float getM_frictionSlip() {
-    return gdxBulletJNI.btWheelInfo_m_frictionSlip_get(swigCPtr, this);
+  public float getFrictionSlip() {
+    return gdxBulletJNI.btWheelInfo_frictionSlip_get(swigCPtr, this);
   }
 
-  public void setM_steering(float value) {
-    gdxBulletJNI.btWheelInfo_m_steering_set(swigCPtr, this, value);
+  public void setSteering(float value) {
+    gdxBulletJNI.btWheelInfo_steering_set(swigCPtr, this, value);
   }
 
-  public float getM_steering() {
-    return gdxBulletJNI.btWheelInfo_m_steering_get(swigCPtr, this);
+  public float getSteering() {
+    return gdxBulletJNI.btWheelInfo_steering_get(swigCPtr, this);
   }
 
-  public void setM_rotation(float value) {
-    gdxBulletJNI.btWheelInfo_m_rotation_set(swigCPtr, this, value);
+  public void setRotation(float value) {
+    gdxBulletJNI.btWheelInfo_rotation_set(swigCPtr, this, value);
   }
 
-  public float getM_rotation() {
-    return gdxBulletJNI.btWheelInfo_m_rotation_get(swigCPtr, this);
+  public float getRotation() {
+    return gdxBulletJNI.btWheelInfo_rotation_get(swigCPtr, this);
   }
 
-  public void setM_deltaRotation(float value) {
-    gdxBulletJNI.btWheelInfo_m_deltaRotation_set(swigCPtr, this, value);
+  public void setDeltaRotation(float value) {
+    gdxBulletJNI.btWheelInfo_deltaRotation_set(swigCPtr, this, value);
   }
 
-  public float getM_deltaRotation() {
-    return gdxBulletJNI.btWheelInfo_m_deltaRotation_get(swigCPtr, this);
+  public float getDeltaRotation() {
+    return gdxBulletJNI.btWheelInfo_deltaRotation_get(swigCPtr, this);
   }
 
-  public void setM_rollInfluence(float value) {
-    gdxBulletJNI.btWheelInfo_m_rollInfluence_set(swigCPtr, this, value);
+  public void setRollInfluence(float value) {
+    gdxBulletJNI.btWheelInfo_rollInfluence_set(swigCPtr, this, value);
   }
 
-  public float getM_rollInfluence() {
-    return gdxBulletJNI.btWheelInfo_m_rollInfluence_get(swigCPtr, this);
+  public float getRollInfluence() {
+    return gdxBulletJNI.btWheelInfo_rollInfluence_get(swigCPtr, this);
   }
 
-  public void setM_maxSuspensionForce(float value) {
-    gdxBulletJNI.btWheelInfo_m_maxSuspensionForce_set(swigCPtr, this, value);
+  public void setMaxSuspensionForce(float value) {
+    gdxBulletJNI.btWheelInfo_maxSuspensionForce_set(swigCPtr, this, value);
   }
 
-  public float getM_maxSuspensionForce() {
-    return gdxBulletJNI.btWheelInfo_m_maxSuspensionForce_get(swigCPtr, this);
+  public float getMaxSuspensionForce() {
+    return gdxBulletJNI.btWheelInfo_maxSuspensionForce_get(swigCPtr, this);
   }
 
-  public void setM_engineForce(float value) {
-    gdxBulletJNI.btWheelInfo_m_engineForce_set(swigCPtr, this, value);
+  public void setEngineForce(float value) {
+    gdxBulletJNI.btWheelInfo_engineForce_set(swigCPtr, this, value);
   }
 
-  public float getM_engineForce() {
-    return gdxBulletJNI.btWheelInfo_m_engineForce_get(swigCPtr, this);
+  public float getEngineForce() {
+    return gdxBulletJNI.btWheelInfo_engineForce_get(swigCPtr, this);
   }
 
-  public void setM_brake(float value) {
-    gdxBulletJNI.btWheelInfo_m_brake_set(swigCPtr, this, value);
+  public void setBrake(float value) {
+    gdxBulletJNI.btWheelInfo_brake_set(swigCPtr, this, value);
   }
 
-  public float getM_brake() {
-    return gdxBulletJNI.btWheelInfo_m_brake_get(swigCPtr, this);
+  public float getBrake() {
+    return gdxBulletJNI.btWheelInfo_brake_get(swigCPtr, this);
   }
 
-  public void setM_bIsFrontWheel(boolean value) {
-    gdxBulletJNI.btWheelInfo_m_bIsFrontWheel_set(swigCPtr, this, value);
+  public void setBIsFrontWheel(boolean value) {
+    gdxBulletJNI.btWheelInfo_bIsFrontWheel_set(swigCPtr, this, value);
   }
 
-  public boolean getM_bIsFrontWheel() {
-    return gdxBulletJNI.btWheelInfo_m_bIsFrontWheel_get(swigCPtr, this);
+  public boolean getBIsFrontWheel() {
+    return gdxBulletJNI.btWheelInfo_bIsFrontWheel_get(swigCPtr, this);
   }
 
-  public void setM_clientInfo(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btWheelInfo_m_clientInfo_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setClientInfo(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btWheelInfo_clientInfo_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_clientInfo() {
-    long cPtr = gdxBulletJNI.btWheelInfo_m_clientInfo_get(swigCPtr, this);
+  public SWIGTYPE_p_void getClientInfo() {
+    long cPtr = gdxBulletJNI.btWheelInfo_clientInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
@@ -230,36 +238,36 @@ public class btWheelInfo {
     gdxBulletJNI.btWheelInfo_updateWheel(swigCPtr, this, btRigidBody.getCPtr(chassis), chassis, SWIGTYPE_p_btWheelInfo__RaycastInfo.getCPtr(raycastInfo));
   }
 
-  public void setM_clippedInvContactDotSuspension(float value) {
-    gdxBulletJNI.btWheelInfo_m_clippedInvContactDotSuspension_set(swigCPtr, this, value);
+  public void setClippedInvContactDotSuspension(float value) {
+    gdxBulletJNI.btWheelInfo_clippedInvContactDotSuspension_set(swigCPtr, this, value);
   }
 
-  public float getM_clippedInvContactDotSuspension() {
-    return gdxBulletJNI.btWheelInfo_m_clippedInvContactDotSuspension_get(swigCPtr, this);
+  public float getClippedInvContactDotSuspension() {
+    return gdxBulletJNI.btWheelInfo_clippedInvContactDotSuspension_get(swigCPtr, this);
   }
 
-  public void setM_suspensionRelativeVelocity(float value) {
-    gdxBulletJNI.btWheelInfo_m_suspensionRelativeVelocity_set(swigCPtr, this, value);
+  public void setSuspensionRelativeVelocity(float value) {
+    gdxBulletJNI.btWheelInfo_suspensionRelativeVelocity_set(swigCPtr, this, value);
   }
 
-  public float getM_suspensionRelativeVelocity() {
-    return gdxBulletJNI.btWheelInfo_m_suspensionRelativeVelocity_get(swigCPtr, this);
+  public float getSuspensionRelativeVelocity() {
+    return gdxBulletJNI.btWheelInfo_suspensionRelativeVelocity_get(swigCPtr, this);
   }
 
-  public void setM_wheelsSuspensionForce(float value) {
-    gdxBulletJNI.btWheelInfo_m_wheelsSuspensionForce_set(swigCPtr, this, value);
+  public void setWheelsSuspensionForce(float value) {
+    gdxBulletJNI.btWheelInfo_wheelsSuspensionForce_set(swigCPtr, this, value);
   }
 
-  public float getM_wheelsSuspensionForce() {
-    return gdxBulletJNI.btWheelInfo_m_wheelsSuspensionForce_get(swigCPtr, this);
+  public float getWheelsSuspensionForce() {
+    return gdxBulletJNI.btWheelInfo_wheelsSuspensionForce_get(swigCPtr, this);
   }
 
-  public void setM_skidInfo(float value) {
-    gdxBulletJNI.btWheelInfo_m_skidInfo_set(swigCPtr, this, value);
+  public void setSkidInfo(float value) {
+    gdxBulletJNI.btWheelInfo_skidInfo_set(swigCPtr, this, value);
   }
 
-  public float getM_skidInfo() {
-    return gdxBulletJNI.btWheelInfo_m_skidInfo_get(swigCPtr, this);
+  public float getSkidInfo() {
+    return gdxBulletJNI.btWheelInfo_skidInfo_get(swigCPtr, this);
   }
 
 }

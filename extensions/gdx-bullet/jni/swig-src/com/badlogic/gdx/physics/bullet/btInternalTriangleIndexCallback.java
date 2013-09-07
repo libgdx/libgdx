@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btInternalTriangleIndexCallback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btInternalTriangleIndexCallback extends BulletBase {
+	private long swigCPtr;
+	
+	protected btInternalTriangleIndexCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btInternalTriangleIndexCallback(long cPtr, boolean cMemoryOwn) {
+		this("btInternalTriangleIndexCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btInternalTriangleIndexCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btInternalTriangleIndexCallback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btInternalTriangleIndexCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btInternalTriangleIndexCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btInternalTriangleIndexCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void internalProcessTriangleIndex(btVector3 triangle, int partId, int triangleIndex) {
     gdxBulletJNI.btInternalTriangleIndexCallback_internalProcessTriangleIndex(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);

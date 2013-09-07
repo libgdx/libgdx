@@ -13,74 +13,82 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConvexInternalShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConvexInternalShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConvexInternalShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexInternalShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btConvexInternalShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexInternalShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexInternalShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexInternalShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setCollisionShapeData(btCollisionShapeData value) {
+    gdxBulletJNI.btConvexInternalShapeData_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btConvexInternalShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexInternalShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_collisionShapeData(btCollisionShapeData value) {
-    gdxBulletJNI.btConvexInternalShapeData_m_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
-  }
-
-  public btCollisionShapeData getM_collisionShapeData() {
-    long cPtr = gdxBulletJNI.btConvexInternalShapeData_m_collisionShapeData_get(swigCPtr, this);
+  public btCollisionShapeData getCollisionShapeData() {
+    long cPtr = gdxBulletJNI.btConvexInternalShapeData_collisionShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
   }
 
-  public void setM_localScaling(btVector3FloatData value) {
-    gdxBulletJNI.btConvexInternalShapeData_m_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLocalScaling(btVector3FloatData value) {
+    gdxBulletJNI.btConvexInternalShapeData_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_localScaling() {
-    long cPtr = gdxBulletJNI.btConvexInternalShapeData_m_localScaling_get(swigCPtr, this);
+  public btVector3FloatData getLocalScaling() {
+    long cPtr = gdxBulletJNI.btConvexInternalShapeData_localScaling_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_implicitShapeDimensions(btVector3FloatData value) {
-    gdxBulletJNI.btConvexInternalShapeData_m_implicitShapeDimensions_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setImplicitShapeDimensions(btVector3FloatData value) {
+    gdxBulletJNI.btConvexInternalShapeData_implicitShapeDimensions_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_implicitShapeDimensions() {
-    long cPtr = gdxBulletJNI.btConvexInternalShapeData_m_implicitShapeDimensions_get(swigCPtr, this);
+  public btVector3FloatData getImplicitShapeDimensions() {
+    long cPtr = gdxBulletJNI.btConvexInternalShapeData_implicitShapeDimensions_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_collisionMargin(float value) {
-    gdxBulletJNI.btConvexInternalShapeData_m_collisionMargin_set(swigCPtr, this, value);
+  public void setCollisionMargin(float value) {
+    gdxBulletJNI.btConvexInternalShapeData_collisionMargin_set(swigCPtr, this, value);
   }
 
-  public float getM_collisionMargin() {
-    return gdxBulletJNI.btConvexInternalShapeData_m_collisionMargin_get(swigCPtr, this);
+  public float getCollisionMargin() {
+    return gdxBulletJNI.btConvexInternalShapeData_collisionMargin_get(swigCPtr, this);
   }
 
-  public void setM_padding(int value) {
-    gdxBulletJNI.btConvexInternalShapeData_m_padding_set(swigCPtr, this, value);
+  public void setPadding(int value) {
+    gdxBulletJNI.btConvexInternalShapeData_padding_set(swigCPtr, this, value);
   }
 
-  public int getM_padding() {
-    return gdxBulletJNI.btConvexInternalShapeData_m_padding_get(swigCPtr, this);
+  public int getPadding() {
+    return gdxBulletJNI.btConvexInternalShapeData_padding_get(swigCPtr, this);
   }
 
   public btConvexInternalShapeData() {

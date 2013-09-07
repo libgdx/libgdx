@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btSoftBody__Impulse {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSoftBody__Impulse obj) {
+  protected static long getCPtr(SWIGTYPE_p_btSoftBody__Impulse obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

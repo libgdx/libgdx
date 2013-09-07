@@ -14,6 +14,12 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+/** Base class for applying one or more {@link Animation}s to a {@link ModelInstance}.
+ * This class only applies the actual {@link Node} transformations, 
+ * it does not manage animations or keep track of animation states. See {@link AnimationController}
+ * for an implementation of this class which does manage animations.
+ * 
+ * @author Xoppa */
 public class BaseAnimationController {
 	public final static class Transform implements Poolable {
 		public final Vector3 translation = new Vector3();
@@ -45,11 +51,7 @@ public class BaseAnimationController {
 			return this;
 		}
 		public Matrix4 toMatrix4(final Matrix4 out) {
-			out.idt();
-			out.translate(translation);
-			out.rotate(rotation);
-			out.scale(scale.x, scale.y, scale.z);
-			return out;
+			return out.set(translation, rotation, scale);
 		}
 		@Override
 		public void reset () {
@@ -65,8 +67,11 @@ public class BaseAnimationController {
 	};
 	private final static ObjectMap<Node, Transform> transforms = new ObjectMap<Node, Transform>();
 	private boolean applying = false;
+	/** The {@link ModelInstance} on which the animations are being performed. */
 	public final ModelInstance target;
 	
+	/** Construct a new BaseAnimationController.
+	 * @param target The {@link ModelInstance} on which the animations are being performed. */
 	public BaseAnimationController(final ModelInstance target) {
 		this.target = target;
 	}

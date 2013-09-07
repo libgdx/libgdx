@@ -84,7 +84,7 @@ public class SharedLibraryLoader {
 			} catch (Exception ignored) {
 			}
 		}
-		return Long.toString(crc.getValue());
+		return Long.toString(crc.getValue(), 16);
 	}
 
 	/** Maps a platform independent library name to a platform dependent name. */
@@ -108,7 +108,7 @@ public class SharedLibraryLoader {
 			if (isAndroid)
 				System.loadLibrary(libraryName);
 			else
-				System.load(extractFile(libraryName, null).getAbsolutePath());
+				loadFile(libraryName);
 		} catch (Throwable ex) {
 			throw new GdxRuntimeException("Couldn't load shared library '" + libraryName + "' for target: "
 				+ System.getProperty("os.name") + (is64Bit ? ", 64-bit" : ", 32-bit"), ex);
@@ -144,43 +144,136 @@ public class SharedLibraryLoader {
 			String sourceCrc = crc(readFile(sourcePath));
 			if (dirName == null) dirName = sourceCrc;
 
-			File extractedDir = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
-				+ dirName);
-			File extractedFile = new File(extractedDir, new File(sourcePath).getName());
-
-			String extractedCrc = null;
-			if (extractedFile.exists()) {
-				try {
-					extractedCrc = crc(new FileInputStream(extractedFile));
-				} catch (FileNotFoundException ignored) {
-				}
-			}
-
-			// If file doesn't exist or the CRC doesn't match, extract it to the temp dir.
-			if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
-				try {
-					InputStream input = readFile(sourcePath);
-					extractedDir.mkdirs();
-					FileOutputStream output = new FileOutputStream(extractedFile);
-					byte[] buffer = new byte[4096];
-					while (true) {
-						int length = input.read(buffer);
-						if (length == -1) break;
-						output.write(buffer, 0, length);
-					}
-					input.close();
-					output.close();
-				} catch (IOException ex) {
-					throw new GdxRuntimeException("Error extracting file: " + sourcePath, ex);
-				}
-			}
-
-			return extractedFile;
+			File extractedFile = getExtractedFile(dirName, new File(sourcePath).getName());
+			return extractFile(sourcePath, sourceCrc, extractedFile);
 		} catch (RuntimeException ex) {
-			// Attempt to fallback to file at java.library.path location, eg for applets.
+			// Fallback to file at java.library.path location, eg for applets.
 			File file = new File(System.getProperty("java.library.path"), sourcePath);
 			if (file.exists()) return file;
 			throw ex;
+		}
+	}
+
+	/** Returns a path to a file that can be written. Tries multiple locations and verifies writing succeeds. */
+	private File getExtractedFile (String dirName, String fileName) {
+		// Temp directory with username in path.
+		File idealFile = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/"
+			+ dirName, fileName);
+		if (canWrite(idealFile)) return idealFile;
+
+		// System provided temp directory.
+		try {
+			File file = File.createTempFile(dirName, null);
+			if (file.delete()) {
+				file = new File(file, fileName);
+				if (canWrite(file)) return file;
+			}
+		} catch (IOException ignored) {
+		}
+
+		// User home.
+		File file = new File(System.getProperty("user.home") + "/.libgdx/" + dirName, fileName);
+		if (canWrite(file)) return file;
+
+		// Relative directory.
+		file = new File(".temp/" + dirName, fileName);
+		if (canWrite(file)) return file;
+
+		return idealFile; // Will likely fail, but we did our best.
+	}
+
+	/** Returns true if the parent directories of the file can be created and the file can be written. */
+	private boolean canWrite (File file) {
+		if (file.canWrite()) return true; // File exists and is writable.
+		File parent = file.getParentFile();
+		parent.mkdirs();
+		if (!parent.isDirectory()) return false;
+		try {
+			new FileOutputStream(file).close();
+			file.delete();
+			return true;
+		} catch (Throwable ex) {
+			return false;
+		}
+	}
+
+	private File extractFile (String sourcePath, String sourceCrc, File extractedFile) throws IOException {
+		String extractedCrc = null;
+		if (extractedFile.exists()) {
+			try {
+				extractedCrc = crc(new FileInputStream(extractedFile));
+			} catch (FileNotFoundException ignored) {
+			}
+		}
+
+		// If file doesn't exist or the CRC doesn't match, extract it to the temp dir.
+		if (extractedCrc == null || !extractedCrc.equals(sourceCrc)) {
+			try {
+				InputStream input = readFile(sourcePath);
+				extractedFile.getParentFile().mkdirs();
+				FileOutputStream output = new FileOutputStream(extractedFile);
+				byte[] buffer = new byte[4096];
+				while (true) {
+					int length = input.read(buffer);
+					if (length == -1) break;
+					output.write(buffer, 0, length);
+				}
+				input.close();
+				output.close();
+			} catch (IOException ex) {
+				throw new GdxRuntimeException("Error extracting file: " + sourcePath + "\nTo: " + extractedFile.getAbsolutePath(), ex);
+			}
+		}
+
+		return extractedFile;
+	}
+
+	/** Extracts the source file and calls System.load. Attemps to extract and load from multiple locations. Throws runtime
+	 * exception if all fail. */
+	private void loadFile (String sourcePath) {
+		String sourceCrc = crc(readFile(sourcePath));
+
+		String fileName = new File(sourcePath).getName();
+
+		// Temp directory with username in path.
+		File file = new File(System.getProperty("java.io.tmpdir") + "/libgdx" + System.getProperty("user.name") + "/" + sourceCrc,
+			fileName);
+		Throwable ex = loadFile(sourcePath, sourceCrc, file);
+		if (ex == null) return;
+
+		// System provided temp directory.
+		try {
+			file = File.createTempFile(sourceCrc, null);
+			if (file.delete() && loadFile(sourcePath, sourceCrc, file) == null) return;
+		} catch (Throwable ignored) {
+		}
+
+		// User home.
+		file = new File(System.getProperty("user.home") + "/.libgdx/" + sourceCrc, fileName);
+		if (loadFile(sourcePath, sourceCrc, file) == null) return;
+
+		// Relative directory.
+		file = new File(".temp/" + sourceCrc, fileName);
+		if (loadFile(sourcePath, sourceCrc, file) == null) return;
+
+		// Fallback to java.library.path location, eg for applets.
+		file = new File(System.getProperty("java.library.path"), sourcePath);
+		if (file.exists()) {
+			System.load(file.getAbsolutePath());
+			return;
+		}
+
+		throw new GdxRuntimeException(ex);
+	}
+
+	/** @return null if the file was extracted and loaded. */
+	private Throwable loadFile (String sourcePath, String sourceCrc, File extractedFile) {
+		try {
+			System.load(extractFile(sourcePath, sourceCrc, extractedFile).getAbsolutePath());
+			return null;
+		} catch (Throwable ex) {
+			ex.printStackTrace();
+			return ex;
 		}
 	}
 }

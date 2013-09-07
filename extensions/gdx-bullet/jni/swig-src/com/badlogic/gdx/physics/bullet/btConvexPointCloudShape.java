@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexPointCloudShape extends btPolyhedralConvexAabbCachingShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btConvexPointCloudShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btConvexPointCloudShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexPointCloudShape(long cPtr, boolean cMemoryOwn) {
+		this("btConvexPointCloudShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexPointCloudShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexPointCloudShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConvexPointCloudShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConvexPointCloudShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexPointCloudShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexPointCloudShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btConvexPointCloudShape() {
     this(gdxBulletJNI.new_btConvexPointCloudShape__SWIG_0(), true);

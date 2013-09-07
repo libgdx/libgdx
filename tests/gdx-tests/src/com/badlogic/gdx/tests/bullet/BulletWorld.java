@@ -136,15 +136,15 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 		
 		super.dispose();
 		
-		collisionWorld.delete();
+		collisionWorld.dispose();
 		if (solver != null)
-			solver.delete();
+			solver.dispose();
 		if (broadphase != null)
-			broadphase.delete();
+			broadphase.dispose();
 		if (dispatcher != null)
-			dispatcher.delete();
+			dispatcher.dispose();
 		if (collisionConfiguration != null)
-			collisionConfiguration.delete();
+			collisionConfiguration.dispose();
 	}
 	
 	public void setDebugMode(final int mode, final Matrix4 projMatrix) {

@@ -13,74 +13,82 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btStaticPlaneShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btStaticPlaneShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btStaticPlaneShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btStaticPlaneShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btStaticPlaneShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btStaticPlaneShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btStaticPlaneShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btStaticPlaneShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setCollisionShapeData(btCollisionShapeData value) {
+    gdxBulletJNI.btStaticPlaneShapeData_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btStaticPlaneShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btStaticPlaneShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_collisionShapeData(btCollisionShapeData value) {
-    gdxBulletJNI.btStaticPlaneShapeData_m_collisionShapeData_set(swigCPtr, this, btCollisionShapeData.getCPtr(value), value);
-  }
-
-  public btCollisionShapeData getM_collisionShapeData() {
-    long cPtr = gdxBulletJNI.btStaticPlaneShapeData_m_collisionShapeData_get(swigCPtr, this);
+  public btCollisionShapeData getCollisionShapeData() {
+    long cPtr = gdxBulletJNI.btStaticPlaneShapeData_collisionShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCollisionShapeData(cPtr, false);
   }
 
-  public void setM_localScaling(btVector3FloatData value) {
-    gdxBulletJNI.btStaticPlaneShapeData_m_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLocalScaling(btVector3FloatData value) {
+    gdxBulletJNI.btStaticPlaneShapeData_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_localScaling() {
-    long cPtr = gdxBulletJNI.btStaticPlaneShapeData_m_localScaling_get(swigCPtr, this);
+  public btVector3FloatData getLocalScaling() {
+    long cPtr = gdxBulletJNI.btStaticPlaneShapeData_localScaling_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_planeNormal(btVector3FloatData value) {
-    gdxBulletJNI.btStaticPlaneShapeData_m_planeNormal_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setPlaneNormal(btVector3FloatData value) {
+    gdxBulletJNI.btStaticPlaneShapeData_planeNormal_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_planeNormal() {
-    long cPtr = gdxBulletJNI.btStaticPlaneShapeData_m_planeNormal_get(swigCPtr, this);
+  public btVector3FloatData getPlaneNormal() {
+    long cPtr = gdxBulletJNI.btStaticPlaneShapeData_planeNormal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_planeConstant(float value) {
-    gdxBulletJNI.btStaticPlaneShapeData_m_planeConstant_set(swigCPtr, this, value);
+  public void setPlaneConstant(float value) {
+    gdxBulletJNI.btStaticPlaneShapeData_planeConstant_set(swigCPtr, this, value);
   }
 
-  public float getM_planeConstant() {
-    return gdxBulletJNI.btStaticPlaneShapeData_m_planeConstant_get(swigCPtr, this);
+  public float getPlaneConstant() {
+    return gdxBulletJNI.btStaticPlaneShapeData_planeConstant_get(swigCPtr, this);
   }
 
-  public void setM_pad(String value) {
-    gdxBulletJNI.btStaticPlaneShapeData_m_pad_set(swigCPtr, this, value);
+  public void setPad(String value) {
+    gdxBulletJNI.btStaticPlaneShapeData_pad_set(swigCPtr, this, value);
   }
 
-  public String getM_pad() {
-    return gdxBulletJNI.btStaticPlaneShapeData_m_pad_get(swigCPtr, this);
+  public String getPad() {
+    return gdxBulletJNI.btStaticPlaneShapeData_pad_get(swigCPtr, this);
   }
 
   public btStaticPlaneShapeData() {

@@ -13,48 +13,56 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btScaledTriangleMeshShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btScaledTriangleMeshShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btScaledTriangleMeshShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btScaledTriangleMeshShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btScaledTriangleMeshShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btScaledTriangleMeshShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btScaledTriangleMeshShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btScaledTriangleMeshShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTrimeshShapeData(btTriangleMeshShapeData value) {
+    gdxBulletJNI.btScaledTriangleMeshShapeData_trimeshShapeData_set(swigCPtr, this, btTriangleMeshShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btScaledTriangleMeshShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btScaledTriangleMeshShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_trimeshShapeData(btTriangleMeshShapeData value) {
-    gdxBulletJNI.btScaledTriangleMeshShapeData_m_trimeshShapeData_set(swigCPtr, this, btTriangleMeshShapeData.getCPtr(value), value);
-  }
-
-  public btTriangleMeshShapeData getM_trimeshShapeData() {
-    long cPtr = gdxBulletJNI.btScaledTriangleMeshShapeData_m_trimeshShapeData_get(swigCPtr, this);
+  public btTriangleMeshShapeData getTrimeshShapeData() {
+    long cPtr = gdxBulletJNI.btScaledTriangleMeshShapeData_trimeshShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTriangleMeshShapeData(cPtr, false);
   }
 
-  public void setM_localScaling(btVector3FloatData value) {
-    gdxBulletJNI.btScaledTriangleMeshShapeData_m_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLocalScaling(btVector3FloatData value) {
+    gdxBulletJNI.btScaledTriangleMeshShapeData_localScaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_localScaling() {
-    long cPtr = gdxBulletJNI.btScaledTriangleMeshShapeData_m_localScaling_get(swigCPtr, this);
+  public btVector3FloatData getLocalScaling() {
+    long cPtr = gdxBulletJNI.btScaledTriangleMeshShapeData_localScaling_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 

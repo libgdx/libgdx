@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btJacobianEntry {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btJacobianEntry extends BulletBase {
+	private long swigCPtr;
+	
+	protected btJacobianEntry(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btJacobianEntry(long cPtr, boolean cMemoryOwn) {
+		this("btJacobianEntry", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btJacobianEntry obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btJacobianEntry(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btJacobianEntry obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btJacobianEntry(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btJacobianEntry(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btJacobianEntry() {
     this(gdxBulletJNI.new_btJacobianEntry__SWIG_0(), true);
@@ -76,57 +84,57 @@ public class btJacobianEntry {
     return gdxBulletJNI.btJacobianEntry_getRelativeVelocity(swigCPtr, this, linvelA, angvelA, linvelB, angvelB);
   }
 
-  public void setM_linearJointAxis(btVector3 value) {
-    gdxBulletJNI.btJacobianEntry_m_linearJointAxis_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLinearJointAxis(btVector3 value) {
+    gdxBulletJNI.btJacobianEntry_linearJointAxis_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_linearJointAxis() {
-    long cPtr = gdxBulletJNI.btJacobianEntry_m_linearJointAxis_get(swigCPtr, this);
+  public btVector3 getLinearJointAxis() {
+    long cPtr = gdxBulletJNI.btJacobianEntry_linearJointAxis_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_aJ(btVector3 value) {
-    gdxBulletJNI.btJacobianEntry_m_aJ_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAJ(btVector3 value) {
+    gdxBulletJNI.btJacobianEntry_aJ_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_aJ() {
-    long cPtr = gdxBulletJNI.btJacobianEntry_m_aJ_get(swigCPtr, this);
+  public btVector3 getAJ() {
+    long cPtr = gdxBulletJNI.btJacobianEntry_aJ_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_bJ(btVector3 value) {
-    gdxBulletJNI.btJacobianEntry_m_bJ_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setBJ(btVector3 value) {
+    gdxBulletJNI.btJacobianEntry_bJ_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_bJ() {
-    long cPtr = gdxBulletJNI.btJacobianEntry_m_bJ_get(swigCPtr, this);
+  public btVector3 getBJ() {
+    long cPtr = gdxBulletJNI.btJacobianEntry_bJ_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_0MinvJt(btVector3 value) {
-    gdxBulletJNI.btJacobianEntry_m_0MinvJt_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void set0MinvJt(btVector3 value) {
+    gdxBulletJNI.btJacobianEntry_0MinvJt_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_0MinvJt() {
-    long cPtr = gdxBulletJNI.btJacobianEntry_m_0MinvJt_get(swigCPtr, this);
+  public btVector3 get0MinvJt() {
+    long cPtr = gdxBulletJNI.btJacobianEntry_0MinvJt_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_1MinvJt(btVector3 value) {
-    gdxBulletJNI.btJacobianEntry_m_1MinvJt_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void set1MinvJt(btVector3 value) {
+    gdxBulletJNI.btJacobianEntry_1MinvJt_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_1MinvJt() {
-    long cPtr = gdxBulletJNI.btJacobianEntry_m_1MinvJt_get(swigCPtr, this);
+  public btVector3 get1MinvJt() {
+    long cPtr = gdxBulletJNI.btJacobianEntry_1MinvJt_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_Adiag(float value) {
-    gdxBulletJNI.btJacobianEntry_m_Adiag_set(swigCPtr, this, value);
+  public void setAdiag(float value) {
+    gdxBulletJNI.btJacobianEntry_Adiag_set(swigCPtr, this, value);
   }
 
-  public float getM_Adiag() {
-    return gdxBulletJNI.btJacobianEntry_m_Adiag_get(swigCPtr, this);
+  public float getAdiag() {
+    return gdxBulletJNI.btJacobianEntry_Adiag_get(swigCPtr, this);
   }
 
 }

@@ -39,14 +39,13 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	BitmapFontData data;
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, BitmapFontParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, BitmapFontParameter parameter) {
 		Array<AssetDescriptor> deps = new Array<AssetDescriptor>();
 		if (parameter != null && parameter.bitmapFontData != null) {
 			data = parameter.bitmapFontData;
 			return deps;
 		}
-		FileHandle handle = resolve(fileName);
-		data = new BitmapFontData(handle, parameter != null ? parameter.flip : false);
+		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
 		for (int i=0; i<data.getImagePaths().length; i++) {
 			deps.add(new AssetDescriptor(data.getImagePath(i), Texture.class));
 		}
@@ -54,12 +53,11 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
 	}
 
 	@Override
-	public BitmapFont loadSync (AssetManager manager, String fileName, BitmapFontParameter parameter) {
-		FileHandle handle = resolve(fileName);
+	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
 		TextureRegion[] regs = new TextureRegion[data.getImagePaths().length];
 		for (int i=0; i<regs.length; i++) {
 			TextureRegion region = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));

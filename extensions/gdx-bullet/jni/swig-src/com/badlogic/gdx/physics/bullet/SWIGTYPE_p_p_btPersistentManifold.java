@@ -19,7 +19,7 @@ public class SWIGTYPE_p_p_btPersistentManifold {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_p_btPersistentManifold obj) {
+  protected static long getCPtr(SWIGTYPE_p_p_btPersistentManifold obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

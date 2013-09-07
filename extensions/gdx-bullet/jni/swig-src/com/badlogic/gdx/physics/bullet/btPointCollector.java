@@ -13,65 +13,73 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btPointCollector {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btPointCollector extends BulletBase {
+	private long swigCPtr;
+	
+	protected btPointCollector(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPointCollector(long cPtr, boolean cMemoryOwn) {
+		this("btPointCollector", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPointCollector obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPointCollector(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPointCollector(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setNormalOnBInWorld(btVector3 value) {
+    gdxBulletJNI.btPointCollector_normalOnBInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btPointCollector obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPointCollector(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_normalOnBInWorld(btVector3 value) {
-    gdxBulletJNI.btPointCollector_m_normalOnBInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_normalOnBInWorld() {
-    long cPtr = gdxBulletJNI.btPointCollector_m_normalOnBInWorld_get(swigCPtr, this);
+  public btVector3 getNormalOnBInWorld() {
+    long cPtr = gdxBulletJNI.btPointCollector_normalOnBInWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_pointInWorld(btVector3 value) {
-    gdxBulletJNI.btPointCollector_m_pointInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setPointInWorld(btVector3 value) {
+    gdxBulletJNI.btPointCollector_pointInWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_pointInWorld() {
-    long cPtr = gdxBulletJNI.btPointCollector_m_pointInWorld_get(swigCPtr, this);
+  public btVector3 getPointInWorld() {
+    long cPtr = gdxBulletJNI.btPointCollector_pointInWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_distance(float value) {
-    gdxBulletJNI.btPointCollector_m_distance_set(swigCPtr, this, value);
+  public void setDistance(float value) {
+    gdxBulletJNI.btPointCollector_distance_set(swigCPtr, this, value);
   }
 
-  public float getM_distance() {
-    return gdxBulletJNI.btPointCollector_m_distance_get(swigCPtr, this);
+  public float getDistance() {
+    return gdxBulletJNI.btPointCollector_distance_get(swigCPtr, this);
   }
 
-  public void setM_hasResult(boolean value) {
-    gdxBulletJNI.btPointCollector_m_hasResult_set(swigCPtr, this, value);
+  public void setHasResult(boolean value) {
+    gdxBulletJNI.btPointCollector_hasResult_set(swigCPtr, this, value);
   }
 
-  public boolean getM_hasResult() {
-    return gdxBulletJNI.btPointCollector_m_hasResult_get(swigCPtr, this);
+  public boolean getHasResult() {
+    return gdxBulletJNI.btPointCollector_hasResult_get(swigCPtr, this);
   }
 
   public btPointCollector() {

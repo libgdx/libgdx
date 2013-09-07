@@ -13,65 +13,73 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btMultiSphereShapeData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btMultiSphereShapeData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btMultiSphereShapeData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btMultiSphereShapeData(long cPtr, boolean cMemoryOwn) {
+		this("btMultiSphereShapeData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btMultiSphereShapeData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btMultiSphereShapeData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btMultiSphereShapeData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setConvexInternalShapeData(btConvexInternalShapeData value) {
+    gdxBulletJNI.btMultiSphereShapeData_convexInternalShapeData_set(swigCPtr, this, btConvexInternalShapeData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btMultiSphereShapeData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btMultiSphereShapeData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_convexInternalShapeData(btConvexInternalShapeData value) {
-    gdxBulletJNI.btMultiSphereShapeData_m_convexInternalShapeData_set(swigCPtr, this, btConvexInternalShapeData.getCPtr(value), value);
-  }
-
-  public btConvexInternalShapeData getM_convexInternalShapeData() {
-    long cPtr = gdxBulletJNI.btMultiSphereShapeData_m_convexInternalShapeData_get(swigCPtr, this);
+  public btConvexInternalShapeData getConvexInternalShapeData() {
+    long cPtr = gdxBulletJNI.btMultiSphereShapeData_convexInternalShapeData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btConvexInternalShapeData(cPtr, false);
   }
 
-  public void setM_localPositionArrayPtr(btPositionAndRadius value) {
-    gdxBulletJNI.btMultiSphereShapeData_m_localPositionArrayPtr_set(swigCPtr, this, btPositionAndRadius.getCPtr(value), value);
+  public void setLocalPositionArrayPtr(btPositionAndRadius value) {
+    gdxBulletJNI.btMultiSphereShapeData_localPositionArrayPtr_set(swigCPtr, this, btPositionAndRadius.getCPtr(value), value);
   }
 
-  public btPositionAndRadius getM_localPositionArrayPtr() {
-    long cPtr = gdxBulletJNI.btMultiSphereShapeData_m_localPositionArrayPtr_get(swigCPtr, this);
+  public btPositionAndRadius getLocalPositionArrayPtr() {
+    long cPtr = gdxBulletJNI.btMultiSphereShapeData_localPositionArrayPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btPositionAndRadius(cPtr, false);
   }
 
-  public void setM_localPositionArraySize(int value) {
-    gdxBulletJNI.btMultiSphereShapeData_m_localPositionArraySize_set(swigCPtr, this, value);
+  public void setLocalPositionArraySize(int value) {
+    gdxBulletJNI.btMultiSphereShapeData_localPositionArraySize_set(swigCPtr, this, value);
   }
 
-  public int getM_localPositionArraySize() {
-    return gdxBulletJNI.btMultiSphereShapeData_m_localPositionArraySize_get(swigCPtr, this);
+  public int getLocalPositionArraySize() {
+    return gdxBulletJNI.btMultiSphereShapeData_localPositionArraySize_get(swigCPtr, this);
   }
 
-  public void setM_padding(String value) {
-    gdxBulletJNI.btMultiSphereShapeData_m_padding_set(swigCPtr, this, value);
+  public void setPadding(String value) {
+    gdxBulletJNI.btMultiSphereShapeData_padding_set(swigCPtr, this, value);
   }
 
-  public String getM_padding() {
-    return gdxBulletJNI.btMultiSphereShapeData_m_padding_get(swigCPtr, this);
+  public String getPadding() {
+    return gdxBulletJNI.btMultiSphereShapeData_padding_get(swigCPtr, this);
   }
 
   public btMultiSphereShapeData() {

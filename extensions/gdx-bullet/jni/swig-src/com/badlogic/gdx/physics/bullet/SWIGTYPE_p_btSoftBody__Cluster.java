@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btSoftBody__Cluster {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSoftBody__Cluster obj) {
+  protected static long getCPtr(SWIGTYPE_p_btSoftBody__Cluster obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

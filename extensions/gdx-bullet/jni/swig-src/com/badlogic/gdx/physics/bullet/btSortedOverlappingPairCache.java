@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSortedOverlappingPairCache extends btOverlappingPairCache {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSortedOverlappingPairCache(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSortedOverlappingPairCache_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSortedOverlappingPairCache(long cPtr, boolean cMemoryOwn) {
+		this("btSortedOverlappingPairCache", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSortedOverlappingPairCache obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSortedOverlappingPairCache(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSortedOverlappingPairCache_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSortedOverlappingPairCache obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSortedOverlappingPairCache(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSortedOverlappingPairCache(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btSortedOverlappingPairCache() {
     this(gdxBulletJNI.new_btSortedOverlappingPairCache(), true);

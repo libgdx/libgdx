@@ -13,79 +13,87 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConstraintRow {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConstraintRow extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConstraintRow(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConstraintRow(long cPtr, boolean cMemoryOwn) {
+		this("btConstraintRow", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConstraintRow obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConstraintRow(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConstraintRow(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setNormal(float[] value) {
+    gdxBulletJNI.btConstraintRow_normal_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btConstraintRow obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float[] getNormal() {
+    return gdxBulletJNI.btConstraintRow_normal_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setRhs(float value) {
+    gdxBulletJNI.btConstraintRow_rhs_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConstraintRow(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public float getRhs() {
+    return gdxBulletJNI.btConstraintRow_rhs_get(swigCPtr, this);
   }
 
-  public void setM_normal(float[] value) {
-    gdxBulletJNI.btConstraintRow_m_normal_set(swigCPtr, this, value);
+  public void setJacDiagInv(float value) {
+    gdxBulletJNI.btConstraintRow_jacDiagInv_set(swigCPtr, this, value);
   }
 
-  public float[] getM_normal() {
-    return gdxBulletJNI.btConstraintRow_m_normal_get(swigCPtr, this);
+  public float getJacDiagInv() {
+    return gdxBulletJNI.btConstraintRow_jacDiagInv_get(swigCPtr, this);
   }
 
-  public void setM_rhs(float value) {
-    gdxBulletJNI.btConstraintRow_m_rhs_set(swigCPtr, this, value);
+  public void setLowerLimit(float value) {
+    gdxBulletJNI.btConstraintRow_lowerLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_rhs() {
-    return gdxBulletJNI.btConstraintRow_m_rhs_get(swigCPtr, this);
+  public float getLowerLimit() {
+    return gdxBulletJNI.btConstraintRow_lowerLimit_get(swigCPtr, this);
   }
 
-  public void setM_jacDiagInv(float value) {
-    gdxBulletJNI.btConstraintRow_m_jacDiagInv_set(swigCPtr, this, value);
+  public void setUpperLimit(float value) {
+    gdxBulletJNI.btConstraintRow_upperLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_jacDiagInv() {
-    return gdxBulletJNI.btConstraintRow_m_jacDiagInv_get(swigCPtr, this);
+  public float getUpperLimit() {
+    return gdxBulletJNI.btConstraintRow_upperLimit_get(swigCPtr, this);
   }
 
-  public void setM_lowerLimit(float value) {
-    gdxBulletJNI.btConstraintRow_m_lowerLimit_set(swigCPtr, this, value);
+  public void setAccumImpulse(float value) {
+    gdxBulletJNI.btConstraintRow_accumImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_lowerLimit() {
-    return gdxBulletJNI.btConstraintRow_m_lowerLimit_get(swigCPtr, this);
-  }
-
-  public void setM_upperLimit(float value) {
-    gdxBulletJNI.btConstraintRow_m_upperLimit_set(swigCPtr, this, value);
-  }
-
-  public float getM_upperLimit() {
-    return gdxBulletJNI.btConstraintRow_m_upperLimit_get(swigCPtr, this);
-  }
-
-  public void setM_accumImpulse(float value) {
-    gdxBulletJNI.btConstraintRow_m_accumImpulse_set(swigCPtr, this, value);
-  }
-
-  public float getM_accumImpulse() {
-    return gdxBulletJNI.btConstraintRow_m_accumImpulse_get(swigCPtr, this);
+  public float getAccumImpulse() {
+    return gdxBulletJNI.btConstraintRow_accumImpulse_get(swigCPtr, this);
   }
 
   public btConstraintRow() {

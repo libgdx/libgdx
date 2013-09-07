@@ -28,6 +28,7 @@ import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
@@ -89,6 +91,7 @@ public class AssetManager implements Disposable {
 		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
+		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
@@ -279,8 +282,8 @@ public class AssetManager implements Disposable {
 			AssetDescriptor desc = loadQueue.get(i);
 			if (desc.fileName.equals(fileName) && !desc.type.equals(type))
 				throw new GdxRuntimeException("Asset with name '" + fileName
-					+ "' already in preload queue, but has different type (expected: " + ClassReflection.getSimpleName(type) + ", found: "
-					+ ClassReflection.getSimpleName(desc.type) + ")");
+					+ "' already in preload queue, but has different type (expected: " + ClassReflection.getSimpleName(type)
+					+ ", found: " + ClassReflection.getSimpleName(desc.type) + ")");
 		}
 
 		// check task list
@@ -348,7 +351,7 @@ public class AssetManager implements Disposable {
 	 * between updates. This may block for less time if all loading tasks are complete. This may block for more time if the portion
 	 * of a single task that happens in the GL thread takes a long time.
 	 * @return true if all loading is finished. */
-	public synchronized boolean update (int millis) {
+	public boolean update (int millis) {
 		long endTime = System.currentTimeMillis() + millis;
 		while (true) {
 			boolean done = update();
@@ -365,12 +368,12 @@ public class AssetManager implements Disposable {
 		log.debug("Loading complete.");
 	}
 
-	synchronized void injectDependencies(String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
-		for(AssetDescriptor desc: dependendAssetDescs) {
+	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
+		for (AssetDescriptor desc : dependendAssetDescs) {
 			injectDependency(parentAssetFilename, desc);
 		}
 	}
-	
+
 	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {
 		// add the asset as a dependency of the parent asset
 		Array<String> dependencies = assetDependencies.get(parentAssetFilename);

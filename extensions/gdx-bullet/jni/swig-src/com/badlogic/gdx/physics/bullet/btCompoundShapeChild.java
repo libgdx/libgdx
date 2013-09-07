@@ -13,73 +13,81 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCompoundShapeChild {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCompoundShapeChild extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCompoundShapeChild(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCompoundShapeChild(long cPtr, boolean cMemoryOwn) {
+		this("btCompoundShapeChild", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCompoundShapeChild obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCompoundShapeChild(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCompoundShapeChild(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTransform(btTransform value) {
+    gdxBulletJNI.btCompoundShapeChild_transform_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public static long getCPtr(btCompoundShapeChild obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCompoundShapeChild(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_transform(btTransform value) {
-    gdxBulletJNI.btCompoundShapeChild_m_transform_set(swigCPtr, this, btTransform.getCPtr(value), value);
-  }
-
-  public btTransform getM_transform() {
-    long cPtr = gdxBulletJNI.btCompoundShapeChild_m_transform_get(swigCPtr, this);
+  public btTransform getTransform() {
+    long cPtr = gdxBulletJNI.btCompoundShapeChild_transform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_childShape(btCollisionShape value) {
-    gdxBulletJNI.btCompoundShapeChild_m_childShape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
+  public void setChildShape(btCollisionShape value) {
+    gdxBulletJNI.btCompoundShapeChild_childShape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
   }
 
-  public btCollisionShape getM_childShape() {
-    long cPtr = gdxBulletJNI.btCompoundShapeChild_m_childShape_get(swigCPtr, this);
+  public btCollisionShape getChildShape() {
+    long cPtr = gdxBulletJNI.btCompoundShapeChild_childShape_get(swigCPtr, this);
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
-  public void setM_childShapeType(int value) {
-    gdxBulletJNI.btCompoundShapeChild_m_childShapeType_set(swigCPtr, this, value);
+  public void setChildShapeType(int value) {
+    gdxBulletJNI.btCompoundShapeChild_childShapeType_set(swigCPtr, this, value);
   }
 
-  public int getM_childShapeType() {
-    return gdxBulletJNI.btCompoundShapeChild_m_childShapeType_get(swigCPtr, this);
+  public int getChildShapeType() {
+    return gdxBulletJNI.btCompoundShapeChild_childShapeType_get(swigCPtr, this);
   }
 
-  public void setM_childMargin(float value) {
-    gdxBulletJNI.btCompoundShapeChild_m_childMargin_set(swigCPtr, this, value);
+  public void setChildMargin(float value) {
+    gdxBulletJNI.btCompoundShapeChild_childMargin_set(swigCPtr, this, value);
   }
 
-  public float getM_childMargin() {
-    return gdxBulletJNI.btCompoundShapeChild_m_childMargin_get(swigCPtr, this);
+  public float getChildMargin() {
+    return gdxBulletJNI.btCompoundShapeChild_childMargin_get(swigCPtr, this);
   }
 
-  public void setM_node(btDbvtNode value) {
-    gdxBulletJNI.btCompoundShapeChild_m_node_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
+  public void setNode(btDbvtNode value) {
+    gdxBulletJNI.btCompoundShapeChild_node_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
   }
 
-  public btDbvtNode getM_node() {
-    long cPtr = gdxBulletJNI.btCompoundShapeChild_m_node_get(swigCPtr, this);
+  public btDbvtNode getNode() {
+    long cPtr = gdxBulletJNI.btCompoundShapeChild_node_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
   }
 

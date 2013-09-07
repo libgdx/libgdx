@@ -54,6 +54,7 @@ public class Json {
 	private final ObjectMap<Class, String> classToTag = new ObjectMap();
 	private final ObjectMap<Class, Serializer> classToSerializer = new ObjectMap();
 	private final ObjectMap<Class, Object[]> classToDefaultValues = new ObjectMap();
+	private Serializer defaultSerializer;
 	private boolean ignoreUnknownFields;
 
 	public Json () {
@@ -97,6 +98,10 @@ public class Json {
 	 * deserialization. Set to null to never output this information, but be warned that deserialization may fail. */
 	public void setTypeName (String typeName) {
 		this.typeName = typeName;
+	}
+
+	public void setDefaultSerializer (Serializer defaultSerializer) {
+		this.defaultSerializer = defaultSerializer;
 	}
 
 	public <T> void setSerializer (Class<T> type, Serializer<T> serializer) {
@@ -830,6 +835,8 @@ public class Json {
 						result.put(child.name(), readValue(elementType, null, child));
 					return (T)result;
 				}
+			} else if (defaultSerializer != null) {
+				return (T)defaultSerializer.read(this, jsonData, type);
 			} else
 				return (T)jsonData;
 

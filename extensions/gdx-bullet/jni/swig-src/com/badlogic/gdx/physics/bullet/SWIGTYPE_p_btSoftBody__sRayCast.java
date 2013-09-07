@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btSoftBody__sRayCast {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSoftBody__sRayCast obj) {
+  protected static long getCPtr(SWIGTYPE_p_btSoftBody__sRayCast obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

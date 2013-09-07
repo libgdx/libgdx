@@ -20,12 +20,16 @@ public interface MeshPartBuilder {
 	public void setColor(final Color color);
 	/** Set the color used if no vertex color is provided. */
 	public void setColor(float r, float g, float b, float a);
+	/** Set range of texture coordinates used (default is 0,0,1,1). */
+	public void setUVRange(float u1, float v1, float u2, float v2);
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
 	public short vertex(final float[] values);
 	/** Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are available. */
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
 	/** Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available. */
 	public short vertex(final VertexInfo info);
+	/** @return The index of the last added vertex. */
+	public short lastIndex();
 	/** Add an index, MeshPartBuilder expects all meshes to be indexed. */
 	public void index(final short value);
 	/** Add multiple indices, MeshPartBuilder expects all meshes to be indexed. */
@@ -68,6 +72,8 @@ public interface MeshPartBuilder {
 	public void patch(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU, int divisionsV);
 	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void patch(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU, int divisionsV);
+	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
+	public void patch(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV);
 	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
 						VertexInfo corner001, VertexInfo corner011, VertexInfo corner101, VertexInfo corner111);
@@ -148,6 +154,8 @@ public interface MeshPartBuilder {
 			return this;
 		}
 		public VertexInfo set(final VertexInfo other) {
+			if (other == null)
+				return set(null, null, null, null);
 			hasPosition = other.hasPosition;
 			position.set(other.position);
 			hasNormal = other.hasNormal;
