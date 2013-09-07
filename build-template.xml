@@ -146,6 +146,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<exclude name="*-natives.jar"/>
 				<exclude name="*-debug.jar"/>
 				<exclude name="android-*.jar"/>
+                <exclude name="robovm-*.jar"/>
 				<exclude name="gwt*.jar"/>
 			</zipgroupfileset>
 			<!-- merge dependencies specified in parent build.xml -->
