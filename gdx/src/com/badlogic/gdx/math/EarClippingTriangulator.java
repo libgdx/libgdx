@@ -177,12 +177,9 @@ public class EarClippingTriangulator {
 				float vy = vertices[i * 2 + 1];
 				// Because the polygon has clockwise winding order, the area sign will be positive if the point is strictly inside.
 				// It will be 0 on the edge, which we want to include as well.
-				int areaSign1 = computeSpannedAreaSign(p1x, p1y, p2x, p2y, vx, vy);
-				if (areaSign1 >= 0) {
-					int areaSign2 = computeSpannedAreaSign(p2x, p2y, p3x, p3y, vx, vy);
-					if (areaSign2 >= 0) {
-						int areaSign3 = computeSpannedAreaSign(p3x, p3y, p1x, p1y, vx, vy);
-						if (areaSign3 >= 0) return false;
+				if (computeSpannedAreaSign(p1x, p1y, p2x, p2y, vx, vy) >= 0) {
+					if (computeSpannedAreaSign(p2x, p2y, p3x, p3y, vx, vy) >= 0) {
+						if (computeSpannedAreaSign(p3x, p3y, p1x, p1y, vx, vy) >= 0) return false;
 					}
 				}
 			}
@@ -223,20 +220,19 @@ public class EarClippingTriangulator {
 
 	static private boolean areVerticesClockwise (float[] vertices, int offset, int count) {
 		if (count <= 2) return false;
-		float area = 0;
+		float area = 0, p1x, p1y, p2x, p2y;
 		for (int i = offset, n = offset + count - 3; i < n; i += 2) {
-			float p1x = vertices[i];
-			float p1y = vertices[i + 1];
-			float p2x = vertices[i + 2];
-			float p2y = vertices[i + 3];
+			p1x = vertices[i];
+			p1y = vertices[i + 1];
+			p2x = vertices[i + 2];
+			p2y = vertices[i + 3];
 			area += p1x * p2y - p2x * p1y;
 		}
-		float p1x = vertices[count - 2];
-		float p1y = vertices[count - 1];
-		float p2x = vertices[0];
-		float p2y = vertices[1];
-		area += p1x * p2y - p2x * p1y;
-		return area < 0;
+		p1x = vertices[count - 2];
+		p1y = vertices[count - 1];
+		p2x = vertices[0];
+		p2y = vertices[1];
+		return area + p1x * p2y - p2x * p1y < 0;
 	}
 
 	static private int computeSpannedAreaSign (float p1x, float p1y, float p2x, float p2y, float p3x, float p3y) {
