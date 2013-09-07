@@ -31,9 +31,10 @@ import com.badlogic.gdx.utils.IntArray;
 /** @author Nathan Sweet */
 public class DelaunayTriangulatorTest extends GdxTest {
 	private ShapeRenderer renderer;
-	private FloatArray points = new FloatArray();
-	private IntArray triangles;
-	private DelaunayTriangulator trianglulator = new DelaunayTriangulator();
+	FloatArray points = new FloatArray();
+	IntArray triangles;
+	DelaunayTriangulator trianglulator = new DelaunayTriangulator();
+	long seed = MathUtils.random.nextLong();
 
 	public void create () {
 		renderer = new ShapeRenderer();
@@ -42,15 +43,20 @@ public class DelaunayTriangulatorTest extends GdxTest {
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+				seed = MathUtils.random.nextLong();
+				System.out.println(seed);
 				triangulate();
 				return true;
+			}
+
+			public boolean mouseMoved (int screenX, int screenY) {
+				triangulate();
+				return false;
 			}
 		});
 	}
 
 	void triangulate () {
-		long seed = MathUtils.random.nextLong();
-		System.out.println(seed);
 		MathUtils.random.setSeed(seed);
 
 		int pointCount = 100;
@@ -66,6 +72,8 @@ public class DelaunayTriangulatorTest extends GdxTest {
 			} while (points.contains(value));
 			points.add(value);
 		}
+		points.add(Gdx.input.getX());
+		points.add(Gdx.graphics.getHeight() - Gdx.input.getY());
 
 		triangles = trianglulator.computeTriangles(points, false);
 	}

@@ -159,7 +159,7 @@ public class DelaunayTriangulator {
 
 	/** Returns -1 if point xp,yp is inside the circumcircle made up of the points x1,y1, x2,y2, x3,y3. Otherwise returns the x
 	 * coordinate of the circumcircle center plus the radius. Note: a point on the edge is inside the circumcircle. */
-	float circumCircle (float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
+	private float circumCircle (float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
 		// Check for coincident points.
 		if (Math.abs(y1 - y2) < EPSILON && Math.abs(y2 - y3) < EPSILON) return Float.MAX_VALUE;
 
