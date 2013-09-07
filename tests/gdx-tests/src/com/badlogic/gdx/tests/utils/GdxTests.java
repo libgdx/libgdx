@@ -82,7 +82,7 @@ public class GdxTests {
 		SimpleVertexShader.class, ShapeRendererTest.class, MoveSpriteExample.class, UISimpleTest.class,
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
 		// InternationalFontsTest.class, VorbisTest.class
-		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class,
+		TextButtonTest.class, TextButtonTestGL2.class, TextureBindTest.class, SortedSpriteTest.class, DelaunayTriangulatorTest.class,
 		ExternalMusicTest.class, SoftKeyboardTest.class, DirtyRenderingTest.class, YDownTest.class,
 		ScreenCaptureTest.class, BitmapFontTest.class, LabelScaleTest.class, GamepadTest.class, NetAPITest.class, TideMapAssetManagerTest.class, TideMapDirectLoaderTest.class, TiledMapAssetManagerTest.class, TiledMapBench.class,
 		RunnablePostTest.class, Vector2dTest.class, SuperKoalio.class, NinePatchTest.class, Basic3DSceneTest.class, Animation3DTest.class,
