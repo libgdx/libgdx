@@ -14,46 +14,54 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class ClosestNotMeConvexResultCallback extends ClosestConvexResultCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected ClosestNotMeConvexResultCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.ClosestNotMeConvexResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected ClosestNotMeConvexResultCallback(long cPtr, boolean cMemoryOwn) {
+		this("ClosestNotMeConvexResultCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(ClosestNotMeConvexResultCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected ClosestNotMeConvexResultCallback(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.ClosestNotMeConvexResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_ClosestNotMeConvexResultCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setMe(btCollisionObject value) {
+    gdxBulletJNI.ClosestNotMeConvexResultCallback_me_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
   }
 
-  public static long getCPtr(ClosestNotMeConvexResultCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_ClosestNotMeConvexResultCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_me(btCollisionObject value) {
-    gdxBulletJNI.ClosestNotMeConvexResultCallback_m_me_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
-  }
-
-  public btCollisionObject getM_me() {
-	return btCollisionObject.getInstance(gdxBulletJNI.ClosestNotMeConvexResultCallback_m_me_get(swigCPtr, this), false);
+  public btCollisionObject getMe() {
+	return btCollisionObject.getInstance(gdxBulletJNI.ClosestNotMeConvexResultCallback_me_get(swigCPtr, this), false);
 }
 
-  public void setM_allowedPenetration(float value) {
-    gdxBulletJNI.ClosestNotMeConvexResultCallback_m_allowedPenetration_set(swigCPtr, this, value);
+  public void setAllowedPenetration(float value) {
+    gdxBulletJNI.ClosestNotMeConvexResultCallback_allowedPenetration_set(swigCPtr, this, value);
   }
 
-  public float getM_allowedPenetration() {
-    return gdxBulletJNI.ClosestNotMeConvexResultCallback_m_allowedPenetration_get(swigCPtr, this);
+  public float getAllowedPenetration() {
+    return gdxBulletJNI.ClosestNotMeConvexResultCallback_allowedPenetration_get(swigCPtr, this);
   }
 
   public ClosestNotMeConvexResultCallback(btCollisionObject me, Vector3 fromA, Vector3 toA) {

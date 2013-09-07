@@ -6,16 +6,25 @@
 
 #define gdxToString(X)	"X"
 
-/* 
- * Allow public access to the CPtr methods on proxy classes and wrappers.
- * 
- * public was the default in SWIG <= 2.0.4, but changed to protected in
- * 2.0.5. Getting pointers to native Bullet objects can be useful (for 
- * instance, to map them back to associated Java scene objects), so make
- * the getCPtr method public.
- */
-SWIG_JAVABODY_PROXY(protected, public, SWIGTYPE)
-SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
+/* remove m_ prefix for the getters/setters of properties, 
+ * %rename has some conflict with %template so we much be careful when selecting what to rename */
+%rename("%(strip:[m_])s", %$ismember, %$ispublic, %$not %$isclass, %$not %$istemplate, %$not %$isfunction, regexmatch$name="m_.*$") "";
+/* some classes have both public properties and getter/setter methods, ignore the latter. */
+%ignore btHashString::getHash;
+%ignore btManifoldPoint::getLifeTime;
+%ignore btManifoldPoint::getPositionWorldOnA;
+%ignore btManifoldPoint::getPositionWorldOnB;
+%ignore btManifoldPoint::getAppliedImpulse;
+%ignore btSolverBody::getWorldTransform;
+%ignore btSolverBody::getDeltaLinearVelocity;
+%ignore btSolverBody::getDeltaAngularVelocity;
+%ignore btSolverBody::getPushVelocity;
+%ignore btSolverBody::getTurnVelocity;
+%ignore btTypedObject::getObjectType;
+%ignore btVoronoiSimplexSolver::setEqualVertexThreshold;
+%ignore btVoronoiSimplexSolver::getEqualVertexThreshold;
+
+%include "common/gdxDefault.i"
 
 /* Configures types that need down cast support */
 %include "common/gdxDownCast.i"
@@ -34,7 +43,7 @@ SWIG_JAVABODY_TYPEWRAPPER(protected, protected, public, SWIGTYPE)
 
 %include "common/gdxPooledObject.i"
 
-%include "common/gdxManagedObject.i"
+//%include "common/gdxManagedObject.i"
 
 /* Prefer libgdx's linear math types (Vector3, Matrix3, etc.). */
 %include "common/gdxMathTypes.i"
@@ -190,3 +199,4 @@ ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 %include "gdxMissingBulletMethods.i"
 
 %include "extras/serialize/gdxBulletSerialize.i"
+

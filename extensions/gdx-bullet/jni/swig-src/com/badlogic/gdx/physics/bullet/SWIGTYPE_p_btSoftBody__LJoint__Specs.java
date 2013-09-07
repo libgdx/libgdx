@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btSoftBody__LJoint__Specs {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btSoftBody__LJoint__Specs obj) {
+  protected static long getCPtr(SWIGTYPE_p_btSoftBody__LJoint__Specs obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

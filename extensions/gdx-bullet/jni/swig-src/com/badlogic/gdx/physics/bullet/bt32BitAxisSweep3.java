@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class bt32BitAxisSweep3 extends btAxisSweep3InternalInt {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected bt32BitAxisSweep3(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.bt32BitAxisSweep3_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected bt32BitAxisSweep3(long cPtr, boolean cMemoryOwn) {
+		this("bt32BitAxisSweep3", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(bt32BitAxisSweep3 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected bt32BitAxisSweep3(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.bt32BitAxisSweep3_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(bt32BitAxisSweep3 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_bt32BitAxisSweep3(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_bt32BitAxisSweep3(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public bt32BitAxisSweep3(Vector3 worldAabbMin, Vector3 worldAabbMax, long maxHandles, btOverlappingPairCache pairCache, boolean disableRaycastAccelerator) {
     this(gdxBulletJNI.new_bt32BitAxisSweep3__SWIG_0(worldAabbMin, worldAabbMax, maxHandles, btOverlappingPairCache.getCPtr(pairCache), pairCache, disableRaycastAccelerator), true);

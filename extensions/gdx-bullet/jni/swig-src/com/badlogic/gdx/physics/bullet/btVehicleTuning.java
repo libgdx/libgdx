@@ -13,83 +13,91 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btVehicleTuning {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btVehicleTuning extends BulletBase {
+	private long swigCPtr;
+	
+	protected btVehicleTuning(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btVehicleTuning(long cPtr, boolean cMemoryOwn) {
+		this("btVehicleTuning", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btVehicleTuning obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btVehicleTuning(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btVehicleTuning obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btVehicleTuning(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btVehicleTuning(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btVehicleTuning() {
     this(gdxBulletJNI.new_btVehicleTuning(), true);
   }
 
-  public void setM_suspensionStiffness(float value) {
-    gdxBulletJNI.btVehicleTuning_m_suspensionStiffness_set(swigCPtr, this, value);
+  public void setSuspensionStiffness(float value) {
+    gdxBulletJNI.btVehicleTuning_suspensionStiffness_set(swigCPtr, this, value);
   }
 
-  public float getM_suspensionStiffness() {
-    return gdxBulletJNI.btVehicleTuning_m_suspensionStiffness_get(swigCPtr, this);
+  public float getSuspensionStiffness() {
+    return gdxBulletJNI.btVehicleTuning_suspensionStiffness_get(swigCPtr, this);
   }
 
-  public void setM_suspensionCompression(float value) {
-    gdxBulletJNI.btVehicleTuning_m_suspensionCompression_set(swigCPtr, this, value);
+  public void setSuspensionCompression(float value) {
+    gdxBulletJNI.btVehicleTuning_suspensionCompression_set(swigCPtr, this, value);
   }
 
-  public float getM_suspensionCompression() {
-    return gdxBulletJNI.btVehicleTuning_m_suspensionCompression_get(swigCPtr, this);
+  public float getSuspensionCompression() {
+    return gdxBulletJNI.btVehicleTuning_suspensionCompression_get(swigCPtr, this);
   }
 
-  public void setM_suspensionDamping(float value) {
-    gdxBulletJNI.btVehicleTuning_m_suspensionDamping_set(swigCPtr, this, value);
+  public void setSuspensionDamping(float value) {
+    gdxBulletJNI.btVehicleTuning_suspensionDamping_set(swigCPtr, this, value);
   }
 
-  public float getM_suspensionDamping() {
-    return gdxBulletJNI.btVehicleTuning_m_suspensionDamping_get(swigCPtr, this);
+  public float getSuspensionDamping() {
+    return gdxBulletJNI.btVehicleTuning_suspensionDamping_get(swigCPtr, this);
   }
 
-  public void setM_maxSuspensionTravelCm(float value) {
-    gdxBulletJNI.btVehicleTuning_m_maxSuspensionTravelCm_set(swigCPtr, this, value);
+  public void setMaxSuspensionTravelCm(float value) {
+    gdxBulletJNI.btVehicleTuning_maxSuspensionTravelCm_set(swigCPtr, this, value);
   }
 
-  public float getM_maxSuspensionTravelCm() {
-    return gdxBulletJNI.btVehicleTuning_m_maxSuspensionTravelCm_get(swigCPtr, this);
+  public float getMaxSuspensionTravelCm() {
+    return gdxBulletJNI.btVehicleTuning_maxSuspensionTravelCm_get(swigCPtr, this);
   }
 
-  public void setM_frictionSlip(float value) {
-    gdxBulletJNI.btVehicleTuning_m_frictionSlip_set(swigCPtr, this, value);
+  public void setFrictionSlip(float value) {
+    gdxBulletJNI.btVehicleTuning_frictionSlip_set(swigCPtr, this, value);
   }
 
-  public float getM_frictionSlip() {
-    return gdxBulletJNI.btVehicleTuning_m_frictionSlip_get(swigCPtr, this);
+  public float getFrictionSlip() {
+    return gdxBulletJNI.btVehicleTuning_frictionSlip_get(swigCPtr, this);
   }
 
-  public void setM_maxSuspensionForce(float value) {
-    gdxBulletJNI.btVehicleTuning_m_maxSuspensionForce_set(swigCPtr, this, value);
+  public void setMaxSuspensionForce(float value) {
+    gdxBulletJNI.btVehicleTuning_maxSuspensionForce_set(swigCPtr, this, value);
   }
 
-  public float getM_maxSuspensionForce() {
-    return gdxBulletJNI.btVehicleTuning_m_maxSuspensionForce_get(swigCPtr, this);
+  public float getMaxSuspensionForce() {
+    return gdxBulletJNI.btVehicleTuning_maxSuspensionForce_get(swigCPtr, this);
   }
 
 }

@@ -49,7 +49,7 @@ public class MeshShapeTest extends BaseBulletTest {
 		
 		final Model sceneModel = objLoader.loadModel(Gdx.files.internal("data/scene.obj"));
 		disposables.add(sceneModel);
-		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
+		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(sceneModel.meshParts));
 		sceneConstructor.bodyInfo.setRestitution(0.25f);
 		world.addConstructor("scene", sceneConstructor);
 		

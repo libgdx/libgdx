@@ -13,39 +13,47 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionAlgorithmCreateFunc {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCollisionAlgorithmCreateFunc extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCollisionAlgorithmCreateFunc(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCollisionAlgorithmCreateFunc(long cPtr, boolean cMemoryOwn) {
+		this("btCollisionAlgorithmCreateFunc", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCollisionAlgorithmCreateFunc obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCollisionAlgorithmCreateFunc(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCollisionAlgorithmCreateFunc(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setSwapped(boolean value) {
+    gdxBulletJNI.btCollisionAlgorithmCreateFunc_swapped_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btCollisionAlgorithmCreateFunc obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionAlgorithmCreateFunc(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_swapped(boolean value) {
-    gdxBulletJNI.btCollisionAlgorithmCreateFunc_m_swapped_set(swigCPtr, this, value);
-  }
-
-  public boolean getM_swapped() {
-    return gdxBulletJNI.btCollisionAlgorithmCreateFunc_m_swapped_get(swigCPtr, this);
+  public boolean getSwapped() {
+    return gdxBulletJNI.btCollisionAlgorithmCreateFunc_swapped_get(swigCPtr, this);
   }
 
   public btCollisionAlgorithmCreateFunc() {

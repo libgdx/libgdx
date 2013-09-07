@@ -234,10 +234,6 @@
 %include "BulletCollision/CollisionShapes/btUniformScalingShape.h"
 
 %include "./btCompoundShape.i"
-%{
-#include <BulletCollision/CollisionShapes/btCompoundShape.h>
-%}
-%include "BulletCollision/CollisionShapes/btCompoundShape.h"
 
 %{
 #include <BulletCollision/CollisionShapes/btConvexPointCloudShape.h>
@@ -460,6 +456,8 @@
 %include "./btMultiSphereShape.i"
 
 %include "./ContactListener.i"
+
+%include "./ContactCache.i"
 
 %template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
 %include "./btBroadphasePairArray.i"

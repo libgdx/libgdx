@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btMultiSphereShape extends btConvexInternalAabbCachingShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btMultiSphereShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btMultiSphereShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btMultiSphereShape(long cPtr, boolean cMemoryOwn) {
+		this("btMultiSphereShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btMultiSphereShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btMultiSphereShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btMultiSphereShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btMultiSphereShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btMultiSphereShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btMultiSphereShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btMultiSphereShape(Vector3[] positions, float[] radi, int numSpheres) {
     this(gdxBulletJNI.new_btMultiSphereShape(positions, radi, numSpheres), true);

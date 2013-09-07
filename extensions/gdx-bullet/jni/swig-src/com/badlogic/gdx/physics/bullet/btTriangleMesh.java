@@ -14,38 +14,46 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleMesh extends btTriangleIndexVertexArray {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btTriangleMesh(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btTriangleMesh_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleMesh(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleMesh", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleMesh obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleMesh(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btTriangleMesh_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleMesh(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setWeldingThreshold(float value) {
+    gdxBulletJNI.btTriangleMesh_weldingThreshold_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btTriangleMesh obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleMesh(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_weldingThreshold(float value) {
-    gdxBulletJNI.btTriangleMesh_m_weldingThreshold_set(swigCPtr, this, value);
-  }
-
-  public float getM_weldingThreshold() {
-    return gdxBulletJNI.btTriangleMesh_m_weldingThreshold_get(swigCPtr, this);
+  public float getWeldingThreshold() {
+    return gdxBulletJNI.btTriangleMesh_weldingThreshold_get(swigCPtr, this);
   }
 
   public btTriangleMesh(boolean use32bitIndices, boolean use4componentVertices) {

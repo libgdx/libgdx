@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class InternalTickCallback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class InternalTickCallback extends BulletBase {
+	private long swigCPtr;
+	
+	protected InternalTickCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected InternalTickCallback(long cPtr, boolean cMemoryOwn) {
+		this("InternalTickCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(InternalTickCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected InternalTickCallback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(InternalTickCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_InternalTickCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_InternalTickCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   protected void swigDirectorDisconnect() {
     swigCMemOwn = false;

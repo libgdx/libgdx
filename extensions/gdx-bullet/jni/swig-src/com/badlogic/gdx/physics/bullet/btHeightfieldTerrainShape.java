@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btHeightfieldTerrainShape extends btConcaveShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btHeightfieldTerrainShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btHeightfieldTerrainShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btHeightfieldTerrainShape(long cPtr, boolean cMemoryOwn) {
+		this("btHeightfieldTerrainShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btHeightfieldTerrainShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btHeightfieldTerrainShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btHeightfieldTerrainShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btHeightfieldTerrainShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btHeightfieldTerrainShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btHeightfieldTerrainShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void setUseDiamondSubdivision(boolean useDiamondSubdivision) {
     gdxBulletJNI.btHeightfieldTerrainShape_setUseDiamondSubdivision__SWIG_0(swigCPtr, this, useDiamondSubdivision);

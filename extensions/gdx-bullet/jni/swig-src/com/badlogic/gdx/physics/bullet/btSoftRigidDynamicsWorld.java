@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftRigidDynamicsWorld extends btDiscreteDynamicsWorld {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSoftRigidDynamicsWorld(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSoftRigidDynamicsWorld_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSoftRigidDynamicsWorld(long cPtr, boolean cMemoryOwn) {
+		this("btSoftRigidDynamicsWorld", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSoftRigidDynamicsWorld obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSoftRigidDynamicsWorld(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSoftRigidDynamicsWorld_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSoftRigidDynamicsWorld obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSoftRigidDynamicsWorld(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSoftRigidDynamicsWorld(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btSoftRigidDynamicsWorld(btDispatcher dispatcher, btBroadphaseInterface pairCache, btConstraintSolver constraintSolver, btCollisionConfiguration collisionConfiguration, btSoftBodySolver softBodySolver) {
     this(gdxBulletJNI.new_btSoftRigidDynamicsWorld__SWIG_0(btDispatcher.getCPtr(dispatcher), dispatcher, btBroadphaseInterface.getCPtr(pairCache), pairCache, btConstraintSolver.getCPtr(constraintSolver), constraintSolver, btCollisionConfiguration.getCPtr(collisionConfiguration), collisionConfiguration, btSoftBodySolver.getCPtr(softBodySolver), softBodySolver), true);

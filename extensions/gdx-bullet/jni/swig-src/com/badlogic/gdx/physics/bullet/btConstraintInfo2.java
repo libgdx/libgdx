@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btConstraintInfo2 {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btConstraintInfo2 extends BulletBase {
+	private long swigCPtr;
+	
+	protected btConstraintInfo2(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConstraintInfo2(long cPtr, boolean cMemoryOwn) {
+		this("btConstraintInfo2", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConstraintInfo2 obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConstraintInfo2(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btConstraintInfo2 obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConstraintInfo2(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConstraintInfo2(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void setFps(float value) {
     gdxBulletJNI.btConstraintInfo2_fps_set(swigCPtr, this, value);
@@ -56,39 +64,39 @@ public class btConstraintInfo2 {
     return gdxBulletJNI.btConstraintInfo2_erp_get(swigCPtr, this);
   }
 
-  public void setM_J1linearAxis(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_J1linearAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setJ1linearAxis(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_J1linearAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_J1linearAxis() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_J1linearAxis_get(swigCPtr, this);
+  public SWIGTYPE_p_float getJ1linearAxis() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_J1linearAxis_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
-  public void setM_J1angularAxis(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_J1angularAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setJ1angularAxis(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_J1angularAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_J1angularAxis() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_J1angularAxis_get(swigCPtr, this);
+  public SWIGTYPE_p_float getJ1angularAxis() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_J1angularAxis_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
-  public void setM_J2linearAxis(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_J2linearAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setJ2linearAxis(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_J2linearAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_J2linearAxis() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_J2linearAxis_get(swigCPtr, this);
+  public SWIGTYPE_p_float getJ2linearAxis() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_J2linearAxis_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
-  public void setM_J2angularAxis(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_J2angularAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setJ2angularAxis(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_J2angularAxis_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_J2angularAxis() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_J2angularAxis_get(swigCPtr, this);
+  public SWIGTYPE_p_float getJ2angularAxis() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_J2angularAxis_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
@@ -100,12 +108,12 @@ public class btConstraintInfo2 {
     return gdxBulletJNI.btConstraintInfo2_rowskip_get(swigCPtr, this);
   }
 
-  public void setM_constraintError(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_constraintError_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setConstraintError(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_constraintError_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_constraintError() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_constraintError_get(swigCPtr, this);
+  public SWIGTYPE_p_float getConstraintError() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_constraintError_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
@@ -118,21 +126,21 @@ public class btConstraintInfo2 {
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
-  public void setM_lowerLimit(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_lowerLimit_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setLowerLimit(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_lowerLimit_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_lowerLimit() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_lowerLimit_get(swigCPtr, this);
+  public SWIGTYPE_p_float getLowerLimit() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_lowerLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
-  public void setM_upperLimit(SWIGTYPE_p_float value) {
-    gdxBulletJNI.btConstraintInfo2_m_upperLimit_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
+  public void setUpperLimit(SWIGTYPE_p_float value) {
+    gdxBulletJNI.btConstraintInfo2_upperLimit_set(swigCPtr, this, SWIGTYPE_p_float.getCPtr(value));
   }
 
-  public SWIGTYPE_p_float getM_upperLimit() {
-    long cPtr = gdxBulletJNI.btConstraintInfo2_m_upperLimit_get(swigCPtr, this);
+  public SWIGTYPE_p_float getUpperLimit() {
+    long cPtr = gdxBulletJNI.btConstraintInfo2_upperLimit_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_float(cPtr, false);
   }
 
@@ -145,20 +153,20 @@ public class btConstraintInfo2 {
     return (cPtr == 0) ? null : new SWIGTYPE_p_int(cPtr, false);
   }
 
-  public void setM_numIterations(int value) {
-    gdxBulletJNI.btConstraintInfo2_m_numIterations_set(swigCPtr, this, value);
+  public void setNumIterations(int value) {
+    gdxBulletJNI.btConstraintInfo2_numIterations_set(swigCPtr, this, value);
   }
 
-  public int getM_numIterations() {
-    return gdxBulletJNI.btConstraintInfo2_m_numIterations_get(swigCPtr, this);
+  public int getNumIterations() {
+    return gdxBulletJNI.btConstraintInfo2_numIterations_get(swigCPtr, this);
   }
 
-  public void setM_damping(float value) {
-    gdxBulletJNI.btConstraintInfo2_m_damping_set(swigCPtr, this, value);
+  public void setDamping(float value) {
+    gdxBulletJNI.btConstraintInfo2_damping_set(swigCPtr, this, value);
   }
 
-  public float getM_damping() {
-    return gdxBulletJNI.btConstraintInfo2_m_damping_get(swigCPtr, this);
+  public float getDamping() {
+    return gdxBulletJNI.btConstraintInfo2_damping_get(swigCPtr, this);
   }
 
   public btConstraintInfo2() {

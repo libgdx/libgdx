@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btAxisSweep3InternalInt extends btBroadphaseInterface {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btAxisSweep3InternalInt(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btAxisSweep3InternalInt_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btAxisSweep3InternalInt(long cPtr, boolean cMemoryOwn) {
+		this("btAxisSweep3InternalInt", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btAxisSweep3InternalInt obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btAxisSweep3InternalInt(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btAxisSweep3InternalInt_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btAxisSweep3InternalInt obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btAxisSweep3InternalInt(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btAxisSweep3InternalInt(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btAxisSweep3InternalInt(Vector3 worldAabbMin, Vector3 worldAabbMax, long handleMask, long handleSentinel, long maxHandles, btOverlappingPairCache pairCache, boolean disableRaycastAccelerator) {
     this(gdxBulletJNI.new_btAxisSweep3InternalInt__SWIG_0(worldAabbMin, worldAabbMax, handleMask, handleSentinel, maxHandles, btOverlappingPairCache.getCPtr(pairCache), pairCache, disableRaycastAccelerator), true);

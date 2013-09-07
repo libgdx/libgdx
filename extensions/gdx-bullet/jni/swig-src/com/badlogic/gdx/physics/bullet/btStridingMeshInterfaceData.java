@@ -13,65 +13,73 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btStridingMeshInterfaceData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btStridingMeshInterfaceData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btStridingMeshInterfaceData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btStridingMeshInterfaceData(long cPtr, boolean cMemoryOwn) {
+		this("btStridingMeshInterfaceData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btStridingMeshInterfaceData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btStridingMeshInterfaceData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btStridingMeshInterfaceData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setMeshPartsPtr(btMeshPartData value) {
+    gdxBulletJNI.btStridingMeshInterfaceData_meshPartsPtr_set(swigCPtr, this, btMeshPartData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btStridingMeshInterfaceData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btStridingMeshInterfaceData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_meshPartsPtr(btMeshPartData value) {
-    gdxBulletJNI.btStridingMeshInterfaceData_m_meshPartsPtr_set(swigCPtr, this, btMeshPartData.getCPtr(value), value);
-  }
-
-  public btMeshPartData getM_meshPartsPtr() {
-    long cPtr = gdxBulletJNI.btStridingMeshInterfaceData_m_meshPartsPtr_get(swigCPtr, this);
+  public btMeshPartData getMeshPartsPtr() {
+    long cPtr = gdxBulletJNI.btStridingMeshInterfaceData_meshPartsPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btMeshPartData(cPtr, false);
   }
 
-  public void setM_scaling(btVector3FloatData value) {
-    gdxBulletJNI.btStridingMeshInterfaceData_m_scaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setScaling(btVector3FloatData value) {
+    gdxBulletJNI.btStridingMeshInterfaceData_scaling_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_scaling() {
-    long cPtr = gdxBulletJNI.btStridingMeshInterfaceData_m_scaling_get(swigCPtr, this);
+  public btVector3FloatData getScaling() {
+    long cPtr = gdxBulletJNI.btStridingMeshInterfaceData_scaling_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_numMeshParts(int value) {
-    gdxBulletJNI.btStridingMeshInterfaceData_m_numMeshParts_set(swigCPtr, this, value);
+  public void setNumMeshParts(int value) {
+    gdxBulletJNI.btStridingMeshInterfaceData_numMeshParts_set(swigCPtr, this, value);
   }
 
-  public int getM_numMeshParts() {
-    return gdxBulletJNI.btStridingMeshInterfaceData_m_numMeshParts_get(swigCPtr, this);
+  public int getNumMeshParts() {
+    return gdxBulletJNI.btStridingMeshInterfaceData_numMeshParts_get(swigCPtr, this);
   }
 
-  public void setM_padding(String value) {
-    gdxBulletJNI.btStridingMeshInterfaceData_m_padding_set(swigCPtr, this, value);
+  public void setPadding(String value) {
+    gdxBulletJNI.btStridingMeshInterfaceData_padding_set(swigCPtr, this, value);
   }
 
-  public String getM_padding() {
-    return gdxBulletJNI.btStridingMeshInterfaceData_m_padding_get(swigCPtr, this);
+  public String getPadding() {
+    return gdxBulletJNI.btStridingMeshInterfaceData_padding_get(swigCPtr, this);
   }
 
   public btStridingMeshInterfaceData() {

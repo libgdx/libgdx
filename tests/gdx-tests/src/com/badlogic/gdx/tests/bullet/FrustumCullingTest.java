@@ -90,7 +90,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 			for (int i = 0; i < points.length; i++)
 				hullShape.addPoint(tmpV.set(points[i]).sub(center));
 			final btCompoundShape shape = new btCompoundShape();
-			shape.addChildShape(tmpM.setToTranslation(center), hullShape, true);
+			shape.addChildShape(tmpM.setToTranslation(center), hullShape);
 			result.setCollisionShape(shape);
 		} else {
 			final btConvexHullShape shape = new btConvexHullShape();
@@ -261,7 +261,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		super.dispose();
 		
 		if (tempManifoldArr != null)
-			tempManifoldArr.delete();
+			tempManifoldArr.dispose();
 		tempManifoldArr = null;
 	}
 	
@@ -287,7 +287,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		public void dispose () {
 			super.dispose();
 			if (shape != null)
-				shape.delete();
+				shape.dispose();
 			shape = null;
 		}
 	}

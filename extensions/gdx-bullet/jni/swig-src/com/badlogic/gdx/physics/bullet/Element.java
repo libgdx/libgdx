@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class Element {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class Element extends BulletBase {
+	private long swigCPtr;
+	
+	protected Element(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected Element(long cPtr, boolean cMemoryOwn) {
+		this("Element", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(Element obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected Element(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(Element obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_Element(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_Element(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
 	public void takeOwnership() {
 		swigCMemOwn = true;
@@ -48,12 +56,12 @@ public class Element {
 		swigCMemOwn = false;
 	}
 
-  public void setM_tag(SWIGTYPE_p_void value) {
-    gdxBulletJNI.Element_m_tag_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setTag(SWIGTYPE_p_void value) {
+    gdxBulletJNI.Element_tag_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_tag() {
-    long cPtr = gdxBulletJNI.Element_m_tag_get(swigCPtr, this);
+  public SWIGTYPE_p_void getTag() {
+    long cPtr = gdxBulletJNI.Element_tag_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
