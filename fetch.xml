@@ -30,6 +30,7 @@
 		<get src="${domain}/ios/gdx-backend-ios.dll.mdb" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>
 		
         <!-- robovm snapshot jars for robovm backend -->
+        <mkdir dir="backends/backends/gdx-backend-robovm/libs/"/>
         <get src="${robovm}/robovm-cacerts-full.jar" dest="backends/backends/gdx-backend-robovm/libs/"/>
         <get src="${robovm}/robovm-cocoatouch.jar" dest="backends/backends/gdx-backend-robovm/libs/"/>
         <get src="${robovm}/robovm-objc.jar" dest="backends/backends/gdx-backend-robovm/libs/"/>
