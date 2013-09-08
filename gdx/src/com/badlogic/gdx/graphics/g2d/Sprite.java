@@ -284,14 +284,15 @@ public class Sprite extends TextureRegion {
 		dirty = true;
 	}
 
-	public void setRotation (float degrees) {
-		this.rotation = degrees;
+	/** Sets the sprite's rotation. */
+	public void setRotation (float radians) {
+		this.rotation = radians;
 		dirty = true;
 	}
 
 	/** Sets the sprite's rotation relative to the current rotation. */
-	public void rotate (float degrees) {
-		rotation += degrees;
+	public void rotate (float radians) {
+		rotation += radians;
 		dirty = true;
 	}
 
@@ -327,12 +328,14 @@ public class Sprite extends TextureRegion {
 		}
 	}
 
+	/** Set's the sprite's horizontal and vertical scale. */
 	public void setScale (float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;
 		dirty = true;
 	}
 
+	/** Set's the sprite's horizontal scale and vertical scale separately. */
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
