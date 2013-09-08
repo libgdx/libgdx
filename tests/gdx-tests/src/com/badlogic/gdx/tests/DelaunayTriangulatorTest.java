@@ -40,6 +40,7 @@ public class DelaunayTriangulatorTest extends GdxTest {
 		renderer = new ShapeRenderer();
 
 		triangulate();
+		System.out.println(seed);
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
@@ -58,6 +59,7 @@ public class DelaunayTriangulatorTest extends GdxTest {
 
 	void triangulate () {
 		// seed = 4139368480425561099l;
+		// seed = 6559652580366669361l;
 		MathUtils.random.setSeed(seed);
 
 		int pointCount = 100;

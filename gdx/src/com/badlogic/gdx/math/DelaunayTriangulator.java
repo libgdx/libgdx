@@ -9,11 +9,15 @@ import com.badlogic.gdx.utils.IntArray;
  * @author Nathan Sweet */
 public class DelaunayTriangulator {
 	static private final float EPSILON = 0.000001f;
+	static private final int INSIDE = 0;
+	static private final int COMPLETE = 1;
+	static private final int INCOMPLETE = 2;
 
 	private final IntArray quicksortStack = new IntArray();
-	private final IntArray triangles = new IntArray(false, 64);
-	private final IntArray edges = new IntArray(32);
-	private final BooleanArray complete = new BooleanArray(false, 64);
+	private final IntArray triangles = new IntArray(false, 16);
+	private final IntArray edges = new IntArray();
+	private final BooleanArray complete = new BooleanArray(false, 16);
+	private final float[] superTriangle = new float[6];
 
 	/** @see #computeTriangles(float[], int, int, boolean) */
 	public IntArray computeTriangles (FloatArray points, boolean sorted) {
@@ -35,37 +39,42 @@ public class DelaunayTriangulator {
 
 		if (!sorted) quicksortPairs(points, offset, end - 1);
 
-		IntArray triangles = this.triangles;
-		triangles.clear();
-		triangles.ensureCapacity(count);
-
-		IntArray edges = this.edges;
-
-		BooleanArray complete = this.complete;
-		complete.ensureCapacity(count);
-
 		// Determine bounds for super triangle.
 		float xmin = points[0], ymin = points[1];
 		float xmax = xmin, ymax = ymin;
 		for (int i = offset + 2; i < end; i++) {
-			if (points[i] < xmin) xmin = points[i];
-			if (points[i] > xmax) xmax = points[i];
+			float value = points[i];
+			if (value < xmin) xmin = value;
+			if (value > xmax) xmax = value;
 			i++;
-			if (points[i] < ymin) ymin = points[i];
-			if (points[i] > ymax) ymax = points[i];
+			value = points[i];
+			if (value < ymin) ymin = value;
+			if (value > ymax) ymax = value;
 		}
 		float dx = xmax - xmin, dy = ymax - ymin;
 		float dmax = dx > dy ? dx : dy;
 		float xmid = (xmax + xmin) / 2f, ymid = (ymax + ymin) / 2f;
 
-		// Setup the super triangle, which encompasses all points.
-		float[] superTriangle = new float[6];
+		// Setup the super triangle, which contains all points.
+		float[] superTriangle = this.superTriangle;
 		superTriangle[0] = xmid - 20f * dmax;
-		superTriangle[1] = ymid - dmax;
+		superTriangle[1] = ymid - 20f * dmax;
 		superTriangle[2] = xmid;
 		superTriangle[3] = ymid + 20f * dmax;
 		superTriangle[4] = xmid + 20f * dmax;
-		superTriangle[5] = ymid - dmax;
+		superTriangle[5] = ymid - 20f * dmax;
+
+		IntArray edges = this.edges;
+		edges.ensureCapacity(count / 2);
+
+		BooleanArray complete = this.complete;
+		complete.ensureCapacity(count);
+
+		IntArray triangles = this.triangles;
+		triangles.clear();
+		triangles.ensureCapacity(count);
+
+		// Add super triangle.
 		triangles.add(end);
 		triangles.add(end + 2);
 		triangles.add(end + 4);
@@ -76,36 +85,44 @@ public class DelaunayTriangulator {
 			float x = points[pointIndex], y = points[pointIndex + 1];
 
 			// If x,y lies inside the circumcircle of a triangle, the edges are stored and the triangle removed.
-			for (int triangleIndex = 0; triangleIndex < triangles.size; triangleIndex += 3) {
+			int[] trianglesArray = triangles.items;
+			boolean[] completeArray = complete.items;
+			for (int triangleIndex = triangles.size - 1; triangleIndex >= 0; triangleIndex -= 3) {
 				int completeIndex = triangleIndex / 3;
-				if (complete.get(completeIndex)) continue;
-				int p1 = triangles.get(triangleIndex);
-				int p2 = triangles.get(triangleIndex + 1);
-				int p3 = triangles.get(triangleIndex + 2);
+				if (completeArray[completeIndex]) continue;
+				int p1 = trianglesArray[triangleIndex - 2];
+				int p2 = trianglesArray[triangleIndex - 1];
+				int p3 = trianglesArray[triangleIndex];
 				float x1, y1, x2, y2, x3, y3;
 				if (p1 >= end) {
-					x1 = superTriangle[p1 - end];
-					y1 = superTriangle[p1 - end + 1];
+					int i = p1 - end;
+					x1 = superTriangle[i];
+					y1 = superTriangle[i + 1];
 				} else {
 					x1 = points[p1];
 					y1 = points[p1 + 1];
 				}
 				if (p2 >= end) {
-					x2 = superTriangle[p2 - end];
-					y2 = superTriangle[p2 - end + 1];
+					int i = p2 - end;
+					x2 = superTriangle[i];
+					y2 = superTriangle[i + 1];
 				} else {
 					x2 = points[p2];
 					y2 = points[p2 + 1];
 				}
 				if (p3 >= end) {
-					x3 = superTriangle[p3 - end];
-					y3 = superTriangle[p3 - end + 1];
+					int i = p3 - end;
+					x3 = superTriangle[i];
+					y3 = superTriangle[i + 1];
 				} else {
 					x3 = points[p3];
 					y3 = points[p3 + 1];
 				}
-				float result = circumCircle(x, y, x1, y1, x2, y2, x3, y3);
-				if (result == -1) {
+				switch (circumCircle(x, y, x1, y1, x2, y2, x3, y3)) {
+				case COMPLETE:
+					completeArray[completeIndex] = true;
+					break;
+				case INSIDE:
 					edges.add(p1);
 					edges.add(p2);
 					edges.add(p2);
@@ -113,32 +130,32 @@ public class DelaunayTriangulator {
 					edges.add(p3);
 					edges.add(p1);
 
-					triangles.removeIndex(triangleIndex + 2);
-					triangles.removeIndex(triangleIndex + 1);
 					triangles.removeIndex(triangleIndex);
+					triangles.removeIndex(triangleIndex - 1);
+					triangles.removeIndex(triangleIndex - 2);
 					complete.removeIndex(completeIndex);
-					triangleIndex -= 3;
-				} else if (result < x) //
-					complete.set(completeIndex, true);
+					break;
+				}
 			}
 
+			int[] edgesArray = edges.items;
 			for (int i = 0, n = edges.size; i < n; i += 2) {
 				// Skip multiple edges. If all triangles are anticlockwise then all interior edges are opposite pointing in direction.
-				int p1 = edges.get(i);
+				int p1 = edgesArray[i];
 				if (p1 == -1) continue;
-				int p2 = edges.get(i + 1);
+				int p2 = edgesArray[i + 1];
 				boolean skip = false;
 				for (int ii = i + 2; ii < n; ii += 2) {
-					if (p1 == edges.get(ii + 1) && p2 == edges.get(ii)) {
+					if (p1 == edgesArray[ii + 1] && p2 == edgesArray[ii]) {
 						skip = true;
-						edges.set(ii, -1);
+						edgesArray[ii] = -1;
 					}
 				}
 				if (skip) continue;
 
 				// Form new triangles for the current point. Edges are arranged in clockwise order.
 				triangles.add(p1);
-				triangles.add(edges.get(i + 1));
+				triangles.add(edgesArray[i + 1]);
 				triangles.add(pointIndex);
 				complete.add(false);
 			}
@@ -147,8 +164,9 @@ public class DelaunayTriangulator {
 		complete.clear();
 
 		// Remove triangles with super triangle vertices.
+		int[] trianglesArray = triangles.items;
 		for (int i = triangles.size - 1; i >= 0; i -= 3) {
-			if (triangles.get(i) >= end || triangles.get(i - 1) >= end || triangles.get(i - 2) >= end) {
+			if (trianglesArray[i] >= end || trianglesArray[i - 1] >= end || trianglesArray[i - 2] >= end) {
 				triangles.removeIndex(i);
 				triangles.removeIndex(i - 1);
 				triangles.removeIndex(i - 2);
@@ -157,34 +175,34 @@ public class DelaunayTriangulator {
 		return triangles;
 	}
 
-	/** Returns -1 if point xp,yp is inside the circumcircle made up of the points x1,y1, x2,y2, x3,y3. Otherwise returns the x
-	 * coordinate of the circumcircle center plus the radius. Note: a point on the edge is inside the circumcircle. */
-	private float circumCircle (float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
-		// Check for coincident points.
-		if (Math.abs(y1 - y2) < EPSILON && Math.abs(y2 - y3) < EPSILON) return Float.MAX_VALUE;
-
+	/** Returns INSIDE if point xp,yp is inside the circumcircle made up of the points x1,y1, x2,y2, x3,y3. Returns COMPLETE if xp
+	 * is to the right of the entire circumcircle. Otherwise returns INCOMPLETE. Note: a point on the circumcircle edge is
+	 * considered inside. */
+	private int circumCircle (float xp, float yp, float x1, float y1, float x2, float y2, float x3, float y3) {
 		float xc, yc;
-		if (Math.abs(y2 - y1) < EPSILON) {
+		float y1y2 = Math.abs(y1 - y2);
+		float y2y3 = Math.abs(y2 - y3);
+		if (y1y2 < EPSILON) {
+			if (y2y3 < EPSILON) return INCOMPLETE;
 			float m2 = -(x3 - x2) / (y3 - y2);
 			float mx2 = (x2 + x3) / 2f;
 			float my2 = (y2 + y3) / 2f;
 			xc = (x2 + x1) / 2f;
 			yc = m2 * (xc - mx2) + my2;
-		} else if (Math.abs(y3 - y2) < EPSILON) {
-			float m1 = -(x2 - x1) / (y2 - y1);
-			float mx1 = (x1 + x2) / 2f;
-			float my1 = (y1 + y2) / 2f;
-			xc = (x3 + x2) / 2f;
-			yc = m1 * (xc - mx1) + my1;
 		} else {
 			float m1 = -(x2 - x1) / (y2 - y1);
-			float m2 = -(x3 - x2) / (y3 - y2);
 			float mx1 = (x1 + x2) / 2f;
-			float mx2 = (x2 + x3) / 2f;
 			float my1 = (y1 + y2) / 2f;
-			float my2 = (y2 + y3) / 2f;
-			xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
-			yc = m1 * (xc - mx1) + my1;
+			if (y2y3 < EPSILON) {
+				xc = (x3 + x2) / 2f;
+				yc = m1 * (xc - mx1) + my1;
+			} else {
+				float m2 = -(x3 - x2) / (y3 - y2);
+				float mx2 = (x2 + x3) / 2f;
+				float my2 = (y2 + y3) / 2f;
+				xc = (m1 * mx1 - m2 * mx2 + my2 - my1) / (m1 - m2);
+				yc = m1 * (xc - mx1) + my1;
+			}
 		}
 
 		float dx = x2 - xc;
@@ -192,8 +210,10 @@ public class DelaunayTriangulator {
 		float rsqr = dx * dx + dy * dy;
 
 		dx = xp - xc;
+		dx *= dx;
 		dy = yp - yc;
-		return dx * dx + dy * dy - rsqr <= EPSILON ? -1 : (xc + (float)Math.sqrt(rsqr));
+		if (dx + dy * dy - rsqr <= EPSILON) return INSIDE;
+		return xp > xc && dx > rsqr ? COMPLETE : INCOMPLETE;
 	}
 
 	/** Sorts x,y pairs of values by the x value.
