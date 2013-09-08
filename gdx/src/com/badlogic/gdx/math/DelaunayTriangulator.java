@@ -32,7 +32,8 @@ public class DelaunayTriangulator {
 	/** Triangulates the given point cloud to a list of triangle indices that make up the Delaunay triangulation.
 	 * @param points x,y pairs describing points. Duplicate points will result in undefined behavior.
 	 * @param sorted If false, the points will be sorted by the x coordinate, which is required by the triangulation algorithm.
-	 * @return triples of indexes into the points that describe the triangles in clockwise order. Note the returned array is reused
+	 *           Note in this case the input array is modified and the returned indices are for the modified array.
+	 * @return triples of indices into the points that describe the triangles in clockwise order. Note the returned array is reused
 	 *         for later calls to the same method. */
 	public IntArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
 		int end = offset + count;
@@ -244,10 +245,10 @@ public class DelaunayTriangulator {
 	private int quicksortPartition (final float[] values, int lower, int upper) {
 		float value = values[lower];
 		int up = upper;
-		int down = lower;
+		int down = lower + 2;
 		float temp;
 		while (down < up) {
-			while (values[down] <= value && down < up)
+			while (down < up && values[down] <= value)
 				down = down + 2;
 			while (values[up] > value)
 				up = up - 2;
