@@ -60,11 +60,11 @@ public class DelaunayTriangulator {
 
 		// Setup the super triangle, which encompasses all points.
 		float[] superTriangle = new float[6];
-		superTriangle[0] = xmid - 2f * dmax;
+		superTriangle[0] = xmid - 20f * dmax;
 		superTriangle[1] = ymid - dmax;
 		superTriangle[2] = xmid;
-		superTriangle[3] = ymid + 2f * dmax;
-		superTriangle[4] = xmid + 2f * dmax;
+		superTriangle[3] = ymid + 20f * dmax;
+		superTriangle[4] = xmid + 20f * dmax;
 		superTriangle[5] = ymid - dmax;
 		triangles.add(end);
 		triangles.add(end + 2);
