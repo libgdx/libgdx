@@ -63,6 +63,7 @@
 - AssetLoader now takes a FileHandle that is the resolved file name. The AssetLoader no longer has to resolve the file name, so we can prevent it from being resolved twice.
 - Rewrote EarClippingTriangulator to not allocate (no more Vector2s).
 - Added ParticleEffectLoader to make AssetManager load ParticleEffects
+- Added GeometryUtils, more Intersector functions, DelaunayTriangulator, ConvexHull.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

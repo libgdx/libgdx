@@ -23,7 +23,7 @@ public class ConvexHull {
 	/** Returns a list of points on the convex hull in counter-clockwise order. Note: the last point in the returned list is the
 	 * same as the first one. */
 	/** Returns the convex hull polygon for the given point cloud.
-	 * @param points x,y pairs describing points.
+	 * @param points x,y pairs describing points. Duplicate points will result in undefined behavior.
 	 * @param sorted If false, the points will be sorted by the x coordinate then the y coordinate, which is required by the
 	 *           triangulation algorithm. Note in this case the input array is modified.
 	 * @return pairs of coordinates that describe the convex hull polygon in counterclockwise order. Note the returned array is
@@ -31,10 +31,11 @@ public class ConvexHull {
 	public FloatArray computePolygon (float[] points, int offset, int count, boolean sorted) {
 		int end = offset + count;
 
-		if (!sorted) quicksortPairs(points, offset, end - 1);
+		if (!sorted) sort(points, offset, count);
 
 		// Lower hull.
 		FloatArray hull = this.hull;
+		hull.clear();
 		for (int i = offset; i < end; i += 2) {
 			float x = points[i];
 			float y = points[i + 1];
@@ -69,9 +70,10 @@ public class ConvexHull {
 	}
 
 	/** Sorts x,y pairs of values by the x value, then the y value.
-	 * @param lower Start x index.
-	 * @param upper End x index. */
-	private void quicksortPairs (float[] values, int lower, int upper) {
+	 * @param count Number of indices, must be even. */
+	private void sort (float[] values, int offset, int count) {
+		int lower = offset;
+		int upper = offset + count - 1;
 		IntArray stack = quicksortStack;
 		stack.add(lower);
 		stack.add(upper - 1);
