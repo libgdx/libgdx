@@ -38,6 +38,11 @@ public class DelaunayTriangulator {
 	 * @return triples of indices into the points that describe the triangles in clockwise order. Note the returned array is reused
 	 *         for later calls to the same method. */
 	public IntArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
+		IntArray triangles = this.triangles;
+		triangles.clear();
+		if (count < 6) return triangles;
+		triangles.ensureCapacity(count);
+
 		int end = offset + count;
 
 		if (!sorted) sort(points, offset, count);
@@ -73,10 +78,6 @@ public class DelaunayTriangulator {
 		BooleanArray complete = this.complete;
 		complete.clear();
 		complete.ensureCapacity(count);
-
-		IntArray triangles = this.triangles;
-		triangles.clear();
-		triangles.ensureCapacity(count);
 
 		// Add super triangle.
 		triangles.add(end);
@@ -179,10 +180,8 @@ public class DelaunayTriangulator {
 		// Convert sorted to unsorted indices.
 		if (!sorted) {
 			int[] originalIndicesArray = originalIndices.items;
-			for (int i = 0, n = triangles.size; i < n; i++) {
-				System.out.println(trianglesArray[i] / 2 + " -> " + originalIndicesArray[trianglesArray[i] / 2]);
+			for (int i = 0, n = triangles.size; i < n; i++)
 				trianglesArray[i] = originalIndicesArray[trianglesArray[i] / 2] * 2;
-			}
 		}
 
 		return triangles;
