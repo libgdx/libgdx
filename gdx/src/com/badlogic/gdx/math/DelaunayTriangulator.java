@@ -15,6 +15,7 @@ public class DelaunayTriangulator {
 
 	private final IntArray quicksortStack = new IntArray();
 	private final IntArray triangles = new IntArray(false, 16);
+	private final IntArray originalIndices = new IntArray(false, 0);
 	private final IntArray edges = new IntArray();
 	private final BooleanArray complete = new BooleanArray(false, 16);
 	private final float[] superTriangle = new float[6];
@@ -31,14 +32,15 @@ public class DelaunayTriangulator {
 
 	/** Triangulates the given point cloud to a list of triangle indices that make up the Delaunay triangulation.
 	 * @param points x,y pairs describing points. Duplicate points will result in undefined behavior.
-	 * @param sorted If false, the points will be sorted by the x coordinate, which is required by the triangulation algorithm.
-	 *           Note in this case the input array is modified and the returned indices are for the modified array.
+	 * @param sorted If false, the points will be sorted by the x coordinate, which is required by the triangulation algorithm. If
+	 *           sorting is done the input array is not modified, the returned indices are for the original array, and count*2
+	 *           additional working memory is needed.
 	 * @return triples of indices into the points that describe the triangles in clockwise order. Note the returned array is reused
 	 *         for later calls to the same method. */
 	public IntArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
 		int end = offset + count;
 
-		if (!sorted) quicksortPairs(points, offset, end - 1);
+		if (!sorted) sort(points, offset, count);
 
 		// Determine bounds for super triangle.
 		float xmin = points[0], ymin = points[1];
@@ -69,6 +71,7 @@ public class DelaunayTriangulator {
 		edges.ensureCapacity(count / 2);
 
 		BooleanArray complete = this.complete;
+		complete.clear();
 		complete.ensureCapacity(count);
 
 		IntArray triangles = this.triangles;
@@ -162,7 +165,6 @@ public class DelaunayTriangulator {
 			}
 			edges.clear();
 		}
-		complete.clear();
 
 		// Remove triangles with super triangle vertices.
 		int[] trianglesArray = triangles.items;
@@ -173,6 +175,16 @@ public class DelaunayTriangulator {
 				triangles.removeIndex(i - 2);
 			}
 		}
+
+		// Convert sorted to unsorted indices.
+		if (!sorted) {
+			int[] originalIndicesArray = originalIndices.items;
+			for (int i = 0, n = triangles.size; i < n; i++) {
+				System.out.println(trianglesArray[i] / 2 + " -> " + originalIndicesArray[trianglesArray[i] / 2]);
+				trianglesArray[i] = originalIndicesArray[trianglesArray[i] / 2] * 2;
+			}
+		}
+
 		return triangles;
 	}
 
@@ -218,9 +230,17 @@ public class DelaunayTriangulator {
 	}
 
 	/** Sorts x,y pairs of values by the x value.
-	 * @param lower Start x index.
-	 * @param upper End x index. */
-	private void quicksortPairs (float[] values, int lower, int upper) {
+	 * @param count Number of indices, must be even. */
+	private void sort (float[] values, int offset, int count) {
+		int pointCount = count / 2;
+		originalIndices.clear();
+		originalIndices.ensureCapacity(pointCount);
+		int[] originalIndicesArray = originalIndices.items;
+		for (int i = 0; i < pointCount; i++)
+			originalIndicesArray[i] = i;
+
+		int lower = offset;
+		int upper = offset + count - 1;
 		IntArray stack = quicksortStack;
 		stack.add(lower);
 		stack.add(upper - 1);
@@ -228,7 +248,7 @@ public class DelaunayTriangulator {
 			upper = stack.pop();
 			lower = stack.pop();
 			if (upper <= lower) continue;
-			int i = quicksortPartition(values, lower, upper);
+			int i = quicksortPartition(values, lower, upper, originalIndicesArray);
 			if (i - lower > upper - i) {
 				stack.add(lower);
 				stack.add(i - 2);
@@ -242,32 +262,41 @@ public class DelaunayTriangulator {
 		}
 	}
 
-	private int quicksortPartition (final float[] values, int lower, int upper) {
+	private int quicksortPartition (final float[] values, int lower, int upper, int[] originalIndices) {
 		float value = values[lower];
 		int up = upper;
 		int down = lower + 2;
-		float temp;
+		float tempValue;
+		int tempIndex;
 		while (down < up) {
 			while (down < up && values[down] <= value)
 				down = down + 2;
 			while (values[up] > value)
 				up = up - 2;
 			if (down < up) {
-				temp = values[down];
+				tempValue = values[down];
 				values[down] = values[up];
-				values[up] = temp;
+				values[up] = tempValue;
 
-				temp = values[down + 1];
+				tempValue = values[down + 1];
 				values[down + 1] = values[up + 1];
-				values[up + 1] = temp;
+				values[up + 1] = tempValue;
+
+				tempIndex = originalIndices[down / 2];
+				originalIndices[down / 2] = originalIndices[up / 2];
+				originalIndices[up / 2] = tempIndex;
 			}
 		}
 		values[lower] = values[up];
 		values[up] = value;
 
-		temp = values[lower + 1];
+		tempValue = values[lower + 1];
 		values[lower + 1] = values[up + 1];
-		values[up + 1] = temp;
+		values[up + 1] = tempValue;
+
+		tempIndex = originalIndices[lower / 2];
+		originalIndices[lower / 2] = originalIndices[up / 2];
+		originalIndices[up / 2] = tempIndex;
 		return up;
 	}
 }
