@@ -17,6 +17,8 @@ package aurelienribon.gdxsetupui;
 
 import aurelienribon.utils.Res;
 import aurelienribon.utils.TemplateManager;
+
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -75,7 +78,10 @@ public class ProjectSetup {
 		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.projectName + cfg.suffixDesktop);
 		if (cfg.isAndroidIncluded) templateManager.define("PRJ_ANDROID_NAME", cfg.projectName + cfg.suffixAndroid);
 		if (cfg.isHtmlIncluded) templateManager.define("PRJ_HTML_NAME", cfg.projectName + cfg.suffixHtml);
-		if (cfg.isIosIncluded) templateManager.define("PRJ_IOS_NAME", cfg.projectName + cfg.suffixIos);
+		if (cfg.isIosIncluded) {
+			templateManager.define("PRJ_IOS_NAME", cfg.projectName + cfg.suffixIos);
+			templateManager.define("PRJ_ROBOVM_NAME", cfg.projectName + cfg.suffixRobovm);
+		}
 
 		// Android manifest definitions
 		if (!cfg.androidMinSdkVersion.equals("")) templateManager.define("ANDROID_MIN_SDK", cfg.androidMinSdkVersion);
@@ -126,7 +132,9 @@ public class ProjectSetup {
 		File androidPrjLibsDir = new File(tmpDst, "/prj-android/libs");
 		File htmlPrjLibsDir = new File(tmpDst, "/prj-html/war/WEB-INF/lib");
 		File iosPrjLibsDir = new File(tmpDst, "/prj-ios/libs");
+		File robovmPrjLibsDir = new File(tmpDst, "/prj-robovm/libs");
 		File dataDir = new File(tmpDst, "/prj-android/assets");
+		System.out.println("infalting libs");
 
 		for (String library : cfg.libraries) {
 			InputStream is = new FileInputStream(cfg.librariesZipPaths.get(library));
@@ -138,19 +146,22 @@ public class ProjectSetup {
 			while ((entry = zis.getNextEntry()) != null) {
 				if (entry.isDirectory()) continue;
 				String entryName = entry.getName();
+				byte[] bytes = IOUtils.toByteArray(zis);
 
 				for (String elemName : def.libsCommon)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, commonPrjLibsDir);
+					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, commonPrjLibsDir);
 				for (String elemName : def.libsDesktop)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, desktopPrjLibsDir);
+					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, desktopPrjLibsDir);
 				for (String elemName : def.libsAndroid)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, androidPrjLibsDir);
+					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, androidPrjLibsDir);
 				for (String elemName : def.libsHtml)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, htmlPrjLibsDir);
+					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, htmlPrjLibsDir);
 				for (String elemName : def.libsIos)
-					if(entryName.endsWith(elemName)) copyEntry(zis, elemName, iosPrjLibsDir);
+					if(entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, iosPrjLibsDir);
+				for (String elemName : def.libsRobovm)
+					if(entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, robovmPrjLibsDir);
 				for (String elemName : def.data)
-					if (entryName.endsWith(elemName)) copyEntry(zis, elemName, dataDir);
+					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, dataDir);
 			}
 
 			zis.close();
@@ -166,6 +177,7 @@ public class ProjectSetup {
 		List<String> entriesDesktop = new ArrayList<String>();
 		List<String> entriesAndroid = new ArrayList<String>();
 		List<String> entriesHtml = new ArrayList<String>();
+		List<String> entriesRobovm = new ArrayList<String>();
 		List<String> gwtInherits = new ArrayList<String>();
 
 		for (String library : cfg.libraries) {
@@ -198,6 +210,12 @@ public class ProjectSetup {
 				entriesHtml.add(buildClasspathEntry(file, source, "war/WEB-INF/lib/", false));
 				if (source != null) entriesHtml.add(buildClasspathEntry(source, null, "war/WEB-INF/lib/", false));
 			}
+			
+			for(String file: def.libsRobovm) {
+				if(!isLibJar(file)) continue;
+				String source = getSource(def.libsAndroid, file);
+				entriesRobovm.add(buildClasspathEntry(file, source, "libs/", false));
+			}
 
 			if (def.gwtModuleName != null) {
 				gwtInherits.add("<inherits name='" + def.gwtModuleName + "' />");
@@ -208,6 +226,7 @@ public class ProjectSetup {
 		templateManager.define("CLASSPATHENTRIES_DESKTOP", flatten(entriesDesktop, "\t", "\n").trim());
 		templateManager.define("CLASSPATHENTRIES_ANDROID", flatten(entriesAndroid, "\t", "\n").trim());
 		templateManager.define("CLASSPATHENTRIES_HTML", flatten(entriesHtml, "\t", "\n").trim());
+		templateManager.define("CLASSPATHENTRIES_ROBOVM", flatten(entriesRobovm, "\t", "\n").trim());
 		templateManager.define("GWT_INHERITS", flatten(gwtInherits, "\t", "\n").trim());
 		templateManager.processOver(new File(tmpDst, "prj-common/.classpath"));
 		templateManager.processOver(new File(tmpDst, "prj-desktop/.classpath"));
@@ -262,6 +281,12 @@ public class ProjectSetup {
 			move(src, "my-gdx-game-ios.sln", cfg.projectName + cfg.suffixIos + ".sln");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
+			
+			src = new File(tmpDst, "prj-robovm");
+			dst = new File(tmpDst, cfg.projectName + cfg.suffixRobovm);
+			move(src, "src/RobovmLauncher.java", "src/" + cfg.packageName.replace('.', '/') + "/RobovmLauncher.java");
+			templateDir(src);
+			FileUtils.moveDirectory(src, dst);
 		}
 	}
 
@@ -292,6 +317,9 @@ public class ProjectSetup {
 		if(cfg.isIosIncluded) {
 			src = new File(tmpDst, cfg.projectName + cfg.suffixIos);
 			FileUtils.copyDirectoryToDirectory(src, dst);
+			
+			src = new File(tmpDst, cfg.projectName + cfg.suffixRobovm);
+			FileUtils.copyDirectoryToDirectory(src, dst);
 		}
 	}
 
@@ -319,7 +347,7 @@ public class ProjectSetup {
 		}
 	}
 
-	private void copyEntry(ZipInputStream zis, String name, File dst) throws IOException {
+	private void copyEntry(InputStream zis, String name, File dst) throws IOException {
 		File file = new File(dst, name);
 		file.getParentFile().mkdirs();
 

@@ -1,6 +1,16 @@
 <!-- Call this to fetch all the natives from the build server -->
 <project name="fetch-natives" default="all">
 	<property name="domain" value="http://libgdx.badlogicgames.com/nightlies/dist"/>
+    <property name="robovm" value="http://libgdx.badlogicgames.com/robovm/robovm/lib/"/>
+    
+    <target name="fetch-robovm">
+        <mkdir dir="backends/gdx-backend-robovm/libs/"/>
+        <get src="${robovm}/robovm-cacerts-full.jar" dest="backends/gdx-backend-robovm/libs/"/>
+        <get src="${robovm}/robovm-cocoatouch.jar" dest="backends/gdx-backend-robovm/libs/"/>
+        <get src="${robovm}/robovm-objc.jar" dest="backends/gdx-backend-robovm/libs/"/>
+        <get src="${robovm}/robovm-rt.jar" dest="backends/gdx-backend-robovm/libs/"/>
+    </target>
+    
 	<target name="fetch">		
 		<!-- create a temporary directory for all android and ios natives, to be distributed
 		     across demos and tests. The xxx-natives.jar files are put into the respective 
@@ -20,13 +30,17 @@
 		<get src="${domain}/ios/gdx.dll" dest="gdx/libs/ios32"/>
 		<get src="${domain}/ios/gdx.dll.mdb" dest="gdx/libs/ios32"/>
         <get src="${domain}/ios/libgdx.a" dest="gdx/libs/ios32"/>
+        <get src="${domain}/ios/libObjectAL.a" dest="gdx/libs/ios32"/>
 		<get src="${domain}/ios/libgdx.a" dest="tmp/ios"/>
 		<get src="${domain}/ios/ikvm/bin/libikvm-natives.a" dest="tmp/ios"/>
 		
 		<!-- ios backend -->
 		<mkdir dir="backends/gdx-backend-iosmonotouch/libs/ios32"/>
 		<get src="${domain}/ios/gdx-backend-ios.dll" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>
-		<get src="${domain}/ios/gdx-backend-ios.dll.mdb" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>		
+		<get src="${domain}/ios/gdx-backend-ios.dll.mdb" dest="backends/gdx-backend-iosmonotouch/libs/ios32"/>
+		
+        <!-- robovm snapshot jars for robovm backend -->
+        <antcall target="fetch-robovm"/>
 		
 		<!-- audio natives -->
 		<mkdir dir="extensions/gdx-audio/libs/ios32"/>

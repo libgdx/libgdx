@@ -265,7 +265,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		}
 
 		makeCurrent();
-		((IOSInput) Gdx.input).processEvents();
+		input.processEvents();
 		app.listener.render();
 		// SwapBuffers();
 	}

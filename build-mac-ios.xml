@@ -25,6 +25,7 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
+        
 		<ant antfile="build-ios32.xml" dir="gdx/jni"/>
 		<ant antfile="convert-ikvm.xml" dir=".">
 			<property name="IN" value="-srcpath:gdx/src/ dist/gdx.jar"/>
@@ -37,6 +38,12 @@
 			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:backends/gdx-backend-iosmonotouch/src/ dist/gdx-backend-iosmonotouch.jar"/>
 			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/ios32/gdx-backend-ios.dll"/>
 		</ant>
+	</target>
+    
+    <target name="backend-robovm" depends="core">
+        <exec dir="backends/gdx-backend-robovm" executable="/bin/bash">
+            <arg value="build-objectal.sh"/>
+        </exec>
 	</target>
 	
 	<target name="freetype" depends="core">
@@ -84,6 +91,6 @@
 		</ant>
 	</target>
 	
-	<target name="all" depends="core,backend-iosmonotouch,freetype,bullet,audio,image,controllers">	
+	<target name="all" depends="core,backend-iosmonotouch,backend-robovm,freetype,bullet,audio,image,controllers">	
 	</target>
 </project>

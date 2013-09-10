@@ -36,7 +36,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		desktopSuffixField.setText(Ctx.cfgSetup.suffixDesktop);
 		androidSuffixField.setText(Ctx.cfgSetup.suffixAndroid);
 		htmlSuffixField.setText(Ctx.cfgSetup.suffixHtml);
-                iosSuffixField.setText(Ctx.cfgSetup.suffixIos);
+      iosSuffixField.setText(Ctx.cfgSetup.suffixIos);
 		androidMinSdkField.setText(Ctx.cfgSetup.androidMinSdkVersion);
 		androidTargetSdkField.setText(Ctx.cfgSetup.androidTargetSdkVersion);
 		androidMaxSdkField.setText(Ctx.cfgSetup.androidMaxSdkVersion);
@@ -45,7 +45,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		desktopSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidSuffixField.addKeyListener(updateOnTypeKeyListener);
 		htmlSuffixField.addKeyListener(updateOnTypeKeyListener);
-                iosSuffixField.addKeyListener(updateOnTypeKeyListener);
+		iosSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidMinSdkField.addKeyListener(updateOnTypeKeyListener);
 		androidTargetSdkField.addKeyListener(updateOnTypeKeyListener);
 		androidMaxSdkField.addKeyListener(updateOnTypeKeyListener);
