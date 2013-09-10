@@ -56,22 +56,22 @@ public class MathUtils {
 		}
 	}
 
-	/** Returns the sine in radians. */
+		/** Returns the sine in radians from a lookup table. */
 	static public final float sin (float radians) {
 		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians. */
+	/** Returns the cosine in radians from a lookup table. */
 	static public final float cos (float radians) {
 		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in radians. */
+	/** Returns the sine in radians from a lookup table. */
 	static public final float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians. */
+	/** Returns the cosine in radians from a lookup table. */
 	static public final float cosDeg (float degrees) {
 		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
