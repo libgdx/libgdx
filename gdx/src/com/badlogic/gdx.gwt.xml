@@ -43,7 +43,8 @@
 		<include name="assets/loaders/SoundLoader.java"/>
 		<include name="assets/loaders/SynchronousAssetLoader.java"/>
 		<include name="assets/loaders/TextureAtlasLoader.java"/>
-		<include name="assets/loaders/TextureLoader.java"/> <!-- Emulated -->
+		<include name="assets/loaders/TextureLoader.java"/>
+		<include name="assets/loaders/ParticleEffectLoader"/>
 		
 	<!-- assets/loaders/resolvers -->		
 		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
@@ -259,10 +260,13 @@
 		<include name="math/BSpline.java"/>
 		<include name="math/CatmullRomSpline.java"/>
 		<include name="math/Circle.java"/>
+		<include name="math/ConvexHull.java"/>
+		<include name="math/DelaunayTriangulator.java"/>
 		<include name="math/EarClippingTriangulator.java"/>
 		<include name="math/Ellipse.java"/>
 		<include name="math/FloatCounter.java"/>
 		<include name="math/Frustum.java"/>
+		<include name="math/GeometryUtils.java"/>
 		<include name="math/GridPoint2.java"/>
 		<include name="math/GridPoint3.java"/>
 		<include name="math/Interpolation.java"/>
