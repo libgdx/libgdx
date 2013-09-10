@@ -44,7 +44,7 @@
 		<include name="assets/loaders/SynchronousAssetLoader.java"/>
 		<include name="assets/loaders/TextureAtlasLoader.java"/>
 		<include name="assets/loaders/TextureLoader.java"/>
-		<include name="assets/loaders/ParticleEffectLoader"/>
+		<include name="assets/loaders/ParticleEffectLoader.java"/>
 		
 	<!-- assets/loaders/resolvers -->		
 		<include name="assets/loaders/resolvers/ExternalFileHandleResolver.java"/>
