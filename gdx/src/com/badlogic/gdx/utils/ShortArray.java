@@ -72,6 +72,13 @@ public class ShortArray {
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
 
+	/** Casts the specified value to short and adds it. */
+	public void add (int value) {
+		short[] items = this.items;
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size++] = (short)value;
+	}
+
 	public void add (short value) {
 		short[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
