@@ -72,7 +72,8 @@ import com.badlogic.gdx.utils.NumberUtils;
  * 
  * 
  * @author mzechner
- * @author Stefan Bachmann */
+ * @author Stefan Bachmann
+ * @author Nathan Sweet */
 public class PolygonSpriteBatch {
 	private Mesh mesh;
 	private Mesh[] buffers;
