@@ -54,7 +54,7 @@ import com.badlogic.gdx.utils.NumberUtils;
  * <p>
  * A PolyongSpriteBatch is managed. In case the OpenGL context is lost all OpenGL resources a PolyongSpriteBatch uses internally
  * get invalidated. A context is lost when a user switches to another application or receives an incoming call on Android. A
- * SpritPolyongSpriteBatcheBatch will be automatically reloaded after the OpenGL context is restored.
+ * PolygonSpriteBatch will be automatically reloaded after the OpenGL context is restored.
  * </p>
  * 
  * <p>
