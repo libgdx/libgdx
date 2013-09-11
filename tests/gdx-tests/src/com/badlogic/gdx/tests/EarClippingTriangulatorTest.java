@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.ShortArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,16 +243,16 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		}
 
 		private void triangulate () {
-			FloatArray triangles = new EarClippingTriangulator().computeTriangles(polygon);
+			ShortArray triangles = new EarClippingTriangulator().computeTriangles(polygon);
 
-			FloatArray triangleOutlines = new FloatArray(2 * triangles.size);
-			for (int i = 0, j = 0; i < triangles.size;) {
-				float ax = triangles.get(i++);
-				float ay = triangles.get(i++);
-				float bx = triangles.get(i++);
-				float by = triangles.get(i++);
-				float cx = triangles.get(i++);
-				float cy = triangles.get(i++);
+			FloatArray triangleOutlines = new FloatArray(triangles.size * 2);
+			for (int i = 0; i < triangles.size; i += 3) {
+				float ax = polygon.get(triangles.get(i) * 2);
+				float ay = polygon.get(triangles.get(i) * 2 + 1);
+				float bx = polygon.get(triangles.get(i + 1) * 2);
+				float by = polygon.get(triangles.get(i + 1) * 2 + 1);
+				float cx = polygon.get(triangles.get(i + 2) * 2);
+				float cy = polygon.get(triangles.get(i + 2) * 2 + 1);
 				triangleOutlines.add(ax);
 				triangleOutlines.add(ay);
 				triangleOutlines.add(bx);
@@ -267,7 +268,7 @@ public class EarClippingTriangulatorTest extends GdxTest {
 			}
 
 			polygonMesh.setVertices(polygon.items, 0, polygon.size);
-			interiorMesh.setVertices(listToColoredVertexArray(triangles, getColor()));
+			interiorMesh.setVertices(listToColoredVertexArray(polygon, triangles, getColor()));
 			triangleOutlineMesh.setVertices(triangleOutlines.items, 0, triangleOutlines.size);
 		}
 
@@ -333,42 +334,20 @@ public class EarClippingTriangulatorTest extends GdxTest {
 		}
 	}
 
-	static List<Vector2> vertexArrayToList (float[] array) {
-		int n = array.length;
-		List<Vector2> list = new ArrayList<Vector2>(n / 2);
-		for (int i = 0; i < n; i += 2) {
-			list.add(new Vector2(array[i], array[i + 1]));
-		}
-		return list;
-	}
-
-	static float[] listToVertexArray (List<Vector2> list) {
-		int n = list.size();
-		float[] array = new float[n * 2];
-		int i = 0;
-		for (Vector2 v : list) {
-			array[i++] = v.x;
-			array[i++] = v.y;
-		}
-		return array;
-	}
-
-	static float[] listToColoredVertexArray (FloatArray list, Color color) {
-		int n = list.size;
-		float[] array = new float[n / 2 * 6];
+	static float[] listToColoredVertexArray (FloatArray vertices, ShortArray triangles, Color color) {
+		int n = triangles.size;
+		float[] array = new float[n * 6];
 		int i = 0;
 		int j = 0;
-		for (int k = 0; k < n;) {
-			float brightness = 0.3f + 0.4f * ((j / 3) * 3 / (n / 3f));
-
-			array[i++] = list.get(k++);
-			array[i++] = list.get(k++);
+		for (int k = 0; k < n; k++, j++) {
+			float percent = n <= 3 ? 1 : (j / 3) / (float)(n / 3 - 1);
+			float brightness = 0.3f + 0.4f * percent;
+			array[i++] = vertices.get(triangles.get(k) * 2);
+			array[i++] = vertices.get(triangles.get(k) * 2 + 1);
 			array[i++] = color.r * brightness;
 			array[i++] = color.g * brightness;
 			array[i++] = color.b * brightness;
 			array[i++] = 1;
-
-			j++;
 		}
 		return array;
 	}

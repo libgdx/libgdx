@@ -64,6 +64,8 @@
 - Rewrote EarClippingTriangulator to not allocate (no more Vector2s).
 - Added ParticleEffectLoader to make AssetManager load ParticleEffects
 - Added GeometryUtils, more Intersector functions, DelaunayTriangulator, ConvexHull.
+- EarClippingTriangulator changed to return triangle indices.
+- PolygonSpriteBatch and friends refactored to use triangle indices.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

@@ -4,6 +4,7 @@ package com.badlogic.gdx.math;
 import com.badlogic.gdx.utils.BooleanArray;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ShortArray;
 
 /** Delaunay triangulation. Adapted from Paul Bourke's triangulate: http://paulbourke.net/papers/triangulate/
  * @author Nathan Sweet */
@@ -14,38 +15,46 @@ public class DelaunayTriangulator {
 	static private final int INCOMPLETE = 2;
 
 	private final IntArray quicksortStack = new IntArray();
-	private final IntArray triangles = new IntArray(false, 16);
-	private final IntArray originalIndices = new IntArray(false, 0);
+	private float[] sortedPoints;
+	private final ShortArray triangles = new ShortArray(false, 16);
+	private final ShortArray originalIndices = new ShortArray(false, 0);
 	private final IntArray edges = new IntArray();
 	private final BooleanArray complete = new BooleanArray(false, 16);
 	private final float[] superTriangle = new float[6];
+	private final Vector2 centroid = new Vector2();
 
 	/** @see #computeTriangles(float[], int, int, boolean) */
-	public IntArray computeTriangles (FloatArray points, boolean sorted) {
+	public ShortArray computeTriangles (FloatArray points, boolean sorted) {
 		return computeTriangles(points.items, 0, points.size, sorted);
 	}
 
 	/** @see #computeTriangles(float[], int, int, boolean) */
-	public IntArray computeTriangles (float[] polygon, boolean sorted) {
+	public ShortArray computeTriangles (float[] polygon, boolean sorted) {
 		return computeTriangles(polygon, 0, polygon.length, sorted);
 	}
 
 	/** Triangulates the given point cloud to a list of triangle indices that make up the Delaunay triangulation.
 	 * @param points x,y pairs describing points. Duplicate points will result in undefined behavior.
 	 * @param sorted If false, the points will be sorted by the x coordinate, which is required by the triangulation algorithm. If
-	 *           sorting is done the input array is not modified, the returned indices are for the original array, and count*2
+	 *           sorting is done the input array is not modified, the returned indices are for the input array, and count*2
 	 *           additional working memory is needed.
 	 * @return triples of indices into the points that describe the triangles in clockwise order. Note the returned array is reused
 	 *         for later calls to the same method. */
-	public IntArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
-		IntArray triangles = this.triangles;
+	public ShortArray computeTriangles (float[] points, int offset, int count, boolean sorted) {
+		ShortArray triangles = this.triangles;
 		triangles.clear();
 		if (count < 6) return triangles;
 		triangles.ensureCapacity(count);
 
-		int end = offset + count;
+		if (!sorted) {
+			if (sortedPoints == null || sortedPoints.length < count) sortedPoints = new float[count];
+			System.arraycopy(points, offset, sortedPoints, 0, count);
+			points = sortedPoints;
+			offset = 0;
+			sort(points, count);
+		}
 
-		if (!sorted) sort(points, offset, count);
+		int end = offset + count;
 
 		// Determine bounds for super triangle.
 		float xmin = points[0], ymin = points[1];
@@ -90,7 +99,7 @@ public class DelaunayTriangulator {
 			float x = points[pointIndex], y = points[pointIndex + 1];
 
 			// If x,y lies inside the circumcircle of a triangle, the edges are stored and the triangle removed.
-			int[] trianglesArray = triangles.items;
+			short[] trianglesArray = triangles.items;
 			boolean[] completeArray = complete.items;
 			for (int triangleIndex = triangles.size - 1; triangleIndex >= 0; triangleIndex -= 3) {
 				int completeIndex = triangleIndex / 3;
@@ -168,7 +177,7 @@ public class DelaunayTriangulator {
 		}
 
 		// Remove triangles with super triangle vertices.
-		int[] trianglesArray = triangles.items;
+		short[] trianglesArray = triangles.items;
 		for (int i = triangles.size - 1; i >= 0; i -= 3) {
 			if (trianglesArray[i] >= end || trianglesArray[i - 1] >= end || trianglesArray[i - 2] >= end) {
 				triangles.removeIndex(i);
@@ -179,9 +188,18 @@ public class DelaunayTriangulator {
 
 		// Convert sorted to unsorted indices.
 		if (!sorted) {
-			int[] originalIndicesArray = originalIndices.items;
+			short[] originalIndicesArray = originalIndices.items;
 			for (int i = 0, n = triangles.size; i < n; i++)
-				trianglesArray[i] = originalIndicesArray[trianglesArray[i] / 2] * 2;
+				trianglesArray[i] = (short)(originalIndicesArray[trianglesArray[i] / 2] * 2);
+		}
+
+		// Adjust triangles to start from zero and count by 1, not by vertex x,y coordinate pairs.
+		if (offset == 0) {
+			for (int i = 0, n = triangles.size; i < n; i++)
+				trianglesArray[i] = (short)(trianglesArray[i] / 2);
+		} else {
+			for (int i = 0, n = triangles.size; i < n; i++)
+				trianglesArray[i] = (short)((trianglesArray[i] - offset) / 2);
 		}
 
 		return triangles;
@@ -230,16 +248,16 @@ public class DelaunayTriangulator {
 
 	/** Sorts x,y pairs of values by the x value.
 	 * @param count Number of indices, must be even. */
-	private void sort (float[] values, int offset, int count) {
+	private void sort (float[] values, int count) {
 		int pointCount = count / 2;
 		originalIndices.clear();
 		originalIndices.ensureCapacity(pointCount);
-		int[] originalIndicesArray = originalIndices.items;
-		for (int i = 0; i < pointCount; i++)
+		short[] originalIndicesArray = originalIndices.items;
+		for (short i = 0; i < pointCount; i++)
 			originalIndicesArray[i] = i;
 
-		int lower = offset;
-		int upper = offset + count - 1;
+		int lower = 0;
+		int upper = count - 1;
 		IntArray stack = quicksortStack;
 		stack.add(lower);
 		stack.add(upper - 1);
@@ -261,12 +279,12 @@ public class DelaunayTriangulator {
 		}
 	}
 
-	private int quicksortPartition (final float[] values, int lower, int upper, int[] originalIndices) {
+	private int quicksortPartition (final float[] values, int lower, int upper, short[] originalIndices) {
 		float value = values[lower];
 		int up = upper;
 		int down = lower + 2;
 		float tempValue;
-		int tempIndex;
+		short tempIndex;
 		while (down < up) {
 			while (down < up && values[down] <= value)
 				down = down + 2;
@@ -297,5 +315,22 @@ public class DelaunayTriangulator {
 		originalIndices[lower / 2] = originalIndices[up / 2];
 		originalIndices[up / 2] = tempIndex;
 		return up;
+	}
+
+	/** Removes all triangles with an edge outside the specified hull, which may be concave. */
+	public void trim (IntArray triangles, float[] points, float[] hull, int offset, int count) {
+		int[] trianglesArray = triangles.items;
+		for (int i = triangles.size - 1; i >= 0; i -= 3) {
+			int p1 = trianglesArray[i];
+			int p2 = trianglesArray[i + 1];
+			int p3 = trianglesArray[i + 2];
+			GeometryUtils.triangleCentroid(points[p1], points[p1 + 1], points[p2], points[p2 + 1], points[p3], points[p3 + 1],
+				centroid);
+			if (!Intersector.isPointInPolygon(hull, offset, count, centroid.x, centroid.y)) {
+				triangles.removeIndex(i + 2);
+				triangles.removeIndex(i + 1);
+				triangles.removeIndex(i);
+			}
+		}
 	}
 }

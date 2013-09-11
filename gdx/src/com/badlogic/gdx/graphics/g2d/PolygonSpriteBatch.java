@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.Gdx;
@@ -75,24 +76,24 @@ import com.badlogic.gdx.utils.NumberUtils;
 public class PolygonSpriteBatch {
 	private Mesh mesh;
 	private Mesh[] buffers;
+	private int bufferIndex;
 
-	private Texture lastTexture = null;
-
-	private int idx = 0;
-	private int currBufferIdx = 0;
 	private final float[] vertices;
+	private final short[] triangles;
+	private int vertexIndex, triangleIndex;
+	private Texture lastTexture;
+	private boolean drawing;
 
 	private final Matrix4 transformMatrix = new Matrix4();
 	private final Matrix4 projectionMatrix = new Matrix4();
 	private final Matrix4 combinedMatrix = new Matrix4();
 
-	private boolean drawing = false;
-
-	private boolean blendingDisabled = false;
+	private boolean blendingDisabled;
 	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
 	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
 	private final ShaderProgram shader;
+	private ShaderProgram customShader;
 	private boolean ownsShader;
 
 	float color = Color.WHITE.toFloatBits();
@@ -106,7 +107,6 @@ public class PolygonSpriteBatch {
 
 	/** the maximum number of sprites rendered in one batch so far **/
 	public int maxVerticesInBatch = 0;
-	private ShaderProgram customShader = null;
 
 	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
 	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
@@ -170,14 +170,15 @@ public class PolygonSpriteBatch {
 		this.buffers = new Mesh[buffers];
 
 		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size, 0, new VertexAttribute(Usage.Position, 2,
+			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 3, new VertexAttribute(Usage.Position, 2,
 				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		}
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-		vertices = new float[size * Sprite.VERTEX_SIZE];
+		vertices = new float[size * Sprite.SPRITE_SIZE];
+		triangles = new short[size * 3];
 
 		mesh = this.buffers[0];
 
@@ -193,15 +194,15 @@ public class PolygonSpriteBatch {
 		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
 			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-			+ "uniform mat4 u_projectionViewMatrix;\n" //
+			+ "uniform mat4 u_projTrans;\n" //
 			+ "varying vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords;\n" //
+			+ "varying vec2 v_textureCoords;\n" //
 			+ "\n" //
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
+			+ "   v_textureCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
+			+ "   gl_Position = u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
 		String fragmentShader = "#ifdef GL_ES\n" //
 			+ "#define LOWP lowp\n" //
@@ -210,15 +211,15 @@ public class PolygonSpriteBatch {
 			+ "#define LOWP \n" //
 			+ "#endif\n" //
 			+ "varying LOWP vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords;\n" //
+			+ "varying vec2 v_textureCoords;\n" //
 			+ "uniform sampler2D u_texture;\n" //
 			+ "void main()\n"//
 			+ "{\n" //
-			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
+			+ "  gl_FragColor = v_color * texture2D(u_texture, v_textureCoords);\n" //
 			+ "}";
 
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
+		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
 
@@ -241,8 +242,6 @@ public class PolygonSpriteBatch {
 		}
 		setupMatrices();
 
-		idx = 0;
-		lastTexture = null;
 		drawing = true;
 	}
 
@@ -250,9 +249,8 @@ public class PolygonSpriteBatch {
 	 * {@link #begin()} */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before end.");
-		if (idx > 0) renderMesh();
+		if (vertexIndex > 0) renderMesh();
 		lastTexture = null;
-		idx = 0;
 		drawing = false;
 
 		GLCommon gl = Gdx.gl;
@@ -299,33 +297,81 @@ public class PolygonSpriteBatch {
 
 	/** Draws a polygon region with the bottom left corner at x,y having the width and height of the region. */
 	public void draw (PolygonRegion region, float x, float y) {
-		draw(region, x, y, region.getRegion().getRegionWidth(), region.getRegion().getRegionHeight());
+		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
+
+		final short[] triangles = this.triangles;
+		final short[] regionTriangles = region.triangles;
+		final int regionTrianglesLength = regionTriangles.length;
+		final float[] regionVertices = region.vertices;
+		final int regionVerticesLength = regionVertices.length;
+
+		final Texture texture = region.region.texture;
+		if (texture != lastTexture)
+			switchTexture(texture);
+		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
+			renderMesh();
+
+		int triangleIndex = this.triangleIndex;
+		int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / Sprite.VERTEX_SIZE;
+
+		for (int i = 0; i < regionTrianglesLength; i++)
+			triangles[triangleIndex++] = (short)(regionTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		final float[] vertices = this.vertices;
+		final float color = this.color;
+		final float[] textureCoords = region.textureCoords;
+
+		for (int i = 0; i < regionVerticesLength; i += 2) {
+			vertices[vertexIndex++] = regionVertices[i] + x;
+			vertices[vertexIndex++] = regionVertices[i + 1] + y;
+			vertices[vertexIndex++] = color;
+			vertices[vertexIndex++] = textureCoords[i];
+			vertices[vertexIndex++] = textureCoords[i + 1];
+		}
+		this.vertexIndex = vertexIndex;
 	}
 
 	/** Draws a polygon region with the bottom left corner at x,y and stretching the region to cover the given width and height. */
 	public void draw (PolygonRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
 
-		Texture texture = region.getRegion().texture;
-		if (texture != lastTexture) {
+		final short[] triangles = this.triangles;
+		final short[] regionTriangles = region.triangles;
+		final int regionTrianglesLength = regionTriangles.length;
+		final float[] regionVertices = region.vertices;
+		final int regionVerticesLength = regionVertices.length;
+		final TextureRegion textureRegion = region.region;
+
+		final Texture texture = textureRegion.texture;
+		if (texture != lastTexture)
 			switchTexture(texture);
+		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
+			renderMesh();
+
+		int triangleIndex = this.triangleIndex;
+		int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / Sprite.VERTEX_SIZE;
+
+		for (int i = 0, n = regionTriangles.length; i < n; i++)
+			triangles[triangleIndex++] = (short)(regionTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		final float[] vertices = this.vertices;
+		final float color = this.color;
+		final float[] textureCoords = region.textureCoords;
+		final float sX = width / textureRegion.regionWidth;
+		final float sY = height / textureRegion.regionHeight;
+
+		for (int i = 0; i < regionVerticesLength; i += 2) {
+			vertices[vertexIndex++] = regionVertices[i] * sX + x;
+			vertices[vertexIndex++] = regionVertices[i + 1] * sY + y;
+			vertices[vertexIndex++] = color;
+			vertices[vertexIndex++] = textureCoords[i];
+			vertices[vertexIndex++] = textureCoords[i + 1];
 		}
-
-		float[] localVertices = region.getLocalVertices();
-		float[] texCoords = region.getTextureCoords();
-
-		if (idx + localVertices.length > vertices.length) renderMesh();
-
-		float sX = width / region.getRegion().getRegionWidth();
-		float sY = height / region.getRegion().getRegionHeight();
-
-		for (int i = 0; i < localVertices.length; i += 2) {
-			vertices[idx++] = ((localVertices[i]) * sX) + x;
-			vertices[idx++] = ((localVertices[i + 1]) * sY) + y;
-			vertices[idx++] = color;
-			vertices[idx++] = texCoords[i];
-			vertices[idx++] = texCoords[i + 1];
-		}
+		this.vertexIndex = vertexIndex;
 	}
 
 	/** Draws the polygon region with the bottom left corner at x,y and stretching the region to cover the given width and height.
@@ -336,70 +382,75 @@ public class PolygonSpriteBatch {
 		float scaleX, float scaleY, float rotation) {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
 
-		Texture texture = region.getRegion().texture;
-		if (texture != lastTexture) {
+		final short[] triangles = this.triangles;
+		final short[] regionTriangles = region.triangles;
+		final int regionTrianglesLength = regionTriangles.length;
+		final float[] regionVertices = region.vertices;
+		final int regionVerticesLength = regionVertices.length;
+		final TextureRegion textureRegion = region.region;
+
+		Texture texture = textureRegion.texture;
+		if (texture != lastTexture)
 			switchTexture(texture);
-		}
+		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
+			renderMesh();
 
-		float[] localVertices = region.getLocalVertices();
-		float[] texCoords = region.getTextureCoords();
+		int triangleIndex = this.triangleIndex;
+		int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / Sprite.VERTEX_SIZE;
 
-		if (idx + localVertices.length > vertices.length) renderMesh();
+		for (int i = 0; i < regionTrianglesLength; i++)
+			triangles[triangleIndex++] = (short)(regionTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		final float[] vertices = this.vertices;
+		final float color = this.color;
+		final float[] textureCoords = region.textureCoords;
 
 		final float worldOriginX = x + originX;
 		final float worldOriginY = y + originY;
-		float sX = width / region.getRegion().getRegionWidth();
-		float sY = height / region.getRegion().getRegionHeight();
-		float fx, rx;
-		float fy, ry;
-
+		final float sX = width / textureRegion.regionWidth;
+		final float sY = height / textureRegion.regionHeight;
 		final float cos = MathUtils.cosDeg(rotation);
 		final float sin = MathUtils.sinDeg(rotation);
 
-		for (int i = 0; i < localVertices.length; i += 2) {
-			fx = localVertices[i] * sX;
-			fy = localVertices[i + 1] * sY;
-
-			fx -= originX;
-			fy -= originY;
-
-			if (scaleX != 1 || scaleY != 1) {
-				fx *= scaleX;
-				fy *= scaleY;
-			}
-
-			rx = cos * fx - sin * fy;
-			ry = sin * fx + cos * fy;
-
-			rx += worldOriginX;
-			ry += worldOriginY;
-
-			vertices[idx++] = rx;
-			vertices[idx++] = ry;
-			vertices[idx++] = color;
-			vertices[idx++] = texCoords[i];
-			vertices[idx++] = texCoords[i + 1];
+		float fx, fy;
+		for (int i = 0; i < regionVerticesLength; i += 2) {
+			fx = (regionVertices[i] * sX - originX) * scaleX;
+			fy = (regionVertices[i + 1] * sY - originY) * scaleY;
+			vertices[vertexIndex++] = cos * fx - sin * fy + worldOriginX;
+			vertices[vertexIndex++] = sin * fx + cos * fy + worldOriginY;
+			vertices[vertexIndex++] = color;
+			vertices[vertexIndex++] = textureCoords[i];
+			vertices[vertexIndex++] = textureCoords[i + 1];
 		}
+		this.vertexIndex = vertexIndex;
 	}
 
-	/** Draws the polygon region using the given vertices. Each vertices must be made up of 5 elements in this order: x, y, color,
-	 * u, v. */
-	public void draw (PolygonRegion region, float[] spriteVertices, int offset, int length) {
+	/** Draws the polygon using the given vertices and triangles. Each vertices must be made up of 5 elements in this order: x, y,
+	 * color, u, v. */
+	public void draw (Texture texture, float[] polygonVertices, int verticesOffset, int verticesCount, short[] polygonTriangles,
+		int trianglesOffset, int trianglesCount) {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
 
-		Texture texture = region.getRegion().texture;
-		if (texture != lastTexture) {
+		final short[] triangles = this.triangles;
+		final float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		}
+		else if (triangleIndex + trianglesCount > triangles.length || vertexIndex + verticesCount > vertices.length) //
+			renderMesh();
 
-		if (idx + length > vertices.length) renderMesh();
+		int triangleIndex = this.triangleIndex;
+		final int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / Sprite.VERTEX_SIZE;
 
-		if (length <= vertices.length) {
-			System.arraycopy(spriteVertices, offset, vertices, idx, length);
-			idx += length;
-		} else {
-			// ay captain, need to split it across multiple batches. Who sends humangous streams like this?!
-		}
+		for (int i = trianglesOffset, n = i + trianglesCount; i < n; i++)
+			triangles[triangleIndex++] = (short)(polygonTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		System.arraycopy(polygonVertices, verticesOffset, vertices, vertexIndex, verticesCount);
+		this.vertexIndex += verticesCount;
 	}
 
 	/** Causes any pending sprites to be rendered, without ending the PolygonSpriteBatch. */
@@ -408,36 +459,35 @@ public class PolygonSpriteBatch {
 	}
 
 	private void renderMesh () {
-		if (idx == 0) return;
+		if (vertexIndex == 0) return;
 
 		renderCalls++;
 		totalRenderCalls++;
-		int verticesInBatch = idx / Sprite.VERTEX_SIZE;
+		int verticesInBatch = triangleIndex;
 		if (verticesInBatch > maxVerticesInBatch) maxVerticesInBatch = verticesInBatch;
 
 		lastTexture.bind();
-		mesh.setVertices(vertices, 0, idx);
+		Mesh mesh = this.mesh;
+		mesh.setVertices(vertices, 0, vertexIndex);
+		mesh.setIndices(triangles, 0, triangleIndex);
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				mesh.render(customShader, GL10.GL_TRIANGLES, 0, verticesInBatch);
-			else
-				mesh.render(shader, GL10.GL_TRIANGLES, 0, verticesInBatch);
-		} else {
+		if (Gdx.graphics.isGL20Available())
+			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, verticesInBatch);
+		else
 			mesh.render(GL10.GL_TRIANGLES, 0, verticesInBatch);
-		}
 
-		idx = 0;
-		currBufferIdx++;
-		if (currBufferIdx == buffers.length) currBufferIdx = 0;
-		mesh = buffers[currBufferIdx];
+		vertexIndex = 0;
+		triangleIndex = 0;
+		bufferIndex++;
+		if (bufferIndex == buffers.length) bufferIndex = 0;
+		this.mesh = buffers[bufferIndex];
 	}
 
 	/** Disables blending for drawing sprites. Does not disable blending for text rendering */
@@ -453,10 +503,10 @@ public class PolygonSpriteBatch {
 	}
 
 	/** Sets the blending function to be used when rendering sprites.
-	 * 
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
+	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, SpriteBatch won't change the blending function.
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
+		if (blendSrcFunc == srcFunc && blendDstFunc == dstFunc) return;
 		renderMesh();
 		blendSrcFunc = srcFunc;
 		blendDstFunc = dstFunc;
@@ -518,7 +568,7 @@ public class PolygonSpriteBatch {
 				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
 				customShader.setUniformi("u_texture", 0);
 			} else {
-				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+				shader.setUniformMatrix("u_projTrans", combinedMatrix);
 				shader.setUniformi("u_texture", 0);
 			}
 		}

@@ -26,13 +26,13 @@ import com.badlogic.gdx.math.DelaunayTriangulator;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.FloatArray;
-import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ShortArray;
 
 /** @author Nathan Sweet */
 public class DelaunayTriangulatorTest extends GdxTest {
 	private ShapeRenderer renderer;
 	FloatArray points = new FloatArray();
-	IntArray triangles;
+	ShortArray triangles;
 	DelaunayTriangulator trianglulator = new DelaunayTriangulator();
 	long seed = MathUtils.random.nextLong();
 
@@ -93,10 +93,13 @@ public class DelaunayTriangulatorTest extends GdxTest {
 		renderer.setColor(Color.WHITE);
 		renderer.begin(ShapeType.Line);
 		for (int i = 0; i < triangles.size; i += 3) {
+			int p1 = triangles.get(i) * 2;
+			int p2 = triangles.get(i + 1) * 2;
+			int p3 = triangles.get(i + 2) * 2;
 			renderer.triangle( //
-				points.get(triangles.get(i)), points.get(triangles.get(i) + 1), //
-				points.get(triangles.get(i + 1)), points.get(triangles.get(i + 1) + 1), //
-				points.get(triangles.get(i + 2)), points.get(triangles.get(i + 2) + 1));
+				points.get(p1), points.get(p1 + 1), //
+				points.get(p2), points.get(p2 + 1), //
+				points.get(p3), points.get(p3 + 1));
 		}
 		renderer.end();
 	}
