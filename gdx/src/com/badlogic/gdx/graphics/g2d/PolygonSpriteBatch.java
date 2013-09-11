@@ -37,25 +37,39 @@ import com.badlogic.gdx.utils.NumberUtils;
  * and optimize them for processing by the GPU.
  * <p>
  * THIS STUFF IS WIP
+ * 
  * <p>
- * To draw something with a PolygonSpriteBatch one has to first call the {@link PolygonSpriteBatch#begin()} method which will
+ * To draw something with a PolyongSpriteBatch one has to first call the {@link PolygonSpriteBatch#begin()} method which will
  * setup appropriate render states. When you are done with drawing you have to call {@link PolygonSpriteBatch#end()} which will
  * actually draw the things you specified.
+ * </p>
+ * 
  * <p>
- * All drawing commands of the PolygonSpriteBatch operate in screen coordinates. The screen coordinate system has an x-axis
+ * All drawing commands of the PolyongSpriteBatch operate in screen coordinates. The screen coordinate system has an x-axis
  * pointing to the right, an y-axis pointing upwards and the origin is in the lower left corner of the screen. You can also
  * provide your own transformation and projection matrices if you so wish.
+ * </p>
+ * 
  * <p>
- * A PolygonSpriteBatch is managed. In case the OpenGL context is lost all OpenGL resources a PolygonSpriteBatch uses internally
+ * A PolyongSpriteBatch is managed. In case the OpenGL context is lost all OpenGL resources a PolyongSpriteBatch uses internally
  * get invalidated. A context is lost when a user switches to another application or receives an incoming call on Android. A
- * SpritPolygonSpriteBatcheBatch will be automatically reloaded after the OpenGL context is restored.
+ * PolygonSpriteBatch will be automatically reloaded after the OpenGL context is restored.
+ * </p>
+ * 
  * <p>
- * A PolygonSpriteBatch is a pretty heavy object so you should only ever have one in your program.
+ * A PolyongSpriteBatch is a pretty heavy object so you should only ever have one in your program.
+ * </p>
+ * 
  * <p>
- * A PolygonSpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw
+ * A PolyongSpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw
  * all provided sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
+ * </p>
+ * 
  * <p>
- * A PolygonSpriteBatch has to be disposed if it is no longer used.
+ * A PolyongSpriteBatch has to be disposed if it is no longer used.
+ * </p>
+ * 
+ * 
  * @author mzechner
  * @author Stefan Bachmann
  * @author Nathan Sweet */
@@ -107,14 +121,20 @@ public class PolygonSpriteBatch {
 		this(size, null);
 	}
 
-	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
+	 * Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
 	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
 	 * with respect to the screen resolution.
+	 * </p>
+	 * 
 	 * <p>
 	 * The size parameter specifies the maximum size of a single batch in number of vertices(!)
+	 * </p>
+	 * 
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
+	 * </p>
+	 * 
 	 * @param size the batch size in number of vertices(!)
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
@@ -127,14 +147,20 @@ public class PolygonSpriteBatch {
 		this(size, buffers, null);
 	}
 
-	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
+	 * Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
 	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
 	 * with respect to the screen resolution.
+	 * </p>
+	 * 
 	 * <p>
 	 * The size parameter specifies the maximum size of a single batch in number of vertices(!)
+	 * </p>
+	 * 
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
+	 * </p>
+	 * 
 	 * @param size the batch size in number of vertices(!)
 	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
@@ -557,12 +583,13 @@ public class PolygonSpriteBatch {
 	 * which gets "0" appened to indicate the use of the first texture unit. The projection matrix is uploaded via a mat4 uniform
 	 * called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined transform and projection
 	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
-	 * "u_texture".
-	 * <p>
-	 * Call this method with a null argument to use the default shader.
-	 * <p>
+	 * "u_texture".</p>
+	 * 
+	 * Call this method with a null argument to use the default shader.</p>
+	 * 
 	 * This method will flush the batch before setting the new shader, you can call it in between {@link #begin()} and
 	 * {@link #end()}.
+	 * 
 	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
 	public void setShader (ShaderProgram shader) {
 		if (drawing) {
