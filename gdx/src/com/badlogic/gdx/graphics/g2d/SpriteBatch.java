@@ -139,11 +139,9 @@ public class SpriteBatch implements Disposable {
 	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
 	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
-		if (size > 5460) {
-			throw new GdxRuntimeException("Can't have more than 5460 sprites per batch");
-		}
-		this.buffers = new Mesh[buffers];
+		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
+		this.buffers = new Mesh[buffers];
 		for (int i = 0; i < buffers; i++) {
 			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
 				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
@@ -207,7 +205,7 @@ public class SpriteBatch implements Disposable {
 			+ "}";
 
 		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
+		if (shader.isCompiled() == false) throw new IllegalArgumentException("Error compiling shader: " + shader.getLog());
 		return shader;
 	}
 
@@ -216,7 +214,7 @@ public class SpriteBatch implements Disposable {
 	 * by default where everything is given in pixels. You can specify your own projection and modelview matrices via
 	 * {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */
 	public void begin () {
-		if (drawing) throw new IllegalStateException("you have to call SpriteBatch.end() first");
+		if (drawing) throw new IllegalStateException("SpriteBatch.end must be called before begin.");
 		renderCalls = 0;
 
 		Gdx.gl.glDepthMask(false);
@@ -230,8 +228,6 @@ public class SpriteBatch implements Disposable {
 		}
 		setupMatrices();
 
-		idx = 0;
-		lastTexture = null;
 		drawing = true;
 	}
 
@@ -241,7 +237,6 @@ public class SpriteBatch implements Disposable {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before end.");
 		if (idx > 0) renderMesh();
 		lastTexture = null;
-		idx = 0;
 		drawing = false;
 
 		GLCommon gl = Gdx.gl;
@@ -312,9 +307,12 @@ public class SpriteBatch implements Disposable {
 		float scaleY, float rotation, int srcX, int srcY, int srcWidth, int srcHeight, boolean flipX, boolean flipY) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		} else if (idx == vertices.length) renderMesh();
+		else if (idx == vertices.length) //
+			renderMesh();
 
 		// bottom left and top right corner points relative to origin
 		final float worldOriginX = x + originX;
@@ -407,6 +405,7 @@ public class SpriteBatch implements Disposable {
 			v2 = tmp;
 		}
 
+		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
@@ -430,6 +429,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
@@ -451,9 +451,12 @@ public class SpriteBatch implements Disposable {
 		int srcHeight, boolean flipX, boolean flipY) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		} else if (idx == vertices.length) renderMesh();
+		else if (idx == vertices.length) //
+			renderMesh();
 
 		float u = srcX * invTexWidth;
 		float v = (srcY + srcHeight) * invTexHeight;
@@ -474,6 +477,7 @@ public class SpriteBatch implements Disposable {
 			v2 = tmp;
 		}
 
+		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -497,6 +501,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
@@ -512,9 +517,12 @@ public class SpriteBatch implements Disposable {
 	public void draw (Texture texture, float x, float y, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		} else if (idx == vertices.length) renderMesh();
+		else if (idx == vertices.length) //
+			renderMesh();
 
 		final float u = srcX * invTexWidth;
 		final float v = (srcY + srcHeight) * invTexHeight;
@@ -523,6 +531,7 @@ public class SpriteBatch implements Disposable {
 		final float fx2 = x + srcWidth;
 		final float fy2 = y + srcHeight;
 
+		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -546,6 +555,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y having the given width and height in pixels. The portion of the
@@ -560,13 +570,17 @@ public class SpriteBatch implements Disposable {
 	public void draw (Texture texture, float x, float y, float width, float height, float u, float v, float u2, float v2) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		} else if (idx == vertices.length) renderMesh();
+		else if (idx == vertices.length) //
+			renderMesh();
 
 		final float fx2 = x + width;
 		final float fy2 = y + height;
 
+		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -590,6 +604,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y having the width and height of the texture.
@@ -599,13 +614,17 @@ public class SpriteBatch implements Disposable {
 	public void draw (Texture texture, float x, float y) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		} else if (idx == vertices.length) renderMesh();
+		else if (idx == vertices.length) //
+			renderMesh();
 
 		final float fx2 = x + texture.getWidth();
 		final float fy2 = y + texture.getHeight();
 
+		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -629,15 +648,18 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = 1;
 		vertices[idx++] = 1;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. */
 	public void draw (Texture texture, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		} else if (idx == vertices.length) //
+		else if (idx == vertices.length) //
 			renderMesh();
 
 		final float fx2 = x + width;
@@ -647,6 +669,7 @@ public class SpriteBatch implements Disposable {
 		final float u2 = 1;
 		final float v2 = 0;
 
+		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -670,6 +693,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
@@ -677,23 +701,26 @@ public class SpriteBatch implements Disposable {
 	public void draw (Texture texture, float[] spriteVertices, int offset, int count) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
-		if (texture != lastTexture) {
+		int verticesLength = vertices.length;
+		int remainingVertices = verticesLength;
+		if (texture != lastTexture)
 			switchTexture(texture);
-		}
-
-		int remainingVertices = vertices.length - idx;
-		if (remainingVertices == 0) {
-			renderMesh();
-			remainingVertices = vertices.length;
+		else {
+			remainingVertices -= idx;
+			if (remainingVertices == 0) {
+				renderMesh();
+				remainingVertices = verticesLength;
+			}
 		}
 		int copyCount = Math.min(remainingVertices, count);
+
 		System.arraycopy(spriteVertices, offset, vertices, idx, copyCount);
 		idx += copyCount;
 		count -= copyCount;
 		while (count > 0) {
 			offset += copyCount;
 			renderMesh();
-			copyCount = Math.min(vertices.length, count);
+			copyCount = Math.min(verticesLength, count);
 			System.arraycopy(spriteVertices, offset, vertices, 0, copyCount);
 			idx += copyCount;
 			count -= copyCount;
@@ -709,6 +736,8 @@ public class SpriteBatch implements Disposable {
 	public void draw (TextureRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
+		float[] vertices = this.vertices;
+
 		Texture texture = region.texture;
 		if (texture != lastTexture) {
 			switchTexture(texture);
@@ -722,6 +751,7 @@ public class SpriteBatch implements Disposable {
 		final float u2 = region.u2;
 		final float v2 = region.v;
 
+		int idx = this.idx;
 		vertices[idx++] = x;
 		vertices[idx++] = y;
 		vertices[idx++] = color;
@@ -745,6 +775,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the bottom left corner at x,y and stretching the region to cover the given width and height. The
@@ -754,6 +785,8 @@ public class SpriteBatch implements Disposable {
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+		float[] vertices = this.vertices;
 
 		Texture texture = region.texture;
 		if (texture != lastTexture) {
@@ -840,6 +873,7 @@ public class SpriteBatch implements Disposable {
 		final float u2 = region.u2;
 		final float v2 = region.v;
 
+		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
@@ -863,6 +897,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u2;
 		vertices[idx++] = v;
+		this.idx = idx;
 	}
 
 	/** Draws a rectangle with the texture coordinates rotated 90 degrees. The bottom left corner at x,y and stretching the region
@@ -874,6 +909,8 @@ public class SpriteBatch implements Disposable {
 	public void draw (TextureRegion region, float x, float y, float originX, float originY, float width, float height,
 		float scaleX, float scaleY, float rotation, boolean clockwise) {
 		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+		float[] vertices = this.vertices;
 
 		Texture texture = region.texture;
 		if (texture != lastTexture) {
@@ -976,6 +1013,7 @@ public class SpriteBatch implements Disposable {
 			v4 = region.v2;
 		}
 
+		int idx = this.idx;
 		vertices[idx++] = x1;
 		vertices[idx++] = y1;
 		vertices[idx++] = color;
@@ -999,6 +1037,7 @@ public class SpriteBatch implements Disposable {
 		vertices[idx++] = color;
 		vertices[idx++] = u4;
 		vertices[idx++] = v4;
+		this.idx = idx;
 	}
 
 	/** Causes any pending sprites to be rendered, without ending the SpriteBatch. */
@@ -1013,11 +1052,13 @@ public class SpriteBatch implements Disposable {
 		totalRenderCalls++;
 		int spritesInBatch = idx / 20;
 		if (spritesInBatch > maxSpritesInBatch) maxSpritesInBatch = spritesInBatch;
+		int count = spritesInBatch * 6;
 
 		lastTexture.bind();
+		Mesh mesh = this.mesh;
 		mesh.setVertices(vertices, 0, idx);
 		mesh.getIndicesBuffer().position(0);
-		mesh.getIndicesBuffer().limit(spritesInBatch * 6);
+		mesh.getIndicesBuffer().limit(count);
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
@@ -1026,19 +1067,15 @@ public class SpriteBatch implements Disposable {
 			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				mesh.render(customShader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
-			else
-				mesh.render(shader, GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
-		} else {
-			mesh.render(GL10.GL_TRIANGLES, 0, spritesInBatch * 6);
-		}
+		if (Gdx.graphics.isGL20Available())
+			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, count);
+		else
+			mesh.render(GL10.GL_TRIANGLES, 0, count);
 
 		idx = 0;
 		currBufferIdx++;
 		if (currBufferIdx == buffers.length) currBufferIdx = 0;
-		mesh = buffers[currBufferIdx];
+		this.mesh = buffers[currBufferIdx];
 	}
 
 	/** Disables blending for drawing sprites. */
@@ -1056,7 +1093,6 @@ public class SpriteBatch implements Disposable {
 	}
 
 	/** Sets the blending function to be used when rendering sprites.
-	 * 
 	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, SpriteBatch won't change the blending function.
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
