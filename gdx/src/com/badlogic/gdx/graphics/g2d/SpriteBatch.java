@@ -125,6 +125,7 @@ public class SpriteBatch implements Disposable {
 	 *           {@link Mesh#forceVBO}).
 	 * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
 	public SpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
+		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
 		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
 		this.buffers = new Mesh[buffers];

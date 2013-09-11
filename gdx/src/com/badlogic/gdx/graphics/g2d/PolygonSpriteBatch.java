@@ -128,6 +128,7 @@ public class PolygonSpriteBatch {
 	 *           {@link Mesh#forceVBO}).
 	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately. */
 	public PolygonSpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
+		// 32767 is max index, so 32767 / 3 - (32767 / 3 % 3) = 10920.
 		if (size > 10920) throw new IllegalArgumentException("Can't have more than 10920 triangles per batch: " + size);
 
 		this.buffers = new Mesh[buffers];
