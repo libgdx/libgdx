@@ -17,9 +17,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
 /** Defines a polygon shape on top of a texture region to avoid drawing transparent pixels.
- * <p>
- * THIS STUFF IS A WIP
- * <p>
  * @see PolygonRegionLoader
  * @author Stefan Bachmann
  * @author Nathan Sweet */
@@ -29,7 +26,7 @@ public class PolygonRegion {
 	final short[] triangles;
 	final TextureRegion region;
 
-	/** Creates a PolygonRegin by triangulating the polygon coordinates in vertices and calculates uvs based on that. TextureRegion
+	/** Creates a PolygonRegion by triangulating the polygon coordinates in vertices and calculates uvs based on that. TextureRegion
 	 * can come from an atlas.
 	 * @param region the region used for drawing
 	 * @param vertices contains 2D polygon coordinates in pixels relative to source region */

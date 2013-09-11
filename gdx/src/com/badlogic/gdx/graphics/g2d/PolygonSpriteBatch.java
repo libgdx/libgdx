@@ -32,11 +32,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** <p>
- * A PolygonSpriteBatch is used to draw 2D polygons that reference a texture (region). The class will batch the drawing commands
+/** A PolygonSpriteBatch is used to draw 2D polygons that reference a texture (region). The class will batch the drawing commands
  * and optimize them for processing by the GPU.
- * <p>
- * THIS STUFF IS WIP
  * <p>
  * To draw something with a PolygonSpriteBatch one has to first call the {@link PolygonSpriteBatch#begin()} method which will
  * setup appropriate render states. When you are done with drawing you have to call {@link PolygonSpriteBatch#end()} which will
