@@ -124,7 +124,8 @@ public class PolygonSpriteBatch {
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link SpriteBatch#createDefaultShader()}.
 	 * @param size The max number of vertices and number of triangles in a single batch. Max of 10920.
-	 * @param buffers The number of meshes to use. This only makes sense with VBOs and is an expert function.
+	 * @param buffers The number of meshes to use. This is an expert function. It only makes sense with VBOs (see
+	 *           {@link Mesh#forceVBO}).
 	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately. */
 	public PolygonSpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
 		if (size > 10920) throw new IllegalArgumentException("Can't have more than 10920 triangles per batch: " + size);
