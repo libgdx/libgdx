@@ -107,7 +107,7 @@ public class PolygonSpriteBatch {
 	public int totalRenderCalls = 0;
 
 	/** the maximum number of sprites rendered in one batch so far **/
-	public int maxVerticesInBatch = 0;
+	public int maxTrianglesInBatch = 0;
 
 	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
 	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
@@ -464,8 +464,8 @@ public class PolygonSpriteBatch {
 
 		renderCalls++;
 		totalRenderCalls++;
-		int verticesInBatch = triangleIndex;
-		if (verticesInBatch > maxVerticesInBatch) maxVerticesInBatch = verticesInBatch;
+		int trianglesInBatch = triangleIndex;
+		if (trianglesInBatch > maxTrianglesInBatch) maxTrianglesInBatch = trianglesInBatch;
 
 		lastTexture.bind();
 		Mesh mesh = this.mesh;
@@ -480,9 +480,9 @@ public class PolygonSpriteBatch {
 		}
 
 		if (Gdx.graphics.isGL20Available())
-			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, verticesInBatch);
+			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, trianglesInBatch);
 		else
-			mesh.render(GL10.GL_TRIANGLES, 0, verticesInBatch);
+			mesh.render(GL10.GL_TRIANGLES, 0, trianglesInBatch);
 
 		vertexIndex = 0;
 		triangleIndex = 0;

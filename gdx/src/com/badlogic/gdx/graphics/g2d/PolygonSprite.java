@@ -159,7 +159,7 @@ public class PolygonSprite {
 		float color = NumberUtils.intToFloatColor(intBits);
 		final float[] vertices = this.vertices;
 		for (int i = 2; i < vertices.length; i += Sprite.VERTEX_SIZE)
-			vertices[i + 2] = color;
+			vertices[i] = color;
 	}
 
 	/** Sets the origin in relation to the sprite's position for scaling and rotation. */
@@ -201,31 +201,30 @@ public class PolygonSprite {
 
 	/** Returns the packed vertices, colors, and texture coordinates for this sprite. */
 	public float[] getVertices () {
-		if (dirty) {
-			dirty = false;
+		if (!dirty) return vertices;
+		dirty = false;
 
-			final float originX = this.originX;
-			final float originY = this.originY;
-			final float scaleX = this.scaleX;
-			final float scaleY = this.scaleY;
-			final PolygonRegion region = this.region;
-			final float[] vertices = this.vertices;
-			final float[] regionVertices = region.vertices;
+		final float originX = this.originX;
+		final float originY = this.originY;
+		final float scaleX = this.scaleX;
+		final float scaleY = this.scaleY;
+		final PolygonRegion region = this.region;
+		final float[] vertices = this.vertices;
+		final float[] regionVertices = region.vertices;
 
-			final float worldOriginX = x + originX;
-			final float worldOriginY = y + originY;
-			final float sX = width / region.region.getRegionWidth();
-			final float sY = height / region.region.getRegionHeight();
-			final float cos = MathUtils.cosDeg(rotation);
-			final float sin = MathUtils.sinDeg(rotation);
+		final float worldOriginX = x + originX;
+		final float worldOriginY = y + originY;
+		final float sX = width / region.region.getRegionWidth();
+		final float sY = height / region.region.getRegionHeight();
+		final float cos = MathUtils.cosDeg(rotation);
+		final float sin = MathUtils.sinDeg(rotation);
 
-			float fx, fy;
-			for (int i = 0, v = 0, n = regionVertices.length; i < n; i += 2, v += 5) {
-				fx = (regionVertices[i] * sX - originX) * scaleX;
-				fy = (regionVertices[i + 1] * sY - originY) * scaleY;
-				vertices[v] = cos * fx - sin * fy + worldOriginX;
-				vertices[v + 1] = sin * fx + cos * fy + worldOriginY;
-			}
+		float fx, fy;
+		for (int i = 0, v = 0, n = regionVertices.length; i < n; i += 2, v += 5) {
+			fx = (regionVertices[i] * sX - originX) * scaleX;
+			fy = (regionVertices[i + 1] * sY - originY) * scaleY;
+			vertices[v] = cos * fx - sin * fy + worldOriginX;
+			vertices[v + 1] = sin * fx + cos * fy + worldOriginY;
 		}
 		return vertices;
 	}
@@ -243,10 +242,12 @@ public class PolygonSprite {
 		float maxy = vertices[1];
 
 		for (int i = 5; i < vertices.length; i += 5) {
-			minx = minx > vertices[i] ? vertices[i] : minx;
-			maxx = maxx < vertices[i] ? vertices[i] : maxx;
-			miny = miny > vertices[i + 1] ? vertices[i + 1] : miny;
-			maxy = maxy < vertices[i + 1] ? vertices[i + 1] : maxy;
+			float x = vertices[i];
+			float y = vertices[i + 1];
+			minx = minx > x ? x : minx;
+			maxx = maxx < x ? x : maxx;
+			miny = miny > y ? y : miny;
+			maxy = maxy < y ? y : maxy;
 		}
 
 		bounds.x = minx;
@@ -329,7 +330,7 @@ public class PolygonSprite {
 
 		// Set the color and UVs in this sprite's vertices.
 		float[] vertices = this.vertices;
-		for (int i = 2, v = 0, n = regionVertices.length; i < n; i += 2, v += 5) {
+		for (int i = 0, v = 2, n = regionVertices.length; i < n; i += 2, v += 5) {
 			vertices[v] = color.toFloatBits();
 			vertices[v + 1] = textureCoords[i];
 			vertices[v + 2] = textureCoords[i + 1];
