@@ -35,13 +35,16 @@ public class PolygonRegion {
 		this.vertices = vertices;
 		this.triangles = triangles;
 
-		textureCoords = new float[vertices.length];
-		float uvWidth = region.u2 - region.u;
-		float uvHeight = region.v2 - region.v;
+		float[] textureCoords = this.textureCoords = new float[vertices.length];
+		float u = region.u, v = region.u;
+		float uvWidth = region.u2 - u;
+		float uvHeight = region.v2 - v;
+		int width = region.regionWidth;
+		int height = region.regionHeight;
 		for (int i = 0, n = vertices.length; i < n; i++) {
-			textureCoords[i] = region.getU() + uvWidth * (vertices[i] / region.getRegionWidth());
+			textureCoords[i] = u + uvWidth * (vertices[i] / width);
 			i++;
-			textureCoords[i] = region.getV() + uvHeight * (1 - (vertices[i] / region.getRegionHeight()));
+			textureCoords[i] = v + uvHeight * (1 - (vertices[i] / height));
 		}
 	}
 
