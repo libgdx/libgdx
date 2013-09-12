@@ -23,6 +23,7 @@ public class IOSFiles implements Files {
 	
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
+		if (type == FileType.Internal) return internal(fileName);
 		return new IOSFileHandle(fileName, type);
 	}
 
