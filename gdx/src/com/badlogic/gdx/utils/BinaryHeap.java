@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 /** @author Nathan Sweet */
 public class BinaryHeap<T extends BinaryHeap.Node> {
-	public int size = 0;
+	public int size;
 
 	private Node[] nodes;
 	private final boolean isMaxHeap;
@@ -46,18 +46,38 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return node;
 	}
 
-	public Node peek () {
+	public T add (T node, float value) {
+		node.value = value;
+		return add(node);
+	}
+
+	public T peek () {
 		if (size == 0) throw new IllegalStateException("The heap is empty.");
-		return nodes[0];
+		return (T)nodes[0];
 	}
 
 	public T pop () {
+		return remove(0);
+	}
+
+	public T remove (int index) {
 		Node[] nodes = this.nodes;
-		Node popped = nodes[0];
-		nodes[0] = nodes[--size];
+		Node removed = nodes[index];
+		nodes[index] = nodes[--size];
 		nodes[size] = null;
-		if (size > 0) down(0);
-		return (T)popped;
+		if (size > 0) down(index);
+		return (T)removed;
+	}
+
+	public T remove (T node) {
+		return remove(node.index);
+	}
+
+	public void clear () {
+		Node[] nodes = this.nodes;
+		for (int i = 0, n = size; i < n; i++)
+			nodes[i] = null;
+		size = 0;
 	}
 
 	public void setValue (T node, float value) {
