@@ -60,17 +60,17 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 		return remove(0);
 	}
 
-	public T remove (int index) {
+	public T remove (T node) {
+		return remove(node.index);
+	}
+
+	private T remove (int index) {
 		Node[] nodes = this.nodes;
 		Node removed = nodes[index];
 		nodes[index] = nodes[--size];
 		nodes[size] = null;
-		if (size > 0) down(index);
+		if (size > 0 && index < size) down(index);
 		return (T)removed;
-	}
-
-	public T remove (T node) {
-		return remove(node.index);
 	}
 
 	public void clear () {
@@ -154,13 +154,13 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 
 	public String toString () {
 		if (size == 0) return "[]";
-		Object[] nodes = this.nodes;
+		Node[] nodes = this.nodes;
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append('[');
-		buffer.append(nodes[0]);
+		buffer.append(nodes[0].value);
 		for (int i = 1; i < size; i++) {
 			buffer.append(", ");
-			buffer.append(nodes[i]);
+			buffer.append(nodes[i].value);
 		}
 		buffer.append(']');
 		return buffer.toString();
@@ -177,6 +177,10 @@ public class BinaryHeap<T extends BinaryHeap.Node> {
 
 		public float getValue () {
 			return value;
+		}
+
+		public String toString () {
+			return Float.toString(value);
 		}
 	}
 }
