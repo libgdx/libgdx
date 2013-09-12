@@ -107,16 +107,10 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 		}
 	}
 
-	/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */
+	/** Invalidates the layout of this widget and every parent widget to the root of the hierarchy. */
 	public void invalidateHierarchy () {
 		super.invalidate();
 		getTable().invalidateHierarchy();
-	}
-
-	private void toStageCoordinates (Actor actor, Vector2 point) {
-		point.x += actor.getX();
-		point.y += actor.getY();
-		toStageCoordinates(actor.getParent(), point);
 	}
 
 	public void drawDebug (SpriteBatch batch) {
