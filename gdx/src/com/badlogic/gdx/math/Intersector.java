@@ -19,8 +19,10 @@ package com.badlogic.gdx.math;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.utils.Array;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
@@ -91,25 +93,41 @@ public final class Intersector {
 			* (pointX - linePoint1X));
 	}
 
-	/** Checks whether the given point is in the polygon.
-	 * @param polygon The polygon vertices
-	 * @param point The point
-	 * @return true if the point is in the polygon */
-	public static boolean isPointInPolygon (List<Vector2> polygon, Vector2 point) {
-		int j = polygon.size() - 1;
-		boolean oddNodes = false;
-		for (int i = 0; i < polygon.size(); i++) {
-			if (polygon.get(i).y < point.y && polygon.get(j).y >= point.y || polygon.get(j).y < point.y
-				&& polygon.get(i).y >= point.y) {
-				if (polygon.get(i).x + (point.y - polygon.get(i).y) / (polygon.get(j).y - polygon.get(i).y)
-					* (polygon.get(j).x - polygon.get(i).x) < point.x) {
-					oddNodes = !oddNodes;
-				}
-			}
-			j = i;
-		}
-		return oddNodes;
-	}
+    /** Checks whether the given point is in the polygon.
+     * @param polygon The polygon vertices
+     * @param point The point
+     * @return true if the point is in the polygon
+     * @deprecated prefer the method with {@link #isPointInPolygon(com.badlogic.gdx.utils.Array, Vector2)}
+     */
+    @Deprecated
+    public static boolean isPointInPolygon (List<Vector2> polygon, Vector2 point) {
+        return isPointInPolygonAux(polygon.iterator(), polygon.get(polygon.size()-1), point);
+    }
+
+    /** Checks whether the given point is in the polygon.
+     * @param polygon The polygon vertices
+     * @param point The point
+     * @return true if the point is in the polygon */
+    public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
+        return isPointInPolygonAux(polygon.iterator(), polygon.peek(), point);
+    }
+
+    private static boolean isPointInPolygonAux(Iterator<Vector2> polygon, Vector2 lastVertice, Vector2 point) {
+        System.out.print("isPointInPolygonAux("+point+") ");
+        boolean oddNodes = false;
+        for (;polygon.hasNext();) {
+            Vector2 vertice = polygon.next();
+            if (vertice.y < point.y && lastVertice.y >= point.y || lastVertice.y < point.y
+                    && vertice.y >= point.y) {
+                if (vertice.x + (point.y - vertice.y) / (lastVertice.y - vertice.y)
+                        * (lastVertice.x - vertice.x) < point.x) {
+                    oddNodes = !oddNodes;
+                }
+            }
+            lastVertice = vertice;
+        }
+        return oddNodes;
+    }
 
 	/** Returns true if the specified point is in the polygon. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
