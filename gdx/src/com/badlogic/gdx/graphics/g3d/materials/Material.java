@@ -30,7 +30,7 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 			if (obj == this) return true;
 			if (!(obj instanceof Attribute)) return false;
 			final Attribute other = (Attribute)obj;
-			if (other.type != other.type) return false; 
+			if (this.type != other.type) return false;
 			return equals(other);
 		}
 		@Override
