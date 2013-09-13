@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.lights.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.graphics.g3d.lights.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
@@ -36,6 +37,7 @@ import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
@@ -69,9 +71,9 @@ public class BaseBulletTest extends BulletTest {
 		initialized = true;
 	}
 	
-	public Lights lights = new Lights(0.2f, 0.2f, 0.2f).add(
-		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f)
-	);
+	public Lights lights;
+	public DirectionalShadowLight shadowLight;
+	public ModelBatch shadowBatch;
 
 	public BulletWorld world;
 	public ObjLoader objLoader = new ObjLoader();
@@ -87,6 +89,12 @@ public class BaseBulletTest extends BulletTest {
 	@Override
 	public void create () {
 		init();
+		lights = new Lights(0.3f, 0.3f, 0.3f).add(
+			(shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f)
+		);
+		lights.shadowMap = shadowLight;
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
+		
 		modelBatch = new ModelBatch();
 		
 		world = createWorld();
@@ -127,6 +135,15 @@ public class BaseBulletTest extends BulletTest {
 			disposable.dispose();
 		disposables.clear();
 		
+		modelBatch.dispose();
+		modelBatch = null;
+		
+		shadowBatch.dispose();
+		shadowBatch = null;
+		
+		shadowLight.dispose();
+		shadowLight = null;
+		
 		super.dispose();
 	}
 	
@@ -157,11 +174,18 @@ public class BaseBulletTest extends BulletTest {
 	
 	protected void beginRender(boolean lighting) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(0,0,0,0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		camera.update();
 	}
 	
 	protected void renderWorld() {
+		shadowLight.begin(Vector3.Zero, camera.direction);
+		shadowBatch.begin(shadowLight.getCamera());
+		world.render(shadowBatch, null);
+		shadowBatch.end();
+		shadowLight.end();
+		
 		modelBatch.begin(camera);
 		world.render(modelBatch, lights);
 		modelBatch.end();

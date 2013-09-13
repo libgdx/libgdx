@@ -6,7 +6,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Lights {
 	public final Color ambientLight = new Color(0,0,0,1);
-    public Color fog;
+	public Color fog;
+	/** @deprecated Experimental, likely to change, do not use! */
+	public ShadowMap shadowMap;
 	public final Array<DirectionalLight> directionalLights = new Array<DirectionalLight>();
 	public final Array<PointLight> pointLights = new Array<PointLight>();
 	

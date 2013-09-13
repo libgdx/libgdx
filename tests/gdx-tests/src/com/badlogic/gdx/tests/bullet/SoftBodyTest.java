@@ -122,6 +122,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		model = ModelBuilder.createFromMesh(mesh, GL10.GL_TRIANGLES, 
 			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f), IntAttribute.createCullFace(0)));
 		instance = new ModelInstance(model);
+		world.add(new BulletEntity(instance, null));
 	}
 	
 	@Override
@@ -146,11 +147,12 @@ public class SoftBodyTest extends BaseBulletTest {
 	protected void renderWorld () {
 		softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
 		softBody.getWorldTransform(instance.transform);
+		super.renderWorld();
 		
-		modelBatch.begin(camera);
-		world.render(modelBatch, lights);
-		modelBatch.render(instance, lights);
-		modelBatch.end();
+//		modelBatch.begin(camera);
+//		world.render(modelBatch, lights);
+//		modelBatch.render(instance, lights);
+//		modelBatch.end();
 	}
 	
 	@Override
