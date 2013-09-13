@@ -293,6 +293,13 @@ public class Sprite extends TextureRegion {
 		this.rotation = degrees;
 		dirty = true;
 	}
+	
+	/**
+	 * @return the rotation of the sprite in degrees
+	 */
+	public float getRotation() {
+		return rotation;
+	}
 
 	/** Sets the sprite's rotation in degrees relative to the current rotation.
 	 ** Rotation is centered on the origin set in {@link #setOrigin(float, float)} */
