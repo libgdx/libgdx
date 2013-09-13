@@ -93,6 +93,7 @@
 		<include name="graphics/g2d/ParticleEmitterBox2D.java"/>		
 		<include name="graphics/g2d/PixmapPacker.java"/>
 		<include name="graphics/g2d/PolygonRegion.java"/>
+		<include name="graphics/g2d/PolygonRegionLoader.java"/>
 		<include name="graphics/g2d/PolygonSprite.java"/>
 		<include name="graphics/g2d/PolygonSpriteBatch.java"/>
 		<include name="graphics/g2d/Sprite.java"/>
@@ -124,8 +125,10 @@
 		<include name="graphics/g3d/lights/AmbientCubemap.java"/>
 		<include name="graphics/g3d/lights/BaseLight.java"/>
 		<include name="graphics/g3d/lights/DirectionalLight.java"/>
+		<include name="graphics/g3d/lights/DirectionalShadowLight.java"/>
 		<include name="graphics/g3d/lights/Lights.java"/>
 		<include name="graphics/g3d/lights/PointLight.java"/>
+		<include name="graphics/g3d/lights/ShadowMap.java"/>
 				
 	<!-- graphics/g3d/loader -->		
 		<include name="graphics/g3d/loader/G3dModelLoader.java"/>
@@ -163,19 +166,21 @@
 	<!-- graphics/g3d/shaders -->
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
+		<include name="graphics/g3d/shaders/DepthShader.java"/>
 		<include name="graphics/g3d/shaders/GLES10Shader.java"/>
 		
 	<!-- graphics/g3d/shaders/graph -->
 		<include name="graphics/g3d/shaders/graph/*.java"/>
 
 	<!-- graphics/g3d/utils -->
-	  <include name="graphics/g3d/utils/AnimationController.java"/>
-	  <include name="graphics/g3d/utils/BaseAnimationController.java"/>
+		<include name="graphics/g3d/utils/AnimationController.java"/>
+		<include name="graphics/g3d/utils/BaseAnimationController.java"/>
 		<include name="graphics/g3d/utils/BaseShaderProvider.java"/>
 		<include name="graphics/g3d/utils/CameraInputController.java"/>
 		<include name="graphics/g3d/utils/DefaultRenderableSorter.java"/>
 		<include name="graphics/g3d/utils/DefaultShaderProvider.java"/>
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
+		<include name="graphics/g3d/utils/DepthShaderProvider.java"/>
 		<include name="graphics/g3d/utils/FirstPersonCameraController.java"/>
 		<include name="graphics/g3d/utils/MeshBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
@@ -495,6 +500,8 @@
 	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.fnt" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/utils/arial-15.png" />
 </module>
