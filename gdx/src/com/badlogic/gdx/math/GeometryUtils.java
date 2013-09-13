@@ -25,7 +25,7 @@ public class GeometryUtils {
 	 * @param b the second coefficient of the quadric equation
 	 * @param c the third coefficient of the quadric equation
 	 * @return the lowest positive root or Float.Nan */
-	static public float getLowestPositiveRoot (float a, float b, float c) {
+	static public float lowestPositiveRoot (float a, float b, float c) {
 		float det = b * b - 4 * a * c;
 		if (det < 0) return Float.NaN;
 
@@ -64,6 +64,7 @@ public class GeometryUtils {
 
 	/** Returns the centroid for the specified non-self-intersecting polygon. */
 	public static Vector2 polygonCentroid (float[] polygon, int offset, int count, Vector2 centroid) {
+		if (polygon.length < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
 		float x = 0, y = 0;
 
 		float signedArea = 0;
