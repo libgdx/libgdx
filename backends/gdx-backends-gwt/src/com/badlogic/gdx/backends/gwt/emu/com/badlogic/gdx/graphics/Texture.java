@@ -29,8 +29,8 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class Texture implements Disposable {
-	static IntBuffer buffer = BufferUtils.newIntBuffer(1);
+public class Texture extends GLTexture {
+	//static IntBuffer buffer = BufferUtils.newIntBuffer(1);
 
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), Linear(GL10.GL_LINEAR), MipMap(GL10.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
@@ -53,7 +53,7 @@ public class Texture implements Disposable {
 	}
 
 	public enum TextureWrap {
-		ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
+		MirroredRepeat(GL20.GL_MIRRORED_REPEAT),ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
 
 		final int glEnum;
 
@@ -66,11 +66,6 @@ public class Texture implements Disposable {
 		}
 	}
 
-	TextureFilter minFilter = TextureFilter.Nearest;
-	TextureFilter magFilter = TextureFilter.Nearest;
-	TextureWrap uWrap = TextureWrap.ClampToEdge;
-	TextureWrap vWrap = TextureWrap.ClampToEdge;
-	int glHandle;
 	TextureData data;
 
 	public Texture (String internalPath) {
@@ -86,7 +81,7 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		create(new FileTextureData(file, null, format, useMipMaps));
+		this(createTextureData(file, format, useMipMaps));
 	}
 
 	public Texture (Pixmap pixmap) {
@@ -106,19 +101,8 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (TextureData data) {
-		create(data);
-	}
-
-	private void create (TextureData data) {
-		glHandle = createGLHandle();
+		super(GL10.GL_TEXTURE_2D, createGLHandle());
 		load(data);
-	}
-
-	public static int createGLHandle () {
-		buffer.position(0);
-		buffer.limit(buffer.capacity());
-		Gdx.gl.glGenTextures(1, buffer);
-		return buffer.get(0);
 	}
 
 	public void load (TextureData data) {
@@ -182,6 +166,11 @@ public class Texture implements Disposable {
 	/** @return the height of the texture in pixels */
 	public int getHeight () {
 		return data.getHeight();
+	}
+	
+	@Override
+	public int getDepth() {
+		return 0;
 	}
 
 	public TextureFilter getMinFilter () {
@@ -267,10 +256,7 @@ public class Texture implements Disposable {
 	/** Disposes all resources associated with the texture */
 	public void dispose () {
 		if (glHandle == 0) return;
-		buffer.clear();
-		buffer.put(glHandle);
-		buffer.flip();
-		Gdx.gl.glDeleteTextures(1, buffer);
+		delete();
 		glHandle = 0;
 	}
 
