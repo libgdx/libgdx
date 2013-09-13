@@ -28,10 +28,6 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 /** A text label, with optional word wrapping.
  * <p>
- * Unlike most scene2d.ui widgets, label can be scaled and rotated using the actor's scale, rotation, and origin. This only
- * affects drawing, other scene2d.ui widgets will still use the unscaled and unrotated bounds of the label. Note that a scaled or
- * rotated label causes a SpriteBatch flush when it is drawn, so should be used relatively sparingly.
- * <p>
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
 public class Label extends Widget {
