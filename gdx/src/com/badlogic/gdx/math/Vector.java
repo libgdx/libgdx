@@ -49,7 +49,7 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T sub (T v);
 
-	/** Normalizes this vector
+	/** Normalizes this vector. Does nothing if it is zero.
 	 * @return This vector for chaining */
 	T nor ();
 
