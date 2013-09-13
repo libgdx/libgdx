@@ -1,8 +1,6 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;

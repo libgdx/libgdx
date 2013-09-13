@@ -64,6 +64,7 @@
 - Rewrote EarClippingTriangulator to not allocate (no more Vector2s).
 - Added ParticleEffectLoader to make AssetManager load ParticleEffects
 - Added GeometryUtils, more Intersector functions, DelaunayTriangulator, ConvexHull.
+- Added getBoundingBox to ParticleEffect
 - EarClippingTriangulator changed to return triangle indices.
 - PolygonSpriteBatch and friends refactored to use triangle indices.
 - Added add(T, float), remove(int), remove(T) and clear() methods to BinaryHeap
