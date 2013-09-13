@@ -94,7 +94,7 @@ public class Cubemap extends GLTexture {
 	}
 	
 	@Override
-	protected boolean canReload () {
+	public boolean isManaged () {
 		for (TextureData data : this.data)
 			if (!data.isManaged())
 				return false;
@@ -103,7 +103,7 @@ public class Cubemap extends GLTexture {
 	
 	@Override
 	protected void reload () {
-		if (!canReload()) throw new GdxRuntimeException("Tried to reload an unmanaged Cubemap");
+		if (!isManaged()) throw new GdxRuntimeException("Tried to reload an unmanaged Cubemap");
 		glHandle = createGLHandle();
 		load(data[CubemapSide.PositiveX.index],
 			data[CubemapSide.NegativeX.index],

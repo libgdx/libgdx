@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * Also provides some (protected) static methods to create TextureData and upload image data. 
  * @author badlogic, Xoppa
  */
-public class GLTexture implements Disposable {
+public abstract class GLTexture implements Disposable {
 	/** The target of this texture, used when binding the texture, e.g. GL_TEXTURE_2D */
 	public final int glTarget;
 	protected int glHandle;
@@ -33,17 +33,13 @@ public class GLTexture implements Disposable {
 	protected TextureWrap vWrap = TextureWrap.ClampToEdge;
 	
 	/** @return the width of the texture in pixels */
-	public int getWidth() {
-		return -1;
-	}
+	public abstract int getWidth();
+	
 	/** @return the height of the texture in pixels */
-	public int getHeight() {
-		return -1;
-	}
+	public abstract int getHeight();
+	
 	/** @return the depth of the texture in pixels */
-	public int getDepth() {
-		return -1;
-	}
+	public abstract int getDepth();
 	
 	/** Generates a new OpenGL texture with the specified target. */ 
 	public GLTexture(int glTarget) {
@@ -55,13 +51,10 @@ public class GLTexture implements Disposable {
 		this.glHandle = glHandle;
 	}
 	
-	protected boolean canReload() {
-		return false;
-	}
+	/** @return whether this texture is managed or not. */
+	public abstract boolean isManaged ();
 	
-	protected void reload() {
-		throw new GdxRuntimeException("Cannot reload this texture");
-	}
+	protected abstract void reload();
 	
 	/** Binds this texture. The texture will be bound to the currently active texture unit specified via
 	 * {@link GLCommon#glActiveTexture(int)}. */

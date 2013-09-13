@@ -150,16 +150,11 @@ public class Texture extends GLTexture {
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
 
-	@Override
-	protected boolean canReload () {
-		return data.isManaged();
-	}
-	
 	/** Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only
 	 * if you know what you do! */
 	@Override
 	protected void reload () {
-		if (!canReload()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
+		if (!isManaged()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
 		glHandle = createGLHandle();
 		load(data);
 	}
