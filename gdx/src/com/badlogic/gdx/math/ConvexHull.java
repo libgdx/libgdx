@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.IntArray;
 public class ConvexHull {
 	private final FloatArray hull = new FloatArray();
 	private final IntArray quicksortStack = new IntArray();
+	private float[] sortedPoints;
 
 	/** @see #computePolygon(float[], int, int, boolean) */
 	public FloatArray computePolygon (FloatArray points, boolean sorted) {
@@ -24,14 +25,20 @@ public class ConvexHull {
 	 * same as the first one. */
 	/** Returns the convex hull polygon for the given point cloud.
 	 * @param points x,y pairs describing points. Duplicate points will result in undefined behavior.
-	 * @param sorted If false, the points will be sorted by the x coordinate then the y coordinate, which is required by the
-	 *           triangulation algorithm. Note in this case the input array is modified.
+	 * @param sorted If false, the points will be sorted by the x coordinate then the y coordinate, which is required by the convex
+	 *           hull algorithm. If sorting is done the input array is not modified and count additional working memory is needed.
 	 * @return pairs of coordinates that describe the convex hull polygon in counterclockwise order. Note the returned array is
 	 *         reused for later calls to the same method. */
 	public FloatArray computePolygon (float[] points, int offset, int count, boolean sorted) {
 		int end = offset + count;
 
-		if (!sorted) sort(points, offset, count);
+		if (!sorted) {
+			if (sortedPoints == null || sortedPoints.length < count) sortedPoints = new float[count];
+			System.arraycopy(points, offset, sortedPoints, 0, count);
+			points = sortedPoints;
+			offset = 0;
+			sort(points, count);
+		}
 
 		// Lower hull.
 		FloatArray hull = this.hull;
@@ -71,9 +78,9 @@ public class ConvexHull {
 
 	/** Sorts x,y pairs of values by the x value, then the y value.
 	 * @param count Number of indices, must be even. */
-	private void sort (float[] values, int offset, int count) {
-		int lower = offset;
-		int upper = offset + count - 1;
+	private void sort (float[] values, int count) {
+		int lower = 0;
+		int upper = count - 1;
 		IntArray stack = quicksortStack;
 		stack.add(lower);
 		stack.add(upper - 1);
