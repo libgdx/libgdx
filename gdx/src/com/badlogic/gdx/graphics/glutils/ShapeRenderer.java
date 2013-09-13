@@ -132,6 +132,10 @@ public class ShapeRenderer {
 		this.color.set(r, g, b, a);
 	}
 
+	public Color getColor () {
+		return color;
+	}
+
 	/** Sets the projection matrix to be used for rendering. Usually this will be set to {@link Camera#combined}.
 	 * @param matrix */
 	public void setProjectionMatrix (Matrix4 matrix) {
