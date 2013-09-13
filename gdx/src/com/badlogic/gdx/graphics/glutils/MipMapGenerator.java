@@ -51,7 +51,7 @@ public class MipMapGenerator {
 			return;
 		}
 
-		if (Gdx.app.getType() == ApplicationType.Android) {
+		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.WebGL) {
 			if (Gdx.graphics.isGL20Available())
 				generateMipMapGLES20(target, pixmap, disposePixmap);
 			else
