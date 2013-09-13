@@ -1,10 +1,11 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 
 public class TextureDescriptor {
-	public Texture texture = null;
+	public GLTexture texture = null;
 	public Texture.TextureFilter minFilter;
 	public Texture.TextureFilter magFilter;
 	public Texture.TextureWrap uWrap;
@@ -22,7 +23,7 @@ public class TextureDescriptor {
 	public TextureDescriptor() {
 	}
 
-	public void set(final Texture texture, final Texture.TextureFilter minFilter, final Texture.TextureFilter magFilter, final Texture.TextureWrap uWrap, final Texture.TextureWrap vWrap) {
+	public void set(final GLTexture texture, final Texture.TextureFilter minFilter, final Texture.TextureFilter magFilter, final Texture.TextureWrap uWrap, final Texture.TextureWrap vWrap) {
 		this.texture = texture;
 		this.minFilter = minFilter;
 		this.magFilter = magFilter;
