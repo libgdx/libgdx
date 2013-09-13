@@ -310,6 +310,10 @@ public class ParticleEmitter {
 	public void reset () {
 		emissionDelta = 0;
 		durationTimer = duration;
+		boolean[] active = this.active;
+		for (int i = 0, n = active.length; i < n; i++)
+			active[i] = false;
+		activeCount = 0;
 		start();
 	}
 
@@ -342,7 +346,7 @@ public class ParticleEmitter {
 
 		updateFlags = 0;
 		if (angleValue.active && angleValue.timeline.length > 1) updateFlags |= UPDATE_ANGLE;
-		if (velocityValue.active && velocityValue.active) updateFlags |= UPDATE_VELOCITY;
+		if (velocityValue.active) updateFlags |= UPDATE_VELOCITY;
 		if (scaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
 		if (rotationValue.active && rotationValue.timeline.length > 1) updateFlags |= UPDATE_ROTATION;
 		if (windValue.active) updateFlags |= UPDATE_WIND;

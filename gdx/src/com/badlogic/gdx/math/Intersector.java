@@ -16,12 +16,12 @@
 
 package com.badlogic.gdx.math;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
+
+import java.util.Arrays;
+import java.util.List;
 
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
@@ -29,35 +29,6 @@ import com.badlogic.gdx.math.collision.Ray;
  * @author jan.stria
  * @author Nathan Sweet */
 public final class Intersector {
-	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
-	 * Float.Nan is returned.
-	 * 
-	 * @param a the first coefficient of the quadric equation
-	 * @param b the second coefficient of the quadric equation
-	 * @param c the third coefficient of the quadric equation
-	 * @return the lowest positive root or Float.Nan */
-	public static float getLowestPositiveRoot (float a, float b, float c) {
-		float det = b * b - 4 * a * c;
-		if (det < 0) return Float.NaN;
-
-		float sqrtD = (float)Math.sqrt(det);
-		float invA = 1 / (2 * a);
-		float r1 = (-b - sqrtD) * invA;
-		float r2 = (-b + sqrtD) * invA;
-
-		if (r1 > r2) {
-			float tmp = r2;
-			r2 = r1;
-			r1 = tmp;
-		}
-
-		if (r1 > 0) return r1;
-
-		if (r2 > 0) return r2;
-
-		return Float.NaN;
-	}
-
 	private final static Vector3 v0 = new Vector3();
 	private final static Vector3 v1 = new Vector3();
 	private final static Vector3 v2 = new Vector3();
@@ -86,6 +57,16 @@ public final class Intersector {
 		return true;
 	}
 
+	/** Returns true if the given point is inside the triangle. */
+	public static boolean isPointInTriangle (float px, float py, float ax, float ay, float bx, float by, float cx, float cy) {
+		float px1 = px - ax;
+		float py1 = py - ay;
+		boolean side12 = (bx - ax) * py1 - (by - ay) * px1 > 0;
+		if ((cx - ax) * py1 - (cy - ay) * px1 > 0 == side12) return false;
+		if ((cx - bx) * (py - by) - (cy - by) * (px - bx) > 0 != side12) return false;
+		return true;
+	}
+
 	public static boolean intersectSegmentPlane (Vector3 start, Vector3 end, Plane plane, Vector3 intersection) {
 		Vector3 dir = end.tmp().sub(start);
 		float denom = dir.dot(plane.getNormal());
@@ -94,23 +75,6 @@ public final class Intersector {
 
 		intersection.set(start).add(dir.scl(t));
 		return true;
-	}
-
-	public static Vector2 triangleCentroid (float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid) {
-		centroid.x = (x1 + x2 + x3) / 3;
-		centroid.y = (x1 + x2 + x3) / 3;
-		return centroid;
-	}
-
-	public static Vector2 quadrilateralCentroid (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
-		Vector2 centroid) {
-		float avgX1 = (x1 + x2 + x3) / 3;
-		float avgY1 = (y1 + y2 + y3) / 3;
-		float avgX2 = (x1 + x4 + x3) / 3;
-		float avgY2 = (y1 + y4 + y3) / 3;
-		centroid.x = avgX1 - (avgX1 - avgX2) / 2;
-		centroid.y = avgY1 - (avgY1 - avgY2) / 2;
-		return centroid;
 	}
 
 	/** Determines on which side of the given line the point is. Returns -1 if the point is on the left side of the line, 0 if the
@@ -141,6 +105,22 @@ public final class Intersector {
 					* (polygon.get(j).x - polygon.get(i).x) < point.x) {
 					oddNodes = !oddNodes;
 				}
+			}
+			j = i;
+		}
+		return oddNodes;
+	}
+
+	/** Returns true if the specified point is in the polygon. */
+	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
+		boolean oddNodes = false;
+		int j = offset + count - 2;
+		for (int i = offset, n = j; i <= n; i += 2) {
+			float yi = polygon[i + 1];
+			float yj = polygon[j + 1];
+			if (yi < y && yj >= y || yj < y && yi >= y) {
+				float xi = polygon[i];
+				if (xi + (y - yi) / (yj - yi) * (polygon[j] - xi) < x) oddNodes = !oddNodes;
 			}
 			j = i;
 		}

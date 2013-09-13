@@ -69,6 +69,10 @@ public class Helper {
 	public static String getIosPrjPath (ProjectUpdateConfiguration cfg) {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixIos + "/", true);
 	}
+	
+	public static String getRobovomPrjPath (ProjectUpdateConfiguration cfg) {
+		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixRobovm + "/", true);
+	}
 
 	// -------------------------------------------------------------------------
 	// Classpath

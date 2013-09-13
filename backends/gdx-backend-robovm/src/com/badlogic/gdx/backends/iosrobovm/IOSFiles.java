@@ -33,7 +33,7 @@ public class IOSFiles implements Files {
 
 	@Override
 	public FileHandle internal (String path) {
-		return new IOSFileHandle(new File(internalPath, path), FileType.Internal);
+		return new IOSFileHandle(path, FileType.Internal);
 	}
 
 	@Override

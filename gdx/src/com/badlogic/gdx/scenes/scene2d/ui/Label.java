@@ -38,6 +38,7 @@ public class Label extends Widget {
 	private LabelStyle style;
 	private final TextBounds bounds = new TextBounds();
 	private final StringBuilder text = new StringBuilder();
+	private StringBuilder tempText;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
 	private HAlignment lineAlign = HAlignment.LEFT;
@@ -148,8 +149,20 @@ public class Label extends Widget {
 		float oldScaleY = font.getScaleY();
 		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
 
-		Drawable background = style.background;
 		float width = getWidth(), height = getHeight();
+		StringBuilder text;
+		if (width < bounds.width) {
+			float ellipseWidth = font.getBounds("...").width;
+			text = tempText != null ? tempText : (tempText = new StringBuilder());
+			text.setLength(0);
+			if (width > ellipseWidth) {
+				text.append(this.text, 0, font.computeVisibleGlyphs(this.text, 0, this.text.length, width - ellipseWidth));
+				text.append("...");
+			}
+		} else
+			text = this.text;
+
+		Drawable background = style.background;
 		float x = 0, y = 0;
 		if (background != null) {
 			x = background.getLeftWidth();
