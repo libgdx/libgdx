@@ -46,7 +46,7 @@ public class Label extends Widget {
 	private float lastPrefHeight;
 	private boolean sizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
-	private boolean ellipse = true;
+	private boolean ellipse;
 
 	public Label (CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -290,7 +290,7 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** When true the text will be truncated with an ellipse if it does not fit within the width of the label. Default is true. */
+	/** When true the text will be truncated with an ellipse if it does not fit within the width of the label. Default is false. */
 	public void setEllipse (boolean ellipse) {
 		this.ellipse = ellipse;
 	}
