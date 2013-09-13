@@ -13,6 +13,9 @@
       </includes>
       <skipPngCrush>true</skipPngCrush>
     </resource>
+    <resource>
+      <directory>data</directory>
+    </resource>
   </resources>
   <libs>
     <lib>../../../gdx/libs/ios32/libgdx.a</lib>
