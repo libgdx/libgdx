@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
@@ -33,7 +34,7 @@ public interface TextureBinder {
 	 * @param texture the {@link Texture}
 	 * @return the unit the texture was bound to
 	 */
-	public int bind(Texture texture);
+	public int bind(GLTexture texture);
 	
 	/**
 	 * @return the number of binds actually executed since the last call to {@link #resetCounts()}
