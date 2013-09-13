@@ -8,12 +8,21 @@ import org.robovm.cocoatouch.foundation.NSMutableDictionary;
 import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
+import org.robovm.objc.ObjCClass;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class IOSPreferences implements Preferences {
 
+	static {
+		// FIXME: Work around for a bug in RoboVM (https://github.com/robovm/robovm/issues/155).
+		//        These calls make sure NSNumber and NSString have been registered properly with the
+		//        RoboVM Objective-C bridge. Without them the get-methods below may throw ClassCastException.
+		ObjCClass.getByType(NSNumber.class);
+		ObjCClass.getByType(NSString.class);
+	}
+	
 	NSMutableDictionary<NSString, NSObject> nsDictionary;
 	String filePath;
 
