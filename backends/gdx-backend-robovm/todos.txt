@@ -38,8 +38,6 @@ General
 	- OGG support
 - IOSNet
 	- check if that actually works as intended
-- IOSPreferences
-	- bug in RoboVM prevents this from working
 - IOSSound
 	- add support for manipulating an already playing sound instance, seems to work through ALSource
 	- add support for pitch shifting, not sure ObjectAL can do that
