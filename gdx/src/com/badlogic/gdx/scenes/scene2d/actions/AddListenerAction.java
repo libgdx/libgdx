@@ -30,9 +30,9 @@ public class AddListenerAction extends Action {
 	public boolean act (float delta) {
 		Actor actor = (targetActor != null ? targetActor : this.actor);
 		if (capture)
-			targetActor.addCaptureListener(listener);
+			actor.addCaptureListener(listener);
 		else
-			targetActor.addListener(listener);
+			actor.addListener(listener);
 		return true;
 	}
 
