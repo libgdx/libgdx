@@ -96,7 +96,7 @@ public final class Intersector {
      * @param polygon The polygon vertices passed as an array
      * @param point The point
      * @return true if the point is in the polygon */
-   public static boolean isPointInPolygonAux(Array<Vector2> polygon, Vector2 point) {
+   public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
         Vector2 lastVertice = polygon.peek();
         boolean oddNodes = false;
         for (int i=0; i<polygon.size; i++) {
