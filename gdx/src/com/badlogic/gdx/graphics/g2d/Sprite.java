@@ -76,8 +76,8 @@ public class Sprite extends TextureRegion {
 	}
 
 	// Note the region is copied.
-	/** Creates a sprite based on a specific TextureRegion, the new sprite's region is a copy of
-	 * the parameter region - altering one does not affect the other */
+	/** Creates a sprite based on a specific TextureRegion, the new sprite's region is a copy of the parameter region - altering one
+	 * does not affect the other */
 	public Sprite (TextureRegion region) {
 		setRegion(region);
 		setColor(1, 1, 1, 1);
@@ -248,7 +248,7 @@ public class Sprite extends TextureRegion {
 		vertices[X4] += xAmount;
 		vertices[Y4] += yAmount;
 	}
-	
+
 	/** Sets the color used to tint this sprite. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
@@ -258,7 +258,7 @@ public class Sprite extends TextureRegion {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-	
+
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
@@ -287,22 +287,19 @@ public class Sprite extends TextureRegion {
 		dirty = true;
 	}
 
-	/** Sets the rotation of the sprite in degrees.
-	 * Rotation is centered on the origin set in {@link #setOrigin(float, float)} */
+	/** Sets the rotation of the sprite in degrees. Rotation is centered on the origin set in {@link #setOrigin(float, float)} */
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
 		dirty = true;
 	}
-	
-	/**
-	 * @return the rotation of the sprite in degrees
-	 */
-	public float getRotation() {
+
+	/** @return the rotation of the sprite in degrees */
+	public float getRotation () {
 		return rotation;
 	}
 
-	/** Sets the sprite's rotation in degrees relative to the current rotation.
-	 ** Rotation is centered on the origin set in {@link #setOrigin(float, float)} */
+	/** Sets the sprite's rotation in degrees relative to the current rotation. Rotation is centered on the origin set in
+	 * {@link #setOrigin(float, float)} */
 	public void rotate (float degrees) {
 		rotation += degrees;
 		dirty = true;
@@ -340,28 +337,25 @@ public class Sprite extends TextureRegion {
 		}
 	}
 
-	/** Sets the sprite's scale for both X and Y uniformly.
-	 * The sprite scales out from the origin.
-	 * This will not affect the values returned by {@link #getWidth()} and {@link #getHeight()}*/
+	/** Sets the sprite's scale for both X and Y uniformly. The sprite scales out from the origin. This will not affect the values
+	 * returned by {@link #getWidth()} and {@link #getHeight()} */
 	public void setScale (float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;
 		dirty = true;
 	}
 
-	/** Sets the sprite's scale for both X and Y.
-	 * The sprite scales out from the origin.
-	 * This will not affect the values returned by {@link #getWidth()} and {@link #getHeight()}*/
+	/** Sets the sprite's scale for both X and Y. The sprite scales out from the origin. This will not affect the values returned by
+	 * {@link #getWidth()} and {@link #getHeight()} */
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
 		dirty = true;
 	}
 
-	/** Sets the sprite's scale relative to the current scale.
-	 * for example: original scale 2 -> sprite.scale(4) -> final scale 6.
-	 * The sprite scales out from the origin.
-	 * This will not affect the values returned by {@link #getWidth()} and {@link #getHeight()}*/
+	/** Sets the sprite's scale relative to the current scale. for example: original scale 2 -> sprite.scale(4) -> final scale 6.
+	 * The sprite scales out from the origin. This will not affect the values returned by {@link #getWidth()} and
+	 * {@link #getHeight()} */
 	public void scale (float amount) {
 		this.scaleX += amount;
 		this.scaleY += amount;
@@ -506,23 +500,16 @@ public class Sprite extends TextureRegion {
 		return height;
 	}
 
-	/** The origin influences {@link #setPosition(float, float)},
-	 * {@link #setRotation(float)} and the expansion direction of scaling {@link #setScale(float, float)}
-	 * */
+	/** The origin influences {@link #setPosition(float, float)}, {@link #setRotation(float)} and the expansion direction of scaling
+	 * {@link #setScale(float, float)} */
 	public float getOriginX () {
 		return originX;
 	}
 
-	/** The origin influences {@link #setPosition(float, float)},
-	 * {@link #setRotation(float)} and the expansion direction of scaling {@link #setScale(float, float)}
-	 * */
+	/** The origin influences {@link #setPosition(float, float)}, {@link #setRotation(float)} and the expansion direction of scaling
+	 * {@link #setScale(float, float)} */
 	public float getOriginY () {
 		return originY;
-	}
-
-	/** @return sprite rotation in degrees
-	public float getRotation () {
-		return rotation;
 	}
 
 	/** X scale of the sprite, independent of size set by {@link #setSize(float, float)} */
