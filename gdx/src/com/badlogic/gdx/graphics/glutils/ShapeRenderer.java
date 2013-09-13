@@ -739,7 +739,7 @@ public class ShapeRenderer {
 	public void polygon (float[] vertices, int offset, int count) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
-		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have a pair number of vertices.");
+		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
 
 		checkDirty();
 		checkFlush(count);
@@ -780,7 +780,7 @@ public class ShapeRenderer {
 	public void polyline (float[] vertices, int offset, int count) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 4) throw new IllegalArgumentException("Polylines must contain at least 2 points.");
-		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have a pair number of vertices.");
+		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have an even number of vertices.");
 
 		checkDirty();
 		checkFlush(count);
