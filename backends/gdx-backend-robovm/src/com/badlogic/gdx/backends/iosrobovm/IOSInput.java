@@ -10,7 +10,6 @@ import org.robovm.cocoatouch.uikit.UIAlertView;
 import org.robovm.cocoatouch.uikit.UIAlertViewDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertViewStyle;
 import org.robovm.cocoatouch.uikit.UIApplication;
-import org.robovm.cocoatouch.uikit.UIDevice;
 import org.robovm.cocoatouch.uikit.UIEvent;
 import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
 import org.robovm.cocoatouch.uikit.UITextField;
@@ -206,7 +205,6 @@ public class IOSInput implements Input {
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text);
-		//app.uiViewController.add(uiAlertView);
 		uiAlertView.show();
 	}
 	
