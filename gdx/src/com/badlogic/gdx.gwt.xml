@@ -64,11 +64,13 @@
 	<!-- graphics -->		
 		<include name="graphics/Camera.java"/>
 		<include name="graphics/Color.java"/>
+		<include name="graphics/Cubemap.java"/>
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL10.java"/>
 		<include name="graphics/GL11.java"/>
 		<include name="graphics/GL20.java"/>
 		<include name="graphics/GLCommon.java"/>
+		<include name="graphics/GLTexture.java"/>
 		<include name="graphics/Mesh.java"/>
 		<include name="graphics/OrthographicCamera.java"/>
 		<include name="graphics/PerspectiveCamera.java"/>
