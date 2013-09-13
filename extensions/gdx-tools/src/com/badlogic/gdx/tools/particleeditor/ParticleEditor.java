@@ -71,6 +71,7 @@ public class ParticleEditor extends JFrame {
 	OrthographicCamera textCamera;
 	NumericValue pixelsPerMeter;
 	NumericValue zoomLevel;
+	NumericValue deltaMultiplier;
 
 	float pixelsPerMeterPrev;
 	float zoomLevelPrev;
@@ -103,6 +104,7 @@ public class ParticleEditor extends JFrame {
 				editRowsPanel.removeAll();
 				addEditorRow(new NumericPanel(pixelsPerMeter, "Pixels per meter", ""));
 				addEditorRow(new NumericPanel(zoomLevel, "Zoom level", ""));
+				addEditorRow(new NumericPanel(deltaMultiplier, "Delta multiplier", ""));
 
 				rowsPanel.removeAll();
 				ParticleEmitter emitter = getEmitter();
@@ -322,10 +324,14 @@ public class ParticleEditor extends JFrame {
 			zoomLevel = new NumericValue();
 			zoomLevel.setValue(1.0f);
 			zoomLevel.setAlwaysActive(true);
+			
+			deltaMultiplier = new NumericValue();
+			deltaMultiplier.setValue(1.0f);
+			deltaMultiplier.setAlwaysActive(true);
 
 			font = new BitmapFont(Gdx.files.getFileHandle("default.fnt", FileType.Internal), Gdx.files.getFileHandle("default.png",
 				FileType.Internal), true);
-			effectPanel.newEmitter("Untitled", true);
+			effectPanel.newExampleEmitter("Untitled", true);
 			// if (resources.openFile("/editor-bg.png") != null) bgImage = new Image(gl, "/editor-bg.png");
 			Gdx.input.setInputProcessor(this);
 		}
@@ -350,7 +356,7 @@ public class ParticleEditor extends JFrame {
 			int viewWidth = Gdx.graphics.getWidth();
 			int viewHeight = Gdx.graphics.getHeight();
 
-			float delta = Gdx.graphics.getDeltaTime();
+			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
 
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -366,7 +372,7 @@ public class ParticleEditor extends JFrame {
 				zoomLevelPrev = zoomLevel.getValue();
 				pixelsPerMeterPrev = pixelsPerMeter.getValue();
 			}
-
+			
 			spriteBatch.setProjectionMatrix(worldCamera.combined);
 
 			spriteBatch.begin();
