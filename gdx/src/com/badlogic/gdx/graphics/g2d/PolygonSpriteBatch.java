@@ -480,8 +480,6 @@ public class PolygonSpriteBatch {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 			if (customShader != null) {
-				customShader.setUniformMatrix("u_proj", projectionMatrix);
-				customShader.setUniformMatrix("u_trans", transformMatrix);
 				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
 				customShader.setUniformi("u_texture", 0);
 			} else {
