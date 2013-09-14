@@ -251,6 +251,8 @@ public class Model implements Disposable {
 			result.set(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
 		if (mtl.emissive != null)
 			result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
+		if (mtl.reflection != null)
+			result.set(new ColorAttribute(ColorAttribute.Reflection, mtl.reflection));
 		if (mtl.shininess > 0f)
 			result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
 		if (mtl.opacity != 1.f)

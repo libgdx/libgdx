@@ -17,6 +17,7 @@ public class ModelMaterial {
 	public Color diffuse;
 	public Color specular;
 	public Color emissive;
+	public Color reflection;
 	
 	public float shininess;
 	public float opacity = 1.f;

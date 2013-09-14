@@ -10,15 +10,25 @@ public class ColorAttribute extends Material.Attribute {
     public final static String SpecularAlias = "specularColor";
     public final static long Specular = register(SpecularAlias);
     public final static String AmbientAlias = "ambientColor";
-    public static final long Ambient = register("ambientColor");
+    public static final long Ambient = register(AmbientAlias);
     public final static String EmissiveAlias = "emissiveColor";
-    public static final long Emissive = register("emissiveColor");
+    public static final long Emissive = register(EmissiveAlias);
+    public final static String ReflectionAlias = "reflectionColor";
+    public static final long Reflection = register(ReflectionAlias);
 
-    protected static long Mask = Ambient | Diffuse | Specular | Emissive;
+    protected static long Mask = Ambient | Diffuse | Specular | Emissive | Reflection;
 
     public final static boolean is(final long mask) {
         return (mask & Mask) != 0;
     }
+    
+    public final static ColorAttribute createAmbient(final Color color) {
+       return new ColorAttribute(Ambient, color);
+   }
+
+   public final static ColorAttribute createAmbient(float r, float g, float b, float a) {
+       return new ColorAttribute(Ambient, r, g, b, a);
+   }
 
     public final static ColorAttribute createDiffuse(final Color color) {
         return new ColorAttribute(Diffuse, color);
@@ -35,6 +45,14 @@ public class ColorAttribute extends Material.Attribute {
     public final static ColorAttribute createSpecular(float r, float g, float b, float a) {
         return new ColorAttribute(Specular, r, g, b, a);
     }
+    
+    public final static ColorAttribute createReflection(final Color color) {
+       return new ColorAttribute(Reflection, color);
+   }
+
+   public final static ColorAttribute createReflection(float r, float g, float b, float a) {
+       return new ColorAttribute(Reflection, r, g, b, a);
+   }
 
     public final Color color = new Color();
 
