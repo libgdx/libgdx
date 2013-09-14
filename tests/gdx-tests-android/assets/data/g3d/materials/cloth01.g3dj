@@ -1,0 +1,26 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "cloth_01", 
+			"diffuse": [ 1.000000,  1.000000,  1.000000], 
+			"specular": [ 0.500000,  0.500000,  0.500000], 
+			"textures": [
+				{
+					"id": "cloth_diffuse_01", 
+					"filename": "cloth_diffuse_01.png", 
+					"type": "DIFFUSE"
+				}, 
+				{
+					"id": "cloth_normal_01", 
+					"filename": "cloth_normal_01.png", 
+					"type": "NORMAL"
+				}
+			]
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}
