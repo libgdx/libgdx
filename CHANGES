@@ -1,4 +1,5 @@
 [0.9.9]
+- MipMapGenerator methods now don't take disposePixmap argument anymore
 - added GLTexture, base class for all textures, encapsulates target (2d, cubemap, ...)
 - added CubeMap, 6 sided texture
 - changed TextureData#consumeCompressedData, takes target now

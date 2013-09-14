@@ -233,28 +233,28 @@ public abstract class GLTexture implements Disposable {
 		}
 		
 		Pixmap pixmap = data.consumePixmap();
-		boolean disposePixmap = false;
+		boolean disposePixmap = data.disposePixmap();
 		if (data.getFormat() != pixmap.getFormat()) {
 			Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data.getFormat());
 			Blending blend = Pixmap.getBlending();
 			Pixmap.setBlending(Blending.None);
 			tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
 			Pixmap.setBlending(blend);
+			if(data.disposePixmap()) {
+				pixmap.dispose();
+			}
 			pixmap = tmp;
 			disposePixmap = true;
 		}
 
 		Gdx.gl.glPixelStorei(GL10.GL_UNPACK_ALIGNMENT, 1);
 		if (data.useMipMaps()) {
-			MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight(), disposePixmap);
+			MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
 		} else {
 			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-			if (disposePixmap) {
-				pixmap.dispose();
-			}
 		}
-		if (data.disposePixmap())
+		if (disposePixmap)
 			pixmap.dispose();
 	}
 }

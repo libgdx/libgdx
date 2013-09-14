@@ -78,7 +78,7 @@ public class ETC1TextureData implements TextureData {
 			Pixmap pixmap = ETC1.decodeImage(data, Format.RGB565);
 			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-			if (useMipMaps) MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight(), false);
+			if (useMipMaps) MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
 			pixmap.dispose();
 			useMipMaps = false;
 		} else {
