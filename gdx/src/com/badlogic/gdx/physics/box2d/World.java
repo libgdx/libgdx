@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
@@ -311,12 +309,12 @@ b2ContactFilter defaultFilter;
 	public void destroyBody (Body body) {
 		body.setUserData(null);
 		this.bodies.remove(body.addr);
-		List<Fixture> fixtureList = body.getFixtureList();
-		while(!fixtureList.isEmpty()) {
-			this.fixtures.remove(fixtureList.remove(0).addr).setUserData(null);
+		Array<Fixture> fixtureList = body.getFixtureList();
+		while(fixtureList.size > 0) {
+			this.fixtures.remove(fixtureList.removeIndex(0).addr).setUserData(null);
 		}
-		List<JointEdge> jointList = body.getJointList();
-		while (!jointList.isEmpty())
+		Array<JointEdge> jointList = body.getJointList();
+		while (jointList.size > 0)
 			destroyJoint(body.getJointList().get(0).joint);
 		jniDestroyBody(addr, body.addr);
 		freeBodies.free(body);
@@ -590,8 +588,8 @@ b2ContactFilter defaultFilter;
 	public void destroyJoint (Joint joint) {
 		joint.setUserData(null);
 		joints.remove(joint.addr);
-		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
-		joint.jointEdgeB.other.joints.remove(joint.jointEdgeA);
+		joint.jointEdgeA.other.joints.removeValue(joint.jointEdgeB, true);
+		joint.jointEdgeB.other.joints.removeValue(joint.jointEdgeA, true);
 		jniDestroyJoint(addr, joint.addr);
 	}
 
@@ -797,14 +795,14 @@ b2ContactFilter defaultFilter;
 // b2Contact* GetContactList();
 
 	private long[] contactAddrs = new long[200];
-	private final ArrayList<Contact> contacts = new ArrayList<Contact>();
-	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>();
+	private final Array<Contact> contacts = new Array<Contact>();
+	private final Array<Contact> freeContacts = new Array<Contact>();
 
 	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
 	 * returned list will have O(1) access times when using indexing. contacts are created and destroyed in the middle of a time
 	 * step. Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
-	public List<Contact> getContactList () {
+	public Array<Contact> getContactList () {
 		int numContacts = getContactCount();
 		if (numContacts > contactAddrs.length) {
 			int newSize = 2 * numContacts;
@@ -812,8 +810,8 @@ b2ContactFilter defaultFilter;
 			contacts.ensureCapacity(newSize);
 			freeContacts.ensureCapacity(newSize);
 		}
-		if (numContacts > freeContacts.size()) {
-			int freeConts = freeContacts.size();
+		if (numContacts > freeContacts.size) {
+			int freeConts = freeContacts.size;
 			for (int i = 0; i < numContacts - freeConts; i++)
 				freeContacts.add(new Contact(this, 0));
 		}
