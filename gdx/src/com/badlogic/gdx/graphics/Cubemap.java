@@ -12,16 +12,27 @@ import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** Wraps a standard OpenGL ES Cubemap. Must be disposed when it is no longer used.
+ * @author Xoppa */
 public class Cubemap extends GLTexture {
+	/** Enum to identify each side of a Cubemap */
 	public enum CubemapSide {
+		/** The positive X and first side of the cubemap */ 
 		PositiveX(0, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_X),
+		/** The negative X and second side of the cubemap */
 		NegativeX(1, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_X),
+		/** The positive Y and third side of the cubemap */
 		PositiveY(2, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Y),
+		/** The negative Y and fourth side of the cubemap */
 		NegativeY(3, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Y),
+		/** The positive Z and fifth side of the cubemap */
 		PositiveZ(4, GL20.GL_TEXTURE_CUBE_MAP_POSITIVE_Z),
+		/** The negative Z and sixth side of the cubemap */
 		NegativeZ(5, GL20.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z);
 
+		/** The zero based index of the side in the cubemap */
 		public final int index;
+		/** The OpenGL target (used for glTexImage2D) of the side. */
 		public final int glEnum;
 
 		CubemapSide (int index, int glEnum) {
@@ -29,6 +40,7 @@ public class Cubemap extends GLTexture {
 			this.glEnum = glEnum;
 		}
 
+		/** @return The OpenGL target (used for glTexImage2D) of the side. */
 		public int getGLEnum () {
 			return glEnum;
 		}
@@ -36,10 +48,18 @@ public class Cubemap extends GLTexture {
 	
 	protected final TextureData[] data = new TextureData[6];
 	
+	/** Construct an empty Cubemap. Use the load(...) methods to set the texture of each side. Every side of the cubemap must be
+	 * set before it can be used. */
+	public Cubemap () {
+		this((TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null, (TextureData)null);
+	}
+	
+	/** Construct a Cubemap with the specified texture files for the sides, does not generate mipmaps. */
 	public Cubemap (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY, FileHandle positiveZ, FileHandle negativeZ) {
 		this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
 	}
 
+	/** Construct a Cubemap with the specified texture files for the sides, optionally generating mipmaps. */
 	public Cubemap (FileHandle positiveX, FileHandle negativeX, FileHandle positiveY, FileHandle negativeY, FileHandle positiveZ, FileHandle negativeZ, boolean useMipMaps) {
 		this(createTextureData(positiveX, useMipMaps), 
 			createTextureData(negativeX, useMipMaps),
@@ -49,10 +69,12 @@ public class Cubemap extends GLTexture {
 			createTextureData(negativeZ, useMipMaps));
 	}
 	
+	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, does not generate mipmaps. */
 	public Cubemap (Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ) {
 		this(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ, false);
 	}
 	
+	/** Construct a Cubemap with the specified {@link Pixmap}s for the sides, optionally generating mipmaps. */
 	public Cubemap (Pixmap positiveX, Pixmap negativeX, Pixmap positiveY, Pixmap negativeY, Pixmap positiveZ, Pixmap negativeZ, boolean useMipMaps) {
 		this(positiveX == null ? null : new PixmapTextureData(positiveX, null, useMipMaps, false),
 			negativeX == null ? null : new PixmapTextureData(negativeX, null, useMipMaps, false),
@@ -62,6 +84,7 @@ public class Cubemap extends GLTexture {
 			negativeZ == null? null : new PixmapTextureData(negativeZ, null, useMipMaps, false));
 	}
 	
+	/** Construct a Cubemap with {@link Pixmap}s for each side of the specified size. */
 	public Cubemap (int width, int height, int depth, Format format) {
 		this(new PixmapTextureData(new Pixmap(depth, height, format), null, false, true),
 			new PixmapTextureData(new Pixmap(depth, height, format), null, false, true),
@@ -71,6 +94,7 @@ public class Cubemap extends GLTexture {
 			new PixmapTextureData(new Pixmap(width, height, format), null, false, true));
 	}
 
+	/** Construct a Cubemap with the specified {@link TextureData}'s for the sides */
 	public Cubemap (TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY, TextureData positiveZ, TextureData negativeZ) {
 		super(GL20.GL_TEXTURE_CUBE_MAP);
 		minFilter = TextureFilter.Nearest;
@@ -80,16 +104,17 @@ public class Cubemap extends GLTexture {
 		load(positiveX, negativeX, positiveY, negativeY, positiveZ, negativeZ);
 	}
 	
+	/** Sets the sides of this cubemap to the specified {@link TextureData}. */
 	public void load (TextureData positiveX, TextureData negativeX, TextureData positiveY, TextureData negativeY, TextureData positiveZ, TextureData negativeZ) {
 		bind();
 		unsafeSetFilter(minFilter, magFilter, true);
 		unsafeSetWrap(uWrap, vWrap, true);
-		load(CubemapSide.PositiveX, positiveX);
-		load(CubemapSide.NegativeX, negativeX);
-		load(CubemapSide.PositiveY, positiveY);
-		load(CubemapSide.NegativeY, negativeY);
-		load(CubemapSide.PositiveZ, positiveZ);
-		load(CubemapSide.NegativeZ, negativeZ);
+		unsafeLoad(CubemapSide.PositiveX, positiveX);
+		unsafeLoad(CubemapSide.NegativeX, negativeX);
+		unsafeLoad(CubemapSide.PositiveY, positiveY);
+		unsafeLoad(CubemapSide.NegativeY, negativeY);
+		unsafeLoad(CubemapSide.PositiveZ, positiveZ);
+		unsafeLoad(CubemapSide.NegativeZ, negativeZ);
 		Gdx.gl.glBindTexture(glTarget, 0);
 	}
 	
@@ -113,7 +138,61 @@ public class Cubemap extends GLTexture {
 			data[CubemapSide.NegativeZ.index]);
 	}
 	
+	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side,
+	 * overwriting any previous data set to that side. Does not generate mipmaps.
+	 * This method binds the Cubemap to the active unit! 
+	 * @param side The {@link CubemapSide}
+	 * @param file The texture {@link FileHandle} */
+	public void load (CubemapSide side, FileHandle file) {
+		load(side, file, false);
+	}
+	
+	/** Loads the texture specified using the {@link FileHandle} and sets it to specified side,
+	 * overwriting any previous data set to that side. 
+	 * This method binds the Cubemap to the active unit! 
+	 * @param side The {@link CubemapSide}
+	 * @param file The texture {@link FileHandle}
+	 * @param useMipMaps True to generate mipmaps. */
+	public void load (CubemapSide side, FileHandle file, boolean useMipMaps) {
+		load(side, createTextureData(file, useMipMaps));
+	}
+	
+	/** Sets the specified side of this cubemap to the specified {@link Pixmap}, overwriting any previous
+	 * data set to that side. Does not generate mipmaps.
+	 * This method binds the Cubemap to the active unit! 
+	 * @param side The {@link CubemapSide}
+	 * @param pixmap The {@link Pixmap} */
+	public void load (CubemapSide side, Pixmap pixmap) {
+		load(side, pixmap == null ? null : new PixmapTextureData(pixmap, null, false, false));
+	}
+
+	/** Sets the specified side of this cubemap to the specified {@link Pixmap}, overwriting any previous
+	 * data set to that side. 
+	 * This method binds the Cubemap to the active unit! 
+	 * @param side The {@link CubemapSide}
+	 * @param pixmap The {@link Pixmap}
+	 * @param useMipMaps True to generate mipmaps. */
+	public void load (CubemapSide side, Pixmap pixmap, boolean useMipMaps) {
+		load(side, pixmap == null ? null : new PixmapTextureData(pixmap, null, useMipMaps, false));
+	}
+	
+	/** Sets the specified side of this cubemap to the specified {@link TextureData}, overwriting any previous
+	 * data set to that side. 
+	 * This method binds the Cubemap to the active unit! 
+	 * @param side The {@link CubemapSide} 
+	 * @param data The {@link TextureData} */
 	public void load (CubemapSide side, TextureData data) {
+		bind();
+		unsafeLoad(side, data);
+		Gdx.gl.glBindTexture(glTarget, 0);
+	}
+	
+	/** Sets the specified side of this cubemap to the specified {@link TextureData}, overwriting any previous
+	 * data set to that side. 
+	 * Assumes that the cubemap is bound and active! See also: {@link #load(CubemapSide, TextureData)} 
+	 * @param side The {@link CubemapSide} 
+	 * @param data The {@link TextureData} */
+	protected void unsafeLoad (CubemapSide side, TextureData data) {
 		final int idx = side.index;
 		if (this.data[idx] != null && data != null && data.isManaged() != this.data[idx].isManaged())
 			throw new GdxRuntimeException("New data must have the same managed status as the old data");
@@ -123,6 +202,15 @@ public class Cubemap extends GLTexture {
 		this.data[idx] = data;
 	}
 	
+	/** @return True if all sides of this cubemap are set, false otherwise. */
+	public boolean isComplete() {
+		for (int i = 0; i < data.length; i++)
+			if (data[i] == null)
+				return false;
+		return true;
+	}
+	
+	/** @return The {@link TextureData} for the specified side, can be null if the cubemap is incomplete. */
 	public TextureData getTextureData (CubemapSide side) {
 		return data[side.index];
 	}
