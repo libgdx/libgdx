@@ -1,6 +1,8 @@
 
 package com.badlogic.gdx.utils.pathfinding;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BinaryHeap;
 import com.badlogic.gdx.utils.BinaryHeap.Node;
 
@@ -9,171 +11,115 @@ import com.badlogic.gdx.utils.BinaryHeap.Node;
  * Original implementation by Kevin Glass from Slick2D.
  * </p>
  * @author hneuer */
-public class AStarPathFinder implements PathFindingContext, PathFinder {
-	/** The default heuristic calculator providing the Manhattan distance. */
-	public static final AStarHeuristicCalculator MANHATTAN = new AStarHeuristicCalculator() {
-		@Override
-		public float getCost (TileBasedMap map, Object mover, int x, int y, int tx, int ty) {
-			return Math.abs(tx - x) + Math.abs(ty - y);
-		}
-	};
-
-	/** A heuristic calculator providing the closest squared distance. */
-	public static final AStarHeuristicCalculator CLOSEST_SQUARED = new AStarHeuristicCalculator() {
-		@Override
-		public float getCost (TileBasedMap map, Object mover, int x, int y, int tx, int ty) {
-			int dx = tx - x;
-			int dy = ty - y;
-			return dx * dx + dy * dy;
-		}
-	};
-
-	/** A heuristic calculator providing the closest distance. */
-	public static final AStarHeuristicCalculator CLOSEST = new AStarHeuristicCalculator() {
-		@Override
-		public float getCost (TileBasedMap map, Object mover, int x, int y, int tx, int ty) {
-			return (float)Math.sqrt(CLOSEST_SQUARED.getCost(map, mover, x, y, tx, ty));
-		}
-	};
-
+public class AStarPathFinder implements NavContext, PathFinder {
 	/** The set of nodes that we do not yet consider fully searched */
-	private final BinaryHeap<SearchNode> openList = new BinaryHeap<SearchNode>();
-	/** The map being searched */
-	private final TileBasedMap map;
-	/** Map width in tiles */
-	private final int mapWidth;
-	/** Map height in tiles */
-	private final int mapHeight;
+	private final BinaryHeap<AStarAlgoData> openList = new BinaryHeap<AStarAlgoData>();
+	/** The graph being searched */
+	private final NavGraph graph;
 	/** The maximum depth of search we're willing to accept before giving up */
 	private final int maxSearchDistance;
-	/** The complete set of nodes across the map */
-	private final SearchNode[][] nodes;
-	/** True if we allow diagonal movement */
-	private final boolean allowDiagMovement;
 	/** The heuristic we're applying to determine which nodes to search first */
 	private final AStarHeuristicCalculator heuristicCalculator;
 
-	/** The node we're currently searching from */
-	private SearchNode currentNode;
 	/** The mover going through the path */
 	private Object mover;
-	/** The x coordinate of the source tile we're moving from */
-	private int sourceX;
-	/** The y coordinate of the source tile we're moving from */
-	private int sourceY;
 	/** The distance searched so far */
 	private int distance;
-
-	/** Create a path finder with the default heuristic - Manhattan distance to target. */
-	public AStarPathFinder (TileBasedMap map, int maxSearchDistance, boolean allowDiagMovement) {
-		this(map, maxSearchDistance, allowDiagMovement, MANHATTAN);
-	}
+	/** Unique ID for each search run. Used to mark nodes. */
+	private int checkedID;
+	/** The current source node in the context (part of the NavContext implementation) */
+	private NavNode sourceNodeInContext;
 
 	/** Create a path finder with a specific heuristic. */
-	public AStarPathFinder (TileBasedMap map, int maxSearchDistance, boolean allowDiagMovement, AStarHeuristicCalculator heuristic) {
+	public AStarPathFinder (NavGraph graph, int maxSearchDistance, AStarHeuristicCalculator heuristic) {
 		this.heuristicCalculator = heuristic;
-		this.map = map;
-		this.mapWidth = map.getWidthInTiles();
-		this.mapHeight = map.getHeightInTiles();
+		this.graph = graph;
 		this.maxSearchDistance = maxSearchDistance;
-		this.allowDiagMovement = allowDiagMovement;
-
-		nodes = new SearchNode[mapWidth][mapHeight];
-		for (int x = 0, w = mapWidth; x < w; x++)
-			for (int y = 0, h = mapHeight; y < h; y++)
-				nodes[x][y] = new SearchNode(x, y);
 	}
 
 	@Override
-	public boolean findPath (Object mover, int sx, int sy, int tx, int ty, NavPath out) {
+	public boolean findPath (Object mover, NavNode startNode, NavNode targetNode, NavPath out) {
 		this.mover = mover;
-		currentNode = null;
 		distance = 0;
 
-		if (isBlocked(tx, ty, tx, ty)) return false;
+		if (isBlocked(targetNode, targetNode)) return false;
 
-		for (int x = 0, w = mapWidth; x < w; x++)
-			for (int y = 0, h = mapHeight; y < h; y++)
-				nodes[x][y].reset();
+		checkedID++;
+		if (checkedID < 0) checkedID = 1;
 
-		SearchNode targetNode = nodes[tx][ty];
+		BinaryHeap<AStarAlgoData> openList = this.openList;
+		AStarHeuristicCalculator heuristicCalculator = this.heuristicCalculator;
+		int maxSearchDistance = this.maxSearchDistance;
+
 		openList.clear();
-		addToOpenList(nodes[sx][sy]);
+		addToOpenList(getAlgoData(startNode));
 
+		AStarAlgoData currentData = null;
 		int maxDepth = 0;
 		while (maxDepth < maxSearchDistance && openList.size != 0) {
-			int lastX = sx;
-			int lastY = sy;
-			if (currentNode != null) {
-				lastX = currentNode.x;
-				lastY = currentNode.y;
-			}
+			AStarAlgoData lastData = currentData;
+			currentData = openList.pop();
+			currentData.open = false;
+			distance = currentData.depth;
+			currentData.closed = true;
 
-			currentNode = openList.pop();
-			currentNode.open = false;
-			distance = currentNode.depth;
-			currentNode.closed = true;
+			if (currentData.node == targetNode && lastData != null && !isBlocked(lastData.node, targetNode)) break;
 
-			if (currentNode == targetNode && !isBlocked(lastX, lastY, tx, ty)) break;
-
-			int currentX = currentNode.x;
-			int currentY = currentNode.y;
-			float currentCost = currentNode.cost;
-			for (int dx = -1; dx < 2; dx++)
-				for (int dy = -1; dy < 2; dy++) {
-					if ((dx == 0 && dy == 0) || (!allowDiagMovement && dx != 0 && dy != 0)) continue;
-					int neighborX = currentX + dx;
-					int neighborY = currentY + dy;
-					if (neighborX < 0 || neighborY < 0 || neighborX >= mapWidth || neighborY >= mapHeight) continue;
-					if (!isBlocked(currentX, currentY, neighborX, neighborY)) {
-						float nextStepCost = currentCost + getMovementCost(currentX, currentY, neighborX, neighborY);
-						SearchNode neighbor = nodes[neighborX][neighborY];
-						if (nextStepCost < neighbor.cost) {
-							if (neighbor.open) {
-								openList.remove(neighbor);
-								neighbor.open = false;
-							}
-							neighbor.closed = false;
+			float currentCost = currentData.cost;
+			for (NavNode neighborNode : currentData.node.neighbors) {
+				AStarAlgoData neighborData = getAlgoData(neighborNode);
+				if (!isBlocked(currentData.node, neighborNode)) {
+					sourceNodeInContext = startNode;
+					float nextStepCost = currentCost + graph.getCost(this, neighborNode);
+					if (nextStepCost < neighborData.cost) {
+						if (neighborData.open) {
+							openList.remove(neighborData);
+							neighborData.open = false;
 						}
-						if (!neighbor.open && !neighbor.closed) {
-							neighbor.cost = nextStepCost;
-							neighbor.heuristic = heuristicCalculator.getCost(map, mover, neighborX, neighborY, tx, ty);
-							maxDepth = Math.max(maxDepth, neighbor.setParent(currentNode));
-							addToOpenList(neighbor);
-						}
+						neighborData.closed = false;
+					}
+					if (!neighborData.open && !neighborData.closed) {
+						neighborData.cost = nextStepCost;
+						neighborData.heuristic = heuristicCalculator.getCost(this, mover, neighborNode, targetNode);
+						neighborData.depth = currentData.depth + 1;
+						neighborNode.parent = currentData.node;
+						maxDepth = Math.max(maxDepth, neighborData.depth);
+						addToOpenList(neighborData);
 					}
 				}
+			}
 		}
 
 		boolean pathFound = targetNode.parent != null;
-		if (pathFound) {
-			out.clear();
-			SearchNode startNode = nodes[sx][sy];
-			while (targetNode != startNode) {
-				out.appendStep(targetNode.x, targetNode.y);
-				targetNode = targetNode.parent;
-			}
-			out.appendStep(sx, sy);
-			out.reverse();
-		}
+		if (pathFound) out.fill(startNode, targetNode);
 		return pathFound;
 	}
 
-	private float getMovementCost (int sx, int sy, int tx, int ty) {
-		sourceX = sx;
-		sourceY = sy;
-		return map.getCost(this, tx, ty);
+	/** Get the AStar data from the given node and reset it if it has not been used in this run. If it does not exist at all (node
+	 * is reached the first time in the very first run) create a new one. */
+	private AStarAlgoData getAlgoData (NavNode node) {
+		AStarAlgoData ad = (AStarAlgoData)node.algoData;
+		if (node.algoData == null) {
+			ad = new AStarAlgoData(node);
+			node.algoData = ad;
+		}
+
+		if (ad.checkedID != checkedID) {
+			ad.reset();
+			ad.checkedID = checkedID;
+		}
+		return ad;
 	}
 
-	private void addToOpenList (SearchNode node) {
+	/** Ask the graph if the way from start to target node is blocked. */
+	private boolean isBlocked (NavNode startNode, NavNode targetNode) {
+		sourceNodeInContext = startNode;
+		return graph.blocked(this, targetNode);
+	}
+
+	private void addToOpenList (AStarAlgoData node) {
 		openList.add(node, node.cost + node.heuristic);
 		node.open = true;
-	}
-
-	private boolean isBlocked (int sx, int sy, int tx, int ty) {
-		sourceX = sx;
-		sourceY = sy;
-		return map.blocked(this, tx, ty);
 	}
 
 	@Override
@@ -182,83 +128,48 @@ public class AStarPathFinder implements PathFindingContext, PathFinder {
 	}
 
 	@Override
-	public int getSearchDistance () {
+	public float getSearchDistance () {
 		return distance;
 	}
 
 	@Override
-	public int getSourceX () {
-		return sourceX;
+	public NavNode getSourceNode () {
+		return sourceNodeInContext;
 	}
 
-	@Override
-	public int getSourceY () {
-		return sourceY;
+	/** The description of a class providing a cost for a given tile based on a target location and entity being moved. This
+	 * heuristic controls what priority is placed on different tiles during the search for a path */
+	public interface AStarHeuristicCalculator<N extends NavNode> {
+		public float getCost (NavContext<N> map, Object mover, N startNode, N targetNode);
 	}
 
-	/** A single node in the search graph */
-	class SearchNode extends Node {
-		/** The x coordinate of the node */
-		final int x;
-		/** The y coordinate of the node */
-		final int y;
-		/** The path cost for this node */
-		float cost;
-		/** The parent of this node, how we reached it in the search */
-		SearchNode parent;
-		/** The heuristic cost of this node */
+	class AStarAlgoData extends BinaryHeap.Node {
+		/** Backlink to the node. */
+		final NavNode node;
+		/** Heuristic from this node to the target. */
 		float heuristic;
-		/** The search depth of this node */
+		/** Search depth to reach this node. */
 		int depth;
+		/** ID of the current search. */
+		int checkedID;
+		/** This node's cost. */
+		float cost;
 		/** In the open list */
 		boolean open;
 		/** In the closed list */
 		boolean closed;
 
-		/** Create a new node for a given position.
-		 * 
-		 * @param x The x coordinate of the node
-		 * @param y The y coordinate of the node */
-		SearchNode (int x, int y) {
+		public AStarAlgoData (NavNode node) {
 			super(0);
-			this.x = x;
-			this.y = y;
+			this.node = node;
 		}
 
-		/** Set the parent of this node and calculates the node's search depth.
-		 * 
-		 * @param parent The parent node which lead us to this node
-		 * @return The depth we have now reached in searching */
-		int setParent (SearchNode parent) {
-			this.parent = parent;
-			depth = parent.depth + 1;
-			return depth;
-		}
-
-		/** Reset the state of this node */
 		void reset () {
 			closed = false;
 			open = false;
 			cost = 0;
 			depth = 0;
-			parent = null;
+			node.parent = null;
 		}
-	}
-
-	/** The description of a class providing a cost for a given tile based on a target location and entity being moved. This
-	 * heuristic controls what priority is placed on different tiles during the search for a path */
-	public interface AStarHeuristicCalculator {
-
-		/** Get the additional heuristic cost of the given tile. This controls the order in which tiles are searched while attempting
-		 * to find a path to the target location. The lower the cost the more likely the tile will be searched.
-		 * 
-		 * @param map The map on which the path is being found
-		 * @param mover The entity that is moving along the path
-		 * @param x The x coordinate of the tile being evaluated
-		 * @param y The y coordinate of the tile being evaluated
-		 * @param tx The x coordinate of the target location
-		 * @param ty The y coordinate of the target location
-		 * @return The cost associated with the given tile */
-		public float getCost (TileBasedMap map, Object mover, int x, int y, int tx, int ty);
 	}
 }
