@@ -21,8 +21,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -38,6 +36,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Array;
 
 /** <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program useable with OpenGL ES 2.0.
@@ -85,7 +84,7 @@ public class ShaderProgram implements Disposable {
 	public static boolean pedantic = true;
 
 	/** the list of currently available shaders **/
-	private final static ObjectMap<Application, List<ShaderProgram>> shaders = new ObjectMap<Application, List<ShaderProgram>>();
+	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
 
 	/** the log **/
 	private String log = "";
@@ -759,7 +758,7 @@ public class ShaderProgram implements Disposable {
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
-		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).remove(this);
+		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).removeValue(this, true);
 	}
 
 	/** Disables the vertex attribute with the given name
@@ -804,8 +803,8 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private void addManagedShader (Application app, ShaderProgram shaderProgram) {
-		List<ShaderProgram> managedResources = shaders.get(app);
-		if (managedResources == null) managedResources = new ArrayList<ShaderProgram>();
+		Array<ShaderProgram> managedResources = shaders.get(app);
+		if (managedResources == null) managedResources = new Array<ShaderProgram>();
 		managedResources.add(shaderProgram);
 		shaders.put(app, managedResources);
 	}
@@ -815,12 +814,12 @@ public class ShaderProgram implements Disposable {
 	public static void invalidateAllShaderPrograms (Application app) {
 		if (Gdx.graphics.getGL20() == null) return;
 
-		List<ShaderProgram> shaderList = shaders.get(app);
-		if (shaderList == null) return;
+		Array<ShaderProgram> shaderArray = shaders.get(app);
+		if (shaderArray == null) return;
 
-		for (int i = 0; i < shaderList.size(); i++) {
-			shaderList.get(i).invalidated = true;
-			shaderList.get(i).checkManaged();
+		for (int i = 0; i < shaderArray.size; i++) {
+			shaderArray.get(i).invalidated = true;
+			shaderArray.get(i).checkManaged();
 		}
 	}
 
@@ -833,7 +832,7 @@ public class ShaderProgram implements Disposable {
 		int i = 0;
 		builder.append("Managed shaders/app: { ");
 		for (Application app : shaders.keys()) {
-			builder.append(shaders.get(app).size());
+			builder.append(shaders.get(app).size);
 			builder.append(" ");
 		}
 		builder.append("}");
