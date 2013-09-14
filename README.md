@@ -1,6 +1,6 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
-*We just migrated our Wiki to Github, so it's a little bit rough, we'll fix things up in the next few days*
+*We just migrated our Wiki to Github, so it's a little bit rough, we'll fix things up in the next days*
 
 Libgdx is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
