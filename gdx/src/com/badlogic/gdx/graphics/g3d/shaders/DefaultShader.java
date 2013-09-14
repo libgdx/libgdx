@@ -29,6 +29,17 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultShader extends BaseShader {
+	public static class Config {
+		public boolean lighting;
+		public boolean environmentCubemap;
+		public boolean shadowMap;
+		public boolean fog;
+		public int numDirectional;
+		public int numPoint;
+		public int numSpot;
+		public int numBones;
+	}
+	
 	public static class Inputs {
 		public final static Uniform projTrans = new Uniform("u_projTrans");
 		public final static Uniform viewTrans = new Uniform("u_viewTrans");
@@ -49,12 +60,15 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform diffuseTexture = new Uniform("u_diffuseTexture", TextureAttribute.Diffuse);
 		public final static Uniform specularColor = new Uniform("u_specularColor", ColorAttribute.Specular);
 		public final static Uniform specularTexture = new Uniform("u_specularTexture", TextureAttribute.Specular);
+		public final static Uniform emissiveColor = new Uniform("u_emissiveColor", ColorAttribute.Emissive);
+		public final static Uniform reflectionColor = new Uniform("u_reflectionColor", ColorAttribute.Reflection);
 		public final static Uniform normalTexture	= new Uniform("u_normalTexture", TextureAttribute.Normal);
 		public final static Uniform alphaTest = new Uniform("u_alphaTest", FloatAttribute.AlphaTest);
 		
 		public final static Uniform ambientCube = new Uniform("u_ambientCubemap");
 		public final static Uniform dirLights = new Uniform("u_dirLights");
 		public final static Uniform pointLights = new Uniform("u_pointLights");
+		public final static Uniform environmentCubemap = new Uniform("u_environmentCubemap");
 	}
 	
 	public static class Setters {
@@ -169,6 +183,18 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, unit);
 			}
 		};
+		public final static Setter emissiveColor = new Setter() {
+			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+				shader.set(inputID, ((ColorAttribute)(renderable.material.get(ColorAttribute.Emissive))).color);
+			}
+		};
+		public final static Setter reflectionColor = new Setter() {
+			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+				shader.set(inputID, ((ColorAttribute)(renderable.material.get(ColorAttribute.Reflection))).color);
+			}
+		};
 		public final static Setter normalTexture = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
 			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
@@ -206,6 +232,15 @@ public class DefaultShader extends BaseShader {
 				}
 			}
 		}
+		public final static Setter environmentCubemap = new Setter() {
+			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+				if (renderable.lights != null && renderable.lights.environmentCubemap != null) {
+					final int unit = shader.context.textureBinder.bind(renderable.lights.environmentCubemap);
+					shader.set(inputID, unit);
+				}
+			}
+		};
 	}
 
 	private static String defaultVertexShader = null;
@@ -252,10 +287,13 @@ public class DefaultShader extends BaseShader {
 	public final int u_diffuseTexture;
 	public final int u_specularColor;
 	public final int u_specularTexture;
+	public final int u_emissiveColor;
+	public final int u_reflectionColor;
 	public final int u_normalTexture;
 	public final int u_alphaTest;
 	// Lighting uniforms
 	protected final int u_ambientCubemap;
+	protected final int u_environmentCubemap;
 	protected final int u_dirLights0color			= register(new Uniform("u_dirLights[0].color"));
 	protected final int u_dirLights0direction		= register(new Uniform("u_dirLights[0].direction"));
 	protected final int u_dirLights1color			= register(new Uniform("u_dirLights[1].color"));
@@ -279,9 +317,10 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
 
-	protected boolean lighting;
-	protected boolean shadowMap;
-	protected boolean fog;
+	protected final boolean lighting;
+	protected final boolean environmentCubemap;
+	protected final boolean shadowMap;
+	protected final boolean fog;
 	protected final AmbientCubemap ambientCubemap = new AmbientCubemap();
 	protected final DirectionalLight directionalLights[];
 	protected final PointLight pointLights[];
@@ -293,22 +332,23 @@ public class DefaultShader extends BaseShader {
 	/** Material attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
 	
-	public DefaultShader(final Renderable renderable, boolean lighting, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), renderable, lighting, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final Renderable renderable, boolean lighting, boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(getDefaultVertexShader(), getDefaultFragmentShader(), renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
 	}
 	
-	public DefaultShader(final String vertexShader, final String fragmentShader, final Renderable renderable, boolean lighting, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
-		this(createPrefix(renderable, lighting, shadowMap, fog, numDirectional, numPoint, numSpot, numBones), 
-			vertexShader, fragmentShader, renderable, lighting, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final String vertexShader, final String fragmentShader, final Renderable renderable, boolean lighting, boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(createPrefix(renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones), 
+			vertexShader, fragmentShader, renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
 	}
 
-	public DefaultShader(final String prefix, final String vertexShader, final String fragmentShader, final Renderable renderable, boolean lighting, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
-		this(new ShaderProgram(prefix + vertexShader, prefix + fragmentShader), renderable, lighting, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
+	public DefaultShader(final String prefix, final String vertexShader, final String fragmentShader, final Renderable renderable, boolean lighting, boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+		this(new ShaderProgram(prefix + vertexShader, prefix + fragmentShader), renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
 	}
 	
-	public DefaultShader(final ShaderProgram shaderProgram, final Renderable renderable, boolean lighting, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+	public DefaultShader(final ShaderProgram shaderProgram, final Renderable renderable, boolean lighting, boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
 		this.program = shaderProgram;
 		this.lighting = lighting;
+		this.environmentCubemap = environmentCubemap;
 		this.shadowMap = shadowMap;
 		this.fog = fog;
 		this.renderable = renderable;
@@ -346,10 +386,13 @@ public class DefaultShader extends BaseShader {
 		u_diffuseTexture		= register(Inputs.diffuseTexture, Setters.diffuseTexture);
 		u_specularColor		= register(Inputs.specularColor, Setters.specularColor);
 		u_specularTexture		= register(Inputs.specularTexture, Setters.specularTexture);
+		u_emissiveColor		= register(Inputs.emissiveColor, Setters.emissiveColor);
+		u_reflectionColor		= register(Inputs.reflectionColor, Setters.reflectionColor);
 		u_normalTexture		= register(Inputs.normalTexture, Setters.normalTexture);
 		u_alphaTest				= register(Inputs.alphaTest);
 		
 		u_ambientCubemap		= lighting ? register(Inputs.ambientCube, new Setters.ACubemap(numDirectional, numPoint)) : -1;
+		u_environmentCubemap = environmentCubemap ? register(Inputs.environmentCubemap, Setters.environmentCubemap) : -1;
 	}
 
 	@Override
@@ -383,7 +426,7 @@ public class DefaultShader extends BaseShader {
 		return (mask & flag) != 0;
 	}
 	
-	public static String createPrefix(final Renderable renderable, boolean lighting, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
+	public static String createPrefix(final Renderable renderable, boolean lighting, boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
 		String prefix = "";
 		final long mask = renderable.material.getMask();
 		final long attributes = renderable.mesh.getVertexAttributes().getMask();
@@ -408,6 +451,8 @@ public class DefaultShader extends BaseShader {
  				}
 				if (shadowMap)
 					prefix += "#define shadowMapFlag\n";
+				if (environmentCubemap)
+					prefix += "#define environmentCubemapFlag\n";
 			}
 		}
 		final int n = renderable.mesh.getVertexAttributes().size();
@@ -436,6 +481,10 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+ColorAttribute.DiffuseAlias+"Flag\n";
 		if ((mask & ColorAttribute.Specular) == ColorAttribute.Specular)
 			prefix += "#define "+ColorAttribute.SpecularAlias+"Flag\n";
+		if ((mask & ColorAttribute.Emissive) == ColorAttribute.Emissive)
+			prefix += "#define "+ColorAttribute.EmissiveAlias+"Flag\n";
+		if ((mask & ColorAttribute.Reflection) == ColorAttribute.Reflection)
+			prefix += "#define "+ColorAttribute.ReflectionAlias+"Flag\n";
 		if ((mask & FloatAttribute.Shininess) == FloatAttribute.Shininess)
 			prefix += "#define "+FloatAttribute.ShininessAlias+"Flag\n";
 		if ((mask & FloatAttribute.AlphaTest) == FloatAttribute.AlphaTest)
@@ -452,10 +501,6 @@ public class DefaultShader extends BaseShader {
 			(vertexMask == renderable.mesh.getVertexAttributes().getMask()) && 
 			(renderable.lights != null) == lighting &&
             ((renderable.lights != null && renderable.lights.fog != null) == fog);
-	}
-	
-	private final boolean can(final long flag) {
-		return (materialMask & flag) == flag;
 	}
 	
 	@Override
