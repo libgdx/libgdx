@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.lights;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -9,6 +10,7 @@ public class Lights {
 	public Color fog;
 	/** @deprecated Experimental, likely to change, do not use! */
 	public ShadowMap shadowMap;
+	public Cubemap environmentCubemap;
 	public final Array<DirectionalLight> directionalLights = new Array<DirectionalLight>();
 	public final Array<PointLight> pointLights = new Array<PointLight>();
 	

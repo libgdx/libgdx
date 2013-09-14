@@ -67,7 +67,7 @@ public class DepthShader extends DefaultShader {
 	}
 	
 	public DepthShader(final ShaderProgram shaderProgram, final Renderable renderable, int numBones) {
-		super(shaderProgram, renderable, false, false, false, 0, 0, 0, numBones);
+		super(shaderProgram, renderable, false, false, false, false, 0, 0, 0, numBones);
 		this.numBones = numBones;
 		int w = 0;
 		final int n = renderable.mesh.getVertexAttributes().size();
