@@ -1,6 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
@@ -315,7 +316,7 @@ public abstract class BaseShader implements Shader {
 		return true;
 	}
 	
-	public final boolean set(final int uniform, final Texture texture) {
+	public final boolean set(final int uniform, final GLTexture texture) {
 		if (locations[uniform] < 0)
 			return false;
 		program.setUniformi(locations[uniform], context.textureBinder.bind(texture));
