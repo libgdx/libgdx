@@ -42,7 +42,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	/** Desktop only: Set this to an absolute path to load the shader files from an alternative location. */
 	final static String hotLoadFolder = null;
 	/** Desktop only: Set this to an absolute path to save the generated shader files. */
-	final static String tempFolder = "D:\\temp\\shaders"; 
+	final static String tempFolder = null;//"D:\\temp\\shaders"; 
 	
 	protected  String shaders[] = new String[] {
 		"<default>", "depth", "gouraud", "phong", "normal", "fur", "cubemap", "reflect", "test"
