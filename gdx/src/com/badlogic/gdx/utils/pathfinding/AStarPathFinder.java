@@ -50,6 +50,7 @@ public class AStarPathFinder implements NavContext, PathFinder {
 
 		openList.clear();
 		addToOpenList(getAlgoData(startNode));
+		getAlgoData(targetNode);
 
 		AStarAlgoData currentData = null;
 		int maxDepth = 0;
