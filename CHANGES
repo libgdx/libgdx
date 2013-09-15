@@ -72,6 +72,7 @@
 - EarClippingTriangulator changed to return triangle indices.
 - PolygonSpriteBatch and friends refactored to use triangle indices.
 - Added add(T, float), remove(int), remove(T) and clear() methods to BinaryHeap
+- Added GDX port of Slick2D's AStarPathFinder
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
