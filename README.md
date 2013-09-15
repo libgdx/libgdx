@@ -26,7 +26,7 @@ You can get help on our [forum](http://badlogicgames.com/forum/) and talk to oth
 users on our IRC channel #libgdx at irc.freenode.net.
 
 #### Reporting Issues
-Use the issue tracker here on Github to report issues. Make sure you read the 
+Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on Github to report issues. Make sure you read the 
 [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through
 the process or properly reporting an issue.
 
