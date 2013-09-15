@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -31,6 +30,7 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.NumberUtils;
@@ -72,14 +72,14 @@ public class SpriteCache implements Disposable {
 	private boolean drawing;
 	private final Matrix4 transformMatrix = new Matrix4();
 	private final Matrix4 projectionMatrix = new Matrix4();
-	private ArrayList<Cache> caches = new ArrayList();
+	private Array<Cache> caches = new Array();
 
 	private final Matrix4 combinedMatrix = new Matrix4();
 	private final ShaderProgram shader;
 
 	private Cache currentCache;
-	private final ArrayList<Texture> textures = new ArrayList(8);
-	private final ArrayList<Integer> counts = new ArrayList(8);
+	private final Array<Texture> textures = new Array(8);
+	private final Array<Integer> counts = new Array(8);
 
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
@@ -158,7 +158,7 @@ public class SpriteCache implements Disposable {
 	public void beginCache () {
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
 		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
-		currentCache = new Cache(caches.size(), mesh.getVerticesBuffer().limit());
+		currentCache = new Cache(caches.size, mesh.getVerticesBuffer().limit());
 		caches.add(currentCache);
 		mesh.getVerticesBuffer().compact();
 	}
@@ -168,8 +168,8 @@ public class SpriteCache implements Disposable {
 	 * {@link #clear()} and then {@link #begin()}. */
 	public void beginCache (int cacheID) {
 		if (currentCache != null) throw new IllegalStateException("endCache must be called before begin.");
-		if (cacheID == caches.size() - 1) {
-			Cache oldCache = caches.remove(cacheID);
+		if (cacheID == caches.size - 1) {
+			Cache oldCache = caches.removeIndex(cacheID);
 			mesh.getVerticesBuffer().limit(oldCache.offset);
 			beginCache();
 			return;
@@ -186,10 +186,10 @@ public class SpriteCache implements Disposable {
 		if (cache.textures == null) {
 			// New cache.
 			cache.maxCount = cacheCount;
-			cache.textureCount = textures.size();
-			cache.textures = textures.toArray(new Texture[cache.textureCount]);
+			cache.textureCount = textures.size;
+			cache.textures = textures.toArray(Texture.class);
 			cache.counts = new int[cache.textureCount];
-			for (int i = 0, n = counts.size(); i < n; i++)
+			for (int i = 0, n = counts.size; i < n; i++)
 				cache.counts[i] = counts.get(i);
 
 			mesh.getVerticesBuffer().flip();
@@ -201,7 +201,7 @@ public class SpriteCache implements Disposable {
 						+ cacheCount + " (" + cache.maxCount + " max)");
 			}
 
-			cache.textureCount = textures.size();
+			cache.textureCount = textures.size;
 
 			if (cache.textures.length < cache.textureCount) cache.textures = new Texture[cache.textureCount];
 			for (int i = 0, n = cache.textureCount; i < n; i++)
@@ -213,7 +213,7 @@ public class SpriteCache implements Disposable {
 
 			FloatBuffer vertices = mesh.getVerticesBuffer();
 			vertices.position(0);
-			Cache lastCache = caches.get(caches.size() - 1);
+			Cache lastCache = caches.get(caches.size - 1);
 			vertices.limit(lastCache.offset + lastCache.maxCount);
 		}
 
@@ -238,7 +238,7 @@ public class SpriteCache implements Disposable {
 
 		int verticesPerImage = mesh.getNumIndices() > 0 ? 4 : 6;
 		int count = length / (verticesPerImage * VERTEX_SIZE) * 6;
-		int lastIndex = textures.size() - 1;
+		int lastIndex = textures.size - 1;
 		if (lastIndex < 0 || textures.get(lastIndex) != texture) {
 			textures.add(texture);
 			counts.add(count);
