@@ -25,9 +25,9 @@ import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
  * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This is slower than a typical hash map
- * implementation, but may be acceptable for small maps and has the benefits that keys and values can be accessed by
- * index, which makes iteration fast. Like {@link Array}, if ordered is false, * this class avoids a memory copy when
- * removing elements (the last element is moved to the removed element's position).
+ * implementation, but may be acceptable for small maps and has the benefits that keys and values can be accessed by index, which
+ * makes iteration fast. Like {@link Array}, if ordered is false, * this class avoids a memory copy when removing elements (the
+ * last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class ArrayMap<K, V> {
 	public K[] keys;
@@ -334,6 +334,7 @@ public class ArrayMap<K, V> {
 	/** Reduces the size of the backing arrays to the size of the actual number of entries. This is useful to release memory when
 	 * many items have been removed, or if it is known that more entries will not be added. */
 	public void shrink () {
+		if (keys.length == size) return;
 		resize(size);
 	}
 
