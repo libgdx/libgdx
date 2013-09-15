@@ -1,10 +1,7 @@
 
 package com.badlogic.gdx.utils.pathfinding;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BinaryHeap;
-import com.badlogic.gdx.utils.BinaryHeap.Node;
 
 /** A path finder that uses the AStar heuristic based algorithm to determine a path.
  * <p>

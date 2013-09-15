@@ -2,7 +2,6 @@
 package com.badlogic.gdx.utils.pathfinding;
 
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.BinaryHeap;
 
 /** A single node in the navigation graph.
  * @author hneuer */

@@ -1,9 +1,6 @@
 
 package com.badlogic.gdx.utils.pathfinding;
 
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.IntArray;
-
 /** A navigation path.
  * @author hneuer */
 public interface NavPath<N extends NavNode> {
@@ -13,4 +10,10 @@ public interface NavPath<N extends NavNode> {
 	 * parent relation).
 	 * <p> */
 	public void fill (N startNode, N targetNode);
+
+	/** Returns the length of the path, i.e. the number of reached nodes. */
+	public int getLength ();
+
+	/** Clear the path. */
+	public void clear ();
 }

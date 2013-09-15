@@ -1,8 +1,8 @@
 
 package com.badlogic.gdx.utils.pathfinding.tiled;
 
-import com.badlogic.gdx.utils.pathfinding.NavContext;
 import com.badlogic.gdx.utils.pathfinding.AStarPathFinder.AStarHeuristicCalculator;
+import com.badlogic.gdx.utils.pathfinding.NavContext;
 
 /** Implementation of a heuristic calculator for a tile map. It simply calculates the Manhattan distance between two given tiles.
  * @author hneuer */
