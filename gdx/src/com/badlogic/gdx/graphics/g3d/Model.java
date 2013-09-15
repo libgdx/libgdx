@@ -69,7 +69,7 @@ public class Model implements Disposable {
 	public final Array<Mesh> meshes = new Array<Mesh>();
 	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
 	public final Array<MeshPart> meshParts = new Array<MeshPart>();
-	/** List of disposable resources like textures or meshes the Model is responsible for disposing **/
+	/** Array of disposable resources like textures or meshes the Model is responsible for disposing **/
 	protected final Array<Disposable> disposables = new Array<Disposable>();
 	
 	/** Constructs an empty model. Manual created models do not manage their resources by default. 
@@ -251,6 +251,8 @@ public class Model implements Disposable {
 			result.set(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
 		if (mtl.emissive != null)
 			result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
+		if (mtl.reflection != null)
+			result.set(new ColorAttribute(ColorAttribute.Reflection, mtl.reflection));
 		if (mtl.shininess > 0f)
 			result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
 		if (mtl.opacity != 1.f)

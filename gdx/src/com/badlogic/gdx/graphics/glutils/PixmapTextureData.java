@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;
@@ -75,7 +76,7 @@ public class PixmapTextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData () {
+	public void consumeCompressedData (int target) {
 		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
 	}
 

@@ -134,7 +134,7 @@ public class FileTextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData () {
+	public void consumeCompressedData (int target) {
 		throw new GdxRuntimeException("This TextureData implementation does not upload data itself");
 	}
 }

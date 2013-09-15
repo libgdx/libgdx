@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +25,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	/** The weight added to a texture when its reused */
 	private final int reuseWeight;
 	/** The textures currently exclusive bound */
-	private final Texture[] textures;
+	private final GLTexture[] textures;
 	/** The weight (reuseWeight * reused - discarded) of the textures */
 	private final int[] weights;
 	/** The method of binding to use */
@@ -59,7 +60,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 		this.method = method;
 		this.offset = offset;
 		this.count = count;
-		this.textures = new Texture[count];
+		this.textures = new GLTexture[count];
 		this.reuseWeight = reuseWeight;
 		this.weights = (method == WEIGHTED) ? new int[count] : null;
 	}
@@ -101,14 +102,14 @@ public final class DefaultTextureBinder implements TextureBinder {
 	
 	private final TextureDescriptor tempDesc = new TextureDescriptor();
 	@Override
-	public final int bind(final Texture texture) {
+	public final int bind(final GLTexture texture) {
 		tempDesc.set(texture, null, null, null, null);
 		return bindTexture(tempDesc, false);
 	}
 	
 	private final int bindTexture(final TextureDescriptor textureDesc, final boolean rebind) {
 		final int idx, result;
-		final Texture texture = textureDesc.texture;
+		final GLTexture texture = textureDesc.texture;
 		reused = false;
 		
 		switch (method) {
@@ -131,7 +132,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	}
 
 	private int currentTexture = 0;
-	private final int bindTextureRoundRobin(final Texture texture) {
+	private final int bindTextureRoundRobin(final GLTexture texture) {
 		for (int i = 0; i < count; i++) {
 			final int idx = (currentTexture + i) % count;
 			if (textures[idx] == texture) {
@@ -145,7 +146,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 		return currentTexture;
 	}
 	
-	private final int bindTextureWeighted(final Texture texture) {
+	private final int bindTextureWeighted(final GLTexture texture) {
 		int result = -1;
 		int weight = weights[0];
 		int windex = 0;

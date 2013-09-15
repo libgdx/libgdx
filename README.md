@@ -1,55 +1,45 @@
-# Libgdx
+![logo](http://libgdx.badlogicgames.com/img/logo.png)
+
+*We just migrated our Wiki to Github, so it's a little bit rough, we'll fix things up in the next days*
 
 Libgdx is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
 
-#### Learn [how to contribute][B]
-#### The [Libgdx Official Site][1] hosts downloads, documentation and contains useful links
-#### The [community-maintained wiki][4] hosted at Google Code will explain much of Libgdx
-#### Use the [Badlogic Forum][5] to ask questions about Libgdx
-#### Follow the [Badlogic Blog][2] for the latest Libgdx news
-#### Use the [Issue Tracker][3] to post concrete bug reports (with a pull request if possible)
-#### Chat with us on IRC at irc.freenode.net, #libgdx
-#### Follow [@badlogicgames][6] on Twitter
+#### Getting Started
+Head over to http://libgdx.badlogicgames.com/documentation.html to find the latest getting started guide,
+download links and so on. You can find more information on libgdx on our official site 
+at http://libgdx.badlogicgames.com/
 
-## Compiling the Code
+#### Documentation
+The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information you'll need to write a 
+libgdx game. You can contribute to the Wiki directly here on Github!
 
-Be sure to understand the [prerequisites][7] required for Libgdx.
+We also provide [Javadocs](http://libgdx.badlogicgames.com/nightlies/docs/api/) online. The Javadocs are
+also bundled as source Jars with every libgdx distribution for consumption in your favorite IDE.
 
-See [Running Demos &
-Tests][8] for
-instructions on getting the basics working with the source tree.
+#### News & Community
+You can follow the latest news about libgdx on the [blog](http://www.badlogicgames.com). Follow
+[@badlogicgames](https://twitter.com/badlogicgames) for real-time updates.
 
-See the [Source Building wiki page][9] for instructions on building
-native code and building distribution images.
+You can get help on our [forum](http://badlogicgames.com/forum/) and talk to other libgdx 
+users on our IRC channel #libgdx at irc.freenode.net.
 
-You do not have to compile Libgdx, you can [download][A] official
-releases and nightly build snapshots from [libgdx.badlogicgames.com][A].
+#### Reporting Issues
+Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on Github to report issues. Make sure you read the 
+[Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through
+the process or properly reporting an issue.
 
-## Libgdx Usage Examples
+#### Contributing & Working from Source
+Libgdx has a strong developer community constantly improving the code base. We love to
+get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx/wiki/Contributing) 
+article describes the process of helping libgdx to become even better.
 
-There are a number of example games included in the source. Some of them include:
+To contribute, you need to work with libgdx' sources directly, something normal users do not
+have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Working-from-source)
+article will give you directions.
 
- - metagun
- - superjumper
- - gdx-vertorpinball
- - rtm
- - very angry robots
- - pax-britannica
-
-To see how to use libgdx you can either go to the [wiki][4] (which has plenty of good information) or read through
-these example projects.  The test cases in `tests/gdx-tests/` are another good source of sample code.
-Once again, if you get stuck just drop in to the friendly [forums][5].
-
- [1]: http://libgdx.badlogicgames.com
- [2]: http://www.badlogicgames.com
- [3]: http://code.google.com/p/libgdx/issues
- [4]: http://code.google.com/p/libgdx/wiki/TableOfContents
- [5]: http://www.badlogicgames.com/forum
- [6]: http://www.twitter.com/badlogicgames
- [7]: http://code.google.com/p/libgdx/wiki/Prerequisits
- [8]: http://code.google.com/p/libgdx/wiki/SourceRunningDemos
- [9]: http://code.google.com/p/libgdx/wiki/SourceBuilding
- [A]: http://libgdx.badlogicgames.com/download.html
- [B]: https://code.google.com/p/libgdx/wiki/Contributing?ts=1363359071&updated=Contributing
+#### License
+Libgdx is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you
+can use it free of charge, without strings attached in commercial and non-commercial projects. We love to
+get (non-mandatory) credit in case you release a game or app using libgdx!

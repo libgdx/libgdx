@@ -21,6 +21,7 @@
 		<include name="Net.java"/>
 		<include name="Preferences.java"/>
 		<include name="Screen.java"/>
+		<include name="ScreenAdapter.java"/>
 		<include name="Version.java"/>
 		
 	<!-- assets -->		
@@ -64,11 +65,13 @@
 	<!-- graphics -->		
 		<include name="graphics/Camera.java"/>
 		<include name="graphics/Color.java"/>
+		<include name="graphics/Cubemap.java"/>
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL10.java"/>
 		<include name="graphics/GL11.java"/>
 		<include name="graphics/GL20.java"/>
 		<include name="graphics/GLCommon.java"/>
+		<include name="graphics/GLTexture.java"/> <!-- emulated -->
 		<include name="graphics/Mesh.java"/>
 		<include name="graphics/OrthographicCamera.java"/>
 		<include name="graphics/PerspectiveCamera.java"/>
@@ -194,7 +197,7 @@
 		
 	<!-- graphics/glutils -->
 		<exclude name="graphics/glutils/ETC1.java"/> <!-- Reason: No ETC1 Support -->
-		<exclude name="graphics/glutils/ETC1TextureData.java"/>  <!-- Reason: No ETC1 Support -->
+		<include name="graphics/glutils/ETC1TextureData.java"/>  <!-- Emulated: explodes on construction -->
 		<include name="graphics/glutils/FileTextureData.java"/> <!-- Emulated: No PixmapIO -->
 		<include name="graphics/glutils/FloatFrameBuffer.java"/>
 		<include name="graphics/glutils/FloatTextureData.java"/>
