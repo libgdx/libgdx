@@ -13,47 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btMaterial {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btMaterial extends BulletBase {
+	private long swigCPtr;
+	
+	protected btMaterial(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btMaterial(long cPtr, boolean cMemoryOwn) {
+		this("btMaterial", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btMaterial obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btMaterial(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btMaterial(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setFriction(float value) {
+    gdxBulletJNI.btMaterial_friction_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btMaterial obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float getFriction() {
+    return gdxBulletJNI.btMaterial_friction_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setRestitution(float value) {
+    gdxBulletJNI.btMaterial_restitution_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btMaterial(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_friction(float value) {
-    gdxBulletJNI.btMaterial_m_friction_set(swigCPtr, this, value);
-  }
-
-  public float getM_friction() {
-    return gdxBulletJNI.btMaterial_m_friction_get(swigCPtr, this);
-  }
-
-  public void setM_restitution(float value) {
-    gdxBulletJNI.btMaterial_m_restitution_set(swigCPtr, this, value);
-  }
-
-  public float getM_restitution() {
-    return gdxBulletJNI.btMaterial_m_restitution_get(swigCPtr, this);
+  public float getRestitution() {
+    return gdxBulletJNI.btMaterial_restitution_get(swigCPtr, this);
   }
 
   public void setPad(int[] value) {

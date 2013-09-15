@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class PHullResult {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class PHullResult extends BulletBase {
+	private long swigCPtr;
+	
+	protected PHullResult(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected PHullResult(long cPtr, boolean cMemoryOwn) {
+		this("PHullResult", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(PHullResult obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected PHullResult(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(PHullResult obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_PHullResult(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_PHullResult(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public PHullResult() {
     this(gdxBulletJNI.new_PHullResult(), true);
@@ -77,12 +85,12 @@ public class PHullResult {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_Indices(SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t value) {
-    gdxBulletJNI.PHullResult_m_Indices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t.getCPtr(value));
+  public void setIndices(SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t value) {
+    gdxBulletJNI.PHullResult_Indices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t getM_Indices() {
-    long cPtr = gdxBulletJNI.PHullResult_m_Indices_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t getIndices() {
+    long cPtr = gdxBulletJNI.PHullResult_Indices_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t(cPtr, false);
   }
 

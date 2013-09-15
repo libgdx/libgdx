@@ -16,9 +16,8 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
+
 import java.util.Iterator;
-import java.util.List;
 
 import org.jbox2d.collision.AABB;
 import org.jbox2d.common.Settings;
@@ -286,9 +285,9 @@ public final class World implements Disposable {
 	 * returned list will have O(1) access times when using indexing. contacts are created and destroyed in the middle of a time
 	 * step. Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
-	ArrayList<Contact> contacts = new ArrayList<Contact>();
+	Array<Contact> contacts = new Array<Contact>();
 
-	public List<Contact> getContactList () {
+	public Array<Contact> getContactList () {
 		// FIXME pool contacts
 		org.jbox2d.dynamics.contacts.Contact contactList = world.getContactList();
 		contacts.clear();

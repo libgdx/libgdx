@@ -13,140 +13,148 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btDispatcherInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btDispatcherInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected btDispatcherInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btDispatcherInfo(long cPtr, boolean cMemoryOwn) {
+		this("btDispatcherInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btDispatcherInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btDispatcherInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btDispatcherInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btDispatcherInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btDispatcherInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btDispatcherInfo() {
     this(gdxBulletJNI.new_btDispatcherInfo(), true);
   }
 
-  public void setM_timeStep(float value) {
-    gdxBulletJNI.btDispatcherInfo_m_timeStep_set(swigCPtr, this, value);
+  public void setTimeStep(float value) {
+    gdxBulletJNI.btDispatcherInfo_timeStep_set(swigCPtr, this, value);
   }
 
-  public float getM_timeStep() {
-    return gdxBulletJNI.btDispatcherInfo_m_timeStep_get(swigCPtr, this);
+  public float getTimeStep() {
+    return gdxBulletJNI.btDispatcherInfo_timeStep_get(swigCPtr, this);
   }
 
-  public void setM_stepCount(int value) {
-    gdxBulletJNI.btDispatcherInfo_m_stepCount_set(swigCPtr, this, value);
+  public void setStepCount(int value) {
+    gdxBulletJNI.btDispatcherInfo_stepCount_set(swigCPtr, this, value);
   }
 
-  public int getM_stepCount() {
-    return gdxBulletJNI.btDispatcherInfo_m_stepCount_get(swigCPtr, this);
+  public int getStepCount() {
+    return gdxBulletJNI.btDispatcherInfo_stepCount_get(swigCPtr, this);
   }
 
-  public void setM_dispatchFunc(int value) {
-    gdxBulletJNI.btDispatcherInfo_m_dispatchFunc_set(swigCPtr, this, value);
+  public void setDispatchFunc(int value) {
+    gdxBulletJNI.btDispatcherInfo_dispatchFunc_set(swigCPtr, this, value);
   }
 
-  public int getM_dispatchFunc() {
-    return gdxBulletJNI.btDispatcherInfo_m_dispatchFunc_get(swigCPtr, this);
+  public int getDispatchFunc() {
+    return gdxBulletJNI.btDispatcherInfo_dispatchFunc_get(swigCPtr, this);
   }
 
-  public void setM_timeOfImpact(float value) {
-    gdxBulletJNI.btDispatcherInfo_m_timeOfImpact_set(swigCPtr, this, value);
+  public void setTimeOfImpact(float value) {
+    gdxBulletJNI.btDispatcherInfo_timeOfImpact_set(swigCPtr, this, value);
   }
 
-  public float getM_timeOfImpact() {
-    return gdxBulletJNI.btDispatcherInfo_m_timeOfImpact_get(swigCPtr, this);
+  public float getTimeOfImpact() {
+    return gdxBulletJNI.btDispatcherInfo_timeOfImpact_get(swigCPtr, this);
   }
 
-  public void setM_useContinuous(boolean value) {
-    gdxBulletJNI.btDispatcherInfo_m_useContinuous_set(swigCPtr, this, value);
+  public void setUseContinuous(boolean value) {
+    gdxBulletJNI.btDispatcherInfo_useContinuous_set(swigCPtr, this, value);
   }
 
-  public boolean getM_useContinuous() {
-    return gdxBulletJNI.btDispatcherInfo_m_useContinuous_get(swigCPtr, this);
+  public boolean getUseContinuous() {
+    return gdxBulletJNI.btDispatcherInfo_useContinuous_get(swigCPtr, this);
   }
 
-  public void setM_debugDraw(btIDebugDraw value) {
-    gdxBulletJNI.btDispatcherInfo_m_debugDraw_set(swigCPtr, this, btIDebugDraw.getCPtr(value), value);
+  public void setDebugDraw(btIDebugDraw value) {
+    gdxBulletJNI.btDispatcherInfo_debugDraw_set(swigCPtr, this, btIDebugDraw.getCPtr(value), value);
   }
 
-  public btIDebugDraw getM_debugDraw() {
-    long cPtr = gdxBulletJNI.btDispatcherInfo_m_debugDraw_get(swigCPtr, this);
+  public btIDebugDraw getDebugDraw() {
+    long cPtr = gdxBulletJNI.btDispatcherInfo_debugDraw_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btIDebugDraw(cPtr, false);
   }
 
-  public void setM_enableSatConvex(boolean value) {
-    gdxBulletJNI.btDispatcherInfo_m_enableSatConvex_set(swigCPtr, this, value);
+  public void setEnableSatConvex(boolean value) {
+    gdxBulletJNI.btDispatcherInfo_enableSatConvex_set(swigCPtr, this, value);
   }
 
-  public boolean getM_enableSatConvex() {
-    return gdxBulletJNI.btDispatcherInfo_m_enableSatConvex_get(swigCPtr, this);
+  public boolean getEnableSatConvex() {
+    return gdxBulletJNI.btDispatcherInfo_enableSatConvex_get(swigCPtr, this);
   }
 
-  public void setM_enableSPU(boolean value) {
-    gdxBulletJNI.btDispatcherInfo_m_enableSPU_set(swigCPtr, this, value);
+  public void setEnableSPU(boolean value) {
+    gdxBulletJNI.btDispatcherInfo_enableSPU_set(swigCPtr, this, value);
   }
 
-  public boolean getM_enableSPU() {
-    return gdxBulletJNI.btDispatcherInfo_m_enableSPU_get(swigCPtr, this);
+  public boolean getEnableSPU() {
+    return gdxBulletJNI.btDispatcherInfo_enableSPU_get(swigCPtr, this);
   }
 
-  public void setM_useEpa(boolean value) {
-    gdxBulletJNI.btDispatcherInfo_m_useEpa_set(swigCPtr, this, value);
+  public void setUseEpa(boolean value) {
+    gdxBulletJNI.btDispatcherInfo_useEpa_set(swigCPtr, this, value);
   }
 
-  public boolean getM_useEpa() {
-    return gdxBulletJNI.btDispatcherInfo_m_useEpa_get(swigCPtr, this);
+  public boolean getUseEpa() {
+    return gdxBulletJNI.btDispatcherInfo_useEpa_get(swigCPtr, this);
   }
 
-  public void setM_allowedCcdPenetration(float value) {
-    gdxBulletJNI.btDispatcherInfo_m_allowedCcdPenetration_set(swigCPtr, this, value);
+  public void setAllowedCcdPenetration(float value) {
+    gdxBulletJNI.btDispatcherInfo_allowedCcdPenetration_set(swigCPtr, this, value);
   }
 
-  public float getM_allowedCcdPenetration() {
-    return gdxBulletJNI.btDispatcherInfo_m_allowedCcdPenetration_get(swigCPtr, this);
+  public float getAllowedCcdPenetration() {
+    return gdxBulletJNI.btDispatcherInfo_allowedCcdPenetration_get(swigCPtr, this);
   }
 
-  public void setM_useConvexConservativeDistanceUtil(boolean value) {
-    gdxBulletJNI.btDispatcherInfo_m_useConvexConservativeDistanceUtil_set(swigCPtr, this, value);
+  public void setUseConvexConservativeDistanceUtil(boolean value) {
+    gdxBulletJNI.btDispatcherInfo_useConvexConservativeDistanceUtil_set(swigCPtr, this, value);
   }
 
-  public boolean getM_useConvexConservativeDistanceUtil() {
-    return gdxBulletJNI.btDispatcherInfo_m_useConvexConservativeDistanceUtil_get(swigCPtr, this);
+  public boolean getUseConvexConservativeDistanceUtil() {
+    return gdxBulletJNI.btDispatcherInfo_useConvexConservativeDistanceUtil_get(swigCPtr, this);
   }
 
-  public void setM_convexConservativeDistanceThreshold(float value) {
-    gdxBulletJNI.btDispatcherInfo_m_convexConservativeDistanceThreshold_set(swigCPtr, this, value);
+  public void setConvexConservativeDistanceThreshold(float value) {
+    gdxBulletJNI.btDispatcherInfo_convexConservativeDistanceThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_convexConservativeDistanceThreshold() {
-    return gdxBulletJNI.btDispatcherInfo_m_convexConservativeDistanceThreshold_get(swigCPtr, this);
+  public float getConvexConservativeDistanceThreshold() {
+    return gdxBulletJNI.btDispatcherInfo_convexConservativeDistanceThreshold_get(swigCPtr, this);
   }
 
-  public void setM_stackAllocator(btStackAlloc value) {
-    gdxBulletJNI.btDispatcherInfo_m_stackAllocator_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
+  public void setStackAllocator(btStackAlloc value) {
+    gdxBulletJNI.btDispatcherInfo_stackAllocator_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
   }
 
-  public btStackAlloc getM_stackAllocator() {
-    long cPtr = gdxBulletJNI.btDispatcherInfo_m_stackAllocator_get(swigCPtr, this);
+  public btStackAlloc getStackAllocator() {
+    long cPtr = gdxBulletJNI.btDispatcherInfo_stackAllocator_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btStackAlloc(cPtr, false);
   }
 

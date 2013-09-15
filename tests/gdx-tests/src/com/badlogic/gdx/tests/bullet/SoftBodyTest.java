@@ -69,9 +69,9 @@ public class SoftBodyTest extends BaseBulletTest {
 		btSoftRigidDynamicsWorld dynamicsWorld = new btSoftRigidDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		
 		worldInfo = new btSoftBodyWorldInfo();
-		worldInfo.setM_broadphase(broadphase);
-		worldInfo.setM_dispatcher(dispatcher);
-		worldInfo.getM_sparsesdf().Initialize();
+		worldInfo.setBroadphase(broadphase);
+		worldInfo.setDispatcher(dispatcher);
+		worldInfo.getSparsesdf().Initialize();
 		
 		return new BulletWorld(collisionConfiguration, dispatcher, broadphase, solver, dynamicsWorld);
 	}
@@ -122,17 +122,18 @@ public class SoftBodyTest extends BaseBulletTest {
 		model = ModelBuilder.createFromMesh(mesh, GL10.GL_TRIANGLES, 
 			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f), IntAttribute.createCullFace(0)));
 		instance = new ModelInstance(model);
+		world.add(new BulletEntity(instance, null));
 	}
 	
 	@Override
 	public void dispose () {
 		((btSoftRigidDynamicsWorld)(world.collisionWorld)).removeSoftBody(softBody);
-		softBody.delete();
+		softBody.dispose();
 		softBody = null;
 		
 		super.dispose();
 				
-		worldInfo.delete();
+		worldInfo.dispose();
 		worldInfo = null;
 		instance = null;
 		model.dispose();
@@ -146,11 +147,12 @@ public class SoftBodyTest extends BaseBulletTest {
 	protected void renderWorld () {
 		softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
 		softBody.getWorldTransform(instance.transform);
+		super.renderWorld();
 		
-		modelBatch.begin(camera);
-		world.render(modelBatch, lights);
-		modelBatch.render(instance, lights);
-		modelBatch.end();
+//		modelBatch.begin(camera);
+//		world.render(modelBatch, lights);
+//		modelBatch.render(instance, lights);
+//		modelBatch.end();
 	}
 	
 	@Override

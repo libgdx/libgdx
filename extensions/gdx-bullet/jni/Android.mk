@@ -138,7 +138,6 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/LinearMath/btQuickprof.cpp\
 	src/bullet/LinearMath/btSerializer.cpp\
 	src/bullet/LinearMath/btVector3.cpp\
-	src/custom/gdx/vector.cpp\
 	src/extras/Serialize/BulletFileLoader/bChunk.cpp\
 	src/extras/Serialize/BulletFileLoader/bDNA.cpp\
 	src/extras/Serialize/BulletFileLoader/bFile.cpp\

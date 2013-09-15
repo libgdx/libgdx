@@ -13,101 +13,109 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btMaterialProperties {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btMaterialProperties extends BulletBase {
+	private long swigCPtr;
+	
+	protected btMaterialProperties(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btMaterialProperties(long cPtr, boolean cMemoryOwn) {
+		this("btMaterialProperties", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btMaterialProperties obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btMaterialProperties(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btMaterialProperties(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setNumMaterials(int value) {
+    gdxBulletJNI.btMaterialProperties_numMaterials_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btMaterialProperties obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getNumMaterials() {
+    return gdxBulletJNI.btMaterialProperties_numMaterials_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btMaterialProperties(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_numMaterials(int value) {
-    gdxBulletJNI.btMaterialProperties_m_numMaterials_set(swigCPtr, this, value);
-  }
-
-  public int getM_numMaterials() {
-    return gdxBulletJNI.btMaterialProperties_m_numMaterials_get(swigCPtr, this);
-  }
-
-  public void setM_materialBase(java.nio.ByteBuffer value) {
+  public void setMaterialBase(java.nio.ByteBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.btMaterialProperties_m_materialBase_set(swigCPtr, this, value);
+      gdxBulletJNI.btMaterialProperties_materialBase_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.ByteBuffer getM_materialBase() {
-    return gdxBulletJNI.btMaterialProperties_m_materialBase_get(swigCPtr, this);
+  public java.nio.ByteBuffer getMaterialBase() {
+    return gdxBulletJNI.btMaterialProperties_materialBase_get(swigCPtr, this);
 }
 
-  public void setM_materialStride(int value) {
-    gdxBulletJNI.btMaterialProperties_m_materialStride_set(swigCPtr, this, value);
+  public void setMaterialStride(int value) {
+    gdxBulletJNI.btMaterialProperties_materialStride_set(swigCPtr, this, value);
   }
 
-  public int getM_materialStride() {
-    return gdxBulletJNI.btMaterialProperties_m_materialStride_get(swigCPtr, this);
+  public int getMaterialStride() {
+    return gdxBulletJNI.btMaterialProperties_materialStride_get(swigCPtr, this);
   }
 
-  public void setM_materialType(int value) {
-    gdxBulletJNI.btMaterialProperties_m_materialType_set(swigCPtr, this, value);
+  public void setMaterialType(int value) {
+    gdxBulletJNI.btMaterialProperties_materialType_set(swigCPtr, this, value);
   }
 
-  public int getM_materialType() {
-    return gdxBulletJNI.btMaterialProperties_m_materialType_get(swigCPtr, this);
+  public int getMaterialType() {
+    return gdxBulletJNI.btMaterialProperties_materialType_get(swigCPtr, this);
   }
 
-  public void setM_numTriangles(int value) {
-    gdxBulletJNI.btMaterialProperties_m_numTriangles_set(swigCPtr, this, value);
+  public void setNumTriangles(int value) {
+    gdxBulletJNI.btMaterialProperties_numTriangles_set(swigCPtr, this, value);
   }
 
-  public int getM_numTriangles() {
-    return gdxBulletJNI.btMaterialProperties_m_numTriangles_get(swigCPtr, this);
+  public int getNumTriangles() {
+    return gdxBulletJNI.btMaterialProperties_numTriangles_get(swigCPtr, this);
   }
 
-  public void setM_triangleMaterialsBase(java.nio.ByteBuffer value) {
+  public void setTriangleMaterialsBase(java.nio.ByteBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.btMaterialProperties_m_triangleMaterialsBase_set(swigCPtr, this, value);
+      gdxBulletJNI.btMaterialProperties_triangleMaterialsBase_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.ByteBuffer getM_triangleMaterialsBase() {
-    return gdxBulletJNI.btMaterialProperties_m_triangleMaterialsBase_get(swigCPtr, this);
+  public java.nio.ByteBuffer getTriangleMaterialsBase() {
+    return gdxBulletJNI.btMaterialProperties_triangleMaterialsBase_get(swigCPtr, this);
 }
 
-  public void setM_triangleMaterialStride(int value) {
-    gdxBulletJNI.btMaterialProperties_m_triangleMaterialStride_set(swigCPtr, this, value);
+  public void setTriangleMaterialStride(int value) {
+    gdxBulletJNI.btMaterialProperties_triangleMaterialStride_set(swigCPtr, this, value);
   }
 
-  public int getM_triangleMaterialStride() {
-    return gdxBulletJNI.btMaterialProperties_m_triangleMaterialStride_get(swigCPtr, this);
+  public int getTriangleMaterialStride() {
+    return gdxBulletJNI.btMaterialProperties_triangleMaterialStride_get(swigCPtr, this);
   }
 
-  public void setM_triangleType(int value) {
-    gdxBulletJNI.btMaterialProperties_m_triangleType_set(swigCPtr, this, value);
+  public void setTriangleType(int value) {
+    gdxBulletJNI.btMaterialProperties_triangleType_set(swigCPtr, this, value);
   }
 
-  public int getM_triangleType() {
-    return gdxBulletJNI.btMaterialProperties_m_triangleType_get(swigCPtr, this);
+  public int getTriangleType() {
+    return gdxBulletJNI.btMaterialProperties_triangleType_get(swigCPtr, this);
   }
 
   public btMaterialProperties() {

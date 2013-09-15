@@ -18,9 +18,9 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-/** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> 4 by 4 matrix. Like the {@link Vector3}
- * class it allows the chaining of methods by returning a reference to itself. For example:
- * 
+/** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix.
+ * Like the {@link Vector3} class it allows the chaining of methods by returning a reference to itself. For example:
+ *
  * <pre>
  * Matrix4 mat = new Matrix4().trn(position).mul(camera.combined);
  * </pre>
@@ -64,8 +64,9 @@ public class Matrix4 implements Serializable {
 	}
 
 	/** Constructs a matrix from the given float array. The array must have at least 16 elements; the first 16 will be copied.
-	 * @param values The float array to copy. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not modified) */
+	 * @param values The float array to copy. Remember that this matrix is in
+	 * <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 * (The float array is not modified.) */
 	public Matrix4 (float[] values) {
 		this.set(values);
 	}
@@ -96,7 +97,7 @@ public class Matrix4 implements Serializable {
 	 * copied.
 	 * 
 	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
@@ -243,8 +244,8 @@ public class Matrix4 implements Serializable {
 		return val;
 	}
 
-	/** Multiplies this matrix with the given matrix, storing the result in this matrix. For example:
-	 * 
+	/** Postmultiplies this matrix with the given matrix, storing the result in this matrix. For example:
+	 *
 	 * <pre>
 	 * A.mul(B) results in A := AB.
 	 * </pre>
@@ -302,10 +303,10 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Inverts the matrix. Throws a {@link RuntimeException} in case the matrix is not invertible. Stores the result in this
-	 * matrix.
-	 * 
-	 * @return This matrix for the purpose of chaining methods together. */
+	/** Inverts the matrix. Stores the result in this matrix.
+	 *
+	 * @return This matrix for the purpose of chaining methods together.
+	 * @throws RuntimeException if the matrix is singular (not invertible) */
 	public Matrix4 inv () {
 		float l_det = val[M30] * val[M21] * val[M12] * val[M03] - val[M20] * val[M31] * val[M12] * val[M03] - val[M30] * val[M11]
 			* val[M22] * val[M03] + val[M10] * val[M31] * val[M22] * val[M03] + val[M20] * val[M11] * val[M32] * val[M03] - val[M10]
@@ -566,14 +567,14 @@ public class Matrix4 implements Serializable {
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
 	 * @param axis The axis
-	 * @param angle The angle in degrees
+	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToRotation (Vector3 axis, float angle) {
-		if (angle == 0) {
+	public Matrix4 setToRotation (Vector3 axis, float degrees) {
+		if (degrees == 0) {
 			idt();
 			return this;
 		}
-		return set(quat.set(axis, angle));
+		return set(quat.set(axis, degrees));
 	}
 
 	/** Sets the matrix to a rotation matrix around the given axis.
@@ -581,14 +582,14 @@ public class Matrix4 implements Serializable {
 	 * @param axisX The x-component of the axis
 	 * @param axisY The y-component of the axis
 	 * @param axisZ The z-component of the axis
-	 * @param angle The angle in degrees
+	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 setToRotation (float axisX, float axisY, float axisZ, float angle) {
-		if (angle == 0) {
+	public Matrix4 setToRotation (float axisX, float axisY, float axisZ, float degrees) {
+		if (degrees == 0) {
 			idt();
 			return this;
 		}
-		return set(quat.setFromAxis(axisX, axisY, axisZ, angle));
+		return set(quat.setFromAxis(axisX, axisY, axisZ, degrees));
 	}
 
 	/** Set the matrix to a rotation matrix between two vectors.
@@ -1086,11 +1087,11 @@ public class Matrix4 implements Serializable {
 	 * glTranslate/glRotate/glScale.
 	 * 
 	 * @param axis The vector axis to rotate around.
-	 * @param angle The angle in degrees.
+	 * @param degrees The angle in degrees.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 rotate (Vector3 axis, float angle) {
-		if (angle == 0) return this;
-		quat.set(axis, angle);
+	public Matrix4 rotate (Vector3 axis, float degrees) {
+		if (degrees == 0) return this;
+		quat.set(axis, degrees);
 		return rotate(quat);
 	}
 
@@ -1099,11 +1100,11 @@ public class Matrix4 implements Serializable {
 	 * @param axisX The x-axis component of the vector to rotate around.
 	 * @param axisY The y-axis component of the vector to rotate around.
 	 * @param axisZ The z-axis component of the vector to rotate around.
-	 * @param angle The angle in degrees
+	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 rotate (float axisX, float axisY, float axisZ, float angle) {
-		if (angle == 0) return this;
-		quat.setFromAxis(axisX, axisY, axisZ, angle);
+	public Matrix4 rotate (float axisX, float axisY, float axisZ, float degrees) {
+		if (degrees == 0) return this;
+		quat.setFromAxis(axisX, axisY, axisZ, degrees);
 		return rotate(quat);
 	}
 

@@ -1,28 +1,29 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 
 public class TextureDescriptor {
-	public Texture texture = null;
-	public int minFilter = GL10.GL_INVALID_VALUE;
-	public int magFilter = GL10.GL_INVALID_VALUE;
-	public int uWrap = GL10.GL_INVALID_VALUE;
-	public int vWrap = GL10.GL_INVALID_VALUE;
+	public GLTexture texture = null;
+	public Texture.TextureFilter minFilter;
+	public Texture.TextureFilter magFilter;
+	public Texture.TextureWrap uWrap;
+	public Texture.TextureWrap vWrap;
 	// TODO add other values, see http://www.opengl.org/sdk/docs/man/xhtml/glTexParameter.xml
 	
-	public TextureDescriptor(final Texture texture, final int minFilter, final int magFilter, final int uWrap, final int vWrap) {
+	public TextureDescriptor(final Texture texture, final Texture.TextureFilter minFilter, final Texture.TextureFilter magFilter, final Texture.TextureWrap uWrap, final Texture.TextureWrap vWrap) {
 		set(texture, minFilter, magFilter, uWrap, vWrap);
 	}
 	
 	public TextureDescriptor(final Texture texture) {
-		this.texture = texture;
+		this(texture, null, null, null, null);
 	}
 	
 	public TextureDescriptor() {
 	}
-	
-	public void set(final Texture texture, final int minFilter, final int magFilter, final int uWrap, final int vWrap) {
+
+	public void set(final GLTexture texture, final Texture.TextureFilter minFilter, final Texture.TextureFilter magFilter, final Texture.TextureWrap uWrap, final Texture.TextureWrap vWrap) {
 		this.texture = texture;
 		this.minFilter = minFilter;
 		this.magFilter = magFilter;
@@ -36,14 +37,6 @@ public class TextureDescriptor {
 		magFilter = other.magFilter;
 		uWrap = other.uWrap;
 		vWrap = other.vWrap;
-	}
-	
-	public void reset() {
-		texture = null;
-		minFilter = GL10.GL_INVALID_VALUE;
-		magFilter = GL10.GL_INVALID_VALUE;
-		uWrap = GL10.GL_INVALID_VALUE;
-		vWrap = GL10.GL_INVALID_VALUE;
 	}
 	
 	@Override

@@ -112,6 +112,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeConvexResultCallback.h" />
+    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeRayResultCallback.h" />
+    <ClInclude Include="..\..\..\src\custom\gdx\ContactCache.h" />
+    <ClInclude Include="..\..\..\src\custom\gdx\ContactListener.h" />
+    <ClInclude Include="..\..\..\src\custom\gdx\GdxCollisionObjectBridge.h" />
+    <ClInclude Include="..\..\..\src\custom\gdx\InternalTickCallback.h" />
     <ClInclude Include="..\..\..\swig-src\gdxBullet_wrap.h" />
   </ItemGroup>
   <ItemGroup>

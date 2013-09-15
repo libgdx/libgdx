@@ -108,15 +108,6 @@ public class ClickListener extends InputListener {
 	public void clicked (InputEvent event, float x, float y) {
 	}
 
-	public void dragStart (InputEvent event, float x, float y, int pointer) {
-	}
-
-	public void drag (InputEvent event, float x, float y, int pointer) {
-	}
-
-	public void dragStop (InputEvent event, float x, float y, int pointer) {
-	}
-
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
 	public boolean isOver (Actor actor, float x, float y) {
 		Actor hit = actor.hit(x, y, true);

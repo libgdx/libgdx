@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +28,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.TextureData.TextureDataType;
-import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
-import com.badlogic.gdx.graphics.glutils.FileTextureData;
-import com.badlogic.gdx.graphics.glutils.FloatTextureData;
-import com.badlogic.gdx.graphics.glutils.MipMapGenerator;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -66,11 +57,10 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * </p>
  * 
  * @author badlogicgames@gmail.com */
-public class Texture implements Disposable {
-	static private boolean enforcePotImages = true;
+public class Texture extends GLTexture {
 	private static AssetManager assetManager;
 	final static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
-
+	
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), Linear(GL10.GL_LINEAR), MipMap(GL10.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
 			GL10.GL_NEAREST_MIPMAP_NEAREST), MipMapLinearNearest(GL10.GL_LINEAR_MIPMAP_NEAREST), MipMapNearestLinear(
@@ -105,15 +95,8 @@ public class Texture implements Disposable {
 		}
 	}
 
-	private static final IntBuffer buffer = BufferUtils.newIntBuffer(1);
-
-	TextureFilter minFilter = TextureFilter.Nearest;
-	TextureFilter magFilter = TextureFilter.Nearest;
-	TextureWrap uWrap = TextureWrap.ClampToEdge;
-	TextureWrap vWrap = TextureWrap.ClampToEdge;
-	int glHandle;
 	TextureData data;
-
+	
 	public Texture (String internalPath) {
 		this(Gdx.files.internal(internalPath));
 	}
@@ -127,11 +110,7 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (FileHandle file, Format format, boolean useMipMaps) {
-		if (file.name().endsWith(".etc1")) {
-			create(new ETC1TextureData(file, useMipMaps));
-		} else {
-			create(new FileTextureData(file, null, format, useMipMaps));
-		}
+		this(createTextureData(file, format, useMipMaps));
 	}
 
 	public Texture (Pixmap pixmap) {
@@ -151,20 +130,9 @@ public class Texture implements Disposable {
 	}
 
 	public Texture (TextureData data) {
-		create(data);
-	}
-
-	private void create (TextureData data) {
-		glHandle = createGLHandle();
+		super(GL10.GL_TEXTURE_2D, createGLHandle());
 		load(data);
 		if (data.isManaged()) addManagedTexture(Gdx.app, this);
-	}
-
-	public static int createGLHandle () {
-		buffer.position(0);
-		buffer.limit(buffer.capacity());
-		Gdx.gl.glGenTextures(1, buffer);
-		return buffer.get(0);
 	}
 
 	public void load (TextureData data) {
@@ -174,81 +142,21 @@ public class Texture implements Disposable {
 
 		if (!data.isPrepared()) data.prepare();
 
-		if (data.getType() == TextureDataType.Pixmap) {
-			Pixmap pixmap = data.consumePixmap();
-			uploadImageData(pixmap);
-			if (data.disposePixmap()) pixmap.dispose();
-			setFilter(minFilter, magFilter);
-			setWrap(uWrap, vWrap);
-		}
+		bind();
+		uploadImageData(GL10.GL_TEXTURE_2D, data);
 
-		if (data.getType() == TextureDataType.Compressed) {
-			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
-			data.consumeCompressedData();
-			setFilter(minFilter, magFilter);
-			setWrap(uWrap, vWrap);
-		}
-		
-		if (data.getType() == TextureDataType.Float) {
-			Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
-			data.consumeCompressedData();
-			setFilter(minFilter, magFilter);
-			setWrap(uWrap, vWrap);
-		}
-		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, 0);
-	}
-
-	private void uploadImageData (Pixmap pixmap) {
-		if (enforcePotImages && Gdx.gl20 == null
-			&& (!MathUtils.isPowerOfTwo(data.getWidth()) || !MathUtils.isPowerOfTwo(data.getHeight()))) {
-			throw new GdxRuntimeException("Texture width and height must be powers of two: " + data.getWidth() + "x"
-				+ data.getHeight());
-		}
-
-		boolean disposePixmap = false;
-		if (data.getFormat() != pixmap.getFormat()) {
-			Pixmap tmp = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), data.getFormat());
-			Blending blend = Pixmap.getBlending();
-			Pixmap.setBlending(Blending.None);
-			tmp.drawPixmap(pixmap, 0, 0, 0, 0, pixmap.getWidth(), pixmap.getHeight());
-			Pixmap.setBlending(blend);
-			pixmap = tmp;
-			disposePixmap = true;
-		}
-
-		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
-		Gdx.gl.glPixelStorei(GL10.GL_UNPACK_ALIGNMENT, 1);
-		if (data.useMipMaps()) {
-			MipMapGenerator.generateMipMap(pixmap, pixmap.getWidth(), pixmap.getHeight(), disposePixmap);
-		} else {
-			Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
-				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
-			if (disposePixmap) {
-				pixmap.dispose();
-			}
-		}
+		setFilter(minFilter, magFilter);
+		setWrap(uWrap, vWrap);
+		Gdx.gl.glBindTexture(glTarget, 0);
 	}
 
 	/** Used internally to reload after context loss. Creates a new GL handle then calls {@link #load(TextureData)}. Use this only
 	 * if you know what you do! */
-	private void reload () {
-		if (!data.isManaged()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
+	@Override
+	protected void reload () {
+		if (!isManaged()) throw new GdxRuntimeException("Tried to reload unmanaged Texture");
 		glHandle = createGLHandle();
 		load(data);
-	}
-
-	/** Binds this texture. The texture will be bound to the currently active texture unit specified via
-	 * {@link GLCommon#glActiveTexture(int)}. */
-	public void bind () {
-		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
-	}
-
-	/** Binds the texture to the given texture unit. Sets the currently active texture unit via
-	 * {@link GLCommon#glActiveTexture(int)}.
-	 * @param unit the unit (0 to MAX_TEXTURE_UNITS). */
-	public void bind (int unit) {
-		Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + unit);
-		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
 	}
 
 	/** Draws the given {@link Pixmap} to the texture at position x, y. No clipping is performed so you have to make sure that you
@@ -260,35 +168,24 @@ public class Texture implements Disposable {
 	public void draw (Pixmap pixmap, int x, int y) {
 		if (data.isManaged()) throw new GdxRuntimeException("can't draw to a managed texture");
 
-		Gdx.gl.glBindTexture(GL10.GL_TEXTURE_2D, glHandle);
-		Gdx.gl.glTexSubImage2D(GL10.GL_TEXTURE_2D, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(),
+		bind();
+		Gdx.gl.glTexSubImage2D(glTarget, 0, x, y, pixmap.getWidth(), pixmap.getHeight(), pixmap.getGLFormat(),
 			pixmap.getGLType(), pixmap.getPixels());
 	}
 
-	/** @return the width of the texture in pixels */
+	@Override
 	public int getWidth () {
 		return data.getWidth();
 	}
 
-	/** @return the height of the texture in pixels */
+	@Override
 	public int getHeight () {
 		return data.getHeight();
 	}
-
-	public TextureFilter getMinFilter () {
-		return minFilter;
-	}
-
-	public TextureFilter getMagFilter () {
-		return magFilter;
-	}
-
-	public TextureWrap getUWrap () {
-		return uWrap;
-	}
-
-	public TextureWrap getVWrap () {
-		return vWrap;
+	
+	@Override
+	public int getDepth() {
+		return 0;
 	}
 
 	public TextureData getTextureData () {
@@ -300,30 +197,6 @@ public class Texture implements Disposable {
 		return data.isManaged();
 	}
 
-	public int getTextureObjectHandle () {
-		return glHandle;
-	}
-
-	/** Sets the {@link TextureWrap} for this texture on the u and v axis. This will bind this texture!
-	 * 
-	 * @param u the u wrap
-	 * @param v the v wrap */
-	public void setWrap (TextureWrap u, TextureWrap v) {
-		this.uWrap = u;
-		this.vWrap = v;
-		bind();
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, u.getGLEnum());
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, v.getGLEnum());
-	}
-
-	public void setFilter (TextureFilter minFilter, TextureFilter magFilter) {
-		this.minFilter = minFilter;
-		this.magFilter = magFilter;
-		bind();
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, minFilter.getGLEnum());
-		Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, magFilter.getGLEnum());
-	}
-
 	/** Disposes all resources associated with the texture */
 	public void dispose () {
 		// this is a hack. reason: we have to set the glHandle to 0 for textures that are
@@ -331,17 +204,9 @@ public class Texture implements Disposable {
 		// and then reload it. the glHandle is set to 0 in invalidateAllTextures prior to
 		// removal from the asset manager.
 		if (glHandle == 0) return;
-		buffer.put(0, glHandle);
-		Gdx.gl.glDeleteTextures(1, buffer);
-		if (data.isManaged()) {
+		delete();
+		if (data.isManaged())
 			if (managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).remove(this);
-		}
-		glHandle = 0;
-	}
-
-	/** @param enforcePotImages whether to enforce power of two images in OpenGL ES 1.0 or not. */
-	static public void setEnforcePotImages (boolean enforcePotImages) {
-		Texture.enforcePotImages = enforcePotImages;
 	}
 
 	private static void addManagedTexture (Application app, Texture texture) {

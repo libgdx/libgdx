@@ -57,9 +57,7 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * A model is created from {@link ModelData}, which in turn is loaded by a {@link ModelLoader}.
  *   
- * @author badlogic
- *
- */
+ * @author badlogic, xoppa */
 public class Model implements Disposable {
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes **/
 	public final Array<Material> materials = new Array<Material>();
@@ -78,15 +76,16 @@ public class Model implements Disposable {
 	 * Use {@link #manageDisposable(Disposable)} to add resources to be managed by this model. */
 	public Model() {}
 	
-	/**
-	 * Constructs a new Model based on the {@link ModelData}. Texture files
+	/** Constructs a new Model based on the {@link ModelData}. Texture files
 	 * will be loaded from the internal file storage via an {@link FileTextureProvider}.
-	 * @param modelData
-	 */
+	 * @param modelData the {@link ModelData} got from e.g. {@link ModelLoader} */
 	public Model(ModelData modelData) {
 		this(modelData, new FileTextureProvider());
 	}
-	
+
+	/** Constructs a new Model based on the {@link ModelData}.
+	 * @param modelData the {@link ModelData} got from e.g. {@link ModelLoader}
+	 * @param textureProvider the {@link TextureProvider} to use for loading the textures */
 	public Model(ModelData modelData, TextureProvider textureProvider) {
 		load(modelData, textureProvider);
 	}
@@ -252,6 +251,8 @@ public class Model implements Disposable {
 			result.set(new ColorAttribute(ColorAttribute.Specular, mtl.specular));
 		if (mtl.emissive != null)
 			result.set(new ColorAttribute(ColorAttribute.Emissive, mtl.emissive));
+		if (mtl.reflection != null)
+			result.set(new ColorAttribute(ColorAttribute.Reflection, mtl.reflection));
 		if (mtl.shininess > 0f)
 			result.set(new FloatAttribute(FloatAttribute.Shininess, mtl.shininess));
 		if (mtl.opacity != 1.f)
@@ -272,10 +273,10 @@ public class Model implements Disposable {
 				}
 				
 				TextureDescriptor descriptor = new TextureDescriptor(texture);
-				descriptor.minFilter = GL20.GL_LINEAR;
-				descriptor.magFilter = GL20.GL_LINEAR;
-				descriptor.uWrap = GL20.GL_REPEAT;
-				descriptor.vWrap = GL20.GL_REPEAT;
+				descriptor.minFilter = Texture.TextureFilter.Linear;
+				descriptor.magFilter = Texture.TextureFilter.Linear;
+				descriptor.uWrap = Texture.TextureWrap.Repeat;
+				descriptor.vWrap = Texture.TextureWrap.Repeat;
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
 					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
@@ -296,16 +297,15 @@ public class Model implements Disposable {
 		return result;
 	}
 	
-	/**
-	 * Adds a {@link Disposable} to be managed and disposed by this Model. Can
+	/** Adds a {@link Disposable} to be managed and disposed by this Model. Can
 	 * be used to keep track of manually loaded textures for {@link ModelInstance}.
-	 * @param disposable the Disposable
-	 */
+	 * @param disposable the Disposable */
 	public void manageDisposable(Disposable disposable) {
 		if (!disposables.contains(disposable, true))
 			disposables.add(disposable);
 	}
 	
+	/** @return the {@link Disposable} objects that will be disposed when the {@link #dispose()} method is called. */
 	public Iterable<Disposable> getManagedDisposables() {
 		return disposables;
 	}
@@ -317,8 +317,7 @@ public class Model implements Disposable {
 		}
 	}
 	
-	/**
-	 * Calculates the local and world transform of all {@link Node} instances in this model, recursively.
+	/** Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and
 	 * scale of each Node. Then each {@link Node#calculateWorldTransform()}
 	 * is calculated, based on the parent's world transform and the local transform of each Node.
@@ -338,14 +337,18 @@ public class Model implements Disposable {
 	}
 	
 	/** Calculate the bounding box of this model instance.
-	 * This is a potential slow operation, it is advised to cache the result. */
+	 * This is a potential slow operation, it is advised to cache the result.
+	 * @param out the {@link BoundingBox} that will be set with the bounds.
+	 * @return the out parameter for chaining */
 	public BoundingBox calculateBoundingBox(final BoundingBox out) {
 		out.inf();
 		return extendBoundingBox(out);
 	}
 	
 	/** Extends the bounding box with the bounds of this model instance.
-	 * This is a potential slow operation, it is advised to cache the result. */
+	 * This is a potential slow operation, it is advised to cache the result.
+	 * @param out the {@link BoundingBox} that will be extended with the bounds.
+	 * @return the out parameter for chaining */
 	public BoundingBox extendBoundingBox(final BoundingBox out) {
 		final int n = nodes.size;
 		for(int i = 0; i < n; i++)
@@ -353,12 +356,15 @@ public class Model implements Disposable {
 		return out;
 	}
 
-	/** @return The animation with the specified id, or null if not available. */
+	/** @param id The ID of the animation to fetch (case sensitive).
+	 * @return The {@link Animation} with the specified id, or null if not available. */
 	public Animation getAnimation(final String id) {
 		return getAnimation(id, true);
 	}
 	
-	/** @return The animation with the specified id, or null if not available. */
+	/** @param id The ID of the animation to fetch.
+	 * @param ignoreCase whether to use case sensitivity when comparing the animation id.
+	 * @return The {@link Animation} with the specified id, or null if not available. */
 	public Animation getAnimation(final String id, boolean ignoreCase) {
 		final int n = animations.size;
 		Animation animation;
@@ -374,12 +380,15 @@ public class Model implements Disposable {
 		return null;
 	}
 	
-	/** @return The material with the specified id, or null if not available. */
+	/** @param id The ID of the material to fetch.
+	 * @return The {@link Material} with the specified id, or null if not available. */
 	public Material getMaterial(final String id) {
 		return getMaterial(id, true);
 	}
 	
-	/** @return The material with the specified id, or null if not available. */
+	/** @param id The ID of the material to fetch.
+	 * @param ignoreCase whether to use case sensitivity when comparing the material id.
+	 * @return The {@link Material} with the specified id, or null if not available. */
 	public Material getMaterial(final String id, boolean ignoreCase) {
 		final int n = materials.size;
 		Material material;
@@ -395,19 +404,23 @@ public class Model implements Disposable {
 		return null;
 	}
 	
-	/** @return The node with the specified id, or null if not found. */
+	/** @param id The ID of the node to fetch.
+	 * @return The {@link Node} with the specified id, or null if not found. */
 	public Node getNode(final String id) {
 		return getNode(id, true);
 	}
 	
-	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
-	 * @return The node with the specified id, or null if not found. */
+	/** @param id The ID of the node to fetch.
+	 * @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The {@link Node} with the specified id, or null if not found. */
 	public Node getNode(final String id, boolean recursive) {
 		return getNode(id, recursive, false);
 	}
 	
-	/** @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
-	 * @return The node with the specified id, or null if not found. */
+	/** @param id The ID of the node to fetch.
+	 * @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @param ignoreCase whether to use case sensitivity when comparing the node id.
+	 * @return The {@link Node} with the specified id, or null if not found. */
 	public Node getNode(final String id, boolean recursive, boolean ignoreCase) {
 		return Node.getNode(nodes, id, recursive, ignoreCase);
 	}

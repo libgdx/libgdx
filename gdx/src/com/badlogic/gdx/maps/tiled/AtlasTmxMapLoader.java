@@ -175,9 +175,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	protected FileHandle loadAtlas (Element root, FileHandle tmxFile) throws IOException {
-
 		Element e = root.getChildByName("properties");
-		Array<FileHandle> atlases = new Array<FileHandle>();
 
 		if (e != null) {
 			for (Element property : e.getChildrenByName("property")) {
@@ -309,19 +307,19 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 			}
 
-			// get the TextureAtlas for this tileset
-			TextureAtlas atlas = null;
-			String regionsName = "";
-			if (map.getProperties().containsKey("atlas")) {
-				FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
-				atlasHandle = resolve(atlasHandle.path());
-				atlas = resolver.getAtlas(atlasHandle.path());
-				regionsName = atlasHandle.nameWithoutExtension();
+			if (!map.getProperties().containsKey("atlas")) {
+				throw new GdxRuntimeException("The map is missing the 'atlas' property");
+			}
 
-				if (parameter != null && parameter.forceTextureFilters) {
-					for (Texture texture : atlas.getTextures()) {
-						trackedTextures.add(texture);
-					}
+			// get the TextureAtlas for this tileset
+			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
+			atlasHandle = resolve(atlasHandle.path());
+			TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
+			String regionsName = atlasHandle.nameWithoutExtension();
+
+			if (parameter != null && parameter.forceTextureFilters) {
+				for (Texture texture : atlas.getTextures()) {
+					trackedTextures.add(texture);
 				}
 			}
 

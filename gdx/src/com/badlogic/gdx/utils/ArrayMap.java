@@ -24,9 +24,10 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
- * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This may be acceptable for small maps and has the
- * benefits that keys and values can be accessed by index, which makes iteration fast. Like {@link Array}, if ordered is false,
- * this class avoids a memory copy when removing elements (the last element is moved to the removed element's position).
+ * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This is slower than a typical hash map
+ * implementation, but may be acceptable for small maps and has the benefits that keys and values can be accessed by
+ * index, which makes iteration fast. Like {@link Array}, if ordered is false, * this class avoids a memory copy when
+ * removing elements (the last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class ArrayMap<K, V> {
 	public K[] keys;
@@ -310,6 +311,16 @@ public class ArrayMap<K, V> {
 		return values[size - 1];
 	}
 
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	public void clear (int maximumCapacity) {
+		if (keys.length <= maximumCapacity) {
+			clear();
+			return;
+		}
+		size = 0;
+		resize(maximumCapacity);
+	}
+
 	public void clear () {
 		K[] keys = this.keys;
 		V[] values = this.values;
@@ -335,11 +346,11 @@ public class ArrayMap<K, V> {
 
 	protected void resize (int newSize) {
 		K[] newKeys = (K[])ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
-		System.arraycopy(keys, 0, newKeys, 0, Math.min(keys.length, newKeys.length));
+		System.arraycopy(keys, 0, newKeys, 0, Math.min(size, newKeys.length));
 		this.keys = newKeys;
 
 		V[] newValues = (V[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
-		System.arraycopy(values, 0, newValues, 0, Math.min(values.length, newValues.length));
+		System.arraycopy(values, 0, newValues, 0, Math.min(size, newValues.length));
 		this.values = newValues;
 	}
 

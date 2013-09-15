@@ -42,7 +42,7 @@ public class Tree extends WidgetGroup {
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Array<Node> selectedNodes = new Array();
-	float ySpacing = 4, iconSpacing = 2, padding = 0, indentSpacing;
+	float ySpacing = 4, iconSpacingLeft = 2, iconSpacingRight = 2, padding = 0, indentSpacing;
 	private float leftColumnWidth, prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	boolean multiSelect = true;
@@ -94,7 +94,7 @@ public class Tree extends WidgetGroup {
 					if (node.children.size > 0) {
 						// Toggle expanded.
 						float rowX = node.actor.getX();
-						if (node.icon != null) rowX -= iconSpacing + node.icon.getMinWidth();
+						if (node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();
 						if (x < rowX) {
 							node.setExpanded(!node.expanded);
 							return;
@@ -128,7 +128,7 @@ public class Tree extends WidgetGroup {
 
 	public void setStyle (TreeStyle style) {
 		this.style = style;
-		indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth()) + iconSpacing;
+		indentSpacing = Math.max(style.plus.getMinWidth(), style.minus.getMinWidth()) + iconSpacingLeft;
 	}
 
 	public void add (Node node) {
@@ -184,16 +184,17 @@ public class Tree extends WidgetGroup {
 		prefHeight = getHeight();
 		leftColumnWidth = 0;
 		computeSize(rootNodes, indentSpacing);
-		leftColumnWidth += iconSpacing + padding;
+		leftColumnWidth += iconSpacingLeft + padding;
 		prefWidth += leftColumnWidth + padding;
 		prefHeight = getHeight() - prefHeight;
 	}
 
 	private void computeSize (Array<Node> nodes, float indent) {
 		float ySpacing = this.ySpacing;
+		float spacing = iconSpacingLeft + iconSpacingRight;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
-			float rowWidth = indent + iconSpacing;
+			float rowWidth = indent + iconSpacingRight;
 			Actor actor = node.actor;
 			if (actor instanceof Layout) {
 				Layout layout = (Layout)actor;
@@ -205,7 +206,7 @@ public class Tree extends WidgetGroup {
 				node.height = actor.getHeight();
 			}
 			if (node.icon != null) {
-				rowWidth += iconSpacing * 2 + node.icon.getMinWidth();
+				rowWidth += spacing + node.icon.getMinWidth();
 				node.height = Math.max(node.height, node.icon.getMinHeight());
 			}
 			prefWidth = Math.max(prefWidth, rowWidth);
@@ -216,7 +217,7 @@ public class Tree extends WidgetGroup {
 
 	public void layout () {
 		if (sizeInvalid) computeSize();
-		layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacing, getHeight() - ySpacing / 2);
+		layout(rootNodes, leftColumnWidth + indentSpacing + iconSpacingRight, getHeight() - ySpacing / 2);
 	}
 
 	private float layout (Array<Node> nodes, float indent, float y) {
@@ -263,7 +264,7 @@ public class Tree extends WidgetGroup {
 			if (node.icon != null) {
 				float iconY = actor.getY() + Math.round((node.height - node.icon.getMinHeight()) / 2);
 				batch.setColor(actor.getColor());
-				node.icon.draw(batch, x + node.actor.getX() - iconSpacing - node.icon.getMinWidth(), y + iconY,
+				node.icon.draw(batch, x + node.actor.getX() - iconSpacingRight - node.icon.getMinWidth(), y + iconY,
 					node.icon.getMinWidth(), node.icon.getMinHeight());
 				batch.setColor(Color.WHITE);
 			}
@@ -272,7 +273,7 @@ public class Tree extends WidgetGroup {
 
 			Drawable expandIcon = node.expanded ? minus : plus;
 			float iconY = actor.getY() + Math.round((node.height - expandIcon.getMinHeight()) / 2);
-			expandIcon.draw(batch, x + indent - iconSpacing, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
+			expandIcon.draw(batch, x + indent - iconSpacingLeft, y + iconY, expandIcon.getMinWidth(), expandIcon.getMinHeight());
 			if (node.expanded) draw(batch, node.children, indent + indentSpacing);
 		}
 	}
@@ -365,8 +366,9 @@ public class Tree extends WidgetGroup {
 	}
 
 	/** Sets the amount of horizontal space between the node actors and icons. */
-	public void setIconSpacing (float iconSpacing) {
-		this.iconSpacing = iconSpacing;
+	public void setIconSpacing (float left, float right) {
+		this.iconSpacingLeft = left;
+		this.iconSpacingRight = right;
 	}
 
 	public float getPrefWidth () {
@@ -514,11 +516,7 @@ public class Tree extends WidgetGroup {
 		public void insert (int index, Node node) {
 			node.parent = this;
 			children.insert(index, node);
-			if (!expanded) return;
-			Tree tree = getTree();
-			if (tree == null) return;
-			for (int i = 0, n = children.size; i < n; i++)
-				children.get(i).addToTree(tree);
+			updateChildren();
 		}
 
 		public void remove () {
@@ -562,8 +560,17 @@ public class Tree extends WidgetGroup {
 			return expanded;
 		}
 
+		/** If the children order is changed, {@link #updateChildren()} must be called. */
 		public Array<Node> getChildren () {
 			return children;
+		}
+
+		public void updateChildren () {
+			if (!expanded) return;
+			Tree tree = getTree();
+			if (tree == null) return;
+			for (int i = 0, n = children.size; i < n; i++)
+				children.get(i).addToTree(tree);
 		}
 
 		/** @return May be null. */

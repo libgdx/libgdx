@@ -61,7 +61,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	 * before growing the backing table. */
 	public ObjectSet (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		if (capacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
+		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
@@ -283,6 +283,26 @@ public class ObjectSet<T> implements Iterable<T> {
 		if (index < lastIndex) keyTable[index] = keyTable[lastIndex];
 	}
 
+	/** Reduces the size of the backing arrays to be the specified capacity or less. If the capacity is already less, nothing is
+	 * done. If the map contains more items than the specified capacity, the next highest power of two capacity is used instead. */
+	public void shrink (int maximumCapacity) {
+		if (maximumCapacity < 0) throw new IllegalArgumentException("maximumCapacity must be >= 0: " + maximumCapacity);
+		if (size > maximumCapacity) maximumCapacity = size;
+		if (capacity <= maximumCapacity) return;
+		maximumCapacity = MathUtils.nextPowerOfTwo(maximumCapacity);
+		resize(maximumCapacity);
+	}
+
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	public void clear (int maximumCapacity) {
+		if (capacity <= maximumCapacity) {
+			clear();
+			return;
+		}
+		size = 0;
+		resize(maximumCapacity);
+	}
+
 	public void clear () {
 		T[] keyTable = this.keyTable;
 		for (int i = capacity + stashSize; i-- > 0;)
@@ -332,11 +352,14 @@ public class ObjectSet<T> implements Iterable<T> {
 
 		keyTable = (T[])new Object[newSize + stashCapacity];
 
+		int oldSize = size;
 		size = 0;
 		stashSize = 0;
-		for (int i = 0; i < oldEndIndex; i++) {
-			T key = oldKeyTable[i];
-			if (key != null) addResize(key);
+		if (oldSize > 0) {
+			for (int i = 0; i < oldEndIndex; i++) {
+				T key = oldKeyTable[i];
+				if (key != null) addResize(key);
+			}
 		}
 	}
 

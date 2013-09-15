@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btPolyhedralConvexAabbCachingShape extends btPolyhedralConvexShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btPolyhedralConvexAabbCachingShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btPolyhedralConvexAabbCachingShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btPolyhedralConvexAabbCachingShape(long cPtr, boolean cMemoryOwn) {
+		this("btPolyhedralConvexAabbCachingShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btPolyhedralConvexAabbCachingShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btPolyhedralConvexAabbCachingShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btPolyhedralConvexAabbCachingShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btPolyhedralConvexAabbCachingShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btPolyhedralConvexAabbCachingShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btPolyhedralConvexAabbCachingShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void getNonvirtualAabb(Matrix4 trans, Vector3 aabbMin, Vector3 aabbMax, float margin) {
     gdxBulletJNI.btPolyhedralConvexAabbCachingShape_getNonvirtualAabb(swigCPtr, this, trans, aabbMin, aabbMax, margin);

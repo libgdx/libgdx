@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -24,7 +25,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	/** The weight added to a texture when its reused */
 	private final int reuseWeight;
 	/** The textures currently exclusive bound */
-	private final TextureDescriptor[] textures;
+	private final GLTexture[] textures;
 	/** The weight (reuseWeight * reused - discarded) of the textures */
 	private final int[] weights;
 	/** The method of binding to use */
@@ -42,7 +43,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 	
 	/** Uses all remaining texture units and reuse weight of 3 */
 	public DefaultTextureBinder(final int method, final int offset) {
-		this(method, offset,  Math.min(getMaxTextureUnits(), MAX_GLES_UNITS) - offset);
+		this(method, offset,  -1);
 	}
 	
 	/** Uses reuse weight of 10 */
@@ -50,16 +51,16 @@ public final class DefaultTextureBinder implements TextureBinder {
 		this(method, offset, count, 10);
 	}
 	
-	public DefaultTextureBinder(final int method, final int offset, final int count, final int reuseWeight) {
+	public DefaultTextureBinder(final int method, final int offset, int count, final int reuseWeight) {
 		final int max = Math.min(getMaxTextureUnits(), MAX_GLES_UNITS);
+		if (count < 0)
+			count = max - offset;
 		if (offset < 0 || count < 0 || (offset + count) > max || reuseWeight < 1)
 			throw new GdxRuntimeException("Illegal arguments");
 		this.method = method;
 		this.offset = offset;
 		this.count = count;
-		this.textures = new TextureDescriptor[count];
-		for (int i = 0; i < count; i++)
-			this.textures[i] = new TextureDescriptor();
+		this.textures = new GLTexture[count];
 		this.reuseWeight = reuseWeight;
 		this.weights = (method == WEIGHTED) ? new int[count] : null;
 	}
@@ -76,79 +77,81 @@ public final class DefaultTextureBinder implements TextureBinder {
 	@Override
 	public void begin () {
 		for(int i = 0; i < count; i++) {
-			textures[i].reset();
+			textures[i] = null;
 			if(weights != null) weights[i] = 0;
 		}
 	}
 
 	@Override
 	public void end () {
+		/* No need to unbind and textures are set to null in begin()
 		for(int i = 0; i < count; i++) {
-			if (textures[i].texture != null) {
+			if (textures[i] != null) {
 				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + offset + i);
 				Gdx.gl.glBindTexture(GL20.GL_TEXTURE_2D, 0);
-				textures[i].texture = null;
+				textures[i] = null;
 			}
-		}
+		}*/
 		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 	}
 	
-	/** Binds the texture if needed and sets it active, returns the unit */
 	@Override
 	public final int bind(final TextureDescriptor textureDesc) {
 		return bindTexture(textureDesc, false);
 	}
-
+	
+	private final TextureDescriptor tempDesc = new TextureDescriptor();
+	@Override
+	public final int bind(final GLTexture texture) {
+		tempDesc.set(texture, null, null, null, null);
+		return bindTexture(tempDesc, false);
+	}
+	
 	private final int bindTexture(final TextureDescriptor textureDesc, final boolean rebind) {
-		int idx, result;
+		final int idx, result;
+		final GLTexture texture = textureDesc.texture;
 		reused = false;
 		
 		switch (method) {
-		case ROUNDROBIN: result = offset + (idx = bindTextureRoundRobin(textureDesc.texture)); break;
-		case WEIGHTED: result = offset + (idx = bindTextureWeighted(textureDesc.texture)); break;
+		case ROUNDROBIN: result = offset + (idx = bindTextureRoundRobin(texture)); break;
+		case WEIGHTED: result = offset + (idx = bindTextureWeighted(texture)); break;
 		default: return -1; 
 		}
 		
 		if (reused) {
 			reuseCount++;
 			if (rebind)
-				textureDesc.texture.bind(result);
+				texture.bind(result);
 			else
 				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + result);
 		} else
 			bindCount++;
-		if (textureDesc.minFilter != GL10.GL_INVALID_VALUE && textureDesc.minFilter != textures[idx].minFilter)
-			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, textures[idx].minFilter = textureDesc.minFilter);
-		if (textureDesc.magFilter != GL10.GL_INVALID_VALUE && textureDesc.magFilter != textures[idx].magFilter)
-			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, textures[idx].magFilter = textureDesc.magFilter);
-		if (textureDesc.uWrap != GL10.GL_INVALID_VALUE && textureDesc.uWrap != textures[idx].uWrap)
-			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, textures[idx].uWrap = textureDesc.uWrap);
-		if (textureDesc.vWrap != GL10.GL_INVALID_VALUE && textureDesc.vWrap != textures[idx].vWrap)
-			Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, textures[idx].vWrap = textureDesc.vWrap);
+		texture.unsafeSetWrap(textureDesc.uWrap, textureDesc.vWrap);
+		texture.unsafeSetFilter(textureDesc.minFilter, textureDesc.magFilter);
 		return result;
 	}
 
 	private int currentTexture = 0;
-	private final int bindTextureRoundRobin(final Texture texture) {
+	private final int bindTextureRoundRobin(final GLTexture texture) {
 		for (int i = 0; i < count; i++) {
 			final int idx = (currentTexture + i) % count;
-			if (textures[idx].texture == texture) {
+			if (textures[idx] == texture) {
 				reused = true;
 				return idx;
 			}
 		}
 		currentTexture = (currentTexture + 1) % count;
-		textures[currentTexture].texture = texture;
+		textures[currentTexture] = texture;
 		texture.bind(offset + currentTexture);
 		return currentTexture;
 	}
 	
-	private final int bindTextureWeighted(final Texture texture) {
+	private final int bindTextureWeighted(final GLTexture texture) {
 		int result = -1;
 		int weight = weights[0];
 		int windex = 0;
 		for (int i = 0; i < count; i++) {
-			if (textures[i].texture == texture) {
+			if (textures[i] == texture) {
 				result = i;
 				weights[i]+=reuseWeight;
 			} else if (weights[i] < 0 || --weights[i] < weight) {
@@ -157,7 +160,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 			}
 		}
 		if (result < 0) {
-			textures[windex].texture = texture;
+			textures[windex] = texture;
 			weights[windex] = 100;
 			texture.bind(offset + (result = windex));
 		} else 

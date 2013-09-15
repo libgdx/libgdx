@@ -8,7 +8,7 @@
 	/** Temporary instance, use by native methods that return a _TYPE instance */
 	protected final static _TYPE temp = new _TYPE(0, false);
 	public static _TYPE internalTemp(long cPtr, boolean own) {
-		temp.reuse(cPtr, own);
+		temp.reset(cPtr, own);
 		return temp;
 	}
 	/** Pool of _TYPE instances, used by director interface to provide the arguments. */
@@ -21,19 +21,13 @@
 	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
 	public static _TYPE obtain(long cPtr, boolean own) {
 		final _TYPE result = pool.obtain();
-		result.reuse(cPtr, own);
+		result.reset(cPtr, own);
 		return result;
 	}
 	/** delete the native object if required and allow the instance to be reused by the obtain method */
 	public static void free(final _TYPE inst) {
-		inst.delete();
+		inst.dispose();
 		pool.free(inst);
-	}
-	/** Same as deleting and recreating this object with the new pointer, but without garbage collecting */
-	protected void reuse(final long cPtr, final boolean own) {
-		delete();
-		swigCPtr = cPtr;
-		swigCMemOwn = own;
 	}
 %}
 

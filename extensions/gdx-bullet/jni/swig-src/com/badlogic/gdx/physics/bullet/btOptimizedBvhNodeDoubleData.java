@@ -13,81 +13,89 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btOptimizedBvhNodeDoubleData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btOptimizedBvhNodeDoubleData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btOptimizedBvhNodeDoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btOptimizedBvhNodeDoubleData(long cPtr, boolean cMemoryOwn) {
+		this("btOptimizedBvhNodeDoubleData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btOptimizedBvhNodeDoubleData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btOptimizedBvhNodeDoubleData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btOptimizedBvhNodeDoubleData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setAabbMinOrg(btVector3DoubleData value) {
+    gdxBulletJNI.btOptimizedBvhNodeDoubleData_aabbMinOrg_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btOptimizedBvhNodeDoubleData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btOptimizedBvhNodeDoubleData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_aabbMinOrg(btVector3DoubleData value) {
-    gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_aabbMinOrg_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
-  }
-
-  public btVector3DoubleData getM_aabbMinOrg() {
-    long cPtr = gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_aabbMinOrg_get(swigCPtr, this);
+  public btVector3DoubleData getAabbMinOrg() {
+    long cPtr = gdxBulletJNI.btOptimizedBvhNodeDoubleData_aabbMinOrg_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_aabbMaxOrg(btVector3DoubleData value) {
-    gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_aabbMaxOrg_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setAabbMaxOrg(btVector3DoubleData value) {
+    gdxBulletJNI.btOptimizedBvhNodeDoubleData_aabbMaxOrg_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_aabbMaxOrg() {
-    long cPtr = gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_aabbMaxOrg_get(swigCPtr, this);
+  public btVector3DoubleData getAabbMaxOrg() {
+    long cPtr = gdxBulletJNI.btOptimizedBvhNodeDoubleData_aabbMaxOrg_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_escapeIndex(int value) {
-    gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_escapeIndex_set(swigCPtr, this, value);
+  public void setEscapeIndex(int value) {
+    gdxBulletJNI.btOptimizedBvhNodeDoubleData_escapeIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_escapeIndex() {
-    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_escapeIndex_get(swigCPtr, this);
+  public int getEscapeIndex() {
+    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_escapeIndex_get(swigCPtr, this);
   }
 
-  public void setM_subPart(int value) {
-    gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_subPart_set(swigCPtr, this, value);
+  public void setSubPart(int value) {
+    gdxBulletJNI.btOptimizedBvhNodeDoubleData_subPart_set(swigCPtr, this, value);
   }
 
-  public int getM_subPart() {
-    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_subPart_get(swigCPtr, this);
+  public int getSubPart() {
+    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_subPart_get(swigCPtr, this);
   }
 
-  public void setM_triangleIndex(int value) {
-    gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_triangleIndex_set(swigCPtr, this, value);
+  public void setTriangleIndex(int value) {
+    gdxBulletJNI.btOptimizedBvhNodeDoubleData_triangleIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_triangleIndex() {
-    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_triangleIndex_get(swigCPtr, this);
+  public int getTriangleIndex() {
+    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_triangleIndex_get(swigCPtr, this);
   }
 
-  public void setM_pad(String value) {
-    gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_pad_set(swigCPtr, this, value);
+  public void setPad(String value) {
+    gdxBulletJNI.btOptimizedBvhNodeDoubleData_pad_set(swigCPtr, this, value);
   }
 
-  public String getM_pad() {
-    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_m_pad_get(swigCPtr, this);
+  public String getPad() {
+    return gdxBulletJNI.btOptimizedBvhNodeDoubleData_pad_get(swigCPtr, this);
   }
 
   public btOptimizedBvhNodeDoubleData() {

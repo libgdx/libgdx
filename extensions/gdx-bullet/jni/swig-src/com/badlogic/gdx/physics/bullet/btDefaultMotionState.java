@@ -14,65 +14,73 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btDefaultMotionState extends btMotionState {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btDefaultMotionState(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btDefaultMotionState_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btDefaultMotionState(long cPtr, boolean cMemoryOwn) {
+		this("btDefaultMotionState", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btDefaultMotionState obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btDefaultMotionState(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btDefaultMotionState_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btDefaultMotionState(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setGraphicsWorldTrans(btTransform value) {
+    gdxBulletJNI.btDefaultMotionState_graphicsWorldTrans_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public static long getCPtr(btDefaultMotionState obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btDefaultMotionState(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_graphicsWorldTrans(btTransform value) {
-    gdxBulletJNI.btDefaultMotionState_m_graphicsWorldTrans_set(swigCPtr, this, btTransform.getCPtr(value), value);
-  }
-
-  public btTransform getM_graphicsWorldTrans() {
-    long cPtr = gdxBulletJNI.btDefaultMotionState_m_graphicsWorldTrans_get(swigCPtr, this);
+  public btTransform getGraphicsWorldTrans() {
+    long cPtr = gdxBulletJNI.btDefaultMotionState_graphicsWorldTrans_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_centerOfMassOffset(btTransform value) {
-    gdxBulletJNI.btDefaultMotionState_m_centerOfMassOffset_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setCenterOfMassOffset(btTransform value) {
+    gdxBulletJNI.btDefaultMotionState_centerOfMassOffset_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_centerOfMassOffset() {
-    long cPtr = gdxBulletJNI.btDefaultMotionState_m_centerOfMassOffset_get(swigCPtr, this);
+  public btTransform getCenterOfMassOffset() {
+    long cPtr = gdxBulletJNI.btDefaultMotionState_centerOfMassOffset_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_startWorldTrans(btTransform value) {
-    gdxBulletJNI.btDefaultMotionState_m_startWorldTrans_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setStartWorldTrans(btTransform value) {
+    gdxBulletJNI.btDefaultMotionState_startWorldTrans_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_startWorldTrans() {
-    long cPtr = gdxBulletJNI.btDefaultMotionState_m_startWorldTrans_get(swigCPtr, this);
+  public btTransform getStartWorldTrans() {
+    long cPtr = gdxBulletJNI.btDefaultMotionState_startWorldTrans_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_userPointer(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btDefaultMotionState_m_userPointer_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setUserPointer(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btDefaultMotionState_userPointer_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_userPointer() {
-    long cPtr = gdxBulletJNI.btDefaultMotionState_m_userPointer_get(swigCPtr, this);
+  public SWIGTYPE_p_void getUserPointer() {
+    long cPtr = gdxBulletJNI.btDefaultMotionState_userPointer_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 

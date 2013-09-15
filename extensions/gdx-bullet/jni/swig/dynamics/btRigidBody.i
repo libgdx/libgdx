@@ -1,68 +1,81 @@
-/*
- *	Interface module for a class with inner structs or classes.
- */
- 
 %module btRigidBody
-
 
 %{
 #include <BulletDynamics/Dynamics/btRigidBody.h>
 typedef btRigidBody::btRigidBodyConstructionInfo btRigidBodyConstructionInfo;
 %}
 
-
-%rename(mass) btRigidBodyConstructionInfo::m_mass;
-%rename(startWorldTransform) btRigidBodyConstructionInfo::m_startWorldTransform;
-%rename(localInertia) btRigidBodyConstructionInfo::m_localInertia;
-%rename(linearDamping) btRigidBodyConstructionInfo::m_linearDamping;
-%rename(angularDamping) btRigidBodyConstructionInfo::m_angularDamping;
-%rename(friction) btRigidBodyConstructionInfo::m_friction;
-%rename(restitution) btRigidBodyConstructionInfo::m_restitution;
-%rename(linearSleepingThreshold) btRigidBodyConstructionInfo::m_linearSleepingThreshold;
-%rename(angularSleepingThreshold) btRigidBodyConstructionInfo::m_angularSleepingThreshold;
-%rename(additionalDamping) btRigidBodyConstructionInfo::m_additionalDamping;
-%rename(additionalDampingFactor) btRigidBodyConstructionInfo::m_additionalDampingFactor;
-%rename(additionalLinearDampingThresholdSqr) btRigidBodyConstructionInfo::m_additionalLinearDampingThresholdSqr;
-%rename(additionalAngularDampingThresholdSqr) btRigidBodyConstructionInfo::m_additionalAngularDampingThresholdSqr;
-%rename(additionalAngularDampingFactor) btRigidBodyConstructionInfo::m_additionalAngularDampingFactor;
-
+%rename(i_motionState) btRigidBodyConstructionInfo::m_motionState;
 %javamethodmodifiers btRigidBodyConstructionInfo::m_motionState "private";
+%rename(i_collisionShape) btRigidBodyConstructionInfo::m_collisionShape;
 %javamethodmodifiers btRigidBodyConstructionInfo::m_collisionShape "private";
 
 %javamethodmodifiers btRigidBodyConstructionInfo::btRigidBodyConstructionInfo "private";
 
 %typemap(javacode) btRigidBodyConstructionInfo %{
 	protected btMotionState motionState;
-	protected btCollisionShape collisionShape;
 	
 	public void setMotionState(btMotionState motionState) {
+		refMotionState(motionState);
+		setI_motionState(motionState);
+	}
+	
+	protected void refMotionState(btMotionState motionState) {
+		if (this.motionState == motionState)
+			return;
+		if (this.motionState != null)
+			this.motionState.release();
 		this.motionState = motionState;
-		setM_motionState(motionState);
+		if (this.motionState != null)
+			this.motionState.obtain();
 	}
 	
 	public btMotionState getMotionState() {
-		return motionState != null ? motionState : (motionState = getM_motionState());
+		return motionState;
 	}
 	
+	protected btCollisionShape collisionShape;
+	
 	public void setCollisionShape(btCollisionShape collisionShape) {
-		this.collisionShape = collisionShape;
-		setM_collisionShape(collisionShape);
+		refCollisionShape(collisionShape);
+		setI_collisionShape(collisionShape);
+	}
+	
+	protected void refCollisionShape(btCollisionShape shape) {
+		if (collisionShape == shape)
+			return;
+		if (collisionShape != null)
+			collisionShape.release();
+		collisionShape = shape;
+		if (collisionShape != null)
+			collisionShape.obtain();
 	}
 	
 	public btCollisionShape getCollisionShape() {
-		return collisionShape != null ? collisionShape : (collisionShape = getM_collisionShape());
+		return collisionShape;
 	}
 	
 	public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
 		this(false, mass, motionState, collisionShape, localInertia);
-		this.motionState = motionState;
-		this.collisionShape = collisionShape;
+		refMotionState(motionState);
+		refCollisionShape(collisionShape);
 	}
 	
 	public btRigidBodyConstructionInfo(float mass, btMotionState motionState, btCollisionShape collisionShape) {
 		this(false, mass, motionState, collisionShape);
-		this.motionState = motionState;
-		this.collisionShape = collisionShape;
+		refMotionState(motionState);
+		refCollisionShape(collisionShape);
+	}
+	
+	@Override
+	public void dispose() {
+		if (motionState != null)
+			motionState.release();
+		motionState = null;
+		if (collisionShape != null)
+			collisionShape.release();
+		collisionShape = null;
+		super.dispose();
 	}
 %}
 
@@ -133,32 +146,50 @@ private:
 %typemap(javacode) btRigidBody %{
 	protected btMotionState motionState;
 	
-  public btRigidBody(btRigidBodyConstructionInfo constructionInfo) {
-    this(false, constructionInfo);
-    this.collisionShape = constructionInfo.getCollisionShape();
-    this.motionState = constructionInfo.getMotionState();
-  }
-
-  public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
-    this(false, mass, motionState, collisionShape, localInertia);
-    this.collisionShape = collisionShape;
-    this.motionState = motionState;
-  }
-
-  public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape) {
-	  this(false, mass, motionState, collisionShape);
-	    this.collisionShape = collisionShape;
-	    this.motionState = motionState;
-  }
+	public btRigidBody(btRigidBodyConstructionInfo constructionInfo) {
+		this(false, constructionInfo);
+		refCollisionShape(constructionInfo.getCollisionShape());
+		refMotionState(constructionInfo.getMotionState());
+	}
+	
+	public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape, Vector3 localInertia) {
+		this(false, mass, motionState, collisionShape, localInertia);
+		refCollisionShape(collisionShape);
+		refMotionState(motionState);
+	}
+	
+	public btRigidBody(float mass, btMotionState motionState, btCollisionShape collisionShape) {
+		this(false, mass, motionState, collisionShape);
+		refCollisionShape(collisionShape);
+		refMotionState(motionState);
+	}
   
-  public btMotionState getMotionState() {
-	  return motionState != null ? motionState : (motionState = internalGetMotionState());
-  }
-  
-  public void setMotionState(btMotionState motionState) {
-	  this.motionState = motionState;
-	  internalSetMotionState(motionState);
-  }
+	public void setMotionState(btMotionState motionState) {
+		refMotionState(motionState);
+		internalSetMotionState(motionState);
+	}
+	
+	protected void refMotionState(btMotionState motionState) {
+		if (this.motionState == motionState)
+			return;
+		if (this.motionState != null)
+			this.motionState.release();
+		this.motionState = motionState;
+		if (this.motionState != null)
+			this.motionState.obtain();
+	}
+	
+	public btMotionState getMotionState() {
+		return motionState;
+	}
+	
+	@Override
+	public void dispose() {
+		if (motionState != null)
+			motionState.release();
+		motionState = null;
+		super.dispose();
+	}
 %}
 
 %include "BulletDynamics/Dynamics/btRigidBody.h"

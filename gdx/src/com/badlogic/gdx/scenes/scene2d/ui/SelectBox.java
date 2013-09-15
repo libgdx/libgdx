@@ -55,6 +55,7 @@ public class SelectBox extends Widget {
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	int maxListCount;
+	boolean disabled;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -73,6 +74,7 @@ public class SelectBox extends Widget {
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
+				if (disabled) return false;
 				Stage stage = getStage();
 				if (list == null) list = new SelectList();
 				list.show(stage);
@@ -87,7 +89,7 @@ public class SelectBox extends Widget {
 		this.maxListCount = maxListCount;
 	}
 
-	/** @return Max number of dropdown List items to display when the box is opened, or <= 0 to display them all. */
+	/** @return Max number of items to display when the box is opened, or <= 0 to display them all. */
 	public int getMaxListCount () {
 		return maxListCount;
 	}
@@ -160,14 +162,16 @@ public class SelectBox extends Widget {
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		Drawable background;
-		if (list != null && list.getParent() != null && style.backgroundOpen != null)
+		if (disabled)
+			background = style.backgroundDisabled;
+		else if (list != null && list.getParent() != null && style.backgroundOpen != null)
 			background = style.backgroundOpen;
 		else if (clickListener.isOver() && style.backgroundOver != null)
 			background = style.backgroundOver;
 		else
 			background = style.background;
 		final BitmapFont font = style.font;
-		final Color fontColor = style.fontColor;
+		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : style.fontColor;
 
 		Color color = getColor();
 		float x = getX();
@@ -210,6 +214,11 @@ public class SelectBox extends Widget {
 	/** @return the string of the currently selected item */
 	public String getSelection () {
 		return items[selectedIndex];
+	}
+
+	public void setDisabled (boolean disabled) {
+		if (disabled && !this.disabled) hideList();
+		this.disabled = disabled;
 	}
 
 	public float getPrefWidth () {
@@ -326,11 +335,13 @@ public class SelectBox extends Widget {
 	static public class SelectBoxStyle {
 		public BitmapFont font;
 		public Color fontColor = new Color(1, 1, 1, 1);
+		/** Optional. */
+		public Color disabledFontColor;
 		public Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;
 		/** Optional. */
-		public Drawable backgroundOver, backgroundOpen;
+		public Drawable backgroundOver, backgroundOpen, backgroundDisabled;
 
 		public SelectBoxStyle () {
 		}
@@ -347,9 +358,13 @@ public class SelectBox extends Widget {
 		public SelectBoxStyle (SelectBoxStyle style) {
 			this.font = style.font;
 			this.fontColor.set(style.fontColor);
+			if (style.disabledFontColor != null) this.disabledFontColor = new Color(style.disabledFontColor);
 			this.background = style.background;
-			this.scrollStyle = style.scrollStyle;
-			this.listStyle = style.listStyle;
+			this.backgroundOver = style.backgroundOver;
+			this.backgroundOpen = style.backgroundOpen;
+			this.backgroundDisabled = style.backgroundDisabled;
+			this.scrollStyle = new ScrollPaneStyle(style.scrollStyle);
+			this.listStyle = new ListStyle(style.listStyle);
 		}
 	}
 }

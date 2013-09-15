@@ -1,12 +1,9 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
-import java.io.File;
-
 import org.robovm.cocoatouch.foundation.NSBundle;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class IOSFiles implements Files {
 	// TODO: Use NSSearchPathForDirectoriesInDomains instead?
@@ -33,7 +30,7 @@ public class IOSFiles implements Files {
 
 	@Override
 	public FileHandle internal (String path) {
-		return new IOSFileHandle(new File(internalPath, path), FileType.Internal);
+		return new IOSFileHandle(path, FileType.Internal);
 	}
 
 	@Override

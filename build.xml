@@ -114,6 +114,20 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
+    
+    <!-- gdx robovm backend -->
+    <target name="gdx-backend-robovm" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+		</path>
+        <ant antfile="fetch.xml">
+            <target name="fetch-robovm"/>
+        </ant>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-robovm">
+			<property name="jar" value="gdx-backend-robovm"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
 
 	<!-- gdx ios-monotouch backend -->
 	<target name="gdx-backend-iosmonotouch" depends="gdx-core">
@@ -366,7 +380,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-iosmonotouch,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
+depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-backend-iosmonotouch,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
 
 	<target name="all" depends="jars,docs,copy-iosfiles">
 		<!-- copy distribution files (licences etc.) -->
@@ -378,5 +392,6 @@ depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jg
 
 		<!-- zip dist dir -->
 		<zip destfile="libgdx-${version}.zip" basedir="${distDir}"/>
+		<checksum file="libgdx-${version}.zip" forceOverwrite="yes" />
 	</target>
 </project>

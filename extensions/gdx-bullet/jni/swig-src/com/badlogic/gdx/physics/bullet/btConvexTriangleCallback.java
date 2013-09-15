@@ -14,46 +14,54 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btConvexTriangleCallback extends btTriangleCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btConvexTriangleCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btConvexTriangleCallback_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btConvexTriangleCallback(long cPtr, boolean cMemoryOwn) {
+		this("btConvexTriangleCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btConvexTriangleCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btConvexTriangleCallback(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btConvexTriangleCallback_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btConvexTriangleCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTriangleCount(int value) {
+    gdxBulletJNI.btConvexTriangleCallback_triangleCount_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btConvexTriangleCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getTriangleCount() {
+    return gdxBulletJNI.btConvexTriangleCallback_triangleCount_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setManifoldPtr(btPersistentManifold value) {
+    gdxBulletJNI.btConvexTriangleCallback_manifoldPtr_set(swigCPtr, this, btPersistentManifold.getCPtr(value), value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btConvexTriangleCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_triangleCount(int value) {
-    gdxBulletJNI.btConvexTriangleCallback_m_triangleCount_set(swigCPtr, this, value);
-  }
-
-  public int getM_triangleCount() {
-    return gdxBulletJNI.btConvexTriangleCallback_m_triangleCount_get(swigCPtr, this);
-  }
-
-  public void setM_manifoldPtr(btPersistentManifold value) {
-    gdxBulletJNI.btConvexTriangleCallback_m_manifoldPtr_set(swigCPtr, this, btPersistentManifold.getCPtr(value), value);
-  }
-
-  public btPersistentManifold getM_manifoldPtr() {
-    long cPtr = gdxBulletJNI.btConvexTriangleCallback_m_manifoldPtr_get(swigCPtr, this);
+  public btPersistentManifold getManifoldPtr() {
+    long cPtr = gdxBulletJNI.btConvexTriangleCallback_manifoldPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
   }
 

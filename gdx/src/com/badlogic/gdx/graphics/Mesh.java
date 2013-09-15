@@ -281,7 +281,7 @@ public class Mesh implements Disposable {
 			if (transformations != null)
 				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset / vertexSize, vsize / vertexSize);
 			mesh.getIndices(indices, ioffset);
-			for (int j = 0; j < isize; i++)
+			for (int j = 0; j < isize; j++)
 				indices[ioffset+j] = (short)(indices[ioffset+j] + voffset);
 			voffset += vsize;
 			ioffset += isize;
@@ -293,8 +293,7 @@ public class Mesh implements Disposable {
 		return result;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
-	 * fixed point an IllegalArgumentException will be thrown.
+	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 * 
 	 * @param vertices the vertices.
 	 * @return the mesh for invocation chaining.*/
@@ -304,8 +303,7 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
-	 * fixed point an IllegalArgumentException will be thrown.
+	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 * 
 	 * @param vertices the vertices.
 	 * @param offset the offset into the vertices array

@@ -30,5 +30,6 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 		for(Shader shader: shaders) {
 			shader.dispose();
 		}
+		shaders.clear();
 	}
 }

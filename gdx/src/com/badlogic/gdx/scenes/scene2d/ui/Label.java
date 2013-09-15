@@ -28,16 +28,13 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 /** A text label, with optional word wrapping.
  * <p>
- * Unlike most scene2d.ui widgets, label can be scaled and rotated using the actor's scale, rotation, and origin. This only
- * affects drawing, other scene2d.ui widgets will still use the unscaled and unrotated bounds of the label. Note that a scaled or
- * rotated label causes a SpriteBatch flush when it is drawn, so should be used relatively sparingly.
- * <p>
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
 public class Label extends Widget {
 	private LabelStyle style;
 	private final TextBounds bounds = new TextBounds();
 	private final StringBuilder text = new StringBuilder();
+	private StringBuilder tempText;
 	private BitmapFontCache cache;
 	private int labelAlign = Align.left;
 	private HAlignment lineAlign = HAlignment.LEFT;
@@ -45,6 +42,7 @@ public class Label extends Widget {
 	private float lastPrefHeight;
 	private boolean sizeInvalid = true;
 	private float fontScaleX = 1, fontScaleY = 1;
+	private boolean ellipse;
 
 	public Label (CharSequence text, Skin skin) {
 		this(text, skin.get(LabelStyle.class));
@@ -102,7 +100,7 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	private boolean textEquals (CharSequence other) {
+	public boolean textEquals (CharSequence other) {
 		int length = text.length;
 		char[] chars = text.chars;
 		if (length != other.length()) return false;
@@ -148,8 +146,20 @@ public class Label extends Widget {
 		float oldScaleY = font.getScaleY();
 		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
 
-		Drawable background = style.background;
 		float width = getWidth(), height = getHeight();
+		StringBuilder text;
+		if (ellipse && width < bounds.width) {
+			float ellipseWidth = font.getBounds("...").width;
+			text = tempText != null ? tempText : (tempText = new StringBuilder());
+			text.setLength(0);
+			if (width > ellipseWidth) {
+				text.append(this.text, 0, font.computeVisibleGlyphs(this.text, 0, this.text.length, width - ellipseWidth));
+				text.append("...");
+			}
+		} else
+			text = this.text;
+
+		Drawable background = style.background;
 		float x = 0, y = 0;
 		if (background != null) {
 			x = background.getLeftWidth();
@@ -274,6 +284,11 @@ public class Label extends Widget {
 	public void setFontScaleY (float fontScaleY) {
 		this.fontScaleY = fontScaleY;
 		invalidateHierarchy();
+	}
+
+	/** When true the text will be truncated with an ellipse if it does not fit within the width of the label. Default is false. */
+	public void setEllipse (boolean ellipse) {
+		this.ellipse = ellipse;
 	}
 
 	/** The style for a label, see {@link Label}.

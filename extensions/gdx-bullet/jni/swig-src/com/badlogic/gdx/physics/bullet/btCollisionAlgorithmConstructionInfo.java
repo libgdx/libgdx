@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionAlgorithmConstructionInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCollisionAlgorithmConstructionInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCollisionAlgorithmConstructionInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCollisionAlgorithmConstructionInfo(long cPtr, boolean cMemoryOwn) {
+		this("btCollisionAlgorithmConstructionInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCollisionAlgorithmConstructionInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCollisionAlgorithmConstructionInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btCollisionAlgorithmConstructionInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionAlgorithmConstructionInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCollisionAlgorithmConstructionInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btCollisionAlgorithmConstructionInfo() {
     this(gdxBulletJNI.new_btCollisionAlgorithmConstructionInfo__SWIG_0(), true);
@@ -48,21 +56,21 @@ public class btCollisionAlgorithmConstructionInfo {
     this(gdxBulletJNI.new_btCollisionAlgorithmConstructionInfo__SWIG_1(btDispatcher.getCPtr(dispatcher), dispatcher, temp), true);
   }
 
-  public void setM_dispatcher1(btDispatcher value) {
-    gdxBulletJNI.btCollisionAlgorithmConstructionInfo_m_dispatcher1_set(swigCPtr, this, btDispatcher.getCPtr(value), value);
+  public void setDispatcher1(btDispatcher value) {
+    gdxBulletJNI.btCollisionAlgorithmConstructionInfo_dispatcher1_set(swigCPtr, this, btDispatcher.getCPtr(value), value);
   }
 
-  public btDispatcher getM_dispatcher1() {
-    long cPtr = gdxBulletJNI.btCollisionAlgorithmConstructionInfo_m_dispatcher1_get(swigCPtr, this);
+  public btDispatcher getDispatcher1() {
+    long cPtr = gdxBulletJNI.btCollisionAlgorithmConstructionInfo_dispatcher1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDispatcher(cPtr, false);
   }
 
-  public void setM_manifold(btPersistentManifold value) {
-    gdxBulletJNI.btCollisionAlgorithmConstructionInfo_m_manifold_set(swigCPtr, this, btPersistentManifold.getCPtr(value), value);
+  public void setManifold(btPersistentManifold value) {
+    gdxBulletJNI.btCollisionAlgorithmConstructionInfo_manifold_set(swigCPtr, this, btPersistentManifold.getCPtr(value), value);
   }
 
-  public btPersistentManifold getM_manifold() {
-    long cPtr = gdxBulletJNI.btCollisionAlgorithmConstructionInfo_m_manifold_get(swigCPtr, this);
+  public btPersistentManifold getManifold() {
+    long cPtr = gdxBulletJNI.btCollisionAlgorithmConstructionInfo_manifold_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btPersistentManifold(cPtr, false);
   }
 

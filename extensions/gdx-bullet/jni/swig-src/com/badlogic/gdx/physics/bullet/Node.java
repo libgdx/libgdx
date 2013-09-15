@@ -14,108 +14,116 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Node extends Feature {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected Node(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.Node_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected Node(long cPtr, boolean cMemoryOwn) {
+		this("Node", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(Node obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected Node(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.Node_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_Node(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setX(btVector3 value) {
+    gdxBulletJNI.Node_x_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(Node obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_Node(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_x(btVector3 value) {
-    gdxBulletJNI.Node_m_x_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_x() {
-    long cPtr = gdxBulletJNI.Node_m_x_get(swigCPtr, this);
+  public btVector3 getX() {
+    long cPtr = gdxBulletJNI.Node_x_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_q(btVector3 value) {
-    gdxBulletJNI.Node_m_q_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setQ(btVector3 value) {
+    gdxBulletJNI.Node_q_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_q() {
-    long cPtr = gdxBulletJNI.Node_m_q_get(swigCPtr, this);
+  public btVector3 getQ() {
+    long cPtr = gdxBulletJNI.Node_q_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_v(btVector3 value) {
-    gdxBulletJNI.Node_m_v_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setV(btVector3 value) {
+    gdxBulletJNI.Node_v_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_v() {
-    long cPtr = gdxBulletJNI.Node_m_v_get(swigCPtr, this);
+  public btVector3 getV() {
+    long cPtr = gdxBulletJNI.Node_v_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_f(btVector3 value) {
-    gdxBulletJNI.Node_m_f_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setF(btVector3 value) {
+    gdxBulletJNI.Node_f_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_f() {
-    long cPtr = gdxBulletJNI.Node_m_f_get(swigCPtr, this);
+  public btVector3 getF() {
+    long cPtr = gdxBulletJNI.Node_f_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_n(btVector3 value) {
-    gdxBulletJNI.Node_m_n_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setN(btVector3 value) {
+    gdxBulletJNI.Node_n_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_n() {
-    long cPtr = gdxBulletJNI.Node_m_n_get(swigCPtr, this);
+  public btVector3 getN() {
+    long cPtr = gdxBulletJNI.Node_n_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_im(float value) {
-    gdxBulletJNI.Node_m_im_set(swigCPtr, this, value);
+  public void setIm(float value) {
+    gdxBulletJNI.Node_im_set(swigCPtr, this, value);
   }
 
-  public float getM_im() {
-    return gdxBulletJNI.Node_m_im_get(swigCPtr, this);
+  public float getIm() {
+    return gdxBulletJNI.Node_im_get(swigCPtr, this);
   }
 
-  public void setM_area(float value) {
-    gdxBulletJNI.Node_m_area_set(swigCPtr, this, value);
+  public void setArea(float value) {
+    gdxBulletJNI.Node_area_set(swigCPtr, this, value);
   }
 
-  public float getM_area() {
-    return gdxBulletJNI.Node_m_area_get(swigCPtr, this);
+  public float getArea() {
+    return gdxBulletJNI.Node_area_get(swigCPtr, this);
   }
 
-  public void setM_leaf(btDbvtNode value) {
-    gdxBulletJNI.Node_m_leaf_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
+  public void setLeaf(btDbvtNode value) {
+    gdxBulletJNI.Node_leaf_set(swigCPtr, this, btDbvtNode.getCPtr(value), value);
   }
 
-  public btDbvtNode getM_leaf() {
-    long cPtr = gdxBulletJNI.Node_m_leaf_get(swigCPtr, this);
+  public btDbvtNode getLeaf() {
+    long cPtr = gdxBulletJNI.Node_leaf_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
   }
 
-  public void setM_battach(int value) {
-    gdxBulletJNI.Node_m_battach_set(swigCPtr, this, value);
+  public void setBattach(int value) {
+    gdxBulletJNI.Node_battach_set(swigCPtr, this, value);
   }
 
-  public int getM_battach() {
-    return gdxBulletJNI.Node_m_battach_get(swigCPtr, this);
+  public int getBattach() {
+    return gdxBulletJNI.Node_battach_get(swigCPtr, this);
   }
 
   public Node() {

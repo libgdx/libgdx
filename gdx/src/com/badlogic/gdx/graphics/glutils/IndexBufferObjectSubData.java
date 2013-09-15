@@ -146,7 +146,7 @@ public class IndexBufferObjectSubData implements IndexData {
 // gl.glBufferData(GL11.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 // .limit(), byteBuffer, usage);
 				gl.glBufferSubData(GL11.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-			} else if (Gdx.gl11 != null) {
+			} else if (Gdx.gl20 != null) {
 				GL20 gl = Gdx.gl20;
 // gl.glBufferData(GL20.GL_ELEMENT_ARRAY_BUFFER, byteBuffer
 // .limit(), byteBuffer, usage);

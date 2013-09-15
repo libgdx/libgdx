@@ -80,7 +80,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * The projection and transformation matrices are a state of the ShapeRenderer, just like the color and will be applied to all
  * shapes until they are changed.
  * 
- * @author mzechner, stbachmann
+ * @author mzechner
+ * @author stbachmann
  * @author Nathan Sweet */
 public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
@@ -129,6 +130,10 @@ public class ShapeRenderer {
 	/** Sets the {@link Color} to be used by shapes. */
 	public void setColor (float r, float g, float b, float a) {
 		this.color.set(r, g, b, a);
+	}
+
+	public Color getColor () {
+		return color;
 	}
 
 	/** Sets the projection matrix to be used for rendering. Usually this will be set to {@link Camera#combined}.
@@ -208,28 +213,24 @@ public class ShapeRenderer {
 
 	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public final void line (float x, float y, float z, float x2, float y2, float z2) {
-	
-		line( x, y, z, x2, y2, z2, color, color );
+		line(x, y, z, x2, y2, z2, color, color);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
-	 * Lazy method that "just" calls the "other" method and unpacks the Vector3 for you */
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. Lazy method that "just" calls the
+	 * "other" method and unpacks the Vector3 for you */
 	public final void line (Vector3 v0, Vector3 v1) {
-		
-		line( v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color );
+		line(v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color);
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public final void line (float x, float y, float x2, float y2) {
-		
-		line( x, y, 0.0f, x2, y2, 0.0f, color, color );
+		line(x, y, 0.0f, x2, y2, 0.0f, color, color);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
-	 * Lazy method that "just" calls the "other" method and unpacks the Vector2 for you */
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. Lazy method that "just" calls the
+	 * "other" method and unpacks the Vector2 for you */
 	public final void line (Vector2 v0, Vector2 v1) {
-		
-		line( v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color );
+		line(v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color);
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
@@ -237,12 +238,11 @@ public class ShapeRenderer {
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
 	public final void line (float x, float y, float x2, float y2, Color c1, Color c2) {
-		
-		line( x, y, 0.0f, x2, y2, 0.0f, c1, c2 );
+		line(x, y, 0.0f, x2, y2, 0.0f, c1, c2);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
-	 * with 2 colors interpolated between start & end point.
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn with 2 colors
+	 * interpolated between start & end point.
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
 	public void line (float x, float y, float z, float x2, float y2, float z2, Color c1, Color c2) {
@@ -514,7 +514,7 @@ public class ShapeRenderer {
 	public void arc (float x, float y, float radius, float start, float angle) {
 		arc(x, y, radius, start, angle, Math.max(1, (int)(6 * (float)Math.cbrt(radius) * (angle / 360.0f))));
 	}
-	
+
 	public void arc (float x, float y, float radius, float start, float angle, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
@@ -526,10 +526,10 @@ public class ShapeRenderer {
 		float sin = MathUtils.sin(theta);
 		float cx = radius * MathUtils.cos(start * MathUtils.degreesToRadians);
 		float cy = radius * MathUtils.sin(start * MathUtils.degreesToRadians);
-		
+
 		if (currType == ShapeType.Line) {
 			checkFlush(segments * 2 + 2);
-			
+
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x, y, 0);
 			renderer.color(color.r, color.g, color.b, color.a);
@@ -570,7 +570,7 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x + cx, y + cy, 0);
 	}
-	
+
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
 		circle(x, y, radius, Math.max(1, (int)(6 * (float)Math.cbrt(radius))));
@@ -743,7 +743,7 @@ public class ShapeRenderer {
 	public void polygon (float[] vertices, int offset, int count) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
-		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have a pair number of vertices.");
+		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
 
 		checkDirty();
 		checkFlush(count);
@@ -784,7 +784,7 @@ public class ShapeRenderer {
 	public void polyline (float[] vertices, int offset, int count) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 4) throw new IllegalArgumentException("Polylines must contain at least 2 points.");
-		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have a pair number of vertices.");
+		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have an even number of vertices.");
 
 		checkDirty();
 		checkFlush(count);
@@ -835,6 +835,10 @@ public class ShapeRenderer {
 	/** Returns the current {@link ShapeType} used */
 	public ShapeType getCurrentType () {
 		return currType;
+	}
+
+	public ImmediateModeRenderer getRenderer () {
+		return renderer;
 	}
 
 	public void dispose () {

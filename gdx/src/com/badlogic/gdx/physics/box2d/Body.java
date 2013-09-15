@@ -16,10 +16,9 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Array;
 
 /** A rigid body. These are created via World.CreateBody.
  * @author mzechner */
@@ -39,10 +38,10 @@ public class Body {
 	private final World world;
 
 	/** Fixtures of this body **/
-	private ArrayList<Fixture> fixtures = new ArrayList<Fixture>(2);
+	private Array<Fixture> fixtures = new Array<Fixture>(2);
 
 	/** Joints of this body **/
-	protected ArrayList<JointEdge> joints = new ArrayList<JointEdge>(2);
+	protected Array<JointEdge> joints = new Array<JointEdge>(2);
 
 	/** user data **/
 	private Object userData;
@@ -59,7 +58,7 @@ public class Body {
 	protected void reset (long addr) {
 		this.addr = addr;
 		this.userData = null;
-		for (int i = 0; i < fixtures.size(); i++)
+		for (int i = 0; i < fixtures.size; i++)
 			this.world.freeFixtures.free(fixtures.get(i));
 		fixtures.clear();
 		this.joints.clear();
@@ -127,7 +126,7 @@ public class Body {
 	public void destroyFixture (Fixture fixture) {
 		jniDestroyFixture(addr, fixture.addr);
 		this.world.fixtures.remove(fixture.addr);
-		this.fixtures.remove(fixture);
+		this.fixtures.removeValue(fixture, true);
 		this.world.freeFixtures.free(fixture);
 	}
 
@@ -757,19 +756,19 @@ inline b2BodyType getBodyType( int type )
 	*/
 
 	/** Get the list of all fixtures attached to this body. Do not modify the list! */
-	public ArrayList<Fixture> getFixtureList () {
+	public Array<Fixture> getFixtureList () {
 		return fixtures;
 	}
 
 	/** Get the list of all joints attached to this body. Do not modify the list! */
-	public ArrayList<JointEdge> getJointList () {
+	public Array<JointEdge> getJointList () {
 		return joints;
 	}
 
 	/** Get the list of all contacts attached to this body.
 	 * @warning this list changes during the time step and you may miss some collisions if you don't use b2ContactListener. Do not
 	 *          modify the returned list! */
-// ArrayList<ContactEdge> getContactList()
+// Array<ContactEdge> getContactList()
 // {
 // return contacts;
 // }

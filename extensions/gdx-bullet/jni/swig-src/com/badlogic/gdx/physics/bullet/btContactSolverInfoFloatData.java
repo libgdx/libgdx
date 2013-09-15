@@ -13,207 +13,215 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btContactSolverInfoFloatData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btContactSolverInfoFloatData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btContactSolverInfoFloatData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btContactSolverInfoFloatData(long cPtr, boolean cMemoryOwn) {
+		this("btContactSolverInfoFloatData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btContactSolverInfoFloatData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btContactSolverInfoFloatData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btContactSolverInfoFloatData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTau(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_tau_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btContactSolverInfoFloatData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float getTau() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_tau_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setDamping(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_damping_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btContactSolverInfoFloatData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public float getDamping() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_damping_get(swigCPtr, this);
   }
 
-  public void setM_tau(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_tau_set(swigCPtr, this, value);
+  public void setFriction(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_friction_set(swigCPtr, this, value);
   }
 
-  public float getM_tau() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_tau_get(swigCPtr, this);
+  public float getFriction() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_friction_get(swigCPtr, this);
   }
 
-  public void setM_damping(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_damping_set(swigCPtr, this, value);
+  public void setTimeStep(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_timeStep_set(swigCPtr, this, value);
   }
 
-  public float getM_damping() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_damping_get(swigCPtr, this);
+  public float getTimeStep() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_timeStep_get(swigCPtr, this);
   }
 
-  public void setM_friction(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_friction_set(swigCPtr, this, value);
+  public void setRestitution(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_restitution_set(swigCPtr, this, value);
   }
 
-  public float getM_friction() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_friction_get(swigCPtr, this);
+  public float getRestitution() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_restitution_get(swigCPtr, this);
   }
 
-  public void setM_timeStep(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_timeStep_set(swigCPtr, this, value);
+  public void setMaxErrorReduction(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_maxErrorReduction_set(swigCPtr, this, value);
   }
 
-  public float getM_timeStep() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_timeStep_get(swigCPtr, this);
+  public float getMaxErrorReduction() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_maxErrorReduction_get(swigCPtr, this);
   }
 
-  public void setM_restitution(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_restitution_set(swigCPtr, this, value);
+  public void setSor(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_sor_set(swigCPtr, this, value);
   }
 
-  public float getM_restitution() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_restitution_get(swigCPtr, this);
+  public float getSor() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_sor_get(swigCPtr, this);
   }
 
-  public void setM_maxErrorReduction(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_maxErrorReduction_set(swigCPtr, this, value);
+  public void setErp(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_erp_set(swigCPtr, this, value);
   }
 
-  public float getM_maxErrorReduction() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_maxErrorReduction_get(swigCPtr, this);
+  public float getErp() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_erp_get(swigCPtr, this);
   }
 
-  public void setM_sor(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_sor_set(swigCPtr, this, value);
+  public void setErp2(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_erp2_set(swigCPtr, this, value);
   }
 
-  public float getM_sor() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_sor_get(swigCPtr, this);
+  public float getErp2() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_erp2_get(swigCPtr, this);
   }
 
-  public void setM_erp(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_erp_set(swigCPtr, this, value);
+  public void setGlobalCfm(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_globalCfm_set(swigCPtr, this, value);
   }
 
-  public float getM_erp() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_erp_get(swigCPtr, this);
+  public float getGlobalCfm() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_globalCfm_get(swigCPtr, this);
   }
 
-  public void setM_erp2(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_erp2_set(swigCPtr, this, value);
+  public void setSplitImpulsePenetrationThreshold(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_splitImpulsePenetrationThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_erp2() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_erp2_get(swigCPtr, this);
+  public float getSplitImpulsePenetrationThreshold() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_splitImpulsePenetrationThreshold_get(swigCPtr, this);
   }
 
-  public void setM_globalCfm(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_globalCfm_set(swigCPtr, this, value);
+  public void setSplitImpulseTurnErp(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_splitImpulseTurnErp_set(swigCPtr, this, value);
   }
 
-  public float getM_globalCfm() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_globalCfm_get(swigCPtr, this);
+  public float getSplitImpulseTurnErp() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_splitImpulseTurnErp_get(swigCPtr, this);
   }
 
-  public void setM_splitImpulsePenetrationThreshold(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_splitImpulsePenetrationThreshold_set(swigCPtr, this, value);
+  public void setLinearSlop(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_linearSlop_set(swigCPtr, this, value);
   }
 
-  public float getM_splitImpulsePenetrationThreshold() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_splitImpulsePenetrationThreshold_get(swigCPtr, this);
+  public float getLinearSlop() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_linearSlop_get(swigCPtr, this);
   }
 
-  public void setM_splitImpulseTurnErp(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_splitImpulseTurnErp_set(swigCPtr, this, value);
+  public void setWarmstartingFactor(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_warmstartingFactor_set(swigCPtr, this, value);
   }
 
-  public float getM_splitImpulseTurnErp() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_splitImpulseTurnErp_get(swigCPtr, this);
+  public float getWarmstartingFactor() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_warmstartingFactor_get(swigCPtr, this);
   }
 
-  public void setM_linearSlop(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_linearSlop_set(swigCPtr, this, value);
+  public void setMaxGyroscopicForce(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_maxGyroscopicForce_set(swigCPtr, this, value);
   }
 
-  public float getM_linearSlop() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_linearSlop_get(swigCPtr, this);
+  public float getMaxGyroscopicForce() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_maxGyroscopicForce_get(swigCPtr, this);
   }
 
-  public void setM_warmstartingFactor(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_warmstartingFactor_set(swigCPtr, this, value);
+  public void setSingleAxisRollingFrictionThreshold(float value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_singleAxisRollingFrictionThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_warmstartingFactor() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_warmstartingFactor_get(swigCPtr, this);
+  public float getSingleAxisRollingFrictionThreshold() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_singleAxisRollingFrictionThreshold_get(swigCPtr, this);
   }
 
-  public void setM_maxGyroscopicForce(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_maxGyroscopicForce_set(swigCPtr, this, value);
+  public void setNumIterations(int value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_numIterations_set(swigCPtr, this, value);
   }
 
-  public float getM_maxGyroscopicForce() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_maxGyroscopicForce_get(swigCPtr, this);
+  public int getNumIterations() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_numIterations_get(swigCPtr, this);
   }
 
-  public void setM_singleAxisRollingFrictionThreshold(float value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_singleAxisRollingFrictionThreshold_set(swigCPtr, this, value);
+  public void setSolverMode(int value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_solverMode_set(swigCPtr, this, value);
   }
 
-  public float getM_singleAxisRollingFrictionThreshold() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_singleAxisRollingFrictionThreshold_get(swigCPtr, this);
+  public int getSolverMode() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_solverMode_get(swigCPtr, this);
   }
 
-  public void setM_numIterations(int value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_numIterations_set(swigCPtr, this, value);
+  public void setRestingContactRestitutionThreshold(int value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_restingContactRestitutionThreshold_set(swigCPtr, this, value);
   }
 
-  public int getM_numIterations() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_numIterations_get(swigCPtr, this);
+  public int getRestingContactRestitutionThreshold() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_restingContactRestitutionThreshold_get(swigCPtr, this);
   }
 
-  public void setM_solverMode(int value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_solverMode_set(swigCPtr, this, value);
+  public void setMinimumSolverBatchSize(int value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_minimumSolverBatchSize_set(swigCPtr, this, value);
   }
 
-  public int getM_solverMode() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_solverMode_get(swigCPtr, this);
+  public int getMinimumSolverBatchSize() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_minimumSolverBatchSize_get(swigCPtr, this);
   }
 
-  public void setM_restingContactRestitutionThreshold(int value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_restingContactRestitutionThreshold_set(swigCPtr, this, value);
+  public void setSplitImpulse(int value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_splitImpulse_set(swigCPtr, this, value);
   }
 
-  public int getM_restingContactRestitutionThreshold() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_restingContactRestitutionThreshold_get(swigCPtr, this);
+  public int getSplitImpulse() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_splitImpulse_get(swigCPtr, this);
   }
 
-  public void setM_minimumSolverBatchSize(int value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_minimumSolverBatchSize_set(swigCPtr, this, value);
+  public void setPadding(String value) {
+    gdxBulletJNI.btContactSolverInfoFloatData_padding_set(swigCPtr, this, value);
   }
 
-  public int getM_minimumSolverBatchSize() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_minimumSolverBatchSize_get(swigCPtr, this);
-  }
-
-  public void setM_splitImpulse(int value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_splitImpulse_set(swigCPtr, this, value);
-  }
-
-  public int getM_splitImpulse() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_splitImpulse_get(swigCPtr, this);
-  }
-
-  public void setM_padding(String value) {
-    gdxBulletJNI.btContactSolverInfoFloatData_m_padding_set(swigCPtr, this, value);
-  }
-
-  public String getM_padding() {
-    return gdxBulletJNI.btContactSolverInfoFloatData_m_padding_get(swigCPtr, this);
+  public String getPadding() {
+    return gdxBulletJNI.btContactSolverInfoFloatData_padding_get(swigCPtr, this);
   }
 
   public btContactSolverInfoFloatData() {

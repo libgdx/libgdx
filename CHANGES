@@ -1,4 +1,12 @@
 [0.9.9]
+- MipMapGenerator methods now don't take disposePixmap argument anymore
+- added GLTexture, base class for all textures, encapsulates target (2d, cubemap, ...)
+- added CubeMap, 6 sided texture
+- changed TextureData#consumeCompressedData, takes target now
+- added RoboVM backend jar and native libs (libObjectAL, libgdx, in ios/ folder of distribution)
+- added RoboVM backend to build
+- changed Bullet wrapper API, see http://www.badlogicgames.com/wordpress/?p=3150
+- changed MusicLoader and SoundLoader to be asynchronous loaders
 - changed behaviour of Net#sendHttpRequest() so HttpResponseListener#handleHttpResponse() callback is executed in worker thread instead of main thread
 - added Bresenham2, for drawing lines on an integer 2D grid
 - added GridPoint2 and GridPoint3, representing integer points in a 2D or 3D grid
@@ -57,6 +65,13 @@
 - Changed AssetErrorListener#error to have AssetDescriptor to enable access to parameters of failed asset.
 - Changed SelectBoxStyle to have ScrollPaneStyle and ListStyle for fully customizing the drop down list. http://www.badlogicgames.com/wordpress/?p=3110
 - AssetLoader now takes a FileHandle that is the resolved file name. The AssetLoader no longer has to resolve the file name, so we can prevent it from being resolved twice.
+- Rewrote EarClippingTriangulator to not allocate (no more Vector2s).
+- Added ParticleEffectLoader to make AssetManager load ParticleEffects
+- Added GeometryUtils, more Intersector functions, DelaunayTriangulator, ConvexHull.
+- Added getBoundingBox to ParticleEffect
+- EarClippingTriangulator changed to return triangle indices.
+- PolygonSpriteBatch and friends refactored to use triangle indices.
+- Added add(T, float), remove(int), remove(T) and clear() methods to BinaryHeap
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

@@ -72,6 +72,13 @@ public class ShortArray {
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
 
+	/** Casts the specified value to short and adds it. */
+	public void add (int value) {
+		short[] items = this.items;
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size++] = (short)value;
+	}
+
 	public void add (short value) {
 		short[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
@@ -244,6 +251,7 @@ public class ShortArray {
 	}
 
 	public void reverse () {
+		short[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
 			short temp = items[i];
@@ -253,6 +261,7 @@ public class ShortArray {
 	}
 
 	public void shuffle () {
+		short[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = MathUtils.random(i);
 			short temp = items[i];

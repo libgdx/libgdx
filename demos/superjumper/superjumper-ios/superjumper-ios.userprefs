@@ -1,17 +1,17 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.6.1" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="superjumper-ios/Info.plist">
+  <MonoDevelop.Ide.Workbench ActiveDocument="superjumper-ios/Main.cs">
     <Files>
-      <File FileName="superjumper-ios/Main.cs" Line="1" Column="1" />
+      <File FileName="superjumper-ios/Main.cs" Line="8" Column="11" />
       <File FileName="superjumper-ios/Info.plist" />
-      <File FileName="../../../backends/gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSGraphics.java" Line="168" Column="3" />
+      <File FileName="../../../backends/gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSGraphics.java" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="superjumper-ios" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Info.plist" selected="True" />
+            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>

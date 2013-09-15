@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -27,13 +24,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.EarClippingTriangulator;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.ShortArray;
 
 public class LocalLwjglTest extends ApplicationAdapter {
 	ShapeRenderer renderer;
 	OrthographicCamera camera;
 	float[] coords = {-2.0f, 0.0f, -2.0f, 0.5f, 0.0f, 1.0f, 0.5f, 2.875f, 1.0f, 0.5f, 1.5f, 1.0f, 2.0f, 1.0f, 2.0f, 0.0f};
-	private List<Vector2> triangles;
+	private ShortArray triangles;
 
 	@Override
 	public void create () {
@@ -42,11 +39,7 @@ public class LocalLwjglTest extends ApplicationAdapter {
 		camera.position.set(0, 0, 0);
 		camera.update();
 
-		List<Vector2> poly = new ArrayList<Vector2>();
-		for (int i = 0; i < coords.length; i += 2) {
-			poly.add(new Vector2(coords[i], coords[i + 1]));
-		}
-		triangles = new EarClippingTriangulator().computeTriangles(poly);
+		triangles = new EarClippingTriangulator().computeTriangles(coords);
 	}
 
 	@Override
@@ -66,11 +59,14 @@ public class LocalLwjglTest extends ApplicationAdapter {
 		renderer.setColor(1, 0, 0, 1);
 		renderer.translate(0, -4, 0);
 		renderer.begin(ShapeType.Filled);
-		for (int i = 0; i < triangles.size(); i += 3) {
-			Vector2 v1 = triangles.get(i);
-			Vector2 v2 = triangles.get(i + 1);
-			Vector2 v3 = triangles.get(i + 2);
-			renderer.triangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
+		for (int i = 0; i < triangles.size; i += 6) {
+			float p1x = coords[triangles.get(i)];
+			float p1y = coords[triangles.get(i + 1)];
+			float p2x = coords[triangles.get(i + 2)];
+			float p2y = coords[triangles.get(i + 3)];
+			float p3x = coords[triangles.get(i + 4)];
+			float p3y = coords[triangles.get(i + 5)];
+			renderer.triangle(p1x, p1y, p2x, p2y, p3x, p3y);
 		}
 		renderer.end();
 		renderer.identity();

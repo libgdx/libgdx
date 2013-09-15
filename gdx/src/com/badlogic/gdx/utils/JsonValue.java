@@ -3,10 +3,14 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /** Container for a JSON object, array, string, double, long, boolean, or null.
  * <p>
- * JsonValue children are a linked list. Iteration of arrays or objects is easily done using a for loop, like the example below.
- * This is much more efficient than accessing children by index when there are many children.<br>
+ * JsonValue children are a linked list. Iteration of arrays or objects is easily done using a for loop, either with the enhanced
+ * for loop syntactic sugar or like the example below. This is much more efficient than accessing children by index when there are
+ * many children.<br>
  * 
  * <pre>
  * JsonValue map = ...;
@@ -14,7 +18,7 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * 	System.out.println(entry.name() + " = " + entry.asString());
  * </pre>
  * @author Nathan Sweet */
-public class JsonValue {
+public class JsonValue implements Iterable<JsonValue> {
 	private ValueType type;
 
 	private String stringValue;
@@ -223,6 +227,11 @@ public class JsonValue {
 			return longValue != 0;
 		}
 		throw new IllegalStateException("Value cannot be converted to boolean: " + type);
+	}
+
+	/** Returns true if a child with the specified name exists and has a child. */
+	public boolean hasChild (String name) {
+		return getChild(name) != null;
 	}
 
 	/** Finds the child with the specified name and returns its first child.
@@ -575,5 +584,40 @@ public class JsonValue {
 
 	public enum ValueType {
 		object, array, stringValue, doubleValue, longValue, booleanValue, nullValue
+	}
+
+	public JsonIterator iterator () {
+		return new JsonIterator();
+	}
+
+	public class JsonIterator implements Iterator<JsonValue>, Iterable<JsonValue> {
+		JsonValue entry = child;
+		JsonValue current;
+
+		public boolean hasNext () {
+			return entry != null;
+		}
+
+		public JsonValue next () {
+			current = entry;
+			if (current == null) throw new NoSuchElementException();
+			entry = current.next;
+			return current;
+		}
+
+		public void remove () {
+			if (current.prev == null) {
+				child = current.next;
+				if (child != null) child.prev = null;
+			} else {
+				current.prev.next = current.next;
+				if (current.next != null) current.next.prev = current.prev;
+			}
+			size--;
+		}
+
+		public Iterator<JsonValue> iterator () {
+			return this;
+		}
 	}
 }
