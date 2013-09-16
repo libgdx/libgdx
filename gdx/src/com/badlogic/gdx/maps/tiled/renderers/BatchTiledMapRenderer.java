@@ -85,7 +85,6 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	@Override
 	public void render () {
-		AnimatedTiledMapTile.updateAnimationBaseTime();
 		beginRender();
 		for (MapLayer layer : map.getLayers()) {
 			if (layer.isVisible()) {
@@ -103,7 +102,6 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	@Override
 	public void render (int[] layers) {
-		AnimatedTiledMapTile.updateAnimationBaseTime();
 		beginRender();
 		for (int layerIdx : layers) {
 			MapLayer layer = map.getLayers().get(layerIdx);
@@ -122,6 +120,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	/** Called before the rendering of all layers starts. */
 	protected void beginRender () {
+		AnimatedTiledMapTile.updateAnimationBaseTime();
 		spriteBatch.begin();
 	}
 
