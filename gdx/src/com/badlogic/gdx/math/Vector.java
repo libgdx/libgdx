@@ -75,9 +75,16 @@ public interface Vector<T extends Vector<T>> {
 	 * @return the distance between this and the other vector */
 	float dst (T v);
 
-	/** @param v The other vector
+	/** This is much faster to calculate than {@link Vector#dst(Vector)}
+	 * It avoids a calculating square root, so it is mostly useful for comparisons
+	 * @param v The other vector
 	 * @return the squared distance between this and the other vector */
 	float dst2 (T v);
+
+	/** @param v The other vector
+	 * @return a fast, approximate distance between this and the other vector
+	 */
+	float approxDst(T v);
 
 	/** Linearly interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is stored
 	 * in this vector.
