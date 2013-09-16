@@ -67,7 +67,7 @@ public class FloatArray {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public FloatArray (boolean ordered, float[] array, int startIndex, int count) {
-		this(ordered, array.length);
+		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
@@ -88,7 +88,7 @@ public class FloatArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (float[] array) {
+	public void addAll (float... array) {
 		addAll(array, 0, array.length);
 	}
 
@@ -219,6 +219,7 @@ public class FloatArray {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 

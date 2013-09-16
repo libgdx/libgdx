@@ -8,6 +8,9 @@ import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 import com.badlogic.gdx.tests.gwt.GwtTestWrapper;
 
 public class IOSRobovmTests extends IOSApplication.Delegate {
+	class InnerClass {
+	}
+	
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();

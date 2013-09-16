@@ -256,8 +256,8 @@ public class StringBuilder implements Appendable, CharSequence {
 			if (start >= 0 && 0 <= length && length <= value.length - start) {
 				if (length != 0) {
 					move(length, index);
-					System.arraycopy(value, start, value, index, length);
-					length += length;
+					System.arraycopy(value, start, chars, index, length);
+					this.length += length;
 				}
 				return;
 			}

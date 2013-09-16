@@ -25,7 +25,7 @@ http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/libgdx-log
 0.9.8
 
 [stable-url]
-http://libgdx.googlecode.com/files/libgdx-0.9.8.zip
+http://libgdx.badlogicgames.com/releases/libgdx-0.9.8.zip
 
 [latest-url]
 http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip
@@ -44,9 +44,10 @@ gdx-backend-lwjgl-sources.jar
 gdx-natives.jar
 
 [libs-android]
+armeabi/libandroidgl20.so
 armeabi/libgdx.so
+armeabi-v7a/libandroidgl20.so
 armeabi-v7a/libgdx.so
-x86/libgdx.so
 gdx-backend-android.jar
 gdx-backend-android-sources.jar
 
@@ -75,3 +76,8 @@ ios/ikvm/bin/ikvm.exe
 ios/ikvm/bin/ikvmc.exe
 ios/ikvm/bin/ikvmstub.exe
 ios/ikvm/bin/libikvm-natives.a
+
+[libs-robovm]
+gdx-backend-robovm.jar
+ios/libgdx.a
+ios/libObjectAL.a
