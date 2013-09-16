@@ -1,25 +1,22 @@
+/*******************************************************************************
+ * Copyright 2013 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.maps.tiled.renderers;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,9 +27,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
-public class IsometricStaggeredTiledMapRenderer extends  BatchTiledMapRenderer {
-	private TiledMap map;
-
+public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
 	private float[] vertices = new float[20];
 
 	public IsometricStaggeredTiledMapRenderer(TiledMap map) {
