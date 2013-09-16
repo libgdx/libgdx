@@ -25,8 +25,6 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	protected boolean ownsSpriteBatch;
 
-	protected boolean doSpriteBatchBeginEnd = true;
-
 	public TiledMap getMap () {
 		return map;
 	}
@@ -85,16 +83,10 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		viewBounds.set(x, y, width, height);
 	}
 
-	/** Disables/Enables the begin/end calls to the spriteBatch during rendering. Disable this if you want to control the
-	 * spriteBatch from outside. By default this is enabled. */
-	public void setSpriteBatchBeginEnd (boolean doSpriteBatchBeginEnd) {
-		this.doSpriteBatchBeginEnd = doSpriteBatchBeginEnd;
-	}
-
 	@Override
 	public void render () {
 		AnimatedTiledMapTile.updateAnimationBaseTime();
-		if (doSpriteBatchBeginEnd) spriteBatch.begin();
+		beginRender();
 		for (MapLayer layer : map.getLayers()) {
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
@@ -106,13 +98,13 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 				}
 			}
 		}
-		if (doSpriteBatchBeginEnd) spriteBatch.end();
+		endRender();
 	}
 
 	@Override
 	public void render (int[] layers) {
 		AnimatedTiledMapTile.updateAnimationBaseTime();
-		if (doSpriteBatchBeginEnd) spriteBatch.begin();
+		beginRender();
 		for (int layerIdx : layers) {
 			MapLayer layer = map.getLayers().get(layerIdx);
 			if (layer.isVisible()) {
@@ -125,7 +117,17 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 				}
 			}
 		}
-		if (doSpriteBatchBeginEnd) spriteBatch.end();
+		endRender();
+	}
+
+	/** Called before the rendering of all layers starts. */
+	protected void beginRender () {
+		spriteBatch.begin();
+	}
+
+	/** Called after the rendering of all layers ended. */
+	protected void endRender () {
+		spriteBatch.end();
 	}
 
 	@Override
