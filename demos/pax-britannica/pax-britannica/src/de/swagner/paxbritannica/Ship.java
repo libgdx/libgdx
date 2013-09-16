@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import de.swagner.paxbritannica.factory.FactoryProduction;
 
@@ -29,7 +30,7 @@ public class Ship extends Sprite {
 	public Vector2 facing = new Vector2();
 	
 	public Vector2 collisionCenter = new Vector2();
-	public ArrayList<Vector2> collisionPoints = new ArrayList<Vector2>();
+	public Array<Vector2> collisionPoints = new Array<Vector2>();
 
 	public boolean alive = true;
 
