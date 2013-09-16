@@ -135,7 +135,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * (diffuse.rgb * v_lightDiffuse);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse);
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#else
 		#if defined(specularTextureFlag) && defined(specularColorFlag)
@@ -160,7 +160,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * ((diffuse.rgb * v_lightDiffuse) + specular);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#endif //lightingFlag
 
