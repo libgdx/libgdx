@@ -115,11 +115,13 @@ public class BitmapFontDistanceFieldTest extends GdxTest {
 		spriteBatch.flush();
 		y += 10 + 2 * descriptionFont.getLineHeight();
 		
-		if (linearFiltering) {
-			font.getRegion().getTexture().setFilter(TextureFilter.MipMapLinearNearest, TextureFilter.Linear);
-		} else {
-			font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+		//set filters for each page
+		TextureFilter minFilter = linearFiltering ? TextureFilter.MipMapLinearNearest : TextureFilter.Nearest;
+		TextureFilter magFilter = linearFiltering ? TextureFilter.Linear : TextureFilter.Nearest;
+		for (int i=0; i<font.getRegions().length; i++) {
+			font.getRegion(i).getTexture().setFilter(minFilter, magFilter);
 		}
+		
 		if (useShader) {
 			spriteBatch.setShader(distanceFieldShader);
 		} else {
