@@ -19,8 +19,8 @@ void main() {
 	
 	// Pass attributes values to the fragment shader
 	passLights();
-	passColor();
-	passTexCoord0();
+	pushColor();
+	pushTexCoord0();
 	passFog(calculateFog(g_position, u_cameraPosition));
 	passShadowMapUV(calcShadowMapUV(g_position));
 }
@@ -53,6 +53,8 @@ varying float v_fog;
 
 void main() {
 	pullLights();
+	pullColor();
+	pullTexCoord0();
 	
 	vec4 diffuse = applyColorDiffuse(g_color);
 

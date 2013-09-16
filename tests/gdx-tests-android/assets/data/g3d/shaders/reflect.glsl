@@ -23,7 +23,7 @@ void main() {
 	
 	v_reflect = reflect(-viewDir, g_normal);
 	
-	passTexCoord0();
+	pushTexCoord0();
 }
 
 
@@ -50,6 +50,8 @@ uniform samplerCube u_environmentCubemap;
 #endif
 
 void main() {
+	pullTexCoord0();
+	
 #ifdef normalTextureFlag
 	vec4 N = vec4(normalize(texture2D(u_normalTexture, g_texCoord0).xyz * 2.0 - 1.0), 1.0);
 #else

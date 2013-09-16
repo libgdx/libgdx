@@ -33,8 +33,8 @@ void main() {
 	v_viewDir = normalize(u_cameraPosition.xyz - g_position.xyz) * worldToTangent;
 	v_pass = u_pass;
 	
-	passColor();
-	passTexCoord0();	
+	pushColor();
+	pushTexCoord0();	
 }
 
 
@@ -65,6 +65,9 @@ varying vec3 v_viewDir;
 varying float v_pass;
 
 void main() {
+	pullColor();
+	pullTexCoord0();
+	
 	vec4 diffuse = applyColorDiffuse(g_color);
 	vec3 specular = fetchColorSpecular();
 
