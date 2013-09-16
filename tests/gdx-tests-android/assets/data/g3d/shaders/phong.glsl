@@ -98,7 +98,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * (diffuse.rgb * g_lightDiffuse);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * g_lightDiffuse);
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#else
 		vec3 specular = applyColorSpecular(g_lightSpecular);
@@ -115,7 +115,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * ((diffuse.rgb * g_lightDiffuse) + specular);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * g_lightDiffuse) + specular;
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#endif //lightingFlag
 
