@@ -28,8 +28,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 public class IsometricStaggeredTiledMapRenderer extends BatchTiledMapRenderer {
-	private TiledMap map;
-
 	private float[] vertices = new float[20];
 
 	public IsometricStaggeredTiledMapRenderer(TiledMap map) {
