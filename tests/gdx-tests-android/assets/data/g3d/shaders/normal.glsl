@@ -17,7 +17,7 @@ void main() {
 	g_tangent = normalize(u_normalMatrix * applySkinning(g_tangent));
 	pushBinormal();
 	pushTangent();
-	passTexCoord0();
+	pushTexCoord0();
 #endif
 	
 	passNormalValue(normalize(u_normalMatrix * applySkinning(g_normal)));
