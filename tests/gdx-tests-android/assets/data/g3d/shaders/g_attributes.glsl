@@ -65,14 +65,9 @@
 ////////// POSITION ATTRIBUTE - FRAGMENT
 ////////////////////////////////////////////////////////////////////////////////////
 #include "common.glsl:nop"
- 	varying vec4 v_position;
-#if defined(positionFlag)
-	vec4 g_position = v_position;
-	#define pullPosition() nop()
-#else
-	vec4 g_position = vec4(0.0, 0.0, 0.0, 1.0);
-	#define pullPosition() (g_position = v_position)
-#endif
+varying vec4 v_position;
+vec4 g_position = vec4(0.0, 0.0, 0.0, 1.0);
+#define pullPosition() (g_position = v_position)
 	
 [g_colorVS]
 ////////////////////////////////////////////////////////////////////////////////////
@@ -97,14 +92,9 @@
 ////////// COLOR ATTRIBUTE - FRAGMENT
 ///////////////////////////////////////////////////////////////////////////////////
 #include "common.glsl:nop"
- 	varying vec4 v_color;
-#if defined(colorFlag)
-	vec4 g_color = v_color;
-	#define pullColor() nop()
-#else
-	vec4 g_color = vec4(1.0, 1.0, 1.0, 1.0);
-	#define pullColor()	(g_color = v_color)
-#endif
+varying vec4 v_color;
+vec4 g_color = vec4(1.0, 1.0, 1.0, 1.0);
+#define pullColor()	(g_color = v_color)
 
 [g_normalVS]
 ////////////////////////////////////////////////////////////////////////////////////
@@ -129,14 +119,9 @@
 ////////// NORMAL ATTRIBUTE - FRAGMENT
 ///////////////////////////////////////////////////////////////////////////////////
 #include "common.glsl:nop"
-	varying vec3 v_normal;
-#if defined(normalFlag)
-	vec3 g_normal = v_normal;
-	#define pullNormal() nop()
-#else
-	vec3 g_normal = vec3(0.0, 0.0, 1.0);
-	#define pullNormal() (g_normal = v_normal)
-#endif
+varying vec3 v_normal;
+vec3 g_normal = vec3(0.0, 0.0, 1.0);
+#define pullNormal() (g_normal = v_normal)
 
 [g_binormalVS]
 ////////////////////////////////////////////////////////////////////////////////////
@@ -161,14 +146,9 @@
 ////////// BINORMAL ATTRIBUTE - FRAGMENT
 ///////////////////////////////////////////////////////////////////////////////////
 #include "common.glsl:nop"
-	varying vec3 v_binormal;
-#if defined(binormalFlag)
-	vec3 g_binormal = v_binormal;
-	#define pullBinormal() nop()
-#else
-	vec3 g_binormal = vec3(0.0, 0.0, 1.0);
-	#define pullBinormal() (g_binormal = v_binormal)
-#endif
+varying vec3 v_binormal;
+vec3 g_binormal = vec3(0.0, 0.0, 1.0);
+#define pullBinormal() (g_binormal = v_binormal)
 
 [g_tangentVS]
 ////////////////////////////////////////////////////////////////////////////////////
@@ -193,14 +173,9 @@
 ////////// TANGENT ATTRIBUTE - FRAGMENT
 ///////////////////////////////////////////////////////////////////////////////////
 #include "common.glsl:nop"
-	varying vec3 v_tangent;
-#if defined(tangentFlag)
-	vec3 g_tangent = v_tangent;
-	#define pullTangent() nop()
-#else
-	vec3 g_tangent = vec3(1.0, 0.0, 0.0);
-	#define pullTangent() (g_tangent = v_tangent)
-#endif
+varying vec3 v_tangent;
+vec3 g_tangent = vec3(1.0, 0.0, 0.0);
+#define pullTangent() (g_tangent = v_tangent)
 
 [g_texCoord0VS]
 ////////////////////////////////////////////////////////////////////////////////////
@@ -225,11 +200,6 @@
 ////////// TEXCOORD0 ATTRIBUTE - FRAGMENT
 ///////////////////////////////////////////////////////////////////////////////////
 #include "common.glsl:nop"
-	varying vec2 v_texCoord0;
-#if defined(texCoord0Flag)
-	vec2 g_texCoord0 = v_texCoord0;
-	#define pullTexCoord0() nop()
-#else
-	vec2 g_texCoord0 = vec2(0.0, 0.0);
-	#define pullTexCoord0() (g_texCoord0 = v_texCoord0)
-#endif
+varying vec2 v_texCoord0;
+vec2 g_texCoord0 = vec2(0.0, 0.0);
+#define pullTexCoord0() (g_texCoord0 = v_texCoord0)
