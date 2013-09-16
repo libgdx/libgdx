@@ -365,8 +365,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	/** {@link BitmapFontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is
-	 * held in memory, thus the {@link #getImagePath()} and {@link #getFontFile()} methods will return null.
-	 * 
+	 * held in memory, thus the {@link #getImagePaths()} and {@link #getFontFile()} methods will return null.
 	 * @author mzechner */
 	public static class FreeTypeBitmapFontData extends BitmapFontData {
 		TextureRegion[] regions;
