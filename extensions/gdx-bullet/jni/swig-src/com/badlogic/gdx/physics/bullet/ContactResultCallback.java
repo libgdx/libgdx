@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class ContactResultCallback {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class ContactResultCallback extends BulletBase {
+	private long swigCPtr;
+	
+	protected ContactResultCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected ContactResultCallback(long cPtr, boolean cMemoryOwn) {
+		this("ContactResultCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(ContactResultCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected ContactResultCallback(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(ContactResultCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_ContactResultCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_ContactResultCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   protected void swigDirectorDisconnect() {
     swigCMemOwn = false;
@@ -55,20 +63,20 @@ public class ContactResultCallback {
     gdxBulletJNI.ContactResultCallback_change_ownership(this, swigCPtr, true);
   }
 
-  public void setM_collisionFilterGroup(short value) {
-    gdxBulletJNI.ContactResultCallback_m_collisionFilterGroup_set(swigCPtr, this, value);
+  public void setCollisionFilterGroup(short value) {
+    gdxBulletJNI.ContactResultCallback_collisionFilterGroup_set(swigCPtr, this, value);
   }
 
-  public short getM_collisionFilterGroup() {
-    return gdxBulletJNI.ContactResultCallback_m_collisionFilterGroup_get(swigCPtr, this);
+  public short getCollisionFilterGroup() {
+    return gdxBulletJNI.ContactResultCallback_collisionFilterGroup_get(swigCPtr, this);
   }
 
-  public void setM_collisionFilterMask(short value) {
-    gdxBulletJNI.ContactResultCallback_m_collisionFilterMask_set(swigCPtr, this, value);
+  public void setCollisionFilterMask(short value) {
+    gdxBulletJNI.ContactResultCallback_collisionFilterMask_set(swigCPtr, this, value);
   }
 
-  public short getM_collisionFilterMask() {
-    return gdxBulletJNI.ContactResultCallback_m_collisionFilterMask_get(swigCPtr, this);
+  public short getCollisionFilterMask() {
+    return gdxBulletJNI.ContactResultCallback_collisionFilterMask_get(swigCPtr, this);
   }
 
   public ContactResultCallback() {

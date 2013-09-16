@@ -1,0 +1,26 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "elephant_01", 
+			"diffuse": [ 1.000000,  1.000000,  1.000000], 
+			"specular": [ 0.900000,  0.900000,  0.900000], 
+			"textures": [
+				{
+					"id": "elephant_diffuse_01", 
+					"filename": "elephant_diffuse_01.png", 
+					"type": "DIFFUSE"
+				}, 
+				{
+					"id": "elephant_normal_01", 
+					"filename": "elephant_normal_01.png", 
+					"type": "NORMAL"
+				}
+			]
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}

@@ -19,7 +19,7 @@ public class SWIGTYPE_p_bParse__btBulletFile {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_bParse__btBulletFile obj) {
+  protected static long getCPtr(SWIGTYPE_p_bParse__btBulletFile obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

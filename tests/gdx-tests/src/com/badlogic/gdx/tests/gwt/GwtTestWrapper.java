@@ -153,6 +153,17 @@ public class GwtTestWrapper extends GdxTest {
 				}
 				return false;
 			}
+
+			@Override
+			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+				if(screenX < Gdx.graphics.getWidth() / 10.0 &&
+					screenY < Gdx.graphics.getHeight() / 10.0) {
+					if(test != null) {
+						dispose = true;
+					}
+				}
+				return false;
+			}
 		};
 		((InputWrapper)Gdx.input).multiplexer.addProcessor(ui);
 		

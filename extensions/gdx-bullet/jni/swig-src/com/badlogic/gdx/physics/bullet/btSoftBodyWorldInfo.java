@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSoftBodyWorldInfo {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSoftBodyWorldInfo extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSoftBodyWorldInfo(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSoftBodyWorldInfo(long cPtr, boolean cMemoryOwn) {
+		this("btSoftBodyWorldInfo", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSoftBodyWorldInfo obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSoftBodyWorldInfo(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSoftBodyWorldInfo obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSoftBodyWorldInfo(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSoftBodyWorldInfo(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public void setAir_density(float value) {
     gdxBulletJNI.btSoftBodyWorldInfo_air_density_set(swigCPtr, this, value);
@@ -73,39 +81,39 @@ public class btSoftBodyWorldInfo {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_broadphase(btBroadphaseInterface value) {
-    gdxBulletJNI.btSoftBodyWorldInfo_m_broadphase_set(swigCPtr, this, btBroadphaseInterface.getCPtr(value), value);
+  public void setBroadphase(btBroadphaseInterface value) {
+    gdxBulletJNI.btSoftBodyWorldInfo_broadphase_set(swigCPtr, this, btBroadphaseInterface.getCPtr(value), value);
   }
 
-  public btBroadphaseInterface getM_broadphase() {
-    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_m_broadphase_get(swigCPtr, this);
+  public btBroadphaseInterface getBroadphase() {
+    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_broadphase_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btBroadphaseInterface(cPtr, false);
   }
 
-  public void setM_dispatcher(btDispatcher value) {
-    gdxBulletJNI.btSoftBodyWorldInfo_m_dispatcher_set(swigCPtr, this, btDispatcher.getCPtr(value), value);
+  public void setDispatcher(btDispatcher value) {
+    gdxBulletJNI.btSoftBodyWorldInfo_dispatcher_set(swigCPtr, this, btDispatcher.getCPtr(value), value);
   }
 
-  public btDispatcher getM_dispatcher() {
-    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_m_dispatcher_get(swigCPtr, this);
+  public btDispatcher getDispatcher() {
+    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_dispatcher_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDispatcher(cPtr, false);
   }
 
-  public void setM_gravity(btVector3 value) {
-    gdxBulletJNI.btSoftBodyWorldInfo_m_gravity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setGravity(btVector3 value) {
+    gdxBulletJNI.btSoftBodyWorldInfo_gravity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_gravity() {
-    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_m_gravity_get(swigCPtr, this);
+  public btVector3 getGravity() {
+    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_gravity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_sparsesdf(btSparseSdf3 value) {
-    gdxBulletJNI.btSoftBodyWorldInfo_m_sparsesdf_set(swigCPtr, this, btSparseSdf3.getCPtr(value), value);
+  public void setSparsesdf(btSparseSdf3 value) {
+    gdxBulletJNI.btSoftBodyWorldInfo_sparsesdf_set(swigCPtr, this, btSparseSdf3.getCPtr(value), value);
   }
 
-  public btSparseSdf3 getM_sparsesdf() {
-    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_m_sparsesdf_get(swigCPtr, this);
+  public btSparseSdf3 getSparsesdf() {
+    long cPtr = gdxBulletJNI.btSoftBodyWorldInfo_sparsesdf_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btSparseSdf3(cPtr, false);
   }
 

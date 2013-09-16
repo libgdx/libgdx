@@ -13,63 +13,71 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class SoftBodyMaterialData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class SoftBodyMaterialData extends BulletBase {
+	private long swigCPtr;
+	
+	protected SoftBodyMaterialData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected SoftBodyMaterialData(long cPtr, boolean cMemoryOwn) {
+		this("SoftBodyMaterialData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(SoftBodyMaterialData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected SoftBodyMaterialData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_SoftBodyMaterialData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setLinearStiffness(float value) {
+    gdxBulletJNI.SoftBodyMaterialData_linearStiffness_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(SoftBodyMaterialData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public float getLinearStiffness() {
+    return gdxBulletJNI.SoftBodyMaterialData_linearStiffness_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setAngularStiffness(float value) {
+    gdxBulletJNI.SoftBodyMaterialData_angularStiffness_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_SoftBodyMaterialData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public float getAngularStiffness() {
+    return gdxBulletJNI.SoftBodyMaterialData_angularStiffness_get(swigCPtr, this);
   }
 
-  public void setM_linearStiffness(float value) {
-    gdxBulletJNI.SoftBodyMaterialData_m_linearStiffness_set(swigCPtr, this, value);
+  public void setVolumeStiffness(float value) {
+    gdxBulletJNI.SoftBodyMaterialData_volumeStiffness_set(swigCPtr, this, value);
   }
 
-  public float getM_linearStiffness() {
-    return gdxBulletJNI.SoftBodyMaterialData_m_linearStiffness_get(swigCPtr, this);
+  public float getVolumeStiffness() {
+    return gdxBulletJNI.SoftBodyMaterialData_volumeStiffness_get(swigCPtr, this);
   }
 
-  public void setM_angularStiffness(float value) {
-    gdxBulletJNI.SoftBodyMaterialData_m_angularStiffness_set(swigCPtr, this, value);
+  public void setFlags(int value) {
+    gdxBulletJNI.SoftBodyMaterialData_flags_set(swigCPtr, this, value);
   }
 
-  public float getM_angularStiffness() {
-    return gdxBulletJNI.SoftBodyMaterialData_m_angularStiffness_get(swigCPtr, this);
-  }
-
-  public void setM_volumeStiffness(float value) {
-    gdxBulletJNI.SoftBodyMaterialData_m_volumeStiffness_set(swigCPtr, this, value);
-  }
-
-  public float getM_volumeStiffness() {
-    return gdxBulletJNI.SoftBodyMaterialData_m_volumeStiffness_get(swigCPtr, this);
-  }
-
-  public void setM_flags(int value) {
-    gdxBulletJNI.SoftBodyMaterialData_m_flags_set(swigCPtr, this, value);
-  }
-
-  public int getM_flags() {
-    return gdxBulletJNI.SoftBodyMaterialData_m_flags_get(swigCPtr, this);
+  public int getFlags() {
+    return gdxBulletJNI.SoftBodyMaterialData_flags_get(swigCPtr, this);
   }
 
   public SoftBodyMaterialData() {

@@ -31,9 +31,21 @@ public class IOSFileHandle extends FileHandle {
 		return new IOSFileHandle(parent, type);
 	}
 
+	public FileHandle sibling (String name) {
+		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
+		return new IOSFileHandle(new File(file.getParent(), name), type);
+	}
+
 	public File file () {
+		if (type == FileType.Internal) return new File(IOSFiles.internalPath, file.getPath());
 		if (type == FileType.External) return new File(IOSFiles.externalPath, file.getPath());
 		if (type == FileType.Local) return new File(IOSFiles.localPath, file.getPath());
 		return file;
 	}
+
+	@Override
+	public boolean exists() {
+		return file().exists();
+	}
+
 }

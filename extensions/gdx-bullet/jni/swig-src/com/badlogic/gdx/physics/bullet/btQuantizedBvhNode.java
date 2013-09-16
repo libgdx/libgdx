@@ -13,55 +13,63 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btQuantizedBvhNode {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btQuantizedBvhNode extends BulletBase {
+	private long swigCPtr;
+	
+	protected btQuantizedBvhNode(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btQuantizedBvhNode(long cPtr, boolean cMemoryOwn) {
+		this("btQuantizedBvhNode", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btQuantizedBvhNode obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btQuantizedBvhNode(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btQuantizedBvhNode(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setQuantizedAabbMin(int[] value) {
+    gdxBulletJNI.btQuantizedBvhNode_quantizedAabbMin_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btQuantizedBvhNode obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int[] getQuantizedAabbMin() {
+    return gdxBulletJNI.btQuantizedBvhNode_quantizedAabbMin_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setQuantizedAabbMax(int[] value) {
+    gdxBulletJNI.btQuantizedBvhNode_quantizedAabbMax_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btQuantizedBvhNode(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public int[] getQuantizedAabbMax() {
+    return gdxBulletJNI.btQuantizedBvhNode_quantizedAabbMax_get(swigCPtr, this);
   }
 
-  public void setM_quantizedAabbMin(int[] value) {
-    gdxBulletJNI.btQuantizedBvhNode_m_quantizedAabbMin_set(swigCPtr, this, value);
+  public void setEscapeIndexOrTriangleIndex(int value) {
+    gdxBulletJNI.btQuantizedBvhNode_escapeIndexOrTriangleIndex_set(swigCPtr, this, value);
   }
 
-  public int[] getM_quantizedAabbMin() {
-    return gdxBulletJNI.btQuantizedBvhNode_m_quantizedAabbMin_get(swigCPtr, this);
-  }
-
-  public void setM_quantizedAabbMax(int[] value) {
-    gdxBulletJNI.btQuantizedBvhNode_m_quantizedAabbMax_set(swigCPtr, this, value);
-  }
-
-  public int[] getM_quantizedAabbMax() {
-    return gdxBulletJNI.btQuantizedBvhNode_m_quantizedAabbMax_get(swigCPtr, this);
-  }
-
-  public void setM_escapeIndexOrTriangleIndex(int value) {
-    gdxBulletJNI.btQuantizedBvhNode_m_escapeIndexOrTriangleIndex_set(swigCPtr, this, value);
-  }
-
-  public int getM_escapeIndexOrTriangleIndex() {
-    return gdxBulletJNI.btQuantizedBvhNode_m_escapeIndexOrTriangleIndex_get(swigCPtr, this);
+  public int getEscapeIndexOrTriangleIndex() {
+    return gdxBulletJNI.btQuantizedBvhNode_escapeIndexOrTriangleIndex_get(swigCPtr, this);
   }
 
   public boolean isLeafNode() {

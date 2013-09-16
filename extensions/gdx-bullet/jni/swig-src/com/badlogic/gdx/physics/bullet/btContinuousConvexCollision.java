@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btContinuousConvexCollision extends btConvexCast {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btContinuousConvexCollision(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btContinuousConvexCollision_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btContinuousConvexCollision(long cPtr, boolean cMemoryOwn) {
+		this("btContinuousConvexCollision", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btContinuousConvexCollision obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btContinuousConvexCollision(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btContinuousConvexCollision_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btContinuousConvexCollision obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btContinuousConvexCollision(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btContinuousConvexCollision(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btContinuousConvexCollision(btConvexShape shapeA, btConvexShape shapeB, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
     this(gdxBulletJNI.new_btContinuousConvexCollision__SWIG_0(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);

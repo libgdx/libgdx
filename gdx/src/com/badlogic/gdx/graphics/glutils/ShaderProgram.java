@@ -21,8 +21,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
@@ -38,6 +36,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Array;
 
 /** <p>
  * A shader program encapsulates a vertex and fragment shader pair linked to form a shader program useable with OpenGL ES 2.0.
@@ -85,7 +84,7 @@ public class ShaderProgram implements Disposable {
 	public static boolean pedantic = true;
 
 	/** the list of currently available shaders **/
-	private final static ObjectMap<Application, List<ShaderProgram>> shaders = new ObjectMap<Application, List<ShaderProgram>>();
+	private final static ObjectMap<Application, Array<ShaderProgram>> shaders = new ObjectMap<Application, Array<ShaderProgram>>();
 
 	/** the log **/
 	private String log = "";
@@ -759,7 +758,7 @@ public class ShaderProgram implements Disposable {
 		gl.glDeleteShader(vertexShaderHandle);
 		gl.glDeleteShader(fragmentShaderHandle);
 		gl.glDeleteProgram(program);
-		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).remove(this);
+		if (shaders.get(Gdx.app) != null) shaders.get(Gdx.app).removeValue(this, true);
 	}
 
 	/** Disables the vertex attribute with the given name
@@ -804,8 +803,8 @@ public class ShaderProgram implements Disposable {
 	}
 
 	private void addManagedShader (Application app, ShaderProgram shaderProgram) {
-		List<ShaderProgram> managedResources = shaders.get(app);
-		if (managedResources == null) managedResources = new ArrayList<ShaderProgram>();
+		Array<ShaderProgram> managedResources = shaders.get(app);
+		if (managedResources == null) managedResources = new Array<ShaderProgram>();
 		managedResources.add(shaderProgram);
 		shaders.put(app, managedResources);
 	}
@@ -815,12 +814,12 @@ public class ShaderProgram implements Disposable {
 	public static void invalidateAllShaderPrograms (Application app) {
 		if (Gdx.graphics.getGL20() == null) return;
 
-		List<ShaderProgram> shaderList = shaders.get(app);
-		if (shaderList == null) return;
+		Array<ShaderProgram> shaderArray = shaders.get(app);
+		if (shaderArray == null) return;
 
-		for (int i = 0; i < shaderList.size(); i++) {
-			shaderList.get(i).invalidated = true;
-			shaderList.get(i).checkManaged();
+		for (int i = 0; i < shaderArray.size; i++) {
+			shaderArray.get(i).invalidated = true;
+			shaderArray.get(i).checkManaged();
 		}
 	}
 
@@ -833,7 +832,7 @@ public class ShaderProgram implements Disposable {
 		int i = 0;
 		builder.append("Managed shaders/app: { ");
 		for (Application app : shaders.keys()) {
-			builder.append(shaders.get(app).size());
+			builder.append(shaders.get(app).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -913,31 +912,19 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the attribute
 	 * @return the type of the attribute, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getAttributeType (String name) {
-		int type = attributeTypes.get(name, -1);
-		if (type == -1)
-			return 0;
-		else
-			return type;
+		return attributeTypes.get(name, 0);
 	}
 
 	/** @param name the name of the attribute
 	 * @return the location of the attribute or -1. */
 	public int getAttributeLocation (String name) {
-		int location = attributes.get(name, -1);
-		if (location == -1)
-			return -1;
-		else
-			return location;
+		return attributes.get(name, -1);
 	}
 
 	/** @param name the name of the attribute
 	 * @return the size of the attribute or 0. */
 	public int getAttributeSize (String name) {
-		int size = attributeSizes.get(name, -1);
-		if (size == -1)
-			return 0;
-		else
-			return size;
+		return attributeSizes.get(name, 0);
 	}
 
 	/** @param name the name of the uniform
@@ -949,31 +936,19 @@ public class ShaderProgram implements Disposable {
 	/** @param name the name of the uniform
 	 * @return the type of the uniform, one of {@link GL20#GL_FLOAT}, {@link GL20#GL_FLOAT_VEC2} etc. */
 	public int getUniformType (String name) {
-		int type = uniformTypes.get(name, -1);
-		if (type == -1)
-			return 0;
-		else
-			return type;
+		return uniformTypes.get(name, 0);
 	}
 
 	/** @param name the name of the uniform
 	 * @return the location of the uniform or -1. */
 	public int getUniformLocation (String name) {
-		int location = uniforms.get(name, -1);
-		if (location == -1)
-			return -1;
-		else
-			return location;
+		return uniforms.get(name, -1);
 	}
 
 	/** @param name the name of the uniform
 	 * @return the size of the uniform or 0. */
 	public int getUniformSize (String name) {
-		int size = uniformSizes.get(name, -1);
-		if (size == -1)
-			return 0;
-		else
-			return size;
+		return uniformSizes.get(name, 0);
 	}
 
 	/** @return the attributes */

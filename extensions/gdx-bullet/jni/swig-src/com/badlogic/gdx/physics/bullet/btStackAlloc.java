@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btStackAlloc {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btStackAlloc extends BulletBase {
+	private long swigCPtr;
+	
+	protected btStackAlloc(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btStackAlloc(long cPtr, boolean cMemoryOwn) {
+		this("btStackAlloc", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btStackAlloc obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btStackAlloc(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btStackAlloc obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btStackAlloc(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btStackAlloc(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btStackAlloc(long size) {
     this(gdxBulletJNI.new_btStackAlloc(size), true);

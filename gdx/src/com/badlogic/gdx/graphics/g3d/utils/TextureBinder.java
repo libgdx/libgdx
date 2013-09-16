@@ -1,11 +1,12 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
  * Responsible for binding textures, may implement a strategy to avoid binding a texture
  * unnecessarily. A TextureBinder may decide to which texture unit it binds a texture.
- * @author badlogic
+ * @author badlogic, Xoppa
  *
  */
 public interface TextureBinder {
@@ -29,7 +30,14 @@ public interface TextureBinder {
 	public int bind(TextureDescriptor textureDescriptor);
 	
 	/**
-	 * @return the number of binds actualy executed since the last call to {@link #resetCounts()}
+	 * Binds the texture to an available unit.
+	 * @param texture the {@link Texture}
+	 * @return the unit the texture was bound to
+	 */
+	public int bind(GLTexture texture);
+	
+	/**
+	 * @return the number of binds actually executed since the last call to {@link #resetCounts()}
 	 */
 	public int getBindCount();
 	/**

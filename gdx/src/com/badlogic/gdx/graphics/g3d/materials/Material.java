@@ -30,7 +30,7 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 			if (obj == this) return true;
 			if (!(obj instanceof Attribute)) return false;
 			final Attribute other = (Attribute)obj;
-			if (other.type != other.type) return false; 
+			if (this.type != other.type) return false;
 			return equals(other);
 		}
 		@Override
@@ -160,7 +160,7 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 
 	/** Add an array of attributes to this material.
 	 * If the material already contains an attribute of the same type it is overwritten. */
-	public final void set(final Array<Attribute> attributes) {
+	public final void set(final Iterable<Attribute> attributes) {
 		for (final Attribute attr : attributes)
 			set(attr);
 	}
@@ -227,17 +227,18 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 		}
 	}
 	
-	/** @return True if this material contains the same attributes as the other, 
-	 * use {@link #equals(Material)} to see if the values are also the same */
-	public final boolean same(final Material other) {
-		return mask == other.mask;
-	}
-	
-	/** @return True if this material equals the other material in every aspect */
-	public final boolean equals (final Material other) {
-		if (other == null) return false;
-		if (other == this) return true;
-		if (!same(other)) return false;
+	/** Check if this Material has the same attributes as the other Material. 
+	 * If compareValues is true, it also compares the values of each attribute.
+	 * Use {@link #equals(Material)} to compare Materials including ID.
+	 * @param compareValues True to compare attribute values, false to only compare attribute types
+	 * @return True if this material contains the same attributes (and optionally attribute values) as the other. */
+	public final boolean same(final Material other, boolean compareValues) {
+		if (other == this)
+			return true;
+		if ((other == null) || (mask != other.mask))
+			return false;
+		if (!compareValues)
+			return true;
 		sort();
 		other.sort();
 		for (int i = 0; i < attributes.size; i++)
@@ -246,7 +247,18 @@ public class Material implements Iterable<Material.Attribute>, Comparator<Materi
 		return true;
 	}
 	
-	/** @return True if this material equals the other material in every aspect */
+	/** See {@link #same(Material, boolean)}
+	 * @return True if this material contains the same attributes (but not values) as the other. */
+	public final boolean same(final Material other) {
+		return same(other, false);
+	}
+	
+	/** @return True if this material equals the other material in every aspect (including the ID) */
+	public final boolean equals (final Material other) {
+		return same(other, true) && id.equals(other.id);
+	}
+	
+	/** @return True if this material equals the other material in every aspect (including the ID) */
 	@Override
 	public final boolean equals (final Object obj) {
 		return obj instanceof Material ? equals((Material)obj) : false;

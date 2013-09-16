@@ -85,6 +85,7 @@ import com.badlogic.gdx.utils.OrderedMap;
  * packer.dispose();
  * </pre> */
 public class PixmapPacker implements Disposable {
+	
 	static final class Node {
 		public Node leftChild;
 		public Node rightChild;
@@ -282,6 +283,17 @@ public class PixmapPacker implements Disposable {
 			if (rect != null) return page;
 		}
 		return null;
+	}
+	
+	/** Returns the index of the page containing the given packed rectangle.
+	 * @param name the name of the image
+	 * @return the index of the page the image is stored in or -1 */
+	public synchronized int getPageIndex (String name) {
+		for (int i=0; i<pages.size; i++) {
+			Rectangle rect = pages.get(i).rects.get(name);
+			if (rect != null) return i;
+		}
+		return -1;
 	}
 
 	/** Disposes all resources, including Pixmap instances for the pages created so far. These page Pixmap instances are shared with

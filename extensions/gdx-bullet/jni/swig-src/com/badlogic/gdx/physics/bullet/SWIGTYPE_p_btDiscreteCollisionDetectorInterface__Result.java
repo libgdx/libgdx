@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result obj) {
+  protected static long getCPtr(SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

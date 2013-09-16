@@ -9,7 +9,9 @@ import org.robovm.cocoatouch.uikit.UIAccelerometerDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertView;
 import org.robovm.cocoatouch.uikit.UIAlertViewDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertViewStyle;
+import org.robovm.cocoatouch.uikit.UIApplication;
 import org.robovm.cocoatouch.uikit.UIEvent;
+import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
 import org.robovm.cocoatouch.uikit.UITextField;
 import org.robovm.cocoatouch.uikit.UITouch;
 import org.robovm.cocoatouch.uikit.UITouchPhase;
@@ -70,10 +72,26 @@ public class IOSInput implements Input {
 				@Override
 				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
 					//super.DidAccelerate(accelerometer, values);
-					// FIXME take orientation into account, these values here get flipped by iOS...
-					acceleration[0] = (float)values.getX() * 10;
-					acceleration[1] = (float)values.getY() * 10;
-					acceleration[2] = (float)values.getZ() * 10;
+					float x = (float)values.getX() * 10;
+					float y = (float)values.getY() * 10;
+					float z = (float)values.getZ() * 10;
+
+					UIInterfaceOrientation orientation = app.graphics.viewController != null 
+							? app.graphics.viewController.getInterfaceOrientation() 
+									: UIApplication.getSharedApplication().getStatusBarOrientation();
+
+					if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight) {
+						float t = x;
+						x = y;
+						y = t;
+					}
+					if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.Portrait) {
+						x = -x;
+					}
+					
+					acceleration[0] = x;
+					acceleration[1] = y;
+					acceleration[2] = z;
 				}
 			};
 			UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
@@ -187,7 +205,6 @@ public class IOSInput implements Input {
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text);
-		//app.uiViewController.add(uiAlertView);
 		uiAlertView.show();
 	}
 	

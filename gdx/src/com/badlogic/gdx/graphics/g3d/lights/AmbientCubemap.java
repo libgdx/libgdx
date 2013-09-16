@@ -121,4 +121,13 @@ public class AmbientCubemap {
 		final float t = intensity / (1f + target.dst(point));
 		return add(color.r*t, color.g*t, color.b*t, target.x-point.x, target.y-point.y, target.z-point.z);
 	}
+	
+	@Override
+	public String toString () {
+		String result = "";
+		for (int i = 0; i < data.length; i+=3) {
+			result += Float.toString(data[i]) + ", " + Float.toString(data[i+1]) + ", " + Float.toString(data[i+2]) + "\n";
+		}
+		return result;
+	}
 }

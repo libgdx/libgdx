@@ -13,47 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTriIndex {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTriIndex extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTriIndex(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriIndex(long cPtr, boolean cMemoryOwn) {
+		this("btTriIndex", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriIndex obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriIndex(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriIndex(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setPartIdTriangleIndex(int value) {
+    gdxBulletJNI.btTriIndex_PartIdTriangleIndex_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btTriIndex obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getPartIdTriangleIndex() {
+    return gdxBulletJNI.btTriIndex_PartIdTriangleIndex_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setChildShape(btCollisionShape value) {
+    gdxBulletJNI.btTriIndex_childShape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriIndex(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_PartIdTriangleIndex(int value) {
-    gdxBulletJNI.btTriIndex_m_PartIdTriangleIndex_set(swigCPtr, this, value);
-  }
-
-  public int getM_PartIdTriangleIndex() {
-    return gdxBulletJNI.btTriIndex_m_PartIdTriangleIndex_get(swigCPtr, this);
-  }
-
-  public void setM_childShape(btCollisionShape value) {
-    gdxBulletJNI.btTriIndex_m_childShape_set(swigCPtr, this, btCollisionShape.getCPtr(value), value);
-  }
-
-  public btCollisionShape getM_childShape() {
-    long cPtr = gdxBulletJNI.btTriIndex_m_childShape_get(swigCPtr, this);
+  public btCollisionShape getChildShape() {
+    long cPtr = gdxBulletJNI.btTriIndex_childShape_get(swigCPtr, this);
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 

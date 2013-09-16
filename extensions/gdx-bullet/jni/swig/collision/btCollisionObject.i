@@ -4,8 +4,6 @@
  
 %module btCollisionObject
 
-CREATE_MANAGED_OBJECT(btCollisionObject);
-
 %typemap(javainterfaces) btCollisionObject %{
 	com.badlogic.gdx.utils.Disposable
 %}
@@ -15,25 +13,41 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 %rename(internalGetCollisionShape) btCollisionObject::getCollisionShape;
 %javamethodmodifiers btCollisionObject::getCollisionShape "private";
 
+%typemap(javaout) 	btCollisionObject *, const btCollisionObject *, btCollisionObject * const & {
+	return btCollisionObject.getInstance($jnicall, $owner);
+}
 
-%typemap(javabody) btCollisionObject %{
-	private long swigCPtr;
-	protected boolean swigCMemOwn;
+%typemap(javadirectorin) btCollisionObject *, const btCollisionObject *, btCollisionObject * const &	"btCollisionObject.getInstance($1, false)"
+
+%typemap(javacode) btCollisionObject %{
+	/** Provides direct access to the instances this wrapper managed. */
+	public final static com.badlogic.gdx.utils.LongMap<btCollisionObject> instances = new com.badlogic.gdx.utils.LongMap<btCollisionObject>();
 	
-	protected btCollisionObject(long cPtr, boolean cMemoryOwn) {
-		swigCMemOwn = cMemoryOwn;
-		swigCPtr = cPtr;
-		gdxBridge = new GdxCollisionObjectBridge();
-		internalSetGdxBridge(gdxBridge);
-		addInstance(this);
+	/** @return The existing instance for the specified pointer, or null if the instance doesn't exist */
+	public static btCollisionObject getInstance(final long swigCPtr) {
+		return swigCPtr == 0 ? null : instances.get(swigCPtr);
 	}
 	
-	protected void beforeDelete() {
-		if (swigCPtr != 0)
-			removeInstance(this);
-		if (gdxBridge != null)
-			gdxBridge.delete();
-		gdxBridge = null;
+	/** @return The existing instance for the specified pointer, or a newly created instance if the instance didn't exist */
+	public static btCollisionObject getInstance(final long swigCPtr, boolean owner) {
+		if (swigCPtr == 0)
+			return null;
+		btCollisionObject result = instances.get(swigCPtr);
+		if (result == null)
+			result = new btCollisionObject(swigCPtr, owner);
+		return result;
+	}
+	
+	/** Add the instance to the managed instances.
+	 * You should avoid using this method. This method is intended for internal purposes only. */
+	public static void addInstance(final btCollisionObject obj) {
+		instances.put(getCPtr(obj), obj);
+	}
+	
+	/** Remove the instance to the managed instances.
+	 * Be careful using this method. This method is intended for internal purposes only. */	
+	public static void removeInstance(final btCollisionObject obj) {
+		instances.remove(getCPtr(obj));
 	}
 	
 	protected GdxCollisionObjectBridge gdxBridge;
@@ -44,10 +58,26 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 	
 	/** User definable data, not used by Bullet itself. */
 	public Object userData;
+	
+	@Override
+	protected void construct() {
+		super.construct();
+		gdxBridge = new GdxCollisionObjectBridge();
+		internalSetGdxBridge(gdxBridge);
+		addInstance(this);
+	}
 
 	@Override
 	public void dispose() {
-		delete();
+		if (swigCPtr != 0)
+			removeInstance(this);
+		if (gdxBridge != null)
+			gdxBridge.dispose();
+		gdxBridge = null;
+		if (collisionShape != null)
+			collisionShape.release();
+		collisionShape = null;
+		super.dispose();
 	}
 
 	/** @return A user definable value set using {@link #setUserValue(int)}, intended to quickly identify the collision object */ 
@@ -82,12 +112,21 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 	}
 	
 	public void setCollisionShape(btCollisionShape shape) {
-		collisionShape = shape;
+		refCollisionShape(shape);
 		internalSetCollisionShape(shape);
 	}
 	
+	protected void refCollisionShape(btCollisionShape shape) {
+		if (collisionShape == shape)
+			return;
+		if (collisionShape != null)
+			collisionShape.release();
+		collisionShape = shape;
+		collisionShape.obtain();
+	}
+	
 	public btCollisionShape getCollisionShape() {
-		return collisionShape != null ? collisionShape : (collisionShape = internalGetCollisionShape()); 
+		return collisionShape; 
 	}
 %}
 
@@ -97,6 +136,9 @@ CREATE_MANAGED_OBJECT(btCollisionObject);
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionObject.h"
 %include "gdx/GdxCollisionObjectBridge.h"
+
+%javamethodmodifiers btCollisionObject::internalSetGdxBridge "private";
+%javamethodmodifiers btCollisionObject::internalGetGdxBridge "private";
 
 %extend btCollisionObject {
 	void internalSetGdxBridge(GdxCollisionObjectBridge *bridge) {

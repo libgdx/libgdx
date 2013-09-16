@@ -1,15 +1,19 @@
 package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -302,6 +306,20 @@ public abstract class BaseShader implements Shader {
 		if (locations[uniform] < 0)
 			return false;
 		program.setUniformi(locations[uniform], v1, v2, v3, v4);
+		return true;
+	}
+	
+	public final boolean set(final int uniform, final TextureDescriptor textureDesc) {
+		if (locations[uniform] < 0)
+			return false;
+		program.setUniformi(locations[uniform], context.textureBinder.bind(textureDesc));
+		return true;
+	}
+	
+	public final boolean set(final int uniform, final GLTexture texture) {
+		if (locations[uniform] < 0)
+			return false;
+		program.setUniformi(locations[uniform], context.textureBinder.bind(texture));
 		return true;
 	}
 }

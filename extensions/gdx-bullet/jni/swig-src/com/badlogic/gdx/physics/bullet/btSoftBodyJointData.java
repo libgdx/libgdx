@@ -13,131 +13,139 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSoftBodyJointData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSoftBodyJointData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSoftBodyJointData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSoftBodyJointData(long cPtr, boolean cMemoryOwn) {
+		this("btSoftBodyJointData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSoftBodyJointData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSoftBodyJointData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSoftBodyJointData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setBodyA(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btSoftBodyJointData_bodyA_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public static long getCPtr(btSoftBodyJointData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSoftBodyJointData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_bodyA(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btSoftBodyJointData_m_bodyA_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_void getM_bodyA() {
-    long cPtr = gdxBulletJNI.btSoftBodyJointData_m_bodyA_get(swigCPtr, this);
+  public SWIGTYPE_p_void getBodyA() {
+    long cPtr = gdxBulletJNI.btSoftBodyJointData_bodyA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public void setM_bodyB(SWIGTYPE_p_void value) {
-    gdxBulletJNI.btSoftBodyJointData_m_bodyB_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setBodyB(SWIGTYPE_p_void value) {
+    gdxBulletJNI.btSoftBodyJointData_bodyB_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
   }
 
-  public SWIGTYPE_p_void getM_bodyB() {
-    long cPtr = gdxBulletJNI.btSoftBodyJointData_m_bodyB_get(swigCPtr, this);
+  public SWIGTYPE_p_void getBodyB() {
+    long cPtr = gdxBulletJNI.btSoftBodyJointData_bodyB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
-  public void setM_refs(btVector3FloatData value) {
-    gdxBulletJNI.btSoftBodyJointData_m_refs_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setRefs(btVector3FloatData value) {
+    gdxBulletJNI.btSoftBodyJointData_refs_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_refs() {
-    long cPtr = gdxBulletJNI.btSoftBodyJointData_m_refs_get(swigCPtr, this);
+  public btVector3FloatData getRefs() {
+    long cPtr = gdxBulletJNI.btSoftBodyJointData_refs_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_cfm(float value) {
-    gdxBulletJNI.btSoftBodyJointData_m_cfm_set(swigCPtr, this, value);
+  public void setCfm(float value) {
+    gdxBulletJNI.btSoftBodyJointData_cfm_set(swigCPtr, this, value);
   }
 
-  public float getM_cfm() {
-    return gdxBulletJNI.btSoftBodyJointData_m_cfm_get(swigCPtr, this);
+  public float getCfm() {
+    return gdxBulletJNI.btSoftBodyJointData_cfm_get(swigCPtr, this);
   }
 
-  public void setM_erp(float value) {
-    gdxBulletJNI.btSoftBodyJointData_m_erp_set(swigCPtr, this, value);
+  public void setErp(float value) {
+    gdxBulletJNI.btSoftBodyJointData_erp_set(swigCPtr, this, value);
   }
 
-  public float getM_erp() {
-    return gdxBulletJNI.btSoftBodyJointData_m_erp_get(swigCPtr, this);
+  public float getErp() {
+    return gdxBulletJNI.btSoftBodyJointData_erp_get(swigCPtr, this);
   }
 
-  public void setM_split(float value) {
-    gdxBulletJNI.btSoftBodyJointData_m_split_set(swigCPtr, this, value);
+  public void setSplit(float value) {
+    gdxBulletJNI.btSoftBodyJointData_split_set(swigCPtr, this, value);
   }
 
-  public float getM_split() {
-    return gdxBulletJNI.btSoftBodyJointData_m_split_get(swigCPtr, this);
+  public float getSplit() {
+    return gdxBulletJNI.btSoftBodyJointData_split_get(swigCPtr, this);
   }
 
-  public void setM_delete(int value) {
-    gdxBulletJNI.btSoftBodyJointData_m_delete_set(swigCPtr, this, value);
+  public void setDelete(int value) {
+    gdxBulletJNI.btSoftBodyJointData_delete_set(swigCPtr, this, value);
   }
 
-  public int getM_delete() {
-    return gdxBulletJNI.btSoftBodyJointData_m_delete_get(swigCPtr, this);
+  public int getDelete() {
+    return gdxBulletJNI.btSoftBodyJointData_delete_get(swigCPtr, this);
   }
 
-  public void setM_relPosition(btVector3FloatData value) {
-    gdxBulletJNI.btSoftBodyJointData_m_relPosition_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setRelPosition(btVector3FloatData value) {
+    gdxBulletJNI.btSoftBodyJointData_relPosition_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_relPosition() {
-    long cPtr = gdxBulletJNI.btSoftBodyJointData_m_relPosition_get(swigCPtr, this);
+  public btVector3FloatData getRelPosition() {
+    long cPtr = gdxBulletJNI.btSoftBodyJointData_relPosition_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_bodyAtype(int value) {
-    gdxBulletJNI.btSoftBodyJointData_m_bodyAtype_set(swigCPtr, this, value);
+  public void setBodyAtype(int value) {
+    gdxBulletJNI.btSoftBodyJointData_bodyAtype_set(swigCPtr, this, value);
   }
 
-  public int getM_bodyAtype() {
-    return gdxBulletJNI.btSoftBodyJointData_m_bodyAtype_get(swigCPtr, this);
+  public int getBodyAtype() {
+    return gdxBulletJNI.btSoftBodyJointData_bodyAtype_get(swigCPtr, this);
   }
 
-  public void setM_bodyBtype(int value) {
-    gdxBulletJNI.btSoftBodyJointData_m_bodyBtype_set(swigCPtr, this, value);
+  public void setBodyBtype(int value) {
+    gdxBulletJNI.btSoftBodyJointData_bodyBtype_set(swigCPtr, this, value);
   }
 
-  public int getM_bodyBtype() {
-    return gdxBulletJNI.btSoftBodyJointData_m_bodyBtype_get(swigCPtr, this);
+  public int getBodyBtype() {
+    return gdxBulletJNI.btSoftBodyJointData_bodyBtype_get(swigCPtr, this);
   }
 
-  public void setM_jointType(int value) {
-    gdxBulletJNI.btSoftBodyJointData_m_jointType_set(swigCPtr, this, value);
+  public void setJointType(int value) {
+    gdxBulletJNI.btSoftBodyJointData_jointType_set(swigCPtr, this, value);
   }
 
-  public int getM_jointType() {
-    return gdxBulletJNI.btSoftBodyJointData_m_jointType_get(swigCPtr, this);
+  public int getJointType() {
+    return gdxBulletJNI.btSoftBodyJointData_jointType_get(swigCPtr, this);
   }
 
-  public void setM_pad(int value) {
-    gdxBulletJNI.btSoftBodyJointData_m_pad_set(swigCPtr, this, value);
+  public void setPad(int value) {
+    gdxBulletJNI.btSoftBodyJointData_pad_set(swigCPtr, this, value);
   }
 
-  public int getM_pad() {
-    return gdxBulletJNI.btSoftBodyJointData_m_pad_get(swigCPtr, this);
+  public int getPad() {
+    return gdxBulletJNI.btSoftBodyJointData_pad_get(swigCPtr, this);
   }
 
   public btSoftBodyJointData() {

@@ -13,39 +13,47 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btVector3DoubleData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btVector3DoubleData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btVector3DoubleData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btVector3DoubleData(long cPtr, boolean cMemoryOwn) {
+		this("btVector3DoubleData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btVector3DoubleData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btVector3DoubleData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btVector3DoubleData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setFloats(double[] value) {
+    gdxBulletJNI.btVector3DoubleData_floats_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btVector3DoubleData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btVector3DoubleData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_floats(double[] value) {
-    gdxBulletJNI.btVector3DoubleData_m_floats_set(swigCPtr, this, value);
-  }
-
-  public double[] getM_floats() {
-    return gdxBulletJNI.btVector3DoubleData_m_floats_get(swigCPtr, this);
+  public double[] getFloats() {
+    return gdxBulletJNI.btVector3DoubleData_floats_get(swigCPtr, this);
   }
 
   public btVector3DoubleData() {

@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSphereTriangleCollisionAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSphereTriangleCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSphereTriangleCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSphereTriangleCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+		this("btSphereTriangleCollisionAlgorithm", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSphereTriangleCollisionAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSphereTriangleCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSphereTriangleCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSphereTriangleCollisionAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSphereTriangleCollisionAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSphereTriangleCollisionAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btSphereTriangleCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean swapped) {
     this(gdxBulletJNI.new_btSphereTriangleCollisionAlgorithm__SWIG_0(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, swapped), true);

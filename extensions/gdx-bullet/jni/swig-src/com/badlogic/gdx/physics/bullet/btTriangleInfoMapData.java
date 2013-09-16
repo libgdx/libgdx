@@ -13,153 +13,161 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTriangleInfoMapData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTriangleInfoMapData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTriangleInfoMapData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleInfoMapData(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleInfoMapData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleInfoMapData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleInfoMapData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btTriangleInfoMapData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleInfoMapData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleInfoMapData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_hashTablePtr(java.nio.IntBuffer value) {
+  public void setHashTablePtr(java.nio.IntBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.btTriangleInfoMapData_m_hashTablePtr_set(swigCPtr, this, value);
+      gdxBulletJNI.btTriangleInfoMapData_hashTablePtr_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.IntBuffer getM_hashTablePtr() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_hashTablePtr_get(swigCPtr, this);
+  public java.nio.IntBuffer getHashTablePtr() {
+    return gdxBulletJNI.btTriangleInfoMapData_hashTablePtr_get(swigCPtr, this);
 }
 
-  public void setM_nextPtr(java.nio.IntBuffer value) {
+  public void setNextPtr(java.nio.IntBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.btTriangleInfoMapData_m_nextPtr_set(swigCPtr, this, value);
+      gdxBulletJNI.btTriangleInfoMapData_nextPtr_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.IntBuffer getM_nextPtr() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_nextPtr_get(swigCPtr, this);
+  public java.nio.IntBuffer getNextPtr() {
+    return gdxBulletJNI.btTriangleInfoMapData_nextPtr_get(swigCPtr, this);
 }
 
-  public void setM_valueArrayPtr(btTriangleInfoData value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_valueArrayPtr_set(swigCPtr, this, btTriangleInfoData.getCPtr(value), value);
+  public void setValueArrayPtr(btTriangleInfoData value) {
+    gdxBulletJNI.btTriangleInfoMapData_valueArrayPtr_set(swigCPtr, this, btTriangleInfoData.getCPtr(value), value);
   }
 
-  public btTriangleInfoData getM_valueArrayPtr() {
-    long cPtr = gdxBulletJNI.btTriangleInfoMapData_m_valueArrayPtr_get(swigCPtr, this);
+  public btTriangleInfoData getValueArrayPtr() {
+    long cPtr = gdxBulletJNI.btTriangleInfoMapData_valueArrayPtr_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTriangleInfoData(cPtr, false);
   }
 
-  public void setM_keyArrayPtr(java.nio.IntBuffer value) {
+  public void setKeyArrayPtr(java.nio.IntBuffer value) {
     assert value.isDirect() : "Buffer must be allocated direct.";
     {
-      gdxBulletJNI.btTriangleInfoMapData_m_keyArrayPtr_set(swigCPtr, this, value);
+      gdxBulletJNI.btTriangleInfoMapData_keyArrayPtr_set(swigCPtr, this, value);
     }
   }
 
-  public java.nio.IntBuffer getM_keyArrayPtr() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_keyArrayPtr_get(swigCPtr, this);
+  public java.nio.IntBuffer getKeyArrayPtr() {
+    return gdxBulletJNI.btTriangleInfoMapData_keyArrayPtr_get(swigCPtr, this);
 }
 
-  public void setM_convexEpsilon(float value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_convexEpsilon_set(swigCPtr, this, value);
+  public void setConvexEpsilon(float value) {
+    gdxBulletJNI.btTriangleInfoMapData_convexEpsilon_set(swigCPtr, this, value);
   }
 
-  public float getM_convexEpsilon() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_convexEpsilon_get(swigCPtr, this);
+  public float getConvexEpsilon() {
+    return gdxBulletJNI.btTriangleInfoMapData_convexEpsilon_get(swigCPtr, this);
   }
 
-  public void setM_planarEpsilon(float value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_planarEpsilon_set(swigCPtr, this, value);
+  public void setPlanarEpsilon(float value) {
+    gdxBulletJNI.btTriangleInfoMapData_planarEpsilon_set(swigCPtr, this, value);
   }
 
-  public float getM_planarEpsilon() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_planarEpsilon_get(swigCPtr, this);
+  public float getPlanarEpsilon() {
+    return gdxBulletJNI.btTriangleInfoMapData_planarEpsilon_get(swigCPtr, this);
   }
 
-  public void setM_equalVertexThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_equalVertexThreshold_set(swigCPtr, this, value);
+  public void setEqualVertexThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMapData_equalVertexThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_equalVertexThreshold() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_equalVertexThreshold_get(swigCPtr, this);
+  public float getEqualVertexThreshold() {
+    return gdxBulletJNI.btTriangleInfoMapData_equalVertexThreshold_get(swigCPtr, this);
   }
 
-  public void setM_edgeDistanceThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_edgeDistanceThreshold_set(swigCPtr, this, value);
+  public void setEdgeDistanceThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMapData_edgeDistanceThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_edgeDistanceThreshold() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_edgeDistanceThreshold_get(swigCPtr, this);
+  public float getEdgeDistanceThreshold() {
+    return gdxBulletJNI.btTriangleInfoMapData_edgeDistanceThreshold_get(swigCPtr, this);
   }
 
-  public void setM_zeroAreaThreshold(float value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_zeroAreaThreshold_set(swigCPtr, this, value);
+  public void setZeroAreaThreshold(float value) {
+    gdxBulletJNI.btTriangleInfoMapData_zeroAreaThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_zeroAreaThreshold() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_zeroAreaThreshold_get(swigCPtr, this);
+  public float getZeroAreaThreshold() {
+    return gdxBulletJNI.btTriangleInfoMapData_zeroAreaThreshold_get(swigCPtr, this);
   }
 
-  public void setM_nextSize(int value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_nextSize_set(swigCPtr, this, value);
+  public void setNextSize(int value) {
+    gdxBulletJNI.btTriangleInfoMapData_nextSize_set(swigCPtr, this, value);
   }
 
-  public int getM_nextSize() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_nextSize_get(swigCPtr, this);
+  public int getNextSize() {
+    return gdxBulletJNI.btTriangleInfoMapData_nextSize_get(swigCPtr, this);
   }
 
-  public void setM_hashTableSize(int value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_hashTableSize_set(swigCPtr, this, value);
+  public void setHashTableSize(int value) {
+    gdxBulletJNI.btTriangleInfoMapData_hashTableSize_set(swigCPtr, this, value);
   }
 
-  public int getM_hashTableSize() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_hashTableSize_get(swigCPtr, this);
+  public int getHashTableSize() {
+    return gdxBulletJNI.btTriangleInfoMapData_hashTableSize_get(swigCPtr, this);
   }
 
-  public void setM_numValues(int value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_numValues_set(swigCPtr, this, value);
+  public void setNumValues(int value) {
+    gdxBulletJNI.btTriangleInfoMapData_numValues_set(swigCPtr, this, value);
   }
 
-  public int getM_numValues() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_numValues_get(swigCPtr, this);
+  public int getNumValues() {
+    return gdxBulletJNI.btTriangleInfoMapData_numValues_get(swigCPtr, this);
   }
 
-  public void setM_numKeys(int value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_numKeys_set(swigCPtr, this, value);
+  public void setNumKeys(int value) {
+    gdxBulletJNI.btTriangleInfoMapData_numKeys_set(swigCPtr, this, value);
   }
 
-  public int getM_numKeys() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_numKeys_get(swigCPtr, this);
+  public int getNumKeys() {
+    return gdxBulletJNI.btTriangleInfoMapData_numKeys_get(swigCPtr, this);
   }
 
-  public void setM_padding(String value) {
-    gdxBulletJNI.btTriangleInfoMapData_m_padding_set(swigCPtr, this, value);
+  public void setPadding(String value) {
+    gdxBulletJNI.btTriangleInfoMapData_padding_set(swigCPtr, this, value);
   }
 
-  public String getM_padding() {
-    return gdxBulletJNI.btTriangleInfoMapData_m_padding_get(swigCPtr, this);
+  public String getPadding() {
+    return gdxBulletJNI.btTriangleInfoMapData_padding_get(swigCPtr, this);
   }
 
   public btTriangleInfoMapData() {

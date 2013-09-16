@@ -155,7 +155,7 @@ public class VehicleTest extends BaseBulletTest {
 		
 		for (int i = 0; i < wheels.length; i++) {
 			vehicle.updateWheelTransform(i, true);
-			vehicle.getWheelInfo(i).getM_worldTransform().getOpenGLMatrix(wheels[i].transform.val);
+			vehicle.getWheelInfo(i).getWorldTransform().getOpenGLMatrix(wheels[i].transform.val);
 		}
 		
 		chassis.transform.getTranslation(camera.position);
@@ -176,11 +176,11 @@ public class VehicleTest extends BaseBulletTest {
 	@Override
 	public void dispose () {
 		super.dispose();
-		vehicle.delete();
+		vehicle.dispose();
 		vehicle = null;
-		raycaster.delete();
+		raycaster.dispose();
 		raycaster = null;
-		tuning.delete();
+		tuning.dispose();
 		tuning = null;
 	}
 	

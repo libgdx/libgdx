@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btScaledBvhTriangleMeshShape extends btConcaveShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btScaledBvhTriangleMeshShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btScaledBvhTriangleMeshShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btScaledBvhTriangleMeshShape(long cPtr, boolean cMemoryOwn) {
+		this("btScaledBvhTriangleMeshShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btScaledBvhTriangleMeshShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btScaledBvhTriangleMeshShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btScaledBvhTriangleMeshShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btScaledBvhTriangleMeshShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btScaledBvhTriangleMeshShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btScaledBvhTriangleMeshShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btScaledBvhTriangleMeshShape(btBvhTriangleMeshShape childShape, Vector3 localScaling) {
     this(gdxBulletJNI.new_btScaledBvhTriangleMeshShape(btBvhTriangleMeshShape.getCPtr(childShape), childShape, localScaling), true);

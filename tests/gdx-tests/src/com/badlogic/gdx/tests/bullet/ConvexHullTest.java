@@ -36,7 +36,7 @@ public class ConvexHullTest extends BaseBulletTest {
 		disposables.add(carModel);
 		carModel.materials.get(0).clear();
 		carModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE));
-		world.addConstructor("car", new BulletConstructor(carModel, 5f, createConvexHullShape(carModel)));
+		world.addConstructor("car", new BulletConstructor(carModel, 5f, createConvexHullShape(carModel, true)));
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
@@ -53,15 +53,18 @@ public class ConvexHullTest extends BaseBulletTest {
 		return true;
 	}
 	
-	public static btConvexHullShape createConvexHullShape(final Model model) {
+	public static btConvexHullShape createConvexHullShape(final Model model, boolean optimize) {
 		final Mesh mesh = model.meshes.get(0);
 		final btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize());
+		if (!optimize)
+			return shape;
 		// now optimize the shape
 		final btShapeHull hull = new btShapeHull(shape);
 		hull.buildHull(shape.getMargin());
 		final btConvexHullShape result = new btConvexHullShape(hull);
 		// delete the temporary shape
-		shape.delete();
+		shape.dispose();
+		hull.dispose();
 		return result;
 	}
 }

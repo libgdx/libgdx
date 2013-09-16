@@ -14,185 +14,193 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btDbvtBroadphase extends btBroadphaseInterface {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btDbvtBroadphase(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btDbvtBroadphase_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btDbvtBroadphase(long cPtr, boolean cMemoryOwn) {
+		this("btDbvtBroadphase", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btDbvtBroadphase obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btDbvtBroadphase(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btDbvtBroadphase_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btDbvtBroadphase(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setSets(btDbvt value) {
+    gdxBulletJNI.btDbvtBroadphase_sets_set(swigCPtr, this, btDbvt.getCPtr(value), value);
   }
 
-  public static long getCPtr(btDbvtBroadphase obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btDbvtBroadphase(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_sets(btDbvt value) {
-    gdxBulletJNI.btDbvtBroadphase_m_sets_set(swigCPtr, this, btDbvt.getCPtr(value), value);
-  }
-
-  public btDbvt getM_sets() {
-    long cPtr = gdxBulletJNI.btDbvtBroadphase_m_sets_get(swigCPtr, this);
+  public btDbvt getSets() {
+    long cPtr = gdxBulletJNI.btDbvtBroadphase_sets_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btDbvt(cPtr, false);
   }
 
-  public void setM_stageRoots(SWIGTYPE_p_p_btDbvtProxy value) {
-    gdxBulletJNI.btDbvtBroadphase_m_stageRoots_set(swigCPtr, this, SWIGTYPE_p_p_btDbvtProxy.getCPtr(value));
+  public void setStageRoots(SWIGTYPE_p_p_btDbvtProxy value) {
+    gdxBulletJNI.btDbvtBroadphase_stageRoots_set(swigCPtr, this, SWIGTYPE_p_p_btDbvtProxy.getCPtr(value));
   }
 
-  public SWIGTYPE_p_p_btDbvtProxy getM_stageRoots() {
-    long cPtr = gdxBulletJNI.btDbvtBroadphase_m_stageRoots_get(swigCPtr, this);
+  public SWIGTYPE_p_p_btDbvtProxy getStageRoots() {
+    long cPtr = gdxBulletJNI.btDbvtBroadphase_stageRoots_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_btDbvtProxy(cPtr, false);
   }
 
-  public void setM_paircache(btOverlappingPairCache value) {
-    gdxBulletJNI.btDbvtBroadphase_m_paircache_set(swigCPtr, this, btOverlappingPairCache.getCPtr(value), value);
+  public void setPaircache(btOverlappingPairCache value) {
+    gdxBulletJNI.btDbvtBroadphase_paircache_set(swigCPtr, this, btOverlappingPairCache.getCPtr(value), value);
   }
 
-  public btOverlappingPairCache getM_paircache() {
-    long cPtr = gdxBulletJNI.btDbvtBroadphase_m_paircache_get(swigCPtr, this);
+  public btOverlappingPairCache getPaircache() {
+    long cPtr = gdxBulletJNI.btDbvtBroadphase_paircache_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btOverlappingPairCache(cPtr, false);
   }
 
-  public void setM_prediction(float value) {
-    gdxBulletJNI.btDbvtBroadphase_m_prediction_set(swigCPtr, this, value);
+  public void setPrediction(float value) {
+    gdxBulletJNI.btDbvtBroadphase_prediction_set(swigCPtr, this, value);
   }
 
-  public float getM_prediction() {
-    return gdxBulletJNI.btDbvtBroadphase_m_prediction_get(swigCPtr, this);
+  public float getPrediction() {
+    return gdxBulletJNI.btDbvtBroadphase_prediction_get(swigCPtr, this);
   }
 
-  public void setM_stageCurrent(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_stageCurrent_set(swigCPtr, this, value);
+  public void setStageCurrent(int value) {
+    gdxBulletJNI.btDbvtBroadphase_stageCurrent_set(swigCPtr, this, value);
   }
 
-  public int getM_stageCurrent() {
-    return gdxBulletJNI.btDbvtBroadphase_m_stageCurrent_get(swigCPtr, this);
+  public int getStageCurrent() {
+    return gdxBulletJNI.btDbvtBroadphase_stageCurrent_get(swigCPtr, this);
   }
 
-  public void setM_fupdates(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_fupdates_set(swigCPtr, this, value);
+  public void setFupdates(int value) {
+    gdxBulletJNI.btDbvtBroadphase_fupdates_set(swigCPtr, this, value);
   }
 
-  public int getM_fupdates() {
-    return gdxBulletJNI.btDbvtBroadphase_m_fupdates_get(swigCPtr, this);
+  public int getFupdates() {
+    return gdxBulletJNI.btDbvtBroadphase_fupdates_get(swigCPtr, this);
   }
 
-  public void setM_dupdates(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_dupdates_set(swigCPtr, this, value);
+  public void setDupdates(int value) {
+    gdxBulletJNI.btDbvtBroadphase_dupdates_set(swigCPtr, this, value);
   }
 
-  public int getM_dupdates() {
-    return gdxBulletJNI.btDbvtBroadphase_m_dupdates_get(swigCPtr, this);
+  public int getDupdates() {
+    return gdxBulletJNI.btDbvtBroadphase_dupdates_get(swigCPtr, this);
   }
 
-  public void setM_cupdates(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_cupdates_set(swigCPtr, this, value);
+  public void setCupdates(int value) {
+    gdxBulletJNI.btDbvtBroadphase_cupdates_set(swigCPtr, this, value);
   }
 
-  public int getM_cupdates() {
-    return gdxBulletJNI.btDbvtBroadphase_m_cupdates_get(swigCPtr, this);
+  public int getCupdates() {
+    return gdxBulletJNI.btDbvtBroadphase_cupdates_get(swigCPtr, this);
   }
 
-  public void setM_newpairs(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_newpairs_set(swigCPtr, this, value);
+  public void setNewpairs(int value) {
+    gdxBulletJNI.btDbvtBroadphase_newpairs_set(swigCPtr, this, value);
   }
 
-  public int getM_newpairs() {
-    return gdxBulletJNI.btDbvtBroadphase_m_newpairs_get(swigCPtr, this);
+  public int getNewpairs() {
+    return gdxBulletJNI.btDbvtBroadphase_newpairs_get(swigCPtr, this);
   }
 
-  public void setM_fixedleft(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_fixedleft_set(swigCPtr, this, value);
+  public void setFixedleft(int value) {
+    gdxBulletJNI.btDbvtBroadphase_fixedleft_set(swigCPtr, this, value);
   }
 
-  public int getM_fixedleft() {
-    return gdxBulletJNI.btDbvtBroadphase_m_fixedleft_get(swigCPtr, this);
+  public int getFixedleft() {
+    return gdxBulletJNI.btDbvtBroadphase_fixedleft_get(swigCPtr, this);
   }
 
-  public void setM_updates_call(long value) {
-    gdxBulletJNI.btDbvtBroadphase_m_updates_call_set(swigCPtr, this, value);
+  public void setUpdates_call(long value) {
+    gdxBulletJNI.btDbvtBroadphase_updates_call_set(swigCPtr, this, value);
   }
 
-  public long getM_updates_call() {
-    return gdxBulletJNI.btDbvtBroadphase_m_updates_call_get(swigCPtr, this);
+  public long getUpdates_call() {
+    return gdxBulletJNI.btDbvtBroadphase_updates_call_get(swigCPtr, this);
   }
 
-  public void setM_updates_done(long value) {
-    gdxBulletJNI.btDbvtBroadphase_m_updates_done_set(swigCPtr, this, value);
+  public void setUpdates_done(long value) {
+    gdxBulletJNI.btDbvtBroadphase_updates_done_set(swigCPtr, this, value);
   }
 
-  public long getM_updates_done() {
-    return gdxBulletJNI.btDbvtBroadphase_m_updates_done_get(swigCPtr, this);
+  public long getUpdates_done() {
+    return gdxBulletJNI.btDbvtBroadphase_updates_done_get(swigCPtr, this);
   }
 
-  public void setM_updates_ratio(float value) {
-    gdxBulletJNI.btDbvtBroadphase_m_updates_ratio_set(swigCPtr, this, value);
+  public void setUpdates_ratio(float value) {
+    gdxBulletJNI.btDbvtBroadphase_updates_ratio_set(swigCPtr, this, value);
   }
 
-  public float getM_updates_ratio() {
-    return gdxBulletJNI.btDbvtBroadphase_m_updates_ratio_get(swigCPtr, this);
+  public float getUpdates_ratio() {
+    return gdxBulletJNI.btDbvtBroadphase_updates_ratio_get(swigCPtr, this);
   }
 
-  public void setM_pid(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_pid_set(swigCPtr, this, value);
+  public void setPid(int value) {
+    gdxBulletJNI.btDbvtBroadphase_pid_set(swigCPtr, this, value);
   }
 
-  public int getM_pid() {
-    return gdxBulletJNI.btDbvtBroadphase_m_pid_get(swigCPtr, this);
+  public int getPid() {
+    return gdxBulletJNI.btDbvtBroadphase_pid_get(swigCPtr, this);
   }
 
-  public void setM_cid(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_cid_set(swigCPtr, this, value);
+  public void setCid(int value) {
+    gdxBulletJNI.btDbvtBroadphase_cid_set(swigCPtr, this, value);
   }
 
-  public int getM_cid() {
-    return gdxBulletJNI.btDbvtBroadphase_m_cid_get(swigCPtr, this);
+  public int getCid() {
+    return gdxBulletJNI.btDbvtBroadphase_cid_get(swigCPtr, this);
   }
 
-  public void setM_gid(int value) {
-    gdxBulletJNI.btDbvtBroadphase_m_gid_set(swigCPtr, this, value);
+  public void setGid(int value) {
+    gdxBulletJNI.btDbvtBroadphase_gid_set(swigCPtr, this, value);
   }
 
-  public int getM_gid() {
-    return gdxBulletJNI.btDbvtBroadphase_m_gid_get(swigCPtr, this);
+  public int getGid() {
+    return gdxBulletJNI.btDbvtBroadphase_gid_get(swigCPtr, this);
   }
 
-  public void setM_releasepaircache(boolean value) {
-    gdxBulletJNI.btDbvtBroadphase_m_releasepaircache_set(swigCPtr, this, value);
+  public void setReleasepaircache(boolean value) {
+    gdxBulletJNI.btDbvtBroadphase_releasepaircache_set(swigCPtr, this, value);
   }
 
-  public boolean getM_releasepaircache() {
-    return gdxBulletJNI.btDbvtBroadphase_m_releasepaircache_get(swigCPtr, this);
+  public boolean getReleasepaircache() {
+    return gdxBulletJNI.btDbvtBroadphase_releasepaircache_get(swigCPtr, this);
   }
 
-  public void setM_deferedcollide(boolean value) {
-    gdxBulletJNI.btDbvtBroadphase_m_deferedcollide_set(swigCPtr, this, value);
+  public void setDeferedcollide(boolean value) {
+    gdxBulletJNI.btDbvtBroadphase_deferedcollide_set(swigCPtr, this, value);
   }
 
-  public boolean getM_deferedcollide() {
-    return gdxBulletJNI.btDbvtBroadphase_m_deferedcollide_get(swigCPtr, this);
+  public boolean getDeferedcollide() {
+    return gdxBulletJNI.btDbvtBroadphase_deferedcollide_get(swigCPtr, this);
   }
 
-  public void setM_needcleanup(boolean value) {
-    gdxBulletJNI.btDbvtBroadphase_m_needcleanup_set(swigCPtr, this, value);
+  public void setNeedcleanup(boolean value) {
+    gdxBulletJNI.btDbvtBroadphase_needcleanup_set(swigCPtr, this, value);
   }
 
-  public boolean getM_needcleanup() {
-    return gdxBulletJNI.btDbvtBroadphase_m_needcleanup_get(swigCPtr, this);
+  public boolean getNeedcleanup() {
+    return gdxBulletJNI.btDbvtBroadphase_needcleanup_get(swigCPtr, this);
   }
 
   public btDbvtBroadphase(btOverlappingPairCache paircache) {

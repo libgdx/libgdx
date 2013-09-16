@@ -13,82 +13,90 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class SoftRigidAnchorData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class SoftRigidAnchorData extends BulletBase {
+	private long swigCPtr;
+	
+	protected SoftRigidAnchorData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected SoftRigidAnchorData(long cPtr, boolean cMemoryOwn) {
+		this("SoftRigidAnchorData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(SoftRigidAnchorData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected SoftRigidAnchorData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_SoftRigidAnchorData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setC0(SWIGTYPE_p_btMatrix3x3FloatData value) {
+    gdxBulletJNI.SoftRigidAnchorData_c0_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
   }
 
-  public static long getCPtr(SoftRigidAnchorData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public SWIGTYPE_p_btMatrix3x3FloatData getC0() {
+    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftRigidAnchorData_c0_get(swigCPtr, this), true);
   }
 
-  protected void finalize() {
-    delete();
+  public void setC1(btVector3FloatData value) {
+    gdxBulletJNI.SoftRigidAnchorData_c1_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_SoftRigidAnchorData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_c0(SWIGTYPE_p_btMatrix3x3FloatData value) {
-    gdxBulletJNI.SoftRigidAnchorData_m_c0_set(swigCPtr, this, SWIGTYPE_p_btMatrix3x3FloatData.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_btMatrix3x3FloatData getM_c0() {
-    return new SWIGTYPE_p_btMatrix3x3FloatData(gdxBulletJNI.SoftRigidAnchorData_m_c0_get(swigCPtr, this), true);
-  }
-
-  public void setM_c1(btVector3FloatData value) {
-    gdxBulletJNI.SoftRigidAnchorData_m_c1_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
-
-  public btVector3FloatData getM_c1() {
-    long cPtr = gdxBulletJNI.SoftRigidAnchorData_m_c1_get(swigCPtr, this);
+  public btVector3FloatData getC1() {
+    long cPtr = gdxBulletJNI.SoftRigidAnchorData_c1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_localFrame(btVector3FloatData value) {
-    gdxBulletJNI.SoftRigidAnchorData_m_localFrame_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
+  public void setLocalFrame(btVector3FloatData value) {
+    gdxBulletJNI.SoftRigidAnchorData_localFrame_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public btVector3FloatData getM_localFrame() {
-    long cPtr = gdxBulletJNI.SoftRigidAnchorData_m_localFrame_get(swigCPtr, this);
+  public btVector3FloatData getLocalFrame() {
+    long cPtr = gdxBulletJNI.SoftRigidAnchorData_localFrame_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_rigidBody(btRigidBodyFloatData value) {
-    gdxBulletJNI.SoftRigidAnchorData_m_rigidBody_set(swigCPtr, this, btRigidBodyFloatData.getCPtr(value), value);
+  public void setRigidBody(btRigidBodyFloatData value) {
+    gdxBulletJNI.SoftRigidAnchorData_rigidBody_set(swigCPtr, this, btRigidBodyFloatData.getCPtr(value), value);
   }
 
-  public btRigidBodyFloatData getM_rigidBody() {
-    long cPtr = gdxBulletJNI.SoftRigidAnchorData_m_rigidBody_get(swigCPtr, this);
+  public btRigidBodyFloatData getRigidBody() {
+    long cPtr = gdxBulletJNI.SoftRigidAnchorData_rigidBody_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btRigidBodyFloatData(cPtr, false);
   }
 
-  public void setM_nodeIndex(int value) {
-    gdxBulletJNI.SoftRigidAnchorData_m_nodeIndex_set(swigCPtr, this, value);
+  public void setNodeIndex(int value) {
+    gdxBulletJNI.SoftRigidAnchorData_nodeIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_nodeIndex() {
-    return gdxBulletJNI.SoftRigidAnchorData_m_nodeIndex_get(swigCPtr, this);
+  public int getNodeIndex() {
+    return gdxBulletJNI.SoftRigidAnchorData_nodeIndex_get(swigCPtr, this);
   }
 
-  public void setM_c2(float value) {
-    gdxBulletJNI.SoftRigidAnchorData_m_c2_set(swigCPtr, this, value);
+  public void setC2(float value) {
+    gdxBulletJNI.SoftRigidAnchorData_c2_set(swigCPtr, this, value);
   }
 
-  public float getM_c2() {
-    return gdxBulletJNI.SoftRigidAnchorData_m_c2_get(swigCPtr, this);
+  public float getC2() {
+    return gdxBulletJNI.SoftRigidAnchorData_c2_get(swigCPtr, this);
   }
 
   public SoftRigidAnchorData() {

@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.math;
 
-/** Encapsulates a 2D polygon defined by it's vertices relative 
- * to an origin point (default of 0, 0). */
+/** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
 public class Polygon {
 	private float[] localVertices;
 	private float[] worldVertices;
@@ -27,33 +26,30 @@ public class Polygon {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
 	private Rectangle bounds;
-	
+
 	/** Constructs a new polygon with no vertices. */
 	public Polygon () {
 		this.localVertices = new float[0];
 	}
 
-	/** Constructs a new polygon from a float array of parts of vertex points. 
+	/** Constructs a new polygon from a float array of parts of vertex points.
 	 * 
-	 * @param vertices an array where every even element represents the horizontal
-	 * part of a point, and the following element representing the vertical part
+	 * @param vertices an array where every even element represents the horizontal part of a point, and the following element
+	 *           representing the vertical part
 	 * 
-	 * @throws IllegalArgumentException if less than 6 elements, 
-	 * representing 3 points, are provided
-	 */
+	 * @throws IllegalArgumentException if less than 6 elements, representing 3 points, are provided */
 	public Polygon (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
 		this.localVertices = vertices;
 	}
 
-	/** Returns the polygon's local vertices without scaling or rotation and 
-	 * without being offset by the polygon position. */
+	/** Returns the polygon's local vertices without scaling or rotation and without being offset by the polygon position. */
 	public float[] getVertices () {
 		return localVertices;
 	}
 
-	/** Calculates and returns the vertices of the polygon after scaling, rotation,
-	 * and positional translations have been applied, as they are position within the world.
+	/** Calculates and returns the vertices of the polygon after scaling, rotation, and positional translations have been applied,
+	 * as they are position within the world.
 	 * 
 	 * @return vertices scaled, rotated, and offset by the polygon position. */
 	public float[] getTransformedVertices () {
@@ -111,19 +107,15 @@ public class Polygon {
 		this.y = y;
 		dirty = true;
 	}
-	
-	/** Sets the polygon's local vertices relative to the origin point,
-	 * without any scaling, rotating or translations being applied.
+
+	/** Sets the polygon's local vertices relative to the origin point, without any scaling, rotating or translations being applied.
 	 * 
-	 * @param vertices float array where every even element represents the
-	 * x-coordinate of a vertex, and the proceeding element representing the
-	 * y-coordinate.
-	 * @throws IllegalArgumentException  if less than 6 elements, 
-	 * representing 3 points, are provided
-	 */
+	 * @param vertices float array where every even element represents the x-coordinate of a vertex, and the proceeding element
+	 *           representing the y-coordinate.
+	 * @throws IllegalArgumentException if less than 6 elements, representing 3 points, are provided */
 	public void setVertices (float[] vertices) {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
-		
+
 		// if the provided vertices are the same length, we can copy them into localVertices
 		if (localVertices.length == vertices.length) {
 			for (int i = 0; i < localVertices.length; i++) {
@@ -168,9 +160,7 @@ public class Polygon {
 		dirty = true;
 	}
 
-	/** Sets the polygon's world vertices to be recalculated when calling 
-	 * {@link #getTransformedVertices() getTransformedVertices}. 
-	 */
+	/** Sets the polygon's world vertices to be recalculated when calling {@link #getTransformedVertices() getTransformedVertices}. */
 	public void dirty () {
 		dirty = true;
 	}
@@ -196,13 +186,11 @@ public class Polygon {
 		return area;
 	}
 
-	/** Returns an axis-aligned bounding box of this polygon.  
+	/** Returns an axis-aligned bounding box of this polygon.
 	 * 
-	 * Note the returned Rectangle is cached in this polygon, and will
-	 * be reused if this Polygon is changed.
+	 * Note the returned Rectangle is cached in this polygon, and will be reused if this Polygon is changed.
 	 * 
-	 * @return this polygon's bounding box {@link Rectangle}
-	 */
+	 * @return this polygon's bounding box {@link Rectangle} */
 	public Rectangle getBoundingRectangle () {
 		float[] vertices = getTransformedVertices();
 
@@ -227,7 +215,7 @@ public class Polygon {
 
 		return bounds;
 	}
-	
+
 	/** Returns whether an x, y pair is contained within the polygon. */
 	public boolean contains (float x, float y) {
 		final float[] vertices = getTransformedVertices();
@@ -269,7 +257,7 @@ public class Polygon {
 		return rotation;
 	}
 
-	/** Returns the total horizontal scaling applied to the polygon. */ 
+	/** Returns the total horizontal scaling applied to the polygon. */
 	public float getScaleX () {
 		return scaleX;
 	}

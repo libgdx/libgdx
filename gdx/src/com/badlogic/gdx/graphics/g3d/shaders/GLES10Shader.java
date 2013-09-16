@@ -153,11 +153,9 @@ public class GLES10Shader implements Shader{
 				} else if (attribute.type == TextureAttribute.Diffuse) {
 					TextureDescriptor textureDesc = ((TextureAttribute)attribute).textureDescription;
 					if (currentTexture0 != textureDesc.texture)
-						(currentTexture0 = textureDesc.texture).bind(0);
-					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, textureDesc.minFilter);
-					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, textureDesc.magFilter);
-					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, textureDesc.uWrap);
-					Gdx.gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, textureDesc.vWrap);
+						(currentTexture0 = (Texture)textureDesc.texture).bind(0);
+					currentTexture0.unsafeSetFilter(textureDesc.minFilter, textureDesc.magFilter);
+					currentTexture0.unsafeSetWrap(textureDesc.uWrap, textureDesc.vWrap);
 					Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 				}
 				else if ((attribute.type & IntAttribute.CullFace) == IntAttribute.CullFace)

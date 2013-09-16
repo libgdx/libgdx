@@ -56,7 +56,4 @@ public class IOSApplicationConfiguration {
 	public boolean useAccelerometer = true;
 	/** the update interval to poll the accelerometer with, in seconds **/
 	public float accelerometerUpdate = 0.05f;
-	
-	/** whether to use ObjectAL for sound implementation or not.  */
-	public boolean useObjectAL = true;
 }

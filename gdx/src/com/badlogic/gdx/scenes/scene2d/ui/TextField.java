@@ -863,7 +863,9 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor, focusedFontColor, disabledFontColor;
+		public Color fontColor;
+		/** Optional. */
+		public Color focusedFontColor, disabledFontColor;
 		/** Optional. */
 		public Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */

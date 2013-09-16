@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCollisionShape {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCollisionShape extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCollisionShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCollisionShape(long cPtr, boolean cMemoryOwn) {
+		this("btCollisionShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCollisionShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCollisionShape(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btCollisionShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCollisionShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCollisionShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
 
   public static btCollisionShape newDerivedObject(long swigCPtr, boolean owner) {

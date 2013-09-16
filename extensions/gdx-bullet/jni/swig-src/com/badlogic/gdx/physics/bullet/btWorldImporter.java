@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btWorldImporter {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btWorldImporter extends BulletBase {
+	private long swigCPtr;
+	
+	protected btWorldImporter(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btWorldImporter(long cPtr, boolean cMemoryOwn) {
+		this("btWorldImporter", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btWorldImporter obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btWorldImporter(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btWorldImporter obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btWorldImporter(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btWorldImporter(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btWorldImporter(btDynamicsWorld world) {
     this(gdxBulletJNI.new_btWorldImporter(btDynamicsWorld.getCPtr(world), world), true);

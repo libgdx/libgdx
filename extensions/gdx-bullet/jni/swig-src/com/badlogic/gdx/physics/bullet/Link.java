@@ -14,87 +14,95 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Link extends Feature {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected Link(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.Link_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected Link(long cPtr, boolean cMemoryOwn) {
+		this("Link", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(Link obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected Link(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.Link_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_Link(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setN(SWIGTYPE_p_p_Node value) {
+    gdxBulletJNI.Link_n_set(swigCPtr, this, SWIGTYPE_p_p_Node.getCPtr(value));
   }
 
-  public static long getCPtr(Link obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_Link(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_n(SWIGTYPE_p_p_Node value) {
-    gdxBulletJNI.Link_m_n_set(swigCPtr, this, SWIGTYPE_p_p_Node.getCPtr(value));
-  }
-
-  public SWIGTYPE_p_p_Node getM_n() {
-    long cPtr = gdxBulletJNI.Link_m_n_get(swigCPtr, this);
+  public SWIGTYPE_p_p_Node getN() {
+    long cPtr = gdxBulletJNI.Link_n_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_p_Node(cPtr, false);
   }
 
-  public void setM_rl(float value) {
-    gdxBulletJNI.Link_m_rl_set(swigCPtr, this, value);
+  public void setRl(float value) {
+    gdxBulletJNI.Link_rl_set(swigCPtr, this, value);
   }
 
-  public float getM_rl() {
-    return gdxBulletJNI.Link_m_rl_get(swigCPtr, this);
+  public float getRl() {
+    return gdxBulletJNI.Link_rl_get(swigCPtr, this);
   }
 
-  public void setM_bbending(int value) {
-    gdxBulletJNI.Link_m_bbending_set(swigCPtr, this, value);
+  public void setBbending(int value) {
+    gdxBulletJNI.Link_bbending_set(swigCPtr, this, value);
   }
 
-  public int getM_bbending() {
-    return gdxBulletJNI.Link_m_bbending_get(swigCPtr, this);
+  public int getBbending() {
+    return gdxBulletJNI.Link_bbending_get(swigCPtr, this);
   }
 
-  public void setM_c0(float value) {
-    gdxBulletJNI.Link_m_c0_set(swigCPtr, this, value);
+  public void setC0(float value) {
+    gdxBulletJNI.Link_c0_set(swigCPtr, this, value);
   }
 
-  public float getM_c0() {
-    return gdxBulletJNI.Link_m_c0_get(swigCPtr, this);
+  public float getC0() {
+    return gdxBulletJNI.Link_c0_get(swigCPtr, this);
   }
 
-  public void setM_c1(float value) {
-    gdxBulletJNI.Link_m_c1_set(swigCPtr, this, value);
+  public void setC1(float value) {
+    gdxBulletJNI.Link_c1_set(swigCPtr, this, value);
   }
 
-  public float getM_c1() {
-    return gdxBulletJNI.Link_m_c1_get(swigCPtr, this);
+  public float getC1() {
+    return gdxBulletJNI.Link_c1_get(swigCPtr, this);
   }
 
-  public void setM_c2(float value) {
-    gdxBulletJNI.Link_m_c2_set(swigCPtr, this, value);
+  public void setC2(float value) {
+    gdxBulletJNI.Link_c2_set(swigCPtr, this, value);
   }
 
-  public float getM_c2() {
-    return gdxBulletJNI.Link_m_c2_get(swigCPtr, this);
+  public float getC2() {
+    return gdxBulletJNI.Link_c2_get(swigCPtr, this);
   }
 
-  public void setM_c3(btVector3 value) {
-    gdxBulletJNI.Link_m_c3_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setC3(btVector3 value) {
+    gdxBulletJNI.Link_c3_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_c3() {
-    long cPtr = gdxBulletJNI.Link_m_c3_get(swigCPtr, this);
+  public btVector3 getC3() {
+    long cPtr = gdxBulletJNI.Link_c3_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
