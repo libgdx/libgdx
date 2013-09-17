@@ -59,6 +59,16 @@ public final class Intersector {
 	}
 
 	/** Returns true if the given point is inside the triangle. */
+	public static boolean isPointInTriangle (Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
+		float px1 = p.x - a.x;
+		float py1 = p.y - a.y;
+		boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
+		if ((c.x - a.x) * py1 - (c.y - a.y) * px1 > 0 == side12) return false;
+		if ((c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0 != side12) return false;
+		return true;
+	}
+
+	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (float px, float py, float ax, float ay, float bx, float by, float cx, float cy) {
 		float px1 = px - ax;
 		float py1 = py - ay;
@@ -92,26 +102,24 @@ public final class Intersector {
 			* (pointX - linePoint1X));
 	}
 
-    /** Checks whether the given point is in the polygon.
-     * @param polygon The polygon vertices passed as an array
-     * @param point The point
-     * @return true if the point is in the polygon */
-   public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
-        Vector2 lastVertice = polygon.peek();
-        boolean oddNodes = false;
-        for (int i=0; i<polygon.size; i++) {
-            Vector2 vertice = polygon.get(i);
-            if (vertice.y < point.y && lastVertice.y >= point.y || lastVertice.y < point.y
-                    && vertice.y >= point.y) {
-                if (vertice.x + (point.y - vertice.y) / (lastVertice.y - vertice.y)
-                        * (lastVertice.x - vertice.x) < point.x) {
-                    oddNodes = !oddNodes;
-                }
-            }
-            lastVertice = vertice;
-        }
-        return oddNodes;
-    }
+	/** Checks whether the given point is in the polygon.
+	 * @param polygon The polygon vertices passed as an array
+	 * @param point The point
+	 * @return true if the point is in the polygon */
+	public static boolean isPointInPolygon (Array<Vector2> polygon, Vector2 point) {
+		Vector2 lastVertice = polygon.peek();
+		boolean oddNodes = false;
+		for (int i = 0; i < polygon.size; i++) {
+			Vector2 vertice = polygon.get(i);
+			if (vertice.y < point.y && lastVertice.y >= point.y || lastVertice.y < point.y && vertice.y >= point.y) {
+				if (vertice.x + (point.y - vertice.y) / (lastVertice.y - vertice.y) * (lastVertice.x - vertice.x) < point.x) {
+					oddNodes = !oddNodes;
+				}
+			}
+			lastVertice = vertice;
+		}
+		return oddNodes;
+	}
 
 	/** Returns true if the specified point is in the polygon. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
