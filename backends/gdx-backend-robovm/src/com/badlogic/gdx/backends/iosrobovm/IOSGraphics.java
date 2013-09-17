@@ -10,6 +10,7 @@ import org.robovm.cocoatouch.glkit.GLKViewController;
 import org.robovm.cocoatouch.glkit.GLKViewControllerDelegate;
 import org.robovm.cocoatouch.glkit.GLKViewDelegate;
 import org.robovm.cocoatouch.glkit.GLKViewDrawableColorFormat;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableDepthFormat;
 import org.robovm.cocoatouch.opengles.EAGLContext;
 import org.robovm.cocoatouch.opengles.EAGLRenderingAPI;
 import org.robovm.cocoatouch.uikit.UIDevice;
@@ -158,6 +159,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		};
 		view.setDelegate(this);
 		view.setDrawableColorFormat(GLKViewDrawableColorFormat.RGB565);
+		view.setDrawableDepthFormat(GLKViewDrawableDepthFormat.Format16);
 
 		viewController = new IOSUIViewController(app, this);
 		viewController.setView(view);
