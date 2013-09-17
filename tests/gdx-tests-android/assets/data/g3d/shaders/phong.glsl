@@ -15,7 +15,7 @@ void main() {
 	gl_Position = u_projViewTrans * g_position;
 
 	// Pass the attributes values to the fragment shader
-	passPosition();
+	pushPosition();
 	
 #ifdef normalTextureFlag
 	calculateTangentVectors();
@@ -24,8 +24,8 @@ void main() {
 #endif
 
 	passNormalValue(normalize(u_normalMatrix * applySkinning(g_normal)));
-	passColor();
-	passTexCoord0();
+	pushColor();
+	pushTexCoord0();
 	
 	passShadowMapUV(calcShadowMapUV(g_position));
 	passFog(calculateFog(g_position, u_cameraPosition));
@@ -66,8 +66,11 @@ varying float v_fog;
 // #define gouraud
 
 void main() {
-#ifdef normalTextureFlag
+	pullColor();
+	pullTexCoord0();
 	pullNormal();
+	
+#ifdef normalTextureFlag
 	pullBinormal();
 	pullTangent();
 	
@@ -98,7 +101,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * (diffuse.rgb * g_lightDiffuse);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * g_lightDiffuse);
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#else
 		vec3 specular = applyColorSpecular(g_lightSpecular);
@@ -115,7 +118,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * ((diffuse.rgb * g_lightDiffuse) + specular);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * g_lightDiffuse) + specular;
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#endif //lightingFlag
 

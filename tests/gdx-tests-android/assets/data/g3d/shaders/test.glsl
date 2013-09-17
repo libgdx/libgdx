@@ -38,9 +38,8 @@ void main() {
 	v_reflect = reflect(-viewDir, g_normal);
 #endif
 	
-	passColor();
-	passTexCoord0();
-	passNormal();
+	pushColor();
+	pushTexCoord0();
 }
 
 
@@ -80,6 +79,9 @@ uniform vec4 u_reflectionColor;
 #define saturate(x) clamp( x, 0.0, 1.0 )
 
 void main() {
+	pullColor();
+	pullTexCoord0();
+	
 	vec4 diffuse = applyColorDiffuse(g_color);
 	vec3 specular = fetchColorSpecular();
 	
@@ -109,10 +111,10 @@ void main() {
 	vec3 environment = textureCube(u_environmentCubemap, reflectDir).rgb;
 	specular *= environment;
 #ifdef reflectionColorFlag
-	diffuse.rgb = saturate(vec3(1.0) - u_reflectionColor.rgb) * diffuse.rgb + environment * u_reflectionColor;
+	diffuse.rgb = saturate(vec3(1.0) - u_reflectionColor.rgb) * diffuse.rgb + environment * u_reflectionColor.rgb;
 #endif
 #endif
 
-	gl_FragColor = vec4(v_lightCol * diffuse.rgb * NL, diffuse.w);
-	gl_FragColor.rgb += selfShadow * specular * spec;
+	gl_FragColor = vec4((v_lightCol * diffuse.rgb) * NL, diffuse.w);
+	gl_FragColor.rgb += (selfShadow * spec) * specular;
 }
