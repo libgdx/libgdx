@@ -1,5 +1,10 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
+import org.robovm.cocoatouch.glkit.GLKViewDrawableColorFormat;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableDepthFormat;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableMultisample;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableStencilFormat;
+
 public class IOSApplicationConfiguration {
 	// FIXME add compass, framebuffer bit depth, stencil, just like on Android if possible
 	/** whether to enable screen dimming. */
@@ -8,6 +13,21 @@ public class IOSApplicationConfiguration {
 	public boolean orientationPortrait = true;
 	/** whether or not landscape orientation is supported. */
 	public boolean orientationLandscape = true;
+	
+	/** the color format, RGB565 is the default **/
+	public GLKViewDrawableColorFormat colorFormat = GLKViewDrawableColorFormat.RGB565;
+	
+	/** the depth buffer format, Format16 is default **/
+	public GLKViewDrawableDepthFormat depthFormat = GLKViewDrawableDepthFormat.Format16;
+	
+	/** the stencil buffer format, None is default **/
+	public GLKViewDrawableStencilFormat stencilFormat = GLKViewDrawableStencilFormat.None;
+	
+	/** the multisample format, None is default **/
+	public GLKViewDrawableMultisample multisample = GLKViewDrawableMultisample.None;
+	
+	/** number of frames per second, 60 is default **/
+	public int preferredFramesPerSecond = 60;
 	
 	/**
 	 * Scale factor to use on large screens  with retina display, i.e. iPad 3+ (has no effect on non-retina screens).
