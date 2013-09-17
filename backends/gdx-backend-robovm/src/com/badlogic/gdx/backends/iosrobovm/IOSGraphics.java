@@ -192,7 +192,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
-		ppcY = ppcY / 2.54f;
+		ppcY = ppiY / 2.54f;
 		app.debug(tag, "Display: ppi=" + ppi + ", density=" + density);
 
 		// time + FPS
