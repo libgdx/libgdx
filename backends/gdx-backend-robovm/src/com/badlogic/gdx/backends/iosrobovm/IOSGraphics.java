@@ -115,11 +115,13 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 	volatile boolean paused;
 	boolean wasPaused;
 
+	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
 	public IOSGraphics(CGSize bounds, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+		this.config = config;
 		// setup view and OpenGL
 		width = (int) bounds.width();
 		height = (int) bounds.height();
@@ -168,7 +170,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		viewController = new IOSUIViewController(app, this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
-		viewController.setPreferredFramesPerSecond(60);
+		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
 
 		this.app = app;
 		this.input = input;
@@ -407,7 +409,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 	@Override
 	public DisplayMode getDesktopDisplayMode() {
-		return new IOSDisplayMode(getWidth(), getHeight(), 60, bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
+		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
 	}
 
 	private class IOSDisplayMode extends DisplayMode {

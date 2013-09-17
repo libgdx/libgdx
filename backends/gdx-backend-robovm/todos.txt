@@ -7,7 +7,7 @@ General
 	- getClipboard() not implemented properly, should at least support strings
 	- 
 - IOSApplicationConfiguration
-	- add compass, FBO bit depth, stencil bit depth
+	- add compass
 	- add useGL2, requires implementation of GL10/GL11 for ios, and fixes in IOSGraphics
 - IOSAudo
 	- newAudioDevice(), new AudioRecorder() not implemented
@@ -18,7 +18,6 @@ General
 	- need to store current device orientation for Input#getOrienation and consorts
 	- GLKView, is this supported from IOS 5+ onwards? i guess we can make that our minimum iOS version
 	- Add support for GL10/GL11	
-	- setPreferredFramesPerSecond is hardcoded to 60, should make that configurable i guess	
 	- check if apps supporting both portrait and landscape work (resize, etc.) 
 	- implement non-continuous rendering
 - IOSInput

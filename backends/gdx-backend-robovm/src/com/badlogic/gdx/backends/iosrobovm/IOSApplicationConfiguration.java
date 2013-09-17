@@ -26,6 +26,9 @@ public class IOSApplicationConfiguration {
 	/** the multisample format, None is default **/
 	public GLKViewDrawableMultisample multisample = GLKViewDrawableMultisample.None;
 	
+	/** number of frames per second, 60 is default **/
+	public int preferredFramesPerSecond = 60;
+	
 	/**
 	 * Scale factor to use on large screens  with retina display, i.e. iPad 3+ (has no effect on non-retina screens).
 	 * <ul>
