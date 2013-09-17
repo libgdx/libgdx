@@ -109,6 +109,11 @@ public class LongArray {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		items[index] = value;
 	}
+	
+	public void incr (int index, long value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] += value;
+	}
 
 	public void insert (int index, long value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
