@@ -17,8 +17,8 @@ import com.badlogic.gdx.utils.IntArray;
 
 import static com.badlogic.gdx.math.MathUtils.*;
 
-/** This class makes a maze using the recursive division method described on Wikipedia. {@link http
- * ://en.wikipedia.org/wiki/Maze_generation_algorithm} */
+/** This class makes a maze using the recursive division method described on <a href="http
+ * ://en.wikipedia.org/wiki/Maze_generation_algorithm">Wikipedia</a>. */
 public final class MazeGenerator {
 
 	private int width;
