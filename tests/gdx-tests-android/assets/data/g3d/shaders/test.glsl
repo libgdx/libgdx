@@ -38,9 +38,8 @@ void main() {
 	v_reflect = reflect(-viewDir, g_normal);
 #endif
 	
-	passColor();
-	passTexCoord0();
-	passNormal();
+	pushColor();
+	pushTexCoord0();
 }
 
 
@@ -80,6 +79,9 @@ uniform vec4 u_reflectionColor;
 #define saturate(x) clamp( x, 0.0, 1.0 )
 
 void main() {
+	pullColor();
+	pullTexCoord0();
+	
 	vec4 diffuse = applyColorDiffuse(g_color);
 	vec3 specular = fetchColorSpecular();
 	

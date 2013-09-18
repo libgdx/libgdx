@@ -432,6 +432,84 @@ public class ShapeRenderer {
 		}
 	}
 
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The originX and
+	 * originY specify the point about which to rotate the rectangle. The rotation is in degrees. The {@link ShapeType} passed to
+	 * begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}. */
+	public void rect (float x, float y, float width, float height, float originX, float originY, float rotation) {
+		rect(x, y, width, height, originX, originY, rotation, color, color, color, color);
+	}
+
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The originX and
+	 * originY specify the point about which to rotate the rectangle. The rotation is in degrees. The {@link ShapeType} passed to
+	 * begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param col1 The color at (x, y)
+	 * @param col2 The color at (x + width, y)
+	 * @param col3 The color at (x + width, y + height)
+	 * @param col4 The color at (x, y + height) */
+	public void rect (float x, float y, float width, float height, float originX, float originY, float rotation, Color col1,
+		Color col2, Color col3, Color col4) {
+		if (currType != ShapeType.Filled && currType != ShapeType.Line)
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+
+		checkDirty();
+		checkFlush(8);
+
+		float r = (float)Math.toRadians(rotation);
+		float c = (float)Math.cos(r);
+		float s = (float)Math.sin(r);
+
+		float x1, y1, x2, y2, x3, y3, x4, y4;
+
+		x1 = x + c * (0 - originX) + -s * (0 - originY);
+		y1 = y + s * (0 - originY) + c * (0 - originY);
+
+		x2 = x + c * (width - originX) + -s * (0 - originY);
+		y2 = y + s * (width - originY) + c * (0 - originY);
+
+		x3 = x + c * (width - originX) + -s * (height - originY);
+		y3 = y + s * (width - originY) + c * (height - originY);
+
+		x4 = x + c * (0 - originX) + -s * (height - originY);
+		y4 = y + s * (0 - originY) + c * (height - originY);
+
+		if (currType == ShapeType.Line) {
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x3, y3, 0);
+
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x3, y3, 0);
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x4, y4, 0);
+
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x4, y4, 0);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+		} else {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x4, y4, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+		}
+
+	}
+
 	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
 	 * to begin has to be {@link ShapeType#Line}. */
 	public void box (float x, float y, float z, float width, float height, float depth) {

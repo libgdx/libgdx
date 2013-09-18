@@ -63,11 +63,11 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
-		<!--<ant antfile="build-ios32.xml" dir="extensions/gdx-bullet/jni"/>
+		<ant antfile="build-ios32.xml" dir="extensions/gdx-bullet/jni"/>
 		<ant antfile="convert-ikvm.xml" dir=".">
 			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:extensions/gdx-bullet/src/ dist/extensions/gdx-bullet/gdx-bullet.jar"/>
 			<property name="OUT" value="extensions/gdx-bullet/libs/ios32/gdx-bullet.dll"/>
-		</ant>-->
+		</ant>
 	</target>
 	
 	<target name="controllers" depends="core">

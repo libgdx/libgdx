@@ -117,7 +117,7 @@ public class IOSApplication implements Application {
 		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), this, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
 		this.net = new IOSNet(this);

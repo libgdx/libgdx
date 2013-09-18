@@ -7,7 +7,7 @@ General
 	- getClipboard() not implemented properly, should at least support strings
 	- 
 - IOSApplicationConfiguration
-	- add compass, FBO bit depth, stencil bit depth
+	- add compass
 	- add useGL2, requires implementation of GL10/GL11 for ios, and fixes in IOSGraphics
 - IOSAudo
 	- newAudioDevice(), new AudioRecorder() not implemented
@@ -17,23 +17,18 @@ General
 - IOSGraphics
 	- need to store current device orientation for Input#getOrienation and consorts
 	- GLKView, is this supported from IOS 5+ onwards? i guess we can make that our minimum iOS version
-	- Add support for GL10/GL11
-	- Color format is fixed at RGB565, add RBGA8888 option in config
-	- make sure returned buffer format is correct if we expose setting color depth etc.
-	- setPreferredFramesPerSecond is hardcoded to 60, should make that configurable i guess
-	- check if density calculations are correct for ppi/ppc
+	- Add support for GL10/GL11	
 	- check if apps supporting both portrait and landscape work (resize, etc.) 
 	- implement non-continuous rendering
 - IOSInput
-	- IOSInput#touchDown is a bit bonkers, with 64-bit iOS that might become an issue (it's an int, not a long)
-	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
-	- see if we can programmatically show the keyboard and receive key events, if so map to gdx keycodes
-	- getPlaceholderTextInput() needs to be implemented
-	- vibrate(), cancelVibrate() needs to be implemented
-	- we should totally refactor setCatchBackKey and consorts eventually...
-	- add compass support, fix up isPeripheralAvailable(), including onscreen keyboard stuff
 	- getRotation() needs to be implemented
 	- getNativeOrientation() needs to be implemented, see IOSInput
+	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
+	- vibrate(), cancelVibrate() needs to be implemented
+	- see if we can programmatically show the keyboard and receive key events, if so map to gdx keycodes
+	- getPlaceholderTextInput() needs to be implemented		
+	- add compass support, fix up isPeripheralAvailable(), including onscreen keyboard stuff
+	
 - IOSMusic
 	- OGG support
 - IOSNet

@@ -54,6 +54,7 @@
 		<get src="${domain}/extensions/gdx-bullet/armeabi/libgdx-bullet.so" dest="tmp/armeabi"/>
 		<get src="${domain}/extensions/gdx-bullet/armeabi-v7a/libgdx-bullet.so" dest="tmp/armeabi-v7a"/>
         <get src="${domain}/extensions/gdx-bullet/x86/libgdx-bullet.so" dest="tmp/x86"/>
+        <get src="${domain}/extensions/gdx-bullet/ios/libgdx-bullet.so" dest="extensions/gdx-bullet/libs/ios32"/>
 		
 		<!-- controllers natives, desktop only -->
 		<mkdir dir="extensions/gdx-controllers/gdx-controllers-desktop/libs/ios32"/>
@@ -67,6 +68,7 @@
         <get src="${domain}/extensions/gdx-freetype/x86/libgdx-freetype.so" dest="tmp/x86"/>
 		<get src="${domain}/extensions/gdx-freetype/ios/gdx-freetype.dll" dest="extensions/gdx-freetype/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-freetype/ios/gdx-freetype.dll.mdb" dest="extensions/gdx-freetype/libs/ios32"/>
+        <get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a" dest="extensions/gdx-freetype/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-freetype/ios/libgdx-freetype.a" dest="tmp/ios"/>
 		
 		<!-- image natives -->

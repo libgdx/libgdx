@@ -117,6 +117,11 @@ public class ShortArray {
 		items[index] = value;
 	}
 
+	public void incr (int index, short value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] = value;
+	}
+
 	public void insert (int index, short value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		short[] items = this.items;

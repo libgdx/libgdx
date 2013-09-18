@@ -109,6 +109,11 @@ public class CharArray {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		items[index] = value;
 	}
+	
+	public void incr (int index, char value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] += value;
+	}
 
 	public void insert (int index, char value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));

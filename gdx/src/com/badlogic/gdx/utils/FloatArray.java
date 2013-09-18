@@ -110,6 +110,11 @@ public class FloatArray {
 		items[index] = value;
 	}
 
+	public void incr (int index, float value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] += value;
+	}
+
 	public void insert (int index, float value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		float[] items = this.items;
