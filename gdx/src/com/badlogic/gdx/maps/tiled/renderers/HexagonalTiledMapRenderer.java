@@ -68,7 +68,6 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
 
 		final float layerTileWidth25 = layerTileWidth * 0.25f;
-		final float layerTileWidth50 = layerTileWidth * 0.50f;
 		final float layerTileWidth75 = layerTileWidth * 0.75f;
 
 		final float layerTileHeight50 = layerTileHeight * 0.50f;
