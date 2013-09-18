@@ -170,8 +170,6 @@ public class TextField extends Widget {
 			public boolean keyDown (InputEvent event, int keycode) {
 				if (disabled) return false;
 
-				final BitmapFont font = style.font;
-
 				lastBlink = 0;
 				cursorOn = false;
 

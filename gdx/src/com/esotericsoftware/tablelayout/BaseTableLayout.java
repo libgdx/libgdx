@@ -528,7 +528,6 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	private void computeSize () {
 		sizeInvalid = false;
 
-		Toolkit toolkit = this.toolkit;
 		ArrayList<Cell> cells = this.cells;
 
 		if (cells.size() > 0 && !cells.get(cells.size() - 1).endRow) endRow();
