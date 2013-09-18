@@ -166,6 +166,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		view.setDrawableDepthFormat(config.depthFormat);
 		view.setDrawableStencilFormat(config.stencilFormat);
 		view.setDrawableMultisample(config.multisample);
+		view.setMultipleTouchEnabled(true);
 
 		viewController = new IOSUIViewController(app, this);
 		viewController.setView(view);

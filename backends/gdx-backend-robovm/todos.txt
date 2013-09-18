@@ -21,16 +21,14 @@ General
 	- check if apps supporting both portrait and landscape work (resize, etc.) 
 	- implement non-continuous rendering
 - IOSInput
-	- Multitouch is broken
-	- IOSInput#touchDown is a bit bonkers, with 64-bit iOS that might become an issue (it's an int, not a long)
-	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
-	- see if we can programmatically show the keyboard and receive key events, if so map to gdx keycodes
-	- getPlaceholderTextInput() needs to be implemented
-	- vibrate(), cancelVibrate() needs to be implemented
-	- we should totally refactor setCatchBackKey and consorts eventually...
-	- add compass support, fix up isPeripheralAvailable(), including onscreen keyboard stuff
 	- getRotation() needs to be implemented
 	- getNativeOrientation() needs to be implemented, see IOSInput
+	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
+	- vibrate(), cancelVibrate() needs to be implemented
+	- see if we can programmatically show the keyboard and receive key events, if so map to gdx keycodes
+	- getPlaceholderTextInput() needs to be implemented		
+	- add compass support, fix up isPeripheralAvailable(), including onscreen keyboard stuff
+	
 - IOSMusic
 	- OGG support
 - IOSNet
