@@ -113,7 +113,6 @@ public class DecalBatch implements Disposable {
 	 * 
 	 * @param decal Decal to add for rendering */
 	public void add (Decal decal) {
-		DecalMaterial material = decal.getMaterial();
 		int groupIndex = groupStrategy.decideGroup(decal);
 		Array<Decal> targetGroup = groupList.get(groupIndex);
 		if (targetGroup == null) {

@@ -152,7 +152,6 @@ public class BitmapFontCache {
 				vertices[i] = color;
 		} else {
 			int pageCount = vertexData.length;
-			TextureRegion[] regions = font.getRegions();
 
 			// for each page...
 			for (int i = 0; i < pageCount; i++) {

@@ -402,7 +402,6 @@ public class BitmapFont implements Disposable {
 	 * the last line of text. */
 	public TextBounds getWrappedBounds (CharSequence str, float wrapWidth, TextBounds textBounds) {
 		if (wrapWidth <= 0) wrapWidth = Integer.MAX_VALUE;
-		float down = this.data.down;
 		int start = 0;
 		int numLines = 0;
 		int length = str.length();
