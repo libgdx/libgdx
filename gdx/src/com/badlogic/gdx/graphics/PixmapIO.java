@@ -28,6 +28,7 @@ import java.util.zip.InflaterInputStream;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Writes Pixmaps to various formats.
  * @author mzechner
@@ -99,10 +100,7 @@ public class PixmapIO {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write Pixmap to file '" + file + "'", e);
 			} finally {
-				if (out != null) try {
-					out.close();
-				} catch (Exception e) {
-				}
+				StreamUtils.closeQuietly(out);
 			}
 		}
 
@@ -135,10 +133,7 @@ public class PixmapIO {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't read Pixmap from file '" + file + "'", e);
 			} finally {
-				if (in != null) try {
-					in.close();
-				} catch (Exception e) {
-				}
+				StreamUtils.closeQuietly(in);
 			}
 		}
 	}
