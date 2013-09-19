@@ -80,6 +80,7 @@
 	- Added getCache() to BitmapFont, for expert users who wish to use the BitmapFontCache (see BitmapFontTest)
 	- FreeTypeFontGenerator now includes setMaxTextureSize and getMaxTextureSize to cap the generated glyph atlas size (default 1024)
 - added render-hooks beginRender() and endRender() to BatchTiledMapRenderer
+- Added panStop to GestureListener interface.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
