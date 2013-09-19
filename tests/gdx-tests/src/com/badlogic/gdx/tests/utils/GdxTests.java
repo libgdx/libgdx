@@ -72,6 +72,7 @@ public class GdxTests {
 		OrthoCamBorderTest.class, ParallaxTest.class, ParticleEmitterTest.class, PickingTest.class, PixelsPerInchTest.class,
 		PixmapBlendingTest.class, PixmapTest.class, PixmapPackerTest.class, PolygonRegionTest.class, PolygonSpriteTest.class, PreferencesTest.class,
 		ProjectiveTextureTest.class, Pong.class, ProjectTest.class, RemoteTest.class, RotationTest.class, DragAndDropTest.class,
+		SelectTest.class,
 		ShaderMultitextureTest.class, ShadowMappingTest.class, PathTest.class, SimpleAnimationTest.class, SimpleDecalTest.class,
 		SimpleStageCullingTest.class, SoundTest.class, SpriteCacheTest.class, SpriteCacheOffsetTest.class, LetterBoxTest1.class,
 		SpriteBatchRotationTest.class, SpriteBatchShaderTest.class, SpriteBatchTest.class, SpritePerformanceTest.class,

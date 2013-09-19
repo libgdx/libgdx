@@ -222,7 +222,6 @@ public class Tree extends WidgetGroup {
 
 	private float layout (Array<Node> nodes, float indent, float y) {
 		float ySpacing = this.ySpacing;
-		Drawable plus = style.plus, minus = style.minus;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			Actor actor = node.actor;
@@ -302,7 +301,6 @@ public class Tree extends WidgetGroup {
 	}
 
 	void selectNodes (Array<Node> nodes, float low, float high) {
-		float ySpacing = this.ySpacing;
 		for (int i = 0, n = nodes.size; i < n; i++) {
 			Node node = nodes.get(i);
 			if (node.actor.getY() < low) break;

@@ -518,6 +518,9 @@ public class TexturePacker2 {
 			combineSubdirectories = settings.combineSubdirectories;
 			flattenPaths = settings.flattenPaths;
 			premultiplyAlpha = settings.premultiplyAlpha;
+			forceSquareOutput = settings.forceSquareOutput;
+			useIndexes = settings.useIndexes;
+			bleed = settings.bleed;
 		}
 	}
 

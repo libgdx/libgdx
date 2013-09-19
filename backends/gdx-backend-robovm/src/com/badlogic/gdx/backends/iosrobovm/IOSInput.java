@@ -39,7 +39,7 @@ public class IOSInput implements Input {
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
 	// we store the pointer to the UITouch struct here, or 0
-	int[] touchDown = new int[MAX_TOUCHES];
+	long[] touchDown = new long[MAX_TOUCHES];
 	int numTouched = 0;
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
@@ -388,7 +388,7 @@ public class IOSInput implements Input {
 	}
 	
 	private int findPointer(UITouch touch) {
-		int ptr = (int) touch.getHandle();
+		long ptr = touch.getHandle();
 		for(int i = 0; i < touchDown.length; i++) {
 			if(touchDown[i] == ptr) return i;
 		}
@@ -406,7 +406,7 @@ public class IOSInput implements Input {
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
 				
-				if(touch.getPhase() == UITouchPhase.Began) {
+				if(touch.getPhase() == UITouchPhase.Began) {					
 					event.pointer = getFreePointer();
 					touchDown[event.pointer] = (int) touch.getHandle();
 					touchX[event.pointer] = event.x;
@@ -426,7 +426,7 @@ public class IOSInput implements Input {
 				}
 				
 				if(touch.getPhase() == UITouchPhase.Cancelled ||
-					touch.getPhase() == UITouchPhase.Ended) {
+					touch.getPhase() == UITouchPhase.Ended) {					
 					event.pointer = findPointer(touch);
 					touchDown[event.pointer] = 0; 
 					touchX[event.pointer] = event.x;

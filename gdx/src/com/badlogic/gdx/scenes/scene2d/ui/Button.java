@@ -86,7 +86,6 @@ public class Button extends Table {
 		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				if (isDisabled) return;
-				boolean wasChecked = isChecked;
 				setChecked(!isChecked);
 			}
 		});
