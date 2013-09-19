@@ -359,9 +359,7 @@ public class Quaternion implements Serializable {
 	 * @param v2 The target vector, which should be normalized.
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final Vector3 v1, final Vector3 v2) {
-    		Vector3 w = v1.tmp().crs(v2);
-    		set(w.x, w.y, w.z, 1 + v1.dot(v2));
-    		return nor();
+    		return setFromCross(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
     	}
 	
 	/** Set this quaternion to the rotation between two vectors.
@@ -369,10 +367,7 @@ public class Quaternion implements Serializable {
 	 * @param v2 The target vector
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCrossNotNormalized (final Vector3 v1, final Vector3 v2) {
-		float norm_u_norm_v = Math.sqrt(v1.len2() * v2.len2());
-    		Vector3 w = v1.tmp().crs(v2);
-    		set(w.x, w.y, w.z, norm_u_norm_v + v1.dot(v2));
-    		return nor();
+    		return setFromCrossNotNormalized(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
     	}
 	
 	/** Set this quaternion to the rotation between two vectors.
@@ -384,13 +379,35 @@ public class Quaternion implements Serializable {
 	 * @param z2 The target vector z value, which should be normalized.
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+    		return setFromCross(1, x1, y1, z1, x2, y2, z2);
+	}
+	
+	/** Set this quaternion to the rotation between two vectors.
+	 * @param x1 The base vectors x value.
+	 * @param y1 The base vectors y value.
+	 * @param z1 The base vectors z value.
+	 * @param x2 The target vector x value.
+	 * @param y2 The target vector y value.
+	 * @param z2 The target vector z value.
+	 * @return This quaternion for chaining */
+	public Quaternion setFromCrossNotNormalized (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		float len1 = x1 * x1 + y1 * y1 + z1 * z1;
+		float len2 = x2 * x2 + y2 * y2 + z2 * z2;
+		
+		float norm_u_norm_v = Math.sqrt(len1 * len2);
+    		
+    		return setFromCross(norm_u_norm_v, x1, y1, z1, x2, y2, z2);
+	}
+	
+	
+	private Quaternion setFromCross (final float normFactor, final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		float x = y1 * z2 - z1 * y2;
 		float y = z1 * x2 - x1 * z2;
 		float z = x1 * y2 - y1 * x2;
 		
 		float dot = x1 * x2 + y1 * y2 + z1 * z2;
 		
-    		set(x, y, z, 1 + dot);
+    		set(x, y, z, normFactor + dot);
     		
     		return nor();
 	}
