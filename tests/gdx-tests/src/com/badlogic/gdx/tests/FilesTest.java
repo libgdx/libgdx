@@ -31,6 +31,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class FilesTest extends GdxTest {
 	String message = "";
@@ -49,10 +50,7 @@ public class FilesTest extends GdxTest {
 
 			try {
 				InputStream in = Gdx.files.internal("data/cube.obj").read();
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+				StreamUtils.closeQuietly(in);
 				message += "Open internal success\n";
 			} catch (Throwable e) {
 				message += "Couldn't open internal data/cube.obj\n" + e.getMessage() + "\n";
@@ -68,20 +66,12 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't write externalstorage/test.txt\n";
 			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(out);
 			}
 
 			try {
 				InputStream in = Gdx.files.external("test.txt").read();
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+				StreamUtils.closeQuietly(in);
 				message += "Open external success\n";
 			} catch (Throwable e) {
 				message += "Couldn't open internal externalstorage/test.txt\n" + e.getMessage() + "\n";
@@ -99,12 +89,7 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't read externalstorage/test.txt\n";
 			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(in);
 			}
 
 			if (!Gdx.files.external("test.txt").delete()) message += "Couldn't delete externalstorage/test.txt";
@@ -125,20 +110,12 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't write localstorage/test.txt\n";
 			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(out);
 			}
 
 			try {
 				InputStream in = Gdx.files.local("test.txt").read();
-				try {
-					in.close();
-				} catch (IOException e) {
-				}
+				StreamUtils.closeQuietly(in);
 				message += "Open local success\n";
 			} catch (Throwable e) {
 				message += "Couldn't open localstorage/test.txt\n" + e.getMessage() + "\n";
@@ -156,12 +133,7 @@ public class FilesTest extends GdxTest {
 			} catch (IOException e) {
 				message += "Couldn't read localstorage/test.txt\n";
 			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-					}
-				}
+				StreamUtils.closeQuietly(in);
 			}
 
 			if (!Gdx.files.local("test.txt").delete()) message += "Couldn't delete localstorage/test.txt";
