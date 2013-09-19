@@ -23,7 +23,8 @@ import java.io.Serializable;
  * for more information.
  * 
  * @author badlogicgames@gmail.com
- * @author vesuvio */
+ * @author vesuvio *
+ * @author Daniel Heinrich */
 public class Quaternion implements Serializable {
 	private static final long serialVersionUID = -7661875440774897168L;
 	private static final float NORMALIZATION_TOLERANCE = 0.00001f;
