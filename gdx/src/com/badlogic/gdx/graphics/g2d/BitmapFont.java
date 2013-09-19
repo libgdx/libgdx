@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Renders bitmap fonts. The font consists of 2 files: an image file or {@link TextureRegion} containing the glyphs and a file in
  * the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
@@ -969,10 +970,7 @@ public class BitmapFont implements Disposable {
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error loading font file: " + fontFile, ex);
 			} finally {
-				try {
-					reader.close();
-				} catch (IOException ignored) {
-				}
+				StreamUtils.closeQuietly(reader);
 			}
 		}
 

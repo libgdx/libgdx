@@ -189,10 +189,7 @@ public class Json {
 		} catch (Exception ex) {
 			throw new SerializationException("Error writing file: " + file, ex);
 		} finally {
-			try {
-				if (writer != null) writer.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(writer);
 		}
 	}
 
@@ -212,10 +209,7 @@ public class Json {
 		try {
 			writeValue(object, knownType, elementType);
 		} finally {
-			try {
-				this.writer.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(this.writer);
 			this.writer = null;
 		}
 	}

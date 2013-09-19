@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.openal;
 import java.io.ByteArrayOutputStream;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** @author Nathan Sweet */
 public class Ogg {
@@ -41,8 +42,7 @@ public class Ogg {
 		}
 
 		public void reset () {
-			if (input == null) return;
-			input.close();
+			StreamUtils.closeQuietly(input);
 			input = null;
 		}
 	}
