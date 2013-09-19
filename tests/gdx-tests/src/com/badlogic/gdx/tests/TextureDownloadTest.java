@@ -29,6 +29,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class TextureDownloadTest extends GdxTest {
 	@Override
@@ -64,10 +65,7 @@ public class TextureDownloadTest extends GdxTest {
 				} catch (Exception ex) {
 					return 0;
 				} finally {
-					try {
-						if (in != null) in.close();
-					} catch (Exception ignored) {
-					}
+					StreamUtils.closeQuietly(in);
 				}
 			}
 

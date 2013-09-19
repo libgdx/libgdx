@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g2d;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -56,10 +57,7 @@ public class PolygonRegionLoader {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading polygon shape file: " + file, ex);
 		} finally {
-			try {
-				reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 		throw new GdxRuntimeException("Polygon shape not found: " + file);
 	}

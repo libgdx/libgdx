@@ -30,6 +30,7 @@ import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class LwjglPreferences implements Preferences {
 	private final String name;
@@ -51,10 +52,7 @@ public class LwjglPreferences implements Preferences {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		} finally {
-			if (in != null) try {
-				in.close();
-			} catch (Exception e) {
-			}
+			StreamUtils.closeQuietly(in);
 		}
 	}
 
@@ -178,10 +176,7 @@ public class LwjglPreferences implements Preferences {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing preferences: " + file, ex);
 		} finally {
-			if (out != null) try {
-				out.close();
-			} catch (Exception e) {
-			}
+			StreamUtils.closeQuietly(out);
 		}
 	}
 

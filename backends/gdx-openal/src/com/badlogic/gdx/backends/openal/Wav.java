@@ -23,6 +23,7 @@ import java.io.IOException;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 public class Wav {
 	static public class Music extends OpenALMusic {
@@ -48,11 +49,7 @@ public class Wav {
 		}
 
 		public void reset () {
-			if (input == null) return;
-			try {
-				input.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 			input = null;
 		}
 	}
