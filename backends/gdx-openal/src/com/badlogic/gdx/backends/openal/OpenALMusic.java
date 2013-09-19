@@ -47,7 +47,7 @@ public abstract class OpenALMusic implements Music {
 	private float renderedSeconds, secondsPerBuffer;
 
 	protected final FileHandle file;
-	
+
 	private OnCompletionListener onCompletionListener;
 
 	public OpenALMusic (OpenALAudio audio, FileHandle file) {
@@ -126,11 +126,11 @@ public abstract class OpenALMusic implements Music {
 		if (audio.noDevice) return;
 		if (sourceID != -1) alSourcef(sourceID, AL_GAIN, volume);
 	}
-	
-	public float getVolume() {
+
+	public float getVolume () {
 		return this.volume;
 	}
-	
+
 	public void setPan (float pan, float volume) {
 		this.volume = volume;
 		this.pan = pan;
@@ -217,8 +217,12 @@ public abstract class OpenALMusic implements Music {
 		buffers = null;
 		onCompletionListener = null;
 	}
-	
+
 	public void setOnCompletionListener (OnCompletionListener listener) {
 		onCompletionListener = listener;
+	}
+
+	public int getSourceId () {
+		return sourceID;
 	}
 }
