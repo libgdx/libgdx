@@ -1,4 +1,6 @@
 [0.9.9]
+- added Select class for selecting kth ordered statistic from arrays (see Array.selectRanked() method)
+- refactored Box2D to use badlogic Arrays instead of java.util.ArrayLists
 - MipMapGenerator methods now don't take disposePixmap argument anymore
 - added GLTexture, base class for all textures, encapsulates target (2d, cubemap, ...)
 - added CubeMap, 6 sided texture
