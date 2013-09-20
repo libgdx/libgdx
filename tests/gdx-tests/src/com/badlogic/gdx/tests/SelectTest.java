@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -10,17 +11,15 @@ import com.badlogic.gdx.utils.PerformanceCounter;
 
 import java.util.Comparator;
 
-/**
- * For testing and benchmarking of gdx.utils.Select and its associated algorithms/classes
- * @author Jon renner
- */
+/** For testing and benchmarking of gdx.utils.Select and its associated algorithms/classes
+ * @author Jon renner */
 public class SelectTest extends GdxTest {
-	private static PerformanceCounter perf = new PerformanceCounter("bench");
-	private static boolean verify; // verify and report the results of each selection
+	static PerformanceCounter perf = new PerformanceCounter("bench");
+	static boolean verify; // verify and report the results of each selection
 	private static boolean quiet;
 
 	@Override
-	public void create() {
+	public void create () {
 		int n = 100;
 		player = createDummies(n);
 		enemy = createDummies(n);
@@ -51,7 +50,7 @@ public class SelectTest extends GdxTest {
 		consistencyTest(runs, enemy.size / 2);
 		print("TEST CONSISTENCY FOR HIGHEST RANKED");
 		consistencyTest(runs, enemy.size);
-		
+
 		// test that selectRanked and selectRankedIndex return the same
 		print("TEST selectRanked AND selectRankedIndex RETURN MATCHING RESULTS - LOWEST RANKED");
 		testValueMatchesIndex(runs, 1);
@@ -59,29 +58,27 @@ public class SelectTest extends GdxTest {
 		testValueMatchesIndex(runs, enemy.size / 2);
 		print("TEST selectRanked AND selectRankedIndex RETURN MATCHING RESULTS - HIGHEST RANKED");
 		testValueMatchesIndex(runs, enemy.size);
-		
+
 		print("ALL TESTS PASSED");
 	}
 
-	public static void correctnessTest(int runs, int k) {
-		String msg = String.format("[%d runs with %dx%d dummy game units] - ",
-				runs, player.size, enemy.size);
+	public static void correctnessTest (int runs, int k) {
+		String msg = String.format("[%d runs with %dx%d dummy game units] - ", runs, player.size, enemy.size);
 		verify = true;
 		test(runs, k);
 		print(msg + "VERIFIED");
 	}
 
-	public static void performanceTest(int runs, int k) {
+	public static void performanceTest (int runs, int k) {
 		verify = false;
 		test(runs, k);
-		String msg = String.format("[%d runs with %dx%d dummy game units] - ",
-				runs, player.size, enemy.size);
-		print(msg + String.format("avg: %.5f, min/max: %.4f/%.4f, total time: %.3f (ms), made %d comparisons",
-				allPerf.time.min, allPerf.time.max, allPerf.time.average * 1000, allPerf.time.total * 1000,
-				comparisonsMade));
+		String msg = String.format("[%d runs with %dx%d dummy game units] - ", runs, player.size, enemy.size);
+		print(msg
+			+ String.format("avg: %.5f, min/max: %.4f/%.4f, total time: %.3f (ms), made %d comparisons", allPerf.time.min,
+				allPerf.time.max, allPerf.time.average * 1000, allPerf.time.total * 1000, comparisonsMade));
 	}
 
-	public static void consistencyTest(int runs, int k) {
+	public static void consistencyTest (int runs, int k) {
 		verify = false;
 		Dummy test = player.get(0);
 		Dummy lastFound = null;
@@ -100,8 +97,8 @@ public class SelectTest extends GdxTest {
 			}
 		}
 	}
-	
-	public static void testValueMatchesIndex(int runs, int k) {
+
+	public static void testValueMatchesIndex (int runs, int k) {
 		verify = false;
 		for (int i = 0; i < runs; i++) {
 			allRandom();
@@ -112,15 +109,14 @@ public class SelectTest extends GdxTest {
 			Dummy indexDummy = enemy.get(idx);
 			Dummy valueDummy = enemy.selectRanked(distComp, k);
 			if (!(indexDummy.equals(valueDummy))) {
-				throw new GdxRuntimeException("results of selectRankedIndex and selectRanked do not return the same object\n" +
-					"selectRankedIndex -> " + indexDummy + "\n" +
-					"selectRanked      -> " + valueDummy);
+				throw new GdxRuntimeException("results of selectRankedIndex and selectRanked do not return the same object\n"
+					+ "selectRankedIndex -> " + indexDummy + "\n" + "selectRanked      -> " + valueDummy);
 			}
-			
-		}				
+
+		}
 	}
 
-	public static void test(int runs, int k) {
+	public static void test (int runs, int k) {
 		// k = kth order statistic
 		comparisonsMade = 0;
 		perf.reset();
@@ -133,7 +129,7 @@ public class SelectTest extends GdxTest {
 		}
 	}
 
-	public static void allRandom() {
+	public static void allRandom () {
 		for (Dummy d : player) {
 			d.setRandomPos();
 		}
@@ -143,7 +139,8 @@ public class SelectTest extends GdxTest {
 	}
 
 	private static PerformanceCounter allPerf = new PerformanceCounter("all");
-	public static void getKthNearestEnemy(boolean silent, int k) {
+
+	public static void getKthNearestEnemy (boolean silent, int k) {
 		Dummy kthDummy = null;
 		perf.reset();
 		allPerf.start();
@@ -153,16 +150,16 @@ public class SelectTest extends GdxTest {
 		allPerf.stop();
 		allPerf.tick();
 		if (silent) return;
-		print(String.format("found nearest. min: %.4f, max: %.4f, avg: %.4f, total: %.3f ms",
-				perf.time.min * 1000, perf.time.max * 1000, perf.time.average * 1000, perf.time.total * 1000));
+		print(String.format("found nearest. min: %.4f, max: %.4f, avg: %.4f, total: %.3f ms", perf.time.min * 1000,
+			perf.time.max * 1000, perf.time.average * 1000, perf.time.total * 1000));
 	}
 
-	public static void verifyCorrectness(Dummy d, int k) {
+	public static void verifyCorrectness (Dummy d, int k) {
 		enemy.sort(distComp);
 		int idx = enemy.indexOf(d, true);
 		// remember that k = min value = 0 position in the array, therefore k - 1
-		//if (idx != k - 1) {
-		//print("verified - idx: " + idx + ", (k - 1): " + (k - 1));
+		// if (idx != k - 1) {
+		// print("verified - idx: " + idx + ", (k - 1): " + (k - 1));
 		if (enemy.get(idx) != enemy.get(k - 1)) {
 			System.out.println("origin dummy: " + originDummy);
 			System.out.println("TEST FAILURE: " + "idx: " + idx + " does not equal (k - 1): " + (k - 1));
@@ -174,30 +171,29 @@ public class SelectTest extends GdxTest {
 		public Vector2 pos;
 		public int id;
 
-		public Dummy() {
+		public Dummy () {
 			// set the position manually
 		}
 
 		@Override
-		public boolean equals(Object obj) {
+		public boolean equals (Object obj) {
 			if (!(obj instanceof Dummy)) {
 				throw new GdxRuntimeException("do not compare to anything but other Dummy objects");
 			}
-			Dummy d = (Dummy) obj;
+			Dummy d = (Dummy)obj;
 			// we only care about position/distance
 			float epsilon = 0.0001f;
 			float diff = Math.abs(d.pos.x - this.pos.x) + Math.abs(d.pos.y - this.pos.y);
-			if (diff > epsilon)
-				return false;
+			if (diff > epsilon) return false;
 			return true;
 
 		}
 
-		public Dummy getKthNearestEnemy(int k) {
+		public Dummy getKthNearestEnemy (int k) {
 			perf.start();
 			originDummy = this;
 			Dummy found = enemy.selectRanked(distComp, k);
-			//print(this + " found enemy: " + found);
+			// print(this + " found enemy: " + found);
 			perf.stop();
 			perf.tick();
 			if (verify) {
@@ -206,7 +202,7 @@ public class SelectTest extends GdxTest {
 			return found;
 		}
 
-		public void setRandomPos() {
+		public void setRandomPos () {
 			float max = 100;
 			this.pos.x = -max + MathUtils.random(max * 2);
 			this.pos.y = -max + MathUtils.random(max * 2);
@@ -221,7 +217,7 @@ public class SelectTest extends GdxTest {
 		}
 
 		@Override
-		public String toString() {
+		public String toString () {
 			return String.format("Dummy at: %.2f, %.2f", pos.x, pos.y);
 		}
 	}
@@ -230,7 +226,7 @@ public class SelectTest extends GdxTest {
 	public static Array<Dummy> player;
 	public static Array<Dummy> enemy;
 
-	public static Array<Dummy> createDummies(int n) {
+	public static Array<Dummy> createDummies (int n) {
 		float variance = 20;
 		Array<Dummy> dummies = new Array<Dummy>();
 		for (int i = 0; i < n; i++) {
@@ -242,11 +238,11 @@ public class SelectTest extends GdxTest {
 		return dummies;
 	}
 
-	private static Dummy originDummy;
-	private static long comparisonsMade = 0;
+	static Dummy originDummy;
+	static long comparisonsMade = 0;
 	static Comparator<Dummy> distComp = new Comparator<Dummy>() {
 		@Override
-		public int compare(Dummy o1, Dummy o2) {
+		public int compare (Dummy o1, Dummy o2) {
 			comparisonsMade++;
 			float d1 = originDummy.pos.dst2(o1.pos);
 			float d2 = originDummy.pos.dst2(o2.pos);
@@ -257,7 +253,7 @@ public class SelectTest extends GdxTest {
 		}
 	};
 
-	public static void print(Object ...objs) {
+	public static void print (Object... objs) {
 		for (Object o : objs) {
 			System.out.print(o);
 		}
