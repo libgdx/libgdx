@@ -68,50 +68,8 @@ public class Window extends Table {
 		setHeight(150);
 		setTitle(title);
 
-		addCaptureListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				toFront();
-				return false;
-			}
-		});
-		addListener(new InputListener() {
-			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (button == 0) {
-					dragging = isMovable && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth();
-					dragOffset.set(x, y);
-				}
-				return dragging || isModal;
-			}
-
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (dragging) dragging = false;
-			}
-
-			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				if (!dragging) return;
-				translate(x - dragOffset.x, y - dragOffset.y);
-			}
-
-			public boolean mouseMoved (InputEvent event, float x, float y) {
-				return isModal;
-			}
-
-			public boolean scrolled (InputEvent event, float x, float y, int amount) {
-				return isModal;
-			}
-
-			public boolean keyDown (InputEvent event, int keycode) {
-				return isModal;
-			}
-
-			public boolean keyUp (InputEvent event, int keycode) {
-				return isModal;
-			}
-
-			public boolean keyTyped (InputEvent event, char character) {
-				return isModal;
-			}
-		});
+		addCaptureListener(createDefaultCaptureListener());
+		addListener(createDefaultListener());
 	}
 
 	public void setStyle (WindowStyle style) {
@@ -213,6 +171,62 @@ public class Window extends Table {
 
 	public float getPrefWidth () {
 		return Math.max(super.getPrefWidth(), titleCache.getBounds().width + getPadLeft() + getPadRight());
+	}
+
+	/** @return a newly created default listener */
+	protected InputListener createDefaultListener () {
+		return new WindowInputListener();
+	}
+
+	/** @return a newly created default capture listener */
+	protected InputListener createDefaultCaptureListener () {
+		return new WindowCaptureInputListener();
+	}
+
+	protected class WindowInputListener extends InputListener {
+		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			if (button == 0) {
+				dragging = isMovable && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth();
+				dragOffset.set(x, y);
+			}
+			return dragging || isModal;
+		}
+
+		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			if (dragging) dragging = false;
+		}
+
+		public void touchDragged (InputEvent event, float x, float y, int pointer) {
+			if (!dragging) return;
+			translate(x - dragOffset.x, y - dragOffset.y);
+		}
+
+		public boolean mouseMoved (InputEvent event, float x, float y) {
+			return isModal;
+		}
+
+		public boolean scrolled (InputEvent event, float x, float y, int amount) {
+			return isModal;
+		}
+
+		public boolean keyDown (InputEvent event, int keycode) {
+			return isModal;
+		}
+
+		public boolean keyUp (InputEvent event, int keycode) {
+			return isModal;
+		}
+
+		public boolean keyTyped (InputEvent event, char character) {
+			return isModal;
+		}
+	}
+
+	protected class WindowCaptureInputListener extends InputListener {
+		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+			toFront();
+			return false;
+		}
 	}
 
 	/** The style for a window, see {@link Window}.
