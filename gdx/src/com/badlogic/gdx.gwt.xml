@@ -432,6 +432,7 @@
 		<include name="utils/IntFloatMap.java"/>
 		<include name="utils/IntIntMap.java"/>
 		<include name="utils/IntMap.java"/>
+		<include name="utils/IntSet.java"/>
 		<include name="utils/Json.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
