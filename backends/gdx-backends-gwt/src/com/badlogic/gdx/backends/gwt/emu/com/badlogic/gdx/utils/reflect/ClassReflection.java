@@ -126,7 +126,7 @@ public final class ClassReflection {
 		}
 	}
 
-	/** Returns a {@link Field} that represents the specified public member field for the supplied class. */
+	/** Returns an array of {@link Field} objects reflecting all the fields declared by the supplied class. */
 	static public Field[] getDeclaredFields (Class c) {
 		com.badlogic.gwtref.client.Field[] fields = ReflectionCache.getType(c).getDeclaredFields();
 		Field[] result = new Field[fields.length];
