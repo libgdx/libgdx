@@ -57,7 +57,7 @@ public class Polygon {
 		dirty = false;
 
 		final float[] localVertices = this.localVertices;
-		if (worldVertices == null || worldVertices.length < localVertices.length) worldVertices = new float[localVertices.length];
+		if (worldVertices == null || worldVertices.length != localVertices.length) worldVertices = new float[localVertices.length];
 
 		final float[] worldVertices = this.worldVertices;
 		final float positionX = x;
