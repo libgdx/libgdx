@@ -129,6 +129,11 @@ public class MathUtils {
 	// ---
 
 	static public Random random = new Random();
+	
+	/** Sets the seed of the internal Random object */ 
+	static public void setSeed(long seed) {
+		random.setSeed(seed);
+	}
 
 	/** Returns a random number between 0 (inclusive) and the specified value (inclusive). */
 	static public final int random (int range) {
