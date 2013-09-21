@@ -61,7 +61,7 @@ public class Type {
 	/** @return the super class of this type or null */
 	public Type getSuperclass () {
 		try {
-			return ReflectionCache.forName(superClass.getName());
+			return superClass == null ? null : ReflectionCache.forName(superClass.getName());
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
