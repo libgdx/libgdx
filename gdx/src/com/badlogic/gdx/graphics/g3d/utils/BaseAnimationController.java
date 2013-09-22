@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -168,6 +169,14 @@ public class BaseAnimationController {
 					out.put(node, pool.obtain().set(transform));
 				}
 			}
+		}
+	}
+	
+	/** Remove the specified animation, by marking the affected nodes as not animated. When switching animation, this should
+	 * be call prior to applyAnimation(s). */
+	protected void removeAnimation(final Animation animation) {
+		for (final NodeAnimation nodeAnim : animation.nodeAnimations) {
+			nodeAnim.node.isAnimated = false;
 		}
 	}
 }
