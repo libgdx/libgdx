@@ -184,6 +184,16 @@ public class AnimationController extends BaseAnimationController {
 	public AnimationDesc setAnimation(final String id) {
 		return setAnimation(id, 1, 1.0f, null);
 	}
+	
+	/** Set the active animation, replacing any current animation.
+	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
+	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, 
+	 * negative to continuously loop the animation.
+	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
+	 * animation is completed. */
+	public AnimationDesc setAnimation(final String id, int loopCount) {
+		return setAnimation(id, loopCount, 1.0f, null);
+	}
 
 	/** Set the active animation, replacing any current animation.
 	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
