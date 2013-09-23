@@ -8,15 +8,20 @@
         <relativePath>../../..</relativePath>
     </parent>
     
-    <artifactId>gdx-platform</artifactId>
+    <artifactId>gdx-bullet-platform</artifactId>
     <packaging>jar</packaging>
-    <name>libGDX Native Libraries</name>
+    <name>libGDX Bullet Native Libraries</name>
     
     <properties>
-        <base.url>http://libgdx.badlogicgames.com/nightlies/dist</base.url>
+        <base.url>http://libgdx.badlogicgames.com/nightlies/dist/extensions/gdx-bullet/</base.url>
     </properties>
     
     <dependencies>
+        <dependency>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>gdx-bullet</artifactId>
+        <version>${project.version}</version>        
+    </dependency>
     </dependencies>
     
     <build>
@@ -35,7 +40,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache</cacheDirectory>
-                            <url>${base.url}/gdx-natives.jar</url>
+                            <url>${base.url}/gdx-bullet-natives.jar</url>
                             <unpack>true</unpack>
                             <outputDirectory>${project.build.directory}/desktop</outputDirectory>
                         </configuration>
@@ -48,7 +53,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/armeabi</cacheDirectory>
-                            <url>${base.url}/armeabi/libgdx.so</url>
+                            <url>${base.url}/armeabi/libgdx-bullet.so</url>
                             <outputDirectory>${project.build.directory}/armeabi</outputDirectory>
                         </configuration>
                     </execution>
@@ -59,7 +64,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
-                            <url>${base.url}/armeabi-v7a/libgdx.so</url>
+                            <url>${base.url}/armeabi-v7a/libgdx-bullet.so</url>
                             <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
                         </configuration>
                     </execution>
@@ -70,18 +75,7 @@
                         <goals><goal>wget</goal></goals>
                         <configuration>
                             <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/ios/libgdx.a</url>
-                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>ios-objectal</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
-                            <url>${base.url}/ios/libObjectAL.a</url>
+                            <url>${base.url}/ios/libgdx-bullet.a</url>
                             <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>

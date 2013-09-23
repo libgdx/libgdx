@@ -47,6 +47,7 @@ public class Window extends Table {
 	boolean dragging;
 	private int titleAlignment = Align.center;
 	boolean keepWithinStage = true;
+	Table buttonTable;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -67,6 +68,9 @@ public class Window extends Table {
 		setWidth(150);
 		setHeight(150);
 		setTitle(title);
+
+		buttonTable = new Table();
+		addActor(buttonTable);
 
 		addCaptureListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -144,31 +148,43 @@ public class Window extends Table {
 	}
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+		float x = getX(), y = getY();
+		float width = getWidth(), height = getHeight();
+		float padTop = getPadTop();
+
 		if (style.stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
 			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
 			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground
-				.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+			style.stageBackground.draw(batch, x + tmpPosition.x, y + tmpPosition.y, x + tmpSize.x, y + tmpSize.y);
 		}
 
 		super.drawBackground(batch, parentAlpha);
+
+		// Draw button table.
+		buttonTable.getColor().a = getColor().a;
+		buttonTable.pack();
+		buttonTable.setPosition(width - buttonTable.getWidth(), Math.min(height - padTop, height - buttonTable.getHeight()));
+		buttonTable.translate(x, y);
+		buttonTable.draw(batch, parentAlpha);
+		buttonTable.translate(-x, -y);
+
 		// Draw the title without the batch transformed or clipping applied.
-		float x = getX(), y = getY() + getHeight();
+		y += height;
 		TextBounds bounds = titleCache.getBounds();
 		if ((titleAlignment & Align.left) != 0)
 			x += getPadLeft();
 		else if ((titleAlignment & Align.right) != 0)
-			x += getWidth() - bounds.width - getPadRight();
+			x += width - bounds.width - getPadRight();
 		else
-			x += (getWidth() - bounds.width) / 2;
+			x += (width - bounds.width) / 2;
 		if ((titleAlignment & Align.top) == 0) {
 			if ((titleAlignment & Align.bottom) != 0)
-				y -= getPadTop() - bounds.height;
+				y -= padTop - bounds.height;
 			else
-				y -= (getPadTop() - bounds.height) / 2;
+				y -= (padTop - bounds.height) / 2;
 		}
 		titleCache.setColor(Color.tmp.set(getColor()).mul(style.titleFontColor));
 		titleCache.setPosition((int)x, (int)y);
@@ -213,6 +229,10 @@ public class Window extends Table {
 
 	public float getPrefWidth () {
 		return Math.max(super.getPrefWidth(), titleCache.getBounds().width + getPadLeft() + getPadRight());
+	}
+
+	public Table getButtonTable () {
+		return buttonTable;
 	}
 
 	/** The style for a window, see {@link Window}.

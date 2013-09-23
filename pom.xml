@@ -57,6 +57,10 @@
     <module>backends/gdx-backend-lwjgl</module>
     <module>backends/gdx-backends-gwt</module>
     <module>extensions/gdx-tools</module>
+    <module>extensions/gdx-freetype</module>
+    <module>extensions/gdx-freetype/jni/maven</module>
+    <module>extensions/gdx-bullet</module>
+    <module>extensions/gdx-bullet/jni/maven</module>
   </modules>
 
   <build>

@@ -207,6 +207,8 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			int tileSizeY = Integer.parseInt(tileSizeParts[1]);
 			
 			TiledMapTileLayer layer = new TiledMapTileLayer(layerSizeX, layerSizeY, tileSizeX, tileSizeY);
+			layer.setName(id);
+			layer.setVisible(visible.equalsIgnoreCase("True"));
 			Element tileArray = element.getChildByName("TileArray");
 			Array<Element> rows = tileArray.getChildrenByName("Row");
 			TiledMapTileSets tilesets = map.getTileSets();
