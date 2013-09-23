@@ -36,7 +36,7 @@ public class PolygonRegion {
 		this.triangles = triangles;
 
 		float[] textureCoords = this.textureCoords = new float[vertices.length];
-		float u = region.u, v = region.u;
+		float u = region.u, v = region.v;
 		float uvWidth = region.u2 - u;
 		float uvHeight = region.v2 - v;
 		int width = region.regionWidth;
