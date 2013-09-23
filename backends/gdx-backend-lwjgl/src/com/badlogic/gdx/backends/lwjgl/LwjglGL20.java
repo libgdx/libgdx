@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * compatible. Some glGetXXX methods are not implemented.
  * 
  * @author mzechner */
-final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
+public class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	public void glActiveTexture (int texture) {
 		GL13.glActiveTexture(texture);
 	}
