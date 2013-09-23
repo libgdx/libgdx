@@ -1,25 +1,23 @@
 General
 	- see issue tracker, RoboVM specific issues are marked with [RoboVM]
 	- OGG is currently not supported by ObjectAL
-
+	
 - IOSApplication.java
-	- getVersion(), getJavaHeap(), getNativeHeap() not implemented
 	- getClipboard() not implemented properly, should at least support strings
-
+	
 - IOSApplicationConfiguration
 	- add compass
 	- add useGL2, requires implementation of GL10/GL11 for ios, and fixes in IOSGraphics
+	
 - IOSAudo
 	- newAudioDevice(), new AudioRecorder() not implemented
 	- OGG not supported, see if we can add that to ObjectAL
-- IOSFileHandle, IOSFiles
-	- check if paths for internal, external, local are correct and working as intended
+	
 - IOSGraphics
 	- need to store current device orientation for Input#getOrienation and consorts
-	- GLKView, is this supported from IOS 5+ onwards? i guess we can make that our minimum iOS version
 	- Add support for GL10/GL11	
-	- check if apps supporting both portrait and landscape work (resize, etc.) 
 	- implement non-continuous rendering
+	
 - IOSInput
 	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
 	- vibrate(), cancelVibrate() needs to be implemented
@@ -29,8 +27,10 @@ General
 	
 - IOSMusic
 	- OGG support
+	
 - IOSNet
 	- check if that actually works as intended
+	
 - IOSSound
 	- add support for manipulating an already playing sound instance, seems to work through ALSource
 	- add support for pitch shifting, not sure ObjectAL can do that

@@ -63,6 +63,13 @@ public class IOSInput implements Input {
 	
 	void setupPeripherals() {
 		setupAccelerometer();
+		setupCompass();
+	}
+
+	private void setupCompass () {
+		if(config.useCompass) {
+			// FIXME implement compass
+		}
 	}
 
 	private void setupAccelerometer() {

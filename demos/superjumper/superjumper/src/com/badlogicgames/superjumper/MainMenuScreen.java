@@ -101,7 +101,9 @@ public class MainMenuScreen implements Screen {
 		batcher.end();
 		
 		if(System.nanoTime() - last > 2000000000) {
-			Gdx.app.log("SuperJumper", "native orientation:" + Gdx.input.getNativeOrientation() + 
+			Gdx.app.log("SuperJumper", "version: " + Gdx.app.getVersion() + 
+												", memory: " + Gdx.app.getJavaHeap() + ", " + Gdx.app.getNativeHeap() + 
+												", native orientation:" + Gdx.input.getNativeOrientation() + 
 												", orientation: " + Gdx.input.getRotation() + 
 												", accel: " + (int)Gdx.input.getAccelerometerX() + ", " + (int)Gdx.input.getAccelerometerY() + ", " + (int)Gdx.input.getAccelerometerZ() +
 												", apr: " + (int)Gdx.input.getAzimuth() + ", " + (int)Gdx.input.getPitch() + ", " + (int)Gdx.input.getRoll());
