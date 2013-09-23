@@ -33,6 +33,9 @@ public class GdxBuild {
 		// generate C/C++ code
 		new NativeCodeGenerator().generate("src", "bin", JNI_DIR, new String[] {"**/*"}, null);
 		
+		// generate iOS GL ES 1.x bindings
+		new NativeCodeGenerator().generate("../backends/gdx-backend-robovm/src", "../backends/gdx-backend-robovm/bin", JNI_DIR + "/iosgl", new String[] {"**/IOSGLES10.java"}, null);
+		
 		String[] excludeCpp = { "android/**" };
 		
 		// generate build scripts, for win32 only
@@ -56,8 +59,9 @@ public class GdxBuild {
 		mac.cppExcludes = excludeCpp;
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.cppExcludes = excludeCpp;
+		ios.headerDirs = new String[] { ".", "jni-headers", "jni-headers/mac", "iosgl" };
 		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, win32home, win32,
-			win64, lin32, lin64, android, ios);
+			win64, lin32, lin64, android, ios);		
 
 		// build natives
 		// BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
