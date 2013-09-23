@@ -5,7 +5,7 @@ General
 - IOSApplication.java
 	- getVersion(), getJavaHeap(), getNativeHeap() not implemented
 	- getClipboard() not implemented properly, should at least support strings
-	- 
+
 - IOSApplicationConfiguration
 	- add compass
 	- add useGL2, requires implementation of GL10/GL11 for ios, and fixes in IOSGraphics
@@ -21,8 +21,6 @@ General
 	- check if apps supporting both portrait and landscape work (resize, etc.) 
 	- implement non-continuous rendering
 - IOSInput
-	- getRotation() needs to be implemented
-	- getNativeOrientation() needs to be implemented, see IOSInput
 	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
 	- vibrate(), cancelVibrate() needs to be implemented
 	- see if we can programmatically show the keyboard and receive key events, if so map to gdx keycodes
