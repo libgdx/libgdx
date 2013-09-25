@@ -27,6 +27,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MipMapGenerator {
+
+	private MipMapGenerator() {
+		// disallow, static methods only
+	}
+
 	private static boolean useHWMipMap = true;
 
 	static public void setUseHardwareMipMap (boolean useHWMipMap) {

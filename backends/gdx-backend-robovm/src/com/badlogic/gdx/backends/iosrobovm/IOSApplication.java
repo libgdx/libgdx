@@ -297,20 +297,17 @@ public class IOSApplication implements Application {
 
 	@Override
 	public int getVersion () {
-		// FIXME return iOS version
-		return 0;
+		return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
 	}
 
 	@Override
 	public long getJavaHeap () {
-		// FIXME check what mono offers
-		return 0;
+		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
 	@Override
 	public long getNativeHeap () {
-		// FIXME check what mono offers
-		return 0;
+		return getJavaHeap();
 	}
 
 	@Override

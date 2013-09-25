@@ -432,6 +432,7 @@
 		<include name="utils/IntFloatMap.java"/>
 		<include name="utils/IntIntMap.java"/>
 		<include name="utils/IntMap.java"/>
+		<include name="utils/IntSet.java"/>
 		<include name="utils/Json.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
@@ -453,9 +454,11 @@
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
+		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/Scaling.java"/>
 		<exclude name="utils/ScreenUtils.java"/> <!-- Reason: Type mismatch Buffer->ByteBuffer -->
+		<include name="utils/Select.java"/>
 		<include name="utils/SerializationException.java"/> <!-- Emulated: Reflection -->
 		<exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/ShortArray.java"/>

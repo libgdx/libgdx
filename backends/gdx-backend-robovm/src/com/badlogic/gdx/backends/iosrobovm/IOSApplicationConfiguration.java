@@ -72,8 +72,11 @@ public class IOSApplicationConfiguration {
     */
 	public float displayScaleSmallScreenIfNonRetina = 1.0f;
 	
-	/** whether to use the accelerometer **/
+	/** whether to use the accelerometer, default true **/
 	public boolean useAccelerometer = true;
 	/** the update interval to poll the accelerometer with, in seconds **/
 	public float accelerometerUpdate = 0.05f;
+	
+	/** whether to use the compass, default true **/
+	public boolean useCompass = true;
 }
