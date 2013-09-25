@@ -144,9 +144,7 @@ public class ScrollPane extends WidgetGroup {
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != draggingPointer) return;
-				draggingPointer = -1;
-				touchScrollH = false;
-				touchScrollV = false;
+				cancel();
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
@@ -231,6 +229,13 @@ public class ScrollPane extends WidgetGroup {
 		if (!cancelTouchFocus) return;
 		Stage stage = getStage();
 		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
+	}
+
+	/** If currently scrolling by tracking a touch down, stop scrolling. */
+	public void cancel () {
+		draggingPointer = -1;
+		touchScrollH = false;
+		touchScrollV = false;
 	}
 
 	void clamp () {
