@@ -224,6 +224,11 @@ public class GestureDetector extends InputAdapter {
 		return handled;
 	}
 
+	/** No further gesture events will be triggered for the current touch, if any. */
+	public void cancel () {
+		longPressFired = true;
+	}
+
 	/** @return whether the user touched the screen long enough to trigger a long press event. */
 	public boolean isLongPressed () {
 		return isLongPressed(longPressSeconds);

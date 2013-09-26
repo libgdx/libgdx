@@ -236,6 +236,7 @@ public class ScrollPane extends WidgetGroup {
 		draggingPointer = -1;
 		touchScrollH = false;
 		touchScrollV = false;
+		flickScrollListener.getGestureDetector().cancel();
 	}
 
 	void clamp () {
