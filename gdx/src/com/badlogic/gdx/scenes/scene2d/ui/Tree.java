@@ -305,7 +305,7 @@ public class Tree extends WidgetGroup {
 			Node node = nodes.get(i);
 			if (node.actor.getY() < low) break;
 			if (!node.isSelectable()) continue;
-			if (node.actor.getY() <= high) selectedNodes.add(node);
+			if (node.actor.getY() <= high && !selectedNodes.contains(node, true)) selectedNodes.add(node);
 			if (node.expanded) selectNodes(node.children, low, high);
 		}
 	}
