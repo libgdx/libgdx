@@ -16,9 +16,11 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.lights.PointLight;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.environment.Environment;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
@@ -42,7 +44,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	/** Desktop only: Set this to an absolute path to load the shader files from an alternative location. */
 	final static String hotLoadFolder = null;
 	/** Desktop only: Set this to an absolute path to save the generated shader files. */
-	final static String tempFolder = null;//"D:\\temp\\shaders"; 
+	final static String tempFolder = "D:\\temp\\shaders"; 
 	
 	protected  String shaders[] = new String[] {
 		"<default>", "depth", "gouraud", "phong", "normal", "fur", "cubemap", "reflect", "test"
@@ -69,12 +71,10 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		}
 		
 		public boolean revert() {
-			final String defaultVert = DefaultShader.getDefaultVertexShader();
-			final String defaultFrag = DefaultShader.getDefaultFragmentShader();
-			if (vertexShader.equals(defaultVert) && fragmentShader.equals(defaultFrag))
+			if (config.vertexShader == null || config.fragmentShader == null)
 				return false;
-			vertexShader = defaultVert;
-			fragmentShader = defaultFrag;
+			config.vertexShader = null;
+			config.fragmentShader = null;
 			clear();
 			return true;
 		}
@@ -86,8 +86,10 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			} catch(Throwable e) {
 				if (tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop)
 					Gdx.files.absolute(tempFolder).child(name+".log.txt").writeString(e.getMessage(), false);
-				if (!revert())
+				if (!revert()) {
+					Gdx.app.error("ShaderCollectionTest", e.getMessage());
 					throw new GdxRuntimeException("Error creating shader, cannot revert to default shader", e);
+				}
 				error = true;
 				Gdx.app.error("ShaderTest", "Could not create shader, reverted to default shader.", e);
 				return super.getShader(renderable);
@@ -96,31 +98,19 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		
 		@Override
 		protected Shader createShader (Renderable renderable) {
-         return createShader(vertexShader, fragmentShader, renderable, renderable.lights != null,
-         	renderable.lights != null && renderable.lights.environmentCubemap != null, 
-         	renderable.lights != null && renderable.lights.shadowMap != null, 
-         	renderable.lights != null && renderable.lights.fog != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
-		}
-		
-		public Shader createShader(final String vertexShader, final String fragmentShader, final Renderable renderable, boolean lighting, boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
-			if (tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop) {
-				String prefix = DefaultShader.createPrefix(renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
-				Gdx.files.absolute(tempFolder).child(name+".vertex.glsl").writeString(prefix + vertexShader, false);
-				Gdx.files.absolute(tempFolder).child(name+".fragment.glsl").writeString(prefix + fragmentShader, false);
+			if (config.vertexShader != null && config.fragmentShader != null && tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop) {
+				String prefix = DefaultShader.createPrefix(renderable, config);
+				Gdx.files.absolute(tempFolder).child(name+".vertex.glsl").writeString(prefix + config.vertexShader, false);
+				Gdx.files.absolute(tempFolder).child(name+".fragment.glsl").writeString(prefix + config.fragmentShader, false);
 			}
-			BaseShader result = new MultiPassShader(vertexShader, fragmentShader, renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
+			BaseShader result = new MultiPassShader(renderable, config);
 			if (tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop)
 				Gdx.files.absolute(tempFolder).child(name+".log.txt").writeString(result.program.getLog(), false);
 			return result;
 		}
 	}
 	
-	protected Lights lights = new Lights(0.1f, 0.1f, 0.1f).add(
-		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f)
-		//new PointLight().set(Color.RED, 5f, -2f, -2f, 20f),
-		//new PointLight().set(Color.GREEN, -2f, 5f, -2f, 20f),
-		//new PointLight().set(Color.BLUE, -2f, -2f, 5f, 20f)
-	);
+	protected Environment lights;
 	protected TestShaderProvider shaderProvider;
 	protected FileHandle shaderRoot;
 	protected ModelBatch shaderBatch;
@@ -134,6 +124,11 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	@Override
 	public void create () {
 		super.create();
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.1f, 0.1f, 1.f));
+		lights.add(
+			new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f)
+		);
 		
 		shaderProvider = new TestShaderProvider();
 		shaderBatch = new ModelBatch(shaderProvider);
@@ -143,7 +138,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		cam.update();
 		showAxes = true;
 		
-		onModelClicked("g3d/shapes/teapot.g3dj");
+		onModelClicked("g3d/test/test4.g3dj");
 		
 		shaderRoot = (hotLoadFolder != null && Gdx.app.getType() == ApplicationType.Desktop) ? 
 			Gdx.files.absolute(hotLoadFolder) : Gdx.files.internal("data/g3d/shaders");
@@ -204,17 +199,15 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	public void setShader(String name) {
 		shaderProvider.error = false;
 		if (name.equals("<default>")) {
-			shaderProvider.vertexShader = DefaultShader.getDefaultVertexShader();
-			shaderProvider.fragmentShader = DefaultShader.getDefaultFragmentShader();
+			shaderProvider.config.vertexShader = null;
+			shaderProvider.config.fragmentShader = null;
 			shaderProvider.name = "default";
 		} else {
 			ShaderLoader loader = new ShaderLoader(shaderRoot);
-			shaderProvider.vertexShader = loader.load(name+".glsl:VS");
-			shaderProvider.fragmentShader = loader.load(name+".glsl:FS");
+			shaderProvider.config.vertexShader = loader.load(name+".glsl:VS");
+			shaderProvider.config.fragmentShader = loader.load(name+".glsl:FS");
 			shaderProvider.name = name;
 		}
-		Gdx.app.log("VS", "\n"+shaderProvider.vertexShader);
-		Gdx.app.log("FS", "\n"+shaderProvider.fragmentShader);
 		shaderProvider.clear();
 	}
 
@@ -229,7 +222,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	public void render (Array<ModelInstance> instances) {
 		lights.directionalLights.get(0).direction.rotate(dirLightRotAxis, Gdx.graphics.getDeltaTime() * 45f);
 
-		super.render(instances);
+		super.render(null);
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
 			e.value.update(Gdx.graphics.getDeltaTime());
 		shaderBatch.begin(cam);
