@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -32,11 +33,15 @@ public class BitmapFontTest extends GdxTest {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private ShapeRenderer renderer;
-
+	private BitmapFont multiPageFont;
+	
 	@Override
 	public void create () {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
+		
+		multiPageFont = new BitmapFont(Gdx.files.internal("data/multipagefont.fnt"));
+		
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
 	}
@@ -56,7 +61,8 @@ public class BitmapFontTest extends GdxTest {
 
 		float x = 100, y = 20;
 		float alignmentWidth;
-
+		
+		
 		if (false) {
 			alignmentWidth = 0;
 			font.drawMultiLine(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
@@ -74,9 +80,30 @@ public class BitmapFontTest extends GdxTest {
 			font.drawWrapped(spriteBatch, text, x, viewHeight - y, alignmentWidth, HAlignment.RIGHT);
 		}
 
+		//'R' and 'p' are in different pages
+		String txt2 = "this font uses "+multiPageFont.getRegions().length+" texture pages: RpRpRpRpRpNM";
+		spriteBatch.renderCalls = 0;
+		
+		//regular draw function
+		multiPageFont.setColor(Color.BLUE);
+		multiPageFont.draw(spriteBatch, txt2, 10, 100);
+		
+		
+		//expert usage.. drawing with bitmap font cache
+		BitmapFontCache cache = multiPageFont.getCache();
+		cache.clear();
+		cache.setColor(Color.BLACK);
+		cache.setText(txt2, 10, 50);
+		cache.setColor(Color.PINK, 3, 6);
+		cache.setColor(Color.ORANGE, 9, 12);
+		cache.setColor(Color.GREEN, 16, txt2.length());
+		cache.draw(spriteBatch, 5, txt2.length()-5);
+		
 		spriteBatch.end();
-
+//		System.out.println(spriteBatch.renderCalls);
+		
 		renderer.begin(ShapeType.Line);
+		renderer.setColor(Color.BLACK);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
 	}

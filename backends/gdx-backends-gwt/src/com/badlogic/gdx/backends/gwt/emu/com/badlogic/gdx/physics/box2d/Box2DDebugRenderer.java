@@ -118,7 +118,7 @@ public class Box2DDebugRenderer {
 
 		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
 		renderer.begin(ShapeType.Point);
-		int len = world.getContactList().size();
+		int len = world.getContactList().size;
 		for (int i = 0; i < len; i++)
 			drawContact(world.getContactList().get(i));
 		renderer.end();
@@ -127,8 +127,8 @@ public class Box2DDebugRenderer {
 
 	protected void renderBody (Body body) {
 		Transform transform = body.getTransform();
-		int len = body.getFixtureList().size();
-		List<Fixture> fixtures = body.getFixtureList();
+		int len = body.getFixtureList().size;
+		Array<Fixture> fixtures = body.getFixtureList();
 		for (int i = 0; i < len; i++) {
 			Fixture fixture = fixtures.get(i);
 

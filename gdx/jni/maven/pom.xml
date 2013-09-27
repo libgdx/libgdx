@@ -63,6 +63,28 @@
                             <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>ios-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>ios-objectal</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libObjectAL.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             
@@ -117,6 +139,20 @@
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-local-ios</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/ios32</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/ios</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             
@@ -129,6 +165,7 @@
                         <descriptor>desktop.xml</descriptor>
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
+                        <descriptor>ios.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

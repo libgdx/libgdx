@@ -56,10 +56,7 @@ public class JsonReader implements BaseJsonReader {
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		} finally {
-			try {
-				reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 	}
 
@@ -70,10 +67,7 @@ public class JsonReader implements BaseJsonReader {
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		} finally {
-			try {
-				input.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 	}
 

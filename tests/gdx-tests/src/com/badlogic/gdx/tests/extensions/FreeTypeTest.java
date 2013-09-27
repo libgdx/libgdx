@@ -44,10 +44,11 @@ public class FreeTypeTest extends GdxTest {
 		}
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), flip);
 		FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
+		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
-		FreeTypeBitmapFontData fontData = generator.generateData(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);		
+		FreeTypeBitmapFontData fontData = generator.generateData(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
+		ftFont = generator.generateFont(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
 		generator.dispose();
-		ftFont = new BitmapFont(fontData, fontData.getTextureRegion(), false);
 	}
 
 	@Override

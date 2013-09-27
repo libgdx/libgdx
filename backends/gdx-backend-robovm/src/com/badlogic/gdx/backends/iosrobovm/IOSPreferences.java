@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.robovm.cocoatouch.foundation.NSBundle;
 import org.robovm.cocoatouch.foundation.NSMutableDictionary;
 import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;

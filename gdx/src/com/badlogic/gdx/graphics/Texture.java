@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Application;
@@ -30,6 +28,7 @@ import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -59,7 +58,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author badlogicgames@gmail.com */
 public class Texture extends GLTexture {
 	private static AssetManager assetManager;
-	final static Map<Application, List<Texture>> managedTextures = new HashMap<Application, List<Texture>>();
+	final static Map<Application, Array<Texture>> managedTextures = new HashMap<Application, Array<Texture>>();
 	
 	public enum TextureFilter {
 		Nearest(GL10.GL_NEAREST), Linear(GL10.GL_LINEAR), MipMap(GL10.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
@@ -206,14 +205,14 @@ public class Texture extends GLTexture {
 		if (glHandle == 0) return;
 		delete();
 		if (data.isManaged())
-			if (managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).remove(this);
+			if (managedTextures.get(Gdx.app) != null) managedTextures.get(Gdx.app).removeValue(this, true);
 	}
 
 	private static void addManagedTexture (Application app, Texture texture) {
-		List<Texture> managedTextureList = managedTextures.get(app);
-		if (managedTextureList == null) managedTextureList = new ArrayList<Texture>();
-		managedTextureList.add(texture);
-		managedTextures.put(app, managedTextureList);
+		Array<Texture> managedTextureArray = managedTextures.get(app);
+		if (managedTextureArray == null) managedTextureArray = new Array<Texture>();
+		managedTextureArray.add(texture);
+		managedTextures.put(app, managedTextureArray);
 	}
 
 	/** Clears all managed textures. This is an internal method. Do not use it! */
@@ -223,12 +222,12 @@ public class Texture extends GLTexture {
 
 	/** Invalidate all managed textures. This is an internal method. Do not use it! */
 	public static void invalidateAllTextures (Application app) {
-		List<Texture> managedTextureList = managedTextures.get(app);
-		if (managedTextureList == null) return;
+		Array<Texture> managedTextureArray = managedTextures.get(app);
+		if (managedTextureArray == null) return;
 
 		if (assetManager == null) {
-			for (int i = 0; i < managedTextureList.size(); i++) {
-				Texture texture = managedTextureList.get(i);
+			for (int i = 0; i < managedTextureArray.size; i++) {
+				Texture texture = managedTextureArray.get(i);
 				texture.reload();
 			}
 		} else {
@@ -239,7 +238,7 @@ public class Texture extends GLTexture {
 
 			// next we go through each texture and reload either directly or via the
 			// asset manager.
-			List<Texture> textures = new ArrayList<Texture>(managedTextureList);
+			Array<Texture> textures = new Array<Texture>(managedTextureArray);
 			for (Texture texture : textures) {
 				String fileName = assetManager.getAssetFileName(texture);
 				if (fileName == null) {
@@ -276,8 +275,8 @@ public class Texture extends GLTexture {
 					assetManager.load(fileName, Texture.class, params);
 				}
 			}
-			managedTextureList.clear();
-			managedTextureList.addAll(textures);
+			managedTextureArray.clear();
+			managedTextureArray.addAll(textures);
 		}
 	}
 
@@ -293,7 +292,7 @@ public class Texture extends GLTexture {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Managed textures/app: { ");
 		for (Application app : managedTextures.keySet()) {
-			builder.append(managedTextures.get(app).size());
+			builder.append(managedTextures.get(app).size);
 			builder.append(" ");
 		}
 		builder.append("}");
@@ -302,6 +301,6 @@ public class Texture extends GLTexture {
 
 	/** @return the number of managed textures currently loaded */
 	public static int getNumManagedTextures () {
-		return managedTextures.get(Gdx.app).size();
+		return managedTextures.get(Gdx.app).size;
 	}
 }

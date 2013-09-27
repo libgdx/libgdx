@@ -1,5 +1,7 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
+*We just migrated our Wiki to Github, so it's a little bit rough, we'll fix things up in the next days*
+
 Libgdx is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
@@ -24,7 +26,7 @@ You can get help on our [forum](http://badlogicgames.com/forum/) and talk to oth
 users on our IRC channel #libgdx at irc.freenode.net.
 
 #### Reporting Issues
-Use the issue tracker here on Github to report issues. Make sure you read the 
+Use the [issue tracker](https://github.com/libgdx/libgdx/issues?page=1&state=open) here on Github to report issues. Make sure you read the 
 [Getting Help](https://github.com/libgdx/libgdx/wiki/Getting-help) article that walks you through
 the process or properly reporting an issue.
 

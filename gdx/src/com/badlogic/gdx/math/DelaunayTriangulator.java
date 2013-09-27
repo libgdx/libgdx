@@ -317,7 +317,8 @@ public class DelaunayTriangulator {
 		return up;
 	}
 
-	/** Removes all triangles with an edge outside the specified hull, which may be concave. */
+	/** Removes all triangles with a centroid outside the specified hull, which may be concave. Note some triangulations may have
+	 * triangles whose centroid is inside the hull but a portion is outside. */
 	public void trim (ShortArray triangles, float[] points, float[] hull, int offset, int count) {
 		short[] trianglesArray = triangles.items;
 		for (int i = triangles.size - 1; i >= 0; i -= 3) {

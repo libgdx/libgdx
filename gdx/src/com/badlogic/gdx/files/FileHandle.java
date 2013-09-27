@@ -20,6 +20,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -206,10 +207,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading layout file: " + this, ex);
 		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 		return output.toString();
 	}
@@ -240,10 +238,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 		if (position < buffer.length) {
 			// Shrink buffer.
@@ -271,10 +266,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 		return position - offset;
 	}
@@ -314,14 +306,8 @@ public class FileHandle {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (Exception ignored) {
-			}
-			try {
-				if (output != null) output.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(input);
+			StreamUtils.closeQuietly(output);
 		}
 
 	}
@@ -377,10 +363,7 @@ public class FileHandle {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				if (writer != null) writer.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(writer);
 		}
 	}
 
@@ -395,10 +378,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				output.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(output);
 		}
 	}
 
@@ -413,10 +393,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				output.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(output);
 		}
 	}
 
@@ -588,10 +565,7 @@ public class FileHandle {
 				return input.available();
 			} catch (Exception ignored) {
 			} finally {
-				try {
-					input.close();
-				} catch (IOException ignored) {
-				}
+				StreamUtils.closeQuietly(input);
 			}
 			return 0;
 		}

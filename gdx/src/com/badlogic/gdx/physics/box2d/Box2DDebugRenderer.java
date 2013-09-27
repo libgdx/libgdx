@@ -17,7 +17,6 @@
 package com.badlogic.gdx.physics.box2d;
 
 import java.util.Iterator;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -110,7 +109,7 @@ public class Box2DDebugRenderer {
 		if (drawContacts) {
 			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
 			renderer.begin(ShapeType.Point);
-			int len = world.getContactList().size();
+			int len = world.getContactList().size;
 			for (int i = 0; i < len; i++)
 				drawContact(world.getContactList().get(i));
 			renderer.end();

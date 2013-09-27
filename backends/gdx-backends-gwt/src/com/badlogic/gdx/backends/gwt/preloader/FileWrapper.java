@@ -34,6 +34,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Used in PreloaderBundleGenerator to ease my pain. Since we emulate the original FileHandle, i have to make a copy...
  * @author mzechner
@@ -187,10 +188,7 @@ public class FileWrapper {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading layout file: " + this, ex);
 		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 		return output.toString();
 	}
@@ -355,10 +353,7 @@ public class FileWrapper {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				if (writer != null) writer.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(writer);
 		}
 	}
 

@@ -29,6 +29,7 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JConstructor;
 import com.google.gwt.core.ext.typeinfo.JEnumConstant;
 import com.google.gwt.core.ext.typeinfo.JEnumType;
 import com.google.gwt.core.ext.typeinfo.JField;
@@ -37,6 +38,7 @@ import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.core.ext.typeinfo.JParameter;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -647,8 +649,7 @@ public class ReflectionCacheSourceCreator {
 		p("public Object newInstance (Type type) {");
 		for (JType type : types) {
 			if (type instanceof JClassType) {
-				JClassType clazzType = (JClassType)type;
-				if (clazzType.isDefaultInstantiable() && !(clazzType instanceof JArrayType) && !(clazzType instanceof JEnumType)) {
+				if (isInstantiableWithNewOperator((JClassType)type)) {
 					p("if(type.getName().equals(\"" + type.getErasedType().getQualifiedSourceName() + "\")) return new "
 						+ type.getErasedType().getQualifiedSourceName() + "();");
 				} else {
@@ -661,6 +662,16 @@ public class ReflectionCacheSourceCreator {
 		}
 		p("return null;");
 		p("}");
+	}
+
+	private static boolean isInstantiableWithNewOperator (JClassType t) {
+		if (!t.isDefaultInstantiable() || t instanceof JArrayType || t instanceof JEnumType) return false;
+		try {
+			JConstructor constructor = t.getConstructor(new JType[0]);
+			return constructor != null && constructor.isPublic();
+		} catch (NotFoundException e) {
+			return false;
+		}
 	}
 
 	private void setArrayElementT () {

@@ -1,4 +1,6 @@
 [0.9.9]
+- added Select class for selecting kth ordered statistic from arrays (see Array.selectRanked() method)
+- refactored Box2D to use badlogic Arrays instead of java.util.ArrayLists
 - MipMapGenerator methods now don't take disposePixmap argument anymore
 - added GLTexture, base class for all textures, encapsulates target (2d, cubemap, ...)
 - added CubeMap, 6 sided texture
@@ -72,6 +74,15 @@
 - EarClippingTriangulator changed to return triangle indices.
 - PolygonSpriteBatch and friends refactored to use triangle indices.
 - Added add(T, float), remove(int), remove(T) and clear() methods to BinaryHeap
+- Bitmap Font changes:
+	- FreeTypeFontGenerator allows you to specify the PixmapPacker now, to create an atlas with many different fonts (see FreeTypePackTest)
+	- BitmapFont, BitmapFontCache and FreeTypeFontGenerator now support fonts with multiple texture pages. (see BitmapFontTest and FreeTypePackTest)
+	- BitmapFontData.imagePath and getImagePath() is depreacted, use imagePaths[] and getImagePath(int) instead
+	- Added two BitmapFont constructors for convenience; no need to specify flip boolean
+	- Added getCache() to BitmapFont, for expert users who wish to use the BitmapFontCache (see BitmapFontTest)
+	- FreeTypeFontGenerator now includes setMaxTextureSize and getMaxTextureSize to cap the generated glyph atlas size (default 1024)
+- added render-hooks beginRender() and endRender() to BatchTiledMapRenderer
+- Added panStop to GestureListener interface.
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

@@ -21,6 +21,7 @@
 		<include name="Net.java"/>
 		<include name="Preferences.java"/>
 		<include name="Screen.java"/>
+		<include name="ScreenAdapter.java"/>
 		<include name="Version.java"/>
 		
 	<!-- assets -->		
@@ -253,10 +254,10 @@
 	<!-- maps/tiled/renderers -->
 		<include name="maps/tiled/renderers/BatchTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/HexagonalTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/IsometricStaggeredTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
-		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer2.java"/>
-		
+
 	<!-- maps/tiles/tiles -->
 		<include name="maps/tiled/tiles/AnimatedTiledMapTile.java"/>
 		<include name="maps/tiled/tiles/StaticTiledMapTile.java"/>
@@ -431,6 +432,7 @@
 		<include name="utils/IntFloatMap.java"/>
 		<include name="utils/IntIntMap.java"/>
 		<include name="utils/IntMap.java"/>
+		<include name="utils/IntSet.java"/>
 		<include name="utils/Json.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/JsonReader.java"/>
 		<include name="utils/JsonValue.java"/>
@@ -452,9 +454,11 @@
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
+		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/> <!-- Emulated: Reflection -->
 		<include name="utils/Scaling.java"/>
 		<exclude name="utils/ScreenUtils.java"/> <!-- Reason: Type mismatch Buffer->ByteBuffer -->
+		<include name="utils/Select.java"/>
 		<include name="utils/SerializationException.java"/> <!-- Emulated: Reflection -->
 		<exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/ShortArray.java"/>

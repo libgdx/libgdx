@@ -90,7 +90,7 @@ public class Array<T> implements Iterable<T> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public Array (boolean ordered, T[] array, int start, int count) {
-		this(ordered, array.length, (Class)array.getClass().getComponentType());
+		this(ordered, count, (Class)array.getClass().getComponentType());
 		size = count;
 		System.arraycopy(array, 0, items, 0, size);
 	}
@@ -302,6 +302,7 @@ public class Array<T> implements Iterable<T> {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 
@@ -334,6 +335,35 @@ public class Array<T> implements Iterable<T> {
 		Sort.instance().sort(items, comparator, 0, size);
 	}
 
+	/** Selects the nth-lowest element from the Array according to Comparator ranking.
+	 * @see Select
+	 * @param comparator used for comparison
+	 * @param nth_lowest rank of desired object according to comparison,
+	 * n is based on ordinal numbers, not array indices.
+	 * for min value use 1, for max value use size of array, using 0 results in runtime exception.
+	 * @return the value of the Nth lowest ranked object.
+	 */
+	public T selectRanked(Comparator<T> comparator, int nth_lowest) {
+		if (nth_lowest < 1) {
+			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
+		}
+		return Select.instance().select(items, comparator, nth_lowest, size);
+	}
+
+	/** @see Array#selectRanked(java.util.Comparator, int)
+	* @param comparator used for comparison
+	 * @param nth_lowest rank of desired object according to comparison,
+	 * n is based on ordinal numbers, not array indices.
+	 * for min value use 1, for max value use size of array, using 0 results in runtime exception.
+	 * @return the index of the Nth lowest ranked object.
+	 */
+	public int selectRankedIndex(Comparator<T> comparator, int nth_lowest) {
+		if (nth_lowest < 1) {
+			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
+		}
+		return Select.instance().selectIndex(items, comparator, nth_lowest, size);
+	}
+
 	public void reverse () {
 		T[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
@@ -362,7 +392,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Returns an iterable for the selected items in the array. Remove is supported, but not between hasNext() and next(). Note
-	 * that the same iteratable instance is returned each time this method is called. Use the {@link Predicate.PredicateIterable}
+	 * that the same iterable instance is returned each time this method is called. Use the {@link Predicate.PredicateIterable}
 	 * constructor for nested or multithreaded iteration. */
 	public Iterable<T> select (Predicate<T> predicate) {
 		if (predicateIterable == null)

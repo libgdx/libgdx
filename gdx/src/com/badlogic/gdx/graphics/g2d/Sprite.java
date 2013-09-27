@@ -525,7 +525,6 @@ public class Sprite extends TextureRegion {
 	/** Returns the color of this sprite. Changing the returned color will have no affect, {@link #setColor(Color)} or
 	 * {@link #setColor(float, float, float, float)} must be used. */
 	public Color getColor () {
-		float floatBits = vertices[C1];
 		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
 		Color color = this.color;
 		color.r = (intBits & 0xff) / 255f;

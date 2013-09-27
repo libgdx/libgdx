@@ -117,7 +117,7 @@ public class IOSApplication implements Application {
 		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), this, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
 		this.files = new IOSFiles();
 		this.audio = new IOSAudio();
 		this.net = new IOSNet(this);
@@ -297,20 +297,17 @@ public class IOSApplication implements Application {
 
 	@Override
 	public int getVersion () {
-		// FIXME return iOS version
-		return 0;
+		return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
 	}
 
 	@Override
 	public long getJavaHeap () {
-		// FIXME check what mono offers
-		return 0;
+		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
 	@Override
 	public long getNativeHeap () {
-		// FIXME check what mono offers
-		return 0;
+		return getJavaHeap();
 	}
 
 	@Override

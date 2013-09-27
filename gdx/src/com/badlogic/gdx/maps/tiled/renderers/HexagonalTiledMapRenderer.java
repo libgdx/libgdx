@@ -16,26 +16,7 @@
 
 package com.badlogic.gdx.maps.tiled.renderers;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,17 +28,16 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 
 public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
-
 	private boolean yDown = false;
 
 	public boolean isYdown() {
 		return yDown;
 	}
-	
+
 	public void setYDown(boolean yDown) {
 		this.yDown = yDown;
 	}
-	
+
 	public HexagonalTiledMapRenderer (TiledMap map) {
 		super(map);
 	}
@@ -73,41 +53,39 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 	public HexagonalTiledMapRenderer (TiledMap map, float unitScale, SpriteBatch spriteBatch) {
 		super(map, unitScale, spriteBatch);
 	}
-	
+
 	private float[] vertices = new float[20];
-	
+
 	@Override
 	public void renderTileLayer(TiledMapTileLayer layer) {
 		final Color batchColor = spriteBatch.getColor();
 		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
-		
+
 		final int layerWidth = layer.getWidth();
 		final int layerHeight = layer.getHeight();
-		
+
 		final float layerTileWidth = layer.getTileWidth() * unitScale;
 		final float layerTileHeight = layer.getTileHeight() * unitScale;
-		
+
 		final float layerTileWidth25 = layerTileWidth * 0.25f;
-		final float layerTileWidth50 = layerTileWidth * 0.50f;
 		final float layerTileWidth75 = layerTileWidth * 0.75f;
-		
+
 		final float layerTileHeight50 = layerTileHeight * 0.50f;
 		final float layerTileHeight150 = layerTileHeight * 1.50f;
-		
+
 		final int col1 = Math.max(0, (int) (((viewBounds.x - layerTileWidth25) / layerTileWidth75)));
 		final int col2 = Math.min(layerWidth, (int) ((viewBounds.x + viewBounds.width + layerTileWidth75) / layerTileWidth75));
-	
+
 		final int row1 = Math.max(0, (int) ((viewBounds.y / layerTileHeight150)));
 		final int row2 = Math.min(layerHeight, (int) ((viewBounds.y + viewBounds.height + layerTileHeight150) / layerTileHeight));
-		
+
 		final float[] vertices = this.vertices;
-		
+
 		for (int row = row1; row < row2; row++) {
 			for (int col = col1; col < col2; col++) {
-				
 				float x = layerTileWidth75 * col;
 				float y = (col % 2 == (yDown ? 0 : 1) ? 0 : layerTileHeight50) + (layerTileHeight * row);
-				
+
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
 				if(cell == null) {
 					x += layerTileWidth;
@@ -116,47 +94,47 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 				final TiledMapTile tile = cell.getTile();
 				if (tile != null) {
 					if (tile instanceof AnimatedTiledMapTile) continue;
-					
+
 					final boolean flipX = cell.getFlipHorizontally();
 					final boolean flipY = cell.getFlipVertically();
 					final int rotations = cell.getRotation();
-					
+
 					TextureRegion region = tile.getTextureRegion();
-					
+
 					float x1 = x;
 					float y1 = y;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
-					
+
 					float u1 = region.getU();
 					float v1 = region.getV2();
 					float u2 = region.getU2();
 					float v2 = region.getV();
-					
+
 					vertices[X1] = x1;
 					vertices[Y1] = y1;
 					vertices[C1] = color;
 					vertices[U1] = u1;
 					vertices[V1] = v1;
-					
+
 					vertices[X2] = x1;
 					vertices[Y2] = y2;
 					vertices[C2] = color;
 					vertices[U2] = u1;
 					vertices[V2] = v2;
-					
+
 					vertices[X3] = x2;
 					vertices[Y3] = y2;
 					vertices[C3] = color;
 					vertices[U3] = u2;
 					vertices[V3] = v2;
-					
+
 					vertices[X4] = x2;
 					vertices[Y4] = y1;
 					vertices[C4] = color;
 					vertices[U4] = u2;
-					vertices[V4] = v1;							
-					
+					vertices[V4] = v1;
+
 					if (flipX) {
 						float temp = vertices[U1];
 						vertices[U1] = vertices[U3];
@@ -179,7 +157,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 						vertices[U3] = tempU;
 						tempU = vertices[U2];
 						vertices[U2] = vertices[U4];
-						vertices[U4] = tempU;									
+						vertices[U4] = tempU;
 						float tempV = vertices[V1];
 						vertices[V1] = vertices[V3];
 						vertices[V3] = tempV;
@@ -194,10 +172,9 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		}
 		
 	}
-	
+
 	@Override
 	public void renderObject(MapObject object) {
 
 	}
-	
 }
