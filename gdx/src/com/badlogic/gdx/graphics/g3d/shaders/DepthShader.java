@@ -7,12 +7,24 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class DepthShader extends DefaultShader {
+	public static class Config extends DefaultShader.Config {
+		public boolean depthBufferOnly = false;
+		
+		public Config () {
+			super();
+		}
+		public Config (String vertexShader, String fragmentShader) {
+			super(vertexShader, fragmentShader);
+		}
+	}
+	
 	private static String defaultVertexShader = null;
 	public final static String getDefaultVertexShader() {
 		if (defaultVertexShader == null)
@@ -27,7 +39,7 @@ public class DepthShader extends DefaultShader {
 		return defaultFragmentShader;
 	}
 	
-	public static String createPrefix(final Renderable renderable, int numBones, boolean depthBufferOnly) {
+	public static String createPrefix(final Renderable renderable, final Config config) {
 		String prefix = "";
 		final long mask = renderable.material.getMask();
 		final long attributes = renderable.mesh.getVertexAttributes().getMask();
@@ -44,31 +56,37 @@ public class DepthShader extends DefaultShader {
 //			prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
 //		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
 //			prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
-		if (numBones > 0)
-			prefix += "#define numBones "+numBones+"\n";
-		if (!depthBufferOnly)
+		if (renderable.bones != null && config.numBones > 0)
+			prefix += "#define numBones "+config.numBones+"\n";
+		if (!config.depthBufferOnly)
 			prefix += "#define PackedDepthFlag\n";
 		return prefix;
 	}
 	
 	public final int numBones;
 	public final int weights;
+	
+	public DepthShader(final Renderable renderable) {
+		this(renderable, new Config());
+	}
+	
+	public DepthShader(final Renderable renderable, final Config config) {
+		this(renderable, config, createPrefix(renderable, config));
+	}
 
-	public DepthShader(final Renderable renderable, int numBones, boolean depthBufferOnly) {
-		this(getDefaultVertexShader(), getDefaultFragmentShader(), renderable, numBones, depthBufferOnly);
+	public DepthShader(final Renderable renderable, final Config config, final String prefix) {
+		this(renderable, config, prefix, 
+				config.vertexShader != null ? config.vertexShader : getDefaultVertexShader(), 
+				config.fragmentShader != null ? config.fragmentShader : getDefaultFragmentShader());
 	}
 	
-	public DepthShader(final String vertexShader, final String fragmentShader, final Renderable renderable, int numBones, boolean depthBufferOnly) {
-		this(createPrefix(renderable, numBones, depthBufferOnly), vertexShader, fragmentShader, renderable, numBones);
+	public DepthShader(final Renderable renderable, final Config config, final String prefix, final String vertexShader, final String fragmentShader) {
+		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
 	}
 	
-	public DepthShader(final String prefix, final String vertexShader, final String fragmentShader, final Renderable renderable, int numBones) {
-		this(new ShaderProgram(prefix + vertexShader, prefix + fragmentShader), renderable, numBones);
-	}
-	
-	public DepthShader(final ShaderProgram shaderProgram, final Renderable renderable, int numBones) {
-		super(shaderProgram, renderable, false, false, false, false, 0, 0, 0, numBones);
-		this.numBones = numBones;
+	public DepthShader(final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
+		super(renderable, config, shaderProgram);
+		this.numBones = renderable.bones == null ? 0 : config.numBones;
 		int w = 0;
 		final int n = renderable.mesh.getVertexAttributes().size();
 		for (int i = 0; i < n; i++) {

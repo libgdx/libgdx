@@ -6,16 +6,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.lights.PointLight;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.Environment;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.math.MathUtils;
@@ -77,13 +78,16 @@ public class GLES10Shader implements Shader{
 	private final float[] lightVal = {0,0,0,0};
 	private final float[] zeroVal4 = {0,0,0,0};
 	private final float[] oneVal4  = {1,1,1,1};
-	private void bindLights(Lights lights) {
+	private void bindLights(Environment lights) {
 		if (lights == null) {
 			Gdx.gl10.glDisable(GL10.GL_LIGHTING);
 			return;
 		}
 		Gdx.gl10.glEnable(GL10.GL_LIGHTING);
-		Gdx.gl10.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, getValues(lightVal, lights.ambientLight), 0);
+		if (lights.has(ColorAttribute.AmbientLight))
+			Gdx.gl10.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, getValues(lightVal, ((ColorAttribute)lights.get(ColorAttribute.AmbientLight)).color), 0);
+		else
+			Gdx.gl10.glLightModelfv(GL10.GL_LIGHT_MODEL_AMBIENT, zeroVal4, 0);
 		Gdx.gl10.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, zeroVal4, 0);
 		int idx=0;
 		Gdx.gl10.glPushMatrix();
@@ -135,17 +139,17 @@ public class GLES10Shader implements Shader{
 				context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 			if (!currentMaterial.has(ColorAttribute.Diffuse)) {
 				Gdx.gl10.glColor4f(1,1,1,1);
-				if (renderable.lights != null)
+				if (renderable.environment != null)
 					Gdx.gl10.glDisable(GL10.GL_COLOR_MATERIAL);
 			} if (!currentMaterial.has(TextureAttribute.Diffuse))
 				Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
 			int cullFace = defaultCullFace;
-			for (final Material.Attribute attribute : currentMaterial) {
+			for (final Attribute attribute : currentMaterial) {
 				if (attribute.type == BlendingAttribute.Type)
 					context.setBlending(true, ((BlendingAttribute)attribute).sourceFunction, ((BlendingAttribute)attribute).destFunction);
 				else if (attribute.type == ColorAttribute.Diffuse) {
 					Gdx.gl10.glColor4f(((ColorAttribute)attribute).color.r, ((ColorAttribute)attribute).color.g, ((ColorAttribute)attribute).color.b, ((ColorAttribute)attribute).color.a);
-					if (renderable.lights != null) {
+					if (renderable.environment != null) {
 						Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
 						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
 						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
@@ -170,7 +174,7 @@ public class GLES10Shader implements Shader{
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glLoadMatrixf(currentTransform.val, 0);
 		}
-		bindLights(renderable.lights);
+		bindLights(renderable.environment);
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
 				currentMesh.unbind();

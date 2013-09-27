@@ -1,11 +1,11 @@
-package com.badlogic.gdx.graphics.g3d.materials;
+package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class TextureAttribute extends Material.Attribute {
+public class TextureAttribute extends Attribute {
 	public final static String DiffuseAlias = "diffuseTexture";
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularTexture";
