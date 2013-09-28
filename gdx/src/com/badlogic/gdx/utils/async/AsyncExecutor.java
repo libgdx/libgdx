@@ -62,7 +62,7 @@ public class AsyncExecutor implements Disposable {
 		try {
 			executor.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			new GdxRuntimeException("Couldn't shutdown loading thread");
+			throw new GdxRuntimeException("Couldn't shutdown loading thread", e);
 		}
 	}
 }
