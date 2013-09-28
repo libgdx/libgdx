@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Environment extends Attributes {
-	public Color fog;
 	/** @deprecated Experimental, likely to change, do not use! */
 	public ShadowMap shadowMap;
 	public Cubemap environmentCubemap;

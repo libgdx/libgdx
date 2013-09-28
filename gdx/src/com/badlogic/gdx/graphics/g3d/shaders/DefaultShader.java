@@ -368,7 +368,7 @@ public class DefaultShader extends BaseShader {
 		this.lighting = renderable.environment != null;
 		this.environmentCubemap = lighting && renderable.environment.environmentCubemap != null;
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
-		this.fog = lighting && renderable.environment.fog != null;
+		this.fog = lighting && renderable.environment.has(ColorAttribute.Fog);
 		this.renderable = renderable;
 		materialMask = renderable.material.getMask() | optionalAttributes;
 		vertexMask = renderable.mesh.getVertexAttributes().getMask();
@@ -464,7 +464,7 @@ public class DefaultShader extends BaseShader {
 				prefix += "#define ambientCubemapFlag\n";
 				prefix += "#define numDirectionalLights "+config.numDirectionalLights+"\n";
 				prefix += "#define numPointLights "+config.numPointLights+"\n";
-				if (renderable.environment.fog != null) {
+				if (renderable.environment.has(ColorAttribute.Fog)) {
 	 				prefix += "#define fogFlag\n";
  				}
 				if (renderable.environment.shadowMap != null)
@@ -518,7 +518,7 @@ public class DefaultShader extends BaseShader {
 		return (materialMask == (renderable.material.getMask() | optionalAttributes)) && 
 			(vertexMask == renderable.mesh.getVertexAttributes().getMask()) && 
 			(renderable.environment != null) == lighting &&
-            ((renderable.environment != null && renderable.environment.fog != null) == fog);
+            ((renderable.environment != null && renderable.environment.has(ColorAttribute.Fog)) == fog);
 	}
 	
 	@Override
@@ -656,8 +656,8 @@ public class DefaultShader extends BaseShader {
 			}
 		}
 
-		if (lights.fog != null) {
-			set(u_fogColor, lights.fog);
+		if (lights.has(ColorAttribute.Fog)) {
+			set(u_fogColor, ((ColorAttribute)lights.get(ColorAttribute.Fog)).color);
 		}
 		
 		if (lights.shadowMap != null) {

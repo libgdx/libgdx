@@ -17,8 +17,10 @@ public class ColorAttribute extends Attribute {
     public static final long Reflection = register(ReflectionAlias);
     public final static String AmbientLightAlias = "ambientLightColor";
     public static final long AmbientLight = register(AmbientLightAlias);
+    public final static String FogAlias = "fogColor";
+    public static final long Fog = register(FogAlias);
 
-    protected static long Mask = Ambient | Diffuse | Specular | Emissive | Reflection | AmbientLight;
+    protected static long Mask = Ambient | Diffuse | Specular | Emissive | Reflection | AmbientLight | Fog;
 
     public final static boolean is(final long mask) {
         return (mask & Mask) != 0;

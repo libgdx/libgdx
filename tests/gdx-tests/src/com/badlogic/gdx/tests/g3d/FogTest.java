@@ -25,15 +25,15 @@ public class FogTest extends GdxTest implements ApplicationListener {
 	public ModelBatch modelBatch;
 	public Model model;
 	public ModelInstance instance;
-	public Environment lights;
+	public Environment environment;
 	
 	@Override
 	public void create () {
 		modelBatch = new ModelBatch();
-		lights = new Environment();
-		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
-        lights.fog = new Color(0.13f, 0.13f, 0.13f, 1f);
-		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
+		environment.set(new ColorAttribute(ColorAttribute.Fog, 0.13f, 0.13f, 0.13f, 1f));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(30f, 10f, 30f);
@@ -62,7 +62,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
         Gdx.gl.glClearColor(0.13f, 0.13f, 0.13f, 1);
 
 		modelBatch.begin(cam);
-		modelBatch.render(instance, lights);
+		modelBatch.render(instance, environment);
 		modelBatch.end();
 	}
 
