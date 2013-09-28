@@ -138,7 +138,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		cam.update();
 		showAxes = true;
 		
-		onModelClicked("g3d/test/test4.g3dj");
+		onModelClicked("g3d/shapes/teapot.g3dj");
 		
 		shaderRoot = (hotLoadFolder != null && Gdx.app.getType() == ApplicationType.Desktop) ? 
 			Gdx.files.absolute(hotLoadFolder) : Gdx.files.internal("data/g3d/shaders");

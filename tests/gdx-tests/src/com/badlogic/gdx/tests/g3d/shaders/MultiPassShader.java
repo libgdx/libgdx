@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 
 public class MultiPassShader extends DefaultShader {
-	public static int passes = 30;
+	public static int passes = 10;
 	
 	protected final int u_pass = register(new Uniform("u_pass"));
 	

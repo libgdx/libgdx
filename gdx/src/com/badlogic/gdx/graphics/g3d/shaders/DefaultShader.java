@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.graphics.g3d.Attributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -86,64 +87,64 @@ public class DefaultShader extends BaseShader {
 	public static class Setters {
 		public final static Setter projTrans = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return true; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) { 
 				shader.set(inputID, shader.camera.projection);
 			}
 		};
 		public final static Setter viewTrans = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return true; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, shader.camera.view);
 			}
 		};
 		public final static Setter projViewTrans = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return true; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, shader.camera.combined);
 			}
 		};
 		public final static Setter cameraPosition = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return true; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, shader.camera.position.x, shader.camera.position.y, shader.camera.position.z, 1.1881f/(shader.camera.far*shader.camera.far));
 			}
 		};
 		public final static Setter cameraDirection = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return true; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, shader.camera.direction);
 			}
 		};
 		public final static Setter cameraUp = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return true; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, shader.camera.up);
 			}
 		};
 		public final static Setter worldTrans = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, renderable.worldTransform);
 			}
 		};
 		public final static Setter worldViewTrans = new Setter() {
 			final Matrix4 temp = new Matrix4();
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(renderable.worldTransform).mul(shader.camera.view));
 			}
 		};
 		public final static Setter projViewWorldTrans = new Setter() {
 			final Matrix4 temp = new Matrix4();
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, temp.set(shader.camera.combined).mul(renderable.worldTransform));
 			}
 		};
 		public final static Setter normalMatrix = new Setter() {
 			private final Matrix3 tmpM = new Matrix3();
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				shader.set(inputID, tmpM.set(renderable.worldTransform).inv().transpose());
 			}
 		};
@@ -154,7 +155,7 @@ public class DefaultShader extends BaseShader {
 				this.bones = new float[numBones * 16];
 			}
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				for (int i = 0; i < bones.length; i++) {
 					final int idx = i/16;
 					bones[i] = (renderable.bones == null || idx >= renderable.bones.length || renderable.bones[idx] == null) ? 
@@ -165,52 +166,52 @@ public class DefaultShader extends BaseShader {
 		}
 		public final static Setter shininess = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				shader.set(inputID, ((FloatAttribute)(renderable.material.get(FloatAttribute.Shininess))).value);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((FloatAttribute)(combinedAttributes.get(FloatAttribute.Shininess))).value);
 			}
 		};
 		public final static Setter diffuseColor = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				shader.set(inputID, ((ColorAttribute)(renderable.material.get(ColorAttribute.Diffuse))).color);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((ColorAttribute)(combinedAttributes.get(ColorAttribute.Diffuse))).color);
 			}
 		};
 		public final static Setter diffuseTexture = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(renderable.material.get(TextureAttribute.Diffuse))).textureDescription);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Diffuse))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
 		public final static Setter specularColor = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				shader.set(inputID, ((ColorAttribute)(renderable.material.get(ColorAttribute.Specular))).color);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((ColorAttribute)(combinedAttributes.get(ColorAttribute.Specular))).color);
 			}
 		};
 		public final static Setter specularTexture = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(renderable.material.get(TextureAttribute.Specular))).textureDescription);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Specular))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
 		public final static Setter emissiveColor = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				shader.set(inputID, ((ColorAttribute)(renderable.material.get(ColorAttribute.Emissive))).color);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((ColorAttribute)(combinedAttributes.get(ColorAttribute.Emissive))).color);
 			}
 		};
 		public final static Setter reflectionColor = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				shader.set(inputID, ((ColorAttribute)(renderable.material.get(ColorAttribute.Reflection))).color);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				shader.set(inputID, ((ColorAttribute)(combinedAttributes.get(ColorAttribute.Reflection))).color);
 			}
 		};
 		public final static Setter normalTexture = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
-				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(renderable.material.get(TextureAttribute.Normal))).textureDescription);
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
+				final int unit = shader.context.textureBinder.bind(((TextureAttribute)(combinedAttributes.get(TextureAttribute.Normal))).textureDescription);
 				shader.set(inputID, unit);
 			}
 		};
@@ -225,7 +226,7 @@ public class DefaultShader extends BaseShader {
 				this.pointLightsOffset = pointLightsOffset;
 			}
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				if (renderable.environment == null)
 					shader.program.setUniform3fv(shader.loc(inputID), ones, 0, ones.length);
 				else {
@@ -247,7 +248,7 @@ public class DefaultShader extends BaseShader {
 		}
 		public final static Setter environmentCubemap = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable) {
+			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 				if (renderable.environment != null && renderable.environment.environmentCubemap != null) {
 					final int unit = shader.context.textureBinder.bind(renderable.environment.environmentCubemap);
 					shader.set(inputID, unit);
