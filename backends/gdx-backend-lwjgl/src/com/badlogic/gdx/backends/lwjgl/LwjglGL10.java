@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 /** An implementation of the {@link GL10} interface based on LWJGL. Fixed point vertex arrays are emulated.
  * 
  * @author mzechner */
-class LwjglGL10 implements GL10 {
+public class LwjglGL10 implements GL10 {
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;
 

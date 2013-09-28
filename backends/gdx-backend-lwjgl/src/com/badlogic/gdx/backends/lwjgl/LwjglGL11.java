@@ -33,7 +33,7 @@ import org.lwjgl.opengl.GL15;
  * are not implemented.
  * 
  * @author mzechner */
-final class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
+public class LwjglGL11 extends LwjglGL10 implements com.badlogic.gdx.graphics.GL11 {
 	private IntBuffer tempInt;
 	private FloatBuffer tempFloat;
 
