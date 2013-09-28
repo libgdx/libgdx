@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.attributes;
 
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
@@ -33,21 +34,23 @@ public class TextureAttribute extends Attribute {
 		return new TextureAttribute(Specular, texture);
 	}
 	
-	public final TextureDescriptor textureDescription;
+	public final TextureDescriptor<Texture> textureDescription;
 	
-	public TextureAttribute(final long type, final TextureDescriptor textureDescription) {
+	public TextureAttribute(final long type) {
 		super(type);
 		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");
-		this.textureDescription = textureDescription; // FIXME Add TextureDescriptor#copy or #addRef ?
+		textureDescription = new TextureDescriptor<Texture>();
 	}
 	
-	public TextureAttribute(final long type) {
-		this(type, new TextureDescriptor());
+	public <T extends Texture> TextureAttribute(final long type, final TextureDescriptor<T> textureDescription) {
+		this(type);
+		this.textureDescription.set(textureDescription);
 	}
 	
 	public TextureAttribute(final long type, final Texture texture) {
-		this(type, new TextureDescriptor(texture));
+		this(type);
+		textureDescription.texture = texture;
 	}
 	
 	public TextureAttribute(final TextureAttribute copyFrom) {

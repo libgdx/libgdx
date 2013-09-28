@@ -9,18 +9,19 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.Environment;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -249,9 +250,8 @@ public class DefaultShader extends BaseShader {
 		public final static Setter environmentCubemap = new Setter() {
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
 			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				if (renderable.environment != null && renderable.environment.environmentCubemap != null) {
-					final int unit = shader.context.textureBinder.bind(renderable.environment.environmentCubemap);
-					shader.set(inputID, unit);
+				if (combinedAttributes.has(CubemapAttribute.EnvironmentMap)) {
+					shader.set(inputID, shader.context.textureBinder.bind(((CubemapAttribute)combinedAttributes.get(CubemapAttribute.EnvironmentMap)).textureDescription));
 				}
 			}
 		};
@@ -367,7 +367,8 @@ public class DefaultShader extends BaseShader {
 	public DefaultShader(final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		this.program = shaderProgram;
 		this.lighting = renderable.environment != null;
-		this.environmentCubemap = lighting && renderable.environment.environmentCubemap != null;
+		this.environmentCubemap = renderable.material.has(CubemapAttribute.EnvironmentMap) || (
+				lighting && renderable.environment.has(CubemapAttribute.EnvironmentMap));
 		this.shadowMap = lighting && renderable.environment.shadowMap != null;
 		this.fog = lighting && renderable.environment.has(ColorAttribute.Fog);
 		this.renderable = renderable;
@@ -470,7 +471,7 @@ public class DefaultShader extends BaseShader {
  				}
 				if (renderable.environment.shadowMap != null)
 					prefix += "#define shadowMapFlag\n";
-				if (renderable.environment.environmentCubemap != null)
+				if (renderable.material.has(CubemapAttribute.EnvironmentMap) || renderable.environment.has(CubemapAttribute.EnvironmentMap))
 					prefix += "#define environmentCubemapFlag\n";
 			}
 		}

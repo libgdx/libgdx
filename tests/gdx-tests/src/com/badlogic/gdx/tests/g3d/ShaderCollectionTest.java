@@ -11,15 +11,16 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.environment.Environment;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
@@ -163,8 +164,8 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			cubemap = null;
 		}
 		if (name.equals("<none>")) {
-			if (lights.environmentCubemap != null) {
-				lights.environmentCubemap = null;
+			if (lights.has(CubemapAttribute.EnvironmentMap)) {
+				lights.remove(CubemapAttribute.EnvironmentMap);
 				shaderProvider.clear();
 			}
 		}
@@ -175,9 +176,9 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 				root.child(name+"_PZ.png"), root.child(name+"_NZ.png"), 
 				false); // FIXME mipmapping on desktop
 			cubemap.load(CubemapSide.NegativeX, root.child(name+"_NX.png"));
-			if (lights.environmentCubemap == null)
+			if (!lights.has(CubemapAttribute.EnvironmentMap))
 				shaderProvider.clear();
-			lights.environmentCubemap = cubemap;
+			lights.set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
 		}
 	}
 	
