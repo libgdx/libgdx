@@ -131,8 +131,11 @@ public class GLES10Shader implements Shader{
 		return getValues(out, color.r, color.g, color.b, color.a);
 	}
 	
+	private Color tmpC = new Color();
 	@Override
 	public void render (final Renderable renderable) {
+		tmpC.set(1,1,1,1);
+		boolean hasColor = false;
 		if (currentMaterial != renderable.material) {
 			currentMaterial = renderable.material;
 			if (!currentMaterial.has(BlendingAttribute.Type))
@@ -145,15 +148,16 @@ public class GLES10Shader implements Shader{
 				Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
 			int cullFace = defaultCullFace;
 			for (final Attribute attribute : currentMaterial) {
-				if (attribute.type == BlendingAttribute.Type)
+				if (attribute.type == BlendingAttribute.Type) {
 					context.setBlending(true, ((BlendingAttribute)attribute).sourceFunction, ((BlendingAttribute)attribute).destFunction);
+					hasColor = true;
+					tmpC.a = ((BlendingAttribute)attribute).opacity;
+				}
 				else if (attribute.type == ColorAttribute.Diffuse) {
-					Gdx.gl10.glColor4f(((ColorAttribute)attribute).color.r, ((ColorAttribute)attribute).color.g, ((ColorAttribute)attribute).color.b, ((ColorAttribute)attribute).color.a);
-					if (renderable.environment != null) {
-						Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
-						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
-						Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, getValues(lightVal, ((ColorAttribute)attribute).color), 0);
-					}
+					float a = tmpC.a;
+					tmpC.set(((ColorAttribute)attribute).color);
+					tmpC.a = a;
+					hasColor = true;
 				} else if (attribute.type == TextureAttribute.Diffuse) {
 					TextureDescriptor textureDesc = ((TextureAttribute)attribute).textureDescription;
 					if (currentTexture0 != textureDesc.texture)
@@ -166,6 +170,14 @@ public class GLES10Shader implements Shader{
 					cullFace = ((IntAttribute)attribute).value;
 			}
 			context.setCullFace(cullFace);
+		}
+		if (hasColor) {
+			Gdx.gl10.glColor4f(tmpC.r, tmpC.g, tmpC.b, tmpC.a);
+			if (renderable.environment != null) {
+				Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
+				Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_AMBIENT, getValues(lightVal, tmpC), 0);
+				Gdx.gl10.glMaterialfv(GL10.GL_FRONT_AND_BACK, GL10.GL_DIFFUSE, getValues(lightVal, tmpC), 0);
+			}
 		}
 		if (currentTransform != renderable.worldTransform) { // FIXME mul localtransform
 			if (currentTransform != null)
