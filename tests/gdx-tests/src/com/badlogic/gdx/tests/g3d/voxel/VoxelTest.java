@@ -12,13 +12,13 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -34,7 +34,7 @@ public class VoxelTest extends GdxTest {
 	BitmapFont font;
 	ModelBatch modelBatch;
 	PerspectiveCamera camera;
-	Lights lights;
+	Environment lights;
 	FirstPersonCameraController controller;
 	VoxelWorld voxelWorld;
 
@@ -51,8 +51,8 @@ public class VoxelTest extends GdxTest {
 		controller = new FirstPersonCameraController(camera);
 		Gdx.input.setInputProcessor(controller);
 		
-		lights = new Lights();
-		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add(new DirectionalLight().set(1, 1, 1, 0, -1, 0));
 		
 		Texture texture = new Texture(Gdx.files.internal("data/g3d/tiles.png"));

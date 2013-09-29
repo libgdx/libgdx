@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 

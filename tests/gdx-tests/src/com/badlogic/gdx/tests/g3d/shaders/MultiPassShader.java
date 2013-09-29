@@ -9,9 +9,8 @@ public class MultiPassShader extends DefaultShader {
 	
 	protected final int u_pass = register(new Uniform("u_pass"));
 	
-	public MultiPassShader (String vertexShader, String fragmentShader, Renderable renderable, boolean lighting, 
-		boolean environmentCubemap, boolean shadowMap, boolean fog, int numDirectional, int numPoint, int numSpot, int numBones) {
-		super(vertexShader, fragmentShader, renderable, lighting, environmentCubemap, shadowMap, fog, numDirectional, numPoint, numSpot, numBones);
+	public MultiPassShader (final Renderable renderable, final Config config) {
+		super(renderable, config);
 	}
 
 	@Override
