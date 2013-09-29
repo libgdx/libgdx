@@ -59,7 +59,7 @@ public class GdxBuild {
 		mac.cppExcludes = excludeCpp;
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.cppExcludes = excludeCpp;
-		ios.headerDirs = new String[] { ".", "jni-headers", "jni-headers/mac", "iosgl" };
+		ios.headerDirs = new String[] { "iosgl" };
 		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, win32home, win32,
 			win64, lin32, lin64, android, ios);		
 
