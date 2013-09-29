@@ -41,6 +41,7 @@ import com.badlogic.gdx.tests.g3d.ModelLoaderTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.voxel.VoxelTest;
+import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -52,7 +53,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new ShaderCollectionTest();
+		GdxTest test = new NetAPITest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.width = 1024;

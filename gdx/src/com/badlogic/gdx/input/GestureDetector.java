@@ -56,7 +56,7 @@ public class GestureDetector extends InputAdapter {
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run () {
-			longPressFired = listener.longPress(pointer1.x, pointer1.y);
+			if (!longPressFired) longPressFired = listener.longPress(pointer1.x, pointer1.y);
 		}
 	};
 
@@ -222,6 +222,12 @@ public class GestureDetector extends InputAdapter {
 			handled = listener.fling(tracker.getVelocityX(), tracker.getVelocityY(), button) || handled;
 		}
 		return handled;
+	}
+
+	/** No further gesture events will be triggered for the current touch, if any. */
+	public void cancel () {
+		longPressTask.cancel();
+		longPressFired = true;
 	}
 
 	/** @return whether the user touched the screen long enough to trigger a long press event. */

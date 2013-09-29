@@ -109,6 +109,8 @@ public class AnimationController extends BaseAnimationController {
 	public float transitionTargetTime;
 	/** Whether an action is being performed. Do not alter this value. */
 	public boolean inAction;
+	
+	private boolean justChangedAnimation = false;
 
 	/** Construct a new AnimationController.
 	 * @param target The {@link ModelInstance} on which the animations will be performed. */
@@ -117,6 +119,8 @@ public class AnimationController extends BaseAnimationController {
 	}
 	
 	private AnimationDesc obtain(final Animation anim, int loopCount, float speed, final AnimationListener listener) {
+		if (anim == null)
+			return null;
 		final AnimationDesc result = animationPool.obtain();
 		result.animation = anim;
 		result.listener = listener;
@@ -127,6 +131,8 @@ public class AnimationController extends BaseAnimationController {
 	}
 	
 	private AnimationDesc obtain(final String id, int loopCount, float speed, final AnimationListener listener) {
+		if (id == null)
+			return null;
 		final Animation anim = target.getAnimation(id);
 		if (anim == null)
 			throw new GdxRuntimeException("Unknown animation: "+id);
@@ -141,8 +147,19 @@ public class AnimationController extends BaseAnimationController {
 	/** Update any animations currently being played.
 	 * @param delta The time elapsed since last update, change this to alter the overall speed (can be negative). */
 	public void update(float delta) {
+		if (previous != null && ((transitionCurrentTime += delta) >= transitionTargetTime)) {
+			removeAnimation(previous.animation);
+			justChangedAnimation = true;
+			animationPool.free(previous);
+			previous = null;
+		}
+		if (justChangedAnimation) {
+			target.calculateTransforms();
+			justChangedAnimation = false;
+		}
 		if (current == null || current.loopCount == 0 || current.animation == null)
 			return;
+		justChangedAnimation = false;
 		updating = true;
 		final float remain = current.update(delta);
 		if (remain != 0f && queued != null) {
@@ -152,10 +169,6 @@ public class AnimationController extends BaseAnimationController {
 			updating = false;
 			update(remain);
 			return;
-		}
-		if (previous != null && ((transitionCurrentTime += delta) >= transitionTargetTime)) {
-			animationPool.free(previous);
-			previous = null;
 		}
 		if (previous != null)
 			applyAnimations(previous.animation, previous.time, current.animation, current.time, transitionCurrentTime / transitionTargetTime);
@@ -170,6 +183,16 @@ public class AnimationController extends BaseAnimationController {
 	 * animation is completed. */
 	public AnimationDesc setAnimation(final String id) {
 		return setAnimation(id, 1, 1.0f, null);
+	}
+	
+	/** Set the active animation, replacing any current animation.
+	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
+	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, 
+	 * negative to continuously loop the animation.
+	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
+	 * animation is completed. */
+	public AnimationDesc setAnimation(final String id, int loopCount) {
+		return setAnimation(id, loopCount, 1.0f, null);
 	}
 
 	/** Set the active animation, replacing any current animation.
@@ -219,11 +242,14 @@ public class AnimationController extends BaseAnimationController {
 		if (current == null)
 			current = anim;
 		else {
-			if (current.animation == anim.animation)
+			if (anim != null && current.animation == anim.animation)
 				anim.time = current.time;
+			else
+				removeAnimation(current.animation);
 			animationPool.free(current);
 			current = anim;
 		}
+		justChangedAnimation = true;
 		return anim;
 	}
 	
@@ -285,7 +311,7 @@ public class AnimationController extends BaseAnimationController {
 			current = anim;
 		else if (inAction)
 			queue(anim, transitionTime);
-		else if (current.animation == anim.animation) {
+		else if (anim != null && current.animation == anim.animation) {
 			anim.time = current.time;
 			animationPool.free(current);
 			current = anim;

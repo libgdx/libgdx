@@ -1,8 +1,8 @@
-package com.badlogic.gdx.graphics.g3d.materials;
+package com.badlogic.gdx.graphics.g3d.attributes;
 
-import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 
-public class IntAttribute extends Material.Attribute {
+public class IntAttribute extends Attribute {
 	public static final String CullFaceAlias = "cullface";
 	public static final long CullFace = register(CullFaceAlias);
 	

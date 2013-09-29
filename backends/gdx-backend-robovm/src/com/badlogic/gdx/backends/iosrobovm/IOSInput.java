@@ -63,6 +63,13 @@ public class IOSInput implements Input {
 	
 	void setupPeripherals() {
 		setupAccelerometer();
+		setupCompass();
+	}
+
+	private void setupCompass () {
+		if(config.useCompass) {
+			// FIXME implement compass
+		}
 	}
 
 	private void setupAccelerometer() {
@@ -71,27 +78,17 @@ public class IOSInput implements Input {
 
 				@Override
 				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
-					//super.DidAccelerate(accelerometer, values);
 					float x = (float)values.getX() * 10;
 					float y = (float)values.getY() * 10;
 					float z = (float)values.getZ() * 10;
 
 					UIInterfaceOrientation orientation = app.graphics.viewController != null 
-							? app.graphics.viewController.getInterfaceOrientation() 
-									: UIApplication.getSharedApplication().getStatusBarOrientation();
-
-					if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight) {
-						float t = x;
-						x = y;
-						y = t;
-					}
-					if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.Portrait) {
-						x = -x;
-					}
-					
-					acceleration[0] = x;
-					acceleration[1] = y;
-					acceleration[2] = z;
+																		? app.graphics.viewController.getInterfaceOrientation() 
+																		: UIApplication.getSharedApplication().getStatusBarOrientation();
+										
+					acceleration[0] = -x;
+					acceleration[1] = -y;
+					acceleration[2] = -z;
 				}
 			};
 			UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
@@ -319,14 +316,20 @@ public class IOSInput implements Input {
 
 	@Override
 	public int getRotation() {
-		// FIXME implement this
+		UIInterfaceOrientation orientation = app.graphics.viewController != null 
+					? app.graphics.viewController.getInterfaceOrientation() 
+					: UIApplication.getSharedApplication().getStatusBarOrientation();
+		// we measure orientation counter clockwise, just like on Android
+		if(orientation == UIInterfaceOrientation.Portrait) return 0;
+		if(orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
+		if(orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
+		if(orientation == UIInterfaceOrientation.LandscapeRight) return 90;
 		return 0;
 	}
 
 	@Override
 	public Orientation getNativeOrientation() {
-		// FIXME implement this
-		return null;
+		return Orientation.Portrait;
 	}
 
 	@Override

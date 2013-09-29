@@ -123,7 +123,7 @@ public class ScrollPane extends WidgetGroup {
 						draggingPointer = pointer;
 						return true;
 					}
-					setScrollX(amountX + Math.max(areaWidth * 0.9f, maxX * 0.1f) * (x < hKnobBounds.x ? -1 : 1));
+					setScrollX(amountX + areaWidth * (x < hKnobBounds.x ? -1 : 1));
 					return true;
 				}
 				if (scrollY && vScrollBounds.contains(x, y)) {
@@ -136,7 +136,7 @@ public class ScrollPane extends WidgetGroup {
 						draggingPointer = pointer;
 						return true;
 					}
-					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) * (y < vKnobBounds.y ? 1 : -1));
+					setScrollY(amountY + areaHeight * (y < vKnobBounds.y ? 1 : -1));
 					return true;
 				}
 				return false;
@@ -144,9 +144,7 @@ public class ScrollPane extends WidgetGroup {
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer != draggingPointer) return;
-				draggingPointer = -1;
-				touchScrollH = false;
-				touchScrollV = false;
+				cancel();
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
@@ -231,6 +229,14 @@ public class ScrollPane extends WidgetGroup {
 		if (!cancelTouchFocus) return;
 		Stage stage = getStage();
 		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
+	}
+
+	/** If currently scrolling by tracking a touch down, stop scrolling. */
+	public void cancel () {
+		draggingPointer = -1;
+		touchScrollH = false;
+		touchScrollV = false;
+		flickScrollListener.getGestureDetector().cancel();
 	}
 
 	void clamp () {
