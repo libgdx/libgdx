@@ -2,8 +2,6 @@ package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 import com.badlogic.gdx.math.Matrix4;
@@ -41,8 +39,8 @@ public class Renderable {
 	public Material material;
 	/** the bones transformations used for skinning, or null if not applicable */  
 	public Matrix4 bones[];
-	/** the {@link Lights} to be used to render this Renderable, may be null **/
-	public Lights lights;
+	/** the {@link Environment} to be used to render this Renderable, may be null **/
+	public Environment environment;
 	/** the {@link Shader} to be used to render this Renderable, may be null.
 	 * It is not guaranteed that the shader will be used, the used {@link ShaderProvider} is responsible
 	 * for actually choosing the correct shader to use. **/

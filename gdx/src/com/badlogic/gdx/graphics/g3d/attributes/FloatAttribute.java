@@ -1,9 +1,9 @@
-package com.badlogic.gdx.graphics.g3d.materials;
+package com.badlogic.gdx.graphics.g3d.attributes;
 
-import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class FloatAttribute extends Material.Attribute {
+public class FloatAttribute extends Attribute {
     public static final String ShininessAlias = "shininess";
     public static final long Shininess = register(ShininessAlias);
 

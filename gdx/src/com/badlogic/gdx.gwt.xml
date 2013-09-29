@@ -106,12 +106,25 @@
 		<include name="graphics/g2d/TextureRegion.java"/>
 		
 	<!-- graphics/g3d -->
+		<include name="graphics/g3d/Attribute.java"/>
+		<include name="graphics/g3d/Attributes.java"/>
+		<include name="graphics/g3d/Environment.java"/>
+		<include name="graphics/g3d/Material.java"/>
 		<include name="graphics/g3d/Model.java"/>
 		<include name="graphics/g3d/ModelBatch.java"/>
 		<include name="graphics/g3d/ModelInstance.java"/>
 		<include name="graphics/g3d/Renderable.java"/>
 		<include name="graphics/g3d/RenderableProvider.java"/>
 		<include name="graphics/g3d/Shader.java"/>
+		
+	<!-- graphics/g3d/attributes -->
+		<include name="graphics/g3d/attributes/BlendingAttribute.java"/>
+		<include name="graphics/g3d/attributes/ColorAttribute.java"/>
+		<include name="graphics/g3d/attributes/CubemapAttribute.java"/>
+		<include name="graphics/g3d/attributes/DepthTestAttribute.java"/>
+		<include name="graphics/g3d/attributes/FloatAttribute.java"/>
+		<include name="graphics/g3d/attributes/IntAttribute.java"/>
+		<include name="graphics/g3d/attributes/TextureAttribute.java"/>
 		
 	<!-- graphics/g3d/decals -->
 		<include name="graphics/g3d/decals/CameraGroupStrategy.java"/>
@@ -124,27 +137,18 @@
 		<include name="graphics/g3d/decals/PluggableGroupStrategy.java"/>
 		<include name="graphics/g3d/decals/SimpleOrthoGroupStrategy.java"/>
 
-	<!-- graphics/g3d/lights -->		
-		<include name="graphics/g3d/lights/AmbientCubemap.java"/>
-		<include name="graphics/g3d/lights/BaseLight.java"/>
-		<include name="graphics/g3d/lights/DirectionalLight.java"/>
-		<include name="graphics/g3d/lights/DirectionalShadowLight.java"/>
-		<include name="graphics/g3d/lights/Lights.java"/>
-		<include name="graphics/g3d/lights/PointLight.java"/>
-		<include name="graphics/g3d/lights/ShadowMap.java"/>
+	<!-- graphics/g3d/environment -->		
+		<include name="graphics/g3d/environment/AmbientCubemap.java"/>
+		<include name="graphics/g3d/environment/BaseLight.java"/>
+		<include name="graphics/g3d/environment/DirectionalLight.java"/>
+		<include name="graphics/g3d/environment/DirectionalShadowLight.java"/>
+		<include name="graphics/g3d/environment/Lights.java"/>
+		<include name="graphics/g3d/environment/PointLight.java"/>
+		<include name="graphics/g3d/environment/ShadowMap.java"/>
 				
 	<!-- graphics/g3d/loader -->		
 		<include name="graphics/g3d/loader/G3dModelLoader.java"/>
 		<include name="graphics/g3d/loader/ObjLoader.java"/>
-
-	<!-- graphics/g3d/materials -->
-		<include name="graphics/g3d/materials/BlendingAttribute.java"/>
-		<include name="graphics/g3d/materials/ColorAttribute.java"/>
-		<include name="graphics/g3d/materials/DepthTestAttribute.java"/>
-		<include name="graphics/g3d/materials/FloatAttribute.java"/>
-		<include name="graphics/g3d/materials/IntAttribute.java"/>
-		<include name="graphics/g3d/materials/Material.java"/>
-		<include name="graphics/g3d/materials/TextureAttribute.java"/>
 		
 	<!-- graphics/g3d/model -->
 		<include name="graphics/g3d/model/Animation.java"/>
@@ -185,6 +189,7 @@
 		<include name="graphics/g3d/utils/DefaultTextureBinder.java"/>
 		<include name="graphics/g3d/utils/DepthShaderProvider.java"/>
 		<include name="graphics/g3d/utils/FirstPersonCameraController.java"/>
+		<include name="graphics/g3d/utils/GLES10ShaderProvider.java"/>
 		<include name="graphics/g3d/utils/MeshBuilder.java"/>
 		<include name="graphics/g3d/utils/MeshPartBuilder.java"/>
 		<include name="graphics/g3d/utils/ModelBuilder.java"/>
