@@ -123,7 +123,7 @@ public class ScrollPane extends WidgetGroup {
 						draggingPointer = pointer;
 						return true;
 					}
-					setScrollX(amountX + areaWidth * (x < hKnobBounds.x ? -1 : 1));
+					setScrollX(amountX + getPageScrollX() * (x < hKnobBounds.x ? -1 : 1));
 					return true;
 				}
 				if (scrollY && vScrollBounds.contains(x, y)) {
@@ -136,7 +136,7 @@ public class ScrollPane extends WidgetGroup {
 						draggingPointer = pointer;
 						return true;
 					}
-					setScrollY(amountY + areaHeight * (y < vKnobBounds.y ? 1 : -1));
+					setScrollY(amountY + getPageScrollY() * (y < vKnobBounds.y ? 1 : -1));
 					return true;
 				}
 				return false;
@@ -645,6 +645,16 @@ public class ScrollPane extends WidgetGroup {
 	/** Called whenever the visual y scroll amount is changed. */
 	protected void visualScrollY (float pixelsY) {
 		this.visualAmountY = pixelsY;
+	}
+
+	/** Returns the amount to scroll horizontally when the scrollbar is clicked. */
+	protected float getPageScrollX () {
+		return areaWidth;
+	}
+
+	/** Returns the amount to scroll vertically when the scrollbar is clicked. */
+	protected float getPageScrollY () {
+		return areaHeight;
 	}
 
 	public void setScrollX (float pixels) {
