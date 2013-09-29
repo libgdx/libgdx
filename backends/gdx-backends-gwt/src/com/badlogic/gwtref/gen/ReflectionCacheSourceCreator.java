@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import com.badlogic.gwtref.gen.SwitchedCodeBlocks.Code;
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
