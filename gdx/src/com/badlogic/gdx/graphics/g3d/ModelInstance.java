@@ -1,7 +1,6 @@
 package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;

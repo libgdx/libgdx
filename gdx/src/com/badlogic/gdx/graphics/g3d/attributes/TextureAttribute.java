@@ -1,11 +1,12 @@
-package com.badlogic.gdx.graphics.g3d.materials;
+package com.badlogic.gdx.graphics.g3d.attributes;
 
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class TextureAttribute extends Material.Attribute {
+public class TextureAttribute extends Attribute {
 	public final static String DiffuseAlias = "diffuseTexture";
 	public final static long Diffuse = register(DiffuseAlias);
 	public final static String SpecularAlias = "specularTexture";
@@ -33,21 +34,23 @@ public class TextureAttribute extends Material.Attribute {
 		return new TextureAttribute(Specular, texture);
 	}
 	
-	public final TextureDescriptor textureDescription;
+	public final TextureDescriptor<Texture> textureDescription;
 	
-	public TextureAttribute(final long type, final TextureDescriptor textureDescription) {
+	public TextureAttribute(final long type) {
 		super(type);
 		if (!is(type))
 			throw new GdxRuntimeException("Invalid type specified");
-		this.textureDescription = textureDescription; // FIXME Add TextureDescriptor#copy or #addRef ?
+		textureDescription = new TextureDescriptor<Texture>();
 	}
 	
-	public TextureAttribute(final long type) {
-		this(type, new TextureDescriptor());
+	public <T extends Texture> TextureAttribute(final long type, final TextureDescriptor<T> textureDescription) {
+		this(type);
+		this.textureDescription.set(textureDescription);
 	}
 	
 	public TextureAttribute(final long type, final Texture texture) {
-		this(type, new TextureDescriptor(texture));
+		this(type);
+		textureDescription.texture = texture;
 	}
 	
 	public TextureAttribute(final TextureAttribute copyFrom) {

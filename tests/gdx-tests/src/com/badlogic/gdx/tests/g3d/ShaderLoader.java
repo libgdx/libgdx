@@ -70,7 +70,7 @@ public class ShaderLoader {
 					}
 				}
 			} else
-				out.append(line).append("\n");
+				out.append(line.trim()).append("\r\n");
 		}
 	}
 	
@@ -90,7 +90,7 @@ public class ShaderLoader {
 					stringBuilder.setLength(0);
 					snipName = line.substring(1, idx);
 				} else
-					stringBuilder.append(line).append("\n");
+					stringBuilder.append(line.trim()).append("\r\n");
 			}
 		} catch (IOException e) {
 			throw new GdxRuntimeException(e);

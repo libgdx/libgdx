@@ -1,10 +1,10 @@
-package com.badlogic.gdx.graphics.g3d.materials;
+package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g3d.materials.Material.Attribute;
+import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class BlendingAttribute extends Material.Attribute {
+public class BlendingAttribute extends Attribute {
 	public final static String Alias = "blended";
 	public final static long Type = register(Alias);
 	
