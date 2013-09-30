@@ -25,7 +25,7 @@ public class QuickSelect<T> {
 		swap(right, pivot);
 		int storage = left;
 		for (int i = left; i < right; i++) {
-			if (comp.compare(array[i], pivotValue) == -1) {
+			if (comp.compare(array[i], pivotValue) < 0) {
 				swap(storage, i);
 				storage++;
 			}
