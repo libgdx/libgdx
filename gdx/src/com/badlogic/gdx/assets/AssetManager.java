@@ -124,6 +124,12 @@ public class AssetManager implements Disposable {
 		return asset;
 	}
 
+	/** @param assetDescriptor the asset descriptor
+	 * @return the asset */
+	public synchronized <T> T get (AssetDescriptor<T> assetDescriptor) {
+		return get(assetDescriptor.fileName, assetDescriptor.type);
+	}
+
 	/** Removes the asset and all its dependencies if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
