@@ -12,13 +12,6 @@
   <packaging>jar</packaging>
   <name>libGDX OpenAL Support</name>
 
-  <repositories>
-    <repository>
-      <id>ooo-ext-repo</id>
-      <url>http://ooo-maven.googlecode.com/hg/repository</url>
-    </repository>
-  </repositories>
-
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -43,11 +36,7 @@
         <artifactId>jorbis</artifactId>
         <version>0.0.17</version>
     </dependency>
-    <dependency>
-      <groupId>com.jcraft</groupId>
-      <artifactId>jogg</artifactId>
-      <version>0.0.7</version>
-    </dependency>
+
   </dependencies>
 
   <build>
