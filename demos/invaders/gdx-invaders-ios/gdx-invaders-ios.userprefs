@@ -1,19 +1,18 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneSimulatorTarget.IPhone.5.0" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../gdx-invaders/src/com/badlogic/gdxinvaders/Renderer.java">
+  <MonoDevelop.Ide.Workbench ActiveDocument="gdx-invaders-ios/Main.cs">
     <Files>
       <File FileName="gdx-invaders-ios/Main.cs" Line="24" Column="1" />
       <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/screens/GameLoop.java" Line="84" Column="1" />
-      <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/GdxInvaders.java" Line="40" Column="1" />
-      <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/screens/InvadersScreen.java" Line="34" Column="1" />
-      <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/Renderer.java" Line="126" Column="23" />
+      <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/GdxInvaders.java" Line="1" Column="1" />
+      <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/screens/InvadersScreen.java" Line="1" Column="1" />
+      <File FileName="../gdx-invaders/src/com/badlogic/gdxinvaders/Renderer.java" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="gdx-invaders-ios" expanded="True">
+          <Node name="gdx-invaders-ios" expanded="True" selected="True">
             <Node name="References" expanded="True" />
-            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>

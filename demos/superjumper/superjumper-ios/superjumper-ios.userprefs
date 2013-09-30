@@ -10,8 +10,7 @@
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="superjumper-ios" expanded="True">
-            <Node name="References" expanded="True" />
-            <Node name="Main.cs" selected="True" />
+            <Node name="References" expanded="True" selected="True" />
           </Node>
         </State>
       </Pad>

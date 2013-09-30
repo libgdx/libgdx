@@ -26,7 +26,7 @@
     <MtouchI18n>west</MtouchI18n>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchArch>ARMv7</MtouchArch>
@@ -64,7 +64,7 @@
     <MtouchDebug>True</MtouchDebug>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
@@ -84,7 +84,7 @@
     <MtouchI18n>west</MtouchI18n>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="ant -f convert.xml compile convert -DSRC=&quot;../../gdx-invaders/src/&quot; -DCLASSPATH=&quot;../../../../gdx/bin/;../../../../backends/gdx-backend-lwjgl/bin&quot; -DIN=&quot;-r:../../../../backends/gdx-backend-iosmonotouch/libs/gdx.dll -recurse:target/*.class&quot;  -DOUT=&quot;invaders.dll&quot; -DEXCLUDE=&quot;**/GdxInvadersDesktop.java&quot; -v" workingdir="${ProjectDir}" />
+        <Command type="BeforeBuild" command="ant -f convert.xml" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
     <MtouchExtraArgs>-nosymbolstrip -nostrip -cxx -gcc_flags "-L${ProjectDir} -likvm-natives -lgdx -force_load ${ProjectDir}/libgdx.a -force_load ${ProjectDir}/libikvm-natives.a"</MtouchExtraArgs>
