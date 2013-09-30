@@ -39,9 +39,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.jcraft</groupId>
-      <artifactId>jorbis</artifactId>
-      <version>0.0.15</version>
+        <groupId>org.jcraft</groupId>
+        <artifactId>jorbis</artifactId>
+        <version>0.0.17</version>
     </dependency>
     <dependency>
       <groupId>com.jcraft</groupId>
