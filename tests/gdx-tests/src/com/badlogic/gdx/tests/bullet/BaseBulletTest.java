@@ -72,7 +72,7 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	public Environment lights;
-	public DirectionalShadowLight shadowLight;
+	public DirectionalLight shadowLight;
 	public ModelBatch shadowBatch;
 
 	public BulletWorld world;
@@ -92,9 +92,9 @@ public class BaseBulletTest extends BulletTest {
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
 		lights.add(
-			(shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f)
+			(shadowLight = new DirectionalLight()).set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f)
 		);
-		lights.shadowMap = shadowLight;
+//		lights.shadowMap = shadowLight;
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		
 		modelBatch = new ModelBatch();
@@ -143,7 +143,7 @@ public class BaseBulletTest extends BulletTest {
 		shadowBatch.dispose();
 		shadowBatch = null;
 		
-		shadowLight.dispose();
+//		shadowLight.dispose();
 		shadowLight = null;
 		
 		super.dispose();
@@ -182,11 +182,11 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	protected void renderWorld() {
-		shadowLight.begin(Vector3.Zero, camera.direction);
-		shadowBatch.begin(shadowLight.getCamera());
-		world.render(shadowBatch, null);
-		shadowBatch.end();
-		shadowLight.end();
+//		shadowLight.begin(Vector3.Zero, camera.direction);
+//		shadowBatch.begin(shadowLight.getCamera());
+//		world.render(shadowBatch, null);
+//		shadowBatch.end();
+//		shadowLight.end();
 		
 		modelBatch.begin(camera);
 		world.render(modelBatch, lights);

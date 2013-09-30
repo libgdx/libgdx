@@ -30,7 +30,7 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++"/>
-	<property name="g++-opts" value="-c -Wall -O2 -miphoneos-version-min=5.1 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
+	<property name="g++-opts" value="-g -c -Wall -O2 -miphoneos-version-min=5.1 -fno-strict-aliasing -fno-rtti -DBT_NO_PROFILE"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
