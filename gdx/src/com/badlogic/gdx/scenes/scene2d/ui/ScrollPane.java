@@ -123,7 +123,7 @@ public class ScrollPane extends WidgetGroup {
 						draggingPointer = pointer;
 						return true;
 					}
-					setScrollX(amountX + getPageScrollX() * (x < hKnobBounds.x ? -1 : 1));
+					setScrollX(amountX + areaWidth * (x < hKnobBounds.x ? -1 : 1));
 					return true;
 				}
 				if (scrollY && vScrollBounds.contains(x, y)) {
@@ -136,7 +136,7 @@ public class ScrollPane extends WidgetGroup {
 						draggingPointer = pointer;
 						return true;
 					}
-					setScrollY(amountY + getPageScrollY() * (y < vKnobBounds.y ? 1 : -1));
+					setScrollY(amountY + areaHeight * (y < vKnobBounds.y ? 1 : -1));
 					return true;
 				}
 				return false;
@@ -212,9 +212,9 @@ public class ScrollPane extends WidgetGroup {
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				resetFade();
 				if (scrollY)
-					setScrollY(amountY + Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4 * amount);
+					setScrollY(amountY + getMouseWheelY() * amount);
 				else if (scrollX) //
-					setScrollX(amountX + Math.max(areaWidth * 0.9f, maxX * 0.1f) / 4 * amount);
+					setScrollX(amountX + getMouseWheelX() * amount);
 				return true;
 			}
 		});
@@ -647,14 +647,14 @@ public class ScrollPane extends WidgetGroup {
 		this.visualAmountY = pixelsY;
 	}
 
-	/** Returns the amount to scroll horizontally when the scrollbar is clicked. */
-	protected float getPageScrollX () {
-		return areaWidth;
+	/** Returns the amount to scroll horizontally when the mouse wheel is scrolled. */
+	protected float getMouseWheelX () {
+		return Math.max(areaWidth * 0.9f, maxX * 0.1f) / 4;
 	}
 
-	/** Returns the amount to scroll vertically when the scrollbar is clicked. */
-	protected float getPageScrollY () {
-		return areaHeight;
+	/** Returns the amount to scroll vertically when the mouse wheel is scrolled. */
+	protected float getMouseWheelY () {
+		return Math.max(areaHeight * 0.9f, maxY * 0.1f) / 4;
 	}
 
 	public void setScrollX (float pixels) {
