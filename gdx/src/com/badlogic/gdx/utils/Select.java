@@ -7,6 +7,7 @@ import java.util.Comparator;
  * an unordered list in faster time than sorting the whole array.
  * Typical applications include finding the nearest enemy unit(s), and other
  * operations which are likely to run as often as every x frames.
+ * Certain values of k will result in a partial sorting of the Array.
  * <p>The lowest ranking element starts at 1, not 0. 1 = first, 2 = second, 3 = third, etc.
  * calling with a value of zero will result in a {@link GdxRuntimeException} </p>
  * <p> This class uses very minimal extra memory, as it makes no copies of the array.
