@@ -81,10 +81,7 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-I."/>
-			<arg value="-Ijni-headers"/>
-			<arg value="-Ijni-headers/mac"/>
-			<arg value="-Iiosgl"/>
+						<arg value="-Iiosgl"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -100,10 +97,7 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-I."/>
-			<arg value="-Ijni-headers"/>
-			<arg value="-Ijni-headers/mac"/>
-			<arg value="-Iiosgl"/>
+						<arg value="-Iiosgl"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -140,10 +134,7 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-I."/>
-			<arg value="-Ijni-headers"/>
-			<arg value="-Ijni-headers/mac"/>
-			<arg value="-Iiosgl"/>
+						<arg value="-Iiosgl"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -159,10 +150,7 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-I."/>
-			<arg value="-Ijni-headers"/>
-			<arg value="-Ijni-headers/mac"/>
-			<arg value="-Iiosgl"/>
+						<arg value="-Iiosgl"/>
 
 			<srcfile/>
 			<arg value="-o"/>

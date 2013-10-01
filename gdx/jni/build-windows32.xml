@@ -33,6 +33,7 @@
 				<include name="**/*.cpp"/>
 
 				<exclude name="android/**"/>
+		<exclude name="iosgl/**"/>
 
 	</fileset>
 
