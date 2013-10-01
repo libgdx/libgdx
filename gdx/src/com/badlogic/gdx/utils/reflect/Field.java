@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.utils.reflect;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -83,16 +84,22 @@ public final class Field {
 		return field.isSynthetic();
 	}
 
-	/** If the type of the field is parameterized, returns the Class object representing the parameter type, null otherwise. */
-	public Class getElementType () {
+	/** If the type of the field is parameterized, returns the Class object representing the parameter type at the specified index,
+	 * null otherwise. */
+	public Class getElementType (int index) {
 		Type genericType = field.getGenericType();
 		if (genericType instanceof ParameterizedType) {
 			Type[] actualTypes = ((ParameterizedType)genericType).getActualTypeArguments();
-			if (actualTypes.length == 1) {
-				Type actualType = actualTypes[0];
+			if (actualTypes.length - 1 >= index) {
+				Type actualType = actualTypes[index];
 				if (actualType instanceof Class)
 					return (Class)actualType;
-				else if (actualType instanceof ParameterizedType) return (Class)((ParameterizedType)actualType).getRawType();
+				else if (actualType instanceof ParameterizedType)
+					return (Class)((ParameterizedType)actualType).getRawType();
+				else if (actualType instanceof GenericArrayType) {
+					Type componentType = ((GenericArrayType)actualType).getGenericComponentType();
+					if (componentType instanceof Class) return ArrayReflection.newInstance((Class)componentType, 0).getClass();
+				}
 			}
 		}
 		return null;

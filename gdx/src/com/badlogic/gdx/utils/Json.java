@@ -857,7 +857,7 @@ public class Json {
 				return (T)newArray;
 			}
 			if (ClassReflection.isAssignableFrom(List.class, type)) {
-				List newArray = type == null ? new ArrayList() : (List)newInstance(type);
+				List newArray = (type == null || type.isInterface()) ? new ArrayList() : (List)newInstance(type);
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					newArray.add(readValue(elementType, null, child));
 				return (T)newArray;
@@ -865,7 +865,7 @@ public class Json {
 			if (type.isArray()) {
 				Class componentType = type.getComponentType();
 				if (elementType == null) elementType = componentType;
-				Object newArray = ArrayReflection.newInstance(componentType, jsonData.size());
+				Object newArray = ArrayReflection.newInstance(componentType, jsonData.size);
 				int i = 0;
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					ArrayReflection.set(newArray, i++, readValue(elementType, null, child));
@@ -976,7 +976,9 @@ public class Json {
 
 		public FieldMetadata (Field field) {
 			this.field = field;
-			this.elementType = field.getElementType();
+			int index = (ClassReflection.isAssignableFrom(ObjectMap.class, field.getType()) || ClassReflection.isAssignableFrom(
+				HashMap.class, field.getType())) ? 1 : 0;
+			this.elementType = field.getElementType(index);
 		}
 	}
 
