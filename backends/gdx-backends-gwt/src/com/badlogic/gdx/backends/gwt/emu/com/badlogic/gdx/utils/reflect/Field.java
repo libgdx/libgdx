@@ -82,8 +82,9 @@ public final class Field {
 		return field.isSynthetic();
 	}
 	
-	/** If the type of the field is parameterized, returns the Class object representing the parameter type, null otherwise. */
-	public Class getElementType() {
+	/** If the type of the field is parameterized, returns the Class object representing the parameter type at the specified index,
+	 * null otherwise. */
+	public Class getElementType (int index) {
 		return null;
 	}
 	
