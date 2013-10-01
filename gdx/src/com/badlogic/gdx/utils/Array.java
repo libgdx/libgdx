@@ -336,6 +336,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Selects the nth-lowest element from the Array according to Comparator ranking.
+	 * This might partially sort the Array, affecting draw order for drawn elements.
 	 * @see Select
 	 * @param comparator used for comparison
 	 * @param nth_lowest rank of desired object according to comparison,
