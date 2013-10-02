@@ -565,7 +565,7 @@ public class Actor {
 		tableBounds.height = height;
 		Stage stage = this.stage;
 		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
-		ScissorStack.calculateScissors(stage.getCamera(), stage.getSpriteBatch().getTransformMatrix(), tableBounds, scissorBounds);
+		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
 		Pools.free(scissorBounds);
 		return false;

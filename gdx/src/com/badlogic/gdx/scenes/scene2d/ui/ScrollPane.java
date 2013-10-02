@@ -516,7 +516,7 @@ public class ScrollPane extends WidgetGroup {
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
-		ScissorStack.calculateScissors(getStage().getCamera(), batch.getTransformMatrix(), widgetAreaBounds, scissorBounds);
+		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 
 		// Draw the background ninepatch.
 		Color color = getColor();

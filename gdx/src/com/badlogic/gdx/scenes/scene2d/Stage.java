@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
@@ -243,6 +244,9 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+		if (screenX < viewportX || screenX >= viewportX + viewportWidth) return false;
+		if (screenY < viewportY || screenY >= viewportY + viewportHeight) return false;
+
 		pointerTouched[pointer] = true;
 		pointerScreenX[pointer] = screenX;
 		pointerScreenY[pointer] = screenY;
@@ -339,6 +343,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
 	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
+		if (screenX < viewportX || screenX >= viewportX + viewportWidth) return false;
+		if (screenY < viewportY || screenY >= viewportY + viewportHeight) return false;
+
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
 
@@ -686,6 +693,11 @@ public class Stage extends InputAdapter implements Disposable {
 	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);
 		return coords;
+	}
+
+	public void calculateScissors (Rectangle area, Rectangle scissor) {
+		ScissorStack.calculateScissors(camera, viewportX, viewportY, viewportWidth, viewportHeight, batch.getTransformMatrix(),
+			area, scissor);
 	}
 
 	public void dispose () {
