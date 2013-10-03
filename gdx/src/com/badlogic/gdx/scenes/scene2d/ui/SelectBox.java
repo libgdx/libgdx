@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
@@ -44,7 +45,7 @@ import com.badlogic.gdx.utils.Pools;
  * {@link SelectBoxStyle#background}.
  * @author mzechner
  * @author Nathan Sweet */
-public class SelectBox extends Widget {
+public class SelectBox extends Widget implements Disableable {
 	static final Vector2 tmpCoords = new Vector2();
 
 	SelectBoxStyle style;

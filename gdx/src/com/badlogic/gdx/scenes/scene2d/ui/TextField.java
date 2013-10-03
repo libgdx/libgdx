@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -55,7 +56,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * implementation will bring up the default IME.
  * @author mzechner
  * @author Nathan Sweet */
-public class TextField extends Widget {
+public class TextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
 	static private final char ENTER_ANDROID = '\n';

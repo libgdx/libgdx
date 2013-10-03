@@ -156,8 +156,8 @@ public class Window extends Table {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
-			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
-			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
+			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, -1));
+			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth() + 1, stage.getHeight()));
 			style.stageBackground.draw(batch, x + tmpPosition.x, y + tmpPosition.y, x + tmpSize.x, y + tmpSize.y);
 		}
 
