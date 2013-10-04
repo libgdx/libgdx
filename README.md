@@ -11,6 +11,10 @@ Head over to http://libgdx.badlogicgames.com/documentation.html to find the late
 download links and so on. You can find more information on libgdx on our official site 
 at http://libgdx.badlogicgames.com/
 
+### Downloads
+You can get the latest release or nightly version of libgdx from the [offical download site](http://libgdx.badlogicgames.com/download.html). We actually
+recommend using the nightlies to be up to date with latest bug fixes and feature additions.
+
 #### Documentation
 The [Wiki](https://github.com/libgdx/libgdx/wiki) contains all the information you'll need to write a 
 libgdx game. You can contribute to the Wiki directly here on Github!
