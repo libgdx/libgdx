@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.StreamUtils;
 public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
 	private BoundingBox bounds;
+	private boolean ownsTexture;
 
 	public ParticleEffect () {
 		emitters = new Array(8);
@@ -188,6 +189,7 @@ public class ParticleEffect implements Disposable {
 	}
 
 	public void loadEmitterImages (FileHandle imagesDir) {
+		ownsTexture = true;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
@@ -203,6 +205,7 @@ public class ParticleEffect implements Disposable {
 
 	/** Disposes the texture for each sprite for each ParticleEmitter. */
 	public void dispose () {
+		if (!ownsTexture) return;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			emitter.getSprite().getTexture().dispose();
