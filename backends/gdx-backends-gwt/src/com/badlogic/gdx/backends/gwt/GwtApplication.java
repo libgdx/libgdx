@@ -80,6 +80,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
+	
+	public String getPreloaderBaseURL()
+	{
+		return GWT.getHostPageBaseURL() + "assets/";
+	}
+	
 	@Override
 	public void onModuleLoad () {
 		GwtApplication.agentInfo = computeAgentInfo();
@@ -215,7 +221,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	long loadStart = TimeUtils.nanoTime();
 
 	public Preloader createPreloader() {
-		return new Preloader();
+		return new Preloader(getPreloaderBaseURL());
 	}
 
 	public PreloaderCallback getPreloaderCallback () {
