@@ -31,7 +31,11 @@ public class Select {
 	}
 
 	public <T> int selectIndex(T[] items, Comparator<T> comp, int kthLowest, int size) {
-		if (size < 1) throw new GdxRuntimeException("cannot select from empty array (size < 1)");
+		if (size < 1) {
+			throw new GdxRuntimeException("cannot select from empty array (size < 1)");
+		} else if (kthLowest > size) {
+			throw new GdxRuntimeException("Kth rank is larger than size. k: " + kthLowest + ", size: " + size);
+		}
 		int idx;
 		// naive partial selection sort almost certain to outperform quickselect where n is min or max
 		if (kthLowest == 1) {
