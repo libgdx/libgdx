@@ -246,7 +246,6 @@ public class PreviewPanel extends javax.swing.JPanel {
 				for (String path : def.libsDesktop) pathToNodes(path, desktopLibsNode);
 				for (String path : def.libsAndroid) pathToNodes(path, androidLibsNode);
 				for (String path : def.libsHtml) pathToNodes(path, htmlLibsNode);
-				for (String path : def.libsIos) pathToNodes(path, iosLibsNode);
 				for (String path : def.libsRobovm) pathToNodes(path, robovmLibsNode);
 				for (String path : def.data) pathToNodes(path, dataNode);                              
 			}
@@ -291,7 +290,6 @@ public class PreviewPanel extends javax.swing.JPanel {
 					if (isDir && name.equals("prj-desktop")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixDesktop;
 					if (isDir && name.equals("prj-android")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixAndroid;
 					if (isDir && name.equals("prj-html")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixHtml;
-					if (isDir && name.equals("prj-ios")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixIos;
 					if (isDir && name.equals("prj-robovm")) name = Ctx.cfgSetup.projectName + Ctx.cfgSetup.suffixRobovm;
 
 					label.setText(FilenameUtils.getName(name));
