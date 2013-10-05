@@ -9,5 +9,5 @@ dependencies {
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project {
-    name = appName
+    name = appName + "-core"
 }

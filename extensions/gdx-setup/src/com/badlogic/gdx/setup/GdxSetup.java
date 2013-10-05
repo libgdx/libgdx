@@ -60,6 +60,9 @@ public class GdxSetup {
 		values.put("%MAIN_CLASS%", mainClass);
 		
 		copyAndReplace(outputDir, project, values);
+		
+		// HACK executable flag isn't preserved for whatever reason...
+		new File(outputDir, "gradlew").setExecutable(true);
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
