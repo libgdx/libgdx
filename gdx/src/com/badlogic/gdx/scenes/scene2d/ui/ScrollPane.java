@@ -464,11 +464,7 @@ public class ScrollPane extends WidgetGroup {
 				// bar on the top or bottom
 				if (hScrollOnBottom) {
 					boundsY = bgBottomHeight;
-				} else {
-					System.out.println("height: " + height);
-					System.out.println("areaHeight: " + areaHeight);
-					System.out.println("bgBottomHeight: " + bgBottomHeight);
-					System.out.println("bgTopHeight: " + bgTopHeight);					
+				} else {					
 					boundsY = height - bgTopHeight - hScrollHeight;
 				}
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);

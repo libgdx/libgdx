@@ -138,15 +138,21 @@ public class ScrollPaneScrollBarsTest extends GdxTest {
 		final ScrollPane vertOnlyRightScroll = new ScrollPane(vertOnlyRightTable, skin);
 		vertOnlyRightScroll.setVScrollBarAtRight(true);
 		
-		ScrollPane[] scrollPanes = new ScrollPane[] {bottomLeftScroll, bottomRightScroll, topLeftScroll, topRightScroll,
-			horizOnlyTopScroll, horizOnlyBottomScroll	};
+		ScrollPane[] scrollPanes = new ScrollPane[] {
+			bottomLeftScroll, bottomRightScroll, topLeftScroll, topRightScroll,
+			horizOnlyTopScroll, horizOnlyBottomScroll,
+			vertOnlyLeftScroll, vertOnlyRightScroll
+		};
 		// want to see all scroll bars all the time
 		for (ScrollPane pane : scrollPanes) {
 			pane.setFadeScrollBars(false);
 		}
 
-		Table[] tables = new Table[] { bottomLeftTable, bottomRightTable, topLeftTable, topRightTable,
-			horizOnlyTopTable, horizOnlyBottomTable};
+		Table[] tables = new Table[] { 
+			bottomLeftTable, bottomRightTable, topLeftTable, topRightTable,
+			horizOnlyTopTable, horizOnlyBottomTable,
+			vertOnlyLeftTable, vertOnlyRightTable
+		};
 		for (Table t : tables) {
 			t.pad(10).defaults().expandX().space(4);
 		}
