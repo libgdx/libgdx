@@ -247,4 +247,14 @@ public class MathUtils {
 	static public int roundPositive (float x) {
 		return (int)(x + 0.5f);
 	}
+	
+	/** Returns x as its absolute value */
+	static public float abs(float x) {
+		return x < 0 ? x *-1 : x;
+	}
+	
+	/** Returns x as its absolute value */
+	static public int abs(int x) {
+		return x < 0 ? x *-1 : x;
+	}
 }
