@@ -398,6 +398,7 @@
 		<include name="scenes/scene2d/utils/ChangeListener.java"/>
 		<include name="scenes/scene2d/utils/ClickListener.java"/>
 		<include name="scenes/scene2d/utils/Cullable.java"/>
+		<include name="scenes/scene2d/utils/Disableable.java"/>
 		<include name="scenes/scene2d/utils/DragAndDrop.java"/>
 		<include name="scenes/scene2d/utils/DragListener.java"/>
 		<include name="scenes/scene2d/utils/DragScrollListener.java"/>
