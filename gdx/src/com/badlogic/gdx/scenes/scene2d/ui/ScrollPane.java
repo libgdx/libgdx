@@ -499,7 +499,7 @@ public class ScrollPane extends WidgetGroup {
 				if (vScrollOnRight) {
 					vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
 				} else {
-					vKnobBounds.x = 0;
+					vKnobBounds.x = bgLeftWidth;
 				}
 				vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 			} else {
