@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -147,5 +148,11 @@ public class WidgetGroup extends Group implements Layout {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		super.draw(batch, parentAlpha);
+	}
+
+	public Actor hit (float x, float y, boolean touchable) {
+		if (touchable && getTouchable() == Touchable.disabled) return null;
+		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
+		return super.hit(x, y, touchable);
 	}
 }
