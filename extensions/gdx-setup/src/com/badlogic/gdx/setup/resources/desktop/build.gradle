@@ -14,3 +14,7 @@ tasks.ideaModule.doFirst {
 eclipse.project {
     name = appName + "-desktop"
 }
+
+run {
+  ignoreExitValue = true
+}

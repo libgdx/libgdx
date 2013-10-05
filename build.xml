@@ -32,6 +32,17 @@
 		<ant antfile="build.xml" dir="extensions/gdx-setup-ui/"/>
 		<copy tofile="${distDir}/gdx-setup-ui.jar" file="extensions/gdx-setup-ui/gdx-setup-ui.jar"/>
 	</target>
+    
+    <!-- new gdx setup -->
+    <target name="gdx-setup">
+		<fileset id="resourcefiles" dir="extensions/gdx-setup/src">
+            <exclude name="**/*.java"/>
+		</fileset>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-setup">
+			<property name="jar" value="gdx-setup"/>
+			<reference refid="resourcefiles"/>
+		</ant>
+    </target>
 
 	<!-- gdx core -->
 	<target name="gdx-core" depends="gdx-jnigen">
@@ -314,7 +325,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
+depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->
