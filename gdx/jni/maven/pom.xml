@@ -43,6 +43,17 @@
                     
 
                     <execution>
+                        <id>x86-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
+                            <url>${base.url}/x86/libgdx.so</url>
+                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>armeabi-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
@@ -163,6 +174,7 @@
                 <configuration>
                     <descriptors>
                         <descriptor>desktop.xml</descriptor>
+                        <descriptor>x86.xml</descriptor>
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>

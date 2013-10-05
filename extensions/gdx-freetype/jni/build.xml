@@ -24,8 +24,6 @@
 			<fileset dir="../libs/linux32" includes="libgdx-freetype.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-freetype64.so"/>
 			<fileset dir="../libs/macosx32" includes="libgdx-freetype.dylib"/>
-			<fileset dir="../libs/android32" includes="libgdx-freetype.so"/>
-			<fileset dir="../libs/ios32" includes="libgdx-freetype.a"/>
 
 		</jar>
 	</target>
