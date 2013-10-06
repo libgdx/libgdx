@@ -27,13 +27,14 @@ public class Test2 extends ApplicationAdapter {
 		Pixmap p = new Pixmap(64, 64, Format.RGBA8888);
 		p.setColor(Color.RED);
 		p.fillRectangle(32, 32, size , size );
-		region = new TextureRegion(new Texture(p), 32, 32, size , size );
+		region = new TextureRegion(new Texture(p), 32, 32, 1 , 1);
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		batch.begin();
 		batch.draw(region, 1, 1, 256, 256);
 		batch.end();
+		
 		screenCap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		screenCapTex = new Texture(screenCap);
 		System.out.println("size: " + size);
