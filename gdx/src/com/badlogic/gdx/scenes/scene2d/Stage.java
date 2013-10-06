@@ -82,6 +82,12 @@ public class Stage extends InputAdapter implements Disposable {
 		this(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, null);
 	}
 
+	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} that doesn't keep the aspect ratio.
+	 * The stage will use its own {@link SpriteBatch}, which will be disposed when the stage is disposed. */
+	public Stage (float width, float height) {
+		this(width, height, false, null);
+	}
+
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport}. The stage will use its own
 	 * {@link SpriteBatch}, which will be disposed when the stage is disposed. */
 	public Stage (float width, float height, boolean keepAspectRatio) {
@@ -104,6 +110,12 @@ public class Stage extends InputAdapter implements Disposable {
 
 		camera = new OrthographicCamera();
 		setViewport(width, height, keepAspectRatio);
+	}
+
+	/** Sets up the stage size using a viewport that fills the entire screen without keeping the aspect ratio.
+	 * @see #setViewport(float, float, boolean, float, float, float, float) */
+	public void setViewport (float width, float height) {
+		setViewport(width, height, false, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	/** Sets up the stage size using a viewport that fills the entire screen.
