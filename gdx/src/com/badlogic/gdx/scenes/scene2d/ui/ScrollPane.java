@@ -464,7 +464,7 @@ public class ScrollPane extends WidgetGroup {
 				// bar on the top or bottom
 				if (hScrollOnBottom) {
 					boundsY = bgBottomHeight;
-				} else {					
+				} else {
 					boundsY = height - bgTopHeight - hScrollHeight;
 				}
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
@@ -894,18 +894,12 @@ public class ScrollPane extends WidgetGroup {
 		this.clamp = clamp;
 	}
 
-	/** Put the vertical scroll bar and knob on the left or right side of the ScrollPane
-	 * @param atRight set to true to draw on the right, false to draw on the left (default : right)
-	 */
-	public void setVScrollBarAtRight(boolean atRight) {
-		vScrollOnRight = atRight;
-	}
-
-	/** Put the vertical scroll bar and knob on the top (y coords, not draw order) or bottom of the ScrollPane
-	 * @param atBottom set to true to draw on the bottom, false to draw on the top (default : bottom)
-	 */
-	public void setHScrollBarAtBottom(boolean atBottom) {
-		hScrollOnBottom = atBottom;
+	/** Set the position of the vertical and horizontal scroll bars (if they exist).
+	 * @param bottom sets horizontal scroll bar to be at the bottom or the top
+	 * @param right sets vertical scroll bar to be at the right or the left */
+	public void setScrollBarPositions (boolean bottom, boolean right) {
+		hScrollOnBottom = bottom;
+		vScrollOnRight = right;
 	}
 
 	/** When true the scroll bars fade out after some time of not being used. */

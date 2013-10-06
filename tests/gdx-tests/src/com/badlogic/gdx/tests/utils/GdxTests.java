@@ -55,6 +55,7 @@ import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
  * @author badlogicgames@gmail.com */
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
+		// @off
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
@@ -224,9 +225,11 @@ public class GdxTests {
 		VibratorTest.class,
 		WaterRipples.class,
 		YDownTest.class
+		// @on
+
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,
 		// InternationalFontsTest.class, VorbisTest.class
-	));
+		));
 
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());
@@ -236,11 +239,9 @@ public class GdxTests {
 		return names;
 	}
 
-	private static Class<? extends GdxTest> forName (String name)
-	{
+	private static Class<? extends GdxTest> forName (String name) {
 		for (Class clazz : tests)
-			if (clazz.getSimpleName().equals(name))
-				return clazz;
+			if (clazz.getSimpleName().equals(name)) return clazz;
 		return null;
 	}
 
