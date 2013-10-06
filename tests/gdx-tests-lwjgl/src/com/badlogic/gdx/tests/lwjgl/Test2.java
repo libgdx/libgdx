@@ -36,10 +36,10 @@ public class Test2 extends ApplicationAdapter {
 		batch.end();
 		screenCap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		screenCapTex = new Texture(screenCap);
-		System.out.println(screenCap.getPixel(0, 0));
-		System.out.println(screenCap.getPixel(1, 1));
-		System.out.println(screenCap.getPixel(256, 256));
-		System.out.println(screenCap.getPixel(257, 257));
+		System.out.println(Integer.toHexString(screenCap.getPixel(0, 0)));
+		System.out.println(Integer.toHexString(screenCap.getPixel(1, 1)));
+		System.out.println(Integer.toHexString(screenCap.getPixel(256, 256)));
+		System.out.println(Integer.toHexString(screenCap.getPixel(257, 257)));
 	}
 
 	public void render () {
