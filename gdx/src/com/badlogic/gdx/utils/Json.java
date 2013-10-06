@@ -225,6 +225,7 @@ public class Json {
 		return writer;
 	}
 
+	/** Writes all fields of the specified object to the current JSON object. */
 	public void writeFields (Object object) {
 		Class type = object.getClass();
 
@@ -295,20 +296,24 @@ public class Json {
 		return values;
 	}
 
+	/** @see #writeField(Object, String, String, Class) */
 	public void writeField (Object object, String name) {
 		writeField(object, name, name, null);
 	}
 
-	/** @param elementType May be null if the type is unknown. */
+	/** @param elementType May be null if the type is unknown.
+	 * @see #writeField(Object, String, String, Class) */
 	public void writeField (Object object, String name, Class elementType) {
 		writeField(object, name, name, elementType);
 	}
 
+	/** @see #writeField(Object, String, String, Class) */
 	public void writeField (Object object, String fieldName, String jsonName) {
 		writeField(object, fieldName, jsonName, null);
 	}
 
-	/** @param elementType May be null if the type is unknown. */
+	/** Writes the specified field to the current JSON object.
+	 * @param elementType May be null if the type is unknown. */
 	public void writeField (Object object, String fieldName, String jsonName, Class elementType) {
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
@@ -333,7 +338,9 @@ public class Json {
 		}
 	}
 
-	/** @param value May be null. */
+	/** Writes the value as a field on the current JSON object, without writing the actual class.
+	 * @param value May be null.
+	 * @see #writeValue(String, Object, Class, Class) */
 	public void writeValue (String name, Object value) {
 		try {
 			writer.name(name);
@@ -346,8 +353,11 @@ public class Json {
 			writeValue(value, value.getClass(), null);
 	}
 
-	/** @param value May be null.
-	 * @param knownType May be null if the type is unknown. */
+	/** Writes the value as a field on the current JSON object, writing the class of the object if it differs from the specified
+	 * known type.
+	 * @param value May be null.
+	 * @param knownType May be null if the type is unknown.
+	 * @see #writeValue(String, Object, Class, Class) */
 	public void writeValue (String name, Object value, Class knownType) {
 		try {
 			writer.name(name);
@@ -357,7 +367,9 @@ public class Json {
 		writeValue(value, knownType, null);
 	}
 
-	/** @param value May be null.
+	/** Writes the value as a field on the current JSON object, writing the class of the object if it differs from the specified
+	 * known type. The specified element type is used as the default type for collections.
+	 * @param value May be null.
 	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void writeValue (String name, Object value, Class knownType, Class elementType) {
@@ -369,7 +381,8 @@ public class Json {
 		writeValue(value, knownType, elementType);
 	}
 
-	/** @param value May be null. */
+	/** Writes the value, without writing the class of the object.
+	 * @param value May be null. */
 	public void writeValue (Object value) {
 		if (value == null)
 			writeValue(value, null, null);
@@ -377,13 +390,16 @@ public class Json {
 			writeValue(value, value.getClass(), null);
 	}
 
-	/** @param value May be null.
+	/** Writes the value, writing the class of the object if it differs from the specified known type.
+	 * @param value May be null.
 	 * @param knownType May be null if the type is unknown. */
 	public void writeValue (Object value, Class knownType) {
 		writeValue(value, knownType, null);
 	}
 
-	/** @param value May be null.
+	/** Writes the value, writing the class of the object if it differs from the specified known type. The specified element type is
+	 * used as the default type for collections.
+	 * @param value May be null.
 	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void writeValue (Object value, Class knownType, Class elementType) {
@@ -550,7 +566,8 @@ public class Json {
 		}
 	}
 
-	/** @param knownType May be null if the type is unknown. */
+	/** Starts writing an object, writing the actualType to a field if needed.
+	 * @param knownType May be null if the type is unknown. */
 	public void writeObjectStart (Class actualType, Class knownType) {
 		try {
 			writer.object();
