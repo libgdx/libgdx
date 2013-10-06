@@ -5,7 +5,7 @@
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
         <version>0.9.9-SNAPSHOT</version>
-        <relativePath>../../..</relativePath>
+        <relativePath>../../../../</relativePath>
     </parent>
     
     <artifactId>gdx-freetype-platform</artifactId>
