@@ -30,6 +30,11 @@ public class PixelPerfectTest extends GdxTest {
 	}
 
 	@Override
+	public void resize (int width, int height) {
+		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
+	@Override
 	public void render () {
 		Gdx.gl.glClearColor(1, 0, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

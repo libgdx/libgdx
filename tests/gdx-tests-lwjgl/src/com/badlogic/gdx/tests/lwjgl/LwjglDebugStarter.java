@@ -58,7 +58,7 @@ public class LwjglDebugStarter {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
 		config.width = 320;
-		config.height = 240;
+		config.height = 241;
 		new LwjglApplication(test, config);
 	}
 }
