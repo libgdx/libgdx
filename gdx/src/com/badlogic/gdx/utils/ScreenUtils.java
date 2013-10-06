@@ -73,9 +73,7 @@ public class ScreenUtils {
 
 		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
 		ByteBuffer pixels = pixmap.getPixels();
-		byte[] bytes = getFrameBufferPixels(true);
-		pixels.put(bytes);
-		pixels.flip();
+		Gdx.gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
 
 		return pixmap;
 	}

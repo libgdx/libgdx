@@ -19,15 +19,15 @@ public class Test2 extends ApplicationAdapter {
 	TextureRegion region;
 	Pixmap screenCap;
 	Texture screenCapTex;
+	private int size = 2;
 
 	public void create () {
-		int size =1;
 
 		batch = new SpriteBatch();
 		Pixmap p = new Pixmap(64, 64, Format.RGBA8888);
 		p.setColor(Color.RED);
-		p.fillRectangle(32, 32, size, size);
-		region = new TextureRegion(new Texture(p), 32, 32, size, size);
+		p.fillRectangle(32, 32, size , size );
+		region = new TextureRegion(new Texture(p), 32, 32, size , size );
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -36,6 +36,7 @@ public class Test2 extends ApplicationAdapter {
 		batch.end();
 		screenCap = ScreenUtils.getFrameBufferPixmap(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		screenCapTex = new Texture(screenCap);
+		System.out.println("size: " + size);
 		System.out.println(Integer.toHexString(screenCap.getPixel(0, 0)));
 		System.out.println(Integer.toHexString(screenCap.getPixel(1, 1)));
 		System.out.println(Integer.toHexString(screenCap.getPixel(256, 256)));
