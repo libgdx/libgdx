@@ -63,7 +63,6 @@ import com.badlogic.gdx.tests.ImageTest;
 import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.IntegerBitmapFontTest;
 import com.badlogic.gdx.tests.InverseKinematicsTest;
-import com.badlogic.gdx.tests.IsoCamTest;
 import com.badlogic.gdx.tests.IsometricTileTest;
 import com.badlogic.gdx.tests.KinematicBodyTest;
 import com.badlogic.gdx.tests.LabelScaleTest;
@@ -78,7 +77,6 @@ import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.RotationTest;
-import com.badlogic.gdx.tests.RunnablePostTest;
 import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.SimpleAnimationTest;
@@ -527,10 +525,6 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new InverseKinematicsTest();
-			}
-		}, new Instancer() {
-			public GdxTest instance () {
-				return new IsoCamTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {

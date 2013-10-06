@@ -31,6 +31,7 @@ import com.badlogic.gdx.tests.DelaunayTriangulatorTest;
 import com.badlogic.gdx.tests.EarClippingTriangulatorTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
 import com.badlogic.gdx.tests.MipMapTest;
+import com.badlogic.gdx.tests.PixelPerfectTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TimerTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
@@ -53,11 +54,11 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new NetAPITest();
+		GdxTest test = new PixelPerfectTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		config.width = 1024;
-		config.height = 768;
+		config.width = 320;
+		config.height = 240;
 		new LwjglApplication(test, config);
 	}
 }

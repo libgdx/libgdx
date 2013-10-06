@@ -65,7 +65,7 @@ public class GdxTests {
 		ScrollPaneTest.class, FloatTest.class, FloatTextureTest.class, FrameBufferTest.class, FramebufferToTextureTest.class, FrustumTest.class,
 		FullscreenTest.class, Gdx2DTest.class, GroupFadeTest.class, ImmediateModeRendererTest.class, Scene2dTest.class,
 		ImmediateModeRendererAlphaTest.class, IndexBufferObjectClassTest.class, TreeTest.class, IndexBufferObjectShaderTest.class,
-		InputTest.class, IntegerBitmapFontTest.class, InverseKinematicsTest.class, IsoCamTest.class, IsometricTileTest.class,
+		InputTest.class, IntegerBitmapFontTest.class, InverseKinematicsTest.class, IsometricTileTest.class,
 		KinematicBodyTest.class, LifeCycleTest.class, LineDrawingTest.class, ScrollPane2Test.class, ManagedTest.class,
 		ManualBindTest.class, MaterialTest.class, MatrixJNITest.class, MeshMultitextureTest.class, MeshShaderTest.class, MeshTest.class,
 		MipMapTest.class, MultitouchTest.class, MusicTest.class, MyFirstTriangle.class, ObjTest.class, OnscreenKeyboardTest.class,
