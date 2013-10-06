@@ -56,6 +56,8 @@ public class ScrollPane extends WidgetGroup {
 	private ActorGestureListener flickScrollListener;
 
 	boolean scrollX, scrollY;
+	boolean vScrollOnRight = true;
+	boolean hScrollOnBottom = true;
 	float amountX, amountY;
 	float visualAmountX, visualAmountY;
 	float maxX, maxY;
@@ -416,7 +418,21 @@ public class ScrollPane extends WidgetGroup {
 				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
 			} else {
 				// Offset widget area y for horizontal scrollbar.
-				if (scrollX) widgetAreaBounds.y += scrollbarHeight;
+				if (scrollX) {
+					if (hScrollOnBottom) {
+						widgetAreaBounds.y += scrollbarHeight;
+					} else {
+						widgetAreaBounds.y = 0;
+					}
+				}
+				// Offset widget area x for vertical scrollbar.
+				if (scrollY) {
+					if (vScrollOnRight) {
+						widgetAreaBounds.x = 0;
+					} else {
+						widgetAreaBounds.x += scrollbarWidth;
+					}
+				}
 			}
 		}
 
@@ -438,7 +454,20 @@ public class ScrollPane extends WidgetGroup {
 		if (scrollX) {
 			if (hScrollKnob != null) {
 				float hScrollHeight = style.hScroll != null ? style.hScroll.getMinHeight() : hScrollKnob.getMinHeight();
-				hScrollBounds.set(bgLeftWidth, bgBottomHeight, areaWidth, hScrollHeight);
+				// the small gap where the two scroll bars intersect might have to flip from right to left
+				float boundsX, boundsY;
+				if (vScrollOnRight) {
+					boundsX = bgLeftWidth;
+				} else {
+					boundsX = bgLeftWidth + scrollbarWidth;
+				}
+				// bar on the top or bottom
+				if (hScrollOnBottom) {
+					boundsY = bgBottomHeight;
+				} else {
+					boundsY = height - bgTopHeight - hScrollHeight;
+				}
+				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
 				hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
 				hKnobBounds.height = hScrollKnob.getMinHeight();
 				hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
@@ -451,10 +480,27 @@ public class ScrollPane extends WidgetGroup {
 		if (scrollY) {
 			if (vScrollKnob != null) {
 				float vScrollWidth = style.vScroll != null ? style.vScroll.getMinWidth() : vScrollKnob.getMinWidth();
-				vScrollBounds.set(width - bgRightWidth - vScrollWidth, height - bgTopHeight - areaHeight, vScrollWidth, areaHeight);
+				// the small gap where the two scroll bars intersect might have to flip from bottom to top
+				float boundsX, boundsY;
+				if (hScrollOnBottom) {
+					boundsY = height - bgTopHeight - areaHeight;
+				} else {
+					boundsY = bgBottomHeight;
+				}
+				// bar on the left or right
+				if (vScrollOnRight) {
+					boundsX = width - bgRightWidth - vScrollWidth;
+				} else {
+					boundsX = bgLeftWidth;
+				}
+				vScrollBounds.set(boundsX, boundsY, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
 				vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widgetHeight));
-				vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
+				if (vScrollOnRight) {
+					vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
+				} else {
+					vKnobBounds.x = bgLeftWidth;
+				}
 				vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
 			} else {
 				vScrollBounds.set(0, 0, 0, 0);
@@ -846,6 +892,14 @@ public class ScrollPane extends WidgetGroup {
 	/** For flick scroll, prevents scrolling out of the widget's bounds. Default is true. */
 	public void setClamp (boolean clamp) {
 		this.clamp = clamp;
+	}
+
+	/** Set the position of the vertical and horizontal scroll bars (if they exist).
+	 * @param bottom sets horizontal scroll bar to be at the bottom or the top
+	 * @param right sets vertical scroll bar to be at the right or the left */
+	public void setScrollBarPositions (boolean bottom, boolean right) {
+		hScrollOnBottom = bottom;
+		vScrollOnRight = right;
 	}
 
 	/** When true the scroll bars fade out after some time of not being used. */
