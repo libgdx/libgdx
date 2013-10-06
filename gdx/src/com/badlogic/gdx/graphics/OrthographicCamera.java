@@ -33,8 +33,8 @@ public class OrthographicCamera extends Camera {
 	}
 
 	/** Constructs a new OrthographicCamera, using the given viewport width and height. For pixel perfect 2D rendering just supply
-	 * the screen size, for other unit scales (e.g. meters for box2d) proceed accordingly. The camera will show the region [-viewportWidth/2, -viewportHeight / 2]- [viewportWidth/2, viewportHeight/2]
-	 * 
+	 * the screen size, for other unit scales (e.g. meters for box2d) proceed accordingly. The camera will show the region
+	 * [-viewportWidth/2, -(viewportHeight/2-1)] - [(viewportWidth/2-1), viewportHeight/2]
 	 * @param viewportWidth the viewport width
 	 * @param viewportHeight the viewport height */
 	public OrthographicCamera (float viewportWidth, float viewportHeight) {
@@ -45,8 +45,7 @@ public class OrthographicCamera extends Camera {
 	}
 
 	/** Constructs a new OrthographicCamera, using the given viewport width and height. This will create a camera useable for
-	 * iso-metric views. The diamond angle is specifies the angle of a tile viewed isometrically. 
-	 * 
+	 * iso-metric views. The diamond angle is specifies the angle of a tile viewed isometrically.
 	 * @param viewportWidth the viewport width
 	 * @param viewportHeight the viewport height
 	 * @param diamondAngle the angle in degrees */
@@ -113,7 +112,7 @@ public class OrthographicCamera extends Camera {
 
 	@Override
 	public void update (boolean updateFrustum) {
-		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom
+		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2 - 1), zoom * -(viewportHeight / 2 - 1), zoom
 			* viewportHeight / 2, Math.abs(near), Math.abs(far));
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
