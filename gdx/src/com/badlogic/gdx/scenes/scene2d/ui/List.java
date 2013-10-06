@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -44,6 +46,9 @@ public class List extends Widget implements Cullable {
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
 	private boolean selectable = true;
+	
+	private String[] unfiltered_items;  // the unfiltered list items array backing. this is the List's true item backing.
+	private ArrayList<String> new_list; // used in the filtering process 
 
 	public List (Object[] items, Skin skin) {
 		this(items, skin.get(ListStyle.class));
@@ -58,6 +63,8 @@ public class List extends Widget implements Cullable {
 		setItems(items);
 		setWidth(getPrefWidth());
 		setHeight(getPrefHeight());
+		
+		new_list = new ArrayList<String>();
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -181,7 +188,34 @@ public class List extends Widget implements Cullable {
 			items = (String[])objects;
 
 		selectedIndex = 0;
+		unfiltered_items = items;
+		
+		recalcMetrics();
+	}
 
+	/** @return The true items array backing for this List as set by {@link #setItems(Object[])}. */
+	public String[] getItems () {
+		return unfiltered_items;
+	}
+
+	public float getItemHeight () {
+		return itemHeight;
+	}
+
+	public float getPrefWidth () {
+		return prefWidth;
+	}
+
+	public float getPrefHeight () {
+		return prefHeight;
+	}
+
+	public void setCullingArea (Rectangle cullingArea) {
+		this.cullingArea = cullingArea;
+	}
+	
+	/** Recalculates the List's dimensions based on {@link #getItemsDisplayed()} */
+	private void recalcMetrics() {
 		final BitmapFont font = style.font;
 		final Drawable selectedDrawable = style.selection;
 
@@ -200,26 +234,45 @@ public class List extends Widget implements Cullable {
 
 		invalidateHierarchy();
 	}
-
-	public String[] getItems () {
+	
+	/**
+	 * @return The items currently displayed by this List. Does not reflect this List's items backing array as set by {@link #setItems(Object[])}.
+	 * @see #getItems()
+	 * @see #filterList(String, boolean)
+	 */
+	public String[] getItemsDisplayed() {
 		return items;
 	}
-
-	public float getItemHeight () {
-		return itemHeight;
+	
+	/** {@link #filterList(String, boolean)} defaulted to be case-insensitive. */
+	public void filterList(String filter) {
+		filterList(filter, false);
 	}
-
-	public float getPrefWidth () {
-		return prefWidth;
+	
+	/**
+	 * Filters this list's displayed items. This does NOT modify this List's items backing array as set by {@link #setItems(Object[])}. 
+	 * @param filter A string the List's items must contain to be displayed
+	 * @param case_sensitive Whether the filter and items are compared case sensitive
+	 * @see #getItems()
+	 * @see #getItemsDisplayed()
+	 */
+	public void filterList(String filter, boolean case_sensitive) {
+		if (filter.isEmpty() && getItems().length == getItemsDisplayed().length) // don't need to filter
+			return;
+		
+		if (!case_sensitive)
+			filter = filter.toLowerCase();
+		
+		for (String item : unfiltered_items)
+			if (item.toLowerCase().contains(filter))
+				new_list.add(item);
+		
+		items = new_list.toArray(new String[new_list.size()]);
+		recalcMetrics();
+		
+		new_list.clear();
 	}
-
-	public float getPrefHeight () {
-		return prefHeight;
-	}
-
-	public void setCullingArea (Rectangle cullingArea) {
-		this.cullingArea = cullingArea;
-	}
+	
 
 	/** The style for a list, see {@link List}.
 	 * @author mzechner
