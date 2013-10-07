@@ -137,17 +137,21 @@ public class Bits {
 		int bitsLength = bits.length;
 		if (word >= bitsLength) return -1;
 		long bitsAtWord = bits[word];
-		for (int i = fromIndex & 0x3f; i < 64; i++) {
-			if ((bitsAtWord & (1L << (i & 0x3F))) != 0L) {
-				return (word << 6) + i;
+		if (bitsAtWord != 0) {
+			for (int i = fromIndex & 0x3f; i < 64; i++) {
+				if ((bitsAtWord & (1L << (i & 0x3F))) != 0L) {
+					return (word << 6) + i;
+				}
 			}
 		}
 		for (word++; word < bitsLength; word++) {
 			if (word != 0) {
 				bitsAtWord = bits[word];
-				for (int i = 0; i < 64; i++) {
-					if ((bitsAtWord & (1L << (i & 0x3F))) != 0L) {
-						return (word << 6) + i;
+				if (bitsAtWord != 0) {
+					for (int i = 0; i < 64; i++) {
+						if ((bitsAtWord & (1L << (i & 0x3F))) != 0L) {
+							return (word << 6) + i;
+						}
 					}
 				}
 			}
