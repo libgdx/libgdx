@@ -85,6 +85,7 @@
 - added render-hooks beginRender() and endRender() to BatchTiledMapRenderer
 - Added panStop to GestureListener interface.
 - ScissorStack#calculateScissors changed to take viewport, enabling it to work with glViewport.
+- Added Bits#getAndClear, Bits#getAndSet and Bits#containsAll
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791
