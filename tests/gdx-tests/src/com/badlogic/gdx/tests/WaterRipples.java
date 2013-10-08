@@ -235,7 +235,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int newParam) {
-// Ray ray = camera.getPickRay( x, (int)(y / (float)Gdx.graphics.getHeight() * Gdx.graphics.getWidth()));
+// Ray ray = camera.getPickRay( x,y);
 // Intersector.intersectRayPlane( ray, plane, point );
 // touchWater( point );
 		return false;
@@ -248,7 +248,7 @@ public class WaterRipples extends GdxTest implements InputProcessor {
 
 	@Override
 	public boolean touchDragged (int x, int y, int pointer) {
-// Ray ray = camera.getPickRay( x, (int)(y / (float)Gdx.graphics.getHeight() * Gdx.graphics.getWidth()));
+// Ray ray = camera.getPickRay( x,y);
 // Intersector.intersectRayPlane( ray, plane, point );
 // touchWater( point );
 		return false;
