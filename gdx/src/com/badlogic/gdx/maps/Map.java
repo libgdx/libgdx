@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Disposable;
  */
 public class Map implements Disposable {
 	private MapLayers layers = new MapLayers();
-	private MapProperties properties = new MapProperties();
+	protected MapProperties properties = new MapProperties();
 	
 	/**
 	 * Creates empty map

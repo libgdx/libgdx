@@ -30,6 +30,28 @@ public class TiledMap extends Map {
 	}
 	
 	/**
+	 * @return map width (in tile)
+	 */
+	public int getWidth() {
+		return properties.get("width", Integer.class);
+	}
+	
+	/**
+	 * @return map height (in tile)
+	 */
+	public int getHeight() {
+		return properties.get("height", Integer.class);
+	}
+	
+	public int getTileWidth() {
+		return properties.get("tilewidth", Integer.class);
+	}
+	
+	public int getTileHeight() {
+		return properties.get("tileheight", Integer.class);
+	}
+	
+	/**
 	 * Used by loaders to set resources when loading the map
 	 * directly, without {@link AssetManager}. To be disposed in
 	 * {@link #dispose()}.
