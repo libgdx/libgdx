@@ -28,6 +28,10 @@ public class DepthTestAttribute extends Attribute {
    	this(GL10.GL_LEQUAL);
    }
    
+   public DepthTestAttribute(boolean depthMask) {
+   	this(GL10.GL_LEQUAL, depthMask);
+   }
+   
    public DepthTestAttribute(final int depthFunc) {
    	this(depthFunc, true);
    }
