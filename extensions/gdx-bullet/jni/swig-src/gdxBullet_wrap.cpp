@@ -55295,6 +55295,34 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_bt
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDiscreteDynamicsWorld_1interpolation_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jboolean jarg2) {
+  btDiscreteDynamicsWorld *arg1 = (btDiscreteDynamicsWorld *) 0 ;
+  bool arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDiscreteDynamicsWorld **)&jarg1; 
+  arg2 = jarg2 ? true : false; 
+  if (arg1) (arg1)->m_interpolation = arg2;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_btDiscreteDynamicsWorld_1interpolation_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  btDiscreteDynamicsWorld *arg1 = (btDiscreteDynamicsWorld *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btDiscreteDynamicsWorld **)&jarg1; 
+  result = (bool) ((arg1)->m_interpolation);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_gdxBulletJNI_delete_1btCharacterControllerInterface(JNIEnv *jenv, jclass jcls, jlong jarg1) {
   btCharacterControllerInterface *arg1 = (btCharacterControllerInterface *) 0 ;
   

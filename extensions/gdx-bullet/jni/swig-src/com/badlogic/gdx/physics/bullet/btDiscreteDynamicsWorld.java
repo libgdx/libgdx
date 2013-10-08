@@ -150,4 +150,12 @@ public class btDiscreteDynamicsWorld extends btDynamicsWorld {
     return gdxBulletJNI.btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(swigCPtr, this);
   }
 
+  public void setInterpolation(boolean value) {
+    gdxBulletJNI.btDiscreteDynamicsWorld_interpolation_set(swigCPtr, this, value);
+  }
+
+  public boolean getInterpolation() {
+    return gdxBulletJNI.btDiscreteDynamicsWorld_interpolation_get(swigCPtr, this);
+  }
+
 }

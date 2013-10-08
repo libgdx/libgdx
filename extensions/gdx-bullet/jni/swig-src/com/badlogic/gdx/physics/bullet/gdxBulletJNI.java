@@ -3039,6 +3039,8 @@ public class gdxBulletJNI {
   public final static native boolean btDiscreteDynamicsWorld_getSynchronizeAllMotionStates(long jarg1, btDiscreteDynamicsWorld jarg1_);
   public final static native void btDiscreteDynamicsWorld_setApplySpeculativeContactRestitution(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
   public final static native boolean btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(long jarg1, btDiscreteDynamicsWorld jarg1_);
+  public final static native void btDiscreteDynamicsWorld_interpolation_set(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
+  public final static native boolean btDiscreteDynamicsWorld_interpolation_get(long jarg1, btDiscreteDynamicsWorld jarg1_);
   public final static native void delete_btCharacterControllerInterface(long jarg1);
   public final static native void btCharacterControllerInterface_setWalkDirection(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2);
   public final static native void btCharacterControllerInterface_setVelocityForTimeInterval(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2, float jarg3);
