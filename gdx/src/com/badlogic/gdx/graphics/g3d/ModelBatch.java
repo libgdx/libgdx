@@ -127,6 +127,13 @@ public class ModelBatch implements Disposable {
 		camera = cam;
 	}
 	
+	/** Provides access to the current camera in between {@link #begin(Camera)} and {@link #end()}. Do not change
+	 * the camera's values. Use {@link #setCamera(Camera)}, if you need to change the camera.
+	 * @return The current camera being used or null if called outside {@link #begin(Camera)} and {@link #end()}. */
+	public Camera getCamera() {
+		return camera;
+	}
+	
 	/** Flushes the batch, causing all {@link Renderable}s in the batch to be rendered. Can only be called after the
 	 * call to {@link #begin(Camera)} and before the call to {@link #end()}. */
 	public void flush() {

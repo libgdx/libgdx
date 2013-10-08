@@ -256,6 +256,85 @@ public class MeshBuilder implements MeshPartBuilder {
 		vMax = v2;
 	}
 	
+	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. 
+	 * Useful before adding many vertices to avoid multiple backing array resizes.
+	 * @param numVertices The number of vertices you are about to add */
+	public void ensureVertices(int numVertices) {
+		vertices.ensureCapacity(vertex.length * numVertices);
+	}
+	
+	/** Increases the size of the backing indices array to accommodate the specified number of additional indices. 
+	 * Useful before adding many indices to avoid multiple backing array resizes.
+	 * @param numIndices The number of indices you are about to add */
+	public void ensureIndices(int numIndices) {
+		indices.ensureCapacity(numIndices);
+	}
+	
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional
+	 * vertices and indices. Useful before adding many vertices and indices to avoid multiple backing array resizes.
+	 * @param numVertices The number of vertices you are about to add
+	 * @param numIndices The number of indices you are about to add */
+	public void ensureCapacity(int numVertices, int numIndices) {
+		ensureVertices(numVertices);
+		ensureIndices(numIndices);
+	}
+	
+	/** Increases the size of the backing indices array to accommodate the specified number of additional triangles. 
+	 * Useful before adding many triangles to avoid multiple backing array resizes.
+	 * @param numTriangles The number of triangles you are about to add */
+	public void ensureTriangleIndices(int numTriangles) {
+		if (primitiveType == GL10.GL_LINES)
+			ensureIndices(6 * numTriangles);
+		else // GL_TRIANGLES || GL_POINTS
+			ensureIndices(3 * numTriangles);
+	}
+	
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional
+	 * vertices and triangles. Useful before adding many triangles to avoid multiple backing array resizes.
+	 * @param numVertices The number of vertices you are about to add
+	 * @param numTriangles The number of triangles you are about to add */
+	public void ensureTriangles(int numVertices, int numTriangles) {
+		ensureVertices(numVertices);
+		ensureTriangleIndices(numTriangles);
+	}
+	
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional
+	 * vertices and triangles. Useful before adding many triangles to avoid multiple backing array resizes.
+	 * Assumes each triangles adds 3 vertices.
+	 * @param numTriangles The number of triangles you are about to add */
+	public void ensureTriangles(int numTriangles) {
+		ensureTriangles(3 * numTriangles, numTriangles);
+	}
+	
+	/** Increases the size of the backing indices array to accommodate the specified number of additional rectangles. 
+	 * Useful before adding many rectangles to avoid multiple backing array resizes.
+	 * @param numRectangles The number of rectangles you are about to add */
+	public void ensureRectangleIndices(int numRectangles) {
+		if (primitiveType == GL10.GL_POINTS) 
+			ensureIndices(4 * numRectangles);
+		else if (primitiveType == GL10.GL_LINES) 
+			ensureIndices(8 * numRectangles);
+		else // GL_TRIANGLES
+			ensureIndices(6 * numRectangles);
+	}
+	
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional
+	 * vertices and rectangles. Useful before adding many rectangles to avoid multiple backing array resizes.
+	 * @param numVertices The number of vertices you are about to add
+	 * @param numRectangles The number of rectangles you are about to add */
+	public void ensureRectangles(int numVertices, int numRectangles) {
+		ensureVertices(numVertices);
+		ensureRectangleIndices(numRectangles);
+	}
+	
+	/** Increases the size of the backing vertices and indices arrays to accommodate the specified number of additional
+	 * vertices and rectangles. Useful before adding many rectangles to avoid multiple backing array resizes.
+	 * Assumes each rectangles adds 4 vertices
+	 * @param numRectangles The number of rectangles you are about to add */
+	public void ensureRectangles(int numRectangles) {
+		ensureRectangles(4 * numRectangles, numRectangles);
+	}
+	
 	@Override
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 		if (vindex >= Short.MAX_VALUE)
@@ -295,7 +374,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public short vertex(final float[] values) {
+	public short vertex(final float... values) {
 		vertices.addAll(values);
 		vindex += values.length / stride;
 		return (short)(vindex-1);
@@ -314,14 +393,14 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void index(final short value1, final short value2) {
-		indices.ensureCapacity(2);
+		ensureIndices(2);
 		indices.add(value1);
 		indices.add(value2);
 	}
 	
 	@Override
 	public void index(final short value1, final short value2, final short value3) {
-		indices.ensureCapacity(3);
+		ensureIndices(3);
 		indices.add(value1);
 		indices.add(value2);
 		indices.add(value3);
@@ -329,7 +408,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void index(final short value1, final short value2, final short value3, final short value4) {
-		indices.ensureCapacity(4);
+		ensureIndices(4);
 		indices.add(value1);
 		indices.add(value2);
 		indices.add(value3);
@@ -338,7 +417,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void index(short value1, short value2, short value3, short value4, short value5, short value6) {
-		indices.ensureCapacity(6);
+		ensureIndices(6);
 		indices.add(value1);
 		indices.add(value2);
 		indices.add(value3);
@@ -349,7 +428,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void index(short value1, short value2, short value3, short value4, short value5, short value6, short value7, short value8) {
-		indices.ensureCapacity(8);
+		ensureIndices(8);
 		indices.add(value1);
 		indices.add(value2);
 		indices.add(value3);
@@ -369,6 +448,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void line(VertexInfo p1, VertexInfo p2) {
+		ensureVertices(2);
 		line(vertex(p1), vertex(p2));
 	}
 
@@ -399,6 +479,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void triangle(VertexInfo p1, VertexInfo p2, VertexInfo p3) {
+		ensureVertices(3);
 		triangle(vertex(p1), vertex(p2), vertex(p3));
 	}
 	
@@ -426,6 +507,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void rect(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01) {
+		ensureVertices(4);
 		rect(vertex(corner00), vertex(corner10), vertex(corner11), vertex(corner01));
 	}
 	
@@ -447,6 +529,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void patch(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU, int divisionsV) {
+		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
 		for (int u = 0; u <= divisionsU; u++) {
 			final float alphaU = (float)u / (float)divisionsU; 
 			vertTmp5.set(corner00).lerp(corner10, alphaU);
@@ -479,6 +562,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
 						VertexInfo corner001, VertexInfo corner011, VertexInfo corner101, VertexInfo corner111) {
+		ensureVertices(8);
 		final short i000 = vertex(corner000);
 		final short i100 = vertex(corner100);
 		final short i110 = vertex(corner110);
@@ -487,28 +571,37 @@ public class MeshBuilder implements MeshPartBuilder {
 		final short i101 = vertex(corner101);
 		final short i111 = vertex(corner111);
 		final short i011 = vertex(corner011);
-		rect(i000, i100, i110, i010);
-		rect(i101, i001, i011, i111);
+		
 		if (primitiveType == GL10.GL_LINES) {
+			ensureIndices(24);
+			rect(i000, i100, i110, i010);
+			rect(i101, i001, i011, i111);
 			index(i000, i001, i010, i011, i110, i111, i100, i101);
-		} else if (primitiveType == GL10.GL_TRIANGLES) {
-			index(i001, i000, i010, i010, i011, i001);
-			index(i100, i101, i111, i111, i110, i100);
-			index(i001, i101, i100, i100, i000, i001);
-			index(i010, i110, i111, i111, i011, i010);
-		} else if (primitiveType != GL10.GL_POINTS) 
-			throw new GdxRuntimeException("Incorrect primitive type");
+		} else if (primitiveType != GL10.GL_POINTS) {
+			ensureRectangleIndices(2);
+			rect(i000, i100, i110, i010);
+			rect(i101, i001, i011, i111);
+		} else { // GL10.GL_TRIANGLES
+			ensureRectangleIndices(6);
+			rect(i000, i100, i110, i010);
+			rect(i101, i001, i011, i111);
+			rect(i000, i010, i011, i001);
+			rect(i101, i111, i110, i100);
+			rect(i101, i100, i000, i001);
+			rect(i110, i111, i011, i010);
+		}
 	}
 	
 	@Override
 	public void box(Vector3 corner000, Vector3 corner010, Vector3 corner100, Vector3 corner110,
 						Vector3 corner001, Vector3 corner011, Vector3 corner101, Vector3 corner111) {
-		if (norOffset < 0) {
+		if (norOffset < 0 && uvOffset < 0) {
 			box(vertTmp1.set(corner000, null, null, null), vertTmp2.set(corner010, null, null, null),
 				vertTmp3.set(corner100, null, null, null), vertTmp4.set(corner110, null, null, null),
 				vertTmp5.set(corner001, null, null, null), vertTmp6.set(corner011, null, null, null),
 				vertTmp7.set(corner101, null, null, null), vertTmp8.set(corner111, null, null, null));
 		} else {
+			ensureRectangles(6);
 			Vector3 nor = tempV1.set(corner000).lerp(corner110, 0.5f).sub(tempV2.set(corner001).lerp(corner111, 0.5f)).nor();
 			rect(corner000, corner010, corner110, corner100, nor);
 			rect(corner011, corner001, corner101, corner111, nor.scl(-1));
@@ -580,6 +673,8 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
+		ensureTriangles(divisions + 2, divisions);
+		
 		final float ao = MathUtils.degreesToRadians * angleFrom;
 		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
 		final Vector3 sx = tempV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
@@ -588,7 +683,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		curr.hasUV = curr.hasPosition = curr.hasNormal = true;
 		curr.uv.set(.5f, .5f);
 		curr.position.set(centerX, centerY, centerZ);
-		curr.normal.set(normalX, normalY, normalZ);
+		curr.normal.set(normalX, normalY, normalZ);	
 		final short center = vertex(curr);
 		float angle = 0f;
 		for (int i = 0; i <= divisions; i++) {
@@ -628,7 +723,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
 		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
-			
+		
+		ensureRectangles(2 * (divisions + 1), divisions);
 		for (int i = 0; i <= divisions; i++) {
 			angle = ao + step * i;
 			u = 1f - us * i;
@@ -642,9 +738,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			curr2.uv.set(u, 0);
 			vertex(curr1);
 			vertex(curr2);
-			if (i == 0)
-				continue;
-			rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
+			if (i != 0)
+				rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
 		}
 		if (close) {
 			circle(width, depth, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, divisions, angleFrom, angleTo);
@@ -660,6 +755,8 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void cone(float width, float height, float depth, int divisions, float angleFrom, float angleTo) {
 		// FIXME create better cylinder method (- axis on which to create the cone (matrix?))
+		ensureTriangles(divisions + 2, divisions);
+		
 		final float hw = width * 0.5f;
 		final float hh = height * 0.5f;
 		final float hd = depth * 0.5f;
@@ -667,7 +764,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
 		final float us = 1f / divisions;
 		float u = 0f;
-		float angle = 0f;
+		float angle = 0f;		
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0,hh,0).setNor(0,1,0).setUV(0.5f, 0);
@@ -720,6 +817,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		float angleV = 0f;
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
+		
+		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
 		for (int iv = 0; iv <= divisionsV; iv++) {
 			angleV = avo + stepV * iv;
 			v = vs * iv;
