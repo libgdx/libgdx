@@ -32,9 +32,9 @@ import com.badlogic.gdx.utils.Array;
 /** Test switch of scroll bars + knobs from right to left, and bottom to top */
 public class ScrollPaneScrollBarsTest extends GdxTest {
 	private Stage stage;
-	private Array<ScrollPane> scrollPanes = new Array<ScrollPane>();
-	private boolean doFade = true;
-	private boolean doOnTop = true;
+	Array<ScrollPane> scrollPanes = new Array<ScrollPane>();
+	boolean doFade = true;
+	boolean doOnTop = true;
 	private Table bottomLeft, bottomRight, topLeft, topRight, horizOnlyTop, horizOnlyBottom, vertOnlyLeft, vertOnlyRight;
 
 	public void create () {
