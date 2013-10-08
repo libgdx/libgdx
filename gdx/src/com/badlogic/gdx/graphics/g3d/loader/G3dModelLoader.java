@@ -42,7 +42,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		super(resolver);
 		this.reader = reader;
 	}
-	
+
 	@Override
 	public ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
 		return parseModel(fileHandle);
@@ -65,7 +65,6 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		return model;
 	}
 
-	
 	private void parseMeshes (ModelData model, JsonValue json) {
 		JsonValue meshes = json.require("meshes");
 		
