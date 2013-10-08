@@ -26,6 +26,13 @@ public class btSphereTriangleCollisionAlgorithm extends btActivatingCollisionAlg
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSphereTriangleCollisionAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSphereTriangleCollisionAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btSphereShape extends btConvexInternalShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSphereShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSphereShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

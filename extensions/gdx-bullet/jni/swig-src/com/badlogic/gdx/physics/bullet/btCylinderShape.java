@@ -26,6 +26,13 @@ public class btCylinderShape extends btConvexInternalShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btCylinderShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btCylinderShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

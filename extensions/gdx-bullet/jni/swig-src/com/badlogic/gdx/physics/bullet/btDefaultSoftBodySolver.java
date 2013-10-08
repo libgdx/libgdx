@@ -26,6 +26,13 @@ public class btDefaultSoftBodySolver extends btSoftBodySolver {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btDefaultSoftBodySolver_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btDefaultSoftBodySolver obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

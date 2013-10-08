@@ -26,6 +26,13 @@ public class btCapsuleShapeX extends btCapsuleShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btCapsuleShapeX_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btCapsuleShapeX obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

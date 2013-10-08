@@ -26,6 +26,13 @@ public class btConvex2dConvex2dAlgorithm extends btActivatingCollisionAlgorithm 
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btConvex2dConvex2dAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btConvex2dConvex2dAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

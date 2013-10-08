@@ -26,6 +26,13 @@ public class btBroadphaseRayCallback extends btBroadphaseAabbCallback {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btBroadphaseRayCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btBroadphaseRayCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

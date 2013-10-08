@@ -26,6 +26,13 @@ public class btContactConstraint extends btTypedConstraint {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btContactConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btContactConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

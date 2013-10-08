@@ -26,6 +26,13 @@ public class btSoftSoftCollisionAlgorithm extends btCollisionAlgorithm {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSoftSoftCollisionAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSoftSoftCollisionAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

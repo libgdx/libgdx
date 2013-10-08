@@ -26,6 +26,13 @@ public class btTriangleRaycastCallback extends btTriangleCallback {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btTriangleRaycastCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btTriangleRaycastCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

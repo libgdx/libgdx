@@ -26,6 +26,13 @@ public class btDbvtBroadphase extends btBroadphaseInterface {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btDbvtBroadphase_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btDbvtBroadphase obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

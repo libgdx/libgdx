@@ -26,6 +26,13 @@ public class btScaledBvhTriangleMeshShape extends btConcaveShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btScaledBvhTriangleMeshShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btScaledBvhTriangleMeshShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

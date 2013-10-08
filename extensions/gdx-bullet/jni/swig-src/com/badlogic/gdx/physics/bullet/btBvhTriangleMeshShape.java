@@ -31,6 +31,13 @@ public class btBvhTriangleMeshShape extends btTriangleMeshShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btBvhTriangleMeshShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btBvhTriangleMeshShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
