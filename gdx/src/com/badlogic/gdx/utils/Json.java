@@ -994,7 +994,7 @@ public class Json {
 		public FieldMetadata (Field field) {
 			this.field = field;
 			int index = (ClassReflection.isAssignableFrom(ObjectMap.class, field.getType()) || ClassReflection.isAssignableFrom(
-				HashMap.class, field.getType())) ? 1 : 0;
+				Map.class, field.getType())) ? 1 : 0;
 			this.elementType = field.getElementType(index);
 		}
 	}
