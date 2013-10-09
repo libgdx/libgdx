@@ -87,21 +87,21 @@ public interface MeshPartBuilder {
 	/** Add a box at the specified location, with the specified dimensions */
 	public void box(float x, float y, float z, float width, float height, float depth);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions);
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, int divisions);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions);
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo);
 	/**
 	 * Add an ellipse
 	 * @param width external width

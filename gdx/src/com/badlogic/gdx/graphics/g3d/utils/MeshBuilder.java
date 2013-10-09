@@ -632,49 +632,49 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 	
 	@Override
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions) {
-		circle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, divisions, 0, 360);
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions) {
+		circle(radius, centerX, centerY, centerZ, normalX, normalY, normalZ, divisions, 0, 360);
 	}
 
 	@Override
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions) {
-		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, int divisions) {
+		circle(radius, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions);
 	}
 
 	@Override
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions) {
-		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions) {
+		circle(radius, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions);
 	}
 	
 	@Override
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions) {
-		circle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, 0, 360);		
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions) {
+		circle(radius, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, 0, 360);		
 	}
 	
 	@Override
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo) {
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo) {
 		tempV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
 		tempV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
 		if (tempV2.len2() > tempV1.len2())
 			tempV1.set(tempV2);
 		tempV2.set(tempV1.nor()).crs(normalX, normalY, normalZ).nor();
-		circle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tempV1.x, tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, divisions, angleFrom, angleTo);
+		circle(radius, centerX, centerY, centerZ, normalX, normalY, normalZ, tempV1.x, tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, divisions, angleFrom, angleTo);
 	}
 
 	@Override
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo) {
-		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions, angleFrom, angleTo);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo) {
+		circle(radius, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions, angleFrom, angleTo);
 	}
 	
 	@Override
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo) {
-		circle(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions, angleFrom, angleTo);
+	public void circle(float radius, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo) {
+		circle(radius, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions, angleFrom, angleTo);
 	}
 
 	@Override
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
+	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
 		
-		ellipse(width, height, 0, 0, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo);
+		ellipse(radius, radius, 0, 0, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo);
 	}
 	
 	@Override
@@ -804,8 +804,8 @@ public class MeshBuilder implements MeshPartBuilder {
 				rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
 		}
 		if (close) {
-			circle(width, depth, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, divisions, angleFrom, angleTo);
-			circle(width, depth, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, divisions, 180f-angleTo, 180f-angleFrom);
+			ellipse(width, depth, 0, 0, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, divisions, angleFrom, angleTo);
+			ellipse(width, depth, 0, 0, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, divisions, 180f-angleTo, 180f-angleFrom);
 		}
 	}
 	
@@ -843,7 +843,7 @@ public class MeshBuilder implements MeshPartBuilder {
 				continue;
 			triangle((short)base, (short)(vindex-1), (short)(vindex-2)); // FIXME don't duplicate lines and points
 		}
-		circle(width, depth, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, divisions, 180f-angleTo, 180f-angleFrom);
+		ellipse(width, depth, 0, 0, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, divisions, 180f-angleTo, 180f-angleFrom);
 	}
 	
 	@Override
