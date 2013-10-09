@@ -49,6 +49,12 @@ public class FloatCounter {
 			mean = (windowSize > 1) ? new WindowedMean(windowSize) : null;
 			reset();
 	}
+
+	@Override
+	public String toString() {
+		return String.format("count: %d, total: %.5f, min/max: %.5f/%.5f, avg: %.5f, latest: %.5f, windowed-mean: %.5f",
+				count, total, min, max, average, latest, value);
+	}
 	
 	/**
 	 * Add a value and update all fields.
