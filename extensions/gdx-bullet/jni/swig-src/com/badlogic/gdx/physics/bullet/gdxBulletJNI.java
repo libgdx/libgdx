@@ -15,42 +15,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Pool;
 
 public class gdxBulletJNI {
-
-  private final static Vector3 staticVector3 = new Vector3();
-  public static final Pool<Vector3> poolVector3 = new Pool<Vector3>() {
-    @Override
-	protected Vector3 newObject() {
-      return new Vector3();
-	}
-  };
-
-
-  private final static Quaternion staticQuaternion = new Quaternion();
-  public static final Pool<Quaternion> poolQuaternion = new Pool<Quaternion>() {
-    @Override
-	protected Quaternion newObject() {
-      return new Quaternion();
-	}
-  };
-
-
-  private final static Matrix3 staticMatrix3 = new Matrix3();
-  public static final Pool<Matrix3> poolMatrix3 = new Pool<Matrix3>() {
-    @Override
-	protected Matrix3 newObject() {
-      return new Matrix3();
-	}
-  };
-
-
-  private final static Matrix4 staticMatrix4 = new Matrix4();
-  public static final Pool<Matrix4> poolMatrix4 = new Pool<Matrix4>() {
-    @Override
-	protected Matrix4 newObject() {
-      return new Matrix4();
-	}
-  };
-
   public final static native int btGetVersion();
   public final static native float btSqrt(float jarg1);
   public final static native float btFabs(float jarg1);
@@ -90,25 +54,25 @@ public class gdxBulletJNI {
   public final static native int btTypedObject_objectType_get(long jarg1, btTypedObject jarg1_);
   public final static native void delete_btTypedObject(long jarg1);
   public final static native long new_btTransform__SWIG_0();
-  public final static native long new_btTransform__SWIG_1(Quaternion jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_2(Quaternion jarg1);
-  public final static native long new_btTransform__SWIG_3(Matrix3 jarg1, Vector3 jarg2);
-  public final static native long new_btTransform__SWIG_4(Matrix3 jarg1);
-  public final static native long new_btTransform__SWIG_5(Matrix4 jarg1);
-  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, Matrix4 jarg2, Matrix4 jarg3);
-  public final static native Matrix3 btTransform_getBasis__SWIG_0(long jarg1, btTransform jarg1_);
-  public final static native Vector3 btTransform_getOrigin__SWIG_0(long jarg1, btTransform jarg1_);
-  public final static native Quaternion btTransform_getRotation(long jarg1, btTransform jarg1_);
+  public final static native long new_btTransform__SWIG_1(long jarg1, btQuaternion jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long new_btTransform__SWIG_2(long jarg1, btQuaternion jarg1_);
+  public final static native long new_btTransform__SWIG_3(long jarg1, long jarg2, btVector3 jarg2_);
+  public final static native long new_btTransform__SWIG_4(long jarg1);
+  public final static native long new_btTransform__SWIG_5(long jarg1, btTransform jarg1_);
+  public final static native void btTransform_mult(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_, long jarg3, btTransform jarg3_);
+  public final static native long btTransform_getBasis__SWIG_0(long jarg1, btTransform jarg1_);
+  public final static native long btTransform_getOrigin__SWIG_0(long jarg1, btTransform jarg1_);
+  public final static native long btTransform_getRotation(long jarg1, btTransform jarg1_);
   public final static native void btTransform_setFromOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
   public final static native void btTransform_getOpenGLMatrix(long jarg1, btTransform jarg1_, float[] jarg2);
-  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native Vector3 btTransform_invXform(long jarg1, btTransform jarg1_, Vector3 jarg2);
-  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, Matrix3 jarg2);
-  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, Quaternion jarg2);
+  public final static native void btTransform_setOrigin(long jarg1, btTransform jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long btTransform_invXform(long jarg1, btTransform jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native void btTransform_setBasis(long jarg1, btTransform jarg1_, long jarg2);
+  public final static native void btTransform_setRotation(long jarg1, btTransform jarg1_, long jarg2, btQuaternion jarg2_);
   public final static native void btTransform_setIdentity(long jarg1, btTransform jarg1_);
-  public final static native Matrix4 btTransform_inverse(long jarg1, btTransform jarg1_);
-  public final static native Matrix4 btTransform_inverseTimes(long jarg1, btTransform jarg1_, Matrix4 jarg2);
-  public final static native Matrix4 btTransform_getIdentity();
+  public final static native long btTransform_inverse(long jarg1, btTransform jarg1_);
+  public final static native long btTransform_inverseTimes(long jarg1, btTransform jarg1_, long jarg2, btTransform jarg2_);
+  public final static native long btTransform_getIdentity();
   public final static native void btTransform_serialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
   public final static native void btTransform_serializeFloat(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
   public final static native void btTransform_deSerialize(long jarg1, btTransform jarg1_, long jarg2, btTransformFloatData jarg2_);
@@ -131,25 +95,25 @@ public class gdxBulletJNI {
   public final static native float[] btVector3_floats_get(long jarg1, btVector3 jarg1_);
   public final static native long new_btVector3__SWIG_0();
   public final static native long new_btVector3__SWIG_1(float jarg1, float jarg2, float jarg3);
-  public final static native float btVector3_dot(long jarg1, btVector3 jarg1_, Vector3 jarg2);
+  public final static native float btVector3_dot(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
   public final static native float btVector3_length2(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_length(long jarg1, btVector3 jarg1_);
-  public final static native float btVector3_distance2(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native float btVector3_distance(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3_safeNormalize(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_normalize(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_normalized(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_rotate(long jarg1, btVector3 jarg1_, Vector3 jarg2, float jarg3);
-  public final static native float btVector3_angle(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native Vector3 btVector3_absolute(long jarg1, btVector3 jarg1_);
-  public final static native Vector3 btVector3_cross(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native float btVector3_triple(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3);
+  public final static native float btVector3_distance2(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native float btVector3_distance(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long btVector3_safeNormalize(long jarg1, btVector3 jarg1_);
+  public final static native long btVector3_normalize(long jarg1, btVector3 jarg1_);
+  public final static native long btVector3_normalized(long jarg1, btVector3 jarg1_);
+  public final static native long btVector3_rotate(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, float jarg3);
+  public final static native float btVector3_angle(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long btVector3_absolute(long jarg1, btVector3 jarg1_);
+  public final static native long btVector3_cross(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native float btVector3_triple(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_);
   public final static native int btVector3_minAxis(long jarg1, btVector3 jarg1_);
   public final static native int btVector3_maxAxis(long jarg1, btVector3 jarg1_);
   public final static native int btVector3_furthestAxis(long jarg1, btVector3 jarg1_);
   public final static native int btVector3_closestAxis(long jarg1, btVector3 jarg1_);
-  public final static native void btVector3_setInterpolate3(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
-  public final static native Vector3 btVector3_lerp(long jarg1, btVector3 jarg1_, Vector3 jarg2, float jarg3);
+  public final static native void btVector3_setInterpolate3(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, float jarg4);
+  public final static native long btVector3_lerp(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, float jarg3);
   public final static native float btVector3_getX(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_getY(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_getZ(long jarg1, btVector3 jarg1_);
@@ -161,8 +125,8 @@ public class gdxBulletJNI {
   public final static native float btVector3_y(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_z(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_w(long jarg1, btVector3 jarg1_);
-  public final static native void btVector3_setMax(long jarg1, btVector3 jarg1_, Vector3 jarg2);
-  public final static native void btVector3_setMin(long jarg1, btVector3 jarg1_, Vector3 jarg2);
+  public final static native void btVector3_setMax(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native void btVector3_setMin(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
   public final static native void btVector3_setValue(long jarg1, btVector3 jarg1_, float jarg2, float jarg3, float jarg4);
   public final static native void btVector3_getSkewSymmetricMatrix(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
   public final static native void btVector3_setZero(long jarg1, btVector3 jarg1_);
@@ -176,15 +140,15 @@ public class gdxBulletJNI {
   public final static native void btVector3_deSerializeDouble(long jarg1, btVector3 jarg1_, long jarg2, btVector3DoubleData jarg2_);
   public final static native int btVector3_maxDot(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, int jarg3, long jarg4);
   public final static native int btVector3_minDot(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, int jarg3, long jarg4);
-  public final static native Vector3 btVector3_dot3(long jarg1, btVector3 jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native long btVector3_dot3(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
   public final static native void delete_btVector3(long jarg1);
-  public final static native float btDot(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btDistance2(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btDistance(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btAngle__SWIG_0(Vector3 jarg1, Vector3 jarg2);
-  public final static native Vector3 btCross(Vector3 jarg1, Vector3 jarg2);
-  public final static native float btTriple(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
-  public final static native Vector3 lerp(Vector3 jarg1, Vector3 jarg2, float jarg3);
+  public final static native float btDot(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native float btDistance2(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native float btDistance(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native float btAngle__SWIG_0(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long btCross(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native float btTriple(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_);
+  public final static native long lerp(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_, float jarg3);
   public final static native long new_btVector4__SWIG_0();
   public final static native long new_btVector4__SWIG_1(float jarg1, float jarg2, float jarg3, float jarg4);
   public final static native long btVector4_absolute4(long jarg1, btVector4 jarg1_);
@@ -195,8 +159,8 @@ public class gdxBulletJNI {
   public final static native void btVector4_setValue(long jarg1, btVector4 jarg1_, float jarg2, float jarg3, float jarg4, float jarg5);
   public final static native void delete_btVector4(long jarg1);
   public final static native void btSwapScalarEndian(float jarg1, long jarg2);
-  public final static native void btSwapVector3Endian(Vector3 jarg1, Vector3 jarg2);
-  public final static native void btUnSwapVector3Endian(Vector3 jarg1);
+  public final static native void btSwapVector3Endian(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native void btUnSwapVector3Endian(long jarg1, btVector3 jarg1_);
   public final static native void btVector3FloatData_floats_set(long jarg1, btVector3FloatData jarg1_, float[] jarg2);
   public final static native float[] btVector3FloatData_floats_get(long jarg1, btVector3FloatData jarg1_);
   public final static native long new_btVector3FloatData();
@@ -207,34 +171,70 @@ public class gdxBulletJNI {
   public final static native void delete_btVector3DoubleData(long jarg1);
   public final static native long new_btQuaternion__SWIG_0();
   public final static native long new_btQuaternion__SWIG_1(float jarg1, float jarg2, float jarg3, float jarg4);
-  public final static native long new_btQuaternion__SWIG_2(Vector3 jarg1, float jarg2);
+  public final static native long new_btQuaternion__SWIG_2(long jarg1, btVector3 jarg1_, float jarg2);
   public final static native long new_btQuaternion__SWIG_3(float jarg1, float jarg2, float jarg3);
-  public final static native void btQuaternion_setRotation(long jarg1, btQuaternion jarg1_, Vector3 jarg2, float jarg3);
+  public final static native void btQuaternion_setRotation(long jarg1, btQuaternion jarg1_, long jarg2, btVector3 jarg2_, float jarg3);
   public final static native void btQuaternion_setEuler(long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
   public final static native void btQuaternion_setEulerZYX(long jarg1, btQuaternion jarg1_, float jarg2, float jarg3, float jarg4);
-  public final static native float btQuaternion_dot(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+  public final static native float btQuaternion_dot(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_);
   public final static native float btQuaternion_length2(long jarg1, btQuaternion jarg1_);
   public final static native float btQuaternion_length(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_normalize(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_normalized(long jarg1, btQuaternion jarg1_);
-  public final static native float btQuaternion_angle(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+  public final static native long btQuaternion_normalize(long jarg1, btQuaternion jarg1_);
+  public final static native long btQuaternion_normalized(long jarg1, btQuaternion jarg1_);
+  public final static native float btQuaternion_angle(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_);
   public final static native float btQuaternion_getAngle(long jarg1, btQuaternion jarg1_);
-  public final static native Vector3 btQuaternion_getAxis(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_inverse(long jarg1, btQuaternion jarg1_);
-  public final static native Quaternion btQuaternion_farthest(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_nearest(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
-  public final static native Quaternion btQuaternion_slerp(long jarg1, btQuaternion jarg1_, Quaternion jarg2, float jarg3);
-  public final static native Quaternion btQuaternion_getIdentity();
+  public final static native long btQuaternion_getAxis(long jarg1, btQuaternion jarg1_);
+  public final static native long btQuaternion_inverse(long jarg1, btQuaternion jarg1_);
+  public final static native long btQuaternion_farthest(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_);
+  public final static native long btQuaternion_nearest(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_);
+  public final static native long btQuaternion_slerp(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_, float jarg3);
+  public final static native long btQuaternion_getIdentity();
   public final static native float btQuaternion_getW(long jarg1, btQuaternion jarg1_);
   public final static native void delete_btQuaternion(long jarg1);
-  public final static native float dot(Quaternion jarg1, Quaternion jarg2);
-  public final static native float length(Quaternion jarg1);
-  public final static native float btAngle__SWIG_1(Quaternion jarg1, Quaternion jarg2);
-  public final static native Quaternion inverse(Quaternion jarg1);
-  public final static native Quaternion slerp(Quaternion jarg1, Quaternion jarg2, float jarg3);
-  public final static native Vector3 quatRotate(Quaternion jarg1, Vector3 jarg2);
-  public final static native Quaternion shortestArcQuat(Vector3 jarg1, Vector3 jarg2);
-  public final static native Quaternion shortestArcQuatNormalize2(Vector3 jarg1, Vector3 jarg2);
+  public final static native float dot(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_);
+  public final static native float length(long jarg1, btQuaternion jarg1_);
+  public final static native float btAngle__SWIG_1(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_);
+  public final static native long inverse(long jarg1, btQuaternion jarg1_);
+  public final static native long slerp(long jarg1, btQuaternion jarg1_, long jarg2, btQuaternion jarg2_, float jarg3);
+  public final static native long quatRotate(long jarg1, btQuaternion jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long shortestArcQuat(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+  public final static native long shortestArcQuatNormalize2(long jarg1, btVector3 jarg1_, long jarg2, btVector3 jarg2_);
+
+  private final static Vector3 staticVector3 = new Vector3();
+  public static final Pool<Vector3> poolVector3 = new Pool<Vector3>() {
+    @Override
+	protected Vector3 newObject() {
+      return new Vector3();
+	}
+  };
+
+
+  private final static Quaternion staticQuaternion = new Quaternion();
+  public static final Pool<Quaternion> poolQuaternion = new Pool<Quaternion>() {
+    @Override
+	protected Quaternion newObject() {
+      return new Quaternion();
+	}
+  };
+
+
+  private final static Matrix3 staticMatrix3 = new Matrix3();
+  public static final Pool<Matrix3> poolMatrix3 = new Pool<Matrix3>() {
+    @Override
+	protected Matrix3 newObject() {
+      return new Matrix3();
+	}
+  };
+
+
+  private final static Matrix4 staticMatrix4 = new Matrix4();
+  public static final Pool<Matrix4> poolMatrix4 = new Pool<Matrix4>() {
+    @Override
+	protected Matrix4 newObject() {
+      return new Matrix4();
+	}
+  };
+
   public final static native void AabbExpand(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
   public final static native boolean TestPointAgainstAabb2(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3);
   public final static native boolean TestAabbAgainstAabb2(Vector3 jarg1, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
@@ -3039,6 +3039,8 @@ public class gdxBulletJNI {
   public final static native boolean btDiscreteDynamicsWorld_getSynchronizeAllMotionStates(long jarg1, btDiscreteDynamicsWorld jarg1_);
   public final static native void btDiscreteDynamicsWorld_setApplySpeculativeContactRestitution(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
   public final static native boolean btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(long jarg1, btDiscreteDynamicsWorld jarg1_);
+  public final static native void btDiscreteDynamicsWorld_interpolation_set(long jarg1, btDiscreteDynamicsWorld jarg1_, boolean jarg2);
+  public final static native boolean btDiscreteDynamicsWorld_interpolation_get(long jarg1, btDiscreteDynamicsWorld jarg1_);
   public final static native void delete_btCharacterControllerInterface(long jarg1);
   public final static native void btCharacterControllerInterface_setWalkDirection(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2);
   public final static native void btCharacterControllerInterface_setVelocityForTimeInterval(long jarg1, btCharacterControllerInterface jarg1_, Vector3 jarg2, float jarg3);
@@ -3233,7 +3235,6 @@ public class gdxBulletJNI {
   public final static native long btSolverBody_angularVelocity_get(long jarg1, btSolverBody jarg1_);
   public final static native void btSolverBody_originalBody_set(long jarg1, btSolverBody jarg1_, long jarg2, btRigidBody jarg2_);
   public final static native long btSolverBody_originalBody_get(long jarg1, btSolverBody jarg1_);
-  public final static native void btSolverBody_setWorldTransform(long jarg1, btSolverBody jarg1_, Matrix4 jarg2);
   public final static native void btSolverBody_getVelocityInLocalPointObsolete(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3);
   public final static native void btSolverBody_getAngularVelocity(long jarg1, btSolverBody jarg1_, Vector3 jarg2);
   public final static native void btSolverBody_applyImpulse(long jarg1, btSolverBody jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);

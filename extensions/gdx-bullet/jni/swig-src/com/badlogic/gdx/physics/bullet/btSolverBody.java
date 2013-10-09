@@ -26,6 +26,13 @@ public class btSolverBody extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSolverBody obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
@@ -145,10 +152,6 @@ public class btSolverBody extends BulletBase {
   public btRigidBody getOriginalBody() {
     long cPtr = gdxBulletJNI.btSolverBody_originalBody_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
-  }
-
-  public void setWorldTransform(Matrix4 worldTransform) {
-    gdxBulletJNI.btSolverBody_setWorldTransform(swigCPtr, this, worldTransform);
   }
 
   public void getVelocityInLocalPointObsolete(Vector3 rel_pos, Vector3 velocity) {

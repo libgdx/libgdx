@@ -26,6 +26,13 @@ public class btGjkEpaSolver2 extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btGjkEpaSolver2 obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btSoftBodyRigidBodyCollisionConfiguration extends btDefaultCollisio
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSoftBodyRigidBodyCollisionConfiguration_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSoftBodyRigidBodyCollisionConfiguration obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

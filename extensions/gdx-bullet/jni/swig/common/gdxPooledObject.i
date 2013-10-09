@@ -51,7 +51,7 @@
 	  
 	  static jmethodID reuseMethod = NULL;
 	  if (reuseMethod == NULL)
-		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reuse", "(JZ)V");
+		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reset", "(JZ)V");
 	  
 	  long ptr;
 	  *(const void **)&ptr = cPtr;

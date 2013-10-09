@@ -26,6 +26,13 @@ public class btConeTwistConstraint extends btTypedConstraint {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btConeTwistConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btConeTwistConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

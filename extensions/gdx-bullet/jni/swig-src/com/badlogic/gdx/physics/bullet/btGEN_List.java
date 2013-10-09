@@ -26,6 +26,13 @@ public class btGEN_List extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btGEN_List obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

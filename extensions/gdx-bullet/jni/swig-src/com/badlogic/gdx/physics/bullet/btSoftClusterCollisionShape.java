@@ -26,6 +26,13 @@ public class btSoftClusterCollisionShape extends btConvexInternalShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSoftClusterCollisionShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSoftClusterCollisionShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

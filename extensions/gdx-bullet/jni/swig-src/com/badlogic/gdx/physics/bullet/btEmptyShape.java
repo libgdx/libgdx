@@ -26,6 +26,13 @@ public class btEmptyShape extends btConcaveShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btEmptyShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btEmptyShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

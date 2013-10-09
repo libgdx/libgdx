@@ -26,6 +26,13 @@ public class Feature extends Element {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.Feature_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(Feature obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

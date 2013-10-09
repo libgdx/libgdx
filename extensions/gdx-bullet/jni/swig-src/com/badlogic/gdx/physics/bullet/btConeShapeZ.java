@@ -26,6 +26,13 @@ public class btConeShapeZ extends btConeShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btConeShapeZ_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btConeShapeZ obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

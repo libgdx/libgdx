@@ -26,6 +26,13 @@ public class bt32BitAxisSweep3 extends btAxisSweep3InternalInt {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.bt32BitAxisSweep3_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(bt32BitAxisSweep3 obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class ClosestNotMeConvexResultCallback extends ClosestConvexResultCallbac
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.ClosestNotMeConvexResultCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(ClosestNotMeConvexResultCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

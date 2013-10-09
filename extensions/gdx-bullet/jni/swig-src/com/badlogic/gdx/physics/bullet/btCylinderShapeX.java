@@ -26,6 +26,13 @@ public class btCylinderShapeX extends btCylinderShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btCylinderShapeX_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btCylinderShapeX obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

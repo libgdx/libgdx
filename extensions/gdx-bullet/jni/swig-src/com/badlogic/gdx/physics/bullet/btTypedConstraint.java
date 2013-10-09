@@ -26,6 +26,13 @@ public class btTypedConstraint extends btTypedObject {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btTypedConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btTypedConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

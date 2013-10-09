@@ -26,6 +26,13 @@ public class btConvexInternalAabbCachingShape extends btConvexInternalShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btConvexInternalAabbCachingShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btConvexInternalAabbCachingShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

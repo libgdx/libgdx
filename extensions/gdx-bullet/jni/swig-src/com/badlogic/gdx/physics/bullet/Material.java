@@ -26,6 +26,13 @@ public class Material extends Element {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.Material_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(Material obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

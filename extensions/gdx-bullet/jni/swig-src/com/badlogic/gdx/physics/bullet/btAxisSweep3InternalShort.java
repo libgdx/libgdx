@@ -26,6 +26,13 @@ public class btAxisSweep3InternalShort extends btBroadphaseInterface {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btAxisSweep3InternalShort_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btAxisSweep3InternalShort obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

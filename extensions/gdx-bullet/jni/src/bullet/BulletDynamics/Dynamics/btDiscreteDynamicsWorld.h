@@ -53,6 +53,7 @@ protected:
 
 	//for variable timesteps
 	btScalar	m_localTime;
+	btScalar	m_fixedTimeStep;
 	//for variable timesteps
 
 	bool	m_ownsIslandManager;
@@ -216,6 +217,7 @@ public:
 	///Preliminary serialization test for Bullet 2.76. Loading those files requires a separate parser (see Bullet/Demos/SerializeDemo)
 	virtual	void	serialize(btSerializer* serializer);
 
+	bool m_interpolation;
 };
 
 #endif //BT_DISCRETE_DYNAMICS_WORLD_H

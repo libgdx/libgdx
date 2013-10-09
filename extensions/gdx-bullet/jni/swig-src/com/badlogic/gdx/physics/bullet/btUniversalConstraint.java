@@ -26,6 +26,13 @@ public class btUniversalConstraint extends btGeneric6DofConstraint {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btUniversalConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btUniversalConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
