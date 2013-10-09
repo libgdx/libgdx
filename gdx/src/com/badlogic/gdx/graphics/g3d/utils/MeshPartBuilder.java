@@ -102,6 +102,22 @@ public interface MeshPartBuilder {
 	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo);
 	/** Add a circle */
 	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo);
+	/** Add a circle (only the external line)	Must use GL_LINES to create it */
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions);
+	/** Add a circle */
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, int divisions);
+	/** Add a circle */
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions);
+	/** Add a circle */
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions);
+	/** Add a circle */
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo);
 	/** Add a cylinder */
 	public void cylinder(float width, float height, float depth, int divisions);
 	/** Add a cylinder */

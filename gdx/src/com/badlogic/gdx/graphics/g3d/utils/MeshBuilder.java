@@ -675,13 +675,71 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
 		ensureTriangles(divisions + 2, divisions);
 		
+		makecircle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo, false);
+	}
+	
+	@Override
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions) {
+		circleLine(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, divisions, 0, 360);
+	}
+
+	@Override
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, int divisions) {
+		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions);
+	}
+
+	@Override
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions) {
+		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions);
+	}
+	
+	@Override
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions) {
+		circleLine(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, 0, 360);		
+	}
+	
+	@Override
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo) {
+		tempV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
+		tempV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
+		if (tempV2.len2() > tempV1.len2())
+			tempV1.set(tempV2);
+		tempV2.set(tempV1.nor()).crs(normalX, normalY, normalZ).nor();
+		circleLine(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tempV1.x, tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, divisions, angleFrom, angleTo);
+	}
+
+	@Override
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo) {
+		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions, angleFrom, angleTo);
+	}
+	
+	@Override
+	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo) {
+		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions, angleFrom, angleTo);
+	}
+
+	@Override
+	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
+		ensureVertices(divisions + 1);
+		
+		makecircle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo, true);
+	}
+	
+	
+	private void makecircle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo, boolean isLine) {
+	
 		final float ao = MathUtils.degreesToRadians * angleFrom;
 		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
 		final Vector3 sx = tempV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
 		final Vector3 sy = tempV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
 		VertexInfo curr = vertTmp3.set(null, null, null, null);
-		curr.hasUV = curr.hasPosition = curr.hasNormal = true;
-		curr.uv.set(.5f, .5f);
+		
+		if(!isLine)	{
+			curr.hasUV = true;
+			curr.uv.set(.5f, .5f);
+		}
+		
+		curr.hasPosition = curr.hasNormal = true;
 		curr.position.set(centerX, centerY, centerZ);
 		curr.normal.set(normalX, normalY, normalZ);	
 		final short center = vertex(curr);
@@ -690,11 +748,19 @@ public class MeshBuilder implements MeshPartBuilder {
 			angle = ao + step * i;
 			final float x = MathUtils.cos(angle);
 			final float y = MathUtils.sin(angle);
-			curr.uv.set(.5f + .5f * x, .5f + .5f * y);
 			curr.position.set(centerX, centerY, centerZ).add(sx.x*x+sy.x*y, sx.y*x+sy.y*y, sx.z*x+sy.z*y);
-			vertex(curr);
-			if (i != 0)
-				triangle((short)(vindex - 1), (short)(vindex - 2), center);
+			
+			if(!isLine)	{			
+				curr.uv.set(.5f + .5f * x, .5f + .5f * y);				
+				vertex(curr);
+				if (i != 0)
+					triangle((short)(vindex - 1), (short)(vindex - 2), center);
+			}
+			else {
+				vertex(curr);
+				if (i != 0)
+					line((short)(vindex - 1), (short)(vindex - 2));
+			}	
 		}
 	}
 	
