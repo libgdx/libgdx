@@ -673,94 +673,89 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
-		ensureTriangles(divisions + 2, divisions);
 		
-		makecircle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo, false);
+		ellipse(width, height, 0, 0, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo);
 	}
 	
 	@Override
-	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions) {
-		circleLine(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, divisions, 0, 360);
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, Vector3 center, Vector3 normal, int divisions) {
+		ellipse(width, height, innerWidth, innerHeight, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions, 0, 360);
 	}
 
 	@Override
-	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, int divisions) {
-		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions);
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions) {
+		ellipse(width, height, innerWidth, innerHeight, centerX, centerY, centerZ, normalX, normalY, normalZ, divisions, 0, 360);
 	}
-
+		
 	@Override
-	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions) {
-		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions);
-	}
-	
-	@Override
-	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions) {
-		circleLine(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, 0, 360);		
-	}
-	
-	@Override
-	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo) {
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo) {
 		tempV1.set(normalX, normalY, normalZ).crs(0, 0, 1);
 		tempV2.set(normalX, normalY, normalZ).crs(0, 1, 0);
 		if (tempV2.len2() > tempV1.len2())
 			tempV1.set(tempV2);
 		tempV2.set(tempV1.nor()).crs(normalX, normalY, normalZ).nor();
-		circleLine(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tempV1.x, tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, divisions, angleFrom, angleTo);
-	}
-
-	@Override
-	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo) {
-		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, divisions, angleFrom, angleTo);
+		ellipse(width, height, innerWidth, innerHeight, centerX, centerY, centerZ, normalX, normalY, normalZ,  tempV1.x, tempV1.y, tempV1.z, tempV2.x, tempV2.y, tempV2.z, divisions, angleFrom, angleTo);
 	}
 	
 	@Override
-	public void circleLine(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo) {
-		circleLine(width, height, center.x, center.y, center.z, normal.x, normal.y, normal.z, tangent.x, tangent.y, tangent.z, binormal.x, binormal.y, binormal.z, divisions, angleFrom, angleTo);
-	}
-
-	@Override
-	public void circleLine(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
-		ensureVertices(divisions + 1);
-		
-		makecircle(width, height, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo, true);
-	}
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
 	
-	
-	private void makecircle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo, boolean isLine) {
-	
-		final float ao = MathUtils.degreesToRadians * angleFrom;
-		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
-		final Vector3 sx = tempV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
-		final Vector3 sy = tempV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
-		VertexInfo curr = vertTmp3.set(null, null, null, null);
-		
-		if(!isLine)	{
-			curr.hasUV = true;
-			curr.uv.set(.5f, .5f);
+		if(innerWidth <= 0 || innerHeight <= 0)	{					
+			ensureTriangles(divisions + 2, divisions);
+		}
+		else if (innerWidth == width && innerHeight == height){
+			ensureVertices(divisions + 1);
+			if(primitiveType != GL10.GL_LINES)
+				throw new GdxRuntimeException("Incorrect primitive type : expect GL_LINES because innerWidth == width && innerHeight == height");
+		}
+		else {
+			ensureRectangleIndices(divisions + 1);
 		}
 		
-		curr.hasPosition = curr.hasNormal = true;
-		curr.position.set(centerX, centerY, centerZ);
-		curr.normal.set(normalX, normalY, normalZ);	
-		final short center = vertex(curr);
+		final float ao = MathUtils.degreesToRadians * angleFrom;
+		final float step = (MathUtils.degreesToRadians * (angleTo - angleFrom)) / divisions;
+		final Vector3 sxEx = tempV1.set(tangentX, tangentY, tangentZ).scl(width * 0.5f);
+		final Vector3 syEx = tempV2.set(binormalX, binormalY, binormalZ).scl(height * 0.5f);
+		final Vector3 sxIn = tempV3.set(tangentX, tangentY, tangentZ).scl(innerWidth * 0.5f);
+		final Vector3 syIn = tempV4.set(binormalX, binormalY, binormalZ).scl(innerHeight * 0.5f);
+		VertexInfo currIn = vertTmp3.set(null, null, null, null);
+		currIn.hasUV = true;
+		currIn.uv.set(.5f, .5f);		
+		currIn.hasPosition = currIn.hasNormal = true;
+		currIn.position.set(centerX, centerY, centerZ);
+		currIn.normal.set(normalX, normalY, normalZ);	
+		VertexInfo currEx = vertTmp4.set(null, null, null, null);
+		currEx.hasUV = true;
+		currEx.uv.set(.5f, .5f);		
+		currEx.hasPosition = currEx.hasNormal = true;
+		currEx.position.set(centerX, centerY, centerZ);
+		currEx.normal.set(normalX, normalY, normalZ);
+		final short center = vertex(currEx);
 		float angle = 0f;
 		for (int i = 0; i <= divisions; i++) {
 			angle = ao + step * i;
 			final float x = MathUtils.cos(angle);
 			final float y = MathUtils.sin(angle);
-			curr.position.set(centerX, centerY, centerZ).add(sx.x*x+sy.x*y, sx.y*x+sy.y*y, sx.z*x+sy.z*y);
+			currEx.position.set(centerX, centerY, centerZ).add(sxEx.x*x+syEx.x*y, sxEx.y*x+syEx.y*y, sxEx.z*x+syEx.z*y);
+			currEx.uv.set(.5f + .5f * x, .5f + .5f * y);				
+			vertex(currEx);
 			
-			if(!isLine)	{			
-				curr.uv.set(.5f + .5f * x, .5f + .5f * y);				
-				vertex(curr);
+			if(innerWidth <= 0 || innerHeight <= 0)	{					
 				if (i != 0)
 					triangle((short)(vindex - 1), (short)(vindex - 2), center);
 			}
-			else {
-				vertex(curr);
+			else if (innerWidth == width && innerHeight == height){
 				if (i != 0)
 					line((short)(vindex - 1), (short)(vindex - 2));
-			}	
+			}
+			else {
+				currIn.position.set(centerX, centerY, centerZ).add(sxIn.x*x+syIn.x*y, sxIn.y*x+syIn.y*y, sxIn.z*x+syIn.z*y);
+				currIn.uv.set(.5f + .5f * x, .5f + .5f * y);				
+				vertex(currIn);
+				
+				if( i != 0)
+					rect((short)(vindex - 1), (short)(vindex - 2),(short)(vindex - 4), (short)(vindex - 3));
+			}
 		}
 	}
 	
