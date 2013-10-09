@@ -705,11 +705,12 @@ public class MeshBuilder implements MeshPartBuilder {
 		}
 		else if (innerWidth == width && innerHeight == height){
 			ensureVertices(divisions + 1);
+			ensureIndices(divisions + 1);
 			if(primitiveType != GL10.GL_LINES)
 				throw new GdxRuntimeException("Incorrect primitive type : expect GL_LINES because innerWidth == width && innerHeight == height");
 		}
 		else {
-			ensureRectangleIndices(divisions + 1);
+			ensureRectangles((divisions + 1)*2, divisions + 1);
 		}
 		
 		final float ao = MathUtils.degreesToRadians * angleFrom;
