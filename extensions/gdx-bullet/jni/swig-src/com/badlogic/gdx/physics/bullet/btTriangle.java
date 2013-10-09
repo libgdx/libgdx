@@ -13,74 +13,82 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTriangle {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTriangle extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTriangle(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangle(long cPtr, boolean cMemoryOwn) {
+		this("btTriangle", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangle obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangle(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangle(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setVertex0(btVector3 value) {
+    gdxBulletJNI.btTriangle_vertex0_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public static long getCPtr(btTriangle obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangle(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_vertex0(btVector3 value) {
-    gdxBulletJNI.btTriangle_m_vertex0_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getM_vertex0() {
-    long cPtr = gdxBulletJNI.btTriangle_m_vertex0_get(swigCPtr, this);
+  public btVector3 getVertex0() {
+    long cPtr = gdxBulletJNI.btTriangle_vertex0_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_vertex1(btVector3 value) {
-    gdxBulletJNI.btTriangle_m_vertex1_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setVertex1(btVector3 value) {
+    gdxBulletJNI.btTriangle_vertex1_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_vertex1() {
-    long cPtr = gdxBulletJNI.btTriangle_m_vertex1_get(swigCPtr, this);
+  public btVector3 getVertex1() {
+    long cPtr = gdxBulletJNI.btTriangle_vertex1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_vertex2(btVector3 value) {
-    gdxBulletJNI.btTriangle_m_vertex2_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setVertex2(btVector3 value) {
+    gdxBulletJNI.btTriangle_vertex2_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_vertex2() {
-    long cPtr = gdxBulletJNI.btTriangle_m_vertex2_get(swigCPtr, this);
+  public btVector3 getVertex2() {
+    long cPtr = gdxBulletJNI.btTriangle_vertex2_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_partId(int value) {
-    gdxBulletJNI.btTriangle_m_partId_set(swigCPtr, this, value);
+  public void setPartId(int value) {
+    gdxBulletJNI.btTriangle_partId_set(swigCPtr, this, value);
   }
 
-  public int getM_partId() {
-    return gdxBulletJNI.btTriangle_m_partId_get(swigCPtr, this);
+  public int getPartId() {
+    return gdxBulletJNI.btTriangle_partId_get(swigCPtr, this);
   }
 
-  public void setM_triangleIndex(int value) {
-    gdxBulletJNI.btTriangle_m_triangleIndex_set(swigCPtr, this, value);
+  public void setTriangleIndex(int value) {
+    gdxBulletJNI.btTriangle_triangleIndex_set(swigCPtr, this, value);
   }
 
-  public int getM_triangleIndex() {
-    return gdxBulletJNI.btTriangle_m_triangleIndex_get(swigCPtr, this);
+  public int getTriangleIndex() {
+    return gdxBulletJNI.btTriangle_triangleIndex_get(swigCPtr, this);
   }
 
   public btTriangle() {

@@ -11,6 +11,7 @@
 		<exclude name="**/FFTTest.java"/> <!-- native -->
 		<exclude name="**/FramebufferToTextureTest.java"/> <!-- ScreenUtils missing -->
 		<exclude name="**/FreeTypeTest.java"/> <!-- native  -->
+		<exclude name="**/FreeTypePackTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypeDisposeTest.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
 		<exclude name="**/InterpolationTest.java"/> <!-- reflection -->
@@ -18,6 +19,7 @@
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/ScreenCaptureTest.java"/> <!-- ScreenUtils -->
+		<exclude name="**/SelectTest.java"/> <!-- String.format -->
 		<exclude name="**/SoundTouchTest.java"/> <!-- native -->
 		<exclude name="**/StbTrueTypeTest.java"/> <!-- native -->
 		<exclude name="**/TextureDownloadTest.java"/> <!-- http utils missing -->
@@ -31,7 +33,7 @@
 		<exclude name="**/bullet/"/> <!-- native -->
 		<exclude name="**/FloatTextureTest.java"/> <!-- GLES 2.0 extension -->
 		<exclude name="**/NetAPITest.java"/> <!-- abuses FileHandle() -->
-		
+		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
 		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->
 	</source>
 </module>

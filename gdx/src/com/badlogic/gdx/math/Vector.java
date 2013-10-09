@@ -49,7 +49,7 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T sub (T v);
 
-	/** Normalizes this vector
+	/** Normalizes this vector. Does nothing if it is zero.
 	 * @return This vector for chaining */
 	T nor ();
 
@@ -75,7 +75,9 @@ public interface Vector<T extends Vector<T>> {
 	 * @return the distance between this and the other vector */
 	float dst (T v);
 
-	/** @param v The other vector
+	/** This is much faster to calculate than {@link Vector#dst(Vector)}
+	 * It avoids a calculating square root, so it is mostly useful for comparisons
+	 * @param v The other vector
 	 * @return the squared distance between this and the other vector */
 	float dst2 (T v);
 

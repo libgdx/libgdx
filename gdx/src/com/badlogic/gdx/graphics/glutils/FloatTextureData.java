@@ -64,7 +64,7 @@ public class FloatTextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData () {
+	public void consumeCompressedData (int target) {
 		if (!Gdx.graphics.supportsExtension("texture_float"))
 			throw new GdxRuntimeException("Extension OES_TEXTURE_FLOAT not supported!");
 		
@@ -76,13 +76,13 @@ public class FloatTextureData implements TextureData {
 		if (Gdx.app.getType() == ApplicationType.Android
 			|| Gdx.app.getType() == ApplicationType.iOS
 			|| Gdx.app.getType() == ApplicationType.WebGL) {
-			Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL10.GL_RGBA, width, height, 0,
+			Gdx.gl.glTexImage2D(target, 0, GL10.GL_RGBA, width, height, 0,
 						GL10.GL_RGBA, GL10.GL_FLOAT, buffer);
 		}
 		else {
 			//in desktop OpenGL the texture format is defined only by the third argument,
 			//hence we need to use GL_RGBA32F there (this constant is unavailable in GLES/WebGL)
-		    Gdx.gl.glTexImage2D(GL10.GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0,
+		    Gdx.gl.glTexImage2D(target, 0, GL_RGBA32F, width, height, 0,
 				GL10.GL_RGBA, GL10.GL_FLOAT, buffer);
 		}
 	}

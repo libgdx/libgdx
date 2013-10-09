@@ -20,10 +20,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -155,7 +155,7 @@ public class VehicleTest extends BaseBulletTest {
 		
 		for (int i = 0; i < wheels.length; i++) {
 			vehicle.updateWheelTransform(i, true);
-			vehicle.getWheelInfo(i).getM_worldTransform().getOpenGLMatrix(wheels[i].transform.val);
+			vehicle.getWheelInfo(i).getWorldTransform().getOpenGLMatrix(wheels[i].transform.val);
 		}
 		
 		chassis.transform.getTranslation(camera.position);
@@ -176,11 +176,11 @@ public class VehicleTest extends BaseBulletTest {
 	@Override
 	public void dispose () {
 		super.dispose();
-		vehicle.delete();
+		vehicle.dispose();
 		vehicle = null;
-		raycaster.delete();
+		raycaster.dispose();
 		raycaster = null;
-		tuning.delete();
+		tuning.dispose();
 		tuning = null;
 	}
 	

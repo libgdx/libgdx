@@ -81,7 +81,7 @@ public class InternalTickTest extends BaseBulletTest {
 		super.dispose();
 		
 		if (internalTickCallback != null)
-			internalTickCallback.delete();
+			internalTickCallback.dispose();
 		internalTickCallback = null;
 	}
 	

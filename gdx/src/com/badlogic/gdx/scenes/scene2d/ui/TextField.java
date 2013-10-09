@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -55,7 +56,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * implementation will bring up the default IME.
  * @author mzechner
  * @author Nathan Sweet */
-public class TextField extends Widget {
+public class TextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
 	static private final char ENTER_ANDROID = '\n';
@@ -169,8 +170,6 @@ public class TextField extends Widget {
 
 			public boolean keyDown (InputEvent event, int keycode) {
 				if (disabled) return false;
-
-				final BitmapFont font = style.font;
 
 				lastBlink = 0;
 				cursorOn = false;
@@ -863,7 +862,9 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor, focusedFontColor, disabledFontColor;
+		public Color fontColor;
+		/** Optional. */
+		public Color focusedFontColor, disabledFontColor;
 		/** Optional. */
 		public Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */

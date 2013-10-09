@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class ClosestConvexResultCallback extends ConvexResultCallback {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected ClosestConvexResultCallback(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.ClosestConvexResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected ClosestConvexResultCallback(long cPtr, boolean cMemoryOwn) {
+		this("ClosestConvexResultCallback", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(ClosestConvexResultCallback obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected ClosestConvexResultCallback(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.ClosestConvexResultCallback_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(ClosestConvexResultCallback obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_ClosestConvexResultCallback(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_ClosestConvexResultCallback(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   protected void swigDirectorDisconnect() {
     swigCMemOwn = false;
@@ -60,48 +68,48 @@ public class ClosestConvexResultCallback extends ConvexResultCallback {
     gdxBulletJNI.ClosestConvexResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
-  public void setM_convexFromWorld(btVector3 value) {
-    gdxBulletJNI.ClosestConvexResultCallback_m_convexFromWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setConvexFromWorld(btVector3 value) {
+    gdxBulletJNI.ClosestConvexResultCallback_convexFromWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_convexFromWorld() {
-    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_m_convexFromWorld_get(swigCPtr, this);
+  public btVector3 getConvexFromWorld() {
+    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_convexFromWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_convexToWorld(btVector3 value) {
-    gdxBulletJNI.ClosestConvexResultCallback_m_convexToWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setConvexToWorld(btVector3 value) {
+    gdxBulletJNI.ClosestConvexResultCallback_convexToWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_convexToWorld() {
-    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_m_convexToWorld_get(swigCPtr, this);
+  public btVector3 getConvexToWorld() {
+    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_convexToWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitNormalWorld(btVector3 value) {
-    gdxBulletJNI.ClosestConvexResultCallback_m_hitNormalWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitNormalWorld(btVector3 value) {
+    gdxBulletJNI.ClosestConvexResultCallback_hitNormalWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitNormalWorld() {
-    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_m_hitNormalWorld_get(swigCPtr, this);
+  public btVector3 getHitNormalWorld() {
+    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_hitNormalWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitPointWorld(btVector3 value) {
-    gdxBulletJNI.ClosestConvexResultCallback_m_hitPointWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitPointWorld(btVector3 value) {
+    gdxBulletJNI.ClosestConvexResultCallback_hitPointWorld_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitPointWorld() {
-    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_m_hitPointWorld_get(swigCPtr, this);
+  public btVector3 getHitPointWorld() {
+    long cPtr = gdxBulletJNI.ClosestConvexResultCallback_hitPointWorld_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitCollisionObject(btCollisionObject value) {
-    gdxBulletJNI.ClosestConvexResultCallback_m_hitCollisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
+  public void setHitCollisionObject(btCollisionObject value) {
+    gdxBulletJNI.ClosestConvexResultCallback_hitCollisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
   }
 
-  public btCollisionObject getM_hitCollisionObject() {
-	return btCollisionObject.getInstance(gdxBulletJNI.ClosestConvexResultCallback_m_hitCollisionObject_get(swigCPtr, this), false);
+  public btCollisionObject getHitCollisionObject() {
+	return btCollisionObject.getInstance(gdxBulletJNI.ClosestConvexResultCallback_hitCollisionObject_get(swigCPtr, this), false);
 }
 
   public float addSingleResult(LocalConvexResult convexResult, boolean normalInWorldSpace) {

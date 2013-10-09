@@ -1,0 +1,26 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "stone_01", 
+			"diffuse": [ 1.000000,  1.000000,  1.000000], 
+			"specular": [ 0.900000,  0.900000,  0.900000], 
+			"textures": [
+				{
+					"id": "stone_diffuse_01", 
+					"filename": "stone_diffuse_01.png", 
+					"type": "DIFFUSE"
+				}, 
+				{
+					"id": "stone_normal_01", 
+					"filename": "stone_normal_01.png", 
+					"type": "NORMAL"
+				}
+			]
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}

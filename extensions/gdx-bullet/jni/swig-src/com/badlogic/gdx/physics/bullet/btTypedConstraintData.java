@@ -13,137 +13,145 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btTypedConstraintData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btTypedConstraintData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btTypedConstraintData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTypedConstraintData(long cPtr, boolean cMemoryOwn) {
+		this("btTypedConstraintData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTypedConstraintData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTypedConstraintData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTypedConstraintData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setRbA(btRigidBodyFloatData value) {
+    gdxBulletJNI.btTypedConstraintData_rbA_set(swigCPtr, this, btRigidBodyFloatData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btTypedConstraintData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTypedConstraintData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_rbA(btRigidBodyFloatData value) {
-    gdxBulletJNI.btTypedConstraintData_m_rbA_set(swigCPtr, this, btRigidBodyFloatData.getCPtr(value), value);
-  }
-
-  public btRigidBodyFloatData getM_rbA() {
-    long cPtr = gdxBulletJNI.btTypedConstraintData_m_rbA_get(swigCPtr, this);
+  public btRigidBodyFloatData getRbA() {
+    long cPtr = gdxBulletJNI.btTypedConstraintData_rbA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btRigidBodyFloatData(cPtr, false);
   }
 
-  public void setM_rbB(btRigidBodyFloatData value) {
-    gdxBulletJNI.btTypedConstraintData_m_rbB_set(swigCPtr, this, btRigidBodyFloatData.getCPtr(value), value);
+  public void setRbB(btRigidBodyFloatData value) {
+    gdxBulletJNI.btTypedConstraintData_rbB_set(swigCPtr, this, btRigidBodyFloatData.getCPtr(value), value);
   }
 
-  public btRigidBodyFloatData getM_rbB() {
-    long cPtr = gdxBulletJNI.btTypedConstraintData_m_rbB_get(swigCPtr, this);
+  public btRigidBodyFloatData getRbB() {
+    long cPtr = gdxBulletJNI.btTypedConstraintData_rbB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btRigidBodyFloatData(cPtr, false);
   }
 
-  public void setM_name(String value) {
-    gdxBulletJNI.btTypedConstraintData_m_name_set(swigCPtr, this, value);
+  public void setName(String value) {
+    gdxBulletJNI.btTypedConstraintData_name_set(swigCPtr, this, value);
   }
 
-  public String getM_name() {
-    return gdxBulletJNI.btTypedConstraintData_m_name_get(swigCPtr, this);
+  public String getName() {
+    return gdxBulletJNI.btTypedConstraintData_name_get(swigCPtr, this);
   }
 
-  public void setM_objectType(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_objectType_set(swigCPtr, this, value);
+  public void setObjectType(int value) {
+    gdxBulletJNI.btTypedConstraintData_objectType_set(swigCPtr, this, value);
   }
 
-  public int getM_objectType() {
-    return gdxBulletJNI.btTypedConstraintData_m_objectType_get(swigCPtr, this);
+  public int getObjectType() {
+    return gdxBulletJNI.btTypedConstraintData_objectType_get(swigCPtr, this);
   }
 
-  public void setM_userConstraintType(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_userConstraintType_set(swigCPtr, this, value);
+  public void setUserConstraintType(int value) {
+    gdxBulletJNI.btTypedConstraintData_userConstraintType_set(swigCPtr, this, value);
   }
 
-  public int getM_userConstraintType() {
-    return gdxBulletJNI.btTypedConstraintData_m_userConstraintType_get(swigCPtr, this);
+  public int getUserConstraintType() {
+    return gdxBulletJNI.btTypedConstraintData_userConstraintType_get(swigCPtr, this);
   }
 
-  public void setM_userConstraintId(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_userConstraintId_set(swigCPtr, this, value);
+  public void setUserConstraintId(int value) {
+    gdxBulletJNI.btTypedConstraintData_userConstraintId_set(swigCPtr, this, value);
   }
 
-  public int getM_userConstraintId() {
-    return gdxBulletJNI.btTypedConstraintData_m_userConstraintId_get(swigCPtr, this);
+  public int getUserConstraintId() {
+    return gdxBulletJNI.btTypedConstraintData_userConstraintId_get(swigCPtr, this);
   }
 
-  public void setM_needsFeedback(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_needsFeedback_set(swigCPtr, this, value);
+  public void setNeedsFeedback(int value) {
+    gdxBulletJNI.btTypedConstraintData_needsFeedback_set(swigCPtr, this, value);
   }
 
-  public int getM_needsFeedback() {
-    return gdxBulletJNI.btTypedConstraintData_m_needsFeedback_get(swigCPtr, this);
+  public int getNeedsFeedback() {
+    return gdxBulletJNI.btTypedConstraintData_needsFeedback_get(swigCPtr, this);
   }
 
-  public void setM_appliedImpulse(float value) {
-    gdxBulletJNI.btTypedConstraintData_m_appliedImpulse_set(swigCPtr, this, value);
+  public void setAppliedImpulse(float value) {
+    gdxBulletJNI.btTypedConstraintData_appliedImpulse_set(swigCPtr, this, value);
   }
 
-  public float getM_appliedImpulse() {
-    return gdxBulletJNI.btTypedConstraintData_m_appliedImpulse_get(swigCPtr, this);
+  public float getAppliedImpulse() {
+    return gdxBulletJNI.btTypedConstraintData_appliedImpulse_get(swigCPtr, this);
   }
 
-  public void setM_dbgDrawSize(float value) {
-    gdxBulletJNI.btTypedConstraintData_m_dbgDrawSize_set(swigCPtr, this, value);
+  public void setDbgDrawSize(float value) {
+    gdxBulletJNI.btTypedConstraintData_dbgDrawSize_set(swigCPtr, this, value);
   }
 
-  public float getM_dbgDrawSize() {
-    return gdxBulletJNI.btTypedConstraintData_m_dbgDrawSize_get(swigCPtr, this);
+  public float getDbgDrawSize() {
+    return gdxBulletJNI.btTypedConstraintData_dbgDrawSize_get(swigCPtr, this);
   }
 
-  public void setM_disableCollisionsBetweenLinkedBodies(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_disableCollisionsBetweenLinkedBodies_set(swigCPtr, this, value);
+  public void setDisableCollisionsBetweenLinkedBodies(int value) {
+    gdxBulletJNI.btTypedConstraintData_disableCollisionsBetweenLinkedBodies_set(swigCPtr, this, value);
   }
 
-  public int getM_disableCollisionsBetweenLinkedBodies() {
-    return gdxBulletJNI.btTypedConstraintData_m_disableCollisionsBetweenLinkedBodies_get(swigCPtr, this);
+  public int getDisableCollisionsBetweenLinkedBodies() {
+    return gdxBulletJNI.btTypedConstraintData_disableCollisionsBetweenLinkedBodies_get(swigCPtr, this);
   }
 
-  public void setM_overrideNumSolverIterations(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_overrideNumSolverIterations_set(swigCPtr, this, value);
+  public void setOverrideNumSolverIterations(int value) {
+    gdxBulletJNI.btTypedConstraintData_overrideNumSolverIterations_set(swigCPtr, this, value);
   }
 
-  public int getM_overrideNumSolverIterations() {
-    return gdxBulletJNI.btTypedConstraintData_m_overrideNumSolverIterations_get(swigCPtr, this);
+  public int getOverrideNumSolverIterations() {
+    return gdxBulletJNI.btTypedConstraintData_overrideNumSolverIterations_get(swigCPtr, this);
   }
 
-  public void setM_breakingImpulseThreshold(float value) {
-    gdxBulletJNI.btTypedConstraintData_m_breakingImpulseThreshold_set(swigCPtr, this, value);
+  public void setBreakingImpulseThreshold(float value) {
+    gdxBulletJNI.btTypedConstraintData_breakingImpulseThreshold_set(swigCPtr, this, value);
   }
 
-  public float getM_breakingImpulseThreshold() {
-    return gdxBulletJNI.btTypedConstraintData_m_breakingImpulseThreshold_get(swigCPtr, this);
+  public float getBreakingImpulseThreshold() {
+    return gdxBulletJNI.btTypedConstraintData_breakingImpulseThreshold_get(swigCPtr, this);
   }
 
-  public void setM_isEnabled(int value) {
-    gdxBulletJNI.btTypedConstraintData_m_isEnabled_set(swigCPtr, this, value);
+  public void setIsEnabled(int value) {
+    gdxBulletJNI.btTypedConstraintData_isEnabled_set(swigCPtr, this, value);
   }
 
-  public int getM_isEnabled() {
-    return gdxBulletJNI.btTypedConstraintData_m_isEnabled_get(swigCPtr, this);
+  public int getIsEnabled() {
+    return gdxBulletJNI.btTypedConstraintData_isEnabled_get(swigCPtr, this);
   }
 
   public btTypedConstraintData() {

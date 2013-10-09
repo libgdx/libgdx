@@ -6,14 +6,19 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
-	public String vertexShader;
-	public String fragmentShader;
+	public final DefaultShader.Config config;
+	
+	public DefaultShaderProvider(final DefaultShader.Config config) {
+		if (!Gdx.graphics.isGL20Available())
+			throw new RuntimeException("The default shader requires OpenGL ES 2.0");
+		this.config = (config == null) ? new DefaultShader.Config() : config;
+	}
 	
 	public DefaultShaderProvider(final String vertexShader, final String fragmentShader) {
-		this.vertexShader = vertexShader;
-		this.fragmentShader = fragmentShader;
+		this(new DefaultShader.Config(vertexShader, fragmentShader));
 	}
 	
 	public DefaultShaderProvider(final FileHandle vertexShader, final FileHandle fragmentShader) {
@@ -21,15 +26,11 @@ public class DefaultShaderProvider extends BaseShaderProvider {
 	}
 	
 	public DefaultShaderProvider() {
-		this(DefaultShader.getDefaultVertexShader(), DefaultShader.getDefaultFragmentShader());
+		this(null);
 	}
 	
 	@Override
 	protected Shader createShader(final Renderable renderable) {
-		Gdx.app.log("DefaultShaderProvider", "Creating new shader");
-		if (Gdx.graphics.isGL20Available()) {
-            return new DefaultShader(vertexShader, fragmentShader, renderable, renderable.lights != null, renderable.lights != null && renderable.lights.fog != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
-        }
-		return new GLES10Shader();
+	   return new DefaultShader(renderable, config);
 	}
 }

@@ -13,139 +13,143 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSolverBody {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSolverBody extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSolverBody(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSolverBody(long cPtr, boolean cMemoryOwn) {
+		this("btSolverBody", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSolverBody obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSolverBody(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSolverBody(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setWorldTransform(btTransform value) {
+    gdxBulletJNI.btSolverBody_worldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public static long getCPtr(btSolverBody obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSolverBody(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_worldTransform(btTransform value) {
-    gdxBulletJNI.btSolverBody_m_worldTransform_set(swigCPtr, this, btTransform.getCPtr(value), value);
-  }
-
-  public btTransform getM_worldTransform() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_worldTransform_get(swigCPtr, this);
+  public btTransform getWorldTransform() {
+    long cPtr = gdxBulletJNI.btSolverBody_worldTransform_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_deltaLinearVelocity(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_deltaLinearVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setDeltaLinearVelocity(btVector3 value) {
+    gdxBulletJNI.btSolverBody_deltaLinearVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_deltaLinearVelocity() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_deltaLinearVelocity_get(swigCPtr, this);
+  public btVector3 getDeltaLinearVelocity() {
+    long cPtr = gdxBulletJNI.btSolverBody_deltaLinearVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_deltaAngularVelocity(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_deltaAngularVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setDeltaAngularVelocity(btVector3 value) {
+    gdxBulletJNI.btSolverBody_deltaAngularVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_deltaAngularVelocity() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_deltaAngularVelocity_get(swigCPtr, this);
+  public btVector3 getDeltaAngularVelocity() {
+    long cPtr = gdxBulletJNI.btSolverBody_deltaAngularVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_angularFactor(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_angularFactor_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAngularFactor(btVector3 value) {
+    gdxBulletJNI.btSolverBody_angularFactor_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_angularFactor() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_angularFactor_get(swigCPtr, this);
+  public btVector3 getAngularFactor() {
+    long cPtr = gdxBulletJNI.btSolverBody_angularFactor_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_linearFactor(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_linearFactor_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLinearFactor(btVector3 value) {
+    gdxBulletJNI.btSolverBody_linearFactor_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_linearFactor() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_linearFactor_get(swigCPtr, this);
+  public btVector3 getLinearFactor() {
+    long cPtr = gdxBulletJNI.btSolverBody_linearFactor_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_invMass(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_invMass_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setInvMass(btVector3 value) {
+    gdxBulletJNI.btSolverBody_invMass_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_invMass() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_invMass_get(swigCPtr, this);
+  public btVector3 getInvMass() {
+    long cPtr = gdxBulletJNI.btSolverBody_invMass_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_pushVelocity(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_pushVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setPushVelocity(btVector3 value) {
+    gdxBulletJNI.btSolverBody_pushVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_pushVelocity() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_pushVelocity_get(swigCPtr, this);
+  public btVector3 getPushVelocity() {
+    long cPtr = gdxBulletJNI.btSolverBody_pushVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_turnVelocity(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_turnVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setTurnVelocity(btVector3 value) {
+    gdxBulletJNI.btSolverBody_turnVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_turnVelocity() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_turnVelocity_get(swigCPtr, this);
+  public btVector3 getTurnVelocity() {
+    long cPtr = gdxBulletJNI.btSolverBody_turnVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_linearVelocity(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_linearVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setLinearVelocity(btVector3 value) {
+    gdxBulletJNI.btSolverBody_linearVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_linearVelocity() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_linearVelocity_get(swigCPtr, this);
+  public btVector3 getLinearVelocity() {
+    long cPtr = gdxBulletJNI.btSolverBody_linearVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_angularVelocity(btVector3 value) {
-    gdxBulletJNI.btSolverBody_m_angularVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setAngularVelocity(btVector3 value) {
+    gdxBulletJNI.btSolverBody_angularVelocity_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_angularVelocity() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_angularVelocity_get(swigCPtr, this);
+  public btVector3 getAngularVelocity() {
+    long cPtr = gdxBulletJNI.btSolverBody_angularVelocity_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_originalBody(btRigidBody value) {
-    gdxBulletJNI.btSolverBody_m_originalBody_set(swigCPtr, this, btRigidBody.getCPtr(value), value);
+  public void setOriginalBody(btRigidBody value) {
+    gdxBulletJNI.btSolverBody_originalBody_set(swigCPtr, this, btRigidBody.getCPtr(value), value);
   }
 
-  public btRigidBody getM_originalBody() {
-    long cPtr = gdxBulletJNI.btSolverBody_m_originalBody_get(swigCPtr, this);
+  public btRigidBody getOriginalBody() {
+    long cPtr = gdxBulletJNI.btSolverBody_originalBody_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
   }
 
   public void setWorldTransform(Matrix4 worldTransform) {
     gdxBulletJNI.btSolverBody_setWorldTransform(swigCPtr, this, worldTransform);
   }
-
-  public Matrix4 getWorldTransform() {
-	return gdxBulletJNI.btSolverBody_getWorldTransform(swigCPtr, this);
-}
 
   public void getVelocityInLocalPointObsolete(Vector3 rel_pos, Vector3 velocity) {
     gdxBulletJNI.btSolverBody_getVelocityInLocalPointObsolete(swigCPtr, this, rel_pos, velocity);
@@ -162,22 +166,6 @@ public class btSolverBody {
   public void internalApplyPushImpulse(Vector3 linearComponent, Vector3 angularComponent, float impulseMagnitude) {
     gdxBulletJNI.btSolverBody_internalApplyPushImpulse(swigCPtr, this, linearComponent, angularComponent, impulseMagnitude);
   }
-
-  public Vector3 getDeltaLinearVelocity() {
-	return gdxBulletJNI.btSolverBody_getDeltaLinearVelocity(swigCPtr, this);
-}
-
-  public Vector3 getDeltaAngularVelocity() {
-	return gdxBulletJNI.btSolverBody_getDeltaAngularVelocity(swigCPtr, this);
-}
-
-  public Vector3 getPushVelocity() {
-	return gdxBulletJNI.btSolverBody_getPushVelocity(swigCPtr, this);
-}
-
-  public Vector3 getTurnVelocity() {
-	return gdxBulletJNI.btSolverBody_getTurnVelocity(swigCPtr, this);
-}
 
   public Vector3 internalGetDeltaLinearVelocity() {
 	return gdxBulletJNI.btSolverBody_internalGetDeltaLinearVelocity(swigCPtr, this);

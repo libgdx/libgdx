@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
@@ -37,7 +38,7 @@ import com.badlogic.gdx.utils.Pools;
  * 140, a relatively arbitrary size.
  * @author mzechner
  * @author Nathan Sweet */
-public class Slider extends Widget {
+public class Slider extends Widget implements Disableable {
 	private SliderStyle style;
 	private float min, max, stepSize;
 	private float value, animateFromValue;

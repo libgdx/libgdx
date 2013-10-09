@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class HullResult {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class HullResult extends BulletBase {
+	private long swigCPtr;
+	
+	protected HullResult(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected HullResult(long cPtr, boolean cMemoryOwn) {
+		this("HullResult", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(HullResult obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected HullResult(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(HullResult obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_HullResult(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_HullResult(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public HullResult() {
     this(gdxBulletJNI.new_HullResult(), true);
@@ -60,12 +68,12 @@ public class HullResult {
     return gdxBulletJNI.HullResult_mNumOutputVertices_get(swigCPtr, this);
   }
 
-  public void setM_OutputVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    gdxBulletJNI.HullResult_m_OutputVertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setOutputVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
+    gdxBulletJNI.HullResult_OutputVertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getM_OutputVertices() {
-    long cPtr = gdxBulletJNI.HullResult_m_OutputVertices_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getOutputVertices() {
+    long cPtr = gdxBulletJNI.HullResult_OutputVertices_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
   }
 
@@ -85,12 +93,12 @@ public class HullResult {
     return gdxBulletJNI.HullResult_mNumIndices_get(swigCPtr, this);
   }
 
-  public void setM_Indices(SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t value) {
-    gdxBulletJNI.HullResult_m_Indices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t.getCPtr(value));
+  public void setIndices(SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t value) {
+    gdxBulletJNI.HullResult_Indices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t getM_Indices() {
-    long cPtr = gdxBulletJNI.HullResult_m_Indices_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t getIndices() {
+    long cPtr = gdxBulletJNI.HullResult_Indices_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_unsigned_int_t(cPtr, false);
   }
 

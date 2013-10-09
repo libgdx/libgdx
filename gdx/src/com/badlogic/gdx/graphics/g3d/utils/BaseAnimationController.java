@@ -1,5 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -14,6 +15,12 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+/** Base class for applying one or more {@link Animation}s to a {@link ModelInstance}.
+ * This class only applies the actual {@link Node} transformations, 
+ * it does not manage animations or keep track of animation states. See {@link AnimationController}
+ * for an implementation of this class which does manage animations.
+ * 
+ * @author Xoppa */
 public class BaseAnimationController {
 	public final static class Transform implements Poolable {
 		public final Vector3 translation = new Vector3();
@@ -61,8 +68,11 @@ public class BaseAnimationController {
 	};
 	private final static ObjectMap<Node, Transform> transforms = new ObjectMap<Node, Transform>();
 	private boolean applying = false;
+	/** The {@link ModelInstance} on which the animations are being performed. */
 	public final ModelInstance target;
 	
+	/** Construct a new BaseAnimationController.
+	 * @param target The {@link ModelInstance} on which the animations are being performed. */
 	public BaseAnimationController(final ModelInstance target) {
 		this.target = target;
 	}
@@ -159,6 +169,14 @@ public class BaseAnimationController {
 					out.put(node, pool.obtain().set(transform));
 				}
 			}
+		}
+	}
+	
+	/** Remove the specified animation, by marking the affected nodes as not animated. When switching animation, this should
+	 * be call prior to applyAnimation(s). */
+	protected void removeAnimation(final Animation animation) {
+		for (final NodeAnimation nodeAnim : animation.nodeAnimations) {
+			nodeAnim.node.isAnimated = false;
 		}
 	}
 }

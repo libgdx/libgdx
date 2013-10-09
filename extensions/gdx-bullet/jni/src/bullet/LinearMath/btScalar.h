@@ -158,7 +158,8 @@ inline int	btGetVersion()
 	//non-windows systems
 
 #if (defined (__APPLE__) && (!defined (BT_USE_DOUBLE_PRECISION)))
-    #if defined (__i386__) || defined (__x86_64__)
+#include <TargetConditionals.h>
+    #if (defined (__i386__) || defined (__x86_64__)) && (!(TARGET_IPHONE_SIMULATOR))
         #define BT_USE_SSE
 		//BT_USE_SSE_IN_API is enabled on Mac OSX by default, because memory is automatically aligned on 16-byte boundaries
 		//if apps run into issues, we will disable the next line

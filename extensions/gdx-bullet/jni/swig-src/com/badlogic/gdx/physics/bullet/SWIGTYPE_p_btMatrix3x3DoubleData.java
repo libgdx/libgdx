@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btMatrix3x3DoubleData {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btMatrix3x3DoubleData obj) {
+  protected static long getCPtr(SWIGTYPE_p_btMatrix3x3DoubleData obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

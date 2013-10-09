@@ -237,7 +237,7 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 		}
 
 		// since Box2D 2.2 we need to reset the friction of any existing contacts
-		List<Contact> contacts = world.getContactList();
+		Array<Contact> contacts = world.getContactList();
 		for (int i = 0; i < world.getContactCount(); i++) {
 			Contact contact = contacts.get(i);
 			contact.resetFriction();
@@ -289,8 +289,8 @@ public class Box2DCharacterControllerTest extends GdxTest implements Application
 
 	private boolean isPlayerGrounded (float deltaTime) {
 		groundedPlatform = null;
-		List<Contact> contactList = world.getContactList();
-		for (int i = 0; i < contactList.size(); i++) {
+		Array<Contact> contactList = world.getContactList();
+		for (int i = 0; i < contactList.size; i++) {
 			Contact contact = contactList.get(i);
 			if (contact.isTouching()
 				&& (contact.getFixtureA() == playerSensorFixture || contact.getFixtureB() == playerSensorFixture)) {

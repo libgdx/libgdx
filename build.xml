@@ -2,9 +2,6 @@
 	<description>libgdx distribution build file</description>
 	<property environment="env" />
 
-	<!-- ndk directory -->
-	<property name="env.NDK_HOME" value="/home/mzechner/android-ndk-r5"/>
-
 	<!-- library version -->
 	<property name="version" value="0.9.9-SNAPSHOT"/>
 
@@ -35,6 +32,17 @@
 		<ant antfile="build.xml" dir="extensions/gdx-setup-ui/"/>
 		<copy tofile="${distDir}/gdx-setup-ui.jar" file="extensions/gdx-setup-ui/gdx-setup-ui.jar"/>
 	</target>
+    
+    <!-- new gdx setup -->
+    <target name="gdx-setup">
+		<fileset id="resourcefiles" dir="extensions/gdx-setup/src">
+            <exclude name="**/*.java"/>
+		</fileset>
+		<ant antfile="../../build-template.xml" dir="extensions/gdx-setup">
+			<property name="jar" value="gdx-setup"/>
+			<reference refid="resourcefiles"/>
+		</ant>
+    </target>
 
 	<!-- gdx core -->
 	<target name="gdx-core" depends="gdx-jnigen">
@@ -114,21 +122,17 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
-
-	<!-- gdx ios-monotouch backend -->
-	<target name="gdx-backend-iosmonotouch" depends="gdx-core">
+    
+    <!-- gdx robovm backend -->
+    <target name="gdx-backend-robovm" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/monotouch-5.4.0.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/mscorlib-4.0.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/opentk-5.4.0.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-2.1.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-core-2.1.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/monotouch-jars/system-data-2.1.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-iosmonotouch/libs/objectal/libObjectAL.jar"/>
 		</path>
-		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-iosmonotouch">
-			<property name="jar" value="gdx-backend-iosmonotouch"/>
+        <ant antfile="fetch.xml">
+            <target name="fetch-robovm"/>
+        </ant>
+		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-robovm">
+			<property name="jar" value="gdx-backend-robovm"/>
 			<reference refid="classpath"/>
 		</ant>
 	</target>
@@ -313,62 +317,17 @@
 			<fileset dir="backends" includes="gdx-backend-lwjgl/src/com/badlogic/gdx/backends/lwjgl/LwjglApplet.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-android/src/com/badlogic/gdx/backends/android/AndroidApplicationConfiguration.java"/>
-			<fileset dir="backends" includes="gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSApplication.java"/>
-			<fileset dir="backends" includes="gdx-backend-iosmonotouch/src/com/badlogic/gdx/backends/ios/IOSApplicationConfiguration.java"/>
 			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplication.java"/>
 			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java"/>
+            <fileset dir="backends" includes="gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplication.java"/>
+			<fileset dir="backends" includes="gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplicationConfiguration.java"/>
 		</javadoc>
 	</target>
 
-	<!-- assumes that all the .dll and .a files have been compiled on a Mac and copied on top
-	of the current libgdx folder -->
-	<target name="copy-iosfiles">
-		<!-- copy dll and .a files as well as IKVM, monotouch and ObjectAL binaries to ios folder-->
-		<copy todir="${distDir}/ios" flatten="true" failonerror="false">
-			<fileset dir="gdx/libs/ios32/">
-				<include name="*.a"/>
-				<include name="*.dll"/>
-				<include name="*.dll.mdb"/>
-			</fileset>
-			<fileset dir="backends/gdx-backend-iosmonotouch/libs/ios32">
-				<include name="*.dll"/>
-				<include name="*.dll.mdb"/>
-				<include name="*.a"/>
-			</fileset>
-		</copy>
-		<copy todir="${distDir}/ios/ikvm" failonerror="false">
-			<fileset dir="backends/gdx-backend-iosmonotouch/libs/ikvm"/>
-		</copy>
-		<copy todir="${distDir}/ios/monotouch-jars" failonerror="false">
-			<fileset dir="backends/gdx-backend-iosmonotouch/libs/monotouch-jars"/>
-		</copy>
-		<copy todir="${distDir}/ios/objectal" failonerror="false">
-			<fileset dir="backends/gdx-backend-iosmonotouch/libs/objectal"/>
-		</copy>
-
-		<!-- copy freetype extension dll and .a files -->
-		<copy todir="${distDir}/extensions/gdx-freetype/ios" failonerror="false">
-			<fileset dir="extensions/gdx-freetype/libs/ios32">
-				<include name="*.a"/>
-				<include name="*.dll"/>
-				<include name="*.dll.mdb"/>
-			</fileset>
-		</copy>
-
-		<!-- copy bullet extension dll and .a files -->
-		<copy todir="${distDir}/extensions/gdx-bullet/ios" failonerror="false">
-			<fileset dir="extensions/gdx-bullet/libs/ios32">
-				<include name="*.a"/>
-				<include name="*.dll"/>
-				<include name="*.dll.mdb"/>
-			</fileset>
-		</copy>
-	</target>
-
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-iosmonotouch,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
+depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
 
-	<target name="all" depends="jars,docs,copy-iosfiles">
+	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->
 		<copy tofile="${distDir}/README" file="README.md"/>
 		<copy tofile="${distDir}/LICENSE" file="LICENSE"/>
@@ -378,5 +337,6 @@ depends="clean,gdx-setup-ui,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jg
 
 		<!-- zip dist dir -->
 		<zip destfile="libgdx-${version}.zip" basedir="${distDir}"/>
+		<checksum file="libgdx-${version}.zip" forceOverwrite="yes" />
 	</target>
 </project>

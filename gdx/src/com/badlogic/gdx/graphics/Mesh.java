@@ -18,9 +18,7 @@ package com.badlogic.gdx.graphics;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Application;
@@ -40,6 +38,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -74,7 +73,7 @@ public class Mesh implements Disposable {
 	}
 
 	/** list of all meshes **/
-	static final Map<Application, List<Mesh>> meshes = new HashMap<Application, List<Mesh>>();
+	static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
 
 	/** used for benchmarking **/
 	public static boolean forceVBO = false;
@@ -281,7 +280,7 @@ public class Mesh implements Disposable {
 			if (transformations != null)
 				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset / vertexSize, vsize / vertexSize);
 			mesh.getIndices(indices, ioffset);
-			for (int j = 0; j < isize; i++)
+			for (int j = 0; j < isize; j++)
 				indices[ioffset+j] = (short)(indices[ioffset+j] + voffset);
 			voffset += vsize;
 			ioffset += isize;
@@ -293,8 +292,7 @@ public class Mesh implements Disposable {
 		return result;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
-	 * fixed point an IllegalArgumentException will be thrown.
+	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 * 
 	 * @param vertices the vertices.
 	 * @return the mesh for invocation chaining.*/
@@ -304,8 +302,7 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
-	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format. If this mesh is configured to use
-	 * fixed point an IllegalArgumentException will be thrown.
+	/** Sets the vertices of this Mesh. The attributes are assumed to be given in float format.
 	 * 
 	 * @param vertices the vertices.
 	 * @param offset the offset into the vertices array
@@ -672,7 +669,7 @@ public class Mesh implements Disposable {
 
 	/** Frees all resources associated with this Mesh */
 	public void dispose () {
-		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).remove(this);
+		if (meshes.get(Gdx.app) != null) meshes.get(Gdx.app).removeValue(this, true);
 		vertices.dispose();
 		indices.dispose();
 	}
@@ -830,8 +827,8 @@ public class Mesh implements Disposable {
 	}
 
 	private static void addManagedMesh (Application app, Mesh mesh) {
-		List<Mesh> managedResources = meshes.get(app);
-		if (managedResources == null) managedResources = new ArrayList<Mesh>();
+		Array<Mesh> managedResources = meshes.get(app);
+		if (managedResources == null) managedResources = new Array<Mesh>();
 		managedResources.add(mesh);
 		meshes.put(app, managedResources);
 	}
@@ -839,13 +836,13 @@ public class Mesh implements Disposable {
 	/** Invalidates all meshes so the next time they are rendered new VBO handles are generated.
 	 * @param app */
 	public static void invalidateAllMeshes (Application app) {
-		List<Mesh> meshesList = meshes.get(app);
-		if (meshesList == null) return;
-		for (int i = 0; i < meshesList.size(); i++) {
-			if (meshesList.get(i).vertices instanceof VertexBufferObject) {
-				((VertexBufferObject)meshesList.get(i).vertices).invalidate();
+		Array<Mesh> meshesArray = meshes.get(app);
+		if (meshesArray == null) return;
+		for (int i = 0; i < meshesArray.size; i++) {
+			if (meshesArray.get(i).vertices instanceof VertexBufferObject) {
+				((VertexBufferObject)meshesArray.get(i).vertices).invalidate();
 			}
-			meshesList.get(i).indices.invalidate();
+			meshesArray.get(i).indices.invalidate();
 		}
 	}
 
@@ -859,7 +856,7 @@ public class Mesh implements Disposable {
 		int i = 0;
 		builder.append("Managed meshes/app: { ");
 		for (Application app : meshes.keySet()) {
-			builder.append(meshes.get(app).size());
+			builder.append(meshes.get(app).size);
 			builder.append(" ");
 		}
 		builder.append("}");

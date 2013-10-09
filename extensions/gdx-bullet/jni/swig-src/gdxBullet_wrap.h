@@ -158,88 +158,65 @@ protected:
     bool swig_override[2];
 };
 
-class SwigDirector_ContactAddedListenerByWrapper : public ContactAddedListenerByWrapper, public Swig::Director {
+class SwigDirector_ContactListener : public ContactListener, public Swig::Director {
 
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ContactAddedListenerByWrapper(JNIEnv *jenv);
+    SwigDirector_ContactListener(JNIEnv *jenv, bool dummy);
+    virtual bool onContactAdded(btManifoldPoint &cp, btCollisionObjectWrapper const *colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper const *colObj1Wrap, int partId1, int index1);
+    virtual bool onContactAdded(btManifoldPoint &cp, btCollisionObject const *colObj0, int partId0, int index0, btCollisionObject const *colObj1, int partId1, int index1);
+    virtual bool onContactAdded(btManifoldPoint &cp, int userValue0, int partId0, int index0, int userValue1, int partId1, int index1);
     virtual bool onContactAdded(btManifoldPoint &cp, btCollisionObjectWrapper const *colObj0Wrap, int partId0, int index0, bool match0, btCollisionObjectWrapper const *colObj1Wrap, int partId1, int index1, bool match1);
-public:
-    bool swig_overrides(int n) {
-      return (n < 1 ? swig_override[n] : false);
-    }
-protected:
-    bool swig_override[1];
-};
-
-class SwigDirector_ContactAddedListenerByObject : public ContactAddedListenerByObject, public Swig::Director {
-
-public:
-    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ContactAddedListenerByObject(JNIEnv *jenv);
     virtual bool onContactAdded(btManifoldPoint &cp, btCollisionObject const *colObj0, int partId0, int index0, bool match0, btCollisionObject const *colObj1, int partId1, int index1, bool match1);
-public:
-    bool swig_overrides(int n) {
-      return (n < 1 ? swig_override[n] : false);
-    }
-protected:
-    bool swig_override[1];
-};
-
-class SwigDirector_ContactAddedListenerByValue : public ContactAddedListenerByValue, public Swig::Director {
-
-public:
-    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ContactAddedListenerByValue(JNIEnv *jenv);
     virtual bool onContactAdded(btManifoldPoint &cp, int userValue0, int partId0, int index0, bool match0, int userValue1, int partId1, int index1, bool match1);
-public:
-    bool swig_overrides(int n) {
-      return (n < 1 ? swig_override[n] : false);
-    }
-protected:
-    bool swig_override[1];
-};
-
-class SwigDirector_ContactProcessedListenerByObject : public ContactProcessedListenerByObject, public Swig::Director {
-
-public:
-    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ContactProcessedListenerByObject(JNIEnv *jenv);
+    virtual bool onContactAdded(btCollisionObjectWrapper const *colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper const *colObj1Wrap, int partId1, int index1);
+    virtual bool onContactAdded(btCollisionObject const *colObj0, int partId0, int index0, btCollisionObject const *colObj1, int partId1, int index1);
+    virtual bool onContactAdded(int userValue0, int partId0, int index0, int userValue1, int partId1, int index1);
+    virtual bool onContactAdded(btCollisionObjectWrapper const *colObj0Wrap, int partId0, int index0, bool match0, btCollisionObjectWrapper const *colObj1Wrap, int partId1, int index1, bool match1);
+    virtual bool onContactAdded(btCollisionObject const *colObj0, int partId0, int index0, bool match0, btCollisionObject const *colObj1, int partId1, int index1, bool match1);
+    virtual bool onContactAdded(int userValue0, int partId0, int index0, bool match0, int userValue1, int partId1, int index1, bool match1);
+    virtual void onContactProcessed(btManifoldPoint &cp, btCollisionObject const *colObj0, btCollisionObject const *colObj1);
+    virtual void onContactProcessed(btManifoldPoint &cp, int userValue0, int userValue1);
     virtual void onContactProcessed(btManifoldPoint &cp, btCollisionObject const *colObj0, bool match0, btCollisionObject const *colObj1, bool match1);
-public:
-    bool swig_overrides(int n) {
-      return (n < 1 ? swig_override[n] : false);
-    }
-protected:
-    bool swig_override[1];
-};
-
-class SwigDirector_ContactProcessedListenerByValue : public ContactProcessedListenerByValue, public Swig::Director {
-
-public:
-    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ContactProcessedListenerByValue(JNIEnv *jenv);
     virtual void onContactProcessed(btManifoldPoint &cp, int userValue0, bool match0, int userValue1, bool match1);
+    virtual void onContactProcessed(btCollisionObject const *colObj0, btCollisionObject const *colObj1);
+    virtual void onContactProcessed(int userValue0, int userValue1);
+    virtual void onContactProcessed(btCollisionObject const *colObj0, bool match0, btCollisionObject const *colObj1, bool match1);
+    virtual void onContactProcessed(int userValue0, bool match0, int userValue1, bool match1);
+    virtual void onContactDestroyed(int manifoldPointUserValue);
+    virtual void onContactStarted(btPersistentManifold *manifold);
+    virtual void onContactStarted(btCollisionObject const *colObj0, btCollisionObject const *colObj1);
+    virtual void onContactStarted(int const &userValue0, int const &userValue1);
+    virtual void onContactStarted(btPersistentManifold *manifold, bool const &match0, bool const &match1);
+    virtual void onContactStarted(btCollisionObject const *colObj0, bool const &match0, btCollisionObject const *colObj1, bool const &match1);
+    virtual void onContactStarted(int const &userValue0, bool const &match0, int const &userValue1, bool const &match1);
+    virtual void onContactEnded(btPersistentManifold *manifold);
+    virtual void onContactEnded(btCollisionObject const *colObj0, btCollisionObject const *colObj1);
+    virtual void onContactEnded(int const &userValue0, int const &userValue1);
+    virtual void onContactEnded(btPersistentManifold *manifold, bool const &match0, bool const &match1);
+    virtual void onContactEnded(btCollisionObject const *colObj0, bool const &match0, btCollisionObject const *colObj1, bool const &match1);
+    virtual void onContactEnded(int const &userValue0, bool const &match0, int const &userValue1, bool const &match1);
 public:
     bool swig_overrides(int n) {
-      return (n < 1 ? swig_override[n] : false);
+      return (n < 33 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[1];
+    bool swig_override[33];
 };
 
-class SwigDirector_ContactDestroyedListener : public ContactDestroyedListener, public Swig::Director {
+class SwigDirector_ContactCache : public ContactCache, public Swig::Director {
 
 public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
-    SwigDirector_ContactDestroyedListener(JNIEnv *jenv);
-    virtual void onContactDestroyed(int manifoldPointUserValue);
+    SwigDirector_ContactCache(JNIEnv *jenv, bool dummy);
+    virtual void onContactStarted(btPersistentManifold *manifold, bool const &match0, bool const &match1);
+    virtual void onContactEnded(btCollisionObject const *colObj0, bool const &match0, btCollisionObject const *colObj1, bool const &match1);
 public:
     bool swig_overrides(int n) {
-      return (n < 1 ? swig_override[n] : false);
+      return (n < 2 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[1];
+    bool swig_override[2];
 };
 
 class SwigDirector_InternalTickCallback : public InternalTickCallback, public Swig::Director {

@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSphereSphereCollisionAlgorithm extends btActivatingCollisionAlgorithm {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSphereSphereCollisionAlgorithm(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSphereSphereCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSphereSphereCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
+		this("btSphereSphereCollisionAlgorithm", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSphereSphereCollisionAlgorithm obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSphereSphereCollisionAlgorithm(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSphereSphereCollisionAlgorithm_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSphereSphereCollisionAlgorithm obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSphereSphereCollisionAlgorithm(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSphereSphereCollisionAlgorithm(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btSphereSphereCollisionAlgorithm(btPersistentManifold mf, btCollisionAlgorithmConstructionInfo ci, btCollisionObjectWrapper col0Wrap, btCollisionObjectWrapper col1Wrap) {
     this(gdxBulletJNI.new_btSphereSphereCollisionAlgorithm__SWIG_0(btPersistentManifold.getCPtr(mf), mf, btCollisionAlgorithmConstructionInfo.getCPtr(ci), ci, btCollisionObjectWrapper.getCPtr(col0Wrap), col0Wrap, btCollisionObjectWrapper.getCPtr(col1Wrap), col1Wrap), true);

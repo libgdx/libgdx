@@ -28,6 +28,7 @@ import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
+import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
@@ -39,6 +40,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
@@ -89,6 +91,7 @@ public class AssetManager implements Disposable {
 		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
+		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
@@ -119,6 +122,12 @@ public class AssetManager implements Disposable {
 		T asset = assetContainer.getObject(type);
 		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		return asset;
+	}
+
+	/** @param assetDescriptor the asset descriptor
+	 * @return the asset */
+	public synchronized <T> T get (AssetDescriptor<T> assetDescriptor) {
+		return get(assetDescriptor.fileName, assetDescriptor.type);
 	}
 
 	/** Removes the asset and all its dependencies if they are not used by other assets.

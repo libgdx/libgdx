@@ -67,7 +67,7 @@ public class LongArray {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public LongArray (boolean ordered, long[] array, int startIndex, int count) {
-		this(ordered, array.length);
+		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
@@ -108,6 +108,11 @@ public class LongArray {
 	public void set (int index, long value) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		items[index] = value;
+	}
+	
+	public void incr (int index, long value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] += value;
 	}
 
 	public void insert (int index, long value) {
@@ -219,6 +224,7 @@ public class LongArray {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 
@@ -244,6 +250,7 @@ public class LongArray {
 	}
 
 	public void reverse () {
+		long[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
 			long temp = items[i];
@@ -253,6 +260,7 @@ public class LongArray {
 	}
 
 	public void shuffle () {
+		long[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = MathUtils.random(i);
 			long temp = items[i];

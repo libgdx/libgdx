@@ -9,7 +9,9 @@ import org.robovm.cocoatouch.uikit.UIAccelerometerDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertView;
 import org.robovm.cocoatouch.uikit.UIAlertViewDelegate;
 import org.robovm.cocoatouch.uikit.UIAlertViewStyle;
+import org.robovm.cocoatouch.uikit.UIApplication;
 import org.robovm.cocoatouch.uikit.UIEvent;
+import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
 import org.robovm.cocoatouch.uikit.UITextField;
 import org.robovm.cocoatouch.uikit.UITouch;
 import org.robovm.cocoatouch.uikit.UITouchPhase;
@@ -37,7 +39,7 @@ public class IOSInput implements Input {
 	int[] touchX = new int[MAX_TOUCHES];
 	int[] touchY = new int[MAX_TOUCHES];
 	// we store the pointer to the UITouch struct here, or 0
-	int[] touchDown = new int[MAX_TOUCHES];
+	long[] touchDown = new long[MAX_TOUCHES];
 	int numTouched = 0;
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
@@ -61,6 +63,13 @@ public class IOSInput implements Input {
 	
 	void setupPeripherals() {
 		setupAccelerometer();
+		setupCompass();
+	}
+
+	private void setupCompass () {
+		if(config.useCompass) {
+			// FIXME implement compass
+		}
 	}
 
 	private void setupAccelerometer() {
@@ -69,11 +78,17 @@ public class IOSInput implements Input {
 
 				@Override
 				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
-					//super.DidAccelerate(accelerometer, values);
-					// FIXME take orientation into account, these values here get flipped by iOS...
-					acceleration[0] = (float)values.getX() * 10;
-					acceleration[1] = (float)values.getY() * 10;
-					acceleration[2] = (float)values.getZ() * 10;
+					float x = (float)values.getX() * 10;
+					float y = (float)values.getY() * 10;
+					float z = (float)values.getZ() * 10;
+
+					UIInterfaceOrientation orientation = app.graphics.viewController != null 
+																		? app.graphics.viewController.getInterfaceOrientation() 
+																		: UIApplication.getSharedApplication().getStatusBarOrientation();
+										
+					acceleration[0] = -x;
+					acceleration[1] = -y;
+					acceleration[2] = -z;
 				}
 			};
 			UIAccelerometer.getSharedAccelerometer().setDelegate(accelerometerDelegate);
@@ -187,7 +202,6 @@ public class IOSInput implements Input {
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text);
-		//app.uiViewController.add(uiAlertView);
 		uiAlertView.show();
 	}
 	
@@ -302,14 +316,20 @@ public class IOSInput implements Input {
 
 	@Override
 	public int getRotation() {
-		// FIXME implement this
+		UIInterfaceOrientation orientation = app.graphics.viewController != null 
+					? app.graphics.viewController.getInterfaceOrientation() 
+					: UIApplication.getSharedApplication().getStatusBarOrientation();
+		// we measure orientation counter clockwise, just like on Android
+		if(orientation == UIInterfaceOrientation.Portrait) return 0;
+		if(orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
+		if(orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
+		if(orientation == UIInterfaceOrientation.LandscapeRight) return 90;
 		return 0;
 	}
 
 	@Override
 	public Orientation getNativeOrientation() {
-		// FIXME implement this
-		return null;
+		return Orientation.Portrait;
 	}
 
 	@Override
@@ -371,7 +391,7 @@ public class IOSInput implements Input {
 	}
 	
 	private int findPointer(UITouch touch) {
-		int ptr = (int) touch.getHandle();
+		long ptr = touch.getHandle();
 		for(int i = 0; i < touchDown.length; i++) {
 			if(touchDown[i] == ptr) return i;
 		}
@@ -389,7 +409,7 @@ public class IOSInput implements Input {
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
 				
-				if(touch.getPhase() == UITouchPhase.Began) {
+				if(touch.getPhase() == UITouchPhase.Began) {					
 					event.pointer = getFreePointer();
 					touchDown[event.pointer] = (int) touch.getHandle();
 					touchX[event.pointer] = event.x;
@@ -409,7 +429,7 @@ public class IOSInput implements Input {
 				}
 				
 				if(touch.getPhase() == UITouchPhase.Cancelled ||
-					touch.getPhase() == UITouchPhase.Ended) {
+					touch.getPhase() == UITouchPhase.Ended) {					
 					event.pointer = findPointer(touch);
 					touchDown[event.pointer] = 0; 
 					touchX[event.pointer] = event.x;

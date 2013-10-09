@@ -13,69 +13,77 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class ClosestPointInput {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class ClosestPointInput extends BulletBase {
+	private long swigCPtr;
+	
+	protected ClosestPointInput(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected ClosestPointInput(long cPtr, boolean cMemoryOwn) {
+		this("ClosestPointInput", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(ClosestPointInput obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected ClosestPointInput(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(ClosestPointInput obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_ClosestPointInput(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_ClosestPointInput(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public ClosestPointInput() {
     this(gdxBulletJNI.new_ClosestPointInput(), true);
   }
 
-  public void setM_transformA(btTransform value) {
-    gdxBulletJNI.ClosestPointInput_m_transformA_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setTransformA(btTransform value) {
+    gdxBulletJNI.ClosestPointInput_transformA_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_transformA() {
-    long cPtr = gdxBulletJNI.ClosestPointInput_m_transformA_get(swigCPtr, this);
+  public btTransform getTransformA() {
+    long cPtr = gdxBulletJNI.ClosestPointInput_transformA_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_transformB(btTransform value) {
-    gdxBulletJNI.ClosestPointInput_m_transformB_set(swigCPtr, this, btTransform.getCPtr(value), value);
+  public void setTransformB(btTransform value) {
+    gdxBulletJNI.ClosestPointInput_transformB_set(swigCPtr, this, btTransform.getCPtr(value), value);
   }
 
-  public btTransform getM_transformB() {
-    long cPtr = gdxBulletJNI.ClosestPointInput_m_transformB_get(swigCPtr, this);
+  public btTransform getTransformB() {
+    long cPtr = gdxBulletJNI.ClosestPointInput_transformB_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setM_maximumDistanceSquared(float value) {
-    gdxBulletJNI.ClosestPointInput_m_maximumDistanceSquared_set(swigCPtr, this, value);
+  public void setMaximumDistanceSquared(float value) {
+    gdxBulletJNI.ClosestPointInput_maximumDistanceSquared_set(swigCPtr, this, value);
   }
 
-  public float getM_maximumDistanceSquared() {
-    return gdxBulletJNI.ClosestPointInput_m_maximumDistanceSquared_get(swigCPtr, this);
+  public float getMaximumDistanceSquared() {
+    return gdxBulletJNI.ClosestPointInput_maximumDistanceSquared_get(swigCPtr, this);
   }
 
-  public void setM_stackAlloc(btStackAlloc value) {
-    gdxBulletJNI.ClosestPointInput_m_stackAlloc_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
+  public void setStackAlloc(btStackAlloc value) {
+    gdxBulletJNI.ClosestPointInput_stackAlloc_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
   }
 
-  public btStackAlloc getM_stackAlloc() {
-    long cPtr = gdxBulletJNI.ClosestPointInput_m_stackAlloc_get(swigCPtr, this);
+  public btStackAlloc getStackAlloc() {
+    long cPtr = gdxBulletJNI.ClosestPointInput_stackAlloc_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btStackAlloc(cPtr, false);
   }
 

@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btTriangleIndexVertexMaterialArray extends btTriangleIndexVertexArray {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btTriangleIndexVertexMaterialArray(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btTriangleIndexVertexMaterialArray_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btTriangleIndexVertexMaterialArray(long cPtr, boolean cMemoryOwn) {
+		this("btTriangleIndexVertexMaterialArray", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btTriangleIndexVertexMaterialArray obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btTriangleIndexVertexMaterialArray(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btTriangleIndexVertexMaterialArray_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btTriangleIndexVertexMaterialArray obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btTriangleIndexVertexMaterialArray(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btTriangleIndexVertexMaterialArray(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btTriangleIndexVertexMaterialArray() {
     this(gdxBulletJNI.new_btTriangleIndexVertexMaterialArray__SWIG_0(), true);

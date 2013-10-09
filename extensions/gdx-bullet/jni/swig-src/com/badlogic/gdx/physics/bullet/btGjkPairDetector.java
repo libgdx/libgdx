@@ -13,63 +13,71 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btGjkPairDetector {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btGjkPairDetector extends BulletBase {
+	private long swigCPtr;
+	
+	protected btGjkPairDetector(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btGjkPairDetector(long cPtr, boolean cMemoryOwn) {
+		this("btGjkPairDetector", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btGjkPairDetector obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btGjkPairDetector(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btGjkPairDetector(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setLastUsedMethod(int value) {
+    gdxBulletJNI.btGjkPairDetector_lastUsedMethod_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btGjkPairDetector obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getLastUsedMethod() {
+    return gdxBulletJNI.btGjkPairDetector_lastUsedMethod_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setCurIter(int value) {
+    gdxBulletJNI.btGjkPairDetector_curIter_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btGjkPairDetector(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
+  public int getCurIter() {
+    return gdxBulletJNI.btGjkPairDetector_curIter_get(swigCPtr, this);
   }
 
-  public void setM_lastUsedMethod(int value) {
-    gdxBulletJNI.btGjkPairDetector_m_lastUsedMethod_set(swigCPtr, this, value);
+  public void setDegenerateSimplex(int value) {
+    gdxBulletJNI.btGjkPairDetector_degenerateSimplex_set(swigCPtr, this, value);
   }
 
-  public int getM_lastUsedMethod() {
-    return gdxBulletJNI.btGjkPairDetector_m_lastUsedMethod_get(swigCPtr, this);
+  public int getDegenerateSimplex() {
+    return gdxBulletJNI.btGjkPairDetector_degenerateSimplex_get(swigCPtr, this);
   }
 
-  public void setM_curIter(int value) {
-    gdxBulletJNI.btGjkPairDetector_m_curIter_set(swigCPtr, this, value);
+  public void setCatchDegeneracies(int value) {
+    gdxBulletJNI.btGjkPairDetector_catchDegeneracies_set(swigCPtr, this, value);
   }
 
-  public int getM_curIter() {
-    return gdxBulletJNI.btGjkPairDetector_m_curIter_get(swigCPtr, this);
-  }
-
-  public void setM_degenerateSimplex(int value) {
-    gdxBulletJNI.btGjkPairDetector_m_degenerateSimplex_set(swigCPtr, this, value);
-  }
-
-  public int getM_degenerateSimplex() {
-    return gdxBulletJNI.btGjkPairDetector_m_degenerateSimplex_get(swigCPtr, this);
-  }
-
-  public void setM_catchDegeneracies(int value) {
-    gdxBulletJNI.btGjkPairDetector_m_catchDegeneracies_set(swigCPtr, this, value);
-  }
-
-  public int getM_catchDegeneracies() {
-    return gdxBulletJNI.btGjkPairDetector_m_catchDegeneracies_get(swigCPtr, this);
+  public int getCatchDegeneracies() {
+    return gdxBulletJNI.btGjkPairDetector_catchDegeneracies_get(swigCPtr, this);
   }
 
   public btGjkPairDetector(btConvexShape objectA, btConvexShape objectB, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {

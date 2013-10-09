@@ -33,7 +33,7 @@ public abstract class BaseProjectConfiguration {
 	public String suffixCommon = "";
 	public String suffixDesktop = "-desktop";
 	public String suffixAndroid = "-android";
-	public String suffixIos = "-ios";
+	public String suffixRobovm = "-robovm";
 	public String suffixHtml = "-html";
 
 	public final List<String> libraries = new ArrayList<String>();

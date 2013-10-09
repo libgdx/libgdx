@@ -27,13 +27,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.tests.Bresenham2Test;
+import com.badlogic.gdx.tests.DelaunayTriangulatorTest;
+import com.badlogic.gdx.tests.EarClippingTriangulatorTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
+import com.badlogic.gdx.tests.MipMapTest;
+import com.badlogic.gdx.tests.PixelPerfectTest;
+import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TimerTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
+import com.badlogic.gdx.tests.g3d.FogTest;
+import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelLoaderTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
+import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.voxel.VoxelTest;
+import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -45,11 +54,11 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new VoxelTest();
+		GdxTest test = new PixelPerfectTest();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.useGL20 = test.needsGL20();
-		config.width = 1024;
-		config.height = 768;
+		config.width = 320;
+		config.height = 241;
 		new LwjglApplication(test, config);
 	}
 }

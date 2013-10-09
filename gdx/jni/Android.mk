@@ -86,7 +86,6 @@ LOCAL_SRC_FILES := android/AndroidGL20.cpp\
 	etc1/etc1_utils.cpp\
 	gdx2d/gdx2d.c\
 	gdx2d/stb_image.c\
-	iosgl/iosgl20.cpp\
 	memcpy_wrap.c
  
 include $(BUILD_SHARED_LIBRARY)

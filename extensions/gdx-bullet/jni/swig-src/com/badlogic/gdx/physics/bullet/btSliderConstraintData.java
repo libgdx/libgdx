@@ -13,106 +13,114 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSliderConstraintData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSliderConstraintData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSliderConstraintData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSliderConstraintData(long cPtr, boolean cMemoryOwn) {
+		this("btSliderConstraintData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSliderConstraintData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSliderConstraintData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSliderConstraintData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setTypeConstraintData(btTypedConstraintData value) {
+    gdxBulletJNI.btSliderConstraintData_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btSliderConstraintData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSliderConstraintData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_typeConstraintData(btTypedConstraintData value) {
-    gdxBulletJNI.btSliderConstraintData_m_typeConstraintData_set(swigCPtr, this, btTypedConstraintData.getCPtr(value), value);
-  }
-
-  public btTypedConstraintData getM_typeConstraintData() {
-    long cPtr = gdxBulletJNI.btSliderConstraintData_m_typeConstraintData_get(swigCPtr, this);
+  public btTypedConstraintData getTypeConstraintData() {
+    long cPtr = gdxBulletJNI.btSliderConstraintData_typeConstraintData_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTypedConstraintData(cPtr, false);
   }
 
-  public void setM_rbAFrame(btTransformFloatData value) {
-    gdxBulletJNI.btSliderConstraintData_m_rbAFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
+  public void setRbAFrame(btTransformFloatData value) {
+    gdxBulletJNI.btSliderConstraintData_rbAFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
   }
 
-  public btTransformFloatData getM_rbAFrame() {
-    long cPtr = gdxBulletJNI.btSliderConstraintData_m_rbAFrame_get(swigCPtr, this);
+  public btTransformFloatData getRbAFrame() {
+    long cPtr = gdxBulletJNI.btSliderConstraintData_rbAFrame_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
   }
 
-  public void setM_rbBFrame(btTransformFloatData value) {
-    gdxBulletJNI.btSliderConstraintData_m_rbBFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
+  public void setRbBFrame(btTransformFloatData value) {
+    gdxBulletJNI.btSliderConstraintData_rbBFrame_set(swigCPtr, this, btTransformFloatData.getCPtr(value), value);
   }
 
-  public btTransformFloatData getM_rbBFrame() {
-    long cPtr = gdxBulletJNI.btSliderConstraintData_m_rbBFrame_get(swigCPtr, this);
+  public btTransformFloatData getRbBFrame() {
+    long cPtr = gdxBulletJNI.btSliderConstraintData_rbBFrame_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btTransformFloatData(cPtr, false);
   }
 
-  public void setM_linearUpperLimit(float value) {
-    gdxBulletJNI.btSliderConstraintData_m_linearUpperLimit_set(swigCPtr, this, value);
+  public void setLinearUpperLimit(float value) {
+    gdxBulletJNI.btSliderConstraintData_linearUpperLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_linearUpperLimit() {
-    return gdxBulletJNI.btSliderConstraintData_m_linearUpperLimit_get(swigCPtr, this);
+  public float getLinearUpperLimit() {
+    return gdxBulletJNI.btSliderConstraintData_linearUpperLimit_get(swigCPtr, this);
   }
 
-  public void setM_linearLowerLimit(float value) {
-    gdxBulletJNI.btSliderConstraintData_m_linearLowerLimit_set(swigCPtr, this, value);
+  public void setLinearLowerLimit(float value) {
+    gdxBulletJNI.btSliderConstraintData_linearLowerLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_linearLowerLimit() {
-    return gdxBulletJNI.btSliderConstraintData_m_linearLowerLimit_get(swigCPtr, this);
+  public float getLinearLowerLimit() {
+    return gdxBulletJNI.btSliderConstraintData_linearLowerLimit_get(swigCPtr, this);
   }
 
-  public void setM_angularUpperLimit(float value) {
-    gdxBulletJNI.btSliderConstraintData_m_angularUpperLimit_set(swigCPtr, this, value);
+  public void setAngularUpperLimit(float value) {
+    gdxBulletJNI.btSliderConstraintData_angularUpperLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_angularUpperLimit() {
-    return gdxBulletJNI.btSliderConstraintData_m_angularUpperLimit_get(swigCPtr, this);
+  public float getAngularUpperLimit() {
+    return gdxBulletJNI.btSliderConstraintData_angularUpperLimit_get(swigCPtr, this);
   }
 
-  public void setM_angularLowerLimit(float value) {
-    gdxBulletJNI.btSliderConstraintData_m_angularLowerLimit_set(swigCPtr, this, value);
+  public void setAngularLowerLimit(float value) {
+    gdxBulletJNI.btSliderConstraintData_angularLowerLimit_set(swigCPtr, this, value);
   }
 
-  public float getM_angularLowerLimit() {
-    return gdxBulletJNI.btSliderConstraintData_m_angularLowerLimit_get(swigCPtr, this);
+  public float getAngularLowerLimit() {
+    return gdxBulletJNI.btSliderConstraintData_angularLowerLimit_get(swigCPtr, this);
   }
 
-  public void setM_useLinearReferenceFrameA(int value) {
-    gdxBulletJNI.btSliderConstraintData_m_useLinearReferenceFrameA_set(swigCPtr, this, value);
+  public void setUseLinearReferenceFrameA(int value) {
+    gdxBulletJNI.btSliderConstraintData_useLinearReferenceFrameA_set(swigCPtr, this, value);
   }
 
-  public int getM_useLinearReferenceFrameA() {
-    return gdxBulletJNI.btSliderConstraintData_m_useLinearReferenceFrameA_get(swigCPtr, this);
+  public int getUseLinearReferenceFrameA() {
+    return gdxBulletJNI.btSliderConstraintData_useLinearReferenceFrameA_get(swigCPtr, this);
   }
 
-  public void setM_useOffsetForConstraintFrame(int value) {
-    gdxBulletJNI.btSliderConstraintData_m_useOffsetForConstraintFrame_set(swigCPtr, this, value);
+  public void setUseOffsetForConstraintFrame(int value) {
+    gdxBulletJNI.btSliderConstraintData_useOffsetForConstraintFrame_set(swigCPtr, this, value);
   }
 
-  public int getM_useOffsetForConstraintFrame() {
-    return gdxBulletJNI.btSliderConstraintData_m_useOffsetForConstraintFrame_get(swigCPtr, this);
+  public int getUseOffsetForConstraintFrame() {
+    return gdxBulletJNI.btSliderConstraintData_useOffsetForConstraintFrame_get(swigCPtr, this);
   }
 
   public btSliderConstraintData() {

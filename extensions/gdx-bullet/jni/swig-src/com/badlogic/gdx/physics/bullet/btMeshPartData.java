@@ -13,101 +13,109 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btMeshPartData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btMeshPartData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btMeshPartData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btMeshPartData(long cPtr, boolean cMemoryOwn) {
+		this("btMeshPartData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btMeshPartData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btMeshPartData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btMeshPartData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setVertices3f(btVector3FloatData value) {
+    gdxBulletJNI.btMeshPartData_vertices3f_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
   }
 
-  public static long getCPtr(btMeshPartData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btMeshPartData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_vertices3f(btVector3FloatData value) {
-    gdxBulletJNI.btMeshPartData_m_vertices3f_set(swigCPtr, this, btVector3FloatData.getCPtr(value), value);
-  }
-
-  public btVector3FloatData getM_vertices3f() {
-    long cPtr = gdxBulletJNI.btMeshPartData_m_vertices3f_get(swigCPtr, this);
+  public btVector3FloatData getVertices3f() {
+    long cPtr = gdxBulletJNI.btMeshPartData_vertices3f_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3FloatData(cPtr, false);
   }
 
-  public void setM_vertices3d(btVector3DoubleData value) {
-    gdxBulletJNI.btMeshPartData_m_vertices3d_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
+  public void setVertices3d(btVector3DoubleData value) {
+    gdxBulletJNI.btMeshPartData_vertices3d_set(swigCPtr, this, btVector3DoubleData.getCPtr(value), value);
   }
 
-  public btVector3DoubleData getM_vertices3d() {
-    long cPtr = gdxBulletJNI.btMeshPartData_m_vertices3d_get(swigCPtr, this);
+  public btVector3DoubleData getVertices3d() {
+    long cPtr = gdxBulletJNI.btMeshPartData_vertices3d_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3DoubleData(cPtr, false);
   }
 
-  public void setM_indices32(btIntIndexData value) {
-    gdxBulletJNI.btMeshPartData_m_indices32_set(swigCPtr, this, btIntIndexData.getCPtr(value), value);
+  public void setIndices32(btIntIndexData value) {
+    gdxBulletJNI.btMeshPartData_indices32_set(swigCPtr, this, btIntIndexData.getCPtr(value), value);
   }
 
-  public btIntIndexData getM_indices32() {
-    long cPtr = gdxBulletJNI.btMeshPartData_m_indices32_get(swigCPtr, this);
+  public btIntIndexData getIndices32() {
+    long cPtr = gdxBulletJNI.btMeshPartData_indices32_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btIntIndexData(cPtr, false);
   }
 
-  public void setM_3indices16(btShortIntIndexTripletData value) {
-    gdxBulletJNI.btMeshPartData_m_3indices16_set(swigCPtr, this, btShortIntIndexTripletData.getCPtr(value), value);
+  public void set3indices16(btShortIntIndexTripletData value) {
+    gdxBulletJNI.btMeshPartData_3indices16_set(swigCPtr, this, btShortIntIndexTripletData.getCPtr(value), value);
   }
 
-  public btShortIntIndexTripletData getM_3indices16() {
-    long cPtr = gdxBulletJNI.btMeshPartData_m_3indices16_get(swigCPtr, this);
+  public btShortIntIndexTripletData get3indices16() {
+    long cPtr = gdxBulletJNI.btMeshPartData_3indices16_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btShortIntIndexTripletData(cPtr, false);
   }
 
-  public void setM_3indices8(btCharIndexTripletData value) {
-    gdxBulletJNI.btMeshPartData_m_3indices8_set(swigCPtr, this, btCharIndexTripletData.getCPtr(value), value);
+  public void set3indices8(btCharIndexTripletData value) {
+    gdxBulletJNI.btMeshPartData_3indices8_set(swigCPtr, this, btCharIndexTripletData.getCPtr(value), value);
   }
 
-  public btCharIndexTripletData getM_3indices8() {
-    long cPtr = gdxBulletJNI.btMeshPartData_m_3indices8_get(swigCPtr, this);
+  public btCharIndexTripletData get3indices8() {
+    long cPtr = gdxBulletJNI.btMeshPartData_3indices8_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCharIndexTripletData(cPtr, false);
   }
 
-  public void setM_indices16(btShortIntIndexData value) {
-    gdxBulletJNI.btMeshPartData_m_indices16_set(swigCPtr, this, btShortIntIndexData.getCPtr(value), value);
+  public void setIndices16(btShortIntIndexData value) {
+    gdxBulletJNI.btMeshPartData_indices16_set(swigCPtr, this, btShortIntIndexData.getCPtr(value), value);
   }
 
-  public btShortIntIndexData getM_indices16() {
-    long cPtr = gdxBulletJNI.btMeshPartData_m_indices16_get(swigCPtr, this);
+  public btShortIntIndexData getIndices16() {
+    long cPtr = gdxBulletJNI.btMeshPartData_indices16_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btShortIntIndexData(cPtr, false);
   }
 
-  public void setM_numTriangles(int value) {
-    gdxBulletJNI.btMeshPartData_m_numTriangles_set(swigCPtr, this, value);
+  public void setNumTriangles(int value) {
+    gdxBulletJNI.btMeshPartData_numTriangles_set(swigCPtr, this, value);
   }
 
-  public int getM_numTriangles() {
-    return gdxBulletJNI.btMeshPartData_m_numTriangles_get(swigCPtr, this);
+  public int getNumTriangles() {
+    return gdxBulletJNI.btMeshPartData_numTriangles_get(swigCPtr, this);
   }
 
-  public void setM_numVertices(int value) {
-    gdxBulletJNI.btMeshPartData_m_numVertices_set(swigCPtr, this, value);
+  public void setNumVertices(int value) {
+    gdxBulletJNI.btMeshPartData_numVertices_set(swigCPtr, this, value);
   }
 
-  public int getM_numVertices() {
-    return gdxBulletJNI.btMeshPartData_m_numVertices_get(swigCPtr, this);
+  public int getNumVertices() {
+    return gdxBulletJNI.btMeshPartData_numVertices_get(swigCPtr, this);
   }
 
   public btMeshPartData() {

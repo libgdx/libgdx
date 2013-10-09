@@ -24,14 +24,18 @@ import java.io.InputStreamReader;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */
 public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
+	private BoundingBox bounds;
+	private boolean ownsTexture;
 
 	public ParticleEffect () {
 		emitters = new Array(8);
@@ -148,10 +152,7 @@ public class ParticleEffect implements Disposable {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
 		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException ex) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 	}
 
@@ -170,6 +171,7 @@ public class ParticleEffect implements Disposable {
 	}
 
 	public void loadEmitterImages (FileHandle imagesDir) {
+		ownsTexture = true;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
@@ -186,9 +188,21 @@ public class ParticleEffect implements Disposable {
 	/** Disposes the texture for each sprite for each ParticleEmitter. */
 	@Override
 	public void dispose () {
+		if (!ownsTexture) return;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			emitter.getSprite().getTexture().dispose();
 		}
+	}
+	
+	/** Returns the bounding box for all active particles. z axis will always be zero. */
+	public BoundingBox getBoundingBox () {
+		if (bounds == null) bounds = new BoundingBox();
+
+		BoundingBox bounds = this.bounds;
+		bounds.inf();
+		for (ParticleEmitter emitter : this.emitters)
+			bounds.ext(emitter.getBoundingBox());
+		return bounds;
 	}
 }

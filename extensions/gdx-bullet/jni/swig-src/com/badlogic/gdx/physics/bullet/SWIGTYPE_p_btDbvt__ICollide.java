@@ -19,7 +19,7 @@ public class SWIGTYPE_p_btDbvt__ICollide {
     swigCPtr = 0;
   }
 
-  public static long getCPtr(SWIGTYPE_p_btDbvt__ICollide obj) {
+  protected static long getCPtr(SWIGTYPE_p_btDbvt__ICollide obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }

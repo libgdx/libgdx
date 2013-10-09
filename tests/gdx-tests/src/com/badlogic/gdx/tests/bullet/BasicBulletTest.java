@@ -20,15 +20,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
@@ -70,7 +72,7 @@ public class BasicBulletTest extends BulletTest {
 	}
 	
 	ModelBatch modelBatch;
-	Lights lights = new Lights(0.2f, 0.2f, 0.2f).add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f));
+	Environment lights;
 	ModelBuilder modelBuilder = new ModelBuilder();
 	
 	btCollisionConfiguration collisionConfiguration;
@@ -92,6 +94,11 @@ public class BasicBulletTest extends BulletTest {
 	public void create () {
 		super.create();
 		instructions = "Swipe for next test";
+		
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.2f, 0.2f, 0.2f, 1.f));
+		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f));
+		
 		// Set up the camera
 		final float width = Gdx.graphics.getWidth();
 		final float height = Gdx.graphics.getHeight();
@@ -138,7 +145,7 @@ public class BasicBulletTest extends BulletTest {
 		MotionState groundMotionState = new MotionState(ground.transform);
 		motionStates.add(groundMotionState);
 		btRigidBody groundBody = new btRigidBody(groundInfo);
-		groundInfo.setMotionState(groundMotionState);
+		groundBody.setMotionState(groundMotionState);
 		bodies.add(groundBody);
 		collisionWorld.addRigidBody(groundBody);
 		// Create the spheres
@@ -147,11 +154,11 @@ public class BasicBulletTest extends BulletTest {
 				for (float z = 0f; z <= 0f; z+= 2f) {
 					ModelInstance sphere = new ModelInstance(sphereModel);
 					instances.add(sphere);
-					sphere.transform.trn(x, y, z);
+					sphere.transform.trn(x+0.1f*MathUtils.random(), y+0.1f*MathUtils.random(), z+0.1f*MathUtils.random());
 					MotionState sphereMotionState = new MotionState(sphere.transform);
 					motionStates.add(sphereMotionState);
 					btRigidBody sphereBody = new btRigidBody(sphereInfo);
-					sphereInfo.setMotionState(sphereMotionState);
+					sphereBody.setMotionState(sphereMotionState);
 					bodies.add(sphereBody);
 					collisionWorld.addRigidBody(sphereBody);
 				}
@@ -182,23 +189,23 @@ public class BasicBulletTest extends BulletTest {
 	
 	@Override
 	public void dispose () {
-		collisionWorld.delete();
-		solver.delete();
-		broadphase.delete();
-		dispatcher.delete();
-		collisionConfiguration.delete();
+		collisionWorld.dispose();
+		solver.dispose();
+		broadphase.dispose();
+		dispatcher.dispose();
+		collisionConfiguration.dispose();
 		
 		for (btRigidBody body : bodies)
-			body.delete();
+			body.dispose();
 		bodies.clear();
 		for (MotionState motionState : motionStates)
-			motionState.delete();
+			motionState.dispose();
 		motionStates.clear();
 		for (btCollisionShape shape : shapes)
-			shape.delete();
+			shape.dispose();
 		shapes.clear();
 		for (btRigidBodyConstructionInfo info : bodyInfos)
-			info.delete();
+			info.dispose();
 		bodyInfos.clear();
 		
 		modelBatch.dispose();

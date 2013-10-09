@@ -13,47 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btCharIndexTripletData {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btCharIndexTripletData extends BulletBase {
+	private long swigCPtr;
+	
+	protected btCharIndexTripletData(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btCharIndexTripletData(long cPtr, boolean cMemoryOwn) {
+		this("btCharIndexTripletData", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btCharIndexTripletData obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btCharIndexTripletData(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btCharIndexTripletData(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setValues(short[] value) {
+    gdxBulletJNI.btCharIndexTripletData_values_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btCharIndexTripletData obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public short[] getValues() {
+    return gdxBulletJNI.btCharIndexTripletData_values_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setPad(char value) {
+    gdxBulletJNI.btCharIndexTripletData_pad_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btCharIndexTripletData(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_values(short[] value) {
-    gdxBulletJNI.btCharIndexTripletData_m_values_set(swigCPtr, this, value);
-  }
-
-  public short[] getM_values() {
-    return gdxBulletJNI.btCharIndexTripletData_m_values_get(swigCPtr, this);
-  }
-
-  public void setM_pad(char value) {
-    gdxBulletJNI.btCharIndexTripletData_m_pad_set(swigCPtr, this, value);
-  }
-
-  public char getM_pad() {
-    return gdxBulletJNI.btCharIndexTripletData_m_pad_get(swigCPtr, this);
+  public char getPad() {
+    return gdxBulletJNI.btCharIndexTripletData_pad_get(swigCPtr, this);
   }
 
   public btCharIndexTripletData() {

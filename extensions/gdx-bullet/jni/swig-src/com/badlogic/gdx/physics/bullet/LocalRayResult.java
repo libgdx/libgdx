@@ -13,69 +13,77 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class LocalRayResult {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class LocalRayResult extends BulletBase {
+	private long swigCPtr;
+	
+	protected LocalRayResult(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected LocalRayResult(long cPtr, boolean cMemoryOwn) {
+		this("LocalRayResult", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(LocalRayResult obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected LocalRayResult(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(LocalRayResult obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_LocalRayResult(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_LocalRayResult(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public LocalRayResult(btCollisionObject collisionObject, LocalShapeInfo localShapeInfo, Vector3 hitNormalLocal, float hitFraction) {
     this(gdxBulletJNI.new_LocalRayResult(btCollisionObject.getCPtr(collisionObject), collisionObject, LocalShapeInfo.getCPtr(localShapeInfo), localShapeInfo, hitNormalLocal, hitFraction), true);
   }
 
-  public void setM_collisionObject(btCollisionObject value) {
-    gdxBulletJNI.LocalRayResult_m_collisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
+  public void setCollisionObject(btCollisionObject value) {
+    gdxBulletJNI.LocalRayResult_collisionObject_set(swigCPtr, this, btCollisionObject.getCPtr(value), value);
   }
 
-  public btCollisionObject getM_collisionObject() {
-	return btCollisionObject.getInstance(gdxBulletJNI.LocalRayResult_m_collisionObject_get(swigCPtr, this), false);
+  public btCollisionObject getCollisionObject() {
+	return btCollisionObject.getInstance(gdxBulletJNI.LocalRayResult_collisionObject_get(swigCPtr, this), false);
 }
 
-  public void setM_localShapeInfo(LocalShapeInfo value) {
-    gdxBulletJNI.LocalRayResult_m_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);
+  public void setLocalShapeInfo(LocalShapeInfo value) {
+    gdxBulletJNI.LocalRayResult_localShapeInfo_set(swigCPtr, this, LocalShapeInfo.getCPtr(value), value);
   }
 
-  public LocalShapeInfo getM_localShapeInfo() {
-    long cPtr = gdxBulletJNI.LocalRayResult_m_localShapeInfo_get(swigCPtr, this);
+  public LocalShapeInfo getLocalShapeInfo() {
+    long cPtr = gdxBulletJNI.LocalRayResult_localShapeInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new LocalShapeInfo(cPtr, false);
   }
 
-  public void setM_hitNormalLocal(btVector3 value) {
-    gdxBulletJNI.LocalRayResult_m_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setHitNormalLocal(btVector3 value) {
+    gdxBulletJNI.LocalRayResult_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getM_hitNormalLocal() {
-    long cPtr = gdxBulletJNI.LocalRayResult_m_hitNormalLocal_get(swigCPtr, this);
+  public btVector3 getHitNormalLocal() {
+    long cPtr = gdxBulletJNI.LocalRayResult_hitNormalLocal_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setM_hitFraction(float value) {
-    gdxBulletJNI.LocalRayResult_m_hitFraction_set(swigCPtr, this, value);
+  public void setHitFraction(float value) {
+    gdxBulletJNI.LocalRayResult_hitFraction_set(swigCPtr, this, value);
   }
 
-  public float getM_hitFraction() {
-    return gdxBulletJNI.LocalRayResult_m_hitFraction_get(swigCPtr, this);
+  public float getHitFraction() {
+    return gdxBulletJNI.LocalRayResult_hitFraction_get(swigCPtr, this);
   }
 
 }

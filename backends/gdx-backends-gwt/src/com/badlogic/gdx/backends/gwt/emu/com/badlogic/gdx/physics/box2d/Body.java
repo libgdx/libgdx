@@ -16,12 +16,11 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
-
 import org.jbox2d.common.Vec2;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Array;
 
 /** A rigid body. These are created via World.CreateBody.
  * @author mzechner */
@@ -30,8 +29,8 @@ public class Body {
 	public final org.jbox2d.dynamics.Body body;
 	final Vec2 tmp = new Vec2();
 	final Vec2 tmp2 = new Vec2();
-	final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
-	final ArrayList<JointEdge> joints = new ArrayList<JointEdge>();
+	final Array<Fixture> fixtures = new Array<Fixture>();
+	final Array<JointEdge> joints = new Array<JointEdge>();
 
 	/** Constructs a new body with the given address
 	 * @param world the world
@@ -445,17 +444,17 @@ public class Body {
 	 * @warning This function is locked during callbacks. */
 	public void destroyFixture (Fixture fixture) {
 		body.destroyFixture(fixture.fixture);
-		fixtures.remove(fixture);
+		fixtures.removeValue(fixture, true);
 		world.fixtures.remove(fixture.fixture);
 	}
 
 	/** Get the list of all fixtures attached to this body. Do not modify the list! */
-	public ArrayList<Fixture> getFixtureList () {
+	public Array<Fixture> getFixtureList () {
 		return fixtures;
 	}
 
 	/** Get the list of all joints attached to this body. Do not modify the list! */
-	public ArrayList<JointEdge> getJointList () {
+	public Array<JointEdge> getJointList () {
 		// FIXME wow this is bad...
 		org.jbox2d.dynamics.joints.JointEdge jointEdge = body.getJointList();
 		joints.clear();

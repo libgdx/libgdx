@@ -14,38 +14,46 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btSoftBodyCollisionShape extends btConcaveShape {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btSoftBodyCollisionShape(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btSoftBodyCollisionShape_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSoftBodyCollisionShape(long cPtr, boolean cMemoryOwn) {
+		this("btSoftBodyCollisionShape", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSoftBodyCollisionShape obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSoftBodyCollisionShape(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btSoftBodyCollisionShape_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSoftBodyCollisionShape(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setBody(btSoftBody value) {
+    gdxBulletJNI.btSoftBodyCollisionShape_body_set(swigCPtr, this, btSoftBody.getCPtr(value), value);
   }
 
-  public static long getCPtr(btSoftBodyCollisionShape obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSoftBodyCollisionShape(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
-
-  public void setM_body(btSoftBody value) {
-    gdxBulletJNI.btSoftBodyCollisionShape_m_body_set(swigCPtr, this, btSoftBody.getCPtr(value), value);
-  }
-
-  public btSoftBody getM_body() {
-    long cPtr = gdxBulletJNI.btSoftBodyCollisionShape_m_body_get(swigCPtr, this);
+  public btSoftBody getBody() {
+    long cPtr = gdxBulletJNI.btSoftBodyCollisionShape_body_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btSoftBody(cPtr, false);
   }
 

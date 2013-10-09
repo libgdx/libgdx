@@ -31,6 +31,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Class for encoding and decoding ETC1 compressed images. Also provides methods to add a PKM header.
  * @author mzechner */
@@ -75,10 +76,7 @@ public class ETC1 {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't load pkm file '" + pkmFile + "'", e);
 			} finally {
-				if (in != null) try {
-					in.close();
-				} catch (Exception e) {
-				}
+				StreamUtils.closeQuietly(in);
 			}
 
 			width = getWidthPKM(compressedData, 0);
@@ -119,10 +117,7 @@ public class ETC1 {
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Couldn't write PKM file to '" + file + "'", e);
 			} finally {
-				if (write != null) try {
-					write.close();
-				} catch (Exception e) {
-				}
+				StreamUtils.closeQuietly(write);
 			}
 			compressedData.position(dataOffset);
 			compressedData.limit(compressedData.capacity());

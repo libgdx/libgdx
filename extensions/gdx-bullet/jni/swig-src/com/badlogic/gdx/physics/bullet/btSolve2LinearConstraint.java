@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSolve2LinearConstraint {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btSolve2LinearConstraint extends BulletBase {
+	private long swigCPtr;
+	
+	protected btSolve2LinearConstraint(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btSolve2LinearConstraint(long cPtr, boolean cMemoryOwn) {
+		this("btSolve2LinearConstraint", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btSolve2LinearConstraint obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btSolve2LinearConstraint(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btSolve2LinearConstraint obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btSolve2LinearConstraint(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btSolve2LinearConstraint(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btSolve2LinearConstraint(float tau, float damping) {
     this(gdxBulletJNI.new_btSolve2LinearConstraint(tau, damping), true);

@@ -80,7 +80,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * The projection and transformation matrices are a state of the ShapeRenderer, just like the color and will be applied to all
  * shapes until they are changed.
  * 
- * @author mzechner, stbachmann
+ * @author mzechner
+ * @author stbachmann
  * @author Nathan Sweet */
 public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
@@ -129,6 +130,10 @@ public class ShapeRenderer {
 	/** Sets the {@link Color} to be used by shapes. */
 	public void setColor (float r, float g, float b, float a) {
 		this.color.set(r, g, b, a);
+	}
+
+	public Color getColor () {
+		return color;
 	}
 
 	/** Sets the projection matrix to be used for rendering. Usually this will be set to {@link Camera#combined}.
@@ -208,28 +213,24 @@ public class ShapeRenderer {
 
 	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public final void line (float x, float y, float z, float x2, float y2, float z2) {
-	
-		line( x, y, z, x2, y2, z2, color, color );
+		line(x, y, z, x2, y2, z2, color, color);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
-	 * Lazy method that "just" calls the "other" method and unpacks the Vector3 for you */
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. Lazy method that "just" calls the
+	 * "other" method and unpacks the Vector3 for you */
 	public final void line (Vector3 v0, Vector3 v1) {
-		
-		line( v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color );
+		line(v0.x, v0.y, v0.z, v1.x, v1.y, v1.z, color, color);
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. */
 	public final void line (float x, float y, float x2, float y2) {
-		
-		line( x, y, 0.0f, x2, y2, 0.0f, color, color );
+		line(x, y, 0.0f, x2, y2, 0.0f, color, color);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}.
-	 * Lazy method that "just" calls the "other" method and unpacks the Vector2 for you */
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. Lazy method that "just" calls the
+	 * "other" method and unpacks the Vector2 for you */
 	public final void line (Vector2 v0, Vector2 v1) {
-		
-		line( v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color );
+		line(v0.x, v0.y, 0.0f, v1.x, v1.y, 0.0f, color, color);
 	}
 
 	/** Draws a line in the x/y plane. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
@@ -237,12 +238,11 @@ public class ShapeRenderer {
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
 	public final void line (float x, float y, float x2, float y2, Color c1, Color c2) {
-		
-		line( x, y, 0.0f, x2, y2, 0.0f, c1, c2 );
+		line(x, y, 0.0f, x2, y2, 0.0f, c1, c2);
 	}
 
-	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn
-	 * with 2 colors interpolated between start & end point.
+	/** Draws a line. The {@link ShapeType} passed to begin has to be {@link ShapeType#Line}. The line is drawn with 2 colors
+	 * interpolated between start & end point.
 	 * @param c1 Color at start of the line
 	 * @param c2 Color at end of the line */
 	public void line (float x, float y, float z, float x2, float y2, float z2, Color c1, Color c2) {
@@ -432,6 +432,84 @@ public class ShapeRenderer {
 		}
 	}
 
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The originX and
+	 * originY specify the point about which to rotate the rectangle. The rotation is in degrees. The {@link ShapeType} passed to
+	 * begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}. */
+	public void rect (float x, float y, float width, float height, float originX, float originY, float rotation) {
+		rect(x, y, width, height, originX, originY, rotation, color, color, color, color);
+	}
+
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The originX and
+	 * originY specify the point about which to rotate the rectangle. The rotation is in degrees. The {@link ShapeType} passed to
+	 * begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param col1 The color at (x, y)
+	 * @param col2 The color at (x + width, y)
+	 * @param col3 The color at (x + width, y + height)
+	 * @param col4 The color at (x, y + height) */
+	public void rect (float x, float y, float width, float height, float originX, float originY, float rotation, Color col1,
+		Color col2, Color col3, Color col4) {
+		if (currType != ShapeType.Filled && currType != ShapeType.Line)
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+
+		checkDirty();
+		checkFlush(8);
+
+		float r = (float)Math.toRadians(rotation);
+		float c = (float)Math.cos(r);
+		float s = (float)Math.sin(r);
+
+		float x1, y1, x2, y2, x3, y3, x4, y4;
+
+		x1 = x + c * (0 - originX) + -s * (0 - originY) + originX;
+		y1 = y + s * (0 - originX) + c * (0 - originY) + originY;
+
+		x2 = x + c * (width - originX) + -s * (0 - originY) + originX;
+		y2 = y + s * (width - originX) + c * (0 - originY) + originY;
+
+		x3 = x + c * (width - originX) + -s * (height - originY) + originX;
+		y3 = y + s * (width - originX) + c * (height - originY) + originY;
+
+		x4 = x + c * (0 - originX) + -s * (height - originY) + originX;
+		y4 = y + s * (0 - originX) + c * (height - originY) + originY;
+
+		if (currType == ShapeType.Line) {
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x3, y3, 0);
+
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x3, y3, 0);
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x4, y4, 0);
+
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
+			renderer.vertex(x4, y4, 0);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+		} else {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x4, y4, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1, y1, 0);
+		}
+
+	}
+
 	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
 	 * to begin has to be {@link ShapeType#Line}. */
 	public void box (float x, float y, float z, float width, float height, float depth) {
@@ -514,7 +592,7 @@ public class ShapeRenderer {
 	public void arc (float x, float y, float radius, float start, float angle) {
 		arc(x, y, radius, start, angle, Math.max(1, (int)(6 * (float)Math.cbrt(radius) * (angle / 360.0f))));
 	}
-	
+
 	public void arc (float x, float y, float radius, float start, float angle, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
@@ -526,10 +604,10 @@ public class ShapeRenderer {
 		float sin = MathUtils.sin(theta);
 		float cx = radius * MathUtils.cos(start * MathUtils.degreesToRadians);
 		float cy = radius * MathUtils.sin(start * MathUtils.degreesToRadians);
-		
+
 		if (currType == ShapeType.Line) {
 			checkFlush(segments * 2 + 2);
-			
+
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x, y, 0);
 			renderer.color(color.r, color.g, color.b, color.a);
@@ -570,7 +648,7 @@ public class ShapeRenderer {
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x + cx, y + cy, 0);
 	}
-	
+
 	/** Calls {@link #circle(float, float, float, int)} by estimating the number of segments needed for a smooth circle. */
 	public void circle (float x, float y, float radius) {
 		circle(x, y, radius, Math.max(1, (int)(6 * (float)Math.cbrt(radius))));
@@ -743,7 +821,7 @@ public class ShapeRenderer {
 	public void polygon (float[] vertices, int offset, int count) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
-		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have a pair number of vertices.");
+		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
 
 		checkDirty();
 		checkFlush(count);
@@ -784,7 +862,7 @@ public class ShapeRenderer {
 	public void polyline (float[] vertices, int offset, int count) {
 		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 4) throw new IllegalArgumentException("Polylines must contain at least 2 points.");
-		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have a pair number of vertices.");
+		if (count % 2 != 0) throw new IllegalArgumentException("Polylines must have an even number of vertices.");
 
 		checkDirty();
 		checkFlush(count);
@@ -835,6 +913,10 @@ public class ShapeRenderer {
 	/** Returns the current {@link ShapeType} used */
 	public ShapeType getCurrentType () {
 		return currType;
+	}
+
+	public ImmediateModeRenderer getRenderer () {
+		return renderer;
 	}
 
 	public void dispose () {

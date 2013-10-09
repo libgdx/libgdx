@@ -87,12 +87,22 @@ public class TextureRegion {
 	}
 
 	public void setRegion (float u, float v, float u2, float v2) {
+		int texWidth = texture.getWidth(), texHeight = texture.getHeight();
+		regionWidth = Math.round(Math.abs(u2 - u) * texWidth);
+		regionHeight = Math.round(Math.abs(v2 - v) * texHeight);
+
+		// For a 1x1 region, adjust UVs to pixel center to avoid filtering artifacts on AMD GPUs when drawing stretched.
+		if (regionWidth == 1 && regionHeight == 1) {
+			u += 0.5f / texWidth;
+			u2 = u;
+			v += 0.5f / texHeight;
+			v2 = v;
+		}
+
 		this.u = u;
 		this.v = v;
 		this.u2 = u2;
 		this.v2 = v2;
-		regionWidth = Math.round(Math.abs(u2 - u) * texture.getWidth());
-		regionHeight = Math.round(Math.abs(v2 - v) * texture.getHeight());
 	}
 
 	/** Sets the texture and coordinates to the specified region. */

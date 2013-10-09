@@ -79,10 +79,7 @@ public class SharedLibraryLoader {
 				crc.update(buffer, 0, length);
 			}
 		} catch (Exception ex) {
-			try {
-				input.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 		return Long.toString(crc.getValue(), 16);
 	}

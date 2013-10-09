@@ -13,32 +13,40 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btBroadphasePair {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btBroadphasePair extends BulletBase {
+	private long swigCPtr;
+	
+	protected btBroadphasePair(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btBroadphasePair(long cPtr, boolean cMemoryOwn) {
+		this("btBroadphasePair", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btBroadphasePair obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btBroadphasePair(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btBroadphasePair obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btBroadphasePair(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btBroadphasePair(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btBroadphasePair() {
     this(gdxBulletJNI.new_btBroadphasePair__SWIG_0(), true);
@@ -52,30 +60,30 @@ public class btBroadphasePair {
     this(gdxBulletJNI.new_btBroadphasePair__SWIG_2(btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1), true);
   }
 
-  public void setM_pProxy0(btBroadphaseProxy value) {
-    gdxBulletJNI.btBroadphasePair_m_pProxy0_set(swigCPtr, this, btBroadphaseProxy.getCPtr(value), value);
+  public void setPProxy0(btBroadphaseProxy value) {
+    gdxBulletJNI.btBroadphasePair_pProxy0_set(swigCPtr, this, btBroadphaseProxy.getCPtr(value), value);
   }
 
-  public btBroadphaseProxy getM_pProxy0() {
-    long cPtr = gdxBulletJNI.btBroadphasePair_m_pProxy0_get(swigCPtr, this);
+  public btBroadphaseProxy getPProxy0() {
+    long cPtr = gdxBulletJNI.btBroadphasePair_pProxy0_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
   }
 
-  public void setM_pProxy1(btBroadphaseProxy value) {
-    gdxBulletJNI.btBroadphasePair_m_pProxy1_set(swigCPtr, this, btBroadphaseProxy.getCPtr(value), value);
+  public void setPProxy1(btBroadphaseProxy value) {
+    gdxBulletJNI.btBroadphasePair_pProxy1_set(swigCPtr, this, btBroadphaseProxy.getCPtr(value), value);
   }
 
-  public btBroadphaseProxy getM_pProxy1() {
-    long cPtr = gdxBulletJNI.btBroadphasePair_m_pProxy1_get(swigCPtr, this);
+  public btBroadphaseProxy getPProxy1() {
+    long cPtr = gdxBulletJNI.btBroadphasePair_pProxy1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
   }
 
-  public void setM_algorithm(btCollisionAlgorithm value) {
-    gdxBulletJNI.btBroadphasePair_m_algorithm_set(swigCPtr, this, btCollisionAlgorithm.getCPtr(value), value);
+  public void setAlgorithm(btCollisionAlgorithm value) {
+    gdxBulletJNI.btBroadphasePair_algorithm_set(swigCPtr, this, btCollisionAlgorithm.getCPtr(value), value);
   }
 
-  public btCollisionAlgorithm getM_algorithm() {
-    long cPtr = gdxBulletJNI.btBroadphasePair_m_algorithm_get(swigCPtr, this);
+  public btCollisionAlgorithm getAlgorithm() {
+    long cPtr = gdxBulletJNI.btBroadphasePair_algorithm_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btCollisionAlgorithm(cPtr, false);
   }
 

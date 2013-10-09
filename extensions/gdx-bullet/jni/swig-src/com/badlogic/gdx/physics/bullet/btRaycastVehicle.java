@@ -14,31 +14,39 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
 public class btRaycastVehicle extends btActionInterface {
-  private long swigCPtr;
+	private long swigCPtr;
+	
+	protected btRaycastVehicle(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, gdxBulletJNI.btRaycastVehicle_SWIGUpcast(cPtr), cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btRaycastVehicle(long cPtr, boolean cMemoryOwn) {
+		this("btRaycastVehicle", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btRaycastVehicle obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btRaycastVehicle(long cPtr, boolean cMemoryOwn) {
-    super(gdxBulletJNI.btRaycastVehicle_SWIGUpcast(cPtr), cMemoryOwn);
-    swigCPtr = cPtr;
-  }
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
 
-  public static long getCPtr(btRaycastVehicle obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btRaycastVehicle(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-    super.delete();
-  }
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btRaycastVehicle(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
 
   public btRaycastVehicle(btVehicleTuning tuning, btRigidBody chassis, btVehicleRaycaster raycaster) {
     this(gdxBulletJNI.new_btRaycastVehicle(btVehicleTuning.getCPtr(tuning), tuning, btRigidBody.getCPtr(chassis), chassis, btVehicleRaycaster.getCPtr(raycaster), raycaster), true);
@@ -92,12 +100,12 @@ public class btRaycastVehicle extends btActionInterface {
     return gdxBulletJNI.btRaycastVehicle_getNumWheels(swigCPtr, this);
   }
 
-  public void setM_wheelInfo(SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t value) {
-    gdxBulletJNI.btRaycastVehicle_m_wheelInfo_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t.getCPtr(value));
+  public void setWheelInfo(SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t value) {
+    gdxBulletJNI.btRaycastVehicle_wheelInfo_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t.getCPtr(value));
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t getM_wheelInfo() {
-    long cPtr = gdxBulletJNI.btRaycastVehicle_m_wheelInfo_get(swigCPtr, this);
+  public SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t getWheelInfo() {
+    long cPtr = gdxBulletJNI.btRaycastVehicle_wheelInfo_get(swigCPtr, this);
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btWheelInfo_t(cPtr, false);
   }
 

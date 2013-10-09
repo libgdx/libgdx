@@ -33,8 +33,8 @@ public class OrthographicCamera extends Camera {
 	}
 
 	/** Constructs a new OrthographicCamera, using the given viewport width and height. For pixel perfect 2D rendering just supply
-	 * the screen size, for other unit scales (e.g. meters for box2d) proceed accordingly. The camera will show the region [-viewportWidth/2, -viewportHeight / 2]- [viewportWidth/2, viewportHeight/2]
-	 * 
+	 * the screen size, for other unit scales (e.g. meters for box2d) proceed accordingly. The camera will show the region
+	 * [-viewportWidth/2, -(viewportHeight/2-1)] - [(viewportWidth/2-1), viewportHeight/2]
 	 * @param viewportWidth the viewport width
 	 * @param viewportHeight the viewport height */
 	public OrthographicCamera (float viewportWidth, float viewportHeight) {
@@ -42,66 +42,6 @@ public class OrthographicCamera extends Camera {
 		this.viewportHeight = viewportHeight;
 		this.near = 0;
 		update();
-	}
-
-	/** Constructs a new OrthographicCamera, using the given viewport width and height. This will create a camera useable for
-	 * iso-metric views. The diamond angle is specifies the angle of a tile viewed isometrically. 
-	 * 
-	 * @param viewportWidth the viewport width
-	 * @param viewportHeight the viewport height
-	 * @param diamondAngle the angle in degrees */
-	public OrthographicCamera (float viewportWidth, float viewportHeight, float diamondAngle) {
-		this.viewportWidth = viewportWidth;
-		this.viewportHeight = viewportHeight;
-		this.near = 0;
-		findDirectionForIsoView(diamondAngle, 0.00000001f, 20);
-		update();
-	}
-
-	public void findDirectionForIsoView (float targetAngle, float epsilon, int maxIterations) {
-		float start = targetAngle - 5;
-		float end = targetAngle + 5;
-		float mid = targetAngle;
-
-		int iterations = 0;
-		float aMid = 0;
-		while (Math.abs(targetAngle - aMid) > epsilon && iterations++ < maxIterations) {
-			aMid = calculateAngle(mid);
-
-			if (targetAngle < aMid) {
-				end = mid;
-			} else {
-				start = mid;
-			}
-			mid = start + (end - start) / 2;
-		}
-		position.set(calculateDirection(mid));
-		position.y = -position.y;
-		lookAt(0, 0, 0);
-		normalizeUp();
-	}
-
-	private float calculateAngle (float a) {
-		Vector3 camPos = calculateDirection(a);
-		position.set(camPos.scl(30));
-		lookAt(0, 0, 0);
-		normalizeUp();
-		update();
-
-		Vector3 orig = new Vector3(0, 0, 0);
-		Vector3 vec = new Vector3(1, 0, 0);
-		project(orig);
-		project(vec);
-		Vector2 d = new Vector2(vec.x - orig.x, -(vec.y - orig.y));
-		return d.angle();
-	}
-
-	private Vector3 calculateDirection (float angle) {
-		Matrix4 transform = new Matrix4();
-		Vector3 dir = new Vector3(-1, 0, 1).nor();
-		transform.setToRotation(new Vector3(1, 0, 1).nor(), angle);
-		dir.mul(transform).nor();
-		return dir;
 	}
 
 	private final Vector3 tmp = new Vector3();
@@ -113,7 +53,7 @@ public class OrthographicCamera extends Camera {
 
 	@Override
 	public void update (boolean updateFrustum) {
-		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * viewportWidth / 2, zoom * -viewportHeight / 2, zoom
+		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2), zoom * -(viewportHeight / 2), zoom
 			* viewportHeight / 2, Math.abs(near), Math.abs(far));
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);

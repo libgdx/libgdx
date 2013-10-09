@@ -55,8 +55,8 @@ public class LwjglCanvas implements Application {
 	LwjglNet net;
 	ApplicationListener listener;
 	Canvas canvas;
-	final List<Runnable> runnables = new ArrayList();
-	final List<Runnable> executedRunnables = new ArrayList();
+	final Array<Runnable> runnables = new Array();
+	final Array<Runnable> executedRunnables = new Array();
 	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
@@ -222,19 +222,7 @@ public class LwjglCanvas implements Application {
 						listener.resize(width, height);
 					}
 
-					synchronized (runnables) {
-						executedRunnables.clear();
-						executedRunnables.addAll(runnables);
-						runnables.clear();
-
-						for (int i = 0; i < executedRunnables.size(); i++) {
-							try {
-								executedRunnables.get(i).run();
-							} catch (Throwable t) {
-								t.printStackTrace();
-							}
-						}
-					}
+					executeRunnables();
 
 					input.update();
 					input.processEvents();
@@ -249,6 +237,18 @@ public class LwjglCanvas implements Application {
 				EventQueue.invokeLater(this);
 			}
 		});
+	}
+
+	public boolean executeRunnables () {
+		synchronized (runnables) {
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+		}
+		if (executedRunnables.size == 0) return false;
+		for (int i = 0; i < executedRunnables.size; i++)
+			executedRunnables.get(i).run();
+		executedRunnables.clear();
+		return true;
 	}
 
 	protected int getFrameRate () {

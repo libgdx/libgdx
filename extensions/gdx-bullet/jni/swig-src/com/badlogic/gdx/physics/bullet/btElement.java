@@ -13,47 +13,55 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btElement {
-  private long swigCPtr;
-  protected boolean swigCMemOwn;
+public class btElement extends BulletBase {
+	private long swigCPtr;
+	
+	protected btElement(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
+		swigCPtr = cPtr;
+	}
+	
+	protected btElement(long cPtr, boolean cMemoryOwn) {
+		this("btElement", cPtr, cMemoryOwn);
+		construct();
+	}
+	
+	public static long getCPtr(btElement obj) {
+		return (obj == null) ? 0 : obj.swigCPtr;
+	}
 
-  protected btElement(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
+	@Override
+	protected void finalize() throws Throwable {
+		if (!destroyed)
+			destroy();
+		super.finalize();
+	}
+
+  @Override protected synchronized void delete() {
+		if (swigCPtr != 0) {
+			if (swigCMemOwn) {
+				swigCMemOwn = false;
+				gdxBulletJNI.delete_btElement(swigCPtr);
+			}
+			swigCPtr = 0;
+		}
+		super.delete();
+	}
+
+  public void setId(int value) {
+    gdxBulletJNI.btElement_id_set(swigCPtr, this, value);
   }
 
-  public static long getCPtr(btElement obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
+  public int getId() {
+    return gdxBulletJNI.btElement_id_get(swigCPtr, this);
   }
 
-  protected void finalize() {
-    delete();
+  public void setSz(int value) {
+    gdxBulletJNI.btElement_sz_set(swigCPtr, this, value);
   }
 
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        gdxBulletJNI.delete_btElement(swigCPtr);
-      }
-      swigCPtr = 0;
-    }
-  }
-
-  public void setM_id(int value) {
-    gdxBulletJNI.btElement_m_id_set(swigCPtr, this, value);
-  }
-
-  public int getM_id() {
-    return gdxBulletJNI.btElement_m_id_get(swigCPtr, this);
-  }
-
-  public void setM_sz(int value) {
-    gdxBulletJNI.btElement_m_sz_set(swigCPtr, this, value);
-  }
-
-  public int getM_sz() {
-    return gdxBulletJNI.btElement_m_sz_get(swigCPtr, this);
+  public int getSz() {
+    return gdxBulletJNI.btElement_sz_get(swigCPtr, this);
   }
 
   public btElement() {

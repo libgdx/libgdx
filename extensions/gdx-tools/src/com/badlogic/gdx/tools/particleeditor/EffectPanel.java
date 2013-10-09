@@ -57,41 +57,65 @@ class EffectPanel extends JPanel {
 	public ParticleEmitter newEmitter (String name, boolean select) {
 		final ParticleEmitter emitter = new ParticleEmitter();
 
+		emitter.getDuration().setLow(1000);
+		emitter.getEmission().setHigh(50);
+		emitter.getLife().setHigh(500);
+		emitter.getScale().setHigh(32, 32);
+
+		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});
+		emitter.getTransparency().setHigh(1);
+
+		emitter.setFlip(false, true);
+		emitter.setMaxParticleCount(25);
+		emitter.setImagePath("particle.png");
+
+		addEmitter(name, select, emitter);
+		return emitter;
+	}
+
+	public ParticleEmitter newExampleEmitter (String name, boolean select) {
+		final ParticleEmitter emitter = new ParticleEmitter();
+		
 		emitter.getDuration().setLow(3000);
-
+		
 		emitter.getEmission().setHigh(250);
-
+		
 		emitter.getLife().setHigh(500, 1000);
 		emitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
 		emitter.getLife().setScaling(new float[] {1, 1, 0.3f});
-
+		
 		emitter.getScale().setHigh(32, 32);
-
+		
 		emitter.getRotation().setLow(1, 360);
 		emitter.getRotation().setHigh(180, 180);
 		emitter.getRotation().setTimeline(new float[] {0, 1});
 		emitter.getRotation().setScaling(new float[] {0, 1});
 		emitter.getRotation().setRelative(true);
-
+		
 		emitter.getAngle().setHigh(45, 135);
 		emitter.getAngle().setLow(90);
 		emitter.getAngle().setTimeline(new float[] {0, 0.5f, 1});
 		emitter.getAngle().setScaling(new float[] {1, 0, 0});
 		emitter.getAngle().setActive(true);
-
+		
 		emitter.getVelocity().setHigh(30, 300);
 		emitter.getVelocity().setActive(true);
-
+		
 		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});
-
+		
 		emitter.getTransparency().setHigh(1, 1);
 		emitter.getTransparency().setTimeline(new float[] {0, 0.2f, 0.8f, 1});
 		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
-
+		
 		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(200);
 		emitter.setImagePath("particle.png");
-
+		
+		addEmitter(name, select, emitter);
+		return emitter;
+	}
+	
+	private void addEmitter (String name, boolean select, final ParticleEmitter emitter) {
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
 		if (emitters.size == 0)
 			emitter.setPosition(editor.worldCamera.viewportWidth / 2, editor.worldCamera.viewportHeight / 2);
@@ -107,7 +131,6 @@ class EffectPanel extends JPanel {
 			int row = emitterTableModel.getRowCount() - 1;
 			emitterTable.getSelectionModel().setSelectionInterval(row, row);
 		}
-		return emitter;
 	}
 
 	void emitterSelected () {
