@@ -156,77 +156,77 @@ public class gdxBullet implements gdxBulletConstants {
     return gdxBulletJNI.btNormalizeAngle(angleInRadians);
   }
 
-  public static float btDot(Vector3 v1, Vector3 v2) {
-    return gdxBulletJNI.btDot(v1, v2);
+  public static float btDot(btVector3 v1, btVector3 v2) {
+    return gdxBulletJNI.btDot(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2);
   }
 
-  public static float btDistance2(Vector3 v1, Vector3 v2) {
-    return gdxBulletJNI.btDistance2(v1, v2);
+  public static float btDistance2(btVector3 v1, btVector3 v2) {
+    return gdxBulletJNI.btDistance2(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2);
   }
 
-  public static float btDistance(Vector3 v1, Vector3 v2) {
-    return gdxBulletJNI.btDistance(v1, v2);
+  public static float btDistance(btVector3 v1, btVector3 v2) {
+    return gdxBulletJNI.btDistance(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2);
   }
 
-  public static float btAngle(Vector3 v1, Vector3 v2) {
-    return gdxBulletJNI.btAngle__SWIG_0(v1, v2);
+  public static float btAngle(btVector3 v1, btVector3 v2) {
+    return gdxBulletJNI.btAngle__SWIG_0(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2);
   }
 
-  public static Vector3 btCross(Vector3 v1, Vector3 v2) {
-	return gdxBulletJNI.btCross(v1, v2);
-}
-
-  public static float btTriple(Vector3 v1, Vector3 v2, Vector3 v3) {
-    return gdxBulletJNI.btTriple(v1, v2, v3);
+  public static btVector3 btCross(btVector3 v1, btVector3 v2) {
+    return new btVector3(gdxBulletJNI.btCross(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2), true);
   }
 
-  public static Vector3 lerp(Vector3 v1, Vector3 v2, float t) {
-	return gdxBulletJNI.lerp(v1, v2, t);
-}
+  public static float btTriple(btVector3 v1, btVector3 v2, btVector3 v3) {
+    return gdxBulletJNI.btTriple(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2, btVector3.getCPtr(v3), v3);
+  }
+
+  public static btVector3 lerp(btVector3 v1, btVector3 v2, float t) {
+    return new btVector3(gdxBulletJNI.lerp(btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2, t), true);
+  }
 
   public static void btSwapScalarEndian(float sourceVal, SWIGTYPE_p_float destVal) {
     gdxBulletJNI.btSwapScalarEndian(sourceVal, SWIGTYPE_p_float.getCPtr(destVal));
   }
 
-  public static void btSwapVector3Endian(Vector3 sourceVec, Vector3 destVec) {
-    gdxBulletJNI.btSwapVector3Endian(sourceVec, destVec);
+  public static void btSwapVector3Endian(btVector3 sourceVec, btVector3 destVec) {
+    gdxBulletJNI.btSwapVector3Endian(btVector3.getCPtr(sourceVec), sourceVec, btVector3.getCPtr(destVec), destVec);
   }
 
-  public static void btUnSwapVector3Endian(Vector3 vector) {
-    gdxBulletJNI.btUnSwapVector3Endian(vector);
+  public static void btUnSwapVector3Endian(btVector3 vector) {
+    gdxBulletJNI.btUnSwapVector3Endian(btVector3.getCPtr(vector), vector);
   }
 
-  public static float dot(Quaternion q1, Quaternion q2) {
-    return gdxBulletJNI.dot(q1, q2);
+  public static float dot(btQuaternion q1, btQuaternion q2) {
+    return gdxBulletJNI.dot(btQuaternion.getCPtr(q1), q1, btQuaternion.getCPtr(q2), q2);
   }
 
-  public static float length(Quaternion q) {
-    return gdxBulletJNI.length(q);
+  public static float length(btQuaternion q) {
+    return gdxBulletJNI.length(btQuaternion.getCPtr(q), q);
   }
 
-  public static float btAngle(Quaternion q1, Quaternion q2) {
-    return gdxBulletJNI.btAngle__SWIG_1(q1, q2);
+  public static float btAngle(btQuaternion q1, btQuaternion q2) {
+    return gdxBulletJNI.btAngle__SWIG_1(btQuaternion.getCPtr(q1), q1, btQuaternion.getCPtr(q2), q2);
   }
 
-  public static Quaternion inverse(Quaternion q) {
-	return gdxBulletJNI.inverse(q);
-}
+  public static btQuaternion inverse(btQuaternion q) {
+    return new btQuaternion(gdxBulletJNI.inverse(btQuaternion.getCPtr(q), q), true);
+  }
 
-  public static Quaternion slerp(Quaternion q1, Quaternion q2, float t) {
-	return gdxBulletJNI.slerp(q1, q2, t);
-}
+  public static btQuaternion slerp(btQuaternion q1, btQuaternion q2, float t) {
+    return new btQuaternion(gdxBulletJNI.slerp(btQuaternion.getCPtr(q1), q1, btQuaternion.getCPtr(q2), q2, t), true);
+  }
 
-  public static Vector3 quatRotate(Quaternion rotation, Vector3 v) {
-	return gdxBulletJNI.quatRotate(rotation, v);
-}
+  public static btVector3 quatRotate(btQuaternion rotation, btVector3 v) {
+    return new btVector3(gdxBulletJNI.quatRotate(btQuaternion.getCPtr(rotation), rotation, btVector3.getCPtr(v), v), true);
+  }
 
-  public static Quaternion shortestArcQuat(Vector3 v0, Vector3 v1) {
-	return gdxBulletJNI.shortestArcQuat(v0, v1);
-}
+  public static btQuaternion shortestArcQuat(btVector3 v0, btVector3 v1) {
+    return new btQuaternion(gdxBulletJNI.shortestArcQuat(btVector3.getCPtr(v0), v0, btVector3.getCPtr(v1), v1), true);
+  }
 
-  public static Quaternion shortestArcQuatNormalize2(Vector3 v0, Vector3 v1) {
-	return gdxBulletJNI.shortestArcQuatNormalize2(v0, v1);
-}
+  public static btQuaternion shortestArcQuatNormalize2(btVector3 v0, btVector3 v1) {
+    return new btQuaternion(gdxBulletJNI.shortestArcQuatNormalize2(btVector3.getCPtr(v0), v0, btVector3.getCPtr(v1), v1), true);
+  }
 
   public static void AabbExpand(Vector3 aabbMin, Vector3 aabbMax, Vector3 expansionMin, Vector3 expansionMax) {
     gdxBulletJNI.AabbExpand(aabbMin, aabbMax, expansionMin, expansionMax);

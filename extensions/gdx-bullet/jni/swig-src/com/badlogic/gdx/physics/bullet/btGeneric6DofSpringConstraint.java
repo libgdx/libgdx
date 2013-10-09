@@ -26,6 +26,13 @@ public class btGeneric6DofSpringConstraint extends btGeneric6DofConstraint {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btGeneric6DofSpringConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btGeneric6DofSpringConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btBox2dBox2dCollisionAlgorithm extends btActivatingCollisionAlgorit
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btBox2dBox2dCollisionAlgorithm_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btBox2dBox2dCollisionAlgorithm obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

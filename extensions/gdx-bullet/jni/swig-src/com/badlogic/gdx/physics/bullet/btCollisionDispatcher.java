@@ -26,6 +26,13 @@ public class btCollisionDispatcher extends btDispatcher {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btCollisionDispatcher_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btCollisionDispatcher obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btDiscreteDynamicsWorld extends btDynamicsWorld {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btDiscreteDynamicsWorld_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btDiscreteDynamicsWorld obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
@@ -141,6 +148,14 @@ public class btDiscreteDynamicsWorld extends btDynamicsWorld {
 
   public boolean getApplySpeculativeContactRestitution() {
     return gdxBulletJNI.btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(swigCPtr, this);
+  }
+
+  public void setInterpolation(boolean value) {
+    gdxBulletJNI.btDiscreteDynamicsWorld_interpolation_set(swigCPtr, this, value);
+  }
+
+  public boolean getInterpolation() {
+    return gdxBulletJNI.btDiscreteDynamicsWorld_interpolation_get(swigCPtr, this);
   }
 
 }

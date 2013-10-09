@@ -26,6 +26,13 @@ public class btConvex2dShape extends btConvexShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btConvex2dShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btConvex2dShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

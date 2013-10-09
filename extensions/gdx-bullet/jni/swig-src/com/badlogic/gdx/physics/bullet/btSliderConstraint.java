@@ -26,6 +26,13 @@ public class btSliderConstraint extends btTypedConstraint {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSliderConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSliderConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

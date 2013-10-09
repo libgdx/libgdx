@@ -26,6 +26,13 @@ public class btOptimizedBvh extends btQuantizedBvh {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btOptimizedBvh_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btOptimizedBvh obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

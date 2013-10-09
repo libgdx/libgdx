@@ -26,6 +26,13 @@ public class btSimpleDynamicsWorld extends btDynamicsWorld {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSimpleDynamicsWorld_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSimpleDynamicsWorld obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

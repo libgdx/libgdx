@@ -13,6 +13,13 @@
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr($javaclassname obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
@@ -29,6 +36,13 @@
 	protected $javaclassname(long cPtr, boolean cMemoryOwn) {
 		this("$javaclassname", cPtr, cMemoryOwn);
 		construct();
+	}
+	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset($imclassname.$javaclazznameSWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
 	}
 	
 	public static long getCPtr($javaclassname obj) {

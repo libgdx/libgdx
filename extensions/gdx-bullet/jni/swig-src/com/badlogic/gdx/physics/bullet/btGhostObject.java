@@ -26,6 +26,13 @@ public class btGhostObject extends btCollisionObject {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btGhostObject_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btGhostObject obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

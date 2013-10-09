@@ -26,6 +26,13 @@ public class GrahamVector3 extends btVector3 {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.GrahamVector3_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(GrahamVector3 obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btBU_Simplex1to4 extends btPolyhedralConvexAabbCachingShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btBU_Simplex1to4_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btBU_Simplex1to4 obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

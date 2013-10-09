@@ -26,6 +26,13 @@ public class btNullPairCache extends btOverlappingPairCache {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btNullPairCache_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btNullPairCache obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
