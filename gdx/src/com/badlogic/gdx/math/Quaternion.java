@@ -395,7 +395,7 @@ public class Quaternion implements Serializable {
 		float len1 = x1 * x1 + y1 * y1 + z1 * z1;
 		float len2 = x2 * x2 + y2 * y2 + z2 * z2;
 		
-		float norm = Math.sqrt(len1 * len2);
+		float norm = (float)Math.sqrt(len1 * len2);
     		
     		return setFromCross(norm, x1, y1, z1, x2, y2, z2);
 	}
