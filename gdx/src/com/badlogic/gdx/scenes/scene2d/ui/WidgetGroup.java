@@ -125,6 +125,10 @@ public class WidgetGroup extends Group implements Layout {
 		invalidateHierarchy();
 	}
 
+	protected void sizeChanged () {
+		invalidate();
+	}
+
 	public void pack () {
 		float newWidth = getPrefWidth();
 		float newHeight = getPrefHeight();

@@ -22,13 +22,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
@@ -368,7 +366,9 @@ public class Actor {
 	}
 
 	public void setWidth (float width) {
+		float oldWidth = this.width;
 		this.width = width;
+		if (width != oldWidth) sizeChanged();
 	}
 
 	public float getHeight () {
@@ -376,7 +376,9 @@ public class Actor {
 	}
 
 	public void setHeight (float height) {
+		float oldHeight = this.height;
 		this.height = height;
+		if (height != oldHeight) sizeChanged();
 	}
 
 	/** Returns y plus height. */
@@ -389,30 +391,42 @@ public class Actor {
 		return x + width;
 	}
 
+	/** Called when the actor's size has been changed. */
+	protected void sizeChanged () {
+	}
+
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
+		float oldWidth = this.width;
+		float oldHeight = this.height;
 		this.width = width;
 		this.height = height;
+		if (width != oldWidth || height != oldHeight) sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
 	public void size (float size) {
 		width += size;
 		height += size;
+		sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
 	public void size (float width, float height) {
 		this.width += width;
 		this.height += height;
+		sizeChanged();
 	}
 
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
+		float oldWidth = this.width;
+		float oldHeight = this.height;
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		if (width != oldWidth || height != oldHeight) sizeChanged();
 	}
 
 	public float getOriginX () {

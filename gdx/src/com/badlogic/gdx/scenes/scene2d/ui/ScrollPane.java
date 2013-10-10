@@ -508,17 +508,8 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 
-		if (widget.getWidth() != widgetWidth || widget.getHeight() != widgetHeight) {
-			widget.setWidth(widgetWidth);
-			widget.setHeight(widgetHeight);
-			if (widget instanceof Layout) {
-				Layout layout = (Layout)widget;
-				layout.invalidate();
-				layout.validate();
-			}
-		} else {
-			if (widget instanceof Layout) ((Layout)widget).validate();
-		}
+		widget.setSize(widgetWidth, widgetHeight);
+		if (widget instanceof Layout) ((Layout)widget).validate();
 	}
 
 	@Override
