@@ -674,7 +674,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void circle(float radius, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo) {
 		
-		ellipse(radius, radius, 0, 0, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo);
+		ellipse(radius*2, radius*2, 0, 0, centerX, centerY, centerZ, normalX, normalY, normalZ, tangentX, tangentY, tangentZ, binormalX, binormalY, binormalZ, divisions, angleFrom, angleTo);
 	}
 	
 	@Override
