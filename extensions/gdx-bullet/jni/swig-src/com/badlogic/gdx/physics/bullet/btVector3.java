@@ -26,6 +26,13 @@ public class btVector3 extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btVector3 obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
@@ -64,8 +71,8 @@ public class btVector3 extends BulletBase {
     this(gdxBulletJNI.new_btVector3__SWIG_1(_x, _y, _z), true);
   }
 
-  public float dot(Vector3 v) {
-    return gdxBulletJNI.btVector3_dot(swigCPtr, this, v);
+  public float dot(btVector3 v) {
+    return gdxBulletJNI.btVector3_dot(swigCPtr, this, btVector3.getCPtr(v), v);
   }
 
   public float length2() {
@@ -76,44 +83,44 @@ public class btVector3 extends BulletBase {
     return gdxBulletJNI.btVector3_length(swigCPtr, this);
   }
 
-  public float distance2(Vector3 v) {
-    return gdxBulletJNI.btVector3_distance2(swigCPtr, this, v);
+  public float distance2(btVector3 v) {
+    return gdxBulletJNI.btVector3_distance2(swigCPtr, this, btVector3.getCPtr(v), v);
   }
 
-  public float distance(Vector3 v) {
-    return gdxBulletJNI.btVector3_distance(swigCPtr, this, v);
+  public float distance(btVector3 v) {
+    return gdxBulletJNI.btVector3_distance(swigCPtr, this, btVector3.getCPtr(v), v);
   }
 
-  public Vector3 safeNormalize() {
-	return gdxBulletJNI.btVector3_safeNormalize(swigCPtr, this);
-}
-
-  public Vector3 normalize() {
-	return gdxBulletJNI.btVector3_normalize(swigCPtr, this);
-}
-
-  public Vector3 normalized() {
-	return gdxBulletJNI.btVector3_normalized(swigCPtr, this);
-}
-
-  public Vector3 rotate(Vector3 wAxis, float angle) {
-	return gdxBulletJNI.btVector3_rotate(swigCPtr, this, wAxis, angle);
-}
-
-  public float angle(Vector3 v) {
-    return gdxBulletJNI.btVector3_angle(swigCPtr, this, v);
+  public btVector3 safeNormalize() {
+    return new btVector3(gdxBulletJNI.btVector3_safeNormalize(swigCPtr, this), false);
   }
 
-  public Vector3 absolute() {
-	return gdxBulletJNI.btVector3_absolute(swigCPtr, this);
-}
+  public btVector3 normalize() {
+    return new btVector3(gdxBulletJNI.btVector3_normalize(swigCPtr, this), false);
+  }
 
-  public Vector3 cross(Vector3 v) {
-	return gdxBulletJNI.btVector3_cross(swigCPtr, this, v);
-}
+  public btVector3 normalized() {
+    return new btVector3(gdxBulletJNI.btVector3_normalized(swigCPtr, this), true);
+  }
 
-  public float triple(Vector3 v1, Vector3 v2) {
-    return gdxBulletJNI.btVector3_triple(swigCPtr, this, v1, v2);
+  public btVector3 rotate(btVector3 wAxis, float angle) {
+    return new btVector3(gdxBulletJNI.btVector3_rotate(swigCPtr, this, btVector3.getCPtr(wAxis), wAxis, angle), true);
+  }
+
+  public float angle(btVector3 v) {
+    return gdxBulletJNI.btVector3_angle(swigCPtr, this, btVector3.getCPtr(v), v);
+  }
+
+  public btVector3 absolute() {
+    return new btVector3(gdxBulletJNI.btVector3_absolute(swigCPtr, this), true);
+  }
+
+  public btVector3 cross(btVector3 v) {
+    return new btVector3(gdxBulletJNI.btVector3_cross(swigCPtr, this, btVector3.getCPtr(v), v), true);
+  }
+
+  public float triple(btVector3 v1, btVector3 v2) {
+    return gdxBulletJNI.btVector3_triple(swigCPtr, this, btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2);
   }
 
   public int minAxis() {
@@ -132,13 +139,13 @@ public class btVector3 extends BulletBase {
     return gdxBulletJNI.btVector3_closestAxis(swigCPtr, this);
   }
 
-  public void setInterpolate3(Vector3 v0, Vector3 v1, float rt) {
-    gdxBulletJNI.btVector3_setInterpolate3(swigCPtr, this, v0, v1, rt);
+  public void setInterpolate3(btVector3 v0, btVector3 v1, float rt) {
+    gdxBulletJNI.btVector3_setInterpolate3(swigCPtr, this, btVector3.getCPtr(v0), v0, btVector3.getCPtr(v1), v1, rt);
   }
 
-  public Vector3 lerp(Vector3 v, float t) {
-	return gdxBulletJNI.btVector3_lerp(swigCPtr, this, v, t);
-}
+  public btVector3 lerp(btVector3 v, float t) {
+    return new btVector3(gdxBulletJNI.btVector3_lerp(swigCPtr, this, btVector3.getCPtr(v), v, t), true);
+  }
 
   public float getX() {
     return gdxBulletJNI.btVector3_getX(swigCPtr, this);
@@ -184,12 +191,12 @@ public class btVector3 extends BulletBase {
     return gdxBulletJNI.btVector3_w(swigCPtr, this);
   }
 
-  public void setMax(Vector3 other) {
-    gdxBulletJNI.btVector3_setMax(swigCPtr, this, other);
+  public void setMax(btVector3 other) {
+    gdxBulletJNI.btVector3_setMax(swigCPtr, this, btVector3.getCPtr(other), other);
   }
 
-  public void setMin(Vector3 other) {
-    gdxBulletJNI.btVector3_setMin(swigCPtr, this, other);
+  public void setMin(btVector3 other) {
+    gdxBulletJNI.btVector3_setMin(swigCPtr, this, btVector3.getCPtr(other), other);
   }
 
   public void setValue(float _x, float _y, float _z) {
@@ -244,8 +251,8 @@ public class btVector3 extends BulletBase {
     return gdxBulletJNI.btVector3_minDot(swigCPtr, this, btVector3.getCPtr(array), array, array_count, SWIGTYPE_p_float.getCPtr(dotOut));
   }
 
-  public Vector3 dot3(Vector3 v0, Vector3 v1, Vector3 v2) {
-	return gdxBulletJNI.btVector3_dot3(swigCPtr, this, v0, v1, v2);
-}
+  public btVector3 dot3(btVector3 v0, btVector3 v1, btVector3 v2) {
+    return new btVector3(gdxBulletJNI.btVector3_dot3(swigCPtr, this, btVector3.getCPtr(v0), v0, btVector3.getCPtr(v1), v1, btVector3.getCPtr(v2), v2), true);
+  }
 
 }

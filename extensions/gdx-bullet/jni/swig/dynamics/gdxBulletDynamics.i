@@ -56,6 +56,7 @@
 %}
 %include "BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h"
 
+
 %{
 #include <BulletDynamics/ConstraintSolver/btSolverBody.h>
 %}

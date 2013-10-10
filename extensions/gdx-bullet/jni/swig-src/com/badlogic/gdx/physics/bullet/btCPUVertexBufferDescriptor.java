@@ -26,6 +26,13 @@ public class btCPUVertexBufferDescriptor extends btVertexBufferDescriptor {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btCPUVertexBufferDescriptor_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btCPUVertexBufferDescriptor obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

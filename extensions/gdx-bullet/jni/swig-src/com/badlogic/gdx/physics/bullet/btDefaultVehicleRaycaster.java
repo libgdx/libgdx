@@ -26,6 +26,13 @@ public class btDefaultVehicleRaycaster extends btVehicleRaycaster {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btDefaultVehicleRaycaster_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btDefaultVehicleRaycaster obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btStaticPlaneShape extends btConcaveShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btStaticPlaneShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btStaticPlaneShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

@@ -26,6 +26,13 @@ public class btQuaternion extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btQuaternion obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
@@ -56,16 +63,16 @@ public class btQuaternion extends BulletBase {
     this(gdxBulletJNI.new_btQuaternion__SWIG_1(_x, _y, _z, _w), true);
   }
 
-  public btQuaternion(Vector3 _axis, float _angle) {
-    this(gdxBulletJNI.new_btQuaternion__SWIG_2(_axis, _angle), true);
+  public btQuaternion(btVector3 _axis, float _angle) {
+    this(gdxBulletJNI.new_btQuaternion__SWIG_2(btVector3.getCPtr(_axis), _axis, _angle), true);
   }
 
   public btQuaternion(float yaw, float pitch, float roll) {
     this(gdxBulletJNI.new_btQuaternion__SWIG_3(yaw, pitch, roll), true);
   }
 
-  public void setRotation(Vector3 axis, float _angle) {
-    gdxBulletJNI.btQuaternion_setRotation(swigCPtr, this, axis, _angle);
+  public void setRotation(btVector3 axis, float _angle) {
+    gdxBulletJNI.btQuaternion_setRotation(swigCPtr, this, btVector3.getCPtr(axis), axis, _angle);
   }
 
   public void setEuler(float yaw, float pitch, float roll) {
@@ -76,8 +83,8 @@ public class btQuaternion extends BulletBase {
     gdxBulletJNI.btQuaternion_setEulerZYX(swigCPtr, this, yaw, pitch, roll);
   }
 
-  public float dot(Quaternion q) {
-    return gdxBulletJNI.btQuaternion_dot(swigCPtr, this, q);
+  public float dot(btQuaternion q) {
+    return gdxBulletJNI.btQuaternion_dot(swigCPtr, this, btQuaternion.getCPtr(q), q);
   }
 
   public float length2() {
@@ -88,45 +95,45 @@ public class btQuaternion extends BulletBase {
     return gdxBulletJNI.btQuaternion_length(swigCPtr, this);
   }
 
-  public Quaternion normalize() {
-	return gdxBulletJNI.btQuaternion_normalize(swigCPtr, this);
-}
+  public btQuaternion normalize() {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_normalize(swigCPtr, this), false);
+  }
 
-  public Quaternion normalized() {
-	return gdxBulletJNI.btQuaternion_normalized(swigCPtr, this);
-}
+  public btQuaternion normalized() {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_normalized(swigCPtr, this), true);
+  }
 
-  public float angle(Quaternion q) {
-    return gdxBulletJNI.btQuaternion_angle(swigCPtr, this, q);
+  public float angle(btQuaternion q) {
+    return gdxBulletJNI.btQuaternion_angle(swigCPtr, this, btQuaternion.getCPtr(q), q);
   }
 
   public float getAngle() {
     return gdxBulletJNI.btQuaternion_getAngle(swigCPtr, this);
   }
 
-  public Vector3 getAxis() {
-	return gdxBulletJNI.btQuaternion_getAxis(swigCPtr, this);
-}
+  public btVector3 getAxis() {
+    return new btVector3(gdxBulletJNI.btQuaternion_getAxis(swigCPtr, this), true);
+  }
 
-  public Quaternion inverse() {
-	return gdxBulletJNI.btQuaternion_inverse(swigCPtr, this);
-}
+  public btQuaternion inverse() {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_inverse(swigCPtr, this), true);
+  }
 
-  public Quaternion farthest(Quaternion qd) {
-	return gdxBulletJNI.btQuaternion_farthest(swigCPtr, this, qd);
-}
+  public btQuaternion farthest(btQuaternion qd) {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_farthest(swigCPtr, this, btQuaternion.getCPtr(qd), qd), true);
+  }
 
-  public Quaternion nearest(Quaternion qd) {
-	return gdxBulletJNI.btQuaternion_nearest(swigCPtr, this, qd);
-}
+  public btQuaternion nearest(btQuaternion qd) {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_nearest(swigCPtr, this, btQuaternion.getCPtr(qd), qd), true);
+  }
 
-  public Quaternion slerp(Quaternion q, float t) {
-	return gdxBulletJNI.btQuaternion_slerp(swigCPtr, this, q, t);
-}
+  public btQuaternion slerp(btQuaternion q, float t) {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_slerp(swigCPtr, this, btQuaternion.getCPtr(q), q, t), true);
+  }
 
-  public static Quaternion getIdentity() {
-	return gdxBulletJNI.btQuaternion_getIdentity();
-}
+  public static btQuaternion getIdentity() {
+    return new btQuaternion(gdxBulletJNI.btQuaternion_getIdentity(), false);
+  }
 
   public float getW() {
     return gdxBulletJNI.btQuaternion_getW(swigCPtr, this);

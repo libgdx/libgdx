@@ -26,6 +26,13 @@ public class btSoftColliders extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSoftColliders obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

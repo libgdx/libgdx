@@ -26,6 +26,13 @@ public class btMinkowskiPenetrationDepthSolver extends btConvexPenetrationDepthS
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btMinkowskiPenetrationDepthSolver_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btMinkowskiPenetrationDepthSolver obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

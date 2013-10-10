@@ -26,6 +26,13 @@ public class ClosestNotMeRayResultCallback extends ClosestRayResultCallback {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.ClosestNotMeRayResultCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(ClosestNotMeRayResultCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

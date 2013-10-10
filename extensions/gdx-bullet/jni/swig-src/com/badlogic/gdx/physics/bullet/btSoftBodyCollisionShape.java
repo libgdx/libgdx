@@ -26,6 +26,13 @@ public class btSoftBodyCollisionShape extends btConcaveShape {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSoftBodyCollisionShape_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSoftBodyCollisionShape obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

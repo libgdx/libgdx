@@ -26,6 +26,13 @@ public class Face extends Feature {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.Face_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(Face obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

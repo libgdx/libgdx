@@ -26,6 +26,13 @@ public class btDefaultCollisionConfiguration extends btCollisionConfiguration {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btDefaultCollisionConfiguration_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btDefaultCollisionConfiguration obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

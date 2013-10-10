@@ -26,6 +26,13 @@ public class btTransform extends BulletBase {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
+	}
+	
 	public static long getCPtr(btTransform obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
@@ -52,41 +59,41 @@ public class btTransform extends BulletBase {
     this(gdxBulletJNI.new_btTransform__SWIG_0(), true);
   }
 
-  public btTransform(Quaternion q, Vector3 c) {
-    this(gdxBulletJNI.new_btTransform__SWIG_1(q, c), true);
+  public btTransform(btQuaternion q, btVector3 c) {
+    this(gdxBulletJNI.new_btTransform__SWIG_1(btQuaternion.getCPtr(q), q, btVector3.getCPtr(c), c), true);
   }
 
-  public btTransform(Quaternion q) {
-    this(gdxBulletJNI.new_btTransform__SWIG_2(q), true);
+  public btTransform(btQuaternion q) {
+    this(gdxBulletJNI.new_btTransform__SWIG_2(btQuaternion.getCPtr(q), q), true);
   }
 
-  public btTransform(Matrix3 b, Vector3 c) {
-    this(gdxBulletJNI.new_btTransform__SWIG_3(b, c), true);
+  public btTransform(SWIGTYPE_p_btMatrix3x3 b, btVector3 c) {
+    this(gdxBulletJNI.new_btTransform__SWIG_3(SWIGTYPE_p_btMatrix3x3.getCPtr(b), btVector3.getCPtr(c), c), true);
   }
 
-  public btTransform(Matrix3 b) {
-    this(gdxBulletJNI.new_btTransform__SWIG_4(b), true);
+  public btTransform(SWIGTYPE_p_btMatrix3x3 b) {
+    this(gdxBulletJNI.new_btTransform__SWIG_4(SWIGTYPE_p_btMatrix3x3.getCPtr(b)), true);
   }
 
-  public btTransform(Matrix4 other) {
-    this(gdxBulletJNI.new_btTransform__SWIG_5(other), true);
+  public btTransform(btTransform other) {
+    this(gdxBulletJNI.new_btTransform__SWIG_5(btTransform.getCPtr(other), other), true);
   }
 
-  public void mult(Matrix4 t1, Matrix4 t2) {
-    gdxBulletJNI.btTransform_mult(swigCPtr, this, t1, t2);
+  public void mult(btTransform t1, btTransform t2) {
+    gdxBulletJNI.btTransform_mult(swigCPtr, this, btTransform.getCPtr(t1), t1, btTransform.getCPtr(t2), t2);
   }
 
-  public Matrix3 getBasis() {
-	return gdxBulletJNI.btTransform_getBasis__SWIG_0(swigCPtr, this);
-}
+  public SWIGTYPE_p_btMatrix3x3 getBasis() {
+    return new SWIGTYPE_p_btMatrix3x3(gdxBulletJNI.btTransform_getBasis__SWIG_0(swigCPtr, this), false);
+  }
 
-  public Vector3 getOrigin() {
-	return gdxBulletJNI.btTransform_getOrigin__SWIG_0(swigCPtr, this);
-}
+  public btVector3 getOrigin() {
+    return new btVector3(gdxBulletJNI.btTransform_getOrigin__SWIG_0(swigCPtr, this), false);
+  }
 
-  public Quaternion getRotation() {
-	return gdxBulletJNI.btTransform_getRotation(swigCPtr, this);
-}
+  public btQuaternion getRotation() {
+    return new btQuaternion(gdxBulletJNI.btTransform_getRotation(swigCPtr, this), true);
+  }
 
   public void setFromOpenGLMatrix(float[] m) {
     gdxBulletJNI.btTransform_setFromOpenGLMatrix(swigCPtr, this, m);
@@ -96,37 +103,37 @@ public class btTransform extends BulletBase {
     gdxBulletJNI.btTransform_getOpenGLMatrix(swigCPtr, this, m);
   }
 
-  public void setOrigin(Vector3 origin) {
-    gdxBulletJNI.btTransform_setOrigin(swigCPtr, this, origin);
+  public void setOrigin(btVector3 origin) {
+    gdxBulletJNI.btTransform_setOrigin(swigCPtr, this, btVector3.getCPtr(origin), origin);
   }
 
-  public Vector3 invXform(Vector3 inVec) {
-	return gdxBulletJNI.btTransform_invXform(swigCPtr, this, inVec);
-}
-
-  public void setBasis(Matrix3 basis) {
-    gdxBulletJNI.btTransform_setBasis(swigCPtr, this, basis);
+  public btVector3 invXform(btVector3 inVec) {
+    return new btVector3(gdxBulletJNI.btTransform_invXform(swigCPtr, this, btVector3.getCPtr(inVec), inVec), true);
   }
 
-  public void setRotation(Quaternion q) {
-    gdxBulletJNI.btTransform_setRotation(swigCPtr, this, q);
+  public void setBasis(SWIGTYPE_p_btMatrix3x3 basis) {
+    gdxBulletJNI.btTransform_setBasis(swigCPtr, this, SWIGTYPE_p_btMatrix3x3.getCPtr(basis));
+  }
+
+  public void setRotation(btQuaternion q) {
+    gdxBulletJNI.btTransform_setRotation(swigCPtr, this, btQuaternion.getCPtr(q), q);
   }
 
   public void setIdentity() {
     gdxBulletJNI.btTransform_setIdentity(swigCPtr, this);
   }
 
-  public Matrix4 inverse() {
-	return gdxBulletJNI.btTransform_inverse(swigCPtr, this);
-}
+  public btTransform inverse() {
+    return new btTransform(gdxBulletJNI.btTransform_inverse(swigCPtr, this), true);
+  }
 
-  public Matrix4 inverseTimes(Matrix4 t) {
-	return gdxBulletJNI.btTransform_inverseTimes(swigCPtr, this, t);
-}
+  public btTransform inverseTimes(btTransform t) {
+    return new btTransform(gdxBulletJNI.btTransform_inverseTimes(swigCPtr, this, btTransform.getCPtr(t), t), true);
+  }
 
-  public static Matrix4 getIdentity() {
-	return gdxBulletJNI.btTransform_getIdentity();
-}
+  public static btTransform getIdentity() {
+    return new btTransform(gdxBulletJNI.btTransform_getIdentity(), false);
+  }
 
   public void serialize(btTransformFloatData dataOut) {
     gdxBulletJNI.btTransform_serialize(swigCPtr, this, btTransformFloatData.getCPtr(dataOut), dataOut);

@@ -26,6 +26,13 @@ public class btContinuousConvexCollision extends btConvexCast {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btContinuousConvexCollision_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btContinuousConvexCollision obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

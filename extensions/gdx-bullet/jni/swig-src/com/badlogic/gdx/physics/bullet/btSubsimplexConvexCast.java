@@ -26,6 +26,13 @@ public class btSubsimplexConvexCast extends btConvexCast {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btSubsimplexConvexCast_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btSubsimplexConvexCast obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

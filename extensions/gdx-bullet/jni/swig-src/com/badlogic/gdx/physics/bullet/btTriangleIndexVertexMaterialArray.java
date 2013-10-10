@@ -26,6 +26,13 @@ public class btTriangleIndexVertexMaterialArray extends btTriangleIndexVertexArr
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btTriangleIndexVertexMaterialArray_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btTriangleIndexVertexMaterialArray obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

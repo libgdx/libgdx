@@ -26,6 +26,13 @@ public class btContactSolverInfo extends btContactSolverInfoData {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btContactSolverInfo_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btContactSolverInfo obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

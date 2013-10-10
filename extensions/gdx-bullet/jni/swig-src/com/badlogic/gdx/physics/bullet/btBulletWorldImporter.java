@@ -26,6 +26,13 @@ public class btBulletWorldImporter extends btWorldImporter {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btBulletWorldImporter_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btBulletWorldImporter obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

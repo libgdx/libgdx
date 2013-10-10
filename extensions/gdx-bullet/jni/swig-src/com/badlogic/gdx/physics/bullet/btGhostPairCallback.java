@@ -26,6 +26,13 @@ public class btGhostPairCallback extends btOverlappingPairCallback {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btGhostPairCallback_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btGhostPairCallback obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

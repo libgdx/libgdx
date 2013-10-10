@@ -26,6 +26,13 @@ public class btDefaultMotionState extends btMotionState {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btDefaultMotionState_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btDefaultMotionState obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

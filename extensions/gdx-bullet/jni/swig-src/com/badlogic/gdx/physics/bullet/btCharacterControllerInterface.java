@@ -26,6 +26,13 @@ public class btCharacterControllerInterface extends btActionInterface {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btCharacterControllerInterface_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btCharacterControllerInterface obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}

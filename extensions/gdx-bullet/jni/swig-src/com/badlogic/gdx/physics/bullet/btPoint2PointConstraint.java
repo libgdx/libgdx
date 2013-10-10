@@ -26,6 +26,13 @@ public class btPoint2PointConstraint extends btTypedConstraint {
 		construct();
 	}
 	
+	@Override
+	protected void reset(long cPtr, boolean cMemoryOwn) {
+		if (!destroyed)
+			destroy();
+		super.reset(gdxBulletJNI.btPoint2PointConstraint_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+	}
+	
 	public static long getCPtr(btPoint2PointConstraint obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
