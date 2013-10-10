@@ -6,8 +6,12 @@
 #define specularFlag
 #endif
 
+#if defined(specularFlag) || defined(fogFlag)
+#define cameraPositionFlag
+#endif
+
 attribute vec3 a_position;
-uniform mat4 u_projTrans;
+uniform mat4 u_projViewTrans;
 
 #if defined(colorFlag)
 varying vec4 v_color;
@@ -126,8 +130,16 @@ uniform vec3 u_sphericalHarmonics[9];
 
 #ifdef specularFlag
 varying vec3 v_lightSpecular;
-uniform vec3 u_cameraPosition;
 #endif // specularFlag
+
+#ifdef cameraPositionFlag
+uniform vec4 u_cameraPosition;
+#endif // cameraPositionFlag
+
+#ifdef fogFlag
+varying float v_fog;
+#endif // fogFlag
+
 
 #if defined(numDirectionalLights) && (numDirectionalLights > 0)
 struct DirectionalLight
@@ -147,6 +159,21 @@ struct PointLight
 };
 uniform PointLight u_pointLights[numPointLights];
 #endif // numPointLights
+
+#if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
+#define ambientFlag
+#endif //ambientFlag
+
+#ifdef shadowMapFlag
+uniform mat4 u_shadowMapProjViewTrans;
+varying vec3 v_shadowMapUv;
+#define separateAmbientFlag
+#endif //shadowMapFlag
+
+#if defined(ambientFlag) && defined(separateAmbientFlag)
+varying vec3 v_ambientLight;
+#endif //separateAmbientFlag
+
 #endif // lightingFlag
 
 void main() {
@@ -198,7 +225,14 @@ void main() {
 	#else
 		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	#endif
-	gl_Position = u_projTrans * pos; // FIXME dont use a temp pos value (<kalle_h> this causes some vertex yittering with positions as low as 300)
+		
+	gl_Position = u_projViewTrans * pos;
+		
+	#ifdef shadowMapFlag
+		vec4 spos = u_shadowMapProjViewTrans * pos;
+		v_shadowMapUv.xy = (spos.xy / spos.w) * 0.5 + 0.5;
+		v_shadowMapUv.z = min(spos.z * 0.5 + 0.5, 0.998);
+	#endif //shadowMapFlag
 	
 	#if defined(normalFlag)
 		#if defined(skinningFlag)
@@ -209,36 +243,54 @@ void main() {
 		v_normal = normal;
 	#endif // normalFlag
 
+    #ifdef fogFlag
+        vec3 flen = u_cameraPosition.xyz - pos.xyz;
+        float fog = dot(flen, flen) * u_cameraPosition.w;
+        v_fog = min(fog, 1.0);
+    #endif
+
 	#ifdef lightingFlag
-		#ifdef ambientLightFlag
-			v_lightDiffuse = u_ambientLight;
-		#else
-			v_lightDiffuse = vec3(0.0);
-		#endif // ambientLightFlag
+		#if	defined(ambientLightFlag)
+        	vec3 ambientLight = u_ambientLight;
+		#elif defined(ambientFlag)
+        	vec3 ambientLight = vec3(0.0);
+		#endif
 			
 		#ifdef ambientCubemapFlag 		
 			vec3 squaredNormal = normal * normal;
 			vec3 isPositive  = step(0.0, normal);
-			v_lightDiffuse += squaredNormal.x * mix(u_ambientCubemap[0], u_ambientCubemap[1], isPositive.x) +
+			ambientLight += squaredNormal.x * mix(u_ambientCubemap[0], u_ambientCubemap[1], isPositive.x) +
 					squaredNormal.y * mix(u_ambientCubemap[2], u_ambientCubemap[3], isPositive.y) +
 					squaredNormal.z * mix(u_ambientCubemap[4], u_ambientCubemap[5], isPositive.z);
 		#endif // ambientCubemapFlag
 
 		#ifdef sphericalHarmonicsFlag
-			v_lightDiffuse += u_sphericalHarmonics[0];
-			v_lightDiffuse += u_sphericalHarmonics[1] * normal.x;
-			v_lightDiffuse += u_sphericalHarmonics[2] * normal.y;
-			v_lightDiffuse += u_sphericalHarmonics[3] * normal.z;
-			v_lightDiffuse += u_sphericalHarmonics[4] * (normal.x * normal.z);
-			v_lightDiffuse += u_sphericalHarmonics[5] * (normal.z * normal.y);
-			v_lightDiffuse += u_sphericalHarmonics[6] * (normal.y * normal.x);
-			v_lightDiffuse += u_sphericalHarmonics[7] * (3.0 * normal.z * normal.z - 1.0);
-			v_lightDiffuse += u_sphericalHarmonics[8] * (normal.x * normal.x - normal.y * normal.y);			
+			ambientLight += u_sphericalHarmonics[0];
+			ambientLight += u_sphericalHarmonics[1] * normal.x;
+			ambientLight += u_sphericalHarmonics[2] * normal.y;
+			ambientLight += u_sphericalHarmonics[3] * normal.z;
+			ambientLight += u_sphericalHarmonics[4] * (normal.x * normal.z);
+			ambientLight += u_sphericalHarmonics[5] * (normal.z * normal.y);
+			ambientLight += u_sphericalHarmonics[6] * (normal.y * normal.x);
+			ambientLight += u_sphericalHarmonics[7] * (3.0 * normal.z * normal.z - 1.0);
+			ambientLight += u_sphericalHarmonics[8] * (normal.x * normal.x - normal.y * normal.y);			
 		#endif // sphericalHarmonicsFlag
+
+		#ifdef ambientFlag
+			#ifdef separateAmbientFlag
+				v_ambientLight = ambientLight;
+				v_lightDiffuse = vec3(0.0);
+			#else
+				v_lightDiffuse = ambientLight;
+			#endif //separateAmbientFlag
+		#else
+	        v_lightDiffuse = vec3(0.0);
+		#endif //ambientFlag
+
 			
 		#ifdef specularFlag
 			v_lightSpecular = vec3(0.0);
-			vec3 viewVec = normalize(u_cameraPosition - pos.xyz);
+			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
 			
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)

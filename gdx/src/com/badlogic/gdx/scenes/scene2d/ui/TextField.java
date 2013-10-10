@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -55,7 +56,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * implementation will bring up the default IME.
  * @author mzechner
  * @author Nathan Sweet */
-public class TextField extends Widget {
+public class TextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
 	static private final char ENTER_ANDROID = '\n';
@@ -66,6 +67,8 @@ public class TextField extends Widget {
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
+
+	static boolean isMac = System.getProperty("os.name").contains("Mac");
 
 	TextFieldStyle style;
 	String text, messageText;
@@ -168,15 +171,17 @@ public class TextField extends Widget {
 			public boolean keyDown (InputEvent event, int keycode) {
 				if (disabled) return false;
 
-				final BitmapFont font = style.font;
-
 				lastBlink = 0;
 				cursorOn = false;
 
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
 					boolean repeat = false;
-					boolean ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+					boolean ctrl;
+					if (isMac)
+						ctrl = Gdx.input.isKeyPressed(Keys.SYM);
+					else
+						ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
 					if (ctrl) {
 						// paste
 						if (keycode == Keys.V) {
@@ -191,6 +196,11 @@ public class TextField extends Widget {
 						// cut
 						if (keycode == Keys.X || keycode == Keys.DEL) {
 							cut();
+							return true;
+						}
+						// select all
+						if (keycode == Keys.A) {
+							selectAll();
 							return true;
 						}
 					}
@@ -311,17 +321,18 @@ public class TextField extends Widget {
 
 				Stage stage = getStage();
 				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
-					if (character == BACKSPACE && (cursor > 0 || hasSelection)) {
-						if (!hasSelection) {
-							text = text.substring(0, cursor - 1) + text.substring(cursor);
-							updateDisplayText();
-							cursor--;
-							renderOffset = 0;
-						} else {
-							delete();
+					if (character == BACKSPACE) {
+						if (cursor > 0 || hasSelection) {
+							if (!hasSelection) {
+								text = text.substring(0, cursor - 1) + text.substring(cursor);
+								updateDisplayText();
+								cursor--;
+								renderOffset = 0;
+							} else {
+								delete();
+							}
 						}
-					}
-					if (character == DELETE) {
+					} else if (character == DELETE) {
 						if (cursor < text.length() || hasSelection) {
 							if (!hasSelection) {
 								text = text.substring(0, cursor) + text.substring(cursor + 1);
@@ -330,17 +341,14 @@ public class TextField extends Widget {
 								delete();
 							}
 						}
-						return true;
-					}
-					if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
-						if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
-					}
-					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal)
+					} else if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
 						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-					if (font.containsCharacter(character)) {
-						if (maxLength > 0 && text.length() + 1 > maxLength) {
-							return true;
+					} else if (font.containsCharacter(character)) {
+						// Character may be added to the text.
+						if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
+							if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						}
+						if (maxLength > 0 && text.length() + 1 > maxLength) return true;
 						if (!hasSelection) {
 							text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 							updateDisplayText();
@@ -549,7 +557,7 @@ public class TextField extends Widget {
 
 	/** Copies the contents of this TextField to the {@link Clipboard} implementation set on this TextField. */
 	public void copy () {
-		if (hasSelection) {
+		if (hasSelection && !passwordMode) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
 			clipboard.setContents(text.substring(minIndex, maxIndex));
@@ -559,7 +567,7 @@ public class TextField extends Widget {
 	/** Copies the selected contents of this TextField to the {@link Clipboard} implementation set on this TextField, then removes
 	 * it. */
 	public void cut () {
-		if (hasSelection) {
+		if (hasSelection && !passwordMode) {
 			copy();
 			delete();
 		}
@@ -854,7 +862,9 @@ public class TextField extends Widget {
 	 * @author Nathan Sweet */
 	static public class TextFieldStyle {
 		public BitmapFont font;
-		public Color fontColor, focusedFontColor, disabledFontColor;
+		public Color fontColor;
+		/** Optional. */
+		public Color focusedFontColor, disabledFontColor;
 		/** Optional. */
 		public Drawable background, focusedBackground, disabledBackground, cursor, selection;
 		/** Optional. */

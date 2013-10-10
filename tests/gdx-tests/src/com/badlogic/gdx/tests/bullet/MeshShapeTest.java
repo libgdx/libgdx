@@ -21,10 +21,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -42,13 +42,15 @@ public class MeshShapeTest extends BaseBulletTest {
 		final Model sphereModel = modelBuilder.createSphere(0.5f, 0.5f, 0.5f, 8, 8, 
 			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
 			Usage.Position | Usage.Normal); 
+		disposables.add(sphereModel);
 		final BulletConstructor sphereConstructor = new BulletConstructor(sphereModel, 0.25f, new btSphereShape(0.25f));
-		sphereConstructor.bodyInfo.setM_restitution(1f);
+		sphereConstructor.bodyInfo.setRestitution(1f);
 		world.addConstructor("sphere", sphereConstructor);
 		
-		final Model sceneModel = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
-		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(true, sceneModel));
-		sceneConstructor.bodyInfo.setM_restitution(0.25f);
+		final Model sceneModel = objLoader.loadModel(Gdx.files.internal("data/scene.obj"));
+		disposables.add(sceneModel);
+		final BulletConstructor sceneConstructor = new BulletConstructor(sceneModel, 0f, new btBvhTriangleMeshShape(sceneModel.meshParts));
+		sceneConstructor.bodyInfo.setRestitution(0.25f);
 		world.addConstructor("scene", sceneConstructor);
 		
 		world.add("scene", (new Matrix4()).setToTranslation(0f, 2f, 0f).rotate(Vector3.Y, -90))
@@ -63,11 +65,6 @@ public class MeshShapeTest extends BaseBulletTest {
 					.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 			}
 		}
-	}
-	
-	@Override
-	public void dispose () {
-		super.dispose();
 	}
 	
 	@Override

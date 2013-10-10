@@ -38,6 +38,12 @@ public class Circle implements Serializable {
 		this.radius = radius;
 	}
 
+	public Circle (Circle circle) {
+		this.x = circle.x;
+		this.y = circle.y;
+		this.radius = circle.radius;
+	}
+
 	public void set (float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
@@ -62,6 +68,18 @@ public class Circle implements Serializable {
 	 * @param y The y-coordinate */
 	public void setPosition (float x, float y) {
 		this.x = x;
+		this.y = y;
+	}
+
+	/** Sets the x-coordinate of circle center
+	 * @param x The x-coordinate */
+	public void setX (float x) {
+		this.x = x;
+	}
+
+	/** Sets the y-coordinate of circle center
+	 * @param y The y-coordinate */
+	public void setY (float y) {
 		this.y = y;
 	}
 

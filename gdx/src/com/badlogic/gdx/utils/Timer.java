@@ -16,45 +16,26 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.LifecycleListener;
 
 /** Executes tasks in the future on the main loop thread.
  * @author Nathan Sweet */
 public class Timer {
 	static final Array<Timer> instances = new Array(1);
-	static {
-		Thread thread = new Thread("Timer") {
-			public void run () {
-				while (true) {
-					synchronized (instances) {
-						long timeMillis = System.nanoTime() / 1000000;
-						long waitMillis = Long.MAX_VALUE;
-						for (int i = 0, n = instances.size; i < n; i++) {
-							try {
-								waitMillis = instances.get(i).update(timeMillis, waitMillis);
-							} catch (Throwable ex) {
-								throw new GdxRuntimeException("Task failed: " + instances.get(i).getClass().getName(), ex);
-							}
-						}
-						try {
-							if (waitMillis > 0) instances.wait(waitMillis);
-						} catch (InterruptedException ignored) {
-						}
-					}
-				}
-			}
-		};
-		thread.setDaemon(true);
-		thread.start();
-	}
-
-	/** Timer instance for general application wide usage. Static methods on {@link Timer} make convenient use of this instance. */
-	static public final Timer instance = new Timer();
-
+	static TimerThread thread;
 	static private final int CANCELLED = -1;
 	static private final int FOREVER = -2;
 
+	/** Timer instance for general application wide usage. Static methods on {@link Timer} make convenient use of this instance. */
+	static Timer instance = new Timer();
+	static public Timer instance() {
+		if (instance == null) {
+			instance = new Timer();
+		}
+		return instance;
+	}
 	private final Array<Task> tasks = new Array(false, 8);
 
 	public Timer () {
@@ -100,6 +81,7 @@ public class Timer {
 		synchronized (instances) {
 			if (instances.contains(this, true)) return;
 			instances.add(this);
+			if (thread == null) thread = new TimerThread();
 			wake();
 		}
 	}
@@ -142,7 +124,17 @@ public class Timer {
 		return waitMillis;
 	}
 
-	static private void wake () {
+	/** Adds the specified delay to all tasks. */
+	public void delay (long delayMillis) {
+		synchronized (tasks) {
+			for (int i = 0, n = tasks.size; i < n; i++) {
+				Task task = tasks.get(i);
+				task.executeTimeMillis += delayMillis;
+			}
+		}
+	}
+
+	static void wake () {
 		synchronized (instances) {
 			instances.notifyAll();
 		}
@@ -151,25 +143,25 @@ public class Timer {
 	/** Schedules a task on {@link #instance}.
 	 * @see #postTask(Task) */
 	static public void post (Task task) {
-		instance.postTask(task);
+		instance().postTask(task);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float) */
 	static public void schedule (Task task, float delaySeconds) {
-		instance.scheduleTask(task, delaySeconds);
+		instance().scheduleTask(task, delaySeconds);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float, float) */
 	static public void schedule (Task task, float delaySeconds, float intervalSeconds) {
-		instance.scheduleTask(task, delaySeconds, intervalSeconds);
+		instance().scheduleTask(task, delaySeconds, intervalSeconds);
 	}
 
 	/** Schedules a task on {@link #instance}.
 	 * @see #scheduleTask(Task, float, float, int) */
 	static public void schedule (Task task, float delaySeconds, float intervalSeconds, int repeatCount) {
-		instance.scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
+		instance().scheduleTask(task, delaySeconds, intervalSeconds, repeatCount);
 	}
 
 	/** Runnable with a cancel method.
@@ -192,6 +184,69 @@ public class Timer {
 		/** Returns true if this task is scheduled to be executed in the future by a timer. */
 		public boolean isScheduled () {
 			return repeatCount != CANCELLED;
+		}
+	}
+
+	/** Manages the single timer thread. Stops thread on libgdx application pause and dispose, starts thread on resume.
+	 * @author Nathan Sweet */
+	static class TimerThread implements Runnable, LifecycleListener {
+		private Application app;
+		private long pauseMillis;
+
+		public TimerThread () {
+			Gdx.app.addLifecycleListener(this);
+			resume();
+		}
+
+		public void run () {
+			while (true) {
+				synchronized (instances) {
+					if (app != Gdx.app) return;
+
+					long timeMillis = System.nanoTime() / 1000000;
+					long waitMillis = 5000;
+					for (int i = 0, n = instances.size; i < n; i++) {
+						try {
+							waitMillis = instances.get(i).update(timeMillis, waitMillis);
+						} catch (Throwable ex) {
+							throw new GdxRuntimeException("Task failed: " + instances.get(i).getClass().getName(), ex);
+						}
+					}
+
+					if (app != Gdx.app) return;
+
+					try {
+						if (waitMillis > 0) instances.wait(waitMillis);
+					} catch (InterruptedException ignored) {
+					}
+				}
+			}
+		}
+
+		public void resume () {
+			long delayMillis = System.nanoTime() / 1000000 - pauseMillis;
+			synchronized (instances) {
+				for (int i = 0, n = instances.size; i < n; i++)
+					instances.get(i).delay(delayMillis);
+			}
+			app = Gdx.app;
+			new Thread(this, "Timer").start();
+		}
+
+		public void pause () {
+			pauseMillis = System.nanoTime() / 1000000;
+			synchronized (instances) {
+				app = null;
+				wake();
+			}
+		}
+
+		public void dispose () {
+			pause();
+			Gdx.app.removeLifecycleListener(this);
+			thread = null;
+			instances.clear();
+			instance = null;
 		}
 	}
 }

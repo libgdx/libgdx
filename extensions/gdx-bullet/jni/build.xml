@@ -24,8 +24,6 @@
 			<fileset dir="../libs/linux32" includes="libgdx-bullet.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-bullet64.so"/>
 			<fileset dir="../libs/macosx32" includes="libgdx-bullet.dylib"/>
-			<fileset dir="../libs/android32" includes="libgdx-bullet.so"/>
-			<fileset dir="../libs/ios32" includes="libgdx-bullet.a"/>
 
 		</jar>
 	</target>

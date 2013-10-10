@@ -22,7 +22,7 @@
 				<include name="memcpy_wrap.c"/>
 		<include name="**/*.c"/>
 
-				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+				<exclude name="src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
 
 	</fileset>
 	
@@ -33,7 +33,7 @@
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
-				<exclude name="src/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
+				<exclude name="src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"/>
 
 	</fileset>
 
@@ -68,7 +68,7 @@
 		<condition property="has-compiler">
 			<equals arg1="${compiler-found}" arg2="true"/>
 		</condition>
-		<copy todir="src" verbose="true" overwrite="true"><fileset dir="../patched"/></copy>
+		
 	</target>
 	
 	<target name="create-build-dir" depends="precompile" if="has-compiler">
@@ -93,7 +93,9 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
+						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/custom/"/>
+			<arg value="-Isrc/extras/Serialize/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -109,7 +111,9 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-						<arg value="-Isrc/"/>
+						<arg value="-Isrc/bullet/"/>
+			<arg value="-Isrc/custom/"/>
+			<arg value="-Isrc/extras/Serialize/"/>
 
 			<srcfile/>
 			<arg value="-o"/>
@@ -141,6 +145,6 @@
 	</target>	
 	
 	<target name="postcompile" depends="link">
-		<exec executable="svn" dir="."><arg line="revert -R src"/></exec>
+		
 	</target>
 </project>

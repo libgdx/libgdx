@@ -1,6 +1,7 @@
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
+import java.util.Iterator;
+
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extends AsynchronousAssetLoader<Model, P> {
@@ -51,9 +53,9 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	}
 	
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, P parameters) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, P parameters) {
 		final Array<AssetDescriptor> deps = new Array();
-		ModelData data = loadModelData(resolve(fileName), parameters);
+		ModelData data = loadModelData(file, parameters);
 		if (data == null)
 			return deps;
 		
@@ -74,11 +76,11 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 	}
 	
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, P parameters) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, P parameters) {
 	}
 
 	@Override
-	public Model loadSync (AssetManager manager, String fileName, P parameters) {
+	public Model loadSync (AssetManager manager, String fileName, FileHandle file, P parameters) {
 		ModelData data = null;
 		synchronized(items) {
 			for (int i = 0; i < items.size; i++) {
@@ -91,6 +93,15 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 		if (data == null)
 			return null;
 		final Model result = new Model(data, new TextureProvider.AssetTextureProvider(manager));
+		// need to remove the textures from the managed disposables, or else ref counting
+		// doesn't work!
+		Iterator<Disposable> disposables = result.getManagedDisposables().iterator();
+		while(disposables.hasNext()) {
+			Disposable disposable = disposables.next();
+			if(disposable instanceof Texture) {
+				disposables.remove();
+			}
+		}
 		data = null;
 		return result;
 	}

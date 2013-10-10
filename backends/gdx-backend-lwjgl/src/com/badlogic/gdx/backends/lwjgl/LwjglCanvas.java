@@ -55,8 +55,8 @@ public class LwjglCanvas implements Application {
 	LwjglNet net;
 	ApplicationListener listener;
 	Canvas canvas;
-	final List<Runnable> runnables = new ArrayList();
-	final List<Runnable> executedRunnables = new ArrayList();
+	final Array<Runnable> runnables = new Array();
+	final Array<Runnable> executedRunnables = new Array();
 	final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	boolean running = true;
 	int logLevel = LOG_INFO;
@@ -140,7 +140,7 @@ public class LwjglCanvas implements Application {
 
 	protected void setTitle (String title) {
 	}
-	
+
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
@@ -222,19 +222,7 @@ public class LwjglCanvas implements Application {
 						listener.resize(width, height);
 					}
 
-					synchronized (runnables) {
-						executedRunnables.clear();
-						executedRunnables.addAll(runnables);
-						runnables.clear();
-
-						for (int i = 0; i < executedRunnables.size(); i++) {
-							try {
-								executedRunnables.get(i).run();
-							} catch (Throwable t) {
-								t.printStackTrace();
-							}
-						}
-					}
+					executeRunnables();
 
 					input.update();
 					input.processEvents();
@@ -242,13 +230,33 @@ public class LwjglCanvas implements Application {
 					if (audio != null) audio.update();
 					Display.update();
 					canvas.setCursor(cursor);
-					if (graphics.vsync) Display.sync(60);
+					Display.sync(getFrameRate());
 				} catch (Throwable ex) {
 					exception(ex);
 				}
 				EventQueue.invokeLater(this);
 			}
 		});
+	}
+
+	public boolean executeRunnables () {
+		synchronized (runnables) {
+			executedRunnables.addAll(runnables);
+			runnables.clear();
+		}
+		if (executedRunnables.size == 0) return false;
+		for (int i = 0; i < executedRunnables.size; i++)
+			executedRunnables.get(i).run();
+		executedRunnables.clear();
+		return true;
+	}
+
+	protected int getFrameRate () {
+		int frameRate = Display.isActive() ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
+		if (frameRate == -1) frameRate = 10;
+		if (frameRate == 0) frameRate = graphics.config.backgroundFPS;
+		if (frameRate == 0) frameRate = 30;
+		return frameRate;
 	}
 
 	protected void exception (Throwable ex) {

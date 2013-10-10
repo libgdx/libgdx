@@ -21,11 +21,13 @@ import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 
 /** An ordered or unordered map of objects. This implementation uses arrays to store the keys and values, which means
- * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This may be acceptable for small maps and has the
- * benefits that keys and values can be accessed by index, which makes iteration fast. Like {@link Array}, if ordered is false,
- * this class avoids a memory copy when removing elements (the last element is moved to the removed element's position).
+ * {@link #getKey(Object, boolean) gets} do a comparison for each key in the map. This is slower than a typical hash map
+ * implementation, but may be acceptable for small maps and has the benefits that keys and values can be accessed by index, which
+ * makes iteration fast. Like {@link Array}, if ordered is false, * this class avoids a memory copy when removing elements (the
+ * last element is moved to the removed element's position).
  * @author Nathan Sweet */
 public class ArrayMap<K, V> {
 	public K[] keys;
@@ -60,14 +62,14 @@ public class ArrayMap<K, V> {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the arrays, which avoids a
 	 *           memory copy.
 	 * @param capacity Any elements added beyond this will cause the backing arrays to be grown. */
-	public ArrayMap (boolean ordered, int capacity, Class<K> keyArrayType, Class<V> valueArrayType) {
+	public ArrayMap (boolean ordered, int capacity, Class keyArrayType, Class valueArrayType) {
 		this.ordered = ordered;
-		keys = (K[])java.lang.reflect.Array.newInstance(keyArrayType, capacity);
-		values = (V[])java.lang.reflect.Array.newInstance(valueArrayType, capacity);
+		keys = (K[])ArrayReflection.newInstance(keyArrayType, capacity);
+		values = (V[])ArrayReflection.newInstance(valueArrayType, capacity);
 	}
 
 	/** Creates an ordered map with {@link #keys} and {@link #values} of the specified type and a capacity of 16. */
-	public ArrayMap (Class<K> keyArrayType, Class<V> valueArrayType) {
+	public ArrayMap (Class keyArrayType, Class valueArrayType) {
 		this(false, 16, keyArrayType, valueArrayType);
 	}
 
@@ -75,8 +77,7 @@ public class ArrayMap<K, V> {
 	 * will be ordered if the specified map is ordered. The capacity is set to the number of elements, so any subsequent elements
 	 * added will cause the backing arrays to be grown. */
 	public ArrayMap (ArrayMap array) {
-		this(array.ordered, array.size, (Class<K>)array.keys.getClass().getComponentType(), (Class<V>)array.values.getClass()
-			.getComponentType());
+		this(array.ordered, array.size, array.keys.getClass().getComponentType(), array.values.getClass().getComponentType());
 		size = array.size;
 		System.arraycopy(array.keys, 0, keys, 0, size);
 		System.arraycopy(array.values, 0, values, 0, size);
@@ -136,12 +137,12 @@ public class ArrayMap<K, V> {
 	public K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
-		if (identity || values == null) {
+		if (identity || value == null) {
 			for (; i >= 0; i--)
-				if (values[i] == values) return keys[i];
+				if (values[i] == value) return keys[i];
 		} else {
 			for (; i >= 0; i--)
-				if (values.equals(values[i])) return keys[i];
+				if (value.equals(values[i])) return keys[i];
 		}
 		return null;
 	}
@@ -310,6 +311,16 @@ public class ArrayMap<K, V> {
 		return values[size - 1];
 	}
 
+	/** Clears the map and reduces the size of the backing arrays to be the specified capacity if they are larger. */
+	public void clear (int maximumCapacity) {
+		if (keys.length <= maximumCapacity) {
+			clear();
+			return;
+		}
+		size = 0;
+		resize(maximumCapacity);
+	}
+
 	public void clear () {
 		K[] keys = this.keys;
 		V[] values = this.values;
@@ -323,6 +334,7 @@ public class ArrayMap<K, V> {
 	/** Reduces the size of the backing arrays to the size of the actual number of entries. This is useful to release memory when
 	 * many items have been removed, or if it is known that more entries will not be added. */
 	public void shrink () {
+		if (keys.length == size) return;
 		resize(size);
 	}
 
@@ -334,12 +346,12 @@ public class ArrayMap<K, V> {
 	}
 
 	protected void resize (int newSize) {
-		K[] newKeys = (K[])java.lang.reflect.Array.newInstance(keys.getClass().getComponentType(), newSize);
-		System.arraycopy(keys, 0, newKeys, 0, Math.min(keys.length, newKeys.length));
+		K[] newKeys = (K[])ArrayReflection.newInstance(keys.getClass().getComponentType(), newSize);
+		System.arraycopy(keys, 0, newKeys, 0, Math.min(size, newKeys.length));
 		this.keys = newKeys;
 
-		V[] newValues = (V[])java.lang.reflect.Array.newInstance(values.getClass().getComponentType(), newSize);
-		System.arraycopy(values, 0, newValues, 0, Math.min(values.length, newValues.length));
+		V[] newValues = (V[])ArrayReflection.newInstance(values.getClass().getComponentType(), newSize);
+		System.arraycopy(values, 0, newValues, 0, Math.min(size, newValues.length));
 		this.values = newValues;
 	}
 

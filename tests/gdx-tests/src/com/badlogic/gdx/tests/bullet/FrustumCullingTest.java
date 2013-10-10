@@ -22,9 +22,9 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -90,7 +90,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 			for (int i = 0; i < points.length; i++)
 				hullShape.addPoint(tmpV.set(points[i]).sub(center));
 			final btCompoundShape shape = new btCompoundShape();
-			shape.addChildShape(tmpM.setToTranslation(center), hullShape, true);
+			shape.addChildShape(tmpM.setToTranslation(center), hullShape);
 			result.setCollisionShape(shape);
 		} else {
 			final btConvexHullShape shape = new btConvexHullShape();
@@ -163,6 +163,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		overviewCam.update();
 		
 		final Model frustumModel = createFrustumModel(frustumCam.frustum.planePoints);
+		disposables.add(frustumModel);
 		frustumObject = createFrustumObject(frustumCam.frustum.planePoints);
 		world.add(frustumEntity = new BulletEntity(frustumModel, frustumObject, 0, 0, 0));
 		frustumEntity.setColor(Color.BLUE);
@@ -260,7 +261,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		super.dispose();
 		
 		if (tempManifoldArr != null)
-			tempManifoldArr.delete();
+			tempManifoldArr.dispose();
 		tempManifoldArr = null;
 	}
 	
@@ -286,7 +287,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		public void dispose () {
 			super.dispose();
 			if (shape != null)
-				shape.delete();
+				shape.dispose();
 			shape = null;
 		}
 	}

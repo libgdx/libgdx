@@ -47,7 +47,11 @@ public class BulletEntity extends BaseEntity {
 	}
 	
 	public BulletEntity (final Model model, final btCollisionObject body, final Matrix4 transform) {
-		this.modelInstance = new ModelInstance(model, transform.cpy());
+		this(new ModelInstance(model, transform.cpy()), body);
+	}
+		
+	public BulletEntity (final ModelInstance modelInstance, final btCollisionObject body) {
+		this.modelInstance = modelInstance;
 		this.transform = this.modelInstance.transform;
 		this.body = body;
 		
@@ -71,7 +75,7 @@ public class BulletEntity extends BaseEntity {
 		body = null;
 	}
 	
-	static class MotionState extends btMotionState implements Disposable {
+	static class MotionState extends btMotionState {
 		private final Matrix4 transform;
 		
 		public MotionState(final Matrix4 transform) {
@@ -93,11 +97,6 @@ public class BulletEntity extends BaseEntity {
 		@Override
 		public void setWorldTransform (final Matrix4 worldTrans) {
 			transform.set(worldTrans);
-		}
-		
-		@Override
-		public void dispose () {
-			delete();
 		}
 	}
 }

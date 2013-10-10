@@ -44,8 +44,8 @@ public class BulletBuild {
 		cppFlags += " -DBT_NO_PROFILE";
 
 		// generate build scripts
-		String[] excludes = {"src/BulletMultiThreaded/GpuSoftBodySolvers/**"};
-		String[] headers = {"src/"};
+		String[] excludes = {"src/bullet/BulletMultiThreaded/GpuSoftBodySolvers/**"};
+		String[] headers = {"src/bullet/", "src/custom/", "src/extras/Serialize/"};
 
 		BuildTarget win32home = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		win32home.compilerPrefix = "";
@@ -66,9 +66,9 @@ public class BulletBuild {
 		win64.cppFlags += cppFlags;
 		// special pre and post compile tasks to patch the source and revert the
 		// changes
-		win64.preCompileTask = "<copy todir=\"src\" verbose=\"true\" overwrite=\"true\">" + "<fileset dir=\"../patched\"/>"
-			+ "</copy>";
-		win64.postCompileTask = "<exec executable=\"svn\" dir=\".\">" + "<arg line=\"revert -R src\"/>" + "</exec>";
+		//win64.preCompileTask = "<copy todir=\"src\" verbose=\"true\" overwrite=\"true\">" + "<fileset dir=\"../patched\"/>"
+			//+ "</copy>";
+		//win64.postCompileTask = "<exec executable=\"svn\" dir=\".\">" + "<arg line=\"revert -R src\"/>" + "</exec>";
 
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cExcludes = lin32.cppExcludes = excludes;

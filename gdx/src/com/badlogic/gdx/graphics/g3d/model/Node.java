@@ -1,10 +1,11 @@
 package com.badlogic.gdx.graphics.g3d.model;
 
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -33,7 +34,7 @@ public class Node {
 	public final Matrix4 localTransform = new Matrix4();
 	/** the global transform, product of local transform and transform of the parent node, calculated via {@link #calculateWorldTransform()}**/
 	public final Matrix4 globalTransform = new Matrix4();
-	
+
 	public Array<NodePart> parts = new Array<NodePart>(2);
 	
 	/**
@@ -93,5 +94,71 @@ public class Node {
 				child.calculateBoneTransforms(true);
 			}
 		}
+	}
+
+	/** Calculate the bounding box of this Node.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out) {
+		out.inf();
+		return extendBoundingBox(out);
+	}
+	
+	/** Calculate the bounding box of this Node.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox calculateBoundingBox(final BoundingBox out, boolean transform) {
+		out.inf();
+		return extendBoundingBox(out, transform);
+	}
+
+	/** Extends the bounding box with the bounds of this Node.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox extendBoundingBox(final BoundingBox out) {
+		return extendBoundingBox(out, true);
+	}
+	
+	/** Extends the bounding box with the bounds of this Node.
+	 * This is a potential slow operation, it is advised to cache the result. */
+	public BoundingBox extendBoundingBox(final BoundingBox out, boolean transform) {
+		final int partCount = parts.size;
+		for (int i = 0; i < partCount; i++) {
+			final MeshPart meshPart = parts.get(i).meshPart;
+			if (transform)
+				meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices, globalTransform);
+			else
+				meshPart.mesh.extendBoundingBox(out, meshPart.indexOffset, meshPart.numVertices);
+		}
+		final int childCount = children.size;
+		for (int i = 0; i < childCount; i++)
+			children.get(i).extendBoundingBox(out);
+		return out;
+	}
+	
+	/** @param recursive false to fetch a root child only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public Node getChild(final String id, boolean recursive, boolean ignoreCase) {
+		return getNode(children, id, recursive, ignoreCase);
+	}
+	
+	/** Helper method to recursive fetch a node from an array
+	 * @param recursive false to fetch a root node only, true to search the entire node tree for the specified node.
+	 * @return The node with the specified id, or null if not found. */
+	public static Node getNode(final Array<Node> nodes, final String id, boolean recursive, boolean ignoreCase) {
+		final int n = nodes.size;
+		Node node;
+		if (ignoreCase) {
+			for (int i = 0; i < n; i++)
+				if ((node = nodes.get(i)).id.equalsIgnoreCase(id))
+					return node;
+		} else {
+			for (int i = 0; i < n; i++)
+				if ((node = nodes.get(i)).id.equals(id))
+					return node;
+		}
+		if (recursive) {
+			for (int i = 0; i < n; i++)
+				if ((node = getNode(nodes.get(i).children, id, true, ignoreCase)) != null)
+					return node;
+		}
+		return null;
 	}
 }

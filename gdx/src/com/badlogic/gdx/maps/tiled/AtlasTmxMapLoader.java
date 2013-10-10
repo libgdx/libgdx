@@ -122,9 +122,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
-		FileHandle tmxFile = resolve(fileName);
 		try {
 			root = xml.parse(tmxFile);
 
@@ -135,8 +134,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					String value = property.getAttribute("value");
 					if (name.startsWith("atlas")) {
 						FileHandle atlasHandle = getRelativeFileHandle(tmxFile, value);
-						atlasHandle = resolve(atlasHandle.path());
-						dependencies.add(new AssetDescriptor(atlasHandle.path(), TextureAtlas.class));
+						dependencies.add(new AssetDescriptor(atlasHandle, TextureAtlas.class));
 					}
 				}
 			}
@@ -177,9 +175,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	protected FileHandle loadAtlas (Element root, FileHandle tmxFile) throws IOException {
-
 		Element e = root.getChildByName("properties");
-		Array<FileHandle> atlases = new Array<FileHandle>();
 
 		if (e != null) {
 			for (Element property : e.getChildrenByName("property")) {
@@ -210,10 +206,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, AtlasTiledMapLoaderParameters parameter) {
 		map = null;
 
-		FileHandle tmxFile = resolve(fileName);
 		if (parameter != null) {
 			yUp = parameter.yUp;
 		} else {
@@ -228,7 +223,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, AtlasTiledMapLoaderParameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, AtlasTiledMapLoaderParameters parameter) {
 		if (parameter != null) {
 			setTextureFilters(parameter.textureMinFilter, parameter.textureMagFilter);
 		}
@@ -312,19 +307,19 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
 			}
 
-			// get the TextureAtlas for this tileset
-			TextureAtlas atlas = null;
-			String regionsName = "";
-			if (map.getProperties().containsKey("atlas")) {
-				FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
-				atlasHandle = resolve(atlasHandle.path());
-				atlas = resolver.getAtlas(atlasHandle.path());
-				regionsName = atlasHandle.nameWithoutExtension();
+			if (!map.getProperties().containsKey("atlas")) {
+				throw new GdxRuntimeException("The map is missing the 'atlas' property");
+			}
 
-				if (parameter != null && parameter.forceTextureFilters) {
-					for (Texture texture : atlas.getTextures()) {
-						trackedTextures.add(texture);
-					}
+			// get the TextureAtlas for this tileset
+			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
+			atlasHandle = resolve(atlasHandle.path());
+			TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
+			String regionsName = atlasHandle.nameWithoutExtension();
+
+			if (parameter != null && parameter.forceTextureFilters) {
+				for (Texture texture : atlas.getTextures()) {
+					trackedTextures.add(texture);
 				}
 			}
 
@@ -362,6 +357,14 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile != null) {
+					String terrain = tileElement.getAttribute("terrain", null);
+					if (terrain != null) {
+						tile.getProperties().put("terrain", terrain);
+					}
+					String probability = tileElement.getAttribute("probability", null);
+					if (probability != null) {
+						tile.getProperties().put("probability", probability);
+					}
 					Element properties = tileElement.getChildByName("properties");
 					if (properties != null) {
 						loadProperties(tile.getProperties(), properties);
@@ -598,6 +601,10 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			if (type != null) {
 				object.getProperties().put("type", type);
 			}
+			int gid = element.getIntAttribute("gid", -1);
+			if (gid != -1) {
+				object.getProperties().put("gid", gid);
+			}
 			object.getProperties().put("x", x);
 			object.getProperties().put("y", yUp ? y - height : y);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
@@ -642,7 +649,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		}
 		return cell;
 	}
-	
+
 	public static FileHandle getRelativeFileHandle (FileHandle file, String path) {
 		StringTokenizer tokenizer = new StringTokenizer(path, "\\/");
 		FileHandle result = file.parent();

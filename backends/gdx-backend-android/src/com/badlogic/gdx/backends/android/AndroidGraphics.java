@@ -474,13 +474,13 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				app.executedRunnables.clear();
 				app.executedRunnables.addAll(app.runnables);
 				app.runnables.clear();
+			}
 
-				for (int i = 0; i < app.executedRunnables.size; i++) {
-					try {
-						app.executedRunnables.get(i).run();
-					} catch (Throwable t) {
-						t.printStackTrace();
-					}
+			for (int i = 0; i < app.executedRunnables.size; i++) {
+				try {
+					app.executedRunnables.get(i).run();
+				} catch (Throwable t) {
+					t.printStackTrace();
 				}
 			}
 			app.input.processEvents();

@@ -26,7 +26,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TableToolkit.DebugRect;
@@ -60,43 +59,19 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 				float widgetHeight = Math.round(c.getWidgetHeight());
 				float widgetX = Math.round(c.getWidgetX());
 				float widgetY = height - Math.round(c.getWidgetY()) - widgetHeight;
-				c.setWidgetX(widgetX);
-				c.setWidgetY(widgetY);
-				c.setWidgetWidth(widgetWidth);
-				c.setWidgetHeight(widgetHeight);
+				c.setWidgetBounds(widgetX, widgetY, widgetWidth, widgetHeight);
 				Actor actor = (Actor)c.getWidget();
-				if (actor != null) {
-					actor.setX(widgetX);
-					actor.setY(widgetY);
-					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
-						actor.setWidth(widgetWidth);
-						actor.setHeight(widgetHeight);
-						if (actor instanceof Layout) ((Layout)actor).invalidate();
-					}
-				}
+				if (actor != null) actor.setBounds(widgetX, widgetY, widgetWidth, widgetHeight);
 			}
 		} else {
 			for (int i = 0, n = cells.size(); i < n; i++) {
 				Cell c = cells.get(i);
 				if (c.getIgnore()) continue;
-				float widgetWidth = c.getWidgetWidth();
 				float widgetHeight = c.getWidgetHeight();
-				float widgetX = c.getWidgetX();
 				float widgetY = height - c.getWidgetY() - widgetHeight;
-				c.setWidgetX(widgetX);
 				c.setWidgetY(widgetY);
-				c.setWidgetWidth(widgetWidth);
-				c.setWidgetHeight(widgetHeight);
 				Actor actor = (Actor)c.getWidget();
-				if (actor != null) {
-					actor.setX(widgetX);
-					actor.setY(widgetY);
-					if (actor.getWidth() != widgetWidth || actor.getHeight() != widgetHeight) {
-						actor.setWidth(widgetWidth);
-						actor.setHeight(widgetHeight);
-						if (actor instanceof Layout) ((Layout)actor).invalidate();
-					}
-				}
+				if (actor != null) actor.setBounds(c.getWidgetX(), widgetY, c.getWidgetWidth(), widgetHeight);
 			}
 		}
 		// Validate children separately from sizing actors to ensure actors without a cell are validated.
@@ -107,16 +82,10 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 		}
 	}
 
-	/** Invalides the layout of this widget and every parent widget to the root of the hierarchy. */
+	/** Invalidates the layout of this widget and every parent widget to the root of the hierarchy. */
 	public void invalidateHierarchy () {
 		super.invalidate();
 		getTable().invalidateHierarchy();
-	}
-
-	private void toStageCoordinates (Actor actor, Vector2 point) {
-		point.x += actor.getX();
-		point.y += actor.getY();
-		toStageCoordinates(actor.getParent(), point);
 	}
 
 	public void drawDebug (SpriteBatch batch) {

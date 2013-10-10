@@ -54,7 +54,7 @@ import java.util.List;
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 	static {
-		Toolkit.instance = new TableToolkit();
+		if (Toolkit.instance == null) Toolkit.instance = new TableToolkit();
 	}
 
 	private final TableLayout layout;
@@ -216,6 +216,13 @@ public class Table extends WidgetGroup {
 	 * @param actor May be null to add a cell without an actor. */
 	public Cell add (Actor actor) {
 		return layout.add(actor);
+	}
+
+	public boolean removeActor (Actor actor) {
+		if (!super.removeActor(actor)) return false;
+		Cell cell = getCell(actor);
+		if (cell != null) cell.setWidget(null);
+		return true;
 	}
 
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.

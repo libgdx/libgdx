@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d.joints;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -28,6 +29,10 @@ public class RevoluteJoint extends Joint {
 	/*JNI
 #include <Box2D/Box2D.h> 
 	 */
+	/** Get the first ground anchor. */
+	private final float[] tmp = new float[2];
+	private final Vector2 localAnchorA = new Vector2();
+	private final Vector2 localAnchorB = new Vector2();
 	
 	public RevoluteJoint (World world, long addr) {
 		super(world, addr);
@@ -162,5 +167,48 @@ public class RevoluteJoint extends Joint {
 	private native float jniGetMotorTorque (long addr, float invDt); /*
 		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
 		return joint->GetMotorTorque(invDt);
+	*/
+	
+	public Vector2 getLocalAnchorA () {
+		jniGetLocalAnchorA(addr, tmp);
+		localAnchorA.set(tmp[0], tmp[1]);
+		return localAnchorA;
+	}
+
+	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
+		anchor[0] = joint->GetLocalAnchorA().x;
+		anchor[1] = joint->GetLocalAnchorA().y;
+	*/
+	
+	public Vector2 getLocalAnchorB () {
+		jniGetLocalAnchorA(addr, tmp);
+		localAnchorA.set(tmp[0], tmp[1]);
+		return localAnchorA;
+	}
+
+	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
+		anchor[0] = joint->GetLocalAnchorB().x;
+		anchor[1] = joint->GetLocalAnchorB().y;
+	*/
+	
+	/** Get the current motor torque, usually in N-m. */
+	public float getReferenceAngle () {
+		return jniGetReferenceAngle(addr);
+	}
+
+	private native float jniGetReferenceAngle (long addr); /*
+		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
+		return joint->GetReferenceAngle();
+	*/
+	
+	public float getMaxMotorTorque () {
+		return jniGetMaxMotorTorque(addr);
+	}
+
+	private native float jniGetMaxMotorTorque (long addr); /*
+		b2RevoluteJoint* joint = (b2RevoluteJoint*)addr;
+		return joint->GetMaxMotorTorque();
 	*/
 }

@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -99,22 +101,37 @@ public class PreloaderBundleGenerator extends Generator {
 			}
 		}		
 		
-		StringBuffer buffer = new StringBuffer();
+		HashMap<String, ArrayList<Asset>> bundles = new HashMap<String, ArrayList<Asset>>();
 		for (Asset asset : assets) {
-			String path = asset.file.path().replace('\\', '/').replace(assetOutputPath + "assets/", "").replaceFirst("assets", "");
-			if (path.startsWith("/")) path = path.substring(1);
-			buffer.append(asset.type.code);
-			buffer.append(":");
-			buffer.append(path);
-			buffer.append(":");
-			buffer.append(asset.file.isDirectory() ? 0 : asset.file.length());
-			buffer.append(":");
-			String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
-			buffer.append(mimetype == null ? "application/unknown" : mimetype);
-			buffer.append("\n");
+			String bundleName = assetFilter.getBundleName(asset.file.path());
+			if (bundleName == null) {
+				bundleName = "assets";
+			}			
+			ArrayList<Asset> bundleAssets = bundles.get(bundleName);
+			if (bundleAssets == null) {
+				bundleAssets = new ArrayList<Asset>();
+				bundles.put(bundleName, bundleAssets);
+			}
+			bundleAssets.add(asset);
 		}
-		target.child("assets.txt").writeString(buffer.toString(), false);
-		System.out.println(buffer.toString());
+
+		for (Entry<String, ArrayList<Asset>> bundle : bundles.entrySet()) {
+			StringBuffer buffer = new StringBuffer();
+			for (Asset asset : bundle.getValue()) {
+				String path = asset.file.path().replace('\\', '/').replace(assetOutputPath + "assets/", "").replaceFirst("assets", "");
+				if (path.startsWith("/")) path = path.substring(1);
+				buffer.append(asset.type.code);
+				buffer.append(":");
+				buffer.append(path);
+				buffer.append(":");
+				buffer.append(asset.file.isDirectory() ? 0 : asset.file.length());
+				buffer.append(":");
+				String mimetype = URLConnection.guessContentTypeFromName(asset.file.name());
+				buffer.append(mimetype == null ? "application/unknown" : mimetype);
+				buffer.append("\n");
+			}
+			target.child(bundle.getKey() + ".txt").writeString(buffer.toString(), false);
+		}
 		return createDummyClass(logger, context);
 	}
 
@@ -178,7 +195,8 @@ public class PreloaderBundleGenerator extends Generator {
 		}
 		String paths = assetPathProperty.getValues().get(0);
 		if(paths == null) {
-			return null;
+			throw new RuntimeException(
+				"No gdx.assetpath defined. Add <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> to your GWT projects gwt.xml file");
 		} else {
 			ArrayList<String> existingPaths = new ArrayList<String>();
 			String[] tokens = paths.split(",");
@@ -188,7 +206,8 @@ public class PreloaderBundleGenerator extends Generator {
 					return token;
 				}
 			}
-			return null;
+			throw new RuntimeException(
+				"No valid gdx.assetpath defined. Fix <set-configuration-property name=\"gdx.assetpath\" value=\"relative/path/to/assets/\"/> in your GWT projects gwt.xml file");
 		}
 	}
 	

@@ -13,14 +13,14 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 		Shader suggestedShader = renderable.shader;
 		if (suggestedShader != null && suggestedShader.canRender(renderable))
 			return suggestedShader;
-		for (int i = 0; i < shaders.size; i++) {
-			final Shader shader = shaders.get(i);
+		for (Shader shader : shaders) {
 			if (shader.canRender(renderable))
 				return shader;
 		}
-		final Shader result = createShader(renderable);
-		shaders.add(result);
-		return result;
+		final Shader shader = createShader(renderable);
+		shader.init();
+		shaders.add(shader);
+		return shader;
 	}
 	
 	protected abstract Shader createShader(final Renderable renderable);
@@ -30,5 +30,6 @@ public abstract class BaseShaderProvider implements ShaderProvider {
 		for(Shader shader: shaders) {
 			shader.dispose();
 		}
+		shaders.clear();
 	}
 }

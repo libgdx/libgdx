@@ -16,8 +16,8 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
@@ -112,7 +112,7 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	}
 	
 	@Override
-	public void render (ModelBatch batch, Lights lights, Iterable<BulletEntity> entities) {
+	public void render (ModelBatch batch, Environment lights, Iterable<BulletEntity> entities) {
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
 			debugDrawer.begin();
 			collisionWorld.debugDrawWorld();
@@ -136,15 +136,15 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 		
 		super.dispose();
 		
-		collisionWorld.delete();
+		collisionWorld.dispose();
 		if (solver != null)
-			solver.delete();
+			solver.dispose();
 		if (broadphase != null)
-			broadphase.delete();
+			broadphase.dispose();
 		if (dispatcher != null)
-			dispatcher.delete();
+			dispatcher.dispose();
 		if (collisionConfiguration != null)
-			collisionConfiguration.delete();
+			collisionConfiguration.dispose();
 	}
 	
 	public void setDebugMode(final int mode, final Matrix4 projMatrix) {

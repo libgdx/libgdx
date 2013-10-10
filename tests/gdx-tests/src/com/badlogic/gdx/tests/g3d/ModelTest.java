@@ -2,67 +2,56 @@ package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 public class ModelTest extends BaseG3dHudTest {
-	Lights lights = new Lights(0.4f, 0.4f, 0.4f).add(
-		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -1f, 0f)
-		//new PointLight().set(1f, 0f, 0f, 5f, 5f, 5f, 15f),
-		//new PointLight().set(0f, 0f, 1f, -5f, 5f, 5f, 15f),
-		//new PointLight().set(0f, 1f, 0f, 0f, 5f, -5f, 7f)
-		//new Light(0.5f, 0.5f, 0.5f, 1f),
-		//new Light(0.5f, 0.5f, 0.5f, 1f, -1f, -2f, -3f)
-	);
+	Environment lights;
+	
+	ObjectMap<ModelInstance, AnimationController> animationControllers = new ObjectMap<ModelInstance, AnimationController>(); 
 
 	@Override
 	public void create () {
 		super.create();
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
+		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
+		
+		cam.position.set(1,1,1);
+		cam.lookAt(0,0,0);
+		cam.update();
 		showAxes = true;
+		
 		onModelClicked("g3d/teapot.g3db");
 	}
 
-	private final static Vector3 tmpV = new Vector3();
-	private final static Quaternion tmpQ = new Quaternion();
-	float counter;
-	String currentAsset;
+	private final Vector3 tmpV = new Vector3();
+	private final Quaternion tmpQ = new Quaternion();
+	private final BoundingBox bounds = new BoundingBox();
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
-		for (final ModelInstance instance : instances) {
-			if (instance.currentAnimation != null) {
-				instance.currentAnimTime = (instance.currentAnimTime + Gdx.graphics.getDeltaTime()) % instance.currentAnimation.duration;
-				for (final NodeAnimation nodeAnim : instance.currentAnimation.nodeAnimations) {
-					nodeAnim.node.isAnimated = true;
-					final int n = nodeAnim.keyframes.size - 1;
-					if (n == 0) {
-						nodeAnim.node.localTransform.idt().
-							translate(nodeAnim.keyframes.get(0).translation).
-							rotate(nodeAnim.keyframes.get(0).rotation).
-							scl(nodeAnim.keyframes.get(0).scale);					
-					}
-					for (int i = 0; i < n; i++) {
-						if (instance.currentAnimTime >= nodeAnim.keyframes.get(i).keytime && instance.currentAnimTime <= nodeAnim.keyframes.get(i+1).keytime) {
-							final float t = (instance.currentAnimTime - nodeAnim.keyframes.get(i).keytime) / (nodeAnim.keyframes.get(i+1).keytime - nodeAnim.keyframes.get(i).keytime);
-							nodeAnim.node.localTransform.idt().
-								translate(tmpV.set(nodeAnim.keyframes.get(i).translation).lerp(nodeAnim.keyframes.get(i+1).translation, t)).
-								rotate(tmpQ.set(nodeAnim.keyframes.get(i).rotation).slerp(nodeAnim.keyframes.get(i+1).rotation, t)).
-								scl(tmpV.set(nodeAnim.keyframes.get(i).scale).lerp(nodeAnim.keyframes.get(i+1).scale, t));
-							break;
-						}
-					}
-				}
-				instance.calculateTransforms();
-			}
-		}
+		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
+			e.value.update(Gdx.graphics.getDeltaTime());
 		batch.render(instances, lights);
 	}
 	
@@ -88,38 +77,42 @@ public class ModelTest extends BaseG3dHudTest {
 		assets.load(currentlyLoading, Model.class);
 		loading = true;
 	}
-	
+
 	@Override
 	protected void onLoaded() {
 		if (currentlyLoading == null || currentlyLoading.isEmpty())
 			return;
 		
 		instances.clear();
+		animationControllers.clear();
 		final ModelInstance instance = new ModelInstance(assets.get(currentlyLoading, Model.class));
 		instances.add(instance);
+		if (instance.animations.size > 0)
+			animationControllers.put(instance, new AnimationController(instance));
 		currentlyLoading = null;
+		
+		instance.calculateBoundingBox(bounds);
+		cam.position.set(1,1,1).nor().scl(bounds.getDimensions().len() * 0.75f + bounds.getCenter().len());
+		cam.up.set(0,1,0);
+		cam.lookAt(0,0,0);
+		cam.far = bounds.getDimensions().len() * 2.0f;
+		cam.update();
 	}
 	
 	protected void switchAnimation() {
-		for (final ModelInstance instance : instances) {
-			if (instance.animations.size > 0) {
-				if (instance.currentAnimation != null) {
-					for (final NodeAnimation nodeAnim : instance.currentAnimation.nodeAnimations)
-						nodeAnim.node.isAnimated = false;
-					instance.calculateTransforms();
-				}
-				int animIndex = -1;
-				for (int i = 0; i < instance.animations.size; i++) {
-					final Animation animation = instance.animations.get(i);
-					if (instance.currentAnimation == animation) {
+		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries()) {
+			int animIndex = 0;
+			if (e.value.current != null) {
+				for (int i = 0; i < e.key.animations.size; i++) {
+					final Animation animation = e.key.animations.get(i);
+					if (e.value.current.animation == animation) {
 						animIndex = i;
 						break;
 					}
 				}
-				animIndex = (animIndex + 1) % (instance.animations.size + 1);
-				instance.currentAnimation = animIndex == instance.animations.size ? null : instance.animations.get(animIndex);
-				instance.currentAnimTime = 0f;
 			}
+			animIndex = (animIndex + 1) % (e.key.animations.size + 1);
+			e.value.animate((animIndex == e.key.animations.size) ? null : e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
 		}
 	}
 

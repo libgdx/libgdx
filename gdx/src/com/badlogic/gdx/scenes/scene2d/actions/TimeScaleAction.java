@@ -21,7 +21,7 @@ package com.badlogic.gdx.scenes.scene2d.actions;
 public class TimeScaleAction extends DelegateAction {
 	private float scale;
 
-	public boolean act (float delta) {
+	protected boolean delegate (float delta) {
 		if (action == null) return true;
 		return action.act(delta * scale);
 	}

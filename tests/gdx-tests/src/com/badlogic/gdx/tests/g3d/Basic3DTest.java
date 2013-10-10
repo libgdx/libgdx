@@ -1,38 +1,40 @@
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.UBJsonReader;
 
-public class Basic3DTest extends GdxTest implements ApplicationListener {
+public class Basic3DTest extends GdxTest {
 	public PerspectiveCamera cam;
 	public CameraInputController inputController;
 	public ModelBatch modelBatch;
 	public Model model;
 	public ModelInstance instance;
-	public Lights lights;
+	public Environment environment;
 	
 	@Override
 	public void create () {
-		modelBatch = new ModelBatch();
-		lights = new Lights();
-		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
-		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+		modelBatch = new ModelBatch(new DefaultShaderProvider());
+//		modelBatch = new ModelBatch();
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, .4f, .4f, .4f, 1f));
+		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
 		
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
@@ -44,6 +46,9 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
 		instance = new ModelInstance(model);
+		
+//		model = new G3dModelLoader(new UBJsonReader()).loadModel(Gdx.files.internal("data/g3d/knight.g3db"));
+//		instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
 	}
@@ -56,7 +61,7 @@ public class Basic3DTest extends GdxTest implements ApplicationListener {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
 		modelBatch.begin(cam);
-		modelBatch.render(instance, lights);
+		modelBatch.render(instance, environment);
 		modelBatch.end();
 	}
 	

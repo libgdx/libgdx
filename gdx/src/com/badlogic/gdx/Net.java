@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
@@ -69,11 +70,21 @@ public interface Net {
 		String getResultAsString ();
 
 		/** Returns the data of the HTTP response as an {@link InputStream}.
+		 * <b><br>Warning:</b> Do not store a reference to this InputStream outside of {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. 
+		 * The underlying HTTP connection will be closed after that callback finishes executing. 
+		 * Reading from the InputStream after it's connection has been closed will lead to exception.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
 
 		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
 		HttpStatus getStatus ();
+		
+		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
+		String getHeader(String name);
+
+		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings
+		 * that represent the corresponding header values. */
+		Map<String, List<String>> getHeaders ();
 	}
 
 	/** Provides common HTTP methods to use when creating a {@link HttpRequest}.
@@ -220,8 +231,9 @@ public interface Net {
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
-		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready. {@link HttpResponse}
-		 * contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
+		 * Passing data to the rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} 
+		 * {@link HttpResponse} contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
 		 * {@link HttpStatus#getStatusCode()}). For example:
 		 * 
 		 * <pre>

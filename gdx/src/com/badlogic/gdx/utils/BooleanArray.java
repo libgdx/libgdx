@@ -69,7 +69,7 @@ public class BooleanArray {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public BooleanArray (boolean ordered, boolean[] array, int startIndex, int count) {
-		this(ordered, array.length);
+		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
@@ -96,7 +96,7 @@ public class BooleanArray {
 
 	public void addAll (boolean[] array, int offset, int length) {
 		boolean[] items = this.items;
-		int sizeNeeded = size + length - offset;
+		int sizeNeeded = size + length;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
@@ -188,6 +188,7 @@ public class BooleanArray {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 
@@ -209,6 +210,7 @@ public class BooleanArray {
 	}
 
 	public void reverse () {
+		boolean[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
 			boolean temp = items[i];
@@ -218,6 +220,7 @@ public class BooleanArray {
 	}
 
 	public void shuffle () {
+		boolean[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = MathUtils.random(i);
 			boolean temp = items[i];

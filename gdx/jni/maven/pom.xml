@@ -27,7 +27,7 @@
             <plugin>
                 <groupId>com.googlecode.maven-download-plugin</groupId>
                 <artifactId>maven-download-plugin</artifactId>
-                <version>1.0.0</version>
+                <version>1.1.0</version>
                 <executions>
                     <execution>
                         <id>desktop</id>
@@ -41,16 +41,18 @@
                         </configuration>
                     </execution>
                     
+
                     <execution>
-                        <id>armeabi-gl20</id>
+                        <id>x86-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
                         <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi</cacheDirectory>
-                            <url>${base.url}/armeabi/libandroidgl20.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi</outputDirectory>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
+                            <url>${base.url}/x86/libgdx.so</url>
+                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>armeabi-gdx</id>
                         <phase>process-resources</phase>
@@ -63,16 +65,6 @@
                     </execution>
                     
                     <execution>
-                        <id>armeabi-v7a-gl20</id>
-                        <phase>process-resources</phase>
-                        <goals><goal>wget</goal></goals>
-                        <configuration>
-                            <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
-                            <url>${base.url}/armeabi-v7a/libandroidgl20.so</url>
-                            <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>armeabi-v7a-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
@@ -80,6 +72,28 @@
                             <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
                             <url>${base.url}/armeabi-v7a/libgdx.so</url>
                             <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>ios-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>ios-objectal</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libObjectAL.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -136,6 +150,20 @@
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-local-ios</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/ios32</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/ios</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             
@@ -146,8 +174,10 @@
                 <configuration>
                     <descriptors>
                         <descriptor>desktop.xml</descriptor>
+                        <descriptor>x86.xml</descriptor>
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
+                        <descriptor>ios.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

@@ -111,6 +111,38 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetMotorTorque
   (JNIEnv *, jobject, jlong, jfloat);
 
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RevoluteJoint
+ * Method:    jniGetLocalAnchorA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetLocalAnchorA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RevoluteJoint
+ * Method:    jniGetLocalAnchorB
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetLocalAnchorB
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RevoluteJoint
+ * Method:    jniGetReferenceAngle
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetReferenceAngle
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RevoluteJoint
+ * Method:    jniGetMaxMotorTorque
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RevoluteJoint_jniGetMaxMotorTorque
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

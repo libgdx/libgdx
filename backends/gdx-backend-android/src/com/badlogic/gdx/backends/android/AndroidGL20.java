@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.GL20;
 
 public class AndroidGL20 implements GL20 {
 	static {
-		System.loadLibrary("androidgl20");
+		System.loadLibrary("gdx");
 		init();
 	}
 

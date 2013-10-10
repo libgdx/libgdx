@@ -110,10 +110,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, TmxMapLoader.Parameters parameter) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle tmxFile, TmxMapLoader.Parameters parameter) {
 		map = null;
 
-		FileHandle tmxFile = resolve(fileName);
 		if (parameter != null) {
 			yUp = parameter.yUp;
 		} else {
@@ -127,7 +126,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, TmxMapLoader.Parameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle fileHandle, TmxMapLoader.Parameters parameter) {
 		return map;
 	}
 
@@ -137,10 +136,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	 * @param parameter not used for now
 	 * @return dependencies for the given .tmx file */
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle tmxFile, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
-			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			boolean generateMipMaps = (parameter != null ? parameter.generateMipMaps : false);
 			TextureLoader.TextureParameter texParams = new TextureParameter();
@@ -150,7 +148,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				texParams.magFilter = parameter.textureMagFilter;
 			}
 			for (FileHandle image : loadTilesets(root, tmxFile)) {
-				dependencies.add(new AssetDescriptor(image.path(), Texture.class, texParams));
+				dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
 			}
 			return dependencies;
 		} catch (IOException e) {
@@ -330,6 +328,14 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile != null) {
+					String terrain = tileElement.getAttribute("terrain", null);
+					if (terrain != null) {
+						tile.getProperties().put("terrain", terrain);
+					}
+					String probability = tileElement.getAttribute("probability", null);
+					if (probability != null) {
+						tile.getProperties().put("probability", probability);
+					}
 					Element properties = tileElement.getChildByName("properties");
 					if (properties != null) {
 						loadProperties(tile.getProperties(), properties);
@@ -504,6 +510,10 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
+			}
+			int gid = element.getIntAttribute("gid", -1);
+			if (gid != -1) {
+				object.getProperties().put("gid", gid);
 			}
 			object.getProperties().put("x", x);
 			object.getProperties().put("y", yUp ? y - height : y);

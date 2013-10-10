@@ -32,7 +32,7 @@ import com.google.gwt.user.client.WindowResizeListener;
  * 
  * Typically, a {@link ResizableWidgetCollection} is only needed if you expect your widgets to resize based on window resizing or
  * other events. Fixed sized Widgets do not need to be added to a {@link ResizableWidgetCollection} as they cannot be resized. */
-public class ResizableWidgetCollection implements WindowResizeListener, Iterable<ResizableWidget> {
+public class ResizableWidgetCollection implements ResizeHandler, Iterable<ResizableWidget> {
 	/** Information about a widgets size. */
 	static class ResizableWidgetInfo {
 
@@ -130,19 +130,19 @@ public class ResizableWidgetCollection implements WindowResizeListener, Iterable
 	private Map<ResizableWidget, ResizableWidgetInfo> widgets = new HashMap<ResizableWidget, ResizableWidgetInfo>();
 
 	/** The current window height. */
-	private int windowHeight = 0;
+	int windowHeight = 0;
 
 	/** The current window width. */
-	private int windowWidth = 0;
+	int windowWidth = 0;
 
 	/** The hook used to remove the window handler. */
 	private HandlerRegistration windowHandler;
 
 	/** The delay between resize checks. */
-	private int resizeCheckDelay = DEFAULT_RESIZE_CHECK_DELAY;
+	int resizeCheckDelay = DEFAULT_RESIZE_CHECK_DELAY;
 
 	/** A boolean indicating that resize checking should run. */
-	private boolean resizeCheckingEnabled;
+	boolean resizeCheckingEnabled;
 
 	/** Create a ResizableWidget. */
 	public ResizableWidgetCollection () {
@@ -212,15 +212,6 @@ public class ResizableWidgetCollection implements WindowResizeListener, Iterable
 		return widgets.keySet().iterator();
 	}
 
-	/** Called when the browser window is resized.
-	 * 
-	 * @param width the width of the window's client area.
-	 * @param height the height of the window's client area. */
-	@Deprecated
-	public void onWindowResized (int width, int height) {
-		checkWidgetSize();
-	}
-
 	/** Remove a {@link ResizableWidget} from the collection.
 	 * 
 	 * @param widget the widget to remove */
@@ -243,11 +234,7 @@ public class ResizableWidgetCollection implements WindowResizeListener, Iterable
 		if (enabled && !resizeCheckingEnabled) {
 			resizeCheckingEnabled = true;
 			if (windowHandler == null) {
-				windowHandler = Window.addResizeHandler(new ResizeHandler() {
-					public void onResize (ResizeEvent event) {
-						onWindowResized(event.getWidth(), event.getHeight());
-					}
-				});
+				windowHandler = Window.addResizeHandler(this);
 			}
 			resizeCheckTimer.schedule(resizeCheckDelay);
 		} else if (!enabled && resizeCheckingEnabled) {
@@ -273,6 +260,14 @@ public class ResizableWidgetCollection implements WindowResizeListener, Iterable
 		if (info != null) {
 			info.updateSizes();
 		}
+	}
+
+	/** Called when the browser window is resized.
+	 *
+	 */
+	@Override
+	public void onResize (ResizeEvent event) {
+		checkWidgetSize();
 	}
 
 }

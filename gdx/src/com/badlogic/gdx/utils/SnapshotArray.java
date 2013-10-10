@@ -48,7 +48,7 @@ public class SnapshotArray<T> extends Array<T> {
 		super(array);
 	}
 
-	public SnapshotArray (boolean ordered, int capacity, Class<T> arrayType) {
+	public SnapshotArray (boolean ordered, int capacity, Class arrayType) {
 		super(ordered, capacity, arrayType);
 	}
 
@@ -60,7 +60,7 @@ public class SnapshotArray<T> extends Array<T> {
 		super(ordered, array, startIndex, count);
 	}
 
-	public SnapshotArray (Class<T> arrayType) {
+	public SnapshotArray (Class arrayType) {
 		super(arrayType);
 	}
 
@@ -74,6 +74,7 @@ public class SnapshotArray<T> extends Array<T> {
 
 	/** Returns the backing array, which is guaranteed to not be modified before {@link #end()}. */
 	public T[] begin () {
+		modified();
 		snapshot = items;
 		snapshots++;
 		return items;

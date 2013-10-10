@@ -3,11 +3,6 @@ package com.badlogic.gdx.backends.jglfw;
 
 import static com.badlogic.jglfw.Glfw.*;
 
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.InputProcessorQueue;
-import com.badlogic.jglfw.GlfwCallbackAdapter;
-
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
@@ -23,6 +18,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.jglfw.GlfwCallbackAdapter;
 
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
  * @author mzechner
@@ -175,6 +175,8 @@ public class JglfwInput implements Input {
 
 	public boolean isKeyPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) return pressedKeys > 0;
+		if (key == Input.Keys.SYM)
+			return glfwGetKey(app.graphics.window, GLFW_KEY_LEFT_SUPER) || glfwGetKey(app.graphics.window, GLFW_KEY_RIGHT_SUPER);
 		return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
 	}
 
@@ -525,25 +527,25 @@ public class JglfwInput implements Input {
 		case GLFW_KEY_F12:
 			return Input.Keys.F12;
 		case GLFW_KEY_KP_0:
-			return Input.Keys.NUM_0;
+			return Input.Keys.NUMPAD_0;
 		case GLFW_KEY_KP_1:
-			return Input.Keys.NUM_1;
+			return Input.Keys.NUMPAD_1;
 		case GLFW_KEY_KP_2:
-			return Input.Keys.NUM_2;
+			return Input.Keys.NUMPAD_2;
 		case GLFW_KEY_KP_3:
-			return Input.Keys.NUM_3;
+			return Input.Keys.NUMPAD_3;
 		case GLFW_KEY_KP_4:
-			return Input.Keys.NUM_4;
+			return Input.Keys.NUMPAD_4;
 		case GLFW_KEY_KP_5:
-			return Input.Keys.NUM_5;
+			return Input.Keys.NUMPAD_5;
 		case GLFW_KEY_KP_6:
-			return Input.Keys.NUM_6;
+			return Input.Keys.NUMPAD_6;
 		case GLFW_KEY_KP_7:
-			return Input.Keys.NUM_7;
+			return Input.Keys.NUMPAD_7;
 		case GLFW_KEY_KP_8:
-			return Input.Keys.NUM_8;
+			return Input.Keys.NUMPAD_8;
 		case GLFW_KEY_KP_9:
-			return Input.Keys.NUM_9;
+			return Input.Keys.NUMPAD_9;
 		default:
 			return Input.Keys.UNKNOWN;
 		}
@@ -711,6 +713,26 @@ public class JglfwInput implements Input {
 			return GLFW_KEY_F11;
 		case Input.Keys.F12:
 			return GLFW_KEY_F12;
+		case Input.Keys.NUMPAD_0:
+			return GLFW_KEY_KP_0;
+		case Input.Keys.NUMPAD_1:
+			return GLFW_KEY_KP_1;
+		case Input.Keys.NUMPAD_2:
+			return GLFW_KEY_KP_2;
+		case Input.Keys.NUMPAD_3:
+			return GLFW_KEY_KP_3;
+		case Input.Keys.NUMPAD_4:
+			return GLFW_KEY_KP_4;
+		case Input.Keys.NUMPAD_5:
+			return GLFW_KEY_KP_5;
+		case Input.Keys.NUMPAD_6:
+			return GLFW_KEY_KP_6;
+		case Input.Keys.NUMPAD_7:
+			return GLFW_KEY_KP_7;
+		case Input.Keys.NUMPAD_8:
+			return GLFW_KEY_KP_8;
+		case Input.Keys.NUMPAD_9:
+			return GLFW_KEY_KP_9;			
 		default:
 			return 0;
 		}

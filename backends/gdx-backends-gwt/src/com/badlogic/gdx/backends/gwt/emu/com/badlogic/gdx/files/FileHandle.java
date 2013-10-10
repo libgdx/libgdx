@@ -53,12 +53,6 @@ public class FileHandle {
 		throw new GdxRuntimeException("Stub");
 	}
 
-	/** Returns a java.io.File that represents this file handle. Note the returned file will only be usable for
-	 * {@link FileType#Absolute} and {@link FileType#External} file handles. */
-	public File file () {
-		throw new GdxRuntimeException("Stub");
-	}
-
 	/** Returns a stream for reading this file as bytes.
 	 * @throw GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {

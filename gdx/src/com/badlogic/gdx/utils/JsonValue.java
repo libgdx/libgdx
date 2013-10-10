@@ -3,10 +3,14 @@ package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /** Container for a JSON object, array, string, double, long, boolean, or null.
  * <p>
- * JsonValue children are a linked list. Iteration of arrays or objects is easily done using a for loop, like the example below.
- * This is more efficient than accessing children by index when there are many children.<br>
+ * JsonValue children are a linked list. Iteration of arrays or objects is easily done using a for loop, either with the enhanced
+ * for loop syntactic sugar or like the example below. This is much more efficient than accessing children by index when there are
+ * many children.<br>
  * 
  * <pre>
  * JsonValue map = ...;
@@ -14,17 +18,17 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * 	System.out.println(entry.name() + " = " + entry.asString());
  * </pre>
  * @author Nathan Sweet */
-public class JsonValue {
-	private String name;
+public class JsonValue implements Iterable<JsonValue> {
 	private ValueType type;
 
 	private String stringValue;
-	private Boolean booleanValue;
-	private Double doubleValue;
+	private double doubleValue;
 	private long longValue;
 
-	private JsonValue child, next, prev;
-	private int size;
+	public String name;
+	/** May be null. */
+	public JsonValue child, next, prev;
+	public int size;
 
 	public JsonValue (ValueType type) {
 		this.type = type;
@@ -121,7 +125,7 @@ public class JsonValue {
 		return child;
 	}
 
-	/** Returns this number of children in the array or object. */
+	/** @deprecated Use the size property instead. Returns this number of children in the array or object. */
 	public int size () {
 		return size;
 	}
@@ -130,79 +134,104 @@ public class JsonValue {
 	 * @return May be null if this value is null.
 	 * @throws IllegalStateException if this an array or object. */
 	public String asString () {
-		if (stringValue != null) return stringValue;
-		if (doubleValue != null) {
-			if (doubleValue % 1 == 0) return Long.toString(longValue);
+		switch (type) {
+		case stringValue:
+			return stringValue;
+		case doubleValue:
 			return Double.toString(doubleValue);
+		case longValue:
+			return Long.toString(longValue);
+		case booleanValue:
+			return longValue != 0 ? "true" : "false";
+		case nullValue:
+			return null;
 		}
-		if (booleanValue != null) return Boolean.toString(booleanValue);
-		if (type == ValueType.nullValue) return null;
 		throw new IllegalStateException("Value cannot be converted to string: " + type);
 	}
 
 	/** Returns this value as a float.
 	 * @throws IllegalStateException if this an array or object. */
 	public float asFloat () {
-		if (doubleValue != null) return doubleValue.floatValue();
-		if (stringValue != null) {
-			try {
-				return Float.parseFloat(stringValue);
-			} catch (NumberFormatException ignored) {
-			}
+		switch (type) {
+		case stringValue:
+			return Float.parseFloat(stringValue);
+		case doubleValue:
+			return (float)doubleValue;
+		case longValue:
+			return (float)longValue;
+		case booleanValue:
+			return longValue != 0 ? 1 : 0;
 		}
-		if (booleanValue != null) return booleanValue ? 1 : 0;
 		throw new IllegalStateException("Value cannot be converted to float: " + type);
 	}
 
 	/** Returns this value as a double.
 	 * @throws IllegalStateException if this an array or object. */
 	public double asDouble () {
-		if (doubleValue != null) return doubleValue;
-		if (stringValue != null) {
-			try {
-				return Double.parseDouble(stringValue);
-			} catch (NumberFormatException ignored) {
-			}
+		switch (type) {
+		case stringValue:
+			return Double.parseDouble(stringValue);
+		case doubleValue:
+			return doubleValue;
+		case longValue:
+			return (double)longValue;
+		case booleanValue:
+			return longValue != 0 ? 1 : 0;
 		}
-		if (booleanValue != null) return booleanValue ? 1 : 0;
 		throw new IllegalStateException("Value cannot be converted to double: " + type);
 	}
 
 	/** Returns this value as a long.
 	 * @throws IllegalStateException if this an array or object. */
 	public long asLong () {
-		if (doubleValue != null) return longValue;
-		if (stringValue != null) {
-			try {
-				return Long.parseLong(stringValue);
-			} catch (NumberFormatException ignored) {
-			}
+		switch (type) {
+		case stringValue:
+			return Long.parseLong(stringValue);
+		case doubleValue:
+			return (long)doubleValue;
+		case longValue:
+			return longValue;
+		case booleanValue:
+			return longValue != 0 ? 1 : 0;
 		}
-		if (booleanValue != null) return booleanValue ? 1 : 0;
 		throw new IllegalStateException("Value cannot be converted to long: " + type);
 	}
 
 	/** Returns this value as an int.
 	 * @throws IllegalStateException if this an array or object. */
 	public int asInt () {
-		if (doubleValue != null) return (int)longValue;
-		if (stringValue != null) {
-			try {
-				return Integer.parseInt(stringValue);
-			} catch (NumberFormatException ignored) {
-			}
+		switch (type) {
+		case stringValue:
+			return Integer.parseInt(stringValue);
+		case doubleValue:
+			return (int)doubleValue;
+		case longValue:
+			return (int)longValue;
+		case booleanValue:
+			return longValue != 0 ? 1 : 0;
 		}
-		if (booleanValue != null) return booleanValue ? 1 : 0;
 		throw new IllegalStateException("Value cannot be converted to int: " + type);
 	}
 
 	/** Returns this value as a boolean.
 	 * @throws IllegalStateException if this an array or object. */
 	public boolean asBoolean () {
-		if (booleanValue != null) return booleanValue;
-		if (doubleValue != null) return longValue == 0;
-		if (stringValue != null) return stringValue.equalsIgnoreCase("true");
+		switch (type) {
+		case stringValue:
+			return stringValue.equalsIgnoreCase("true");
+		case doubleValue:
+			return doubleValue == 0;
+		case longValue:
+			return longValue == 0;
+		case booleanValue:
+			return longValue != 0;
+		}
 		throw new IllegalStateException("Value cannot be converted to boolean: " + type);
+	}
+
+	/** Returns true if a child with the specified name exists and has a child. */
+	public boolean hasChild (String name) {
+		return getChild(name) != null;
 	}
 
 	/** Finds the child with the specified name and returns its first child.
@@ -416,23 +445,6 @@ public class JsonValue {
 		return child;
 	}
 
-	public void addChild (JsonValue newChild) {
-		size++;
-		JsonValue current = child;
-		if (current == null) {
-			child = newChild;
-			return;
-		}
-		while (true) {
-			if (current.next == null) {
-				current.next = newChild;
-				newChild.prev = current;
-				return;
-			}
-			current = current.next;
-		}
-	}
-
 	/** Returns the next sibling of this value.
 	 * @return May be null. */
 	public JsonValue next () {
@@ -472,12 +484,15 @@ public class JsonValue {
 	}
 
 	public void set (boolean value) {
-		booleanValue = value;
+		longValue = value ? 1 : 0;
 		type = ValueType.booleanValue;
 	}
 
 	public String toString () {
-		return prettyPrint(OutputType.minimal, 0);
+		if (isValue())
+			return name == null ? asString() : name + ": " + asString();
+		else
+			return prettyPrint(OutputType.minimal, 0);
 	}
 
 	public String prettyPrint (OutputType outputType, int singleLineColumns) {
@@ -569,5 +584,40 @@ public class JsonValue {
 
 	public enum ValueType {
 		object, array, stringValue, doubleValue, longValue, booleanValue, nullValue
+	}
+
+	public JsonIterator iterator () {
+		return new JsonIterator();
+	}
+
+	public class JsonIterator implements Iterator<JsonValue>, Iterable<JsonValue> {
+		JsonValue entry = child;
+		JsonValue current;
+
+		public boolean hasNext () {
+			return entry != null;
+		}
+
+		public JsonValue next () {
+			current = entry;
+			if (current == null) throw new NoSuchElementException();
+			entry = current.next;
+			return current;
+		}
+
+		public void remove () {
+			if (current.prev == null) {
+				child = current.next;
+				if (child != null) child.prev = null;
+			} else {
+				current.prev.next = current.next;
+				if (current.next != null) current.next.prev = current.prev;
+			}
+			size--;
+		}
+
+		public Iterator<JsonValue> iterator () {
+			return this;
+		}
 	}
 }

@@ -189,7 +189,7 @@ public class TexturePacker2 {
 							copy(image, iw - 1, 0, 1, ih, canvas, rectX + iw - 1 + i, rectY, rect.rotated);
 						}
 					}
-				}
+				}				
 				copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
 				if (settings.debug) {
 					g.setColor(Color.magenta);
@@ -197,19 +197,29 @@ public class TexturePacker2 {
 				}
 			}
 
+			if (settings.bleed && !settings.premultiplyAlpha && !settings.outputFormat.equalsIgnoreCase("jpg")) {
+				canvas = new ColorBleedEffect().processImage(canvas, 2);
+				g = (Graphics2D)canvas.getGraphics();
+			}
+
 			if (settings.debug) {
 				g.setColor(Color.magenta);
 				g.drawRect(0, 0, width - 1, height - 1);
 			}
 
+			ImageOutputStream ios = null;
 			try {
 				if (settings.outputFormat.equalsIgnoreCase("jpg")) {
+					BufferedImage newImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
+					newImage.getGraphics().drawImage(canvas, 0, 0, null);
+					canvas = newImage;
+
 					Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
 					ImageWriter writer = writers.next();
 					ImageWriteParam param = writer.getDefaultWriteParam();
 					param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
 					param.setCompressionQuality(settings.jpegQuality);
-					ImageOutputStream ios = ImageIO.createImageOutputStream(outputFile);
+					ios = ImageIO.createImageOutputStream(outputFile);
 					writer.setOutput(ios);
 					writer.write(null, new IIOImage(canvas, null, null), param);
 				} else {
@@ -218,29 +228,30 @@ public class TexturePacker2 {
 				}
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing file: " + outputFile, ex);
+			} finally {
+				if (ios != null) {
+					try {
+						ios.close();
+					} catch (Exception ignored) {
+					}
+				}
 			}
 		}
 	}
 
 	private static void plot (BufferedImage dst, int x, int y, int argb) {
-		if (0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) {
-			dst.setRGB(x, y, argb);
-		}
+		if (0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) dst.setRGB(x, y, argb);
 	}
 
 	private static void copy (BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated) {
 		if (rotated) {
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++)
+				for (int j = 0; j < h; j++)
 					dst.setRGB(dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
-				}
-			}
 		} else {
-			for (int i = 0; i < w; i++) {
-				for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++)
+				for (int j = 0; j < h; j++)
 					dst.setRGB(dx + i, dy + j, src.getRGB(x + i, y + j));
-				}
-			}
 		}
 	}
 
@@ -253,7 +264,6 @@ public class TexturePacker2 {
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
-					System.out.println(rectName);
 					for (Region region : textureAtlasData.getRegions()) {
 						if (region.name.equals(rectName)) {
 							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
@@ -275,8 +285,12 @@ public class TexturePacker2 {
 
 			for (Rect rect : page.outputRects) {
 				writeRect(writer, page, rect, rect.name);
-				for (String alias : rect.aliases)
-					writeRect(writer, page, rect, alias);
+				for (Alias alias : rect.aliases) {
+					Rect aliasRect = new Rect();
+					aliasRect.set(rect);
+					alias.apply(aliasRect);
+					writeRect(writer, page, aliasRect, alias.name);
+				}
 			}
 		}
 // }
@@ -324,22 +338,54 @@ public class TexturePacker2 {
 	}
 
 	/** @author Nathan Sweet */
-	static class Page {
+	public static class Page {
 		public String imageName;
 		public Array<Rect> outputRects, remainingRects;
 		public float occupancy;
 		public int x, y, width, height;
 	}
 
+	/** @author Regnarock
+	 * @author Nathan Sweet */
+	public static class Alias {
+		public String name;
+		public int index;
+		public int[] splits;
+		public int[] pads;
+		public int offsetX, offsetY, originalWidth, originalHeight;
+
+		public Alias (Rect rect) {
+			name = rect.name;
+			index = rect.index;
+			splits = rect.splits;
+			pads = rect.pads;
+			offsetX = rect.offsetX;
+			offsetY = rect.offsetY;
+			originalWidth = rect.originalWidth;
+			originalHeight = rect.originalHeight;
+		}
+
+		public void apply (Rect rect) {
+			rect.name = name;
+			rect.index = index;
+			rect.splits = splits;
+			rect.pads = pads;
+			rect.offsetX = offsetX;
+			rect.offsetY = offsetY;
+			rect.originalWidth = originalWidth;
+			rect.originalHeight = originalHeight;
+		}
+	}
+
 	/** @author Nathan Sweet */
-	static class Rect {
+	public static class Rect {
 		public String name;
 		public BufferedImage image;
 		public int offsetX, offsetY, originalWidth, originalHeight;
 		public int x, y, width, height;
 		public int index;
 		public boolean rotated;
-		public Set<String> aliases = new HashSet<String>();
+		public Set<Alias> aliases = new HashSet<Alias>();
 		public int[] splits;
 		public int[] pads;
 		public boolean canRotate = true;
@@ -419,7 +465,7 @@ public class TexturePacker2 {
 		public boolean pot = true;
 		public int paddingX = 2, paddingY = 2;
 		public boolean edgePadding = true;
-		public boolean duplicatePadding = true;
+		public boolean duplicatePadding = false;
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
@@ -439,6 +485,7 @@ public class TexturePacker2 {
 		public boolean flattenPaths;
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
+		public boolean bleed = true;
 
 		public Settings () {
 		}
@@ -454,6 +501,7 @@ public class TexturePacker2 {
 			paddingX = settings.paddingX;
 			paddingY = settings.paddingY;
 			edgePadding = settings.edgePadding;
+			duplicatePadding = settings.duplicatePadding;
 			alphaThreshold = settings.alphaThreshold;
 			ignoreBlankImages = settings.ignoreBlankImages;
 			stripWhitespaceX = settings.stripWhitespaceX;
@@ -466,11 +514,13 @@ public class TexturePacker2 {
 			filterMag = settings.filterMag;
 			wrapX = settings.wrapX;
 			wrapY = settings.wrapY;
-			duplicatePadding = settings.duplicatePadding;
 			debug = settings.debug;
 			combineSubdirectories = settings.combineSubdirectories;
 			flattenPaths = settings.flattenPaths;
 			premultiplyAlpha = settings.premultiplyAlpha;
+			forceSquareOutput = settings.forceSquareOutput;
+			useIndexes = settings.useIndexes;
+			bleed = settings.bleed;
 		}
 	}
 

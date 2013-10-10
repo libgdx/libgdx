@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
@@ -37,7 +38,7 @@ import com.badlogic.gdx.utils.Pools;
  * 140, a relatively arbitrary size.
  * @author mzechner
  * @author Nathan Sweet */
-public class Slider extends Widget {
+public class Slider extends Widget implements Disableable {
 	private SliderStyle style;
 	private float min, max, stepSize;
 	private float value, animateFromValue;
@@ -48,6 +49,7 @@ public class Slider extends Widget {
 	private Interpolation animateInterpolation = Interpolation.linear;
 	private float[] snapValues;
 	private float threshold;
+	boolean disabled;
 
 	public Slider (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), SliderStyle.class));
@@ -79,6 +81,7 @@ public class Slider extends Widget {
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				if (disabled) return false;
 				if (draggingPointer != -1) return false;
 				draggingPointer = pointer;
 				calculatePositionAndValue(x, y);
@@ -121,10 +124,12 @@ public class Slider extends Widget {
 
 	@Override
 	public void draw (SpriteBatch batch, float parentAlpha) {
-		final Drawable knob = style.knob;
-		final Drawable bg = style.background;
-		final Drawable knobBefore = style.knobBefore;
-		final Drawable knobAfter = style.knobAfter;
+		SliderStyle style = this.style;
+		boolean disabled = this.disabled;
+		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+		final Drawable knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
+		final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
 
 		Color color = getColor();
 		float x = getX();
@@ -182,8 +187,8 @@ public class Slider extends Widget {
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
-		final Drawable knob = style.knob;
-		final Drawable bg = style.background;
+		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
 		float oldPosition = sliderPos;
@@ -192,16 +197,16 @@ public class Slider extends Widget {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
 			float knobHeight = knob == null ? 0 : knob.getMinHeight();
 			sliderPos = y - bg.getBottomHeight() - knobHeight * 0.5f;
+			value = min + (max - min) * (sliderPos / (height - knobHeight));
 			sliderPos = Math.max(0, sliderPos);
 			sliderPos = Math.min(height - knobHeight, sliderPos);
-			value = min + (max - min) * (sliderPos / (height - knobHeight));
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
 			float knobWidth = knob == null ? 0 : knob.getMinWidth();
 			sliderPos = x - bg.getLeftWidth() - knobWidth * 0.5f;
+			value = min + (max - min) * (sliderPos / (width - knobWidth));
 			sliderPos = Math.max(0, sliderPos);
 			sliderPos = Math.min(width - knobWidth, sliderPos);
-			value = min + (max - min) * (sliderPos / (width - knobWidth));
 		}
 
 		float oldValue = value;
@@ -226,9 +231,10 @@ public class Slider extends Widget {
 	}
 
 	/** Sets the slider position, rounded to the nearest step size and clamped to the minumum and maximim values.
+	 * {@link #clamp(float)} can be overidden to allow values outside of the sliders min/max range.
 	 * @return false if the value was not changed because the slider already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
-		value = snap(MathUtils.clamp(Math.round(value / stepSize) * stepSize, min, max));
+		value = snap(clamp(Math.round(value / stepSize) * stepSize));
 		float oldValue = this.value;
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
@@ -243,6 +249,12 @@ public class Slider extends Widget {
 		}
 		Pools.free(changeEvent);
 		return !cancelled;
+	}
+
+	/** Clamps the value to the sliders min/max range. This can be overidden to allow a range different from the slider knob's
+	 * range. */
+	protected float clamp (float value) {
+		return MathUtils.clamp(value, min, max);
 	}
 
 	/** Sets the range of this slider. The slider's current value is reset to min. */
@@ -262,17 +274,22 @@ public class Slider extends Widget {
 	}
 
 	public float getPrefWidth () {
-		if (vertical)
-			return Math.max(style.knob == null ? 0 : style.knob.getMinWidth(), style.background.getMinWidth());
-		else
+		if (vertical) {
+			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
+		} else
 			return 140;
 	}
 
 	public float getPrefHeight () {
 		if (vertical)
 			return 140;
-		else
-			return Math.max(style.knob == null ? 0 : style.knob.getMinHeight(), style.background.getMinHeight());
+		else {
+			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
+			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
+			return Math.max(knob == null ? 0 : knob.getMinHeight(), bg.getMinHeight());
+		}
 	}
 
 	public float getMinValue () {
@@ -297,20 +314,28 @@ public class Slider extends Widget {
 		if (animateInterpolation == null) throw new IllegalArgumentException("animateInterpolation cannot be null.");
 		this.animateInterpolation = animateInterpolation;
 	}
-	
+
 	/** Will make this slider snap to the specified values, if the knob is within the threshold */
-	public void setSnapToValues(float[] values, float threshold) {
+	public void setSnapToValues (float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
 	}
-	
+
 	/** Returns a snapped value, or the original value */
-	private float snap(float value) {
-		if(snapValues == null) return value;
+	private float snap (float value) {
+		if (snapValues == null) return value;
 		for (int i = 0; i < snapValues.length; i++) {
-			if(Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
+			if (Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
 		}
 		return value;
+	}
+
+	public void setDisabled (boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public boolean isDisabled () {
+		return disabled;
 	}
 
 	/** The style for a slider, see {@link Slider}.
@@ -319,10 +344,12 @@ public class Slider extends Widget {
 	static public class SliderStyle {
 		/** The slider background, stretched only in one direction. */
 		public Drawable background;
+		/** Optional. **/
+		public Drawable disabledBackground;
 		/** Optional, centered on the background. */
-		public Drawable knob;
+		public Drawable knob, disabledKnob;
 		/** Optional. */
-		public Drawable knobBefore, knobAfter;
+		public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
 
 		public SliderStyle () {
 		}

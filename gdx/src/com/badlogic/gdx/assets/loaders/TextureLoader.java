@@ -44,19 +44,16 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 		TextureData data;
 		Texture texture;
 	};
-// can't use objectmap, because filename is not guaranteed to be unique at this stage (however, that's pure theoretical, so might change)
-	TextureLoaderInfo info = new TextureLoaderInfo(); // REMOVE THIS, replace by:
-	// FIXME private final Array<TextureLoaderInfo> items = new Array<TextureLoaderInfo>();
+	TextureLoaderInfo info = new TextureLoaderInfo();
 
 	public TextureLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
-		// FIXME TextureLoaderInfo info = new TextureLoaderInfo();
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
 		info.filename = fileName;
-		if (parameter == null || (parameter != null && parameter.textureData == null)) {
+		if (parameter == null || parameter.textureData == null) {
 			Pixmap pixmap = null;
 			Format format = null;
 			boolean genMipMaps = false;
@@ -68,38 +65,24 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 				info.texture = parameter.texture;
 			}
 
-			FileHandle handle = resolve(fileName);
 			if (!fileName.contains(".etc1")) {
 				if (fileName.contains(".cim"))
-					pixmap = PixmapIO.readCIM(handle);
+					pixmap = PixmapIO.readCIM(file);
 				else
-					pixmap = new Pixmap(handle);
-				info.data = new FileTextureData(handle, pixmap, format, genMipMaps);
+					pixmap = new Pixmap(file);
+				info.data = new FileTextureData(file, pixmap, format, genMipMaps);
 			} else {
-				info.data = new ETC1TextureData(handle, genMipMaps);
+				info.data = new ETC1TextureData(file, genMipMaps);
 			}
 		} else {
 			info.data = parameter.textureData;
 			if (!info.data.isPrepared()) info.data.prepare();
 			info.texture = parameter.texture;
 		}
-		//FIXME synchronized(items) {
-			//items.add(info);			
-		//}
 	}
 
 	@Override
-	public Texture loadSync (AssetManager manager, String fileName, TextureParameter parameter) {
-// FIXME		TextureLoaderInfo info = null;
-//		synchronized(items) {
-//			for (int i = 0; i < items.size; i++) {
-//				if (items.get(i).filename.equals(fileName)) {
-//					info = items.get(i);
-//					items.removeIndex(i);
-//					break;
-//				}
-//			}
-//		}
+	public Texture loadSync (AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
 		if (info == null)
 			return null;
 		Texture texture = info.texture;
@@ -116,7 +99,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, TextureParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, TextureParameter parameter) {
 		return null;
 	}
 

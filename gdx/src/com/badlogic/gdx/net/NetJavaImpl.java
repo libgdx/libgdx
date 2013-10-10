@@ -1,3 +1,4 @@
+
 package com.badlogic.gdx.net;
 
 import java.io.BufferedReader;
@@ -9,12 +10,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -22,6 +22,7 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -29,7 +30,6 @@ import com.badlogic.gdx.utils.StreamUtils;
 public class NetJavaImpl {
 
 	static class HttpClientResponse implements HttpResponse {
-
 		private HttpURLConnection connection;
 		private HttpStatus status;
 		private InputStream inputStream;
@@ -51,33 +51,38 @@ public class NetJavaImpl {
 
 		@Override
 		public byte[] getResult () {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-			int nRead;
-			byte[] data = new byte[16384];
-
 			try {
-				while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				buffer.flush();
+				int contentLength = connection.getContentLength();
+				ByteArrayOutputStream buffer;
+				if (contentLength > 0)
+					buffer = new OptimizedByteArrayOutputStream(contentLength);
+				else
+					buffer = new OptimizedByteArrayOutputStream();
+				StreamUtils.copyStream(inputStream, buffer);
+				return buffer.toByteArray();
 			} catch (IOException e) {
-				return new byte[0];
+				return StreamUtils.EMPTY_BYTES;
 			}
-			return buffer.toByteArray();
 		}
 
 		@Override
 		public String getResultAsString () {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			String tmp, line = "";
 			try {
-				while ((tmp = reader.readLine()) != null)
-					line += tmp;
-				reader.close();
-				return line;
+				int approxStringLength = connection.getContentLength();
+				StringBuilder b;
+				if (approxStringLength > 0)
+					b = new StringBuilder(approxStringLength);
+				else
+					b = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null)
+					b.append(line);
+				return b.toString();
 			} catch (IOException e) {
 				return "";
+			} finally {
+				StreamUtils.closeQuietly(reader);
 			}
 		}
 
@@ -91,6 +96,15 @@ public class NetJavaImpl {
 			return status;
 		}
 
+		@Override
+		public String getHeader (String name) {
+			return connection.getHeaderField(name);
+		}
+
+		@Override
+		public Map<String, List<String>> getHeaders () {
+			return connection.getHeaderFields();
+		}
 	}
 
 	private final ExecutorService executorService;
@@ -121,16 +135,14 @@ public class NetJavaImpl {
 
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			// should be enabled to upload data.
-			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT); 
+			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT);
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
 
 			// Headers get set regardless of the method
-			Map<String, String> headers = httpRequest.getHeaders();
-			Set<String> keySet = headers.keySet();
-			for (String name : keySet)
-				connection.addRequestProperty(name, headers.get(name));
+			for (Map.Entry<String, String> header : httpRequest.getHeaders().entrySet())
+				connection.addRequestProperty(header.getKey(), header.getValue());
 
 			// Set Timeouts
 			connection.setConnectTimeout(httpRequest.getTimeOut());
@@ -163,30 +175,15 @@ public class NetJavaImpl {
 						connection.connect();
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
-						// post a runnable to sync the handler with the main thread
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								try {
-									httpResponseListener.handleHttpResponse(clientResponse);
-								} finally {
-									connection.disconnect();
-								}
-							}
-						});
+						try {
+							httpResponseListener.handleHttpResponse(clientResponse);
+						} finally {
+							connection.disconnect();
+						}
 					} catch (final Exception e) {
-						// post a runnable to sync the handler with the main thread
-						Gdx.app.postRunnable(new Runnable() {
-							@Override
-							public void run () {
-								connection.disconnect();
-								httpResponseListener.failed(e);
-							}
-						});
+						connection.disconnect();
+						httpResponseListener.failed(e);
 					}
-// finally {
-// connection.disconnect();
-// }
 				}
 			});
 
@@ -196,4 +193,19 @@ public class NetJavaImpl {
 		}
 	}
 
+	/** A ByteArrayOutputStream which avoids copying of the byte array if not necessary. */
+	static class OptimizedByteArrayOutputStream extends ByteArrayOutputStream {
+		OptimizedByteArrayOutputStream () {
+		}
+
+		OptimizedByteArrayOutputStream (int initialSize) {
+			super(initialSize);
+		}
+
+		@Override
+		public synchronized byte[] toByteArray () {
+			if (count == buf.length) return buf;
+			return super.toByteArray();
+		}
+	}
 }

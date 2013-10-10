@@ -42,7 +42,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		super(resolver);
 		this.reader = reader;
 	}
-	
+
 	@Override
 	public ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
 		return parseModel(fileHandle);
@@ -65,11 +65,10 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		return model;
 	}
 
-	
 	private void parseMeshes (ModelData model, JsonValue json) {
 		JsonValue meshes = json.require("meshes");
 		
-		model.meshes.ensureCapacity(meshes.size());
+		model.meshes.ensureCapacity(meshes.size);
 		for (JsonValue mesh = meshes.child(); mesh != null; mesh = mesh.next()) {
 			ModelMesh jsonMesh = new ModelMesh();
 			
@@ -80,7 +79,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			jsonMesh.attributes = parseAttributes(attributes);
 			
 			JsonValue vertices = mesh.require("vertices");
-			float[] verts = new float[vertices.size()];
+			float[] verts = new float[vertices.size];
 			int j = 0;
 			for (JsonValue value = vertices.child(); value != null; value = value.next(), j++) {
 				verts[j] = value.asFloat();
@@ -109,10 +108,10 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				jsonPart.primitiveType = parseType(type);
 				
 				JsonValue indices = meshPart.require("indices");
-				short[] partIndices = new short[indices.size()];
+				short[] partIndices = new short[indices.size];
 				int k = 0;
 				for (JsonValue value = indices.child(); value != null; value = value.next(), k++) {
-					partIndices[k] = (short)indices.getInt(k);
+					partIndices[k] = (short)value.asInt();
 				}
 				jsonPart.indices = partIndices;
 				parts.add(jsonPart);
@@ -174,7 +173,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			// we should probably create some default material in this case
 		}
 		else {
-			model.materials.ensureCapacity(materials.size());
+			model.materials.ensureCapacity(materials.size);
 			for (JsonValue material = materials.child(); material != null; material = material.next()) {
 				ModelMaterial jsonMaterial = new ModelMaterial();
 				
@@ -185,12 +184,21 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				jsonMaterial.id = id;
 							
 				// Read material colors
-				jsonMaterial.diffuse = parseColor(material.get("diffuse"), Color.WHITE);
-				jsonMaterial.ambient = parseColor(material.get("ambient"), Color.BLACK);
-				jsonMaterial.emissive = parseColor(material.get("emissive"), Color.BLACK);
-				
-			   // Read specular
-				jsonMaterial.specular = parseColor(material.get("specular"), Color.BLACK);
+				final JsonValue diffuse = material.get("diffuse");
+				if (diffuse != null)
+					jsonMaterial.diffuse = parseColor(diffuse);
+				final JsonValue ambient = material.get("ambient");
+				if (ambient != null)
+					jsonMaterial.ambient = parseColor(ambient);
+				final JsonValue emissive= material.get("emissive");
+				if (emissive!= null)
+					jsonMaterial.emissive = parseColor(emissive);
+				final JsonValue specular= material.get("specular");
+				if (specular!= null)
+					jsonMaterial.specular = parseColor(specular);
+				final JsonValue reflection= material.get("reflection");
+				if (reflection!= null)
+					jsonMaterial.reflection = parseColor(reflection);
 				// Read shininess
 				jsonMaterial.shininess = material.getFloat("shininess", 0.0f);
 				// Read opacity
@@ -210,7 +218,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						String fileName = texture.getString("filename", null);
 						if(fileName == null)
 							throw new GdxRuntimeException("Texture needs filename.");
-						jsonTexture.fileName = materialDir + (materialDir.endsWith("/") ? "" : "/") + fileName;
+						jsonTexture.fileName = materialDir + (materialDir.length() == 0 || materialDir.endsWith("/") ? "" : "/") + fileName;
 						
 						jsonTexture.uvTranslation = readVector2(texture.get("uvTranslation"), 0f, 0f);
 						jsonTexture.uvScaling = readVector2(texture.get("uvScaling"), 1f, 1f);
@@ -256,11 +264,8 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		return ModelTexture.USAGE_UNKNOWN;
 	}
 
-	private Color parseColor (JsonValue colorArray, Color defaultColor) {
-		if(colorArray == null) {
-			return defaultColor;
-		}
-		else if(colorArray.size() == 3)
+	private Color parseColor (JsonValue colorArray) {
+		if(colorArray.size >= 3)
 			return new Color(colorArray.getFloat(0), colorArray.getFloat(1), colorArray.getFloat(2), 1.0f);
 		else
 			throw new GdxRuntimeException("Expected Color values <> than three.");
@@ -269,7 +274,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	private Vector2 readVector2 (JsonValue vectorArray, float x, float y) {
 		if(vectorArray == null)
 			return new Vector2(x, y);
-		else if(vectorArray.size() == 2)
+		else if(vectorArray.size == 2)
 			return new Vector2(vectorArray.getFloat(0), vectorArray.getFloat(1));
 		else
 			throw new GdxRuntimeException("Expected Vector2 values <> than two.");
@@ -281,7 +286,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			throw new GdxRuntimeException("At least one node is required.");
 		}
 		
-		model.nodes.ensureCapacity(nodes.size());
+		model.nodes.ensureCapacity(nodes.size);
 		for (JsonValue node = nodes.child(); node != null; node = node.next()) {
 			model.nodes.add(parseNodesRecursively(node));
 		}
@@ -298,17 +303,17 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		jsonNode.id = id;
 		
 		JsonValue translation = json.get("translation");
-		if (translation != null && translation.size() != 3)
+		if (translation != null && translation.size != 3)
 			throw new GdxRuntimeException("Node translation incomplete");
 		jsonNode.translation = translation == null ? null : new Vector3(translation.getFloat(0), translation.getFloat(1), translation.getFloat(2));
 		
 		JsonValue rotation = json.get("rotation");
-		if(rotation != null && rotation.size() != 4)
+		if(rotation != null && rotation.size != 4)
 			throw new GdxRuntimeException("Node rotation incomplete");
 		jsonNode.rotation = rotation == null ? null : new Quaternion(rotation.getFloat(0), rotation.getFloat(1), rotation.getFloat(2), rotation.getFloat(3));
 		
 		JsonValue scale = json.get("scale");
-		if(scale != null && scale.size() != 3)
+		if(scale != null && scale.size != 3)
 			throw new GdxRuntimeException("Node scale incomplete");
 		jsonNode.scale = scale == null ? null : new Vector3(scale.getFloat(0), scale.getFloat(1), scale.getFloat(2));
 		
@@ -318,7 +323,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		
 		JsonValue materials = json.get("parts");
 		if(materials != null){
-			jsonNode.parts = new ModelNodePart[materials.size()];
+			jsonNode.parts = new ModelNodePart[materials.size];
 			int i = 0;
 			for (JsonValue material = materials.child(); material != null; material = material.next(), i++) {
 				ModelNodePart nodePart = new ModelNodePart();
@@ -333,7 +338,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				
 				JsonValue bones = material.get("bones");
 				if (bones != null) {
-					nodePart.bones = new ArrayMap<String, Matrix4>(true, bones.size(), String.class, Matrix4.class);
+					nodePart.bones = new ArrayMap<String, Matrix4>(true, bones.size, String.class, Matrix4.class);
 					int j = 0;
 					for (JsonValue bone = bones.child(); bone != null; bone = bone.next(), j++) {
 						String nodeId = bone.getString("node", null);
@@ -343,15 +348,15 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 						Matrix4 transform = new Matrix4();
 						
 						JsonValue val = bone.get("translation");
-						if (val != null && val.size() >= 3)
+						if (val != null && val.size >= 3)
 							transform.translate(val.getFloat(0), val.getFloat(1), val.getFloat(2));
 						
 						val = bone.get("rotation");
-						if(val != null && val.size() >= 4)
+						if(val != null && val.size >= 4)
 							transform.rotate(tempQ.set(val.getFloat(0), val.getFloat(1), val.getFloat(2), val.getFloat(3)));
 						
 						val = bone.get("scale");
-						if(val != null && val.size() >= 3)
+						if(val != null && val.size >= 3)
 							transform.scale(val.getFloat(0), val.getFloat(1), val.getFloat(2));
 						
 						nodePart.bones.put(nodeId, transform);
@@ -364,7 +369,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		
 		JsonValue children = json.get("children");
 		if(children != null){
-			jsonNode.children = new ModelNode[children.size()];
+			jsonNode.children = new ModelNode[children.size];
 
 			int i = 0;
 			for (JsonValue child = children.child(); child != null; child = child.next(), i++) {
@@ -380,7 +385,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		if(animations == null)
 			return;
 		
-		model.animations.ensureCapacity(animations.size());
+		model.animations.ensureCapacity(animations.size);
 		
 		for (JsonValue anim = animations.child(); anim != null; anim = anim.next()) {
 			JsonValue nodes = anim.get("bones");
@@ -388,7 +393,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				continue;
 			ModelAnimation animation = new ModelAnimation();
 			model.animations.add(animation);
-			animation.nodeAnimations.ensureCapacity(nodes.size());
+			animation.nodeAnimations.ensureCapacity(nodes.size);
 			animation.id = anim.getString("id");
 			for (JsonValue node = nodes.child(); node != null; node = node.next()) {
 				JsonValue keyframes = node.get("keyframes");
@@ -396,20 +401,20 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				ModelNodeAnimation nodeAnim = new ModelNodeAnimation();
 				animation.nodeAnimations.add(nodeAnim);
 				nodeAnim.nodeId = node.getString("boneId");
-				nodeAnim.keyframes.ensureCapacity(keyframes.size());
+				nodeAnim.keyframes.ensureCapacity(keyframes.size);
 
 				for (JsonValue keyframe = keyframes.child(); keyframe != null; keyframe = keyframe.next()) {
 					ModelNodeKeyframe kf = new ModelNodeKeyframe();
 					nodeAnim.keyframes.add(kf);
 					kf.keytime = keyframe.getFloat("keytime") / 1000.f;
 					JsonValue translation = keyframe.get("translation");
-					if (translation != null && translation.size() == 3)
+					if (translation != null && translation.size == 3)
 						kf.translation = new Vector3(translation.getFloat(0), translation.getFloat(1), translation.getFloat(2));
 					JsonValue rotation = keyframe.get("rotation");
-					if (rotation != null && rotation.size() == 4)
+					if (rotation != null && rotation.size == 4)
 						kf.rotation = new Quaternion(rotation.getFloat(0), rotation.getFloat(1), rotation.getFloat(2), rotation.getFloat(3));
 					JsonValue scale = keyframe.get("scale");
-					if (scale != null && scale.size() == 3)
+					if (scale != null && scale.size == 3)
 						kf.scale = new Vector3(scale.getFloat(0), scale.getFloat(1), scale.getFloat(2));
 				}
 			}
