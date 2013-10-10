@@ -239,6 +239,8 @@ public class ObjectSet<T> implements Iterable<T> {
 
 	/** Returns true if the key was removed. */
 	public boolean remove (T key) {
+		if (size == 0) return false;
+
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
 		if (key.equals(keyTable[index])) {
@@ -312,6 +314,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	public boolean contains (T key) {
+		if (size == 0) return false;
 		int hashCode = key.hashCode();
 		int index = hashCode & mask;
 		if (!key.equals(keyTable[index])) {
