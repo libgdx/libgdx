@@ -470,6 +470,6 @@ public class Quaternion implements Serializable {
               axis.z = (float) (this.z / s);
       }
 
-      return (float) Math.toDegrees(angle);
+      return MathUtils.radiansToDegrees * angle;
 	}
 }
