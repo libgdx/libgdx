@@ -17,6 +17,8 @@
 #ifndef GdxCollsionObjectBridge_H
 #define GdxCollsionObjectBridge_H
 
+#include "../../../bullet/BulletCollision/CollisionDispatch/btCollisionObject.h"
+
 /** @author Xoppa */
 class GdxCollisionObjectBridge {
 public:
