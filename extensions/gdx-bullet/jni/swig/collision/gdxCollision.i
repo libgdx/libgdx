@@ -1,10 +1,45 @@
-%module(directors="1") gdxBulletCollision
+%module(directors="1") Collision
 
-%include "./btMotionState.i"
-		
+%include "arrays_java.i"
+
+%import "../linearmath/gdxLinearMath.i"
+
+%include "../common/gdxCommon.i"
+
+%ignore btManifoldPoint::getLifeTime;
+%ignore btManifoldPoint::getPositionWorldOnA;
+%ignore btManifoldPoint::getPositionWorldOnB;
+%ignore btManifoldPoint::getAppliedImpulse;
+%ignore btVoronoiSimplexSolver::setEqualVertexThreshold;
+%ignore btVoronoiSimplexSolver::getEqualVertexThreshold;
+
+%typemap(javaimports) SWIGTYPE	%{
+import com.badlogic.gdx.physics.bullet.BulletBase;
+import com.badlogic.gdx.physics.bullet.linearmath.*;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+%}
+%pragma(java) jniclassimports=%{
+import com.badlogic.gdx.physics.bullet.BulletBase;
+import com.badlogic.gdx.physics.bullet.linearmath.*;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.utils.Pool;
+%}
+%pragma(java) moduleimports=%{
+import com.badlogic.gdx.physics.bullet.BulletBase;
+import com.badlogic.gdx.physics.bullet.linearmath.*;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+%}
+
 %include "./btCollisionShape.i"
-
-%include "./btDefaultMotionState.i"
 
 %include "./btDiscreteCollisionDetectorInterface.i"
 
@@ -40,6 +75,9 @@
 
 %{
 #include <BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h>
+void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
+{
+}
 %}
 %include "BulletCollision/BroadphaseCollision/btMultiSapBroadphase.h"
 
@@ -327,14 +365,14 @@
 %include "./btCollisionWorld.i"
 
 %{
-#include <gdx/ClosestNotMeConvexResultCallback.h>
+#include <gdx/collision/ClosestNotMeConvexResultCallback.h>
 %}
-%include "gdx/ClosestNotMeConvexResultCallback.h"
+%include "gdx/collision/ClosestNotMeConvexResultCallback.h"
 
 %{
-#include <gdx/ClosestNotMeRayResultCallback.h>
+#include <gdx/collision/ClosestNotMeRayResultCallback.h>
 %}
-%include "gdx/ClosestNotMeRayResultCallback.h"
+%include "gdx/collision/ClosestNotMeRayResultCallback.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.h>

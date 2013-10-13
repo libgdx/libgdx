@@ -14,14 +14,6 @@ void CProfileIterator::Enter_Largest_Child()
 }
 #endif
 
-void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
-{
-}
-
-bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 const&, float)
-{
-	return false;
-}
 
 // End dummy implementations for missing Bullet methods
 

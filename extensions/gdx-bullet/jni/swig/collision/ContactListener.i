@@ -1,7 +1,7 @@
 %module ContactListener
 
 %{
-#include <gdx/ContactListener.h>
+#include <gdx/collision/ContactListener.h>
 bool custom_ContactListener_setEvents(ContactListener *listener);
 %}
 
@@ -25,7 +25,7 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 	}
 %}
 
-%include "gdx/ContactListener.h"
+%include "gdx/collision/ContactListener.h"
 
 %init %{
 bool custom_ContactListener_setEvents(ContactListener *listener) {

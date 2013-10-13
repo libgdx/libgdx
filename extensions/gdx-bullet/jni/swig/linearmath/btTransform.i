@@ -4,8 +4,8 @@
  
 %module btTransform
 
-%include "./gdxDisableBuffers.i"
-%include "./gdxEnableArrays.i"
+%include "../common/gdxDisableBuffers.i"
+%include "../common/gdxEnableArrays.i"
 
 %{
 #include <LinearMath/btTransform.h>
@@ -27,5 +27,5 @@
     return getOrigin() + "\n" + getBasis();
   }
 %}
-%include "./gdxDisableArrays.i"
-%include "./gdxEnableBuffers.i"
+%include "../common/gdxDisableArrays.i"
+%include "../common/gdxEnableBuffers.i"
