@@ -2,9 +2,12 @@
 
 %include "arrays_java.i"
 
-%import "../collision/gdxCollision.i"
+%import "../collision/collision.i"
 
 %include "../common/gdxCommon.i"
+
+%include "../../swig-src/linearmath/classes.i"
+%include "../../swig-src/collision/classes.i"
 
 %ignore btSolverBody::getWorldTransform;
 %ignore btSolverBody::setWorldTransform;

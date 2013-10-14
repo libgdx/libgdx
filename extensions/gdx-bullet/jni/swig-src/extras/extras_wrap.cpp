@@ -2292,112 +2292,112 @@ void SwigDirector_btBulletWorldImporter::swig_connect_director(JNIEnv *jenv, job
       "deleteAllData", "()V", NULL 
     },
     {
-      "setDynamicsWorldInfo", "(Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/physics/bullet/extras/btContactSolverInfo;)V", NULL 
+      "setDynamicsWorldInfo", "(Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/physics/bullet/dynamics/btContactSolverInfo;)V", NULL 
     },
     {
-      "createRigidBody", "(ZFLcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;Ljava/lang/String;)Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;", NULL 
+      "createRigidBody", "(ZFLcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;Ljava/lang/String;)Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;", NULL 
     },
     {
-      "createCollisionObject", "(Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;Ljava/lang/String;)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionObject;", NULL 
+      "createCollisionObject", "(Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;Ljava/lang/String;)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObject;", NULL 
     },
     {
-      "createPlaneShape", "(Lcom/badlogic/gdx/math/Vector3;F)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createPlaneShape", "(Lcom/badlogic/gdx/math/Vector3;F)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createBoxShape", "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createBoxShape", "(Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createSphereShape", "(F)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createSphereShape", "(F)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createCapsuleShapeX", "(FF)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createCapsuleShapeX", "(FF)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createCapsuleShapeY", "(FF)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createCapsuleShapeY", "(FF)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createCapsuleShapeZ", "(FF)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createCapsuleShapeZ", "(FF)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createCylinderShapeX", "(FF)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createCylinderShapeX", "(FF)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createCylinderShapeY", "(FF)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createCylinderShapeY", "(FF)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createCylinderShapeZ", "(FF)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createCylinderShapeZ", "(FF)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createTriangleMeshContainer", "()Lcom/badlogic/gdx/physics/bullet/extras/btTriangleIndexVertexArray;", NULL 
+      "createTriangleMeshContainer", "()Lcom/badlogic/gdx/physics/bullet/collision/btTriangleIndexVertexArray;", NULL 
     },
     {
-      "createBvhTriangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/extras/btStridingMeshInterface;Lcom/badlogic/gdx/physics/bullet/extras/btOptimizedBvh;)Lcom/badlogic/gdx/physics/bullet/extras/btBvhTriangleMeshShape;", NULL 
+      "createBvhTriangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterface;Lcom/badlogic/gdx/physics/bullet/collision/btOptimizedBvh;)Lcom/badlogic/gdx/physics/bullet/collision/btBvhTriangleMeshShape;", NULL 
     },
     {
-      "createConvexTriangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/extras/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/extras/btCollisionShape;", NULL 
+      "createConvexTriangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/collision/btCollisionShape;", NULL 
     },
     {
-      "createGimpactShape", "(Lcom/badlogic/gdx/physics/bullet/extras/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/extras/SWIGTYPE_p_btGImpactMeshShape;", NULL 
+      "createGimpactShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterface;)Lcom/badlogic/gdx/physics/bullet/extras/SWIGTYPE_p_btGImpactMeshShape;", NULL 
     },
     {
-      "createStridingMeshInterfaceData", "(Lcom/badlogic/gdx/physics/bullet/extras/btStridingMeshInterfaceData;)Lcom/badlogic/gdx/physics/bullet/extras/btStridingMeshInterfaceData;", NULL 
+      "createStridingMeshInterfaceData", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterfaceData;)Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterfaceData;", NULL 
     },
     {
-      "createConvexHullShape", "()Lcom/badlogic/gdx/physics/bullet/extras/btConvexHullShape;", NULL 
+      "createConvexHullShape", "()Lcom/badlogic/gdx/physics/bullet/collision/btConvexHullShape;", NULL 
     },
     {
-      "createCompoundShape", "()Lcom/badlogic/gdx/physics/bullet/extras/btCompoundShape;", NULL 
+      "createCompoundShape", "()Lcom/badlogic/gdx/physics/bullet/collision/btCompoundShape;", NULL 
     },
     {
-      "createScaledTrangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/extras/btBvhTriangleMeshShape;Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/extras/btScaledBvhTriangleMeshShape;", NULL 
+      "createScaledTrangleMeshShape", "(Lcom/badlogic/gdx/physics/bullet/collision/btBvhTriangleMeshShape;Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/collision/btScaledBvhTriangleMeshShape;", NULL 
     },
     {
-      "createMeshInterface", "(Lcom/badlogic/gdx/physics/bullet/extras/btStridingMeshInterfaceData;)Lcom/badlogic/gdx/physics/bullet/extras/btTriangleIndexVertexArray;", NULL 
+      "createMeshInterface", "(Lcom/badlogic/gdx/physics/bullet/collision/btStridingMeshInterfaceData;)Lcom/badlogic/gdx/physics/bullet/collision/btTriangleIndexVertexArray;", NULL 
     },
     {
-      "createOptimizedBvh", "()Lcom/badlogic/gdx/physics/bullet/extras/btOptimizedBvh;", NULL 
+      "createOptimizedBvh", "()Lcom/badlogic/gdx/physics/bullet/collision/btOptimizedBvh;", NULL 
     },
     {
-      "createTriangleInfoMap", "()Lcom/badlogic/gdx/physics/bullet/extras/btTriangleInfoMap;", NULL 
+      "createTriangleInfoMap", "()Lcom/badlogic/gdx/physics/bullet/collision/btTriangleInfoMap;", NULL 
     },
     {
-      "createPoint2PointConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/extras/btPoint2PointConstraint;", NULL 
+      "createPoint2PointConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/dynamics/btPoint2PointConstraint;", NULL 
     },
     {
-      "createPoint2PointConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/extras/btPoint2PointConstraint;", NULL 
+      "createPoint2PointConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Vector3;)Lcom/badlogic/gdx/physics/bullet/dynamics/btPoint2PointConstraint;", NULL 
     },
     {
-      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btHingeConstraint;", NULL 
+      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btHingeConstraint;", NULL 
     },
     {
-      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/extras/btHingeConstraint;", NULL 
+      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/dynamics/btHingeConstraint;", NULL 
     },
     {
-      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btHingeConstraint;", NULL 
+      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btHingeConstraint;", NULL 
     },
     {
-      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/extras/btHingeConstraint;", NULL 
+      "createHingeConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/dynamics/btHingeConstraint;", NULL 
     },
     {
-      "createConeTwistConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/extras/btConeTwistConstraint;", NULL 
+      "createConeTwistConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/dynamics/btConeTwistConstraint;", NULL 
     },
     {
-      "createConeTwistConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/extras/btConeTwistConstraint;", NULL 
+      "createConeTwistConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;)Lcom/badlogic/gdx/physics/bullet/dynamics/btConeTwistConstraint;", NULL 
     },
     {
-      "createGeneric6DofConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btGeneric6DofConstraint;", NULL 
+      "createGeneric6DofConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btGeneric6DofConstraint;", NULL 
     },
     {
-      "createGeneric6DofConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btGeneric6DofConstraint;", NULL 
+      "createGeneric6DofConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btGeneric6DofConstraint;", NULL 
     },
     {
-      "createGeneric6DofSpringConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btGeneric6DofSpringConstraint;", NULL 
+      "createGeneric6DofSpringConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btGeneric6DofSpringConstraint;", NULL 
     },
     {
-      "createSliderConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btSliderConstraint;", NULL 
+      "createSliderConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btSliderConstraint;", NULL 
     },
     {
-      "createSliderConstraint", "(Lcom/badlogic/gdx/physics/bullet/extras/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/extras/btSliderConstraint;", NULL 
+      "createSliderConstraint", "(Lcom/badlogic/gdx/physics/bullet/dynamics/btRigidBody;Lcom/badlogic/gdx/math/Matrix4;Z)Lcom/badlogic/gdx/physics/bullet/dynamics/btSliderConstraint;", NULL 
     },
     {
       "convertAllObjects", "(Lcom/badlogic/gdx/physics/bullet/extras/SWIGTYPE_p_bParse__btBulletFile;)Z", NULL 

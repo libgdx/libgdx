@@ -2,10 +2,17 @@
 
 %include "arrays_java.i"
 
-%import "../collision/gdxCollision.i"
-%import "../dynamics/gdxDynamics.i"
+%import "../linearmath/linearmath.i"
+%import "../collision/collision.i"
+%import "../dynamics/dynamics.i"
+%import "../softbody/softbody.i"
 
 %include "../common/gdxCommon.i"
+
+%include "../../swig-src/linearmath/classes.i"
+%include "../../swig-src/collision/classes.i"
+%include "../../swig-src/dynamics/classes.i"
+%include "../../swig-src/softbody/classes.i"
 
 %typemap(javaimports) SWIGTYPE	%{
 import com.badlogic.gdx.physics.bullet.BulletBase;

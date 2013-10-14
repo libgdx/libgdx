@@ -2,9 +2,11 @@
 
 %include "arrays_java.i"
 
-%import "../linearmath/gdxLinearMath.i"
+%import "../linearmath/linearmath.i"
 
 %include "../common/gdxCommon.i"
+
+%include "../../swig-src/linearmath/classes.i"
 
 %ignore btManifoldPoint::getLifeTime;
 %ignore btManifoldPoint::getPositionWorldOnA;

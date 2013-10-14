@@ -127,3 +127,9 @@ bool btGeometryUtil::isInside(btAlignedObjectArray<btVector3> const&, btVector3 
 %include "./btMotionState.i"
 
 %include "./btDefaultMotionState.i"
+
+#ifndef BT_NO_PROFILE
+void CProfileIterator::Enter_Largest_Child()
+{
+}
+#endif

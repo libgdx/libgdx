@@ -1,5 +1,9 @@
 #define gdxToString(X)	"X"
 
+%define SPECIFY_CLASS(TYPE, PACKAGE)
+%typemap("javapackage") TYPE, TYPE *, TYPE & gdxToString(PACKAGE);
+%enddef
+
 %{
 #include <gdx/common/jniHelpers.h>
 %}

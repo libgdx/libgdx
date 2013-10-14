@@ -138,12 +138,24 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/LinearMath/btQuickprof.cpp\
 	src/bullet/LinearMath/btSerializer.cpp\
 	src/bullet/LinearMath/btVector3.cpp\
+	src/custom/gdx/collision/ClosestNotMeConvexResultCallback.cpp\
+	src/custom/gdx/collision/ClosestNotMeRayResultCallback.cpp\
+	src/custom/gdx/collision/ContactCache.cpp\
+	src/custom/gdx/collision/ContactListener.cpp\
+	src/custom/gdx/collision/GdxCollisionObjectBridge.cpp\
+	src/custom/gdx/common/jniHelpers.cpp\
+	src/custom/gdx/dynamics/InternalTickCallback.cpp\
+	src/custom/gdx/linearmath/mathtypes.cpp\
 	src/extras/Serialize/BulletFileLoader/bChunk.cpp\
 	src/extras/Serialize/BulletFileLoader/bDNA.cpp\
 	src/extras/Serialize/BulletFileLoader/bFile.cpp\
 	src/extras/Serialize/BulletFileLoader/btBulletFile.cpp\
 	src/extras/Serialize/BulletWorldImporter/btBulletWorldImporter.cpp\
 	src/extras/Serialize/BulletWorldImporter/btWorldImporter.cpp\
-	swig-src/gdxBullet_wrap.cpp
+	swig-src/collision/collision_wrap.cpp\
+	swig-src/dynamics/dynamics_wrap.cpp\
+	swig-src/extras/extras_wrap.cpp\
+	swig-src/linearmath/linearmath_wrap.cpp\
+	swig-src/softbody/softbody_wrap.cpp
  
 include $(BUILD_SHARED_LIBRARY)

@@ -1,4 +1,3 @@
-%module(directors="1") gdxBulletSerialize
 
 %feature("director") btBulletWorldImporter;
 %feature("nodirector") btBulletWorldImporter::createMultiSphereShape;
