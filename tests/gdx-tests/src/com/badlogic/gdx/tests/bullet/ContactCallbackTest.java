@@ -18,11 +18,7 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.physics.bullet.ContactCallbackEvent;
-import com.badlogic.gdx.physics.bullet.ContactListener;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btManifoldPoint;
-import com.badlogic.gdx.physics.bullet.gdxBulletJNI;
+import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Xoppa */

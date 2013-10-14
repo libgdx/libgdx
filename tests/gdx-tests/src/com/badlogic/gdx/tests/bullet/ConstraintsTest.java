@@ -28,11 +28,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btTypedConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.utils.Array;
 
 /** @author xoppa */
