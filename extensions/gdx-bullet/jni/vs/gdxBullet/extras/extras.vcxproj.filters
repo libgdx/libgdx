@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\serialize">
+      <UniqueIdentifier>{91c1b917-aac4-4633-bb48-6e20764b1b25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\serialize\BulletFileLoader">
+      <UniqueIdentifier>{af432e1b-9711-4030-9d75-86469a5ac6e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\serialize\BulletWorldImporter">
+      <UniqueIdentifier>{98c913fa-d39d-42c1-a99a-cd8008cad857}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp">
+      <Filter>Source Files\serialize\BulletFileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bFile.cpp">
+      <Filter>Source Files\serialize\BulletFileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\btBulletFile.cpp">
+      <Filter>Source Files\serialize\BulletFileLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btBulletWorldImporter.cpp">
+      <Filter>Source Files\serialize\BulletWorldImporter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp">
+      <Filter>Source Files\serialize\BulletWorldImporter</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

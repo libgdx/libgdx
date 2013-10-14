@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\bullet">
+      <UniqueIdentifier>{d98be1e7-d1de-469d-9a7f-7c4754491778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics">
+      <UniqueIdentifier>{dc30425d-0ff8-4cd3-a72a-b72c034872af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Character">
+      <UniqueIdentifier>{d90432d1-f58c-4fc1-918d-6c110bd22438}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\ConstraintSolver">
+      <UniqueIdentifier>{1255896c-d48a-4e6e-a90c-bd800852c44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Dynamics">
+      <UniqueIdentifier>{b0bd4af0-7f71-4edc-a809-18a5f582710b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Vehicle">
+      <UniqueIdentifier>{bf97fcc3-0622-4377-be83-0f859140232e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\custom">
+      <UniqueIdentifier>{75446cb3-5f5a-4a01-8e3e-9655fcd43f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\custom\gdx">
+      <UniqueIdentifier>{673d102a-79d3-48f1-b60f-b74d81e7941e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\custom\gdx\dynamics">
+      <UniqueIdentifier>{c8180d5f-dd89-48b5-a90f-1d8334432ee1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btContactConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHinge2Constraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btHingeConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btPoint2PointConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btSequentialImpulseConstraintSolver.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btSliderConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btSolve2LinearConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btTypedConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\swig-src\dynamics\dynamics_wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\InternalTickCallback.cpp">
+      <Filter>Source Files\custom\gdx\dynamics</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
