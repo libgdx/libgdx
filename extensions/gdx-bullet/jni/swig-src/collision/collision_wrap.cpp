@@ -1756,7 +1756,7 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 	SWIGINTERN inline jclass gdx_getClassbtManifoldPoint(JNIEnv * jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
-			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("$packagepath/btManifoldPoint"));
+			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btManifoldPoint"));
 		return cls;
 	}
 	
@@ -1765,7 +1765,7 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 	  static jobject ret = NULL;
 	  static jclass clazz = gdx_getClassbtManifoldPoint(jenv);
 	  if (ret == NULL) {
-	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "$packagepath/btManifoldPoint");
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "com/badlogic/gdx/physics/bullet/collision/btManifoldPoint");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
 	  }
 	  
@@ -1783,7 +1783,7 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 	SWIGINTERN inline jobject gdx_obtainbtManifoldPoint(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
 		static jmethodID obtainMethod = NULL;
 		if (obtainMethod == NULL)
-			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", "(JZ)L$packagepath/btManifoldPoint;");
+			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", "(JZ)Lcom/badlogic/gdx/physics/bullet/collision/btManifoldPoint;");
 		
 		long ptr;
 		*(const void **)&ptr = cPtr; 
@@ -1796,7 +1796,7 @@ bool custom_ContactListener_setEvents(ContactListener *listener);
 	SWIGINTERN inline void gdx_freebtManifoldPoint(JNIEnv * jenv, const jclass clazz, const jobject obj) {
 		static jmethodID freeMethod = NULL;
 		if (freeMethod == NULL)
-			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", "(L$packagepath/btManifoldPoint;)V");
+			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", "(Lcom/badlogic/gdx/physics/bullet/collision/btManifoldPoint;)V");
 		
 		jenv->CallStaticVoidMethod(clazz, freeMethod, obj);
 		

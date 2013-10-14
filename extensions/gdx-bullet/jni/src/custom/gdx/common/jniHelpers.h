@@ -48,7 +48,7 @@ struct GdxPool {
 	 * }
 	 * then construct using:
 	 * GdxPool(jenv, jclass("CommonJNI"), "poolClazz", "Lcom/xxx/b/Clazz;", "tempClazz"); */
-	GdxPool(const char * const &poolField, const char * const &typeName = NULL, const char * const &tempField = NULL,
+	GdxPool(const char * const &poolField, const char * const &typeName = 0, const char * const &tempField = 0,
 		const char * const &poolClazz = GDXPOOL_POOLCLAZZ,
 		const char * const &obtainName = GDXPOOL_OBTAINFUNC, const char * const &obtainSig = GDXPOOL_OBTAINSIG,
 		const char * const &freeName = GDXPOOL_FREEFUNC, const char * const &freeSig = GDXPOOL_FREESIG);
