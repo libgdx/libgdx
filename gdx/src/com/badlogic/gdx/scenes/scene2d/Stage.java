@@ -61,7 +61,6 @@ public class Stage extends InputAdapter implements Disposable {
 	private float viewportX, viewportY, viewportWidth, viewportHeight;
 	private float width, height;
 	private float gutterWidth, gutterHeight;
-	private float centerX, centerY;
 	private Camera camera;
 	private final SpriteBatch batch;
 	private final boolean ownsBatch;
@@ -169,9 +168,8 @@ public class Stage extends InputAdapter implements Disposable {
 			gutterHeight = 0;
 		}
 
-		centerX = this.width / 2;
-		centerY = this.height / 2;
-
+		float centerX = this.width / 2;
+		float centerY = this.height / 2;
 		camera.position.set(centerX, centerY, 0);
 		camera.viewportWidth = this.width;
 		camera.viewportHeight = this.height;
