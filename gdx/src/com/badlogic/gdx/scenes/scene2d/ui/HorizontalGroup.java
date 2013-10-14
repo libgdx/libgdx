@@ -92,9 +92,9 @@ public class HorizontalGroup extends WidgetGroup {
 				height = child.getHeight();
 			}
 			float y;
-			if ((alignment & Align.left) != 0)
+			if ((alignment & Align.bottom) != 0)
 				y = 0;
-			else if ((alignment & Align.right) != 0)
+			else if ((alignment & Align.top) != 0)
 				y = groupHeight - height;
 			else
 				y = (groupHeight - height) / 2;
