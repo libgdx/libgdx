@@ -365,6 +365,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
+	@Override
 	public ApplicationType getType () {
 		return ApplicationType.WebGL;
 	}
