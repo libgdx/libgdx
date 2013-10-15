@@ -353,6 +353,11 @@ public class JglfwApplication implements Application {
 		this.logLevel = logLevel;
 	}
 
+	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
