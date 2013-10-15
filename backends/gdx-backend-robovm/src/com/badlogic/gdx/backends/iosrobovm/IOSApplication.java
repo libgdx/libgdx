@@ -307,6 +307,11 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
+	@Override
 	public ApplicationType getType () {
 		return ApplicationType.iOS;
 	}
