@@ -54,7 +54,7 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	static private HashSet<String> loadedLibraries = new HashSet();
+	static private final HashSet<String> loadedLibraries = new HashSet();
 
 	private String nativesJar;
 

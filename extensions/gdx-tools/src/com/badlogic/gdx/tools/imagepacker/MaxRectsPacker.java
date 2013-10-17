@@ -233,19 +233,19 @@ public class MaxRectsPacker {
 
 		/** Packs a single image. Order is defined externally. */
 		public Rect insert (Rect rect, FreeRectChoiceHeuristic method) {
-			Rect newNode = ScoreRect(rect, method);
+			Rect newNode = scoreRect(rect, method);
 			if (newNode.height == 0) return null;
 
 			int numRectanglesToProcess = freeRectangles.size;
 			for (int i = 0; i < numRectanglesToProcess; ++i) {
-				if (SplitFreeNode(freeRectangles.get(i), newNode)) {
+				if (splitFreeNode(freeRectangles.get(i), newNode)) {
 					freeRectangles.removeIndex(i);
 					--i;
 					--numRectanglesToProcess;
 				}
 			}
 
-			PruneFreeList();
+			pruneFreeList();
 
 			Rect bestNode = new Rect();
 			bestNode.set(rect);
@@ -272,7 +272,7 @@ public class MaxRectsPacker {
 
 				// Find the next rectangle that packs best.
 				for (int i = 0; i < rects.size; i++) {
-					Rect newNode = ScoreRect(rects.get(i), method);
+					Rect newNode = scoreRect(rects.get(i), method);
 					if (newNode.score1 < bestNode.score1 || (newNode.score1 == bestNode.score1 && newNode.score2 < bestNode.score2)) {
 						bestNode.set(rects.get(i));
 						bestNode.score1 = newNode.score1;
@@ -288,7 +288,7 @@ public class MaxRectsPacker {
 
 				if (bestRectIndex == -1) break;
 
-				PlaceRect(bestNode);
+				placeRect(bestNode);
 				rects.removeIndex(bestRectIndex);
 			}
 
@@ -312,22 +312,22 @@ public class MaxRectsPacker {
 			return result;
 		}
 
-		private void PlaceRect (Rect node) {
+		private void placeRect (Rect node) {
 			int numRectanglesToProcess = freeRectangles.size;
 			for (int i = 0; i < numRectanglesToProcess; i++) {
-				if (SplitFreeNode(freeRectangles.get(i), node)) {
+				if (splitFreeNode(freeRectangles.get(i), node)) {
 					freeRectangles.removeIndex(i);
 					--i;
 					--numRectanglesToProcess;
 				}
 			}
 
-			PruneFreeList();
+			pruneFreeList();
 
 			usedRectangles.add(node);
 		}
 
-		private Rect ScoreRect (Rect rect, FreeRectChoiceHeuristic method) {
+		private Rect scoreRect (Rect rect, FreeRectChoiceHeuristic method) {
 			int width = rect.width;
 			int height = rect.height;
 			int rotatedWidth = height - settings.paddingY + settings.paddingX;
@@ -337,20 +337,20 @@ public class MaxRectsPacker {
 			Rect newNode = null;
 			switch (method) {
 			case BestShortSideFit:
-				newNode = FindPositionForNewNodeBestShortSideFit(width, height, rotatedWidth, rotatedHeight, rotate);
+				newNode = findPositionForNewNodeBestShortSideFit(width, height, rotatedWidth, rotatedHeight, rotate);
 				break;
 			case BottomLeftRule:
-				newNode = FindPositionForNewNodeBottomLeft(width, height, rotatedWidth, rotatedHeight, rotate);
+				newNode = findPositionForNewNodeBottomLeft(width, height, rotatedWidth, rotatedHeight, rotate);
 				break;
 			case ContactPointRule:
-				newNode = FindPositionForNewNodeContactPoint(width, height, rotatedWidth, rotatedHeight, rotate);
+				newNode = findPositionForNewNodeContactPoint(width, height, rotatedWidth, rotatedHeight, rotate);
 				newNode.score1 = -newNode.score1; // Reverse since we are minimizing, but for contact point score bigger is better.
 				break;
 			case BestLongSideFit:
-				newNode = FindPositionForNewNodeBestLongSideFit(width, height, rotatedWidth, rotatedHeight, rotate);
+				newNode = findPositionForNewNodeBestLongSideFit(width, height, rotatedWidth, rotatedHeight, rotate);
 				break;
 			case BestAreaFit:
-				newNode = FindPositionForNewNodeBestAreaFit(width, height, rotatedWidth, rotatedHeight, rotate);
+				newNode = findPositionForNewNodeBestAreaFit(width, height, rotatedWidth, rotatedHeight, rotate);
 				break;
 			}
 
@@ -371,7 +371,7 @@ public class MaxRectsPacker {
 			return (float)usedSurfaceArea / (binWidth * binHeight);
 		}
 
-		private Rect FindPositionForNewNodeBottomLeft (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
+		private Rect findPositionForNewNodeBottomLeft (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
 			Rect bestNode = new Rect();
 
 			bestNode.score1 = Integer.MAX_VALUE; // best y, score2 is best x
@@ -406,7 +406,7 @@ public class MaxRectsPacker {
 			return bestNode;
 		}
 
-		private Rect FindPositionForNewNodeBestShortSideFit (int width, int height, int rotatedWidth, int rotatedHeight,
+		private Rect findPositionForNewNodeBestShortSideFit (int width, int height, int rotatedWidth, int rotatedHeight,
 			boolean rotate) {
 			Rect bestNode = new Rect();
 			bestNode.score1 = Integer.MAX_VALUE;
@@ -452,7 +452,7 @@ public class MaxRectsPacker {
 			return bestNode;
 		}
 
-		private Rect FindPositionForNewNodeBestLongSideFit (int width, int height, int rotatedWidth, int rotatedHeight,
+		private Rect findPositionForNewNodeBestLongSideFit (int width, int height, int rotatedWidth, int rotatedHeight,
 			boolean rotate) {
 			Rect bestNode = new Rect();
 
@@ -497,7 +497,7 @@ public class MaxRectsPacker {
 			return bestNode;
 		}
 
-		private Rect FindPositionForNewNodeBestAreaFit (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
+		private Rect findPositionForNewNodeBestAreaFit (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
 			Rect bestNode = new Rect();
 
 			bestNode.score1 = Integer.MAX_VALUE; // best area fit, score2 is best short side fit
@@ -542,12 +542,12 @@ public class MaxRectsPacker {
 		}
 
 		// / Returns 0 if the two intervals i1 and i2 are disjoint, or the length of their overlap otherwise.
-		private int CommonIntervalLength (int i1start, int i1end, int i2start, int i2end) {
+		private int commonIntervalLength (int i1start, int i1end, int i2start, int i2end) {
 			if (i1end < i2start || i2end < i1start) return 0;
 			return Math.min(i1end, i2end) - Math.max(i1start, i2start);
 		}
 
-		private int ContactPointScoreNode (int x, int y, int width, int height) {
+		private int contactPointScoreNode (int x, int y, int width, int height) {
 			int score = 0;
 
 			if (x == 0 || x + width == binWidth) score += height;
@@ -555,16 +555,16 @@ public class MaxRectsPacker {
 
 			for (int i = 0; i < usedRectangles.size; i++) {
 				if (usedRectangles.get(i).x == x + width || usedRectangles.get(i).x + usedRectangles.get(i).width == x)
-					score += CommonIntervalLength(usedRectangles.get(i).y, usedRectangles.get(i).y + usedRectangles.get(i).height, y,
+					score += commonIntervalLength(usedRectangles.get(i).y, usedRectangles.get(i).y + usedRectangles.get(i).height, y,
 						y + height);
 				if (usedRectangles.get(i).y == y + height || usedRectangles.get(i).y + usedRectangles.get(i).height == y)
-					score += CommonIntervalLength(usedRectangles.get(i).x, usedRectangles.get(i).x + usedRectangles.get(i).width, x, x
+					score += commonIntervalLength(usedRectangles.get(i).x, usedRectangles.get(i).x + usedRectangles.get(i).width, x, x
 						+ width);
 			}
 			return score;
 		}
 
-		private Rect FindPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
+		private Rect findPositionForNewNodeContactPoint (int width, int height, int rotatedWidth, int rotatedHeight, boolean rotate) {
 			Rect bestNode = new Rect();
 
 			bestNode.score1 = -1; // best contact score
@@ -572,7 +572,7 @@ public class MaxRectsPacker {
 			for (int i = 0; i < freeRectangles.size; i++) {
 				// Try to place the rectangle in upright (non-rotated) orientation.
 				if (freeRectangles.get(i).width >= width && freeRectangles.get(i).height >= height) {
-					int score = ContactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, width, height);
+					int score = contactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, width, height);
 					if (score > bestNode.score1) {
 						bestNode.x = freeRectangles.get(i).x;
 						bestNode.y = freeRectangles.get(i).y;
@@ -584,7 +584,7 @@ public class MaxRectsPacker {
 				}
 				if (rotate && freeRectangles.get(i).width >= rotatedWidth && freeRectangles.get(i).height >= rotatedHeight) {
 					// This was width,height -- bug fixed?
-					int score = ContactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, rotatedWidth, rotatedHeight);
+					int score = contactPointScoreNode(freeRectangles.get(i).x, freeRectangles.get(i).y, rotatedWidth, rotatedHeight);
 					if (score > bestNode.score1) {
 						bestNode.x = freeRectangles.get(i).x;
 						bestNode.y = freeRectangles.get(i).y;
@@ -598,7 +598,7 @@ public class MaxRectsPacker {
 			return bestNode;
 		}
 
-		private boolean SplitFreeNode (Rect freeNode, Rect usedNode) {
+		private boolean splitFreeNode (Rect freeNode, Rect usedNode) {
 			// Test with SAT if the rectangles even intersect.
 			if (usedNode.x >= freeNode.x + freeNode.width || usedNode.x + usedNode.width <= freeNode.x
 				|| usedNode.y >= freeNode.y + freeNode.height || usedNode.y + usedNode.height <= freeNode.y) return false;
@@ -640,7 +640,7 @@ public class MaxRectsPacker {
 			return true;
 		}
 
-		private void PruneFreeList () {
+		private void pruneFreeList () {
 			/*
 			 * /// Would be nice to do something like this, to avoid a Theta(n^2) loop through each pair. /// But unfortunately it
 			 * doesn't quite cut it, since we also want to detect containment. /// Perhaps there's another way to do this faster than
@@ -656,19 +656,19 @@ public class MaxRectsPacker {
 			// / Go through each pair and remove any rectangle that is redundant.
 			for (int i = 0; i < freeRectangles.size; i++)
 				for (int j = i + 1; j < freeRectangles.size; ++j) {
-					if (IsContainedIn(freeRectangles.get(i), freeRectangles.get(j))) {
+					if (isContainedIn(freeRectangles.get(i), freeRectangles.get(j))) {
 						freeRectangles.removeIndex(i);
 						--i;
 						break;
 					}
-					if (IsContainedIn(freeRectangles.get(j), freeRectangles.get(i))) {
+					if (isContainedIn(freeRectangles.get(j), freeRectangles.get(i))) {
 						freeRectangles.removeIndex(j);
 						--j;
 					}
 				}
 		}
 
-		private boolean IsContainedIn (Rect a, Rect b) {
+		private boolean isContainedIn (Rect a, Rect b) {
 			return a.x >= b.x && a.y >= b.y && a.x + a.width <= b.x + b.width && a.y + a.height <= b.y + b.height;
 		}
 	}
