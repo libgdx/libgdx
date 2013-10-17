@@ -299,7 +299,7 @@ void main() {
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 				v_lightDiffuse += u_dirLights[i].color * NdotL;
 				#ifdef specularFlag
-					float halfDotView = dot(normal, normalize(lightDir + viewVec));
+					float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
 					v_lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
 				#endif // specularFlag
 			}
