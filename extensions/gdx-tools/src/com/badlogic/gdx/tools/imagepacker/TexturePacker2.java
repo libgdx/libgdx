@@ -139,7 +139,7 @@ public class TexturePacker2 {
 			System.out.println("Writing " + canvas.getWidth() + "x" + canvas.getHeight() + ": " + outputFile);
 
 			for (Rect rect : page.outputRects) {
-				BufferedImage image = rect.image;
+				BufferedImage image = rect.getImage(imageProcessor);
 				int iw = image.getWidth();
 				int ih = image.getHeight();
 				int rectX = page.x + rect.x, rectY = page.y + page.height - rect.y - rect.height;
@@ -189,7 +189,7 @@ public class TexturePacker2 {
 							copy(image, iw - 1, 0, 1, ih, canvas, rectX + iw - 1 + i, rectY, rect.rotated);
 						}
 					}
-				}				
+				}
 				copy(image, 0, 0, iw, ih, canvas, rectX, rectY, rect.rotated);
 				if (settings.debug) {
 					g.setColor(Color.magenta);
@@ -239,11 +239,11 @@ public class TexturePacker2 {
 		}
 	}
 
-	private static void plot (BufferedImage dst, int x, int y, int argb) {
+	static private void plot (BufferedImage dst, int x, int y, int argb) {
 		if (0 <= x && x < dst.getWidth() && 0 <= y && y < dst.getHeight()) dst.setRGB(x, y, argb);
 	}
 
-	private static void copy (BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated) {
+	static private void copy (BufferedImage src, int x, int y, int w, int h, BufferedImage dst, int dx, int dy, boolean rotated) {
 		if (rotated) {
 			for (int i = 0; i < w; i++)
 				for (int j = 0; j < h; j++)
@@ -275,8 +275,6 @@ public class TexturePacker2 {
 		}
 
 		FileWriter writer = new FileWriter(packFile, true);
-// if (settings.jsonOutput) {
-// } else {
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
 			writer.write("format: " + settings.format + "\n");
@@ -293,7 +291,6 @@ public class TexturePacker2 {
 				}
 			}
 		}
-// }
 		writer.close();
 	}
 
@@ -301,17 +298,17 @@ public class TexturePacker2 {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
-		writer.write("  size: " + rect.image.getWidth() + ", " + rect.image.getHeight() + "\n");
+		writer.write("  size: " + rect.width + ", " + rect.height + "\n");
 		if (rect.splits != null) {
-			writer
-				.write("  split: " + rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
+			writer.write("  split: " //
+				+ rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
 		}
 		if (rect.pads != null) {
 			if (rect.splits == null) writer.write("  split: 0, 0, 0, 0\n");
 			writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
 		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.image.getHeight() - rect.offsetY) + "\n");
+		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.height - rect.offsetY) + "\n");
 		writer.write("  index: " + rect.index + "\n");
 	}
 
@@ -338,7 +335,7 @@ public class TexturePacker2 {
 	}
 
 	/** @author Nathan Sweet */
-	public static class Page {
+	static public class Page {
 		public String imageName;
 		public Array<Rect> outputRects, remainingRects;
 		public float occupancy;
@@ -347,7 +344,7 @@ public class TexturePacker2 {
 
 	/** @author Regnarock
 	 * @author Nathan Sweet */
-	public static class Alias {
+	static public class Alias {
 		public String name;
 		public int index;
 		public int[] splits;
@@ -378,9 +375,8 @@ public class TexturePacker2 {
 	}
 
 	/** @author Nathan Sweet */
-	public static class Rect {
+	static public class Rect {
 		public String name;
-		public BufferedImage image;
 		public int offsetX, offsetY, originalWidth, originalHeight;
 		public int x, y, width, height;
 		public int index;
@@ -390,9 +386,12 @@ public class TexturePacker2 {
 		public int[] pads;
 		public boolean canRotate = true;
 
+		private boolean isPatch;
+		private BufferedImage image;
+		private File file;
 		int score1, score2;
 
-		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight) {
+		Rect (BufferedImage source, int left, int top, int newWidth, int newHeight, boolean isPatch) {
 			image = new BufferedImage(source.getColorModel(), source.getRaster().createWritableChild(left, top, newWidth, newHeight,
 				0, 0, null), source.getColorModel().isAlphaPremultiplied(), null);
 			offsetX = left;
@@ -401,6 +400,28 @@ public class TexturePacker2 {
 			originalHeight = source.getHeight();
 			width = newWidth;
 			height = newHeight;
+			this.isPatch = isPatch;
+		}
+
+		/** Clears the image for this rect, which will be loaded from the specified file by {@link #getImage(ImageProcessor)}. */
+		public void unloadImage (File file) {
+			this.file = file;
+			image = null;
+		}
+
+		public BufferedImage getImage (ImageProcessor imageProcessor) {
+			if (image != null) return image;
+
+			BufferedImage image;
+			try {
+				image = ImageIO.read(file);
+			} catch (IOException ex) {
+				throw new RuntimeException("Error reading image: " + file, ex);
+			}
+			if (image == null) throw new RuntimeException("Unable to read image: " + file);
+			String name = this.name;
+			if (isPatch) name += ".9";
+			return imageProcessor.processImage(image, name).getImage(null);
 		}
 
 		Rect () {
@@ -436,6 +457,8 @@ public class TexturePacker2 {
 			canRotate = rect.canRotate;
 			score1 = rect.score1;
 			score2 = rect.score2;
+			file = rect.file;
+			isPatch = rect.isPatch;
 		}
 
 		@Override
@@ -486,6 +509,7 @@ public class TexturePacker2 {
 		public boolean premultiplyAlpha;
 		public boolean useIndexes = true;
 		public boolean bleed = true;
+		public boolean limitMemory = true;
 
 		public Settings () {
 		}
@@ -521,6 +545,7 @@ public class TexturePacker2 {
 			forceSquareOutput = settings.forceSquareOutput;
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
+			limitMemory = settings.limitMemory;
 		}
 	}
 
@@ -562,7 +587,7 @@ public class TexturePacker2 {
 		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
 	}
 
-	public static void main (String[] args) throws Exception {
+	static public void main (String[] args) throws Exception {
 		String input = null, output = null, packFileName = "pack.atlas";
 
 		switch (args.length) {
