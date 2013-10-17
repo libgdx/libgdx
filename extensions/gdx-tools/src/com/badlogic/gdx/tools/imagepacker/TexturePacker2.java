@@ -16,6 +16,16 @@
 
 package com.badlogic.gdx.tools.imagepacker;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -31,16 +41,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** @author Nathan Sweet */
 public class TexturePacker2 {
@@ -298,7 +298,8 @@ public class TexturePacker2 {
 		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
 		writer.write("  rotate: " + rect.rotated + "\n");
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
-		writer.write("  size: " + rect.width + ", " + rect.height + "\n");
+
+		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
 		if (rect.splits != null) {
 			writer.write("  split: " //
 				+ rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
@@ -308,7 +309,7 @@ public class TexturePacker2 {
 			writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
 		}
 		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.height - rect.offsetY) + "\n");
+		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.regionHeight - rect.offsetY) + "\n");
 		writer.write("  index: " + rect.index + "\n");
 	}
 
@@ -377,8 +378,8 @@ public class TexturePacker2 {
 	/** @author Nathan Sweet */
 	static public class Rect {
 		public String name;
-		public int offsetX, offsetY, originalWidth, originalHeight;
-		public int x, y, width, height;
+		public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
+		public int x, y, width, height; // Portion of page taken by this region, including padding.
 		public int index;
 		public boolean rotated;
 		public Set<Alias> aliases = new HashSet<Alias>();
@@ -396,6 +397,8 @@ public class TexturePacker2 {
 				0, 0, null), source.getColorModel().isAlphaPremultiplied(), null);
 			offsetX = left;
 			offsetY = top;
+			regionWidth = newWidth;
+			regionHeight = newHeight;
 			originalWidth = source.getWidth();
 			originalHeight = source.getHeight();
 			width = newWidth;
@@ -428,10 +431,6 @@ public class TexturePacker2 {
 		}
 
 		Rect (Rect rect) {
-			setSize(rect);
-		}
-
-		void setSize (Rect rect) {
 			x = rect.x;
 			y = rect.y;
 			width = rect.width;
@@ -443,6 +442,8 @@ public class TexturePacker2 {
 			image = rect.image;
 			offsetX = rect.offsetX;
 			offsetY = rect.offsetY;
+			regionWidth = rect.regionWidth;
+			regionHeight = rect.regionHeight;
 			originalWidth = rect.originalWidth;
 			originalHeight = rect.originalHeight;
 			x = rect.x;

@@ -96,7 +96,7 @@ public class ImageProcessor {
 			if (existing != null) {
 				System.out.println(rect.name + " (alias of " + existing.name + ")");
 				existing.aliases.add(new Alias(rect));
-				// return null;
+				return null;
 			}
 			crcs.put(crc, rect);
 		}
