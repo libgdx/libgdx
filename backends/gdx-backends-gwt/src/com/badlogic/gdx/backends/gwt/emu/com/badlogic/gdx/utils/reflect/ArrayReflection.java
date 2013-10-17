@@ -34,8 +34,7 @@ public final class ArrayReflection {
 
 	/** Returns the value of the indexed component in the supplied array. */
 	static public Object get (Object array, int index) {
-		ReflectionCache.instance.getArrayElement(ReflectionCache.getType(array.getClass()), array, index);
-		return array;
+		return ReflectionCache.instance.getArrayElement(ReflectionCache.getType(array.getClass()), array, index);
 	}
 
 	/** Sets the value of the indexed component in the supplied array to the supplied value. */
