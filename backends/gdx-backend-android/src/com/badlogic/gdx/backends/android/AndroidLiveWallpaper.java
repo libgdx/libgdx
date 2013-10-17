@@ -348,6 +348,11 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
+	@Override
 	public void exit () {
 		// no-op
 	}
