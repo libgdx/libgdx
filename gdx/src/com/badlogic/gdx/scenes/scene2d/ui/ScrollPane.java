@@ -99,7 +99,7 @@ public class ScrollPane extends WidgetGroup {
 	public ScrollPane (Actor widget, ScrollPaneStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
-		setWidget(widget);
+		if (widget != null) setWidget(widget);
 		setWidth(150);
 		setHeight(150);
 
