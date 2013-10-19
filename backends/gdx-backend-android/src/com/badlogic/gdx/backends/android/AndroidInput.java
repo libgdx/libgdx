@@ -39,6 +39,7 @@ import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.badlogic.gdx.AccelerometerInputProcessor;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics.DisplayMode;
@@ -801,7 +802,17 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 		@Override
 		public void onSensorChanged (SensorEvent event) {
+			
+			
+			float oldX = 0,oldY=0,oldZ=0;
+			
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				
+				
+				oldX=accelerometerValues[0];
+				oldY=accelerometerValues[1];
+				oldZ=accelerometerValues[2];
+				
 				if (nativeOrientation == Orientation.Portrait) {
 					System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
 				} else {
@@ -813,6 +824,25 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
 			}
+			
+			try{
+			if(accelerometerAvailable  && processor!=null && processor instanceof AccelerometerInputProcessor){
+				AccelerometerInputProcessor accInputProcessor=(AccelerometerInputProcessor)getInputProcessor();
+				if(oldX !=accelerometerValues[0]){
+					accInputProcessor.onTiltX(accelerometerValues[0]);
+				}
+				if(oldY !=accelerometerValues[1]){
+					accInputProcessor.onTiltY(accelerometerValues[1]);
+				}
+				if(oldZ !=accelerometerValues[2]){
+					accInputProcessor.onTiltZ(accelerometerValues[2]);
+				}
+				
+			}
+			}catch(NullPointerException n){
+				
+			}
+			
 		}
 	}
 }
