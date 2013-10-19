@@ -38,6 +38,7 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.badlogic.gdx.AccelerometerInputProcessor;
 import com.badlogic.gdx.Application;
@@ -168,6 +169,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		} else {
 			nativeOrientation = Orientation.Portrait;
 		}
+		
 	}
 
 	@Override
@@ -177,7 +179,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	@Override
 	public float getAccelerometerY () {
-		return accelerometerValues[1];
+		return  accelerometerValues[1];
 	}
 
 	@Override
@@ -317,10 +319,22 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		}
 	}
 
+	public boolean accelerometerToCheck=false;
 	public void setInputProcessor (InputProcessor processor) {
 		synchronized (this) {
 			this.processor = processor;
 		}
+		
+		try{
+			if (accelerometerAvailable  && processor!=null && processor instanceof AccelerometerInputProcessor){
+				accelerometerToCheck=true;
+			}else{
+				accelerometerToCheck=false;
+			}
+		}catch(NullPointerException n){
+			
+		}
+		
 	}
 
 	void processEvents () {
@@ -329,6 +343,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
+				
+				
+
 
 				int len = keyEvents.size();
 				for (int i = 0; i < len; i++) {
@@ -337,6 +354,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
+						
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);
@@ -581,6 +599,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	final float[] orientation = new float[3];
 
 	private void updateOrientation () {
+		
 		if (SensorManager.getRotationMatrix(R, null, accelerometerValues, magneticFieldValues)) {
 			SensorManager.getOrientation(R, orientation);
 			azimuth = (float)Math.toDegrees(orientation[0]);
@@ -642,6 +661,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (sensor != null) {
 				compassAvailable = accelerometerAvailable;
 				if (compassAvailable) {
+					
+					
+					
+					
 					compassListener = new SensorListener(this.nativeOrientation, this.accelerometerValues, this.magneticFieldValues);
 					compassAvailable = manager.registerListener(compassListener, sensor, SensorManager.SENSOR_DELAY_GAME);
 				}
@@ -665,8 +688,16 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			}
 			manager = null;
 		}
+		
+
+			accelerometerToCheck=false;
+		
+		
+		
 		Gdx.app.log("AndroidInput", "sensor listener tear down");
 	}
+	
+	
 
 	@Override
 	public InputProcessor getInputProcessor () {
@@ -788,11 +819,24 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		final float[] accelerometerValues;
 		final float[] magneticFieldValues;
 		final Orientation nativeOrientation;
+		
 
 		SensorListener (Orientation nativeOrientation, float[] accelerometerValues, float[] magneticFieldValues) {
 			this.accelerometerValues = accelerometerValues;
 			this.magneticFieldValues = magneticFieldValues;
 			this.nativeOrientation = nativeOrientation;
+			
+			try{
+				if (accelerometerAvailable  && processor!=null && processor instanceof AccelerometerInputProcessor){
+					accelerometerToCheck=true;
+				}else{
+					accelerometerToCheck=false;
+				}
+			}catch(NullPointerException n){
+				
+			}
+			
+
 		}
 
 		@Override
@@ -804,45 +848,42 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		public void onSensorChanged (SensorEvent event) {
 			
 			
-			float oldX = 0,oldY=0,oldZ=0;
 			
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+				float oldX=accelerometerValues[0];
+				float oldY=accelerometerValues[1];
+				float oldZ=accelerometerValues[2];
 				
-				
-				oldX=accelerometerValues[0];
-				oldY=accelerometerValues[1];
-				oldZ=accelerometerValues[2];
 				
 				if (nativeOrientation == Orientation.Portrait) {
 					System.arraycopy(event.values, 0, accelerometerValues, 0, accelerometerValues.length);
+					
 				} else {
 					accelerometerValues[0] = event.values[1];
 					accelerometerValues[1] = -event.values[0];
 					accelerometerValues[2] = event.values[2];
+					
 				}
+				
+				
+					if(accelerometerToCheck){
+						AccelerometerInputProcessor accInputProcessor=(AccelerometerInputProcessor)getInputProcessor();
+						if(oldX !=accelerometerValues[0]){
+							accInputProcessor.onTiltX(accelerometerValues[0]);
+						}
+						if(oldY !=accelerometerValues[1]){
+							accInputProcessor.onTiltY(accelerometerValues[1]);
+						}
+						if(oldZ !=accelerometerValues[2]){
+							accInputProcessor.onTiltZ(accelerometerValues[2]);
+						}
+						
+					}
+				
 			}
 			if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 				System.arraycopy(event.values, 0, magneticFieldValues, 0, magneticFieldValues.length);
 			}
-			
-			try{
-			if(accelerometerAvailable  && processor!=null && processor instanceof AccelerometerInputProcessor){
-				AccelerometerInputProcessor accInputProcessor=(AccelerometerInputProcessor)getInputProcessor();
-				if(oldX !=accelerometerValues[0]){
-					accInputProcessor.onTiltX(accelerometerValues[0]);
-				}
-				if(oldY !=accelerometerValues[1]){
-					accInputProcessor.onTiltY(accelerometerValues[1]);
-				}
-				if(oldZ !=accelerometerValues[2]){
-					accInputProcessor.onTiltZ(accelerometerValues[2]);
-				}
-				
-			}
-			}catch(NullPointerException n){
-				
-			}
-			
 		}
 	}
 }
