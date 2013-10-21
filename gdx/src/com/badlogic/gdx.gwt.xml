@@ -368,6 +368,7 @@
 		<include name="scenes/scene2d/ui/ButtonGroup.java"/>
 		<include name="scenes/scene2d/ui/CheckBox.java"/>
 		<include name="scenes/scene2d/ui/Dialog.java"/>
+		<include name="scenes/scene2d/ui/HorizontalGroup.java"/>
 		<include name="scenes/scene2d/ui/Image.java"/>
 		<include name="scenes/scene2d/ui/ImageButton.java"/>
 		<include name="scenes/scene2d/ui/ImageTextButton.java"/>
