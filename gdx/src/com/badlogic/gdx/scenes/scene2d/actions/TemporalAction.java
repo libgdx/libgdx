@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.Pool;
 abstract public class TemporalAction extends Action {
 	private float duration, time;
 	private Interpolation interpolation;
-	private boolean reverse, begun, complete;
+	private boolean reverse, began, complete;
 
 	public TemporalAction () {
 	}
@@ -44,9 +44,9 @@ abstract public class TemporalAction extends Action {
 		Pool pool = getPool();
 		setPool(null); // Ensure this action can't be returned to the pool while executing.
 		try {
-			if (!begun) {
+			if (!began) {
 				begin();
-				begun = true;
+				began = true;
 			}
 			time += delta;
 			complete = time >= duration;
@@ -86,7 +86,7 @@ abstract public class TemporalAction extends Action {
 
 	public void restart () {
 		time = 0;
-		begun = false;
+		began = false;
 		complete = false;
 	}
 
