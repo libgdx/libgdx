@@ -65,7 +65,6 @@ class EffectPanel extends JPanel {
 		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});
 		emitter.getTransparency().setHigh(1);
 
-		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(25);
 		emitter.setImagePath("particle.png");
 
@@ -107,7 +106,6 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setTimeline(new float[] {0, 0.2f, 0.8f, 1});
 		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
 		
-		emitter.setFlip(false, true);
 		emitter.setMaxParticleCount(200);
 		emitter.setImagePath("particle.png");
 		
