@@ -53,7 +53,7 @@ public class Pools {
 			Object object = objects.get(i);
 			if (object == null) continue;
 			ReflectionPool pool = typePools.get(object.getClass());
-			if (pool == null) return; // Ignore freeing an object that was never retained.
+			if (pool == null) continue; // Ignore freeing an object that was never retained.
 			pool.free(object);
 		}
 	}
