@@ -29,18 +29,18 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.ContactResultCallback;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionObjectWrapper;
-import com.badlogic.gdx.physics.bullet.btCollisionWorld;
-import com.badlogic.gdx.physics.bullet.btConvexHullShape;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btManifoldPoint;
-import com.badlogic.gdx.physics.bullet.btShapeHull;
-import com.badlogic.gdx.physics.bullet.btVector3;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
+import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
+import com.badlogic.gdx.physics.bullet.linearmath.btVector3;
 
 /** @author xoppa, didum */
 public class ConvexHullDistanceTest extends BaseBulletTest {
@@ -136,9 +136,9 @@ public class ConvexHullDistanceTest extends BaseBulletTest {
 		public void calculateDistance (btCollisionObject colObjA, btCollisionObject colObjB) {
 			DistanceInternalResultCallback result = new DistanceInternalResultCallback();
 
-			gdxBullet.setGContactBreakingThreshold(100f);
+			Collision.setGContactBreakingThreshold(100f);
 			collisionWorld.contactPairTest(colObjA, colObjB, result);
-			gdxBullet.setGContactBreakingThreshold(0.02f);
+			Collision.setGContactBreakingThreshold(0.02f);
 		}
 
 		private class DistanceInternalResultCallback extends ContactResultCallback {
