@@ -31,18 +31,16 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.btCapsuleShape;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btConeTwistConstraint;
-import com.badlogic.gdx.physics.bullet.btConstraintSetting;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btHingeConstraint;
-import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btTypedConstraint;
-import com.badlogic.gdx.physics.bullet.btVector3;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
+import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btConeTwistConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSetting;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btHingeConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.utils.Array;
 
 /** @author xoppa */
@@ -52,6 +50,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	btPoint2PointConstraint pickConstraint = null;
 	btRigidBody pickedBody = null;
 	float pickDistance;
+	Vector3 tmpV = new Vector3();
 	
 	@Override
 	public void create () {
@@ -100,13 +99,12 @@ public class RayPickRagdollTest extends BaseBulletTest {
 				btRigidBody body = (btRigidBody)(cb.getCollisionObject());
 				if (body != null && !body.isStaticObject() && !body.isKinematicObject()) {
 					pickedBody = body;
-					body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
+					body.setActivationState(Collision.DISABLE_DEACTIVATION);
 					
-					btVector3 hitpoint = cb.getHitPointWorld();
-					Vector3.tmp.set(hitpoint.getX(), hitpoint.getY(), hitpoint.getZ());
-					Vector3.tmp.mul(body.getCenterOfMassTransform().inv());
+					tmpV.set(cb.getHitPointWorld().getFloats());
+					tmpV.mul(body.getCenterOfMassTransform().inv());
 					
-					pickConstraint = new btPoint2PointConstraint(body,Vector3.tmp);
+					pickConstraint = new btPoint2PointConstraint(body,tmpV);
 					btConstraintSetting setting = pickConstraint.getSetting();
 					setting.setImpulseClamp(30f);
 					setting.setTau(0.001f);
@@ -134,7 +132,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 				result = true;
 			}
 			if (pickedBody != null) {
-				pickedBody.forceActivationState(gdxBullet.ACTIVE_TAG);
+				pickedBody.forceActivationState(Collision.ACTIVE_TAG);
 				pickedBody.setDeactivationTime(0f);
 				pickedBody = null;
 			}
