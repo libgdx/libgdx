@@ -44,7 +44,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 
-/** @author dermetfan */
 public class InterpolationTest extends GdxTest {
 
 	private Stage stage;
