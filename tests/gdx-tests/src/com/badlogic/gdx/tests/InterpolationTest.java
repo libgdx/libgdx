@@ -22,11 +22,6 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
@@ -35,11 +30,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -47,27 +41,15 @@ import com.badlogic.gdx.utils.reflect.Field;
 public class InterpolationTest extends GdxTest {
 
 	private Stage stage;
+	private Skin skin;
 	private Table table;
+	private List list;
 	private String interpolationNames[], selectedInterpolation;
 	private ShapeRenderer renderer;
-
-	private BitmapFont font;
-	private Texture blue;
 
 	private float graphSize = 400, steps = graphSize / 2, time = 0, duration = 2.5f;
 
 	private Vector2 startPosition = new Vector2(), targetPosition = new Vector2(), position = new Vector2();
-
-	/** generates resources used for the UI (doesn't need assets): {@link #font}, {@link #blue} */
-	public void generateUIResources() {
-		font = new BitmapFont();
-
-		Pixmap pixmap = new Pixmap(1, 1, Format.RGB565);
-		pixmap.setColor(Color.BLUE);
-		pixmap.fill();
-		blue = new Texture(pixmap);
-		pixmap.dispose();
-	}
 
 	/** resets {@link #startPosition} and {@link #targetPosition} */
 	private void resetPositions() {
@@ -98,7 +80,7 @@ public class InterpolationTest extends GdxTest {
 		Gdx.gl.glClearColor(.3f, .3f, .3f, 1);
 		renderer = new ShapeRenderer();
 
-		generateUIResources();
+		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		stage = new Stage();
 		resetPositions();
@@ -121,11 +103,7 @@ public class InterpolationTest extends GdxTest {
 				interpolationNames[i] = interpolationFields[i].getName();
 		selectedInterpolation = interpolationNames[0];
 
-		ListStyle listStyle = new ListStyle();
-		listStyle.font = font;
-		listStyle.selection = new TextureRegionDrawable(new TextureRegion(blue));
-
-		final List list = new List(interpolationNames, listStyle);
+		list = new List(interpolationNames, skin);
 		list.addListener(new ChangeListener() {
 
 			@Override
@@ -177,7 +155,7 @@ public class InterpolationTest extends GdxTest {
 			text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
 		stage.getSpriteBatch().begin();
-		font.draw(stage.getSpriteBatch(), text, bottomLeftX + graphSize / 2 - font.getBounds(text).width / 2, bottomLeftY + graphSize + font.getLineHeight());
+		list.getStyle().font.draw(stage.getSpriteBatch(), text, bottomLeftX + graphSize / 2 - list.getStyle().font.getBounds(text).width / 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
 		stage.getSpriteBatch().end();
 
 		renderer.begin(ShapeType.Line);
@@ -235,8 +213,7 @@ public class InterpolationTest extends GdxTest {
 	@Override
 	public void dispose() {
 		stage.dispose();
-		font.dispose();
-		blue.dispose();
+		skin.dispose();
 	}
 
 	@Override
