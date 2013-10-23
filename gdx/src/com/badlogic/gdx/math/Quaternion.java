@@ -459,7 +459,7 @@ public class Quaternion implements Serializable {
       	this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
       float angle = (float) (2.0 * Math.acos(this.w));
       double s = Math.sqrt(1 - this.w * this.w); // assuming quaternion normalised then w is less than 1, so term always positive.
-      if (s < 0.001) { // test to avoid divide by zero, s is always positive due to sqrt
+      if (s < NORMALIZATION_TOLERANCE) { // test to avoid divide by zero, s is always positive due to sqrt
               // if s close to zero then direction of axis not important
               axis.x = this.x; // if it is important that axis is normalised then replace with x=1; y=z=0;
               axis.y = this.y;
