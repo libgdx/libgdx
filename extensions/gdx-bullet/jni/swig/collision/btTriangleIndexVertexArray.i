@@ -27,6 +27,8 @@
 };
 
 %typemap(javaimports) btIndexedMesh %{
+import com.badlogic.gdx.physics.bullet.BulletBase;
+import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -135,6 +137,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 %ignore btTriangleIndexVertexArray::getIndexedMeshArray();
 
 %typemap(javaimports) btTriangleIndexVertexArray %{
+import com.badlogic.gdx.physics.bullet.BulletBase;
+import com.badlogic.gdx.physics.bullet.linearmath.*;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;

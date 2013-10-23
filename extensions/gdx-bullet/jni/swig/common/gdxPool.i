@@ -23,7 +23,7 @@
 	SWIGINTERN inline jclass gdx_getTempClass(JNIEnv * jenv) {
 	  static jclass cls = NULL;
 	  if (cls == NULL) {
-		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/gdxBulletJNI"));
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
 	  }
 	  return cls;
 	}

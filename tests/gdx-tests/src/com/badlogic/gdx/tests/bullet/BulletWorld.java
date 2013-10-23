@@ -21,20 +21,19 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.physics.bullet.btBroadphaseInterface;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionWorld;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw;
-import com.badlogic.gdx.physics.bullet.btCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btConstraintSolver;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSolver;
+import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.PerformanceCounter;
 
 /** @author xoppa
@@ -53,6 +52,7 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 	public final Vector3 gravity;	
 	
 	public int maxSubSteps = 5;
+	public float fixedTimeStep = 1f / 60f;
 	
 	public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
 		final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world,  
@@ -106,7 +106,7 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 			performanceCounter.start();
 		}
 		if (collisionWorld instanceof btDynamicsWorld)
-			((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps);
+			((btDynamicsWorld)collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps, fixedTimeStep);
 		if (performanceCounter != null)
 			performanceCounter.stop();
 	}
