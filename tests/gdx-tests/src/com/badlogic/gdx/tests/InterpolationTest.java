@@ -80,7 +80,7 @@ public class InterpolationTest extends GdxTest {
 		Gdx.gl.glClearColor(.3f, .3f, .3f, 1);
 		renderer = new ShapeRenderer();
 
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		stage = new Stage();
 		resetPositions();
