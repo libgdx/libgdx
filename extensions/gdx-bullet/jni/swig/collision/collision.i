@@ -1,5 +1,19 @@
 %module(directors="1") Collision
 
+%feature("director") btBroadphaseAabbCallback;
+%feature("director") btBroadphaseRayCallback;
+%feature("director") btConvexTriangleCallback;
+%feature("director") btGhostPairCallback;
+%feature("director") btInternalTriangleIndexCallback;
+%feature("director") btNodeOverlapCallback;
+%feature("director") btOverlapCallback;
+%feature("director") btOverlapFilterCallback;
+%feature("director") btOverlappingPairCallback;
+%feature("director") btTriangleCallback;
+%feature("director") btTriangleConvexcastCallback;
+%feature("director") btTriangleRaycastCallback;
+// FIXME pool btBroadphaseProxy and btBroadphasePair, reuse btDispatcher and fix ptr/array typemap/pool
+
 %include "arrays_java.i"
 
 %import "../linearmath/linearmath.i"
@@ -41,9 +55,12 @@ import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 %}
 
-%include "./btCollisionShape.i"
+// Required because bullet uses a macro for this
+typedef btVoronoiSimplexSolver btSimplexSolverInterface;
 
 %include "./btDiscreteCollisionDetectorInterface.i"
+
+%include "./btCollisionShape.i"
 
 %{
 #include <BulletCollision/BroadphaseCollision/btBroadphaseProxy.h>
@@ -310,6 +327,11 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "BulletCollision/CollisionDispatch/btConvexPlaneCollisionAlgorithm.h"
 
 %{
+#include <BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.h>
+%}
+%include "BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.h"
+
+%{
 #include <BulletCollision/CollisionDispatch/btCollisionConfiguration.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionConfiguration.h"
@@ -323,6 +345,11 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 #include <BulletCollision/CollisionDispatch/btManifoldResult.h>
 %}
 %include "BulletCollision/CollisionDispatch/btManifoldResult.h"
+
+%{
+#include <BulletCollision/CollisionDispatch/btHashedSimplePairCache.h>
+%}
+%include "BulletCollision/CollisionDispatch/btHashedSimplePairCache.h"
 
 %{
 #include <BulletCollision/CollisionDispatch/btSphereSphereCollisionAlgorithm.h>
@@ -484,14 +511,14 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %include "BulletCollision/NarrowPhaseCollision/btPointCollector.h"
 
 %{
-#include <BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h>
-%}
-%include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
-
-%{
 #include <BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h>
 %}
 %include "BulletCollision/NarrowPhaseCollision/btSimplexSolverInterface.h"
+
+%{
+#include <BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h>
+%}
+%include "BulletCollision/NarrowPhaseCollision/btVoronoiSimplexSolver.h"
 
 %include "./btMultiSphereShape.i"
 
