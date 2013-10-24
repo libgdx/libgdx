@@ -416,6 +416,12 @@ namespace Swig {
   }
 }
 
+#ifndef BT_INFINITY
+static  int btInfinityMask = 0x7F800000;
+#define BT_INFINITY (*(float*)&btInfinityMask)
+#endif
+
+
 #include <gdx/common/jniHelpers.h>
 
 

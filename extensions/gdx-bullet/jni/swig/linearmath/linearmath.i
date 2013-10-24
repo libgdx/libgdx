@@ -1,4 +1,11 @@
 %module(directors="1") LinearMath
+		
+%{
+#ifndef BT_INFINITY
+static  int btInfinityMask = 0x7F800000;
+#define BT_INFINITY (*(float*)&btInfinityMask)
+#endif
+%}
 
 %feature("director") btIDebugDraw;
 
