@@ -58,8 +58,8 @@ public class btSubsimplexConvexCast extends btConvexCast {
 		super.delete();
 	}
 
-  public btSubsimplexConvexCast(btConvexShape shapeA, btConvexShape shapeB, SWIGTYPE_p_btSimplexSolverInterface simplexSolver) {
-    this(CollisionJNI.new_btSubsimplexConvexCast(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver)), true);
+  public btSubsimplexConvexCast(btConvexShape shapeA, btConvexShape shapeB, btVoronoiSimplexSolver simplexSolver) {
+    this(CollisionJNI.new_btSubsimplexConvexCast(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver), true);
   }
 
 }

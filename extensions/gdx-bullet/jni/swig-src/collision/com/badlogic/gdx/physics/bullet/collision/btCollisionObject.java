@@ -397,8 +397,20 @@ public class btCollisionObject extends BulletBase implements
     return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
   }
 
+  public int getUserIndex() {
+    return CollisionJNI.btCollisionObject_getUserIndex(swigCPtr, this);
+  }
+
   public void setUserPointer(SWIGTYPE_p_void userPointer) {
     CollisionJNI.btCollisionObject_setUserPointer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(userPointer));
+  }
+
+  public void setUserIndex(int index) {
+    CollisionJNI.btCollisionObject_setUserIndex(swigCPtr, this, index);
+  }
+
+  public int getUpdateRevisionInternal() {
+    return CollisionJNI.btCollisionObject_getUpdateRevisionInternal(swigCPtr, this);
   }
 
   public boolean checkCollideWith(btCollisionObject co) {
@@ -463,6 +475,7 @@ public class btCollisionObject extends BulletBase implements
     public final static int CO_SOFT_BODY = 8;
     public final static int CO_HF_FLUID = 16;
     public final static int CO_USER_TYPE = 32;
+    public final static int CO_FEATHERSTONE_LINK = 64;
   }
 
   public final static class AnisotropicFrictionFlags {

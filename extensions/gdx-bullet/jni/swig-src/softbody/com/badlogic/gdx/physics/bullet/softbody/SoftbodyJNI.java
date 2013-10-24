@@ -135,12 +135,15 @@ public class SoftbodyJNI {
   public final static native int btSparseSdf3_puid_get(long jarg1, btSparseSdf3 jarg1_);
   public final static native void btSparseSdf3_ncells_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
   public final static native int btSparseSdf3_ncells_get(long jarg1, btSparseSdf3 jarg1_);
+  public final static native void btSparseSdf3_clampCells_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
+  public final static native int btSparseSdf3_clampCells_get(long jarg1, btSparseSdf3 jarg1_);
   public final static native void btSparseSdf3_nprobes_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
   public final static native int btSparseSdf3_nprobes_get(long jarg1, btSparseSdf3 jarg1_);
   public final static native void btSparseSdf3_nqueries_set(long jarg1, btSparseSdf3 jarg1_, int jarg2);
   public final static native int btSparseSdf3_nqueries_get(long jarg1, btSparseSdf3 jarg1_);
-  public final static native void btSparseSdf3_Initialize__SWIG_0(long jarg1, btSparseSdf3 jarg1_, int jarg2);
-  public final static native void btSparseSdf3_Initialize__SWIG_1(long jarg1, btSparseSdf3 jarg1_);
+  public final static native void btSparseSdf3_Initialize__SWIG_0(long jarg1, btSparseSdf3 jarg1_, int jarg2, int jarg3);
+  public final static native void btSparseSdf3_Initialize__SWIG_1(long jarg1, btSparseSdf3 jarg1_, int jarg2);
+  public final static native void btSparseSdf3_Initialize__SWIG_2(long jarg1, btSparseSdf3 jarg1_);
   public final static native void btSparseSdf3_Reset(long jarg1, btSparseSdf3 jarg1_);
   public final static native void btSparseSdf3_GarbageCollect__SWIG_0(long jarg1, btSparseSdf3 jarg1_, int jarg2);
   public final static native void btSparseSdf3_GarbageCollect__SWIG_1(long jarg1, btSparseSdf3 jarg1_);
@@ -159,6 +162,8 @@ public class SoftbodyJNI {
   public final static native float btSoftBodyWorldInfo_water_density_get(long jarg1, btSoftBodyWorldInfo jarg1_);
   public final static native void btSoftBodyWorldInfo_water_offset_set(long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
   public final static native float btSoftBodyWorldInfo_water_offset_get(long jarg1, btSoftBodyWorldInfo jarg1_);
+  public final static native void btSoftBodyWorldInfo_maxDisplacement_set(long jarg1, btSoftBodyWorldInfo jarg1_, float jarg2);
+  public final static native float btSoftBodyWorldInfo_maxDisplacement_get(long jarg1, btSoftBodyWorldInfo jarg1_);
   public final static native void btSoftBodyWorldInfo_water_normal_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btVector3 jarg2_);
   public final static native long btSoftBodyWorldInfo_water_normal_get(long jarg1, btSoftBodyWorldInfo jarg1_);
   public final static native void btSoftBodyWorldInfo_broadphase_set(long jarg1, btSoftBodyWorldInfo jarg1_, long jarg2, btBroadphaseInterface jarg2_);

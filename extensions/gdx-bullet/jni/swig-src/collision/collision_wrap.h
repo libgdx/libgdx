@@ -11,6 +11,160 @@
 #ifndef SWIG_Collision_WRAP_H_
 #define SWIG_Collision_WRAP_H_
 
+struct SwigDirector_btBroadphaseAabbCallback : public btBroadphaseAabbCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btBroadphaseAabbCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btBroadphaseAabbCallback();
+    virtual bool process(btBroadphaseProxy const *proxy);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+struct SwigDirector_btBroadphaseRayCallback : public btBroadphaseRayCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btBroadphaseRayCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btBroadphaseRayCallback();
+    virtual bool process(btBroadphaseProxy const *proxy);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+class SwigDirector_btNodeOverlapCallback : public btNodeOverlapCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btNodeOverlapCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btNodeOverlapCallback();
+    virtual void processNode(int subPart, int triangleIndex);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+class SwigDirector_btOverlappingPairCallback : public btOverlappingPairCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btOverlappingPairCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btOverlappingPairCallback();
+    virtual btBroadphasePair *addOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1);
+    virtual void *removeOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher);
+    virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy *proxy0, btDispatcher *dispatcher);
+public:
+    bool swig_overrides(int n) {
+      return (n < 3 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[3];
+};
+
+struct SwigDirector_btOverlapCallback : public btOverlapCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btOverlapCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btOverlapCallback();
+    virtual bool processOverlap(btBroadphasePair &pair);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+struct SwigDirector_btOverlapFilterCallback : public btOverlapFilterCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btOverlapFilterCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btOverlapFilterCallback();
+    virtual bool needBroadphaseCollision(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1) const;
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+class SwigDirector_btTriangleCallback : public btTriangleCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btTriangleCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btTriangleCallback();
+    virtual void processTriangle(btVector3 *triangle, int partId, int triangleIndex);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+class SwigDirector_btInternalTriangleIndexCallback : public btInternalTriangleIndexCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btInternalTriangleIndexCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btInternalTriangleIndexCallback();
+    virtual void internalProcessTriangleIndex(btVector3 *triangle, int partId, int triangleIndex);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+class SwigDirector_btConvexTriangleCallback : public btConvexTriangleCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btConvexTriangleCallback(JNIEnv *jenv, btDispatcher *dispatcher, btCollisionObjectWrapper const *body0Wrap, btCollisionObjectWrapper const *body1Wrap, bool isSwapped);
+    virtual ~SwigDirector_btConvexTriangleCallback();
+    virtual void processTriangle(btVector3 *triangle, int partId, int triangleIndex);
+public:
+    bool swig_overrides(int n) {
+      return (n < 1 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[1];
+};
+
+class SwigDirector_btGhostPairCallback : public btGhostPairCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btGhostPairCallback(JNIEnv *jenv);
+    virtual ~SwigDirector_btGhostPairCallback();
+    virtual btBroadphasePair *addOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1);
+    virtual void *removeOverlappingPair(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1, btDispatcher *dispatcher);
+    virtual void removeOverlappingPairsContainingProxy(btBroadphaseProxy *arg0, btDispatcher *arg1);
+public:
+    bool swig_overrides(int n) {
+      return (n < 3 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[3];
+};
+
 struct SwigDirector_RayResultCallback : public RayResultCallback, public Swig::Director {
 
 public:
@@ -99,6 +253,38 @@ public:
     virtual ~SwigDirector_ContactResultCallback();
     virtual bool needsCollision(btBroadphaseProxy *proxy0) const;
     virtual btScalar addSingleResult(btManifoldPoint &cp, btCollisionObjectWrapper const *colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper const *colObj1Wrap, int partId1, int index1);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+class SwigDirector_btTriangleRaycastCallback : public btTriangleRaycastCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btTriangleRaycastCallback(JNIEnv *jenv, btVector3 const &from, btVector3 const &to, unsigned int flags = 0);
+    virtual ~SwigDirector_btTriangleRaycastCallback();
+    virtual void processTriangle(btVector3 *triangle, int partId, int triangleIndex);
+    virtual btScalar reportHit(btVector3 const &hitNormalLocal, btScalar hitFraction, int partId, int triangleIndex);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
+class SwigDirector_btTriangleConvexcastCallback : public btTriangleConvexcastCallback, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_btTriangleConvexcastCallback(JNIEnv *jenv, btConvexShape const *convexShape, btTransform const &convexShapeFrom, btTransform const &convexShapeTo, btTransform const &triangleToWorld, btScalar const triangleCollisionMargin);
+    virtual ~SwigDirector_btTriangleConvexcastCallback();
+    virtual void processTriangle(btVector3 *triangle, int partId, int triangleIndex);
+    virtual btScalar reportHit(btVector3 const &hitNormalLocal, btVector3 const &hitPointLocal, btScalar hitFraction, int partId, int triangleIndex);
 public:
     bool swig_overrides(int n) {
       return (n < 2 ? swig_override[n] : false);

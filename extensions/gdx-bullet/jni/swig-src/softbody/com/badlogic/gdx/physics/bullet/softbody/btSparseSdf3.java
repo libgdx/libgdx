@@ -93,6 +93,14 @@ public class btSparseSdf3 extends BulletBase {
     return SoftbodyJNI.btSparseSdf3_ncells_get(swigCPtr, this);
   }
 
+  public void setClampCells(int value) {
+    SoftbodyJNI.btSparseSdf3_clampCells_set(swigCPtr, this, value);
+  }
+
+  public int getClampCells() {
+    return SoftbodyJNI.btSparseSdf3_clampCells_get(swigCPtr, this);
+  }
+
   public void setNprobes(int value) {
     SoftbodyJNI.btSparseSdf3_nprobes_set(swigCPtr, this, value);
   }
@@ -109,12 +117,16 @@ public class btSparseSdf3 extends BulletBase {
     return SoftbodyJNI.btSparseSdf3_nqueries_get(swigCPtr, this);
   }
 
+  public void Initialize(int hashsize, int clampCells) {
+    SoftbodyJNI.btSparseSdf3_Initialize__SWIG_0(swigCPtr, this, hashsize, clampCells);
+  }
+
   public void Initialize(int hashsize) {
-    SoftbodyJNI.btSparseSdf3_Initialize__SWIG_0(swigCPtr, this, hashsize);
+    SoftbodyJNI.btSparseSdf3_Initialize__SWIG_1(swigCPtr, this, hashsize);
   }
 
   public void Initialize() {
-    SoftbodyJNI.btSparseSdf3_Initialize__SWIG_1(swigCPtr, this);
+    SoftbodyJNI.btSparseSdf3_Initialize__SWIG_2(swigCPtr, this);
   }
 
   public void Reset() {

@@ -16,27 +16,6 @@
     <Filter Include="Source Files\bullet">
       <UniqueIdentifier>{2502cac0-4ac4-4514-84db-97cad04d207b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision">
-      <UniqueIdentifier>{13762a51-1bc7-4f0d-a24a-14a0eaa00072}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision\BroadphaseCollision">
-      <UniqueIdentifier>{20035160-b0d3-4c54-bee7-632a7043061a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision\CollisionDispatch">
-      <UniqueIdentifier>{2c7b4544-8104-4b84-8bb0-69289444f6d9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision\CollisionShapes">
-      <UniqueIdentifier>{8617d6f3-77bb-4b19-8cd7-fe9312ecd2bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision\Gimpact">
-      <UniqueIdentifier>{b84f202a-83e2-4593-8147-b5685104bb8d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision\ibmsdk">
-      <UniqueIdentifier>{321450f9-b6fd-43cd-bd32-0b20d7862fad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletCollision\NarrowPhaseCollision">
-      <UniqueIdentifier>{adbc3b93-89ed-4c8b-95b1-bf96eb8cb4e4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\custom">
       <UniqueIdentifier>{45a539c2-ffb9-45b4-a943-2507f7af9f64}</UniqueIdentifier>
     </Filter>
@@ -46,10 +25,43 @@
     <Filter Include="Source Files\custom\gdx\collision">
       <UniqueIdentifier>{13dc396e-744c-4c14-bd64-effe13eeaeb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision">
+      <UniqueIdentifier>{76d7dbe7-7d3b-458a-930c-216592edd9ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision\BroadphaseCollision">
+      <UniqueIdentifier>{5b6002a4-1528-4c5e-adf1-6e774ae048fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision\CollisionDispatch">
+      <UniqueIdentifier>{eabc3d70-dc42-4bb5-9a03-e709b4b2dde5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision\CollisionShapes">
+      <UniqueIdentifier>{9f66e520-d324-462d-b02b-6c84ded17507}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision\Gimpact">
+      <UniqueIdentifier>{261a5013-2ade-44f3-a791-972ef240de44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision\ibmsdk">
+      <UniqueIdentifier>{4e3d60c9-cdb7-4880-a5f9-4429648ca2f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletCollision\NarrowPhaseCollision">
+      <UniqueIdentifier>{afce5366-11d4-4bb9-afe4-6e136ec8c56a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\swig-src\collision\collision_wrap.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeConvexResultCallback.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeRayResultCallback.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactCache.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactListener.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp">
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
@@ -148,6 +160,12 @@
       <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.cpp">
       <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btBox2dShape.cpp">
@@ -326,18 +344,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btVoronoiSimplexSolver.cpp">
       <Filter>Source Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeConvexResultCallback.cpp">
-      <Filter>Source Files\custom\gdx\collision</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeRayResultCallback.cpp">
-      <Filter>Source Files\custom\gdx\collision</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactCache.cpp">
-      <Filter>Source Files\custom\gdx\collision</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactListener.cpp">
-      <Filter>Source Files\custom\gdx\collision</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -109,8 +109,16 @@ public class btQuaternion extends BulletBase {
     return LinearMathJNI.btQuaternion_angle(swigCPtr, this, q);
   }
 
+  public float angleShortestPath(Quaternion q) {
+    return LinearMathJNI.btQuaternion_angleShortestPath(swigCPtr, this, q);
+  }
+
   public float getAngle() {
     return LinearMathJNI.btQuaternion_getAngle(swigCPtr, this);
+  }
+
+  public float getAngleShortestPath() {
+    return LinearMathJNI.btQuaternion_getAngleShortestPath(swigCPtr, this);
   }
 
   public Vector3 getAxis() {

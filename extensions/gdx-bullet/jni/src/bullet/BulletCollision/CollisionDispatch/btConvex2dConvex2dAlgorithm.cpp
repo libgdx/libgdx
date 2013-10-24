@@ -132,7 +132,6 @@ void btConvex2dConvex2dAlgorithm ::processCollision (const btCollisionObjectWrap
 			input.m_maximumDistanceSquared*= input.m_maximumDistanceSquared;
 		}
 
-		input.m_stackAlloc = dispatchInfo.m_stackAllocator;
 		input.m_transformA = body0Wrap->getWorldTransform();
 		input.m_transformB = body1Wrap->getWorldTransform();
 

@@ -28,8 +28,6 @@ public class CollisionJNI {
   public final static native long ClosestPointInput_transformB_get(long jarg1, ClosestPointInput jarg1_);
   public final static native void ClosestPointInput_maximumDistanceSquared_set(long jarg1, ClosestPointInput jarg1_, float jarg2);
   public final static native float ClosestPointInput_maximumDistanceSquared_get(long jarg1, ClosestPointInput jarg1_);
-  public final static native void ClosestPointInput_stackAlloc_set(long jarg1, ClosestPointInput jarg1_, long jarg2, btStackAlloc jarg2_);
-  public final static native long ClosestPointInput_stackAlloc_get(long jarg1, ClosestPointInput jarg1_);
   public final static native void delete_ClosestPointInput(long jarg1);
   public final static native void btBroadphaseProxy_clientObject_set(long jarg1, btBroadphaseProxy jarg1_, long jarg2);
   public final static native long btBroadphaseProxy_clientObject_get(long jarg1, btBroadphaseProxy jarg1_);
@@ -72,6 +70,9 @@ public class CollisionJNI {
   public final static native void delete_btBroadphasePairSortPredicate(long jarg1);
   public final static native void delete_btBroadphaseAabbCallback(long jarg1);
   public final static native boolean btBroadphaseAabbCallback_process(long jarg1, btBroadphaseAabbCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_);
+  public final static native long new_btBroadphaseAabbCallback();
+  public final static native void btBroadphaseAabbCallback_director_connect(btBroadphaseAabbCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btBroadphaseAabbCallback_change_ownership(btBroadphaseAabbCallback obj, long cptr, boolean take_or_release);
   public final static native void btBroadphaseRayCallback_rayDirectionInverse_set(long jarg1, btBroadphaseRayCallback jarg1_, long jarg2, btVector3 jarg2_);
   public final static native long btBroadphaseRayCallback_rayDirectionInverse_get(long jarg1, btBroadphaseRayCallback jarg1_);
   public final static native void btBroadphaseRayCallback_signs_set(long jarg1, btBroadphaseRayCallback jarg1_, long[] jarg2);
@@ -79,6 +80,9 @@ public class CollisionJNI {
   public final static native void btBroadphaseRayCallback_lambda_max_set(long jarg1, btBroadphaseRayCallback jarg1_, float jarg2);
   public final static native float btBroadphaseRayCallback_lambda_max_get(long jarg1, btBroadphaseRayCallback jarg1_);
   public final static native void delete_btBroadphaseRayCallback(long jarg1);
+  public final static native long new_btBroadphaseRayCallback();
+  public final static native void btBroadphaseRayCallback_director_connect(btBroadphaseRayCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btBroadphaseRayCallback_change_ownership(btBroadphaseRayCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_btBroadphaseInterface(long jarg1);
   public final static native long btBroadphaseInterface_createProxy(long jarg1, btBroadphaseInterface jarg1_, Vector3 jarg2, Vector3 jarg3, int jarg4, long jarg5, short jarg6, short jarg7, long jarg8, btDispatcher jarg8_, long jarg9);
   public final static native void btBroadphaseInterface_destroyProxy(long jarg1, btBroadphaseInterface jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_);
@@ -217,6 +221,9 @@ public class CollisionJNI {
   public final static native void delete_btBvhSubtreeInfo(long jarg1);
   public final static native void delete_btNodeOverlapCallback(long jarg1);
   public final static native void btNodeOverlapCallback_processNode(long jarg1, btNodeOverlapCallback jarg1_, int jarg2, int jarg3);
+  public final static native long new_btNodeOverlapCallback();
+  public final static native void btNodeOverlapCallback_director_connect(btNodeOverlapCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btNodeOverlapCallback_change_ownership(btNodeOverlapCallback obj, long cptr, boolean take_or_release);
   public final static native long new_btQuantizedBvh();
   public final static native void delete_btQuantizedBvh(long jarg1);
   public final static native void btQuantizedBvh_setQuantizationValues__SWIG_0(long jarg1, btQuantizedBvh jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4);
@@ -441,6 +448,9 @@ public class CollisionJNI {
   public final static native long btOverlappingPairCallback_addOverlappingPair(long jarg1, btOverlappingPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
   public final static native long btOverlappingPairCallback_removeOverlappingPair(long jarg1, btOverlappingPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_, long jarg4, btDispatcher jarg4_);
   public final static native void btOverlappingPairCallback_removeOverlappingPairsContainingProxy(long jarg1, btOverlappingPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_);
+  public final static native long new_btOverlappingPairCallback();
+  public final static native void btOverlappingPairCallback_director_connect(btOverlappingPairCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btOverlappingPairCallback_change_ownership(btOverlappingPairCallback obj, long cptr, boolean take_or_release);
   public final static native void gOverlappingPairs_set(int jarg1);
   public final static native int gOverlappingPairs_get();
   public final static native long new_btAxisSweep3InternalShort__SWIG_0(Vector3 jarg1, Vector3 jarg2, int jarg3, int jarg4, int jarg5, long jarg6, btOverlappingPairCache jarg6_, boolean jarg7);
@@ -516,8 +526,6 @@ public class CollisionJNI {
   public final static native boolean btDispatcherInfo_useConvexConservativeDistanceUtil_get(long jarg1, btDispatcherInfo jarg1_);
   public final static native void btDispatcherInfo_convexConservativeDistanceThreshold_set(long jarg1, btDispatcherInfo jarg1_, float jarg2);
   public final static native float btDispatcherInfo_convexConservativeDistanceThreshold_get(long jarg1, btDispatcherInfo jarg1_);
-  public final static native void btDispatcherInfo_stackAllocator_set(long jarg1, btDispatcherInfo jarg1_, long jarg2, btStackAlloc jarg2_);
-  public final static native long btDispatcherInfo_stackAllocator_get(long jarg1, btDispatcherInfo jarg1_);
   public final static native void delete_btDispatcherInfo(long jarg1);
   public final static native void delete_btDispatcher(long jarg1);
   public final static native long btDispatcher_findAlgorithm__SWIG_0(long jarg1, btDispatcher jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btPersistentManifold jarg4_);
@@ -536,8 +544,14 @@ public class CollisionJNI {
   public final static native void btDispatcher_freeCollisionAlgorithm(long jarg1, btDispatcher jarg1_, long jarg2);
   public final static native void delete_btOverlapCallback(long jarg1);
   public final static native boolean btOverlapCallback_processOverlap(long jarg1, btOverlapCallback jarg1_, long jarg2, btBroadphasePair jarg2_);
+  public final static native long new_btOverlapCallback();
+  public final static native void btOverlapCallback_director_connect(btOverlapCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btOverlapCallback_change_ownership(btOverlapCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_btOverlapFilterCallback(long jarg1);
   public final static native boolean btOverlapFilterCallback_needBroadphaseCollision(long jarg1, btOverlapFilterCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
+  public final static native long new_btOverlapFilterCallback();
+  public final static native void btOverlapFilterCallback_director_connect(btOverlapFilterCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btOverlapFilterCallback_change_ownership(btOverlapFilterCallback obj, long cptr, boolean take_or_release);
   public final static native void gRemovePairs_set(int jarg1);
   public final static native int gRemovePairs_get();
   public final static native void gAddedPairs_set(int jarg1);
@@ -661,8 +675,14 @@ public class CollisionJNI {
   public final static native void btConcaveShape_processAllTriangles(long jarg1, btConcaveShape jarg1_, long jarg2, btTriangleCallback jarg2_, Vector3 jarg3, Vector3 jarg4);
   public final static native void delete_btTriangleCallback(long jarg1);
   public final static native void btTriangleCallback_processTriangle(long jarg1, btTriangleCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
+  public final static native long new_btTriangleCallback();
+  public final static native void btTriangleCallback_director_connect(btTriangleCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btTriangleCallback_change_ownership(btTriangleCallback obj, long cptr, boolean take_or_release);
   public final static native void delete_btInternalTriangleIndexCallback(long jarg1);
   public final static native void btInternalTriangleIndexCallback_internalProcessTriangleIndex(long jarg1, btInternalTriangleIndexCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
+  public final static native long new_btInternalTriangleIndexCallback();
+  public final static native void btInternalTriangleIndexCallback_director_connect(btInternalTriangleIndexCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btInternalTriangleIndexCallback_change_ownership(btInternalTriangleIndexCallback obj, long cptr, boolean take_or_release);
   public final static native long new_btTriangleInfo();
   public final static native void btTriangleInfo_flags_set(long jarg1, btTriangleInfo jarg1_, int jarg2);
   public final static native int btTriangleInfo_flags_get(long jarg1, btTriangleInfo jarg1_);
@@ -1028,7 +1048,8 @@ public class CollisionJNI {
   public final static native long new_btConvexHullShape__SWIG_1(java.nio.FloatBuffer jarg1, int jarg2);
   public final static native long new_btConvexHullShape__SWIG_2(java.nio.FloatBuffer jarg1);
   public final static native long new_btConvexHullShape__SWIG_3();
-  public final static native void btConvexHullShape_addPoint(long jarg1, btConvexHullShape jarg1_, Vector3 jarg2);
+  public final static native void btConvexHullShape_addPoint__SWIG_0(long jarg1, btConvexHullShape jarg1_, Vector3 jarg2, boolean jarg3);
+  public final static native void btConvexHullShape_addPoint__SWIG_1(long jarg1, btConvexHullShape jarg1_, Vector3 jarg2);
   public final static native long btConvexHullShape_getUnscaledPoints__SWIG_0(long jarg1, btConvexHullShape jarg1_);
   public final static native long btConvexHullShape_getPoints(long jarg1, btConvexHullShape jarg1_);
   public final static native Vector3 btConvexHullShape_getScaledPoint(long jarg1, btConvexHullShape jarg1_, int jarg2);
@@ -1116,6 +1137,14 @@ public class CollisionJNI {
   public final static native void delete_btConeShapeX(long jarg1);
   public final static native long new_btConeShapeZ(float jarg1, float jarg2);
   public final static native void delete_btConeShapeZ(long jarg1);
+  public final static native void btConeShapeData_convexInternalShapeData_set(long jarg1, btConeShapeData jarg1_, long jarg2, btConvexInternalShapeData jarg2_);
+  public final static native long btConeShapeData_convexInternalShapeData_get(long jarg1, btConeShapeData jarg1_);
+  public final static native void btConeShapeData_upIndex_set(long jarg1, btConeShapeData jarg1_, int jarg2);
+  public final static native int btConeShapeData_upIndex_get(long jarg1, btConeShapeData jarg1_);
+  public final static native void btConeShapeData_padding_set(long jarg1, btConeShapeData jarg1_, String jarg2);
+  public final static native String btConeShapeData_padding_get(long jarg1, btConeShapeData jarg1_);
+  public final static native long new_btConeShapeData();
+  public final static native void delete_btConeShapeData(long jarg1);
   public final static native long new_btConvexTriangleMeshShape__SWIG_0(long jarg1, btStridingMeshInterface jarg1_, boolean jarg2);
   public final static native long new_btConvexTriangleMeshShape__SWIG_1(long jarg1, btStridingMeshInterface jarg1_);
   public final static native long btConvexTriangleMeshShape_getMeshInterface__SWIG_0(long jarg1, btConvexTriangleMeshShape jarg1_);
@@ -1260,7 +1289,10 @@ public class CollisionJNI {
   public final static native float btCollisionObject_getCcdSquareMotionThreshold(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_setCcdMotionThreshold(long jarg1, btCollisionObject jarg1_, float jarg2);
   public final static native long btCollisionObject_getUserPointer(long jarg1, btCollisionObject jarg1_);
+  public final static native int btCollisionObject_getUserIndex(long jarg1, btCollisionObject jarg1_);
   public final static native void btCollisionObject_setUserPointer(long jarg1, btCollisionObject jarg1_, long jarg2);
+  public final static native void btCollisionObject_setUserIndex(long jarg1, btCollisionObject jarg1_, int jarg2);
+  public final static native int btCollisionObject_getUpdateRevisionInternal(long jarg1, btCollisionObject jarg1_);
   public final static native boolean btCollisionObject_checkCollideWith(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native int btCollisionObject_calculateSerializeBufferSize(long jarg1, btCollisionObject jarg1_);
   public final static native String btCollisionObject_serialize(long jarg1, btCollisionObject jarg1_, long jarg2, long jarg3);
@@ -1393,6 +1425,10 @@ public class CollisionJNI {
   public final static native void btCollisionObjectWrapper_collisionObject_set(long jarg1, btCollisionObjectWrapper jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native long btCollisionObjectWrapper_collisionObject_get(long jarg1, btCollisionObjectWrapper jarg1_);
   public final static native Matrix4 btCollisionObjectWrapper_worldTransform_get(long jarg1, btCollisionObjectWrapper jarg1_);
+  public final static native void btCollisionObjectWrapper_partId_set(long jarg1, btCollisionObjectWrapper jarg1_, int jarg2);
+  public final static native int btCollisionObjectWrapper_partId_get(long jarg1, btCollisionObjectWrapper jarg1_);
+  public final static native void btCollisionObjectWrapper_index_set(long jarg1, btCollisionObjectWrapper jarg1_, int jarg2);
+  public final static native int btCollisionObjectWrapper_index_get(long jarg1, btCollisionObjectWrapper jarg1_);
   public final static native long btCollisionObjectWrapper_getCollisionShape(long jarg1, btCollisionObjectWrapper jarg1_);
   public final static native long new_btEmptyAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_);
   public final static native void delete_btEmptyAlgorithm(long jarg1);
@@ -1405,22 +1441,27 @@ public class CollisionJNI {
   public final static native void btConvexTriangleCallback_setTimeStepAndCounters(long jarg1, btConvexTriangleCallback jarg1_, float jarg2, long jarg3, btDispatcherInfo jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, btCollisionObjectWrapper jarg5_, long jarg6, btManifoldResult jarg6_);
   public final static native void btConvexTriangleCallback_clearWrapperData(long jarg1, btConvexTriangleCallback jarg1_);
   public final static native void delete_btConvexTriangleCallback(long jarg1);
+  public final static native void btConvexTriangleCallback_processTriangle(long jarg1, btConvexTriangleCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
+  public final static native void btConvexTriangleCallback_processTriangleSwigExplicitbtConvexTriangleCallback(long jarg1, btConvexTriangleCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
   public final static native void btConvexTriangleCallback_clearCache(long jarg1, btConvexTriangleCallback jarg1_);
   public final static native Vector3 btConvexTriangleCallback_getAabbMin(long jarg1, btConvexTriangleCallback jarg1_);
   public final static native Vector3 btConvexTriangleCallback_getAabbMax(long jarg1, btConvexTriangleCallback jarg1_);
+  public final static native void btConvexTriangleCallback_director_connect(btConvexTriangleCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btConvexTriangleCallback_change_ownership(btConvexTriangleCallback obj, long cptr, boolean take_or_release);
   public final static native long new_btConvexConcaveCollisionAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
   public final static native void delete_btConvexConcaveCollisionAlgorithm(long jarg1);
   public final static native void btConvexConcaveCollisionAlgorithm_clearCache(long jarg1, btConvexConcaveCollisionAlgorithm jarg1_);
   public final static native long new_btConvexPlaneCollisionAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, boolean jarg5, int jarg6, int jarg7);
   public final static native void delete_btConvexPlaneCollisionAlgorithm(long jarg1);
   public final static native void btConvexPlaneCollisionAlgorithm_collideSingleContact(long jarg1, btConvexPlaneCollisionAlgorithm jarg1_, Quaternion jarg2, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, btDispatcherInfo jarg5_, long jarg6, btManifoldResult jarg6_);
+  public final static native void gCompoundCompoundChildShapePairCallback_set(long jarg1);
+  public final static native long gCompoundCompoundChildShapePairCallback_get();
+  public final static native long new_btCompoundCompoundCollisionAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
+  public final static native void delete_btCompoundCompoundCollisionAlgorithm(long jarg1);
   public final static native void delete_btCollisionConfiguration(long jarg1);
   public final static native long btCollisionConfiguration_getPersistentManifoldPool(long jarg1, btCollisionConfiguration jarg1_);
   public final static native long btCollisionConfiguration_getCollisionAlgorithmPool(long jarg1, btCollisionConfiguration jarg1_);
-  public final static native long btCollisionConfiguration_getStackAllocator(long jarg1, btCollisionConfiguration jarg1_);
   public final static native long btCollisionConfiguration_getCollisionAlgorithmCreateFunc(long jarg1, btCollisionConfiguration jarg1_, int jarg2, int jarg3);
-  public final static native void btDefaultCollisionConstructionInfo_stackAlloc_set(long jarg1, btDefaultCollisionConstructionInfo jarg1_, long jarg2, btStackAlloc jarg2_);
-  public final static native long btDefaultCollisionConstructionInfo_stackAlloc_get(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
   public final static native void btDefaultCollisionConstructionInfo_persistentManifoldPool_set(long jarg1, btDefaultCollisionConstructionInfo jarg1_, long jarg2, btPoolAllocator jarg2_);
   public final static native long btDefaultCollisionConstructionInfo_persistentManifoldPool_get(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
   public final static native void btDefaultCollisionConstructionInfo_collisionAlgorithmPool_set(long jarg1, btDefaultCollisionConstructionInfo jarg1_, long jarg2, btPoolAllocator jarg2_);
@@ -1431,8 +1472,6 @@ public class CollisionJNI {
   public final static native int btDefaultCollisionConstructionInfo_defaultMaxCollisionAlgorithmPoolSize_get(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
   public final static native void btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_set(long jarg1, btDefaultCollisionConstructionInfo jarg1_, int jarg2);
   public final static native int btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_get(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
-  public final static native void btDefaultCollisionConstructionInfo_defaultStackAllocatorSize_set(long jarg1, btDefaultCollisionConstructionInfo jarg1_, int jarg2);
-  public final static native int btDefaultCollisionConstructionInfo_defaultStackAllocatorSize_get(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
   public final static native void btDefaultCollisionConstructionInfo_useEpaPenetrationAlgorithm_set(long jarg1, btDefaultCollisionConstructionInfo jarg1_, int jarg2);
   public final static native int btDefaultCollisionConstructionInfo_useEpaPenetrationAlgorithm_get(long jarg1, btDefaultCollisionConstructionInfo jarg1_);
   public final static native long new_btDefaultCollisionConstructionInfo();
@@ -1466,6 +1505,31 @@ public class CollisionJNI {
   public final static native long btManifoldResult_getBody1Internal(long jarg1, btManifoldResult jarg1_);
   public final static native float btManifoldResult_calculateCombinedRestitution(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionObject jarg2_);
   public final static native float btManifoldResult_calculateCombinedFriction(long jarg1, btCollisionObject jarg1_, long jarg2, btCollisionObject jarg2_);
+  public final static native int BT_SIMPLE_NULL_PAIR_get();
+  public final static native long new_btSimplePair(int jarg1, int jarg2);
+  public final static native void btSimplePair_indexA_set(long jarg1, btSimplePair jarg1_, int jarg2);
+  public final static native int btSimplePair_indexA_get(long jarg1, btSimplePair jarg1_);
+  public final static native void btSimplePair_indexB_set(long jarg1, btSimplePair jarg1_, int jarg2);
+  public final static native int btSimplePair_indexB_get(long jarg1, btSimplePair jarg1_);
+  public final static native void delete_btSimplePair(long jarg1);
+  public final static native void gOverlappingSimplePairs_set(int jarg1);
+  public final static native int gOverlappingSimplePairs_get();
+  public final static native void gRemoveSimplePairs_set(int jarg1);
+  public final static native int gRemoveSimplePairs_get();
+  public final static native void gAddedSimplePairs_set(int jarg1);
+  public final static native int gAddedSimplePairs_get();
+  public final static native void gFindSimplePairs_set(int jarg1);
+  public final static native int gFindSimplePairs_get();
+  public final static native long new_btHashedSimplePairCache();
+  public final static native void delete_btHashedSimplePairCache(long jarg1);
+  public final static native void btHashedSimplePairCache_removeAllPairs(long jarg1, btHashedSimplePairCache jarg1_);
+  public final static native long btHashedSimplePairCache_removeOverlappingPair(long jarg1, btHashedSimplePairCache jarg1_, int jarg2, int jarg3);
+  public final static native long btHashedSimplePairCache_addOverlappingPair(long jarg1, btHashedSimplePairCache jarg1_, int jarg2, int jarg3);
+  public final static native long btHashedSimplePairCache_getOverlappingPairArrayPtr__SWIG_0(long jarg1, btHashedSimplePairCache jarg1_);
+  public final static native long btHashedSimplePairCache_getOverlappingPairArray__SWIG_0(long jarg1, btHashedSimplePairCache jarg1_);
+  public final static native long btHashedSimplePairCache_findPair(long jarg1, btHashedSimplePairCache jarg1_, int jarg2, int jarg3);
+  public final static native int btHashedSimplePairCache_GetCount(long jarg1, btHashedSimplePairCache jarg1_);
+  public final static native int btHashedSimplePairCache_getNumOverlappingPairs(long jarg1, btHashedSimplePairCache jarg1_);
   public final static native long new_btSphereSphereCollisionAlgorithm__SWIG_0(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_);
   public final static native long new_btSphereSphereCollisionAlgorithm__SWIG_1(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_);
   public final static native void delete_btSphereSphereCollisionAlgorithm(long jarg1);
@@ -1534,6 +1598,14 @@ public class CollisionJNI {
   public final static native long btPairCachingGhostObject_getOverlappingPairCache(long jarg1, btPairCachingGhostObject jarg1_);
   public final static native long new_btGhostPairCallback();
   public final static native void delete_btGhostPairCallback(long jarg1);
+  public final static native long btGhostPairCallback_addOverlappingPair(long jarg1, btGhostPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
+  public final static native long btGhostPairCallback_addOverlappingPairSwigExplicitbtGhostPairCallback(long jarg1, btGhostPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_);
+  public final static native long btGhostPairCallback_removeOverlappingPair(long jarg1, btGhostPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_, long jarg4, btDispatcher jarg4_);
+  public final static native long btGhostPairCallback_removeOverlappingPairSwigExplicitbtGhostPairCallback(long jarg1, btGhostPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btBroadphaseProxy jarg3_, long jarg4, btDispatcher jarg4_);
+  public final static native void btGhostPairCallback_removeOverlappingPairsContainingProxy(long jarg1, btGhostPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_);
+  public final static native void btGhostPairCallback_removeOverlappingPairsContainingProxySwigExplicitbtGhostPairCallback(long jarg1, btGhostPairCallback jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_);
+  public final static native void btGhostPairCallback_director_connect(btGhostPairCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btGhostPairCallback_change_ownership(btGhostPairCallback obj, long cptr, boolean take_or_release);
   public final static native void LocalShapeInfo_shapePart_set(long jarg1, LocalShapeInfo jarg1_, int jarg2);
   public final static native int LocalShapeInfo_shapePart_get(long jarg1, LocalShapeInfo jarg1_);
   public final static native void LocalShapeInfo_triangleIndex_set(long jarg1, LocalShapeInfo jarg1_, int jarg2);
@@ -1697,7 +1769,7 @@ public class CollisionJNI {
   public final static native long new_ClosestNotMeRayResultCallback(long jarg1, btCollisionObject jarg1_);
   public final static native float ClosestNotMeRayResultCallback_addSingleResult(long jarg1, ClosestNotMeRayResultCallback jarg1_, long jarg2, LocalRayResult jarg2_, boolean jarg3);
   public final static native void delete_ClosestNotMeRayResultCallback(long jarg1);
-  public final static native long new_btConvex2dConvex2dAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, long jarg6, btConvexPenetrationDepthSolver jarg6_, int jarg7, int jarg8);
+  public final static native long new_btConvex2dConvex2dAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, btVoronoiSimplexSolver jarg5_, long jarg6, btConvexPenetrationDepthSolver jarg6_, int jarg7, int jarg8);
   public final static native void delete_btConvex2dConvex2dAlgorithm(long jarg1);
   public final static native void btConvex2dConvex2dAlgorithm_setLowLevelOfDetail(long jarg1, btConvex2dConvex2dAlgorithm jarg1_, boolean jarg2);
   public final static native long btConvex2dConvex2dAlgorithm_getManifold(long jarg1, btConvex2dConvex2dAlgorithm jarg1_);
@@ -1727,7 +1799,7 @@ public class CollisionJNI {
   public final static native long btCollisionDispatcher_getCollisionConfiguration__SWIG_0(long jarg1, btCollisionDispatcher jarg1_);
   public final static native void btCollisionDispatcher_setCollisionConfiguration(long jarg1, btCollisionDispatcher jarg1_, long jarg2, btCollisionConfiguration jarg2_);
   public final static native long btCollisionDispatcher_getInternalManifoldPool__SWIG_0(long jarg1, btCollisionDispatcher jarg1_);
-  public final static native long new_btConvexConvexAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, long jarg6, btConvexPenetrationDepthSolver jarg6_, int jarg7, int jarg8);
+  public final static native long new_btConvexConvexAlgorithm(long jarg1, btPersistentManifold jarg1_, long jarg2, btCollisionAlgorithmConstructionInfo jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, long jarg4, btCollisionObjectWrapper jarg4_, long jarg5, btVoronoiSimplexSolver jarg5_, long jarg6, btConvexPenetrationDepthSolver jarg6_, int jarg7, int jarg8);
   public final static native void delete_btConvexConvexAlgorithm(long jarg1);
   public final static native void btConvexConvexAlgorithm_setLowLevelOfDetail(long jarg1, btConvexConvexAlgorithm jarg1_, boolean jarg2);
   public final static native long btConvexConvexAlgorithm_getManifold(long jarg1, btConvexConvexAlgorithm jarg1_);
@@ -1739,11 +1811,14 @@ public class CollisionJNI {
   public final static native void btGenerateInternalEdgeInfo(long jarg1, btBvhTriangleMeshShape jarg1_, long jarg2, btTriangleInfoMap jarg2_);
   public final static native void btAdjustInternalEdgeContacts__SWIG_0(long jarg1, btManifoldPoint jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5, int jarg6);
   public final static native void btAdjustInternalEdgeContacts__SWIG_1(long jarg1, btManifoldPoint jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, int jarg4, int jarg5);
+  public final static native void gCompoundChildShapePairCallback_set(long jarg1);
+  public final static native long gCompoundChildShapePairCallback_get();
   public final static native long new_btCompoundCollisionAlgorithm(long jarg1, btCollisionAlgorithmConstructionInfo jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_, boolean jarg4);
   public final static native void delete_btCompoundCollisionAlgorithm(long jarg1);
+  public final static native long btCompoundCollisionAlgorithm_getChildAlgorithm(long jarg1, btCompoundCollisionAlgorithm jarg1_, int jarg2);
   public final static native void delete_btConvexCast(long jarg1);
   public final static native boolean btConvexCast_calcTimeOfImpact(long jarg1, btConvexCast jarg1_, Matrix4 jarg2, Matrix4 jarg3, Matrix4 jarg4, Matrix4 jarg5, long jarg6);
-  public final static native long new_btSubsimplexConvexCast(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3);
+  public final static native long new_btSubsimplexConvexCast(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btVoronoiSimplexSolver jarg3_);
   public final static native void delete_btSubsimplexConvexCast(long jarg1);
   public final static native void btPolyhedralContactClipping_clipHullAgainstHull(Vector3 jarg1, long jarg2, btConvexPolyhedron jarg2_, long jarg3, btConvexPolyhedron jarg3_, Matrix4 jarg4, Matrix4 jarg5, float jarg6, float jarg7, long jarg8);
   public final static native void btPolyhedralContactClipping_clipFaceAgainstHull(Vector3 jarg1, long jarg2, btConvexPolyhedron jarg2_, Matrix4 jarg3, long jarg4, float jarg5, float jarg6, long jarg7);
@@ -1789,8 +1864,10 @@ public class CollisionJNI {
   public final static native int btGjkPairDetector_degenerateSimplex_get(long jarg1, btGjkPairDetector jarg1_);
   public final static native void btGjkPairDetector_catchDegeneracies_set(long jarg1, btGjkPairDetector jarg1_, int jarg2);
   public final static native int btGjkPairDetector_catchDegeneracies_get(long jarg1, btGjkPairDetector jarg1_);
-  public final static native long new_btGjkPairDetector__SWIG_0(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, long jarg4, btConvexPenetrationDepthSolver jarg4_);
-  public final static native long new_btGjkPairDetector__SWIG_1(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, int jarg3, int jarg4, float jarg5, float jarg6, long jarg7, long jarg8, btConvexPenetrationDepthSolver jarg8_);
+  public final static native void btGjkPairDetector_fixContactNormalDirection_set(long jarg1, btGjkPairDetector jarg1_, int jarg2);
+  public final static native int btGjkPairDetector_fixContactNormalDirection_get(long jarg1, btGjkPairDetector jarg1_);
+  public final static native long new_btGjkPairDetector__SWIG_0(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btVoronoiSimplexSolver jarg3_, long jarg4, btConvexPenetrationDepthSolver jarg4_);
+  public final static native long new_btGjkPairDetector__SWIG_1(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, int jarg3, int jarg4, float jarg5, float jarg6, long jarg7, btVoronoiSimplexSolver jarg7_, long jarg8, btConvexPenetrationDepthSolver jarg8_);
   public final static native void delete_btGjkPairDetector(long jarg1);
   public final static native void btGjkPairDetector_getClosestPoints__SWIG_0(long jarg1, btGjkPairDetector jarg1_, long jarg2, ClosestPointInput jarg2_, long jarg3, Result jarg3_, long jarg4, btIDebugDraw jarg4_, boolean jarg5);
   public final static native void btGjkPairDetector_getClosestPoints__SWIG_1(long jarg1, btGjkPairDetector jarg1_, long jarg2, ClosestPointInput jarg2_, long jarg3, Result jarg3_, long jarg4, btIDebugDraw jarg4_);
@@ -1803,10 +1880,10 @@ public class CollisionJNI {
   public final static native void btGjkPairDetector_setPenetrationDepthSolver(long jarg1, btGjkPairDetector jarg1_, long jarg2, btConvexPenetrationDepthSolver jarg2_);
   public final static native void btGjkPairDetector_setIgnoreMargin(long jarg1, btGjkPairDetector jarg1_, boolean jarg2);
   public final static native void delete_btConvexPenetrationDepthSolver(long jarg1);
-  public final static native boolean btConvexPenetrationDepthSolver_calcPenDepth(long jarg1, btConvexPenetrationDepthSolver jarg1_, long jarg2, long jarg3, btConvexShape jarg3_, long jarg4, btConvexShape jarg4_, Matrix4 jarg5, Matrix4 jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, btIDebugDraw jarg10_, long jarg11, btStackAlloc jarg11_);
+  public final static native boolean btConvexPenetrationDepthSolver_calcPenDepth(long jarg1, btConvexPenetrationDepthSolver jarg1_, long jarg2, btVoronoiSimplexSolver jarg2_, long jarg3, btConvexShape jarg3_, long jarg4, btConvexShape jarg4_, Matrix4 jarg5, Matrix4 jarg6, Vector3 jarg7, Vector3 jarg8, Vector3 jarg9, long jarg10, btIDebugDraw jarg10_);
   public final static native long new_btMinkowskiPenetrationDepthSolver();
   public final static native void delete_btMinkowskiPenetrationDepthSolver(long jarg1);
-  public final static native long new_btGjkConvexCast(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3);
+  public final static native long new_btGjkConvexCast(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btVoronoiSimplexSolver jarg3_);
   public final static native void delete_btGjkConvexCast(long jarg1);
   public final static native void btConstraintRow_normal_set(long jarg1, btConstraintRow jarg1_, float[] jarg2);
   public final static native float[] btConstraintRow_normal_get(long jarg1, btConstraintRow jarg1_);
@@ -1879,7 +1956,7 @@ public class CollisionJNI {
   public final static native int btManifoldPoint_getUserValue(long jarg1, btManifoldPoint jarg1_);
   public final static native void btManifoldPoint_setUserValue(long jarg1, btManifoldPoint jarg1_, int jarg2);
   public final static native void delete_btManifoldPoint(long jarg1);
-  public final static native long new_btContinuousConvexCollision__SWIG_0(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, long jarg4, btConvexPenetrationDepthSolver jarg4_);
+  public final static native long new_btContinuousConvexCollision__SWIG_0(long jarg1, btConvexShape jarg1_, long jarg2, btConvexShape jarg2_, long jarg3, btVoronoiSimplexSolver jarg3_, long jarg4, btConvexPenetrationDepthSolver jarg4_);
   public final static native long new_btContinuousConvexCollision__SWIG_1(long jarg1, btConvexShape jarg1_, long jarg2, btStaticPlaneShape jarg2_);
   public final static native void delete_btContinuousConvexCollision(long jarg1);
   public final static native void btTriangleRaycastCallback_from_set(long jarg1, btTriangleRaycastCallback jarg1_, long jarg2, btVector3 jarg2_);
@@ -1890,8 +1967,14 @@ public class CollisionJNI {
   public final static native long btTriangleRaycastCallback_flags_get(long jarg1, btTriangleRaycastCallback jarg1_);
   public final static native void btTriangleRaycastCallback_hitFraction_set(long jarg1, btTriangleRaycastCallback jarg1_, float jarg2);
   public final static native float btTriangleRaycastCallback_hitFraction_get(long jarg1, btTriangleRaycastCallback jarg1_);
+  public final static native long new_btTriangleRaycastCallback__SWIG_0(Vector3 jarg1, Vector3 jarg2, long jarg3);
+  public final static native long new_btTriangleRaycastCallback__SWIG_1(Vector3 jarg1, Vector3 jarg2);
+  public final static native void btTriangleRaycastCallback_processTriangle(long jarg1, btTriangleRaycastCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
+  public final static native void btTriangleRaycastCallback_processTriangleSwigExplicitbtTriangleRaycastCallback(long jarg1, btTriangleRaycastCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
   public final static native float btTriangleRaycastCallback_reportHit(long jarg1, btTriangleRaycastCallback jarg1_, Vector3 jarg2, float jarg3, int jarg4, int jarg5);
   public final static native void delete_btTriangleRaycastCallback(long jarg1);
+  public final static native void btTriangleRaycastCallback_director_connect(btTriangleRaycastCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btTriangleRaycastCallback_change_ownership(btTriangleRaycastCallback obj, long cptr, boolean take_or_release);
   public final static native void btTriangleConvexcastCallback_convexShape_set(long jarg1, btTriangleConvexcastCallback jarg1_, long jarg2, btConvexShape jarg2_);
   public final static native long btTriangleConvexcastCallback_convexShape_get(long jarg1, btTriangleConvexcastCallback jarg1_);
   public final static native void btTriangleConvexcastCallback_convexShapeFrom_set(long jarg1, btTriangleConvexcastCallback jarg1_, long jarg2, btTransform jarg2_);
@@ -1906,8 +1989,13 @@ public class CollisionJNI {
   public final static native float btTriangleConvexcastCallback_triangleCollisionMargin_get(long jarg1, btTriangleConvexcastCallback jarg1_);
   public final static native void btTriangleConvexcastCallback_allowedPenetration_set(long jarg1, btTriangleConvexcastCallback jarg1_, float jarg2);
   public final static native float btTriangleConvexcastCallback_allowedPenetration_get(long jarg1, btTriangleConvexcastCallback jarg1_);
+  public final static native long new_btTriangleConvexcastCallback(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, Matrix4 jarg3, Matrix4 jarg4, float jarg5);
+  public final static native void btTriangleConvexcastCallback_processTriangle(long jarg1, btTriangleConvexcastCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
+  public final static native void btTriangleConvexcastCallback_processTriangleSwigExplicitbtTriangleConvexcastCallback(long jarg1, btTriangleConvexcastCallback jarg1_, long jarg2, btVector3 jarg2_, int jarg3, int jarg4);
   public final static native float btTriangleConvexcastCallback_reportHit(long jarg1, btTriangleConvexcastCallback jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, int jarg5, int jarg6);
   public final static native void delete_btTriangleConvexcastCallback(long jarg1);
+  public final static native void btTriangleConvexcastCallback_director_connect(btTriangleConvexcastCallback obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void btTriangleConvexcastCallback_change_ownership(btTriangleConvexcastCallback obj, long cptr, boolean take_or_release);
   public final static native int btGjkEpaSolver2_StackSizeRequirement();
   public final static native boolean btGjkEpaSolver2_Distance(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, Vector3 jarg5, long jarg6);
   public final static native boolean btGjkEpaSolver2_Penetration__SWIG_0(long jarg1, btConvexShape jarg1_, Matrix4 jarg2, long jarg3, btConvexShape jarg3_, Matrix4 jarg4, Vector3 jarg5, long jarg6, boolean jarg7);
@@ -2206,6 +2294,7 @@ public class CollisionJNI {
   public final static native long btConvexTriangleCallback_SWIGUpcast(long jarg1);
   public final static native long btConvexConcaveCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btConvexPlaneCollisionAlgorithm_SWIGUpcast(long jarg1);
+  public final static native long btCompoundCompoundCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btDefaultCollisionConfiguration_SWIGUpcast(long jarg1);
   public final static native long btSphereSphereCollisionAlgorithm_SWIGUpcast(long jarg1);
   public final static native long btBoxBoxCollisionAlgorithm_SWIGUpcast(long jarg1);
@@ -2232,6 +2321,48 @@ public class CollisionJNI {
   public final static native long btGjkEpaPenetrationDepthSolver_SWIGUpcast(long jarg1);
   public final static native long btMultiSphereShape_SWIGUpcast(long jarg1);
 
+  public static boolean SwigDirector_btBroadphaseAabbCallback_process(btBroadphaseAabbCallback self, long proxy) {
+    return self.process((proxy == 0) ? null : new btBroadphaseProxy(proxy, false));
+  }
+  public static boolean SwigDirector_btBroadphaseRayCallback_process(btBroadphaseRayCallback self, long proxy) {
+    return self.process((proxy == 0) ? null : new btBroadphaseProxy(proxy, false));
+  }
+  public static void SwigDirector_btNodeOverlapCallback_processNode(btNodeOverlapCallback self, int subPart, int triangleIndex) {
+    self.processNode(subPart, triangleIndex);
+  }
+  public static long SwigDirector_btOverlappingPairCallback_addOverlappingPair(btOverlappingPairCallback self, long proxy0, long proxy1) {
+    return btBroadphasePair.getCPtr(self.addOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false)));
+  }
+  public static long SwigDirector_btOverlappingPairCallback_removeOverlappingPair(btOverlappingPairCallback self, long proxy0, long proxy1, long dispatcher) {
+    return SWIGTYPE_p_void.getCPtr(self.removeOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false)));
+  }
+  public static void SwigDirector_btOverlappingPairCallback_removeOverlappingPairsContainingProxy(btOverlappingPairCallback self, long proxy0, long dispatcher) {
+    self.removeOverlappingPairsContainingProxy((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false));
+  }
+  public static boolean SwigDirector_btOverlapCallback_processOverlap(btOverlapCallback self, long pair) {
+    return self.processOverlap(new btBroadphasePair(pair, false));
+  }
+  public static boolean SwigDirector_btOverlapFilterCallback_needBroadphaseCollision(btOverlapFilterCallback self, long proxy0, long proxy1) {
+    return self.needBroadphaseCollision((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false));
+  }
+  public static void SwigDirector_btTriangleCallback_processTriangle(btTriangleCallback self, long triangle, int partId, int triangleIndex) {
+    self.processTriangle((triangle == 0) ? null : new btVector3(triangle, false), partId, triangleIndex);
+  }
+  public static void SwigDirector_btInternalTriangleIndexCallback_internalProcessTriangleIndex(btInternalTriangleIndexCallback self, long triangle, int partId, int triangleIndex) {
+    self.internalProcessTriangleIndex((triangle == 0) ? null : new btVector3(triangle, false), partId, triangleIndex);
+  }
+  public static void SwigDirector_btConvexTriangleCallback_processTriangle(btConvexTriangleCallback self, long triangle, int partId, int triangleIndex) {
+    self.processTriangle((triangle == 0) ? null : new btVector3(triangle, false), partId, triangleIndex);
+  }
+  public static long SwigDirector_btGhostPairCallback_addOverlappingPair(btGhostPairCallback self, long proxy0, long proxy1) {
+    return btBroadphasePair.getCPtr(self.addOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false)));
+  }
+  public static long SwigDirector_btGhostPairCallback_removeOverlappingPair(btGhostPairCallback self, long proxy0, long proxy1, long dispatcher) {
+    return SWIGTYPE_p_void.getCPtr(self.removeOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false)));
+  }
+  public static void SwigDirector_btGhostPairCallback_removeOverlappingPairsContainingProxy(btGhostPairCallback self, long arg0, long arg1) {
+    self.removeOverlappingPairsContainingProxy((arg0 == 0) ? null : new btBroadphaseProxy(arg0, false), (arg1 == 0) ? null : new btDispatcher(arg1, false));
+  }
   public static boolean SwigDirector_RayResultCallback_needsCollision(RayResultCallback self, long proxy0) {
     return self.needsCollision((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false));
   }
@@ -2267,6 +2398,18 @@ public class CollisionJNI {
   }
   public static float SwigDirector_ContactResultCallback_addSingleResult(ContactResultCallback self, long cp, long colObj0Wrap, int partId0, int index0, long colObj1Wrap, int partId1, int index1) {
     return self.addSingleResult(new btManifoldPoint(cp, false), (colObj0Wrap == 0) ? null : new btCollisionObjectWrapper(colObj0Wrap, false), partId0, index0, (colObj1Wrap == 0) ? null : new btCollisionObjectWrapper(colObj1Wrap, false), partId1, index1);
+  }
+  public static void SwigDirector_btTriangleRaycastCallback_processTriangle(btTriangleRaycastCallback self, long triangle, int partId, int triangleIndex) {
+    self.processTriangle((triangle == 0) ? null : new btVector3(triangle, false), partId, triangleIndex);
+  }
+  public static float SwigDirector_btTriangleRaycastCallback_reportHit(btTriangleRaycastCallback self, Vector3 hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
+    return self.reportHit(hitNormalLocal, hitFraction, partId, triangleIndex);
+  }
+  public static void SwigDirector_btTriangleConvexcastCallback_processTriangle(btTriangleConvexcastCallback self, long triangle, int partId, int triangleIndex) {
+    self.processTriangle((triangle == 0) ? null : new btVector3(triangle, false), partId, triangleIndex);
+  }
+  public static float SwigDirector_btTriangleConvexcastCallback_reportHit(btTriangleConvexcastCallback self, Vector3 hitNormalLocal, Vector3 hitPointLocal, float hitFraction, int partId, int triangleIndex) {
+    return self.reportHit(hitNormalLocal, hitPointLocal, hitFraction, partId, triangleIndex);
   }
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_0(ContactListener self, btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
     return self.onContactAdded(cp, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);

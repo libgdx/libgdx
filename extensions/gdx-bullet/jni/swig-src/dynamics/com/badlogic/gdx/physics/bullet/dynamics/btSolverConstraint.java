@@ -68,12 +68,12 @@ public class btSolverConstraint extends BulletBase {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setContactNormal(btVector3 value) {
-    DynamicsJNI.btSolverConstraint_contactNormal_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  public void setContactNormal1(btVector3 value) {
+    DynamicsJNI.btSolverConstraint_contactNormal1_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
 
-  public btVector3 getContactNormal() {
-    long cPtr = DynamicsJNI.btSolverConstraint_contactNormal_get(swigCPtr, this);
+  public btVector3 getContactNormal1() {
+    long cPtr = DynamicsJNI.btSolverConstraint_contactNormal1_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
@@ -83,6 +83,15 @@ public class btSolverConstraint extends BulletBase {
 
   public btVector3 getRelpos2CrossNormal() {
     long cPtr = DynamicsJNI.btSolverConstraint_relpos2CrossNormal_get(swigCPtr, this);
+    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+  }
+
+  public void setContactNormal2(btVector3 value) {
+    DynamicsJNI.btSolverConstraint_contactNormal2_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  }
+
+  public btVector3 getContactNormal2() {
+    long cPtr = DynamicsJNI.btSolverConstraint_contactNormal2_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 

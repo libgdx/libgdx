@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.Pool;
 
 public class LinearMathJNI {
   public final static native int btGetVersion();
+  public final static native void btInfinityMask_set(int jarg1);
+  public final static native int btInfinityMask_get();
   public final static native float btSqrt(float jarg1);
   public final static native float btFabs(float jarg1);
   public final static native float btCos(float jarg1);
@@ -49,6 +51,7 @@ public class LinearMathJNI {
   public final static native float btUnswapEndianFloat(long jarg1);
   public final static native void btSwapEndianDouble(double jarg1, java.nio.ByteBuffer jarg2);
   public final static native double btUnswapEndianDouble(java.nio.ByteBuffer jarg1);
+  public final static native float btLargeDot(java.nio.FloatBuffer jarg1, java.nio.FloatBuffer jarg2, int jarg3);
   public final static native float btNormalizeAngle(float jarg1);
   public final static native long new_btTypedObject(int jarg1);
   public final static native void btTypedObject_objectType_set(long jarg1, btTypedObject jarg1_, int jarg2);
@@ -99,6 +102,7 @@ public class LinearMathJNI {
   public final static native float btVector3_dot(long jarg1, btVector3 jarg1_, Vector3 jarg2);
   public final static native float btVector3_length2(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_length(long jarg1, btVector3 jarg1_);
+  public final static native float btVector3_norm(long jarg1, btVector3 jarg1_);
   public final static native float btVector3_distance2(long jarg1, btVector3 jarg1_, Vector3 jarg2);
   public final static native float btVector3_distance(long jarg1, btVector3 jarg1_, Vector3 jarg2);
   public final static native Vector3 btVector3_safeNormalize(long jarg1, btVector3 jarg1_);
@@ -183,7 +187,9 @@ public class LinearMathJNI {
   public final static native Quaternion btQuaternion_normalize(long jarg1, btQuaternion jarg1_);
   public final static native Quaternion btQuaternion_normalized(long jarg1, btQuaternion jarg1_);
   public final static native float btQuaternion_angle(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
+  public final static native float btQuaternion_angleShortestPath(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
   public final static native float btQuaternion_getAngle(long jarg1, btQuaternion jarg1_);
+  public final static native float btQuaternion_getAngleShortestPath(long jarg1, btQuaternion jarg1_);
   public final static native Vector3 btQuaternion_getAxis(long jarg1, btQuaternion jarg1_);
   public final static native Quaternion btQuaternion_inverse(long jarg1, btQuaternion jarg1_);
   public final static native Quaternion btQuaternion_farthest(long jarg1, btQuaternion jarg1_, Quaternion jarg2);
@@ -235,10 +241,12 @@ public class LinearMathJNI {
   public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10, float jarg11);
   public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10);
   public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11, boolean jarg12);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11, boolean jarg12);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_2(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_2(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
   public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
   public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
   public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
@@ -511,10 +519,13 @@ public class LinearMathJNI {
   public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1(btIDebugDraw self, long center, long normal, long axis, float radiusA, float radiusB, float minAngle, float maxAngle, long color, boolean drawSect) {
     self.drawArc(new btVector3(center, false), new btVector3(normal, false), new btVector3(axis, false), radiusA, radiusB, minAngle, maxAngle, new btVector3(color, false), drawSect);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color, float stepDegrees) {
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color, float stepDegrees, boolean drawCenter) {
+    self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false), stepDegrees, drawCenter);
+  }
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color, float stepDegrees) {
     self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false), stepDegrees);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color) {
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_2(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color) {
     self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false));
   }
   public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw self, long bbMin, long bbMax, long color) {

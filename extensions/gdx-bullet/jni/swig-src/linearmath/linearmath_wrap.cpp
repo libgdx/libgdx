@@ -412,7 +412,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_LinearMathJNI = NULL;
-    jmethodID director_methids[25];
+    jmethodID director_methids[26];
   }
 }
 
@@ -1879,7 +1879,7 @@ void SwigDirector_btIDebugDraw::drawArc(btVector3 const &center, btVector3 const
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
 
-void SwigDirector_btIDebugDraw::drawSpherePatch(btVector3 const &center, btVector3 const &up, btVector3 const &axis, btScalar radius, btScalar minTh, btScalar maxTh, btScalar minPs, btScalar maxPs, btVector3 const &color, btScalar stepDegrees) {
+void SwigDirector_btIDebugDraw::drawSpherePatch(btVector3 const &center, btVector3 const &up, btVector3 const &axis, btScalar radius, btScalar minTh, btScalar maxTh, btScalar minPs, btScalar maxPs, btVector3 const &color, btScalar stepDegrees, bool drawCenter) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
@@ -1893,9 +1893,10 @@ void SwigDirector_btIDebugDraw::drawSpherePatch(btVector3 const &center, btVecto
   jfloat jmaxPs  ;
   jlong jcolor = 0 ;
   jfloat jstepDegrees  ;
+  jboolean jdrawCenter  ;
   
   if (!swig_override[15]) {
-    btIDebugDraw::drawSpherePatch(center,up,axis,radius,minTh,maxTh,minPs,maxPs,color,stepDegrees);
+    btIDebugDraw::drawSpherePatch(center,up,axis,radius,minTh,maxTh,minPs,maxPs,color,stepDegrees,drawCenter);
     return;
   }
   swigjobj = swig_get_self(jenv);
@@ -1910,7 +1911,8 @@ void SwigDirector_btIDebugDraw::drawSpherePatch(btVector3 const &center, btVecto
     jmaxPs = (jfloat) maxPs;
     *(btVector3 **)&jcolor = (btVector3 *) &color; 
     jstepDegrees = (jfloat) stepDegrees;
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[15], swigjobj, jcenter, jup, jaxis, jradius, jminTh, jmaxTh, jminPs, jmaxPs, jcolor, jstepDegrees);
+    jdrawCenter = (jboolean) drawCenter;
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[15], swigjobj, jcenter, jup, jaxis, jradius, jminTh, jmaxTh, jminPs, jmaxPs, jcolor, jstepDegrees, jdrawCenter);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -1926,7 +1928,7 @@ void SwigDirector_btIDebugDraw::drawBox(btVector3 const &bbMin, btVector3 const 
   jlong jbbMax = 0 ;
   jlong jcolor = 0 ;
   
-  if (!swig_override[17]) {
+  if (!swig_override[18]) {
     btIDebugDraw::drawBox(bbMin,bbMax,color);
     return;
   }
@@ -1935,7 +1937,7 @@ void SwigDirector_btIDebugDraw::drawBox(btVector3 const &bbMin, btVector3 const 
     *(btVector3 **)&jbbMin = (btVector3 *) &bbMin; 
     *(btVector3 **)&jbbMax = (btVector3 *) &bbMax; 
     *(btVector3 **)&jcolor = (btVector3 *) &color; 
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[17], swigjobj, jbbMin, jbbMax, jcolor);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[18], swigjobj, jbbMin, jbbMax, jcolor);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -1952,7 +1954,7 @@ void SwigDirector_btIDebugDraw::drawBox(btVector3 const &bbMin, btVector3 const 
   jlong jtrans = 0 ;
   jlong jcolor = 0 ;
   
-  if (!swig_override[18]) {
+  if (!swig_override[19]) {
     btIDebugDraw::drawBox(bbMin,bbMax,trans,color);
     return;
   }
@@ -1962,7 +1964,7 @@ void SwigDirector_btIDebugDraw::drawBox(btVector3 const &bbMin, btVector3 const 
     *(btVector3 **)&jbbMax = (btVector3 *) &bbMax; 
     *(btTransform **)&jtrans = (btTransform *) &trans; 
     *(btVector3 **)&jcolor = (btVector3 *) &color; 
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[18], swigjobj, jbbMin, jbbMax, jtrans, jcolor);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[19], swigjobj, jbbMin, jbbMax, jtrans, jcolor);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -1980,37 +1982,8 @@ void SwigDirector_btIDebugDraw::drawCapsule(btScalar radius, btScalar halfHeight
   jlong jtransform = 0 ;
   jlong jcolor = 0 ;
   
-  if (!swig_override[19]) {
-    btIDebugDraw::drawCapsule(radius,halfHeight,upAxis,transform,color);
-    return;
-  }
-  swigjobj = swig_get_self(jenv);
-  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jradius = (jfloat) radius;
-    jhalfHeight = (jfloat) halfHeight;
-    jupAxis = (jint) upAxis;
-    *(btTransform **)&jtransform = (btTransform *) &transform; 
-    *(btVector3 **)&jcolor = (btVector3 *) &color; 
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[19], swigjobj, jradius, jhalfHeight, jupAxis, jtransform, jcolor);
-    if (jenv->ExceptionCheck() == JNI_TRUE) return ;
-  } else {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
-  }
-  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
-}
-
-void SwigDirector_btIDebugDraw::drawCylinder(btScalar radius, btScalar halfHeight, int upAxis, btTransform const &transform, btVector3 const &color) {
-  JNIEnvWrapper swigjnienv(this) ;
-  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
-  jobject swigjobj = (jobject) NULL ;
-  jfloat jradius  ;
-  jfloat jhalfHeight  ;
-  jint jupAxis  ;
-  jlong jtransform = 0 ;
-  jlong jcolor = 0 ;
-  
   if (!swig_override[20]) {
-    btIDebugDraw::drawCylinder(radius,halfHeight,upAxis,transform,color);
+    btIDebugDraw::drawCapsule(radius,halfHeight,upAxis,transform,color);
     return;
   }
   swigjobj = swig_get_self(jenv);
@@ -2028,6 +2001,35 @@ void SwigDirector_btIDebugDraw::drawCylinder(btScalar radius, btScalar halfHeigh
   if (swigjobj) jenv->DeleteLocalRef(swigjobj);
 }
 
+void SwigDirector_btIDebugDraw::drawCylinder(btScalar radius, btScalar halfHeight, int upAxis, btTransform const &transform, btVector3 const &color) {
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jfloat jradius  ;
+  jfloat jhalfHeight  ;
+  jint jupAxis  ;
+  jlong jtransform = 0 ;
+  jlong jcolor = 0 ;
+  
+  if (!swig_override[21]) {
+    btIDebugDraw::drawCylinder(radius,halfHeight,upAxis,transform,color);
+    return;
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    jradius = (jfloat) radius;
+    jhalfHeight = (jfloat) halfHeight;
+    jupAxis = (jint) upAxis;
+    *(btTransform **)&jtransform = (btTransform *) &transform; 
+    *(btVector3 **)&jcolor = (btVector3 *) &color; 
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[21], swigjobj, jradius, jhalfHeight, jupAxis, jtransform, jcolor);
+    if (jenv->ExceptionCheck() == JNI_TRUE) return ;
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+}
+
 void SwigDirector_btIDebugDraw::drawCone(btScalar radius, btScalar height, int upAxis, btTransform const &transform, btVector3 const &color) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
@@ -2038,7 +2040,7 @@ void SwigDirector_btIDebugDraw::drawCone(btScalar radius, btScalar height, int u
   jlong jtransform = 0 ;
   jlong jcolor = 0 ;
   
-  if (!swig_override[21]) {
+  if (!swig_override[22]) {
     btIDebugDraw::drawCone(radius,height,upAxis,transform,color);
     return;
   }
@@ -2049,7 +2051,7 @@ void SwigDirector_btIDebugDraw::drawCone(btScalar radius, btScalar height, int u
     jupAxis = (jint) upAxis;
     *(btTransform **)&jtransform = (btTransform *) &transform; 
     *(btVector3 **)&jcolor = (btVector3 *) &color; 
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[21], swigjobj, jradius, jheight, jupAxis, jtransform, jcolor);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[22], swigjobj, jradius, jheight, jupAxis, jtransform, jcolor);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -2066,7 +2068,7 @@ void SwigDirector_btIDebugDraw::drawPlane(btVector3 const &planeNormal, btScalar
   jlong jtransform = 0 ;
   jlong jcolor = 0 ;
   
-  if (!swig_override[22]) {
+  if (!swig_override[23]) {
     btIDebugDraw::drawPlane(planeNormal,planeConst,transform,color);
     return;
   }
@@ -2076,7 +2078,7 @@ void SwigDirector_btIDebugDraw::drawPlane(btVector3 const &planeNormal, btScalar
     jplaneConst = (jfloat) planeConst;
     *(btTransform **)&jtransform = (btTransform *) &transform; 
     *(btVector3 **)&jcolor = (btVector3 *) &color; 
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[22], swigjobj, jplaneNormal, jplaneConst, jtransform, jcolor);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[23], swigjobj, jplaneNormal, jplaneConst, jtransform, jcolor);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -2136,6 +2138,9 @@ void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jsel
       "drawArc", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;FFFFLcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Z)V", NULL 
     },
     {
+      "drawSpherePatch", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;FFFFFLcom/badlogic/gdx/physics/bullet/linearmath/btVector3;FZ)V", NULL 
+    },
+    {
       "drawSpherePatch", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;Lcom/badlogic/gdx/physics/bullet/linearmath/btVector3;FFFFFLcom/badlogic/gdx/physics/bullet/linearmath/btVector3;F)V", NULL 
     },
     {
@@ -2170,7 +2175,7 @@ void SwigDirector_btIDebugDraw::swig_connect_director(JNIEnv *jenv, jobject jsel
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 23; ++i) {
+    for (int i = 0; i < 24; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -2209,7 +2214,7 @@ void SwigDirector_btMotionState::getWorldTransform(btTransform &worldTrans) cons
     jworldTrans = gdx_takePoolObject(jenv, "poolMatrix4");
     gdx_setMatrix4FrombtTransform(jenv, jworldTrans, worldTrans);
     gdxAutoCommitbtTransformAndReleaseMatrix4 auto_commit_worldTrans(jenv, jworldTrans, &worldTrans, "poolMatrix4");
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[23], swigjobj, jworldTrans);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[24], swigjobj, jworldTrans);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -2232,7 +2237,7 @@ void SwigDirector_btMotionState::setWorldTransform(btTransform const &worldTrans
     jworldTrans = gdx_takePoolObject(jenv, "poolMatrix4");
     gdx_setMatrix4FrombtTransform(jenv, jworldTrans, worldTrans);
     gdxPoolAutoRelease autoRelease_jworldTrans(jenv, "poolMatrix4", jworldTrans);
-    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[24], swigjobj, jworldTrans);
+    jenv->CallStaticVoidMethod(Swig::jclass_LinearMathJNI, Swig::director_methids[25], swigjobj, jworldTrans);
     if (jenv->ExceptionCheck() == JNI_TRUE) return ;
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
@@ -2291,6 +2296,28 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   (void)jenv;
   (void)jcls;
   result = (int)btGetVersion();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btInfinityMask_1set(JNIEnv *jenv, jclass jcls, jint jarg1) {
+  int arg1 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = (int)jarg1; 
+  btInfinityMask = arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btInfinityMask_1get(JNIEnv *jenv, jclass jcls) {
+  jint jresult = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (int)btInfinityMask;
   jresult = (jint)result; 
   return jresult;
 }
@@ -2775,6 +2802,36 @@ SWIGEXPORT jdouble JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linea
   }
   result = (double)btUnswapEndianDouble((unsigned char const *)arg1);
   jresult = (jdouble)result; 
+  
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btLargeDot(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2, jint jarg3) {
+  jfloat jresult = 0 ;
+  btScalar *arg1 = (btScalar *) 0 ;
+  btScalar *arg2 = (btScalar *) 0 ;
+  int arg3 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  {
+    arg1 = (btScalar*)jenv->GetDirectBufferAddress(jarg1);
+    if (arg1 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  {
+    arg2 = (btScalar*)jenv->GetDirectBufferAddress(jarg2);
+    if (arg2 == NULL) {
+      SWIG_JavaThrowException(jenv, SWIG_JavaRuntimeException, "Unable to get address of direct buffer. Buffer must be allocated direct.");
+    }
+  }
+  arg3 = (int)jarg3; 
+  result = (btScalar)btLargeDot((float const *)arg1,(float const *)arg2,arg3);
+  jresult = (jfloat)result; 
+  
   
   return jresult;
 }
@@ -3574,6 +3631,21 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linear
   (void)jarg1_;
   arg1 = *(btVector3 **)&jarg1; 
   result = (btScalar)((btVector3 const *)arg1)->length();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3_1norm(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btVector3 *arg1 = (btVector3 *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btVector3 **)&jarg1; 
+  result = (btScalar)((btVector3 const *)arg1)->norm();
   jresult = (jfloat)result; 
   return jresult;
 }
@@ -5095,6 +5167,26 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linear
 }
 
 
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btQuaternion_1angleShortestPath(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jfloat jresult = 0 ;
+  btQuaternion *arg1 = (btQuaternion *) 0 ;
+  btQuaternion *arg2 = 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btQuaternion **)&jarg1; 
+  btQuaternion local_arg2;
+  gdx_setbtQuaternionFromQuaternion(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitQuaternion auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (btScalar)((btQuaternion const *)arg1)->angleShortestPath((btQuaternion const &)*arg2);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btQuaternion_1getAngle(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jfloat jresult = 0 ;
   btQuaternion *arg1 = (btQuaternion *) 0 ;
@@ -5105,6 +5197,21 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linear
   (void)jarg1_;
   arg1 = *(btQuaternion **)&jarg1; 
   result = (btScalar)((btQuaternion const *)arg1)->getAngle();
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btQuaternion_1getAngleShortestPath(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btQuaternion *arg1 = (btQuaternion *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btQuaternion **)&jarg1; 
+  result = (btScalar)((btQuaternion const *)arg1)->getAngleShortestPath();
   jresult = (jfloat)result; 
   return jresult;
 }
@@ -6598,7 +6705,113 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatch_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_, jfloat jarg11) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatch_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_, jfloat jarg11, jboolean jarg12) {
+  btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btVector3 *arg4 = 0 ;
+  btScalar arg5 ;
+  btScalar arg6 ;
+  btScalar arg7 ;
+  btScalar arg8 ;
+  btScalar arg9 ;
+  btVector3 *arg10 = 0 ;
+  btScalar arg11 ;
+  bool arg12 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  (void)jarg4_;
+  (void)jarg10_;
+  arg1 = *(btIDebugDraw **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg3 = *(btVector3 **)&jarg3;
+  if (!arg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg4 = *(btVector3 **)&jarg4;
+  if (!arg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg5 = (btScalar)jarg5; 
+  arg6 = (btScalar)jarg6; 
+  arg7 = (btScalar)jarg7; 
+  arg8 = (btScalar)jarg8; 
+  arg9 = (btScalar)jarg9; 
+  arg10 = *(btVector3 **)&jarg10;
+  if (!arg10) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg11 = (btScalar)jarg11; 
+  arg12 = jarg12 ? true : false; 
+  (arg1)->drawSpherePatch((btVector3 const &)*arg2,(btVector3 const &)*arg3,(btVector3 const &)*arg4,arg5,arg6,arg7,arg8,arg9,(btVector3 const &)*arg10,arg11,arg12);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatchSwigExplicitbtIDebugDraw_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_, jfloat jarg11, jboolean jarg12) {
+  btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *arg3 = 0 ;
+  btVector3 *arg4 = 0 ;
+  btScalar arg5 ;
+  btScalar arg6 ;
+  btScalar arg7 ;
+  btScalar arg8 ;
+  btScalar arg9 ;
+  btVector3 *arg10 = 0 ;
+  btScalar arg11 ;
+  bool arg12 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  (void)jarg4_;
+  (void)jarg10_;
+  arg1 = *(btIDebugDraw **)&jarg1; 
+  arg2 = *(btVector3 **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg3 = *(btVector3 **)&jarg3;
+  if (!arg3) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg4 = *(btVector3 **)&jarg4;
+  if (!arg4) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg5 = (btScalar)jarg5; 
+  arg6 = (btScalar)jarg6; 
+  arg7 = (btScalar)jarg7; 
+  arg8 = (btScalar)jarg8; 
+  arg9 = (btScalar)jarg9; 
+  arg10 = *(btVector3 **)&jarg10;
+  if (!arg10) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVector3 const & reference is null");
+    return ;
+  } 
+  arg11 = (btScalar)jarg11; 
+  arg12 = jarg12 ? true : false; 
+  (arg1)->btIDebugDraw::drawSpherePatch((btVector3 const &)*arg2,(btVector3 const &)*arg3,(btVector3 const &)*arg4,arg5,arg6,arg7,arg8,arg9,(btVector3 const &)*arg10,arg11,arg12);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatch_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_, jfloat jarg11) {
   btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
   btVector3 *arg2 = 0 ;
   btVector3 *arg3 = 0 ;
@@ -6649,7 +6862,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatchSwigExplicitbtIDebugDraw_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_, jfloat jarg11) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatchSwigExplicitbtIDebugDraw_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_, jfloat jarg11) {
   btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
   btVector3 *arg2 = 0 ;
   btVector3 *arg3 = 0 ;
@@ -6700,7 +6913,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatch_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatch_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_) {
   btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
   btVector3 *arg2 = 0 ;
   btVector3 *arg3 = 0 ;
@@ -6749,7 +6962,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatchSwigExplicitbtIDebugDraw_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btIDebugDraw_1drawSpherePatchSwigExplicitbtIDebugDraw_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jfloat jarg7, jfloat jarg8, jfloat jarg9, jlong jarg10, jobject jarg10_) {
   btIDebugDraw *arg1 = (btIDebugDraw *) 0 ;
   btVector3 *arg2 = 0 ;
   btVector3 *arg3 = 0 ;
@@ -10414,7 +10627,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   static struct {
     const char *method;
     const char *signature;
-  } methods[25] = {
+  } methods[26] = {
     {
       "SwigDirector_btIDebugDraw_drawLine__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJ)V" 
     },
@@ -10461,10 +10674,13 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
       "SwigDirector_btIDebugDraw_drawArc__SWIG_1", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJFFFFJZ)V" 
     },
     {
-      "SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJFFFFFJF)V" 
+      "SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJFFFFFJFZ)V" 
     },
     {
-      "SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJFFFFFJ)V" 
+      "SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJFFFFFJF)V" 
+    },
+    {
+      "SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_2", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJFFFFFJ)V" 
     },
     {
       "SwigDirector_btIDebugDraw_drawBox__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/linearmath/btIDebugDraw;JJJ)V" 

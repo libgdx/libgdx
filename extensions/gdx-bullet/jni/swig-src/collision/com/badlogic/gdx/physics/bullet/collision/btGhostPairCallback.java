@@ -58,8 +58,38 @@ public class btGhostPairCallback extends btOverlappingPairCallback {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btGhostPairCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btGhostPairCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public btGhostPairCallback() {
     this(CollisionJNI.new_btGhostPairCallback(), true);
+    CollisionJNI.btGhostPairCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
+
+  public btBroadphasePair addOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
+    long cPtr = (getClass() == btGhostPairCallback.class) ? CollisionJNI.btGhostPairCallback_addOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1) : CollisionJNI.btGhostPairCallback_addOverlappingPairSwigExplicitbtGhostPairCallback(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1);
+    return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
+  }
+
+  public SWIGTYPE_p_void removeOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1, btDispatcher dispatcher) {
+    long cPtr = (getClass() == btGhostPairCallback.class) ? CollisionJNI.btGhostPairCallback_removeOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1, btDispatcher.getCPtr(dispatcher), dispatcher) : CollisionJNI.btGhostPairCallback_removeOverlappingPairSwigExplicitbtGhostPairCallback(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1, btDispatcher.getCPtr(dispatcher), dispatcher);
+    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  }
+
+  public void removeOverlappingPairsContainingProxy(btBroadphaseProxy arg0, btDispatcher arg1) {
+    if (getClass() == btGhostPairCallback.class) CollisionJNI.btGhostPairCallback_removeOverlappingPairsContainingProxy(swigCPtr, this, btBroadphaseProxy.getCPtr(arg0), arg0, btDispatcher.getCPtr(arg1), arg1); else CollisionJNI.btGhostPairCallback_removeOverlappingPairsContainingProxySwigExplicitbtGhostPairCallback(swigCPtr, this, btBroadphaseProxy.getCPtr(arg0), arg0, btDispatcher.getCPtr(arg1), arg1);
   }
 
 }

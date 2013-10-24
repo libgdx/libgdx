@@ -35,7 +35,7 @@ public:
       kF_None                 = 0,
       kF_FilterBackfaces      = 1 << 0,
       kF_KeepUnflippedNormal  = 1 << 1,   // Prevents returned face normal getting flipped when a ray hits a back-facing triangle
-
+	  kF_UseSubSimplexConvexCastRaytest =  1 << 2,   // Uses an approximate but faster ray versus convex intersection algorithm
       kF_Terminator        = 0xFFFFFFFF
    };
    unsigned int m_flags;

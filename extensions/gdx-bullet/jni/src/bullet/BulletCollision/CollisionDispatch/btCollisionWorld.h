@@ -1,6 +1,6 @@
 /*
 Bullet Continuous Collision Detection and Physics Library
-Copyright (c) 2003-2006 Erwin Coumans  http://bulletphysics.com/Bullet/
+Copyright (c) 2003-2013 Erwin Coumans  http://bulletphysics.org
 
 This software is provided 'as-is', without any express or implied warranty.
 In no event will the authors be held liable for any damages arising from the use of this software.
@@ -18,13 +18,11 @@ subject to the following restrictions:
  * @mainpage Bullet Documentation
  *
  * @section intro_sec Introduction
- * Bullet Collision Detection & Physics SDK
- *
  * Bullet is a Collision Detection and Rigid Body Dynamics Library. The Library is Open Source and free for commercial use, under the ZLib license ( http://opensource.org/licenses/zlib-license.php ).
  *
  * The main documentation is Bullet_User_Manual.pdf, included in the source code distribution.
  * There is the Physics Forum for feedback and general Collision Detection and Physics discussions.
- * Please visit http://www.bulletphysics.com
+ * Please visit http://www.bulletphysics.org
  *
  * @section install_sec Installation
  *
@@ -32,7 +30,16 @@ subject to the following restrictions:
  * You can download the Bullet Physics Library from the Google Code repository: http://code.google.com/p/bullet/downloads/list
  *
  * @subsection step2 Step 2: Building
- * Bullet main build system for all platforms is cmake, you can download http://www.cmake.org
+ * Bullet has multiple build systems, including premake, cmake and autotools. Premake and cmake support all platforms.
+ * Premake is included in the Bullet/build folder for Windows, Mac OSX and Linux. 
+ * Under Windows you can click on Bullet/build/vs2010.bat to create Microsoft Visual Studio projects. 
+ * On Mac OSX and Linux you can open a terminal and generate Makefile, codeblocks or Xcode4 projects:
+ * cd Bullet/build
+ * ./premake4_osx gmake or ./premake4_linux gmake or ./premake4_linux64 gmake or (for Mac) ./premake4_osx xcode4
+ * cd Bullet/build/gmake
+ * make
+ * 
+ * An alternative to premake is cmake. You can download cmake from http://www.cmake.org
  * cmake can autogenerate projectfiles for Microsoft Visual Studio, Apple Xcode, KDevelop and Unix Makefiles.
  * The easiest is to run the CMake cmake-gui graphical user interface and choose the options and generate projectfiles.
  * You can also use cmake in the command-line. Here are some examples for various platforms:
@@ -65,7 +72,6 @@ subject to the following restrictions:
 #ifndef BT_COLLISION_WORLD_H
 #define BT_COLLISION_WORLD_H
 
-class btStackAlloc;
 class btCollisionShape;
 class btConvexShape;
 class btBroadphaseInterface;
@@ -90,8 +96,6 @@ protected:
 	btDispatcher*	m_dispatcher1;
 
 	btDispatcherInfo	m_dispatchInfo;
-
-	btStackAlloc*	m_stackAlloc;
 
 	btBroadphaseInterface*	m_broadphasePairCache;
 

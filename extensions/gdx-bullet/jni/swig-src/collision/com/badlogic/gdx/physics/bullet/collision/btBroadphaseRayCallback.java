@@ -58,6 +58,21 @@ public class btBroadphaseRayCallback extends btBroadphaseAabbCallback {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btBroadphaseRayCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btBroadphaseRayCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void setRayDirectionInverse(btVector3 value) {
     CollisionJNI.btBroadphaseRayCallback_rayDirectionInverse_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
@@ -81,6 +96,11 @@ public class btBroadphaseRayCallback extends btBroadphaseAabbCallback {
 
   public float getLambda_max() {
     return CollisionJNI.btBroadphaseRayCallback_lambda_max_get(swigCPtr, this);
+  }
+
+  public btBroadphaseRayCallback() {
+    this(CollisionJNI.new_btBroadphaseRayCallback(), true);
+    CollisionJNI.btBroadphaseRayCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

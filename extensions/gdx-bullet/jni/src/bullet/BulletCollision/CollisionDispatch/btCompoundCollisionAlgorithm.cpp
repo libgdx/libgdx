@@ -11,6 +11,7 @@ subject to the following restrictions:
 1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
+
 */
 
 #include "BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h"
@@ -21,6 +22,8 @@ subject to the following restrictions:
 #include "LinearMath/btAabbUtil2.h"
 #include "btManifoldResult.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+
+btShapePairCallback gCompoundChildShapePairCallback = 0;
 
 btCompoundCollisionAlgorithm::btCompoundCollisionAlgorithm( const btCollisionAlgorithmConstructionInfo& ci,const btCollisionObjectWrapper* body0Wrap,const btCollisionObjectWrapper* body1Wrap,bool isSwapped)
 :btActivatingCollisionAlgorithm(ci,body0Wrap,body1Wrap),
@@ -61,7 +64,7 @@ void	btCompoundCollisionAlgorithm::preallocateChildAlgorithms(const btCollisionO
 			
 			const btCollisionShape* childShape = compoundShape->getChildShape(i);
 
-			btCollisionObjectWrapper childWrap(colObjWrap,childShape,colObjWrap->getCollisionObject(),colObjWrap->getWorldTransform());//wrong child trans, but unused (hopefully)
+			btCollisionObjectWrapper childWrap(colObjWrap,childShape,colObjWrap->getCollisionObject(),colObjWrap->getWorldTransform(),-1,i);//wrong child trans, but unused (hopefully)
 			m_childCollisionAlgorithms[i] = m_dispatcher->findAlgorithm(&childWrap,otherObjWrap,m_sharedManifold);
 		}
 	}
@@ -129,10 +132,16 @@ public:
 		childShape->getAabb(newChildWorldTrans,aabbMin0,aabbMax0);
 		m_otherObjWrap->getCollisionShape()->getAabb(m_otherObjWrap->getWorldTransform(),aabbMin1,aabbMax1);
 
+		if (gCompoundChildShapePairCallback)
+		{
+			if (!gCompoundChildShapePairCallback(m_otherObjWrap->getCollisionShape(), childShape))
+				return;
+		}
+
 		if (TestAabbAgainstAabb2(aabbMin0,aabbMax0,aabbMin1,aabbMax1))
 		{
 
-			btCollisionObjectWrapper compoundWrap(this->m_compoundColObjWrap,childShape,m_compoundColObjWrap->getCollisionObject(),newChildWorldTrans);
+			btCollisionObjectWrapper compoundWrap(this->m_compoundColObjWrap,childShape,m_compoundColObjWrap->getCollisionObject(),newChildWorldTrans,-1,index);
 
 
 			//the contactpoint is still projected back using the original inverted worldtrans

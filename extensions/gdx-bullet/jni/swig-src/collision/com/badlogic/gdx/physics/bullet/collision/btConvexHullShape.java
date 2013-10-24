@@ -89,8 +89,12 @@ public class btConvexHullShape extends btPolyhedralConvexAabbCachingShape {
     this(CollisionJNI.new_btConvexHullShape__SWIG_3(), true);
   }
 
+  public void addPoint(Vector3 point, boolean recalculateLocalAabb) {
+    CollisionJNI.btConvexHullShape_addPoint__SWIG_0(swigCPtr, this, point, recalculateLocalAabb);
+  }
+
   public void addPoint(Vector3 point) {
-    CollisionJNI.btConvexHullShape_addPoint(swigCPtr, this, point);
+    CollisionJNI.btConvexHullShape_addPoint__SWIG_1(swigCPtr, this, point);
   }
 
   public btVector3 getUnscaledPoints() {

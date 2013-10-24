@@ -25,6 +25,7 @@ subject to the following restrictions:
 
 #define CALC_EXACT_INERTIA 1
 
+
 void btGImpactCompoundShape::calculateLocalInertia(btScalar mass,btVector3& inertia) const
 {
 	lockChildShapes();
@@ -144,6 +145,31 @@ void btGImpactMeshShape::rayTest(const btVector3& rayFrom, const btVector3& rayT
 {
 }
 
+void btGImpactMeshShapePart::processAllTrianglesRay(btTriangleCallback* callback,const btVector3& rayFrom, const btVector3& rayTo) const
+{
+	lockChildShapes();
+
+	btAlignedObjectArray<int> collided;
+	btVector3 rayDir(rayTo - rayFrom);
+	rayDir.normalize();
+	m_box_set.rayQuery(rayDir, rayFrom, collided);
+
+	if(collided.size()==0)
+	{
+		unlockChildShapes();
+		return;
+	}
+
+	int part = (int)getPart();
+	btPrimitiveTriangle triangle;
+	int i = collided.size();
+	while(i--)
+	{
+		getPrimitiveTriangle(collided[i],triangle);
+		callback->processTriangle(triangle.m_vertices,part,collided[i]);
+	}
+	unlockChildShapes();
+}
 
 void btGImpactMeshShapePart::processAllTriangles(btTriangleCallback* callback,const btVector3& aabbMin,const btVector3& aabbMax) const
 {
@@ -179,6 +205,15 @@ void btGImpactMeshShape::processAllTriangles(btTriangleCallback* callback,const 
 	while(i--)
 	{
 		m_mesh_parts[i]->processAllTriangles(callback,aabbMin,aabbMax);
+	}
+}
+
+void btGImpactMeshShape::processAllTrianglesRay(btTriangleCallback* callback,const btVector3& rayFrom, const btVector3& rayTo) const
+{
+	int i = m_mesh_parts.size();
+	while(i--)
+	{
+		m_mesh_parts[i]->processAllTrianglesRay(callback, rayFrom, rayTo);
 	}
 }
 

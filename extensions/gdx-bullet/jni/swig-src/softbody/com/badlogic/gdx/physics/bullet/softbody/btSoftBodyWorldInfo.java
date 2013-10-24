@@ -84,6 +84,14 @@ public class btSoftBodyWorldInfo extends BulletBase {
     return SoftbodyJNI.btSoftBodyWorldInfo_water_offset_get(swigCPtr, this);
   }
 
+  public void setMaxDisplacement(float value) {
+    SoftbodyJNI.btSoftBodyWorldInfo_maxDisplacement_set(swigCPtr, this, value);
+  }
+
+  public float getMaxDisplacement() {
+    return SoftbodyJNI.btSoftBodyWorldInfo_maxDisplacement_get(swigCPtr, this);
+  }
+
   public void setWater_normal(btVector3 value) {
     SoftbodyJNI.btSoftBodyWorldInfo_water_normal_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }

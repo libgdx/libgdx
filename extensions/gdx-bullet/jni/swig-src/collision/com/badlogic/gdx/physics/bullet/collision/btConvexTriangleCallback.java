@@ -58,6 +58,21 @@ public class btConvexTriangleCallback extends btTriangleCallback {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btConvexTriangleCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btConvexTriangleCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void setTriangleCount(int value) {
     CollisionJNI.btConvexTriangleCallback_triangleCount_set(swigCPtr, this, value);
   }
@@ -77,6 +92,7 @@ public class btConvexTriangleCallback extends btTriangleCallback {
 
   public btConvexTriangleCallback(btDispatcher dispatcher, btCollisionObjectWrapper body0Wrap, btCollisionObjectWrapper body1Wrap, boolean isSwapped) {
     this(CollisionJNI.new_btConvexTriangleCallback(btDispatcher.getCPtr(dispatcher), dispatcher, btCollisionObjectWrapper.getCPtr(body0Wrap), body0Wrap, btCollisionObjectWrapper.getCPtr(body1Wrap), body1Wrap, isSwapped), true);
+    CollisionJNI.btConvexTriangleCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
   public void setTimeStepAndCounters(float collisionMarginTriangle, btDispatcherInfo dispatchInfo, btCollisionObjectWrapper convexBodyWrap, btCollisionObjectWrapper triBodyWrap, btManifoldResult resultOut) {
@@ -85,6 +101,10 @@ public class btConvexTriangleCallback extends btTriangleCallback {
 
   public void clearWrapperData() {
     CollisionJNI.btConvexTriangleCallback_clearWrapperData(swigCPtr, this);
+  }
+
+  public void processTriangle(btVector3 triangle, int partId, int triangleIndex) {
+    if (getClass() == btConvexTriangleCallback.class) CollisionJNI.btConvexTriangleCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex); else CollisionJNI.btConvexTriangleCallback_processTriangleSwigExplicitbtConvexTriangleCallback(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
   }
 
   public void clearCache() {

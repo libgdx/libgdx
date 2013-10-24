@@ -130,6 +130,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btGhostObject.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btInternalEdgeUtility.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btManifoldResult.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSimulationIslandManager.cpp" />

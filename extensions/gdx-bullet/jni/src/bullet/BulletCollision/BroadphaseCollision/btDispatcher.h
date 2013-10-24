@@ -25,7 +25,6 @@ class btOverlappingPairCache;
 struct btCollisionObjectWrapper;
 
 class btPersistentManifold;
-class btStackAlloc;
 class btPoolAllocator;
 
 struct btDispatcherInfo
@@ -47,8 +46,7 @@ struct btDispatcherInfo
 		m_useEpa(true),
 		m_allowedCcdPenetration(btScalar(0.04)),
 		m_useConvexConservativeDistanceUtil(false),
-		m_convexConservativeDistanceThreshold(0.0f),
-		m_stackAllocator(0)
+		m_convexConservativeDistanceThreshold(0.0f)
 	{
 
 	}
@@ -64,7 +62,6 @@ struct btDispatcherInfo
 	btScalar	m_allowedCcdPenetration;
 	bool		m_useConvexConservativeDistanceUtil;
 	btScalar	m_convexConservativeDistanceThreshold;
-	btStackAlloc*	m_stackAllocator;
 };
 
 ///The btDispatcher interface class can be used in combination with broadphase to dispatch calculations for overlapping pairs.

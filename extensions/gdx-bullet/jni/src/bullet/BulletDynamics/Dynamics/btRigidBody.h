@@ -97,7 +97,7 @@ class btRigidBody  : public btCollisionObject
 
 protected:
 
-	ATTRIBUTE_ALIGNED64(btVector3		m_deltaLinearVelocity);
+	ATTRIBUTE_ALIGNED16(btVector3		m_deltaLinearVelocity);
 	btVector3		m_deltaAngularVelocity;
 	btVector3		m_angularFactor;
 	btVector3		m_invMass;
@@ -363,11 +363,13 @@ public:
 
 	inline void setLinearVelocity(const btVector3& lin_vel)
 	{ 
+		m_updateRevision++;
 		m_linearVelocity = lin_vel; 
 	}
 
 	inline void setAngularVelocity(const btVector3& ang_vel) 
 	{ 
+		m_updateRevision++;
 		m_angularVelocity = ang_vel; 
 	}
 
@@ -484,11 +486,13 @@ public:
 
 	void	setAngularFactor(const btVector3& angFac)
 	{
+		m_updateRevision++;
 		m_angularFactor = angFac;
 	}
 
 	void	setAngularFactor(btScalar angFac)
 	{
+		m_updateRevision++;
 		m_angularFactor.setValue(angFac,angFac,angFac);
 	}
 	const btVector3&	getAngularFactor() const

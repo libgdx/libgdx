@@ -58,15 +58,6 @@ public class btDefaultCollisionConstructionInfo extends BulletBase {
 		super.delete();
 	}
 
-  public void setStackAlloc(btStackAlloc value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_stackAlloc_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
-  }
-
-  public btStackAlloc getStackAlloc() {
-    long cPtr = CollisionJNI.btDefaultCollisionConstructionInfo_stackAlloc_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btStackAlloc(cPtr, false);
-  }
-
   public void setPersistentManifoldPool(btPoolAllocator value) {
     CollisionJNI.btDefaultCollisionConstructionInfo_persistentManifoldPool_set(swigCPtr, this, btPoolAllocator.getCPtr(value), value);
   }
@@ -107,14 +98,6 @@ public class btDefaultCollisionConstructionInfo extends BulletBase {
 
   public int getCustomCollisionAlgorithmMaxElementSize() {
     return CollisionJNI.btDefaultCollisionConstructionInfo_customCollisionAlgorithmMaxElementSize_get(swigCPtr, this);
-  }
-
-  public void setDefaultStackAllocatorSize(int value) {
-    CollisionJNI.btDefaultCollisionConstructionInfo_defaultStackAllocatorSize_set(swigCPtr, this, value);
-  }
-
-  public int getDefaultStackAllocatorSize() {
-    return CollisionJNI.btDefaultCollisionConstructionInfo_defaultStackAllocatorSize_get(swigCPtr, this);
   }
 
   public void setUseEpaPenetrationAlgorithm(int value) {

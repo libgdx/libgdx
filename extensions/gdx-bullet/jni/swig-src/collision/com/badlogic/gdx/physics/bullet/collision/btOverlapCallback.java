@@ -58,8 +58,28 @@ public class btOverlapCallback extends BulletBase {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btOverlapCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btOverlapCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public boolean processOverlap(btBroadphasePair pair) {
     return CollisionJNI.btOverlapCallback_processOverlap(swigCPtr, this, btBroadphasePair.getCPtr(pair), pair);
+  }
+
+  public btOverlapCallback() {
+    this(CollisionJNI.new_btOverlapCallback(), true);
+    CollisionJNI.btOverlapCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

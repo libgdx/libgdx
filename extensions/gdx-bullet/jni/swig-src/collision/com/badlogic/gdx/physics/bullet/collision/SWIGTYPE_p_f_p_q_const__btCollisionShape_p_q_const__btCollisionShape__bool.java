@@ -8,18 +8,18 @@
 
 package com.badlogic.gdx.physics.bullet.collision;
 
-public class SWIGTYPE_p_btSimplexSolverInterface {
+public class SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool {
   private long swigCPtr;
 
-  protected SWIGTYPE_p_btSimplexSolverInterface(long cPtr, boolean futureUse) {
+  protected SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool(long cPtr, boolean futureUse) {
     swigCPtr = cPtr;
   }
 
-  protected SWIGTYPE_p_btSimplexSolverInterface() {
+  protected SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool() {
     swigCPtr = 0;
   }
 
-  protected static long getCPtr(SWIGTYPE_p_btSimplexSolverInterface obj) {
+  protected static long getCPtr(SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 }
