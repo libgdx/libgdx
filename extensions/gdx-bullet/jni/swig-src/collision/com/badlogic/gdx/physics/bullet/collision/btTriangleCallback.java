@@ -58,8 +58,28 @@ public class btTriangleCallback extends BulletBase {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btTriangleCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btTriangleCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void processTriangle(btVector3 triangle, int partId, int triangleIndex) {
     CollisionJNI.btTriangleCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
+  }
+
+  public btTriangleCallback() {
+    this(CollisionJNI.new_btTriangleCallback(), true);
+    CollisionJNI.btTriangleCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

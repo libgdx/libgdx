@@ -51,7 +51,7 @@ public interface CollisionConstants {
   public final static int STATIC_SIMULATION_ISLAND_OPTIMIZATION = 1;
   public final static int USE_DISPATCH_REGISTRY_ARRAY = 1;
   public final static int MANIFOLD_CACHE_SIZE = 4;
+  public final static int NO_VIRTUAL_INTERFACE = 1;
   public final static int VORONOI_SIMPLEX_MAX_VERTS = 5;
   public final static double VORONOI_DEFAULT_EQUAL_VERTEX_THRESHOLD = 0.0001;
-  public final static int NO_VIRTUAL_INTERFACE = 1;
 }

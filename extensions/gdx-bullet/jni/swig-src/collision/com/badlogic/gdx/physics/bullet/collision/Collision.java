@@ -128,6 +128,15 @@ public class Collision implements CollisionConstants {
     return CollisionJNI.gdxCheckFilter__SWIG_1(btCollisionObject.getCPtr(colObj0), colObj0, btCollisionObject.getCPtr(colObj1), colObj1);
   }
 
+  public static void setGCompoundCompoundChildShapePairCallback(SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool value) {
+    CollisionJNI.gCompoundCompoundChildShapePairCallback_set(SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool.getCPtr(value));
+  }
+
+  public static SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool getGCompoundCompoundChildShapePairCallback() {
+    long cPtr = CollisionJNI.gCompoundCompoundChildShapePairCallback_get();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool(cPtr, false);
+  }
+
   public static void setGContactAddedCallback(SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObjectWrapper_int_int_p_q_const__btCollisionObjectWrapper_int_int__bool value) {
     CollisionJNI.gContactAddedCallback_set(SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObjectWrapper_int_int_p_q_const__btCollisionObjectWrapper_int_int__bool.getCPtr(value));
   }
@@ -135,6 +144,42 @@ public class Collision implements CollisionConstants {
   public static SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObjectWrapper_int_int_p_q_const__btCollisionObjectWrapper_int_int__bool getGContactAddedCallback() {
     long cPtr = CollisionJNI.gContactAddedCallback_get();
     return (cPtr == 0) ? null : new SWIGTYPE_p_f_r_btManifoldPoint_p_q_const__btCollisionObjectWrapper_int_int_p_q_const__btCollisionObjectWrapper_int_int__bool(cPtr, false);
+  }
+
+  public static int getBT_SIMPLE_NULL_PAIR() {
+    return CollisionJNI.BT_SIMPLE_NULL_PAIR_get();
+  }
+
+  public static void setGOverlappingSimplePairs(int value) {
+    CollisionJNI.gOverlappingSimplePairs_set(value);
+  }
+
+  public static int getGOverlappingSimplePairs() {
+    return CollisionJNI.gOverlappingSimplePairs_get();
+  }
+
+  public static void setGRemoveSimplePairs(int value) {
+    CollisionJNI.gRemoveSimplePairs_set(value);
+  }
+
+  public static int getGRemoveSimplePairs() {
+    return CollisionJNI.gRemoveSimplePairs_get();
+  }
+
+  public static void setGAddedSimplePairs(int value) {
+    CollisionJNI.gAddedSimplePairs_set(value);
+  }
+
+  public static int getGAddedSimplePairs() {
+    return CollisionJNI.gAddedSimplePairs_get();
+  }
+
+  public static void setGFindSimplePairs(int value) {
+    CollisionJNI.gFindSimplePairs_set(value);
+  }
+
+  public static int getGFindSimplePairs() {
+    return CollisionJNI.gFindSimplePairs_get();
   }
 
   public static void btGenerateInternalEdgeInfo(btBvhTriangleMeshShape trimeshShape, btTriangleInfoMap triangleInfoMap) {
@@ -147,6 +192,15 @@ public class Collision implements CollisionConstants {
 
   public static void btAdjustInternalEdgeContacts(btManifoldPoint cp, btCollisionObjectWrapper trimeshColObj0Wrap, btCollisionObjectWrapper otherColObj1Wrap, int partId0, int index0) {
     CollisionJNI.btAdjustInternalEdgeContacts__SWIG_1(btManifoldPoint.getCPtr(cp), cp, btCollisionObjectWrapper.getCPtr(trimeshColObj0Wrap), trimeshColObj0Wrap, btCollisionObjectWrapper.getCPtr(otherColObj1Wrap), otherColObj1Wrap, partId0, index0);
+  }
+
+  public static void setGCompoundChildShapePairCallback(SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool value) {
+    CollisionJNI.gCompoundChildShapePairCallback_set(SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool.getCPtr(value));
+  }
+
+  public static SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool getGCompoundChildShapePairCallback() {
+    long cPtr = CollisionJNI.gCompoundChildShapePairCallback_get();
+    return (cPtr == 0) ? null : new SWIGTYPE_p_f_p_q_const__btCollisionShape_p_q_const__btCollisionShape__bool(cPtr, false);
   }
 
   public static void setGContactBreakingThreshold(float value) {

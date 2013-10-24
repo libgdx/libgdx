@@ -58,8 +58,28 @@ public class btInternalTriangleIndexCallback extends BulletBase {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btInternalTriangleIndexCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btInternalTriangleIndexCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void internalProcessTriangleIndex(btVector3 triangle, int partId, int triangleIndex) {
     CollisionJNI.btInternalTriangleIndexCallback_internalProcessTriangleIndex(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
+  }
+
+  public btInternalTriangleIndexCallback() {
+    this(CollisionJNI.new_btInternalTriangleIndexCallback(), true);
+    CollisionJNI.btInternalTriangleIndexCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

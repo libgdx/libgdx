@@ -58,8 +58,8 @@ public class btContinuousConvexCollision extends btConvexCast {
 		super.delete();
 	}
 
-  public btContinuousConvexCollision(btConvexShape shapeA, btConvexShape shapeB, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
-    this(CollisionJNI.new_btContinuousConvexCollision__SWIG_0(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);
+  public btContinuousConvexCollision(btConvexShape shapeA, btConvexShape shapeB, btVoronoiSimplexSolver simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
+    this(CollisionJNI.new_btContinuousConvexCollision__SWIG_0(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver, btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);
   }
 
   public btContinuousConvexCollision(btConvexShape shapeA, btStaticPlaneShape plane) {

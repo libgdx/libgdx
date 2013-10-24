@@ -90,12 +90,20 @@ public class btGjkPairDetector extends BulletBase {
     return CollisionJNI.btGjkPairDetector_catchDegeneracies_get(swigCPtr, this);
   }
 
-  public btGjkPairDetector(btConvexShape objectA, btConvexShape objectB, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
-    this(CollisionJNI.new_btGjkPairDetector__SWIG_0(btConvexShape.getCPtr(objectA), objectA, btConvexShape.getCPtr(objectB), objectB, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);
+  public void setFixContactNormalDirection(int value) {
+    CollisionJNI.btGjkPairDetector_fixContactNormalDirection_set(swigCPtr, this, value);
   }
 
-  public btGjkPairDetector(btConvexShape objectA, btConvexShape objectB, int shapeTypeA, int shapeTypeB, float marginA, float marginB, SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
-    this(CollisionJNI.new_btGjkPairDetector__SWIG_1(btConvexShape.getCPtr(objectA), objectA, btConvexShape.getCPtr(objectB), objectB, shapeTypeA, shapeTypeB, marginA, marginB, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);
+  public int getFixContactNormalDirection() {
+    return CollisionJNI.btGjkPairDetector_fixContactNormalDirection_get(swigCPtr, this);
+  }
+
+  public btGjkPairDetector(btConvexShape objectA, btConvexShape objectB, btVoronoiSimplexSolver simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
+    this(CollisionJNI.new_btGjkPairDetector__SWIG_0(btConvexShape.getCPtr(objectA), objectA, btConvexShape.getCPtr(objectB), objectB, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver, btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);
+  }
+
+  public btGjkPairDetector(btConvexShape objectA, btConvexShape objectB, int shapeTypeA, int shapeTypeB, float marginA, float marginB, btVoronoiSimplexSolver simplexSolver, btConvexPenetrationDepthSolver penetrationDepthSolver) {
+    this(CollisionJNI.new_btGjkPairDetector__SWIG_1(btConvexShape.getCPtr(objectA), objectA, btConvexShape.getCPtr(objectB), objectB, shapeTypeA, shapeTypeB, marginA, marginB, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver, btConvexPenetrationDepthSolver.getCPtr(penetrationDepthSolver), penetrationDepthSolver), true);
   }
 
   public void getClosestPoints(ClosestPointInput input, Result output, btIDebugDraw debugDraw, boolean swapResults) {

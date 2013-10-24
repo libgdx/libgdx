@@ -154,12 +154,12 @@ public class btDiscreteDynamicsWorld extends btDynamicsWorld {
     return DynamicsJNI.btDiscreteDynamicsWorld_getApplySpeculativeContactRestitution(swigCPtr, this);
   }
 
-  public void setInterpolation(boolean value) {
-    DynamicsJNI.btDiscreteDynamicsWorld_interpolation_set(swigCPtr, this, value);
+  public void setLatencyMotionStateInterpolation(boolean latencyInterpolation) {
+    DynamicsJNI.btDiscreteDynamicsWorld_setLatencyMotionStateInterpolation(swigCPtr, this, latencyInterpolation);
   }
 
-  public boolean getInterpolation() {
-    return DynamicsJNI.btDiscreteDynamicsWorld_interpolation_get(swigCPtr, this);
+  public boolean getLatencyMotionStateInterpolation() {
+    return DynamicsJNI.btDiscreteDynamicsWorld_getLatencyMotionStateInterpolation(swigCPtr, this);
   }
 
 }

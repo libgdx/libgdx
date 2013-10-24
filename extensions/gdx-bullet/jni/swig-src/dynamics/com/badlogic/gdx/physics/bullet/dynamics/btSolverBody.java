@@ -149,6 +149,24 @@ public class btSolverBody extends BulletBase {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
+  public void setExternalForceImpulse(btVector3 value) {
+    DynamicsJNI.btSolverBody_externalForceImpulse_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  }
+
+  public btVector3 getExternalForceImpulse() {
+    long cPtr = DynamicsJNI.btSolverBody_externalForceImpulse_get(swigCPtr, this);
+    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+  }
+
+  public void setExternalTorqueImpulse(btVector3 value) {
+    DynamicsJNI.btSolverBody_externalTorqueImpulse_set(swigCPtr, this, btVector3.getCPtr(value), value);
+  }
+
+  public btVector3 getExternalTorqueImpulse() {
+    long cPtr = DynamicsJNI.btSolverBody_externalTorqueImpulse_get(swigCPtr, this);
+    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+  }
+
   public void setOriginalBody(btRigidBody value) {
     DynamicsJNI.btSolverBody_originalBody_set(swigCPtr, this, btRigidBody.getCPtr(value), value);
   }
@@ -156,6 +174,10 @@ public class btSolverBody extends BulletBase {
   public btRigidBody getOriginalBody() {
     long cPtr = DynamicsJNI.btSolverBody_originalBody_get(swigCPtr, this);
     return (cPtr == 0) ? null : new btRigidBody(cPtr, false);
+  }
+
+  public void getVelocityInLocalPointNoDelta(Vector3 rel_pos, Vector3 velocity) {
+    DynamicsJNI.btSolverBody_getVelocityInLocalPointNoDelta(swigCPtr, this, rel_pos, velocity);
   }
 
   public void getVelocityInLocalPointObsolete(Vector3 rel_pos, Vector3 velocity) {

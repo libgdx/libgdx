@@ -88,13 +88,4 @@ public class ClosestPointInput extends BulletBase {
     return CollisionJNI.ClosestPointInput_maximumDistanceSquared_get(swigCPtr, this);
   }
 
-  public void setStackAlloc(btStackAlloc value) {
-    CollisionJNI.ClosestPointInput_stackAlloc_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
-  }
-
-  public btStackAlloc getStackAlloc() {
-    long cPtr = CollisionJNI.ClosestPointInput_stackAlloc_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btStackAlloc(cPtr, false);
-  }
-
 }

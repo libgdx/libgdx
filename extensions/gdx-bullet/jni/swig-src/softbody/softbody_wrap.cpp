@@ -3233,6 +3233,34 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1clampCells_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btSparseSdf< 3 > *arg1 = (btSparseSdf< 3 > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSparseSdf< 3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  if (arg1) (arg1)->m_clampCells = arg2;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1clampCells_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btSparseSdf< 3 > *arg1 = (btSparseSdf< 3 > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSparseSdf< 3 > **)&jarg1; 
+  result = (int) ((arg1)->m_clampCells);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1nprobes_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btSparseSdf< 3 > *arg1 = (btSparseSdf< 3 > *) 0 ;
   int arg2 ;
@@ -3289,7 +3317,22 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1Initialize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1Initialize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btSparseSdf< 3 > *arg1 = (btSparseSdf< 3 > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSparseSdf< 3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->Initialize(arg2,arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1Initialize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
   btSparseSdf< 3 > *arg1 = (btSparseSdf< 3 > *) 0 ;
   int arg2 ;
   
@@ -3302,7 +3345,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1Initialize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSparseSdf3_1Initialize_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   btSparseSdf< 3 > *arg1 = (btSparseSdf< 3 > *) 0 ;
   
   (void)jenv;
@@ -3587,6 +3630,34 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_Softbody
   (void)jarg1_;
   arg1 = *(btSoftBodyWorldInfo **)&jarg1; 
   result = (btScalar) ((arg1)->water_offset);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBodyWorldInfo_1maxDisplacement_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btSoftBodyWorldInfo *arg1 = (btSoftBodyWorldInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSoftBodyWorldInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_maxDisplacement = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBodyWorldInfo_1maxDisplacement_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btSoftBodyWorldInfo *arg1 = (btSoftBodyWorldInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btSoftBodyWorldInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_maxDisplacement);
   jresult = (jfloat)result; 
   return jresult;
 }

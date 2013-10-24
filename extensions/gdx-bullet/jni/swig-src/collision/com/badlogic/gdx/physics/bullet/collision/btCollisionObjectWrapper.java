@@ -112,6 +112,22 @@ public class btCollisionObjectWrapper extends BulletBase {
 	return CollisionJNI.btCollisionObjectWrapper_worldTransform_get(swigCPtr, this);
 }
 
+  public void setPartId(int value) {
+    CollisionJNI.btCollisionObjectWrapper_partId_set(swigCPtr, this, value);
+  }
+
+  public int getPartId() {
+    return CollisionJNI.btCollisionObjectWrapper_partId_get(swigCPtr, this);
+  }
+
+  public void setIndex(int value) {
+    CollisionJNI.btCollisionObjectWrapper_index_set(swigCPtr, this, value);
+  }
+
+  public int getIndex() {
+    return CollisionJNI.btCollisionObjectWrapper_index_get(swigCPtr, this);
+  }
+
   public btCollisionShape getCollisionShape() {
     long cPtr = CollisionJNI.btCollisionObjectWrapper_getCollisionShape(swigCPtr, this);
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);

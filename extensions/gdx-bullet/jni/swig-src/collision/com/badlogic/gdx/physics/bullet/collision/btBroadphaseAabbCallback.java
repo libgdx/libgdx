@@ -58,8 +58,28 @@ public class btBroadphaseAabbCallback extends BulletBase {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btBroadphaseAabbCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btBroadphaseAabbCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public boolean process(btBroadphaseProxy proxy) {
     return CollisionJNI.btBroadphaseAabbCallback_process(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy), proxy);
+  }
+
+  public btBroadphaseAabbCallback() {
+    this(CollisionJNI.new_btBroadphaseAabbCallback(), true);
+    CollisionJNI.btBroadphaseAabbCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

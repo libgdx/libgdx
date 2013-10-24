@@ -159,15 +159,6 @@ public class btDispatcherInfo extends BulletBase {
     return CollisionJNI.btDispatcherInfo_convexConservativeDistanceThreshold_get(swigCPtr, this);
   }
 
-  public void setStackAllocator(btStackAlloc value) {
-    CollisionJNI.btDispatcherInfo_stackAllocator_set(swigCPtr, this, btStackAlloc.getCPtr(value), value);
-  }
-
-  public btStackAlloc getStackAllocator() {
-    long cPtr = CollisionJNI.btDispatcherInfo_stackAllocator_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btStackAlloc(cPtr, false);
-  }
-
   public final static class DispatchFunc {
     public final static int DISPATCH_DISCRETE = 1;
     public final static int DISPATCH_CONTINUOUS = DISPATCH_DISCRETE + 1;

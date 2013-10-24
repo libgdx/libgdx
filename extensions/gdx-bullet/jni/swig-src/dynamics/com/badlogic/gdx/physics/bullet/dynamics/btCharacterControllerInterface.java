@@ -67,8 +67,8 @@ public class btCharacterControllerInterface extends btActionInterface {
     DynamicsJNI.btCharacterControllerInterface_setVelocityForTimeInterval(swigCPtr, this, velocity, timeInterval);
   }
 
-  public void reset() {
-    DynamicsJNI.btCharacterControllerInterface_reset(swigCPtr, this);
+  public void reset(btCollisionWorld collisionWorld) {
+    DynamicsJNI.btCharacterControllerInterface_reset(swigCPtr, this, btCollisionWorld.getCPtr(collisionWorld), collisionWorld);
   }
 
   public void warp(Vector3 origin) {
@@ -93,6 +93,10 @@ public class btCharacterControllerInterface extends btActionInterface {
 
   public boolean onGround() {
     return DynamicsJNI.btCharacterControllerInterface_onGround(swigCPtr, this);
+  }
+
+  public void setUpInterpolate(boolean value) {
+    DynamicsJNI.btCharacterControllerInterface_setUpInterpolate(swigCPtr, this, value);
   }
 
 }

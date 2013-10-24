@@ -63,6 +63,14 @@ public class LinearMath implements LinearMathConstants {
     return LinearMathJNI.btGetVersion();
   }
 
+  public static void setBtInfinityMask(int value) {
+    LinearMathJNI.btInfinityMask_set(value);
+  }
+
+  public static int getBtInfinityMask() {
+    return LinearMathJNI.btInfinityMask_get();
+  }
+
   public static float btSqrt(float y) {
     return LinearMathJNI.btSqrt(y);
   }
@@ -194,6 +202,14 @@ public class LinearMath implements LinearMathConstants {
     assert src.isDirect() : "Buffer must be allocated direct.";
     {
       return LinearMathJNI.btUnswapEndianDouble(src);
+    }
+  }
+
+  public static float btLargeDot(java.nio.FloatBuffer a, java.nio.FloatBuffer b, int n) {
+    assert a.isDirect() : "Buffer must be allocated direct.";
+    assert b.isDirect() : "Buffer must be allocated direct.";
+    {
+      return LinearMathJNI.btLargeDot(a, b, n);
     }
   }
 

@@ -31,7 +31,7 @@ public:
     virtual void drawAabb(btVector3 const &from, btVector3 const &to, btVector3 const &color);
     virtual void drawTransform(btTransform const &transform, btScalar orthoLen);
     virtual void drawArc(btVector3 const &center, btVector3 const &normal, btVector3 const &axis, btScalar radiusA, btScalar radiusB, btScalar minAngle, btScalar maxAngle, btVector3 const &color, bool drawSect, btScalar stepDegrees = btScalar(10.f));
-    virtual void drawSpherePatch(btVector3 const &center, btVector3 const &up, btVector3 const &axis, btScalar radius, btScalar minTh, btScalar maxTh, btScalar minPs, btScalar maxPs, btVector3 const &color, btScalar stepDegrees = btScalar(10.f));
+    virtual void drawSpherePatch(btVector3 const &center, btVector3 const &up, btVector3 const &axis, btScalar radius, btScalar minTh, btScalar maxTh, btScalar minPs, btScalar maxPs, btVector3 const &color, btScalar stepDegrees = btScalar(10.f), bool drawCenter = true);
     virtual void drawBox(btVector3 const &bbMin, btVector3 const &bbMax, btVector3 const &color);
     virtual void drawBox(btVector3 const &bbMin, btVector3 const &bbMax, btTransform const &trans, btVector3 const &color);
     virtual void drawCapsule(btScalar radius, btScalar halfHeight, int upAxis, btTransform const &transform, btVector3 const &color);
@@ -40,10 +40,10 @@ public:
     virtual void drawPlane(btVector3 const &planeNormal, btScalar planeConst, btTransform const &transform, btVector3 const &color);
 public:
     bool swig_overrides(int n) {
-      return (n < 23 ? swig_override[n] : false);
+      return (n < 24 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[23];
+    bool swig_override[24];
 };
 
 class SwigDirector_btMotionState : public btMotionState, public Swig::Director {

@@ -58,8 +58,28 @@ public class btNodeOverlapCallback extends BulletBase {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btNodeOverlapCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btNodeOverlapCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void processNode(int subPart, int triangleIndex) {
     CollisionJNI.btNodeOverlapCallback_processNode(swigCPtr, this, subPart, triangleIndex);
+  }
+
+  public btNodeOverlapCallback() {
+    this(CollisionJNI.new_btNodeOverlapCallback(), true);
+    CollisionJNI.btNodeOverlapCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
 }

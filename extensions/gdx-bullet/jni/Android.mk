@@ -28,6 +28,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionObject.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCollisionWorld.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.cpp\
+	src/bullet/BulletCollision/CollisionDispatch/btCompoundCompoundCollisionAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btConvex2dConvex2dAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btConvexConcaveCollisionAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btConvexConvexAlgorithm.cpp\
@@ -35,6 +36,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btEmptyCollisionAlgorithm.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btGhostObject.cpp\
+	src/bullet/BulletCollision/CollisionDispatch/btHashedSimplePairCache.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btInternalEdgeUtility.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btManifoldResult.cpp\
 	src/bullet/BulletCollision/CollisionDispatch/btSimulationIslandManager.cpp\
@@ -105,6 +107,7 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Character/btKinematicCharacterController.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btConeTwistConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btContactConstraint.cpp\
+	src/bullet/BulletDynamics/ConstraintSolver/btFixedConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGearConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.cpp\
 	src/bullet/BulletDynamics/ConstraintSolver/btGeneric6DofSpringConstraint.cpp\
@@ -120,6 +123,15 @@ LOCAL_SRC_FILES := memcpy_wrap.c\
 	src/bullet/BulletDynamics/Dynamics/btRigidBody.cpp\
 	src/bullet/BulletDynamics/Dynamics/btSimpleDynamicsWorld.cpp\
 	src/bullet/BulletDynamics/Dynamics/Bullet-C-API.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBody.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraint.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyConstraintSolver.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointLimitConstraint.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyJointMotor.cpp\
+	src/bullet/BulletDynamics/Featherstone/btMultiBodyPoint2Point.cpp\
+	src/bullet/BulletDynamics/MLCPSolvers/btDantzigLCP.cpp\
+	src/bullet/BulletDynamics/MLCPSolvers/btMLCPSolver.cpp\
 	src/bullet/BulletDynamics/Vehicle/btRaycastVehicle.cpp\
 	src/bullet/BulletDynamics/Vehicle/btWheelInfo.cpp\
 	src/bullet/BulletSoftBody/btDefaultSoftBodySolver.cpp\

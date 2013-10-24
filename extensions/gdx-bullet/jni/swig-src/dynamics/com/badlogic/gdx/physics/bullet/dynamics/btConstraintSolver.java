@@ -63,16 +63,20 @@ public class btConstraintSolver extends BulletBase {
     DynamicsJNI.btConstraintSolver_prepareSolve(swigCPtr, this, arg0, arg1);
   }
 
-  public float solveGroup(SWIGTYPE_p_p_btCollisionObject bodies, int numBodies, SWIGTYPE_p_p_btPersistentManifold manifold, int numManifolds, SWIGTYPE_p_p_btTypedConstraint constraints, int numConstraints, btContactSolverInfo info, btIDebugDraw debugDrawer, btStackAlloc stackAlloc, btDispatcher dispatcher) {
-    return DynamicsJNI.btConstraintSolver_solveGroup(swigCPtr, this, SWIGTYPE_p_p_btCollisionObject.getCPtr(bodies), numBodies, SWIGTYPE_p_p_btPersistentManifold.getCPtr(manifold), numManifolds, SWIGTYPE_p_p_btTypedConstraint.getCPtr(constraints), numConstraints, btContactSolverInfo.getCPtr(info), info, btIDebugDraw.getCPtr(debugDrawer), debugDrawer, btStackAlloc.getCPtr(stackAlloc), stackAlloc, btDispatcher.getCPtr(dispatcher), dispatcher);
+  public float solveGroup(SWIGTYPE_p_p_btCollisionObject bodies, int numBodies, SWIGTYPE_p_p_btPersistentManifold manifold, int numManifolds, SWIGTYPE_p_p_btTypedConstraint constraints, int numConstraints, btContactSolverInfo info, btIDebugDraw debugDrawer, btDispatcher dispatcher) {
+    return DynamicsJNI.btConstraintSolver_solveGroup(swigCPtr, this, SWIGTYPE_p_p_btCollisionObject.getCPtr(bodies), numBodies, SWIGTYPE_p_p_btPersistentManifold.getCPtr(manifold), numManifolds, SWIGTYPE_p_p_btTypedConstraint.getCPtr(constraints), numConstraints, btContactSolverInfo.getCPtr(info), info, btIDebugDraw.getCPtr(debugDrawer), debugDrawer, btDispatcher.getCPtr(dispatcher), dispatcher);
   }
 
-  public void allSolved(btContactSolverInfo arg0, btIDebugDraw arg1, btStackAlloc arg2) {
-    DynamicsJNI.btConstraintSolver_allSolved(swigCPtr, this, btContactSolverInfo.getCPtr(arg0), arg0, btIDebugDraw.getCPtr(arg1), arg1, btStackAlloc.getCPtr(arg2), arg2);
+  public void allSolved(btContactSolverInfo arg0, btIDebugDraw arg1) {
+    DynamicsJNI.btConstraintSolver_allSolved(swigCPtr, this, btContactSolverInfo.getCPtr(arg0), arg0, btIDebugDraw.getCPtr(arg1), arg1);
   }
 
   public void reset() {
     DynamicsJNI.btConstraintSolver_reset(swigCPtr, this);
+  }
+
+  public int getSolverType() {
+    return DynamicsJNI.btConstraintSolver_getSolverType(swigCPtr, this);
   }
 
 }

@@ -58,8 +58,8 @@ public class btConvexPenetrationDepthSolver extends BulletBase {
 		super.delete();
 	}
 
-  public boolean calcPenDepth(SWIGTYPE_p_btSimplexSolverInterface simplexSolver, btConvexShape convexA, btConvexShape convexB, Matrix4 transA, Matrix4 transB, Vector3 v, Vector3 pa, Vector3 pb, btIDebugDraw debugDraw, btStackAlloc stackAlloc) {
-    return CollisionJNI.btConvexPenetrationDepthSolver_calcPenDepth(swigCPtr, this, SWIGTYPE_p_btSimplexSolverInterface.getCPtr(simplexSolver), btConvexShape.getCPtr(convexA), convexA, btConvexShape.getCPtr(convexB), convexB, transA, transB, v, pa, pb, btIDebugDraw.getCPtr(debugDraw), debugDraw, btStackAlloc.getCPtr(stackAlloc), stackAlloc);
+  public boolean calcPenDepth(btVoronoiSimplexSolver simplexSolver, btConvexShape convexA, btConvexShape convexB, Matrix4 transA, Matrix4 transB, Vector3 v, Vector3 pa, Vector3 pb, btIDebugDraw debugDraw) {
+    return CollisionJNI.btConvexPenetrationDepthSolver_calcPenDepth(swigCPtr, this, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver, btConvexShape.getCPtr(convexA), convexA, btConvexShape.getCPtr(convexB), convexB, transA, transB, v, pa, pb, btIDebugDraw.getCPtr(debugDraw), debugDraw);
   }
 
 }

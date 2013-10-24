@@ -58,6 +58,21 @@ public class btTriangleRaycastCallback extends btTriangleCallback {
 		super.delete();
 	}
 
+  protected void swigDirectorDisconnect() {
+    swigCMemOwn = false;
+    delete();
+  }
+
+  public void swigReleaseOwnership() {
+    swigCMemOwn = false;
+    CollisionJNI.btTriangleRaycastCallback_change_ownership(this, swigCPtr, false);
+  }
+
+  public void swigTakeOwnership() {
+    swigCMemOwn = true;
+    CollisionJNI.btTriangleRaycastCallback_change_ownership(this, swigCPtr, true);
+  }
+
   public void setFrom(btVector3 value) {
     CollisionJNI.btTriangleRaycastCallback_from_set(swigCPtr, this, btVector3.getCPtr(value), value);
   }
@@ -92,6 +107,20 @@ public class btTriangleRaycastCallback extends btTriangleCallback {
     return CollisionJNI.btTriangleRaycastCallback_hitFraction_get(swigCPtr, this);
   }
 
+  public btTriangleRaycastCallback(Vector3 from, Vector3 to, long flags) {
+    this(CollisionJNI.new_btTriangleRaycastCallback__SWIG_0(from, to, flags), true);
+    CollisionJNI.btTriangleRaycastCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
+
+  public btTriangleRaycastCallback(Vector3 from, Vector3 to) {
+    this(CollisionJNI.new_btTriangleRaycastCallback__SWIG_1(from, to), true);
+    CollisionJNI.btTriangleRaycastCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+  }
+
+  public void processTriangle(btVector3 triangle, int partId, int triangleIndex) {
+    if (getClass() == btTriangleRaycastCallback.class) CollisionJNI.btTriangleRaycastCallback_processTriangle(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex); else CollisionJNI.btTriangleRaycastCallback_processTriangleSwigExplicitbtTriangleRaycastCallback(swigCPtr, this, btVector3.getCPtr(triangle), triangle, partId, triangleIndex);
+  }
+
   public float reportHit(Vector3 hitNormalLocal, float hitFraction, int partId, int triangleIndex) {
     return CollisionJNI.btTriangleRaycastCallback_reportHit(swigCPtr, this, hitNormalLocal, hitFraction, partId, triangleIndex);
   }
@@ -100,6 +129,7 @@ public class btTriangleRaycastCallback extends btTriangleCallback {
     public final static int kF_None = 0;
     public final static int kF_FilterBackfaces = 1 << 0;
     public final static int kF_KeepUnflippedNormal = 1 << 1;
+    public final static int kF_UseSubSimplexConvexCastRaytest = 1 << 2;
     public final static int kF_Terminator = 0xFFFFFFFF;
   }
 

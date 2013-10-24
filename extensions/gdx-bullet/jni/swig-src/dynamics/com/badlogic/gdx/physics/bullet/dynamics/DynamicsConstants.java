@@ -18,8 +18,13 @@ import com.badlogic.gdx.math.Matrix4;
 
 public interface DynamicsConstants {
   public final static String btRigidBodyDataName = "btRigidBodyFloatData";
+  public final static String btTypedConstraintDataName = "btTypedConstraintFloatData";
+  public final static String btSliderConstraintDataName = "btSliderConstraintData";
   public final static String btPoint2PointConstraintDataName = "btPoint2PointConstraintFloatData";
+  public final static String btGeneric6DofConstraintDataName = "btGeneric6DofConstraintData";
   public final static int BT_6DOF_FLAGS_AXIS_SHIFT = 3;
+  public final static String btConeTwistConstraintDataName = "btConeTwistConstraintData";
+  public final static String btGeneric6DofSpringConstraintDataName = "btGeneric6DofSpringConstraintData";
   public final static int _BT_USE_CENTER_LIMIT_ = 1;
   public final static String btHingeConstraintDataName = "btHingeConstraintFloatData";
 }

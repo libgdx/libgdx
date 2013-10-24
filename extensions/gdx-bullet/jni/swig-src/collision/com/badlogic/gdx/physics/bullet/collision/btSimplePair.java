@@ -15,17 +15,17 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 
-public class btSubsimplexConvexCast extends btConvexCast {
+public class btSimplePair extends BulletBase {
 	private long swigCPtr;
 	
-	protected btSubsimplexConvexCast(final String className, long cPtr, boolean cMemoryOwn) {
-		super(className, CollisionJNI.btSubsimplexConvexCast_SWIGUpcast(cPtr), cMemoryOwn);
+	protected btSimplePair(final String className, long cPtr, boolean cMemoryOwn) {
+		super(className, cPtr, cMemoryOwn);
 		swigCPtr = cPtr;
 	}
 	
-	/** Construct a new btSubsimplexConvexCast, normally you should not need this constructor it's intended for low-level usage. */
-	public btSubsimplexConvexCast(long cPtr, boolean cMemoryOwn) {
-		this("btSubsimplexConvexCast", cPtr, cMemoryOwn);
+	/** Construct a new btSimplePair, normally you should not need this constructor it's intended for low-level usage. */ 
+	public btSimplePair(long cPtr, boolean cMemoryOwn) {
+		this("btSimplePair", cPtr, cMemoryOwn);
 		construct();
 	}
 	
@@ -33,10 +33,10 @@ public class btSubsimplexConvexCast extends btConvexCast {
 	protected void reset(long cPtr, boolean cMemoryOwn) {
 		if (!destroyed)
 			destroy();
-		super.reset(CollisionJNI.btSubsimplexConvexCast_SWIGUpcast(swigCPtr = cPtr), cMemoryOwn);
+		super.reset(swigCPtr = cPtr, cMemoryOwn);
 	}
 	
-	public static long getCPtr(btSubsimplexConvexCast obj) {
+	public static long getCPtr(btSimplePair obj) {
 		return (obj == null) ? 0 : obj.swigCPtr;
 	}
 
@@ -51,15 +51,31 @@ public class btSubsimplexConvexCast extends btConvexCast {
 		if (swigCPtr != 0) {
 			if (swigCMemOwn) {
 				swigCMemOwn = false;
-				CollisionJNI.delete_btSubsimplexConvexCast(swigCPtr);
+				CollisionJNI.delete_btSimplePair(swigCPtr);
 			}
 			swigCPtr = 0;
 		}
 		super.delete();
 	}
 
-  public btSubsimplexConvexCast(btConvexShape shapeA, btConvexShape shapeB, btVoronoiSimplexSolver simplexSolver) {
-    this(CollisionJNI.new_btSubsimplexConvexCast(btConvexShape.getCPtr(shapeA), shapeA, btConvexShape.getCPtr(shapeB), shapeB, btVoronoiSimplexSolver.getCPtr(simplexSolver), simplexSolver), true);
+  public btSimplePair(int indexA, int indexB) {
+    this(CollisionJNI.new_btSimplePair(indexA, indexB), true);
+  }
+
+  public void setIndexA(int value) {
+    CollisionJNI.btSimplePair_indexA_set(swigCPtr, this, value);
+  }
+
+  public int getIndexA() {
+    return CollisionJNI.btSimplePair_indexA_get(swigCPtr, this);
+  }
+
+  public void setIndexB(int value) {
+    CollisionJNI.btSimplePair_indexB_set(swigCPtr, this, value);
+  }
+
+  public int getIndexB() {
+    return CollisionJNI.btSimplePair_indexB_get(swigCPtr, this);
   }
 
 }
