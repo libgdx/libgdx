@@ -69,6 +69,7 @@ struct	btSparseSdf
 	btScalar						voxelsz;
 	int								puid;
 	int								ncells;
+	int								m_clampCells;
 	int								nprobes;
 	int								nqueries;	
 
@@ -77,10 +78,13 @@ struct	btSparseSdf
 	//
 
 	//
-	void					Initialize(int hashsize=2383)
+	void					Initialize(int hashsize=2383, int clampCells = 256*1024)
 	{
+		//avoid a crash due to running out of memory, so clamp the maximum number of cells allocated
+		//if this limit is reached, the SDF is reset (at the cost of some performance during the reset)
+		m_clampCells = clampCells;
 		cells.resize(hashsize,0);
-		Reset();		
+		Reset();
 	}
 	//
 	void					Reset()
@@ -181,6 +185,15 @@ struct	btSparseSdf
 		{
 			++nprobes;		
 			++ncells;
+			int sz = sizeof(Cell);
+			if (ncells>m_clampCells)
+			{
+				static int numResets=0;
+				numResets++;
+//				printf("numResets=%d\n",numResets);
+				Reset();
+			}
+
 			c=new Cell();
 			c->next=root;root=c;
 			c->pclient=shape;

@@ -62,6 +62,10 @@ void	btConeShape::setConeUpIndex(int upIndex)
 	default:
 		btAssert(0);
 	};
+	
+	m_implicitShapeDimensions[m_coneIndices[0]] = m_radius;
+	m_implicitShapeDimensions[m_coneIndices[1]] = m_height;
+	m_implicitShapeDimensions[m_coneIndices[2]] = m_radius;
 }
 
 btVector3 btConeShape::coneLocalSupport(const btVector3& v) const

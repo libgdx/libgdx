@@ -1767,7 +1767,23 @@ void			btSoftBody::predictMotion(btScalar dt)
 	{
 		Node&	n=m_nodes[i];
 		n.m_q	=	n.m_x;
-		n.m_v	+=	n.m_f*n.m_im*m_sst.sdt;
+		btVector3 deltaV = n.m_f*n.m_im*m_sst.sdt;
+		{
+			btScalar maxDisplacement = m_worldInfo->m_maxDisplacement;
+			btScalar clampDeltaV = maxDisplacement/m_sst.sdt;
+			for (int c=0;c<3;c++)
+			{
+				if (deltaV[c]>clampDeltaV)
+				{
+					deltaV[c] = clampDeltaV;
+				}
+				if (deltaV[c]<-clampDeltaV)
+				{
+					deltaV[c]=-clampDeltaV;
+				}
+			}
+		}
+		n.m_v	+=	deltaV;
 		n.m_x	+=	n.m_v*m_sst.sdt;
 		n.m_f	=	btVector3(0,0,0);
 	}

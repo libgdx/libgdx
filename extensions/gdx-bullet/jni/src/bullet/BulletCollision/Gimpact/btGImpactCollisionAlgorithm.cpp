@@ -231,17 +231,15 @@ void btGImpactCollisionAlgorithm::shape_vs_shape_collision(
 
 
 	{
-		btCollisionObjectWrapper ob0(body0Wrap,shape0,body0Wrap->getCollisionObject(), body0Wrap->getWorldTransform());
-		btCollisionObjectWrapper ob1(body1Wrap,shape1,body1Wrap->getCollisionObject(),body1Wrap->getWorldTransform());
-
-		btCollisionAlgorithm* algor = newAlgorithm(&ob0,&ob1);
+		
+		btCollisionAlgorithm* algor = newAlgorithm(body0Wrap,body1Wrap);
 		// post :	checkManifold is called
 
 		m_resultOut->setShapeIdentifiersA(m_part0,m_triface0);
 		m_resultOut->setShapeIdentifiersB(m_part1,m_triface1);
-
-		algor->processCollision(&ob0,&ob1,*m_dispatchInfo,m_resultOut);
-
+		
+		algor->processCollision(body0Wrap,body1Wrap,*m_dispatchInfo,m_resultOut);
+		
 		algor->~btCollisionAlgorithm();
 		m_dispatcher->freeCollisionAlgorithm(algor);
 	}
@@ -258,8 +256,8 @@ void btGImpactCollisionAlgorithm::convex_vs_convex_collision(
 	m_resultOut->setShapeIdentifiersA(m_part0,m_triface0);
 	m_resultOut->setShapeIdentifiersB(m_part1,m_triface1);
 
-	btCollisionObjectWrapper ob0(body0Wrap,shape0,body0Wrap->getCollisionObject(),body0Wrap->getWorldTransform());
-	btCollisionObjectWrapper ob1(body1Wrap,shape1,body1Wrap->getCollisionObject(),body1Wrap->getWorldTransform());
+	btCollisionObjectWrapper ob0(body0Wrap,shape0,body0Wrap->getCollisionObject(),body0Wrap->getWorldTransform(),m_part0,m_triface0);
+	btCollisionObjectWrapper ob1(body1Wrap,shape1,body1Wrap->getCollisionObject(),body1Wrap->getWorldTransform(),m_part1,m_triface1);
 	checkConvexAlgorithm(&ob0,&ob1);
 	m_convex_algorithm->processCollision(&ob0,&ob1,*m_dispatchInfo,m_resultOut);
 
@@ -553,8 +551,8 @@ void btGImpactCollisionAlgorithm::gimpact_vs_gimpact(
 			tr1 = orgtrans1*shape1->getChildTransform(m_triface1);
 		}
 
-		btCollisionObjectWrapper ob0(body0Wrap,colshape0,body0Wrap->getCollisionObject(),tr0);
-		btCollisionObjectWrapper ob1(body1Wrap,colshape1,body1Wrap->getCollisionObject(),tr1);
+		btCollisionObjectWrapper ob0(body0Wrap,colshape0,body0Wrap->getCollisionObject(),tr0,m_part0,m_triface0);
+		btCollisionObjectWrapper ob1(body1Wrap,colshape1,body1Wrap->getCollisionObject(),tr1,m_part1,m_triface1);
 
 		//collide two convex shapes
 		convex_vs_convex_collision(&ob0,&ob1,colshape0,colshape1);
@@ -654,17 +652,29 @@ void btGImpactCollisionAlgorithm::gimpact_vs_shape(const btCollisionObjectWrappe
 			tr0 = orgtrans0*shape0->getChildTransform(child_index);
 		}
 
-		btCollisionObjectWrapper ob0(body0Wrap,colshape0,body0Wrap->getCollisionObject(),body0Wrap->getWorldTransform());
+		btCollisionObjectWrapper ob0(body0Wrap,colshape0,body0Wrap->getCollisionObject(),body0Wrap->getWorldTransform(),m_part0,m_triface0);
+		const btCollisionObjectWrapper* prevObj0 = m_resultOut->getBody0Wrap();
+		
+		if (m_resultOut->getBody0Wrap()->getCollisionObject()==ob0.getCollisionObject())
+		{
+			m_resultOut->setBody0Wrap(&ob0);
+		} else
+		{
+			m_resultOut->setBody1Wrap(&ob0);
+		}
 
 		//collide two shapes
 		if(swapped)
 		{
+			
 			shape_vs_shape_collision(body1Wrap,&ob0,shape1,colshape0);
 		}
 		else
 		{
+			
 			shape_vs_shape_collision(&ob0,body1Wrap,colshape0,shape1);
 		}
+		m_resultOut->setBody0Wrap(prevObj0);
 
 	}
 
@@ -686,10 +696,29 @@ void btGImpactCollisionAlgorithm::gimpact_vs_compoundshape(const btCollisionObje
 		const btCollisionShape * colshape1 = shape1->getChildShape(i);
 		btTransform childtrans1 = orgtrans1*shape1->getChildTransform(i);
 
-		btCollisionObjectWrapper ob1(body1Wrap,colshape1,body1Wrap->getCollisionObject(),childtrans1);
+		btCollisionObjectWrapper ob1(body1Wrap,colshape1,body1Wrap->getCollisionObject(),childtrans1,-1,i);
+		
+		const btCollisionObjectWrapper* tmp = 0;
+		if (m_resultOut->getBody0Wrap()->getCollisionObject()==ob1.getCollisionObject())
+		{
+			tmp = m_resultOut->getBody0Wrap();
+			m_resultOut->setBody0Wrap(&ob1);
+		} else
+		{
+			tmp = m_resultOut->getBody1Wrap();
+			m_resultOut->setBody1Wrap(&ob1);
+		}
 		//collide child shape
 		gimpact_vs_shape(body0Wrap, &ob1,
 					  shape0,colshape1,swapped);
+
+		if (m_resultOut->getBody0Wrap()->getCollisionObject()==ob1.getCollisionObject())
+		{
+			m_resultOut->setBody0Wrap(tmp);
+		} else
+		{
+			m_resultOut->setBody1Wrap(tmp);
+		}
 	}
 }
 
@@ -778,8 +807,31 @@ public:
             algorithm->setPart1(partId);
             algorithm->setFace1(triangleIndex);
         }
+
+		btCollisionObjectWrapper ob1Wrap(body1Wrap,&tri1,body1Wrap->getCollisionObject(),body1Wrap->getWorldTransform(),partId,triangleIndex);
+		const btCollisionObjectWrapper * tmp = 0;
+
+		if (algorithm->internalGetResultOut()->getBody0Wrap()->getCollisionObject()==ob1Wrap.getCollisionObject())
+		{
+			tmp = algorithm->internalGetResultOut()->getBody0Wrap();
+			algorithm->internalGetResultOut()->setBody0Wrap(&ob1Wrap);
+		} else
+		{
+			tmp = algorithm->internalGetResultOut()->getBody1Wrap();
+			algorithm->internalGetResultOut()->setBody1Wrap(&ob1Wrap);
+		}
+		
 		algorithm->gimpact_vs_shape(
-							body0Wrap,body1Wrap,gimpactshape0,&tri1,swapped);
+							body0Wrap,&ob1Wrap,gimpactshape0,&tri1,swapped);
+
+		if (algorithm->internalGetResultOut()->getBody0Wrap()->getCollisionObject()==ob1Wrap.getCollisionObject())
+		{
+			algorithm->internalGetResultOut()->setBody0Wrap(tmp);
+		} else
+		{
+			algorithm->internalGetResultOut()->setBody1Wrap(tmp);
+		}
+
 	}
 };
 
