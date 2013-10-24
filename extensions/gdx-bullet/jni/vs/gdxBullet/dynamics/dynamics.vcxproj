@@ -115,6 +115,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btContactConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
@@ -130,6 +131,15 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
     <ClCompile Include="..\..\..\src\custom\gdx\dynamics\InternalTickCallback.cpp" />

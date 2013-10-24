@@ -85,6 +85,12 @@
     <Filter Include="Source Files\custom\gdx\linearmath">
       <UniqueIdentifier>{9f0d76c7-b963-4948-adf6-1a9768f1c12f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Featherstone">
+      <UniqueIdentifier>{c4ce6a33-0134-4dda-896e-050b5050dfa8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\MLCPSolvers">
+      <UniqueIdentifier>{95104f21-6997-4d0f-a2eb-56789f467fd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\swig-src\linearmath\linearmath_wrap.cpp">
@@ -524,6 +530,42 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp">
       <Filter>Source Files\custom\gdx\linearmath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
