@@ -50,7 +50,7 @@ public class Circle implements Serializable {
 		this.radius = radius;
 	}
     
-    public void set (Vector2 position, float radius) {
+	public void set (Vector2 position, float radius) {
 		this.x = position.x;
 		this.y = position.y;
 		this.radius = radius;
