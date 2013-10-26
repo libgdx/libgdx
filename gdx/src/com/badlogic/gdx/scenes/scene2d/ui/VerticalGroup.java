@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -32,6 +33,7 @@ public class VerticalGroup extends WidgetGroup {
 	private boolean sizeInvalid = true;
 	private int alignment;
 	private boolean reverse;
+	private float spacing;
 
 	public VerticalGroup () {
 		setTouchable(Touchable.childrenOnly);
@@ -55,10 +57,11 @@ public class VerticalGroup extends WidgetGroup {
 
 	private void computeSize () {
 		sizeInvalid = false;
-		prefWidth = 0;
-		prefHeight = 0;
 		SnapshotArray<Actor> children = getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
+		int n = children.size;
+		prefWidth = 0;
+		prefHeight = spacing * (n - 1);
+		for (int i = 0; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Layout) {
 				Layout layout = (Layout)child;
@@ -72,6 +75,7 @@ public class VerticalGroup extends WidgetGroup {
 	}
 
 	public void layout () {
+		float spacing = this.spacing;
 		float groupWidth = getWidth();
 		float y = reverse ? 0 : getHeight();
 		float dir = reverse ? 1 : -1;
@@ -94,9 +98,9 @@ public class VerticalGroup extends WidgetGroup {
 				x = groupWidth - width;
 			else
 				x = (groupWidth - width) / 2;
-			if (!reverse) y += height * dir;
+			if (!reverse) y += (height + spacing) * dir;
 			child.setBounds(x, y, width, height);
-			if (reverse) y += height * dir;
+			if (reverse) y += (height + spacing) * dir;
 		}
 	}
 
@@ -108,5 +112,10 @@ public class VerticalGroup extends WidgetGroup {
 	public float getPrefHeight () {
 		if (sizeInvalid) computeSize();
 		return prefHeight;
+	}
+
+	/** Sets the space between children. */
+	public void setSpacing (float spacing) {
+		this.spacing = spacing;
 	}
 }

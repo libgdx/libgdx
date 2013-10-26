@@ -171,6 +171,10 @@ public class Table extends WidgetGroup {
 		invalidate();
 	}
 
+	public boolean getClip () {
+		return clip;
+	}
+
 	/** Returns the row index for the y coordinate. */
 	public int getRow (float y) {
 		return layout.getRow(y);

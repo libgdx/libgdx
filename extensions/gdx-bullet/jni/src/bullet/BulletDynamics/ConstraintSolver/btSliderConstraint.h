@@ -25,7 +25,13 @@ TODO:
 #ifndef BT_SLIDER_CONSTRAINT_H
 #define BT_SLIDER_CONSTRAINT_H
 
-
+#ifdef BT_USE_DOUBLE_PRECISION
+#define btSliderConstraintData2		btSliderConstraintDoubleData
+#define btSliderConstraintDataName  "btSliderConstraintDoubleData"
+#else
+#define btSliderConstraintData2		btSliderConstraintData 
+#define btSliderConstraintDataName	"btSliderConstraintData"
+#endif //BT_USE_DOUBLE_PRECISION
 
 #include "LinearMath/btVector3.h"
 #include "btJacobianEntry.h"
@@ -283,7 +289,10 @@ public:
 
 };
 
+
 ///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+
+
 struct btSliderConstraintData
 {
 	btTypedConstraintData	m_typeConstraintData;
@@ -302,31 +311,48 @@ struct btSliderConstraintData
 };
 
 
+struct btSliderConstraintDoubleData
+{
+	btTypedConstraintDoubleData	m_typeConstraintData;
+	btTransformDoubleData m_rbAFrame; // constraint axii. Assumes z is hinge axis.
+	btTransformDoubleData m_rbBFrame;
+	
+	double	m_linearUpperLimit;
+	double	m_linearLowerLimit;
+
+	double	m_angularUpperLimit;
+	double	m_angularLowerLimit;
+
+	int	m_useLinearReferenceFrameA;
+	int m_useOffsetForConstraintFrame;
+
+};
+
 SIMD_FORCE_INLINE		int	btSliderConstraint::calculateSerializeBufferSize() const
 {
-	return sizeof(btSliderConstraintData);
+	return sizeof(btSliderConstraintData2);
 }
 
 	///fills the dataBuffer and returns the struct name (and 0 on failure)
 SIMD_FORCE_INLINE	const char*	btSliderConstraint::serialize(void* dataBuffer, btSerializer* serializer) const
 {
 
-	btSliderConstraintData* sliderData = (btSliderConstraintData*) dataBuffer;
+	btSliderConstraintData2* sliderData = (btSliderConstraintData2*) dataBuffer;
 	btTypedConstraint::serialize(&sliderData->m_typeConstraintData,serializer);
 
-	m_frameInA.serializeFloat(sliderData->m_rbAFrame);
-	m_frameInB.serializeFloat(sliderData->m_rbBFrame);
+	m_frameInA.serialize(sliderData->m_rbAFrame);
+	m_frameInB.serialize(sliderData->m_rbBFrame);
 
-	sliderData->m_linearUpperLimit = float(m_upperLinLimit);
-	sliderData->m_linearLowerLimit = float(m_lowerLinLimit);
+	sliderData->m_linearUpperLimit = m_upperLinLimit;
+	sliderData->m_linearLowerLimit = m_lowerLinLimit;
 
-	sliderData->m_angularUpperLimit = float(m_upperAngLimit);
-	sliderData->m_angularLowerLimit = float(m_lowerAngLimit);
+	sliderData->m_angularUpperLimit = m_upperAngLimit;
+	sliderData->m_angularLowerLimit = m_lowerAngLimit;
 
 	sliderData->m_useLinearReferenceFrameA = m_useLinearReferenceFrameA;
 	sliderData->m_useOffsetForConstraintFrame = m_useOffsetForConstraintFrame;
 
-	return "btSliderConstraintData";
+	return btSliderConstraintDataName;
 }
 
 

@@ -125,6 +125,10 @@ public class WidgetGroup extends Group implements Layout {
 		invalidateHierarchy();
 	}
 
+	protected void sizeChanged () {
+		invalidate();
+	}
+
 	public void pack () {
 		float newWidth = getPrefWidth();
 		float newHeight = getPrefHeight();
@@ -148,11 +152,5 @@ public class WidgetGroup extends Group implements Layout {
 	public void draw (SpriteBatch batch, float parentAlpha) {
 		validate();
 		super.draw(batch, parentAlpha);
-	}
-
-	public Actor hit (float x, float y, boolean touchable) {
-		if (touchable && getTouchable() == Touchable.disabled) return null;
-		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
-		return super.hit(x, y, touchable);
 	}
 }

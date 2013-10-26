@@ -18,7 +18,6 @@ subject to the following restrictions:
 
 class btIDebugDraw;
 class btPersistentManifold;
-class btStackAlloc;
 class btDispatcher;
 class btCollisionObject;
 #include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
@@ -43,7 +42,7 @@ protected:
 	btAlignedObjectArray<int>	m_orderFrictionConstraintPool;
 	btAlignedObjectArray<btTypedConstraint::btConstraintInfo1> m_tmpConstraintSizesPool;
 	int							m_maxOverrideNumSolverIterations;
-
+	int m_fixedBodyId;
 	void setupFrictionConstraint(	btSolverConstraint& solverConstraint, const btVector3& normalAxis,int solverBodyIdA,int  solverBodyIdB,
 									btManifoldPoint& cp,const btVector3& rel_pos1,const btVector3& rel_pos2,
 									btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation, 
@@ -57,10 +56,11 @@ protected:
 	btSolverConstraint&	addFrictionConstraint(const btVector3& normalAxis,int solverBodyIdA,int solverBodyIdB,int frictionIndex,btManifoldPoint& cp,const btVector3& rel_pos1,const btVector3& rel_pos2,btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation, btScalar desiredVelocity=0., btScalar cfmSlip=0.);
 	btSolverConstraint&	addRollingFrictionConstraint(const btVector3& normalAxis,int solverBodyIdA,int solverBodyIdB,int frictionIndex,btManifoldPoint& cp,const btVector3& rel_pos1,const btVector3& rel_pos2,btCollisionObject* colObj0,btCollisionObject* colObj1, btScalar relaxation, btScalar desiredVelocity=0, btScalar cfmSlip=0.f);
 
-
+	
 	void setupContactConstraint(btSolverConstraint& solverConstraint, int solverBodyIdA, int solverBodyIdB, btManifoldPoint& cp, 
-								const btContactSolverInfo& infoGlobal, btVector3& vel, btScalar& rel_vel, btScalar& relaxation, 
-								btVector3& rel_pos1, btVector3& rel_pos2);
+								const btContactSolverInfo& infoGlobal,btScalar& relaxation, const btVector3& rel_pos1, const btVector3& rel_pos2);
+
+	static void	applyAnisotropicFriction(btCollisionObject* colObj,btVector3& frictionDirection, int frictionMode);
 
 	void setFrictionConstraintImpulse( btSolverConstraint& solverConstraint, int solverBodyIdA,int solverBodyIdB, 
 										 btManifoldPoint& cp, const btContactSolverInfo& infoGlobal);
@@ -70,6 +70,8 @@ protected:
 
 	
 	btScalar restitutionCurve(btScalar rel_vel, btScalar restitution);
+
+	virtual void convertContacts(btPersistentManifold** manifoldPtr, int numManifolds, const btContactSolverInfo& infoGlobal);
 
 	void	convertContact(btPersistentManifold* manifold,const btContactSolverInfo& infoGlobal);
 
@@ -83,8 +85,8 @@ protected:
         const btSolverConstraint& contactConstraint);
 
 	//internal method
-	int		getOrInitSolverBody(btCollisionObject& body);
-	void	initSolverBody(btSolverBody* solverBody, btCollisionObject* collisionObject);
+	int		getOrInitSolverBody(btCollisionObject& body,btScalar timeStep);
+	void	initSolverBody(btSolverBody* solverBody, btCollisionObject* collisionObject, btScalar timeStep);
 
 	void	resolveSingleConstraintRowGeneric(btSolverBody& bodyA,btSolverBody& bodyB,const btSolverConstraint& contactConstraint);
 
@@ -97,12 +99,12 @@ protected:
 protected:
 	
 	
-	virtual void solveGroupCacheFriendlySplitImpulseIterations(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer,btStackAlloc* stackAlloc);
+	virtual void solveGroupCacheFriendlySplitImpulseIterations(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 	virtual btScalar solveGroupCacheFriendlyFinish(btCollisionObject** bodies,int numBodies,const btContactSolverInfo& infoGlobal);
-	btScalar solveSingleIteration(int iteration, btCollisionObject** bodies ,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer,btStackAlloc* stackAlloc);
+	virtual btScalar solveSingleIteration(int iteration, btCollisionObject** bodies ,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 
-	virtual btScalar solveGroupCacheFriendlySetup(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer,btStackAlloc* stackAlloc);
-	virtual btScalar solveGroupCacheFriendlyIterations(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer,btStackAlloc* stackAlloc);
+	virtual btScalar solveGroupCacheFriendlySetup(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
+	virtual btScalar solveGroupCacheFriendlyIterations(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifoldPtr, int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& infoGlobal,btIDebugDraw* debugDrawer);
 
 
 public:
@@ -112,7 +114,7 @@ public:
 	btSequentialImpulseConstraintSolver();
 	virtual ~btSequentialImpulseConstraintSolver();
 
-	virtual btScalar solveGroup(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifold,int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& info, btIDebugDraw* debugDrawer, btStackAlloc* stackAlloc,btDispatcher* dispatcher);
+	virtual btScalar solveGroup(btCollisionObject** bodies,int numBodies,btPersistentManifold** manifold,int numManifolds,btTypedConstraint** constraints,int numConstraints,const btContactSolverInfo& info, btIDebugDraw* debugDrawer,btDispatcher* dispatcher);
 	
 
 	
@@ -132,6 +134,11 @@ public:
 		return m_btSeed2;
 	}
 
+	
+	virtual btConstraintSolverType	getSolverType() const
+	{
+		return BT_SEQUENTIAL_IMPULSE_SOLVER;
+	}
 };
 
 

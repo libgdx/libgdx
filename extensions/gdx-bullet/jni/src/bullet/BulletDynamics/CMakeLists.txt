@@ -6,6 +6,7 @@ SET(BulletDynamics_SRCS
 	Character/btKinematicCharacterController.cpp
 	ConstraintSolver/btConeTwistConstraint.cpp
 	ConstraintSolver/btContactConstraint.cpp
+	ConstraintSolver/btFixedConstraint.cpp
 	ConstraintSolver/btGearConstraint.cpp
 	ConstraintSolver/btGeneric6DofConstraint.cpp
 	ConstraintSolver/btGeneric6DofSpringConstraint.cpp
@@ -23,6 +24,15 @@ SET(BulletDynamics_SRCS
 	Dynamics/Bullet-C-API.cpp
 	Vehicle/btRaycastVehicle.cpp
 	Vehicle/btWheelInfo.cpp
+	Featherstone/btMultiBody.cpp
+	Featherstone/btMultiBodyConstraintSolver.cpp
+	Featherstone/btMultiBodyDynamicsWorld.cpp
+	Featherstone/btMultiBodyJointLimitConstraint.cpp
+	Featherstone/btMultiBodyConstraint.cpp
+	Featherstone/btMultiBodyPoint2Point.cpp
+	Featherstone/btMultiBodyJointMotor.cpp
+	MLCPSolvers/btDantzigLCP.cpp
+	MLCPSolvers/btMLCPSolver.cpp
 )
 
 SET(Root_HDRS
@@ -34,6 +44,7 @@ SET(ConstraintSolver_HDRS
 	ConstraintSolver/btConstraintSolver.h
 	ConstraintSolver/btContactConstraint.h
 	ConstraintSolver/btContactSolverInfo.h
+	ConstraintSolver/btFixedConstraint.h
 	ConstraintSolver/btGearConstraint.h
 	ConstraintSolver/btGeneric6DofConstraint.h
 	ConstraintSolver/btGeneric6DofSpringConstraint.h
@@ -62,6 +73,29 @@ SET(Vehicle_HDRS
 	Vehicle/btWheelInfo.h
 )
 
+SET(Featherstone_HDRS
+	Featherstone/btMultiBody.h
+	Featherstone/btMultiBodyConstraintSolver.h
+	Featherstone/btMultiBodyDynamicsWorld.h
+	Featherstone/btMultiBodyLink.h
+	Featherstone/btMultiBodyLinkCollider.h
+	Featherstone/btMultiBodySolverConstraint.h
+	Featherstone/btMultiBodyConstraint.h
+	Featherstone/btMultiBodyJointLimitConstraint.h
+	Featherstone/btMultiBodyConstraint.h
+	Featherstone/btMultiBodyPoint2Point.h
+	Featherstone/btMultiBodyJointMotor.h
+)
+
+SET(MLCPSolvers_HDRS
+	MLCPSolvers/btDantzigLCP.h
+	MLCPSolvers/btDantzigSolver.h
+	MLCPSolvers/btMLCPSolver.h
+	MLCPSolvers/btMLCPSolverInterface.h
+	MLCPSolvers/btPATHSolver.h
+	MLCPSolvers/btSolveProjectedGaussSeidel.h	
+)
+
 SET(Character_HDRS
 	Character/btCharacterControllerInterface.h
 	Character/btKinematicCharacterController.h
@@ -75,6 +109,8 @@ SET(BulletDynamics_HDRS
 	${Dynamics_HDRS}
 	${Vehicle_HDRS}
 	${Character_HDRS}
+	${Featherstone_HDRS}
+	${MLCPSolvers_HDRS}
 )
 
 
@@ -91,7 +127,9 @@ IF (INSTALL_LIBS)
 			IF (APPLE AND BUILD_SHARED_LIBS AND FRAMEWORK)
 				INSTALL(TARGETS BulletDynamics DESTINATION .)
 			ELSE (APPLE AND BUILD_SHARED_LIBS AND FRAMEWORK)
-				INSTALL(TARGETS BulletDynamics DESTINATION lib${LIB_SUFFIX})
+				INSTALL(TARGETS BulletDynamics RUNTIME DESTINATION bin
+								LIBRARY DESTINATION lib${LIB_SUFFIX}
+								ARCHIVE DESTINATION lib${LIB_SUFFIX})
 				INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 DESTINATION ${INCLUDE_INSTALL_DIR} FILES_MATCHING PATTERN "*.h"  PATTERN
 ".svn" EXCLUDE PATTERN "CMakeFiles" EXCLUDE)
@@ -108,7 +146,8 @@ DESTINATION ${INCLUDE_INSTALL_DIR}/BulletDynamics)
 			SET_PROPERTY(SOURCE ${Dynamics_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION Headers/Dynamics)
 			SET_PROPERTY(SOURCE ${Vehicle_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION Headers/Vehicle)
 			SET_PROPERTY(SOURCE ${Character_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION Headers/Character)
-				
+			SET_PROPERTY(SOURCE ${Featherstone_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION Headers/Featherstone)
+			SET_PROPERTY(SOURCE ${MLCPSolvers_HDRS} PROPERTY MACOSX_PACKAGE_LOCATION Headers/MLCPSolvers)
 		ENDIF (APPLE AND BUILD_SHARED_LIBS AND FRAMEWORK)
 	ENDIF (NOT INTERNAL_CREATE_DISTRIBUTABLE_MSVC_PROJECTFILES)
 ENDIF (INSTALL_LIBS)

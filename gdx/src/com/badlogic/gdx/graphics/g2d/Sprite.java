@@ -114,6 +114,8 @@ public class Sprite extends TextureRegion {
 		y = sprite.y;
 		width = sprite.width;
 		height = sprite.height;
+		regionWidth = sprite.regionWidth;
+		regionHeight = sprite.regionHeight;
 		originX = sprite.originX;
 		originY = sprite.originY;
 		rotation = sprite.rotation;

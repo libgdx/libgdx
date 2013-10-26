@@ -369,6 +369,10 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 			info->m_J1angularAxis[i*skip+1]=0;
 			info->m_J1angularAxis[i*skip+2]=0;
 
+			info->m_J2linearAxis[i*skip]=0;
+			info->m_J2linearAxis[i*skip+1]=0;
+			info->m_J2linearAxis[i*skip+2]=0;
+
 			info->m_J2angularAxis[i*skip]=0;
 			info->m_J2angularAxis[i*skip+1]=0;
 			info->m_J2angularAxis[i*skip+2]=0;
@@ -384,6 +388,10 @@ void btHingeConstraint::getInfo2Internal(btConstraintInfo2* info, const btTransf
 		info->m_J1linearAxis[0] = 1;
 		info->m_J1linearAxis[skip + 1] = 1;
 		info->m_J1linearAxis[2 * skip + 2] = 1;
+
+		info->m_J2linearAxis[0] = -1;
+		info->m_J2linearAxis[skip + 1] = -1;
+		info->m_J2linearAxis[2 * skip + 2] = -1;
 	}	
 
 
@@ -797,7 +805,11 @@ void btHingeConstraint::getInfo2InternalUsingFrameOffset(btConstraintInfo2* info
 		for (i=0; i<3; i++) info->m_J1linearAxis[s0+i] = p[i];
 		for (i=0; i<3; i++) info->m_J1linearAxis[s1+i] = q[i];
 		for (i=0; i<3; i++) info->m_J1linearAxis[s2+i] = ax1[i];
-	
+
+		for (i=0; i<3; i++) info->m_J2linearAxis[s0+i] = -p[i];
+		for (i=0; i<3; i++) info->m_J2linearAxis[s1+i] = -q[i];
+		for (i=0; i<3; i++) info->m_J2linearAxis[s2+i] = -ax1[i];
+
 	// compute three elements of right hand side
 	
 		btScalar rhs = k * p.dot(ofs);

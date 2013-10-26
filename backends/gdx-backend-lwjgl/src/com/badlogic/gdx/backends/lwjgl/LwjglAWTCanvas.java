@@ -385,6 +385,11 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
+	@Override
 	public void exit () {
 		postRunnable(new Runnable() {
 			@Override

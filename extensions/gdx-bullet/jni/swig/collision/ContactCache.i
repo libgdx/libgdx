@@ -1,7 +1,7 @@
 %module ContactCache
 
 %{
-#include <gdx/ContactCache.h>
+#include <gdx/collision/ContactCache.h>
 %}
 
 %feature("director") ContactCache;
@@ -15,5 +15,5 @@
 	}
 %}
 
-%include "gdx/ContactCache.h"
+%include "gdx/collision/ContactCache.h"
 

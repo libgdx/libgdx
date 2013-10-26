@@ -27,7 +27,7 @@ subject to the following restrictions:
 class btTriangleMesh : public btTriangleIndexVertexArray
 {
 	btAlignedObjectArray<btVector3>	m_4componentVertices;
-	btAlignedObjectArray<float>		m_3componentVertices;
+	btAlignedObjectArray<btScalar>	m_3componentVertices;
 
 	btAlignedObjectArray<unsigned int>		m_32bitIndices;
 	btAlignedObjectArray<unsigned short int>		m_16bitIndices;

@@ -670,6 +670,13 @@ public class Cell<C> {
 		return this;
 	}
 
+	public void setWidgetBounds (float x, float y, float width, float height) {
+		widgetX = x;
+		widgetY = y;
+		widgetWidth = width;
+		widgetHeight = height;
+	}
+
 	public float getWidgetX () {
 		return widgetX;
 	}

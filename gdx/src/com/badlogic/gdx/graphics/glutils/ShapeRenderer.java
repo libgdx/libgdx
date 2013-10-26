@@ -306,6 +306,16 @@ public class ShapeRenderer {
 		renderer.vertex(x2, y2, 0);
 	}
 
+	/**
+	 * Draws a triangle in x/y plane.
+	 * The {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param x1 x of first point
+	 * @param y1 y of first point
+	 * @param x2 x of second point
+	 * @param y2 y of second point
+	 * @param x3 x of third point
+	 * @param y3 y of third point
+	 */
 	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3) {
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
@@ -332,6 +342,49 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x2, y2, 0);
 			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x3, y3, 0);
+		}
+	}
+	
+	/**
+	 * Draws a triangle in x/y plane with coloured corners.
+	 * The {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param x1 x of first point
+	 * @param y1 y of first point
+	 * @param x2 x of second point
+	 * @param y2 y of second point
+	 * @param x3 x of third point
+	 * @param y3 y of third point
+	 * @param col1 color of the point defined by x1 and y1
+	 * @param col2 color of the point defined by x2 and y2
+	 * @param col3 color of the point defined by x3 and y3
+	 */
+	public void triangle (float x1, float y1, float x2, float y2, float x3, float y3, Color col1, Color col2, Color col3) {
+		if (currType != ShapeType.Filled && currType != ShapeType.Line)
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+		checkDirty();
+		checkFlush(6);
+		if (currType == ShapeType.Line) {
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x3, y3, 0);
+
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
+			renderer.vertex(x3, y3, 0);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+		} else {
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
+			renderer.vertex(x1, y1, 0);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
+			renderer.vertex(x2, y2, 0);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
 			renderer.vertex(x3, y3, 0);
 		}
 	}

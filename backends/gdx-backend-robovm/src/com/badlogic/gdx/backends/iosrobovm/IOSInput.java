@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import org.robovm.cocoatouch.coregraphics.CGPoint;
@@ -201,17 +217,20 @@ public class IOSInput implements Input {
 
 	@Override
 	public void getTextInput(TextInputListener listener, String title, String text) {
-		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text);
+		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text, null);
 		uiAlertView.show();
 	}
+
+	// Issue 773 indicates this may solve a premature GC issue
+	UIAlertViewDelegate delegate;
 	
 	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
 	 * @param text Text for text field
 	 * @return UiAlertView */
-	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text) {
-		UIAlertViewDelegate delegate = new UIAlertViewDelegate.Adapter() {
+	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
+		delegate = new UIAlertViewDelegate.Adapter() {
 			@Override
 			public void clicked (UIAlertView view, int clicked) {
 				if (clicked == 0) {
@@ -219,20 +238,16 @@ public class IOSInput implements Input {
 					listener.canceled();
 				} else if (clicked == 1) {
 					// user clicked "Ok" button
-					NSArray<UIView> views = view.getSubviews();
-					for (UIView uiView : views) {
-						// find text field from sub views
-						if (uiView != null && uiView instanceof UITextField) {
-							UITextField tf = (UITextField)uiView;
-							listener.input(tf.getText());
-						}
-					}
+					UITextField textField = view.getTextField(0);
+					listener.input(textField.getText());
 				}
+				delegate = null;
 			}
 
 			@Override
 			public void cancel (UIAlertView view) {
 				listener.canceled();
+				delegate = null;
 			}
 		};
 
@@ -244,20 +259,17 @@ public class IOSInput implements Input {
 		uiAlertView.setAlertViewStyle(UIAlertViewStyle.PlainTextInput);
 		uiAlertView.setDelegate(delegate);
 
-		for (UIView uiView : (NSArray<UIView>) uiAlertView.getSubviews()) {
-			// find text field from sub views and add default text
-			if (uiView != null && uiView instanceof UITextField) {
-				UITextField tf = (UITextField)uiView;
-				tf.setText(text);
-			}
-		}
+		UITextField textField = uiAlertView.getTextField(0);
+		textField.setPlaceholder(placeholder);
+		textField.setText(text);
 
 		return uiAlertView;
 	}
 
 	@Override
 	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
-		// FIXME implement this
+		final UIAlertView uiAlertView = buildUIAlertView(listener, title, null, placeholder);
+		uiAlertView.show();
 	}
 
 	@Override

@@ -51,7 +51,7 @@
 	  
 	  static jmethodID reuseMethod = NULL;
 	  if (reuseMethod == NULL)
-		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reuse", "(JZ)V");
+		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reset", "(JZ)V");
 	  
 	  long ptr;
 	  *(const void **)&ptr = cPtr;
@@ -109,12 +109,12 @@
 %typemap(javadirectorin)	_TYPE, _TYPE &, const _TYPE &	"$1"
 %typemap(javadirectorout)	_TYPE, _TYPE &, const _TYPE &	"$javacall"
 
-%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	const _TYPE &  {
-	jclass jc$1 = gdx_getClass##_TYPE(jenv);
-	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)$1, false);
-	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);
-}
-%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	_TYPE, _TYPE &  {
+//%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	const _TYPE &  {
+//	jclass jc$1 = gdx_getClass##_TYPE(jenv);
+//	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)$1, false);
+//	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);
+//}
+%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	_TYPE, _TYPE &, const _TYPE &  {
 	jclass jc$1 = gdx_getClass##_TYPE(jenv);
 	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)&$1, false);
 	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);

@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.FloatAction;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -74,13 +75,24 @@ public class Scene2dTest extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		VerticalGroup g = new VerticalGroup();
-		g.setPosition(100, 100);
+		g.setPosition(10, 100);
 		g.setReverse(true);
+		g.setSpacing(5);
 		stage.addActor(g);
 		for (int i = 0; i < 10; i++) {
 			g.addActor(new TextButton("button " + i, skin));
 		}
 		g.pack();
+
+		HorizontalGroup h = new HorizontalGroup();
+		h.setPosition(100, 100);
+		h.setReverse(true);
+		h.setSpacing(5);
+		stage.addActor(h);
+		for (int i = 0; i < 7; i++) {
+			h.addActor(new TextButton("button " + i, skin));
+		}
+		h.pack();
 
 		final TextButton button = new TextButton("Fancy Background", skin);
 

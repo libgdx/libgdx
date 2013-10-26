@@ -36,19 +36,15 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.btAxisSweep3;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
-import com.badlogic.gdx.physics.bullet.gdxBulletConstants;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
-import com.badlogic.gdx.physics.bullet.btSoftBody;
-import com.badlogic.gdx.physics.bullet.btSoftBodyHelpers;
-import com.badlogic.gdx.physics.bullet.btSoftBodyRigidBodyCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btSoftBodyWorldInfo;
-import com.badlogic.gdx.physics.bullet.btSoftRigidDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.collision.btAxisSweep3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBody;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyHelpers;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyRigidBodyCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyWorldInfo;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftRigidDynamicsWorld;
 
 /** @author xoppa */
 public class SoftBodyTest extends BaseBulletTest {

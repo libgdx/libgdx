@@ -1,6 +1,6 @@
 %module btCollisionObjectWrapper
 
-CREATE_POOLED_OBJECT(btCollisionObjectWrapper, com/badlogic/gdx/physics/bullet/btCollisionObjectWrapper);
+CREATE_POOLED_OBJECT(btCollisionObjectWrapper, com/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper);
 
 %nodefaultdtor btCollisionObjectWrapper;
 

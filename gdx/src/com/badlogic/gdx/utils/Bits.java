@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.utils;
 
@@ -27,6 +42,30 @@ public class Bits {
 		final int word = index >>> 6;
 		if (word >= bits.length) return false;
 		return (bits[word] & (1L << (index & 0x3F))) != 0L;
+	}
+
+	/** Returns the bit at the given index and clears it in one go.
+	 * @param index the index of the bit
+	 * @return whether the bit was set before invocation
+	 * @throws ArrayIndexOutOfBoundsException if index < 0 */
+	public boolean getAndClear (int index) {
+		final int word = index >>> 6;
+		if (word >= bits.length) return false;
+		long oldBits = bits[word];
+		bits[word] &= ~(1L << (index & 0x3F));
+		return bits[word] != oldBits;
+	}
+
+	/** Returns the bit at the given index and sets it in one go.
+	 * @param index the index of the bit
+	 * @return whether the bit was set before invocation
+	 * @throws ArrayIndexOutOfBoundsException if index < 0 */
+	public boolean getAndSet (int index) {
+		final int word = index >>> 6;
+		checkCapacity(word);
+		long oldBits = bits[word];
+		bits[word] |= 1L << (index & 0x3F);
+		return bits[word] == oldBits;
 	}
 
 	/** @param index the index of the bit to set
@@ -62,6 +101,7 @@ public class Bits {
 
 	/** Clears the entire bitset */
 	public void clear () {
+		long[] bits = this.bits;
 		int length = bits.length;
 		for (int i = 0; i < length; i++) {
 			bits[i] = 0L;
@@ -78,10 +118,12 @@ public class Bits {
 	 * 
 	 * @return the logical size of this bitset */
 	public int length () {
+		long[] bits = this.bits;
 		for (int word = bits.length - 1; word >= 0; --word) {
-			if (bits[word] != 0) {
+			long bitsAtWord = bits[word]; 
+			if (bitsAtWord != 0) {
 				for (int bit = 63; bit >= 0; --bit) {
-					if ((bits[word] & (1L << (bit & 0x3F))) != 0L) {
+					if ((bitsAtWord & (1L << (bit & 0x3F))) != 0L) {
 						return (word << 6) + bit;
 					}
 				}
@@ -92,6 +134,7 @@ public class Bits {
 
 	/** @return true if this bitset contains no bits that are set to true */
 	public boolean isEmpty () {
+		long[] bits = this.bits;
 		int length = bits.length;
 		for (int i = 0; i < length; i++) {
 			if (bits[i] != 0L) {
@@ -104,18 +147,26 @@ public class Bits {
 	/** Returns the index of the first bit that is set to true that occurs on or after the specified starting index. If no such bit
 	 * exists then -1 is returned. */
 	public int nextSetBit (int fromIndex) {
+		long[] bits = this.bits;
 		int word = fromIndex >>> 6;
-		if (word >= bits.length) return -1;
-		for (int i = fromIndex & 0x3f; i < 64; i++) {
-			if ((bits[word] & (1L << (i & 0x3F))) != 0L) {
-				return (word << 6) + i;
+		int bitsLength = bits.length;
+		if (word >= bitsLength) return -1;
+		long bitsAtWord = bits[word];
+		if (bitsAtWord != 0) {
+			for (int i = fromIndex & 0x3f; i < 64; i++) {
+				if ((bitsAtWord & (1L << (i & 0x3F))) != 0L) {
+					return (word << 6) + i;
+				}
 			}
 		}
-		for (word++; word < bits.length; word++) {
+		for (word++; word < bitsLength; word++) {
 			if (word != 0) {
-				for (int i = 0; i < 64; i++) {
-					if ((bits[word] & (1L << (i & 0x3F))) != 0L) {
-						return (word << 6) + i;
+				bitsAtWord = bits[word];
+				if (bitsAtWord != 0) {
+					for (int i = 0; i < 64; i++) {
+						if ((bitsAtWord & (1L << (i & 0x3F))) != 0L) {
+							return (word << 6) + i;
+						}
 					}
 				}
 			}
@@ -126,19 +177,23 @@ public class Bits {
 	/** Returns the index of the first bit that is set to false that occurs on or after the specified starting index. If no such bit
 	 * exists then -1 is returned. */
 	public int nextClearBit (int fromIndex) {
+		long[] bits = this.bits;
 		int word = fromIndex >>> 6;
-		if (word >= bits.length) return -1;
+		int bitsLength = bits.length;
+		if (word >= bitsLength) return -1;
+		long bitsAtWord = bits[word];
 		for (int i = fromIndex & 0x3f; i < 64; i++) {
-			if ((bits[word] & (1L << (i & 0x3F))) == 0L) {
+			if ((bitsAtWord & (1L << (i & 0x3F))) == 0L) {
 				return (word << 6) + i;
 			}
 		}
-		for (word++; word < bits.length; word++) {
+		for (word++; word < bitsLength; word++) {
 			if (word == 0) {
 				return word << 6;
 			}
+			bitsAtWord = bits[word];
 			for (int i = 0; i < 64; i++) {
-				if ((bits[word] & (1L << (i & 0x3F))) == 0L) {
+				if ((bitsAtWord & (1L << (i & 0x3F))) == 0L) {
 					return (word << 6) + i;
 				}
 			}
@@ -194,12 +249,37 @@ public class Bits {
 	 * @return boolean indicating whether this bit set intersects the specified bit set
 	 */
 	public boolean intersects (Bits other) {
-		for (int i = 0, j = bits.length, k = other.bits.length; i < j && i < k; i++) {
-			if ((bits[i] & other.bits[i]) != 0) {
+		long[] bits = this.bits;
+		long[] otherBits = other.bits;
+		for (int i = Math.min(bits.length, otherBits.length) - 1; i >= 0; i--) {
+			if ((bits[i] & otherBits[i]) != 0) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	/** Returns true if this bit set is a super set of the specified set, i.e. it has all bits set to true that are also set to true
+	 * in the specified BitSet.
+	 * 
+	 * @param other a bit set
+	 * @return boolean indicating whether this bit set is a super set of the specified set */
+	public boolean containsAll (Bits other) {
+		long[] bits = this.bits;
+		long[] otherBits = other.bits;
+		int otherBitsLength = otherBits.length;
+		int bitsLength = bits.length;
+
+		for (int i = bitsLength; i < otherBitsLength; i++) {
+			if (otherBits[i] != 0) {
+				return false;
+			}
+		}
+		for (int i = Math.min(bitsLength, otherBitsLength) - 1; i >= 0; i--) {
+			if ((bits[i] & otherBits[i]) != otherBits[i]) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

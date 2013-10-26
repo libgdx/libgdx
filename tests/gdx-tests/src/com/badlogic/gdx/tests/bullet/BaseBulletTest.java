@@ -45,11 +45,9 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btTransform;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.linearmath.LinearMath;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -63,11 +61,11 @@ public class BaseBulletTest extends BulletTest {
 	public static void init() {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
-		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null)
+		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null) {
 			System.load(customDesktopLib);
-		else
+		} else
 			Bullet.init();
-		Gdx.app.log("Bullet", "Version = "+gdxBullet.btGetVersion());
+		Gdx.app.log("Bullet", "Version = "+LinearMath.btGetVersion());
 		initialized = true;
 	}
 	

@@ -511,7 +511,13 @@ public class GwtInput implements Input {
 			this.touched[0] = false;
 			if (processor != null) processor.touchUp(touchX[0], touchY[0], 0, getButton(e.getButton()));
 		}
-
+		if (e.getType().equals(getMouseWheelEvent())) {
+			if (processor != null) {
+				processor.scrolled((int) getMouseWheelVelocity(e));
+			}
+			this.currentEventTimeStamp = TimeUtils.nanoTime();
+			e.preventDefault();
+		}
 		if (e.getType().equals("keydown") && hasFocus) {
 			System.out.println("keydown");
 			int code = keyForCode(e.getKeyCode());
