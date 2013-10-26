@@ -84,7 +84,7 @@ public class OrthographicCamera extends Camera {
 			direction.set(0, 0, 1);
 		} else {
 			up.set(0, 1, 0);
-			direction.set(0, 0, 1);
+			direction.set(0, 0, -1);
 		}
 		position.set(zoom * viewportWidth / 2.0f, zoom * viewportHeight / 2.0f, 0);
 		this.viewportWidth = viewportWidth;
