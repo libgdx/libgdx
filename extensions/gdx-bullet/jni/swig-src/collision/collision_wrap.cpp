@@ -1242,6 +1242,72 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 #include <BulletCollision/BroadphaseCollision/btOverlappingPairCache.h>
 
 
+	// Inline (cached) method to retrieve the type's jclass
+	SWIGINTERN inline jclass gdx_getClassbtBroadphasePair(JNIEnv * jenv) {
+		static jclass cls = NULL;
+		if (cls == NULL)
+			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btBroadphasePair"));
+		return cls;
+	}
+	
+	// Inline method to get the termporary instance
+	SWIGINTERN inline jobject gdx_getTempbtBroadphasePair(JNIEnv * jenv, void *cPtr, bool ownMem) {
+	  static jobject ret = NULL;
+	  static jclass clazz = gdx_getClassbtBroadphasePair(jenv);
+	  if (ret == NULL) {
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "com/badlogic/gdx/physics/bullet/collision/btBroadphasePair");
+	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
+	  }
+	  
+	  static jmethodID reuseMethod = NULL;
+	  if (reuseMethod == NULL)
+		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reset", "(JZ)V");
+	  
+	  long ptr;
+	  *(const void **)&ptr = cPtr;
+	  jenv->CallVoidMethod(ret, reuseMethod, ptr, (jboolean)ownMem);
+	  return ret;
+	}
+
+	// Inline method to obtain an instance from the pool
+	SWIGINTERN inline jobject gdx_obtainbtBroadphasePair(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
+		static jmethodID obtainMethod = NULL;
+		if (obtainMethod == NULL)
+			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", "(JZ)Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;");
+		
+		long ptr;
+		*(const void **)&ptr = cPtr; 
+		jobject ret = jenv->CallStaticObjectMethod(clazz, obtainMethod, ptr, (jboolean)ownMem);
+		
+		return ret;
+	}
+	
+	// Inline method to free an instance from the pool
+	SWIGINTERN inline void gdx_freebtBroadphasePair(JNIEnv * jenv, const jclass clazz, const jobject obj) {
+		static jmethodID freeMethod = NULL;
+		if (freeMethod == NULL)
+			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;)V");
+		
+		jenv->CallStaticVoidMethod(clazz, freeMethod, obj);
+		
+		jenv->DeleteLocalRef(obj);
+	}
+	
+	// Simple raii class to auto free the instance from the pool 
+	class gdxAutoFreebtBroadphasePair {
+	private:
+		JNIEnv * jenv;
+		jobject jbtBroadphasePair;
+		jclass jclazz;
+	public:
+		gdxAutoFreebtBroadphasePair(JNIEnv * jenv, jclass jclazz, jobject jbtBroadphasePair) : 
+			jenv(jenv), jbtBroadphasePair(jbtBroadphasePair), jclazz(jclazz) { }
+		virtual ~gdxAutoFreebtBroadphasePair() {
+			gdx_freebtBroadphasePair(this->jenv, this->jclazz, this->jbtBroadphasePair);
+		}
+	};
+
+
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
 
@@ -2321,7 +2387,7 @@ bool SwigDirector_btOverlapCallback::processOverlap(btBroadphasePair &pair) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jpair = 0 ;
+  jobject jpair = 0 ;
   
   if (!swig_override[0]) {
     SWIG_JavaThrowException(JNIEnvWrapper(this).getJNIEnv(), SWIG_JavaDirectorPureVirtual, "Attempted to invoke pure virtual method btOverlapCallback::processOverlap.");
@@ -2329,7 +2395,9 @@ bool SwigDirector_btOverlapCallback::processOverlap(btBroadphasePair &pair) {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btBroadphasePair **)&jpair = (btBroadphasePair *) &pair; 
+    jclass jcpair = gdx_getClassbtBroadphasePair(jenv);
+    jpair = gdx_obtainbtBroadphasePair(jenv, jcpair, (void*)&pair, false);
+    gdxAutoFreebtBroadphasePair autoRelease_jpair(jenv, jcpair, jpair);
     jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[6], swigjobj, jpair);
     if (jenv->ExceptionCheck() == JNI_TRUE) return c_result;
     c_result = jresult ? true : false; 
@@ -5435,14 +5503,13 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1) {
   jlong jresult = 0 ;
   btBroadphasePair *arg1 = 0 ;
   btBroadphasePair *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
   arg1 = *(btBroadphasePair **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btBroadphasePair const & reference is null");
@@ -5454,7 +5521,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2) {
   jlong jresult = 0 ;
   btBroadphaseProxy *arg1 = 0 ;
   btBroadphaseProxy *arg2 = 0 ;
@@ -5462,8 +5529,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(btBroadphaseProxy **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btBroadphaseProxy & reference is null");
@@ -13726,7 +13791,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlapCallback_1processOverlap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlapCallback_1processOverlap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   jboolean jresult = 0 ;
   btOverlapCallback *arg1 = (btOverlapCallback *) 0 ;
   btBroadphasePair *arg2 = 0 ;
@@ -13735,7 +13800,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(btOverlapCallback **)&jarg1; 
   arg2 = *(btBroadphasePair **)&jarg2;
   if (!arg2) {
@@ -13961,7 +14025,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlappingPairCache_1cleanOverlappingPair(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlappingPairCache_1cleanOverlappingPair(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jlong jarg3, jobject jarg3_) {
   btOverlappingPairCache *arg1 = (btOverlappingPairCache *) 0 ;
   btBroadphasePair *arg2 = 0 ;
   btDispatcher *arg3 = (btDispatcher *) 0 ;
@@ -13969,7 +14033,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   (void)jarg3_;
   arg1 = *(btOverlappingPairCache **)&jarg1; 
   arg2 = *(btBroadphasePair **)&jarg2;
@@ -33410,14 +33473,13 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionDispatcher_1defaultNearCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionDispatcher_1defaultNearCallback(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
   btBroadphasePair *arg1 = 0 ;
   btCollisionDispatcher *arg2 = 0 ;
   btDispatcherInfo *arg3 = 0 ;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
   (void)jarg2_;
   (void)jarg3_;
   arg1 = *(btBroadphasePair **)&jarg1;
@@ -40377,8 +40439,8 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1at(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1at(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jobject jresult = 0 ;
   btAlignedObjectArray< btBroadphasePair > *arg1 = (btAlignedObjectArray< btBroadphasePair > *) 0 ;
   int arg2 ;
   btBroadphasePair *result = 0 ;
@@ -40389,7 +40451,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg1 = *(btAlignedObjectArray< btBroadphasePair > **)&jarg1; 
   arg2 = (int)jarg2; 
   result = (btBroadphasePair *) &((btAlignedObjectArray< btBroadphasePair > const *)arg1)->at(arg2);
-  *(btBroadphasePair **)&jresult = result; 
+  jresult = gdx_getTempbtBroadphasePair(jenv, &result, false);
   return jresult;
 }
 
@@ -41497,7 +41559,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
       "SwigDirector_btOverlappingPairCallback_removeOverlappingPairsContainingProxy", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlappingPairCallback;JJ)V" 
     },
     {
-      "SwigDirector_btOverlapCallback_processOverlap", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlapCallback;J)Z" 
+      "SwigDirector_btOverlapCallback_processOverlap", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlapCallback;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;)Z" 
     },
     {
       "SwigDirector_btOverlapFilterCallback_needBroadphaseCollision", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlapFilterCallback;JJ)Z" 

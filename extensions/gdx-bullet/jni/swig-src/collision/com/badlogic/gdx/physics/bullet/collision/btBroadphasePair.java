@@ -58,16 +58,41 @@ public class btBroadphasePair extends BulletBase {
 		super.delete();
 	}
 
+	/** Temporary instance, use by native methods that return a btBroadphasePair instance */
+	protected final static btBroadphasePair temp = new btBroadphasePair(0, false);
+	public static btBroadphasePair internalTemp(long cPtr, boolean own) {
+		temp.reset(cPtr, own);
+		return temp;
+	}
+	/** Pool of btBroadphasePair instances, used by director interface to provide the arguments. */
+	protected static final com.badlogic.gdx.utils.Pool<btBroadphasePair> pool = new com.badlogic.gdx.utils.Pool<btBroadphasePair>() {
+		@Override
+		protected btBroadphasePair newObject() {
+			return new btBroadphasePair(0, false);
+		}
+	};
+	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
+	public static btBroadphasePair obtain(long cPtr, boolean own) {
+		final btBroadphasePair result = pool.obtain();
+		result.reset(cPtr, own);
+		return result;
+	}
+	/** delete the native object if required and allow the instance to be reused by the obtain method */
+	public static void free(final btBroadphasePair inst) {
+		inst.dispose();
+		pool.free(inst);
+	}
+
   public btBroadphasePair() {
     this(CollisionJNI.new_btBroadphasePair__SWIG_0(), true);
   }
 
   public btBroadphasePair(btBroadphasePair other) {
-    this(CollisionJNI.new_btBroadphasePair__SWIG_1(btBroadphasePair.getCPtr(other), other), true);
+    this(CollisionJNI.new_btBroadphasePair__SWIG_1(other), true);
   }
 
   public btBroadphasePair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
-    this(CollisionJNI.new_btBroadphasePair__SWIG_2(btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1), true);
+    this(CollisionJNI.new_btBroadphasePair__SWIG_2(proxy0, proxy1), true);
   }
 
   public void setPProxy0(btBroadphaseProxy value) {
@@ -75,18 +100,16 @@ public class btBroadphasePair extends BulletBase {
   }
 
   public btBroadphaseProxy getPProxy0() {
-    long cPtr = CollisionJNI.btBroadphasePair_pProxy0_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
-  }
+	return btBroadphaseProxy.internalTemp(CollisionJNI.btBroadphasePair_pProxy0_get(swigCPtr, this), false);
+}
 
   public void setPProxy1(btBroadphaseProxy value) {
     CollisionJNI.btBroadphasePair_pProxy1_set(swigCPtr, this, btBroadphaseProxy.getCPtr(value), value);
   }
 
   public btBroadphaseProxy getPProxy1() {
-    long cPtr = CollisionJNI.btBroadphasePair_pProxy1_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
-  }
+	return btBroadphaseProxy.internalTemp(CollisionJNI.btBroadphasePair_pProxy1_get(swigCPtr, this), false);
+}
 
   public void setAlgorithm(btCollisionAlgorithm value) {
     CollisionJNI.btBroadphasePair_algorithm_set(swigCPtr, this, btCollisionAlgorithm.getCPtr(value), value);

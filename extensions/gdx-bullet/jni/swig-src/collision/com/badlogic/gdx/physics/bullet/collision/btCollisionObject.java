@@ -307,9 +307,8 @@ public class btCollisionObject extends BulletBase implements
   }
 
   public btBroadphaseProxy getBroadphaseHandle() {
-    long cPtr = CollisionJNI.btCollisionObject_getBroadphaseHandle__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
-  }
+	return btBroadphaseProxy.internalTemp(CollisionJNI.btCollisionObject_getBroadphaseHandle__SWIG_0(swigCPtr, this), false);
+}
 
   public void setBroadphaseHandle(btBroadphaseProxy handle) {
     CollisionJNI.btCollisionObject_setBroadphaseHandle(swigCPtr, this, btBroadphaseProxy.getCPtr(handle), handle);

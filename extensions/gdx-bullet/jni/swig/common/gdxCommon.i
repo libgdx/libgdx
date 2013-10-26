@@ -1,5 +1,6 @@
 #define gdxToString(X)	"X"
 
+// Used by the classes.i files
 %define SPECIFY_CLASS(TYPE, PACKAGE)
 %typemap("javapackage") TYPE, TYPE *, TYPE & gdxToString(PACKAGE);
 %enddef

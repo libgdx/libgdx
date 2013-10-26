@@ -57,8 +57,8 @@ public class CollisionJNI {
   public final static native boolean btBroadphaseProxy_isConvex2d(int jarg1);
   public final static native void delete_btBroadphaseProxy(long jarg1);
   public final static native long new_btBroadphasePair__SWIG_0();
-  public final static native long new_btBroadphasePair__SWIG_1(long jarg1, btBroadphasePair jarg1_);
-  public final static native long new_btBroadphasePair__SWIG_2(long jarg1, btBroadphaseProxy jarg1_, long jarg2, btBroadphaseProxy jarg2_);
+  public final static native long new_btBroadphasePair__SWIG_1(btBroadphasePair jarg1);
+  public final static native long new_btBroadphasePair__SWIG_2(btBroadphaseProxy jarg1, btBroadphaseProxy jarg2);
   public final static native void btBroadphasePair_pProxy0_set(long jarg1, btBroadphasePair jarg1_, long jarg2, btBroadphaseProxy jarg2_);
   public final static native long btBroadphasePair_pProxy0_get(long jarg1, btBroadphasePair jarg1_);
   public final static native void btBroadphasePair_pProxy1_set(long jarg1, btBroadphasePair jarg1_, long jarg2, btBroadphaseProxy jarg2_);
@@ -543,7 +543,7 @@ public class CollisionJNI {
   public final static native long btDispatcher_allocateCollisionAlgorithm(long jarg1, btDispatcher jarg1_, int jarg2);
   public final static native void btDispatcher_freeCollisionAlgorithm(long jarg1, btDispatcher jarg1_, long jarg2);
   public final static native void delete_btOverlapCallback(long jarg1);
-  public final static native boolean btOverlapCallback_processOverlap(long jarg1, btOverlapCallback jarg1_, long jarg2, btBroadphasePair jarg2_);
+  public final static native boolean btOverlapCallback_processOverlap(long jarg1, btOverlapCallback jarg1_, btBroadphasePair jarg2);
   public final static native long new_btOverlapCallback();
   public final static native void btOverlapCallback_director_connect(btOverlapCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btOverlapCallback_change_ownership(btOverlapCallback obj, long cptr, boolean take_or_release);
@@ -562,7 +562,7 @@ public class CollisionJNI {
   public final static native void delete_btOverlappingPairCache(long jarg1);
   public final static native long btOverlappingPairCache_getOverlappingPairArrayPtr__SWIG_0(long jarg1, btOverlappingPairCache jarg1_);
   public final static native long btOverlappingPairCache_getOverlappingPairArray(long jarg1, btOverlappingPairCache jarg1_);
-  public final static native void btOverlappingPairCache_cleanOverlappingPair(long jarg1, btOverlappingPairCache jarg1_, long jarg2, btBroadphasePair jarg2_, long jarg3, btDispatcher jarg3_);
+  public final static native void btOverlappingPairCache_cleanOverlappingPair(long jarg1, btOverlappingPairCache jarg1_, btBroadphasePair jarg2, long jarg3, btDispatcher jarg3_);
   public final static native int btOverlappingPairCache_getNumOverlappingPairs(long jarg1, btOverlappingPairCache jarg1_);
   public final static native void btOverlappingPairCache_cleanProxyFromPairs(long jarg1, btOverlappingPairCache jarg1_, long jarg2, btBroadphaseProxy jarg2_, long jarg3, btDispatcher jarg3_);
   public final static native void btOverlappingPairCache_setOverlapFilterCallback(long jarg1, btOverlappingPairCache jarg1_, long jarg2, btOverlapFilterCallback jarg2_);
@@ -1795,7 +1795,7 @@ public class CollisionJNI {
   public final static native long btCollisionDispatcher_findAlgorithm__SWIG_1(long jarg1, btCollisionDispatcher jarg1_, long jarg2, btCollisionObjectWrapper jarg2_, long jarg3, btCollisionObjectWrapper jarg3_);
   public final static native void btCollisionDispatcher_setNearCallback(long jarg1, btCollisionDispatcher jarg1_, long jarg2);
   public final static native long btCollisionDispatcher_getNearCallback(long jarg1, btCollisionDispatcher jarg1_);
-  public final static native void btCollisionDispatcher_defaultNearCallback(long jarg1, btBroadphasePair jarg1_, long jarg2, btCollisionDispatcher jarg2_, long jarg3, btDispatcherInfo jarg3_);
+  public final static native void btCollisionDispatcher_defaultNearCallback(btBroadphasePair jarg1, long jarg2, btCollisionDispatcher jarg2_, long jarg3, btDispatcherInfo jarg3_);
   public final static native long btCollisionDispatcher_getCollisionConfiguration__SWIG_0(long jarg1, btCollisionDispatcher jarg1_);
   public final static native void btCollisionDispatcher_setCollisionConfiguration(long jarg1, btCollisionDispatcher jarg1_, long jarg2, btCollisionConfiguration jarg2_);
   public final static native long btCollisionDispatcher_getInternalManifoldPool__SWIG_0(long jarg1, btCollisionDispatcher jarg1_);
@@ -2209,7 +2209,7 @@ public class CollisionJNI {
   public final static native void btCollisionObjectArray_initializeFromBuffer(long jarg1, btCollisionObjectArray jarg1_, long jarg2, int jarg3, int jarg4);
   public final static native void btCollisionObjectArray_copyFromArray(long jarg1, btCollisionObjectArray jarg1_, long jarg2, btCollisionObjectArray jarg2_);
   public final static native int btBroadphasePairArray_size(long jarg1, btBroadphasePairArray jarg1_);
-  public final static native long btBroadphasePairArray_at(long jarg1, btBroadphasePairArray jarg1_, int jarg2);
+  public final static native btBroadphasePair btBroadphasePairArray_at(long jarg1, btBroadphasePairArray jarg1_, int jarg2);
   public final static native int btBroadphasePairArray_getCollisionObjects(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
   public final static native int btBroadphasePairArray_getCollisionObjectsValue(long jarg1, btBroadphasePairArray jarg1_, int[] jarg2, int jarg3, int jarg4);
   public final static native long new_btBroadphasePairArray();
@@ -2339,8 +2339,8 @@ public class CollisionJNI {
   public static void SwigDirector_btOverlappingPairCallback_removeOverlappingPairsContainingProxy(btOverlappingPairCallback self, long proxy0, long dispatcher) {
     self.removeOverlappingPairsContainingProxy((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false));
   }
-  public static boolean SwigDirector_btOverlapCallback_processOverlap(btOverlapCallback self, long pair) {
-    return self.processOverlap(new btBroadphasePair(pair, false));
+  public static boolean SwigDirector_btOverlapCallback_processOverlap(btOverlapCallback self, btBroadphasePair pair) {
+    return self.processOverlap(pair);
   }
   public static boolean SwigDirector_btOverlapFilterCallback_needBroadphaseCollision(btOverlapFilterCallback self, long proxy0, long proxy1) {
     return self.needBroadphaseCollision((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false));

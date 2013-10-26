@@ -58,6 +58,31 @@ public class btBroadphaseProxy extends BulletBase {
 		super.delete();
 	}
 
+	/** Temporary instance, use by native methods that return a btBroadphaseProxy instance */
+	protected final static btBroadphaseProxy temp = new btBroadphaseProxy(0, false);
+	public static btBroadphaseProxy internalTemp(long cPtr, boolean own) {
+		temp.reset(cPtr, own);
+		return temp;
+	}
+	/** Pool of btBroadphaseProxy instances, used by director interface to provide the arguments. */
+	protected static final com.badlogic.gdx.utils.Pool<btBroadphaseProxy> pool = new com.badlogic.gdx.utils.Pool<btBroadphaseProxy>() {
+		@Override
+		protected btBroadphaseProxy newObject() {
+			return new btBroadphaseProxy(0, false);
+		}
+	};
+	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
+	public static btBroadphaseProxy obtain(long cPtr, boolean own) {
+		final btBroadphaseProxy result = pool.obtain();
+		result.reset(cPtr, own);
+		return result;
+	}
+	/** delete the native object if required and allow the instance to be reused by the obtain method */
+	public static void free(final btBroadphaseProxy inst) {
+		inst.dispose();
+		pool.free(inst);
+	}
+
   public void setClientObject(long value) {
     CollisionJNI.btBroadphaseProxy_clientObject_set(swigCPtr, this, value);
   }

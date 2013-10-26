@@ -74,9 +74,8 @@ public class btOverlappingPairCallback extends BulletBase {
   }
 
   public btBroadphasePair addOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
-    long cPtr = CollisionJNI.btOverlappingPairCallback_addOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1);
-    return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
-  }
+	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCallback_addOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1), false);
+}
 
   public long removeOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1, btDispatcher dispatcher) {
     return CollisionJNI.btOverlappingPairCallback_removeOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1, btDispatcher.getCPtr(dispatcher), dispatcher);

@@ -12,7 +12,7 @@
 %feature("director") btTriangleCallback;
 %feature("director") btTriangleConvexcastCallback;
 %feature("director") btTriangleRaycastCallback;
-// FIXME pool btBroadphaseProxy and btBroadphasePair, reuse btDispatcher and fix ptr/array typemap/pool
+// FIXME reuse btDispatcher and fix ptr/array typemap/pool
 
 %include "arrays_java.i"
 
@@ -62,6 +62,8 @@ typedef btVoronoiSimplexSolver btSimplexSolverInterface;
 
 %include "./btCollisionShape.i"
 
+CREATE_POOLED_OBJECT(btBroadphaseProxy, com/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy);
+CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision/btBroadphasePair);
 %{
 #include <BulletCollision/BroadphaseCollision/btBroadphaseProxy.h>
 %}
