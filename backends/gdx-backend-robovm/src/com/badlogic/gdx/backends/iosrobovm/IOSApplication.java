@@ -264,7 +264,7 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel > LOG_NONE) {
 			System.out.println("[info] " + tag + ": " + message);
 			exception.printStackTrace();
