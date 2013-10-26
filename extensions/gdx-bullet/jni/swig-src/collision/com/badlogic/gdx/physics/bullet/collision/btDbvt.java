@@ -146,8 +146,8 @@ public class btDbvt extends BulletBase {
     CollisionJNI.btDbvt_optimizeIncremental(swigCPtr, this, passes);
   }
 
-  public btDbvtNode insert(btDbvtAabbMm box, SWIGTYPE_p_void data) {
-    long cPtr = CollisionJNI.btDbvt_insert(swigCPtr, this, btDbvtAabbMm.getCPtr(box), box, SWIGTYPE_p_void.getCPtr(data));
+  public btDbvtNode insert(btDbvtAabbMm box, long data) {
+    long cPtr = CollisionJNI.btDbvt_insert(swigCPtr, this, btDbvtAabbMm.getCPtr(box), box, data);
     return (cPtr == 0) ? null : new btDbvtNode(cPtr, false);
   }
 

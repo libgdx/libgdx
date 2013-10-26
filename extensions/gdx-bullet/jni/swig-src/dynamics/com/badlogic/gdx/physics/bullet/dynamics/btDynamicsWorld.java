@@ -141,25 +141,24 @@ public class btDynamicsWorld extends btCollisionWorld {
     DynamicsJNI.btDynamicsWorld_clearForces(swigCPtr, this);
   }
 
-  public void setInternalTickCallback(SWIGTYPE_p_f_p_btDynamicsWorld_float__void cb, SWIGTYPE_p_void worldUserInfo, boolean isPreTick) {
-    DynamicsJNI.btDynamicsWorld_setInternalTickCallback__SWIG_0(swigCPtr, this, SWIGTYPE_p_f_p_btDynamicsWorld_float__void.getCPtr(cb), SWIGTYPE_p_void.getCPtr(worldUserInfo), isPreTick);
+  public void setInternalTickCallback(SWIGTYPE_p_f_p_btDynamicsWorld_float__void cb, long worldUserInfo, boolean isPreTick) {
+    DynamicsJNI.btDynamicsWorld_setInternalTickCallback__SWIG_0(swigCPtr, this, SWIGTYPE_p_f_p_btDynamicsWorld_float__void.getCPtr(cb), worldUserInfo, isPreTick);
   }
 
-  public void setInternalTickCallback(SWIGTYPE_p_f_p_btDynamicsWorld_float__void cb, SWIGTYPE_p_void worldUserInfo) {
-    DynamicsJNI.btDynamicsWorld_setInternalTickCallback__SWIG_1(swigCPtr, this, SWIGTYPE_p_f_p_btDynamicsWorld_float__void.getCPtr(cb), SWIGTYPE_p_void.getCPtr(worldUserInfo));
+  public void setInternalTickCallback(SWIGTYPE_p_f_p_btDynamicsWorld_float__void cb, long worldUserInfo) {
+    DynamicsJNI.btDynamicsWorld_setInternalTickCallback__SWIG_1(swigCPtr, this, SWIGTYPE_p_f_p_btDynamicsWorld_float__void.getCPtr(cb), worldUserInfo);
   }
 
   public void setInternalTickCallback(SWIGTYPE_p_f_p_btDynamicsWorld_float__void cb) {
     DynamicsJNI.btDynamicsWorld_setInternalTickCallback__SWIG_2(swigCPtr, this, SWIGTYPE_p_f_p_btDynamicsWorld_float__void.getCPtr(cb));
   }
 
-  public void setWorldUserInfo(SWIGTYPE_p_void worldUserInfo) {
-    DynamicsJNI.btDynamicsWorld_setWorldUserInfo(swigCPtr, this, SWIGTYPE_p_void.getCPtr(worldUserInfo));
+  public void setWorldUserInfo(long worldUserInfo) {
+    DynamicsJNI.btDynamicsWorld_setWorldUserInfo(swigCPtr, this, worldUserInfo);
   }
 
-  public SWIGTYPE_p_void getWorldUserInfo() {
-    long cPtr = DynamicsJNI.btDynamicsWorld_getWorldUserInfo(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getWorldUserInfo() {
+    return DynamicsJNI.btDynamicsWorld_getWorldUserInfo(swigCPtr, this);
   }
 
   public btContactSolverInfo getSolverInfo() {

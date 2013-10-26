@@ -114,8 +114,8 @@ public class btTriangleInfoMap extends BulletBase {
     return CollisionJNI.btTriangleInfoMap_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public String serialize(SWIGTYPE_p_void dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return CollisionJNI.btTriangleInfoMap_serialize(swigCPtr, this, SWIGTYPE_p_void.getCPtr(dataBuffer), SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
+    return CollisionJNI.btTriangleInfoMap_serialize(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
   }
 
   public void deSerialize(btTriangleInfoMapData data) {

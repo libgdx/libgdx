@@ -126,8 +126,8 @@ public class btStridingMeshInterface extends BulletBase {
     return CollisionJNI.btStridingMeshInterface_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public String serialize(SWIGTYPE_p_void dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return CollisionJNI.btStridingMeshInterface_serialize(swigCPtr, this, SWIGTYPE_p_void.getCPtr(dataBuffer), SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
+    return CollisionJNI.btStridingMeshInterface_serialize(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
   }
 
 }

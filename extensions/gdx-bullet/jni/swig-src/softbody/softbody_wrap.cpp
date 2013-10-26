@@ -2249,7 +2249,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(Element **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_tag = arg2;
 }
 
@@ -2264,7 +2264,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
   (void)jarg1_;
   arg1 = *(Element **)&jarg1; 
   result = (void *) ((arg1)->m_tag);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -3979,7 +3979,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBody **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_tag = arg2;
 }
 
@@ -3994,7 +3994,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
   (void)jarg1_;
   arg1 = *(btSoftBody **)&jarg1; 
   result = (void *) ((arg1)->m_tag);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -11046,7 +11046,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBodyJointData **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_bodyA = arg2;
 }
 
@@ -11061,7 +11061,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
   (void)jarg1_;
   arg1 = *(btSoftBodyJointData **)&jarg1; 
   result = (void *) ((arg1)->m_bodyA);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -11074,7 +11074,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btSoftBodyJointData **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_bodyB = arg2;
 }
 
@@ -11089,7 +11089,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJ
   (void)jarg1_;
   arg1 = *(btSoftBodyJointData **)&jarg1; 
   result = (void *) ((arg1)->m_bodyB);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 

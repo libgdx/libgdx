@@ -73,17 +73,16 @@ public class btPoolAllocator extends BulletBase {
     return LinearMathJNI.btPoolAllocator_getMaxCount(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_void allocate(int size) {
-    long cPtr = LinearMathJNI.btPoolAllocator_allocate(swigCPtr, this, size);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long allocate(int size) {
+    return LinearMathJNI.btPoolAllocator_allocate(swigCPtr, this, size);
   }
 
-  public boolean validPtr(SWIGTYPE_p_void ptr) {
-    return LinearMathJNI.btPoolAllocator_validPtr(swigCPtr, this, SWIGTYPE_p_void.getCPtr(ptr));
+  public boolean validPtr(long ptr) {
+    return LinearMathJNI.btPoolAllocator_validPtr(swigCPtr, this, ptr);
   }
 
-  public void freeMemory(SWIGTYPE_p_void ptr) {
-    LinearMathJNI.btPoolAllocator_freeMemory(swigCPtr, this, SWIGTYPE_p_void.getCPtr(ptr));
+  public void freeMemory(long ptr) {
+    LinearMathJNI.btPoolAllocator_freeMemory(swigCPtr, this, ptr);
   }
 
   public int getElementSize() {

@@ -107,13 +107,12 @@ public class btSoftBody extends btCollisionObject {
     return (cPtr == 0) ? null : new SWIGTYPE_p_btSoftBody__Pose(cPtr, false);
   }
 
-  public void setTag(SWIGTYPE_p_void value) {
-    SoftbodyJNI.btSoftBody_tag_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setTag(long value) {
+    SoftbodyJNI.btSoftBody_tag_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getTag() {
-    long cPtr = SoftbodyJNI.btSoftBody_tag_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getTag() {
+    return SoftbodyJNI.btSoftBody_tag_get(swigCPtr, this);
   }
 
   public void setWorldInfo(btSoftBodyWorldInfo value) {

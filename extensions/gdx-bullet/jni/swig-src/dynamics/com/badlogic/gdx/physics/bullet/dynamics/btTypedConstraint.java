@@ -139,13 +139,12 @@ public class btTypedConstraint extends btTypedObject {
     return DynamicsJNI.btTypedConstraint_getUserConstraintId(swigCPtr, this);
   }
 
-  public void setUserConstraintPtr(SWIGTYPE_p_void ptr) {
-    DynamicsJNI.btTypedConstraint_setUserConstraintPtr(swigCPtr, this, SWIGTYPE_p_void.getCPtr(ptr));
+  public void setUserConstraintPtr(long ptr) {
+    DynamicsJNI.btTypedConstraint_setUserConstraintPtr(swigCPtr, this, ptr);
   }
 
-  public SWIGTYPE_p_void getUserConstraintPtr() {
-    long cPtr = DynamicsJNI.btTypedConstraint_getUserConstraintPtr(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getUserConstraintPtr() {
+    return DynamicsJNI.btTypedConstraint_getUserConstraintPtr(swigCPtr, this);
   }
 
   public void setJointFeedback(btJointFeedback jointFeedback) {
@@ -205,8 +204,8 @@ public class btTypedConstraint extends btTypedObject {
     return DynamicsJNI.btTypedConstraint_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public String serialize(SWIGTYPE_p_void dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return DynamicsJNI.btTypedConstraint_serialize(swigCPtr, this, SWIGTYPE_p_void.getCPtr(dataBuffer), SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
+    return DynamicsJNI.btTypedConstraint_serialize(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
   }
 
 }

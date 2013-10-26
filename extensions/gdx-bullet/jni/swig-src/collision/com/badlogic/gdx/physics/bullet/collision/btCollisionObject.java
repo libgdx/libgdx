@@ -230,13 +230,12 @@ public class btCollisionObject extends BulletBase implements
     return (cPtr == 0) ? null : btCollisionShape.newDerivedObject(cPtr, false);
   }
 
-  public SWIGTYPE_p_void internalGetExtensionPointer() {
-    long cPtr = CollisionJNI.btCollisionObject_internalGetExtensionPointer(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long internalGetExtensionPointer() {
+    return CollisionJNI.btCollisionObject_internalGetExtensionPointer(swigCPtr, this);
   }
 
-  public void internalSetExtensionPointer(SWIGTYPE_p_void pointer) {
-    CollisionJNI.btCollisionObject_internalSetExtensionPointer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(pointer));
+  public void internalSetExtensionPointer(long pointer) {
+    CollisionJNI.btCollisionObject_internalSetExtensionPointer(swigCPtr, this, pointer);
   }
 
   public int getActivationState() {
@@ -392,17 +391,16 @@ public class btCollisionObject extends BulletBase implements
     CollisionJNI.btCollisionObject_setCcdMotionThreshold(swigCPtr, this, ccdMotionThreshold);
   }
 
-  public SWIGTYPE_p_void getUserPointer() {
-    long cPtr = CollisionJNI.btCollisionObject_getUserPointer(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getUserPointer() {
+    return CollisionJNI.btCollisionObject_getUserPointer(swigCPtr, this);
   }
 
   public int getUserIndex() {
     return CollisionJNI.btCollisionObject_getUserIndex(swigCPtr, this);
   }
 
-  public void setUserPointer(SWIGTYPE_p_void userPointer) {
-    CollisionJNI.btCollisionObject_setUserPointer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(userPointer));
+  public void setUserPointer(long userPointer) {
+    CollisionJNI.btCollisionObject_setUserPointer(swigCPtr, this, userPointer);
   }
 
   public void setUserIndex(int index) {
@@ -421,8 +419,8 @@ public class btCollisionObject extends BulletBase implements
     return CollisionJNI.btCollisionObject_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public String serialize(SWIGTYPE_p_void dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return CollisionJNI.btCollisionObject_serialize(swigCPtr, this, SWIGTYPE_p_void.getCPtr(dataBuffer), SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
+    return CollisionJNI.btCollisionObject_serialize(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
   }
 
   public void serializeSingleObject(SWIGTYPE_p_btSerializer serializer) {

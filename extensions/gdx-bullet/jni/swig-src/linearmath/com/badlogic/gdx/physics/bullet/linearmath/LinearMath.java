@@ -351,13 +351,12 @@ public class LinearMath implements LinearMathConstants {
     LinearMathJNI.GrahamScanConvexHull2D(SWIGTYPE_p_btAlignedObjectArrayT_GrahamVector3_t.getCPtr(originalPoints), SWIGTYPE_p_btAlignedObjectArrayT_GrahamVector3_t.getCPtr(hull), normalAxis);
   }
 
-  public static SWIGTYPE_p_void btAlignedAllocInternal(long size, int alignment) {
-    long cPtr = LinearMathJNI.btAlignedAllocInternal(size, alignment);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public static long btAlignedAllocInternal(long size, int alignment) {
+    return LinearMathJNI.btAlignedAllocInternal(size, alignment);
   }
 
-  public static void btAlignedFreeInternal(SWIGTYPE_p_void ptr) {
-    LinearMathJNI.btAlignedFreeInternal(SWIGTYPE_p_void.getCPtr(ptr));
+  public static void btAlignedFreeInternal(long ptr) {
+    LinearMathJNI.btAlignedFreeInternal(ptr);
   }
 
   public static void btAlignedAllocSetCustom(SWIGTYPE_p_f_size_t__p_void allocFunc, SWIGTYPE_p_f_p_void__void freeFunc) {

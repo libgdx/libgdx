@@ -97,7 +97,6 @@ public class ExtrasJNI {
   public final static native long btWorldImporter_createGeneric6DofSpringConstraint(long jarg1, btWorldImporter jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btRigidBody jarg3_, Matrix4 jarg4, Matrix4 jarg5, boolean jarg6);
   public final static native long btWorldImporter_createSliderConstraint__SWIG_0(long jarg1, btWorldImporter jarg1_, long jarg2, btRigidBody jarg2_, long jarg3, btRigidBody jarg3_, Matrix4 jarg4, Matrix4 jarg5, boolean jarg6);
   public final static native long btWorldImporter_createSliderConstraint__SWIG_1(long jarg1, btWorldImporter jarg1_, long jarg2, btRigidBody jarg2_, Matrix4 jarg3, boolean jarg4);
-  public final static native String btWorldImporter_getNameForPointer__SWIG_1(long jarg1, btWorldImporter jarg1_, long jarg2);
   public final static native long new_btBulletWorldImporter__SWIG_0(long jarg1, btDynamicsWorld jarg1_);
   public final static native long new_btBulletWorldImporter__SWIG_1();
   public final static native void delete_btBulletWorldImporter(long jarg1);

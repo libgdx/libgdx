@@ -56,7 +56,6 @@ SPECIFY_CLASS(SWIGTYPE_p_p_btDbvtProxy, com.badlogic.gdx.physics.bullet.collisio
 SPECIFY_CLASS(SWIGTYPE_p_p_btPersistentManifold, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(SWIGTYPE_p_p_btVector3, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(SWIGTYPE_p_p_unsigned_char, com.badlogic.gdx.physics.bullet.collision)
-SPECIFY_CLASS(SWIGTYPE_p_void, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(SphereTriangleDetector, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(bt32BitAxisSweep3, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(btActivatingCollisionAlgorithm, com.badlogic.gdx.physics.bullet.collision)

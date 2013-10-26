@@ -228,13 +228,12 @@ public class btWheelInfo extends BulletBase {
     return DynamicsJNI.btWheelInfo_bIsFrontWheel_get(swigCPtr, this);
   }
 
-  public void setClientInfo(SWIGTYPE_p_void value) {
-    DynamicsJNI.btWheelInfo_clientInfo_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setClientInfo(long value) {
+    DynamicsJNI.btWheelInfo_clientInfo_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getClientInfo() {
-    long cPtr = DynamicsJNI.btWheelInfo_clientInfo_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getClientInfo() {
+    return DynamicsJNI.btWheelInfo_clientInfo_get(swigCPtr, this);
   }
 
   public btWheelInfo() {

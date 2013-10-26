@@ -134,8 +134,8 @@ public class btCollisionObjectArray extends BulletBase {
     CollisionJNI.btCollisionObjectArray_remove(swigCPtr, this, btCollisionObject.getCPtr(key), key);
   }
 
-  public void initializeFromBuffer(SWIGTYPE_p_void buffer, int size, int capacity) {
-    CollisionJNI.btCollisionObjectArray_initializeFromBuffer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(buffer), size, capacity);
+  public void initializeFromBuffer(long buffer, int size, int capacity) {
+    CollisionJNI.btCollisionObjectArray_initializeFromBuffer(swigCPtr, this, buffer, size, capacity);
   }
 
   public void copyFromArray(btCollisionObjectArray otherArray) {

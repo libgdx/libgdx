@@ -135,8 +135,8 @@ public class btManifoldArray extends BulletBase {
     CollisionJNI.btManifoldArray_remove(swigCPtr, this, btPersistentManifold.getCPtr(key), key);
   }
 
-  public void initializeFromBuffer(SWIGTYPE_p_void buffer, int size, int capacity) {
-    CollisionJNI.btManifoldArray_initializeFromBuffer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(buffer), size, capacity);
+  public void initializeFromBuffer(long buffer, int size, int capacity) {
+    CollisionJNI.btManifoldArray_initializeFromBuffer(swigCPtr, this, buffer, size, capacity);
   }
 
   public void copyFromArray(btManifoldArray otherArray) {

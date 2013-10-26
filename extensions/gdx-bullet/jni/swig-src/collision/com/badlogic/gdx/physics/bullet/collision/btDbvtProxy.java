@@ -84,8 +84,8 @@ public class btDbvtProxy extends btBroadphaseProxy {
     return CollisionJNI.btDbvtProxy_stage_get(swigCPtr, this);
   }
 
-  public btDbvtProxy(Vector3 aabbMin, Vector3 aabbMax, SWIGTYPE_p_void userPtr, short collisionFilterGroup, short collisionFilterMask) {
-    this(CollisionJNI.new_btDbvtProxy(aabbMin, aabbMax, SWIGTYPE_p_void.getCPtr(userPtr), collisionFilterGroup, collisionFilterMask), true);
+  public btDbvtProxy(Vector3 aabbMin, Vector3 aabbMax, long userPtr, short collisionFilterGroup, short collisionFilterMask) {
+    this(CollisionJNI.new_btDbvtProxy(aabbMin, aabbMax, userPtr, collisionFilterGroup, collisionFilterMask), true);
   }
 
 }

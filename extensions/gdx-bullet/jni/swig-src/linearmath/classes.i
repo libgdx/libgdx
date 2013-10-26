@@ -22,7 +22,6 @@ SPECIFY_CLASS(SWIGTYPE_p_f_p_void__void, com.badlogic.gdx.physics.bullet.linearm
 SPECIFY_CLASS(SWIGTYPE_p_f_size_t__p_void, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_f_size_t_int__p_void, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(SWIGTYPE_p_float, com.badlogic.gdx.physics.bullet.linearmath)
-SPECIFY_CLASS(SWIGTYPE_p_void, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btAngleCompareFunc, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btBlock, com.badlogic.gdx.physics.bullet.linearmath)
 SPECIFY_CLASS(btConvexHullComputer, com.badlogic.gdx.physics.bullet.linearmath)

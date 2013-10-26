@@ -9278,7 +9278,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   arg1 = *(btPoolAllocator **)&jarg1; 
   arg2 = (int)jarg2; 
   result = (void *)(arg1)->allocate(arg2);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -9293,7 +9293,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btPoolAllocator **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   result = (bool)(arg1)->validPtr(arg2);
   jresult = (jboolean)result; 
   return jresult;
@@ -9308,7 +9308,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btPoolAllocator **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->freeMemory(arg2);
 }
 
@@ -9741,7 +9741,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   arg1 = (size_t)jarg1; 
   arg2 = (int)jarg2; 
   result = (void *)btAlignedAllocInternal(arg1,arg2);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -9751,7 +9751,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(void **)&jarg1; 
+  arg1 = (void *)jarg1; 
   btAlignedFreeInternal(arg1);
 }
 
@@ -10036,7 +10036,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(void **)&jarg1; 
+  arg1 = (void *)jarg1; 
   result = (btHashPtr *)new btHashPtr((void const *)arg1);
   *(btHashPtr **)&jresult = result; 
   return jresult;
@@ -10053,7 +10053,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   (void)jarg1_;
   arg1 = *(btHashPtr **)&jarg1; 
   result = (void *)((btHashPtr const *)arg1)->getPointer();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -10474,7 +10474,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btDefaultMotionState **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_userPointer = arg2;
 }
 
@@ -10489,7 +10489,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   (void)jarg1_;
   arg1 = *(btDefaultMotionState **)&jarg1; 
   result = (void *) ((arg1)->m_userPointer);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 

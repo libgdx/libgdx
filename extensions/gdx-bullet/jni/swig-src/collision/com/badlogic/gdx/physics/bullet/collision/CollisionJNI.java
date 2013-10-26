@@ -2334,7 +2334,7 @@ public class CollisionJNI {
     return btBroadphasePair.getCPtr(self.addOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false)));
   }
   public static long SwigDirector_btOverlappingPairCallback_removeOverlappingPair(btOverlappingPairCallback self, long proxy0, long proxy1, long dispatcher) {
-    return SWIGTYPE_p_void.getCPtr(self.removeOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false)));
+    return self.removeOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false));
   }
   public static void SwigDirector_btOverlappingPairCallback_removeOverlappingPairsContainingProxy(btOverlappingPairCallback self, long proxy0, long dispatcher) {
     self.removeOverlappingPairsContainingProxy((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false));
@@ -2358,7 +2358,7 @@ public class CollisionJNI {
     return btBroadphasePair.getCPtr(self.addOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false)));
   }
   public static long SwigDirector_btGhostPairCallback_removeOverlappingPair(btGhostPairCallback self, long proxy0, long proxy1, long dispatcher) {
-    return SWIGTYPE_p_void.getCPtr(self.removeOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false)));
+    return self.removeOverlappingPair((proxy0 == 0) ? null : new btBroadphaseProxy(proxy0, false), (proxy1 == 0) ? null : new btBroadphaseProxy(proxy1, false), (dispatcher == 0) ? null : new btDispatcher(dispatcher, false));
   }
   public static void SwigDirector_btGhostPairCallback_removeOverlappingPairsContainingProxy(btGhostPairCallback self, long arg0, long arg1) {
     self.removeOverlappingPairsContainingProxy((arg0 == 0) ? null : new btBroadphaseProxy(arg0, false), (arg1 == 0) ? null : new btDispatcher(arg1, false));

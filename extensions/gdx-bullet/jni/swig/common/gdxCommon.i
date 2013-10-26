@@ -35,7 +35,7 @@
 
 
 /* Map "void *" to "jlong". */
-// %include "gdxVoidPointer.i";
+%include "gdxVoidPointer.i";
 
 /* Use "unsafe" enums (plain integer constants) instead of typesafe enum classes. */
 %include "enumtypeunsafe.swg"

@@ -78,9 +78,8 @@ public class btOverlappingPairCallback extends BulletBase {
     return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
   }
 
-  public SWIGTYPE_p_void removeOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1, btDispatcher dispatcher) {
-    long cPtr = CollisionJNI.btOverlappingPairCallback_removeOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1, btDispatcher.getCPtr(dispatcher), dispatcher);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long removeOverlappingPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1, btDispatcher dispatcher) {
+    return CollisionJNI.btOverlappingPairCallback_removeOverlappingPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1, btDispatcher.getCPtr(dispatcher), dispatcher);
   }
 
   public void removeOverlappingPairsContainingProxy(btBroadphaseProxy proxy0, btDispatcher dispatcher) {
