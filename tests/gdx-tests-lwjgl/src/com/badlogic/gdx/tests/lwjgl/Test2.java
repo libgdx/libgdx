@@ -19,7 +19,7 @@ public class Test2 extends ApplicationAdapter {
 	TextureRegion region;
 	Pixmap screenCap;
 	Texture screenCapTex;
-	private int size = 2;
+	private int size = 1;
 
 	public void create () {
 
