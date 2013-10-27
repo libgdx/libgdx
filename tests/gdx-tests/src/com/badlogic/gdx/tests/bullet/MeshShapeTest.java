@@ -29,8 +29,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.btBvhTriangleMeshShape;
-import com.badlogic.gdx.physics.bullet.btSphereShape;
+import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 
 /** @author xoppa */
 public class MeshShapeTest extends BaseBulletTest {

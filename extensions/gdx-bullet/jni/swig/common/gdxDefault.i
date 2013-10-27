@@ -8,7 +8,8 @@
 		swigCPtr = cPtr;
 	}
 	
-	protected $javaclassname(long cPtr, boolean cMemoryOwn) {
+	/** Construct a new $javaclassname, normally you should not need this constructor it's intended for low-level usage. */ 
+	public $javaclassname(long cPtr, boolean cMemoryOwn) {
 		this("$javaclassname", cPtr, cMemoryOwn);
 		construct();
 	}
@@ -33,7 +34,8 @@
 		swigCPtr = cPtr;
 	}
 	
-	protected $javaclassname(long cPtr, boolean cMemoryOwn) {
+	/** Construct a new $javaclassname, normally you should not need this constructor it's intended for low-level usage. */
+	public $javaclassname(long cPtr, boolean cMemoryOwn) {
 		this("$javaclassname", cPtr, cMemoryOwn);
 		construct();
 	}

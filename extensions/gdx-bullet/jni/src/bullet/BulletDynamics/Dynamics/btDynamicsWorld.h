@@ -33,7 +33,8 @@ enum btDynamicsWorldType
 	BT_SIMPLE_DYNAMICS_WORLD=1,
 	BT_DISCRETE_DYNAMICS_WORLD=2,
 	BT_CONTINUOUS_DYNAMICS_WORLD=3,
-	BT_SOFT_RIGID_DYNAMICS_WORLD=4
+	BT_SOFT_RIGID_DYNAMICS_WORLD=4,
+	BT_GPU_DYNAMICS_WORLD=5
 };
 
 ///The btDynamicsWorld is the interface class for several dynamics implementation, basic, discrete, parallel, and continuous etc.

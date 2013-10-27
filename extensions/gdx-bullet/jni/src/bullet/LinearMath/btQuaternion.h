@@ -27,11 +27,17 @@ subject to the following restrictions:
 
 #ifdef BT_USE_SSE
 
-const __m128 ATTRIBUTE_ALIGNED16(vOnes) = {1.0f, 1.0f, 1.0f, 1.0f};
+//const __m128 ATTRIBUTE_ALIGNED16(vOnes) = {1.0f, 1.0f, 1.0f, 1.0f};
+#define vOnes (_mm_set_ps(1.0f, 1.0f, 1.0f, 1.0f))
 
 #endif
 
-#if defined(BT_USE_SSE) || defined(BT_USE_NEON)
+#if defined(BT_USE_SSE) 
+
+#define vQInv (_mm_set_ps(+0.0f, -0.0f, -0.0f, -0.0f))
+#define vPPPM (_mm_set_ps(-0.0f, +0.0f, +0.0f, +0.0f))
+
+#elif defined(BT_USE_NEON)
 
 const btSimdFloat4 ATTRIBUTE_ALIGNED16(vQInv) = {-0.0f, -0.0f, -0.0f, +0.0f};
 const btSimdFloat4 ATTRIBUTE_ALIGNED16(vPPPM) = {+0.0f, +0.0f, +0.0f, -0.0f};
@@ -285,7 +291,7 @@ public:
    * @param q The other quaternion */
 	btScalar dot(const btQuaternion& q) const
 	{
-#if defined (BT_USE_SSE_IN_API) && defined (BT_USE_SSE)
+#if defined BT_USE_SIMD_VECTOR3 && defined (BT_USE_SSE_IN_API) && defined (BT_USE_SSE)
 		__m128	vd;
 		
 		vd = _mm_mul_ps(mVec128, q.mVec128);
@@ -384,7 +390,7 @@ public:
 	{
 		return *this / length();
 	} 
-  /**@brief Return the angle between this quaternion and the other 
+	/**@brief Return the ***half*** angle between this quaternion and the other
    * @param q The other quaternion */
 	btScalar angle(const btQuaternion& q) const 
 	{
@@ -392,12 +398,38 @@ public:
 		btAssert(s != btScalar(0.0));
 		return btAcos(dot(q) / s);
 	}
+	
+	/**@brief Return the angle between this quaternion and the other along the shortest path
+	* @param q The other quaternion */
+	btScalar angleShortestPath(const btQuaternion& q) const 
+	{
+		btScalar s = btSqrt(length2() * q.length2());
+		btAssert(s != btScalar(0.0));
+		if (dot(q) < 0) // Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
+			return btAcos(dot(-q) / s) * btScalar(2.0);
+		else 
+			return btAcos(dot(q) / s) * btScalar(2.0);
+	}
+
   /**@brief Return the angle of rotation represented by this quaternion */
 	btScalar getAngle() const 
 	{
 		btScalar s = btScalar(2.) * btAcos(m_floats[3]);
 		return s;
 	}
+
+	/**@brief Return the angle of rotation represented by this quaternion along the shortest path*/
+	btScalar getAngleShortestPath() const 
+	{
+		btScalar s;
+		if (dot(*this) < 0)
+			s = btScalar(2.) * btAcos(m_floats[3]);
+		else
+			s = btScalar(2.) * btAcos(-m_floats[3]);
+
+		return s;
+	}
+
 
 	/**@brief Return the axis of the rotation represented by this quaternion */
 	btVector3 getAxis() const
@@ -498,7 +530,7 @@ public:
 	  btAssert(magnitude > btScalar(0));
 
     btScalar product = dot(q) / magnitude;
-    if (btFabs(product) != btScalar(1))
+    if (btFabs(product) < btScalar(1))
 		{
       // Take care of long angle case see http://en.wikipedia.org/wiki/Slerp
       const btScalar sign = (product < 0) ? btScalar(-1) : btScalar(1);
@@ -835,7 +867,7 @@ quatRotate(const btQuaternion& rotation, const btVector3& v)
 {
 	btQuaternion q = rotation * v;
 	q *= rotation.inverse();
-#if defined (BT_USE_SSE_IN_API) && defined (BT_USE_SSE)
+#if defined BT_USE_SIMD_VECTOR3 && defined (BT_USE_SSE_IN_API) && defined (BT_USE_SSE)
 	return btVector3(_mm_and_ps(q.get128(), btvFFF0fMask));
 #elif defined(BT_USE_NEON)
     return btVector3((float32x4_t)vandq_s32((int32x4_t)q.get128(), btvFFF0Mask));

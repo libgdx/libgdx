@@ -29,9 +29,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCylinderShape;
-import com.badlogic.gdx.physics.bullet.btSphereShape;
 
 /** @author Xoppa */
 public class ShootTest extends BaseBulletTest {

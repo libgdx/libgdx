@@ -13,6 +13,10 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+#if defined (_WIN32) || defined (__i386__)
+#define BT_USE_SSE_IN_API
+#endif
+
 #include "btConvexHullShape.h"
 #include "BulletCollision/CollisionShapes/btCollisionMargin.h"
 
@@ -45,10 +49,11 @@ void btConvexHullShape::setLocalScaling(const btVector3& scaling)
 	recalcLocalAabb();
 }
 
-void btConvexHullShape::addPoint(const btVector3& point)
+void btConvexHullShape::addPoint(const btVector3& point, bool recalculateLocalAabb)
 {
 	m_unscaledPoints.push_back(point);
-	recalcLocalAabb();
+	if (recalculateLocalAabb)
+		recalcLocalAabb();
 
 }
 

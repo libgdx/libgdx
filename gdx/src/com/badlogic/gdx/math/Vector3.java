@@ -77,6 +77,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		this.set(values[0], values[1], values[2]);
 	}
 
+	/** Creates a vector from the given vector and z-component
+	 *
+	 * @param vector The vector
+	 * @param z The z-component */
+	public Vector3 (final Vector2 vector, float z) {
+		this.set(vector.x, vector.y, z);
+	}
+
 	/** Sets the vector to the given components
 	 * 
 	 * @param x The x-component
@@ -104,6 +112,15 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @return this vector for chaining */
 	public Vector3 set (final float[] values) {
 		return this.set(values[0], values[1], values[2]);
+	}
+
+	/** Sets the components of the given vector and z-component
+	 *
+	 * @param vector The vector
+	 * @param z The z-component
+	 * @return This vector for chaining */
+	public Vector3 set (final Vector2 vector, float z) {
+		return this.set(vector.x, vector.y, z);
 	}
 
 	/** @return a copy of this vector */

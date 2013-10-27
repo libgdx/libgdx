@@ -18,158 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <PropertyGroup Label="Globals">
-    <ProjectGuid>{57008B00-26B2-4F53-9C54-F4D17B5C3122}</ProjectGuid>
-    <RootNamespace>gdxBullet</RootNamespace>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\src\bullet\btBulletCollisionCommon.h" />
-    <ClInclude Include="..\..\..\src\bullet\btBulletDynamicsCommon.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionConfiguration.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionCreateFunc.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObjectWrapper.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexPlaneCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btGhostObject.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btInternalEdgeUtility.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btManifoldResult.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSimulationIslandManager.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSphereBoxCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSphereSphereCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSphereTriangleCollisionAlgorithm.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btUnionFind.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btContinuousConvexCollision.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btConvexCast.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btConvexPenetrationDepthSolver.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btDiscreteCollisionDetectorInterface.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkConvexCast.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa2.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpaPenetrationDepthSolver.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkPairDetector.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btManifoldPoint.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btMinkowskiPenetrationDepthSolver.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btPersistentManifold.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btPointCollector.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btPolyhedralContactClipping.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btRaycastCallback.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btSimplexSolverInterface.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btSubSimplexConvexCast.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btVoronoiSimplexSolver.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btActionInterface.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDynamicsWorld.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.h" />
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.h" />
-    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeConvexResultCallback.h" />
-    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeRayResultCallback.h" />
-    <ClInclude Include="..\..\..\src\custom\gdx\ContactCache.h" />
-    <ClInclude Include="..\..\..\src\custom\gdx\ContactListener.h" />
-    <ClInclude Include="..\..\..\src\custom\gdx\GdxCollisionObjectBridge.h" />
-    <ClInclude Include="..\..\..\src\custom\gdx\InternalTickCallback.h" />
-    <ClInclude Include="..\..\..\swig-src\gdxBullet_wrap.h" />
-  </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp" />
@@ -189,6 +37,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.cpp" />
@@ -196,6 +45,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btGhostObject.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btInternalEdgeUtility.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btManifoldResult.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSimulationIslandManager.cpp" />
@@ -266,6 +116,7 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btContactConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofSpringConstraint.cpp" />
@@ -281,6 +132,15 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp" />
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp" />
     <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btDefaultSoftBodySolver.cpp" />
@@ -299,14 +159,121 @@
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btQuickprof.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer.cpp" />
     <ClCompile Include="..\..\..\src\bullet\LinearMath\btVector3.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeConvexResultCallback.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeRayResultCallback.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactCache.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactListener.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\common\jniHelpers.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\InternalTickCallback.cpp" />
+    <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bFile.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\btBulletFile.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btBulletWorldImporter.cpp" />
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp" />
-    <ClCompile Include="..\..\..\swig-src\gdxBullet_wrap.cpp" />
+    <ClCompile Include="..\..\..\swig-src\collision\collision_wrap.cpp" />
+    <ClCompile Include="..\..\..\swig-src\dynamics\dynamics_wrap.cpp" />
+    <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp" />
+    <ClCompile Include="..\..\..\swig-src\linearmath\linearmath_wrap.cpp" />
+    <ClCompile Include="..\..\..\swig-src\softbody\softbody_wrap.cpp" />
   </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{57008B00-26B2-4F53-9C54-F4D17B5C3122}</ProjectGuid>
+    <RootNamespace>gdxBullet</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>..\..\..\src\bullet;..\..\..\src\custom;..\..\..\src\extras\serialize;..\..\..\jni-headers;..\..\..\jni-headers\win32;..\..\Glut;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

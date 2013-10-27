@@ -53,7 +53,7 @@ btHashedOverlappingPairCache::~btHashedOverlappingPairCache()
 
 void	btHashedOverlappingPairCache::cleanOverlappingPair(btBroadphasePair& pair,btDispatcher* dispatcher)
 {
-	if (pair.m_algorithm)
+	if (pair.m_algorithm && dispatcher)
 	{
 		{
 			pair.m_algorithm->~btCollisionAlgorithm();

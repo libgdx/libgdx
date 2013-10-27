@@ -54,7 +54,7 @@ public class OrthographicCamera extends Camera {
 	@Override
 	public void update (boolean updateFrustum) {
 		projection.setToOrtho(zoom * -viewportWidth / 2, zoom * (viewportWidth / 2), zoom * -(viewportHeight / 2), zoom
-			* viewportHeight / 2, Math.abs(near), Math.abs(far));
+			* viewportHeight / 2, near, far);
 		view.setToLookAt(position, tmp.set(position).add(direction), up);
 		combined.set(projection);
 		Matrix4.mul(combined.val, view.val);
@@ -82,6 +82,9 @@ public class OrthographicCamera extends Camera {
 		if (yDown) {
 			up.set(0, -1, 0);
 			direction.set(0, 0, 1);
+		} else {
+			up.set(0, 1, 0);
+			direction.set(0, 0, -1);
 		}
 		position.set(zoom * viewportWidth / 2.0f, zoom * viewportHeight / 2.0f, 0);
 		this.viewportWidth = viewportWidth;

@@ -24,10 +24,10 @@ class btRigidBody;
 
 
 #ifdef BT_USE_DOUBLE_PRECISION
-#define btPoint2PointConstraintData	btPoint2PointConstraintDoubleData
-#define btPoint2PointConstraintDataName	"btPoint2PointConstraintDoubleData"
+#define btPoint2PointConstraintData2	btPoint2PointConstraintDoubleData2
+#define btPoint2PointConstraintDataName	"btPoint2PointConstraintDoubleData2"
 #else
-#define btPoint2PointConstraintData	btPoint2PointConstraintFloatData
+#define btPoint2PointConstraintData2	btPoint2PointConstraintFloatData
 #define btPoint2PointConstraintDataName	"btPoint2PointConstraintFloatData"
 #endif //BT_USE_DOUBLE_PRECISION
 
@@ -134,24 +134,36 @@ struct	btPoint2PointConstraintFloatData
 };
 
 ///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+struct	btPoint2PointConstraintDoubleData2
+{
+	btTypedConstraintDoubleData	m_typeConstraintData;
+	btVector3DoubleData	m_pivotInA;
+	btVector3DoubleData	m_pivotInB;
+};
+
+#ifdef BT_BACKWARDS_COMPATIBLE_SERIALIZATION
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
+///this structure is not used, except for loading pre-2.82 .bullet files
+///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
 struct	btPoint2PointConstraintDoubleData
 {
 	btTypedConstraintData	m_typeConstraintData;
 	btVector3DoubleData	m_pivotInA;
 	btVector3DoubleData	m_pivotInB;
 };
+#endif //BT_BACKWARDS_COMPATIBLE_SERIALIZATION
 
 
 SIMD_FORCE_INLINE	int	btPoint2PointConstraint::calculateSerializeBufferSize() const
 {
-	return sizeof(btPoint2PointConstraintData);
+	return sizeof(btPoint2PointConstraintData2);
 
 }
 
 	///fills the dataBuffer and returns the struct name (and 0 on failure)
 SIMD_FORCE_INLINE	const char*	btPoint2PointConstraint::serialize(void* dataBuffer, btSerializer* serializer) const
 {
-	btPoint2PointConstraintData* p2pData = (btPoint2PointConstraintData*)dataBuffer;
+	btPoint2PointConstraintData2* p2pData = (btPoint2PointConstraintData2*)dataBuffer;
 
 	btTypedConstraint::serialize(&p2pData->m_typeConstraintData,serializer);
 	m_pivotInA.serialize(p2pData->m_pivotInA);

@@ -14,263 +14,114 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Source Files\bullet">
-      <UniqueIdentifier>{c9028fb6-8c65-42a0-aa3f-396b14f85ad8}</UniqueIdentifier>
+      <UniqueIdentifier>{27ce2b29-12f6-40bf-a876-f95442c28c73}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\LinearMath">
-      <UniqueIdentifier>{1893e809-1c71-4462-b0ff-a3c466d47f81}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletSoftBody">
-      <UniqueIdentifier>{28bb29a0-847a-4ac1-a83d-67e8f78b4ef1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletDynamics">
-      <UniqueIdentifier>{fc1fca11-52b0-400f-b8be-f87a8f848ca8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletDynamics\Character">
-      <UniqueIdentifier>{e334e2ec-631f-4d00-b6d5-e3bc70a18164}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletDynamics\ConstraintSolver">
-      <UniqueIdentifier>{9582687e-1476-4896-a08d-3e0dabd8fccc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletDynamics\Dynamics">
-      <UniqueIdentifier>{0c20ec05-755a-4561-8852-8406cea4bb01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\bullet\BulletDynamics\Vehicle">
-      <UniqueIdentifier>{2b675d48-62df-4b75-a7f2-ce0f516bd68e}</UniqueIdentifier>
+      <UniqueIdentifier>{9d69787e-5a46-47e8-a073-ccb80d6e2347}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision">
-      <UniqueIdentifier>{b4f10bd5-a76f-436c-be0a-384de32827e4}</UniqueIdentifier>
+      <UniqueIdentifier>{ce0cbf58-9fcf-4a35-8ca7-fcf4c71915c7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision\BroadphaseCollision">
-      <UniqueIdentifier>{9ad5beaa-40d2-44f2-a0f1-3e82cebdc3c0}</UniqueIdentifier>
+      <UniqueIdentifier>{2782e277-5158-4537-a127-5399c6d11113}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision\CollisionDispatch">
-      <UniqueIdentifier>{1600b46a-876a-4d7f-ae0d-b4eab31ef023}</UniqueIdentifier>
+      <UniqueIdentifier>{a19a9ed0-2edb-422f-b86a-9b784309bc42}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision\CollisionShapes">
-      <UniqueIdentifier>{914a2f76-be58-4e5f-adc0-1102dc0d54bb}</UniqueIdentifier>
+      <UniqueIdentifier>{9fe5dcc4-de8e-4865-8ef4-0ca650ec6600}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision\Gimpact">
-      <UniqueIdentifier>{950ee892-6235-487e-ba43-64b88f3d7cf4}</UniqueIdentifier>
+      <UniqueIdentifier>{623feb8f-2289-44fe-83fb-a3865dec1049}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision\ibmsdk">
-      <UniqueIdentifier>{2017b66b-966a-40b9-afe8-eae7f4f71b64}</UniqueIdentifier>
+      <UniqueIdentifier>{7b304b3a-a855-4ee6-b075-4c089082508f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bullet\BulletCollision\NarrowPhaseCollision">
-      <UniqueIdentifier>{98a08bc3-c6d3-4eef-ad61-0de885a8bf60}</UniqueIdentifier>
+      <UniqueIdentifier>{b8d36067-564a-4af9-b03b-1b86f8451ce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\custom">
+      <UniqueIdentifier>{43cca291-b3f1-4646-ac3c-72b27dfc5ee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics">
+      <UniqueIdentifier>{326530e9-db8e-47c0-b228-122545acc276}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Character">
+      <UniqueIdentifier>{d98d0e97-bbec-4e1e-9763-495d9154dc74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\ConstraintSolver">
+      <UniqueIdentifier>{a2681de2-18ea-47a3-8bcc-85cb3f0e960c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Dynamics">
+      <UniqueIdentifier>{ccce4f11-e755-4dfb-99a7-98bf43baae79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bullet\BulletDynamics\Vehicle">
+      <UniqueIdentifier>{776a3d6e-fcb3-4da6-b491-6ac8931df8f2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\serialize">
-      <UniqueIdentifier>{89f4806a-7b9c-4707-99c2-1a21843f3c8a}</UniqueIdentifier>
+      <UniqueIdentifier>{0fd24958-e20b-4679-a963-b6cde1b7f2e6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\serialize\BulletFileLoader">
-      <UniqueIdentifier>{1a1a4f34-b3c9-4497-acb6-a16e2ef2e545}</UniqueIdentifier>
+      <UniqueIdentifier>{09fd459a-0c8c-484f-93f5-26fd92c4914b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\serialize\BulletWorldImporter">
-      <UniqueIdentifier>{f280eaee-44db-41d8-8c43-31c91c59cca9}</UniqueIdentifier>
+      <UniqueIdentifier>{d5750eb7-75b2-4c04-9302-a5b98ee65293}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\gdx">
-      <UniqueIdentifier>{2c6c3385-3601-4f95-9865-1188a8be3d73}</UniqueIdentifier>
+    <Filter Include="Source Files\bullet\BulletSoftBody">
+      <UniqueIdentifier>{bae2a6c8-74b9-4c78-975b-522fc26f3711}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\custom">
-      <UniqueIdentifier>{076beb26-8102-4596-becf-2ac71b5f1618}</UniqueIdentifier>
+    <Filter Include="Source Files\custom\gdx">
+      <UniqueIdentifier>{83741052-b319-4e6a-bc60-ee1b99757a47}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\custom\gdx">
-      <UniqueIdentifier>{d2d3d622-b370-4e5b-aa5b-a73cb5c4fda2}</UniqueIdentifier>
+    <Filter Include="Source Files\custom\gdx\collision">
+      <UniqueIdentifier>{5a7d4daa-0332-4841-aa34-0625d75443b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bullet">
-      <UniqueIdentifier>{cc9e0a2b-20f6-4eaa-a3e2-40e17866aa06}</UniqueIdentifier>
+    <Filter Include="Source Files\custom\gdx\dynamics">
+      <UniqueIdentifier>{2d35b2da-b1cf-4886-ba93-d2701231e3e6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bullet\BulletDynamics">
-      <UniqueIdentifier>{4b4221e4-4d94-4fe4-96f1-fcacc46ab2e0}</UniqueIdentifier>
+    <Filter Include="Source Files\custom\gdx\common">
+      <UniqueIdentifier>{1a9dc5e8-2900-4b8a-b59b-d61b2d763c42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bullet\BulletDynamics\Dynamics">
-      <UniqueIdentifier>{7058cbd8-3ae8-4f61-9290-0a3e1b15381a}</UniqueIdentifier>
+    <Filter Include="Source Files\custom\gdx\linearmath">
+      <UniqueIdentifier>{9f0d76c7-b963-4948-adf6-1a9768f1c12f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bullet\BulletCollision">
-      <UniqueIdentifier>{c0fbe8a9-df71-48e0-97e6-be91c5f48eae}</UniqueIdentifier>
+    <Filter Include="Source Files\bullet\BulletDynamics\Featherstone">
+      <UniqueIdentifier>{c4ce6a33-0134-4dda-896e-050b5050dfa8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\bullet\BulletCollision\CollisionDispatch">
-      <UniqueIdentifier>{9bb2e31b-70b7-4ceb-a878-fa26a8d12716}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\bullet\BulletCollision\NarrowPhaseCollision">
-      <UniqueIdentifier>{7c989a37-0a86-465f-8e4c-a57c118db5af}</UniqueIdentifier>
+    <Filter Include="Source Files\bullet\BulletDynamics\MLCPSolvers">
+      <UniqueIdentifier>{95104f21-6997-4d0f-a2eb-56789f467fd1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\swig-src\gdxBullet_wrap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\custom\gdx\GdxCollisionObjectBridge.h">
-      <Filter>Header Files\custom\gdx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\custom\gdx\InternalTickCallback.h">
-      <Filter>Header Files\custom\gdx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeConvexResultCallback.h">
-      <Filter>Header Files\custom\gdx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\custom\gdx\ClosestNotMeRayResultCallback.h">
-      <Filter>Header Files\custom\gdx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\custom\gdx\ContactListener.h">
-      <Filter>Header Files\custom\gdx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\custom\gdx\ContactCache.h">
-      <Filter>Header Files\custom\gdx</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\btBulletDynamicsCommon.h">
-      <Filter>Header Files\bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\btBulletCollisionCommon.h">
-      <Filter>Header Files\bullet</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.h">
-      <Filter>Header Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btActionInterface.h">
-      <Filter>Header Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.h">
-      <Filter>Header Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDynamicsWorld.h">
-      <Filter>Header Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.h">
-      <Filter>Header Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btUnionFind.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionConfiguration.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionCreateFunc.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObjectWrapper.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexPlaneCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btDefaultCollisionConfiguration.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btEmptyCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btGhostObject.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btInternalEdgeUtility.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btManifoldResult.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSimulationIslandManager.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSphereBoxCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSphereSphereCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btSphereTriangleCollisionAlgorithm.h">
-      <Filter>Header Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkConvexCast.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpa2.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkEpaPenetrationDepthSolver.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btGjkPairDetector.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btManifoldPoint.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btMinkowskiPenetrationDepthSolver.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btPersistentManifold.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btPointCollector.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btPolyhedralContactClipping.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btRaycastCallback.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btSimplexSolverInterface.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btSubSimplexConvexCast.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btVoronoiSimplexSolver.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btContinuousConvexCollision.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btConvexCast.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btConvexPenetrationDepthSolver.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btDiscreteCollisionDetectorInterface.h">
-      <Filter>Header Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\swig-src\gdxBullet_wrap.cpp">
+    <ClCompile Include="..\..\..\swig-src\linearmath\linearmath_wrap.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btAlignedAllocator.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btConvexHull.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btConvexHullComputer.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btGeometryUtil.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btPolarDecomposition.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btQuickprof.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\LinearMath\btVector3.cpp">
+      <Filter>Source Files\bullet\LinearMath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp">
+      <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btBroadphaseProxy.cpp">
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
@@ -299,8 +150,38 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btSimpleBroadphase.cpp">
       <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.cpp">
-      <Filter>Source Files\bullet\BulletCollision\BroadphaseCollision</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexPlaneCollisionAlgorithm.cpp">
       <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
@@ -337,54 +218,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.cpp">
       <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btActivatingCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBox2dBox2dCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btBoxBoxDetector.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionDispatcher.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionObject.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCollisionWorld.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvex2dConvex2dAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConcaveCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btConvexConvexAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexArray.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexMaterialArray.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleMesh.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleMeshShape.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btUniformScalingShape.cpp">
-      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btBox2dShape.cpp">
       <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
@@ -479,6 +312,33 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleCallback.cpp">
       <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexArray.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleIndexVertexMaterialArray.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleMesh.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btTriangleMeshShape.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionShapes\btUniformScalingShape.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionShapes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btContactProcessing.cpp">
+      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGenericPoolAllocator.cpp">
+      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGImpactBvh.cpp">
+      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGImpactCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGImpactQuantizedBvh.cpp">
       <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
     </ClCompile>
@@ -498,18 +358,6 @@
       <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\gim_tri_collision.cpp">
-      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btContactProcessing.cpp">
-      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGenericPoolAllocator.cpp">
-      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGImpactBvh.cpp">
-      <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletCollision\Gimpact\btGImpactCollisionAlgorithm.cpp">
       <Filter>Source Files\bullet\BulletCollision\Gimpact</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btContinuousConvexCollision.cpp">
@@ -548,52 +396,22 @@
     <ClCompile Include="..\..\..\src\bullet\BulletCollision\NarrowPhaseCollision\btVoronoiSimplexSolver.cpp">
       <Filter>Source Files\bullet\BulletCollision\NarrowPhaseCollision</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\swig-src\collision\collision_wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\swig-src\dynamics\dynamics_wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Character\btKinematicCharacterController.cpp">
       <Filter>Source Files\bullet\BulletDynamics\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btGeometryUtil.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btQuickprof.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btSerializer.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btVector3.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btAlignedAllocator.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btConvexHull.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btConvexHullComputer.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btConeTwistConstraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btContactConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGeneric6DofConstraint.cpp">
@@ -626,35 +444,26 @@
     <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btUniversalConstraint.cpp">
       <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btDiscreteDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftRigidDynamicsWorld.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btRigidBody.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\btSimpleDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btDefaultSoftBodySolver.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Dynamics\Bullet-C-API.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Dynamics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBody.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btRaycastVehicle.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Vehicle\btWheelInfo.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Vehicle</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyHelpers.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp">
-      <Filter>Source Files\bullet\BulletSoftBody</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\LinearMath\btPolarDecomposition.cpp">
-      <Filter>Source Files\bullet\LinearMath</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btGearConstraint.cpp">
-      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
+    <ClCompile Include="..\..\..\swig-src\extras\extras_wrap.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bDNA.cpp">
       <Filter>Source Files\serialize\BulletFileLoader</Filter>
@@ -671,8 +480,92 @@
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletWorldImporter\btWorldImporter.cpp">
       <Filter>Source Files\serialize\BulletWorldImporter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\swig-src\softbody\softbody_wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btDefaultSoftBodySolver.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBody.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyHelpers.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftRigidDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\src\extras\Serialize\BulletFileLoader\bChunk.cpp">
       <Filter>Source Files\bullet\BulletSoftBody</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeConvexResultCallback.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\dynamics\InternalTickCallback.cpp">
+      <Filter>Source Files\custom\gdx\dynamics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ClosestNotMeRayResultCallback.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactCache.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\collision\ContactListener.cpp">
+      <Filter>Source Files\custom\gdx\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\common\jniHelpers.cpp">
+      <Filter>Source Files\custom\gdx\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\custom\gdx\linearmath\mathtypes.cpp">
+      <Filter>Source Files\custom\gdx\linearmath</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btCompoundCompoundCollisionAlgorithm.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletCollision\CollisionDispatch\btHashedSimplePairCache.cpp">
+      <Filter>Source Files\bullet\BulletCollision\CollisionDispatch</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBody.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyConstraintSolver.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyDynamicsWorld.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointLimitConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyJointMotor.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\Featherstone\btMultiBodyPoint2Point.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\Featherstone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btDantzigLCP.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\MLCPSolvers\btMLCPSolver.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\MLCPSolvers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\bullet\BulletDynamics\ConstraintSolver\btFixedConstraint.cpp">
+      <Filter>Source Files\bullet\BulletDynamics\ConstraintSolver</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

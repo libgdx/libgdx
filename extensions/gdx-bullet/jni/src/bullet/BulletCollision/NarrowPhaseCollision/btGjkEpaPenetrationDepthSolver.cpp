@@ -25,7 +25,7 @@ bool btGjkEpaPenetrationDepthSolver::calcPenDepth( btSimplexSolverInterface& sim
 											  const btConvexShape* pConvexA, const btConvexShape* pConvexB,
 											  const btTransform& transformA, const btTransform& transformB,
 											  btVector3& v, btVector3& wWitnessOnA, btVector3& wWitnessOnB,
-											  class btIDebugDraw* debugDraw, btStackAlloc* stackAlloc )
+											  class btIDebugDraw* debugDraw)
 {
 
 	(void)debugDraw;
@@ -34,7 +34,7 @@ bool btGjkEpaPenetrationDepthSolver::calcPenDepth( btSimplexSolverInterface& sim
 
 //	const btScalar				radialmargin(btScalar(0.));
 	
-	btVector3	guessVector(transformA.getOrigin()-transformB.getOrigin());
+	btVector3	guessVector(transformB.getOrigin()-transformA.getOrigin());
 	btGjkEpaSolver2::sResults	results;
 	
 

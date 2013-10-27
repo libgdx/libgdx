@@ -426,6 +426,8 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 		for (i=0; i<3; i++) info->m_J2angularAxis[s3+i] = -tmpB[i];
 		for (i=0; i<3; i++) info->m_J1linearAxis[s2+i] = p[i];
 		for (i=0; i<3; i++) info->m_J1linearAxis[s3+i] = q[i];
+		for (i=0; i<3; i++) info->m_J2linearAxis[s2+i] = -p[i];
+		for (i=0; i<3; i++) info->m_J2linearAxis[s3+i] = -q[i];
 	}
 	else
 	{	// old way - maybe incorrect if bodies are not on the slider axis
@@ -440,6 +442,8 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 
 		for (i=0; i<3; i++) info->m_J1linearAxis[s2+i] = p[i];
 		for (i=0; i<3; i++) info->m_J1linearAxis[s3+i] = q[i];
+		for (i=0; i<3; i++) info->m_J2linearAxis[s2+i] = -p[i];
+		for (i=0; i<3; i++) info->m_J2linearAxis[s3+i] = -q[i];
 	}
 	// compute two elements of right hand side
 
@@ -479,6 +483,9 @@ void btSliderConstraint::getInfo2NonVirtual(btConstraintInfo2* info, const btTra
 		info->m_J1linearAxis[srow+0] = ax1[0];
 		info->m_J1linearAxis[srow+1] = ax1[1];
 		info->m_J1linearAxis[srow+2] = ax1[2];
+		info->m_J2linearAxis[srow+0] = -ax1[0];
+		info->m_J2linearAxis[srow+1] = -ax1[1];
+		info->m_J2linearAxis[srow+2] = -ax1[2];
 		// linear torque decoupling step:
 		//
 		// we have to be careful that the linear constraint forces (+/- ax1) applied to the two bodies

@@ -19,8 +19,9 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.linearmath.LinearMathConstants;
 
 /** @author xoppa */
 public class KinematicTest extends BaseBulletTest {
@@ -49,7 +50,7 @@ public class KinematicTest extends BaseBulletTest {
 		kinematicBox3.setColor(Color.RED);
 		kinematicBox3.body.setCollisionFlags(kinematicBox3.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);;
 		// This makes bullet call btMotionState#getWorldTransform on every update:
-		kinematicBox3.body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
+		kinematicBox3.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 		angle = 360f;
 	}
 	
@@ -65,7 +66,7 @@ public class KinematicTest extends BaseBulletTest {
 		}
 		kinematicBox.transform.idt().rotate(Vector3.Y, angle).translate(position);
 		// This makes bullet call btMotionState#getWorldTransform once:
-		kinematicBox.body.setActivationState(gdxBullet.ACTIVE_TAG);
+		kinematicBox.body.setActivationState(Collision.ACTIVE_TAG);
 		
 		super.render();
 	}
