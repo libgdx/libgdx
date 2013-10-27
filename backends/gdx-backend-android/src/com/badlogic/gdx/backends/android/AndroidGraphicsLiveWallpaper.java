@@ -36,6 +36,7 @@ import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -192,20 +193,38 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 				view.setRenderer(this);
 				return view;
 			} else {
-				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(context, resolutionStrategy) {
-					// -> specific for live wallpapers
-					@Override
-					public SurfaceHolder getHolder () {
-						return getSurfaceHolder();
-					}
-					// <- specific for live wallpapers
-				};
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
+				if (config.useGLSurfaceViewAPI18) {
+					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(context, resolutionStrategy) {
+						// -> specific for live wallpapers
+						@Override
+						public SurfaceHolder getHolder () {
+							return getSurfaceHolder();
+						}
+						// <- specific for live wallpapers
+					};
+					if (configChooser != null)
+						view.setEGLConfigChooser(configChooser);
+					else
+						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+					view.setRenderer(this);
+					return view;
+				}
+				else {
+					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(context, resolutionStrategy) {
+						// -> specific for live wallpapers
+						@Override
+						public SurfaceHolder getHolder () {
+							return getSurfaceHolder();
+						}
+						// <- specific for live wallpapers
+					};
+					if (configChooser != null)
+						view.setEGLConfigChooser(configChooser);
+					else
+						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+					view.setRenderer(this);
+					return view;
+				}
 			}
 		}
 	}
@@ -782,6 +801,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			// jw: changed
 			//view.setRenderMode(renderMode);
 			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
+			else if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			else if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			else throw new RuntimeException("unimplemented");
 			mean.clear();
@@ -798,6 +818,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			// jw: changed
 			//view.requestRender();
 			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
+			else if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			else if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 			else throw new RuntimeException("unimplemented");
 		}
