@@ -594,8 +594,11 @@ public class JsonReader implements BaseJsonReader {
 		} else if (current.isArray() || current.isObject()) {
 			if (current.size == 0)
 				current.child = child;
-			else
-				lastChild.pop().next = child;
+			else {
+				JsonValue last = lastChild.pop();
+				last.next = child;
+				child.prev = last;
+			}
 			lastChild.add(child);
 			current.size++;
 		} else
