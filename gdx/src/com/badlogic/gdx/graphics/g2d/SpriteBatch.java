@@ -680,6 +680,51 @@ public class SpriteBatch implements Disposable {
 		this.idx = idx;
 	}
 
+        /** Draws a textured quad with every corner having its color and uv coordinates.
+         * The {@link #getColor()} from the SpriteBatch is not applied.
+         * @see SpriteBatch#draw(com.badlogic.gdx.graphics.Texture, float[], int, int)
+         */
+        public void draw (Texture texture,
+                          float x1, float y1, float color1, float u1, float v1,
+                          float x2, float y2, float color2, float u2, float v2,
+                          float x3, float y3, float color3, float u3, float v3,
+                          float x4, float y4, float color4, float u4, float v4) {
+            if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
+
+            float[] vertices = this.vertices;
+
+            if (texture != lastTexture)
+                switchTexture(texture);
+            else if (idx == vertices.length)
+                flush();
+
+            int idx = this.idx;
+            vertices[idx++] = x1;
+            vertices[idx++] = y1;
+            vertices[idx++] = color1;
+            vertices[idx++] = u1;
+            vertices[idx++] = v1;
+
+            vertices[idx++] = x2;
+            vertices[idx++] = y2;
+            vertices[idx++] = color2;
+            vertices[idx++] = u2;
+            vertices[idx++] = v2;
+
+            vertices[idx++] = x3;
+            vertices[idx++] = y3;
+            vertices[idx++] = color3;
+            vertices[idx++] = u3;
+            vertices[idx++] = v3;
+
+            vertices[idx++] = x4;
+            vertices[idx++] = y4;
+            vertices[idx++] = color4;
+            vertices[idx++] = u4;
+            vertices[idx++] = v4;
+            this.idx = idx;
+        }
+
 	/** Draws a rectangle using the given vertices. There must be 4 vertices, each made up of 5 elements in this order: x, y, color,
 	 * u, v. The {@link #getColor()} from the SpriteBatch is not applied. */
 	public void draw (Texture texture, float[] spriteVertices, int offset, int count) {
