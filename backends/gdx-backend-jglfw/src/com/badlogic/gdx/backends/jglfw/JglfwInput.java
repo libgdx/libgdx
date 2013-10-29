@@ -37,6 +37,7 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
@@ -264,7 +265,11 @@ public class JglfwInput implements Input {
 		glfwSetCursorPos(app.graphics.window, x, y);
 	}
 
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
+  @Override
+  public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {
 				final String output = JOptionPane.showInputDialog(null, title, text);

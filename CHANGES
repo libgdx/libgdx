@@ -1,4 +1,5 @@
 [0.9.9]
+- added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213
 - added Select class for selecting kth ordered statistic from arrays (see Array.selectRanked() method)
 - refactored Box2D to use badlogic Arrays instead of java.util.ArrayLists
