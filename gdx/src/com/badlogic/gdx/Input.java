@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.graphics.Pixmap;
+
 /** <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
  * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
@@ -436,4 +438,15 @@ public interface Input {
 	 * @param x the x-position
 	 * @param y the y-position */
 	public void setCursorPosition (int x, int y);
+
+  /**
+   * Only viable on the desktop. Will set the mouse cursor image to the image represented by the {@link com.badlogic.gdx.graphics.Pixmap}.
+   * The Pixmap must be in RGBA8888 format, and only alpha values of 0x00 (completely transparent) and 0xFF (completely opaque) are supported.
+   * To revert to the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
+   *
+   * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default operating system cursor
+   * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
+   * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner)
+   */
+  public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot);
 }
