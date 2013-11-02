@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="jni/swig-src/extras"/>
-	<classpathentry kind="src" path="jni/swig-src/softbody"/>
-	<classpathentry kind="src" path="jni/swig-src/dynamics"/>
-	<classpathentry kind="src" path="jni/swig-src/collision"/>
-	<classpathentry kind="src" path="jni/swig-src/linearmath"/>
+	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/softbody"/>
+	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/dynamics"/>
+	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/collision"/>
+	<classpathentry excluding="classes.i" kind="src" path="jni/swig-src/linearmath"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-jnigen"/>

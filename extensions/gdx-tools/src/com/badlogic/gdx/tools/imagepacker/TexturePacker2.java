@@ -550,6 +550,8 @@ public class TexturePacker2 {
 		}
 	}
 
+	/** Packs using defaults settings.
+	 * @see TexturePacker2#process(Settings, String, String, String) */
 	static public void process (String input, String output, String packFileName) {
 		try {
 			new TexturePackerFileProcessor(new Settings(), packFileName).process(new File(input), new File(output));
@@ -558,6 +560,9 @@ public class TexturePacker2 {
 		}
 	}
 
+	/** @param input Directory containing individual images to be packed.
+	 * @param output Directory where the pack file and page images will be written.
+	 * @param packFileName The name of the pack file. Also used to name the page images. */
 	static public void process (Settings settings, String input, String output, String packFileName) {
 		try {
 			new TexturePackerFileProcessor(settings, packFileName).process(new File(input), new File(output));

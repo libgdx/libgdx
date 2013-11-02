@@ -25,6 +25,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox;
 import com.badlogic.gdx.backends.gwt.widgets.TextInputDialogBox.TextInputDialogListener;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.gargoylesoftware.htmlunit.javascript.host.Navigator;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -358,7 +359,11 @@ public class GwtInput implements Input {
 		// FIXME??
 	}
 
-	// kindly borrowed from our dear playn friends...
+  @Override
+  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  // kindly borrowed from our dear playn friends...
 	static native void addEventListener (JavaScriptObject target, String name, GwtInput handler, boolean capture) /*-{
 																																						target
 																																						.addEventListener(

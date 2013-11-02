@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import org.robovm.cocoatouch.coregraphics.CGPoint;
 import org.robovm.cocoatouch.foundation.NSArray;
 import org.robovm.cocoatouch.foundation.NSSet;
@@ -357,7 +358,11 @@ public class IOSInput implements Input {
 	public void setCursorPosition(int x, int y) {
 	}
 
-	public void touchDown(NSSet touches, UIEvent event) {
+  @Override
+  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  public void touchDown(NSSet touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
