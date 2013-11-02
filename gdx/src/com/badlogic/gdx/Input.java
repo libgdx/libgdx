@@ -441,7 +441,7 @@ public interface Input {
 
   /**
    * Only viable on the desktop. Will set the mouse cursor image to the image represented by the {@link com.badlogic.gdx.graphics.Pixmap}.
-   * The Pixmap must be in RGBA8888 format, and only alpha values of 0x00 (completely transparent) and 0xFF (completely opaque) are supported.
+   * The Pixmap must be in RGBA8888 format, width & height must be powers-of-two greater than zero (not necessarily equal), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only).
    * To revert to the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
    *
    * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default operating system cursor
