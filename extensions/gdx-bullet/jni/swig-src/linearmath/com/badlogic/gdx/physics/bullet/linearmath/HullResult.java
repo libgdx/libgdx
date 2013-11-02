@@ -77,13 +77,13 @@ public class HullResult extends BulletBase {
     return LinearMathJNI.HullResult_mNumOutputVertices_get(swigCPtr, this);
   }
 
-  public void setOutputVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    LinearMathJNI.HullResult_OutputVertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setOutputVertices(btVector3Array value) {
+    LinearMathJNI.HullResult_OutputVertices_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getOutputVertices() {
+  public btVector3Array getOutputVertices() {
     long cPtr = LinearMathJNI.HullResult_OutputVertices_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
+    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
   }
 
   public void setMNumFaces(long value) {

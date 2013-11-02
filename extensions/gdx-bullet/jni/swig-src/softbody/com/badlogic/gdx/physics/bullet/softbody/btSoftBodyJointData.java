@@ -60,22 +60,20 @@ public class btSoftBodyJointData extends BulletBase {
 		super.delete();
 	}
 
-  public void setBodyA(SWIGTYPE_p_void value) {
-    SoftbodyJNI.btSoftBodyJointData_bodyA_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setBodyA(long value) {
+    SoftbodyJNI.btSoftBodyJointData_bodyA_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getBodyA() {
-    long cPtr = SoftbodyJNI.btSoftBodyJointData_bodyA_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getBodyA() {
+    return SoftbodyJNI.btSoftBodyJointData_bodyA_get(swigCPtr, this);
   }
 
-  public void setBodyB(SWIGTYPE_p_void value) {
-    SoftbodyJNI.btSoftBodyJointData_bodyB_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setBodyB(long value) {
+    SoftbodyJNI.btSoftBodyJointData_bodyB_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getBodyB() {
-    long cPtr = SoftbodyJNI.btSoftBodyJointData_bodyB_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getBodyB() {
+    return SoftbodyJNI.btSoftBodyJointData_bodyB_get(swigCPtr, this);
   }
 
   public void setRefs(btVector3FloatData value) {

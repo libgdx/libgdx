@@ -176,7 +176,7 @@ public class SoftbodyJNI {
   public final static native long btSoftBodyWorldInfo_sparsesdf_get(long jarg1, btSoftBodyWorldInfo jarg1_);
   public final static native long new_btSoftBodyWorldInfo();
   public final static native void delete_btSoftBodyWorldInfo(long jarg1);
-  public final static native void btSoftBody_collisionDisabledObjects_set(long jarg1, btSoftBody jarg1_, long jarg2);
+  public final static native void btSoftBody_collisionDisabledObjects_set(long jarg1, btSoftBody jarg1_, long jarg2, btCollisionObjectConstArray jarg2_);
   public final static native long btSoftBody_collisionDisabledObjects_get(long jarg1, btSoftBody jarg1_);
   public final static native void btSoftBody_softBodySolver_set(long jarg1, btSoftBody jarg1_, long jarg2, btSoftBodySolver jarg2_);
   public final static native long btSoftBody_softBodySolver_get(long jarg1, btSoftBody jarg1_);

@@ -1268,9 +1268,6 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 	  };
 	};
 
-SWIGINTERN char const *btWorldImporter_getNameForPointer__SWIG_1(btWorldImporter *self,unsigned long cPtr){
-		return self->getNameForPointer((void*)cPtr);
-	}
 SWIGINTERN bool btBulletWorldImporter_loadFileFromMemory__SWIG_1(btBulletWorldImporter *self,unsigned char *memoryBuffer,int len){
 		return self->loadFileFromMemory((char *)memoryBuffer, len);
 	}
@@ -2772,7 +2769,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_bt
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btAlignedObjectArray< char * > **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = (int)jarg3; 
   arg4 = (int)jarg4; 
   (arg1)->initializeFromBuffer(arg2,arg3,arg4);
@@ -3097,7 +3094,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btWorldImporter **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   result = (char *)((btWorldImporter const *)arg1)->getNameForPointer((void const *)arg2);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
   return jresult;
@@ -4032,23 +4029,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_b
   arg4 = jarg4 ? true : false; 
   result = (btSliderConstraint *)(arg1)->createSliderConstraint(*arg2,(btTransform const &)*arg3,arg4);
   *(btSliderConstraint **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_extras_ExtrasJNI_btWorldImporter_1getNameForPointer_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
-  jstring jresult = 0 ;
-  btWorldImporter *arg1 = (btWorldImporter *) 0 ;
-  unsigned long arg2 ;
-  char *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btWorldImporter **)&jarg1; 
-  arg2 = (unsigned long)jarg2; 
-  result = (char *)btWorldImporter_getNameForPointer__SWIG_1(arg1,arg2);
-  if (result) jresult = jenv->NewStringUTF((const char *)result);
   return jresult;
 }
 

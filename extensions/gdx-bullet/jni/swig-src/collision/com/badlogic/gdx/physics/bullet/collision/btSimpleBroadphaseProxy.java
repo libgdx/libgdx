@@ -70,8 +70,8 @@ public class btSimpleBroadphaseProxy extends btBroadphaseProxy {
     this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_0(), true);
   }
 
-  public btSimpleBroadphaseProxy(Vector3 minpt, Vector3 maxpt, int shapeType, SWIGTYPE_p_void userPtr, short collisionFilterGroup, short collisionFilterMask, SWIGTYPE_p_void multiSapProxy) {
-    this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_1(minpt, maxpt, shapeType, SWIGTYPE_p_void.getCPtr(userPtr), collisionFilterGroup, collisionFilterMask, SWIGTYPE_p_void.getCPtr(multiSapProxy)), true);
+  public btSimpleBroadphaseProxy(Vector3 minpt, Vector3 maxpt, int shapeType, long userPtr, short collisionFilterGroup, short collisionFilterMask, long multiSapProxy) {
+    this(CollisionJNI.new_btSimpleBroadphaseProxy__SWIG_1(minpt, maxpt, shapeType, userPtr, collisionFilterGroup, collisionFilterMask, multiSapProxy), true);
   }
 
   public void SetNextFree(int next) {

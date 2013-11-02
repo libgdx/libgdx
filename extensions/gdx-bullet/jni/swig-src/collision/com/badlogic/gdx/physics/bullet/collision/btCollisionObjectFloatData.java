@@ -58,22 +58,20 @@ public class btCollisionObjectFloatData extends BulletBase {
 		super.delete();
 	}
 
-  public void setBroadphaseHandle(SWIGTYPE_p_void value) {
-    CollisionJNI.btCollisionObjectFloatData_broadphaseHandle_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setBroadphaseHandle(long value) {
+    CollisionJNI.btCollisionObjectFloatData_broadphaseHandle_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getBroadphaseHandle() {
-    long cPtr = CollisionJNI.btCollisionObjectFloatData_broadphaseHandle_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getBroadphaseHandle() {
+    return CollisionJNI.btCollisionObjectFloatData_broadphaseHandle_get(swigCPtr, this);
   }
 
-  public void setCollisionShape(SWIGTYPE_p_void value) {
-    CollisionJNI.btCollisionObjectFloatData_collisionShape_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setCollisionShape(long value) {
+    CollisionJNI.btCollisionObjectFloatData_collisionShape_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getCollisionShape() {
-    long cPtr = CollisionJNI.btCollisionObjectFloatData_collisionShape_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getCollisionShape() {
+    return CollisionJNI.btCollisionObjectFloatData_collisionShape_get(swigCPtr, this);
   }
 
   public void setRootCollisionShape(btCollisionShapeData value) {

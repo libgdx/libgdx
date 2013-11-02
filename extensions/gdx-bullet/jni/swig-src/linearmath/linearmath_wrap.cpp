@@ -7445,12 +7445,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1getPlaneEquationsFromVertices(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1getPlaneEquationsFromVertices(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btAlignedObjectArray< btVector3 > *arg1 = 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = 0 ;
   
   (void)jenv;
   (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btVector3 > & reference is null");
@@ -7465,12 +7467,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1getVerticesFromPlaneEquations(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1getVerticesFromPlaneEquations(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btAlignedObjectArray< btVector3 > *arg1 = 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = 0 ;
   
   (void)jenv;
   (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btVector3 > const & reference is null");
@@ -7485,7 +7489,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1isInside(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg2, jfloat jarg3) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1isInside(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3) {
   jboolean jresult = 0 ;
   btAlignedObjectArray< btVector3 > *arg1 = 0 ;
   btVector3 *arg2 = 0 ;
@@ -7494,6 +7498,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
   
   (void)jenv;
   (void)jcls;
+  (void)jarg1_;
   arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btVector3 > const & reference is null");
@@ -7510,7 +7515,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1isPointInsidePlanes(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg2, jfloat jarg3) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1isPointInsidePlanes(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jfloat jarg3) {
   jboolean jresult = 0 ;
   btAlignedObjectArray< btVector3 > *arg1 = 0 ;
   btVector3 *arg2 = 0 ;
@@ -7519,6 +7524,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
   
   (void)jenv;
   (void)jcls;
+  (void)jarg1_;
   arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btVector3 > const & reference is null");
@@ -7535,7 +7541,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1areVerticesBehindPlane(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jfloat jarg3) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btGeometryUtil_1areVerticesBehindPlane(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jobject jarg2_, jfloat jarg3) {
   jboolean jresult = 0 ;
   btVector3 *arg1 = 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = 0 ;
@@ -7544,6 +7550,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
   
   (void)jenv;
   (void)jcls;
+  (void)jarg2_;
   btVector3 local_arg1;
   gdx_setbtVector3FromVector3(jenv, local_arg1, jarg1);
   arg1 = &local_arg1;
@@ -7965,13 +7972,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_HullResult_1OutputVertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_HullResult_1OutputVertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   HullResult *arg1 = (HullResult *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(HullResult **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->m_OutputVertices = *arg2;
@@ -8509,13 +8517,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_ConvexH_1vertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_ConvexH_1vertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   ConvexH *arg1 = (ConvexH *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(ConvexH **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->vertices = *arg2;
@@ -9278,7 +9287,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   arg1 = *(btPoolAllocator **)&jarg1; 
   arg2 = (int)jarg2; 
   result = (void *)(arg1)->allocate(arg2);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -9293,7 +9302,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Line
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btPoolAllocator **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   result = (bool)(arg1)->validPtr(arg2);
   jresult = (jboolean)result; 
   return jresult;
@@ -9308,7 +9317,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btPoolAllocator **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->freeMemory(arg2);
 }
 
@@ -9343,13 +9352,14 @@ SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_Linea
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btConvexHullComputer_1vertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btConvexHullComputer_1vertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btConvexHullComputer *arg1 = (btConvexHullComputer *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btConvexHullComputer **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->vertices = *arg2;
@@ -9741,7 +9751,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   arg1 = (size_t)jarg1; 
   arg2 = (int)jarg2; 
   result = (void *)btAlignedAllocInternal(arg1,arg2);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -9751,7 +9761,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(void **)&jarg1; 
+  arg1 = (void *)jarg1; 
   btAlignedFreeInternal(arg1);
 }
 
@@ -10036,7 +10046,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(void **)&jarg1; 
+  arg1 = (void *)jarg1; 
   result = (btHashPtr *)new btHashPtr((void const *)arg1);
   *(btHashPtr **)&jresult = result; 
   return jresult;
@@ -10053,7 +10063,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   (void)jarg1_;
   arg1 = *(btHashPtr **)&jarg1; 
   result = (void *)((btHashPtr const *)arg1)->getPointer();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -10474,7 +10484,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btDefaultMotionState **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_userPointer = arg2;
 }
 
@@ -10489,7 +10499,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearM
   (void)jarg1_;
   arg1 = *(btDefaultMotionState **)&jarg1; 
   result = (void *) ((arg1)->m_userPointer);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -10600,6 +10610,682 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMa
   (void)jcls;
   arg1 = *(btDefaultMotionState **)&jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btVector3Array_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btAlignedObjectArray< btVector3 > *)new btAlignedObjectArray< btVector3 >();
+  *(btAlignedObjectArray< btVector3 > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_delete_1btVector3Array(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btVector3Array_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = 0 ;
+  btAlignedObjectArray< btVector3 > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btVector3 > const & reference is null");
+    return 0;
+  } 
+  result = (btAlignedObjectArray< btVector3 > *)new btAlignedObjectArray< btVector3 >((btAlignedObjectArray< btVector3 > const &)*arg1);
+  *(btAlignedObjectArray< btVector3 > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btVector3 > const *)arg1)->size();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jobject jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int arg2 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btVector3 *) &((btAlignedObjectArray< btVector3 > const *)arg1)->at(arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  (arg1)->clear();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  (arg1)->pop_back();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resizeNoInitialize(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jobject jarg3) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int arg2 ;
+  btVector3 *arg3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  btVector3 local_arg3;
+  gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
+  arg3 = &local_arg3;
+  gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
+  (arg1)->resize(arg2,(btVector3 const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resize(arg2);
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  result = (btVector3 *) &(arg1)->expandNonInitializing();
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jobject jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *arg2 = 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (btVector3 *) &(arg1)->expand((btVector3 const &)*arg2);
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jobject jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  result = (btVector3 *) &(arg1)->expand();
+  jresult = gdx_getReturnVector3(jenv);
+  gdx_setVector3FrombtVector3(jenv, jresult, result);
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->push_back((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btVector3 > const *)arg1)->capacity();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->reserve(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->swap(arg2,arg3);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *arg2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (int)((btAlignedObjectArray< btVector3 > const *)arg1)->findBinarySearch((btVector3 const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *arg2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  result = (int)((btAlignedObjectArray< btVector3 > const *)arg1)->findLinearSearch((btVector3 const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btVector3 *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  btVector3 local_arg2;
+  gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
+  arg2 = &local_arg2;
+  gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
+  (arg1)->remove((btVector3 const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = (void *)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btVector3Array_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btVector3 > *arg1 = (btAlignedObjectArray< btVector3 > *) 0 ;
+  btAlignedObjectArray< btVector3 > *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btVector3 > **)&jarg1; 
+  arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btVector3 > const & reference is null");
+    return ;
+  } 
+  (arg1)->copyFromArray((btAlignedObjectArray< btVector3 > const &)*arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btScalarArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btScalar > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btAlignedObjectArray< btScalar > *)new btAlignedObjectArray< btScalar >();
+  *(btAlignedObjectArray< btScalar > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_delete_1btScalarArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_new_1btScalarArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = 0 ;
+  btAlignedObjectArray< btScalar > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btScalar > const & reference is null");
+    return 0;
+  } 
+  result = (btAlignedObjectArray< btScalar > *)new btAlignedObjectArray< btScalar >((btAlignedObjectArray< btScalar > const &)*arg1);
+  *(btAlignedObjectArray< btScalar > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btScalar > const *)arg1)->size();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jfloat jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int arg2 ;
+  float *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (float *) &((btAlignedObjectArray< btScalar > const *)arg1)->at(arg2);
+  jresult = (jfloat)*result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  (arg1)->clear();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  (arg1)->pop_back();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resizeNoInitialize(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jfloat jarg3) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int arg2 ;
+  float *arg3 = 0 ;
+  float temp3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  temp3 = (float)jarg3; 
+  arg3 = &temp3; 
+  (arg1)->resize(arg2,(float const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resize(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  result = (float *) &(arg1)->expandNonInitializing();
+  *(float **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *arg2 = 0 ;
+  float temp2 ;
+  float *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  temp2 = (float)jarg2; 
+  arg2 = &temp2; 
+  result = (float *) &(arg1)->expand((float const &)*arg2);
+  *(float **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  result = (float *) &(arg1)->expand();
+  *(float **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *arg2 = 0 ;
+  float temp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  temp2 = (float)jarg2; 
+  arg2 = &temp2; 
+  (arg1)->push_back((float const &)*arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btScalar > const *)arg1)->capacity();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->reserve(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->swap(arg2,arg3);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *arg2 = 0 ;
+  float temp2 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  temp2 = (float)jarg2; 
+  arg2 = &temp2; 
+  result = (int)((btAlignedObjectArray< btScalar > const *)arg1)->findBinarySearch((float const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *arg2 = 0 ;
+  float temp2 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  temp2 = (float)jarg2; 
+  arg2 = &temp2; 
+  result = (int)((btAlignedObjectArray< btScalar > const *)arg1)->findLinearSearch((float const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  float *arg2 = 0 ;
+  float temp2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  temp2 = (float)jarg2; 
+  arg2 = &temp2; 
+  (arg1)->remove((float const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = (void *)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_linearmath_LinearMathJNI_btScalarArray_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btScalar > *arg1 = (btAlignedObjectArray< btScalar > *) 0 ;
+  btAlignedObjectArray< btScalar > *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btScalar > **)&jarg1; 
+  arg2 = *(btAlignedObjectArray< btScalar > **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btScalar > const & reference is null");
+    return ;
+  } 
+  (arg1)->copyFromArray((btAlignedObjectArray< btScalar > const &)*arg2);
 }
 
 

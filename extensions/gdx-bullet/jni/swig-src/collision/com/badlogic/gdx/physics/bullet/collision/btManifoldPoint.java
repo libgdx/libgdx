@@ -200,13 +200,12 @@ public class btManifoldPoint extends BulletBase {
     return CollisionJNI.btManifoldPoint_index1_get(swigCPtr, this);
   }
 
-  public void setUserPersistentData(SWIGTYPE_p_void value) {
-    CollisionJNI.btManifoldPoint_userPersistentData_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setUserPersistentData(long value) {
+    CollisionJNI.btManifoldPoint_userPersistentData_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getUserPersistentData() {
-    long cPtr = CollisionJNI.btManifoldPoint_userPersistentData_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getUserPersistentData() {
+    return CollisionJNI.btManifoldPoint_userPersistentData_get(swigCPtr, this);
   }
 
   public void setLateralFrictionInitialized(boolean value) {

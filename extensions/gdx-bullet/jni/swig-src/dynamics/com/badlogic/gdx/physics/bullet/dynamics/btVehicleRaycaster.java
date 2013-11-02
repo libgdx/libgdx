@@ -59,9 +59,8 @@ public class btVehicleRaycaster extends BulletBase {
 		super.delete();
 	}
 
-  public SWIGTYPE_p_void castRay(Vector3 from, Vector3 to, SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult result) {
-    long cPtr = DynamicsJNI.btVehicleRaycaster_castRay(swigCPtr, this, from, to, SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult.getCPtr(result));
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long castRay(Vector3 from, Vector3 to, SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult result) {
+    return DynamicsJNI.btVehicleRaycaster_castRay(swigCPtr, this, from, to, SWIGTYPE_p_btVehicleRaycaster__btVehicleRaycasterResult.getCPtr(result));
   }
 
 }

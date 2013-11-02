@@ -12,7 +12,7 @@
 %feature("director") btTriangleCallback;
 %feature("director") btTriangleConvexcastCallback;
 %feature("director") btTriangleRaycastCallback;
-// FIXME pool btBroadphaseProxy and btBroadphasePair, reuse btDispatcher and fix ptr/array typemap/pool
+// FIXME reuse btDispatcher and fix ptr/array typemap/pool
 
 %include "arrays_java.i"
 
@@ -62,6 +62,8 @@ typedef btVoronoiSimplexSolver btSimplexSolverInterface;
 
 %include "./btCollisionShape.i"
 
+CREATE_POOLED_OBJECT(btBroadphaseProxy, com/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy);
+CREATE_POOLED_OBJECT(btBroadphasePair, com/badlogic/gdx/physics/bullet/collision/btBroadphasePair);
 %{
 #include <BulletCollision/BroadphaseCollision/btBroadphaseProxy.h>
 %}
@@ -304,6 +306,9 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./btCollisionObject.i"
 
+%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
+%template(btCollisionObjectConstArray) btAlignedObjectArray<const btCollisionObject*>;
+
 %include "./btCollisionObjectWrapper.i"
 
 %{
@@ -463,6 +468,8 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 
+%template(btPersistentManifoldArray) btAlignedObjectArray<btPersistentManifold*>;
+
 %{
 #include <BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h>
 %}
@@ -526,6 +533,4 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./ContactCache.i"
 
-%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
 %include "./btBroadphasePairArray.i"
-%template(btManifoldArray) btAlignedObjectArray<btPersistentManifold*>;

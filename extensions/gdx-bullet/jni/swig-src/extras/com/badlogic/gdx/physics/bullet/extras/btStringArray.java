@@ -136,8 +136,8 @@ public class btStringArray extends BulletBase {
     ExtrasJNI.btStringArray_remove(swigCPtr, this, key);
   }
 
-  public void initializeFromBuffer(SWIGTYPE_p_void buffer, int size, int capacity) {
-    ExtrasJNI.btStringArray_initializeFromBuffer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(buffer), size, capacity);
+  public void initializeFromBuffer(long buffer, int size, int capacity) {
+    ExtrasJNI.btStringArray_initializeFromBuffer(swigCPtr, this, buffer, size, capacity);
   }
 
   public void copyFromArray(btStringArray otherArray) {

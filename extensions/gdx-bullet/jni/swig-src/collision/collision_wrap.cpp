@@ -1242,6 +1242,72 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 #include <BulletCollision/BroadphaseCollision/btOverlappingPairCache.h>
 
 
+	// Inline (cached) method to retrieve the type's jclass
+	SWIGINTERN inline jclass gdx_getClassbtBroadphasePair(JNIEnv * jenv) {
+		static jclass cls = NULL;
+		if (cls == NULL)
+			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/btBroadphasePair"));
+		return cls;
+	}
+	
+	// Inline method to get the termporary instance
+	SWIGINTERN inline jobject gdx_getTempbtBroadphasePair(JNIEnv * jenv, void *cPtr, bool ownMem) {
+	  static jobject ret = NULL;
+	  static jclass clazz = gdx_getClassbtBroadphasePair(jenv);
+	  if (ret == NULL) {
+	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "com/badlogic/gdx/physics/bullet/collision/btBroadphasePair");
+	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
+	  }
+	  
+	  static jmethodID reuseMethod = NULL;
+	  if (reuseMethod == NULL)
+		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reset", "(JZ)V");
+	  
+	  long ptr;
+	  *(const void **)&ptr = cPtr;
+	  jenv->CallVoidMethod(ret, reuseMethod, ptr, (jboolean)ownMem);
+	  return ret;
+	}
+
+	// Inline method to obtain an instance from the pool
+	SWIGINTERN inline jobject gdx_obtainbtBroadphasePair(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
+		static jmethodID obtainMethod = NULL;
+		if (obtainMethod == NULL)
+			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", "(JZ)Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;");
+		
+		long ptr;
+		*(const void **)&ptr = cPtr; 
+		jobject ret = jenv->CallStaticObjectMethod(clazz, obtainMethod, ptr, (jboolean)ownMem);
+		
+		return ret;
+	}
+	
+	// Inline method to free an instance from the pool
+	SWIGINTERN inline void gdx_freebtBroadphasePair(JNIEnv * jenv, const jclass clazz, const jobject obj) {
+		static jmethodID freeMethod = NULL;
+		if (freeMethod == NULL)
+			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;)V");
+		
+		jenv->CallStaticVoidMethod(clazz, freeMethod, obj);
+		
+		jenv->DeleteLocalRef(obj);
+	}
+	
+	// Simple raii class to auto free the instance from the pool 
+	class gdxAutoFreebtBroadphasePair {
+	private:
+		JNIEnv * jenv;
+		jobject jbtBroadphasePair;
+		jclass jclazz;
+	public:
+		gdxAutoFreebtBroadphasePair(JNIEnv * jenv, jclass jclazz, jobject jbtBroadphasePair) : 
+			jenv(jenv), jbtBroadphasePair(jbtBroadphasePair), jclazz(jclazz) { }
+		virtual ~gdxAutoFreebtBroadphasePair() {
+			gdx_freebtBroadphasePair(this->jenv, this->jclazz, this->jbtBroadphasePair);
+		}
+	};
+
+
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
 
@@ -1617,15 +1683,15 @@ SWIGINTERN void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(btColl
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 
 
-typedef btCollisionWorld::LocalShapeInfo LocalShapeInfo;
-typedef btCollisionWorld::LocalRayResult LocalRayResult;
-typedef btCollisionWorld::RayResultCallback RayResultCallback;
-typedef btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallback;
-typedef btCollisionWorld::AllHitsRayResultCallback AllHitsRayResultCallback;
-typedef btCollisionWorld::LocalConvexResult LocalConvexResult;
-typedef btCollisionWorld::ConvexResultCallback ConvexResultCallback;
-typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallback;
-typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
+	typedef btCollisionWorld::LocalShapeInfo LocalShapeInfo;
+	typedef btCollisionWorld::LocalRayResult LocalRayResult;
+	typedef btCollisionWorld::RayResultCallback RayResultCallback;
+	typedef btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallback;
+	typedef btCollisionWorld::AllHitsRayResultCallback AllHitsRayResultCallback;
+	typedef btCollisionWorld::LocalConvexResult LocalConvexResult;
+	typedef btCollisionWorld::ConvexResultCallback ConvexResultCallback;
+	typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallback;
+	typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
 
 
 #include <gdx/collision/ClosestNotMeConvexResultCallback.h>
@@ -2234,7 +2300,7 @@ void *SwigDirector_btOverlappingPairCallback::removeOverlappingPair(btBroadphase
     *((btDispatcher **)&jdispatcher) = (btDispatcher *) dispatcher; 
     jresult = (jlong) jenv->CallStaticLongMethod(Swig::jclass_CollisionJNI, Swig::director_methids[4], swigjobj, jproxy0, jproxy1, jdispatcher);
     if (jenv->ExceptionCheck() == JNI_TRUE) return c_result;
-    c_result = *(void **)&jresult; 
+    c_result = (void *)jresult; 
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
   }
@@ -2275,7 +2341,7 @@ void SwigDirector_btOverlappingPairCallback::swig_connect_director(JNIEnv *jenv,
       "addOverlappingPair", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;)Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;", NULL 
     },
     {
-      "removeOverlappingPair", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btDispatcher;)Lcom/badlogic/gdx/physics/bullet/collision/SWIGTYPE_p_void;", NULL 
+      "removeOverlappingPair", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btDispatcher;)J", NULL 
     },
     {
       "removeOverlappingPairsContainingProxy", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btDispatcher;)V", NULL 
@@ -2321,7 +2387,7 @@ bool SwigDirector_btOverlapCallback::processOverlap(btBroadphasePair &pair) {
   JNIEnvWrapper swigjnienv(this) ;
   JNIEnv * jenv = swigjnienv.getJNIEnv() ;
   jobject swigjobj = (jobject) NULL ;
-  jlong jpair = 0 ;
+  jobject jpair = 0 ;
   
   if (!swig_override[0]) {
     SWIG_JavaThrowException(JNIEnvWrapper(this).getJNIEnv(), SWIG_JavaDirectorPureVirtual, "Attempted to invoke pure virtual method btOverlapCallback::processOverlap.");
@@ -2329,7 +2395,9 @@ bool SwigDirector_btOverlapCallback::processOverlap(btBroadphasePair &pair) {
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *(btBroadphasePair **)&jpair = (btBroadphasePair *) &pair; 
+    jclass jcpair = gdx_getClassbtBroadphasePair(jenv);
+    jpair = gdx_obtainbtBroadphasePair(jenv, jcpair, (void*)&pair, false);
+    gdxAutoFreebtBroadphasePair autoRelease_jpair(jenv, jcpair, jpair);
     jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[6], swigjobj, jpair);
     if (jenv->ExceptionCheck() == JNI_TRUE) return c_result;
     c_result = jresult ? true : false; 
@@ -2708,7 +2776,7 @@ void *SwigDirector_btGhostPairCallback::removeOverlappingPair(btBroadphaseProxy 
     *((btDispatcher **)&jdispatcher) = (btDispatcher *) dispatcher; 
     jresult = (jlong) jenv->CallStaticLongMethod(Swig::jclass_CollisionJNI, Swig::director_methids[12], swigjobj, jproxy0, jproxy1, jdispatcher);
     if (jenv->ExceptionCheck() == JNI_TRUE) return c_result;
-    c_result = *(void **)&jresult; 
+    c_result = (void *)jresult; 
   } else {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
   }
@@ -2749,7 +2817,7 @@ void SwigDirector_btGhostPairCallback::swig_connect_director(JNIEnv *jenv, jobje
       "addOverlappingPair", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;)Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;", NULL 
     },
     {
-      "removeOverlappingPair", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btDispatcher;)Lcom/badlogic/gdx/physics/bullet/collision/SWIGTYPE_p_void;", NULL 
+      "removeOverlappingPair", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btDispatcher;)J", NULL 
     },
     {
       "removeOverlappingPairsContainingProxy", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseProxy;Lcom/badlogic/gdx/physics/bullet/collision/btDispatcher;)V", NULL 
@@ -5026,7 +5094,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btBroadphaseProxy **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_clientObject = arg2;
 }
 
@@ -5041,7 +5109,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btBroadphaseProxy **)&jarg1; 
   result = (void *) ((arg1)->m_clientObject);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -5110,7 +5178,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btBroadphaseProxy **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_multiSapParentProxy = arg2;
 }
 
@@ -5125,7 +5193,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btBroadphaseProxy **)&jarg1; 
   result = (void *) ((arg1)->m_multiSapParentProxy);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -5263,10 +5331,10 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
   arg2 = &local_arg2;
   gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  arg3 = *(void **)&jarg3; 
+  arg3 = (void *)jarg3; 
   arg4 = (short)jarg4; 
   arg5 = (short)jarg5; 
-  arg6 = *(void **)&jarg6; 
+  arg6 = (void *)jarg6; 
   result = (btBroadphaseProxy *)new btBroadphaseProxy((btVector3 const &)*arg1,(btVector3 const &)*arg2,arg3,arg4,arg5,arg6);
   *(btBroadphaseProxy **)&jresult = result; 
   return jresult;
@@ -5292,7 +5360,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
   arg2 = &local_arg2;
   gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  arg3 = *(void **)&jarg3; 
+  arg3 = (void *)jarg3; 
   arg4 = (short)jarg4; 
   arg5 = (short)jarg5; 
   result = (btBroadphaseProxy *)new btBroadphaseProxy((btVector3 const &)*arg1,(btVector3 const &)*arg2,arg3,arg4,arg5);
@@ -5435,14 +5503,13 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jobject jarg1) {
   jlong jresult = 0 ;
   btBroadphasePair *arg1 = 0 ;
   btBroadphasePair *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
   arg1 = *(btBroadphasePair **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btBroadphasePair const & reference is null");
@@ -5454,7 +5521,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btBroadphasePair_1_1SWIG_12(JNIEnv *jenv, jclass jcls, jobject jarg1, jobject jarg2) {
   jlong jresult = 0 ;
   btBroadphaseProxy *arg1 = 0 ;
   btBroadphaseProxy *arg2 = 0 ;
@@ -5462,8 +5529,6 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(btBroadphaseProxy **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btBroadphaseProxy & reference is null");
@@ -5834,11 +5899,11 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg3 = &local_arg3;
   gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
   arg4 = (int)jarg4; 
-  arg5 = *(void **)&jarg5; 
+  arg5 = (void *)jarg5; 
   arg6 = (short)jarg6; 
   arg7 = (short)jarg7; 
   arg8 = *(btDispatcher **)&jarg8; 
-  arg9 = *(void **)&jarg9; 
+  arg9 = (void *)jarg9; 
   result = (btBroadphaseProxy *)(arg1)->createProxy((btVector3 const &)*arg2,(btVector3 const &)*arg3,arg4,arg5,arg6,arg7,arg8,arg9);
   *(btBroadphaseProxy **)&jresult = result; 
   return jresult;
@@ -7030,7 +7095,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btDbvtVolume const & reference is null");
     return 0;
   } 
-  arg3 = *(void **)&jarg3; 
+  arg3 = (void *)jarg3; 
   result = (btDbvtNode *)(arg1)->insert((btDbvtVolume const &)*arg2,arg3);
   *(btDbvtNode **)&jresult = result; 
   return jresult;
@@ -8646,7 +8711,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btQuantizedBvh **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = (unsigned int)jarg3; 
   arg4 = jarg4 ? true : false; 
   result = (bool)((btQuantizedBvh const *)arg1)->serialize(arg2,arg3,arg4);
@@ -8664,7 +8729,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(void **)&jarg1; 
+  arg1 = (void *)jarg1; 
   arg2 = (unsigned int)jarg2; 
   arg3 = jarg3 ? true : false; 
   result = (btQuantizedBvh *)btQuantizedBvh::deSerializeInPlace(arg1,arg2,arg3);
@@ -8711,7 +8776,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collis
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btQuantizedBvh **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = *(btSerializer **)&jarg3; 
   result = (char *)((btQuantizedBvh const *)arg1)->serialize(arg2,arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
@@ -10301,7 +10366,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   gdx_setbtVector3FromVector3(jenv, local_arg2, jarg2);
   arg2 = &local_arg2;
   gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
-  arg3 = *(void **)&jarg3; 
+  arg3 = (void *)jarg3; 
   arg4 = (short)jarg4; 
   arg5 = (short)jarg5; 
   result = (btDbvtProxy *)new btDbvtProxy((btVector3 const &)*arg1,(btVector3 const &)*arg2,arg3,arg4,arg5);
@@ -11182,10 +11247,10 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg2 = &local_arg2;
   gdxAutoCommitVector3 auto_commit_arg2(jenv, jarg2, &local_arg2);
   arg3 = (int)jarg3; 
-  arg4 = *(void **)&jarg4; 
+  arg4 = (void *)jarg4; 
   arg5 = (short)jarg5; 
   arg6 = (short)jarg6; 
-  arg7 = *(void **)&jarg7; 
+  arg7 = (void *)jarg7; 
   result = (btSimpleBroadphaseProxy *)new btSimpleBroadphaseProxy((btVector3 const &)*arg1,(btVector3 const &)*arg2,arg3,arg4,arg5,arg6,arg7);
   *(btSimpleBroadphaseProxy **)&jresult = result; 
   return jresult;
@@ -11891,7 +11956,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg3 = *(btBroadphaseProxy **)&jarg3; 
   arg4 = *(btDispatcher **)&jarg4; 
   result = (void *)(arg1)->removeOverlappingPair(arg2,arg3,arg4);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -12135,11 +12200,11 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
   arg3 = &local_arg3;
   gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
-  arg4 = *(void **)&jarg4; 
+  arg4 = (void *)jarg4; 
   arg5 = (short)jarg5; 
   arg6 = (short)jarg6; 
   arg7 = *(btDispatcher **)&jarg7; 
-  arg8 = *(void **)&jarg8; 
+  arg8 = (void *)jarg8; 
   result = (unsigned short)(arg1)->addHandle((btVector3 const &)*arg2,(btVector3 const &)*arg3,arg4,arg5,arg6,arg7,arg8);
   jresult = (jint)result; 
   return jresult;
@@ -12587,11 +12652,11 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   gdx_setbtVector3FromVector3(jenv, local_arg3, jarg3);
   arg3 = &local_arg3;
   gdxAutoCommitVector3 auto_commit_arg3(jenv, jarg3, &local_arg3);
-  arg4 = *(void **)&jarg4; 
+  arg4 = (void *)jarg4; 
   arg5 = (short)jarg5; 
   arg6 = (short)jarg6; 
   arg7 = *(btDispatcher **)&jarg7; 
-  arg8 = *(void **)&jarg8; 
+  arg8 = (void *)jarg8; 
   result = (unsigned int)(arg1)->addHandle((btVector3 const &)*arg2,(btVector3 const &)*arg3,arg4,arg5,arg6,arg7,arg8);
   jresult = (jlong)result; 
   return jresult;
@@ -13698,7 +13763,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg1 = *(btDispatcher **)&jarg1; 
   arg2 = (int)jarg2; 
   result = (void *)(arg1)->allocateCollisionAlgorithm(arg2);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -13711,7 +13776,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btDispatcher **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->freeCollisionAlgorithm(arg2);
 }
 
@@ -13726,7 +13791,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlapCallback_1processOverlap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlapCallback_1processOverlap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2) {
   jboolean jresult = 0 ;
   btOverlapCallback *arg1 = (btOverlapCallback *) 0 ;
   btBroadphasePair *arg2 = 0 ;
@@ -13735,7 +13800,6 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   arg1 = *(btOverlapCallback **)&jarg1; 
   arg2 = *(btBroadphasePair **)&jarg2;
   if (!arg2) {
@@ -13961,7 +14025,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlappingPairCache_1cleanOverlappingPair(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btOverlappingPairCache_1cleanOverlappingPair(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jobject jarg2, jlong jarg3, jobject jarg3_) {
   btOverlappingPairCache *arg1 = (btOverlappingPairCache *) 0 ;
   btBroadphasePair *arg2 = 0 ;
   btDispatcher *arg3 = (btDispatcher *) 0 ;
@@ -13969,7 +14033,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  (void)jarg2_;
   (void)jarg3_;
   arg1 = *(btOverlappingPairCache **)&jarg1; 
   arg2 = *(btBroadphasePair **)&jarg2;
@@ -14717,7 +14780,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionShape **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->setUserPointer(arg2);
 }
 
@@ -14732,7 +14795,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionShape **)&jarg1; 
   result = (void *)((btCollisionShape const *)arg1)->getUserPointer();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -14763,7 +14826,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collis
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionShape **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = *(btSerializer **)&jarg3; 
   result = (char *)((btCollisionShape const *)arg1)->serialize(arg2,arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
@@ -16224,7 +16287,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collis
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btTriangleInfoMap **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = *(btSerializer **)&jarg3; 
   result = (char *)((btTriangleInfoMap const *)arg1)->serialize(arg2,arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
@@ -19007,7 +19070,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collis
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btStridingMeshInterface **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = *(btSerializer **)&jarg3; 
   result = (char *)((btStridingMeshInterface const *)arg1)->serialize(arg2,arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
@@ -19981,13 +20044,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btConvexPolyhedron_1vertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btConvexPolyhedron_1vertices_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btConvexPolyhedron *arg1 = (btConvexPolyhedron *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btConvexPolyhedron **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->m_vertices = *arg2;
@@ -20037,13 +20101,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btConvexPolyhedron_1uniqueEdges_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btConvexPolyhedron_1uniqueEdges_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btConvexPolyhedron *arg1 = (btConvexPolyhedron *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btConvexPolyhedron **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->m_uniqueEdges = *arg2;
@@ -20406,7 +20471,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btOptimizedBvh **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = (unsigned int)jarg3; 
   arg4 = jarg4 ? true : false; 
   result = (bool)((btOptimizedBvh const *)arg1)->serializeInPlace(arg2,arg3,arg4);
@@ -20424,7 +20489,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(void **)&jarg1; 
+  arg1 = (void *)jarg1; 
   arg2 = (unsigned int)jarg2; 
   arg3 = jarg3 ? true : false; 
   result = (btOptimizedBvh *)btOptimizedBvh::deSerializeInPlace(arg1,arg2,arg3);
@@ -25020,7 +25085,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionObject **)&jarg1; 
   result = (void *)((btCollisionObject const *)arg1)->internalGetExtensionPointer();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -25033,7 +25098,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObject **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->internalSetExtensionPointer(arg2);
 }
 
@@ -25595,7 +25660,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionObject **)&jarg1; 
   result = (void *)((btCollisionObject const *)arg1)->getUserPointer();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -25623,7 +25688,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObject **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->setUserPointer(arg2);
 }
 
@@ -25700,7 +25765,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collis
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObject **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = *(btSerializer **)&jarg3; 
   result = (char *)((btCollisionObject const *)arg1)->serialize(arg2,arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
@@ -25838,7 +25903,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObjectDoubleData **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_broadphaseHandle = arg2;
 }
 
@@ -25853,7 +25918,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionObjectDoubleData **)&jarg1; 
   result = (void *) ((arg1)->m_broadphaseHandle);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -25866,7 +25931,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObjectDoubleData **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_collisionShape = arg2;
 }
 
@@ -25881,7 +25946,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionObjectDoubleData **)&jarg1; 
   result = (void *) ((arg1)->m_collisionShape);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -26592,7 +26657,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObjectFloatData **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_broadphaseHandle = arg2;
 }
 
@@ -26607,7 +26672,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionObjectFloatData **)&jarg1; 
   result = (void *) ((arg1)->m_broadphaseHandle);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -26620,7 +26685,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btCollisionObjectFloatData **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_collisionShape = arg2;
 }
 
@@ -26635,7 +26700,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btCollisionObjectFloatData **)&jarg1; 
   result = (void *) ((arg1)->m_collisionShape);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -27475,6 +27540,684 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
   result = (bool)gdxCheckFilter((btCollisionObject const *)arg1,(btCollisionObject const *)arg2);
   jresult = (jboolean)result; 
   return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btCollisionObjectArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btAlignedObjectArray< btCollisionObject * > *)new btAlignedObjectArray< btCollisionObject * >();
+  *(btAlignedObjectArray< btCollisionObject * > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_delete_1btCollisionObjectArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btCollisionObjectArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btCollisionObject * > const & reference is null");
+    return 0;
+  } 
+  result = (btAlignedObjectArray< btCollisionObject * > *)new btAlignedObjectArray< btCollisionObject * >((btAlignedObjectArray< btCollisionObject * > const &)*arg1);
+  *(btAlignedObjectArray< btCollisionObject * > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->size();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int arg2 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btCollisionObject **) &((btAlignedObjectArray< btCollisionObject * > const *)arg1)->at(arg2);
+  *(btCollisionObject **)&jresult = *result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  (arg1)->clear();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  (arg1)->pop_back();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resizeNoInitialize(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jobject jarg3_) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int arg2 ;
+  btCollisionObject **arg3 = 0 ;
+  btCollisionObject *temp3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg3_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  temp3 = *(btCollisionObject **)&jarg3;
+  arg3 = (btCollisionObject **)&temp3; 
+  (arg1)->resize(arg2,(btCollisionObject *const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resize(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  result = (btCollisionObject **) &(arg1)->expandNonInitializing();
+  *(btCollisionObject ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  result = (btCollisionObject **) &(arg1)->expand((btCollisionObject *const &)*arg2);
+  *(btCollisionObject ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  result = (btCollisionObject **) &(arg1)->expand();
+  *(btCollisionObject ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  (arg1)->push_back((btCollisionObject *const &)*arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->capacity();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->reserve(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->swap(arg2,arg3);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->findBinarySearch((btCollisionObject *const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->findLinearSearch((btCollisionObject *const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  (arg1)->remove((btCollisionObject *const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = (void *)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
+  btAlignedObjectArray< btCollisionObject * > *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
+  arg2 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btCollisionObject * > const & reference is null");
+    return ;
+  } 
+  (arg1)->copyFromArray((btAlignedObjectArray< btCollisionObject * > const &)*arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btCollisionObjectConstArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btAlignedObjectArray< btCollisionObject const * > *)new btAlignedObjectArray< btCollisionObject const * >();
+  *(btAlignedObjectArray< btCollisionObject const * > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_delete_1btCollisionObjectConstArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btCollisionObjectConstArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btCollisionObject const * > const & reference is null");
+    return 0;
+  } 
+  result = (btAlignedObjectArray< btCollisionObject const * > *)new btAlignedObjectArray< btCollisionObject const * >((btAlignedObjectArray< btCollisionObject const * > const &)*arg1);
+  *(btAlignedObjectArray< btCollisionObject const * > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btCollisionObject const * > const *)arg1)->size();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int arg2 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btCollisionObject **) &((btAlignedObjectArray< btCollisionObject const * > const *)arg1)->at(arg2);
+  *(btCollisionObject **)&jresult = *result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  (arg1)->clear();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  (arg1)->pop_back();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resizeNoInitialize(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jobject jarg3_) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int arg2 ;
+  btCollisionObject **arg3 = 0 ;
+  btCollisionObject *temp3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg3_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  temp3 = *(btCollisionObject **)&jarg3;
+  arg3 = (btCollisionObject **)&temp3; 
+  (arg1)->resize(arg2,(btCollisionObject const *const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resize(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  result = (btCollisionObject **) &(arg1)->expandNonInitializing();
+  *(btCollisionObject ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  result = (btCollisionObject **) &(arg1)->expand((btCollisionObject const *const &)*arg2);
+  *(btCollisionObject ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  result = (btCollisionObject **) &(arg1)->expand();
+  *(btCollisionObject ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  (arg1)->push_back((btCollisionObject const *const &)*arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btCollisionObject const * > const *)arg1)->capacity();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->reserve(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->swap(arg2,arg3);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  result = (int)((btAlignedObjectArray< btCollisionObject const * > const *)arg1)->findBinarySearch((btCollisionObject const *const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  result = (int)((btAlignedObjectArray< btCollisionObject const * > const *)arg1)->findLinearSearch((btCollisionObject const *const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btCollisionObject **arg2 = 0 ;
+  btCollisionObject *temp2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  temp2 = *(btCollisionObject **)&jarg2;
+  arg2 = (btCollisionObject **)&temp2; 
+  (arg1)->remove((btCollisionObject const *const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = (void *)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectConstArray_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btCollisionObject const * > *arg1 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
+  btAlignedObjectArray< btCollisionObject const * > *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg1; 
+  arg2 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btCollisionObject const * > const & reference is null");
+    return ;
+  } 
+  (arg1)->copyFromArray((btAlignedObjectArray< btCollisionObject const * > const &)*arg2);
 }
 
 
@@ -28996,7 +29739,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg2 = (int)jarg2; 
   arg3 = (int)jarg3; 
   result = (void *)(arg1)->removeOverlappingPair(arg2,arg3);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -30249,7 +30992,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg3 = *(btBroadphaseProxy **)&jarg3; 
   arg4 = *(btDispatcher **)&jarg4; 
   result = (void *)(arg1)->removeOverlappingPair(arg2,arg3,arg4);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -30273,7 +31016,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg3 = *(btBroadphaseProxy **)&jarg3; 
   arg4 = *(btDispatcher **)&jarg4; 
   result = (void *)(arg1)->btGhostPairCallback::removeOverlappingPair(arg2,arg3,arg4);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -31056,13 +31799,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1collisionObjects_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1collisionObjects_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   AllHitsRayResultCallback *arg1 = (AllHitsRayResultCallback *) 0 ;
   btAlignedObjectArray< btCollisionObject const * > *arg2 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(AllHitsRayResultCallback **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg2; 
   if (arg1) (arg1)->m_collisionObjects = *arg2;
@@ -31142,13 +31886,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1hitNormalWorld_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1hitNormalWorld_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   AllHitsRayResultCallback *arg1 = (AllHitsRayResultCallback *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(AllHitsRayResultCallback **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->m_hitNormalWorld = *arg2;
@@ -31170,13 +31915,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1hitPointWorld_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1hitPointWorld_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   AllHitsRayResultCallback *arg1 = (AllHitsRayResultCallback *) 0 ;
   btAlignedObjectArray< btVector3 > *arg2 = (btAlignedObjectArray< btVector3 > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(AllHitsRayResultCallback **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btVector3 > **)&jarg2; 
   if (arg1) (arg1)->m_hitPointWorld = *arg2;
@@ -31198,13 +31944,14 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1hitFractions_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_AllHitsRayResultCallback_1hitFractions_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   AllHitsRayResultCallback *arg1 = (AllHitsRayResultCallback *) 0 ;
   btAlignedObjectArray< btScalar > *arg2 = (btAlignedObjectArray< btScalar > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(AllHitsRayResultCallback **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btScalar > **)&jarg2; 
   if (arg1) (arg1)->m_hitFractions = *arg2;
@@ -33410,14 +34157,13 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionDispatcher_1defaultNearCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionDispatcher_1defaultNearCallback(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
   btBroadphasePair *arg1 = 0 ;
   btCollisionDispatcher *arg2 = 0 ;
   btDispatcherInfo *arg3 = 0 ;
   
   (void)jenv;
   (void)jcls;
-  (void)jarg1_;
   (void)jarg2_;
   (void)jarg3_;
   arg1 = *(btBroadphasePair **)&jarg1;
@@ -33962,7 +34708,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPolyhedralContactClipping_1clipFaceAgainstHull(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jobject jarg2_, jobject jarg3, jlong jarg4, jfloat jarg5, jfloat jarg6, jlong jarg7) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPolyhedralContactClipping_1clipFaceAgainstHull(JNIEnv *jenv, jclass jcls, jobject jarg1, jlong jarg2, jobject jarg2_, jobject jarg3, jlong jarg4, jobject jarg4_, jfloat jarg5, jfloat jarg6, jlong jarg7) {
   btVector3 *arg1 = 0 ;
   btConvexPolyhedron *arg2 = 0 ;
   btTransform *arg3 = 0 ;
@@ -33974,6 +34720,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jenv;
   (void)jcls;
   (void)jarg2_;
+  (void)jarg4_;
   btVector3 local_arg1;
   gdx_setbtVector3FromVector3(jenv, local_arg1, jarg1);
   arg1 = &local_arg1;
@@ -34050,7 +34797,7 @@ SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Colli
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPolyhedralContactClipping_1clipFace(JNIEnv *jenv, jclass jcls, jlong jarg1, jlong jarg2, jobject jarg3, jfloat jarg4) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPolyhedralContactClipping_1clipFace(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jobject jarg3, jfloat jarg4) {
   btVertexArray *arg1 = 0 ;
   btVertexArray *arg2 = 0 ;
   btVector3 *arg3 = 0 ;
@@ -34058,6 +34805,8 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   
   (void)jenv;
   (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btVertexArray **)&jarg1;
   if (!arg1) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btVertexArray const & reference is null");
@@ -34569,6 +35318,345 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   arg1 = *(btPersistentManifold **)&jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btPersistentManifoldArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (btAlignedObjectArray< btPersistentManifold * > *)new btAlignedObjectArray< btPersistentManifold * >();
+  *(btAlignedObjectArray< btPersistentManifold * > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_delete_1btPersistentManifoldArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btPersistentManifoldArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1;
+  if (!arg1) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btPersistentManifold * > const & reference is null");
+    return 0;
+  } 
+  result = (btAlignedObjectArray< btPersistentManifold * > *)new btAlignedObjectArray< btPersistentManifold * >((btAlignedObjectArray< btPersistentManifold * > const &)*arg1);
+  *(btAlignedObjectArray< btPersistentManifold * > **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->size();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int arg2 ;
+  btPersistentManifold **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  result = (btPersistentManifold **) &((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->at(arg2);
+  *(btPersistentManifold **)&jresult = *result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  (arg1)->clear();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  (arg1)->pop_back();
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resizeNoInitialize(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jobject jarg3_) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int arg2 ;
+  btPersistentManifold **arg3 = 0 ;
+  btPersistentManifold *temp3 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg3_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  temp3 = *(btPersistentManifold **)&jarg3;
+  arg3 = (btPersistentManifold **)&temp3; 
+  (arg1)->resize(arg2,(btPersistentManifold *const &)*arg3);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->resize(arg2);
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  result = (btPersistentManifold **) &(arg1)->expandNonInitializing();
+  *(btPersistentManifold ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **arg2 = 0 ;
+  btPersistentManifold *temp2 = 0 ;
+  btPersistentManifold **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  temp2 = *(btPersistentManifold **)&jarg2;
+  arg2 = (btPersistentManifold **)&temp2; 
+  result = (btPersistentManifold **) &(arg1)->expand((btPersistentManifold *const &)*arg2);
+  *(btPersistentManifold ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  result = (btPersistentManifold **) &(arg1)->expand();
+  *(btPersistentManifold ***)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **arg2 = 0 ;
+  btPersistentManifold *temp2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  temp2 = *(btPersistentManifold **)&jarg2;
+  arg2 = (btPersistentManifold **)&temp2; 
+  (arg1)->push_back((btPersistentManifold *const &)*arg2);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->capacity();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  (arg1)->reserve(arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (int)jarg2; 
+  arg3 = (int)jarg3; 
+  (arg1)->swap(arg2,arg3);
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **arg2 = 0 ;
+  btPersistentManifold *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  temp2 = *(btPersistentManifold **)&jarg2;
+  arg2 = (btPersistentManifold **)&temp2; 
+  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->findBinarySearch((btPersistentManifold *const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **arg2 = 0 ;
+  btPersistentManifold *temp2 = 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  temp2 = *(btPersistentManifold **)&jarg2;
+  arg2 = (btPersistentManifold **)&temp2; 
+  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->findLinearSearch((btPersistentManifold *const &)*arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btPersistentManifold **arg2 = 0 ;
+  btPersistentManifold *temp2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  temp2 = *(btPersistentManifold **)&jarg2;
+  arg2 = (btPersistentManifold **)&temp2; 
+  (arg1)->remove((btPersistentManifold *const &)*arg2);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  void *arg2 = (void *) 0 ;
+  int arg3 ;
+  int arg4 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = (void *)jarg2; 
+  arg3 = (int)jarg3; 
+  arg4 = (int)jarg4; 
+  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btPersistentManifoldArray_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
+  btAlignedObjectArray< btPersistentManifold * > *arg2 = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
+  arg2 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg2;
+  if (!arg2) {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btPersistentManifold * > const & reference is null");
+    return ;
+  } 
+  (arg1)->copyFromArray((btAlignedObjectArray< btPersistentManifold * > const &)*arg2);
 }
 
 
@@ -35704,7 +36792,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btManifoldPoint **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_userPersistentData = arg2;
 }
 
@@ -35719,7 +36807,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   (void)jarg1_;
   arg1 = *(btManifoldPoint **)&jarg1; 
   result = (void *) ((arg1)->m_userPersistentData);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -40023,345 +41111,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btCollisionObjectArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (btAlignedObjectArray< btCollisionObject * > *)new btAlignedObjectArray< btCollisionObject * >();
-  *(btAlignedObjectArray< btCollisionObject * > **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_delete_1btCollisionObjectArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btCollisionObjectArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1;
-  if (!arg1) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btCollisionObject * > const & reference is null");
-    return 0;
-  } 
-  result = (btAlignedObjectArray< btCollisionObject * > *)new btAlignedObjectArray< btCollisionObject * >((btAlignedObjectArray< btCollisionObject * > const &)*arg1);
-  *(btAlignedObjectArray< btCollisionObject * > **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->size();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int arg2 ;
-  btCollisionObject **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  result = (btCollisionObject **) &((btAlignedObjectArray< btCollisionObject * > const *)arg1)->at(arg2);
-  *(btCollisionObject **)&jresult = *result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  (arg1)->clear();
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  (arg1)->pop_back();
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  (arg1)->resizeNoInitialize(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jobject jarg3_) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int arg2 ;
-  btCollisionObject **arg3 = 0 ;
-  btCollisionObject *temp3 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg3_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  temp3 = *(btCollisionObject **)&jarg3;
-  arg3 = (btCollisionObject **)&temp3; 
-  (arg1)->resize(arg2,(btCollisionObject *const &)*arg3);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  (arg1)->resize(arg2);
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  result = (btCollisionObject **) &(arg1)->expandNonInitializing();
-  *(btCollisionObject ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **arg2 = 0 ;
-  btCollisionObject *temp2 = 0 ;
-  btCollisionObject **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  temp2 = *(btCollisionObject **)&jarg2;
-  arg2 = (btCollisionObject **)&temp2; 
-  result = (btCollisionObject **) &(arg1)->expand((btCollisionObject *const &)*arg2);
-  *(btCollisionObject ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  result = (btCollisionObject **) &(arg1)->expand();
-  *(btCollisionObject ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **arg2 = 0 ;
-  btCollisionObject *temp2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  temp2 = *(btCollisionObject **)&jarg2;
-  arg2 = (btCollisionObject **)&temp2; 
-  (arg1)->push_back((btCollisionObject *const &)*arg2);
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->capacity();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  (arg1)->reserve(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (int)jarg3; 
-  (arg1)->swap(arg2,arg3);
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **arg2 = 0 ;
-  btCollisionObject *temp2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  temp2 = *(btCollisionObject **)&jarg2;
-  arg2 = (btCollisionObject **)&temp2; 
-  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->findBinarySearch((btCollisionObject *const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **arg2 = 0 ;
-  btCollisionObject *temp2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  temp2 = *(btCollisionObject **)&jarg2;
-  arg2 = (btCollisionObject **)&temp2; 
-  result = (int)((btAlignedObjectArray< btCollisionObject * > const *)arg1)->findLinearSearch((btCollisionObject *const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btCollisionObject **arg2 = 0 ;
-  btCollisionObject *temp2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  temp2 = *(btCollisionObject **)&jarg2;
-  arg2 = (btCollisionObject **)&temp2; 
-  (arg1)->remove((btCollisionObject *const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  void *arg2 = (void *) 0 ;
-  int arg3 ;
-  int arg4 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
-  arg3 = (int)jarg3; 
-  arg4 = (int)jarg4; 
-  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btCollisionObjectArray_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< btCollisionObject * > *arg1 = (btAlignedObjectArray< btCollisionObject * > *) 0 ;
-  btAlignedObjectArray< btCollisionObject * > *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg1; 
-  arg2 = *(btAlignedObjectArray< btCollisionObject * > **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btCollisionObject * > const & reference is null");
-    return ;
-  } 
-  (arg1)->copyFromArray((btAlignedObjectArray< btCollisionObject * > const &)*arg2);
-}
-
-
 SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jint jresult = 0 ;
   btAlignedObjectArray< btBroadphasePair > *arg1 = (btAlignedObjectArray< btBroadphasePair > *) 0 ;
@@ -40377,8 +41126,8 @@ SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1at(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
+SWIGEXPORT jobject JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btBroadphasePairArray_1at(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
+  jobject jresult = 0 ;
   btAlignedObjectArray< btBroadphasePair > *arg1 = (btAlignedObjectArray< btBroadphasePair > *) 0 ;
   int arg2 ;
   btBroadphasePair *result = 0 ;
@@ -40389,7 +41138,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
   arg1 = *(btAlignedObjectArray< btBroadphasePair > **)&jarg1; 
   arg2 = (int)jarg2; 
   result = (btBroadphasePair *) &((btAlignedObjectArray< btBroadphasePair > const *)arg1)->at(arg2);
-  *(btBroadphasePair **)&jresult = result; 
+  jresult = gdx_getTempbtBroadphasePair(jenv, &result, false);
   return jresult;
 }
 
@@ -40457,345 +41206,6 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
   (void)jcls;
   arg1 = *(btAlignedObjectArray< btBroadphasePair > **)&jarg1; 
   delete arg1;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btManifoldArray_1_1SWIG_10(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (btAlignedObjectArray< btPersistentManifold * > *)new btAlignedObjectArray< btPersistentManifold * >();
-  *(btAlignedObjectArray< btPersistentManifold * > **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_delete_1btManifoldArray(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1btManifoldArray_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1;
-  if (!arg1) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btPersistentManifold * > const & reference is null");
-    return 0;
-  } 
-  result = (btAlignedObjectArray< btPersistentManifold * > *)new btAlignedObjectArray< btPersistentManifold * >((btAlignedObjectArray< btPersistentManifold * > const &)*arg1);
-  *(btAlignedObjectArray< btPersistentManifold * > **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1size(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->size();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1at_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int arg2 ;
-  btPersistentManifold **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  result = (btPersistentManifold **) &((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->at(arg2);
-  *(btPersistentManifold **)&jresult = *result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1clear(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  (arg1)->clear();
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1pop_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  (arg1)->pop_back();
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1resizeNoInitialize(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  (arg1)->resizeNoInitialize(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1resize_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jlong jarg3, jobject jarg3_) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int arg2 ;
-  btPersistentManifold **arg3 = 0 ;
-  btPersistentManifold *temp3 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg3_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  temp3 = *(btPersistentManifold **)&jarg3;
-  arg3 = (btPersistentManifold **)&temp3; 
-  (arg1)->resize(arg2,(btPersistentManifold *const &)*arg3);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1resize_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  (arg1)->resize(arg2);
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1expandNonInitializing(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  result = (btPersistentManifold **) &(arg1)->expandNonInitializing();
-  *(btPersistentManifold ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1expand_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **arg2 = 0 ;
-  btPersistentManifold *temp2 = 0 ;
-  btPersistentManifold **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  temp2 = *(btPersistentManifold **)&jarg2;
-  arg2 = (btPersistentManifold **)&temp2; 
-  result = (btPersistentManifold **) &(arg1)->expand((btPersistentManifold *const &)*arg2);
-  *(btPersistentManifold ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1expand_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  result = (btPersistentManifold **) &(arg1)->expand();
-  *(btPersistentManifold ***)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1push_1back(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **arg2 = 0 ;
-  btPersistentManifold *temp2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  temp2 = *(btPersistentManifold **)&jarg2;
-  arg2 = (btPersistentManifold **)&temp2; 
-  (arg1)->push_back((btPersistentManifold *const &)*arg2);
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1capacity(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->capacity();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1reserve(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int arg2 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  (arg1)->reserve(arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1swap(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jint jarg2, jint jarg3) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  int arg2 ;
-  int arg3 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = (int)jarg2; 
-  arg3 = (int)jarg3; 
-  (arg1)->swap(arg2,arg3);
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1findBinarySearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **arg2 = 0 ;
-  btPersistentManifold *temp2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  temp2 = *(btPersistentManifold **)&jarg2;
-  arg2 = (btPersistentManifold **)&temp2; 
-  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->findBinarySearch((btPersistentManifold *const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jint JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1findLinearSearch(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  jint jresult = 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **arg2 = 0 ;
-  btPersistentManifold *temp2 = 0 ;
-  int result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  temp2 = *(btPersistentManifold **)&jarg2;
-  arg2 = (btPersistentManifold **)&temp2; 
-  result = (int)((btAlignedObjectArray< btPersistentManifold * > const *)arg1)->findLinearSearch((btPersistentManifold *const &)*arg2);
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1remove(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btPersistentManifold **arg2 = 0 ;
-  btPersistentManifold *temp2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  temp2 = *(btPersistentManifold **)&jarg2;
-  arg2 = (btPersistentManifold **)&temp2; 
-  (arg1)->remove((btPersistentManifold *const &)*arg2);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1initializeFromBuffer(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jint jarg3, jint jarg4) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  void *arg2 = (void *) 0 ;
-  int arg3 ;
-  int arg4 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
-  arg3 = (int)jarg3; 
-  arg4 = (int)jarg4; 
-  (arg1)->initializeFromBuffer(arg2,arg3,arg4);
-}
-
-
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_btManifoldArray_1copyFromArray(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
-  btAlignedObjectArray< btPersistentManifold * > *arg1 = (btAlignedObjectArray< btPersistentManifold * > *) 0 ;
-  btAlignedObjectArray< btPersistentManifold * > *arg2 = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  (void)jarg2_;
-  arg1 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg1; 
-  arg2 = *(btAlignedObjectArray< btPersistentManifold * > **)&jarg2;
-  if (!arg2) {
-    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "btAlignedObjectArray< btPersistentManifold * > const & reference is null");
-    return ;
-  } 
-  (arg1)->copyFromArray((btAlignedObjectArray< btPersistentManifold * > const &)*arg2);
 }
 
 
@@ -41497,7 +41907,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
       "SwigDirector_btOverlappingPairCallback_removeOverlappingPairsContainingProxy", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlappingPairCallback;JJ)V" 
     },
     {
-      "SwigDirector_btOverlapCallback_processOverlap", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlapCallback;J)Z" 
+      "SwigDirector_btOverlapCallback_processOverlap", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlapCallback;Lcom/badlogic/gdx/physics/bullet/collision/btBroadphasePair;)Z" 
     },
     {
       "SwigDirector_btOverlapFilterCallback_needBroadphaseCollision", "(Lcom/badlogic/gdx/physics/bullet/collision/btOverlapFilterCallback;JJ)Z" 

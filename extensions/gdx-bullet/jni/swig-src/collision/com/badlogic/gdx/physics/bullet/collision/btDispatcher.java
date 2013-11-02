@@ -112,13 +112,12 @@ public class btDispatcher extends BulletBase {
     return (cPtr == 0) ? null : new btPoolAllocator(cPtr, false);
   }
 
-  public SWIGTYPE_p_void allocateCollisionAlgorithm(int size) {
-    long cPtr = CollisionJNI.btDispatcher_allocateCollisionAlgorithm(swigCPtr, this, size);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long allocateCollisionAlgorithm(int size) {
+    return CollisionJNI.btDispatcher_allocateCollisionAlgorithm(swigCPtr, this, size);
   }
 
-  public void freeCollisionAlgorithm(SWIGTYPE_p_void ptr) {
-    CollisionJNI.btDispatcher_freeCollisionAlgorithm(swigCPtr, this, SWIGTYPE_p_void.getCPtr(ptr));
+  public void freeCollisionAlgorithm(long ptr) {
+    CollisionJNI.btDispatcher_freeCollisionAlgorithm(swigCPtr, this, ptr);
   }
 
 }
