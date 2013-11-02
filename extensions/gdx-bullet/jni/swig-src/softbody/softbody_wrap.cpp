@@ -3830,13 +3830,14 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJN
 }
 
 
-SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1collisionDisabledObjects_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2) {
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_softbody_SoftbodyJNI_btSoftBody_1collisionDisabledObjects_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   btSoftBody *arg1 = (btSoftBody *) 0 ;
   btAlignedObjectArray< btCollisionObject const * > *arg2 = (btAlignedObjectArray< btCollisionObject const * > *) 0 ;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
+  (void)jarg2_;
   arg1 = *(btSoftBody **)&jarg1; 
   arg2 = *(btAlignedObjectArray< btCollisionObject const * > **)&jarg2; 
   if (arg1) (arg1)->m_collisionDisabledObjects = *arg2;

@@ -62,13 +62,13 @@ public class btSoftBody extends btCollisionObject {
 		super.delete();
 	}
 
-  public void setCollisionDisabledObjects(SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t value) {
-    SoftbodyJNI.btSoftBody_collisionDisabledObjects_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t.getCPtr(value));
+  public void setCollisionDisabledObjects(btCollisionObjectConstArray value) {
+    SoftbodyJNI.btSoftBody_collisionDisabledObjects_set(swigCPtr, this, btCollisionObjectConstArray.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t getCollisionDisabledObjects() {
+  public btCollisionObjectConstArray getCollisionDisabledObjects() {
     long cPtr = SoftbodyJNI.btSoftBody_collisionDisabledObjects_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t(cPtr, false);
+    return (cPtr == 0) ? null : new btCollisionObjectConstArray(cPtr, false);
   }
 
   public void setSoftBodySolver(btSoftBodySolver value) {

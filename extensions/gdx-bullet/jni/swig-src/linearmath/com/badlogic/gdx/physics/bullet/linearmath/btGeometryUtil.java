@@ -57,24 +57,24 @@ public class btGeometryUtil extends BulletBase {
 		super.delete();
 	}
 
-  public static void getPlaneEquationsFromVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t vertices, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t planeEquationsOut) {
-    LinearMathJNI.btGeometryUtil_getPlaneEquationsFromVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(vertices), SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(planeEquationsOut));
+  public static void getPlaneEquationsFromVertices(btVector3Array vertices, btVector3Array planeEquationsOut) {
+    LinearMathJNI.btGeometryUtil_getPlaneEquationsFromVertices(btVector3Array.getCPtr(vertices), vertices, btVector3Array.getCPtr(planeEquationsOut), planeEquationsOut);
   }
 
-  public static void getVerticesFromPlaneEquations(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t planeEquations, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t verticesOut) {
-    LinearMathJNI.btGeometryUtil_getVerticesFromPlaneEquations(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(planeEquations), SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(verticesOut));
+  public static void getVerticesFromPlaneEquations(btVector3Array planeEquations, btVector3Array verticesOut) {
+    LinearMathJNI.btGeometryUtil_getVerticesFromPlaneEquations(btVector3Array.getCPtr(planeEquations), planeEquations, btVector3Array.getCPtr(verticesOut), verticesOut);
   }
 
-  public static boolean isInside(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t vertices, Vector3 planeNormal, float margin) {
-    return LinearMathJNI.btGeometryUtil_isInside(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(vertices), planeNormal, margin);
+  public static boolean isInside(btVector3Array vertices, Vector3 planeNormal, float margin) {
+    return LinearMathJNI.btGeometryUtil_isInside(btVector3Array.getCPtr(vertices), vertices, planeNormal, margin);
   }
 
-  public static boolean isPointInsidePlanes(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t planeEquations, Vector3 point, float margin) {
-    return LinearMathJNI.btGeometryUtil_isPointInsidePlanes(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(planeEquations), point, margin);
+  public static boolean isPointInsidePlanes(btVector3Array planeEquations, Vector3 point, float margin) {
+    return LinearMathJNI.btGeometryUtil_isPointInsidePlanes(btVector3Array.getCPtr(planeEquations), planeEquations, point, margin);
   }
 
-  public static boolean areVerticesBehindPlane(Vector3 planeNormal, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t vertices, float margin) {
-    return LinearMathJNI.btGeometryUtil_areVerticesBehindPlane(planeNormal, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(vertices), margin);
+  public static boolean areVerticesBehindPlane(Vector3 planeNormal, btVector3Array vertices, float margin) {
+    return LinearMathJNI.btGeometryUtil_areVerticesBehindPlane(planeNormal, btVector3Array.getCPtr(vertices), vertices, margin);
   }
 
   public btGeometryUtil() {

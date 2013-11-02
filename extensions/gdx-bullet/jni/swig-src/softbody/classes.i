@@ -9,7 +9,6 @@ SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_Link_t, com.badlogic.gdx.physics.
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_Material_p_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_Node_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_bool_t, com.badlogic.gdx.physics.bullet.softbody)
-SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Anchor_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Cluster_p_t, com.badlogic.gdx.physics.bullet.softbody)
 SPECIFY_CLASS(SWIGTYPE_p_btAlignedObjectArrayT_btSoftBody__Joint_p_t, com.badlogic.gdx.physics.bullet.softbody)

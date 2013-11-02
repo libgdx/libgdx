@@ -306,6 +306,9 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./btCollisionObject.i"
 
+%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
+%template(btCollisionObjectConstArray) btAlignedObjectArray<const btCollisionObject*>;
+
 %include "./btCollisionObjectWrapper.i"
 
 %{
@@ -465,6 +468,8 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 %}
 %include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 
+%template(btPersistentManifoldArray) btAlignedObjectArray<btPersistentManifold*>;
+
 %{
 #include <BulletCollision/NarrowPhaseCollision/btGjkPairDetector.h>
 %}
@@ -528,6 +533,4 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./ContactCache.i"
 
-%template(btCollisionObjectArray) btAlignedObjectArray<btCollisionObject *>;
 %include "./btBroadphasePairArray.i"
-%template(btManifoldArray) btAlignedObjectArray<btPersistentManifold*>;

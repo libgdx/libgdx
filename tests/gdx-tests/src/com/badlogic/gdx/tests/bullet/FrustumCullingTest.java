@@ -38,8 +38,8 @@ import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.collision.btManifoldArray;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
+import com.badlogic.gdx.physics.bullet.collision.btPersistentManifoldArray;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Xoppa */
@@ -97,7 +97,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		return result;
 	}
 	
-	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btCollisionObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
+	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btCollisionObject object, final Array<BulletEntity> out, final btPersistentManifoldArray tmpArr) {
 		// Fetch the array of contacts
 		btBroadphasePairArray arr = world.broadphase.getOverlappingPairCache().getOverlappingPairArray();
 		// Get the user values (which are indices in the entities array) of all objects colliding with the object
@@ -122,7 +122,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 	private btPairCachingGhostObject frustumObject;
 	private BulletEntity frustumEntity;
 	private final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
-	private btManifoldArray tempManifoldArr;
+	private btPersistentManifoldArray tempManifoldArr;
 	private PerspectiveCamera frustumCam;
 	private PerspectiveCamera overviewCam;
 
@@ -132,7 +132,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		
 		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
-		tempManifoldArr = new btManifoldArray();
+		tempManifoldArr = new btPersistentManifoldArray();
 
 		world.addConstructor("collisionBox", new BulletConstructor(world.getConstructor("box").model));
 		
