@@ -22,19 +22,19 @@
       <dependency>
           <groupId>org.robovm</groupId>
           <artifactId>robovm-cocoatouch</artifactId>
-          <version>0.0.5</version>
+          <version>${robovm.version}</version>
       </dependency>
       
       <dependency>
           <groupId>org.robovm</groupId>
           <artifactId>robovm-objc</artifactId>
-          <version>0.0.5</version>
+          <version>${robovm.version}</version>
       </dependency>
       
       <dependency>
           <groupId>org.robovm</groupId>
           <artifactId>robovm-rt</artifactId>
-          <version>0.0.5</version>
+          <version>${robovm.version}</version>
       </dependency>
   </dependencies>
 
