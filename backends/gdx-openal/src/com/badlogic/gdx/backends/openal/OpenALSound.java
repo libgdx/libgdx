@@ -99,6 +99,7 @@ public class OpenALSound implements Sound {
 		audio.freeBuffer(bufferID);
 		alDeleteBuffers(bufferID);
 		bufferID = -1;
+		audio.forget(this);
 	}
 
 	@Override
