@@ -23,7 +23,8 @@ import java.io.Serializable;
  * for more information.
  * 
  * @author badlogicgames@gmail.com
- * @author vesuvio */
+ * @author vesuvio *
+ * @author Daniel Heinrich */
 public class Quaternion implements Serializable {
 	private static final long serialVersionUID = -7661875440774897168L;
 	private static final float NORMALIZATION_TOLERANCE = 0.00001f;
@@ -359,10 +360,16 @@ public class Quaternion implements Serializable {
 	 * @param v2 The target vector, which should be normalized.
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final Vector3 v1, final Vector3 v2) {
-		final float dot = MathUtils.clamp(v1.dot(v2), -1f, 1f);
-		final float angle = (float)Math.acos(dot) * MathUtils.radiansToDegrees;
-		return setFromAxis(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x, angle);
-	}
+    		return setFromCross(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+    	}
+	
+	/** Set this quaternion to the rotation between two vectors.
+	 * @param v1 The base vector
+	 * @param v2 The target vector
+	 * @return This quaternion for chaining */
+	public Quaternion setFromCrossNotNormalized (final Vector3 v1, final Vector3 v2) {
+    		return setFromCrossNotNormalized(v1.x, v1.y, v1.z, v2.x, v2.y, v2.z);
+    	}
 	
 	/** Set this quaternion to the rotation between two vectors.
 	 * @param x1 The base vectors x value, which should be normalized.
@@ -373,9 +380,37 @@ public class Quaternion implements Serializable {
 	 * @param z2 The target vector z value, which should be normalized.
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
-		final float dot = MathUtils.clamp(Vector3.dot(x1, y1, z1, x2, y2, z2), -1f, 1f);
-		final float angle = (float)Math.acos(dot) * MathUtils.radiansToDegrees;
-		return setFromAxis(y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2, angle);
+    		return setFromCross(1, x1, y1, z1, x2, y2, z2);
+	}
+	
+	/** Set this quaternion to the rotation between two vectors.
+	 * @param x1 The base vectors x value.
+	 * @param y1 The base vectors y value.
+	 * @param z1 The base vectors z value.
+	 * @param x2 The target vector x value.
+	 * @param y2 The target vector y value.
+	 * @param z2 The target vector z value.
+	 * @return This quaternion for chaining */
+	public Quaternion setFromCrossNotNormalized (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		float len1 = x1 * x1 + y1 * y1 + z1 * z1;
+		float len2 = x2 * x2 + y2 * y2 + z2 * z2;
+		
+		float norm = (float)Math.sqrt(len1 * len2);
+    		
+    		return setFromCross(norm, x1, y1, z1, x2, y2, z2);
+	}
+	
+	
+	private Quaternion setFromCross (final float normFactor, final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
+		float x = y1 * z2 - z1 * y2;
+		float y = z1 * x2 - x1 * z2;
+		float z = x1 * y2 - y1 * x2;
+		
+		float dot = x1 * x2 + y1 * y2 + z1 * z2;
+		
+    		set(x, y, z, normFactor + dot);
+    		
+    		return nor();
 	}
 
 	/** Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
