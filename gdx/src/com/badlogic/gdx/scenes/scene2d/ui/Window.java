@@ -38,12 +38,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class Window extends Table {
 	static private final Vector2 tmpPosition = new Vector2();
 	static private final Vector2 tmpSize = new Vector2();
+	static private final int MOVE = 1 << 5;
 
 	private WindowStyle style;
 	private String title;
 	private BitmapFontCache titleCache;
-	boolean isMovable = true, isModal;
-	final Vector2 dragOffset = new Vector2();
+	boolean isMovable = true, isModal, isResizable;
+	int resizeBorder = 8;
 	boolean dragging;
 	private int titleAlignment = Align.center;
 	boolean keepWithinStage = true;
@@ -79,21 +80,84 @@ public class Window extends Table {
 			}
 		});
 		addListener(new InputListener() {
+			int edge;
+			float startX, startY, lastX, lastY;
+
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (button == 0) {
-					dragging = isMovable && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth();
-					dragOffset.set(x, y);
+					int border = resizeBorder;
+					float width = getWidth(), height = getHeight();
+					edge = 0;
+					if (isResizable) {
+						if (x < border) edge |= Align.left;
+						if (x > width - border) edge |= Align.right;
+						if (y < border) edge |= Align.bottom;
+						if (y > height - border) edge |= Align.top;
+						if (edge != 0) border += 25;
+						if (x < border) edge |= Align.left;
+						if (x > width - border) edge |= Align.right;
+						if (y < border) edge |= Align.bottom;
+						if (y > height - border) edge |= Align.top;
+					}
+					if (isMovable && edge == 0 && y >= height - getPadTop()) edge = MOVE;
+					dragging = edge != 0;
+					startX = x;
+					startY = y;
+					lastX = x;
+					lastY = y;
 				}
-				return dragging || isModal;
+				return edge != 0 || isModal;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (dragging) dragging = false;
+				dragging = false;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
-				translate(x - dragOffset.x, y - dragOffset.y);
+				float width = getWidth(), height = getHeight();
+				float windowX = getX(), windowY = getY();
+
+				float minWidth = getMinWidth(), maxWidth = getMaxWidth();
+				float minHeight = getMinHeight(), maxHeight = getMaxHeight();
+				Stage stage = getStage();
+				boolean clampPosition = keepWithinStage && getParent() == stage.getRoot();
+
+				if ((edge & MOVE) != 0) {
+					float amountX = x - startX, amountY = y - startY;
+					windowX += amountX;
+					windowY += amountY;
+				}
+				if ((edge & Align.left) != 0) {
+					float amountX = x - startX;
+					if (width - amountX < minWidth) amountX = -(minWidth - width);
+					if (clampPosition && windowX + amountX < 0) amountX = -windowX;
+					width -= amountX;
+					windowX += amountX;
+				}
+				if ((edge & Align.bottom) != 0) {
+					float amountY = y - startY;
+					if (height - amountY < minHeight) amountY = -(minHeight - height);
+					if (clampPosition && windowY + amountY < 0) amountY = -windowY;
+					height -= amountY;
+					windowY += amountY;
+				}
+				if ((edge & Align.right) != 0) {
+					float amountX = x - lastX;
+					if (width + amountX < minWidth) amountX = minWidth - width;
+					if (clampPosition && windowX + width + amountX > stage.getWidth()) amountX = stage.getWidth() - windowX - width;
+					width += amountX;
+				}
+				if ((edge & Align.top) != 0) {
+					float amountY = y - lastY;
+					if (height + amountY < minHeight) amountY = minHeight - height;
+					if (clampPosition && windowY + height + amountY > stage.getHeight())
+						amountY = stage.getHeight() - windowY - height;
+					height += amountY;
+				}
+				lastX = x;
+				lastY = y;
+				setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -134,9 +198,10 @@ public class Window extends Table {
 		return style;
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	void keepWithinStage () {
+		if (!keepWithinStage) return;
 		Stage stage = getStage();
-		if (keepWithinStage && getParent() == stage.getRoot()) {
+		if (getParent() == stage.getRoot()) {
 			float parentWidth = stage.getWidth();
 			float parentHeight = stage.getHeight();
 			if (getX() < 0) setX(0);
@@ -144,6 +209,10 @@ public class Window extends Table {
 			if (getY() < 0) setY(0);
 			if (getTop() > parentHeight) setY(parentHeight - getHeight());
 		}
+	}
+
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		keepWithinStage();
 		super.draw(batch, parentAlpha);
 	}
 
@@ -221,6 +290,14 @@ public class Window extends Table {
 
 	public void setKeepWithinStage (boolean keepWithinStage) {
 		this.keepWithinStage = keepWithinStage;
+	}
+
+	public void setResizable (boolean isResizable) {
+		this.isResizable = isResizable;
+	}
+
+	public void setResizeBorder (int resizeBorder) {
+		this.resizeBorder = resizeBorder;
 	}
 
 	public boolean isDragging () {
