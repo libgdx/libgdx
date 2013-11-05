@@ -74,7 +74,7 @@ public class JsonReader implements BaseJsonReader {
 	@Override
 	public JsonValue parse (FileHandle file) {
 		try {
-			return parse(file.read());
+			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}

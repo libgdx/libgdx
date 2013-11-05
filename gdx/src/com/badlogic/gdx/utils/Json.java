@@ -184,7 +184,7 @@ public class Json {
 	public void toJson (Object object, Class knownType, Class elementType, FileHandle file) {
 		Writer writer = null;
 		try {
-			writer = file.writer(false);
+			writer = file.writer(false, "UTF-8");
 			toJson(object, knownType, elementType, writer);
 		} catch (Exception ex) {
 			throw new SerializationException("Error writing file: " + file, ex);
