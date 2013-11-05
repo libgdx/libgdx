@@ -39,26 +39,23 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Field;
 
 public class InterpolationTest extends GdxTest {
-
-	private Stage stage;
+	Stage stage;
 	private Skin skin;
 	private Table table;
-	private List list;
-	private String interpolationNames[], selectedInterpolation;
+	List list;
+	String interpolationNames[], selectedInterpolation;
 	private ShapeRenderer renderer;
-
-	private float graphSize = 400, steps = graphSize / 2, time = 0, duration = 2.5f;
-
-	private Vector2 startPosition = new Vector2(), targetPosition = new Vector2(), position = new Vector2();
+	float graphSize = 400, steps = graphSize / 2, time = 0, duration = 2.5f;
+	Vector2 startPosition = new Vector2(), targetPosition = new Vector2(), position = new Vector2();
 
 	/** resets {@link #startPosition} and {@link #targetPosition} */
-	private void resetPositions() {
+	void resetPositions () {
 		startPosition.set(stage.getWidth() - stage.getWidth() / 5f, stage.getHeight() - stage.getHeight() / 5f);
 		targetPosition.set(startPosition.x, stage.getHeight() / 5f);
 	}
 
 	/** @return the {@link #position} with the {@link #selectedInterpolation interpolation} applied */
-	private Vector2 getPosition(float time) {
+	Vector2 getPosition (float time) {
 		position.set(targetPosition);
 		position.sub(startPosition);
 		position.scl(getInterpolation(selectedInterpolation).apply(time / duration));
@@ -67,16 +64,16 @@ public class InterpolationTest extends GdxTest {
 	}
 
 	/** @return the {@link #selectedInterpolation selected} interpolation */
-	private Interpolation getInterpolation(String name) {
+	private Interpolation getInterpolation (String name) {
 		try {
-			return (Interpolation) Interpolation.class.getField(name).get(null);
-		} catch(Exception e) {
+			return (Interpolation)Interpolation.class.getField(name).get(null);
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public void create() {
+	public void create () {
 		Gdx.gl.glClearColor(.3f, .3f, .3f, 1);
 		renderer = new ShapeRenderer();
 
@@ -85,55 +82,49 @@ public class InterpolationTest extends GdxTest {
 		stage = new Stage();
 		resetPositions();
 
-		table = new Table();
-		table.setFillParent(true);
-
 		Field[] interpolationFields = ClassReflection.getFields(Interpolation.class);
 
 		// see how many fields are actually interpolations (for safety; other fields may be added with future)
 		int interpolationMembers = 0;
-		for(int i = 0; i < interpolationFields.length; i++)
-			if(Interpolation.class.isAssignableFrom(interpolationFields[i].getDeclaringClass()))
-				interpolationMembers++;
+		for (int i = 0; i < interpolationFields.length; i++)
+			if (Interpolation.class.isAssignableFrom(interpolationFields[i].getDeclaringClass())) interpolationMembers++;
 
 		// get interpolation names
 		interpolationNames = new String[interpolationMembers];
-		for(int i = 0; i < interpolationFields.length; i++)
-			if(Interpolation.class.isAssignableFrom(interpolationFields[i].getDeclaringClass()))
+		for (int i = 0; i < interpolationFields.length; i++)
+			if (Interpolation.class.isAssignableFrom(interpolationFields[i].getDeclaringClass()))
 				interpolationNames[i] = interpolationFields[i].getName();
 		selectedInterpolation = interpolationNames[0];
 
 		list = new List(interpolationNames, skin);
 		list.addListener(new ChangeListener() {
-
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				selectedInterpolation = list.getSelection();
 				time = 0;
 				resetPositions();
 			}
-
 		});
 
-		table.add(new ScrollPane(list)).expand().fillY().left();
+		ScrollPane scroll = new ScrollPane(list, skin);
+		scroll.setFadeScrollBars(false);
+		scroll.setScrollingDisabled(true, false);
+
+		table = new Table();
+		table.setFillParent(true);
+		table.add(scroll).expandX().left().width(100);
 		stage.addActor(table);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
-
-			@Override
-			public boolean scrolled(int amount) {
-				if(!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
-					return false;
+			public boolean scrolled (int amount) {
+				if (!Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) return false;
 				duration -= amount / 15f;
 				duration = MathUtils.clamp(duration, 0, Float.POSITIVE_INFINITY);
 				return true;
 			}
 
 		}, stage, new InputAdapter() {
-
-			@Override
-			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				if(!Float.isNaN(time)) // if "walking" was interrupted by this touch down event
+			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+				if (!Float.isNaN(time)) // if "walking" was interrupted by this touch down event
 					startPosition.set(getPosition(time)); // set startPosition to the current position
 				targetPosition.set(stage.screenToStageCoordinates(targetPosition.set(screenX, screenY)));
 				time = 0;
@@ -143,25 +134,24 @@ public class InterpolationTest extends GdxTest {
 		}));
 	}
 
-	@Override
-	public void render() {
+	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		float bottomLeftX = Gdx.graphics.getWidth() / 2 - graphSize / 2, bottomLeftY = Gdx.graphics.getHeight() / 2 - graphSize / 2;
 
 		// only show up to two decimals
 		String text = String.valueOf(duration);
-		if(text.length() > 4)
-			text = text.substring(0, text.lastIndexOf('.') + 3);
+		if (text.length() > 4) text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
 		stage.getSpriteBatch().begin();
-		list.getStyle().font.draw(stage.getSpriteBatch(), text, bottomLeftX + graphSize / 2 - list.getStyle().font.getBounds(text).width / 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
+		list.getStyle().font.draw(stage.getSpriteBatch(), text, bottomLeftX + graphSize / 2
+			- list.getStyle().font.getBounds(text).width / 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
 		stage.getSpriteBatch().end();
 
 		renderer.begin(ShapeType.Line);
 		renderer.rect(bottomLeftX, bottomLeftY, graphSize, graphSize); // graph bounds
 		float lastX = bottomLeftX, lastY = bottomLeftY;
-		for(float step = 0; step <= steps; step++) {
+		for (float step = 0; step <= steps; step++) {
 			Interpolation interpolation = getInterpolation(selectedInterpolation);
 			float percent = step / steps;
 			float x = bottomLeftX + graphSize * percent, y = bottomLeftY + graphSize * interpolation.apply(percent);
@@ -170,12 +160,13 @@ public class InterpolationTest extends GdxTest {
 			lastY = y;
 		}
 		time += Gdx.graphics.getDeltaTime();
-		if(time > duration) {
+		if (time > duration) {
 			time = Float.NaN; // stop "walking"
 			startPosition.set(targetPosition); // set startPosition to targetPosition for next click
 		}
 		// draw time marker
-		renderer.line(bottomLeftX + graphSize * time / duration, bottomLeftY, bottomLeftX + graphSize * time / duration, bottomLeftY + graphSize);
+		renderer.line(bottomLeftX + graphSize * time / duration, bottomLeftY, bottomLeftX + graphSize * time / duration,
+			bottomLeftY + graphSize);
 		// draw path
 		renderer.setColor(Color.GRAY);
 		renderer.line(startPosition, targetPosition);
@@ -184,7 +175,7 @@ public class InterpolationTest extends GdxTest {
 
 		// draw the position
 		renderer.begin(ShapeType.Filled);
-		if(!Float.isNaN(time)) // don't mess up position if time is NaN
+		if (!Float.isNaN(time)) // don't mess up position if time is NaN
 			getPosition(time);
 		renderer.circle(position.x, position.y, 7);
 		renderer.end();
@@ -193,8 +184,7 @@ public class InterpolationTest extends GdxTest {
 		stage.draw();
 	}
 
-	@Override
-	public void resize(int width, int height) {
+	public void resize (int width, int height) {
 		stage.setViewport(width, height);
 		table.invalidateHierarchy();
 
@@ -202,23 +192,8 @@ public class InterpolationTest extends GdxTest {
 		renderer.setProjectionMatrix(stage.getCamera().combined);
 	}
 
-	@Override
-	public void pause() {
-	}
-
-	@Override
-	public void resume() {
-	}
-
-	@Override
-	public void dispose() {
+	public void dispose () {
 		stage.dispose();
 		skin.dispose();
 	}
-
-	@Override
-	public boolean needsGL20() {
-		return false;
-	}
-
 }
