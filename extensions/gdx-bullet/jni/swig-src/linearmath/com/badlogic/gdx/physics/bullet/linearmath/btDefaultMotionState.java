@@ -84,13 +84,12 @@ public class btDefaultMotionState extends btMotionState {
     return (cPtr == 0) ? null : new btTransform(cPtr, false);
   }
 
-  public void setUserPointer(SWIGTYPE_p_void value) {
-    LinearMathJNI.btDefaultMotionState_userPointer_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setUserPointer(long value) {
+    LinearMathJNI.btDefaultMotionState_userPointer_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getUserPointer() {
-    long cPtr = LinearMathJNI.btDefaultMotionState_userPointer_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getUserPointer() {
+    return LinearMathJNI.btDefaultMotionState_userPointer_get(swigCPtr, this);
   }
 
   public btDefaultMotionState(Matrix4 startTrans, Matrix4 centerOfMassOffset) {

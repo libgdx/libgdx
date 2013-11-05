@@ -59,16 +59,15 @@ public class btOverlappingPairCache extends btOverlappingPairCallback {
 	}
 
   public btBroadphasePair getOverlappingPairArrayPtr() {
-    long cPtr = CollisionJNI.btOverlappingPairCache_getOverlappingPairArrayPtr__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
-  }
+	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCache_getOverlappingPairArrayPtr__SWIG_0(swigCPtr, this), false);
+}
 
   public btBroadphasePairArray getOverlappingPairArray() {
     return new btBroadphasePairArray(CollisionJNI.btOverlappingPairCache_getOverlappingPairArray(swigCPtr, this), false);
   }
 
   public void cleanOverlappingPair(btBroadphasePair pair, btDispatcher dispatcher) {
-    CollisionJNI.btOverlappingPairCache_cleanOverlappingPair(swigCPtr, this, btBroadphasePair.getCPtr(pair), pair, btDispatcher.getCPtr(dispatcher), dispatcher);
+    CollisionJNI.btOverlappingPairCache_cleanOverlappingPair(swigCPtr, this, pair, btDispatcher.getCPtr(dispatcher), dispatcher);
   }
 
   public int getNumOverlappingPairs() {
@@ -88,9 +87,8 @@ public class btOverlappingPairCache extends btOverlappingPairCallback {
   }
 
   public btBroadphasePair findPair(btBroadphaseProxy proxy0, btBroadphaseProxy proxy1) {
-    long cPtr = CollisionJNI.btOverlappingPairCache_findPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1);
-    return (cPtr == 0) ? null : new btBroadphasePair(cPtr, false);
-  }
+	return btBroadphasePair.internalTemp(CollisionJNI.btOverlappingPairCache_findPair(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy0), proxy0, btBroadphaseProxy.getCPtr(proxy1), proxy1), false);
+}
 
   public boolean hasDeferredRemoval() {
     return CollisionJNI.btOverlappingPairCache_hasDeferredRemoval(swigCPtr, this);

@@ -78,12 +78,12 @@ public class btOptimizedBvh extends btQuantizedBvh {
     CollisionJNI.btOptimizedBvh_updateBvhNodes(swigCPtr, this, btStridingMeshInterface.getCPtr(meshInterface), meshInterface, firstNode, endNode, index);
   }
 
-  public boolean serializeInPlace(SWIGTYPE_p_void o_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
-    return CollisionJNI.btOptimizedBvh_serializeInPlace(swigCPtr, this, SWIGTYPE_p_void.getCPtr(o_alignedDataBuffer), i_dataBufferSize, i_swapEndian);
+  public boolean serializeInPlace(long o_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
+    return CollisionJNI.btOptimizedBvh_serializeInPlace(swigCPtr, this, o_alignedDataBuffer, i_dataBufferSize, i_swapEndian);
   }
 
-  public static btOptimizedBvh deSerializeInPlace(SWIGTYPE_p_void i_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
-    long cPtr = CollisionJNI.btOptimizedBvh_deSerializeInPlace(SWIGTYPE_p_void.getCPtr(i_alignedDataBuffer), i_dataBufferSize, i_swapEndian);
+  public static btOptimizedBvh deSerializeInPlace(long i_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
+    long cPtr = CollisionJNI.btOptimizedBvh_deSerializeInPlace(i_alignedDataBuffer, i_dataBufferSize, i_swapEndian);
     return (cPtr == 0) ? null : new btOptimizedBvh(cPtr, false);
   }
 

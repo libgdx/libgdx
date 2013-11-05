@@ -127,12 +127,12 @@ public class btQuantizedBvh extends BulletBase {
     return CollisionJNI.btQuantizedBvh_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public boolean serialize(SWIGTYPE_p_void o_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
-    return CollisionJNI.btQuantizedBvh_serialize__SWIG_0(swigCPtr, this, SWIGTYPE_p_void.getCPtr(o_alignedDataBuffer), i_dataBufferSize, i_swapEndian);
+  public boolean serialize(long o_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
+    return CollisionJNI.btQuantizedBvh_serialize__SWIG_0(swigCPtr, this, o_alignedDataBuffer, i_dataBufferSize, i_swapEndian);
   }
 
-  public static btQuantizedBvh deSerializeInPlace(SWIGTYPE_p_void i_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
-    long cPtr = CollisionJNI.btQuantizedBvh_deSerializeInPlace(SWIGTYPE_p_void.getCPtr(i_alignedDataBuffer), i_dataBufferSize, i_swapEndian);
+  public static btQuantizedBvh deSerializeInPlace(long i_alignedDataBuffer, long i_dataBufferSize, boolean i_swapEndian) {
+    long cPtr = CollisionJNI.btQuantizedBvh_deSerializeInPlace(i_alignedDataBuffer, i_dataBufferSize, i_swapEndian);
     return (cPtr == 0) ? null : new btQuantizedBvh(cPtr, false);
   }
 
@@ -144,8 +144,8 @@ public class btQuantizedBvh extends BulletBase {
     return CollisionJNI.btQuantizedBvh_calculateSerializeBufferSizeNew(swigCPtr, this);
   }
 
-  public String serialize(SWIGTYPE_p_void dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return CollisionJNI.btQuantizedBvh_serialize__SWIG_1(swigCPtr, this, SWIGTYPE_p_void.getCPtr(dataBuffer), SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
+    return CollisionJNI.btQuantizedBvh_serialize__SWIG_1(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
   }
 
   public void deSerializeFloat(btQuantizedBvhFloatData quantizedBvhFloatData) {

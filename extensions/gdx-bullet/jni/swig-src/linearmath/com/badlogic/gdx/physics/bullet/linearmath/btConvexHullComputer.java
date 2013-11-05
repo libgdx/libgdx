@@ -57,13 +57,13 @@ public class btConvexHullComputer extends BulletBase {
 		super.delete();
 	}
 
-  public void setVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    LinearMathJNI.btConvexHullComputer_vertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setVertices(btVector3Array value) {
+    LinearMathJNI.btConvexHullComputer_vertices_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getVertices() {
+  public btVector3Array getVertices() {
     long cPtr = LinearMathJNI.btConvexHullComputer_vertices_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
+    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
   }
 
   public void setEdges(SWIGTYPE_p_btAlignedObjectArrayT_btConvexHullComputer__Edge_t value) {

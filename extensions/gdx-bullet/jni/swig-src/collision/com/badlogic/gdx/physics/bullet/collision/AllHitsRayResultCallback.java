@@ -78,13 +78,13 @@ public class AllHitsRayResultCallback extends RayResultCallback {
     CollisionJNI.AllHitsRayResultCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
   }
 
-  public void setCollisionObjects(SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t value) {
-    CollisionJNI.AllHitsRayResultCallback_collisionObjects_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t.getCPtr(value));
+  public void setCollisionObjects(btCollisionObjectConstArray value) {
+    CollisionJNI.AllHitsRayResultCallback_collisionObjects_set(swigCPtr, this, btCollisionObjectConstArray.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t getCollisionObjects() {
+  public btCollisionObjectConstArray getCollisionObjects() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_collisionObjects_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btCollisionObject_const_p_t(cPtr, false);
+    return (cPtr == 0) ? null : new btCollisionObjectConstArray(cPtr, false);
   }
 
   public void setRayFromWorld(btVector3 value) {
@@ -105,31 +105,31 @@ public class AllHitsRayResultCallback extends RayResultCallback {
     return (cPtr == 0) ? null : new btVector3(cPtr, false);
   }
 
-  public void setHitNormalWorld(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    CollisionJNI.AllHitsRayResultCallback_hitNormalWorld_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setHitNormalWorld(btVector3Array value) {
+    CollisionJNI.AllHitsRayResultCallback_hitNormalWorld_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getHitNormalWorld() {
+  public btVector3Array getHitNormalWorld() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_hitNormalWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
+    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
   }
 
-  public void setHitPointWorld(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    CollisionJNI.AllHitsRayResultCallback_hitPointWorld_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setHitPointWorld(btVector3Array value) {
+    CollisionJNI.AllHitsRayResultCallback_hitPointWorld_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getHitPointWorld() {
+  public btVector3Array getHitPointWorld() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_hitPointWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
+    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
   }
 
-  public void setHitFractions(SWIGTYPE_p_btAlignedObjectArrayT_float_t value) {
-    CollisionJNI.AllHitsRayResultCallback_hitFractions_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_float_t.getCPtr(value));
+  public void setHitFractions(btScalarArray value) {
+    CollisionJNI.AllHitsRayResultCallback_hitFractions_set(swigCPtr, this, btScalarArray.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_float_t getHitFractions() {
+  public btScalarArray getHitFractions() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_hitFractions_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_float_t(cPtr, false);
+    return (cPtr == 0) ? null : new btScalarArray(cPtr, false);
   }
 
   public float addSingleResult(LocalRayResult rayResult, boolean normalInWorldSpace) {

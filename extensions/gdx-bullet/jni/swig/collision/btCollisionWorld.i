@@ -292,102 +292,27 @@
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 %}
 
-//%rename(internalSetBroadphase) btCollisionWorld::setBroadphase;
-//%javamethodmodifiers btCollisionWorld::setBroadphase "private";
-//%rename(internalGetBroadphase) btCollisionWorld::getBroadphase;
-//%javamethodmodifiers btCollisionWorld::getBroadphase "private";
-//%rename(internalGetDispatcher) btCollisionWorld::getDispatcher;
-//%javamethodmodifiers btCollisionWorld::getDispatcher "private";
-//%rename(internalSetDebugDrawer) btCollisionWorld::setDebugDrawer;
-//%javamethodmodifiers btCollisionWorld::setDebugDrawer "private";
-//%rename(internalGetDebugDrawer) btCollisionWorld::getDebugDrawer;
-//%javamethodmodifiers btCollisionWorld::getDebugDrawer "private";
-//%ignore btCollisionWorld::getCollisionObjectArray;
-//%rename(internalGetNumCollisionObjects) btCollisionWorld::getNumCollisionObjects;
-//%javamethodmodifiers btCollisionWorld::getNumCollisionObjects "private";
-//%rename(internalAddCollisionObject) btCollisionWorld::addCollisionObject;
-//%javamethodmodifiers btCollisionWorld::addCollisionObject "private";
-//%rename(internalRemoveCollisionObject) btCollisionWorld::removeCollisionObject;
-//%javamethodmodifiers btCollisionWorld::removeCollisionObject "private";
-//
-//%typemap(javacode) btCollisionWorld %{
-//	protected final Array<btCollisionObject> collisionObjects;
-//	protected void refCollisionObject(final btCollisionObject object) {
-//		final int idx = collisionObjects.indexOf(object, false);
-//		if (idx >= 0)
-//			throw new GdxRuntimeException("Object already added: "+object.toString());
-//		object.obtain();
-//		collisionObjects.add(object);
-//	}
-//	protected void unrefCollisionObject(final btCollisionObject object) {
-//		final int idx = collisionObjects.indexOf(object, false);
-//		if (idx >= 0)
-//			unrefCollisionObject(idx);
-//	}
-//	protected void unrefCollisionObject(final int index) {
-//		collisionObjects.removeIndex(index).release();
-//	}
-//	public int getNumCollisionObjects() {
-//		return collisionObjects.size;
-//	}
-//	public btCollisionObject getCollisionObjects(int index) {
-//		return collisionObjects.get(index);
-//	}
-//	public void addCollisionObject(btCollisionObject collisionObject, short collisionFilterGroup, short collisionFilterMask) {
-//		refCollisionObject(collisionObject);
-//		internalAddCollisionObject(collisionObject, collisionFilterGroup, collisionFilterMask);
-//	}
-//	public void addCollisionObject(btCollisionObject collisionObject, short collisionFilterGroup) {
-//		refCollisionObject(collisionObject);
-//		internalAddCollisionObject(collisionObject, collisionFilterGroup);
-//	}
-//	public void addCollisionObject(btCollisionObject collisionObject) {
-//		refCollisionObject(collisionObject);
-//		internalAddCollisionObject(collisionObject);
-//	}
-//	public void removeCollisionObject(btCollisionObject collisionObject) {
-//		internalRemoveCollisionObject(collisionObject);
-//		unrefCollisionObject(collisionObject);
-//	}
-//	public void removeCollisionObject(int index) {
-//		internalRemoveCollisionObject(collisionObjects.get(index));
-//		unrefCollisionObject(index);
-//	}
-//	
-//	protected btDispatcher dispatcher;
-//	protected void refDispatcher(final btDispatcher dispatcher) {
-//		if (this.dispatcher != dispatcher) {
-//			if (this.dispatcher != null)
-//				this.dispatcher.releaser();
-//			this.dispatcher = dispatcher;
-//			if (this.dispatcher != null)
-//				this.dispatcher.obtain();
-//		}
-//	}
-//	
-//	protected btBroadphaseInterface broadphasePairCache;
-//	protected void refBroadphasePairCache(final btBroadphaseInterface broadphasePairCache) {
-//		if (this.broadphasePairCache != broadphasePairCache) {
-//			if (this.broadphasePairCache != null)
-//				this.broadphasePairCache.releaser();
-//			this.broadphasePairCache = broadphasePairCache;
-//			if (this.broadphasePairCache != null)
-//				this.broadphasePairCache.obtain();
-//		}
-//	}
-//%}
-
-
 %include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 
 %{
-typedef btCollisionWorld::LocalShapeInfo LocalShapeInfo;
-typedef btCollisionWorld::LocalRayResult LocalRayResult;
-typedef btCollisionWorld::RayResultCallback RayResultCallback;
-typedef btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallback;
-typedef btCollisionWorld::AllHitsRayResultCallback AllHitsRayResultCallback;
-typedef btCollisionWorld::LocalConvexResult LocalConvexResult;
-typedef btCollisionWorld::ConvexResultCallback ConvexResultCallback;
-typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallback;
-typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
+	typedef btCollisionWorld::LocalShapeInfo LocalShapeInfo;
+	typedef btCollisionWorld::LocalRayResult LocalRayResult;
+	typedef btCollisionWorld::RayResultCallback RayResultCallback;
+	typedef btCollisionWorld::ClosestRayResultCallback ClosestRayResultCallback;
+	typedef btCollisionWorld::AllHitsRayResultCallback AllHitsRayResultCallback;
+	typedef btCollisionWorld::LocalConvexResult LocalConvexResult;
+	typedef btCollisionWorld::ConvexResultCallback ConvexResultCallback;
+	typedef btCollisionWorld::ClosestConvexResultCallback ClosestConvexResultCallback;
+	typedef btCollisionWorld::ContactResultCallback ContactResultCallback;
 %}
+
+//%extend AllHitsRayResultCallback {
+//	int getCollisionObjectsCount() { return m_collisionObjects.size(); }
+//	btCollisionObject* getCollisionObject(int index) { return m_collisionObjects.at(index); }
+//	int getHitNormalWorldCount() { return m_hitNormalWorld.size(); }
+//	btVector3 getHitNormalWorld(int index) { return m_hitNormalWorld.at(index); }
+//	int getHitPointWorldCount() { return m_hitPointWorld.size(); }
+//	btVector3 getHitPointWorld(int index) { return m_hitPointWorld.at(index); }
+//	int getHitFractionsCount() { return m_hitFractions.size(); }
+//	btScalar getHitFraction(int index) { return m_hitFractions.at(index); }
+//};

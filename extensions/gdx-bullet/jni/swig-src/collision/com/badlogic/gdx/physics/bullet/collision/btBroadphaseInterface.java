@@ -58,10 +58,9 @@ public class btBroadphaseInterface extends BulletBase {
 		super.delete();
 	}
 
-  public btBroadphaseProxy createProxy(Vector3 aabbMin, Vector3 aabbMax, int shapeType, SWIGTYPE_p_void userPtr, short collisionFilterGroup, short collisionFilterMask, btDispatcher dispatcher, SWIGTYPE_p_void multiSapProxy) {
-    long cPtr = CollisionJNI.btBroadphaseInterface_createProxy(swigCPtr, this, aabbMin, aabbMax, shapeType, SWIGTYPE_p_void.getCPtr(userPtr), collisionFilterGroup, collisionFilterMask, btDispatcher.getCPtr(dispatcher), dispatcher, SWIGTYPE_p_void.getCPtr(multiSapProxy));
-    return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
-  }
+  public btBroadphaseProxy createProxy(Vector3 aabbMin, Vector3 aabbMax, int shapeType, long userPtr, short collisionFilterGroup, short collisionFilterMask, btDispatcher dispatcher, long multiSapProxy) {
+	return btBroadphaseProxy.internalTemp(CollisionJNI.btBroadphaseInterface_createProxy(swigCPtr, this, aabbMin, aabbMax, shapeType, userPtr, collisionFilterGroup, collisionFilterMask, btDispatcher.getCPtr(dispatcher), dispatcher, multiSapProxy), false);
+}
 
   public void destroyProxy(btBroadphaseProxy proxy, btDispatcher dispatcher) {
     CollisionJNI.btBroadphaseInterface_destroyProxy(swigCPtr, this, btBroadphaseProxy.getCPtr(proxy), proxy, btDispatcher.getCPtr(dispatcher), dispatcher);

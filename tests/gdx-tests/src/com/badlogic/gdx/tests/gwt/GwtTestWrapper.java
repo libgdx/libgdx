@@ -24,6 +24,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -397,6 +398,10 @@ public class GwtTestWrapper extends GdxTest {
 		@Override
 		public void setCursorPosition (int x, int y) {
 			setCursorPosition(x, y);
+		}
+
+		@Override
+		public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 		}
 	}
 

@@ -62,13 +62,13 @@ public class btConvexPolyhedron extends BulletBase {
     this(CollisionJNI.new_btConvexPolyhedron(), true);
   }
 
-  public void setVertices(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    CollisionJNI.btConvexPolyhedron_vertices_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setVertices(btVector3Array value) {
+    CollisionJNI.btConvexPolyhedron_vertices_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getVertices() {
+  public btVector3Array getVertices() {
     long cPtr = CollisionJNI.btConvexPolyhedron_vertices_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
+    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
   }
 
   public void setFaces(SWIGTYPE_p_btAlignedObjectArrayT_btFace_t value) {
@@ -80,13 +80,13 @@ public class btConvexPolyhedron extends BulletBase {
     return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btFace_t(cPtr, false);
   }
 
-  public void setUniqueEdges(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t value) {
-    CollisionJNI.btConvexPolyhedron_uniqueEdges_set(swigCPtr, this, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(value));
+  public void setUniqueEdges(btVector3Array value) {
+    CollisionJNI.btConvexPolyhedron_uniqueEdges_set(swigCPtr, this, btVector3Array.getCPtr(value), value);
   }
 
-  public SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t getUniqueEdges() {
+  public btVector3Array getUniqueEdges() {
     long cPtr = CollisionJNI.btConvexPolyhedron_uniqueEdges_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t(cPtr, false);
+    return (cPtr == 0) ? null : new btVector3Array(cPtr, false);
   }
 
   public void setLocalCenter(btVector3 value) {

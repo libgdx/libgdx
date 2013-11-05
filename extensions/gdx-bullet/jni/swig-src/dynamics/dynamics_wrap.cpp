@@ -5407,7 +5407,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btTypedConstraint **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->setUserConstraintPtr(arg2);
 }
 
@@ -5422,7 +5422,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   (void)jarg1_;
   arg1 = *(btTypedConstraint **)&jarg1; 
   result = (void *)(arg1)->getUserConstraintPtr();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -5651,7 +5651,7 @@ SWIGEXPORT jstring JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamic
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btTypedConstraint **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   arg3 = *(btSerializer **)&jarg3; 
   result = (char *)((btTypedConstraint const *)arg1)->serialize(arg2,arg3);
   if (result) jresult = jenv->NewStringUTF((const char *)result);
@@ -7521,7 +7521,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jarg1_;
   arg1 = *(btDynamicsWorld **)&jarg1; 
   arg2 = *(btInternalTickCallback *)&jarg2; 
-  arg3 = *(void **)&jarg3; 
+  arg3 = (void *)jarg3; 
   arg4 = jarg4 ? true : false; 
   (arg1)->setInternalTickCallback(arg2,arg3,arg4);
 }
@@ -7537,7 +7537,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jarg1_;
   arg1 = *(btDynamicsWorld **)&jarg1; 
   arg2 = *(btInternalTickCallback *)&jarg2; 
-  arg3 = *(void **)&jarg3; 
+  arg3 = (void *)jarg3; 
   (arg1)->setInternalTickCallback(arg2,arg3);
 }
 
@@ -7563,7 +7563,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btDynamicsWorld **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   (arg1)->setWorldUserInfo(arg2);
 }
 
@@ -7578,7 +7578,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   (void)jarg1_;
   arg1 = *(btDynamicsWorld **)&jarg1; 
   result = (void *)((btDynamicsWorld const *)arg1)->getWorldUserInfo();
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -22758,7 +22758,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
     return 0;
   } 
   result = (void *)(arg1)->castRay((btVector3 const &)*arg2,(btVector3 const &)*arg3,*arg4);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 
@@ -23711,7 +23711,7 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJN
   (void)jcls;
   (void)jarg1_;
   arg1 = *(btWheelInfo **)&jarg1; 
-  arg2 = *(void **)&jarg2; 
+  arg2 = (void *)jarg2; 
   if (arg1) (arg1)->m_clientInfo = arg2;
 }
 
@@ -23726,7 +23726,7 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJ
   (void)jarg1_;
   arg1 = *(btWheelInfo **)&jarg1; 
   result = (void *) ((arg1)->m_clientInfo);
-  *(void **)&jresult = result; 
+  jresult = (jlong)result; 
   return jresult;
 }
 

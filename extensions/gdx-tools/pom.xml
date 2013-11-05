@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -102,9 +102,8 @@
             <phase>integration-test</phase>
             <configuration>
               <target>
-                <property name="root" value="${project.artifactId}-${project.version}"/>
-                <copy file="${project.build.directory}/${root}-distribution.jar"
-                      tofile="${project.build.directory}/${root}.jar"/>
+                <property name="root" value="${project.artifactId}-${project.version}" />
+                <copy file="${project.build.directory}/${root}-distribution.jar" tofile="${project.build.directory}/${root}.jar" />
               </target>
             </configuration>
             <goals>
@@ -143,9 +142,8 @@
                 <phase>test</phase>
                 <configuration>
                   <target>
-                    <java fork="true" classname="${particleClass}"
-                          classpathref="maven.test.classpath">
-                      <sysproperty key="java.library.path" value="target/natives"/>
+                    <java fork="true" classname="${particleClass}" classpathref="maven.test.classpath">
+                      <sysproperty key="java.library.path" value="target/natives" />
                     </java>
                   </target>
                 </configuration>

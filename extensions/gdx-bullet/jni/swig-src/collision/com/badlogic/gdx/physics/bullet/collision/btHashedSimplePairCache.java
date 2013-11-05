@@ -66,9 +66,8 @@ public class btHashedSimplePairCache extends BulletBase {
     CollisionJNI.btHashedSimplePairCache_removeAllPairs(swigCPtr, this);
   }
 
-  public SWIGTYPE_p_void removeOverlappingPair(int indexA, int indexB) {
-    long cPtr = CollisionJNI.btHashedSimplePairCache_removeOverlappingPair(swigCPtr, this, indexA, indexB);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long removeOverlappingPair(int indexA, int indexB) {
+    return CollisionJNI.btHashedSimplePairCache_removeOverlappingPair(swigCPtr, this, indexA, indexB);
   }
 
   public btSimplePair addOverlappingPair(int indexA, int indexB) {

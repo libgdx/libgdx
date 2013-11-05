@@ -232,21 +232,20 @@ public class btCollisionShape extends BulletBase {
     return CollisionJNI.btCollisionShape_getMargin(swigCPtr, this);
   }
 
-  public void setUserPointer(SWIGTYPE_p_void userPtr) {
-    CollisionJNI.btCollisionShape_setUserPointer(swigCPtr, this, SWIGTYPE_p_void.getCPtr(userPtr));
+  public void setUserPointer(long userPtr) {
+    CollisionJNI.btCollisionShape_setUserPointer(swigCPtr, this, userPtr);
   }
 
-  public SWIGTYPE_p_void getUserPointer() {
-    long cPtr = CollisionJNI.btCollisionShape_getUserPointer(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getUserPointer() {
+    return CollisionJNI.btCollisionShape_getUserPointer(swigCPtr, this);
   }
 
   public int calculateSerializeBufferSize() {
     return CollisionJNI.btCollisionShape_calculateSerializeBufferSize(swigCPtr, this);
   }
 
-  public String serialize(SWIGTYPE_p_void dataBuffer, SWIGTYPE_p_btSerializer serializer) {
-    return CollisionJNI.btCollisionShape_serialize(swigCPtr, this, SWIGTYPE_p_void.getCPtr(dataBuffer), SWIGTYPE_p_btSerializer.getCPtr(serializer));
+  public String serialize(long dataBuffer, SWIGTYPE_p_btSerializer serializer) {
+    return CollisionJNI.btCollisionShape_serialize(swigCPtr, this, dataBuffer, SWIGTYPE_p_btSerializer.getCPtr(serializer));
   }
 
   public void serializeSingleShape(SWIGTYPE_p_btSerializer serializer) {

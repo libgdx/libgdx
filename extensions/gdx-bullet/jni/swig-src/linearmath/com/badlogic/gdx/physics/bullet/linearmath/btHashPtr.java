@@ -57,13 +57,12 @@ public class btHashPtr extends BulletBase {
 		super.delete();
 	}
 
-  public btHashPtr(SWIGTYPE_p_void ptr) {
-    this(LinearMathJNI.new_btHashPtr(SWIGTYPE_p_void.getCPtr(ptr)), true);
+  public btHashPtr(long ptr) {
+    this(LinearMathJNI.new_btHashPtr(ptr), true);
   }
 
-  public SWIGTYPE_p_void getPointer() {
-    long cPtr = LinearMathJNI.btHashPtr_getPointer(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getPointer() {
+    return LinearMathJNI.btHashPtr_getPointer(swigCPtr, this);
   }
 
   public boolean equals(btHashPtr other) {

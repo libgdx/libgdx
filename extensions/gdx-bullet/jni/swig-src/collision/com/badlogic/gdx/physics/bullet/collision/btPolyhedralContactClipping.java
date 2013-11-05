@@ -62,16 +62,16 @@ public class btPolyhedralContactClipping extends BulletBase {
     CollisionJNI.btPolyhedralContactClipping_clipHullAgainstHull(separatingNormal, btConvexPolyhedron.getCPtr(hullA), hullA, btConvexPolyhedron.getCPtr(hullB), hullB, transA, transB, minDist, maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));
   }
 
-  public static void clipFaceAgainstHull(Vector3 separatingNormal, btConvexPolyhedron hullA, Matrix4 transA, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t worldVertsB1, float minDist, float maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result resultOut) {
-    CollisionJNI.btPolyhedralContactClipping_clipFaceAgainstHull(separatingNormal, btConvexPolyhedron.getCPtr(hullA), hullA, transA, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(worldVertsB1), minDist, maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));
+  public static void clipFaceAgainstHull(Vector3 separatingNormal, btConvexPolyhedron hullA, Matrix4 transA, btVector3Array worldVertsB1, float minDist, float maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result resultOut) {
+    CollisionJNI.btPolyhedralContactClipping_clipFaceAgainstHull(separatingNormal, btConvexPolyhedron.getCPtr(hullA), hullA, transA, btVector3Array.getCPtr(worldVertsB1), worldVertsB1, minDist, maxDist, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));
   }
 
   public static boolean findSeparatingAxis(btConvexPolyhedron hullA, btConvexPolyhedron hullB, Matrix4 transA, Matrix4 transB, Vector3 sep, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result resultOut) {
     return CollisionJNI.btPolyhedralContactClipping_findSeparatingAxis(btConvexPolyhedron.getCPtr(hullA), hullA, btConvexPolyhedron.getCPtr(hullB), hullB, transA, transB, sep, SWIGTYPE_p_btDiscreteCollisionDetectorInterface__Result.getCPtr(resultOut));
   }
 
-  public static void clipFace(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t pVtxIn, SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t ppVtxOut, Vector3 planeNormalWS, float planeEqWS) {
-    CollisionJNI.btPolyhedralContactClipping_clipFace(SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(pVtxIn), SWIGTYPE_p_btAlignedObjectArrayT_btVector3_t.getCPtr(ppVtxOut), planeNormalWS, planeEqWS);
+  public static void clipFace(btVector3Array pVtxIn, btVector3Array ppVtxOut, Vector3 planeNormalWS, float planeEqWS) {
+    CollisionJNI.btPolyhedralContactClipping_clipFace(btVector3Array.getCPtr(pVtxIn), pVtxIn, btVector3Array.getCPtr(ppVtxOut), ppVtxOut, planeNormalWS, planeEqWS);
   }
 
   public btPolyhedralContactClipping() {

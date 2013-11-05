@@ -1,5 +1,6 @@
 #define gdxToString(X)	"X"
 
+// Used by the classes.i files
 %define SPECIFY_CLASS(TYPE, PACKAGE)
 %typemap("javapackage") TYPE, TYPE *, TYPE & gdxToString(PACKAGE);
 %enddef
@@ -35,7 +36,7 @@
 
 
 /* Map "void *" to "jlong". */
-// %include "gdxVoidPointer.i";
+%include "gdxVoidPointer.i";
 
 /* Use "unsafe" enums (plain integer constants) instead of typesafe enum classes. */
 %include "enumtypeunsafe.swg"

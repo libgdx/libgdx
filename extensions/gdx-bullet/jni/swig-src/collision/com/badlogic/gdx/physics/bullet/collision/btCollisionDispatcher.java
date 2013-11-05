@@ -99,7 +99,7 @@ public class btCollisionDispatcher extends btDispatcher {
   }
 
   public static void defaultNearCallback(btBroadphasePair collisionPair, btCollisionDispatcher dispatcher, btDispatcherInfo dispatchInfo) {
-    CollisionJNI.btCollisionDispatcher_defaultNearCallback(btBroadphasePair.getCPtr(collisionPair), collisionPair, btCollisionDispatcher.getCPtr(dispatcher), dispatcher, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo);
+    CollisionJNI.btCollisionDispatcher_defaultNearCallback(collisionPair, btCollisionDispatcher.getCPtr(dispatcher), dispatcher, btDispatcherInfo.getCPtr(dispatchInfo), dispatchInfo);
   }
 
   public btCollisionConfiguration getCollisionConfiguration() {

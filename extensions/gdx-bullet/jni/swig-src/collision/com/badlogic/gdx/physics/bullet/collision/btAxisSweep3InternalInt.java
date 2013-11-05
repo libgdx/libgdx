@@ -78,8 +78,8 @@ public class btAxisSweep3InternalInt extends btBroadphaseInterface {
     return CollisionJNI.btAxisSweep3InternalInt_getNumHandles(swigCPtr, this);
   }
 
-  public long addHandle(Vector3 aabbMin, Vector3 aabbMax, SWIGTYPE_p_void pOwner, short collisionFilterGroup, short collisionFilterMask, btDispatcher dispatcher, SWIGTYPE_p_void multiSapProxy) {
-    return CollisionJNI.btAxisSweep3InternalInt_addHandle(swigCPtr, this, aabbMin, aabbMax, SWIGTYPE_p_void.getCPtr(pOwner), collisionFilterGroup, collisionFilterMask, btDispatcher.getCPtr(dispatcher), dispatcher, SWIGTYPE_p_void.getCPtr(multiSapProxy));
+  public long addHandle(Vector3 aabbMin, Vector3 aabbMax, long pOwner, short collisionFilterGroup, short collisionFilterMask, btDispatcher dispatcher, long multiSapProxy) {
+    return CollisionJNI.btAxisSweep3InternalInt_addHandle(swigCPtr, this, aabbMin, aabbMax, pOwner, collisionFilterGroup, collisionFilterMask, btDispatcher.getCPtr(dispatcher), dispatcher, multiSapProxy);
   }
 
   public void removeHandle(long handle, btDispatcher dispatcher) {

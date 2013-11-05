@@ -74,7 +74,7 @@ public class btOverlapCallback extends BulletBase {
   }
 
   public boolean processOverlap(btBroadphasePair pair) {
-    return CollisionJNI.btOverlapCallback_processOverlap(swigCPtr, this, btBroadphasePair.getCPtr(pair), pair);
+    return CollisionJNI.btOverlapCallback_processOverlap(swigCPtr, this, pair);
   }
 
   public btOverlapCallback() {

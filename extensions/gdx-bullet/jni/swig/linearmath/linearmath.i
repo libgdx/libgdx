@@ -140,3 +140,6 @@ void CProfileIterator::Enter_Largest_Child()
 {
 }
 #endif
+
+%template(btVector3Array) btAlignedObjectArray<btVector3>;
+%template(btScalarArray) btAlignedObjectArray<btScalar>;

@@ -27,6 +27,7 @@ import java.util.Set;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** <p>
@@ -458,7 +459,11 @@ public class RemoteInput implements Runnable, Input {
 	public void setCursorPosition (int x, int y) {
 	}
 
-	@Override
+  @Override
+  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  @Override
 	public void setCatchMenuKey (boolean catchMenu) {
 		// TODO Auto-generated method stub
 

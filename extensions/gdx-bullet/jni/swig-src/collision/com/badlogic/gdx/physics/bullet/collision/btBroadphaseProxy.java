@@ -58,13 +58,37 @@ public class btBroadphaseProxy extends BulletBase {
 		super.delete();
 	}
 
-  public void setClientObject(SWIGTYPE_p_void value) {
-    CollisionJNI.btBroadphaseProxy_clientObject_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+	/** Temporary instance, use by native methods that return a btBroadphaseProxy instance */
+	protected final static btBroadphaseProxy temp = new btBroadphaseProxy(0, false);
+	public static btBroadphaseProxy internalTemp(long cPtr, boolean own) {
+		temp.reset(cPtr, own);
+		return temp;
+	}
+	/** Pool of btBroadphaseProxy instances, used by director interface to provide the arguments. */
+	protected static final com.badlogic.gdx.utils.Pool<btBroadphaseProxy> pool = new com.badlogic.gdx.utils.Pool<btBroadphaseProxy>() {
+		@Override
+		protected btBroadphaseProxy newObject() {
+			return new btBroadphaseProxy(0, false);
+		}
+	};
+	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
+	public static btBroadphaseProxy obtain(long cPtr, boolean own) {
+		final btBroadphaseProxy result = pool.obtain();
+		result.reset(cPtr, own);
+		return result;
+	}
+	/** delete the native object if required and allow the instance to be reused by the obtain method */
+	public static void free(final btBroadphaseProxy inst) {
+		inst.dispose();
+		pool.free(inst);
+	}
+
+  public void setClientObject(long value) {
+    CollisionJNI.btBroadphaseProxy_clientObject_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getClientObject() {
-    long cPtr = CollisionJNI.btBroadphaseProxy_clientObject_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getClientObject() {
+    return CollisionJNI.btBroadphaseProxy_clientObject_get(swigCPtr, this);
   }
 
   public void setCollisionFilterGroup(short value) {
@@ -83,13 +107,12 @@ public class btBroadphaseProxy extends BulletBase {
     return CollisionJNI.btBroadphaseProxy_collisionFilterMask_get(swigCPtr, this);
   }
 
-  public void setMultiSapParentProxy(SWIGTYPE_p_void value) {
-    CollisionJNI.btBroadphaseProxy_multiSapParentProxy_set(swigCPtr, this, SWIGTYPE_p_void.getCPtr(value));
+  public void setMultiSapParentProxy(long value) {
+    CollisionJNI.btBroadphaseProxy_multiSapParentProxy_set(swigCPtr, this, value);
   }
 
-  public SWIGTYPE_p_void getMultiSapParentProxy() {
-    long cPtr = CollisionJNI.btBroadphaseProxy_multiSapParentProxy_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new SWIGTYPE_p_void(cPtr, false);
+  public long getMultiSapParentProxy() {
+    return CollisionJNI.btBroadphaseProxy_multiSapParentProxy_get(swigCPtr, this);
   }
 
   public void setUniqueId(int value) {
@@ -126,12 +149,12 @@ public class btBroadphaseProxy extends BulletBase {
     this(CollisionJNI.new_btBroadphaseProxy__SWIG_0(), true);
   }
 
-  public btBroadphaseProxy(Vector3 aabbMin, Vector3 aabbMax, SWIGTYPE_p_void userPtr, short collisionFilterGroup, short collisionFilterMask, SWIGTYPE_p_void multiSapParentProxy) {
-    this(CollisionJNI.new_btBroadphaseProxy__SWIG_1(aabbMin, aabbMax, SWIGTYPE_p_void.getCPtr(userPtr), collisionFilterGroup, collisionFilterMask, SWIGTYPE_p_void.getCPtr(multiSapParentProxy)), true);
+  public btBroadphaseProxy(Vector3 aabbMin, Vector3 aabbMax, long userPtr, short collisionFilterGroup, short collisionFilterMask, long multiSapParentProxy) {
+    this(CollisionJNI.new_btBroadphaseProxy__SWIG_1(aabbMin, aabbMax, userPtr, collisionFilterGroup, collisionFilterMask, multiSapParentProxy), true);
   }
 
-  public btBroadphaseProxy(Vector3 aabbMin, Vector3 aabbMax, SWIGTYPE_p_void userPtr, short collisionFilterGroup, short collisionFilterMask) {
-    this(CollisionJNI.new_btBroadphaseProxy__SWIG_2(aabbMin, aabbMax, SWIGTYPE_p_void.getCPtr(userPtr), collisionFilterGroup, collisionFilterMask), true);
+  public btBroadphaseProxy(Vector3 aabbMin, Vector3 aabbMax, long userPtr, short collisionFilterGroup, short collisionFilterMask) {
+    this(CollisionJNI.new_btBroadphaseProxy__SWIG_2(aabbMin, aabbMax, userPtr, collisionFilterGroup, collisionFilterMask), true);
   }
 
   public static boolean isPolyhedral(int proxyType) {

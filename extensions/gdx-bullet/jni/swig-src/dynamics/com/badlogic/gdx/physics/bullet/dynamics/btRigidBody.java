@@ -291,9 +291,8 @@ public class btRigidBody extends btCollisionObject {
   }
 
   public btBroadphaseProxy getBroadphaseProxy() {
-    long cPtr = DynamicsJNI.btRigidBody_getBroadphaseProxy__SWIG_0(swigCPtr, this);
-    return (cPtr == 0) ? null : new btBroadphaseProxy(cPtr, false);
-  }
+	return btBroadphaseProxy.internalTemp(DynamicsJNI.btRigidBody_getBroadphaseProxy__SWIG_0(swigCPtr, this), false);
+}
 
   public void setNewBroadphaseProxy(btBroadphaseProxy broadphaseProxy) {
     DynamicsJNI.btRigidBody_setNewBroadphaseProxy(swigCPtr, this, btBroadphaseProxy.getCPtr(broadphaseProxy), broadphaseProxy);

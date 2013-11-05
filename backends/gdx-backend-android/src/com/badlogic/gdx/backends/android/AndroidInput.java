@@ -45,6 +45,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -771,7 +772,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public void setCursorPosition (int x, int y) {
 	}
 
-	@Override
+  @Override
+  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  @Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}
