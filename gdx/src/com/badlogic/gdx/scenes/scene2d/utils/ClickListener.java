@@ -57,6 +57,7 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
+		over = false;
 		return true;
 	}
 
