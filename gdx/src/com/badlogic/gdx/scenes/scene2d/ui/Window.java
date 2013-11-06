@@ -280,8 +280,16 @@ public class Window extends Table {
 		this.titleAlignment = titleAlignment;
 	}
 
+	public boolean isMovable() {
+		return isMovable;
+	}
+
 	public void setMovable (boolean isMovable) {
 		this.isMovable = isMovable;
+	}
+
+	public boolean isModal() {
+		return isModal;
 	}
 
 	public void setModal (boolean isModal) {
@@ -290,6 +298,10 @@ public class Window extends Table {
 
 	public void setKeepWithinStage (boolean keepWithinStage) {
 		this.keepWithinStage = keepWithinStage;
+	}
+
+	public boolean isResizable() {
+		return isResizable;
 	}
 
 	public void setResizable (boolean isResizable) {
