@@ -391,6 +391,14 @@ public class ModelInstance implements RenderableProvider {
 		return extendBoundingBox(out);
 	}
 	
+	/** Calculate the bounding box of this model instance considering the transform.
+	 * This is a potential slow operation, it is advised to cache the result.
+	 * @param out the {@link BoundingBox} that will be set with the bounds.
+	 * @return the out parameter for chaining */
+	public BoundingBox calculateWorldBoundingBox(final BoundingBox out) {
+		return calculateBoundingBox(out).mul(transform);
+	}
+	
 	/** Extends the bounding box with the bounds of this model instance.
 	 * This is a potential slow operation, it is advised to cache the result.
 	 * @param out the {@link BoundingBox} that will be extended with the bounds.
