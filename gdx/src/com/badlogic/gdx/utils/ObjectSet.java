@@ -122,10 +122,24 @@ public class ObjectSet<T> implements Iterable<T> {
 		return true;
 	}
 
-	public void addAll (Array<T> array) {
-		ensureCapacity(array.size);
-		for (int i = 0, n = array.size; i < n; i++)
-			add(array.get(i));
+	public void addAll (Array<? extends T> array) {
+		addAll(array, 0, array.size);
+	}
+
+	public void addAll (Array<? extends T> array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
+		addAll((T[])array.items, offset, length);
+	}
+
+	public void addAll (T[] array) {
+		addAll(array, 0, array.length);
+	}
+
+	public void addAll (T[] array, int offset, int length) {
+		ensureCapacity(length);
+		for (int i = offset, n = i + length; i < n; i++)
+			add(array[i]);
 	}
 
 	public void addAll (ObjectSet<T> set) {
