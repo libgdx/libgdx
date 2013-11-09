@@ -63,7 +63,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
-	AndroidApplication app;
+	AndroidApplicationBackend app;
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -94,14 +94,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
-	public AndroidGraphics (AndroidApplication activity, AndroidApplicationConfiguration config,
+	public AndroidGraphics (AndroidApplicationBackend app, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
-		view = createGLSurfaceView(activity, config.useGL20, resolutionStrategy);
+		view = createGLSurfaceView(app.activity, config.useGL20, resolutionStrategy);
 		setPreserveContext(view);
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
-		this.app = activity;
+		this.app = app;
 	}
 
 	private void setPreserveContext (View view) {
@@ -213,7 +213,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		app.activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -357,7 +357,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
 
-		Display display = app.getWindowManager().getDefaultDisplay();
+		Display display = app.activity.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
 		this.height = display.getHeight();
 		mean = new WindowedMean(5);
@@ -470,8 +470,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			((AndroidApplication)app).audio.resume();
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			((AndroidApplicationBackend)app).audio.resume();
+			Array<LifecycleListener> listeners = ((AndroidApplicationBackend)app).lifecycleListeners;
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.resume();
@@ -500,27 +500,27 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lpause) {
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			Array<LifecycleListener> listeners = ((AndroidApplicationBackend)app).lifecycleListeners;
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.pause();
 				}
 			}
 			app.listener.pause();
-			((AndroidApplication)app).audio.pause();
+			((AndroidApplicationBackend)app).audio.pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
 		if (ldestroy) {
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			Array<LifecycleListener> listeners = ((AndroidApplicationBackend)app).lifecycleListeners;
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.dispose();
 				}
 			}
 			app.listener.dispose();
-			((AndroidApplication)app).audio.dispose();
-			((AndroidApplication)app).audio = null;
+			((AndroidApplicationBackend)app).audio.dispose();
+			((AndroidApplicationBackend)app).audio = null;
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
@@ -636,7 +636,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		app.activity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
 	}
 

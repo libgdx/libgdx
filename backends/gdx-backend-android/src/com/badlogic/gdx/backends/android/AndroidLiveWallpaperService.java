@@ -174,7 +174,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 	/** 
 	 * This method has to be called in the {@link AndroidLiveWallpaperService#onCreateApplication} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
+	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplicationBackend will try to create an OpenGL ES 2.0
 	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
 	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
 	 * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
