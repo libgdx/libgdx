@@ -9,7 +9,7 @@ allprojects {
     
     version = "1.0"
     ext.appName = "%APP_NAME%"
-    ext.gdxVersion = "0.9.9-SNAPSHOT"
+    ext.gdxVersion = "%GDX_VERSION%"
     
     repositories {
         mavenCentral()
