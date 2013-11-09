@@ -63,7 +63,7 @@ public class AndroidApplicationBackend implements Application {
 		GdxNativesLoader.load();
 	}
 
-	protected Activity activity;
+	protected final Activity activity;
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -78,7 +78,7 @@ public class AndroidApplicationBackend implements Application {
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 
-	public void setActvitiy( Activity activity ) {
+	public AndroidApplicationBackend(Activity activity) {
 		this.activity = activity;
 	}
 

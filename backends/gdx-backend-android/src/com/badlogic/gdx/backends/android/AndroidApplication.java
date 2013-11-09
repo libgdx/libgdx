@@ -44,8 +44,7 @@ public class AndroidApplication extends Activity implements Application {
 
 	protected void initBackend() {
 		if ( backend == null ) {
-			backend = new AndroidApplicationBackend();
-			backend.setActvitiy(this);
+			backend = new AndroidApplicationBackend(this);
 		}
 	}
 
