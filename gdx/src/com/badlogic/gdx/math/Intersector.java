@@ -16,19 +16,20 @@
 
 package com.badlogic.gdx.math;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 
-import java.util.Arrays;
-import java.util.List;
-
 /** Class offering various static methods for intersection testing between different geometric objects.
  * 
  * @author badlogicgames@gmail.com
  * @author jan.stria
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author vanniktech */
 public final class Intersector {
 	private final static Vector3 v0 = new Vector3();
 	private final static Vector3 v1 = new Vector3();
@@ -66,6 +67,16 @@ public final class Intersector {
 		if ((c.x - a.x) * py1 - (c.y - a.y) * px1 > 0 == side12) return false;
 		if ((c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0 != side12) return false;
 		return true;
+	}
+
+	/** Returns true if the given point is inside the triangle. */
+	public static boolean isPointInTriangle (Vector2 p, Triangle triangle) {
+		return isPointInTriangle(p, triangle.getA(), triangle.getB(), triangle.getC());
+	}
+
+	/** Returns true if the given point is inside the triangle. */
+	public static boolean isPointInTriangle (float x, float y, Triangle triangle) {
+		return isPointInTriangle(new Vector2(x, y), triangle);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
