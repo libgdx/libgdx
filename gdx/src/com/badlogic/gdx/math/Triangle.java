@@ -177,21 +177,19 @@ public class Triangle implements Serializable {
 	}
 
 	/** @return the Vector2 of Point A (x1 and y1) */
-	public Vector2 getA () {
-		return new Vector2(x1, y1);
-
+	public Vector2 getA (Vector2 v) {
+		return v.set(x1, y1);
 	}
 
 	/** @return the Vector2 of Point B (x2 and y2) */
-	public Vector2 getB () {
-		return new Vector2(x2, y2);
+	public Vector2 getB (Vector2 v) {
+		return v.set(x2, y2);
 
 	}
 
 	/** @return the Vector2 of Point C (x3 and y3) */
-	public Vector2 getC () {
-		return new Vector2(x3, y3);
-
+	public Vector2 getC (Vector2 v) {
+		return v.set(x3, y3);
 	}
 
 	/** Checks if this triangle contains a point
@@ -199,14 +197,14 @@ public class Triangle implements Serializable {
 	 * @param y y-coordinate
 	 * @return boolean whether it does contain or not */
 	public boolean contains (float x, float y) {
-		return this.contains(new Vector2(x, y));
+		return Intersector.isPointInTriangle(x, y, this);
 	}
 
 	/** Checks if this triangle contains a point
 	 * @param point
 	 * @return boolean whether it does contain or not */
 	public boolean contains (Vector2 point) {
-		return Intersector.isPointInTriangle(point, this.getA(), this.getB(), this.getC());
+		return Intersector.isPointInTriangle(point.x, point.y, x1, y1, x2, y2, x3, y3);
 	}
 
 	@Override

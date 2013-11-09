@@ -61,22 +61,17 @@ public final class Intersector {
 
 	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (Vector2 p, Vector2 a, Vector2 b, Vector2 c) {
-		float px1 = p.x - a.x;
-		float py1 = p.y - a.y;
-		boolean side12 = (b.x - a.x) * py1 - (b.y - a.y) * px1 > 0;
-		if ((c.x - a.x) * py1 - (c.y - a.y) * px1 > 0 == side12) return false;
-		if ((c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x) > 0 != side12) return false;
-		return true;
+		return isPointInTriangle(p.x, p.y, a.x, a.y, b.x, b.y, c.x, c.y);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
-	public static boolean isPointInTriangle (Vector2 p, Triangle triangle) {
-		return isPointInTriangle(p, triangle.getA(), triangle.getB(), triangle.getC());
+	public static boolean isPointInTriangle (float x, float y, Triangle t) {
+		return isPointInTriangle(x, y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
-	public static boolean isPointInTriangle (float x, float y, Triangle triangle) {
-		return isPointInTriangle(new Vector2(x, y), triangle);
+	public static boolean isPointInTriangle (Vector2 p, Triangle t) {
+		return isPointInTriangle(p.x, p.y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
