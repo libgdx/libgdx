@@ -135,21 +135,21 @@ public class AndroidApplicationBackend implements Application {
 		hideStatusBar(config);
 	}
 
-	protected FrameLayout.LayoutParams createLayoutParams () {
+	public FrameLayout.LayoutParams createLayoutParams () {
 		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 			android.view.ViewGroup.LayoutParams.FILL_PARENT);
 		layoutParams.gravity = Gravity.CENTER;
 		return layoutParams;
 	}
 
-	protected void createWakeLock (AndroidApplicationConfiguration config) {
+	public void createWakeLock (AndroidApplicationConfiguration config) {
 		if (config.useWakelock) {
 			PowerManager powerManager = (PowerManager)activity.getSystemService(Context.POWER_SERVICE);
 			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
 		}
 	}
 
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
+	public void hideStatusBar (AndroidApplicationConfiguration config) {
 		if (!config.hideStatusBar || getVersion() < 11)
 			return;
 
@@ -216,7 +216,7 @@ public class AndroidApplicationBackend implements Application {
 		return graphics.getView();
 	}
 
-	protected void onPause () {
+	public void onPause () {
 		if (wakeLock != null) wakeLock.release();
 		boolean isContinuous = graphics.isContinuousRendering();
 		graphics.setContinuousRendering(true);
@@ -246,7 +246,7 @@ public class AndroidApplicationBackend implements Application {
 		}
 	}
 
-	protected void onResume () {
+	public void onResume () {
 		if (wakeLock != null) wakeLock.acquire();
 		Gdx.app = this;
 		Gdx.input = this.getInput();
