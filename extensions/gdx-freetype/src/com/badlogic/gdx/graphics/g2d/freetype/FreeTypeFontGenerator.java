@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphSlot;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -405,14 +406,17 @@ public class FreeTypeFontGenerator implements Disposable {
 			for (int i=0; i<pages.size; i++) {
 				Page p = pages.get(i);
 				
-				Texture tex = new Texture(p.getPixmap(), p.getPixmap().getFormat(), false);
+				Texture tex = new Texture(new PixmapTextureData(p.getPixmap(), p.getPixmap().getFormat(), false, false, true)) {
+					@Override
+					public void dispose () {
+						super.dispose();
+						getTextureData().consumePixmap().dispose();
+					}					
+				};
 				tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 				
 				data.regions[i] = new TextureRegion(tex); 
 			}
-			
-			//no more need for the PixmapPacker.. we can dispose it
-			packer.dispose();
 		}
 		return data;
 	}

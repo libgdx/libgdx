@@ -315,7 +315,7 @@ public class PixmapPacker implements Disposable {
 		TextureAtlas atlas = new TextureAtlas();
 		for (Page page : pages) {
 			if (page.rects.size != 0) {
-				Texture texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+				Texture texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, true)) {
 					@Override
 					public void dispose () {
 						super.dispose();
@@ -343,7 +343,7 @@ public class PixmapPacker implements Disposable {
 		for (Page page : pages) {
 			if (page.texture == null) {
 				if (page.rects.size != 0 && page.addedRects.size > 0) {
-					page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+					page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, true)) {
 						@Override
 						public void dispose () {
 							super.dispose();
@@ -388,18 +388,8 @@ public class PixmapPacker implements Disposable {
 		return padding;
 	}
 
-	public boolean duplicateBoarder () {
+	public boolean duplicateBorder () {
 		return duplicateBorder;
 	}
 
-	public class ManagedPixmapTextureData extends PixmapTextureData {
-		public ManagedPixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps) {
-			super(pixmap, format, useMipMaps, false);
-		}
-
-		@Override
-		public boolean isManaged () {
-			return true;
-		}
-	}
 }
