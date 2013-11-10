@@ -159,8 +159,8 @@ public class AndroidApplication extends Activity implements Application {
 		}
 	}
 	
-	protected void useImmersiveMode (AndroidApplicationConfiguraion config) {
-		if (!conifg.useImmersiveMode || getVersion() < 19) return;
+	protected void useImmersiveMode (AndroidApplicationConfiguration config) {
+		if (!config.useImmersiveMode || getVersion() < 19) return;
 		
 		View view = getWindow().getDecorView();
 		try {
