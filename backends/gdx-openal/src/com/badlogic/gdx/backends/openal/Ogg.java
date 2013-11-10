@@ -52,9 +52,9 @@ public class Ogg {
 		public Sound (OpenALAudio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
-        	InputStream inputStream = file.read();
+			OggInputStream input = null;
 			try {
-				OggInputStream input = new OggInputStream(inputStream);
+				input = new OggInputStream(file.read());
 				ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
 				byte[] buffer = new byte[2048];
 				while (!input.atEnd()) {
@@ -64,7 +64,7 @@ public class Ogg {
 				}
 				setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
 			} finally {
-				StreamUtils.closeQuietly(inputStream);
+				StreamUtils.closeQuietly(input);
 			}
 		}
 	}

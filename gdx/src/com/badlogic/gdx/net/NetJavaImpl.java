@@ -67,14 +67,7 @@ public class NetJavaImpl {
 		@Override
 		public byte[] getResult () {
 			try {
-				int contentLength = connection.getContentLength();
-				ByteArrayOutputStream buffer;
-				if (contentLength > 0)
-					buffer = new OptimizedByteArrayOutputStream(contentLength);
-				else
-					buffer = new OptimizedByteArrayOutputStream();
-				StreamUtils.copyStream(inputStream, buffer);
-				return buffer.toByteArray();
+				return StreamUtils.copyStreamToByteArray(inputStream, connection.getContentLength());
 			} catch (IOException e) {
 				return StreamUtils.EMPTY_BYTES;
 			}
@@ -205,22 +198,6 @@ public class NetJavaImpl {
 		} catch (Exception e) {
 			httpResponseListener.failed(e);
 			return;
-		}
-	}
-
-	/** A ByteArrayOutputStream which avoids copying of the byte array if not necessary. */
-	static class OptimizedByteArrayOutputStream extends ByteArrayOutputStream {
-		OptimizedByteArrayOutputStream () {
-		}
-
-		OptimizedByteArrayOutputStream (int initialSize) {
-			super(initialSize);
-		}
-
-		@Override
-		public synchronized byte[] toByteArray () {
-			if (count == buf.length) return buf;
-			return super.toByteArray();
 		}
 	}
 }
