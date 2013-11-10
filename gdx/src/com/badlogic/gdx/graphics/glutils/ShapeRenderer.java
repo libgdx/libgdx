@@ -20,12 +20,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Triangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -82,7 +81,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author mzechner
  * @author stbachmann
- * @author Nathan Sweet */
+ * @author Nathan Sweet
+ * @author vanniktech */
 public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner, stbachmann */
@@ -345,6 +345,15 @@ public class ShapeRenderer {
 			renderer.vertex(x3, y3, 0);
 		}
 	}
+
+	/**
+	 * Draws a triangle in x/y plane.
+	 * The {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param triangle triangle of type {@link Triangle}
+	 */
+	public void triangle (Triangle triangle) {
+		triangle(triangle.x1, triangle.y1, triangle.x2, triangle.y2, triangle.x3, triangle.y3);
+	}
 	
 	/**
 	 * Draws a triangle in x/y plane with coloured corners.
@@ -387,6 +396,18 @@ public class ShapeRenderer {
 			renderer.color(col3.r, col3.g, col3.b, col3.a);
 			renderer.vertex(x3, y3, 0);
 		}
+	}
+
+	/**
+	 * Draws a triangle in x/y plane with coloured corners.
+	 * The {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param triangle triangle of type {@link Triangle}
+	 * @param col1 color of the point defined by x1 and y1
+	 * @param col2 color of the point defined by x2 and y2
+	 * @param col3 color of the point defined by x3 and y3
+	 */
+	public void triangle (Triangle triangle, Color col1, Color col2, Color col3) {
+		triangle(triangle, col1, col2, col3);
 	}
 
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
@@ -433,6 +454,12 @@ public class ShapeRenderer {
 			renderer.color(color.r, color.g, color.b, color.a);
 			renderer.vertex(x, y, 0);
 		}
+	}
+
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}. */
+	public void rect (Rectangle rect) {
+		rect(rect.x, rect.y, rect.width, rect.height);
 	}
 
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
@@ -483,6 +510,16 @@ public class ShapeRenderer {
 			renderer.color(col1.r, col1.g, col1.b, col1.a);
 			renderer.vertex(x, y, 0);
 		}
+	}
+
+	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
+	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
+	 * @param col1 The color at (x, y)
+	 * @param col2 The color at (x + width, y)
+	 * @param col3 The color at (x + width, y + height)
+	 * @param col4 The color at (x, y + height) */
+	public void rect (Rectangle rect, Color col1, Color col2, Color col3, Color col4) {
+		rect(rect.x, rect.y, rect.width, rect.height, col1, col2, col3, col4);
 	}
 
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The originX and
@@ -707,6 +744,11 @@ public class ShapeRenderer {
 		circle(x, y, radius, Math.max(1, (int)(6 * (float)Math.cbrt(radius))));
 	}
 
+	/** Calls {@link #circle(float, float, float)} by estimating the number of segments needed for a smooth circle. */
+	public void circle (Circle circle) {
+		circle(circle.x, circle.y, circle.radius);
+	}
+
 	public void circle (float x, float y, float radius, int segments) {
 		if (segments <= 0) throw new IllegalArgumentException("segments must be > 0.");
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
@@ -757,6 +799,10 @@ public class ShapeRenderer {
 		cy = 0;
 		renderer.color(color.r, color.g, color.b, color.a);
 		renderer.vertex(x + cx, y + cy, 0);
+	}
+
+	public void circle (Circle circle, int segments) {
+		circle(circle.x, circle.y, circle.radius, segments);
 	}
 
 	/** Calls {@link #ellipse(float, float, float, float, int)} by estimating the number of segments needed for a smooth ellipse. */

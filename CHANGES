@@ -1,4 +1,7 @@
 [0.9.9]
+- Intersector supports isPointInTriangle(Vector2, Triangle) and isPointInTriangle(float x, float y, Triangle)
+- ShapeRenderer supports now rect(Rectangle), circle(Circle), triangle(Triangle) and so on
+- added Triangle class, which Encapsulates a 2D Triangle
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213
 - added Select class for selecting kth ordered statistic from arrays (see Array.selectRanked() method)
