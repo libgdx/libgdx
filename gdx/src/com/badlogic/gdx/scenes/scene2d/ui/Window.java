@@ -99,7 +99,7 @@ public class Window extends Table {
 						if (y < border) edge |= Align.bottom;
 						if (y > height - border) edge |= Align.top;
 					}
-					if (isMovable && edge == 0 && y >= height - getPadTop()) edge = MOVE;
+					if (isMovable && edge == 0 && y <= height && y >= height - getPadTop() && x >= 0 && x <= width) edge = MOVE;
 					dragging = edge != 0;
 					startX = x;
 					startY = y;
@@ -280,7 +280,7 @@ public class Window extends Table {
 		this.titleAlignment = titleAlignment;
 	}
 
-	public boolean isMovable() {
+	public boolean isMovable () {
 		return isMovable;
 	}
 
@@ -288,7 +288,7 @@ public class Window extends Table {
 		this.isMovable = isMovable;
 	}
 
-	public boolean isModal() {
+	public boolean isModal () {
 		return isModal;
 	}
 
@@ -300,7 +300,7 @@ public class Window extends Table {
 		this.keepWithinStage = keepWithinStage;
 	}
 
-	public boolean isResizable() {
+	public boolean isResizable () {
 		return isResizable;
 	}
 
