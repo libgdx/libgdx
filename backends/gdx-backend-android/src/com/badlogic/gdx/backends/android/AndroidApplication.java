@@ -165,8 +165,10 @@ public class AndroidApplication extends Activity implements Application {
 		View view = getWindow().getDecorView();
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(view, 0x00000800);
-			m.invoke(view, 0x00000002);
+			int code = View.SYSTEM_UI_FLAG_FULLSCREEN;
+                        code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                        code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+                        m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
 		}
