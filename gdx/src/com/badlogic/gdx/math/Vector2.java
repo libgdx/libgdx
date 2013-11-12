@@ -86,7 +86,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
-	/** Substracts the given vector from this vector.
+	/** Subtracts the given vector from this vector.
 	 * @param v The vector
 	 * @return This vector for chaining */
 	public Vector2 sub (Vector2 v) {
@@ -95,7 +95,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
-	/** Normalizes this vector
+	/** Normalizes this vector. Does nothing if it is zero.
 	 * @return This vector for chaining */
 	public Vector2 nor () {
 		float len = len();
@@ -172,15 +172,15 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	public Vector2 div (float value) {
-		return this.mul(1 / value);
+		return this.scl(1 / value);
 	}
 
 	public Vector2 div (float vx, float vy) {
-		return this.mul(1 / vx, 1 / vy);
+		return this.scl(1 / vx, 1 / vy);
 	}
 
 	public Vector2 div (Vector2 other) {
-		return this.mul(1 / other.x, 1 / other.y);
+		return this.scl(1 / other.x, 1 / other.y);
 	}
 
 	/** @param v The other vector
@@ -223,7 +223,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public Vector2 limit (float limit) {
 		if (len2() > limit * limit) {
 			nor();
-			mul(limit);
+			scl(limit);
 		}
 		return this;
 	}
@@ -237,9 +237,9 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (l2 == 0f)
 			return this;
 		if (l2 > max * max)
-			return nor().mul(max);
+			return nor().scl(max);
 		if (l2 < min * min)
-			return nor().mul(min);
+			return nor().scl(min);
 		return this;
 	}
 
@@ -257,7 +257,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
-	/** Multiplies this vector by the given matrix
+	/** Left-multiplies this vector by the given matrix
 	 * @param mat the matrix
 	 * @return this vector */
 	public Vector2 mul (Matrix3 mat) {
@@ -283,22 +283,24 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this.x * y - this.y * x;
 	}
 
-	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are counter-clockwise and between 0 and
-	 *         360. */
+	/** @return the angle in degrees of this vector (point) relative to the x-axis.
+	 * Angles are towards the positive y-axis (typically counter-clockwise) and between 0 and 360. */
 	public float angle () {
 		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
 		return angle;
 	}
 
-	/** Sets the angle of the vector.
-	 * @param angle The angle to set. */
-	public void setAngle (float angle) {
+	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
+	 * @param degrees The angle to set. */
+	public Vector2 setAngle (float degrees) {
 		this.set(len(), 0f);
-		this.rotate(angle);
+		this.rotate(degrees);
+
+		return this;
 	}
 
-	/** Rotates the Vector2 by the given angle, counter-clockwise.
+	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param degrees the angle in degrees */
 	public Vector2 rotate (float degrees) {
 		float rad = degrees * MathUtils.degreesToRadians;

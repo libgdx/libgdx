@@ -22,14 +22,17 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+@Deprecated
 public class ObjTest extends GdxTest implements InputProcessor {
 	PerspectiveCamera cam;
-	StillModel mesh;
+	Model model;
 	Texture texture;
 	float angleY = 0;
 	float angleX = 0;
@@ -40,10 +43,11 @@ public class ObjTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public void create () {
-		mesh =  ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/cube.obj"));
+		ObjLoader objLoader = new ObjLoader();
+		model =  objLoader.loadModel(Gdx.files.internal("data/cube.obj"));
 		
 		BoundingBox bbox = new BoundingBox();
-		mesh.getBoundingBox(bbox);
+		model.calculateBoundingBox(bbox);
 		
 		Gdx.app.log("ObjTest", "obj bounds: " + bbox);
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
@@ -81,7 +85,13 @@ public class ObjTest extends GdxTest implements InputProcessor {
 		gl.glRotatef(angleY, 0, 1, 0);
 		gl.glRotatef(angleX, 1, 0, 0);
 		texture.bind();
-		mesh.render();
+		model.meshes.get(0).render(GL10.GL_TRIANGLES);
+	}
+	
+	@Override
+	public void dispose () {
+		model.dispose();
+		texture.dispose();
 	}
 
 	@Override

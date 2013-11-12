@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Scaling;
 
+/** Keeps aspect ratio using black bars while using a 1:1 mapping from stage coordinates to screen coordinates. */
 public class LetterBoxTest2 extends GdxTest {
 	private Stage stage;
 	private Table root;
@@ -52,6 +53,7 @@ public class LetterBoxTest2 extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, false);
+		// 300x200 is the aspect ratio.
 		Vector2 size = Scaling.fit.apply(300, 200, width, height);
 		root.setBounds((width - size.x) / 2, (height - size.y) / 2, size.x, size.y);
 		root.invalidate();

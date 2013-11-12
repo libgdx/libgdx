@@ -36,7 +36,7 @@ public class Collision {
 	private static void collisionCheck(Bullet bullet, Ship ship) {
 		if (bullet.id!=ship.id && ship.alive) {
 			
-			for(int i = 0; i<ship.collisionPoints.size();++i) {
+			for(int i = 0; i<ship.collisionPoints.size;++i) {
 				if(Intersector.isPointInPolygon(bullet.collisionPoints, ship.collisionPoints.get(i))) {
 					ship.damage(bullet.damage);
 					GameInstance.getInstance().bulletHit(ship, bullet);
@@ -45,7 +45,7 @@ public class Collision {
 				}
 			}
 			
-			for(int i = 0; i<bullet.collisionPoints.size();++i) {
+			for(int i = 0; i<bullet.collisionPoints.size;++i) {
 				if(Intersector.isPointInPolygon(ship.collisionPoints, bullet.collisionPoints.get(i))) {
 					ship.damage(bullet.damage);
 					GameInstance.getInstance().bulletHit(ship, bullet);

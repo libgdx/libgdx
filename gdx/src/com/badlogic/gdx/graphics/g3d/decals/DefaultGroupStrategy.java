@@ -81,25 +81,25 @@ public class DefaultGroupStrategy implements GroupStrategy {
 	@Override
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl10.glEnable(GL10.GL_BLEND);
+			Gdx.gl.glEnable(GL10.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void afterGroup (int group) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl10.glDisable(GL10.GL_BLEND);
+			Gdx.gl.glDisable(GL10.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void beforeGroups () {
-		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 	}
 
 	@Override
 	public void afterGroups () {
-		Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 	}
 
 	@Override

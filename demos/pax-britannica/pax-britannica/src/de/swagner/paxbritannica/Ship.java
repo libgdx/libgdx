@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 import de.swagner.paxbritannica.factory.FactoryProduction;
 
@@ -29,7 +30,7 @@ public class Ship extends Sprite {
 	public Vector2 facing = new Vector2();
 	
 	public Vector2 collisionCenter = new Vector2();
-	public ArrayList<Vector2> collisionPoints = new ArrayList<Vector2>();
+	public Array<Vector2> collisionPoints = new Array<Vector2>();
 
 	public boolean alive = true;
 
@@ -66,9 +67,9 @@ public class Ship extends Sprite {
 		collisionPoints.get(2).set( this.getVertices()[10], this.getVertices()[11]);
 		collisionPoints.get(3).set( this.getVertices()[15], this.getVertices()[16]);
 		
-		collisionCenter.set(collisionPoints.get(2)).mul(0.5f).add(collisionPoints.get(0));
+		collisionCenter.set(collisionPoints.get(2)).scl(0.5f).add(collisionPoints.get(0));
 
-		velocity.mul( (float) Math.pow(0.97f, delta * 30.f));
+		velocity.scl( (float) Math.pow(0.97f, delta * 30.f));
 		position.add(velocity.x * delta, velocity.y * delta);
 		
 		this.setRotation(facing.angle());
@@ -114,7 +115,7 @@ public class Ship extends Sprite {
 	public void goTowardsOrAway(Vector2 targetPos, boolean forceThrust, boolean isAway) {
 		target_direction.set(targetPos).sub(collisionCenter);
 		if (isAway) {
-			target_direction.mul(-1);
+			target_direction.scl(-1);
 		}
 
 		if (facing.crs(target_direction) > 0) {

@@ -22,7 +22,6 @@ import java.util.Map;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.google.gwt.corp.localstorage.LocalStorage;
 
 public class GwtPreferences implements Preferences {
 	final String prefix;
@@ -32,10 +31,10 @@ public class GwtPreferences implements Preferences {
 		this.prefix = prefix + ":";
 		int prefixLength = this.prefix.length();
 		try {
-			for (int i = 0; i < LocalStorage.length(); i++) {
-				String key = LocalStorage.key(i);
+			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+				String key = GwtFiles.LocalStorage.key(i);
 				if (key.startsWith(prefix)) {
-					String value = LocalStorage.getItem(key);
+					String value = GwtFiles.LocalStorage.getItem(key);
 					values.put(key.substring(prefixLength, key.length() - 1), toObject(key, value));
 				}
 			}
@@ -64,16 +63,16 @@ public class GwtPreferences implements Preferences {
 	public void flush () {
 		try {
 			// remove all old values
-			for (int i = 0; i < LocalStorage.length(); i++) {
-				String key = LocalStorage.key(i);
-				if (key.startsWith(prefix)) LocalStorage.removeItem(key);
+			for (int i = 0; i < GwtFiles.LocalStorage.getLength(); i++) {
+				String key = GwtFiles.LocalStorage.key(i);
+				if (key.startsWith(prefix)) GwtFiles.LocalStorage.removeItem(key);
 			}
 
 			// push new values to LocalStorage
 			for (String key : values.keys()) {
 				String storageKey = toStorageKey(key, values.get(key));
 				String storageValue = "" + values.get(key).toString();
-				LocalStorage.setItem(storageKey, storageValue);
+				GwtFiles.LocalStorage.setItem(storageKey, storageValue);
 			}
 
 		} catch (Exception e) {

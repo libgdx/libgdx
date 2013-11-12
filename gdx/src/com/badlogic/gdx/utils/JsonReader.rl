@@ -24,19 +24,20 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight JSON parser.<br>
  * <br>
- * The default behavior is to parse the JSON into a DOM made up of {@link OrderedMap}, {@link Array}, String, Float, and Boolean objects.
- * Extend this class and override methods to perform event driven parsing. When this is done, the parse methods will return null.
+ * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
+ * methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
 public class JsonReader {
-	public Object parse (String json) {
+	public JsonValue parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
 	}
 
-	public Object parse (Reader reader) {
+	public JsonValue parse (Reader reader) {
 		try {
 			char[] data = new char[1024];
 			int offset = 0;
@@ -61,7 +62,7 @@ public class JsonReader {
 		}
 	}
 
-	public Object parse (InputStream input) {
+	public JsonValue parse (InputStream input) {
 		try {
 			return parse(new InputStreamReader(input, "ISO-8859-1"));
 		} catch (IOException ex) {
@@ -69,7 +70,7 @@ public class JsonReader {
 		}
 	}
 
-	public Object parse (FileHandle file) {
+	public JsonValue parse (FileHandle file) {
 		try {
 			return parse(file.read());
 		} catch (Exception ex) {
@@ -77,7 +78,7 @@ public class JsonReader {
 		}
 	}
 
-	public Object parse (char[] data, int offset, int length) {
+	public JsonValue parse (char[] data, int offset, int length) {
 		int cs, p = offset, pe = length, eof = pe, top = 0;
 		int[] stack = new int[4];
 
@@ -127,12 +128,19 @@ public class JsonReader {
 					string(name, value);
 				}
 			}
-			action number {
+			action double {
 				String value = new String(data, s, p - s);
 				s = p;
 				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("number: " + name + "=" + Float.parseFloat(value));
-				number(name, Float.parseFloat(value));
+				if (debug) System.out.println("double: " + name + "=" + Double.parseDouble(value));
+				number(name, Double.parseDouble(value));
+			}
+			action long {
+				String value = new String(data, s, p - s);
+				s = p;
+				String name = names.size > 0 ? names.pop() : null;
+				if (debug) System.out.println("long: " + name + "=" + Long.parseLong(value));
+				number(name, Long.parseLong(value));
 			}
 			action trueValue {
 				String name = names.size > 0 ? names.pop() : null;
@@ -175,17 +183,18 @@ public class JsonReader {
 				fret;
 			}
 
-			numberChars = '-'? [0-9]+ ('.' [0-9]+)? ([eE] [+\-]? [0-9]+)?;
+			doubleChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
+			longChars = '-'? [0-9]+;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
 			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
 			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | space)*;
-			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | numberChars >buffer %name;
+			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | doubleChars >buffer %name;
 
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
 			string = '"' quotedChars >buffer %string '"';
 			unquotedString = unquotedValueChars >buffer %string;
-			number = numberChars >buffer %number;
+			number = longChars >buffer %long | doubleChars >buffer %double $-1;
 			nullValue = 'null' %null;
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
 			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
@@ -209,44 +218,49 @@ public class JsonReader {
 			int lineNumber = 1;
 			for (int i = 0; i < p; i++)
 				if (data[i] == '\n') lineNumber++;
-			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p), parseRuntimeEx);
+			throw new SerializationException("Error parsing JSON on line " + lineNumber + " near: " + new String(data, p, pe - p),
+				parseRuntimeEx);
 		} else if (elements.size != 0) {
-			Object element = elements.peek();
+			JsonValue element = elements.peek();
 			elements.clear();
-			if (element instanceof OrderedMap)
+			if (element != null && element.isObject())
 				throw new SerializationException("Error parsing JSON, unmatched brace.");
 			else
 				throw new SerializationException("Error parsing JSON, unmatched bracket.");
+		} else if (parseRuntimeEx != null) {
+			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
-		Object root = this.root;
+		JsonValue root = this.root;
 		this.root = null;
 		return root;
 	}
 
 	%% write data;
 
-	private final Array elements = new Array(8);
-	private Object root, current;
+	private final Array<JsonValue> elements = new Array(8);
+	private JsonValue root, current;
 
-	private void set (String name, Object value) {
-		if (current instanceof OrderedMap)
-			((OrderedMap)current).put(name, value);
-		else if (current instanceof Array)
-			((Array)current).add(value);
+	private void addChild (String name, JsonValue child) {
+		child.setName(name);
+		if (current == null) {
+			current = child;
+			root = child;
+		} else if (current.isArray() || current.isObject())
+			current.addChild(child);
 		else
-			root = value;
+			root = current;
 	}
 
 	protected void startObject (String name) {
-		OrderedMap value = new OrderedMap();
-		if (current != null) set(name, value);
+		JsonValue value = new JsonValue(ValueType.object);
+		if (current != null) addChild(name, value);
 		elements.add(value);
 		current = value;
 	}
 
 	protected void startArray (String name) {
-		Array value = new Array();
-		if (current != null) set(name, value);
+		JsonValue value = new JsonValue(ValueType.array);
+		if (current != null) addChild(name, value);
 		elements.add(value);
 		current = value;
 	}
@@ -257,15 +271,19 @@ public class JsonReader {
 	}
 
 	protected void string (String name, String value) {
-		set(name, value);
+		addChild(name, new JsonValue(value));
 	}
 
-	protected void number (String name, float value) {
-		set(name, value);
+	protected void number (String name, double value) {
+		addChild(name, new JsonValue(value));
+	}
+
+	protected void number (String name, long value) {
+		addChild(name, new JsonValue(value));
 	}
 
 	protected void bool (String name, boolean value) {
-		set(name, value);
+		addChild(name, new JsonValue(value));
 	}
 
 	private String unescape (String value) {

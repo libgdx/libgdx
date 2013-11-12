@@ -32,15 +32,19 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class ClickListener extends InputListener {
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
 	private int pressedPointer = -1;
+	private int pressedButton = -1;
 	private int button;
 	private boolean pressed, over, cancelled;
 	private long tapCountInterval = (long)(0.4f * 1000000000l);
 	private int tapCount;
 	private long lastTapTime;
 
+	/** Create a listener where {@link #clicked(InputEvent, float, float)} is only called for left clicks.
+	 * @see #ClickListener(int) */
 	public ClickListener () {
 	}
 
+	/** @see #setButton(int) */
 	public ClickListener (int button) {
 		this.button = button;
 	}
@@ -50,8 +54,10 @@ public class ClickListener extends InputListener {
 		if (pointer == 0 && this.button != -1 && button != this.button) return false;
 		pressed = true;
 		pressedPointer = pointer;
+		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
+		over = false;
 		return true;
 	}
 
@@ -68,9 +74,10 @@ public class ClickListener extends InputListener {
 	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (!cancelled) {
-				over = isOver(event.getListenerActor(), x, y);
-				if (over && pointer == 0 && this.button != -1 && button != this.button) over = false;
-				if (over) {
+				boolean touchUpOver = isOver(event.getListenerActor(), x, y);
+				// Ignore touch up if the wrong mouse button.
+				if (touchUpOver && pointer == 0 && this.button != -1 && button != this.button) touchUpOver = false;
+				if (touchUpOver) {
 					long time = TimeUtils.nanoTime();
 					if (time - lastTapTime > tapCountInterval) tapCount = 0;
 					tapCount++;
@@ -80,6 +87,7 @@ public class ClickListener extends InputListener {
 			}
 			pressed = false;
 			pressedPointer = -1;
+			pressedButton = -1;
 			cancelled = false;
 		}
 	}
@@ -101,15 +109,6 @@ public class ClickListener extends InputListener {
 	}
 
 	public void clicked (InputEvent event, float x, float y) {
-	}
-
-	public void dragStart (InputEvent event, float x, float y, int pointer) {
-	}
-
-	public void drag (InputEvent event, float x, float y, int pointer) {
-	}
-
-	public void dragStop (InputEvent event, float x, float y, int pointer) {
 	}
 
 	/** Returns true if the specified position is over the specified actor or within the tap square. */
@@ -166,6 +165,17 @@ public class ClickListener extends InputListener {
 		return touchDownY;
 	}
 
+	/** The button that initially pressed this button or -1 if the button is not pressed. */
+	public int getPressedButton () {
+		return pressedButton;
+	}
+
+	/** The pointer that initially pressed this button or -1 if the button is not pressed. */
+	public int getPressedPointer () {
+		return pressedPointer;
+	}
+
+	/** @see #setButton(int) */
 	public int getButton () {
 		return button;
 	}

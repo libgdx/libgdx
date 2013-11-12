@@ -89,7 +89,9 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glBufferData (int target, int size, Buffer data, int usage) {
-		if (data instanceof ByteBuffer)
+		if(data == null)
+			throw new GdxRuntimeException("Using null for the data not possible, blame LWJGL");
+		else if (data instanceof ByteBuffer)
 			GL15.glBufferData(target, (ByteBuffer)data, usage);
 		else if (data instanceof IntBuffer)
 			GL15.glBufferData(target, (IntBuffer)data, usage);
@@ -102,7 +104,9 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
-		if (data instanceof ByteBuffer)
+		if(data == null)
+			throw new GdxRuntimeException("Using null for the data not possible, blame LWJGL");
+		else if (data instanceof ByteBuffer)
 			GL15.glBufferSubData(target, offset, (ByteBuffer)data);
 		else if (data instanceof IntBuffer)
 			GL15.glBufferSubData(target, offset, (IntBuffer)data);
@@ -144,7 +148,12 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	public void glCompressedTexImage2D (int target, int level, int internalformat, int width, int height, int border,
 		int imageSize, Buffer data) {
-		throw new GdxRuntimeException("not implemented");
+		if (data instanceof ByteBuffer) {
+	       GL13.glCompressedTexImage2D(target, level, internalformat, width, height, border, (ByteBuffer)data);
+	    } else {
+	        throw new GdxRuntimeException("Can't use " + data.getClass().getName()
+	           + " with this method. Use ByteBuffer instead.");
+	    }
 	}
 
 	public void glCompressedTexSubImage2D (int target, int level, int xoffset, int yoffset, int width, int height, int format,
@@ -288,7 +297,8 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 		// FIXME this is less than ideal of course...
 		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
 		String name = GL20.glGetActiveAttrib(program, index, 256, typeTmp);
-		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		size.put(typeTmp.get(0));
+		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(1));
 		return name;
 	}
 
@@ -296,7 +306,8 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 		// FIXME this is less than ideal of course...
 		IntBuffer typeTmp = BufferUtils.createIntBuffer(2);
 		String name = GL20.glGetActiveUniform(program, index, 256, typeTmp);
-		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(0));
+		size.put(typeTmp.get(0));
+		if (type instanceof IntBuffer) ((IntBuffer)type).put(typeTmp.get(1));
 		return name;
 	}
 
@@ -370,10 +381,6 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	public void glGetShaderPrecisionFormat (int shadertype, int precisiontype, IntBuffer range, IntBuffer precision) {
 		throw new UnsupportedOperationException("unsupported, won't implement");
-	}
-
-	public void glGetShaderSource (int shader, int bufsize, Buffer length, String source) {
-		throw new UnsupportedOperationException("unsupported, won't implement.");
 	}
 
 	public void glGetShaderiv (int shader, int pname, IntBuffer params) {

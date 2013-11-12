@@ -16,10 +16,9 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Array;
 
 /** A rigid body. These are created via World.CreateBody.
  * @author mzechner */
@@ -39,10 +38,10 @@ public class Body {
 	private final World world;
 
 	/** Fixtures of this body **/
-	private ArrayList<Fixture> fixtures = new ArrayList<Fixture>(2);
+	private Array<Fixture> fixtures = new Array<Fixture>(2);
 
 	/** Joints of this body **/
-	protected ArrayList<JointEdge> joints = new ArrayList<JointEdge>(2);
+	protected Array<JointEdge> joints = new Array<JointEdge>(2);
 
 	/** user data **/
 	private Object userData;
@@ -59,7 +58,7 @@ public class Body {
 	protected void reset (long addr) {
 		this.addr = addr;
 		this.userData = null;
-		for (int i = 0; i < fixtures.size(); i++)
+		for (int i = 0; i < fixtures.size; i++)
 			this.world.freeFixtures.free(fixtures.get(i));
 		fixtures.clear();
 		this.joints.clear();
@@ -127,7 +126,7 @@ public class Body {
 	public void destroyFixture (Fixture fixture) {
 		jniDestroyFixture(addr, fixture.addr);
 		this.world.fixtures.remove(fixture.addr);
-		this.fixtures.remove(fixture);
+		this.fixtures.removeValue(fixture, true);
 		this.world.freeFixtures.free(fixture);
 	}
 
@@ -153,27 +152,10 @@ public class Body {
 	public void setTransform (float x, float y, float angle) {
 		jniSetTransform(addr, x, y, angle);
 	}
-	
-	/** Set the position of the body's origin and rotation. This breaks any contacts and wakes the other bodies. Manipulating a
-	 * body's transform may cause non-physical behavior.
-	 * @param x the world position on the x-axis
-	 * @param y the world position on the y-axis
-	 * @param angle the world rotation in radians. 
-	 * @param updateContacts Box2D SetTransform internally calls contactManager.FindNewContacts() method, sometimes multiple 
-	 * bodies are updated and it is undesirable to trigger Box2D to find new contacts each time, updateContacts should be 
-	 * false in those cases, true otherwise, more information at <a href="http://box2d.org/forum/viewtopic.php?f=3&t=8757">Box2d forums</a>. */
-	public void setTransform (float x, float y, float angle, boolean updateContacts) {
-		jniSetTransform(addr, x, y, angle, updateContacts);
-	}
 
 	private native void jniSetTransform (long addr, float positionX, float positionY, float angle); /*
 		b2Body* body = (b2Body*)addr;
 		body->SetTransform(b2Vec2(positionX, positionY), angle);
-	*/
-	
-	private native void jniSetTransform (long addr, float positionX, float positionY, float angle, boolean updateContacts); /*
-		b2Body* body = (b2Body*)addr;
-		body->SetTransform(b2Vec2(positionX, positionY), angle, updateContacts);
 	*/
 
 	private final Transform transform = new Transform();
@@ -311,9 +293,10 @@ public class Body {
 	/** Apply a force at a world point. If the force is not applied at the center of mass, it will generate a torque and affect the
 	 * angular velocity. This wakes up the body.
 	 * @param force the world force vector, usually in Newtons (N).
-	 * @param point the world position of the point of application. */
-	public void applyForce (Vector2 force, Vector2 point) {
-		jniApplyForce(addr, force.x, force.y, point.x, point.y);
+	 * @param point the world position of the point of application.
+	 * @param wake up the body */
+	public void applyForce (Vector2 force, Vector2 point, boolean wake) {
+		jniApplyForce(addr, force.x, force.y, point.x, point.y, wake);
 	}
 
 	/** Apply a force at a world point. If the force is not applied at the center of mass, it will generate a torque and affect the
@@ -321,52 +304,55 @@ public class Body {
 	 * @param forceX the world force vector on x, usually in Newtons (N).
 	 * @param forceY the world force vector on y, usually in Newtons (N).
 	 * @param pointX the world position of the point of application on x.
-	 * @param pointY the world position of the point of application on y. */
-	public void applyForce (float forceX, float forceY, float pointX, float pointY) {
-		jniApplyForce(addr, forceX, forceY, pointX, pointY);
+	 * @param pointY the world position of the point of application on y. 
+	 * @param wake up the body*/
+	public void applyForce (float forceX, float forceY, float pointX, float pointY, boolean wake) {
+		jniApplyForce(addr, forceX, forceY, pointX, pointY, wake);
 	}
 
-	private native void jniApplyForce (long addr, float forceX, float forceY, float pointX, float pointY); /*
+	private native void jniApplyForce (long addr, float forceX, float forceY, float pointX, float pointY, boolean wake); /*
 		b2Body* body = (b2Body*)addr;
-		body->ApplyForce(b2Vec2(forceX, forceY), b2Vec2(pointX, pointY));
+		body->ApplyForce(b2Vec2(forceX, forceY), b2Vec2(pointX, pointY), wake);
 	*/
 
 	/** Apply a force to the center of mass. This wakes up the body.
 	 * @param force the world force vector, usually in Newtons (N). */
-	public void applyForceToCenter (Vector2 force) {
-		jniApplyForceToCenter(addr, force.x, force.y);
+	public void applyForceToCenter (Vector2 force, boolean wake) {
+		jniApplyForceToCenter(addr, force.x, force.y, wake);
 	}
 
 	/** Apply a force to the center of mass. This wakes up the body.
 	 * @param forceX the world force vector, usually in Newtons (N).
 	 * @param forceY the world force vector, usually in Newtons (N). */
-	public void applyForceToCenter (float forceX, float forceY) {
-		jniApplyForceToCenter(addr, forceX, forceY);
+	public void applyForceToCenter (float forceX, float forceY, boolean wake) {
+		jniApplyForceToCenter(addr, forceX, forceY, wake);
 	}
 
-	private native void jniApplyForceToCenter (long addr, float forceX, float forceY); /*
+	private native void jniApplyForceToCenter (long addr, float forceX, float forceY, boolean wake); /*
 		b2Body* body = (b2Body*)addr;
-		body->ApplyForceToCenter(b2Vec2(forceX, forceY));
+		body->ApplyForceToCenter(b2Vec2(forceX, forceY), wake);
 	*/
 
 	/** Apply a torque. This affects the angular velocity without affecting the linear velocity of the center of mass. This wakes up
 	 * the body.
-	 * @param torque about the z-axis (out of the screen), usually in N-m. */
-	public void applyTorque (float torque) {
-		jniApplyTorque(addr, torque);
+	 * @param torque about the z-axis (out of the screen), usually in N-m.
+	 * @param wake up the body */
+	public void applyTorque (float torque, boolean wake) {
+		jniApplyTorque(addr, torque, wake);
 	}
 
-	private native void jniApplyTorque (long addr, float torque); /*
+	private native void jniApplyTorque (long addr, float torque, boolean wake); /*
 		b2Body* body = (b2Body*)addr;
-		body->ApplyTorque(torque);
+		body->ApplyTorque(torque, wake);
 	*/
 
 	/** Apply an impulse at a point. This immediately modifies the velocity. It also modifies the angular velocity if the point of
 	 * application is not at the center of mass. This wakes up the body.
 	 * @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
-	 * @param point the world position of the point of application. */
-	public void applyLinearImpulse (Vector2 impulse, Vector2 point) {
-		jniApplyLinearImpulse(addr, impulse.x, impulse.y, point.x, point.y);
+	 * @param point the world position of the point of application. 
+	 * @param wake up the body*/
+	public void applyLinearImpulse (Vector2 impulse, Vector2 point, boolean wake) {
+		jniApplyLinearImpulse(addr, impulse.x, impulse.y, point.x, point.y, wake);
 	}
 
 	/** Apply an impulse at a point. This immediately modifies the velocity. It also modifies the angular velocity if the point of
@@ -374,25 +360,26 @@ public class Body {
 	 * @param impulseX the world impulse vector on the x-axis, usually in N-seconds or kg-m/s.
 	 * @param impulseY the world impulse vector on the y-axis, usually in N-seconds or kg-m/s.
 	 * @param pointX the world position of the point of application on the x-axis.
-	 * @param pointY the world position of the point of application on the y-axis. */
-	public void applyLinearImpulse (float impulseX, float impulseY, float pointX, float pointY) {
-		jniApplyLinearImpulse(addr, impulseX, impulseY, pointX, pointY);
+	 * @param pointY the world position of the point of application on the y-axis. 
+	 * @param wake up the body*/
+	public void applyLinearImpulse (float impulseX, float impulseY, float pointX, float pointY, boolean wake) {
+		jniApplyLinearImpulse(addr, impulseX, impulseY, pointX, pointY, wake);
 	}
 
-	private native void jniApplyLinearImpulse (long addr, float impulseX, float impulseY, float pointX, float pointY); /*
+	private native void jniApplyLinearImpulse (long addr, float impulseX, float impulseY, float pointX, float pointY, boolean wake); /*
 		b2Body* body = (b2Body*)addr;
-		body->ApplyLinearImpulse( b2Vec2( impulseX, impulseY ), b2Vec2( pointX, pointY ) );
+		body->ApplyLinearImpulse( b2Vec2( impulseX, impulseY ), b2Vec2( pointX, pointY ), wake);
 	*/
 
 	/** Apply an angular impulse.
 	 * @param impulse the angular impulse in units of kg*m*m/s */
-	public void applyAngularImpulse (float impulse) {
-		jniApplyAngularImpulse(addr, impulse);
+	public void applyAngularImpulse (float impulse, boolean wake) {
+		jniApplyAngularImpulse(addr, impulse, wake);
 	}
 
-	private native void jniApplyAngularImpulse (long addr, float impulse); /*
+	private native void jniApplyAngularImpulse (long addr, float impulse, boolean wake); /*
 		b2Body* body = (b2Body*)addr;
-		body->ApplyAngularImpulse(impulse);
+		body->ApplyAngularImpulse(impulse, wake);
 	*/
 
 	/** Get the total mass of the body.
@@ -769,19 +756,19 @@ inline b2BodyType getBodyType( int type )
 	*/
 
 	/** Get the list of all fixtures attached to this body. Do not modify the list! */
-	public ArrayList<Fixture> getFixtureList () {
+	public Array<Fixture> getFixtureList () {
 		return fixtures;
 	}
 
 	/** Get the list of all joints attached to this body. Do not modify the list! */
-	public ArrayList<JointEdge> getJointList () {
+	public Array<JointEdge> getJointList () {
 		return joints;
 	}
 
 	/** Get the list of all contacts attached to this body.
 	 * @warning this list changes during the time step and you may miss some collisions if you don't use b2ContactListener. Do not
 	 *          modify the returned list! */
-// ArrayList<ContactEdge> getContactList()
+// Array<ContactEdge> getContactList()
 // {
 // return contacts;
 // }

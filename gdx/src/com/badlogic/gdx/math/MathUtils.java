@@ -30,9 +30,9 @@ public class MathUtils {
 	// ---
 
 	static public final float PI = 3.1415927f;
-	public static final float PI2 = PI * 2;
+	static public final float PI2 = PI * 2;
 
-	static private final int SIN_BITS = 13; // Adjust for accuracy.
+	static private final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
 	static private final int SIN_COUNT = SIN_MASK + 1;
 
@@ -56,34 +56,24 @@ public class MathUtils {
 		}
 	}
 
-	static private class Cos {
-		static final float[] table = new float[SIN_COUNT];
-		static {
-			for (int i = 0; i < SIN_COUNT; i++)
-				table[i] = (float)Math.cos((i + 0.5f) / SIN_COUNT * radFull);
-			for (int i = 0; i < 360; i += 90)
-				table[(int)(i * degToIndex) & SIN_MASK] = (float)Math.cos(i * degreesToRadians);
-		}
-	}
-
-	/** Returns the sine in radians. */
+		/** Returns the sine in radians from a lookup table. */
 	static public final float sin (float radians) {
 		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians. */
+	/** Returns the cosine in radians from a lookup table. */
 	static public final float cos (float radians) {
-		return Cos.table[(int)(radians * radToIndex) & SIN_MASK];
+		return Sin.table[(int)((radians + PI / 2) * radToIndex) & SIN_MASK];
 	}
 
-	/** Returns the sine in radians. */
+	/** Returns the sine in radians from a lookup table. */
 	static public final float sinDeg (float degrees) {
 		return Sin.table[(int)(degrees * degToIndex) & SIN_MASK];
 	}
 
-	/** Returns the cosine in radians. */
+	/** Returns the cosine in radians from a lookup table. */
 	static public final float cosDeg (float degrees) {
-		return Cos.table[(int)(degrees * degToIndex) & SIN_MASK];
+		return Sin.table[(int)((degrees + 90) * degToIndex) & SIN_MASK];
 	}
 
 	// ---
@@ -128,10 +118,9 @@ public class MathUtils {
 			add = 0;
 		}
 		float invDiv = 1 / ((x < y ? y : x) * INV_ATAN2_DIM_MINUS_1);
-		
-		if (invDiv == Float.POSITIVE_INFINITY)
-			return ((float)Math.atan2(y, x) + add) * mul;
-		
+
+		if (invDiv == Float.POSITIVE_INFINITY) return ((float)Math.atan2(y, x) + add) * mul;
+
 		int xi = (int)(x * invDiv);
 		int yi = (int)(y * invDiv);
 		return (Atan2.table[yi * ATAN2_DIM + xi] + add) * mul;
@@ -154,6 +143,11 @@ public class MathUtils {
 	/** Returns a random boolean value. */
 	static public final boolean randomBoolean () {
 		return random.nextBoolean();
+	}
+
+	/** Returns true if a random value between 0 and 1 is less than the specified value. */
+	static public final boolean randomBoolean (float chance) {
+		return MathUtils.random() < chance;
 	}
 
 	/** Returns random number between 0.0 (inclusive) and 1.0 (exclusive). */
@@ -214,8 +208,8 @@ public class MathUtils {
 	static private final int BIG_ENOUGH_INT = 16 * 1024;
 	static private final double BIG_ENOUGH_FLOOR = BIG_ENOUGH_INT;
 	static private final double CEIL = 0.9999999;
-//	static private final double BIG_ENOUGH_CEIL = NumberUtils
-//		.longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
+// static private final double BIG_ENOUGH_CEIL = NumberUtils
+// .longBitsToDouble(NumberUtils.doubleToLongBits(BIG_ENOUGH_INT + 1) - 1);
 	static private final double BIG_ENOUGH_CEIL = 16384.999999999996;
 	static private final double BIG_ENOUGH_ROUND = BIG_ENOUGH_INT + 0.5f;
 

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -103,8 +104,8 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	public void texCoord (float u, float v) {
 		final int idx = vertexIdx + texCoordOffset;
-		vertices[idx] = u;
-		vertices[idx + 1] = v;
+		vertices[idx + numSetTexCoords] = u;
+		vertices[idx + numSetTexCoords + 1] = v;
 		numSetTexCoords += 2;
 	}
 
@@ -179,13 +180,12 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		}
 		shader += "   gl_PointSize = 1.0;\n";
 		shader += "}\n";
-
 		return shader;
 	}
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
-		String shader = "#ifdef GL_ES\n" + "precision highp float;\n" + "#endif\n";
-
+		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
+             
 		if (hasColors) shader += "varying vec4 v_col;\n";
 		for (int i = 0; i < numTexCoords; i++) {
 			shader += "varying vec2 v_tex" + i + ";\n";
@@ -205,7 +205,6 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		}
 
 		shader += ";\n}";
-
 		return shader;
 	}
 
@@ -213,6 +212,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	static public ShaderProgram createDefaultShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String vertexShader = createVertexShader(hasNormals, hasColors, numTexCoords);
 		String fragmentShader = createFragmentShader(hasNormals, hasColors, numTexCoords);
-		return new ShaderProgram(vertexShader, fragmentShader);
+		ShaderProgram program = new ShaderProgram(vertexShader, fragmentShader);
+		return program;
 	}
 }

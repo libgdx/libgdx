@@ -16,13 +16,13 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.btMotionState;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btRigidBodyConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBodyConstructionInfo;
+import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
 import com.badlogic.gdx.utils.Disposable;
 
 /** @author xoppa
@@ -46,14 +46,18 @@ public class BulletEntity extends BaseEntity {
 	}
 	
 	public BulletEntity (final Model model, final btCollisionObject body, final Matrix4 transform) {
-		this.model = model;
-		this.transform.set(transform);
+		this(new ModelInstance(model, transform.cpy()), body);
+	}
+		
+	public BulletEntity (final ModelInstance modelInstance, final btCollisionObject body) {
+		this.modelInstance = modelInstance;
+		this.transform = this.modelInstance.transform;
 		this.body = body;
 		
 		if (body != null) {
 			body.userData = this;
 			if (body instanceof btRigidBody) {
-				this.motionState = new MotionState(this.transform);
+				this.motionState = new MotionState(this.modelInstance.transform);
 				((btRigidBody)this.body).setMotionState(motionState);
 			} else
 				body.setWorldTransform(transform);
@@ -70,7 +74,7 @@ public class BulletEntity extends BaseEntity {
 		body = null;
 	}
 	
-	static class MotionState extends btMotionState implements Disposable {
+	static class MotionState extends btMotionState {
 		private final Matrix4 transform;
 		
 		public MotionState(final Matrix4 transform) {
@@ -92,11 +96,6 @@ public class BulletEntity extends BaseEntity {
 		@Override
 		public void setWorldTransform (final Matrix4 worldTrans) {
 			transform.set(worldTrans);
-		}
-		
-		@Override
-		public void dispose () {
-			delete();
 		}
 	}
 }

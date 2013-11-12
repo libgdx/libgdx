@@ -16,12 +16,23 @@
 
 package com.badlogic.gdx.graphics.g3d.model;
 
-public class Animation {
-	public final String name;
-	public final float totalDuration;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.utils.Array;
 
-	public Animation (String name, float totalDuration) {
-		this.name = name;
-		this.totalDuration = totalDuration;
-	}
+/**
+ * An Animation has an id and a list of {@link NodeAnimation} instances. Each
+ * NodeAnimation animates a single {@link Node} in the {@link Model}. Every
+ * {@link NodeAnimation} is assumed to have the same amount of keyframes,
+ * at the same timestamps, as all other node animations for faster keyframe
+ * searches.
+ * 
+ * @author badlogic
+ */
+public class Animation {
+	/** the unique id of the animation **/
+	public String id;
+	/** the duration in seconds **/
+	public float duration;
+	/** the animation curves for individual nodes **/
+	public Array<NodeAnimation> nodeAnimations = new Array<NodeAnimation>();
 }

@@ -19,8 +19,9 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.linearmath.LinearMathConstants;
 
 /** @author xoppa */
 public class KinematicTest extends BaseBulletTest {
@@ -37,19 +38,19 @@ public class KinematicTest extends BaseBulletTest {
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		kinematicBox1 = world.add("staticbox", position1.x, position1.y, position1.z);
-		kinematicBox1.color.set(Color.RED);
+		kinematicBox1.setColor(Color.RED);
 		kinematicBox1.body.setCollisionFlags(kinematicBox1.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
 		kinematicBox2 = world.add("staticbox", position2.x, position2.y, position2.z);
-		kinematicBox2.color.set(Color.RED);
+		kinematicBox2.setColor(Color.RED);
 		kinematicBox2.body.setCollisionFlags(kinematicBox2.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);;
 		kinematicBox3 = world.add("staticbox", position3.x, position3.y, position3.z);
-		kinematicBox3.color.set(Color.RED);
+		kinematicBox3.setColor(Color.RED);
 		kinematicBox3.body.setCollisionFlags(kinematicBox3.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);;
 		// This makes bullet call btMotionState#getWorldTransform on every update:
-		kinematicBox3.body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
+		kinematicBox3.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 		angle = 360f;
 	}
 	
@@ -65,7 +66,7 @@ public class KinematicTest extends BaseBulletTest {
 		}
 		kinematicBox.transform.idt().rotate(Vector3.Y, angle).translate(position);
 		// This makes bullet call btMotionState#getWorldTransform once:
-		kinematicBox.body.setActivationState(gdxBullet.ACTIVE_TAG);
+		kinematicBox.body.setActivationState(Collision.ACTIVE_TAG);
 		
 		super.render();
 	}

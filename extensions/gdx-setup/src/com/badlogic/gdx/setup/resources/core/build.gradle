@@ -1,0 +1,13 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.6
+
+dependencies {
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+}
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+eclipse.project {
+    name = appName + "-core"
+}

@@ -36,16 +36,8 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniDestroyFixtur
  * Method:    jniSetTransform
  * Signature: (JFFF)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform__JFFF
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform
   (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat);
-
-/*
- * Class:     com_badlogic_gdx_physics_box2d_Body
- * Method:    jniSetTransform
- * Signature: (JFFFZ)V
- */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniSetTransform__JFFFZ
-  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
@@ -122,42 +114,42 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniGetAngularV
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniApplyForce
- * Signature: (JFFFF)V
+ * Signature: (JFFFFZ)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForce
-  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniApplyForceToCenter
- * Signature: (JFF)V
+ * Signature: (JFFZ)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyForceToCenter
-  (JNIEnv *, jobject, jlong, jfloat, jfloat);
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniApplyTorque
- * Signature: (JF)V
+ * Signature: (JFZ)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyTorque
-  (JNIEnv *, jobject, jlong, jfloat);
+  (JNIEnv *, jobject, jlong, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniApplyLinearImpulse
- * Signature: (JFFFF)V
+ * Signature: (JFFFFZ)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyLinearImpulse
-  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jlong, jfloat, jfloat, jfloat, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body
  * Method:    jniApplyAngularImpulse
- * Signature: (JF)V
+ * Signature: (JFZ)V
  */
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Body_jniApplyAngularImpulse
-  (JNIEnv *, jobject, jlong, jfloat);
+  (JNIEnv *, jobject, jlong, jfloat, jboolean);
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Body

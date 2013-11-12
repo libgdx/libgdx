@@ -113,4 +113,12 @@ public class Contact {
 	public void ResetRestitution () {
 		contact.resetRestitution();
 	}
+	
+	public float getTangentSpeed () {
+		return contact.getTangentSpeed();
+	}
+	
+	public void setTangentSpeed (float speed) {
+		contact.setTangentSpeed(speed);
+	}
 }

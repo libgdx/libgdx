@@ -149,38 +149,16 @@ public class SplitPane extends WidgetGroup {
 			calculateVertBoundsAndPositions();
 
 		Actor firstWidget = this.firstWidget;
-		Rectangle firstWidgetBounds = this.firstWidgetBounds;
 		if (firstWidget != null) {
-			firstWidget.setX(firstWidgetBounds.x);
-			firstWidget.setY(firstWidgetBounds.y);
-			if (firstWidget.getWidth() != firstWidgetBounds.width || firstWidget.getHeight() != firstWidgetBounds.height) {
-				firstWidget.setWidth(firstWidgetBounds.width);
-				firstWidget.setHeight(firstWidgetBounds.height);
-				if (firstWidget instanceof Layout) {
-					Layout layout = (Layout)firstWidget;
-					layout.invalidate();
-					layout.validate();
-				}
-			} else {
-				if (firstWidget instanceof Layout) ((Layout)firstWidget).validate();
-			}
+			Rectangle firstWidgetBounds = this.firstWidgetBounds;
+			firstWidget.setBounds(firstWidgetBounds.x, firstWidgetBounds.y, firstWidgetBounds.width, firstWidgetBounds.height);
+			if (firstWidget instanceof Layout) ((Layout)firstWidget).validate();
 		}
 		Actor secondWidget = this.secondWidget;
-		Rectangle secondWidgetBounds = this.secondWidgetBounds;
 		if (secondWidget != null) {
-			secondWidget.setX(secondWidgetBounds.x);
-			secondWidget.setY(secondWidgetBounds.y);
-			if (secondWidget.getWidth() != secondWidgetBounds.width || secondWidget.getHeight() != secondWidgetBounds.height) {
-				secondWidget.setWidth(secondWidgetBounds.width);
-				secondWidget.setHeight(secondWidgetBounds.height);
-				if (secondWidget instanceof Layout) {
-					Layout layout = (Layout)secondWidget;
-					layout.invalidate();
-					layout.validate();
-				}
-			} else {
-				if (secondWidget instanceof Layout) ((Layout)secondWidget).validate();
-			}
+			Rectangle secondWidgetBounds = this.secondWidgetBounds;
+			secondWidget.setBounds(secondWidgetBounds.x, secondWidgetBounds.y, secondWidgetBounds.width, secondWidgetBounds.height);
+			if (secondWidget instanceof Layout) ((Layout)secondWidget).validate();
 		}
 	}
 
@@ -253,7 +231,7 @@ public class SplitPane extends WidgetGroup {
 		applyTransform(batch, computeTransform());
 		Matrix4 transform = batch.getTransformMatrix();
 		if (firstWidget != null) {
-			ScissorStack.calculateScissors(getStage().getCamera(), transform, firstWidgetBounds, firstScissors);
+			getStage().calculateScissors(firstWidgetBounds, firstScissors);
 			if (ScissorStack.pushScissors(firstScissors)) {
 				if (firstWidget.isVisible()) firstWidget.draw(batch, parentAlpha * color.a);
 				batch.flush();
@@ -261,7 +239,7 @@ public class SplitPane extends WidgetGroup {
 			}
 		}
 		if (secondWidget != null) {
-			ScissorStack.calculateScissors(getStage().getCamera(), transform, secondWidgetBounds, secondScissors);
+			getStage().calculateScissors(secondWidgetBounds, secondScissors);
 			if (ScissorStack.pushScissors(secondScissors)) {
 				if (secondWidget.isVisible()) secondWidget.draw(batch, parentAlpha * color.a);
 				batch.flush();

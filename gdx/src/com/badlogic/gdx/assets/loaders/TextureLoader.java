@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.glutils.ETC1TextureData;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** {@link AssetLoader} for {@link Texture} instances. The pixel data is loaded asynchronously. The texture is then created on the
  * rendering thread, synchronously. Passing a {@link TextureParameter} to
@@ -37,51 +39,57 @@ import com.badlogic.gdx.utils.Array;
  * various Texture constructors, e.g. filtering, whether to generate mipmaps and so on.
  * @author mzechner */
 public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoader.TextureParameter> {
-	TextureData data;
-	Texture texture;
+	static public class TextureLoaderInfo {
+		String filename;
+		TextureData data;
+		Texture texture;
+	};
+	TextureLoaderInfo info = new TextureLoaderInfo();
 
 	public TextureLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
 	@Override
-	public void loadAsync (AssetManager manager, String fileName, TextureParameter parameter) {
-		if (parameter == null || (parameter != null && parameter.textureData == null)) {
+	public void loadAsync (AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
+		info.filename = fileName;
+		if (parameter == null || parameter.textureData == null) {
 			Pixmap pixmap = null;
 			Format format = null;
 			boolean genMipMaps = false;
-			texture = null;
+			info.texture = null;
 
 			if (parameter != null) {
 				format = parameter.format;
 				genMipMaps = parameter.genMipMaps;
-				texture = parameter.texture;
+				info.texture = parameter.texture;
 			}
 
-			FileHandle handle = resolve(fileName);
 			if (!fileName.contains(".etc1")) {
 				if (fileName.contains(".cim"))
-					pixmap = PixmapIO.readCIM(handle);
+					pixmap = PixmapIO.readCIM(file);
 				else
-					pixmap = new Pixmap(handle);
-				data = new FileTextureData(handle, pixmap, format, genMipMaps);
+					pixmap = new Pixmap(file);
+				info.data = new FileTextureData(file, pixmap, format, genMipMaps);
 			} else {
-				data = new ETC1TextureData(handle, genMipMaps);
+				info.data = new ETC1TextureData(file, genMipMaps);
 			}
 		} else {
-			data = parameter.textureData;
-			if (!data.isPrepared()) data.prepare();
-			texture = parameter.texture;
+			info.data = parameter.textureData;
+			if (!info.data.isPrepared()) info.data.prepare();
+			info.texture = parameter.texture;
 		}
 	}
 
 	@Override
-	public Texture loadSync (AssetManager manager, String fileName, TextureParameter parameter) {
-		Texture texture = this.texture;
+	public Texture loadSync (AssetManager manager, String fileName, FileHandle file, TextureParameter parameter) {
+		if (info == null)
+			return null;
+		Texture texture = info.texture;
 		if (texture != null) {
-			texture.load(data);
+			texture.load(info.data);
 		} else {
-			texture = new Texture(data);
+			texture = new Texture(info.data);
 		}
 		if (parameter != null) {
 			texture.setFilter(parameter.minFilter, parameter.magFilter);
@@ -91,7 +99,7 @@ public class TextureLoader extends AsynchronousAssetLoader<Texture, TextureLoade
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, TextureParameter parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, TextureParameter parameter) {
 		return null;
 	}
 

@@ -23,6 +23,8 @@ import java.io.Writer;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.collision.BoundingBox;
 
 // BOZO - Javadoc.
 // BOZO - Add a duplicate emitter button.
@@ -68,6 +70,7 @@ public class ParticleEmitter {
 	private boolean flipX, flipY;
 	private int updateFlags;
 	private boolean allowCompletion;
+	private BoundingBox bounds;
 
 	private int emission, emissionDiff, emissionDelta;
 	private int lifeOffset, lifeOffsetDiff;
@@ -179,8 +182,44 @@ public class ParticleEmitter {
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
+		if (delayTimer < delay) {
+			delayTimer += deltaMillis;
+		} else {
+			boolean done = false;
+			if (firstUpdate) {
+				firstUpdate = false;
+				addParticle();
+			}
+	
+			if (durationTimer < duration)
+				durationTimer += deltaMillis;
+			else {
+				if (!continuous || allowCompletion)
+					done = true;
+				else
+					restart();
+			}
+
+			if(!done) {
+				emissionDelta += deltaMillis;
+				float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
+				if (emissionTime > 0) {
+					emissionTime = 1000 / emissionTime;
+					if (emissionDelta >= emissionTime) {
+						int emitCount = (int)(emissionDelta / emissionTime);
+						emitCount = Math.min(emitCount, maxParticleCount - activeCount);
+						emissionDelta -= emitCount * emissionTime;
+						emissionDelta %= emissionTime;
+						addParticles(emitCount);
+					}
+				}
+				if (activeCount < minParticleCount) addParticles(minParticleCount - activeCount);
+			}
+		}
+
 		boolean[] active = this.active;
 		int activeCount = this.activeCount;
+		Particle[] particles = this.particles;
 		for (int i = 0, n = active.length; i < n; i++) {
 			if (active[i] && !updateParticle(particles[i], delta, deltaMillis)) {
 				active[i] = false;
@@ -188,37 +227,6 @@ public class ParticleEmitter {
 			}
 		}
 		this.activeCount = activeCount;
-
-		if (delayTimer < delay) {
-			delayTimer += deltaMillis;
-			return;
-		}
-
-		if (firstUpdate) {
-			firstUpdate = false;
-			addParticle();
-		}
-
-		if (durationTimer < duration)
-			durationTimer += deltaMillis;
-		else {
-			if (!continuous || allowCompletion) return;
-			restart();
-		}
-
-		emissionDelta += deltaMillis;
-		float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
-		if (emissionTime > 0) {
-			emissionTime = 1000 / emissionTime;
-			if (emissionDelta >= emissionTime) {
-				int emitCount = (int)(emissionDelta / emissionTime);
-				emitCount = Math.min(emitCount, maxParticleCount - activeCount);
-				emissionDelta -= emitCount * emissionTime;
-				emissionDelta %= emissionTime;
-				addParticles(emitCount);
-			}
-		}
-		if (activeCount < minParticleCount) addParticles(minParticleCount - activeCount);
 	}
 
 	public void draw (SpriteBatch spriteBatch) {
@@ -226,11 +234,9 @@ public class ParticleEmitter {
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
-		int activeCount = this.activeCount;
 
 		for (int i = 0, n = active.length; i < n; i++)
 			if (active[i]) particles[i].draw(spriteBatch);
-		this.activeCount = activeCount;
 
 		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
@@ -307,6 +313,10 @@ public class ParticleEmitter {
 	public void reset () {
 		emissionDelta = 0;
 		durationTimer = duration;
+		boolean[] active = this.active;
+		for (int i = 0, n = active.length; i < n; i++)
+			active[i] = false;
+		activeCount = 0;
 		start();
 	}
 
@@ -339,7 +349,7 @@ public class ParticleEmitter {
 
 		updateFlags = 0;
 		if (angleValue.active && angleValue.timeline.length > 1) updateFlags |= UPDATE_ANGLE;
-		if (velocityValue.active && velocityValue.active) updateFlags |= UPDATE_VELOCITY;
+		if (velocityValue.active) updateFlags |= UPDATE_VELOCITY;
 		if (scaleValue.timeline.length > 1) updateFlags |= UPDATE_SCALE;
 		if (rotationValue.active && rotationValue.timeline.length > 1) updateFlags |= UPDATE_ROTATION;
 		if (windValue.active) updateFlags |= UPDATE_WIND;
@@ -778,6 +788,25 @@ public class ParticleEmitter {
 		yOffsetValue.setLow(-yOffsetValue.getLowMin(), -yOffsetValue.getLowMax());
 	}
 
+	/** Returns the bounding box for all active particles. z axis will always be zero. */
+	public BoundingBox getBoundingBox () {
+		if (bounds == null) bounds = new BoundingBox();
+
+		Particle[] particles = this.particles;
+		boolean[] active = this.active;
+		BoundingBox bounds = this.bounds;
+
+		bounds.inf();
+		for (int i = 0, n = active.length; i < n; i++)
+			if (active[i]) {
+				Rectangle r = particles[i].getBoundingRectangle();
+				bounds.ext(r.x, r.y, 0);
+				bounds.ext(r.x + r.width, r.y + r.height, 0);
+			}
+
+		return bounds;
+	}
+	
 	public void save (Writer output) throws IOException {
 		output.write(name + "\n");
 		output.write("- Delay -\n");

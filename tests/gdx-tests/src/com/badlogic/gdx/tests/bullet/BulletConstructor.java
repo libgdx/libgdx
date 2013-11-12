@@ -16,14 +16,14 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.btBoxShape;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.btRigidBodyConstructionInfo;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBodyConstructionInfo;
 
 /** @author xoppa
  *  Holds the information necessary to create a bullet btRigidBody. This class should outlive the btRigidBody (entity) itself.
@@ -65,7 +65,7 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	 */
 	public BulletConstructor (final Model model, final float mass) {
 		final BoundingBox boundingBox = new BoundingBox(); 
-		model.getBoundingBox(boundingBox);
+		model.calculateBoundingBox(boundingBox);
 		final Vector3 dimensions = boundingBox.getDimensions();
 		create(model, mass, dimensions.x, dimensions.y, dimensions.z);
 	}
@@ -104,8 +104,8 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	@Override
 	public void dispose () {
 		// Don't rely on the GC
-		if (bodyInfo != null) bodyInfo.delete();
-		if (shape != null) shape.delete();
+		if (bodyInfo != null) bodyInfo.dispose();
+		if (shape != null) shape.dispose();
 		// Remove references so the GC can do it's work
 		bodyInfo = null;
 		shape = null;

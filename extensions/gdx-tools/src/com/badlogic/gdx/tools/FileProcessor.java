@@ -103,6 +103,12 @@ public class FileProcessor {
 		return this;
 	}
 
+	/** @param outputRoot May be null.
+	 * @see #process(File, File) */
+	public ArrayList<Entry> process (String inputFile, String outputRoot) throws Exception {
+		return process(new File(inputFile), outputRoot == null ? null : new File(outputRoot));
+	}
+
 	/** Processes the specified input file or directory.
 	 * @param outputRoot May be null if there is no output from processing the files.
 	 * @return the processed files added with {@link #addProcessedFile(Entry)}. */
@@ -201,9 +207,9 @@ public class FileProcessor {
 				entry.outputDir = outputDir;
 
 				if (flattenOutput) {
-					entry.outputFile = outputRoot.length() == 0 ? new File(outputName) : new File(outputRoot, outputName);
+					entry.outputFile = new File(outputRoot, outputName);
 				} else {
-					entry.outputFile = outputDir.length() == 0 ? new File(outputName) : new File(outputDir, outputName);
+					entry.outputFile = new File(outputDir, outputName);
 				}
 
 				dirToEntries.get(dir).add(entry);

@@ -50,6 +50,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -163,13 +164,24 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 				view.setRenderer(this);
 				return view;
 			} else {
-				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(dream, resolutionStrategy);
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
+				if (config.useGLSurfaceViewAPI18) {
+					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(dream, resolutionStrategy);
+					if (configChooser != null)
+						view.setEGLConfigChooser(configChooser);
+					else
+						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+					view.setRenderer(this);
+					return view;
+				}
+				else {
+					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(dream, resolutionStrategy);
+					if (configChooser != null)
+						view.setEGLConfigChooser(configChooser);
+					else
+						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+					view.setRenderer(this);
+					return view;
+				}
 			}
 		}
 	}
@@ -629,6 +641,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 			this.isContinuous = isContinuous;
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
@@ -642,6 +655,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	public void requestRendering () {
 		if (view != null) {
 			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}

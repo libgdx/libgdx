@@ -19,46 +19,67 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btTransform;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.linearmath.LinearMath;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw.DebugDrawModes;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib. 
-	private final static String customDesktopLib = null; //"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = null;//"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 	
 	private static boolean initialized = false;
-	private static void init() {
+	public static void init() {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
-		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null)
+		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null) {
 			System.load(customDesktopLib);
-		else
+		} else
 			Bullet.init();
-
+		Gdx.app.log("Bullet", "Version = "+LinearMath.btGetVersion());
 		initialized = true;
 	}
 	
-	final float lightAmbient[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
-	final float lightPosition[] = new float[] {10f, 10f, 10f, 1f};
-	final float lightDiffuse[] = new float[] {0.5f, 0.5f, 0.5f, 1f};
+	public Environment lights;
+	public DirectionalLight shadowLight;
+	public ModelBatch shadowBatch;
 
-	PerspectiveCamera camera;
-	BulletWorld world;
-	
+	public BulletWorld world;
+	public ObjLoader objLoader = new ObjLoader();
+	public ModelBuilder modelBuilder = new ModelBuilder();
+	public ModelBatch modelBatch;
+	public Array<Disposable> disposables = new Array<Disposable>();
+	private int debugMode = DebugDrawModes.DBG_NoDebug;
+
 	public BulletWorld createWorld() {
 		return new BulletWorld();
 	}
@@ -66,6 +87,16 @@ public class BaseBulletTest extends BulletTest {
 	@Override
 	public void create () {
 		init();
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
+		lights.add(
+			(shadowLight = new DirectionalLight()).set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f)
+		);
+//		lights.shadowMap = shadowLight;
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
+		
+		modelBatch = new ModelBatch();
+		
 		world = createWorld();
 		world.performanceCounter = performanceCounter;
 
@@ -79,23 +110,15 @@ public class BaseBulletTest extends BulletTest {
 		camera.lookAt(0, 0, 0);
 		camera.update();
 		
-		// Create some simple meshes
-		final Mesh groundMesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"));
-		groundMesh.setVertices(new float[] {20f, 0f, 20f, 20f, 0f, -20f, -20f, 0f, 20f, -20f, 0f, -20f});
-		groundMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3});
-		final StillModel groundModel = new StillModel(new StillSubMesh("ground", groundMesh, GL10.GL_TRIANGLES, new Material()));
-
-		final Mesh boxMesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
-		boxMesh.setVertices(new float[] {0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f,
-			0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, -0.5f});
-		boxMesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
-			4, 5, 6, 5, 6, 7, // bottom
-			0, 2, 4, 4, 6, 2, // front
-			1, 3, 5, 5, 7, 3, // back
-			2, 3, 6, 6, 7, 3, // left
-			0, 1, 4, 4, 5, 1 // right
-			});
-		final StillModel boxModel = new StillModel(new StillSubMesh("box", boxMesh, GL10.GL_TRIANGLES, new Material()));
+		// Create some simple models
+		final Model groundModel = modelBuilder.createRect(20f, 0f, -20f, -20f, 0f, -20f, -20f, 0f, 20f, 20f, 0f, 20f, 0, 1, 0, 
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
+			Usage.Position | Usage.Normal);
+		disposables.add(groundModel);
+		final Model boxModel = modelBuilder.createBox(1f, 1f, 1f,
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), 
+			Usage.Position | Usage.Normal);
+		disposables.add(boxModel);
 
 		// Add the constructors
 		world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); // mass = 0: static body
@@ -107,6 +130,19 @@ public class BaseBulletTest extends BulletTest {
 	public void dispose () {
 		world.dispose();
 		world = null;
+		
+		for (Disposable disposable : disposables)
+			disposable.dispose();
+		disposables.clear();
+		
+		modelBatch.dispose();
+		modelBatch = null;
+		
+		shadowBatch.dispose();
+		shadowBatch = null;
+		
+//		shadowLight.dispose();
+		shadowLight = null;
 		
 		super.dispose();
 	}
@@ -125,6 +161,11 @@ public class BaseBulletTest extends BulletTest {
 		beginRender(true);
 
 		renderWorld();
+
+		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
+		if (debugMode != DebugDrawModes.DBG_NoDebug)
+			world.setDebugMode(debugMode, camera.combined);
+		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 		
 		performance.setLength(0);
 		performance.append("FPS: ").append(fpsCounter.value).append(", Bullet: ")
@@ -132,24 +173,22 @@ public class BaseBulletTest extends BulletTest {
 	}
 	
 	protected void beginRender(boolean lighting) {
-		GL10 gl = Gdx.gl10;
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glDepthFunc(GL10.GL_LEQUAL);
-		gl.glEnable(GL10.GL_COLOR_MATERIAL);
-		if (lighting) {
-			gl.glEnable(GL10.GL_LIGHTING);
-			gl.glEnable(GL10.GL_LIGHT0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_AMBIENT, lightAmbient, 0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_POSITION, lightPosition, 0);
-			gl.glLightfv(GL10.GL_LIGHT0, GL10.GL_DIFFUSE, lightDiffuse, 0);
-		} else
-			gl.glDisable(GL10.GL_LIGHTING);
-		camera.apply(Gdx.gl10);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(0,0,0,0);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		camera.update();
 	}
 	
 	protected void renderWorld() {
-		world.render();
+//		shadowLight.begin(Vector3.Zero, camera.direction);
+//		shadowBatch.begin(shadowLight.getCamera());
+//		world.render(shadowBatch, null);
+//		shadowBatch.end();
+//		shadowLight.end();
+		
+		modelBatch.begin(camera);
+		world.render(modelBatch, lights);
+		modelBatch.end();
 	}
 	
 	public void update() {
@@ -168,13 +207,13 @@ public class BaseBulletTest extends BulletTest {
 		// Shoot a box
 		Ray ray = camera.getPickRay(x, y);
 		BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
-		entity.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
-		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.mul(impulse));
+		entity.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+		((btRigidBody)entity.body).applyCentralImpulse(ray.direction.scl(impulse));
 		return entity;
 	}
 	
 	public void setDebugMode(final int mode) {
-		world.setDebugMode(mode, camera.combined);
+		world.setDebugMode(debugMode = mode, camera.combined);
 	}
 	
 	public void toggleDebugMode() {

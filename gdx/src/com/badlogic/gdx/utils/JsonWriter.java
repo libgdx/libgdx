@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /** Builder style API for emitting JSON.
  * @author Nathan Sweet */
 public class JsonWriter extends Writer {
-	Writer writer;
+	final Writer writer;
 	private final Array<JsonObject> stack = new Array();
 	private JsonObject current;
 	private boolean named;
@@ -31,6 +31,10 @@ public class JsonWriter extends Writer {
 
 	public JsonWriter (Writer writer) {
 		this.writer = writer;
+	}
+
+	public Writer getWriter () {
+		return writer;
 	}
 
 	public void setOutputType (OutputType outputType) {
@@ -82,6 +86,11 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
+		if (value instanceof Number) {
+			Number number = (Number)value;
+			long longValue = number.longValue();
+			if (number.doubleValue() == longValue) value = longValue;
+		}
 		if (current != null) {
 			if (current.array) {
 				if (!current.needsComma)

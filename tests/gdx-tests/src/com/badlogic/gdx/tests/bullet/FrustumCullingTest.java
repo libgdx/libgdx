@@ -18,33 +18,26 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btBroadphasePair;
-import com.badlogic.gdx.physics.bullet.btBroadphasePairArray;
-import com.badlogic.gdx.physics.bullet.btCollisionAlgorithm;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.btCollisionWorld;
-import com.badlogic.gdx.physics.bullet.btCompoundShape;
-import com.badlogic.gdx.physics.bullet.btConvexHullShape;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btGhostPairCallback;
-import com.badlogic.gdx.physics.bullet.btManifoldArray;
-import com.badlogic.gdx.physics.bullet.btPairCachingGhostObject;
-import com.badlogic.gdx.physics.bullet.btPersistentManifold;
-import com.badlogic.gdx.physics.bullet.gdxBulletJNI;
+import com.badlogic.gdx.physics.bullet.collision.btBroadphasePairArray;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
+import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
+import com.badlogic.gdx.physics.bullet.collision.btPersistentManifoldArray;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Xoppa */
@@ -90,7 +83,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 			for (int i = 0; i < points.length; i++)
 				hullShape.addPoint(tmpV.set(points[i]).sub(center));
 			final btCompoundShape shape = new btCompoundShape();
-			shape.addChildShape(tmpM.setToTranslation(center), hullShape, true);
+			shape.addChildShape(tmpM.setToTranslation(center), hullShape);
 			result.setCollisionShape(shape);
 		} else {
 			final btConvexHullShape shape = new btConvexHullShape();
@@ -102,7 +95,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		return result;
 	}
 	
-	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btPairCachingGhostObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
+	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btCollisionObject object, final Array<BulletEntity> out, final btPersistentManifoldArray tmpArr) {
 		// Fetch the array of contacts
 		btBroadphasePairArray arr = world.broadphase.getOverlappingPairCache().getOverlappingPairArray();
 		// Get the user values (which are indices in the entities array) of all objects colliding with the object
@@ -115,19 +108,19 @@ public class FrustumCullingTest extends BaseBulletTest {
 	}
 	
 	public static Model createFrustumModel(final Vector3... p) {
-		final Mesh mesh = new Mesh(true, 8, 32, new VertexAttribute(Usage.Position, 3, "a_position"));
-		mesh.setVertices(new float[] {
-			p[0].x, p[0].y, p[0].z, p[1].x, p[1].y, p[1].z, p[2].x, p[2].y, p[2].z, p[3].x, p[3].y, p[3].z, // near
-			p[4].x, p[4].y, p[4].z, p[5].x, p[5].y, p[5].z, p[6].x, p[6].y, p[6].z, p[7].x, p[7].y, p[7].z});// far
-		mesh.setIndices(new short[] {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7});
-		return new StillModel(new StillSubMesh("frustum", mesh, GL10.GL_LINES, new Material()));
+		return ModelBuilder.createFromMesh(new float[] {
+				p[0].x, p[0].y, p[0].z, 0, 0, 1, p[1].x, p[1].y, p[1].z, 0, 0, 1, p[2].x, p[2].y, p[2].z, 0, 0, 1, p[3].x, p[3].y, p[3].z, 0, 0, 1, // near
+				p[4].x, p[4].y, p[4].z, 0, 0, -1, p[5].x, p[5].y, p[5].z, 0, 0, -1, p[6].x, p[6].y, p[6].z, 0, 0, -1, p[7].x, p[7].y, p[7].z, 0, 0, -1},// far
+				new VertexAttribute[] { new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.Normal, 3, "a_normal")},
+				new short[] {0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7},
+				GL10.GL_LINES, new Material(new ColorAttribute(ColorAttribute.Diffuse, Color.WHITE)));
 	}
 	
 	private float angleX, angleY, angleZ;
 	private btPairCachingGhostObject frustumObject;
 	private BulletEntity frustumEntity;
 	private final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
-	private btManifoldArray tempManifoldArr;
+	private btPersistentManifoldArray tempManifoldArr;
 	private PerspectiveCamera frustumCam;
 	private PerspectiveCamera overviewCam;
 
@@ -135,9 +128,9 @@ public class FrustumCullingTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test";
+		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
-		tempManifoldArr = new btManifoldArray();
+		tempManifoldArr = new btPersistentManifoldArray();
 
 		world.addConstructor("collisionBox", new BulletConstructor(world.getConstructor("box").model));
 		
@@ -150,20 +143,23 @@ public class FrustumCullingTest extends BaseBulletTest {
 					BOX_X_MIN + dX * (float)Math.random(), 
 					BOX_Y_MIN + dY * (float)Math.random(), 
 					BOX_Z_MIN + dZ * (float)Math.random()
-				).color.set(Color.GRAY);
+				).setColor(Color.GRAY);
 		
 		frustumCam = new PerspectiveCamera(camera.fieldOfView, camera.viewportWidth, camera.viewportHeight);
+		frustumCam.far = Vector3.len(BOX_X_MAX, BOX_Y_MAX, BOX_Z_MAX);
+		frustumCam.update();
+		
 		overviewCam = camera;
 		overviewCam.position.set(BOX_X_MAX, BOX_Y_MAX, BOX_Z_MAX);
 		overviewCam.lookAt(Vector3.Zero);
+		overviewCam.far = 150f;
 		overviewCam.update();
 		
 		final Model frustumModel = createFrustumModel(frustumCam.frustum.planePoints);
+		disposables.add(frustumModel);
 		frustumObject = createFrustumObject(frustumCam.frustum.planePoints);
 		world.add(frustumEntity = new BulletEntity(frustumModel, frustumObject, 0, 0, 0));
-		frustumEntity.color.set(Color.BLUE);
-		
-		world.renderMeshes = false;
+		frustumEntity.setColor(Color.BLUE);
 	}
 	
 	@Override
@@ -223,7 +219,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 				final BulletEntity e = world.entities.get(i);
 				if (e == frustumEntity)
 					continue;
-				e.transform.getTranslation(tmpV);
+				e.modelInstance.transform.getTranslation(tmpV);
 				if (frustumCam.frustum.sphereInFrustum(tmpV, 1))
 					visibleEntities.add(e);
 			}
@@ -232,16 +228,18 @@ public class FrustumCullingTest extends BaseBulletTest {
 			world.performanceCounter.stop();
 		
 		for (int i = 0; i < visibleEntities.size; i++)
-			visibleEntities.get(i).color.set(Color.RED);
-		
+			visibleEntities.get(i).setColor(Color.RED);
+
+		modelBatch.begin(camera);
 		if ((state & CULL_FRUSTUM) == CULL_FRUSTUM) {
-			world.render(visibleEntities);
-			world.render(frustumEntity);
+			world.render(modelBatch, lights, visibleEntities);
+			world.render(modelBatch, lights, frustumEntity);
 		} else
-			world.render(world.entities);
+			world.render(modelBatch, lights);
+		modelBatch.end();
 		
 		for (int i = 0; i < visibleEntities.size; i++)
-			visibleEntities.get(i).color.set(Color.GRAY);
+			visibleEntities.get(i).setColor(Color.GRAY);
 	}
 	
 	@Override
@@ -256,7 +254,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		super.dispose();
 		
 		if (tempManifoldArr != null)
-			tempManifoldArr.delete();
+			tempManifoldArr.dispose();
 		tempManifoldArr = null;
 	}
 	
@@ -282,7 +280,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		public void dispose () {
 			super.dispose();
 			if (shape != null)
-				shape.delete();
+				shape.dispose();
 			shape = null;
 		}
 	}

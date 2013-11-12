@@ -384,17 +384,8 @@ public class Quaternion implements Serializable {
 	 * @param alpha alpha in the range [0,1]
 	 * @return this quaternion for chaining */
 	public Quaternion slerp (Quaternion end, float alpha) {
-		if (this.equals(end)) {
-			return this;
-		}
-
-		float result = dot(end);
-
-		if (result < 0.0) {
-			// Negate the second quaternion and the result of the dot product
-			end.mul(-1);
-			result = -result;
-		}
+		final float dot = dot(end);
+		float absDot = dot < 0.f ? -dot : dot;
 
 		// Set the first and second scale for the interpolation
 		float scale0 = 1 - alpha;
@@ -402,24 +393,26 @@ public class Quaternion implements Serializable {
 
 		// Check if the angle between the 2 quaternions was big enough to
 		// warrant such calculations
-		if ((1 - result) > 0.1) {// Get the angle between the 2 quaternions,
+		if ((1 - absDot) > 0.1) {// Get the angle between the 2 quaternions,
 			// and then store the sin() of that angle
-			final double theta = Math.acos(result);
-			final double invSinTheta = 1f / Math.sin(theta);
+			final double angle = Math.acos(absDot);
+			final double invSinTheta = 1f / Math.sin(angle);
 
 			// Calculate the scale for q1 and q2, according to the angle and
 			// it's sine value
-			scale0 = (float)(Math.sin((1 - alpha) * theta) * invSinTheta);
-			scale1 = (float)(Math.sin((alpha * theta)) * invSinTheta);
+			scale0 = (float)(Math.sin((1 - alpha) * angle) * invSinTheta);
+			scale1 = (float)(Math.sin((alpha * angle)) * invSinTheta);
 		}
 
+		if (dot < 0.f)
+			scale1 = -scale1;
+		
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.
-		final float x = (scale0 * this.x) + (scale1 * end.x);
-		final float y = (scale0 * this.y) + (scale1 * end.y);
-		final float z = (scale0 * this.z) + (scale1 * end.z);
-		final float w = (scale0 * this.w) + (scale1 * end.w);
-		set(x, y, z, w);
+		x = (scale0 * x) + (scale1 * end.x);
+		y = (scale0 * y) + (scale1 * end.y);
+		z = (scale0 * z) + (scale1 * end.z);
+		w = (scale0 * w) + (scale1 * end.w);
 
 		// Return the interpolated quaternion
 		return this;
@@ -453,5 +446,30 @@ public class Quaternion implements Serializable {
 		this.z *= scalar;
 		this.w *= scalar;
 		return this;
+	}
+	
+	/**
+	 * Get the angle and the axis of rotation
+	 * @param axis axis to get
+	 * @return the angle
+	 */
+	public float getAxisAngle(Vector3 axis) {
+		//source : http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
+      if (this.w > 1)
+      	this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
+      float angle = (float) (2.0 * Math.acos(this.w));
+      double s = Math.sqrt(1 - this.w * this.w); // assuming quaternion normalised then w is less than 1, so term always positive.
+      if (s < NORMALIZATION_TOLERANCE) { // test to avoid divide by zero, s is always positive due to sqrt
+              // if s close to zero then direction of axis not important
+              axis.x = this.x; // if it is important that axis is normalised then replace with x=1; y=z=0;
+              axis.y = this.y;
+              axis.z = this.z;
+      } else {
+              axis.x = (float) (this.x / s); // normalise axis
+              axis.y = (float) (this.y / s);
+              axis.z = (float) (this.z / s);
+      }
+
+      return MathUtils.radiansToDegrees * angle;
 	}
 }

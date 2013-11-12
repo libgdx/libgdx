@@ -16,12 +16,11 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
-
 import org.jbox2d.common.Vec2;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Array;
 
 /** A rigid body. These are created via World.CreateBody.
  * @author mzechner */
@@ -30,8 +29,8 @@ public class Body {
 	public final org.jbox2d.dynamics.Body body;
 	final Vec2 tmp = new Vec2();
 	final Vec2 tmp2 = new Vec2();
-	final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
-	final ArrayList<JointEdge> joints = new ArrayList<JointEdge>();
+	final Array<Fixture> fixtures = new Array<Fixture>();
+	final Array<JointEdge> joints = new Array<JointEdge>();
 
 	/** Constructs a new body with the given address
 	 * @param world the world
@@ -140,7 +139,7 @@ public class Body {
 	 * angular velocity. This wakes up the body.
 	 * @param force the world force vector, usually in Newtons (N).
 	 * @param point the world position of the point of application. */
-	public void applyForce (Vector2 force, Vector2 point) {
+	public void applyForce (Vector2 force, Vector2 point, boolean wrap) {
 		tmp.set(force.x, force.y);
 		tmp2.set(point.x, point.y);
 		body.applyForce(tmp, tmp2);
@@ -152,7 +151,7 @@ public class Body {
 	 * @param forceY the world force vector on y, usually in Newtons (N).
 	 * @param pointX the world position of the point of application on x.
 	 * @param pointY the world position of the point of application on y. */
-	public void applyForce (float forceX, float forceY, float pointX, float pointY) {
+	public void applyForce (float forceX, float forceY, float pointX, float pointY, boolean wake) {
 		tmp.set(forceX, forceY);
 		tmp2.set(pointX, pointY);
 		body.applyForce(tmp, tmp2);
@@ -160,7 +159,7 @@ public class Body {
 
 	/** Apply a force to the center of mass. This wakes up the body.
 	 * @param force the world force vector, usually in Newtons (N). */
-	public void applyForceToCenter (Vector2 force) {
+	public void applyForceToCenter (Vector2 force, boolean wake) {
 		tmp.set(force.x, force.y);
 		body.applyForceToCenter(tmp);
 	}
@@ -168,7 +167,7 @@ public class Body {
 	/** Apply a force to the center of mass. This wakes up the body.
 	 * @param forceX the world force vector, usually in Newtons (N).
 	 * @param forceY the world force vector, usually in Newtons (N). */
-	public void applyForceToCenter (float forceX, float forceY) {
+	public void applyForceToCenter (float forceX, float forceY, boolean wake) {
 		tmp.set(forceX, forceY);
 		body.applyForceToCenter(tmp);
 	}
@@ -176,7 +175,7 @@ public class Body {
 	/** Apply a torque. This affects the angular velocity without affecting the linear velocity of the center of mass. This wakes up
 	 * the body.
 	 * @param torque about the z-axis (out of the screen), usually in N-m. */
-	public void applyTorque (float torque) {
+	public void applyTorque (float torque, boolean wake) {
 		body.applyTorque(torque);
 	}
 
@@ -184,7 +183,7 @@ public class Body {
 	 * application is not at the center of mass. This wakes up the body.
 	 * @param impulse the world impulse vector, usually in N-seconds or kg-m/s.
 	 * @param point the world position of the point of application. */
-	public void applyLinearImpulse (Vector2 impulse, Vector2 point) {
+	public void applyLinearImpulse (Vector2 impulse, Vector2 point, boolean wake) {
 		tmp.set(impulse.x, impulse.y);
 		tmp2.set(point.x, point.y);
 		body.applyLinearImpulse(tmp, tmp2);
@@ -196,7 +195,7 @@ public class Body {
 	 * @param impulseY the world impulse vector on the y-axis, usually in N-seconds or kg-m/s.
 	 * @param pointX the world position of the point of application on the x-axis.
 	 * @param pointY the world position of the point of application on the y-axis. */
-	public void applyLinearImpulse (float impulseX, float impulseY, float pointX, float pointY) {
+	public void applyLinearImpulse (float impulseX, float impulseY, float pointX, float pointY, boolean wake) {
 		tmp.set(impulseX, impulseY);
 		tmp2.set(pointX, pointY);
 		body.applyLinearImpulse(tmp, tmp2);
@@ -204,7 +203,7 @@ public class Body {
 
 	/** Apply an angular impulse.
 	 * @param impulse the angular impulse in units of kg*m*m/s */
-	public void applyAngularImpulse (float impulse) {
+	public void applyAngularImpulse (float impulse, boolean wake) {
 		body.applyAngularImpulse(impulse);
 	}
 
@@ -445,17 +444,17 @@ public class Body {
 	 * @warning This function is locked during callbacks. */
 	public void destroyFixture (Fixture fixture) {
 		body.destroyFixture(fixture.fixture);
-		fixtures.remove(fixture);
+		fixtures.removeValue(fixture, true);
 		world.fixtures.remove(fixture.fixture);
 	}
 
 	/** Get the list of all fixtures attached to this body. Do not modify the list! */
-	public ArrayList<Fixture> getFixtureList () {
+	public Array<Fixture> getFixtureList () {
 		return fixtures;
 	}
 
 	/** Get the list of all joints attached to this body. Do not modify the list! */
-	public ArrayList<JointEdge> getJointList () {
+	public Array<JointEdge> getJointList () {
 		// FIXME wow this is bad...
 		org.jbox2d.dynamics.joints.JointEdge jointEdge = body.getJointList();
 		joints.clear();

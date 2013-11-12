@@ -65,7 +65,6 @@ public class UnicodeFontTest implements ApplicationListener {
 		unicodeFont.loadGlyphs(1);
 
 		String text = "This is UnicodeFont!\nIt rockz. Kerning: T,";
-		unicodeFont.setDisplayListCaching(false);
 		unicodeFont.drawString(10, 33, text);
 		unicodeFont.drawString(10, 330, text);
 

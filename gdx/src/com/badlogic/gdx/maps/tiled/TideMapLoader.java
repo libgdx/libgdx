@@ -1,7 +1,20 @@
-package com.badlogic.gdx.maps.tiled;
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
-import java.io.IOException;
-import java.util.StringTokenizer;
+package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -13,17 +26,20 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.ImageResolver;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.ImageResolver.AssetManagerImageResolver;
 import com.badlogic.gdx.maps.ImageResolver.DirectImageResolver;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
 import com.badlogic.gdx.utils.XmlReader.Element;
+
+import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoader.Parameters> {
 
@@ -52,7 +68,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			}
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadMap(root, tideFile, imageResolver);
-			map.setOwnedTextures(textures.values().toArray());
+			map.setOwnedResources(textures.values().toArray());
 			return map;
 		} catch(IOException e) {
 			throw new GdxRuntimeException("Couldn't load tilemap '" + fileName + "'", e);
@@ -61,8 +77,7 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 	}
 	
 	@Override
-	public TiledMap load (AssetManager assetManager, String fileName, Parameters parameter) {
-		FileHandle tideFile = resolve(fileName);
+	public TiledMap load (AssetManager assetManager, String fileName, FileHandle tideFile, Parameters parameter) {
 		try {
 			return loadMap(root, tideFile, new AssetManagerImageResolver(assetManager));
 		} catch (Exception e) {
@@ -71,10 +86,9 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 	}
 
 	@Override
-	public Array<AssetDescriptor> getDependencies (String fileName, Parameters parameter) {
+	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle tmxFile, Parameters parameter) {
 		Array<AssetDescriptor> dependencies = new Array<AssetDescriptor>();
 		try {
-			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			for(FileHandle image: loadTileSheets(root, tmxFile)) {
 				dependencies.add(new AssetDescriptor(image.path(), Texture.class));
@@ -209,6 +223,8 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			int tileSizeY = Integer.parseInt(tileSizeParts[1]);
 			
 			TiledMapTileLayer layer = new TiledMapTileLayer(layerSizeX, layerSizeY, tileSizeX, tileSizeY);
+			layer.setName(id);
+			layer.setVisible(visible.equalsIgnoreCase("True"));
 			Element tileArray = element.getChildByName("TileArray");
 			Array<Element> rows = tileArray.getChildrenByName("Row");
 			TiledMapTileSets tilesets = map.getTileSets();

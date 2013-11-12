@@ -20,6 +20,7 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -126,8 +127,8 @@ public class FileHandle {
 	/** Returns a stream for reading this file as bytes.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public InputStream read () {
-		if (type == FileType.Classpath || (type == FileType.Internal && !file.exists())
-			|| (type == FileType.Local && !file.exists())) {
+		if (type == FileType.Classpath || (type == FileType.Internal && !file().exists())
+			|| (type == FileType.Local && !file().exists())) {
 			InputStream input = FileHandle.class.getResourceAsStream("/" + file.getPath().replace('\\', '/'));
 			if (input == null) throw new GdxRuntimeException("File not found: " + file + " (" + type + ")");
 			return input;
@@ -206,10 +207,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading layout file: " + this, ex);
 		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 		return output.toString();
 	}
@@ -240,10 +238,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 		if (position < buffer.length) {
 			// Shrink buffer.
@@ -271,10 +266,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 		return position - offset;
 	}
@@ -314,14 +306,8 @@ public class FileHandle {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				if (input != null) input.close();
-			} catch (Exception ignored) {
-			}
-			try {
-				if (output != null) output.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(input);
+			StreamUtils.closeQuietly(output);
 		}
 
 	}
@@ -377,10 +363,7 @@ public class FileHandle {
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				if (writer != null) writer.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(writer);
 		}
 	}
 
@@ -395,10 +378,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				output.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(output);
 		}
 	}
 
@@ -413,10 +393,7 @@ public class FileHandle {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		} finally {
-			try {
-				output.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(output);
 		}
 	}
 
@@ -501,7 +478,7 @@ public class FileHandle {
 	}
 
 	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
-	 * will always return false. */
+	 * will always return false. Note that this can be very slow for internal files on Android! */
 	public boolean exists () {
 		switch (type) {
 		case Internal:
@@ -576,6 +553,7 @@ public class FileHandle {
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
 		copyTo(dest);
 		delete();
+		if (exists () && isDirectory()) deleteDirectory();
 	}
 
 	/** Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
@@ -587,10 +565,7 @@ public class FileHandle {
 				return input.available();
 			} catch (Exception ignored) {
 			} finally {
-				try {
-					input.close();
-				} catch (IOException ignored) {
-				}
+				StreamUtils.closeQuietly(input);
 			}
 			return 0;
 		}
@@ -602,6 +577,21 @@ public class FileHandle {
 	 * is returned for {@link FileType#Internal} files on the classpath. */
 	public long lastModified () {
 		return file().lastModified();
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (!(obj instanceof FileHandle)) return false;
+		FileHandle other = (FileHandle)obj;
+		return type == other.type && path().equals(other.path());
+	}
+
+	@Override
+	public int hashCode () {
+		int hash = 1;
+		hash = hash * 37 + type.hashCode();
+		hash = hash * 67 + path().hashCode();
+		return hash;
 	}
 
 	public String toString () {

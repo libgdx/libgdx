@@ -67,6 +67,16 @@ public class ScreenUtils {
 
 		return textureRegion;
 	}
+	
+	public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h) {
+		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
+
+		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);
+		ByteBuffer pixels = pixmap.getPixels();
+		Gdx.gl.glReadPixels(x, y, w, h, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
+
+		return pixmap;
+	}
 
 	/** Returns the default framebuffer contents as a byte[] array with a length equal to screen width * height * 4. The byte[] will
 	 * always contain RGBA8888 data. Because of differences in screen and image origins the framebuffer contents should be flipped

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g2d;
+
+import static com.badlogic.gdx.graphics.g2d.Sprite.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -31,203 +34,129 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.NumberUtils;
 
-/** <p>
- * A PolyongSpriteBatch is used to draw 2D polygons that reference a texture (region). The class will batch the drawing commands
+/** A PolygonSpriteBatch is used to draw 2D polygons that reference a texture (region). The class will batch the drawing commands
  * and optimize them for processing by the GPU.
- * </p>
- * 
- * THIS STUFF IS WIP
- * 
  * <p>
- * To draw something with a PolyongSpriteBatch one has to first call the {@link PolygonSpriteBatch#begin()} method which will
+ * To draw something with a PolygonSpriteBatch one has to first call the {@link PolygonSpriteBatch#begin()} method which will
  * setup appropriate render states. When you are done with drawing you have to call {@link PolygonSpriteBatch#end()} which will
  * actually draw the things you specified.
- * </p>
- * 
  * <p>
- * All drawing commands of the PolyongSpriteBatch operate in screen coordinates. The screen coordinate system has an x-axis
+ * All drawing commands of the PolygonSpriteBatch operate in screen coordinates. The screen coordinate system has an x-axis
  * pointing to the right, an y-axis pointing upwards and the origin is in the lower left corner of the screen. You can also
  * provide your own transformation and projection matrices if you so wish.
- * </p>
- * 
  * <p>
- * A PolyongSpriteBatch is managed. In case the OpenGL context is lost all OpenGL resources a PolyongSpriteBatch uses internally
+ * A PolygonSpriteBatch is managed. In case the OpenGL context is lost all OpenGL resources a PolygonSpriteBatch uses internally
  * get invalidated. A context is lost when a user switches to another application or receives an incoming call on Android. A
- * SpritPolyongSpriteBatcheBatch will be automatically reloaded after the OpenGL context is restored.
- * </p>
- * 
+ * SpritPolygonSpriteBatcheBatch will be automatically reloaded after the OpenGL context is restored.
  * <p>
- * A PolyongSpriteBatch is a pretty heavy object so you should only ever have one in your program.
- * </p>
- * 
+ * A PolygonSpriteBatch is a pretty heavy object so you should only ever have one in your program.
  * <p>
- * A PolyongSpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw
+ * A PolygonSpriteBatch works with OpenGL ES 1.x and 2.0. In the case of a 2.0 context it will use its own custom shader to draw
  * all provided sprites. You can set your own custom shader via {@link #setShader(ShaderProgram)}.
- * </p>
- * 
  * <p>
- * A PolyongSpriteBatch has to be disposed if it is no longer used.
- * </p>
- * 
- * 
+ * A PolygonSpriteBatch has to be disposed if it is no longer used.
  * @author mzechner
- * @author Stefan Bachmann */
+ * @author Stefan Bachmann
+ * @author Nathan Sweet */
 public class PolygonSpriteBatch {
 	private Mesh mesh;
 	private Mesh[] buffers;
+	private int bufferIndex;
 
-	private Texture lastTexture = null;
-
-	private int idx = 0;
-	private int currBufferIdx = 0;
 	private final float[] vertices;
+	private final short[] triangles;
+	private int vertexIndex, triangleIndex;
+	private Texture lastTexture;
+	private boolean drawing;
 
 	private final Matrix4 transformMatrix = new Matrix4();
 	private final Matrix4 projectionMatrix = new Matrix4();
 	private final Matrix4 combinedMatrix = new Matrix4();
 
-	private boolean drawing = false;
-
-	private boolean blendingDisabled = false;
+	private boolean blendingDisabled;
 	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
 	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
 	private final ShaderProgram shader;
+	private ShaderProgram customShader;
 	private boolean ownsShader;
 
 	float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 
-	/** number of render calls since last {@link #begin()} **/
+	/** Number of render calls since the last {@link #begin()}. **/
 	public int renderCalls = 0;
 
-	/** number of rendering calls ever, will not be reset, unless it's done manually **/
+	/** Number of rendering calls, ever. Will not be reset unless set manually. **/
 	public int totalRenderCalls = 0;
 
-	/** the maximum number of sprites rendered in one batch so far **/
-	public int maxVerticesInBatch = 0;
-	private ShaderProgram customShader = null;
+	/** The maximum number of triangles rendered in one batch so far. **/
+	public int maxTrianglesInBatch = 0;
 
-	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
-	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
-	 * with respect to the screen resolution. */
+	/** Constructs a new PolygonSpriteBatch with a size of 2000, the default shader, and one buffer.
+	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch () {
-		this(4000);
+		this(2000, null);
 	}
 
-	/** Constructs a PolygonSpriteBatch with the specified size in vertices and (if GL2) the default shader. See
-	 * {@link #PolygonSpriteBatch(int, ShaderProgram)}. */
+	/** Constructs a PolygonSpriteBatch with the default shader and one buffer.
+	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size) {
-		this(size, null);
+		this(size, 1, null);
 	}
 
-	/** <p>
-	 * Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
-	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
-	 * with respect to the screen resolution.
-	 * </p>
-	 * 
-	 * <p>
-	 * The size parameter specifies the maximum size of a single batch in number of vertices(!)
-	 * </p>
-	 * 
-	 * <p>
-	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
-	 * </p>
-	 * 
-	 * @param size the batch size in number of vertices(!)
-	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
+	/** Constructs a new PolygonSpriteBatch with one buffer.
+	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
 		this(size, 1, defaultShader);
 	}
 
-	/** Constructs a PolygonSpriteBatch with the specified size and number of buffers and (if GL2) the default shader. See
-	 * {@link #PolygonSpriteBatch(int, int, ShaderProgram)}. */
+	/** Constructs a PolygonSpriteBatch with the default shader.
+	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
 	public PolygonSpriteBatch (int size, int buffers) {
 		this(size, buffers, null);
 	}
 
-	/** <p>
-	 * Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
+	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
 	 * x-axis point to the right and the origin being in the bottom left corner of the screen. The projection will be pixel perfect
-	 * with respect to the screen resolution.
-	 * </p>
-	 * 
-	 * <p>
-	 * The size parameter specifies the maximum size of a single batch in number of vertices(!)
-	 * </p>
-	 * 
+	 * with respect to the current screen resolution.
 	 * <p>
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
-	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See the {@link #createDefaultShader()} method.
-	 * </p>
-	 * 
-	 * @param size the batch size in number of vertices(!)
-	 * @param buffers the number of buffers to use. only makes sense with VBOs. This is an expert function.
-	 * @param defaultShader the default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
+	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link SpriteBatch#createDefaultShader()}.
+	 * @param size The max number of vertices and number of triangles in a single batch. Max of 10920.
+	 * @param buffers The number of meshes to use. This is an expert function. It only makes sense with VBOs (see
+	 *           {@link Mesh#forceVBO}).
+	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately. */
 	public PolygonSpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
-		this.buffers = new Mesh[buffers];
+		// 32767 is max index, so 32767 / 3 - (32767 / 3 % 3) = 10920.
+		if (size > 10920) throw new IllegalArgumentException("Can't have more than 10920 triangles per batch: " + size);
 
+		this.buffers = new Mesh[buffers];
 		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size, 0, new VertexAttribute(Usage.Position, 2,
+			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size, size * 3, new VertexAttribute(Usage.Position, 2,
 				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
 				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 		}
-
-		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-		vertices = new float[size * Sprite.VERTEX_SIZE];
-
 		mesh = this.buffers[0];
 
+		vertices = new float[size * VERTEX_SIZE];
+		triangles = new short[size * 3];
+
 		if (Gdx.graphics.isGL20Available() && defaultShader == null) {
-			shader = createDefaultShader();
+			shader = SpriteBatch.createDefaultShader();
 			ownsShader = true;
 		} else
 			shader = defaultShader;
+
+		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Returns a new instance of the default shader used by SpriteBatch for GL2 when no shader is specified. */
-	static public ShaderProgram createDefaultShader () {
-		String vertexShader = "attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-			+ "attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-			+ "attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-			+ "uniform mat4 u_projectionViewMatrix;\n" //
-			+ "varying vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords;\n" //
-			+ "\n" //
-			+ "void main()\n" //
-			+ "{\n" //
-			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
-			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
-			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
-			+ "}\n";
-		String fragmentShader = "#ifdef GL_ES\n" //
-			+ "#define LOWP lowp\n" //
-			+ "precision mediump float;\n" //
-			+ "#else\n" //
-			+ "#define LOWP \n" //
-			+ "#endif\n" //
-			+ "varying LOWP vec4 v_color;\n" //
-			+ "varying vec2 v_texCoords;\n" //
-			+ "uniform sampler2D u_texture;\n" //
-			+ "void main()\n"//
-			+ "{\n" //
-			+ "  gl_FragColor = v_color * texture2D(u_texture, v_texCoords);\n" //
-			+ "}";
-
-		ShaderProgram shader = new ShaderProgram(vertexShader, fragmentShader);
-		if (shader.isCompiled() == false) throw new IllegalArgumentException("couldn't compile shader: " + shader.getLog());
-		return shader;
-	}
-
-	/** Sets up the SpriteBatch for drawing. This will disable depth buffer writting. It enables blending and texturing. If you have
-	 * more texture units enabled than the first one you have to disable them before calling this. Uses a screen coordinate system
-	 * by default where everything is given in pixels. You can specify your own projection and modelview matrices via
-	 * {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */
+	/** Sets up the PolygonSpriteBatch for drawing. This will disable depth buffer writting. It enables blending and texturing. If
+	 * you have more texture units enabled than the first one you have to disable them before calling this. Uses a screen
+	 * coordinate system by default where everything is given in pixels. You can specify your own projection and modelview matrices
+	 * via {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */
 	public void begin () {
-		if (drawing) throw new IllegalStateException("you have to call PolygonSpriteBatch.end() first");
+		if (drawing) throw new IllegalStateException("PolygonSpriteBatch.end must be called before begin.");
 		renderCalls = 0;
 
 		Gdx.gl.glDepthMask(false);
@@ -241,8 +170,6 @@ public class PolygonSpriteBatch {
 		}
 		setupMatrices();
 
-		idx = 0;
-		lastTexture = null;
 		drawing = true;
 	}
 
@@ -250,9 +177,8 @@ public class PolygonSpriteBatch {
 	 * {@link #begin()} */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before end.");
-		if (idx > 0) renderMesh();
+		if (vertexIndex > 0) flush();
 		lastTexture = null;
-		idx = 0;
 		drawing = false;
 
 		GLCommon gl = Gdx.gl;
@@ -269,7 +195,7 @@ public class PolygonSpriteBatch {
 		}
 	}
 
-	/** Sets the color used to tint images when they are added to the SpriteBatch. Default is {@link Color#WHITE}. */
+	/** Sets the color used to tint images when they are added to the PolygonSpriteBatch. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		color = tint.toFloatBits();
 	}
@@ -299,33 +225,81 @@ public class PolygonSpriteBatch {
 
 	/** Draws a polygon region with the bottom left corner at x,y having the width and height of the region. */
 	public void draw (PolygonRegion region, float x, float y) {
-		draw(region, x, y, region.getRegion().getRegionWidth(), region.getRegion().getRegionHeight());
+		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
+
+		final short[] triangles = this.triangles;
+		final short[] regionTriangles = region.triangles;
+		final int regionTrianglesLength = regionTriangles.length;
+		final float[] regionVertices = region.vertices;
+		final int regionVerticesLength = regionVertices.length;
+
+		final Texture texture = region.region.texture;
+		if (texture != lastTexture)
+			switchTexture(texture);
+		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
+			flush();
+
+		int triangleIndex = this.triangleIndex;
+		int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / VERTEX_SIZE;
+
+		for (int i = 0; i < regionTrianglesLength; i++)
+			triangles[triangleIndex++] = (short)(regionTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		final float[] vertices = this.vertices;
+		final float color = this.color;
+		final float[] textureCoords = region.textureCoords;
+
+		for (int i = 0; i < regionVerticesLength; i += 2) {
+			vertices[vertexIndex++] = regionVertices[i] + x;
+			vertices[vertexIndex++] = regionVertices[i + 1] + y;
+			vertices[vertexIndex++] = color;
+			vertices[vertexIndex++] = textureCoords[i];
+			vertices[vertexIndex++] = textureCoords[i + 1];
+		}
+		this.vertexIndex = vertexIndex;
 	}
 
 	/** Draws a polygon region with the bottom left corner at x,y and stretching the region to cover the given width and height. */
 	public void draw (PolygonRegion region, float x, float y, float width, float height) {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
 
-		Texture texture = region.getRegion().texture;
-		if (texture != lastTexture) {
+		final short[] triangles = this.triangles;
+		final short[] regionTriangles = region.triangles;
+		final int regionTrianglesLength = regionTriangles.length;
+		final float[] regionVertices = region.vertices;
+		final int regionVerticesLength = regionVertices.length;
+		final TextureRegion textureRegion = region.region;
+
+		final Texture texture = textureRegion.texture;
+		if (texture != lastTexture)
 			switchTexture(texture);
+		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
+			flush();
+
+		int triangleIndex = this.triangleIndex;
+		int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / VERTEX_SIZE;
+
+		for (int i = 0, n = regionTriangles.length; i < n; i++)
+			triangles[triangleIndex++] = (short)(regionTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		final float[] vertices = this.vertices;
+		final float color = this.color;
+		final float[] textureCoords = region.textureCoords;
+		final float sX = width / textureRegion.regionWidth;
+		final float sY = height / textureRegion.regionHeight;
+
+		for (int i = 0; i < regionVerticesLength; i += 2) {
+			vertices[vertexIndex++] = regionVertices[i] * sX + x;
+			vertices[vertexIndex++] = regionVertices[i + 1] * sY + y;
+			vertices[vertexIndex++] = color;
+			vertices[vertexIndex++] = textureCoords[i];
+			vertices[vertexIndex++] = textureCoords[i + 1];
 		}
-
-		float[] localVertices = region.getLocalVertices();
-		float[] texCoords = region.getTextureCoords();
-
-		if (idx + localVertices.length > vertices.length) renderMesh();
-
-		float sX = width / region.getRegion().getRegionWidth();
-		float sY = height / region.getRegion().getRegionHeight();
-
-		for (int i = 0; i < localVertices.length; i += 2) {
-			vertices[idx++] = ((localVertices[i]) * sX) + x;
-			vertices[idx++] = ((localVertices[i + 1]) * sY) + y;
-			vertices[idx++] = color;
-			vertices[idx++] = texCoords[i];
-			vertices[idx++] = texCoords[i + 1];
-		}
+		this.vertexIndex = vertexIndex;
 	}
 
 	/** Draws the polygon region with the bottom left corner at x,y and stretching the region to cover the given width and height.
@@ -336,167 +310,160 @@ public class PolygonSpriteBatch {
 		float scaleX, float scaleY, float rotation) {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
 
-		Texture texture = region.getRegion().texture;
-		if (texture != lastTexture) {
+		final short[] triangles = this.triangles;
+		final short[] regionTriangles = region.triangles;
+		final int regionTrianglesLength = regionTriangles.length;
+		final float[] regionVertices = region.vertices;
+		final int regionVerticesLength = regionVertices.length;
+		final TextureRegion textureRegion = region.region;
+
+		Texture texture = textureRegion.texture;
+		if (texture != lastTexture)
 			switchTexture(texture);
-		}
+		else if (triangleIndex + regionTrianglesLength > triangles.length || vertexIndex + regionVerticesLength > vertices.length)
+			flush();
 
-		float[] localVertices = region.getLocalVertices();
-		float[] texCoords = region.getTextureCoords();
+		int triangleIndex = this.triangleIndex;
+		int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / VERTEX_SIZE;
 
-		if (idx + localVertices.length > vertices.length) renderMesh();
+		for (int i = 0; i < regionTrianglesLength; i++)
+			triangles[triangleIndex++] = (short)(regionTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		final float[] vertices = this.vertices;
+		final float color = this.color;
+		final float[] textureCoords = region.textureCoords;
 
 		final float worldOriginX = x + originX;
 		final float worldOriginY = y + originY;
-		float sX = width / region.getRegion().getRegionWidth();
-		float sY = height / region.getRegion().getRegionHeight();
-		float fx, rx;
-		float fy, ry;
-
+		final float sX = width / textureRegion.regionWidth;
+		final float sY = height / textureRegion.regionHeight;
 		final float cos = MathUtils.cosDeg(rotation);
 		final float sin = MathUtils.sinDeg(rotation);
 
-		for (int i = 0; i < localVertices.length; i += 2) {
-			fx = localVertices[i] * sX;
-			fy = localVertices[i + 1] * sY;
-
-			fx -= originX;
-			fy -= originY;
-
-			if (scaleX != 1 || scaleY != 1) {
-				fx *= scaleX;
-				fy *= scaleY;
-			}
-
-			rx = cos * fx - sin * fy;
-			ry = sin * fx + cos * fy;
-
-			rx += worldOriginX;
-			ry += worldOriginY;
-
-			vertices[idx++] = rx;
-			vertices[idx++] = ry;
-			vertices[idx++] = color;
-			vertices[idx++] = texCoords[i];
-			vertices[idx++] = texCoords[i + 1];
+		float fx, fy;
+		for (int i = 0; i < regionVerticesLength; i += 2) {
+			fx = (regionVertices[i] * sX - originX) * scaleX;
+			fy = (regionVertices[i + 1] * sY - originY) * scaleY;
+			vertices[vertexIndex++] = cos * fx - sin * fy + worldOriginX;
+			vertices[vertexIndex++] = sin * fx + cos * fy + worldOriginY;
+			vertices[vertexIndex++] = color;
+			vertices[vertexIndex++] = textureCoords[i];
+			vertices[vertexIndex++] = textureCoords[i + 1];
 		}
+		this.vertexIndex = vertexIndex;
 	}
 
-	/** Draws the polygon region using the given vertices. Each vertices must be made up of 5 elements in this order: x, y, color,
-	 * u, v. */
-	public void draw (PolygonRegion region, float[] spriteVertices, int offset, int length) {
+	/** Draws the polygon using the given vertices and triangles. Each vertices must be made up of 5 elements in this order: x, y,
+	 * color, u, v. */
+	public void draw (Texture texture, float[] polygonVertices, int verticesOffset, int verticesCount, short[] polygonTriangles,
+		int trianglesOffset, int trianglesCount) {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before draw.");
 
-		Texture texture = region.getRegion().texture;
-		if (texture != lastTexture) {
+		final short[] triangles = this.triangles;
+		final float[] vertices = this.vertices;
+
+		if (texture != lastTexture)
 			switchTexture(texture);
-		}
+		else if (triangleIndex + trianglesCount > triangles.length || vertexIndex + verticesCount > vertices.length) //
+			flush();
 
-		if (idx + length > vertices.length) renderMesh();
+		int triangleIndex = this.triangleIndex;
+		final int vertexIndex = this.vertexIndex;
+		final int startVertex = vertexIndex / VERTEX_SIZE;
 
-		if (length <= vertices.length) {
-			System.arraycopy(spriteVertices, offset, vertices, idx, length);
-			idx += length;
-		} else {
-			// ay captain, need to split it across multiple batches. Who sends humangous streams like this?!
-		}
+		for (int i = trianglesOffset, n = i + trianglesCount; i < n; i++)
+			triangles[triangleIndex++] = (short)(polygonTriangles[i] + startVertex);
+		this.triangleIndex = triangleIndex;
+
+		System.arraycopy(polygonVertices, verticesOffset, vertices, vertexIndex, verticesCount);
+		this.vertexIndex += verticesCount;
 	}
 
 	/** Causes any pending sprites to be rendered, without ending the PolygonSpriteBatch. */
 	public void flush () {
-		renderMesh();
-	}
-
-	private void renderMesh () {
-		if (idx == 0) return;
+		if (vertexIndex == 0) return;
 
 		renderCalls++;
 		totalRenderCalls++;
-		int verticesInBatch = idx / Sprite.VERTEX_SIZE;
-		if (verticesInBatch > maxVerticesInBatch) maxVerticesInBatch = verticesInBatch;
+		int trianglesInBatch = triangleIndex;
+		if (trianglesInBatch > maxTrianglesInBatch) maxTrianglesInBatch = trianglesInBatch;
 
 		lastTexture.bind();
-		mesh.setVertices(vertices, 0, idx);
+		Mesh mesh = this.mesh;
+		mesh.setVertices(vertices, 0, vertexIndex);
+		mesh.setIndices(triangles, 0, triangleIndex);
 
 		if (blendingDisabled) {
 			Gdx.gl.glDisable(GL20.GL_BLEND);
 		} else {
 			Gdx.gl.glEnable(GL20.GL_BLEND);
-			Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				mesh.render(customShader, GL10.GL_TRIANGLES, 0, verticesInBatch);
-			else
-				mesh.render(shader, GL10.GL_TRIANGLES, 0, verticesInBatch);
-		} else {
-			mesh.render(GL10.GL_TRIANGLES, 0, verticesInBatch);
-		}
+		if (Gdx.graphics.isGL20Available())
+			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, trianglesInBatch);
+		else
+			mesh.render(GL10.GL_TRIANGLES, 0, trianglesInBatch);
 
-		idx = 0;
-		currBufferIdx++;
-		if (currBufferIdx == buffers.length) currBufferIdx = 0;
-		mesh = buffers[currBufferIdx];
+		vertexIndex = 0;
+		triangleIndex = 0;
+		bufferIndex++;
+		if (bufferIndex == buffers.length) bufferIndex = 0;
+		this.mesh = buffers[bufferIndex];
 	}
 
-	/** Disables blending for drawing sprites. Does not disable blending for text rendering */
+	/** Disables blending for drawing sprites. Calling this within {@link #begin()}/{@link #end()} will flush the batch. */
 	public void disableBlending () {
-		renderMesh();
+		flush();
 		blendingDisabled = true;
 	}
 
-	/** Enables blending for sprites */
+	/** Enables blending for sprites. Calling this within {@link #begin()}/{@link #end()} will flush the batch. */
 	public void enableBlending () {
-		renderMesh();
+		flush();
 		blendingDisabled = false;
 	}
 
 	/** Sets the blending function to be used when rendering sprites.
-	 * 
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA
+	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, PolygonSpriteBatch won't change the blending
+	 *           function.
 	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
-		renderMesh();
+		if (blendSrcFunc == srcFunc && blendDstFunc == dstFunc) return;
+		flush();
 		blendSrcFunc = srcFunc;
 		blendDstFunc = dstFunc;
 	}
 
-	/** Disposes all resources associated with this SpriteBatch */
+	/** Disposes all resources associated with this PolygonSpriteBatch. */
 	public void dispose () {
 		for (int i = 0; i < buffers.length; i++)
 			buffers[i].dispose();
 		if (ownsShader && shader != null) shader.dispose();
 	}
 
-	/** Returns the current projection matrix. Changing this will result in undefined behaviour.
-	 * 
-	 * @return the currently set projection matrix */
+	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
 	public Matrix4 getProjectionMatrix () {
 		return projectionMatrix;
 	}
 
-	/** Returns the current transform matrix. Changing this will result in undefined behaviour.
-	 * 
-	 * @return the currently set transform matrix */
+	/** Returns the current transform matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
 	public Matrix4 getTransformMatrix () {
 		return transformMatrix;
 	}
 
-	/** Sets the projection matrix to be used by this SpriteBatch. If this is called inside a {@link #begin()}/{@link #end()} block.
-	 * the current batch is flushed to the gpu.
-	 * 
-	 * @param projection the projection matrix */
+	/** Sets the projection matrix to be used by this PolygonSpriteBatch. If this is called inside a {@link #begin()}/{@link #end()}
+	 * block, the current batch is flushed to the gpu. */
 	public void setProjectionMatrix (Matrix4 projection) {
 		if (drawing) flush();
 		projectionMatrix.set(projection);
 		if (drawing) setupMatrices();
 	}
 
-	/** Sets the transform matrix to be used by this SpriteBatch. If this is called inside a {@link #begin()}/{@link #end()} block.
-	 * the current batch is flushed to the gpu.
-	 * 
-	 * @param transform the transform matrix */
+	/** Sets the transform matrix to be used by this PolygonSpriteBatch. If this is called inside a {@link #begin()}/{@link #end()}
+	 * block, the current batch is flushed to the gpu. */
 	public void setTransformMatrix (Matrix4 transform) {
 		if (drawing) flush();
 		transformMatrix.set(transform);
@@ -513,36 +480,21 @@ public class PolygonSpriteBatch {
 		} else {
 			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 			if (customShader != null) {
-				customShader.setUniformMatrix("u_proj", projectionMatrix);
-				customShader.setUniformMatrix("u_trans", transformMatrix);
 				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
 				customShader.setUniformi("u_texture", 0);
 			} else {
-				shader.setUniformMatrix("u_projectionViewMatrix", combinedMatrix);
+				shader.setUniformMatrix("u_projTrans", combinedMatrix);
 				shader.setUniformi("u_texture", 0);
 			}
 		}
 	}
 
 	private void switchTexture (Texture texture) {
-		renderMesh();
+		flush();
 		lastTexture = texture;
 	}
 
-	/** Sets the shader to be used in a GLES 2.0 environment. Vertex position attribute is called "a_position", the texture
-	 * coordinates attribute is called called "a_texCoords0", the color attribute is called "a_color". See
-	 * {@link ShaderProgram#POSITION_ATTRIBUTE}, {@link ShaderProgram#COLOR_ATTRIBUTE} and {@link ShaderProgram#TEXCOORD_ATTRIBUTE}
-	 * which gets "0" appened to indicate the use of the first texture unit. The projection matrix is uploaded via a mat4 uniform
-	 * called "u_proj", the transform matrix is uploaded via a uniform called "u_trans", the combined transform and projection
-	 * matrx is is uploaded via a mat4 uniform called "u_projTrans". The texture sampler is passed via a uniform called
-	 * "u_texture".</p>
-	 * 
-	 * Call this method with a null argument to use the default shader.</p>
-	 * 
-	 * This method will flush the batch before setting the new shader, you can call it in between {@link #begin()} and
-	 * {@link #end()}.
-	 * 
-	 * @param shader the {@link ShaderProgram} or null to use the default shader. */
+	/** @see SpriteBatch#setShader(ShaderProgram) */
 	public void setShader (ShaderProgram shader) {
 		if (drawing) {
 			flush();

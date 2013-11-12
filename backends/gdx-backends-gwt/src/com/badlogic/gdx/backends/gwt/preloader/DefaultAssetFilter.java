@@ -45,10 +45,16 @@ public class DefaultAssetFilter implements AssetFilter {
 
 	private boolean isText (String extension) {
 		return extension.equals("json") || extension.equals("xml") || extension.equals("txt") || extension.equals("glsl")
-			|| extension.equals("fnt") || extension.equals("pack") || extension.equals("obj");
+			|| extension.equals("fnt") || extension.equals("pack") || extension.equals("obj") || extension.equals("atlas")
+			|| extension.equals("g3dj");
 	}
 
 	private boolean isAudio (String extension) {
 		return extension.equals("mp3") || extension.equals("ogg") || extension.equals("wav");
+	}
+
+	@Override
+	public String getBundleName (String file) {
+		return "assets";
 	}
 }

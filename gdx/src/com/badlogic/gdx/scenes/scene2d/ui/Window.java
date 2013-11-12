@@ -38,15 +38,17 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 public class Window extends Table {
 	static private final Vector2 tmpPosition = new Vector2();
 	static private final Vector2 tmpSize = new Vector2();
+	static private final int MOVE = 1 << 5;
 
 	private WindowStyle style;
 	private String title;
 	private BitmapFontCache titleCache;
-	boolean isMovable = true, isModal;
-	final Vector2 dragOffset = new Vector2();
+	boolean isMovable = true, isModal, isResizable;
+	int resizeBorder = 8;
 	boolean dragging;
 	private int titleAlignment = Align.center;
 	boolean keepWithinStage = true;
+	Table buttonTable;
 
 	public Window (String title, Skin skin) {
 		this(title, skin.get(WindowStyle.class));
@@ -68,6 +70,9 @@ public class Window extends Table {
 		setHeight(150);
 		setTitle(title);
 
+		buttonTable = new Table();
+		addActor(buttonTable);
+
 		addCaptureListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				toFront();
@@ -75,17 +80,84 @@ public class Window extends Table {
 			}
 		});
 		addListener(new InputListener() {
+			int edge;
+			float startX, startY, lastX, lastY;
+
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (button == 0) {
-					dragging = isMovable && getHeight() - y <= getPadTop() && y < getHeight() && x > 0 && x < getWidth();
-					dragOffset.set(x, y);
+					int border = resizeBorder;
+					float width = getWidth(), height = getHeight();
+					edge = 0;
+					if (isResizable) {
+						if (x < border) edge |= Align.left;
+						if (x > width - border) edge |= Align.right;
+						if (y < border) edge |= Align.bottom;
+						if (y > height - border) edge |= Align.top;
+						if (edge != 0) border += 25;
+						if (x < border) edge |= Align.left;
+						if (x > width - border) edge |= Align.right;
+						if (y < border) edge |= Align.bottom;
+						if (y > height - border) edge |= Align.top;
+					}
+					if (isMovable && edge == 0 && y <= height && y >= height - getPadTop() && x >= 0 && x <= width) edge = MOVE;
+					dragging = edge != 0;
+					startX = x;
+					startY = y;
+					lastX = x;
+					lastY = y;
 				}
-				return dragging || isModal;
+				return edge != 0 || isModal;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				dragging = false;
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				if (!dragging) return;
-				translate(x - dragOffset.x, y - dragOffset.y);
+				float width = getWidth(), height = getHeight();
+				float windowX = getX(), windowY = getY();
+
+				float minWidth = getMinWidth(), maxWidth = getMaxWidth();
+				float minHeight = getMinHeight(), maxHeight = getMaxHeight();
+				Stage stage = getStage();
+				boolean clampPosition = keepWithinStage && getParent() == stage.getRoot();
+
+				if ((edge & MOVE) != 0) {
+					float amountX = x - startX, amountY = y - startY;
+					windowX += amountX;
+					windowY += amountY;
+				}
+				if ((edge & Align.left) != 0) {
+					float amountX = x - startX;
+					if (width - amountX < minWidth) amountX = -(minWidth - width);
+					if (clampPosition && windowX + amountX < 0) amountX = -windowX;
+					width -= amountX;
+					windowX += amountX;
+				}
+				if ((edge & Align.bottom) != 0) {
+					float amountY = y - startY;
+					if (height - amountY < minHeight) amountY = -(minHeight - height);
+					if (clampPosition && windowY + amountY < 0) amountY = -windowY;
+					height -= amountY;
+					windowY += amountY;
+				}
+				if ((edge & Align.right) != 0) {
+					float amountX = x - lastX;
+					if (width + amountX < minWidth) amountX = minWidth - width;
+					if (clampPosition && windowX + width + amountX > stage.getWidth()) amountX = stage.getWidth() - windowX - width;
+					width += amountX;
+				}
+				if ((edge & Align.top) != 0) {
+					float amountY = y - lastY;
+					if (height + amountY < minHeight) amountY = minHeight - height;
+					if (clampPosition && windowY + height + amountY > stage.getHeight())
+						amountY = stage.getHeight() - windowY - height;
+					height += amountY;
+				}
+				lastX = x;
+				lastY = y;
+				setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {
@@ -126,9 +198,10 @@ public class Window extends Table {
 		return style;
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	void keepWithinStage () {
+		if (!keepWithinStage) return;
 		Stage stage = getStage();
-		if (keepWithinStage && getParent() == stage.getRoot()) {
+		if (getParent() == stage.getRoot()) {
 			float parentWidth = stage.getWidth();
 			float parentHeight = stage.getHeight();
 			if (getX() < 0) setX(0);
@@ -136,35 +209,51 @@ public class Window extends Table {
 			if (getY() < 0) setY(0);
 			if (getTop() > parentHeight) setY(parentHeight - getHeight());
 		}
+	}
+
+	public void draw (SpriteBatch batch, float parentAlpha) {
+		keepWithinStage();
 		super.draw(batch, parentAlpha);
 	}
 
 	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+		float x = getX(), y = getY();
+		float width = getWidth(), height = getHeight();
+		float padTop = getPadTop();
+
 		if (style.stageBackground != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			Stage stage = getStage();
 			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
 			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground
-				.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+			style.stageBackground.draw(batch, x + tmpPosition.x, y + tmpPosition.y, x + tmpSize.x, y + tmpSize.y);
 		}
 
 		super.drawBackground(batch, parentAlpha);
+
+		// Draw button table.
+		buttonTable.getColor().a = getColor().a;
+		buttonTable.pack();
+		buttonTable.setPosition(width - buttonTable.getWidth(), Math.min(height - padTop, height - buttonTable.getHeight()));
+		buttonTable.translate(x, y);
+		buttonTable.draw(batch, parentAlpha);
+		buttonTable.translate(-x, -y);
+
 		// Draw the title without the batch transformed or clipping applied.
-		float x = getX(), y = getY() + getHeight();
+		y += height;
 		TextBounds bounds = titleCache.getBounds();
 		if ((titleAlignment & Align.left) != 0)
 			x += getPadLeft();
 		else if ((titleAlignment & Align.right) != 0)
-			x += getWidth() - bounds.width - getPadRight();
+			x += width - bounds.width - getPadRight();
 		else
-			x += (getWidth() - bounds.width) / 2;
+			x += (width - bounds.width) / 2;
 		if ((titleAlignment & Align.top) == 0) {
 			if ((titleAlignment & Align.bottom) != 0)
-				y -= getPadTop() - bounds.height;
+				y -= padTop - bounds.height;
 			else
-				y -= (getPadTop() - bounds.height) / 2;
+				y -= (padTop - bounds.height) / 2;
 		}
 		titleCache.setColor(Color.tmp.set(getColor()).mul(style.titleFontColor));
 		titleCache.setPosition((int)x, (int)y);
@@ -191,8 +280,16 @@ public class Window extends Table {
 		this.titleAlignment = titleAlignment;
 	}
 
+	public boolean isMovable () {
+		return isMovable;
+	}
+
 	public void setMovable (boolean isMovable) {
 		this.isMovable = isMovable;
+	}
+
+	public boolean isModal () {
+		return isModal;
 	}
 
 	public void setModal (boolean isModal) {
@@ -203,12 +300,28 @@ public class Window extends Table {
 		this.keepWithinStage = keepWithinStage;
 	}
 
+	public boolean isResizable () {
+		return isResizable;
+	}
+
+	public void setResizable (boolean isResizable) {
+		this.isResizable = isResizable;
+	}
+
+	public void setResizeBorder (int resizeBorder) {
+		this.resizeBorder = resizeBorder;
+	}
+
 	public boolean isDragging () {
 		return dragging;
 	}
 
 	public float getPrefWidth () {
 		return Math.max(super.getPrefWidth(), titleCache.getBounds().width + getPadLeft() + getPadRight());
+	}
+
+	public Table getButtonTable () {
+		return buttonTable;
 	}
 
 	/** The style for a window, see {@link Window}.

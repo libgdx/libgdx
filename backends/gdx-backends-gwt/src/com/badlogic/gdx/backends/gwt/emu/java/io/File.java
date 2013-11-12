@@ -18,7 +18,7 @@ package java.io;
 
 import java.util.ArrayList;
 
-import com.google.gwt.corp.localstorage.LocalStorage;
+import com.google.gwt.storage.client.Storage;
 
 /** LocalStorage based File implementation for GWT. Should probably have used Harmony as a starting point instead of writing this
  * from scratch.
@@ -36,6 +36,8 @@ public class File {
 
 	public static final String pathSeparator = "" + pathSeparatorChar;
 
+	public static final Storage LocalStorage = Storage.getLocalStorageIfSupported();
+	
 	File parent;
 	String name;
 	boolean absolute;
@@ -159,29 +161,17 @@ public class File {
 	}
 
 	public boolean exists () {
-		try {
-			return LocalStorage.getItem(getCanonicalPath()) != null;
-		} catch (IOException e) {
-			return false;
-		}
+		return LocalStorage.getItem(getCanonicalPath()) != null;
 	}
 
 	public boolean isDirectory () {
-		try {
-			String s = LocalStorage.getItem(getCanonicalPath());
-			return s != null && s.startsWith("{");
-		} catch (IOException e) {
-			return false;
-		}
+		String s = LocalStorage.getItem(getCanonicalPath());
+		return s != null && s.startsWith("{");
 	}
 
 	public boolean isFile () {
-		try {
-			String s = LocalStorage.getItem(getCanonicalPath());
-			return s != null && !s.startsWith("{");
-		} catch (IOException e) {
-			return false;
-		}
+		String s = LocalStorage.getItem(getCanonicalPath());
+		return s != null && !s.startsWith("{");
 	}
 
 	public boolean isHidden () {
@@ -215,15 +205,11 @@ public class File {
 	}
 
 	public boolean delete () {
-		try {
-			if (!exists()) {
-				return false;
-			}
-			LocalStorage.removeItem(getCanonicalPath());
-			return true;
-		} catch (IOException e) {
+		if (!exists()) {
 			return false;
 		}
+		LocalStorage.removeItem(getCanonicalPath());
+		return true;
 	}
 
 	public void deleteOnExit () {
@@ -244,25 +230,20 @@ public class File {
 
 	public File[] listFiles (FilenameFilter filter) {
 		ArrayList<File> files = new ArrayList<File>();
-		try {
-			String prefix = getCanonicalPath();
-			if (!prefix.endsWith(separator)) {
-				prefix += separatorChar;
-			}
-
-			int cut = prefix.length();
-			int cnt = LocalStorage.length();
-			for (int i = 0; i < cnt; i++) {
-				String key = LocalStorage.key(i);
-				if (key.startsWith(prefix) && key.indexOf(separatorChar, cut) == -1) {
-					String name = key.substring(cut);
-					if (filter == null || filter.accept(this, name)) {
-						files.add(new File(this, name));
-					}
+		String prefix = getCanonicalPath();
+		if (!prefix.endsWith(separator)) {
+			prefix += separatorChar;
+		}
+		int cut = prefix.length();
+		int cnt = LocalStorage.getLength();
+		for (int i = 0; i < cnt; i++) {
+			String key = LocalStorage.key(i);
+			if (key.startsWith(prefix) && key.indexOf(separatorChar, cut) == -1) {
+				String name = key.substring(cut);
+				if (filter == null || filter.accept(this, name)) {
+					files.add(new File(this, name));
 				}
 			}
-		} catch (IOException e) {
-			System.err.println("lisFiles() exception: " + e);
 		}
 		return files.toArray(new File[files.size()]);
 	}
@@ -272,19 +253,15 @@ public class File {
 	 */
 
 	public boolean mkdir () {
-		try {
-			if (parent != null && !parent.exists()) {
-				return false;
-			}
-			if (exists()) {
-				return false;
-			}
-			// We may want to make this a JS map
-			LocalStorage.setItem(getCanonicalPath(), "{}");
-			return true;
-		} catch (IOException e) {
+		if (parent != null && !parent.exists()) {
 			return false;
 		}
+		if (exists()) {
+			return false;
+		}
+		// We may want to make this a JS map
+		LocalStorage.setItem(getCanonicalPath(), "{}");
+		return true;
 	}
 
 	public boolean mkdirs () {

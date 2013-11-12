@@ -107,7 +107,7 @@ public class OpenALAudio implements Audio {
 
 	public OpenALSound newSound (FileHandle file) {
 		if (file == null) throw new IllegalArgumentException("file cannot be null.");
-		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(file.extension());
+		Class<? extends OpenALSound> soundClass = extensionToSoundClass.get(file.extension().toLowerCase());
 		if (soundClass == null) throw new GdxRuntimeException("Unknown file extension for sound: " + file);
 		try {
 			return soundClass.getConstructor(new Class[] {OpenALAudio.class, FileHandle.class}).newInstance(this, file);
@@ -118,7 +118,7 @@ public class OpenALAudio implements Audio {
 
 	public OpenALMusic newMusic (FileHandle file) {
 		if (file == null) throw new IllegalArgumentException("file cannot be null.");
-		Class<? extends OpenALMusic> musicClass = extensionToMusicClass.get(file.extension());
+		Class<? extends OpenALMusic> musicClass = extensionToMusicClass.get(file.extension().toLowerCase());
 		if (musicClass == null) throw new GdxRuntimeException("Unknown file extension for music: " + file);
 		try {
 			return musicClass.getConstructor(new Class[] {OpenALAudio.class, FileHandle.class}).newInstance(this, file);
@@ -196,6 +196,26 @@ public class OpenALAudio implements Audio {
 			}
 		}
 	}
+	
+	void pauseSourcesWithBuffer (int bufferID) {
+		if (noDevice) return;
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID)
+				alSourcePause(sourceID);
+		}
+	}
+	
+	void resumeSourcesWithBuffer (int bufferID) {
+		if (noDevice) return;
+		for (int i = 0, n = idleSources.size; i < n; i++) {
+			int sourceID = idleSources.get(i);
+			if (alGetSourcei(sourceID, AL_BUFFER) == bufferID) {
+				if (alGetSourcei(sourceID, AL_SOURCE_STATE) == AL_PAUSED)
+					alSourcePlay(sourceID);
+			}
+		}
+	}
 
 	public void update () {
 		if (noDevice) return;
@@ -212,6 +232,19 @@ public class OpenALAudio implements Audio {
 		if (!soundIdToSource.containsKey(soundId)) return;
 		int sourceId = soundIdToSource.get(soundId);
 		alSourceStop(sourceId);
+	}
+	
+	public void pauseSound (long soundId) {
+		if (!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		alSourcePause(sourceId);
+	}
+	
+	public void resumeSound (long soundId) {
+		if (!soundIdToSource.containsKey(soundId)) return;
+		int sourceId = soundIdToSource.get(soundId);
+		if (alGetSourcei(sourceId, AL_SOURCE_STATE) == AL_PAUSED)
+			alSourcePlay(sourceId);
 	}
 
 	public void setSoundGain (long soundId, float volume) {

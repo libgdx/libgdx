@@ -86,13 +86,10 @@ public class Image extends Widget {
 	}
 
 	public void layout () {
-		float regionWidth, regionHeight;
-		if (drawable != null) {
-			regionWidth = drawable.getMinWidth();
-			regionHeight = drawable.getMinHeight();
-		} else
-			return;
+		if (drawable == null) return;
 
+		float regionWidth = drawable.getMinWidth();
+		float regionHeight = drawable.getMinHeight();
 		float width = getWidth();
 		float height = getHeight();
 
@@ -139,6 +136,10 @@ public class Image extends Widget {
 			} else
 				drawable.draw(batch, x + imageX, y + imageY, imageWidth * scaleX, imageHeight * scaleY);
 		}
+	}
+
+	public void setDrawable (Skin skin, String drawableName) {
+		setDrawable(skin.getDrawable(drawableName));
 	}
 
 	public void setDrawable (Drawable drawable) {

@@ -123,7 +123,7 @@ public class BoundingBox implements Serializable {
 			minimum.z < maximum.z ? minimum.z : maximum.z);
 		max.set(minimum.x > maximum.x ? minimum.x : maximum.x, minimum.y > maximum.y ? minimum.y : maximum.y,
 			minimum.z > maximum.z ? minimum.z : maximum.z);
-		cnt.set(min).add(max).mul(0.5f);
+		cnt.set(min).add(max).scl(0.5f);
 		dim.set(max).sub(min);
 		crn_dirty = true;
 		return this;
@@ -187,7 +187,7 @@ public class BoundingBox implements Serializable {
 	 * 
 	 * @return True in case the bounding box is valid, false otherwise */
 	public boolean isValid () {
-		return (min.x < max.x && min.y < max.y && min.z < max.z);
+		return min.x < max.x && min.y < max.y && min.z < max.z;
 	}
 
 	/** Extends this bounding box by the given bounding box.
@@ -200,6 +200,23 @@ public class BoundingBox implements Serializable {
 			max.set(max(max.x, a_bounds.max.x), max(max.y, a_bounds.max.y), max(max.z, a_bounds.max.z)));
 	}
 
+	/** Extends this bounding box by the given transformed bounding box.
+	 * 
+	 * @param bounds The bounding box
+	 * @param transform The transformation matrix to apply to bounds, before using it to extend this bounding box. 
+	 * @return This bounding box for chaining. */
+	public BoundingBox ext (BoundingBox bounds, Matrix4 transform) {
+		bounds.updateCorners();
+		for (Vector3 pnt : crn) {
+			pnt.mul(transform);
+			min.set(min(min.x, pnt.x), min(min.y, pnt.y), min(min.z, pnt.z));
+			max.set(max(max.x, pnt.x), max(max.y, pnt.y), max(max.z, pnt.z));
+		}
+		crn_dirty = true;
+		bounds.crn_dirty = true;
+		return this.set(min, max);
+	}
+	
 	/** Multiplies the bounding box by the given matrix. This is achieved by multiplying the 8 corner points and then calculating
 	 * the minimum and maximum vectors from the transformed points.
 	 * 
@@ -218,33 +235,43 @@ public class BoundingBox implements Serializable {
 	}
 
 	/** Returns whether the given bounding box is contained in this bounding box.
-	 * @param bounds The bounding box
+	 * @param b The bounding box
 	 * @return Whether the given bounding box is contained */
-	public boolean contains (BoundingBox bounds) {
-		if (!isValid()) return true;
-		if (min.x > bounds.min.x) return false;
-		if (min.y > bounds.min.y) return false;
-		if (min.z > bounds.min.z) return false;
-		if (max.x < bounds.max.x) return false;
-		if (max.y < bounds.max.y) return false;
-		if (max.z < bounds.max.z) return false;
-		return true;
+	public boolean contains (BoundingBox b) {
+		return !isValid()
+			|| (min.x <= b.min.x && min.y <= b.min.y && min.z <= b.min.z && max.x >= b.max.x && max.y >= b.max.y && max.z >= b.max.z);
 	}
 
+	/** Returns whether the given bounding box is intersecting this bounding box (at least one point in).
+	 * @param b The bounding box
+	 * @return Whether the given bounding box is intersected  */
+	public boolean intersects (BoundingBox b) {
+		if(!isValid())
+			return false;
+				
+		//test using SAT (separating axis theorem)
+		
+		float lx = Math.abs(this.cnt.x - b.cnt.x);
+		float sumx = (this.dim.x / 2.0f) + (b.dim.x / 2.0f); 
+		
+		float ly = Math.abs(this.cnt.y - b.cnt.y);
+		float sumy = (this.dim.y / 2.0f) + (b.dim.y / 2.0f); 
+		
+		float lz = Math.abs(this.cnt.z - b.cnt.z);
+		float sumz = (this.dim.z / 2.0f) + (b.dim.z / 2.0f); 
+		
+		return (lx <= sumx && ly <= sumy && lz <= sumz);  
+		
+	}
+	
 	/** Returns whether the given vector is contained in this bounding box.
 	 * @param v The vector
 	 * @return Whether the vector is contained or not. */
 	public boolean contains (Vector3 v) {
-		if (min.x > v.x) return false;
-		if (max.x < v.x) return false;
-		if (min.y > v.y) return false;
-		if (max.y < v.y) return false;
-		if (min.z > v.z) return false;
-		if (max.z < v.z) return false;
-
-		return true;
+		return min.x <= v.x && max.x >= v.x && min.y <= v.y && max.y >= v.y && min.z <= v.z && max.z >= v.z;
 	}
 
+	@Override
 	public String toString () {
 		return "[" + min + "|" + max + "]";
 	}

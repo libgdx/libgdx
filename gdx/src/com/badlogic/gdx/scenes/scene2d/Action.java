@@ -46,7 +46,7 @@ abstract public class Action implements Poolable {
 	/** Sets the actor this action will be used for. This is called automatically when an action is added to an actor. This is also
 	 * called with null when an action is removed from an actor. When set to null, if the action has a {@link #setPool(Pool) pool}
 	 * then the action is {@link Pool#free(Object) returned} to the pool (which calls {@link #reset()}) and the pool is set to null.
-	 * If the action does not have a pool, {@link #reset()} is called.
+	 * If the action does not have a pool, {@link #reset()} is not called.
 	 * <p>
 	 * This method is not typically a good place for a subclass to query the actor's state because the action may not be executed
 	 * for some time, eg it may be {@link DelayAction delayed}. The actor's state is best queried in the first call to
@@ -57,8 +57,7 @@ abstract public class Action implements Poolable {
 			if (pool != null) {
 				pool.free(this);
 				pool = null;
-			} else
-				reset();
+			}
 		}
 	}
 
@@ -77,6 +76,7 @@ abstract public class Action implements Poolable {
 	}
 
 	/** Sets the pool that the action will be returned to when removed from the actor.
+	 * @param pool May be null.
 	 * @see #setActor(Actor) */
 	public void setPool (Pool pool) {
 		this.pool = pool;

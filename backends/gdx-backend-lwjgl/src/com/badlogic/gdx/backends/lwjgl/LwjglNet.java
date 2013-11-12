@@ -16,30 +16,17 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
-import java.awt.Desktop;
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import org.lwjgl.Sys;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.StreamUtils;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
  * @author acoppes */
@@ -64,17 +51,7 @@ public class LwjglNet implements Net {
 
 	@Override
 	public void openURI (String URI) {
-		if (!Desktop.isDesktopSupported()) return;
-
-		Desktop desktop = Desktop.getDesktop();
-
-		if (!desktop.isSupported(Desktop.Action.BROWSE)) return;
-
-		try {
-			desktop.browse(new java.net.URI(URI));
-		} catch (Exception e) {
-			throw new GdxRuntimeException(e);
-		}
+		Sys.openURL(URI);
 	}
 
 }

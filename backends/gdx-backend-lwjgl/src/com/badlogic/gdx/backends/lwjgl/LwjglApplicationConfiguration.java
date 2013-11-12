@@ -16,16 +16,16 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array;
-
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.util.ArrayList;
 
 public class LwjglApplicationConfiguration {
 	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
@@ -46,21 +46,25 @@ public class LwjglApplicationConfiguration {
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
-	/** whether to use CPU synching. If this is false display vsynching is used, which might not work in windowed mode **/
-	public boolean useCPUSynch = false;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/
-	public String title = "Lwjgl Application";
+	public String title;
 	/** whether to call System.exit() on tear-down. Needed for Webstarts on some versions of Mac OS X it seems **/
 	public boolean forceExit = true;
 	/** whether the window is resizable **/
 	public boolean resizable = true;
+	/** the maximum number of sources that can be played simultaneously */
+	public int audioDeviceSimultaneousSources = 16;
 	/** the audio device buffer size in samples **/
 	public int audioDeviceBufferSize = 512;
 	/** the audio device buffer count **/
 	public int audioDeviceBufferCount = 9;
 	public Color initialBackgroundColor = Color.BLACK;
+	/** Target framerate when the window is in the foreground. The CPU sleeps as needed. Use 0 to never sleep. **/
+	public int foregroundFPS = 61;
+	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
+	public int backgroundFPS = 61;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();

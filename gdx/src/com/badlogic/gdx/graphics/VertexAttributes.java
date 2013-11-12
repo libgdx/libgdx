@@ -25,12 +25,15 @@ public final class VertexAttributes {
 	 * 
 	 * @author mzechner */
 	public static final class Usage {
-		public static final int Position = 0;
-		public static final int Color = 1;
-		public static final int ColorPacked = 5;
-		public static final int Normal = 2;
-		public static final int TextureCoordinates = 3;
-		public static final int Generic = 4;
+		public static final int Position = 1;
+		public static final int Color = 2;
+		public static final int ColorPacked = 4;
+		public static final int Normal = 8;
+		public static final int TextureCoordinates = 16;
+		public static final int Generic = 32;
+		public static final int BoneWeight = 64;
+		public static final int Tangent = 128;
+		public static final int BiNormal = 256;
 	}
 
 	/** the attributes in the order they were specified **/
@@ -38,6 +41,9 @@ public final class VertexAttributes {
 
 	/** the size of a single vertex in bytes **/
 	public final int vertexSize;
+	
+	/** cache of the value calculated by {@link #getMask()} **/
+	private long mask = -1;
 
 	/** Constructor, sets the vertex attributes in a specific order */
 	public VertexAttributes (VertexAttribute... attributes) {
@@ -150,5 +156,21 @@ public final class VertexAttributes {
 			if (!attributes[i].equals(other.attributes[i])) return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Calculates a mask based on the contained {@link VertexAttribute} instances. The mask
+	 * is a bit-wise or of each attributes {@link VertexAttribute#usage}.
+	 * @return the mask
+	 */
+	public long getMask () {
+		if(mask == -1) {
+			long result = 0;
+			for(int i = 0; i < attributes.length; i++) {
+				result |= attributes[i].usage;
+			}
+			mask = result;
+		}
+		return mask;
 	}
 }

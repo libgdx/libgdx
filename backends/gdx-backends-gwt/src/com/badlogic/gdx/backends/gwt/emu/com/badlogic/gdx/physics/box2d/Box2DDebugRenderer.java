@@ -30,6 +30,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Shape.Type;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
+import com.badlogic.gdx.utils.Array;
 
 public class Box2DDebugRenderer {
 
@@ -45,6 +46,9 @@ public class Box2DDebugRenderer {
 	private static Vector2 lower;
 	private static Vector2 upper;
 
+	private final static Array<Body> bodies = new Array<Body>();
+	private final static Array<Joint> joints = new Array<Joint>();
+	
 	private boolean drawBodies;
 	private boolean drawJoints;
 	private boolean drawAABBs;
@@ -96,14 +100,16 @@ public class Box2DDebugRenderer {
 		renderer.begin(ShapeType.Line);
 
 		if (drawBodies || drawAABBs) {
-			for (Iterator<Body> iter = world.getBodies(); iter.hasNext();) {
+			world.getBodies(bodies);
+			for (Iterator<Body> iter = bodies.iterator(); iter.hasNext();) {
 				Body body = iter.next();
 				if (body.isActive() || drawInactiveBodies) renderBody(body);
 			}
 		}
 
 		if (drawJoints) {
-			for (Iterator<Joint> iter = world.getJoints(); iter.hasNext();) {
+			world.getJoints(joints);
+			for (Iterator<Joint> iter = joints.iterator(); iter.hasNext();) {
 				Joint joint = iter.next();
 				drawJoint(joint);
 			}
@@ -112,7 +118,7 @@ public class Box2DDebugRenderer {
 
 		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
 		renderer.begin(ShapeType.Point);
-		int len = world.getContactList().size();
+		int len = world.getContactList().size;
 		for (int i = 0; i < len; i++)
 			drawContact(world.getContactList().get(i));
 		renderer.end();
@@ -121,8 +127,8 @@ public class Box2DDebugRenderer {
 
 	protected void renderBody (Body body) {
 		Transform transform = body.getTransform();
-		int len = body.getFixtureList().size();
-		List<Fixture> fixtures = body.getFixtureList();
+		int len = body.getFixtureList().size;
+		Array<Fixture> fixtures = body.getFixtureList();
 		for (int i = 0; i < len; i++) {
 			Fixture fixture = fixtures.get(i);
 

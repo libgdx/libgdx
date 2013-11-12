@@ -18,18 +18,17 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.ContactResultCallback;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionObjectWrapper;
-import com.badlogic.gdx.physics.bullet.btCollisionWorld;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btManifoldPoint;
-import com.badlogic.gdx.physics.bullet.gdxBulletJNI;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
 
 /** @author xoppa */
 public class CollisionWorldTest extends BaseBulletTest {
@@ -44,8 +43,8 @@ public class CollisionWorldTest extends BaseBulletTest {
 		public float addSingleResult (btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0,
 			btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
 			hit = true;
-			other = colObj0Wrap.getM_collisionObject() == movingBox.body ?
-					colObj1Wrap.getM_collisionObject() : colObj0Wrap.getM_collisionObject();
+			other = colObj0Wrap.getCollisionObject() == movingBox.body ?
+					colObj1Wrap.getCollisionObject() : colObj0Wrap.getCollisionObject();
 			
 			return 0f;
 		}
@@ -66,7 +65,7 @@ public class CollisionWorldTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		
-		instructions = "Long press to toggle debug mode\nSwipe for next test";
+		instructions = "Long press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
 		contactCB = new TestContactResultCallback();
 		
@@ -77,16 +76,16 @@ public class CollisionWorldTest extends BaseBulletTest {
 		world.addConstructor("collisionBox", new BulletConstructor(boxModel));
 		
 		world.add("collisionGround", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		world.add("collisionBox", 0f, 1f, 5f)
-			.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		world.add("collisionBox", 0f, 1f, -5f)
-			.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		world.add("collisionBox", 5f, 1f, 0f)
-			.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		world.add("collisionBox", -5f, 1f, 0f)
-			.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 		movingBox = world.add("collisionBox", -5f, 1f, 0f);
 		normalColor.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 	}
@@ -118,19 +117,19 @@ public class CollisionWorldTest extends BaseBulletTest {
 		hit = false;
 		other = null;
 		world.collisionWorld.contactTest(movingBox.body, contactCB);
-		movingBox.color.set(hit ? Color.RED : normalColor);
+		movingBox.setColor(hit ? Color.RED : normalColor);
 		
 		BulletEntity e = null;
 		if (other != null && other.userData != null && other.userData instanceof BulletEntity) { 
 			e = (BulletEntity)(other.userData);
-			tmpColor.set(e.color);
-			e.color.set(Color.RED);
+			tmpColor.set(e.getColor());
+			e.setColor(Color.RED);
 		}
 		
 		super.renderWorld();
 
 		if (e != null)
-			e.color.set(tmpColor);
+			e.setColor(tmpColor);
 	}
 	
 	@Override

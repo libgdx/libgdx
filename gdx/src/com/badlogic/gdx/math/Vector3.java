@@ -27,9 +27,9 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	/** the x-component of this vector **/
 	public float x;
-	/** the x-component of this vector **/
+	/** the y-component of this vector **/
 	public float y;
-	/** the x-component of this vector **/
+	/** the z-component of this vector **/
 	public float z;
 
 	/** @deprecated
@@ -77,6 +77,14 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		this.set(values[0], values[1], values[2]);
 	}
 
+	/** Creates a vector from the given vector and z-component
+	 *
+	 * @param vector The vector
+	 * @param z The z-component */
+	public Vector3 (final Vector2 vector, float z) {
+		this.set(vector.x, vector.y, z);
+	}
+
 	/** Sets the vector to the given components
 	 * 
 	 * @param x The x-component
@@ -104,6 +112,15 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * @return this vector for chaining */
 	public Vector3 set (final float[] values) {
 		return this.set(values[0], values[1], values[2]);
+	}
+
+	/** Sets the components of the given vector and z-component
+	 *
+	 * @param vector The vector
+	 * @param z The z-component
+	 * @return This vector for chaining */
+	public Vector3 set (final Vector2 vector, float z) {
+		return this.set(vector.x, vector.y, z);
 	}
 
 	/** @return a copy of this vector */
@@ -332,7 +349,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return a * a + b * b + c * c;
 	}
 
-	/** Normalizes this vector to unit length
+	/** Normalizes this vector to unit length. Does nothing if it is zero.
 	 * @return This vector for chaining */
 	public Vector3 nor () {
 		final float len2 = this.len2();
@@ -377,7 +394,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(this.y * z - this.z * y, this.z * x - this.x * z, this.x * y - this.y * x);
 	}
 
-	/** Multiplies the vector by the given matrix.
+	/** Left-multiplies the vector by the given matrix, assuming the fourth (w) component of the vector is 1.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
 	public Vector3 mul (final Matrix4 matrix) {
@@ -392,10 +409,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public Vector3 mul (final Quaternion quat) {
 		return quat.transform(this);
 	}
-	
-	/** Multiplies this vector by the given matrix dividing by w. This is mostly used to project/unproject vectors via a perspective
-	 * projection matrix.
-	 * 
+
+	/** Multiplies this vector by the given matrix dividing by w, assuming the fourth (w) component of the vector is 1.
+	 * This is mostly used to project/unproject vectors via a perspective projection matrix.
+	 *
 	 * @param matrix The matrix.
 	 * @return This vector for chaining */
 	public Vector3 prj (final Matrix4 matrix) {
@@ -415,24 +432,25 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02], x * l_mat[Matrix4.M10] + y
 			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12], x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22]);
 	}
-	
-	/** Rotates this vector by the given angle around the given axis.
-	 * 
+
+	/** Rotates this vector by the given angle in degrees around the given axis.
+	 *
+	 * @param degrees the angle in degrees
 	 * @param axisX the x-component of the axis
 	 * @param axisY the y-component of the axis
 	 * @param axisZ the z-component of the axis
 	 * @return This vector for chaining */
-	public Vector3 rotate (float angle, float axisX, float axisY, float axisZ) {
-		return this.mul(tmpMat.setToRotation(axisX, axisY, axisZ, angle));
+	public Vector3 rotate (float degrees, float axisX, float axisY, float axisZ) {
+		return this.mul(tmpMat.setToRotation(axisX, axisY, axisZ, degrees));
 	}
-	
-	/** Rotates this vector by the given angle around the given axis.
-	 * 
-	 * @param axis
-	 * @param angle the angle
+
+	/** Rotates this vector by the given angle in degrees around the given axis.
+	 *
+	 * @param axis the axis
+	 * @param degrees the angle in degrees
 	 * @return This vector for chaining */
-	public Vector3 rotate (final Vector3 axis, float angle) {
-		tmpMat.setToRotation(axis, angle);
+	public Vector3 rotate (final Vector3 axis, float degrees) {
+		tmpMat.setToRotation(axis, degrees);
 		return this.mul(tmpMat);
 	}
 

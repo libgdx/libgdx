@@ -16,30 +16,41 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import java.lang.reflect.InvocationTargetException;
+import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+import com.esotericsoftware.tablelayout.Cell;
+import com.esotericsoftware.tablelayout.Toolkit;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Array;
-import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import com.esotericsoftware.tablelayout.Toolkit;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.ReflectionPool;
 
 /** The libgdx implementation of the table layout functionality.
  * @author Nathan Sweet */
-class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
+public class TableToolkit extends Toolkit<Actor, Table, TableLayout> {
 	static boolean drawDebug;
+	static Pool<Cell> cellPool = new Pool() {
+		protected Cell newObject () {
+			return new Cell();
+		}
+	};
+
+	public Cell obtainCell (TableLayout layout) {
+		Cell cell = cellPool.obtain();
+		cell.setLayout(layout);
+		return cell;
+	}
+
+	public void freeCell (Cell cell) {
+		cell.free();
+		cellPool.free(cell);
+	}
 
 	public void addChild (Actor parent, Actor child) {
 		child.remove();
-		try {
-			parent.getClass().getMethod("setWidget", Actor.class).invoke(parent, child);
-			return;
-		} catch (InvocationTargetException ex) {
-			throw new RuntimeException("Error calling setWidget.", ex);
-		} catch (Exception ignored) {
-		}
 		((Group)parent).addActor(child);
 	}
 

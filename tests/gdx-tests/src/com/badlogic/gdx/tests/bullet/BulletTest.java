@@ -18,6 +18,8 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.FloatCounter;
 import com.badlogic.gdx.math.Vector2;
@@ -27,10 +29,11 @@ import com.badlogic.gdx.utils.SharedLibraryLoader;
 /** @author xoppa */
 public class BulletTest implements ApplicationListener, InputProcessor, GestureListener {
 	public StringBuilder performance = new StringBuilder();
-	public String instructions = "Tap to shoot\nLong press to toggle debug mode\nSwipe for next test";
+	public String instructions = "Tap to shoot\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 	public PerformanceCounter performanceCounter = new PerformanceCounter(this.getClass().getSimpleName());
 	public FloatCounter fpsCounter = new FloatCounter(5);
-	
+	public PerspectiveCamera camera;
+
 	@Override
 	public boolean keyDown (int keycode) {
 		return false;
@@ -117,6 +120,11 @@ public class BulletTest implements ApplicationListener, InputProcessor, GestureL
 
 	@Override
 	public boolean pan (float x, float y, float deltaX, float deltaY) {
+		return false;
+	}
+
+	@Override
+	public boolean panStop (float x, float y, int pointer, int button) {
 		return false;
 	}
 

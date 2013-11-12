@@ -129,7 +129,7 @@ public interface Application {
 	public void log (String tag, String message);
 
 	/** Logs a message to the console or logcat */
-	public void log (String tag, String message, Exception exception);
+	public void log (String tag, String message, Throwable exception);
 
 	/** Logs an error message to the console or logcat */
 	public void error (String tag, String message);
@@ -148,10 +148,13 @@ public interface Application {
 	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}. */
 	public void setLogLevel (int logLevel);
 
+	/** Gets the log level. */
+	public int getLogLevel();
+
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
 
-	/** @return the Android API level on Android or 0 on the desktop. */
+	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
 	public int getVersion ();
 
 	/** @return the Java heap memory use in bytes */

@@ -18,10 +18,10 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.InternalTickCallback;
-import com.badlogic.gdx.physics.bullet.btCollisionObjectArray;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectArray;
+import com.badlogic.gdx.physics.bullet.dynamics.InternalTickCallback;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 /** @author xoppa */
 public class InternalTickTest extends BaseBulletTest {
@@ -36,7 +36,7 @@ public class InternalTickTest extends BaseBulletTest {
 			dynamicsWorld.clearForces();
 			int idx = 0;
 			for (int i = 0; i < objs.size(); i++) {
-				btRigidBody body = btRigidBody.upcast(objs.at(i));
+				btRigidBody body = (btRigidBody)(objs.at(i));
 				if (body == null || body.isStaticOrKinematicObject())
 					continue;
 				body.applyGravity();
@@ -64,13 +64,13 @@ public class InternalTickTest extends BaseBulletTest {
 
 		// Create the entities
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
 					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z)
-						.color.set(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+						.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 				}
 			}
 		}
@@ -81,7 +81,7 @@ public class InternalTickTest extends BaseBulletTest {
 		super.dispose();
 		
 		if (internalTickCallback != null)
-			internalTickCallback.delete();
+			internalTickCallback.dispose();
 		internalTickCallback = null;
 	}
 	

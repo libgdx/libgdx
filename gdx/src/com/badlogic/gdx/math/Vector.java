@@ -19,7 +19,7 @@ package com.badlogic.gdx.math;
 /** Encapsulates a general vector. Allows chaining operations by returning a reference to itself in all modification methods. See
  * {@link Vector2} and {@link Vector3} for specific implementations.
  * @author Xoppa */
-public interface Vector<T extends Vector> {
+public interface Vector<T extends Vector<T>> {
 	/** @return a copy of this vector */
 	T cpy ();
 
@@ -49,7 +49,7 @@ public interface Vector<T extends Vector> {
 	 * @return This vector for chaining */
 	T sub (T v);
 
-	/** Normalizes this vector
+	/** Normalizes this vector. Does nothing if it is zero.
 	 * @return This vector for chaining */
 	T nor ();
 
@@ -75,7 +75,9 @@ public interface Vector<T extends Vector> {
 	 * @return the distance between this and the other vector */
 	float dst (T v);
 
-	/** @param v The other vector
+	/** This is much faster to calculate than {@link Vector#dst(Vector)}
+	 * It avoids a calculating square root, so it is mostly useful for comparisons
+	 * @param v The other vector
 	 * @return the squared distance between this and the other vector */
 	float dst2 (T v);
 

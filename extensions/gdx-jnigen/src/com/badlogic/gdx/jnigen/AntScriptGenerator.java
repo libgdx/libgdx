@@ -102,7 +102,9 @@ public class AntScriptGenerator {
 					buildFiles.add(buildFileName);
 				} 
 				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
-				libsDirs.add("../" + libsDir.path().replace('\\', '/'));
+				if(target.os != TargetOs.Android && target.os != TargetOs.IOS) {
+					libsDirs.add("../" + libsDir.path().replace('\\', '/'));
+				}
 			}
 		}
 
@@ -119,6 +121,12 @@ public class AntScriptGenerator {
 		}
 		for (int i = 0; i < libsDirs.size(); i++) {
 			pack.append("\t\t\t<fileset dir=\"" + libsDirs.get(i) + "\" includes=\"" + sharedLibFiles.get(i) + "\"/>\n");
+		}
+		
+		if(config.sharedLibs != null) {
+			for(String sharedLib: config.sharedLibs) {
+				pack.append("\t\t\t<fileset dir=\"" + sharedLib+ "\"/>\n");
+			}
 		}
 
 		template = template.replace("%projectName%", config.sharedLibName + "-natives");

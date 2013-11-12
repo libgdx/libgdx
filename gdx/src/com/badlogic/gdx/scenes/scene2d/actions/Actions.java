@@ -307,6 +307,13 @@ public class Actions {
 		return action;
 	}
 
+	static public TimeScaleAction timeScale (float scale, Action scaledAction) {
+		TimeScaleAction action = action(TimeScaleAction.class);
+		action.setScale(scale);
+		action.setAction(scaledAction);
+		return action;
+	}
+
 	static public SequenceAction sequence (Action action1) {
 		SequenceAction action = action(SequenceAction.class);
 		action.addAction(action1);

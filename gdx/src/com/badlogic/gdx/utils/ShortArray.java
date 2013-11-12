@@ -59,17 +59,24 @@ public class ShortArray {
 	/** Creates a new ordered array containing the elements in the specified array. The capacity is set to the number of elements,
 	 * so any subsequent elements added will cause the backing array to be grown. */
 	public ShortArray (short[] array) {
-		this(true, array);
+		this(true, array, 0, array.length);
 	}
 
 	/** Creates a new array containing the elements in the specified array. The capacity is set to the number of elements, so any
 	 * subsequent elements added will cause the backing array to be grown.
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
-	public ShortArray (boolean ordered, short[] array) {
-		this(ordered, array.length);
-		size = array.length;
-		System.arraycopy(array, 0, items, 0, size);
+	public ShortArray (boolean ordered, short[] array, int startIndex, int count) {
+		this(ordered, count);
+		size = count;
+		System.arraycopy(array, startIndex, items, 0, count);
+	}
+
+	/** Casts the specified value to short and adds it. */
+	public void add (int value) {
+		short[] items = this.items;
+		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
+		items[size++] = (short)value;
 	}
 
 	public void add (short value) {
@@ -94,7 +101,7 @@ public class ShortArray {
 
 	public void addAll (short[] array, int offset, int length) {
 		short[] items = this.items;
-		int sizeNeeded = size + length - offset;
+		int sizeNeeded = size + length;
 		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
@@ -110,7 +117,13 @@ public class ShortArray {
 		items[index] = value;
 	}
 
+	public void incr (int index, short value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] = value;
+	}
+
 	public void insert (int index, short value) {
+		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		short[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -218,6 +231,7 @@ public class ShortArray {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 
@@ -243,6 +257,7 @@ public class ShortArray {
 	}
 
 	public void reverse () {
+		short[] items = this.items;
 		for (int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++) {
 			int ii = lastIndex - i;
 			short temp = items[i];
@@ -252,6 +267,7 @@ public class ShortArray {
 	}
 
 	public void shuffle () {
+		short[] items = this.items;
 		for (int i = size - 1; i >= 0; i--) {
 			int ii = MathUtils.random(i);
 			short temp = items[i];

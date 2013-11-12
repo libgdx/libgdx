@@ -63,7 +63,7 @@ public class Group extends Actor implements Cullable {
 	 * offset by the group position when drawn. This method avoids drawing children completely outside the
 	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
 	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
-		parentAlpha *= getColor().a;
+		parentAlpha *= this.color.a;
 		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
 		Rectangle cullingArea = this.cullingArea;
@@ -77,30 +77,30 @@ public class Group extends Actor implements Cullable {
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX(), y = child.getY();
-					if (x <= cullRight && y <= cullTop && x + child.getWidth() >= cullLeft && y + child.getHeight() >= cullBottom)
+					float cx = child.x, cy = child.y;
+					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom)
 						child.draw(batch, parentAlpha);
 				}
 				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX(), offsetY = getY();
-				setX(0);
-				setY(0);
+				float offsetX = x, offsetY = y;
+				x = 0;
+				y = 0;
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX(), y = child.getY();
-					if (x <= cullRight && y <= cullTop && x + child.getWidth() >= cullLeft && y + child.getHeight() >= cullBottom) {
-						child.setX(x + offsetX);
-						child.setY(y + offsetY);
+					float cx = child.x, cy = child.y;
+					if (cx <= cullRight && cy <= cullTop && cx + child.width >= cullLeft && cy + child.height >= cullBottom) {
+						child.x = cx + offsetX;
+						child.y = cy + offsetY;
 						child.draw(batch, parentAlpha);
-						child.setX(x);
-						child.setY(y);
+						child.x = cx;
+						child.y = cy;
 					}
 				}
-				setX(offsetX);
-				setY(offsetY);
+				x = offsetX;
+				y = offsetY;
 			}
 		} else {
 			// No culling, draw all children.
@@ -113,21 +113,21 @@ public class Group extends Actor implements Cullable {
 				batch.flush();
 			} else {
 				// No transform for this group, offset each child.
-				float offsetX = getX(), offsetY = getY();
-				setX(0);
-				setY(0);
+				float offsetX = x, offsetY = y;
+				x = 0;
+				y = 0;
 				for (int i = 0, n = children.size; i < n; i++) {
 					Actor child = actors[i];
 					if (!child.isVisible()) continue;
-					float x = child.getX(), y = child.getY();
-					child.setX(x + offsetX);
-					child.setY(y + offsetY);
+					float cx = child.x, cy = child.y;
+					child.x = cx + offsetX;
+					child.y = cy + offsetY;
 					child.draw(batch, parentAlpha);
-					child.setX(x);
-					child.setY(y);
+					child.x = cx;
+					child.y = cy;
 				}
-				setX(offsetX);
-				setY(offsetY);
+				x = offsetX;
+				y = offsetY;
 			}
 		}
 		children.end();
@@ -144,11 +144,11 @@ public class Group extends Actor implements Cullable {
 	protected Matrix4 computeTransform () {
 		Matrix3 temp = worldTransform;
 
-		float originX = getOriginX();
-		float originY = getOriginY();
-		float rotation = getRotation();
-		float scaleX = getScaleX();
-		float scaleY = getScaleY();
+		float originX = this.originX;
+		float originY = this.originY;
+		float rotation = this.rotation;
+		float scaleX = this.scaleX;
+		float scaleY = this.scaleY;
 
 		if (originX != 0 || originY != 0)
 			localTransform.setToTranslation(originX, originY);
@@ -157,7 +157,7 @@ public class Group extends Actor implements Cullable {
 		if (rotation != 0) localTransform.rotate(rotation);
 		if (scaleX != 1 || scaleY != 1) localTransform.scale(scaleX, scaleY);
 		if (originX != 0 || originY != 0) localTransform.translate(-originX, -originY);
-		localTransform.trn(getX(), getY());
+		localTransform.trn(x, y);
 
 		// Find the first parent that transforms.
 		Group parentGroup = getParent();
@@ -331,6 +331,10 @@ public class Group extends Actor implements Cullable {
 		return children;
 	}
 
+	public boolean hasChildren () {
+		return children.size > 0;
+	}
+
 	/** When true (the default), the SpriteBatch is transformed so children are drawn in their parent's coordinate system. This has
 	 * a performance impact because {@link SpriteBatch#flush()} must be done before and after the transform. If the actors in a
 	 * group are not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position
@@ -354,5 +358,19 @@ public class Group extends Actor implements Cullable {
 		// Then from each parent down to the descendant.
 		descendant.parentToLocalCoordinates(localCoords);
 		return localCoords;
+	}
+
+	/** Prints the actor hierarchy recursively for debugging purposes. */
+	public void print () {
+		print("");
+	}
+
+	private void print (String indent) {
+		Actor[] actors = children.begin();
+		for (int i = 0, n = children.size; i < n; i++) {
+			System.out.println(indent + actors[i]);
+			if (actors[i] instanceof Group) ((Group)actors[i]).print(indent + "|  ");
+		}
+		children.end();
 	}
 }

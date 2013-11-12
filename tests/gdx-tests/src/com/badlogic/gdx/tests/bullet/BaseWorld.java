@@ -16,10 +16,13 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -33,7 +36,7 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		public Model model = null;
 		public abstract T construct(final float x, final float y, final float z);
 		public abstract T construct(final Matrix4 transform);
-	}	
+	}
 	
 	private final ObjectMap<String, Constructor<T>> constructors = new ObjectMap<String, Constructor<T>>();
 	protected final Array<T> entities = new Array<T>();
@@ -65,22 +68,18 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		return entity;
 	}
 	
-	public void render() {
-		render(entities);
+	public void render(final ModelBatch batch, final Environment lights) {
+		render(batch, lights, entities);
 	}
 	
-	public void render(final Iterable<T> entities) {
-		for (final T e : entities)
-			render(e);
+	public void render(final ModelBatch batch, final Environment lights, final Iterable<T> entities) {
+		for (final T e : entities) {
+			batch.render(e.modelInstance, lights);
+		}
 	}
 	
-	public void render(final T entity) {
-		final GL10 gl = Gdx.gl10;
-		gl.glPushMatrix();
-		gl.glMultMatrixf(entity.transform.val, 0);
-		gl.glColor4f(entity.color.r, entity.color.g, entity.color.b, entity.color.a);
-		entity.model.render();
-		gl.glPopMatrix();
+	public void render(final ModelBatch batch, final Environment lights, final T entity) {
+		batch.render(entity.modelInstance, lights);
 	}
 	
 	public void update() {	}
@@ -95,8 +94,6 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 			constructor.dispose();
 		constructors.clear();
 		
-		for (int i = 0; i < models.size; i++)
-			models.get(i).dispose();
 		models.clear();
 	}
 }

@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.JointDef.JointType;
@@ -42,6 +40,7 @@ import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
 import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.Pool;
@@ -241,7 +240,8 @@ b2ContactFilter defaultFilter;
 			shouldCollideID = env->GetMethodID( worldClass, "contactFilter", "(JJ)Z");
 		}
 	
-		b2World* world = new b2World( b2Vec2( gravityX, gravityY ), doSleep );
+		b2World* world = new b2World( b2Vec2( gravityX, gravityY ));
+		world->SetAllowSleeping( doSleep );
 		return (jlong)world;
 	*/
 
@@ -309,12 +309,12 @@ b2ContactFilter defaultFilter;
 	public void destroyBody (Body body) {
 		body.setUserData(null);
 		this.bodies.remove(body.addr);
-		List<Fixture> fixtureList = body.getFixtureList();
-		while(!fixtureList.isEmpty()) {
-			this.fixtures.remove(fixtureList.remove(0).addr).setUserData(null);
+		Array<Fixture> fixtureList = body.getFixtureList();
+		while(fixtureList.size > 0) {
+			this.fixtures.remove(fixtureList.removeIndex(0).addr).setUserData(null);
 		}
-		List<JointEdge> jointList = body.getJointList();
-		while (!jointList.isEmpty())
+		Array<JointEdge> jointList = body.getJointList();
+		while (jointList.size > 0)
 			destroyJoint(body.getJointList().get(0).joint);
 		jniDestroyBody(addr, body.addr);
 		freeBodies.free(body);
@@ -323,7 +323,13 @@ b2ContactFilter defaultFilter;
 	private native void jniDestroyBody (long addr, long bodyAddr); /*
 		b2World* world = (b2World*)addr;
 		b2Body* body = (b2Body*)bodyAddr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
 		world->DestroyBody(body);
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
 	*/
 
 	/** Create a joint to constrain bodies together. No reference to the definition is retained. This may cause the connected bodies
@@ -580,16 +586,23 @@ b2ContactFilter defaultFilter;
 	/** Destroy a joint. This may cause the connected bodies to begin colliding.
 	 * @warning This function is locked during callbacks. */
 	public void destroyJoint (Joint joint) {
+		joint.setUserData(null);
 		joints.remove(joint.addr);
-		joint.jointEdgeA.other.joints.remove(joint.jointEdgeB);
-		joint.jointEdgeB.other.joints.remove(joint.jointEdgeA);
+		joint.jointEdgeA.other.joints.removeValue(joint.jointEdgeB, true);
+		joint.jointEdgeB.other.joints.removeValue(joint.jointEdgeA, true);
 		jniDestroyJoint(addr, joint.addr);
 	}
 
 	private native void jniDestroyJoint (long addr, long jointAddr); /*
 		b2World* world = (b2World*)addr;
 		b2Joint* joint = (b2Joint*)jointAddr;
+		CustomContactFilter contactFilter(env, object);
+		CustomContactListener contactListener(env,object);
+		world->SetContactFilter(&contactFilter);
+		world->SetContactListener(&contactListener);
 		world->DestroyJoint( joint );
+		world->SetContactFilter(&defaultFilter);
+		world->SetContactListener(0);
 	*/
 
 	/** Take a time step. This performs collision detection, integration, and constraint solution.
@@ -782,14 +795,14 @@ b2ContactFilter defaultFilter;
 // b2Contact* GetContactList();
 
 	private long[] contactAddrs = new long[200];
-	private final ArrayList<Contact> contacts = new ArrayList<Contact>();
-	private final ArrayList<Contact> freeContacts = new ArrayList<Contact>();
+	private final Array<Contact> contacts = new Array<Contact>();
+	private final Array<Contact> freeContacts = new Array<Contact>();
 
 	/** Returns the list of {@link Contact} instances produced by the last call to {@link #step(float, int, int)}. Note that the
 	 * returned list will have O(1) access times when using indexing. contacts are created and destroyed in the middle of a time
 	 * step. Use {@link ContactListener} to avoid missing contacts
 	 * @return the contact list */
-	public List<Contact> getContactList () {
+	public Array<Contact> getContactList () {
 		int numContacts = getContactCount();
 		if (numContacts > contactAddrs.length) {
 			int newSize = 2 * numContacts;
@@ -797,8 +810,8 @@ b2ContactFilter defaultFilter;
 			contacts.ensureCapacity(newSize);
 			freeContacts.ensureCapacity(newSize);
 		}
-		if (numContacts > freeContacts.size()) {
-			int freeConts = freeContacts.size();
+		if (numContacts > freeContacts.size) {
+			int freeConts = freeContacts.size;
 			for (int i = 0; i < numContacts - freeConts; i++)
 				freeContacts.add(new Contact(this, 0));
 		}
@@ -814,14 +827,22 @@ b2ContactFilter defaultFilter;
 		return contacts;
 	}
 
-	/** @return all bodies currently in the simulation */
-	public Iterator<Body> getBodies () {
-		return bodies.values();
+	/** @param bodies an Array in which to place all bodies currently in the simulation */
+	public void getBodies (Array<Body> bodies) {
+		bodies.clear();
+		bodies.ensureCapacity(this.bodies.size);
+		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
+			bodies.add(iter.next());
+		}		
 	}
 
-	/** @return all joints currently in the simulation */
-	public Iterator<Joint> getJoints () {
-		return joints.values();
+	/** @param joints an Array in which to place all joints currently in the simulation */
+	public void getJoints (Array<Joint> joints) {
+		joints.clear();
+		joints.ensureCapacity(this.joints.size);
+		for (Iterator<Joint> iter = this.joints.values(); iter.hasNext();) {
+			joints.add(iter.next());
+		}
 	}
 
 	private native void jniGetContactList (long addr, long[] contacts); /*

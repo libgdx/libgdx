@@ -36,7 +36,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		desktopSuffixField.setText(Ctx.cfgSetup.suffixDesktop);
 		androidSuffixField.setText(Ctx.cfgSetup.suffixAndroid);
 		htmlSuffixField.setText(Ctx.cfgSetup.suffixHtml);
-                iosSuffixField.setText(Ctx.cfgSetup.suffixIos);
+      iosSuffixField.setText(Ctx.cfgSetup.suffixRobovm);
 		androidMinSdkField.setText(Ctx.cfgSetup.androidMinSdkVersion);
 		androidTargetSdkField.setText(Ctx.cfgSetup.androidTargetSdkVersion);
 		androidMaxSdkField.setText(Ctx.cfgSetup.androidMaxSdkVersion);
@@ -45,7 +45,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		desktopSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidSuffixField.addKeyListener(updateOnTypeKeyListener);
 		htmlSuffixField.addKeyListener(updateOnTypeKeyListener);
-                iosSuffixField.addKeyListener(updateOnTypeKeyListener);
+		iosSuffixField.addKeyListener(updateOnTypeKeyListener);
 		androidMinSdkField.addKeyListener(updateOnTypeKeyListener);
 		androidTargetSdkField.addKeyListener(updateOnTypeKeyListener);
 		androidMaxSdkField.addKeyListener(updateOnTypeKeyListener);
@@ -62,7 +62,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		Ctx.cfgSetup.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgSetup.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgSetup.suffixAndroid = androidSuffixField.getText();
-                Ctx.cfgSetup.suffixIos = iosSuffixField.getText();
+		Ctx.cfgSetup.suffixRobovm = iosSuffixField.getText();
 		Ctx.cfgSetup.androidMinSdkVersion = androidMinSdkField.getText();
 		Ctx.cfgSetup.androidMaxSdkVersion = androidMaxSdkField.getText();
 		Ctx.cfgSetup.androidTargetSdkVersion = androidTargetSdkField.getText();
@@ -70,7 +70,7 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		Ctx.cfgUpdate.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgUpdate.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgUpdate.suffixAndroid = androidSuffixField.getText();
-                Ctx.cfgUpdate.suffixIos = iosSuffixField.getText();
+      Ctx.cfgUpdate.suffixRobovm = iosSuffixField.getText();
 		Ctx.fireCfgSetupChanged();
 	}
 

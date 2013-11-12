@@ -23,6 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pools;
@@ -35,7 +36,7 @@ import com.badlogic.gdx.utils.Pools;
  * <p>
  * The preferred size of the button is determined by the background and the button contents.
  * @author Nathan Sweet */
-public class Button extends Table {
+public class Button extends Table implements Disableable {
 	private ButtonStyle style;
 	boolean isChecked, isDisabled;
 	ButtonGroup buttonGroup;
@@ -76,12 +77,16 @@ public class Button extends Table {
 		setHeight(getPrefHeight());
 	}
 
+	/** Creates a button without setting the style or size. At least a style must be set before using this button. */
+	public Button () {
+		initialize();
+	}
+
 	private void initialize () {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
 				if (isDisabled) return;
-				boolean wasChecked = isChecked;
 				setChecked(!isChecked);
 			}
 		});

@@ -19,6 +19,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<property name="target" value="target" />
 	<property name="libs" value="libs" />
 	<zipfileset id="jarfiles" dir="." excludes="**"/>
+	<fileset id="resourcefiles" dir="." excludes="**"/>
 	
 	<!-- clean output directories, create libs directory -->	
 	<target name="clean">		
@@ -30,9 +31,6 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 	<target name="init" depends="clean">		
 		<mkdir dir="${target}" />
 		<mkdir dir="${target}/java" />
-		<!-- need to copy the internal font to target if compiling the gdx core :/ -->
-		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.png" file="src/com/badlogic/gdx/utils/arial-15.png" />
-		<copy failonerror="false" tofile="${target}/java/com/badlogic/gdx/utils/arial-15.fnt" file="src/com/badlogic/gdx/utils/arial-15.fnt" />
 		<!-- need to copy jni headers for gdx-jnigen -->
 		<copy failonerror="false" todir="${target}/java">
 			<fileset dir="src">
@@ -78,6 +76,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<mkdir dir="${libs}/android32" />
 		<mkdir dir="${libs}/armeabi" />
 		<mkdir dir="${libs}/armeabi-v7a" />
+        <mkdir dir="${libs}/x86" />
 		<mkdir dir="${libs}/linux32" />
 		<mkdir dir="${libs}/linux64" />
 		<mkdir dir="${libs}/macosx32" />
@@ -87,17 +86,6 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 		<echo message="compiling natives code"/>
 		<ant antfile="build.xml" target="clean" dir="${jni}"/>
 		<ant antfile="build.xml" target="all" dir="${jni}"/>
-		<!-- copy shared libs for android -->
-		<copy failonerror="false" todir="${distDir}/armeabi">
-			<fileset dir="${libs}/armeabi">
-				<include name="**/*.so"/>
-			</fileset>
-		</copy>
-		<copy failonerror="false" todir="${distDir}/armeabi-v7a">
-			<fileset dir="${libs}/armeabi-v7a">
-				<include name="**/*.so"/>
-			</fileset>
-		</copy>
 	</target>
 	
 	<!-- create source and class jar -->
@@ -116,7 +104,7 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 			</fileset>
 		</copy>
 		
-		<!-- copy shared libs for android -->
+		<!-- copy shared libs for android & ios -->
 		<copy failonerror="false" todir="${distDir}/armeabi">
 			<fileset dir="${libs}/armeabi">
 				<include name="**/*.so"/>
@@ -127,15 +115,27 @@ zipfileset id="jarfiles" -> the jar files to be merged with the project's classe
 				<include name="**/*.so"/>
 			</fileset>
 		</copy>
+        <copy failonerror="false" todir="${distDir}/x86">
+			<fileset dir="${libs}/x86">
+				<include name="**/*.so"/>
+			</fileset>
+		</copy>
+        <copy failonerror="false" todir="${distDir}/ios">
+			<fileset dir="${libs}/ios32">
+				<include name="**/*.a"/>
+			</fileset>
+		</copy>
 		
 		<!-- class jar -->
 		<jar destfile="${distDir}/${jar}.jar">
 			<fileset dir="${target}/java"/>
+			<fileset refid="resourcefiles"/>
 			<!-- merge dependencies found in libs/ folder, exclude native, debug and android/gwt jars -->
 			<zipgroupfileset file="${libs}/*.jar">
 				<exclude name="*-natives.jar"/>
 				<exclude name="*-debug.jar"/>
 				<exclude name="android-*.jar"/>
+                <exclude name="robovm-*.jar"/>
 				<exclude name="gwt*.jar"/>
 			</zipgroupfileset>
 			<!-- merge dependencies specified in parent build.xml -->

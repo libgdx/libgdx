@@ -16,29 +16,31 @@
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.still.StillModel;
-import com.badlogic.gdx.graphics.g3d.model.still.StillSubMesh;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.btCapsuleShape;
-import com.badlogic.gdx.physics.bullet.btConeTwistConstraint;
-import com.badlogic.gdx.physics.bullet.btConstraintSetting;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btHingeConstraint;
-import com.badlogic.gdx.physics.bullet.btPoint2PointConstraint;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btTypedConstraint;
-import com.badlogic.gdx.physics.bullet.btVector3;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
+import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btConeTwistConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btConstraintSetting;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btHingeConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.utils.Array;
 
 /** @author xoppa */
@@ -48,11 +50,12 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	btPoint2PointConstraint pickConstraint = null;
 	btRigidBody pickedBody = null;
 	float pickDistance;
+	Vector3 tmpV = new Vector3();
 	
 	@Override
 	public void create () {
 		super.create();
-		instructions = "Tap to shoot\nDrag ragdoll to pick\nLong press to toggle debug mode\nSwipe for next test";
+		instructions = "Tap to shoot\nDrag ragdoll to pick\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
 		camera.position.set(4f, 2f, 4f);
 		camera.lookAt(0f, 1f, 0f);
@@ -67,7 +70,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		world.addConstructor("lowerarm", new BulletConstructor(createCapsuleModel(0.04f, 0.25f), 1f, new btCapsuleShape(0.04f, 0.25f)));
 		
 		world.add("ground", 0f, 0f, 0f)
-			.color.set(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
 		
 		addRagdoll(0, 3f, 0);
 		addRagdoll(1f, 6f, 0);
@@ -78,7 +81,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	public void dispose () {
 		for (int i = 0; i < constraints.size; i++) {
 			((btDynamicsWorld)world.collisionWorld).removeConstraint(constraints.get(i));
-			constraints.get(i).delete();
+			constraints.get(i).dispose();
 		}
 		constraints.clear();
 		super.dispose();
@@ -89,24 +92,23 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		boolean result = false;
 		if (button == Buttons.LEFT) {
 			Ray ray = camera.getPickRay(screenX, screenY);
-			Vector3.tmp.set(ray.direction).mul(10f).add(ray.origin);
+			Vector3.tmp.set(ray.direction).scl(10f).add(ray.origin);
 			ClosestRayResultCallback cb = new ClosestRayResultCallback(ray.origin, Vector3.tmp);
 			world.collisionWorld.rayTest(ray.origin, Vector3.tmp, cb);
 			if (cb.hasHit()) {
-				btRigidBody body = btRigidBody.upcast(cb.getM_collisionObject());
+				btRigidBody body = (btRigidBody)(cb.getCollisionObject());
 				if (body != null && !body.isStaticObject() && !body.isKinematicObject()) {
 					pickedBody = body;
-					body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
+					body.setActivationState(Collision.DISABLE_DEACTIVATION);
 					
-					btVector3 hitpoint = cb.getM_hitPointWorld();
-					Vector3.tmp.set(hitpoint.getX(), hitpoint.getY(), hitpoint.getZ());
-					Vector3.tmp.mul(body.getCenterOfMassTransform().inv());
+					tmpV.set(cb.getHitPointWorld().getFloats());
+					tmpV.mul(body.getCenterOfMassTransform().inv());
 					
-					pickConstraint = new btPoint2PointConstraint(body,Vector3.tmp);
-					btConstraintSetting setting = pickConstraint.getM_setting();
-					setting.setM_impulseClamp(30f);
-					setting.setM_tau(0.001f);
-					pickConstraint.setM_setting(setting);
+					pickConstraint = new btPoint2PointConstraint(body,tmpV);
+					btConstraintSetting setting = pickConstraint.getSetting();
+					setting.setImpulseClamp(30f);
+					setting.setTau(0.001f);
+					pickConstraint.setSetting(setting);
 					
 					((btDynamicsWorld)world.collisionWorld).addConstraint(pickConstraint);
 		
@@ -114,7 +116,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 					result = true;
 				}
 			}
-			cb.delete();
+			cb.dispose();
 		}
 		return result ? result : super.touchDown(screenX, screenY, pointer, button);
 	}
@@ -125,12 +127,12 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		if (button == Buttons.LEFT) {
 			if (pickConstraint != null) {
 				((btDynamicsWorld)world.collisionWorld).removeConstraint(pickConstraint);
-				pickConstraint.delete();
+				pickConstraint.dispose();
 				pickConstraint = null;
 				result = true;
 			}
 			if (pickedBody != null) {
-				pickedBody.forceActivationState(gdxBullet.ACTIVE_TAG);
+				pickedBody.forceActivationState(Collision.ACTIVE_TAG);
 				pickedBody.setDeactivationTime(0f);
 				pickedBody = null;
 			}
@@ -143,7 +145,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		boolean result = false;
 		if (pickConstraint != null) {
 			Ray ray = camera.getPickRay(screenX, screenY);
-			Vector3.tmp.set(ray.direction).mul(pickDistance).add(camera.position);
+			Vector3.tmp.set(ray.direction).scl(pickDistance).add(camera.position);
 			pickConstraint.setPivotB(Vector3.tmp);
 			result = true;
 		}
@@ -172,7 +174,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 		btRigidBody leftlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAngles(PI2, 0, 0).trn(x-0.7f, y+1.45f, z)).body;
 		btRigidBody rightupperarm = (btRigidBody)world.add("upperarm", tmpM.setFromEulerAngles(-PI2, 0, 0).trn(x+0.35f, y+1.45f, z)).body;
 		btRigidBody rightlowerarm = (btRigidBody)world.add("lowerarm", tmpM.setFromEulerAngles(-PI2, 0, 0).trn(x+0.7f, y+1.45f, z)).body;
-		
+
 		final Matrix4 localA = new Matrix4();
 		final Matrix4 localB = new Matrix4();
 		btHingeConstraint hingeC = null;
@@ -250,17 +252,10 @@ public class RayPickRagdollTest extends BaseBulletTest {
 	}
 	
 	protected Model createCapsuleModel(float radius, float height) {
-		final float hh = radius + 0.5f * height;
-		final Mesh mesh = new Mesh(true, 8, 36, new VertexAttribute(Usage.Position, 3, "a_position"));
-		mesh.setVertices(new float[] {radius, hh, radius, radius, hh, -radius, -radius, hh, radius, -radius, hh, -radius,
-			radius, -hh, radius, radius, -hh, -radius, -radius, -hh, radius, -radius, -hh, -radius});
-		mesh.setIndices(new short[] {0, 1, 2, 1, 2, 3, // top
-			4, 5, 6, 5, 6, 7, // bottom
-			0, 2, 4, 4, 6, 2, // front
-			1, 3, 5, 5, 7, 3, // back
-			2, 3, 6, 6, 7, 3, // left
-			0, 1, 4, 4, 5, 1 // right
-			});
-		return new StillModel(new StillSubMesh("capsule", mesh, GL10.GL_TRIANGLES, new Material()));
+		final Model result = modelBuilder.createCapsule(radius, height + radius * 2f, 16, 
+			new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE)), 
+			Usage.Position | Usage.Normal);
+		disposables.add(result);
+		return result;
 	}
 }

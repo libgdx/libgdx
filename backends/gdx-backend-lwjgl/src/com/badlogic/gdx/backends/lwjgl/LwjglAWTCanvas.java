@@ -149,7 +149,7 @@ public class LwjglAWTCanvas implements Application {
 
 	protected void setTitle (String title) {
 	}
-	
+
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
@@ -219,6 +219,8 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	void render () {
+		if (!running) return;
+		
 		setGlobals();
 		canvas.setCursor(cursor);
 		graphics.updateTime();
@@ -273,14 +275,29 @@ public class LwjglAWTCanvas implements Application {
 		running = false;
 		setGlobals();
 		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized(listeners) {
-			for(LifecycleListener listener: listeners) {
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
 				listener.pause();
 				listener.dispose();
 			}
 		}
 		listener.pause();
 		listener.dispose();
+
+		Gdx.app = null;
+		
+		Gdx.graphics = null;
+		
+		if (audio != null) {
+			audio.dispose();
+			Gdx.audio = null;
+		}
+
+		if (files != null) Gdx.files = null;
+
+		if (net != null) Gdx.net = null;
+		
+		stopped();
 	}
 
 	@Override
@@ -340,7 +357,7 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ": " + message);
 			exception.printStackTrace(System.out);
@@ -368,20 +385,16 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
+	@Override
 	public void exit () {
 		postRunnable(new Runnable() {
 			@Override
 			public void run () {
-				setGlobals();
-				Array<LifecycleListener> listeners = lifecycleListeners;
-				synchronized(listeners) {
-					for(LifecycleListener listener: listeners) {
-						listener.pause();
-						listener.dispose();
-					}
-				}
-				LwjglAWTCanvas.this.listener.pause();
-				LwjglAWTCanvas.this.listener.dispose();
+				stop();
 				System.exit(-1);
 			}
 		});
@@ -399,7 +412,7 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	/** Test whether the canvas' context is current. */
-	public boolean isCurrent() {
+	public boolean isCurrent () {
 		try {
 			return canvas.isCurrent();
 		} catch (LWJGLException ex) {
@@ -411,18 +424,18 @@ public class LwjglAWTCanvas implements Application {
 	public void setCursor (Cursor cursor) {
 		this.cursor = cursor;
 	}
-	
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }

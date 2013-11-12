@@ -1,42 +1,17 @@
 <project name="gdx-ios-build" default="all" basedir=".">
-	<!-- compile the distribution so we have all jars we need, do not compile natives -->
-	<target name="compile-jars">		
-		<ant antfile="build.xml" dir=".">
-			<property name="compile-natives" value="false"/>
-		</ant>
-	</target>
-		
-    <target name="ios-java-only">
-        <ant antfile="build.xml" target="gdx-backend-iosmonotouch" dir=".">
-			<property name="compile-natives" value="false"/>
-		</ant>
-        <ant antfile="convert-ikvm.xml" dir=".">
-			<property name="IN" value="-srcpath:gdx/src/ dist/gdx.jar"/>
-			<property name="OUT" value="gdx/libs/ios32/gdx.dll"/>
-		</ant>
-        <ant antfile="convert-ikvm.xml" dir=".">
-			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:backends/gdx-backend-iosmonotouch/src/ dist/gdx-backend-iosmonotouch.jar"/>
-			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/ios32/gdx-backend-ios.dll"/>
-		</ant>
-    </target>
     
-	<target name="core" depends="compile-jars">
+	<target name="core">
 		<ant antfile="build-macosx32.xml" dir="gdx/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
 		<ant antfile="build-ios32.xml" dir="gdx/jni"/>
-		<ant antfile="convert-ikvm.xml" dir=".">
-			<property name="IN" value="-srcpath:gdx/src/ dist/gdx.jar"/>
-			<property name="OUT" value="gdx/libs/ios32/gdx.dll"/>
-		</ant>
 	</target>
 	
-	<target name="backend-iosmonotouch" depends="core">
-		<ant antfile="convert-ikvm.xml" dir=".">
-			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:backends/gdx-backend-iosmonotouch/src/ dist/gdx-backend-iosmonotouch.jar"/>
-			<property name="OUT" value="backends/gdx-backend-iosmonotouch/libs/ios32/gdx-backend-ios.dll"/>
-		</ant>
+    <target name="backend-robovm" depends="core">
+        <exec dir="backends/gdx-backend-robovm" executable="/bin/bash">
+            <arg value="build-objectal.sh"/>
+        </exec>
 	</target>
 	
 	<target name="freetype" depends="core">
@@ -45,10 +20,6 @@
 			<target name="postcompile"/>
 		</ant>
 		<ant antfile="build-ios32.xml" dir="extensions/gdx-freetype/jni"/>
-		<ant antfile="convert-ikvm.xml" dir=".">
-			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:extensions/gdx-freetype/src/ dist/extensions/gdx-freetype/gdx-freetype.jar"/>
-			<property name="OUT" value="extensions/gdx-freetype/libs/ios32/gdx-freetype.dll"/>
-		</ant>
 	</target>
 	
 	<target name="bullet" depends="core">
@@ -56,11 +27,7 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
-		<!--<ant antfile="build-ios32.xml" dir="extensions/gdx-bullet/jni"/>
-		<ant antfile="convert-ikvm.xml" dir=".">
-			<property name="IN" value="-r:gdx/libs/ios32/gdx.dll -srcpath:extensions/gdx-bullet/src/ dist/extensions/gdx-bullet/gdx-bullet.jar"/>
-			<property name="OUT" value="extensions/gdx-bullet/libs/ios32/gdx-bullet.dll"/>
-		</ant>-->
+		<ant antfile="build-ios32.xml" dir="extensions/gdx-bullet/jni"/>
 	</target>
 	
 	<target name="controllers" depends="core">
@@ -84,6 +51,6 @@
 		</ant>
 	</target>
 	
-	<target name="all" depends="core,backend-iosmonotouch,freetype,bullet,audio,image,controllers">	
+	<target name="all" depends="core,backend-robovm,freetype,bullet,audio,image,controllers">	
 	</target>
 </project>

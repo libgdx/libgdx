@@ -61,14 +61,24 @@ public class XmlReader {
 	}
 
 	public Element parse (InputStream input) throws IOException {
-		return parse(new InputStreamReader(input, "ISO-8859-1"));
+		Reader r = null;
+		try {
+			r = new InputStreamReader(input, "ISO-8859-1");
+			return parse(r);
+		} finally {
+			StreamUtils.closeQuietly(r);
+		}
 	}
 
 	public Element parse (FileHandle file) throws IOException {
+		InputStream is = null;
 		try {
-			return parse(file.read());
+			is = file.read();
+			return parse(is);
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
+		} finally {
+			StreamUtils.closeQuietly(is);
 		}
 	}
 
