@@ -119,7 +119,12 @@ public class ShortArray {
 
 	public void incr (int index, short value) {
 		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
-		items[index] = value;
+		items[index] += value;
+	}
+
+	public void mul (int index, short value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] *= value;
 	}
 
 	public void insert (int index, short value) {
