@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 /** Drawable for a {@link NinePatch}.
  * <p>
@@ -44,7 +44,7 @@ public class NinePatchDrawable extends BaseDrawable {
 		setPatch(drawable.patch);
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 		patch.draw(batch, x, y, width, height);
 	}
 

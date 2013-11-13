@@ -24,6 +24,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -62,7 +63,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private float width, height;
 	private float gutterWidth, gutterHeight;
 	private Camera camera;
-	private final SpriteBatch batch;
+	private final Batch batch;
 	private final boolean ownsBatch;
 	private final Group root;
 	private final Vector2 stageCoords = new Vector2();
@@ -76,28 +77,27 @@ public class Stage extends InputAdapter implements Disposable {
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 
 	/** Creates a stage with a {@link #setViewport(float, float, boolean) viewport} equal to the device screen resolution. The stage
-	 * will use its own {@link SpriteBatch}. */
+	 * will use its own {@link Batch}. */
 	public Stage () {
 		this(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, null);
 	}
 
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} that doesn't keep the aspect ratio.
-	 * The stage will use its own {@link SpriteBatch}, which will be disposed when the stage is disposed. */
+	 * The stage will use its own {@link Batch}, which will be disposed when the stage is disposed. */
 	public Stage (float width, float height) {
 		this(width, height, false, null);
 	}
 
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport}. The stage will use its own
-	 * {@link SpriteBatch}, which will be disposed when the stage is disposed. */
+	 * {@link Batch}, which will be disposed when the stage is disposed. */
 	public Stage (float width, float height, boolean keepAspectRatio) {
 		this(width, height, keepAspectRatio, null);
 	}
 
-	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link SpriteBatch}. This can be
-	 * used to avoid creating a new SpriteBatch (which can be somewhat slow) if multiple stages are used during an applications
-	 * life time.
+	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link Batch}. This can be used
+	 * to avoid creating a new Batch (which can be somewhat slow) if multiple stages are used during an applications life time.
 	 * @param batch Will not be disposed if {@link #dispose()} is called. Handle disposal yourself. */
-	public Stage (float width, float height, boolean keepAspectRatio, SpriteBatch batch) {
+	public Stage (float width, float height, boolean keepAspectRatio, Batch batch) {
 		ownsBatch = batch == null;
 		this.batch = ownsBatch ? new SpriteBatch() : batch;
 
@@ -648,7 +648,7 @@ public class Stage extends InputAdapter implements Disposable {
 		return gutterHeight;
 	}
 
-	public SpriteBatch getSpriteBatch () {
+	public Batch getSpriteBatch () {
 		return batch;
 	}
 
@@ -658,7 +658,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Sets the stage's camera. The camera must be configured properly or {@link #setViewport(float, float, boolean)} can be called
 	 * after the camera is set. {@link Stage#draw()} will call {@link Camera#update()} and use the {@link Camera#combined} matrix
-	 * for the SpriteBatch {@link SpriteBatch#setProjectionMatrix(com.badlogic.gdx.math.Matrix4) projection matrix}. */
+	 * for the Batch {@link Batch#setProjectionMatrix(com.badlogic.gdx.math.Matrix4) projection matrix}. */
 	public void setCamera (Camera camera) {
 		this.camera = camera;
 	}
@@ -697,8 +697,8 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
-	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}
-	 * during {@link Actor#draw(SpriteBatch, float)}.
+	 * describes how to convert them. The transform matrix is typically obtained from {@link Batch#getTransformMatrix()} during
+	 * {@link Actor#draw(Batch, float)}.
 	 * @see Actor#localToStageCoordinates(Vector2) */
 	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);

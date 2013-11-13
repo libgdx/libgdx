@@ -190,7 +190,7 @@ public class ParticleEmitter {
 				firstUpdate = false;
 				addParticle();
 			}
-	
+
 			if (durationTimer < duration)
 				durationTimer += deltaMillis;
 			else {
@@ -200,7 +200,7 @@ public class ParticleEmitter {
 					restart();
 			}
 
-			if(!done) {
+			if (!done) {
 				emissionDelta += deltaMillis;
 				float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
 				if (emissionTime > 0) {
@@ -229,30 +229,30 @@ public class ParticleEmitter {
 		this.activeCount = activeCount;
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+	public void draw (Batch batch) {
+		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
 
 		for (int i = 0, n = active.length; i < n; i++)
-			if (active[i]) particles[i].draw(spriteBatch);
+			if (active[i]) particles[i].draw(batch);
 
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/** Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
-	 * {@link #draw(SpriteBatch)} separately. */
-	public void draw (SpriteBatch spriteBatch, float delta) {
+	 * {@link #draw(Batch)} separately. */
+	public void draw (Batch batch, float delta) {
 		accumulator += Math.min(delta * 1000, 250);
 		if (accumulator < 1) {
-			draw(spriteBatch);
+			draw(batch);
 			return;
 		}
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
@@ -261,7 +261,7 @@ public class ParticleEmitter {
 			if (active[i]) {
 				Particle particle = particles[i];
 				if (updateParticle(particle, delta, deltaMillis))
-					particle.draw(spriteBatch);
+					particle.draw(batch);
 				else {
 					active[i] = false;
 					activeCount--;
@@ -270,7 +270,7 @@ public class ParticleEmitter {
 		}
 		this.activeCount = activeCount;
 
-		if (additive) spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
@@ -806,7 +806,7 @@ public class ParticleEmitter {
 
 		return bounds;
 	}
-	
+
 	public void save (Writer output) throws IOException {
 		output.write(name + "\n");
 		output.write("- Delay -\n");

@@ -328,7 +328,7 @@ public class NinePatch {
 		vertices[idx] = color;
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 		final float centerColumnX = x + leftWidth;
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
@@ -350,7 +350,7 @@ public class NinePatch {
 	}
 
 	/** Copy given color. The color will be blended with the batch color, then combined with the texture colors at
-	 * {@link NinePatch#draw(SpriteBatch, float, float, float, float) draw} time. Default is {@link Color#WHITE}. */
+	 * {@link NinePatch#draw(Batch, float, float, float, float) draw} time. Default is {@link Color#WHITE}. */
 	public void setColor (Color color) {
 		this.color.set(color);
 	}

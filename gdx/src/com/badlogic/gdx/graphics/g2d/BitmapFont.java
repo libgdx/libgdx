@@ -43,8 +43,8 @@ import com.badlogic.gdx.utils.StreamUtils;
  * the AngleCode BMFont text format that describes where each glyph is on the image. Currently only a single image of glyphs is
  * supported.<br>
  * <br>
- * Text is drawn using a {@link SpriteBatch}. Text can be cached in a {@link BitmapFontCache} for faster rendering of static text,
- * which saves needing to compute the location of each glyph each frame.<br>
+ * Text is drawn using a {@link Batch}. Text can be cached in a {@link BitmapFontCache} for faster rendering of static text, which
+ * saves needing to compute the location of each glyph each frame.<br>
  * <br>
  * * The texture for a BitmapFont loaded from a file is managed. {@link #dispose()} must be called to free the texture when no
  * longer needed. A BitmapFont loaded using a {@link TextureRegion} is managed if the region's texture is managed. Disposing the
@@ -86,7 +86,7 @@ public class BitmapFont implements Disposable {
 
 	/** Creates a BitmapFont with the glyphs relative to the specified region. If the region is null, the glyph textures are loaded
 	 * from the image file given in the font file. The {@link #dispose()} method will not dispose the region's texture in this
-	 * case! 
+	 * case!
 	 * 
 	 * The font data is not flipped.
 	 * 
@@ -96,7 +96,7 @@ public class BitmapFont implements Disposable {
 	public BitmapFont (FileHandle fontFile, TextureRegion region) {
 		this(fontFile, region, false);
 	}
-	
+
 	/** Creates a BitmapFont with the glyphs relative to the specified region. If the region is null, the glyph textures are loaded
 	 * from the image file given in the font file. The {@link #dispose()} method will not dispose the region's texture in this
 	 * case!
@@ -112,7 +112,7 @@ public class BitmapFont implements Disposable {
 	public BitmapFont (FileHandle fontFile) {
 		this(fontFile, false);
 	}
-	
+
 	/** Creates a BitmapFont from a BMFont file. The image file name is read from the BMFont file and the image is loaded from the
 	 * same directory.
 	 * @param flip If true, the glyphs will be flipped for use with a perspective where 0,0 is the upper left corner. */
@@ -137,38 +137,37 @@ public class BitmapFont implements Disposable {
 	}
 
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and {@link TextureRegion}. If the TextureRegion is null,
-	 * the image path(s) will be read from the BitmapFontData. 
-	 * The dispose() method will not dispose the texture of the region(s) if the
-	 * region is != null.
+	 * the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture of the region(s)
+	 * if the region is != null.
 	 * 
-	 * Passing a single TextureRegion assumes that your font only needs a single texture page. If you need to support multiple pages,
-	 * either let the Font read the images themselves (by specifying null as the TextureRegion), or by specifying each page manually
-	 * with the TextureRegion[] constructor.
+	 * Passing a single TextureRegion assumes that your font only needs a single texture page. If you need to support multiple
+	 * pages, either let the Font read the images themselves (by specifying null as the TextureRegion), or by specifying each page
+	 * manually with the TextureRegion[] constructor.
 	 * 
 	 * @param data
 	 * @param region
 	 * @param integer */
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
-		this(data, region!=null ? new TextureRegion[] { region } : null, integer);
+		this(data, region != null ? new TextureRegion[] {region} : null, integer);
 	}
 
-
-	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion is null
-	 * or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture of the 
-	 * region(s) if the regions array is != null and not empty. 
+	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
+	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
+	 * of the region(s) if the regions array is != null and not empty.
 	 * 
 	 * @param data
 	 * @param regions
 	 * @param integer */
 	public BitmapFont (BitmapFontData data, TextureRegion[] regions, boolean integer) {
-		if (regions==null || regions.length==0) {
-			//load each path
+		if (regions == null || regions.length == 0) {
+			// load each path
 			this.regions = new TextureRegion[data.imagePaths.length];
-			for (int i=0; i<this.regions.length; i++) {
+			for (int i = 0; i < this.regions.length; i++) {
 				if (data.fontFile == null) {
 					this.regions[i] = new TextureRegion(new Texture(Gdx.files.internal(data.imagePaths[i]), false));
 				} else {
-					this.regions[i] = new TextureRegion(new Texture(Gdx.files.getFileHandle(data.imagePaths[i], data.fontFile.type()), false));
+					this.regions[i] = new TextureRegion(new Texture(Gdx.files.getFileHandle(data.imagePaths[i], data.fontFile.type()),
+						false));
 				}
 			}
 			ownsTexture = true;
@@ -176,32 +175,32 @@ public class BitmapFont implements Disposable {
 			this.regions = regions;
 			ownsTexture = false;
 		}
-		
+
 		cache = new BitmapFontCache(this);
 		cache.setUseIntegerPositions(integer);
-		
+
 		this.flipped = data.flipped;
 		this.data = data;
 		this.integer = integer;
 		load(data);
 	}
-	
+
 	private void load (BitmapFontData data) {
 		for (Glyph[] page : data.glyphs) {
 			if (page == null) continue;
 			for (Glyph glyph : page) {
 				if (glyph == null) continue;
-				
+
 				TextureRegion region = regions[glyph.page];
-				
-				if (region==null) {
-					//TODO: support null regions by parsing scaleW / scaleH ?
+
+				if (region == null) {
+					// TODO: support null regions by parsing scaleW / scaleH ?
 					throw new IllegalArgumentException("BitmapFont texture region array cannot contain null elements");
 				}
-				
+
 				float invTexWidth = 1.0f / region.getTexture().getWidth();
 				float invTexHeight = 1.0f / region.getTexture().getHeight();
-				
+
 				float offsetX = 0, offsetY = 0;
 				float u = region.u;
 				float v = region.v;
@@ -213,8 +212,7 @@ public class BitmapFont implements Disposable {
 					offsetX = atlasRegion.offsetX;
 					offsetY = atlasRegion.originalHeight - atlasRegion.packedHeight - atlasRegion.offsetY;
 				}
-				
-				
+
 				float x = glyph.srcX;
 				float x2 = glyph.srcX + glyph.width;
 				float y = glyph.srcY;
@@ -264,59 +262,57 @@ public class BitmapFont implements Disposable {
 
 	/** Draws a string at the specified position.
 	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int) */
-	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y) {
+	public TextBounds draw (Batch batch, CharSequence str, float x, float y) {
 		cache.clear();
 		TextBounds bounds = cache.addText(str, x, y, 0, str.length());
-		cache.draw(spriteBatch);
+		cache.draw(batch);
 		return bounds;
 	}
 
 	/** Draws a string at the specified position.
 	 * @see BitmapFontCache#addText(CharSequence, float, float, int, int) */
-	public TextBounds draw (SpriteBatch spriteBatch, CharSequence str, float x, float y, int start, int end) {
+	public TextBounds draw (Batch batch, CharSequence str, float x, float y, int start, int end) {
 		cache.clear();
 		TextBounds bounds = cache.addText(str, x, y, start, end);
-		cache.draw(spriteBatch);
+		cache.draw(batch);
 		return bounds;
 	}
 
 	/** Draws a string, which may contain newlines (\n), at the specified position.
 	 * @see BitmapFontCache#addMultiLineText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y) {
+	public TextBounds drawMultiLine (Batch batch, CharSequence str, float x, float y) {
 		cache.clear();
 		TextBounds bounds = cache.addMultiLineText(str, x, y, 0, HAlignment.LEFT);
-		cache.draw(spriteBatch);
+		cache.draw(batch);
 		return bounds;
 	}
 
 	/** Draws a string, which may contain newlines (\n), at the specified position.
 	 * @see BitmapFontCache#addMultiLineText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawMultiLine (SpriteBatch spriteBatch, CharSequence str, float x, float y, float alignmentWidth,
-		HAlignment alignment) {
+	public TextBounds drawMultiLine (Batch batch, CharSequence str, float x, float y, float alignmentWidth, HAlignment alignment) {
 		cache.clear();
 		TextBounds bounds = cache.addMultiLineText(str, x, y, alignmentWidth, alignment);
-		cache.draw(spriteBatch);
+		cache.draw(batch);
 		return bounds;
 	}
 
 	/** Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped within the
 	 * specified width.
 	 * @see BitmapFontCache#addWrappedText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth) {
+	public TextBounds drawWrapped (Batch batch, CharSequence str, float x, float y, float wrapWidth) {
 		cache.clear();
 		TextBounds bounds = cache.addWrappedText(str, x, y, wrapWidth, HAlignment.LEFT);
-		cache.draw(spriteBatch);
+		cache.draw(batch);
 		return bounds;
 	}
 
 	/** Draws a string, which may contain newlines (\n), with the specified position. Each line is automatically wrapped within the
 	 * specified width.
 	 * @see BitmapFontCache#addWrappedText(CharSequence, float, float, float, HAlignment) */
-	public TextBounds drawWrapped (SpriteBatch spriteBatch, CharSequence str, float x, float y, float wrapWidth,
-		HAlignment alignment) {
+	public TextBounds drawWrapped (Batch batch, CharSequence str, float x, float y, float wrapWidth, HAlignment alignment) {
 		cache.clear();
 		TextBounds bounds = cache.addWrappedText(str, x, y, wrapWidth, alignment);
-		cache.draw(spriteBatch);
+		cache.draw(batch);
 		return bounds;
 	}
 
@@ -568,30 +564,26 @@ public class BitmapFont implements Disposable {
 		return data.scaleY;
 	}
 
-	/** 
-	 * Returns the first texture region. This is included for backwards-compatibility, and 
-	 * for convenience since most fonts only use one texture page. For multi-page fonts, use
-	 * getRegions().
+	/** Returns the first texture region. This is included for backwards-compatibility, and for convenience since most fonts only
+	 * use one texture page. For multi-page fonts, use getRegions().
 	 * @return the first texture region */
-	//TODO: deprecate?
+	// TODO: deprecate?
 	public TextureRegion getRegion () {
 		return regions[0];
 	}
-	
-	/** 
-	 * Returns the array of TextureRegions that represents each texture page of glyphs. 
-	 * @return the array of texture regions; modifying it may produce undesirable results  */
+
+	/** Returns the array of TextureRegions that represents each texture page of glyphs.
+	 * @return the array of texture regions; modifying it may produce undesirable results */
 	public TextureRegion[] getRegions () {
 		return regions;
 	}
-	
-	/** 
-	 * Returns the texture page at the given index.
+
+	/** Returns the texture page at the given index.
 	 * @return the texture page at the given index */
-	public TextureRegion getRegion(int index) {
+	public TextureRegion getRegion (int index) {
 		return regions[index];
 	}
-	
+
 	/** Returns the line height, which is the distance from one line of text to the next. */
 	public float getLineHeight () {
 		return data.lineHeight;
@@ -632,7 +624,7 @@ public class BitmapFont implements Disposable {
 	/** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
 	public void dispose () {
 		if (ownsTexture) {
-			for (int i=0; i<regions.length; i++)
+			for (int i = 0; i < regions.length; i++)
 				regions[i].getTexture().dispose();
 		}
 	}
@@ -671,14 +663,13 @@ public class BitmapFont implements Disposable {
 		return integer;
 	}
 
-	/** For expert usage -- returns the BitmapFontCache used by this font, for rendering to a sprite batch.
-	 * This can be used, for example, to manipulate glyph colors within a specific index. 
-	 * @return the bitmap font cache used by this font
-	 */
-	public BitmapFontCache getCache() {
+	/** For expert usage -- returns the BitmapFontCache used by this font, for rendering to a sprite batch. This can be used, for
+	 * example, to manipulate glyph colors within a specific index.
+	 * @return the bitmap font cache used by this font */
+	public BitmapFontCache getCache () {
 		return cache;
 	}
-	
+
 	public BitmapFontData getData () {
 		return data;
 	}
@@ -704,10 +695,10 @@ public class BitmapFont implements Disposable {
 		public int xoffset, yoffset;
 		public int xadvance;
 		public byte[][] kerning;
-		
+
 		/** The index to the texture page that holds this glyph. */
 		public int page = 0;
-		
+
 		public int getKerning (char ch) {
 			if (kerning != null) {
 				byte[] page = kerning[ch >>> LOG2_PAGE_SIZE];
@@ -765,15 +756,11 @@ public class BitmapFont implements Disposable {
 	}
 
 	public static class BitmapFontData {
-		/** 
-		 * The first discovered image path; included for backwards-compatibility 
-		 * This is the same as imagePaths[0]. 
+		/** The first discovered image path; included for backwards-compatibility This is the same as imagePaths[0].
 		 * 
-		 * @deprecated use imagePaths[0] instead
-		 */
-		@Deprecated
-		public String imagePath;
-		
+		 * @deprecated use imagePaths[0] instead */
+		@Deprecated public String imagePath;
+
 		/** An array of the image paths, i.e. for multiple texture pages */
 		public String[] imagePaths;
 		public FileHandle fontFile;
@@ -792,8 +779,8 @@ public class BitmapFont implements Disposable {
 		/** Use this if you want to create BitmapFontData yourself, e.g. from stb-truetype of FreeType. */
 		public BitmapFontData () {
 		}
-		
-		@SuppressWarnings( "deprecation" )
+
+		@SuppressWarnings("deprecation")
 		public BitmapFontData (FileHandle fontFile, boolean flip) {
 			this.fontFile = fontFile;
 			this.flipped = flip;
@@ -803,9 +790,9 @@ public class BitmapFont implements Disposable {
 
 				String line = reader.readLine();
 				if (line == null) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-				String[] common = line.split(" ", 7); //we want the 6th element to be in tact; i.e. "page=N"
-				
-				//we only really NEED lineHeight and base
+				String[] common = line.split(" ", 7); // we want the 6th element to be in tact; i.e. "page=N"
+
+				// we only really NEED lineHeight and base
 				if (common.length < 3) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 
 				if (!common[1].startsWith("lineHeight=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
@@ -813,59 +800,59 @@ public class BitmapFont implements Disposable {
 
 				if (!common[2].startsWith("base=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
 				float baseLine = Integer.parseInt(common[2].substring(5));
-				
-				//parse the pages count
+
+				// parse the pages count
 				int imgPageCount = 1;
-				if (common.length>=6 && common[5]!=null && common[5].startsWith("pages=")) {
-					try { 
+				if (common.length >= 6 && common[5] != null && common[5].startsWith("pages=")) {
+					try {
 						imgPageCount = Math.max(1, Integer.parseInt(common[5].substring(6)));
 					} catch (NumberFormatException e) {
-						//just ignore and only use one page...
-						//somebody must have tampered with the page count >:(
+						// just ignore and only use one page...
+						// somebody must have tampered with the page count >:(
 					}
 				}
-				
+
 				imagePaths = new String[imgPageCount];
-				
-				//read each page definition
-				for (int p=0; p<imgPageCount; p++) {
-					//read each "page" info line
+
+				// read each page definition
+				for (int p = 0; p < imgPageCount; p++) {
+					// read each "page" info line
 					line = reader.readLine();
-					if (line == null) throw new GdxRuntimeException("Expected more 'page' definitions in font file "+fontFile);
+					if (line == null) throw new GdxRuntimeException("Expected more 'page' definitions in font file " + fontFile);
 					String[] pageLine = line.split(" ", 4);
 					if (!pageLine[2].startsWith("file=")) throw new GdxRuntimeException("Invalid font file: " + fontFile);
-					
-					//we will expect ID to mean "index" -- if for some reason this is not the case, it will fuck everything up
-					//so we need to warn the user that their BMFont output is bogus
+
+					// we will expect ID to mean "index" -- if for some reason this is not the case, it will fuck everything up
+					// so we need to warn the user that their BMFont output is bogus
 					if (pageLine[1].startsWith("id=")) {
 						try {
 							int pageID = Integer.parseInt(pageLine[1].substring(3));
 							if (pageID != p)
-								throw new GdxRuntimeException("Invalid font file: "+fontFile+" -- page ids must be indices starting at 0");
+								throw new GdxRuntimeException("Invalid font file: " + fontFile
+									+ " -- page ids must be indices starting at 0");
 						} catch (NumberFormatException e) {
-							throw new GdxRuntimeException("NumberFormatException on 'page id' element of "+fontFile);
+							throw new GdxRuntimeException("NumberFormatException on 'page id' element of " + fontFile);
 						}
 					}
-					
+
 					String imgFilename = null;
 					if (pageLine[2].endsWith("\"")) {
 						imgFilename = pageLine[2].substring(6, pageLine[2].length() - 1);
 					} else {
 						imgFilename = pageLine[2].substring(5, pageLine[2].length());
 					}
-					
+
 					String path = fontFile.parent().child(imgFilename).path().replaceAll("\\\\", "/");
-					if (this.imagePath==null)
-						this.imagePath = path;
+					if (this.imagePath == null) this.imagePath = path;
 					imagePaths[p] = path;
 				}
 				descent = 0;
 
 				while (true) {
 					line = reader.readLine();
-					if (line == null) break; //EOF
-					if (line.startsWith("kernings ")) break; //Starting kernings block
-					if (!line.startsWith("char ")) continue; 
+					if (line == null) break; // EOF
+					if (line.startsWith("kernings ")) break; // Starting kernings block
+					if (!line.startsWith("char ")) continue;
 
 					Glyph glyph = new Glyph();
 
@@ -895,16 +882,17 @@ public class BitmapFont implements Disposable {
 						glyph.yoffset = -(glyph.height + Integer.parseInt(tokens.nextToken()));
 					tokens.nextToken();
 					glyph.xadvance = Integer.parseInt(tokens.nextToken());
-					
-					//also check for page.. a little safer here since we don't want to break any old functionality
-					//and since maybe some shitty BMFont tools won't bother writing page id??
-					if (tokens.hasMoreTokens())
-						tokens.nextToken();
+
+					// also check for page.. a little safer here since we don't want to break any old functionality
+					// and since maybe some shitty BMFont tools won't bother writing page id??
+					if (tokens.hasMoreTokens()) tokens.nextToken();
 					if (tokens.hasMoreTokens()) {
-						try { glyph.page = Integer.parseInt(tokens.nextToken()); }
-						catch (NumberFormatException e) {}
+						try {
+							glyph.page = Integer.parseInt(tokens.nextToken());
+						} catch (NumberFormatException e) {
+						}
 					}
-						
+
 					if (glyph.width > 0 && glyph.height > 0) descent = Math.min(baseLine + glyph.yoffset, descent);
 				}
 
@@ -979,7 +967,7 @@ public class BitmapFont implements Disposable {
 			if (page == null) glyphs[ch / PAGE_SIZE] = page = new Glyph[PAGE_SIZE];
 			page[ch & PAGE_SIZE - 1] = glyph;
 		}
-		
+
 		public Glyph getFirstGlyph () {
 			for (Glyph[] page : this.glyphs) {
 				if (page == null) continue;
@@ -996,28 +984,23 @@ public class BitmapFont implements Disposable {
 			if (page != null) return page[ch & PAGE_SIZE - 1];
 			return null;
 		}
-		
-		/**
-		 * Returns the first image path; included for backwards-compatibility. Use
-		 * getImagePath(int) instead.
+
+		/** Returns the first image path; included for backwards-compatibility. Use getImagePath(int) instead.
 		 * @return the first image path in the array
-		 * @deprecated use getImagePath(int index) instead
-		 */
+		 * @deprecated use getImagePath(int index) instead */
 		@Deprecated
 		public String getImagePath () {
 			return imagePath;
 		}
-		
-		/**
-		 * Returns the image path for the texture page at the given index.
+
+		/** Returns the image path for the texture page at the given index.
 		 * @param index the index of the page, AKA the "id" in the BMFont file
-		 * @return the texture page
-		 */
-		public String getImagePath(int index) {
+		 * @return the texture page */
+		public String getImagePath (int index) {
 			return imagePaths[index];
 		}
-		
-		public String[] getImagePaths() {
+
+		public String[] getImagePaths () {
 			return imagePaths;
 		}
 

@@ -1,7 +1,7 @@
 package de.swagner.paxbritannica.factory;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -34,10 +34,10 @@ public class EasyEnemyProduction extends FactoryProduction {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 
-		super.draw(spriteBatch);
+		super.draw(batch);
 
 		accumulated_frames += 30 * delta;
 

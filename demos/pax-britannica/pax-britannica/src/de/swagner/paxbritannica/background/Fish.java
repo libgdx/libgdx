@@ -1,8 +1,8 @@
 package de.swagner.paxbritannica.background;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -67,8 +67,8 @@ public class Fish extends Sprite {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
-		super.draw(spriteBatch);
+	public void draw(Batch batch) {
+		super.draw(batch);
 		
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 		

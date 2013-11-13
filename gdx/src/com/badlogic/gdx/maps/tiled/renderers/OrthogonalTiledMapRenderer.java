@@ -16,29 +16,29 @@
 
 package com.badlogic.gdx.maps.tiled.renderers;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.C4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.U4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.V4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.X4;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y1;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y2;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y3;
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.Y4;
+import static com.badlogic.gdx.graphics.g2d.Batch.C1;
+import static com.badlogic.gdx.graphics.g2d.Batch.C2;
+import static com.badlogic.gdx.graphics.g2d.Batch.C3;
+import static com.badlogic.gdx.graphics.g2d.Batch.C4;
+import static com.badlogic.gdx.graphics.g2d.Batch.U1;
+import static com.badlogic.gdx.graphics.g2d.Batch.U2;
+import static com.badlogic.gdx.graphics.g2d.Batch.U3;
+import static com.badlogic.gdx.graphics.g2d.Batch.U4;
+import static com.badlogic.gdx.graphics.g2d.Batch.V1;
+import static com.badlogic.gdx.graphics.g2d.Batch.V2;
+import static com.badlogic.gdx.graphics.g2d.Batch.V3;
+import static com.badlogic.gdx.graphics.g2d.Batch.V4;
+import static com.badlogic.gdx.graphics.g2d.Batch.X1;
+import static com.badlogic.gdx.graphics.g2d.Batch.X2;
+import static com.badlogic.gdx.graphics.g2d.Batch.X3;
+import static com.badlogic.gdx.graphics.g2d.Batch.X4;
+import static com.badlogic.gdx.graphics.g2d.Batch.Y1;
+import static com.badlogic.gdx.graphics.g2d.Batch.Y2;
+import static com.badlogic.gdx.graphics.g2d.Batch.Y3;
+import static com.badlogic.gdx.graphics.g2d.Batch.Y4;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -53,16 +53,16 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		super(map);
 	}
 
-	public OrthogonalTiledMapRenderer(TiledMap map, SpriteBatch spriteBatch) {
-		super(map, spriteBatch);
+	public OrthogonalTiledMapRenderer(TiledMap map, Batch batch) {
+		super(map, batch);
 	}
 
 	public OrthogonalTiledMapRenderer(TiledMap map, float unitScale) {
 		super(map, unitScale);
 	}
 
-	public OrthogonalTiledMapRenderer(TiledMap map, float unitScale, SpriteBatch spriteBatch) {
-		super(map, unitScale, spriteBatch);
+	public OrthogonalTiledMapRenderer(TiledMap map, float unitScale, Batch batch) {
+		super(map, unitScale, batch);
 	}
 
 	@Override

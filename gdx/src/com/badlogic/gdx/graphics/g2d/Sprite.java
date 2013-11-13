@@ -16,17 +16,17 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.NumberUtils;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
-
-/** Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A Sprite has a position
- * and a size given as width and height. The position is relative to the origin of the coordinate system specified via
- * {@link SpriteBatch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
+/** Holds the geometry, color, and texture information for drawing 2D sprites using {@link Batch}. A Sprite has a position and a
+ * size given as width and height. The position is relative to the origin of the coordinate system specified via
+ * {@link Batch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
  * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed (that
  * is, the origin is not modified by rotation and scaling). The origin is given relative to the bottom left corner of the Sprite,
  * its position.
@@ -303,7 +303,7 @@ public class Sprite extends TextureRegion {
 	/** Sets the sprite's rotation in degrees relative to the current rotation. Rotation is centered on the origin set in
 	 * {@link #setOrigin(float, float)} */
 	public void rotate (float degrees) {
-		if(degrees == 0) return;
+		if (degrees == 0) return;
 		rotation += degrees;
 		dirty = true;
 	}
@@ -471,16 +471,16 @@ public class Sprite extends TextureRegion {
 		return bounds;
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
-		spriteBatch.draw(texture, getVertices(), 0, SPRITE_SIZE);
+	public void draw (Batch batch) {
+		batch.draw(texture, getVertices(), 0, SPRITE_SIZE);
 	}
 
-	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
+	public void draw (Batch batch, float alphaModulation) {
 		Color color = getColor();
 		float oldAlpha = color.a;
 		color.a *= alphaModulation;
 		setColor(color);
-		draw(spriteBatch);
+		draw(batch);
 		color.a = oldAlpha;
 		setColor(color);
 	}

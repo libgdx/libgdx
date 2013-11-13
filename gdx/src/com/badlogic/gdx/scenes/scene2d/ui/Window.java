@@ -17,10 +17,10 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -211,12 +211,12 @@ public class Window extends Table {
 		}
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		keepWithinStage();
 		super.draw(batch, parentAlpha);
 	}
 
-	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+	protected void drawBackground (Batch batch, float parentAlpha) {
 		float x = getX(), y = getY();
 		float width = getWidth(), height = getHeight();
 		float padTop = getPadTop();

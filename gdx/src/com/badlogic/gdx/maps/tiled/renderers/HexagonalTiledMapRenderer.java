@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.maps.tiled.renderers;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -46,12 +46,12 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		super(map, unitScale);
 	}
 
-	public HexagonalTiledMapRenderer (TiledMap map, SpriteBatch spriteBatch) {
-		super(map, spriteBatch);
+	public HexagonalTiledMapRenderer (TiledMap map, Batch batch) {
+		super(map, batch);
 	}
 
-	public HexagonalTiledMapRenderer (TiledMap map, float unitScale, SpriteBatch spriteBatch) {
-		super(map, unitScale, spriteBatch);
+	public HexagonalTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
+		super(map, unitScale, batch);
 	}
 
 	private float[] vertices = new float[20];

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.maps.tiled.renderers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
@@ -33,7 +34,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	protected float unitScale;
 
-	protected SpriteBatch spriteBatch;
+	protected Batch spriteBatch;
 
 	protected Rectangle viewBounds;
 
@@ -51,7 +52,7 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		return unitScale;
 	}
 
-	public SpriteBatch getSpriteBatch () {
+	public Batch getSpriteBatch () {
 		return spriteBatch;
 	}
 
@@ -71,15 +72,15 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 		this.ownsSpriteBatch = true;
 	}
 
-	public BatchTiledMapRenderer (TiledMap map, SpriteBatch spriteBatch) {
-		this(map, 1.0f, spriteBatch);
+	public BatchTiledMapRenderer (TiledMap map, Batch batch) {
+		this(map, 1.0f, batch);
 	}
 
-	public BatchTiledMapRenderer (TiledMap map, float unitScale, SpriteBatch spriteBatch) {
+	public BatchTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
 		this.map = map;
 		this.unitScale = unitScale;
 		this.viewBounds = new Rectangle();
-		this.spriteBatch = spriteBatch;
+		this.spriteBatch = batch;
 		this.ownsSpriteBatch = false;
 	}
 
