@@ -56,29 +56,29 @@ import com.badlogic.gdx.utils.NumberUtils;
  * A SpriteBatch has to be disposed if it is no longer used.
  * @author mzechner */
 public class SpriteBatch implements Disposable {
-	private Mesh mesh;
-	private Mesh[] buffers;
-	private int currBufferIdx = 0;
+	protected Mesh mesh;
+	protected Mesh[] buffers;
+	protected int currBufferIdx = 0;
 
-	private final float[] vertices;
-	private int idx = 0;
-	private Texture lastTexture = null;
-	private float invTexWidth = 0, invTexHeight = 0;
-	private boolean drawing = false;
+	protected final float[] vertices;
+	protected int idx = 0;
+	protected Texture lastTexture = null;
+	protected float invTexWidth = 0, invTexHeight = 0;
+	protected boolean drawing = false;
 
-	private final Matrix4 transformMatrix = new Matrix4();
-	private final Matrix4 projectionMatrix = new Matrix4();
-	private final Matrix4 combinedMatrix = new Matrix4();
+	protected final Matrix4 transformMatrix = new Matrix4();
+	protected final Matrix4 projectionMatrix = new Matrix4();
+	protected final Matrix4 combinedMatrix = new Matrix4();
 
-	private boolean blendingDisabled = false;
-	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
-	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
+	protected boolean blendingDisabled = false;
+	protected int blendSrcFunc = GL11.GL_SRC_ALPHA;
+	protected int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
-	private final ShaderProgram shader;
-	private ShaderProgram customShader = null;
-	private boolean ownsShader;
+	protected ShaderProgram shader;
+	protected ShaderProgram customShader = null;
+	protected boolean ownsShader;
 
-	float color = Color.WHITE.toFloatBits();
+	protected float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
 
 	/** Number of render calls since the last {@link #begin()}. **/
@@ -1126,7 +1126,7 @@ public class SpriteBatch implements Disposable {
 		if (drawing) setupMatrices();
 	}
 
-	private void setupMatrices () {
+	protected void setupMatrices () {
 		if (!Gdx.graphics.isGL20Available()) {
 			GL10 gl = Gdx.gl10;
 			gl.glMatrixMode(GL10.GL_PROJECTION);
