@@ -85,9 +85,9 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final float dt = 1f - u;
 		final float t2 = u * u;
 		final float t3 = t2 * u;
-		out.set(points[i]).scl((1.5f * t2 - 2 * u);
-		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).scl(0.5f * (1-t) * (1-t));
-		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).scl((-1.5f * t2 + u + 0.5f);
+		out.set(points[i]).scl(1.5f * t2 - 2 * u);
+		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).scl(0.5f * (1-u) * (1-u)));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).scl(-1.5f * t2 + u + 0.5f));
 		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).scl(0.5f * t2));
 		return out;
 	}
@@ -195,9 +195,24 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		return valueAt(out, i, u);
 	}
 	
-	/** @return The value of the spline at position u of the specified span */ 
+	/** @return The value of the spline at position u of the specified span */
 	public T valueAt(final T out, final int span, final float u) {
 		return calculate(out, continuous ? span : (span + (int)(degree*0.5f)), u, controlPoints, degree, continuous, tmp);
+	}
+	
+
+	@Override
+	public T derivativeAt(final T out, final float t) {
+		final int n = spanCount;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= (float)i;
+		return derivativeAt(out, i, u);
+	}
+	
+	/** @return The derivative of the spline at position u of the specified span */
+	public T derivativeAt(final T out, final int span, final float u) {
+		return derivative(out, continuous ? span : (span + (int)(degree*0.5f)), u, controlPoints, degree, continuous, tmp);
 	}
 	
 	/** @return The span closest to the specified value */ 
