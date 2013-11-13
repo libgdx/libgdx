@@ -75,7 +75,7 @@ public class GameObject {
 		return bounds;
 	}
 
-	/** Switches this game object into a new state and resets {@link stateTime}.
+	/** Switches this game object into a new state and resets {@link #stateTime}.
 	 * @param state the new state. */
 	public void setState (int state) {
 		this.state = state;
