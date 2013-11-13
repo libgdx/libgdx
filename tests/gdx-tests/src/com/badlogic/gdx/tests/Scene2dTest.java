@@ -16,11 +16,13 @@
 
 package com.badlogic.gdx.tests;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -38,8 +40,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
-
 public class Scene2dTest extends GdxTest {
 	Stage stage;
 	private FloatAction meow = new FloatAction(10, 5);
@@ -51,7 +51,7 @@ public class Scene2dTest extends GdxTest {
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		final Actor actor = new Actor() {
-			public void draw (SpriteBatch batch, float parentAlpha) {
+			public void draw (Batch batch, float parentAlpha) {
 				Color color = getColor();
 				batch.setColor(color.r, color.g, color.b, parentAlpha);
 				batch.draw(region, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),

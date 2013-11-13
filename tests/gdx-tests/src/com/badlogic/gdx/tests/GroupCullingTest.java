@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -52,7 +52,7 @@ public class GroupCullingTest extends GdxTest {
 
 		for (int i = 0; i < count; i++) {
 			labels.add(new Label("Label: " + i, skin) {
-				public void draw (SpriteBatch batch, float parentAlpha) {
+				public void draw (Batch batch, float parentAlpha) {
 					super.draw(batch, parentAlpha);
 					drawn++;
 				}
