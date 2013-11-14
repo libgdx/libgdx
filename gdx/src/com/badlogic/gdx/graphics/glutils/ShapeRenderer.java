@@ -872,36 +872,43 @@ public class ShapeRenderer {
 	 * to begin has to be {@link ShapeType#Line}.
 	 * @param vertices */
 	public void polygon (float[] vertices, int offset, int count) {
-		if (currType != ShapeType.Line) throw new GdxRuntimeException("Must call begin(ShapeType.Line)");
 		if (count < 6) throw new IllegalArgumentException("Polygons must contain at least 3 points.");
 		if (count % 2 != 0) throw new IllegalArgumentException("Polygons must have an even number of vertices.");
+		
+		if (currType == ShapeType.Line)
+		{
+			checkDirty();
+			checkFlush(count);
+	
+			float firstX = vertices[0];
+			float firstY = vertices[1];
+	
+			for (int i = offset, n = offset + count; i < n; i += 2) {
+				float x1 = vertices[i];
+				float y1 = vertices[i + 1];
 
-		checkDirty();
-		checkFlush(count);
+				float x2;
+				float y2;
 
-		float firstX = vertices[0];
-		float firstY = vertices[1];
+				if (i + 2 >= count) {
+					x2 = firstX;
+					y2 = firstY;
+				} else {
+					x2 = vertices[i + 2];
+					y2 = vertices[i + 3];
+				}
 
-		for (int i = offset, n = offset + count; i < n; i += 2) {
-			float x1 = vertices[i];
-			float y1 = vertices[i + 1];
-
-			float x2;
-			float y2;
-
-			if (i + 2 >= count) {
-				x2 = firstX;
-				y2 = firstY;
-			} else {
-				x2 = vertices[i + 2];
-				y2 = vertices[i + 3];
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x1, y1, 0);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(x2, y2, 0);
 			}
-
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1, y1, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2, y2, 0);
 		}
+		else if (currType == ShapeLine.Filled)
+		{
+			
+		}
+		else throw new GdxRuntimeException("Must call begin(ShapeType.Line) or begin(ShapeType.Filled)");
 	}
 
 	/** @see #polyline(float[], int, int) */
