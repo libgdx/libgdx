@@ -29,6 +29,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.math.EarClippingTriangulator;
+import com.badlogic.gdx.utils.ShortArray;
 
 /** Renders points, lines, rectangles, filled rectangles and boxes.</p>
  * 
@@ -108,6 +110,8 @@ public class ShapeRenderer {
 	Matrix4 tmp = new Matrix4();
 	Color color = new Color(1, 1, 1, 1);
 	ShapeType currType = null;
+	ShortArray temp;
+	EarClippingTriangulator earClippingTriangulator = new EarClippingTriangulator();
 
 	public ShapeRenderer () {
 		this(5000);
@@ -906,6 +910,9 @@ public class ShapeRenderer {
 		}
 		else if (currType == ShapeLine.Filled)
 		{
+			temp = earClippingTriangulator.computeTriangles(vertices);
+                	for(int i=offset; i<count; i+=3)
+                        	triangle(vertices.get(2*temp.get(i)), vertices.get(2*temp.get(i)+1), vertices.get(2*temp.get(i+1)), vertices.get(2*temp.get(i+1)+1),vertices.get(2*temp.get(i+2)), vertices.get(2*temp.get(i+2)+1));
 			
 		}
 		else throw new GdxRuntimeException("Must call begin(ShapeType.Line) or begin(ShapeType.Filled)");
