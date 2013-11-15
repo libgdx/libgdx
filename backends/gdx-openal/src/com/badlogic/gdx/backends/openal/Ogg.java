@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.openal;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -51,15 +52,20 @@ public class Ogg {
 		public Sound (OpenALAudio audio, FileHandle file) {
 			super(audio);
 			if (audio.noDevice) return;
-			OggInputStream input = new OggInputStream(file.read());
-			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
-			byte[] buffer = new byte[2048];
-			while (!input.atEnd()) {
-				int length = input.read(buffer);
-				if (length == -1) break;
-				output.write(buffer, 0, length);
+			OggInputStream input = null;
+			try {
+				input = new OggInputStream(file.read());
+				ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
+				byte[] buffer = new byte[2048];
+				while (!input.atEnd()) {
+					int length = input.read(buffer);
+					if (length == -1) break;
+					output.write(buffer, 0, length);
+				}
+				setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
+			} finally {
+				StreamUtils.closeQuietly(input);
 			}
-			setup(output.toByteArray(), input.getChannels(), input.getSampleRate());
 		}
 	}
 }

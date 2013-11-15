@@ -17,7 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -513,7 +513,7 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		if (widget == null) return;
 
 		validate();

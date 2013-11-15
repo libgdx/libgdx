@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,13 +47,41 @@ public class StreamUtils {
 			output.write(buffer, 0, bytesRead);
 		}
 	}
-	
+
+	/** Copy the data from an {@link InputStream} to a byte array.
+	 * @throws IOException */
+	public static byte[] copyStreamToByteArray (InputStream input) throws IOException {
+		return copyStreamToByteArray(input, input.available());
+	}
+
+	/** Copy the data from an {@link InputStream} to a byte array.
+	 * @param estimatedSize Used to preallocate a possibly correct sized byte array to avoid an array copy.
+	 * @throws IOException */
+	public static byte[] copyStreamToByteArray (InputStream input, int estimatedSize) throws IOException {
+		ByteArrayOutputStream baos = new OptimizedByteArrayOutputStream(Math.max(0, estimatedSize));
+		copyStream(input, baos);
+		return baos.toByteArray();
+	}
+
 	/** Close and ignore all errors. */
 	public static void closeQuietly (Closeable c) {
 		if (c != null) try {
 			c.close();
 		} catch (IOException e) {
 			// ignore
+		}
+	}
+	
+	/** A ByteArrayOutputStream which avoids copying of the byte array if not necessary. */
+	private static class OptimizedByteArrayOutputStream extends ByteArrayOutputStream {
+		OptimizedByteArrayOutputStream (int initialSize) {
+			super(initialSize);
+		}
+
+		@Override
+		public synchronized byte[] toByteArray () {
+			if (count == buf.length) return buf;
+			return super.toByteArray();
 		}
 	}
 }

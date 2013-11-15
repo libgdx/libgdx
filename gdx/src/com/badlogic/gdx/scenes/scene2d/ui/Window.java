@@ -17,10 +17,10 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -99,7 +99,7 @@ public class Window extends Table {
 						if (y < border) edge |= Align.bottom;
 						if (y > height - border) edge |= Align.top;
 					}
-					if (isMovable && edge == 0 && y >= height - getPadTop()) edge = MOVE;
+					if (isMovable && edge == 0 && y <= height && y >= height - getPadTop() && x >= 0 && x <= width) edge = MOVE;
 					dragging = edge != 0;
 					startX = x;
 					startY = y;
@@ -211,12 +211,12 @@ public class Window extends Table {
 		}
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		keepWithinStage();
 		super.draw(batch, parentAlpha);
 	}
 
-	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+	protected void drawBackground (Batch batch, float parentAlpha) {
 		float x = getX(), y = getY();
 		float width = getWidth(), height = getHeight();
 		float padTop = getPadTop();
@@ -280,7 +280,7 @@ public class Window extends Table {
 		this.titleAlignment = titleAlignment;
 	}
 
-	public boolean isMovable() {
+	public boolean isMovable () {
 		return isMovable;
 	}
 
@@ -288,7 +288,7 @@ public class Window extends Table {
 		this.isMovable = isMovable;
 	}
 
-	public boolean isModal() {
+	public boolean isModal () {
 		return isModal;
 	}
 
@@ -300,7 +300,7 @@ public class Window extends Table {
 		this.keepWithinStage = keepWithinStage;
 	}
 
-	public boolean isResizable() {
+	public boolean isResizable () {
 		return isResizable;
 	}
 

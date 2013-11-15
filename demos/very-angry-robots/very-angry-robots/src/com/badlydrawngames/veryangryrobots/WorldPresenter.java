@@ -16,14 +16,16 @@ package com.badlydrawngames.veryangryrobots;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL10;
+
 import com.badlydrawngames.general.GameScreen;
+import com.badlydrawngames.veryangryrobots.WorldView.Presenter;
 import com.badlydrawngames.veryangryrobots.mobiles.Player;
 
 /** <p>
  * It is the role of the <code>WorldPresenter</code> to glue together the {@link World} and the {@link WorldView}. It passes on
  * information from the controls in the WorldView to the World, updates it, then asks the WorldView to draw everything on its
  * behalf. The {@link WorldView} tells this <code>WorldPresenter</code> what to do via the methods provided by the
- * {@link WorldView#Presenter} interface.
+ * {@link Presenter} interface.
  * </p>
  * 
  * @author Rod */

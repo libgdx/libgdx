@@ -18,8 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.esotericsoftware.tablelayout.Cell;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
@@ -96,7 +96,7 @@ public class ImageTextButton extends Button {
 			image.setDrawable(style.imageUp);
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		updateImage();
 		Color fontColor;
 		if (isDisabled && style.disabledFontColor != null)

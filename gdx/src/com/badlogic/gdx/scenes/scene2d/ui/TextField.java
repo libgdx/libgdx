@@ -20,9 +20,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -462,7 +462,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;

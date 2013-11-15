@@ -115,6 +115,11 @@ public class IntArray {
 		items[index] += value;
 	}
 	
+	public void mul (int index, int value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] *= value;
+	}
+	
 	public void insert (int index, int value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		int[] items = this.items;

@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
@@ -40,7 +40,7 @@ public interface Layout {
 
 	/** Ensures the actor has been laid out. Calls {@link #layout()} if {@link #invalidate()} has called since the last time
 	 * {@link #validate()} was called, or if the actor otherwise needs to be laid out. This method is usually called in
-	 * {@link Actor#draw(SpriteBatch, float)} before drawing is performed. */
+	 * {@link Actor#draw(Batch, float)} before drawing is performed. */
 	public void validate ();
 
 	/** Sizes this actor to its preferred width and height and, if this changed the size, causes the actor to be laid out by calling

@@ -486,6 +486,7 @@ public class ArrayMap<K, V> {
 			return this;
 		}
 
+		/** Note the same entry instance is returned each time this method is called. */
 		public Entry<K, V> next () {
 			if (index >= map.size) throw new NoSuchElementException(String.valueOf(index));
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");

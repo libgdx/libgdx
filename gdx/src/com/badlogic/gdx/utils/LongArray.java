@@ -115,6 +115,11 @@ public class LongArray {
 		items[index] += value;
 	}
 
+	public void mul (int index, long value) {
+		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		items[index] *= value;
+	}
+	
 	public void insert (int index, long value) {
 		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
 		long[] items = this.items;

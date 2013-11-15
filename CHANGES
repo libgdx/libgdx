@@ -87,6 +87,7 @@
 - Added panStop to GestureListener interface.
 - ScissorStack#calculateScissors changed to take viewport, enabling it to work with glViewport.
 - Added Bits#getAndClear, Bits#getAndSet and Bits#containsAll
+- Added setX and setY to TextureAtlas.AtlasSprite so it matches expected behavior
 
 [0.9.8]
 - see http://www.badlogicgames.com/wordpress/?p=2791

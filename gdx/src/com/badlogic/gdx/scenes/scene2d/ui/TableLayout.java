@@ -22,7 +22,7 @@ import com.esotericsoftware.tablelayout.Toolkit;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
@@ -88,7 +88,7 @@ class TableLayout extends BaseTableLayout<Actor, Table, TableLayout, TableToolki
 		getTable().invalidateHierarchy();
 	}
 
-	public void drawDebug (SpriteBatch batch) {
+	public void drawDebug (Batch batch) {
 		if (getDebug() == Debug.none || debugRects == null) return;
 		if (debugRenderer == null) {
 			if (Gdx.graphics.isGL20Available())

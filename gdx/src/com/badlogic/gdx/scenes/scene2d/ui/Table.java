@@ -35,7 +35,7 @@ import com.esotericsoftware.tablelayout.Value;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -75,7 +75,7 @@ public class Table extends WidgetGroup {
 		setTouchable(Touchable.childrenOnly);
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		drawBackground(batch, parentAlpha);
 		if (isTransform()) {
@@ -97,7 +97,7 @@ public class Table extends WidgetGroup {
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
 	 * drawable. */
-	protected void drawBackground (SpriteBatch batch, float parentAlpha) {
+	protected void drawBackground (Batch batch, float parentAlpha) {
 		if (background != null) {
 			Color color = getColor();
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
@@ -481,7 +481,7 @@ public class Table extends WidgetGroup {
 		drawDebug(stage.getActors(), stage.getSpriteBatch());
 	}
 
-	static private void drawDebug (Array<Actor> actors, SpriteBatch batch) {
+	static private void drawDebug (Array<Actor> actors, Batch batch) {
 		for (int i = 0, n = actors.size; i < n; i++) {
 			Actor actor = actors.get(i);
 			if (!actor.isVisible()) continue;

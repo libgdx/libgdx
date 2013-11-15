@@ -19,7 +19,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -235,7 +235,7 @@ public class Tree extends WidgetGroup {
 		return y;
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		Color color = getColor();
 		if (style.background != null) {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
@@ -247,7 +247,7 @@ public class Tree extends WidgetGroup {
 	}
 
 	/** Draws selection, icons, and expand icons. */
-	private void draw (SpriteBatch batch, Array<Node> nodes, float indent) {
+	private void draw (Batch batch, Array<Node> nodes, float indent) {
 		Drawable plus = style.plus, minus = style.minus;
 		float x = getX(), y = getY();
 		for (int i = 0, n = nodes.size; i < n; i++) {

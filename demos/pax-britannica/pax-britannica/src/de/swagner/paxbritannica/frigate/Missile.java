@@ -1,6 +1,6 @@
 package de.swagner.paxbritannica.frigate;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.swagner.paxbritannica.Bullet;
@@ -23,9 +23,9 @@ public class Missile extends Bullet {
 	}
 	
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		ai.update();
 		
-		super.draw(spriteBatch);
+		super.draw(batch);
 	}
 }

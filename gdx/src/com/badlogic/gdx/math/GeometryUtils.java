@@ -48,6 +48,20 @@ public class GeometryUtils {
 		return barycentricOut;
 	}
 
+	/** Returns true if the barycentric coordinates are inside the triangle. */
+	static public boolean barycentricInsideTriangle (Vector2 barycentric) {
+		return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1;
+	}
+
+	/** Returns interpolated values given the barycentric coordinates of a point in a triangle and the values at each vertex.
+	 * @return interpolatedOut */
+	static public Vector2 barycentricInterpolation (Vector2 barycentric, Vector2 a, Vector2 b, Vector2 c, Vector2 interpolatedOut) {
+		float u = 1.f - barycentric.x - barycentric.y;
+		interpolatedOut.x = u * a.x + barycentric.x * b.x + barycentric.y * c.x;
+		interpolatedOut.y = u * a.y + barycentric.x * b.y + barycentric.y * c.y;
+		return interpolatedOut;
+	}
+
 	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
 	 * Float.Nan is returned.
 	 * @param a the first coefficient of the quadric equation

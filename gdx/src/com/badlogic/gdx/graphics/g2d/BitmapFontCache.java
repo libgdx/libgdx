@@ -178,7 +178,7 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
+	public void draw (Batch spriteBatch) {
 		TextureRegion[] regions = font.getRegions();
 		for (int j = 0, n = vertexData.length; j < n; j++) {
 			if (idx[j] >= 0) { //ignore if this texture has no glyphs
@@ -188,7 +188,7 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void draw (SpriteBatch spriteBatch, int start, int end) {
+	public void draw (Batch spriteBatch, int start, int end) {
 		if (vertexData.length == 1) { // i.e. 1 page
 			spriteBatch.draw(font.getRegion().getTexture(), vertexData[0], start * 20, (end - start) * 20);
 		} else { // i.e. multiple pages
@@ -233,7 +233,7 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
+	public void draw (Batch spriteBatch, float alphaModulation) {
 		if (alphaModulation == 1) {
 			draw(spriteBatch);
 			return;

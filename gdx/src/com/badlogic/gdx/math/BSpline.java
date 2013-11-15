@@ -37,6 +37,21 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		return cubic(out, i, u, points, continuous, tmp);
 	}
 	
+	/** Calculates the cubic b-spline derivative for the given position (t).
+	 * @param out The Vector to set to the result.
+	 * @param t The position (0<=t<=1) on the spline
+	 * @param points The control points
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T cubic_derivative(final T out, final float t, final T[] points, final boolean continuous, final T tmp) {
+		final int n = continuous ? points.length : points.length - 3;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= (float)i;
+		return cubic(out, i, u, points, continuous, tmp);
+	}
+	
 	/** Calculates the cubic b-spline value for the given span (i) at the given position (u).
 	 * @param out The Vector to set to the result.
 	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - 3 (cubic degree)
@@ -57,6 +72,26 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		return out;
 	}
 	
+	/** Calculates the cubic b-spline derivative for the given span (i) at the given position (u).
+	 * @param out The Vector to set to the result.
+	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - 3 (cubic degree)
+	 * @param u The position (0<=u<=1) on the span
+	 * @param points The control points
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T cubic_derivative(final T out, final int i, final float u, final T[] points, final boolean continuous, final T tmp) {
+		final int n = points.length;
+		final float dt = 1f - u;
+		final float t2 = u * u;
+		final float t3 = t2 * u;
+		out.set(points[i]).scl(1.5f * t2 - 2 * u);
+		if (continuous || i > 0) out.add(tmp.set(points[(n+i-1)%n]).scl(0.5f * (1-u) * (1-u)));
+		if (continuous || i < (n - 1)) out.add(tmp.set(points[(i + 1)%n]).scl(-1.5f * t2 + u + 0.5f));
+		if (continuous || i < (n - 2)) out.add(tmp.set(points[(i + 2)%n]).scl(0.5f * t2));
+		return out;
+	}
+	
 	/** Calculates the n-degree b-spline value for the given position (t).
 	 * @param out The Vector to set to the result.
 	 * @param t The position (0<=t<=1) on the spline
@@ -73,6 +108,22 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		return calculate(out, i, u, points, degree, continuous, tmp);
 	}
 	
+	/** Calculates the n-degree b-spline derivative for the given position (t).
+	 * @param out The Vector to set to the result.
+	 * @param t The position (0<=t<=1) on the spline
+	 * @param points The control points
+	 * @param degree The degree of the b-spline
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T derivative(final T out, final float t, final T[] points, final int degree, final boolean continuous, final T tmp) {
+		final int n = continuous ? points.length : points.length - degree;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= (float)i;
+		return derivative(out, i, u, points, degree, continuous, tmp);
+	}
+	
 	/** Calculates the n-degree b-spline value for the given span (i) at the given position (u).
 	 * @param out The Vector to set to the result.
 	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - degree
@@ -85,6 +136,22 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	public static <T extends Vector<T>> T calculate(final T out, final int i, final float u, final T[] points, final int degree, final boolean continuous, final T tmp) {
 		switch(degree) {
 		case 3: return cubic(out, i, u, points, continuous, tmp);
+		}
+		return out;
+	}
+	
+	/** Calculates the n-degree b-spline derivative for the given span (i) at the given position (u).
+	 * @param out The Vector to set to the result.
+	 * @param i The span (0<=i<spanCount) spanCount = continuous ? points.length : points.length - degree
+	 * @param u The position (0<=u<=1) on the span
+	 * @param points The control points
+	 * @param degree The degree of the b-spline
+	 * @param continuous If true the b-spline restarts at 0 when reaching 1
+	 * @param tmp A temporary vector used for the calculation
+	 * @return The value of out */
+	public static <T extends Vector<T>> T derivative(final T out, final int i, final float u, final T[] points, final int degree, final boolean continuous, final T tmp) {
+		switch(degree) {
+		case 3: return cubic_derivative(out, i, u, points, continuous, tmp);
 		}
 		return out;
 	}
@@ -128,9 +195,24 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		return valueAt(out, i, u);
 	}
 	
-	/** @return The value of the spline at position u of the specified span */ 
+	/** @return The value of the spline at position u of the specified span */
 	public T valueAt(final T out, final int span, final float u) {
 		return calculate(out, continuous ? span : (span + (int)(degree*0.5f)), u, controlPoints, degree, continuous, tmp);
+	}
+	
+
+	@Override
+	public T derivativeAt(final T out, final float t) {
+		final int n = spanCount;
+		float u = t * n;
+		int i = (t >= 1f) ? (n - 1) : (int)u;
+		u -= (float)i;
+		return derivativeAt(out, i, u);
+	}
+	
+	/** @return The derivative of the spline at position u of the specified span */
+	public T derivativeAt(final T out, final int span, final float u) {
+		return derivative(out, continuous ? span : (span + (int)(degree*0.5f)), u, controlPoints, degree, continuous, tmp);
 	}
 	
 	/** @return The span closest to the specified value */ 

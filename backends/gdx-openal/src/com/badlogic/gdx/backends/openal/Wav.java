@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.openal;
 
-import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class Wav {
 				setup(input.channels, input.sampleRate);
 			}
 			try {
-				return input.readData(buffer);
+				return input.read(buffer);
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
 			}
@@ -59,19 +58,15 @@ public class Wav {
 			super(audio);
 			if (audio.noDevice) return;
 
-			WavInputStream input = new WavInputStream(file);
-			ByteArrayOutputStream output = new ByteArrayOutputStream(4096);
+			WavInputStream input = null;
 			try {
-				byte[] buffer = new byte[2048];
-				while (true) {
-					int length = input.readData(buffer);
-					if (length == -1) break;
-					output.write(buffer, 0, length);
-				}
+				input = new WavInputStream(file);
+				setup(StreamUtils.copyStreamToByteArray(input, input.dataRemaining), input.channels, input.sampleRate);
 			} catch (IOException ex) {
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
+			} finally {
+				StreamUtils.closeQuietly(input);
 			}
-			setup(output.toByteArray(), input.channels, input.sampleRate);
 		}
 	}
 
@@ -110,10 +105,7 @@ public class Wav {
 
 				dataRemaining = seekToChunk('d', 'a', 't', 'a');
 			} catch (Throwable ex) {
-				try {
-					close();
-				} catch (IOException ignored) {
-				}
+				StreamUtils.closeQuietly(this);
 				throw new GdxRuntimeException("Error reading WAV file: " + file, ex);
 			}
 		}
@@ -139,9 +131,9 @@ public class Wav {
 			}
 		}
 
-		public int readData (byte[] buffer) throws IOException {
+		public int read (byte[] buffer) throws IOException {
 			if (dataRemaining == 0) return -1;
-			int length = Math.min(read(buffer), dataRemaining);
+			int length = Math.min(super.read(buffer), dataRemaining);
 			if (length == -1) return -1;
 			dataRemaining -= length;
 			return length;

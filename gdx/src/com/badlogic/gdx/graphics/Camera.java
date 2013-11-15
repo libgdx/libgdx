@@ -19,9 +19,8 @@ package com.badlogic.gdx.graphics;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -89,7 +88,7 @@ public abstract class Camera {
 		direction.set(x, y, z).sub(position).nor();
 		normalizeUp();
 	}
-	
+
 	/** Recalculates the direction of the camera to look at the point (x, y, z).
 	 * @param target the point to look at */
 	public void lookAt (Vector3 target) {
@@ -126,20 +125,20 @@ public abstract class Camera {
 		up.rotate(axis, angle);
 	}
 
-	/** Rotates the direction and up vector of this camera by the given rotation matrix. The direction and up vector
-	 * will not be orthogonalized.
+	/** Rotates the direction and up vector of this camera by the given rotation matrix. The direction and up vector will not be
+	 * orthogonalized.
 	 * 
 	 * @param transform The rotation matrix */
-	public void rotate(final Matrix4 transform) {
+	public void rotate (final Matrix4 transform) {
 		direction.rot(transform);
 		up.rot(transform);
 	}
-	
-	/** Rotates the direction and up vector of this camera by the given {@link Quaternion}. The direction and up vector
-	 * will not be orthogonalized.
+
+	/** Rotates the direction and up vector of this camera by the given {@link Quaternion}. The direction and up vector will not be
+	 * orthogonalized.
 	 * 
 	 * @param quat The quaternion */
-	public void rotate(final Quaternion quat) {
+	public void rotate (final Quaternion quat) {
 		quat.transform(direction);
 		quat.transform(up);
 	}
@@ -158,11 +157,11 @@ public abstract class Camera {
 		tmpVec.rotate(axis, angle);
 		translate(-tmpVec.x, -tmpVec.y, -tmpVec.z);
 	}
-	
+
 	/** Transform the position, direction and up vector by the given matrix
 	 * 
 	 * @param transform The transform matrix */
-	public void transform(final Matrix4 transform) {
+	public void transform (final Matrix4 transform) {
 		position.mul(transform);
 		rotate(transform);
 	}
@@ -218,7 +217,7 @@ public abstract class Camera {
 	/** Projects the {@link Vector3} given in object/world space to window coordinates. It's the same as GLU gluProject with one
 	 * small deviation: The viewport is assumed to span the whole screen. The window coordinate system has its origin in the
 	 * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily
-	 * useable in conjunction with {@link SpriteBatch} and similar classes.
+	 * useable in conjunction with {@link Batch} and similar classes.
 	 * @param vec the position in object/world space. */
 	public void project (Vector3 vec) {
 		project(vec, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -227,8 +226,8 @@ public abstract class Camera {
 	/** Projects the {@link Vector3} given in object/world space to window coordinates. It's the same as GLU gluProject with one
 	 * small deviation: The viewport is assumed to span the whole screen. The window coordinate system has its origin in the
 	 * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily
-	 * useable in conjunction with {@link SpriteBatch} and similar classes. This method allows you to specify the viewport position
-	 * and dimensions in the coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the
+	 * useable in conjunction with {@link Batch} and similar classes. This method allows you to specify the viewport position and
+	 * dimensions in the coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the
 	 * bottom left corner of the screen.
 	 * 
 	 * @param vec the point in object/world space

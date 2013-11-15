@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -49,20 +49,19 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Draws the group and its children. The default implementation calls {@link #applyTransform(SpriteBatch, Matrix4)} if needed,
-	 * then {@link #drawChildren(SpriteBatch, float)}, then {@link #resetTransform(SpriteBatch)} if needed. */
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	/** Draws the group and its children. The default implementation calls {@link #applyTransform(Batch, Matrix4)} if needed, then
+	 * {@link #drawChildren(Batch, float)}, then {@link #resetTransform(Batch)} if needed. */
+	public void draw (Batch batch, float parentAlpha) {
 		if (transform) applyTransform(batch, computeTransform());
 		drawChildren(batch, parentAlpha);
 		if (transform) resetTransform(batch);
 	}
 
-	/** Draws all children. {@link #applyTransform(SpriteBatch, Matrix4)} should be called before and
-	 * {@link #resetTransform(SpriteBatch)} after this method if {@link #setTransform(boolean) transform} is true. If
-	 * {@link #setTransform(boolean) transform} is false these methods don't need to be called, children positions are temporarily
-	 * offset by the group position when drawn. This method avoids drawing children completely outside the
-	 * {@link #setCullingArea(Rectangle) culling area}, if set. */
-	protected void drawChildren (SpriteBatch batch, float parentAlpha) {
+	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)} after
+	 * this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false these
+	 * methods don't need to be called, children positions are temporarily offset by the group position when drawn. This method
+	 * avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	protected void drawChildren (Batch batch, float parentAlpha) {
 		parentAlpha *= this.color.a;
 		SnapshotArray<Actor> children = this.children;
 		Actor[] actors = children.begin();
@@ -133,9 +132,9 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Set the SpriteBatch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the
-	 * batch to be flushed. {@link #resetTransform(SpriteBatch)} will restore the transform to what it was before this call. */
-	protected void applyTransform (SpriteBatch batch, Matrix4 transform) {
+	/** Set the Batch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the batch to
+	 * be flushed. {@link #resetTransform(Batch)} will restore the transform to what it was before this call. */
+	protected void applyTransform (Batch batch, Matrix4 transform) {
 		oldBatchTransform.set(batch.getTransformMatrix());
 		batch.setTransformMatrix(transform);
 	}
@@ -177,9 +176,9 @@ public class Group extends Actor implements Cullable {
 		return batchTransform;
 	}
 
-	/** Restores the SpriteBatch transform to what it was before {@link #applyTransform(SpriteBatch, Matrix4)}. Note this causes the
-	 * batch to be flushed. */
-	protected void resetTransform (SpriteBatch batch) {
+	/** Restores the Batch transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the batch to be
+	 * flushed. */
+	protected void resetTransform (Batch batch) {
 		batch.setTransformMatrix(oldBatchTransform);
 	}
 
@@ -335,11 +334,11 @@ public class Group extends Actor implements Cullable {
 		return children.size > 0;
 	}
 
-	/** When true (the default), the SpriteBatch is transformed so children are drawn in their parent's coordinate system. This has
-	 * a performance impact because {@link SpriteBatch#flush()} must be done before and after the transform. If the actors in a
-	 * group are not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position
-	 * will be offset by the group's position for drawing, causing the children to appear in the correct location even though the
-	 * SpriteBatch has not been transformed. */
+	/** When true (the default), the Batch is transformed so children are drawn in their parent's coordinate system. This has a
+	 * performance impact because {@link Batch#flush()} must be done before and after the transform. If the actors in a group are
+	 * not rotated or scaled, then the transform for the group can be set to false. In this case, each child's position will be
+	 * offset by the group's position for drawing, causing the children to appear in the correct location even though the Batch has
+	 * not been transformed. */
 	public void setTransform (boolean transform) {
 		this.transform = transform;
 	}

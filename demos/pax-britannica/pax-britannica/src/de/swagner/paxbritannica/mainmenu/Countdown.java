@@ -1,8 +1,8 @@
 package de.swagner.paxbritannica.mainmenu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.swagner.paxbritannica.Resources;
@@ -65,10 +65,10 @@ public class Countdown extends Sprite {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 		
-		super.draw(spriteBatch);
+		super.draw(batch);
 
 		if (cnt < 1) {
 			finished = true;
