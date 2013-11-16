@@ -45,40 +45,42 @@ public class XmlReader {
 	}
 
 	public Element parse (Reader reader) throws IOException {
-		char[] data = new char[1024];
-		int offset = 0;
-		while (true) {
-			int length = reader.read(data, offset, data.length - offset);
-			if (length == -1) break;
-			if (length == 0) {
-				char[] newData = new char[data.length * 2];
-				System.arraycopy(data, 0, newData, 0, data.length);
-				data = newData;
-			} else
-				offset += length;
+		try {
+			char[] data = new char[1024];
+			int offset = 0;
+			while (true) {
+				int length = reader.read(data, offset, data.length - offset);
+				if (length == -1) break;
+				if (length == 0) {
+					char[] newData = new char[data.length * 2];
+					System.arraycopy(data, 0, newData, 0, data.length);
+					data = newData;
+				} else
+					offset += length;
+			}
+			return parse(data, 0, offset);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		} finally {
+			StreamUtils.closeQuietly(reader);
 		}
-		return parse(data, 0, offset);
 	}
 
 	public Element parse (InputStream input) throws IOException {
-		Reader r = null;
 		try {
-			r = new InputStreamReader(input, "ISO-8859-1");
-			return parse(r);
+			return parse(new InputStreamReader(input, "UTF-8"));
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
 		} finally {
-			StreamUtils.closeQuietly(r);
+			StreamUtils.closeQuietly(input);
 		}
 	}
 
 	public Element parse (FileHandle file) throws IOException {
-		InputStream is = null;
 		try {
-			is = file.read();
-			return parse(is);
+			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
-		} finally {
-			StreamUtils.closeQuietly(is);
 		}
 	}
 
