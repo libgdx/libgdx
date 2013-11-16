@@ -60,14 +60,24 @@ public class XmlReader {
 	}
 
 	public Element parse (InputStream input) throws IOException {
-		return parse(new InputStreamReader(input, "ISO-8859-1"));
+		Reader r = null;
+		try {
+			r = new InputStreamReader(input, "ISO-8859-1");
+			return parse(r);
+		} finally {
+			StreamUtils.closeQuietly(r);
+		}
 	}
 
 	public Element parse (FileHandle file) throws IOException {
+		InputStream is = null;
 		try {
-			return parse(file.read());
+			is = file.read();
+			return parse(is);
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
+		} finally {
+			StreamUtils.closeQuietly(is);
 		}
 	}
 
@@ -99,6 +109,12 @@ public class XmlReader {
 					while (data[p - 2] != ']' || data[p - 1] != ']' || data[p] != '>')
 						p++;
 					text(new String(data, s, p - s - 2));
+				} else if(c == '!' && data[s + 1] == '-' && data[s + 2] == '-') {
+					// from http://www.w3.org/TR/REC-xml/#syntax
+					// Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
+					p = s + 3;
+					while (data[p] != '-' || data[p + 1] != '-' || data[p + 2] != '>') p++;
+					p += 2;
 				} else
 					while (data[p] != '>') p++;
 				fgoto elementBody;
