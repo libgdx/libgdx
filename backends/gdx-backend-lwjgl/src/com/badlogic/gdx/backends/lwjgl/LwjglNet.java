@@ -20,11 +20,14 @@ import org.lwjgl.Sys;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.UDPSocket;
+import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -54,4 +57,12 @@ public class LwjglNet implements Net {
 		Sys.openURL(URI);
 	}
 
+	@Override
+	public UDPSocket newUDPSocket (Protocol protocol, String host, int port, UDPSocketHints hints) {
+		if (protocol != Protocol.UDP) {
+			Gdx.app.log("LwjglNet", "UDP socket only supports UDP protocol");
+			return null;
+		}
+		return new LwjglUDPSocket(host, protocol, port, hints);
+	}
 }

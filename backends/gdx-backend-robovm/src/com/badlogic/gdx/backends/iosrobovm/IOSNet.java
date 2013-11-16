@@ -16,15 +16,19 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+
 import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIApplication;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.UDPSocket;
+import com.badlogic.gdx.net.UDPSocketHints;
 
 public class IOSNet implements Net {
 
@@ -53,5 +57,15 @@ public class IOSNet implements Net {
 	@Override
 	public void openURI (String URI) {
 		uiApp.openURL(new NSURL(URI));
+	}
+
+	@Override
+	public UDPSocket newUDPSocket(Protocol protocol, String host, int port,
+			UDPSocketHints hints) {
+		if (protocol != Protocol.UDP) {
+			Gdx.app.log("IOSNet", "UDP socket only supports UDP protocol");
+			return null;
+		}
+		return new IOSUDPSocket(host, protocol, port, hints);
 	}
 }
