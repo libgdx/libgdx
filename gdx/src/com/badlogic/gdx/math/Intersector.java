@@ -672,9 +672,10 @@ public final class Intersector {
 		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 		if (d == 0) return false;
 
-		float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		if (intersection != null) {
+			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
+			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		}
 		return true;
 	}
 
@@ -686,9 +687,10 @@ public final class Intersector {
 		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 		if (d == 0) return false;
 
-		float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		if (intersection != null) {
+			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
+			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		}
 		return true;
 	}
 
@@ -720,22 +722,21 @@ public final class Intersector {
 		return false;
 	}
 
-	/** Determines whether the given rectangles intersect and, if they do,
-	 *  sets the supplied {@code intersection} rectangle to the area of overlap.
+	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
+	 * area of overlap.
 	 * 
-	 * @return Whether the rectangles intersect
-	 */
-	static public boolean intersectRectangles(Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection) {
-	    if (rectangle1.overlaps(rectangle2)) {
-	        intersection.x = Math.max(rectangle1.x, rectangle2.x);
-	        intersection.width = Math.min(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width) - intersection.x;
-	        intersection.y = Math.max(rectangle1.y, rectangle2.y);
-	        intersection.height = Math.min(rectangle1.y + rectangle1.height, rectangle2.y + rectangle2.height) - intersection.y;
-	        return true;
-	    }
-	    return false;
-	}	
-	
+	 * @return Whether the rectangles intersect */
+	static public boolean intersectRectangles (Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection) {
+		if (rectangle1.overlaps(rectangle2)) {
+			intersection.x = Math.max(rectangle1.x, rectangle2.x);
+			intersection.width = Math.min(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width) - intersection.x;
+			intersection.y = Math.max(rectangle1.y, rectangle2.y);
+			intersection.height = Math.min(rectangle1.y + rectangle1.height, rectangle2.y + rectangle2.height) - intersection.y;
+			return true;
+		}
+		return false;
+	}
+
 	/** Check whether the given line segment and {@link Polygon} intersect.
 	 * @param p1 The first point of the segment
 	 * @param p2 The second point of the segment
@@ -778,9 +779,9 @@ public final class Intersector {
 		if (d == 0) return false;
 
 		float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-		float ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / d;
-
 		if (ua < 0 || ua > 1) return false;
+
+		float ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / d;
 		if (ub < 0 || ub > 1) return false;
 
 		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
