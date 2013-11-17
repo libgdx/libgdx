@@ -64,8 +64,8 @@ public class BitmapFontCache {
 		this.integer = integer;
 		
 		int regionsLength = font.regions.length;
-		if (font.regions == null || regionsLength == 0)
-			throw new IllegalArgumentException("The specified font must be non-null and contain at least 1 texture page");
+		if (regionsLength == 0)
+			throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
 		
 		this.vertexData = new float[regionsLength][];
 		
@@ -198,18 +198,18 @@ public class BitmapFontCache {
 			// Different pages might have different offsets and lengths
 			// Some pages might not need to be rendered at all..
 
-			int pageCount = vertexData.length;
 			TextureRegion[] regions = font.getRegions();
 
 			// for each page...
-			for (int i = 0; i < pageCount; i++) {
+			for (int i = 0, pageCount = vertexData.length; i < pageCount; i++) {
 
 				int offset = -1;
 				int count = 0;
 
 				// we need to loop through the indices and determine where we begin within the start/end bounds
-				for (int j = 0, n = glyphIndices[i].size; j < n; j++) {
-					int glyphIndex = glyphIndices[i].items[j];
+				IntArray currentGlyphIndices = glyphIndices[i];
+				for (int j = 0, n = currentGlyphIndices.size; j < n; j++) {
+					int glyphIndex = currentGlyphIndices.items[j];
 
 					// break early if the glyph is outside our bounds
 					if (glyphIndex >= end) break;
