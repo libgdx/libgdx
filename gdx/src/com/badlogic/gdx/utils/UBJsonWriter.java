@@ -88,12 +88,9 @@ public class UBJsonWriter implements Closeable {
 		} else if (bytes.length <= Short.MAX_VALUE) {
 			out.writeByte('I');
 			out.writeShort(bytes.length);
-		} else if (bytes.length <= Integer.MAX_VALUE) {
+		} else {
 			out.writeByte('l');
 			out.writeInt(bytes.length);
-		} else if (bytes.length <= Long.MAX_VALUE) {
-			out.writeByte('L');
-			out.writeLong(bytes.length);
 		}
 		out.write(bytes);
 		named = true;
@@ -186,12 +183,9 @@ public class UBJsonWriter implements Closeable {
 		} else if (bytes.length <= Short.MAX_VALUE) {
 			out.writeByte('I');
 			out.writeShort(bytes.length);
-		} else if (bytes.length <= Integer.MAX_VALUE) {
+		} else {
 			out.writeByte('l');
 			out.writeInt(bytes.length);
-		} else if (bytes.length <= Long.MAX_VALUE) {
-			out.writeByte('L');
-			out.writeLong(bytes.length);
 		}
 		out.write(bytes);
 		return this;
