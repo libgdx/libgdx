@@ -65,15 +65,14 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	public static class AtlasTiledMapLoaderParameters extends AssetLoaderParameters<TiledMap> {
 		/** Whether to load the map for a y-up coordinate system */
 		public boolean yUp = true;
-
 		/** force texture filters? **/
 		public boolean forceTextureFilters = false;
-
 		/** The TextureFilter to use for minification, if forceTextureFilter is enabled **/
 		public TextureFilter textureMinFilter = TextureFilter.Nearest;
-
 		/** The TextureFilter to use for magnification, if forceTextureFilter is enabled **/
 		public TextureFilter textureMagFilter = TextureFilter.Nearest;
+		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
+		public boolean convertObjectToTileSpace = false;
 	}
 
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -84,7 +83,10 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
 	protected boolean yUp;
+	protected boolean convertObjectToTileSpace;
 
+	protected int mapTileWidth;
+	protected int mapTileHeight;
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
 
@@ -163,8 +165,10 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		try {
 			if (parameter != null) {
 				yUp = parameter.yUp;
+				convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			} else {
 				yUp = true;
+				convertObjectToTileSpace = false;
 			}
 
 			FileHandle tmxFile = resolve(fileName);
@@ -226,8 +230,10 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 
 		if (parameter != null) {
 			yUp = parameter.yUp;
+			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 		} else {
 			yUp = true;
+			convertObjectToTileSpace = false;
 		}
 
 		try {
@@ -267,6 +273,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
+
+		mapTileWidth = tileWidth;
+		mapTileHeight = tileHeight;
 		mapWidthInPixels = mapWidth * tileWidth;
 		mapHeightInPixels = mapHeight * tileHeight;
 
@@ -568,11 +577,14 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 
-			int x = element.getIntAttribute("x", 0);
-			int y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0));
+			float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
+			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
-			int width = element.getIntAttribute("width", 0);
-			int height = element.getIntAttribute("height", 0);
+			float x = element.getIntAttribute("x", 0) * scaleX;
+			float y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0)) * scaleY;
+
+			float width = element.getIntAttribute("width", 0) * scaleX;
+			float height = element.getIntAttribute("height", 0) * scaleY;
 
 			if (element.getChildCount() > 0) {
 				Element child = null;
@@ -581,8 +593,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]) * scaleX;
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]) * scaleY;
 						if (yUp) {
 							vertices[i * 2 + 1] *= -1;
 						}
@@ -595,8 +607,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]) * scaleX;
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]) * scaleY;
 						if (yUp) {
 							vertices[i * 2 + 1] *= -1;
 						}
@@ -620,8 +632,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			if (gid != -1) {
 				object.getProperties().put("gid", gid);
 			}
-			object.getProperties().put("x", x);
-			object.getProperties().put("y", yUp ? y - height : y);
+			object.getProperties().put("x", x * scaleX);
+			object.getProperties().put("y", (yUp ? y - height : y) * scaleY);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {

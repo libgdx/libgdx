@@ -32,6 +32,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -553,11 +554,7 @@ public class TexturePacker2 {
 	/** Packs using defaults settings.
 	 * @see TexturePacker2#process(Settings, String, String, String) */
 	static public void process (String input, String output, String packFileName) {
-		try {
-			new TexturePackerFileProcessor(new Settings(), packFileName).process(new File(input), new File(output));
-		} catch (Exception ex) {
-			throw new RuntimeException("Error packing files.", ex);
-		}
+		process(new Settings(), input, output, packFileName);
 	}
 
 	/** @param input Directory containing individual images to be packed.
@@ -565,7 +562,15 @@ public class TexturePacker2 {
 	 * @param packFileName The name of the pack file. Also used to name the page images. */
 	static public void process (Settings settings, String input, String output, String packFileName) {
 		try {
-			new TexturePackerFileProcessor(settings, packFileName).process(new File(input), new File(output));
+			TexturePackerFileProcessor processor =
+				new TexturePackerFileProcessor(settings, packFileName);
+			// Sort input files by name to avoid platform-dependent atlas output changes.
+			processor.setComparator(new Comparator<File>() {
+				public int compare(File file1, File file2) {
+					return file1.getName().compareTo(file2.getName());
+				}
+			});
+			processor.process(new File(input), new File(output));
 		} catch (Exception ex) {
 			throw new RuntimeException("Error packing files.", ex);
 		}
