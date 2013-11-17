@@ -81,7 +81,6 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter name (String name) throws IOException {
 		if (current == null || current.array) throw new IllegalStateException("Current item must be an object.");
 		byte[] bytes = name.getBytes("UTF-8");
-		out.writeByte('S');
 		if (bytes.length <= Byte.MAX_VALUE) {
 			out.writeByte('i');
 			out.writeByte(bytes.length);
@@ -203,7 +202,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeByte(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -219,7 +218,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeShort(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -235,7 +234,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeInt(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -251,7 +250,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeLong(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -267,7 +266,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeFloat(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -284,7 +283,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeDouble(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -311,7 +310,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			out.writeChar(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -327,7 +326,7 @@ public class UBJsonWriter implements Closeable {
 		for (int i = 0, n = values.length; i < n; i++) {
 			value(values[i]);
 		}
-		pop();
+		pop(true);
 		return this;
 	}
 
@@ -483,8 +482,15 @@ public class UBJsonWriter implements Closeable {
 	/** Ends the current object or array and pops it off of the element stack.
 	 * @return This writer, for chaining */
 	public UBJsonWriter pop () throws IOException {
+		return pop(false);
+	}
+	
+	protected UBJsonWriter pop (boolean silent) throws IOException {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
-		stack.pop().close();
+		if (silent)
+			stack.pop();
+		else
+			stack.pop().close();
 		current = stack.size == 0 ? null : stack.peek();
 		return this;
 	}
