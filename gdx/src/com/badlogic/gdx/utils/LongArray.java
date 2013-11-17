@@ -88,7 +88,7 @@ public class LongArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (long[] array) {
+	public void addAll (long... array) {
 		addAll(array, 0, array.length);
 	}
 

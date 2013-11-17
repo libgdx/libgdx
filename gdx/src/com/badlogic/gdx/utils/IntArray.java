@@ -88,7 +88,7 @@ public class IntArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (int[] array) {
+	public void addAll (int... array) {
 		addAll(array, 0, array.length);
 	}
 

@@ -95,7 +95,7 @@ public class ShortArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (short[] array) {
+	public void addAll (short... array) {
 		addAll(array, 0, array.length);
 	}
 

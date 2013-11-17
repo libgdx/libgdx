@@ -111,7 +111,7 @@ public class Array<T> implements Iterable<T> {
 		addAll((T[])array.items, offset, length);
 	}
 
-	public void addAll (T[] array) {
+	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 

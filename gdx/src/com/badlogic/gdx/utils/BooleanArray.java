@@ -90,7 +90,7 @@ public class BooleanArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (boolean[] array) {
+	public void addAll (boolean... array) {
 		addAll(array, 0, array.length);
 	}
 
