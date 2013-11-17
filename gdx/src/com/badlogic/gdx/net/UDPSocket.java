@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 package com.badlogic.gdx.net;
 
 import java.net.DatagramPacket;
+
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Interface for working with datagrams
  * @author Unkn0wn0ne
  */
-public interface UDPSocket {
+public interface UDPSocket extends Disposable{
 	
 	/**
 	 * Sends a datagram packet to the predefined destination with the specified data 

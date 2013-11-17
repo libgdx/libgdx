@@ -80,4 +80,9 @@ public class JglfwUDPSocket implements UDPSocket{
 			throw new GdxRuntimeException(e);
 		}
 	}
+
+	@Override
+	public void dispose () {
+		this.socket.close();
+	}
 }

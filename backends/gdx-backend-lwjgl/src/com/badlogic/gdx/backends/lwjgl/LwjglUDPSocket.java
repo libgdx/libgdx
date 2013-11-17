@@ -81,4 +81,9 @@ public class LwjglUDPSocket implements UDPSocket {
 			throw new GdxRuntimeException(e);
 		}
 	}
+
+	@Override
+	public void dispose () {
+		this.socket.close();
+	}
 }
