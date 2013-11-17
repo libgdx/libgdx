@@ -15,10 +15,10 @@
  ******************************************************************************/
 package com.badlogic.gdx.backends.android;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import com.badlogic.gdx.Net.Protocol;
@@ -27,9 +27,8 @@ import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
- * Android implementation of UDPSocket
+ * The Android implementation of {@link UDPSocket}
  * @author Unkn0wn0ne
- *
  */
 public class AndroidUDPSocket implements UDPSocket{
 
@@ -42,15 +41,20 @@ public class AndroidUDPSocket implements UDPSocket{
 			this.address = InetAddress.getByName(address);
 			this.socket = new DatagramSocket(port);
 			this.port = port;
-			applySocketHints(hints);
-		} catch (IOException e) {
+			if (hints == null) {
+				applySocketHints(new UDPSocketHints());
+			} else {
+				applySocketHints(hints);
+			}
+		} catch (Exception e) {
 			throw new GdxRuntimeException(e);
 		}
 		
 	}
 	
-	private void applySocketHints (UDPSocketHints hints) {
-		
+	private void applySocketHints (UDPSocketHints hints) throws SocketException {
+		this.socket.setSoTimeout(hints.SO_TIMEOUT);
+		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
 	}
 
 	@Override

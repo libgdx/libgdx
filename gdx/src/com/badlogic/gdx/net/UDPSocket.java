@@ -13,14 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.net;
 
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 
+/**
+ * Interface for working with datagrams
+ * @author Unkn0wn0ne
+ */
 public interface UDPSocket {
 	
+	/**
+	 * Sends a datagram packet to the predefined destination with the specified data 
+	 * @param buffer The byte array containing the data you want to send
+	 * @param length How much of the byte array you want to send
+	 */
 	public void writeData(byte[] buffer, int length);
 	
+	/**
+	 * Reads data from a datagram packet
+	 * @param buffer The buffer for storing sent data
+	 * @return The datagram packet that was received
+	 */
 	public DatagramPacket readData(byte[] buffer);
 }

@@ -18,12 +18,17 @@ package com.badlogic.gdx.backends.jglfw;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * The Jglfw implementation of {@link UDPSocket}
+ * @author Unkn0wn0ne
+ */
 public class JglfwUDPSocket implements UDPSocket{
 
 	private DatagramSocket socket;
@@ -35,15 +40,20 @@ public class JglfwUDPSocket implements UDPSocket{
 			this.address = InetAddress.getByName(address);
 			this.socket = new DatagramSocket(port);
 			this.port = port;
-			applySocketHints(hints);
+			if (hints == null) {
+				applySocketHints(new UDPSocketHints());
+			} else {
+				applySocketHints(hints);
+			}
 		} catch (Exception e) {
 			throw new GdxRuntimeException(e);
 		}
 		
 	}
 	
-	private void applySocketHints (UDPSocketHints hints) {
-		
+	private void applySocketHints (UDPSocketHints hints) throws SocketException {
+		this.socket.setSoTimeout(hints.SO_TIMEOUT);
+		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
 	}
 
 	@Override
@@ -70,5 +80,4 @@ public class JglfwUDPSocket implements UDPSocket{
 			throw new GdxRuntimeException(e);
 		}
 	}
-
 }

@@ -13,8 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.net;
 
+/**
+ * Contains parameters for the UDP socket implementation
+ * @author Unkn0wn0ne
+ */
 public class UDPSocketHints {
-
+	
+	/**
+	 * Sets the SO_TIMEOUT to the specified timeout. (in miliseconds)
+	 * Note: Set timeout to zero for infinite timeouts
+	 * Default: 0
+	 */
+	public int SO_TIMEOUT = 0;
+	
+	/**
+	 * Sets the traffic class for the datagram.
+	 * Note: traffic class's minimum is zero and maximum is 255. Failing to meat those requirements will cause an IllegalArgumentException
+	 * Default: 0x04 (IPTOS_RELIABILITY)
+	 */
+	public int TRAFFIC_CLASS = 0x04;
 }

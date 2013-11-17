@@ -270,7 +270,7 @@ public interface Net {
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
 
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
-	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.
+	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)} and {@link Net#newUDPSocket(Protocol, String, int, UDPSocketHints)}.
 	 * @author mzechner */
 	public enum Protocol {
 		TCP,
@@ -303,8 +303,14 @@ public interface Net {
 	 * @param URI the URI to be opened. */
 	public void openURI (String URI);
 	
-	/** Creates a socket on the given port, using the UDP protocol
+	/** Creates a new UDP 'socket' that allows you to send data through datagrams
 	 * 
+	 * @param protocol The protocol to be used. Should be {@link Net.Protocol#UDP}
+	 * @param host The IP address or hostname of the destination
+	 * @param port The port
+	 * @param hints Sets the socket properties. See {@link UDPSocketHints} Set null to use the defaults
+	 * @return A UDPSocket
+	 * @throws GdxRuntimeException if there is an error creating the socket
 	 */
 	public UDPSocket newUDPSocket(Protocol protocol, String host, int port, UDPSocketHints hints);
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.lwjgl;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/**
+ * The Lwjgl implementation of {@link UDPSocket}
+ * @author Unkn0wn0ne
+ */
 public class LwjglUDPSocket implements UDPSocket {
 
 	private DatagramSocket socket;
@@ -35,15 +41,20 @@ public class LwjglUDPSocket implements UDPSocket {
 			this.address = InetAddress.getByName(address);
 			this.socket = new DatagramSocket(port);
 			this.port = port;
-			applySocketHints(hints);
+			if (hints == null) {
+				applySocketHints(new UDPSocketHints());
+			} else {
+				applySocketHints(hints);
+			}
 		} catch (Exception e) {
 			throw new GdxRuntimeException(e);
 		}
 		
 	}
 	
-	private void applySocketHints (UDPSocketHints hints) {
-		
+	private void applySocketHints (UDPSocketHints hints) throws SocketException {
+		this.socket.setSoTimeout(hints.SO_TIMEOUT);
+		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
 	}
 
 	@Override
