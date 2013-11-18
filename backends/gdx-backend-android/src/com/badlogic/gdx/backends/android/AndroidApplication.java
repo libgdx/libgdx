@@ -75,6 +75,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
+	protected boolean immersive_mode = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -109,7 +110,8 @@ public class AndroidApplication extends Activity implements Application {
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
-
+		this.immersive_mode = config.useImmersiveMode;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -127,7 +129,7 @@ public class AndroidApplication extends Activity implements Application {
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
 		hideStatusBar(config);
-		useImmersiveMode(config);
+		useImmersiveMode(this.immersive_mode);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -159,16 +161,22 @@ public class AndroidApplication extends Activity implements Application {
 		}
 	}
 	
-	protected void useImmersiveMode (AndroidApplicationConfiguration config) {
-		if (!config.useImmersiveMode || getVersion() < 19) return;
+	@Override
+	public void onWindowFocusChanged (boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		useImmersiveMode(this.immersive_mode);
+	}
+
+	protected void useImmersiveMode (boolean use) {
+		if (!use|| getVersion() < 19) return;
 		
 		View view = getWindow().getDecorView();
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
 			int code = View.SYSTEM_UI_FLAG_FULLSCREEN;
-                        code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-                        code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-                        m.invoke(view, code);
+         code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+          code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+          m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
 		}
