@@ -75,7 +75,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
-	protected boolean immersive_mode = false;
+	protected boolean useImmersiveMode = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -110,7 +110,7 @@ public class AndroidApplication extends Activity implements Application {
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
-		this.immersive_mode = config.useImmersiveMode;
+		this.useImmersiveMode = config.useImmersiveMode;
 		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -129,7 +129,7 @@ public class AndroidApplication extends Activity implements Application {
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
 		hideStatusBar(config);
-		useImmersiveMode(this.immersive_mode);
+		useImmersiveMode(this.useImmersiveMode);
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -164,7 +164,7 @@ public class AndroidApplication extends Activity implements Application {
 	@Override
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
-		useImmersiveMode(this.immersive_mode);
+		useImmersiveMode(this.useImmersiveMode);
 	}
 
 	protected void useImmersiveMode (boolean use) {
@@ -221,7 +221,8 @@ public class AndroidApplication extends Activity implements Application {
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
-
+		this.useImmersiveMode = config.useImmersiveMode;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -231,6 +232,7 @@ public class AndroidApplication extends Activity implements Application {
 
 		createWakeLock(config);
 		hideStatusBar(config);
+		useImmersiveMode(this.useImmersiveMode);
 		return graphics.getView();
 	}
 
