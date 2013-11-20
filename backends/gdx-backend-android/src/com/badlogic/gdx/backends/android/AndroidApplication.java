@@ -111,7 +111,7 @@ public class AndroidApplication extends Activity implements Application {
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
-		
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -130,6 +130,19 @@ public class AndroidApplication extends Activity implements Application {
 		createWakeLock(config);
 		hideStatusBar(config);
 		useImmersiveMode(this.useImmersiveMode);
+		if (this.useImmersiveMode && getVersion() >= 19) {
+			try {
+				View rootView = getWindow().getDecorView();
+				rootView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+					@Override
+					public void onSystemUiVisibilityChange (int arg0) {
+						useImmersiveMode(useImmersiveMode);
+					}
+				});
+			} catch (Exception e) {
+				log("AndroidApplication", "Can't OnSystemUiVisibilityChangeListener", e);
+			}
+		}
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -147,8 +160,7 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11)
-			return;
+		if (!config.hideStatusBar || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
 
@@ -160,7 +172,7 @@ public class AndroidApplication extends Activity implements Application {
 			log("AndroidApplication", "Can't hide status bar", e);
 		}
 	}
-	
+
 	@Override
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
@@ -168,15 +180,15 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	protected void useImmersiveMode (boolean use) {
-		if (!use|| getVersion() < 19) return;
-		
+		if (!use || getVersion() < 19) return;
+
 		View view = getWindow().getDecorView();
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
 			int code = View.SYSTEM_UI_FLAG_FULLSCREEN;
-         code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-          code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-          m.invoke(view, code);
+			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
 		}
@@ -222,7 +234,7 @@ public class AndroidApplication extends Activity implements Application {
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
-		
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -233,6 +245,19 @@ public class AndroidApplication extends Activity implements Application {
 		createWakeLock(config);
 		hideStatusBar(config);
 		useImmersiveMode(this.useImmersiveMode);
+		if (this.useImmersiveMode && getVersion() >= 19) {
+			try {
+				View rootView = getWindow().getDecorView();
+				rootView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+					@Override
+					public void onSystemUiVisibilityChange (int arg0) {
+						useImmersiveMode(useImmersiveMode);
+					}
+				});
+			} catch (Exception e) {
+				log("AndroidApplication", "Can't OnSystemUiVisibilityChangeListener", e);
+			}
+		}
 		return graphics.getView();
 	}
 
@@ -303,7 +328,7 @@ public class AndroidApplication extends Activity implements Application {
 	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
-	
+
 	@Override
 	public Audio getAudio () {
 		return audio;
@@ -323,7 +348,7 @@ public class AndroidApplication extends Activity implements Application {
 	public Input getInput () {
 		return input;
 	}
-	
+
 	@Override
 	public Net getNet () {
 		return net;
@@ -355,15 +380,15 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	AndroidClipboard clipboard;
-	
+
 	@Override
-	public Clipboard getClipboard() {
+	public Clipboard getClipboard () {
 		if (clipboard == null) {
 			clipboard = new AndroidClipboard(this);
 		}
 		return clipboard;
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -430,21 +455,21 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }
