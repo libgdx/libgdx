@@ -88,13 +88,17 @@ public class GeometryUtils {
 		return Float.NaN;
 	}
 
-	public static Vector2 triangleCentroid (float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid) {
+	static public Vector2 triangleCentroid (float x1, float y1, float x2, float y2, float x3, float y3, Vector2 centroid) {
 		centroid.x = (x1 + x2 + x3) / 3;
 		centroid.y = (y1 + y2 + y3) / 3;
 		return centroid;
 	}
 
-	public static Vector2 quadrilateralCentroid (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+	static public float triangleArea (float x1, float y1, float x2, float y2, float x3, float y3) {
+		return Math.abs((x1 - x3) * (y2 - y1) - (x1 - x2) * (y3 - y1)) * 0.5f;
+	}
+
+	static public Vector2 quadrilateralCentroid (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
 		Vector2 centroid) {
 		float avgX1 = (x1 + x2 + x3) / 3;
 		float avgY1 = (y1 + y2 + y3) / 3;
@@ -106,7 +110,7 @@ public class GeometryUtils {
 	}
 
 	/** Returns the centroid for the specified non-self-intersecting polygon. */
-	public static Vector2 polygonCentroid (float[] polygon, int offset, int count, Vector2 centroid) {
+	static public Vector2 polygonCentroid (float[] polygon, int offset, int count, Vector2 centroid) {
 		if (polygon.length < 6) throw new IllegalArgumentException("A polygon must have 3 or more coordinate pairs.");
 		float x = 0, y = 0;
 
@@ -136,5 +140,19 @@ public class GeometryUtils {
 		centroid.x = x / (6 * signedArea);
 		centroid.y = y / (6 * signedArea);
 		return centroid;
+	}
+
+	static public float polygonArea (float[] polygon, int offset, int count) {
+		float area = 0;
+		for (int i = offset, n = offset + count; i < n; i += 2) {
+			int x1 = i;
+			int y1 = i + 1;
+			int x2 = (i + 2) % n;
+			int y2 = (i + 3) % n;
+			area += polygon[x1] * polygon[y2];
+			area -= polygon[x2] * polygon[y1];
+		}
+		area *= 0.5f;
+		return area;
 	}
 }
