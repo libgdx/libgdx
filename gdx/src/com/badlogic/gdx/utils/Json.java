@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
- * https://code.google.com/p/libgdx/wiki/JsonParsing
+ * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
  * @author Nathan Sweet */
 public class Json {
 	private static final boolean debug = false;
