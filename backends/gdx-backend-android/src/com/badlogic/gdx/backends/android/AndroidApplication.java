@@ -139,8 +139,8 @@ public class AndroidApplication extends Activity implements Application {
 						useImmersiveMode(useImmersiveMode);
 					}
 				});
-			} catch (Exception e) {
-				log("AndroidApplication", "Can't OnSystemUiVisibilityChangeListener", e);
+			} catch (Throwable t) {
+				log("AndroidApplication", "Can't create OnSystemUiVisibilityChangeListener", t);
 			}
 		}
 	}
@@ -254,8 +254,8 @@ public class AndroidApplication extends Activity implements Application {
 						useImmersiveMode(useImmersiveMode);
 					}
 				});
-			} catch (Exception e) {
-				log("AndroidApplication", "Can't OnSystemUiVisibilityChangeListener", e);
+			} catch (Throwable t) {
+				log("AndroidApplication", "Can't create OnSystemUiVisibilityChangeListener", t);
 			}
 		}
 		return graphics.getView();
