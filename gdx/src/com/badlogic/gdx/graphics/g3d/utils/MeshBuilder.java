@@ -983,7 +983,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setTransform(Matrix4 transform) {
-		this.transform.set(transform);
+		this.transform = transform;
 	}
 	
 }
