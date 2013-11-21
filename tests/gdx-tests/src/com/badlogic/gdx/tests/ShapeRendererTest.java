@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -54,7 +55,7 @@ public class ShapeRendererTest extends GdxTest {
 
 	public void render () {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		cam.update();
 		renderer.setProjectionMatrix(cam.combined);
 		renderer.identity();
@@ -80,6 +81,9 @@ public class ShapeRendererTest extends GdxTest {
 			renderer.setColor(Color.BLUE);
 			renderer.circle(0.2f, 0.2f, 0.5f, 40);
 			
+			renderer.setColor(Color.WHITE);
+			renderer.box(0.1f, 0.1f, 0.1f, 0.3f, 0.25f, 0.1f);
+
 			renderer.setColor(Color.GREEN);
 			renderer.cone(0.6f, 0.6f, 0, 0.3f, 0.75f, 20);
 			
