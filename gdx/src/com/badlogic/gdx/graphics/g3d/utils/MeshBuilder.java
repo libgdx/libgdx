@@ -104,6 +104,10 @@ public class MeshBuilder implements MeshPartBuilder {
 	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
 	private float[] vertex;
 	
+	/** The current transformation matrix */
+	private Matrix4 transform = null;
+	private final Vector3 tempVTransformed = new Vector3();
+	
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public static VertexAttributes createAttributes(long usage) {
@@ -358,14 +362,28 @@ public class MeshBuilder implements MeshPartBuilder {
 		if (col == null && colorSet)
 			col = color;
 		if (pos != null) {
-			vertex[posOffset  ] = pos.x;
-			if (posSize > 1) vertex[posOffset+1] = pos.y;
-			if (posSize > 2) vertex[posOffset+2] = pos.z;
+			if(transform != null) {
+				tempVTransformed.set(pos).mul(transform);
+				vertex[posOffset  ] = tempVTransformed.x;
+				if (posSize > 1) vertex[posOffset+1] = tempVTransformed.y;
+				if (posSize > 2) vertex[posOffset+2] = tempVTransformed.z;
+			} else {
+				vertex[posOffset  ] = pos.x;
+				if (posSize > 1) vertex[posOffset+1] = pos.y;
+				if (posSize > 2) vertex[posOffset+2] = pos.z;
+			}
 		}
 		if (nor != null && norOffset >= 0) {
-			vertex[norOffset  ] = nor.x;
-			vertex[norOffset+1] = nor.y;
-			vertex[norOffset+2] = nor.z;
+			if(transform != null) {
+				tempVTransformed.set(nor).rot(transform).nor();
+				vertex[norOffset  ] = tempVTransformed.x;
+				vertex[norOffset+1] = tempVTransformed.y;
+				vertex[norOffset+2] = tempVTransformed.z;
+			} else {
+				vertex[norOffset  ] = nor.x;
+				vertex[norOffset+1] = nor.y;
+				vertex[norOffset+2] = nor.z;
+			}
 		}
 		if (col != null) {
 			if (colOffset >= 0) {
@@ -957,4 +975,15 @@ public class MeshBuilder implements MeshPartBuilder {
 		sphere(matTmp1.setToTranslation(0, .5f*(height-d), 0), d, d, d, divisions, divisions, 0, 360, 0, 90);
 		sphere(matTmp1.setToTranslation(0, -.5f*(height-d), 0), d, d, d, divisions, divisions, 0, 360, 90, 180);
 	}
+
+	@Override
+	public Matrix4 getTransform() {
+		return transform;
+	}
+
+	@Override
+	public void setTransform(Matrix4 transform) {
+		this.transform.set(transform);
+	}
+	
 }
