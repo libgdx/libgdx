@@ -201,7 +201,7 @@ public class Label extends Widget {
 		}
 		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
 		cache.setPosition(getX(), getY());
-		cache.draw(batch, color.a * parentAlpha);
+		cache.draw(batch, parentAlpha);
 	}
 
 	public float getPrefWidth () {
