@@ -352,7 +352,7 @@ public class ShapeRenderer {
 	 * @param triangle triangle of type {@link Triangle}
 	 */
 	public void triangle (Triangle triangle) {
-		triangle(triangle.x1, triangle.y1, triangle.x2, triangle.y2, triangle.x3, triangle.y3);
+		triangle(triangle.ax, triangle.ay, triangle.bx, triangle.by, triangle.cx, triangle.cy);
 	}
 	
 	/**

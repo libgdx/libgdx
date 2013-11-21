@@ -11,22 +11,22 @@ public class Triangle implements Serializable {
 	private static final long serialVersionUID = 4947942567670252118L;
 
 	/** x-coordinate for the first point(A) */
-	public float x1;
+	public float ax;
 
 	/** x-coordinate for the second point(B) */
-	public float x2;
+	public float bx;
 
 	/** x-coordinate for the third point(C) */
-	public float x3;
+	public float cx;
 
 	/** y-coordinate for the first point(A) */
-	public float y1;
+	public float ay;
 
 	/** y-coordinate for the second point(B) */
-	public float y2;
+	public float by;
 
 	/** y-coordinate for the third point(C) */
-	public float y3;
+	public float cy;
 
 	/** Empty constructor for triangle */
 	public Triangle () {
@@ -36,44 +36,44 @@ public class Triangle implements Serializable {
 	/** Constructs a triangle from a given triangle
 	 * @param triangle */
 	public Triangle (Triangle triangle) {
-		this.x1 = triangle.x1;
-		this.y1 = triangle.y1;
-		this.x2 = triangle.x2;
-		this.y2 = triangle.y2;
-		this.x3 = triangle.x3;
-		this.y3 = triangle.y3;
+		this.ax = triangle.ax;
+		this.ay = triangle.ay;
+		this.bx = triangle.bx;
+		this.by = triangle.by;
+		this.cx = triangle.cx;
+		this.cy = triangle.cy;
 	}
 
 	/** Constructs a triangle from the given x- and y coordinates of each point
-	 * @param x1 x position of point A
-	 * @param y1 y position of point A
-	 * @param x2 x position of point B
-	 * @param y2 y position of point B
-	 * @param x3 x position of point C
-	 * @param y3 y position of point C */
-	public Triangle (float x1, float y1, float x2, float y2, float x3, float y3) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-		this.x3 = x3;
-		this.y3 = y3;
+	 * @param ax x position of point A
+	 * @param ay y position of point A
+	 * @param bx x position of point B
+	 * @param by y position of point B
+	 * @param cx x position of point C
+	 * @param cy y position of point C */
+	public Triangle (float ax, float ay, float bx, float by, float cx, float cy) {
+		this.ax = ax;
+		this.ay = ay;
+		this.bx = bx;
+		this.by = by;
+		this.cx = cx;
+		this.cy = cy;
 	}
 
-	/** @param x1 x position of point A
-	 * @param y1 y position of point A
-	 * @param x2 x position of point B
-	 * @param y2 y position of point B
-	 * @param x3 x position of point C
-	 * @param y3 y position of point C
+	/** @param ax x position of point A
+	 * @param ay y position of point A
+	 * @param bx x position of point B
+	 * @param by y position of point B
+	 * @param cx x position of point C
+	 * @param cy y position of point C
 	 * @return this triangle for chaining */
-	public Triangle set (float x1, float y1, float x2, float y2, float x3, float y3) {
-		this.x1 = x1;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-		this.x3 = x3;
-		this.y3 = y3;
+	public Triangle set (float ax, float ay, float bx, float by, float cx, float cy) {
+		this.ax = ax;
+		this.ay = ay;
+		this.bx = bx;
+		this.by = by;
+		this.cx = cx;
+		this.cy = cy;
 
 		return this;
 	}
@@ -82,114 +82,114 @@ public class Triangle implements Serializable {
 	 * @param triangle
 	 * @return this triangle for chaining */
 	public Triangle set (Triangle triangle) {
-		this.x1 = triangle.x1;
-		this.y1 = triangle.y1;
-		this.x2 = triangle.x2;
-		this.y2 = triangle.y2;
-		this.x3 = triangle.x3;
-		this.y3 = triangle.y3;
+		this.ax = triangle.ax;
+		this.ay = triangle.ay;
+		this.bx = triangle.bx;
+		this.by = triangle.by;
+		this.cx = triangle.cx;
+		this.cy = triangle.cy;
 
 		return this;
 	}
 
 	/** @return x-coordinate from point A */
-	public float getX1 () {
-		return x1;
+	public float getAX () {
+		return ax;
 	}
 
 	/** Sets the x-coordinate of Point A
-	 * @param x1
+	 * @param ax
 	 * @return this triangle for chaining */
-	public Triangle setX1 (float x1) {
-		this.x1 = x1;
+	public Triangle setAX (float ax) {
+		this.ax = ax;
 
 		return this;
 	}
 
 	/** @return y-coordinate from point A */
-	public float getY1 () {
-		return y1;
+	public float getAy () {
+		return ay;
 	}
 
 	/** Sets the y-coordinate of Point A
-	 * @param y1
+	 * @param ay
 	 * @return this triangle for chaining */
-	public Triangle setY1 (float y1) {
-		this.y1 = y1;
+	public Triangle setAy (float ay) {
+		this.ay = ay;
 
 		return this;
 	}
 
 	/** @return x-coordinate from point B */
-	public float getX2 () {
-		return x2;
+	public float getBx () {
+		return bx;
 	}
 
 	/** Sets the x-coordinate of Point B
-	 * @param x2
+	 * @param bx
 	 * @return this triangle for chaining */
-	public Triangle setX2 (float x2) {
-		this.x2 = x2;
+	public Triangle setBx (float bx) {
+		this.bx = bx;
 
 		return this;
 	}
 
 	/** @return y-coordinate from point B */
-	public float getY2 () {
-		return y2;
+	public float getBy () {
+		return by;
 	}
 
 	/** Sets the y-coordinate of Point B
-	 * @param y2
+	 * @param by
 	 * @return this triangle for chaining */
-	public Triangle setY2 (float y2) {
-		this.y2 = y2;
+	public Triangle setBy (float by) {
+		this.by = by;
 
 		return this;
 	}
 
 	/** @return x-coordinate from point C */
-	public float getX3 () {
-		return x3;
+	public float getCx () {
+		return cx;
 	}
 
 	/** Sets the x-coordinate of Point C
-	 * @param x3
+	 * @param cx
 	 * @return this triangle for chaining */
-	public Triangle setX3 (float x3) {
-		this.x3 = x3;
+	public Triangle setCx (float cx) {
+		this.cx = cx;
 
 		return this;
 	}
 
 	/** @return y-coordinate from point C */
-	public float getY3 () {
-		return y3;
+	public float getCy () {
+		return cy;
 	}
 
 	/** Sets the y-coordinate of Point C
-	 * @param y3
+	 * @param cy
 	 * @return this triangle for chaining */
-	public Triangle setY3 (float y3) {
-		this.y3 = y3;
+	public Triangle setCy (float cy) {
+		this.cy = cy;
 
 		return this;
 	}
 
-	/** @return the Vector2 of Point A (x1 and y1) */
+	/** @return the Vector2 of Point A (ax and ay) */
 	public Vector2 getA (Vector2 v) {
-		return v.set(x1, y1);
+		return v.set(ax, ay);
 	}
 
-	/** @return the Vector2 of Point B (x2 and y2) */
+	/** @return the Vector2 of Point B (bx and by) */
 	public Vector2 getB (Vector2 v) {
-		return v.set(x2, y2);
+		return v.set(bx, by);
 
 	}
 
-	/** @return the Vector2 of Point C (x3 and y3) */
+	/** @return the Vector2 of Point C (cx and cy) */
 	public Vector2 getC (Vector2 v) {
-		return v.set(x3, y3);
+		return v.set(cx, cy);
 	}
 
 	/** Checks if this triangle contains a point
@@ -204,11 +204,53 @@ public class Triangle implements Serializable {
 	 * @param point
 	 * @return boolean whether it does contain or not */
 	public boolean contains (Vector2 point) {
-		return Intersector.isPointInTriangle(point.x, point.y, x1, y1, x2, y2, x3, y3);
+		return Intersector.isPointInTriangle(point.x, point.y, ax, ay, bx, by, cx, cy);
+	}
+
+	public float getArea() {
+		return (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by)) / 2;
+	}
+
+	public void getBaryCenter(Vector2 p, Vector2 baryCenter) {
+		GeometryUtils.barycentric(p, new Vector2(ax, ay), new Vector2(bx, by), new Vector2(cx, cy), baryCenter);
+	}
+
+	public void getCircumCenter(Vector2 centroid) {
+		GeometryUtils.triangleCentroid(ax, ay, bx, by, cx, cy, centroid);
+	}
+
+	public float getLengthA() {
+		return this.getLength(bx, cx, by, cy);
+	}
+
+	public float getLengthB() {
+		return this.getLength(cx, ax, cy, ay);
+	}
+
+	public float getLengthC() {
+		return this.getLength(bx, ax, by, ay);
+	}
+
+	private float getLength(float x2, float x1, float y2, float y1) {
+		return (float)Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+	}
+
+	public float getAngleA() {
+		float a = getLengthA(), b = getLengthB(), c = getLengthC();
+		return (float)Math.acos((b*b + c*c - a*a) / 2 * b * c);
+	}
+
+	public float getAngleB() {
+		float a = getLengthA(), b = getLengthB(), c = getLengthC();
+		return (float)Math.acos((a*a + c*c - b*b) / 2 * a * c);
+	}
+
+	public float getAngleC() {
+		return 180.f - this.getAngleA() - getAngleB();
 	}
 
 	@Override
 	public String toString () {
-		return "Triangle [x1=" + x1 + ", y1=" + y1 + ", x2=" + x2 + ", y2=" + y2 + ", x3=" + x3 + ", y3=" + y3 + "]";
+		return "Triangle [ax=" + ax + ", ay=" + ay + ", bx=" + bx + ", by=" + by + ", cx=" + cx + ", cy=" + cy + "]";
 	}
 }

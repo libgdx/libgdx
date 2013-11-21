@@ -66,12 +66,12 @@ public final class Intersector {
 
 	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (float x, float y, Triangle t) {
-		return isPointInTriangle(x, y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3);
+		return isPointInTriangle(x, y, t.ax, t.ay, t.bx, t.by, t.cx, t.cy);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
 	public static boolean isPointInTriangle (Vector2 p, Triangle t) {
-		return isPointInTriangle(p.x, p.y, t.x1, t.y1, t.x2, t.y2, t.x3, t.y3);
+		return isPointInTriangle(p.x, p.y, t.ax, t.ay, t.bx, t.by, t.cx, t.cy);
 	}
 
 	/** Returns true if the given point is inside the triangle. */
