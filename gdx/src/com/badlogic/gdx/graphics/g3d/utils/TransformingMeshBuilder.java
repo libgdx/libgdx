@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
- * Implementation of <code>TransformingMeshPartBuilder</code>
+ * Implementation of <code>TransformingMeshPartBuilder</code> based on <code>MeshBuilder</code>.
  * 
  * @author azazad
  *
