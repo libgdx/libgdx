@@ -314,25 +314,42 @@ public class Mesh implements Disposable {
 		return this;
 	}
 
+	/** Update (a portion of) the vertices. Does not resize the backing buffer.
+	 * @param targetOffset the offset in number of floats of the mesh part.
+	 * @param source the vertex data to update the mesh part with */ 
+	public Mesh updateVertices (int targetOffset, float[] source) {
+		return updateVertices(targetOffset, source, 0, source.length);
+	}	
+	
+	/** Update (a portion of) the vertices. Does not resize the backing buffer.
+	 * @param targetOffset the offset in number of floats of the mesh part.
+	 * @param source the vertex data to update the mesh part with 
+	 * @param sourceOffset the offset in number of floats within the source array
+	 * @param count the number of floats to update */ 
+	public Mesh updateVertices (int targetOffset, float[] source, int sourceOffset, int count) {
+		this.vertices.updateVertices(targetOffset, source, sourceOffset, count);
+		return this;
+	}
+
 	/** Copies the vertices from the Mesh to the float array. The float array must be large enough to hold all the Mesh's vertices.
 	 * @param vertices the array to copy the vertices to */
-	public void getVertices (float[] vertices) {
-		getVertices(0, -1, vertices);
+	public float[] getVertices (float[] vertices) {
+		return getVertices(0, -1, vertices);
 	}
 	
 	/** Copies the the remaining vertices from the Mesh to the float array. The float array must be large enough to hold the remaining vertices.
 	 * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
 	 * @param vertices the array to copy the vertices to */
-	public void getVertices (int srcOffset, float[] vertices) {
-		getVertices(srcOffset, -1, vertices);
+	public float[] getVertices (int srcOffset, float[] vertices) {
+		return getVertices(srcOffset, -1, vertices);
 	}
 
 	/** Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold count vertices.
 	 * @param srcOffset the offset (in number of floats) of the vertices in the mesh to copy
 	 * @param count the amount of floats to copy
 	 * @param vertices the array to copy the vertices to */
-	public void getVertices (int srcOffset, int count, float[] vertices) {
-		getVertices(srcOffset, count, vertices, 0);
+	public float[] getVertices (int srcOffset, int count, float[] vertices) {
+		return getVertices(srcOffset, count, vertices, 0);
 	}
 	
 	/** Copies the specified vertices from the Mesh to the float array. The float array must be large enough to hold destOffset+count vertices.
@@ -340,7 +357,7 @@ public class Mesh implements Disposable {
 	 * @param count the amount of floats to copy
 	 * @param vertices the array to copy the vertices to
 	 * @param destOffset the offset (in floats) in the vertices array to start copying */
-	public void getVertices (int srcOffset, int count, float[] vertices, int destOffset) {
+	public float[] getVertices (int srcOffset, int count, float[] vertices, int destOffset) {
 		// TODO: Perhaps this method should be vertexSize aware??
 		final int max = getNumVertices() * getVertexSize() / 4;
 		if (count == -1) {
@@ -356,6 +373,7 @@ public class Mesh implements Disposable {
 		getVerticesBuffer().position(srcOffset);
 		getVerticesBuffer().get(vertices, destOffset, count);
 		getVerticesBuffer().position(pos);
+		return vertices;
 	}
 
 	/** Sets the indices of this Mesh
@@ -820,7 +838,122 @@ public class Mesh implements Disposable {
 		}
 		return out;
 	}
-
+	
+	/** Calculates the squared radius of the bounding sphere around the specified center for the specified part.
+	 * @param centerX The X coordinate of the center of the bounding sphere
+	 * @param centerY The Y coordinate of the center of the bounding sphere
+	 * @param centerZ The Z coordinate of the center of the bounding sphere
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the squared radius of the bounding sphere. */
+	public float calculateRadiusSquared(final float centerX, final float centerY, final float centerZ, int offset, int count, final Matrix4 transform) {
+		int numIndices = getNumIndices();
+		if (offset < 0 || count < 1 || offset + count > numIndices)
+			throw new GdxRuntimeException("Not enough indices");
+		
+		final FloatBuffer verts = vertices.getBuffer();
+		final ShortBuffer index = indices.getBuffer();
+		final VertexAttribute posAttrib = getVertexAttribute(Usage.Position);
+		final int posoff = posAttrib.offset / 4;
+		final int vertexSize = vertices.getAttributes().vertexSize / 4;
+		final int end = offset + count;
+		
+		float result = 0;
+		
+		switch (posAttrib.numComponents) {
+		case 1:
+			for (int i = offset; i < end; i++) {
+				final int idx = index.get(i) * vertexSize + posoff;
+				tmpV.set(verts.get(idx), 0, 0);
+				if (transform != null)
+					tmpV.mul(transform);
+				final float r = tmpV.sub(centerX, centerY, centerZ).len2();
+				if (r > result)
+					result = r;
+			}
+			break;
+		case 2:
+			for (int i = offset; i < end; i++) {
+				final int idx = index.get(i) * vertexSize + posoff;
+				tmpV.set(verts.get(idx), verts.get(idx + 1), 0);
+				if (transform != null)
+					tmpV.mul(transform);
+				final float r = tmpV.sub(centerX, centerY, centerZ).len2();
+				if (r > result)
+					result = r;
+			}
+			break;
+		case 3:
+			for (int i = offset; i < end; i++) {
+				final int idx = index.get(i) * vertexSize + posoff;
+				tmpV.set(verts.get(idx), verts.get(idx + 1), verts.get(idx + 2));
+				if (transform != null)
+					tmpV.mul(transform);
+				final float r = tmpV.sub(centerX, centerY, centerZ).len2();
+				if (r > result)
+					result = r;
+			}
+			break;
+		}
+		return result;
+	}
+	
+	/** Calculates the radius of the bounding sphere around the specified center for the specified part.
+	 * @param centerX The X coordinate of the center of the bounding sphere
+	 * @param centerY The Y coordinate of the center of the bounding sphere
+	 * @param centerZ The Z coordinate of the center of the bounding sphere
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the radius of the bounding sphere. */
+	public float calculateRadius(final float centerX, final float centerY, final float centerZ, int offset, int count, final Matrix4 transform) {
+		return (float)Math.sqrt(calculateRadiusSquared(centerX, centerY, centerZ, offset, count, transform));
+	}
+	
+	/** Calculates the squared radius of the bounding sphere around the specified center for the specified part.
+	 * @param center The center of the bounding sphere
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the squared radius of the bounding sphere. */
+	public float calculateRadius(final Vector3 center, int offset, int count, final Matrix4 transform) {
+		return calculateRadius(center.x, center.y, center.z, offset, count, transform);
+	}
+	
+	/** Calculates the squared radius of the bounding sphere around the specified center for the specified part.
+	 * @param centerX The X coordinate of the center of the bounding sphere
+	 * @param centerY The Y coordinate of the center of the bounding sphere
+	 * @param centerZ The Z coordinate of the center of the bounding sphere
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the squared radius of the bounding sphere. */
+	public float calculateRadius(final float centerX, final float centerY, final float centerZ, int offset, int count) {
+		return calculateRadius(centerX, centerY, centerZ, offset, count, null);
+	}
+	
+	/** Calculates the squared radius of the bounding sphere around the specified center for the specified part.
+	 * @param center The center of the bounding sphere
+	 * @param offset the start index of the part.
+	 * @param count the amount of indices the part contains. 
+	 * @return the squared radius of the bounding sphere. */
+	public float calculateRadius(final Vector3 center, int offset, int count) {
+		return calculateRadius(center.x, center.y, center.z, offset, count, null);
+	}
+	
+	/** Calculates the squared radius of the bounding sphere around the specified center for the specified part.
+	 * @param centerX The X coordinate of the center of the bounding sphere
+	 * @param centerY The Y coordinate of the center of the bounding sphere
+	 * @param centerZ The Z coordinate of the center of the bounding sphere
+	 * @return the squared radius of the bounding sphere. */
+	public float calculateRadius(final float centerX, final float centerY, final float centerZ) {
+		return calculateRadius(centerX, centerY, centerZ, 0, getNumIndices(), null);
+	}
+	
+	/** Calculates the squared radius of the bounding sphere around the specified center for the specified part.
+	 * @param center The center of the bounding sphere
+	 * @return the squared radius of the bounding sphere. */
+	public float calculateRadius(final Vector3 center) {
+		return calculateRadius(center.x, center.y, center.z, 0, getNumIndices(), null);
+	}
+	
 	/** @return the backing shortbuffer holding the indices. Does not have to be a direct buffer on Android! */
 	public ShortBuffer getIndicesBuffer () {
 		return indices.getBuffer();
@@ -917,19 +1050,19 @@ public class Mesh implements Disposable {
 	}
 	
 	// TODO: Protected for now, because transforming a portion works but still copies all vertices
-	protected void transform(final Matrix4 matrix, final int start, final int count) {
+	public void transform(final Matrix4 matrix, final int start, final int count) {
 		final VertexAttribute posAttr = getVertexAttribute(Usage.Position);
-		final int offset = posAttr.offset / 4;
-		final int vertexSize = getVertexSize() / 4;
+		final int posOffset = posAttr.offset / 4;
+		final int stride = getVertexSize() / 4;
 		final int numComponents = posAttr.numComponents;
 		final int numVertices = getNumVertices();
 		
-		final float[] vertices = new float[numVertices * vertexSize];
-		// TODO: getVertices(vertices, start * vertexSize, count * vertexSize);
-		getVertices(0, vertices.length, vertices);
-		transform(matrix, vertices, vertexSize, offset, numComponents, start, count);
-		setVertices(vertices, 0, vertices.length);
-		// TODO: setVertices(start * vertexSize, vertices, 0, vertices.length);
+		final float[] vertices = new float[count * stride];
+		getVertices(start * stride, count * stride, vertices);
+		// getVertices(0, vertices.length, vertices);
+		transform(matrix, vertices, stride, posOffset, numComponents, 0, count);
+		//setVertices(vertices, 0, vertices.length);
+		updateVertices(start * stride, vertices);
 	}
 	
 	/**
