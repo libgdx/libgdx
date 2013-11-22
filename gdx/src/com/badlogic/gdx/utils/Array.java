@@ -124,17 +124,17 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public T get (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
 
 	public void set (int index, T value) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
 
 	public void insert (int index, T value) {
-		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		T[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -146,8 +146,8 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void swap (int first, int second) {
-		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
-		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
+		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
 		T[] items = this.items;
 		T firstValue = items[first];
 		items[first] = items[second];
@@ -226,7 +226,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Removes and returns the item at the specified index. */
 	public T removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		T[] items = this.items;
 		T value = (T)items[index];
 		size--;
