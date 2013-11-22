@@ -71,29 +71,59 @@ public class ModelBatch implements Disposable {
 	protected final ShaderProvider shaderProvider;
 	/** the {@link RenderableSorter} **/
 	protected final RenderableSorter sorter;
-	
-	private ModelBatch(RenderContext context, boolean ownContext, ShaderProvider shaderProvider, RenderableSorter sorter) {
-		this.ownContext = ownContext;
-		this.context = context;
-		this.shaderProvider = shaderProvider;
-		this.sorter = sorter;
-	}
-	
+
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public ModelBatch(RenderContext context, ShaderProvider shaderProvider, RenderableSorter sorter) {
-		this(context, false, shaderProvider, sorter);
+	public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
+		this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
+		this.ownContext = (context == null);
+		this.context = (context == null)
+			? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1))
+			: context;
+		this.shaderProvider = (shaderProvider == null)
+			? (Gdx.graphics.isGL20Available() ? new DefaultShaderProvider() : new GLES10ShaderProvider()) 
+			: shaderProvider;
+	}
+	
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	 * @param context The {@link RenderContext} to use.
+	 * @param shaderProvider The {@link ShaderProvider} to use. */
+	public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider) {
+		this(context, shaderProvider, null);
+	}
+	
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	 * @param context The {@link RenderContext} to use.
+	 * @param sorter The {@link RenderableSorter} to use. */
+	public ModelBatch(final RenderContext context, final RenderableSorter sorter) {
+		this(context, null, sorter);
+	}
+	
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	 * @param context The {@link RenderContext} to use. */
+	public ModelBatch(final RenderContext context) {
+		this(context, null, null);
+	}
+	
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself.
+	 * @param shaderProvider The {@link ShaderProvider} to use.
+	 * @param sorter The {@link RenderableSorter} to use. */
+	public ModelBatch(final ShaderProvider shaderProvider, final RenderableSorter sorter) {
+		this(null, shaderProvider, sorter);
+	}
+	
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself.
+	 * @param sorter The {@link RenderableSorter} to use. */
+	public ModelBatch(final RenderableSorter sorter) {
+		this(null, null, sorter);
 	}
 	
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself.
 	 * @param shaderProvider The {@link ShaderProvider} to use. */
-	public ModelBatch(ShaderProvider shaderProvider) {
-		this(new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1)),
-				true,
-				shaderProvider,
-				new DefaultRenderableSorter());
+	public ModelBatch(final ShaderProvider shaderProvider) {
+		this(null, shaderProvider, null);
 	}
 	
 	/** Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader} for
@@ -101,7 +131,7 @@ public class ModelBatch implements Disposable {
 	 * @param vertexShader The {@link FileHandle} of the vertex shader to use.
 	 * @param fragmentShader The {@link FileHandle} of the fragment shader to use. */
 	public ModelBatch(final FileHandle vertexShader, final FileHandle fragmentShader) {
-		this(new DefaultShaderProvider(vertexShader, fragmentShader));
+		this(null, new DefaultShaderProvider(vertexShader, fragmentShader), null);
 	}
 	
 	/** Construct a ModelBatch with the default implementation and the specified ubershader. See {@link DefaultShader} for
@@ -109,15 +139,12 @@ public class ModelBatch implements Disposable {
 	 * @param vertexShader The vertex shader to use.
 	 * @param fragmentShader The fragment shader to use. */
 	public ModelBatch(final String vertexShader, final String fragmentShader) {
-		this(new DefaultShaderProvider(vertexShader, fragmentShader));
+		this(null, new DefaultShaderProvider(vertexShader, fragmentShader), null);
 	}
 	
 	/** Construct a ModelBatch with the default implementation */
 	public ModelBatch() {
-		this(new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN, 1)),
-				true,
-				Gdx.graphics.isGL20Available() ? new DefaultShaderProvider() : new GLES10ShaderProvider(),
-				new DefaultRenderableSorter());
+		this(null, null, null);
 	}
 
 	/** Start rendering one or more {@link Renderable}s. Use one of the render() methods to provide the renderables. 
@@ -148,6 +175,20 @@ public class ModelBatch implements Disposable {
 	 * @return The current camera being used or null if called outside {@link #begin(Camera)} and {@link #end()}. */
 	public Camera getCamera() {
 		return camera;
+	}
+	
+	/** Checks whether the {@link RenderContext} returned by {@link #getRenderContext()} is owned and managed by
+	 * this ModelBatch. When the RenderContext isn't owned by the ModelBatch, you are responsible for calling
+	 * the {@link RenderContext#begin()} and {@link RenderContext#end()} methods yourself, as well as disposing
+	 * the RenderContext. 
+	 * @return True if this ModelBatch owns the RenderContext, false otherwise. */
+	public boolean ownsRenderContext() {
+		return ownContext;
+	}
+	
+	/** @return the {@link RenderContext} used by this ModelBatch. */
+	public RenderContext getRenderContext() {
+		return context;
 	}
 	
 	/** Flushes the batch, causing all {@link Renderable}s in the batch to be rendered. Can only be called after the

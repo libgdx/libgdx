@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +35,9 @@ import java.util.Map;
  *
  */
 public class GdxSetup {
-	public void build (String outputDir, String appName, String packageName, String mainClass) {
+	final static String[] GDX_VERSIONS = {"0.9.9", "1.0-SNAPSHOT"};
+	
+	public void build (String outputDir, String appName, String packageName, String mainClass, String gdxVersion) {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
@@ -73,11 +77,13 @@ public class GdxSetup {
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
 		values.put("%MAIN_CLASS%", mainClass);
+		values.put("%GDX_VERSION%", gdxVersion);
 		
 		copyAndReplace(outputDir, project, values);
 		
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
+		System.out.println("Done! project created in " + outputDir +" directory");
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
@@ -164,6 +170,8 @@ public class GdxSetup {
 	
 	private static void printHelp() {
 		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass>");
+		System.out.println("[OPTIONAL]");
+		System.out.println("--gdxVersion <version> defaults to " + GDX_VERSIONS[0] + " if not specified");
 	}
 	
 	private static Map<String, String> parseArgs(String[] args) {
@@ -187,7 +195,19 @@ public class GdxSetup {
 			printHelp();
 			System.exit(-1);
 		}
+		if(params.containsKey("gdxVersion")){
+			List<String> versions = Arrays.asList(GDX_VERSIONS);
+			if(!versions.contains(params.get("gdxVersion"))){
+				System.out.println("Invalid gdxVersion : use one of the following versions");
+				System.out.println(versions);
+				System.exit(-1);
+			}
+		}
+		if(!params.containsKey("gdxVersion")){
+			params.put("gdxVersion", GDX_VERSIONS[0]);
+			System.out.println("No gdxVersion specified: using default [" + GDX_VERSIONS[0] + "]");
+		}
 		
-		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
+		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("gdxVersion"));
 	}
 }

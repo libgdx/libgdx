@@ -86,6 +86,7 @@
 		
 	<!-- graphics/g2d -->
 		<include name="graphics/g2d/Animation.java"/>
+		<include name="graphics/g2d/Batch.java"/>
 		<include name="graphics/g2d/BitmapFont.java"/>
 		<include name="graphics/g2d/BitmapFontCache.java"/>
 		<exclude name="graphics/g2d/Gdx2DPixmap.java"/> <!-- Reason: JNI -->
@@ -477,7 +478,8 @@
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
 		<include name="utils/TimSort.java"/>
-		<include name="utils/UBJsonReader.java"/>		
+		<include name="utils/UBJsonReader.java"/>
+		<include name="utils/UBJsonWriter.java"/>		
 		<include name="utils/XmlReader.java"/>
 		<include name="utils/XmlWriter.java"/>
 		

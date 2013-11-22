@@ -49,10 +49,12 @@ public class RenderContext {
 	public final void begin() {
 		Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
 		depthFunc = 0;
+		Gdx.gl.glDepthMask(true);
+		depthMask = true;
 		Gdx.gl.glDisable(GL10.GL_BLEND);
 		blending = false;
 		Gdx.gl.glDisable(GL10.GL_CULL_FACE);
-		cullFace = blendSFactor = blendDFactor;
+		cullFace = blendSFactor = blendDFactor = 0;
 		textureBinder.begin();
 	}
 	

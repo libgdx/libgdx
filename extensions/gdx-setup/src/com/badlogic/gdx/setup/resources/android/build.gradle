@@ -36,7 +36,11 @@ task copyAndroidNatives() {
         if(jar.name.endsWith("natives-armeabi.jar")) outputDir = file("libs/armeabi")
         if(jar.name.endsWith("natives-x86.jar")) outputDir = file("libs/x86")                  
         if(outputDir != null) {            
-            copy { from zipTree(file(jar)).matching { include "*.so" } into outputDir }
+            copy {
+				from zipTree(jar)
+				into outputDir
+				include "*.so"
+			}
         }
     }
 }

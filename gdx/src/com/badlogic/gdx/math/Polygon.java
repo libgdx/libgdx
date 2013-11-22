@@ -167,23 +167,8 @@ public class Polygon {
 
 	/** Returns the area contained within the polygon. */
 	public float area () {
-		float area = 0;
-
 		float[] vertices = getTransformedVertices();
-		final int numFloats = vertices.length;
-
-		int x1, y1, x2, y2;
-		for (int i = 0; i < numFloats; i += 2) {
-			x1 = i;
-			y1 = i + 1;
-			x2 = (i + 2) % numFloats;
-			y2 = (i + 3) % numFloats;
-
-			area += vertices[x1] * vertices[y2];
-			area -= vertices[x2] * vertices[y1];
-		}
-		area *= 0.5f;
-		return area;
+		return GeometryUtils.polygonArea(vertices, 0, vertices.length);
 	}
 
 	/** Returns an axis-aligned bounding box of this polygon.

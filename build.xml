@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="0.9.9-SNAPSHOT"/>
+	<property name="version" value="1.0-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -52,6 +52,8 @@
 		<fileset id="resourcefiles" dir="gdx/src">
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl"/>
 			<include name="com/badlogic/gdx/utils/arial-15.png"/>
 			<include name="com/badlogic/gdx/utils/arial-15.fnt"/>
 		</fileset>

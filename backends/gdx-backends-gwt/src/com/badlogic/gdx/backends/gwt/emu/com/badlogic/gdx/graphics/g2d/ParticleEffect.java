@@ -61,14 +61,14 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).update(delta);
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
+	public void draw (Batch batch) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.get(i).draw(spriteBatch);
+			emitters.get(i).draw(batch);
 	}
 
-	public void draw (SpriteBatch spriteBatch, float delta) {
+	public void draw (Batch batch, float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.get(i).draw(spriteBatch, delta);
+			emitters.get(i).draw(batch, delta);
 	}
 
 	public void allowCompletion () {
