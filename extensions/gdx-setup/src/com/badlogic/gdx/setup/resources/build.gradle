@@ -4,9 +4,6 @@ buildscript {
 }
 
 allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
-    
     version = "1.0"
     ext.appName = "%APP_NAME%"
     ext.gdxVersion = "%GDX_VERSION%"
@@ -16,6 +13,11 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenLocal();
     }
+}
+
+subprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
 }
 
 project(":core") {
@@ -44,12 +46,8 @@ project(":android") {
 
     dependencies {
         compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"        
+        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     }
-}
-
-tasks.eclipse.doLast {
-	delete ".project"
 }

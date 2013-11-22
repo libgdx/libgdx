@@ -35,7 +35,7 @@ import java.util.Map;
  *
  */
 public class GdxSetup {
-	final static String[] GDX_VERSIONS = {"0.9.9", "0.9.9-SNAPSHOT"};
+	final static String[] GDX_VERSIONS = {"0.9.9", "1.0-SNAPSHOT"};
 	
 	public void build (String outputDir, String appName, String packageName, String mainClass, String gdxVersion) {
 		Project project = new Project();
