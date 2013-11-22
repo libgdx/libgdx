@@ -244,7 +244,9 @@ public class BufferUtils {
 		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
 		if (buffer == null) throw new GdxRuntimeException("data must be a ByteBuffer or FloatBuffer");
 		// FIXME untested code:
-		float[] arr = buffer.array();
+		int pos = buffer.position();
+		float[] arr = new float[buffer.remaining()];
+		buffer.get(arr);
 		int idx = buffer.position();
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
@@ -262,6 +264,9 @@ public class BufferUtils {
 					arr[idx+3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15];
 			}
 		}
+		buffer.position(pos);
+		buffer.put(arr);
+		buffer.position(pos);
 	}
 	
 	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
@@ -278,7 +283,9 @@ public class BufferUtils {
 		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
 		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
 		// FIXME untested code:
-		float[] arr = buffer.array();
+		int pos = buffer.position();
+		float[] arr = new float[buffer.remaining()];
+		buffer.get(arr);
 		int idx = buffer.position();
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
@@ -292,6 +299,9 @@ public class BufferUtils {
 			if (dimensions >= 3)
 				arr[idx+2] = x * m[ 2] + y * m[ 5] + z * m[8];
 		}
+		buffer.position(pos);
+		buffer.put(arr);
+		buffer.position(pos);
 	}
 
 	public static FloatBuffer newFloatBuffer (int numFloats) {
