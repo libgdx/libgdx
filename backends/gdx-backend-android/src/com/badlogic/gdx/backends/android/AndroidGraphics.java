@@ -413,7 +413,18 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			pause = true;
 			while (pause) {
 				try {
-					synch.wait();
+					// TODO: fix deadlock race condition with quick resume/pause.
+					// Temporary workaround:
+					// Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
+					// deadlock and killing process. This can easily be triggered by openning the
+					// Recent Apps list and then double-tapping the Recent Apps button with
+					// ~500ms between taps.
+					synch.wait(4000);
+					if (pause) {
+						Gdx.app.error("AndroidGraphics", "waiting for pause synchronization took too "
+						                                 + "long; assuming deadlock and killing");
+						android.os.Process.killProcess(android.os.Process.myPid());
+					}
 				} catch (InterruptedException ignored) {
 					Gdx.app.log("AndroidGraphics", "waiting for pause synchronization failed!");
 				}
