@@ -203,7 +203,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			throw new RuntimeException("Call begin() first");
 		endpart();
 		
-		final Mesh mesh = new Mesh(true, vertices.size, indices.size, attributes);
+		final Mesh mesh = new Mesh(true, vertices.size / stride, indices.size, attributes);
 		mesh.setVertices(vertices.items, 0, vertices.size);
 		mesh.setIndices(indices.items, 0, indices.size);
 		
