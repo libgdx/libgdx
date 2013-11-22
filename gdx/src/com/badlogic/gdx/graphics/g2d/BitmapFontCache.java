@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
 
@@ -30,6 +31,47 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author Nathan Sweet
  * @author Matthias Mann */
 public class BitmapFontCache {
+	/** Unused unicode space, which we're using for color change codes */
+	private static final char UNUSED_UNICODE_START = 0xE000;
+	private static final char UNUSED_UNICODE_END = 0xF8FF;
+
+	/** Used to reset color back to default */
+	public static final char COLOR_RESET = UNUSED_UNICODE_START;
+	/** Start of custom color code space */
+	private static final char COLOR_CODES_START = UNUSED_UNICODE_START + 1;
+	/** End of custom color code space */
+	private static final char COLOR_CODES_END = UNUSED_UNICODE_END;
+
+	/** Each index is an offset from COLOR_CODES_START. Float is the color for that char */
+	private static final FloatArray COLOR_CHARS = new FloatArray(true, 4);
+	/** End of allocated custom color codes */
+	private static int colorCodesEnd = COLOR_CODES_START;
+
+	/** Add a new color to the custom color codes. The returned char can be placed inline with any text rendered by
+	 * BitmapFontCache to change the color of the following text. To reset to the default color, specify {@link #COLOR_RESET}.
+	 * @return The char that will change to the given color for the following text. */
+	public static synchronized char addColorChar(float color) {
+		int newChar = COLOR_CODES_START + COLOR_CHARS.size;
+		if (newChar >= COLOR_CODES_END) {
+			throw new GdxRuntimeException("Custom color code overflow");
+		}
+		colorCodesEnd++;
+		COLOR_CHARS.add(color);
+		return (char) newChar;
+	}
+
+	/** Add a new color to the custom color codes.
+	 * @return The char that will change to the given color for the following text. */
+	public static char addColorChar(Color color) {
+		return addColorChar(color.toFloatBits());
+	}
+
+	/** Clear all custom color codes. */
+	public static synchronized void clearColorChars() {
+		colorCodesEnd = COLOR_CODES_START;
+		COLOR_CHARS.clear();
+	}
+
 	private final BitmapFont font;
 
 	private float[][] vertexData;
@@ -40,10 +82,13 @@ public class BitmapFontCache {
 
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
+	/** Used internally to track the current glyph color (different from this.color if color-codes are in use) */
+	private float glyphColor = Color.WHITE.toFloatBits();
 	private final Color tempColor = new Color(Color.WHITE);
 	private final TextBounds textBounds = new TextBounds();
 	private boolean integer = true;
-	
+	private boolean hasColorSpans = false;
+
 	private int glyphCount = 0;
 
 	// For multi-page fonts, the vertices are not laid out in order.
@@ -82,6 +127,11 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Gets the current cached glyph count */
+	public int getGlyphCount() {
+		return glyphCount;
+	}
+
 	/** Sets the position of the text, relative to the position when the cached text was created.
 	 * @param x The x coordinate
 	 * @param y The y coodinate */
@@ -110,42 +160,56 @@ public class BitmapFontCache {
 		}
 	}
 
+	private void setAllVertexColors(float color) {
+		for (int j = 0, length = vertexData.length; j < length; j++) {
+			float[] vertices = vertexData[j];
+			for (int i = 2, n = idx[j]; i < n; i += 5)
+				vertices[i] = color;
+		}
+	}
+
+	/** Set the default color of the text. Does not affect color sub-ranges set by {@link #setColor (Color, int, int)} or
+	 * color-codes from {@link #addColorChar()} as long as the sub-ranges are different from the default color. */
 	public void setColor (float color) {
 		if (color == this.color) return;
+		float oldColor = this.color;
 		this.color = color;
-		for (int j = 0, length = vertexData.length; j < length; j++) {
-			float[] vertices = vertexData[j];
-			for (int i = 2, n = idx[j]; i < n; i += 5)
-				vertices[i] = color;
+		if (!hasColorSpans) {
+			setAllVertexColors(color);
+		} else {
+			int newColorA = NumberUtils.floatToIntColor(color) & 0xFF000000;
+			for (int j = 0, length = vertexData.length; j < length; j++) {
+				float[] vertices = vertexData[j];
+				for (int i = 2, n = idx[j]; i < n; i += 5) {
+					if (vertices[i] == oldColor) {
+						vertices[i] = color;
+					} else {
+						// Replace alpha channel in color-spans with main color alpha.
+						int glyphColorRGB = NumberUtils.floatToIntColor(vertices[i]) & 0xFFFFFF;
+						vertices[i] = NumberUtils.intToFloatColor(glyphColorRGB | newColorA);
+					}
+				}
+			}
 		}
 	}
 
+	/** Set the default color of the text. Does not affect color sub-ranges set by {@link #setColor (Color, int, int)} or
+	 * color-codes from {@link #addColorChar()} as long as the sub-ranges are different from the default color. */
 	public void setColor (Color tint) {
-		final float color = tint.toFloatBits();
-		if (color == this.color) return;
-		this.color = color;
-		for (int j = 0, length = vertexData.length; j < length; j++) {
-			float[] vertices = vertexData[j];
-			for (int i = 2, n = idx[j]; i < n; i += 5)
-				vertices[i] = color;
-		}
+		setColor(tint.toFloatBits());
 	}
 
+	/** Set the default color of the text. Does not affect color sub-ranges set by {@link #setColor (Color, int, int)} or
+	 * color-codes from {@link #addColorChar()} as long as the sub-ranges are different from the default color. */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
-		float color = NumberUtils.intToFloatColor(intBits);
-		if (color == this.color) return;
-		this.color = color;
-		for (int j = 0, length = vertexData.length; j < length; j++) {
-			float[] vertices = vertexData[j];
-			for (int i = 2, n = idx[j]; i < n; i += 5)
-				vertices[i] = color;
-		}
+		setColor(NumberUtils.intToFloatColor(intBits));
 	}
 
-	/** Sets the color of the specified characters. This may only be called after {@link #setText(CharSequence, float, float)} and
-	 * is reset every time setText is called. */
+	/** Sets the color of the specified sub-range of characters. This may only be called after
+	 * {@link #setText(CharSequence, float, float)} and is reset every time setText is called. */
 	public void setColor (Color tint, int start, int end) {
+		hasColorSpans = true;
 		final float color = tint.toFloatBits();
 
 		if (vertexData.length == 1) { // only one page...
@@ -176,6 +240,12 @@ public class BitmapFontCache {
 			}
 
 		}
+	}
+
+	/** Clear all sub-range colors and set to the default color */
+	public void setDefaultColor () {
+		hasColorSpans = false;
+		setAllVertexColors(this.color);
 	}
 
 	public void draw (Batch spriteBatch) {
@@ -260,6 +330,8 @@ public class BitmapFontCache {
 
 	/** Removes all glyphs in the cache. */
 	public void clear () {
+		hasColorSpans = false;
+		glyphColor = this.color;
 		x = 0;
 		y = 0;
 		glyphCount = 0;
@@ -306,6 +378,15 @@ public class BitmapFontCache {
 		}
 	}
 
+	private void updateGlyphColor(char ch) {
+		if (ch == COLOR_RESET) {
+			glyphColor = this.color;
+		} else if (ch >= COLOR_CODES_START && ch < colorCodesEnd) {
+			hasColorSpans = true;
+			glyphColor = COLOR_CHARS.get(ch - COLOR_CODES_START);
+		}
+	}
+
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
@@ -313,11 +394,14 @@ public class BitmapFontCache {
 		BitmapFontData data = font.data;
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
-				lastGlyph = data.getGlyph(str.charAt(start++));
+				char ch = str.charAt(start++);
+				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height);
 					x += lastGlyph.xadvance;
 					break;
+				} else {
+					updateGlyphColor(ch);
 				}
 			}
 			while (start < end) {
@@ -328,12 +412,15 @@ public class BitmapFontCache {
 					lastGlyph = g;
 					addGlyph(lastGlyph, x + g.xoffset, y + g.yoffset, g.width, g.height);
 					x += g.xadvance;
+				} else {
+					updateGlyphColor(ch);
 				}
 			}
 		} else {
 			float scaleX = data.scaleX, scaleY = data.scaleY;
 			while (start < end) {
-				lastGlyph = data.getGlyph(str.charAt(start++));
+				char ch = str.charAt(start++);
+				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, //
 						x + lastGlyph.xoffset * scaleX, //
@@ -342,6 +429,8 @@ public class BitmapFontCache {
 						lastGlyph.height * scaleY);
 					x += lastGlyph.xadvance * scaleX;
 					break;
+				} else {
+					updateGlyphColor(ch);
 				}
 			}
 			while (start < end) {
@@ -356,6 +445,8 @@ public class BitmapFontCache {
 						g.width * scaleX, //
 						g.height * scaleY);
 					x += g.xadvance * scaleX;
+				} else {
+					updateGlyphColor(ch);
 				}
 			}
 		}
@@ -390,25 +481,25 @@ public class BitmapFontCache {
 
 		vertices[idx++] = x;
 		vertices[idx++] = y;
-		vertices[idx++] = color;
+		vertices[idx++] = glyphColor;
 		vertices[idx++] = u;
 		vertices[idx++] = v;
 
 		vertices[idx++] = x;
 		vertices[idx++] = y2;
-		vertices[idx++] = color;
+		vertices[idx++] = glyphColor;
 		vertices[idx++] = u;
 		vertices[idx++] = v2;
 
 		vertices[idx++] = x2;
 		vertices[idx++] = y2;
-		vertices[idx++] = color;
+		vertices[idx++] = glyphColor;
 		vertices[idx++] = u2;
 		vertices[idx++] = v2;
 
 		vertices[idx++] = x2;
 		vertices[idx++] = y;
-		vertices[idx++] = color;
+		vertices[idx++] = glyphColor;
 		vertices[idx++] = u2;
 		vertices[idx] = v;
 	}
