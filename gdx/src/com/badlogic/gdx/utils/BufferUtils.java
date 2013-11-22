@@ -26,6 +26,9 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
  * 
  * @author mzechner */
@@ -165,6 +168,49 @@ public class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numBytes));
 	}
 
+	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
+	 * the offset.
+	 * @param data The buffer to transform.
+	 * @param dimensions The number of components of the vector (2 for xy, 3 for xyz or 4 for xyzw)
+	 * @param strideInBytes The offset between the first and the second vector to transform
+	 * @param count The number of vectors to transform
+	 * @param matrix The matrix to multiply the vector with */
+	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix4 matrix) {
+		switch (dimensions) {
+		case 4:
+			transformV4M4Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		case 3:
+			transformV3M4Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		case 2:
+			transformV2M4Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
+	 * the offset.
+	 * @param data The buffer to transform.
+	 * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
+	 * @param strideInBytes The offset between the first and the second vector to transform
+	 * @param count The number of vectors to transform
+	 * @param matrix The matrix to multiply the vector with */
+	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix) {
+		switch (dimensions) {
+		case 3:
+			transformV3M3Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		case 2:
+			transformV2M3Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+	
 	private static int positionInBytes (Buffer dst) {
 		if (dst instanceof ByteBuffer)
 			return dst.position();
@@ -380,4 +426,82 @@ public class BufferUtils {
 	private native static void copyJni (Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	*/
+	
+	private native static void transformV4M4Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		const int stride = strideInBytes / 4;
+		const int offset = offsetInBytes / 4;
+		float *d = (float*)data;
+		float *m = (float*)matrix;
+		for (int i = 0; i < count; ++i) {
+			const int idx = offset + i * stride;
+			const float x = d[idx    ];
+			const float y = d[idx + 1];
+			const float z = d[idx + 2];
+			const float w = d[idx + 3];
+			d[idx  ] = x * m[ 0] + y * m[ 4] + z * m[ 8] + w * m[12]; 
+			d[idx+1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + w * m[13];
+			d[idx+2] = x * m[ 2] + y * m[ 6] + z * m[10] + w * m[14];
+			d[idx+3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15];
+		}
+	*/
+	
+	private native static void transformV3M4Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		const int stride = strideInBytes / 4;
+		const int offset = offsetInBytes / 4;
+		float *d = (float*)data;
+		float *m = (float*)matrix;
+		for (int i = 0; i < count; ++i) {
+			const int idx = offset + i * stride;
+			const float x = d[idx    ];
+			const float y = d[idx + 1];
+			const float z = d[idx + 2];
+			d[idx  ] = x * m[ 0] + y * m[ 4] + z * m[ 8] + m[12]; 
+			d[idx+1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + m[13];
+			d[idx+2] = x * m[ 2] + y * m[ 6] + z * m[10] + m[14];
+		}
+	 */
+	
+	private native static void transformV2M4Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		const int stride = strideInBytes / 4;
+		const int offset = offsetInBytes / 4;
+		float *d = (float*)data;
+		float *m = (float*)matrix;
+		for (int i = 0; i < count; ++i) {
+			const int idx = offset + i * stride;
+			const float x = d[idx    ];
+			const float y = d[idx + 1];
+			d[idx  ] = x * m[ 0] + y * m[ 4] + m[12]; 
+			d[idx+1] = x * m[ 1] + y * m[ 5] + m[13];
+		}
+	 */
+
+	private native static void transformV3M3Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		const int stride = strideInBytes / 4;
+		const int offset = offsetInBytes / 4;
+		float *d = (float*)data;
+		float *m = (float*)matrix;
+		for (int i = 0; i < count; ++i) {
+			const int idx = offset + i * stride;
+			const float x = d[idx    ];
+			const float y = d[idx + 1];
+			const float z = d[idx + 2];
+			d[idx  ] = x * m[0] + y * m[3] + z * m[6]; 
+			d[idx+1] = x * m[1] + y * m[4] + z * m[7];
+			d[idx+2] = x * m[2] + y * m[5] + z * m[8];
+		}
+	 */
+	
+	private native static void transformV2M3Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		const int stride = strideInBytes / 4;
+		const int offset = offsetInBytes / 4;
+		float *d = (float*)data;
+		float *m = (float*)matrix;
+		for (int i = 0; i < count; ++i) {
+			const int idx = offset + i * stride;
+			const float x = d[idx    ];
+			const float y = d[idx + 1];
+			d[idx  ] = x * m[0] + y * m[3] + m[6]; 
+			d[idx+1] = x * m[1] + y * m[4] + m[7];
+		}
+	 */	
 }

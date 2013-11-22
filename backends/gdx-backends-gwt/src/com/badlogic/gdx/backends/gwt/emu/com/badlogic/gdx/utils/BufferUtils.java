@@ -26,6 +26,8 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
 import com.google.gwt.core.client.GWT;
 
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
@@ -212,7 +214,7 @@ public class BufferUtils {
 		buffer.position(oldPosition);
 		buffer.limit(oldPosition + numElements);
 	}
-
+	
 // /** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
 // * type of src, no matter the datatype of dst). The dst {@link Buffer#position()} is used as the writing offset. The position
 // * of both Buffers will stay the same. The limit of the src Buffer will stay the same. The limit of the dst Buffer will be set
@@ -227,6 +229,70 @@ public class BufferUtils {
 // copyJni(src, positionInBytes(src), dst, positionInBytes(dst), numBytes);
 // dst.limit(dst.position() + bytesToElements(dst, numBytes));
 // }
+	
+	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
+	 * the offset.
+	 * @param data The buffer to transform.
+	 * @param dimensions The number of components of the vector (2 for xy, 3 for xyz or 4 for xyzw)
+	 * @param strideInBytes The offset between the first and the second vector to transform
+	 * @param count The number of vectors to transform
+	 * @param matrix The matrix to multiply the vector with */
+	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix4 matrix) {
+		FloatBuffer buffer = null;
+		if (data instanceof ByteBuffer)
+			buffer = ((ByteBuffer)data).asFloatBuffer();
+		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
+		if (buffer == null) throw new GdxRuntimeException("data must be a ByteBuffer or FloatBuffer");
+		// FIXME untested code:
+		float[] arr = buffer.array();
+		int idx = buffer.position();
+		int stride = strideInBytes / 4;
+		float[] m = matrix.val;
+		for (int i = 0; i < count; i++) {
+			idx += stride;
+			final float x = arr[idx    ];
+			final float y = arr[idx + 1];
+			final float z = dimensions >= 3 ? arr[idx + 2] : 0f;
+			final float w = dimensions >= 4 ? arr[idx + 3] : 1f;
+			arr[idx  ] = x * m[ 0] + y * m[ 4] + z * m[ 8] + w * m[12]; 
+			arr[idx+1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + w * m[13];
+			if (dimensions >= 3) {
+				arr[idx+2] = x * m[ 2] + y * m[ 6] + z * m[10] + w * m[14];
+				if (dimensions >= 4)
+					arr[idx+3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15];
+			}
+		}
+	}
+	
+	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
+	 * the offset.
+	 * @param data The buffer to transform.
+	 * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
+	 * @param strideInBytes The offset between the first and the second vector to transform
+	 * @param count The number of vectors to transform
+	 * @param matrix The matrix to multiply the vector with */
+	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix) {
+		FloatBuffer buffer = null;
+		if (data instanceof ByteBuffer)
+			buffer = ((ByteBuffer)data).asFloatBuffer();
+		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
+		// FIXME untested code:
+		float[] arr = buffer.array();
+		int idx = buffer.position();
+		int stride = strideInBytes / 4;
+		float[] m = matrix.val;
+		for (int i = 0; i < count; i++) {
+			idx += stride;
+			final float x = arr[idx    ];
+			final float y = arr[idx + 1];
+			final float z = dimensions >= 3 ? arr[idx + 2] : 1f;
+			arr[idx  ] = x * m[ 0] + y * m[ 3] + z * m[ 6]; 
+			arr[idx+1] = x * m[ 1] + y * m[ 4] + z * m[ 7];
+			if (dimensions >= 3)
+				arr[idx+2] = x * m[ 2] + y * m[ 5] + z * m[8];
+		}
+	}
 
 	public static FloatBuffer newFloatBuffer (int numFloats) {
 		if (GWT.isProdMode()) {
