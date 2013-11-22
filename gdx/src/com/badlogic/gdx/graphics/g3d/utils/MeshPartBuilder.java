@@ -163,6 +163,16 @@ public interface MeshPartBuilder {
 	/** Add a capsule */
 	public void capsule(float radius, float height, int divisions);
 	
+	/**
+	 * Gets the current transformation matrix.
+	 */
+	public Matrix4 getTransform();
+	
+	/**
+	 * Sets the current transformation matrix. setTransform(null) disables this feature.
+	 */
+	public void setTransform(Matrix4 transform);
+	
 	/** Class that contains all vertex information the builder can use.
 	 * @author Xoppa */
 	public static class VertexInfo implements Poolable {
