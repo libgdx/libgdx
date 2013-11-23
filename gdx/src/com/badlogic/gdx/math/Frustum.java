@@ -87,6 +87,20 @@ public class Frustum {
 		}
 		return true;
 	}
+	
+	/** Returns whether the point is in the frustum.
+	 * 
+	 * @param x The X coordinate of the point
+	 * @param y The Y coordinate of the point
+	 * @param z The Z coordinate of the point
+	 * @return Whether the point is in the frustum. */
+	public boolean pointInFrustum (float x, float y, float z) {
+		for (int i = 0; i < planes.length; i++) {
+			PlaneSide result = planes[i].testPoint(x, y, z);
+			if (result == PlaneSide.Back) return false;
+		}
+		return true;
+	}
 
 	/** Returns whether the given sphere is in the frustum.
 	 * 
@@ -99,6 +113,20 @@ public class Frustum {
 				return false;
 		return true;
 	}
+	
+	/** Returns whether the given sphere is in the frustum.
+	 * 
+	 * @param x The X coordinate of the center of the sphere
+	 * @param y The Y coordinate of the center of the sphere
+	 * @param z The Z coordinate of the center of the sphere
+	 * @param radius The radius of the sphere
+	 * @return Whether the sphere is in the frustum */
+	public boolean sphereInFrustum (float x, float y, float z, float radius) {
+		for (int i = 0; i < 6; i++)
+			if ((planes[i].normal.x * x + planes[i].normal.y * y + planes[i].normal.z * z) < (-radius - planes[i].d))
+				return false;
+		return true;
+	}
 
 	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
 	 * 
@@ -108,6 +136,20 @@ public class Frustum {
 	public boolean sphereInFrustumWithoutNearFar (Vector3 center, float radius) {
 		for (int i = 2; i < 6; i++)
 			if ((planes[i].normal.x * center.x + planes[i].normal.y * center.y + planes[i].normal.z * center.z) < (-radius - planes[i].d))
+				return false;
+		return true;
+	}
+	
+	/** Returns whether the given sphere is in the frustum not checking whether it is behind the near and far clipping plane.
+	 * 
+	 * @param x The X coordinate of the center of the sphere
+	 * @param y The Y coordinate of the center of the sphere
+	 * @param z The Z coordinate of the center of the sphere
+	 * @param radius The radius of the sphere
+	 * @return Whether the sphere is in the frustum */
+	public boolean sphereInFrustumWithoutNearFar (float x, float y, float z, float radius) {
+		for (int i = 2; i < 6; i++)
+			if ((planes[i].normal.x * x + planes[i].normal.y * y + planes[i].normal.z * z) < (-radius - planes[i].d))
 				return false;
 		return true;
 	}
