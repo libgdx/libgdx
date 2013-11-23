@@ -105,7 +105,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	private float[] vertex;
 	
 	/** The current transformation matrix */
-	private Matrix4 transform = null;
+	private boolean vertexTransformationEnabled = false;
+	private final Matrix4 positionTransform = new Matrix4();
+	private final Matrix4 normalTransform = new Matrix4();
 	private final Vector3 tempVTransformed = new Vector3();
 	
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
@@ -362,8 +364,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		if (col == null && colorSet)
 			col = color;
 		if (pos != null) {
-			if(transform != null) {
-				tempVTransformed.set(pos).mul(transform);
+			if(vertexTransformationEnabled) {
+				tempVTransformed.set(pos).mul(positionTransform);
 				vertex[posOffset  ] = tempVTransformed.x;
 				if (posSize > 1) vertex[posOffset+1] = tempVTransformed.y;
 				if (posSize > 2) vertex[posOffset+2] = tempVTransformed.z;
@@ -374,8 +376,8 @@ public class MeshBuilder implements MeshPartBuilder {
 			}
 		}
 		if (nor != null && norOffset >= 0) {
-			if(transform != null) {
-				tempVTransformed.set(nor).rot(transform).nor();
+			if(vertexTransformationEnabled) {
+				tempVTransformed.set(nor).mul(normalTransform).nor();
 				vertex[norOffset  ] = tempVTransformed.x;
 				vertex[norOffset+1] = tempVTransformed.y;
 				vertex[norOffset+2] = tempVTransformed.z;
@@ -977,13 +979,25 @@ public class MeshBuilder implements MeshPartBuilder {
 	}
 
 	@Override
-	public Matrix4 getTransform() {
-		return transform;
+	public Matrix4 getVertexTransform(Matrix4 out) {
+		return out.set(positionTransform);
 	}
 
 	@Override
-	public void setTransform(Matrix4 transform) {
-		this.transform = transform;
+	public void setVertexTransform(Matrix4 transform) {
+		this.positionTransform.set(transform);
+		this.normalTransform.set(transform).inv().tra();
+		vertexTransformationEnabled = true;
 	}
-	
+
+	@Override
+	public boolean isVertexTransformationEnabled() {
+		return vertexTransformationEnabled;
+	}
+
+	@Override
+	public void setVertexTransformationEnabled(boolean enabled) {
+		vertexTransformationEnabled = enabled;
+	}
+
 }

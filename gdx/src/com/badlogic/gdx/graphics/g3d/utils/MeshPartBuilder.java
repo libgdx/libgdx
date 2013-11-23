@@ -164,14 +164,24 @@ public interface MeshPartBuilder {
 	public void capsule(float radius, float height, int divisions);
 	
 	/**
-	 * Gets the current transformation matrix.
+	 * Gets the current vertex transformation matrix.
 	 */
-	public Matrix4 getTransform();
+	public Matrix4 getVertexTransform(Matrix4 out);
 	
 	/**
-	 * Sets the current transformation matrix. setTransform(null) disables this feature.
+	 * Sets the current vertex transformation matrix and enables vertex transformation.
 	 */
-	public void setTransform(Matrix4 transform);
+	public void setVertexTransform(Matrix4 transform);
+	
+	/**
+	 * Indicates whether vertex transformation is enabled.
+	 */
+	public boolean isVertexTransformationEnabled();
+	
+	/**
+	 * Sets whether vertex transformation is enabled.
+	 */
+	public void setVertexTransformationEnabled(boolean enabled);
 	
 	/** Class that contains all vertex information the builder can use.
 	 * @author Xoppa */
