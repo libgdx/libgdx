@@ -59,9 +59,4 @@ public class IOSFileHandle extends FileHandle {
 		return file;
 	}
 
-	@Override
-	public boolean exists() {
-		return file().exists();
-	}
-
 }
