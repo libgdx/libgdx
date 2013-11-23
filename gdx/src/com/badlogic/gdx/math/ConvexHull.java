@@ -18,13 +18,16 @@ package com.badlogic.gdx.math;
 
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.IntArray;
+import com.badlogic.gdx.utils.ShortArray;
 
 /** Computes the convex hull of a set of points using the monotone chain convex hull algorithm (aka Andrew's algorithm).
  * @author Nathan Sweet */
 public class ConvexHull {
-	private final FloatArray hull = new FloatArray();
 	private final IntArray quicksortStack = new IntArray();
 	private float[] sortedPoints;
+	private final FloatArray hull = new FloatArray();
+	private final IntArray indices = new IntArray();
+	private final ShortArray originalIndices = new ShortArray(false, 0);
 
 	/** @see #computePolygon(float[], int, int, boolean) */
 	public FloatArray computePolygon (FloatArray points, boolean sorted) {
@@ -55,9 +58,10 @@ public class ConvexHull {
 			sort(points, count);
 		}
 
-		// Lower hull.
 		FloatArray hull = this.hull;
 		hull.clear();
+
+		// Lower hull.
 		for (int i = offset; i < end; i += 2) {
 			float x = points[i];
 			float y = points[i + 1];
@@ -78,6 +82,71 @@ public class ConvexHull {
 		}
 
 		return hull;
+	}
+
+	/** @see #computeIndices(float[], int, int, boolean) */
+	public IntArray computeIndices (FloatArray points, boolean sorted) {
+		return computeIndices(points.items, 0, points.size, sorted);
+	}
+
+	/** @see #computeIndices(float[], int, int, boolean) */
+	public IntArray computeIndices (float[] polygon, boolean sorted) {
+		return computeIndices(polygon, 0, polygon.length, sorted);
+	}
+
+	/** Computes a hull the same as {@link #computePolygon(float[], int, int, boolean)} but returns indices of the specified points. */
+	public IntArray computeIndices (float[] points, int offset, int count, boolean sorted) {
+		int end = offset + count;
+
+		if (!sorted) {
+			if (sortedPoints == null || sortedPoints.length < count) sortedPoints = new float[count];
+			System.arraycopy(points, offset, sortedPoints, 0, count);
+			points = sortedPoints;
+			offset = 0;
+			sortWithIndices(points, count);
+		}
+
+		IntArray indices = this.indices;
+		indices.clear();
+
+		FloatArray hull = this.hull;
+		hull.clear();
+
+		// Lower hull.
+		for (int i = offset, index = i / 2; i < end; i += 2, index++) {
+			float x = points[i];
+			float y = points[i + 1];
+			while (hull.size >= 4 && ccw(x, y) <= 0) {
+				hull.size -= 2;
+				indices.size--;
+			}
+			hull.add(x);
+			hull.add(y);
+			indices.add(index);
+		}
+
+		// Upper hull.
+		for (int i = end - 4, index = i / 2, t = hull.size + 2; i >= offset; i -= 2, index--) {
+			float x = points[i];
+			float y = points[i + 1];
+			while (hull.size >= t && ccw(x, y) <= 0) {
+				hull.size -= 2;
+				indices.size--;
+			}
+			hull.add(x);
+			hull.add(y);
+			indices.add(index);
+		}
+
+		// Convert sorted to unsorted indices.
+		if (!sorted) {
+			short[] originalIndicesArray = originalIndices.items;
+			int[] indicesArray = indices.items;
+			for (int i = 0, n = indices.size; i < n; i++)
+				indicesArray[i] = originalIndicesArray[indicesArray[i]];
+		}
+
+		return indices;
 	}
 
 	/** Returns > 0 if the points are a counterclockwise turn, < 0 if clockwise, and 0 if colinear. */
@@ -123,6 +192,7 @@ public class ConvexHull {
 		int up = upper;
 		int down = lower;
 		float temp;
+		short tempIndex;
 		while (down < up) {
 			while (down < up && values[down] <= x)
 				down = down + 2;
@@ -143,6 +213,79 @@ public class ConvexHull {
 
 		values[lower + 1] = values[up + 1];
 		values[up + 1] = y;
+
+		return up;
+	}
+
+	/** Sorts x,y pairs of values by the x value, then the y value and stores unsorted original indices.
+	 * @param count Number of indices, must be even. */
+	private void sortWithIndices (float[] values, int count) {
+		int pointCount = count / 2;
+		originalIndices.clear();
+		originalIndices.ensureCapacity(pointCount);
+		short[] originalIndicesArray = originalIndices.items;
+		for (short i = 0; i < pointCount; i++)
+			originalIndicesArray[i] = i;
+
+		int lower = 0;
+		int upper = count - 1;
+		IntArray stack = quicksortStack;
+		stack.add(lower);
+		stack.add(upper - 1);
+		while (stack.size > 0) {
+			upper = stack.pop();
+			lower = stack.pop();
+			if (upper <= lower) continue;
+			int i = quicksortPartitionWithIndices(values, lower, upper, originalIndicesArray);
+			if (i - lower > upper - i) {
+				stack.add(lower);
+				stack.add(i - 2);
+			}
+			stack.add(i + 2);
+			stack.add(upper);
+			if (upper - i >= i - lower) {
+				stack.add(lower);
+				stack.add(i - 2);
+			}
+		}
+	}
+
+	private int quicksortPartitionWithIndices (final float[] values, int lower, int upper, short[] originalIndices) {
+		float x = values[lower];
+		float y = values[lower + 1];
+		int up = upper;
+		int down = lower;
+		float temp;
+		short tempIndex;
+		while (down < up) {
+			while (down < up && values[down] <= x)
+				down = down + 2;
+			while (values[up] > x || (values[up] == x && values[up + 1] > y))
+				up = up - 2;
+			if (down < up) {
+				temp = values[down];
+				values[down] = values[up];
+				values[up] = temp;
+
+				temp = values[down + 1];
+				values[down + 1] = values[up + 1];
+				values[up + 1] = temp;
+
+				tempIndex = originalIndices[down / 2];
+				originalIndices[down / 2] = originalIndices[up / 2];
+				originalIndices[up / 2] = tempIndex;
+			}
+		}
+		values[lower] = values[up];
+		values[up] = x;
+
+		values[lower + 1] = values[up + 1];
+		values[up + 1] = y;
+
+		tempIndex = originalIndices[lower / 2];
+		originalIndices[lower / 2] = originalIndices[up / 2];
+		originalIndices[up / 2] = tempIndex;
+
 		return up;
 	}
 }
