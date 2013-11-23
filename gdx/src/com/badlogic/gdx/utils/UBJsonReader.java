@@ -34,10 +34,14 @@ public class UBJsonReader implements BaseJsonReader {
 	
 	@Override
 	public JsonValue parse (InputStream input) {
+		DataInputStream din = null;
 		try {
-			return parse(new DataInputStream(input));
+			din = new DataInputStream(input);
+			return parse(din);
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
+		} finally {
+			StreamUtils.closeQuietly(din);
 		}
 	}
 
@@ -51,7 +55,11 @@ public class UBJsonReader implements BaseJsonReader {
 	}
 	
 	public JsonValue parse(final DataInputStream din) throws IOException {
-		return parse(din, din.readByte());
+		try {
+			return parse(din, din.readByte());
+		} finally {
+			StreamUtils.closeQuietly(din);
+		}
 	}
 	
 	protected JsonValue parse(final DataInputStream din, final byte type) throws IOException {

@@ -151,4 +151,8 @@ public class DataInputStream extends InputStream implements DataInput {
 		return is.available();
 	}
 	
+	@Override
+	public void close () throws IOException {
+		is.close();
+	}
 }
