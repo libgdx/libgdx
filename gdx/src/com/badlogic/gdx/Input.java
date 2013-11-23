@@ -45,7 +45,7 @@ public interface Input {
 	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
 	 * 
 	 * @author mzechner */
-	public interface TextInputListener {
+	static public interface TextInputListener {
 		public void input (String text);
 
 		public void canceled ();
@@ -53,7 +53,7 @@ public interface Input {
 
 	/** Mouse buttons.
 	 * @author mzechner */
-	public class Buttons {
+	static public class Buttons {
 		public static final int LEFT = 0;
 		public static final int RIGHT = 1;
 		public static final int MIDDLE = 2;
@@ -62,7 +62,7 @@ public interface Input {
 	/** Keys.
 	 * 
 	 * @author mzechner */
-	public class Keys {
+	static public class Keys {
 		public static final int ANY_KEY = -1;
 		public static final int NUM_0 = 7;
 		public static final int NUM_1 = 8;
