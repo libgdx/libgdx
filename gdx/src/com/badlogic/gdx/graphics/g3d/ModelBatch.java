@@ -72,7 +72,7 @@ public class ModelBatch implements Disposable {
 	/** the {@link RenderableSorter} **/
 	protected final RenderableSorter sorter;
 
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself. 
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
@@ -87,40 +87,40 @@ public class ModelBatch implements Disposable {
 			: shaderProvider;
 	}
 	
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself. 
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use. */
 	public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider) {
 		this(context, shaderProvider, null);
 	}
 	
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself. 
 	 * @param context The {@link RenderContext} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
 	public ModelBatch(final RenderContext context, final RenderableSorter sorter) {
 		this(context, null, sorter);
 	}
 	
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself. 
+	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself. 
 	 * @param context The {@link RenderContext} to use. */
 	public ModelBatch(final RenderContext context) {
 		this(context, null, null);
 	}
 	
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself.
+	/** Construct a ModelBatch
 	 * @param shaderProvider The {@link ShaderProvider} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
 	public ModelBatch(final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		this(null, shaderProvider, sorter);
 	}
 	
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself.
+	/** Construct a ModelBatch
 	 * @param sorter The {@link RenderableSorter} to use. */
 	public ModelBatch(final RenderableSorter sorter) {
 		this(null, null, sorter);
 	}
 	
-	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and contact.end() yourself.
+	/** Construct a ModelBatch
 	 * @param shaderProvider The {@link ShaderProvider} to use. */
 	public ModelBatch(final ShaderProvider shaderProvider) {
 		this(null, shaderProvider, null);

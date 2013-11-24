@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -136,6 +137,16 @@ public class FilesTest extends GdxTest {
 				StreamUtils.closeQuietly(in);
 			}
 
+			try {
+				byte[] testBytes = Gdx.files.local("test.txt").readBytes();
+				if (Arrays.equals("test".getBytes(), testBytes))
+					message += "Read into byte array success\n";
+				else
+					fail();
+			} catch (Throwable e) {
+				message += "Couldn't read localstorage/test.txt\n" + e.getMessage() + "\n";
+			}
+
 			if (!Gdx.files.local("test.txt").delete()) message += "Couldn't delete localstorage/test.txt";
 		}
 		try {
@@ -151,7 +162,7 @@ public class FilesTest extends GdxTest {
 
 	private void testClasspath () throws IOException {
 		// no classpath support on ios
-		if(Gdx.app.getType() == ApplicationType.iOS) return;
+		if (Gdx.app.getType() == ApplicationType.iOS) return;
 		FileHandle handle = Gdx.files.classpath("com/badlogic/gdx/utils/arial-15.png");
 		if (!handle.exists()) fail();
 		if (handle.isDirectory()) fail();
@@ -440,8 +451,8 @@ public class FilesTest extends GdxTest {
 	private void fail () {
 		throw new RuntimeException();
 	}
-	
-	private void fail(String msg) {
+
+	private void fail (String msg) {
 		throw new RuntimeException(msg);
 	}
 

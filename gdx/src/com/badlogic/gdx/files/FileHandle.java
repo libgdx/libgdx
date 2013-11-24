@@ -39,9 +39,9 @@ import java.io.Writer;
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
  * 
- * Because some of the file types are backed by composite files and may be compressed (for example, if they are in an Android .apk or are
- * found via the classpath), the methods for extracting a {@link #path()} or {@link #file()} may not be appropriate for all types.
- * Use the Reader or Stream methods here to hide these dependencies from your platform independent code.
+ * Because some of the file types are backed by composite files and may be compressed (for example, if they are in an Android .apk
+ * or are found via the classpath), the methods for extracting a {@link #path()} or {@link #file()} may not be appropriate for all
+ * types. Use the Reader or Stream methods here to hide these dependencies from your platform independent code.
  * 
  * @author mzechner
  * @author Nathan Sweet */
@@ -189,9 +189,7 @@ public class FileHandle {
 	/** Reads the entire file into a string using the specified charset.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
-		int fileLength = (int)length();
-		if (fileLength == 0) fileLength = 512;
-		StringBuilder output = new StringBuilder(fileLength);
+		StringBuilder output = new StringBuilder(estimateLength());
 		InputStreamReader reader = null;
 		try {
 			if (charset == null)
@@ -215,38 +213,19 @@ public class FileHandle {
 	/** Reads the entire file into a byte array.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public byte[] readBytes () {
-		int length = (int)length();
-		if (length == 0) length = 512;
-		byte[] buffer = new byte[length];
-		int position = 0;
 		InputStream input = read();
 		try {
-			while (true) {
-				int count = input.read(buffer, position, buffer.length - position);
-				if (count == -1) break;
-				position += count;
-				if (position == buffer.length) {
-					int b = input.read();
-					if (b == -1) break;
-					// Grow buffer.
-					byte[] newBuffer = new byte[buffer.length * 2];
-					System.arraycopy(buffer, 0, newBuffer, 0, position);
-					buffer = newBuffer;
-					buffer[position++] = (byte)b;
-				}
-			}
+			return StreamUtils.copyStreamToByteArray(input, estimateLength());
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error reading file: " + this, ex);
 		} finally {
 			StreamUtils.closeQuietly(input);
 		}
-		if (position < buffer.length) {
-			// Shrink buffer.
-			byte[] newBuffer = new byte[position];
-			System.arraycopy(buffer, 0, newBuffer, 0, position);
-			buffer = newBuffer;
-		}
-		return buffer;
+	}
+
+	private int estimateLength () {
+		int length = (int)length();
+		return length != 0 ? length : 512;
 	}
 
 	/** Reads the entire file into the byte array. The byte array must be big enough to hold the file's data.
@@ -274,7 +253,7 @@ public class FileHandle {
 	/** Returns a stream for writing to this file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public OutputStream write (boolean append) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
@@ -292,17 +271,12 @@ public class FileHandle {
 	 * will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void write (InputStream input, boolean append) {
 		OutputStream output = null;
 		try {
 			output = write(append);
-			byte[] buffer = new byte[4096];
-			while (true) {
-				int length = input.read(buffer);
-				if (length == -1) break;
-				output.write(buffer, 0, length);
-			}
+			StreamUtils.copyStream(input, output, 4096);
 		} catch (Exception ex) {
 			throw new GdxRuntimeException("Error stream writing to file: " + file + " (" + type + ")", ex);
 		} finally {
@@ -315,7 +289,7 @@ public class FileHandle {
 	/** Returns a writer for writing to this file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public Writer writer (boolean append) {
 		return writer(append, null);
 	}
@@ -324,7 +298,7 @@ public class FileHandle {
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public Writer writer (boolean append, String charset) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot write to a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot write to an internal file: " + file);
@@ -345,7 +319,7 @@ public class FileHandle {
 	/** Writes the specified string to the file using the default charset. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeString (String string, boolean append) {
 		writeString(string, append, null);
 	}
@@ -354,7 +328,7 @@ public class FileHandle {
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @param charset May be null to use the default charset.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeString (String string, boolean append, String charset) {
 		Writer writer = null;
 		try {
@@ -370,7 +344,7 @@ public class FileHandle {
 	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, boolean append) {
 		OutputStream output = write(append);
 		try {
@@ -385,7 +359,7 @@ public class FileHandle {
 	/** Writes the specified bytes to the file. Parent directories will be created if necessary.
 	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
 	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file, or if it could not be written. */
+	 *            {@link FileType#Internal} file, or if it could not be written. */
 	public void writeBytes (byte[] bytes, int offset, int length, boolean append) {
 		OutputStream output = write(append);
 		try {
@@ -445,7 +419,7 @@ public class FileHandle {
 
 	/** Returns a handle to the child with the specified name.
 	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
-	 *        doesn't exist. */
+	 *            doesn't exist. */
 	public FileHandle child (String name) {
 		if (file.getPath().length() == 0) return new FileHandle(new File(name), type);
 		return new FileHandle(new File(file, name), type);
@@ -453,7 +427,7 @@ public class FileHandle {
 
 	/** Returns a handle to the sibling with the specified name.
 	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the sibling
-	 *        doesn't exist, or this file is the root. */
+	 *            doesn't exist, or this file is the root. */
 	public FileHandle sibling (String name) {
 		if (file.getPath().length() == 0) throw new GdxRuntimeException("Cannot get the sibling of the root.");
 		return new FileHandle(new File(file.getParent(), name), type);
@@ -482,7 +456,7 @@ public class FileHandle {
 	public boolean exists () {
 		switch (type) {
 		case Internal:
-			if (file.exists()) return true;
+			if (file().exists()) return true;
 			// Fall through.
 		case Classpath:
 			return FileHandle.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
@@ -505,13 +479,13 @@ public class FileHandle {
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot delete an internal file: " + file);
 		return deleteDirectory(file());
 	}
-	
+
 	/** Deletes all children of this directory, recursively.
 	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
 	public void emptyDirectory () {
 		emptyDirectory(false);
 	}
-	
+
 	/** Deletes all children of this directory, recursively. Optionally preserving the folder structure.
 	 * @throws GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
 	public void emptyDirectory (boolean preserveTree) {
@@ -526,8 +500,8 @@ public class FileHandle {
 	 * this handle is a directory, then 1) if the destination is a file, GdxRuntimeException is thrown, or 2) if the destination is
 	 * a directory, this directory is copied into it recursively, overwriting existing files, or 3) if the destination doesn't
 	 * exist, {@link #mkdirs()} is called on the destination and this directory is copied into it recursively.
-	 * @throws GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file,
-	 *        or copying failed. */
+	 * @throws GdxRuntimeException if the destination file handle is a {@link FileType#Classpath} or {@link FileType#Internal}
+	 *            file, or copying failed. */
 	public void copyTo (FileHandle dest) {
 		boolean sourceDir = isDirectory();
 		if (!sourceDir) {
@@ -547,13 +521,13 @@ public class FileHandle {
 
 	/** Moves this file to the specified file, overwriting the file if it already exists.
 	 * @throws GdxRuntimeException if the source or destination file handle is a {@link FileType#Classpath} or
-	 *        {@link FileType#Internal} file. */
+	 *            {@link FileType#Internal} file. */
 	public void moveTo (FileHandle dest) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot move a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot move an internal file: " + file);
 		copyTo(dest);
 		delete();
-		if (exists () && isDirectory()) deleteDirectory();
+		if (exists() && isDirectory()) deleteDirectory();
 	}
 
 	/** Returns the length in bytes of this file, or 0 if this file is a directory, does not exist, or the size cannot otherwise be
