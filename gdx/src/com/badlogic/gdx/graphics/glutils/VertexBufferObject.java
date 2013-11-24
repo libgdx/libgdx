@@ -146,7 +146,7 @@ public class VertexBufferObject implements VertexData {
 		isDirty = true;
 		final int pos = byteBuffer.position();
 		byteBuffer.position(targetOffset * 4);
-		BufferUtils.copy(vertices, sourceOffset, byteBuffer, count);
+		BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
 		byteBuffer.position(pos);
 		buffer.position(0);
 		bufferChanged();

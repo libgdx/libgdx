@@ -164,7 +164,7 @@ public class VertexBufferObjectSubData implements VertexData {
 		if (isDirect) {
 			final int pos = byteBuffer.position();
 			byteBuffer.position(targetOffset * 4);
-			BufferUtils.copy(vertices, sourceOffset, byteBuffer, count);
+			BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
 			byteBuffer.position(pos);
 		} else
 			throw new GdxRuntimeException("Buffer must be allocated direct."); // Should never happen
