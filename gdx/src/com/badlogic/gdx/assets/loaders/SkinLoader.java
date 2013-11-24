@@ -64,6 +64,10 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 	static public class SkinParameter extends AssetLoaderParameters<Skin> {
 		public final String textureAtlasPath;
 
+		public SkinParameter () {
+			this.textureAtlasPath = null;
+		}
+
 		public SkinParameter (String textureAtlasPath) {
 			this.textureAtlasPath = textureAtlasPath;
 		}
