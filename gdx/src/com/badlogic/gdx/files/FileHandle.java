@@ -456,7 +456,7 @@ public class FileHandle {
 	public boolean exists () {
 		switch (type) {
 		case Internal:
-			if (file.exists()) return true;
+			if (file().exists()) return true;
 			// Fall through.
 		case Classpath:
 			return FileHandle.class.getResource("/" + file.getPath().replace('\\', '/')) != null;
