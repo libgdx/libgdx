@@ -135,7 +135,7 @@ public class IOSApplication implements Application {
 		this.input = new IOSInput(this);
 		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio();
+		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
