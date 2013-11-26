@@ -72,8 +72,6 @@ public class ModelBatch implements Disposable {
 	protected final RenderablePool renderablesPool = new RenderablePool();  
 	/** list of Renderables to be rendered in the current batch **/
 	protected final Array<Renderable> renderables = new Array<Renderable>();
-	/** list of Renderables that can be put back into the pool **/
-	protected final Array<Renderable> reuseableRenderables = new Array<Renderable>();
 	/** the {@link RenderContext} **/
 	protected final RenderContext context;
 	private final boolean ownContext;
