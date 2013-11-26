@@ -21,6 +21,8 @@ import android.os.PowerManager.WakeLock;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 
 /** Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
@@ -66,4 +68,9 @@ public class AndroidApplicationConfiguration {
 	
 	/** if the app is a livewallpaper, whether it should get full touch events **/
 	public boolean getTouchEventsForLiveWallpaper = false; 
+
+	/** whether to use {@link GLSurfaceViewAPI18} in place of the classic {@link GLSurfaceViewCupcake} on Android API 10 and lower.
+	 * In case this is true {@link GLSurfaceViewAPI18} will be used. This implementation properly supports attach to and detach
+	 * from window. default: false */
+	public boolean useGLSurfaceViewAPI18 = false;
 }

@@ -59,6 +59,7 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 
 		@Override
 		public boolean fling (float velocityX, float velocityY, int button) {
+			Gdx.app.log("GestureDetectorTest", "fling " + velocityX + ", " + velocityY);
 			flinging = true;
 			velX = camera.zoom * velocityX * 0.5f;
 			velY = camera.zoom * velocityY * 0.5f;
@@ -67,7 +68,14 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 
 		@Override
 		public boolean pan (float x, float y, float deltaX, float deltaY) {
+			// Gdx.app.log("GestureDetectorTest", "pan at " + x + ", " + y);
 			camera.position.add(-deltaX * camera.zoom, deltaY * camera.zoom, 0);
+			return false;
+		}
+		
+		@Override
+		public boolean panStop (float x, float y, int pointer, int button) {
+			Gdx.app.log("GestureDetectorTest", "pan stop at " + x + ", " + y);
 			return false;
 		}
 

@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.net;
 
 import java.io.BufferedReader;
@@ -11,11 +27,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
 import com.badlogic.gdx.Net.HttpRequest;
@@ -23,6 +37,7 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -30,7 +45,6 @@ import com.badlogic.gdx.utils.StreamUtils;
 public class NetJavaImpl {
 
 	static class HttpClientResponse implements HttpResponse {
-
 		private HttpURLConnection connection;
 		private HttpStatus status;
 		private InputStream inputStream;
@@ -48,38 +62,35 @@ public class NetJavaImpl {
 			} catch (IOException e) {
 				this.status = new HttpStatus(-1);
 			}
-			
 		}
 
 		@Override
 		public byte[] getResult () {
-			ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-			int nRead;
-			byte[] data = new byte[16384];
-
 			try {
-				while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-					buffer.write(data, 0, nRead);
-				}
-				buffer.flush();
+				return StreamUtils.copyStreamToByteArray(inputStream, connection.getContentLength());
 			} catch (IOException e) {
-				return new byte[0];
+				return StreamUtils.EMPTY_BYTES;
 			}
-			return buffer.toByteArray();
 		}
 
 		@Override
 		public String getResultAsString () {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-			String tmp, line = "";
 			try {
-				while ((tmp = reader.readLine()) != null)
-					line += tmp;
-				reader.close();
-				return line;
+				int approxStringLength = connection.getContentLength();
+				StringBuilder b;
+				if (approxStringLength > 0)
+					b = new StringBuilder(approxStringLength);
+				else
+					b = new StringBuilder();
+				String line;
+				while ((line = reader.readLine()) != null)
+					b.append(line);
+				return b.toString();
 			} catch (IOException e) {
 				return "";
+			} finally {
+				StreamUtils.closeQuietly(reader);
 			}
 		}
 
@@ -102,7 +113,6 @@ public class NetJavaImpl {
 		public Map<String, List<String>> getHeaders () {
 			return connection.getHeaderFields();
 		}
-		
 	}
 
 	private final ExecutorService executorService;
@@ -133,16 +143,14 @@ public class NetJavaImpl {
 
 			final HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 			// should be enabled to upload data.
-			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT); 
+			final boolean doingOutPut = method.equalsIgnoreCase(HttpMethods.POST) || method.equalsIgnoreCase(HttpMethods.PUT);
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
 
 			// Headers get set regardless of the method
-			Map<String, String> headers = httpRequest.getHeaders();
-			Set<String> keySet = headers.keySet();
-			for (String name : keySet)
-				connection.addRequestProperty(name, headers.get(name));
+			for (Map.Entry<String, String> header : httpRequest.getHeaders().entrySet())
+				connection.addRequestProperty(header.getKey(), header.getValue());
 
 			// Set Timeouts
 			connection.setConnectTimeout(httpRequest.getTimeOut());
@@ -175,18 +183,15 @@ public class NetJavaImpl {
 						connection.connect();
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
-								try {
-									httpResponseListener.handleHttpResponse(clientResponse);
-								} finally {
-									connection.disconnect();
-								}
+						try {
+							httpResponseListener.handleHttpResponse(clientResponse);
+						} finally {
+							connection.disconnect();
+						}
 					} catch (final Exception e) {
-								connection.disconnect();
-								httpResponseListener.failed(e);
+						connection.disconnect();
+						httpResponseListener.failed(e);
 					}
-// finally {
-// connection.disconnect();
-// }
 				}
 			});
 
@@ -195,5 +200,4 @@ public class NetJavaImpl {
 			return;
 		}
 	}
-
 }

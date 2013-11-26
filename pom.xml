@@ -10,7 +10,7 @@
   <groupId>com.badlogicgames.gdx</groupId>
   <artifactId>gdx-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.9.9-SNAPSHOT</version>
+  <version>1.0-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
   <description>Android/desktop game development framework.</description>
@@ -35,8 +35,8 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/libgdx/libgdx.git</connection>
-    <developerConnection>scm:git:git@github.com:libgdx/libgdx.git</developerConnection>
+    <connection>scm:git:https://github.com/libgdx/libgdx.git</connection>
+    <developerConnection>scm:git:https://github.com/libgdx/libgdx.git</developerConnection>
     <url>http://github.com/libgdx/libgdx</url>
   </scm>
 
@@ -45,7 +45,7 @@
     <android.version>4.2</android.version>
     <gwt.version>2.5.0</gwt.version>
     <lwjgl.version>2.9.0</lwjgl.version>
-    <monotouch.version>5.1</monotouch.version>
+    <robovm.version>0.0.6</robovm.version>
   </properties>
 
   <modules>
@@ -54,9 +54,14 @@
     <module>gdx/jni/maven</module>
     <module>backends/gdx-openal</module>
     <module>backends/gdx-backend-android</module>
+    <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
     <module>backends/gdx-backends-gwt</module>
     <module>extensions/gdx-tools</module>
+    <module>extensions/gdx-freetype</module>
+    <module>extensions/gdx-freetype/jni/maven</module>
+    <module>extensions/gdx-bullet</module>
+    <module>extensions/gdx-bullet/jni/maven</module>
   </modules>
 
   <build>

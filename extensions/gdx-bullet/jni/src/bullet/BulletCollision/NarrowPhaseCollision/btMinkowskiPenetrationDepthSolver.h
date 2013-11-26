@@ -32,7 +32,7 @@ public:
 	const btConvexShape* convexA,const btConvexShape* convexB,
 				const btTransform& transA,const btTransform& transB,
 			btVector3& v, btVector3& pa, btVector3& pb,
-			class btIDebugDraw* debugDraw,btStackAlloc* stackAlloc
+			class btIDebugDraw* debugDraw
 			);
 };
 

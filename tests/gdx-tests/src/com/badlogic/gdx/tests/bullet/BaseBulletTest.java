@@ -26,16 +26,18 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.lights.PointLight;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
@@ -43,11 +45,9 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btTransform;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.linearmath.LinearMath;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -61,17 +61,17 @@ public class BaseBulletTest extends BulletTest {
 	public static void init() {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
-		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null)
+		if (Gdx.app.getType() == ApplicationType.Desktop && customDesktopLib != null) {
 			System.load(customDesktopLib);
-		else
+		} else
 			Bullet.init();
-		Gdx.app.log("Bullet", "Version = "+gdxBullet.btGetVersion());
+		Gdx.app.log("Bullet", "Version = "+LinearMath.btGetVersion());
 		initialized = true;
 	}
 	
-	public Lights lights = new Lights(0.2f, 0.2f, 0.2f).add(
-		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, -0.7f)
-	);
+	public Environment lights;
+	public DirectionalLight shadowLight;
+	public ModelBatch shadowBatch;
 
 	public BulletWorld world;
 	public ObjLoader objLoader = new ObjLoader();
@@ -87,6 +87,14 @@ public class BaseBulletTest extends BulletTest {
 	@Override
 	public void create () {
 		init();
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
+		lights.add(
+			(shadowLight = new DirectionalLight()).set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f)
+		);
+//		lights.shadowMap = shadowLight;
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
+		
 		modelBatch = new ModelBatch();
 		
 		world = createWorld();
@@ -127,6 +135,15 @@ public class BaseBulletTest extends BulletTest {
 			disposable.dispose();
 		disposables.clear();
 		
+		modelBatch.dispose();
+		modelBatch = null;
+		
+		shadowBatch.dispose();
+		shadowBatch = null;
+		
+//		shadowLight.dispose();
+		shadowLight = null;
+		
 		super.dispose();
 	}
 	
@@ -157,11 +174,18 @@ public class BaseBulletTest extends BulletTest {
 	
 	protected void beginRender(boolean lighting) {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(0,0,0,0);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		camera.update();
 	}
 	
 	protected void renderWorld() {
+//		shadowLight.begin(Vector3.Zero, camera.direction);
+//		shadowBatch.begin(shadowLight.getCamera());
+//		world.render(shadowBatch, null);
+//		shadowBatch.end();
+//		shadowLight.end();
+		
 		modelBatch.begin(camera);
 		world.render(modelBatch, lights);
 		modelBatch.end();

@@ -46,7 +46,9 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 			return deps;
 		}
 		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
-		deps.add(new AssetDescriptor(data.getImagePath(), Texture.class));
+		for (int i=0; i<data.getImagePaths().length; i++) {
+			deps.add(new AssetDescriptor(data.getImagePath(i), Texture.class));
+		}
 		return deps;
 	}
 
@@ -56,9 +58,15 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
-		TextureRegion region = new TextureRegion(manager.get(data.getImagePath(), Texture.class));
-		if (parameter != null) region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
-		return new BitmapFont(data, region, true);
+		TextureRegion[] regs = new TextureRegion[data.getImagePaths().length];
+		for (int i=0; i<regs.length; i++) {
+			TextureRegion region = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));
+			if (parameter != null) { 
+				region.getTexture().setFilter(parameter.minFilter, parameter.magFilter);
+			}
+			regs[i] = region;
+		}
+		return new BitmapFont(data, regs, true);
 	}
 
 	/** Parameter to be passed to {@link AssetManager#load(String, Class, AssetLoaderParameters)} if additional configuration is
@@ -68,9 +76,9 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		/** whether to flipY the font or not **/
 		public boolean flip = false;
 		/** the minimum filter to be used for the backing texture */
-		public TextureFilter minFitler = TextureFilter.Nearest;
+		public TextureFilter minFilter = TextureFilter.Nearest;
 		/** the maximum filter to be used for the backing texture */
-		public TextureFilter maxFilter = TextureFilter.Nearest;
+		public TextureFilter magFilter = TextureFilter.Nearest;
 		/** optional BitmapFontData to be used instead of loading the texture directly. Use this if your font is embedded in a skin. **/
 		public BitmapFontData bitmapFontData = null;
 	}

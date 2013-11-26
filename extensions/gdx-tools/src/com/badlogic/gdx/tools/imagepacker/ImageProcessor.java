@@ -58,6 +58,7 @@ public class ImageProcessor {
 		this(null, settings);
 	}
 
+	/** The image won't be kept in-memory during packing if {@link Settings#limitMemory} is true. */
 	public void addImage (File file) {
 		BufferedImage image;
 		try {
@@ -76,10 +77,40 @@ public class ImageProcessor {
 		int dotIndex = name.lastIndexOf('.');
 		if (dotIndex != -1) name = name.substring(0, dotIndex);
 
-		addImage(image, name);
+		Rect rect = addImage(image, name);
+		if (rect != null && settings.limitMemory) rect.unloadImage(file);
 	}
 
-	public void addImage (BufferedImage image, String name) {
+	/** The image will be kept in-memory during packing. */
+	public Rect addImage (BufferedImage image, String name) {
+		Rect rect = processImage(image, name);
+
+		if (rect == null) {
+			System.out.println("Ignoring blank input image: " + name);
+			return null;
+		}
+
+		if (settings.alias) {
+			String crc = hash(rect.getImage(this));
+			Rect existing = crcs.get(crc);
+			if (existing != null) {
+				System.out.println(rect.name + " (alias of " + existing.name + ")");
+				existing.aliases.add(new Alias(rect));
+				return null;
+			}
+			crcs.put(crc, rect);
+		}
+
+		rects.add(rect);
+		return rect;
+	}
+
+	public Array<Rect> getImages () {
+		return rects;
+	}
+
+	/** Returns a rect for the image describing the texture region to be packed, or null if the image should not be packed. */
+	Rect processImage (BufferedImage image, String name) {
 		if (image.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
 			BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
 			newImage.getGraphics().drawImage(image, 0, 0, null);
@@ -87,24 +118,24 @@ public class ImageProcessor {
 		}
 
 		Rect rect = null;
-
-		// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
-		int[] splits = null;
-		int[] pads = null;
 		if (name.endsWith(".9")) {
+			// Strip ".9" from file name, read ninepatch split pixels, and strip ninepatch split pixels.
 			name = name.substring(0, name.length() - 2);
-			splits = getSplits(image, name);
-			pads = getPads(image, name, splits);
+			int[] splits = getSplits(image, name);
+			int[] pads = getPads(image, name, splits);
 			// Strip split pixels.
 			BufferedImage newImage = new BufferedImage(image.getWidth() - 2, image.getHeight() - 2, BufferedImage.TYPE_4BYTE_ABGR);
 			newImage.getGraphics().drawImage(image, 0, 0, newImage.getWidth(), newImage.getHeight(), 1, 1, image.getWidth() - 1,
 				image.getHeight() - 1, null);
 			image = newImage;
-			// Ninepatches won't be rotated or whitespace stripped.
-			rect = new Rect(image, 0, 0, image.getWidth(), image.getHeight());
+			// Ninepatches aren't rotated or whitespace stripped.
+			rect = new Rect(image, 0, 0, image.getWidth(), image.getHeight(), true);
 			rect.splits = splits;
 			rect.pads = pads;
 			rect.canRotate = false;
+		} else {
+			rect = stripWhitespace(image);
+			if (rect == null) return null;
 		}
 
 		// Strip digits off end of name and use as index.
@@ -117,40 +148,16 @@ public class ImageProcessor {
 			}
 		}
 
-		if (rect == null) {
-			rect = createRect(image);
-			if (rect == null) {
-				System.out.println("Ignoring blank input image: " + name);
-				return;
-			}
-		}
-
 		rect.name = name;
 		rect.index = index;
-
-		if (settings.alias) {
-			String crc = hash(rect.image);
-			Rect existing = crcs.get(crc);
-			if (existing != null) {
-				System.out.println(rect.name + " (alias of " + existing.name + ")");
-				existing.aliases.add(new Alias(rect));
-				return;
-			}
-			crcs.put(crc, rect);
-		}
-
-		rects.add(rect);
-	}
-
-	public Array<Rect> getImages () {
-		return rects;
+		return rect;
 	}
 
 	/** Strips whitespace and returns the rect, or null if the image should be ignored. */
-	private Rect createRect (BufferedImage source) {
+	private Rect stripWhitespace (BufferedImage source) {
 		WritableRaster alphaRaster = source.getAlphaRaster();
 		if (alphaRaster == null || (!settings.stripWhitespaceX && !settings.stripWhitespaceY))
-			return new Rect(source, 0, 0, source.getWidth(), source.getHeight());
+			return new Rect(source, 0, 0, source.getWidth(), source.getHeight(), false);
 		final byte[] a = new byte[1];
 		int top = 0;
 		int bottom = source.getHeight();
@@ -206,19 +213,19 @@ public class ImageProcessor {
 			if (settings.ignoreBlankImages)
 				return null;
 			else
-				return new Rect(emptyImage, 0, 0, 1, 1);
+				return new Rect(emptyImage, 0, 0, 1, 1, false);
 		}
-		return new Rect(source, left, top, newWidth, newHeight);
+		return new Rect(source, left, top, newWidth, newHeight, false);
 	}
 
-	private String splitError (int x, int y, int[] rgba, String name) {
+	static private String splitError (int x, int y, int[] rgba, String name) {
 		throw new RuntimeException("Invalid " + name + " ninepatch split pixel at " + x + ", " + y + ", rgba: " + rgba[0] + ", "
 			+ rgba[1] + ", " + rgba[2] + ", " + rgba[3]);
 	}
 
 	/** Returns the splits, or null if the image had no splits or the splits were only a single region. Splits are an int[4] that
 	 * has left, right, top, bottom. */
-	private int[] getSplits (BufferedImage image, String name) {
+	static private int[] getSplits (BufferedImage image, String name) {
 		WritableRaster raster = image.getRaster();
 
 		int startX = getSplitPoint(raster, name, 1, 0, true, true);
@@ -254,7 +261,7 @@ public class ImageProcessor {
 
 	/** Returns the pads, or null if the image had no pads or the pads match the splits. Pads are an int[4] that has left, right,
 	 * top, bottom. */
-	private int[] getPads (BufferedImage image, String name, int[] splits) {
+	static private int[] getPads (BufferedImage image, String name, int[] splits) {
 		WritableRaster raster = image.getRaster();
 
 		int bottom = raster.getHeight() - 1;
@@ -317,7 +324,7 @@ public class ImageProcessor {
 	 * axis (depending on value of xAxis) for the first non-transparent pixel if startPoint is true, or the first transparent pixel
 	 * if startPoint is false. Returns 0 if none found, as 0 is considered an invalid split point being in the outer border which
 	 * will be stripped. */
-	private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) {
+	static private int getSplitPoint (WritableRaster raster, String name, int startX, int startY, boolean startPoint, boolean xAxis) {
 		int[] rgba = new int[4];
 
 		int next = xAxis ? startX : startY;

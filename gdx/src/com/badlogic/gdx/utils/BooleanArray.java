@@ -69,7 +69,7 @@ public class BooleanArray {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public BooleanArray (boolean ordered, boolean[] array, int startIndex, int count) {
-		this(ordered, array.length);
+		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
@@ -90,7 +90,7 @@ public class BooleanArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (boolean[] array) {
+	public void addAll (boolean... array) {
 		addAll(array, 0, array.length);
 	}
 
@@ -103,17 +103,17 @@ public class BooleanArray {
 	}
 
 	public boolean get (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
 
 	public void set (int index, boolean value) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
 
 	public void insert (int index, boolean value) {
-		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		boolean[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -125,8 +125,8 @@ public class BooleanArray {
 	}
 
 	public void swap (int first, int second) {
-		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
-		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
+		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
 		boolean[] items = this.items;
 		boolean firstValue = items[first];
 		items[first] = items[second];
@@ -135,7 +135,7 @@ public class BooleanArray {
 
 	/** Removes and returns the item at the specified index. */
 	public boolean removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		boolean[] items = this.items;
 		boolean value = items[index];
 		size--;
@@ -188,6 +188,7 @@ public class BooleanArray {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 

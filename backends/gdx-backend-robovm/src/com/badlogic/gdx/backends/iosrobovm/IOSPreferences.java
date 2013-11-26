@@ -1,19 +1,45 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.robovm.cocoatouch.foundation.NSBundle;
 import org.robovm.cocoatouch.foundation.NSMutableDictionary;
 import org.robovm.cocoatouch.foundation.NSNumber;
 import org.robovm.cocoatouch.foundation.NSObject;
 import org.robovm.cocoatouch.foundation.NSString;
+import org.robovm.objc.ObjCClass;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class IOSPreferences implements Preferences {
 
+	static {
+		// FIXME: Work around for a bug in RoboVM (https://github.com/robovm/robovm/issues/155).
+		//        These calls make sure NSNumber and NSString have been registered properly with the
+		//        RoboVM Objective-C bridge. Without them the get-methods below may throw ClassCastException.
+		ObjCClass.getByType(NSNumber.class);
+		ObjCClass.getByType(NSString.class);
+	}
+	
 	NSMutableDictionary<NSString, NSObject> nsDictionary;
 	String filePath;
 

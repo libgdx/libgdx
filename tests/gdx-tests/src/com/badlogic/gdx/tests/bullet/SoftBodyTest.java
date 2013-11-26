@@ -23,32 +23,28 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.IntAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.btAxisSweep3;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btSequentialImpulseConstraintSolver;
-import com.badlogic.gdx.physics.bullet.gdxBulletConstants;
-import com.badlogic.gdx.physics.bullet.btIDebugDraw.DebugDrawModes;
-import com.badlogic.gdx.physics.bullet.btSoftBody;
-import com.badlogic.gdx.physics.bullet.btSoftBodyHelpers;
-import com.badlogic.gdx.physics.bullet.btSoftBodyRigidBodyCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btSoftBodyWorldInfo;
-import com.badlogic.gdx.physics.bullet.btSoftRigidDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.collision.btAxisSweep3;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBody;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyHelpers;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyRigidBodyCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyWorldInfo;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftRigidDynamicsWorld;
 
 /** @author xoppa */
 public class SoftBodyTest extends BaseBulletTest {
@@ -122,6 +118,7 @@ public class SoftBodyTest extends BaseBulletTest {
 		model = ModelBuilder.createFromMesh(mesh, GL10.GL_TRIANGLES, 
 			new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f), IntAttribute.createCullFace(0)));
 		instance = new ModelInstance(model);
+		world.add(new BulletEntity(instance, null));
 	}
 	
 	@Override
@@ -146,11 +143,12 @@ public class SoftBodyTest extends BaseBulletTest {
 	protected void renderWorld () {
 		softBody.getVertices(mesh.getVerticesBuffer(), softBody.getNodeCount(), mesh.getVertexSize(), 0);
 		softBody.getWorldTransform(instance.transform);
+		super.renderWorld();
 		
-		modelBatch.begin(camera);
-		world.render(modelBatch, lights);
-		modelBatch.render(instance, lights);
-		modelBatch.end();
+//		modelBatch.begin(camera);
+//		world.render(modelBatch, lights);
+//		modelBatch.render(instance, lights);
+//		modelBatch.end();
 	}
 	
 	@Override

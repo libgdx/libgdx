@@ -1,46 +1,69 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.lights.PointLight;
-import com.badlogic.gdx.graphics.g3d.materials.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 public class ModelTest extends BaseG3dHudTest {
-	Lights lights = new Lights(0.4f, 0.4f, 0.4f).add(
-		//new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -.8f, -.2f)
-		new PointLight().set(1f, 0f, 0f, 5f, 5f, 5f, 20f),
-		new PointLight().set(0f, 0f, 1f, -5f, 5f, 5f, 15f),
-		new PointLight().set(0f, 1f, 0f, 0f, 5f, -5f, 7f)
-	);
+	Environment lights;
 	
 	ObjectMap<ModelInstance, AnimationController> animationControllers = new ObjectMap<ModelInstance, AnimationController>(); 
 
 	@Override
 	public void create () {
 		super.create();
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
+		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
+		
+		cam.position.set(1,1,1);
+		cam.lookAt(0,0,0);
+		cam.update();
 		showAxes = true;
-		//DefaultShader.defaultCullFace = 0;
+		
 		onModelClicked("g3d/teapot.g3db");
 	}
 
-	private final static Vector3 tmpV = new Vector3();
-	private final static Quaternion tmpQ = new Quaternion();
+	private final Vector3 tmpV = new Vector3();
+	private final Quaternion tmpQ = new Quaternion();
+	private final BoundingBox bounds = new BoundingBox();
 	@Override
 	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries())
@@ -70,7 +93,7 @@ public class ModelTest extends BaseG3dHudTest {
 		assets.load(currentlyLoading, Model.class);
 		loading = true;
 	}
-	
+
 	@Override
 	protected void onLoaded() {
 		if (currentlyLoading == null || currentlyLoading.isEmpty())
@@ -83,6 +106,13 @@ public class ModelTest extends BaseG3dHudTest {
 		if (instance.animations.size > 0)
 			animationControllers.put(instance, new AnimationController(instance));
 		currentlyLoading = null;
+		
+		instance.calculateBoundingBox(bounds);
+		cam.position.set(1,1,1).nor().scl(bounds.getDimensions().len() * 0.75f + bounds.getCenter().len());
+		cam.up.set(0,1,0);
+		cam.lookAt(0,0,0);
+		cam.far = bounds.getDimensions().len() * 2.0f;
+		cam.update();
 	}
 	
 	protected void switchAnimation() {
@@ -97,8 +127,8 @@ public class ModelTest extends BaseG3dHudTest {
 					}
 				}
 			}
-			animIndex = (animIndex + 1) % e.key.animations.size;
-			e.value.animate(e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
+			animIndex = (animIndex + 1) % (e.key.animations.size + 1);
+			e.value.animate((animIndex == e.key.animations.size) ? null : e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
 		}
 	}
 

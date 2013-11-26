@@ -80,6 +80,12 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
 
+	
+	public String getPreloaderBaseURL()
+	{
+		return GWT.getHostPageBaseURL() + "assets/";
+	}
+	
 	@Override
 	public void onModuleLoad () {
 		GwtApplication.agentInfo = computeAgentInfo();
@@ -215,7 +221,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	long loadStart = TimeUtils.nanoTime();
 
 	public Preloader createPreloader() {
-		return new Preloader();
+		return new Preloader(getPreloaderBaseURL());
 	}
 
 	public PreloaderCallback getPreloaderCallback () {
@@ -293,7 +299,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
 			checkLogLabel();
 			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
@@ -356,6 +362,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	@Override
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
+	}
+
+	@Override
+	public int getLogLevel() {
+		return logLevel;
 	}
 
 	@Override

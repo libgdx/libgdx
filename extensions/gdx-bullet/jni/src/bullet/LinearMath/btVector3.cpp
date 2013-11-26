@@ -19,9 +19,17 @@
 #define BT_USE_SSE_IN_API
 #endif
 
+
 #include "btVector3.h"
 
-#if defined (BT_USE_SSE) || defined (BT_USE_NEON)
+
+
+#if defined BT_USE_SIMD_VECTOR3
+
+#if DEBUG
+#include <string.h>//for memset
+#endif
+
 
 #ifdef __APPLE__
 #include <stdint.h>
@@ -43,7 +51,7 @@ long _maxdot_large( const float *vv, const float *vec, unsigned long count, floa
 long _maxdot_large( const float *vv, const float *vec, unsigned long count, float *dotResult )
 {
     const float4 *vertices = (const float4*) vv;
-    static const unsigned char indexTable[16] = {-1, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 };
+    static const unsigned char indexTable[16] = {(unsigned char)-1, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 };
     float4 dotMax = btAssign128( -BT_INFINITY,  -BT_INFINITY,  -BT_INFINITY,  -BT_INFINITY );
     float4 vvec = _mm_loadu_ps( vec );
     float4 vHi = btCastiTo128f(_mm_shuffle_epi32( btCastfTo128i( vvec), 0xaa ));          /// zzzz
@@ -428,7 +436,7 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
 long _mindot_large( const float *vv, const float *vec, unsigned long count, float *dotResult )
 {
     const float4 *vertices = (const float4*) vv;
-    static const unsigned char indexTable[16] = {-1, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 };
+    static const unsigned char indexTable[16] = {(unsigned char)-1, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0 };
     float4 dotmin = btAssign128( BT_INFINITY,  BT_INFINITY,  BT_INFINITY,  BT_INFINITY );
     float4 vvec = _mm_loadu_ps( vec );
     float4 vHi = btCastiTo128f(_mm_shuffle_epi32( btCastfTo128i( vvec), 0xaa ));          /// zzzz
@@ -815,7 +823,8 @@ long _mindot_large( const float *vv, const float *vec, unsigned long count, floa
 #elif defined BT_USE_NEON
 #define ARM_NEON_GCC_COMPATIBILITY  1
 #include <arm_neon.h>
-
+#include <sys/types.h>
+#include <sys/sysctl.h> //for sysctlbyname
 
 static long _maxdot_large_v0( const float *vv, const float *vec, unsigned long count, float *dotResult );
 static long _maxdot_large_v1( const float *vv, const float *vec, unsigned long count, float *dotResult );
@@ -827,11 +836,34 @@ static long _mindot_large_sel( const float *vv, const float *vec, unsigned long 
 long (*_maxdot_large)( const float *vv, const float *vec, unsigned long count, float *dotResult ) = _maxdot_large_sel;
 long (*_mindot_large)( const float *vv, const float *vec, unsigned long count, float *dotResult ) = _mindot_large_sel;
 
-extern "C" {int  _get_cpu_capabilities( void );}
+
+static inline uint32_t btGetCpuCapabilities( void )
+{
+    static uint32_t capabilities = 0;
+    static bool testedCapabilities = false;
+
+    if( 0 == testedCapabilities)
+    {
+        uint32_t hasFeature = 0;
+        size_t featureSize = sizeof( hasFeature );
+        int err = sysctlbyname( "hw.optional.neon_hpfp", &hasFeature, &featureSize, NULL, 0 );
+
+        if( 0 == err && hasFeature)
+            capabilities |= 0x2000;
+
+		testedCapabilities = true;
+    }
+    
+    return capabilities;
+}
+
+
+
 
 static long _maxdot_large_sel( const float *vv, const float *vec, unsigned long count, float *dotResult )
 {
-    if( _get_cpu_capabilities() & 0x2000 )
+
+    if( btGetCpuCapabilities() & 0x2000 )
         _maxdot_large = _maxdot_large_v1;
     else
         _maxdot_large = _maxdot_large_v0;
@@ -841,7 +873,8 @@ static long _maxdot_large_sel( const float *vv, const float *vec, unsigned long 
 
 static long _mindot_large_sel( const float *vv, const float *vec, unsigned long count, float *dotResult )
 {
-    if( _get_cpu_capabilities() & 0x2000 )
+
+    if( btGetCpuCapabilities() & 0x2000 )
         _mindot_large = _mindot_large_v1;
     else
         _mindot_large = _mindot_large_v0;
@@ -864,8 +897,8 @@ long _maxdot_large_v0( const float *vv, const float *vec, unsigned long count, f
     float32x2_t dotMaxHi = (float32x2_t) { -BT_INFINITY, -BT_INFINITY };
     uint32x2_t indexLo = (uint32x2_t) {0, 1};
     uint32x2_t indexHi = (uint32x2_t) {2, 3};
-    uint32x2_t iLo = (uint32x2_t) {-1, -1};
-    uint32x2_t iHi = (uint32x2_t) {-1, -1};
+    uint32x2_t iLo = (uint32x2_t) {static_cast<uint32_t>(-1), static_cast<uint32_t>(-1)};
+    uint32x2_t iHi = (uint32x2_t) {static_cast<uint32_t>(-1), static_cast<uint32_t>(-1)};
     const uint32x2_t four = (uint32x2_t) {4,4};
 
     for( ; i+8 <= count; i+= 8 )
@@ -1051,7 +1084,7 @@ long _maxdot_large_v1( const float *vv, const float *vec, unsigned long count, f
     float32x4_t vHi = vdupq_lane_f32(vget_high_f32(vvec), 0);
     const uint32x4_t four = (uint32x4_t){ 4, 4, 4, 4 };
     uint32x4_t local_index = (uint32x4_t) {0, 1, 2, 3};
-    uint32x4_t index = (uint32x4_t) { -1, -1, -1, -1 };
+    uint32x4_t index = (uint32x4_t) { static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), static_cast<uint32_t>(-1) };
     float32x4_t maxDot = (float32x4_t) { -BT_INFINITY, -BT_INFINITY, -BT_INFINITY, -BT_INFINITY };
     
     unsigned long i = 0;
@@ -1249,8 +1282,8 @@ long _mindot_large_v0( const float *vv, const float *vec, unsigned long count, f
     float32x2_t dotMinHi = (float32x2_t) { BT_INFINITY, BT_INFINITY };
     uint32x2_t indexLo = (uint32x2_t) {0, 1};
     uint32x2_t indexHi = (uint32x2_t) {2, 3};
-    uint32x2_t iLo = (uint32x2_t) {-1, -1};
-    uint32x2_t iHi = (uint32x2_t) {-1, -1};
+    uint32x2_t iLo = (uint32x2_t) {static_cast<uint32_t>(-1), static_cast<uint32_t>(-1)};
+    uint32x2_t iHi = (uint32x2_t) {static_cast<uint32_t>(-1), static_cast<uint32_t>(-1)};
     const uint32x2_t four = (uint32x2_t) {4,4};
     
     for( ; i+8 <= count; i+= 8 )
@@ -1434,7 +1467,7 @@ long _mindot_large_v1( const float *vv, const float *vec, unsigned long count, f
     float32x4_t vHi = vdupq_lane_f32(vget_high_f32(vvec), 0);
     const uint32x4_t four = (uint32x4_t){ 4, 4, 4, 4 };
     uint32x4_t local_index = (uint32x4_t) {0, 1, 2, 3};
-    uint32x4_t index = (uint32x4_t) { -1, -1, -1, -1 };
+    uint32x4_t index = (uint32x4_t) { static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), static_cast<uint32_t>(-1), static_cast<uint32_t>(-1) };
     float32x4_t minDot = (float32x4_t) { BT_INFINITY, BT_INFINITY, BT_INFINITY, BT_INFINITY };
     
     unsigned long i = 0;

@@ -1,8 +1,8 @@
 package de.swagner.paxbritannica.mainmenu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -102,12 +102,12 @@ public class FactorySelector extends Sprite {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		
 		
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 		
-		super.draw(spriteBatch);
+		super.draw(batch);
 		
 		collisionMinVector.set(this.getVertices()[0], this.getVertices()[1], -10);
 		collisionMaxVector.set(this.getVertices()[10], this.getVertices()[11], 10);
@@ -130,17 +130,17 @@ public class FactorySelector extends Sprite {
 		float color = fade * pulse + 1 * (1-pulse);
 				
 		if(picked && !(playerSelect || cpuSelect)) {
-			button.draw(spriteBatch);
+			button.draw(batch);
 			button.setColor(0.2f, 0.2f, 0.2f, 1);
 		} else {
 			if(playerSelect) {
-				aPlayerButton.draw(spriteBatch);
+				aPlayerButton.draw(batch);
 				aPlayerButton.setColor(color, color, color, 1);
 			} else if(cpuSelect) {
-				aCpuButton.draw(spriteBatch);
+				aCpuButton.draw(batch);
 				aCpuButton.setColor(color, color, color, 1);
 			} else {
-				button.draw(spriteBatch);
+				button.draw(batch);
 				button.setColor(color, color, color, 1);
 			}
 		}
@@ -151,10 +151,10 @@ public class FactorySelector extends Sprite {
 			
 		    fadeButton = Math.min(fadeButton +delta, 1);
 			cpuButton.setColor(fadeButton, fadeButton, fadeButton, 1);
-		    cpuButton.draw(spriteBatch);
+		    cpuButton.draw(batch);
 		    
 			playerButton.setColor(fadeButton, fadeButton, fadeButton, 1);
-		    playerButton.draw(spriteBatch);
+		    playerButton.draw(batch);
 
 		} else if(playerSelect || cpuSelect) {
 		    fade = Math.min(fade +delta, 1);
@@ -163,18 +163,18 @@ public class FactorySelector extends Sprite {
 			fadeButton = Math.max(fadeButton -delta, 0);
 			if(cpuSelect) {
 				cpuButton.setColor(0, 0, 0, fadeButton);
-			    cpuButton.draw(spriteBatch);
+			    cpuButton.draw(batch);
 			} else {
 				cpuButton.setColor(fadeButton, fadeButton, fadeButton, fadeButton);
-			    cpuButton.draw(spriteBatch);
+			    cpuButton.draw(batch);
 			}
 		    
 			if(playerSelect) {
 				playerButton.setColor(0, 0, 0, fadeButton);
-			    playerButton.draw(spriteBatch);
+			    playerButton.draw(batch);
 			} else {
 				playerButton.setColor(fadeButton, fadeButton, fadeButton, fadeButton);
-			    playerButton.draw(spriteBatch);
+			    playerButton.draw(batch);
 			}
 		}
 

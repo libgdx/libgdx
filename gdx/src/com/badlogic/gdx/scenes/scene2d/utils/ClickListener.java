@@ -39,6 +39,8 @@ public class ClickListener extends InputListener {
 	private int tapCount;
 	private long lastTapTime;
 
+	/** Create a listener where {@link #clicked(InputEvent, float, float)} is only called for left clicks.
+	 * @see #ClickListener(int) */
 	public ClickListener () {
 	}
 
@@ -55,6 +57,7 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
+		over = false;
 		return true;
 	}
 

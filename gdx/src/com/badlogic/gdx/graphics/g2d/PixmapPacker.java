@@ -85,6 +85,7 @@ import com.badlogic.gdx.utils.OrderedMap;
  * packer.dispose();
  * </pre> */
 public class PixmapPacker implements Disposable {
+	
 	static final class Node {
 		public Node leftChild;
 		public Node rightChild;
@@ -283,6 +284,17 @@ public class PixmapPacker implements Disposable {
 		}
 		return null;
 	}
+	
+	/** Returns the index of the page containing the given packed rectangle.
+	 * @param name the name of the image
+	 * @return the index of the page the image is stored in or -1 */
+	public synchronized int getPageIndex (String name) {
+		for (int i=0; i<pages.size; i++) {
+			Rectangle rect = pages.get(i).rects.get(name);
+			if (rect != null) return i;
+		}
+		return -1;
+	}
 
 	/** Disposes all resources, including Pixmap instances for the pages created so far. These page Pixmap instances are shared with
 	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
@@ -303,7 +315,7 @@ public class PixmapPacker implements Disposable {
 		TextureAtlas atlas = new TextureAtlas();
 		for (Page page : pages) {
 			if (page.rects.size != 0) {
-				Texture texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+				Texture texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, true)) {
 					@Override
 					public void dispose () {
 						super.dispose();
@@ -331,7 +343,7 @@ public class PixmapPacker implements Disposable {
 		for (Page page : pages) {
 			if (page.texture == null) {
 				if (page.rects.size != 0 && page.addedRects.size > 0) {
-					page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+					page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, true)) {
 						@Override
 						public void dispose () {
 							super.dispose();
@@ -376,18 +388,8 @@ public class PixmapPacker implements Disposable {
 		return padding;
 	}
 
-	public boolean duplicateBoarder () {
+	public boolean duplicateBorder () {
 		return duplicateBorder;
 	}
 
-	public class ManagedPixmapTextureData extends PixmapTextureData {
-		public ManagedPixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps) {
-			super(pixmap, format, useMipMaps, false);
-		}
-
-		@Override
-		public boolean isManaged () {
-			return true;
-		}
-	}
 }

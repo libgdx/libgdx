@@ -24,8 +24,10 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
@@ -60,9 +62,8 @@ public class Stage extends InputAdapter implements Disposable {
 	private float viewportX, viewportY, viewportWidth, viewportHeight;
 	private float width, height;
 	private float gutterWidth, gutterHeight;
-	private float centerX, centerY;
 	private Camera camera;
-	private final SpriteBatch batch;
+	private final Batch batch;
 	private final boolean ownsBatch;
 	private final Group root;
 	private final Vector2 stageCoords = new Vector2();
@@ -76,25 +77,30 @@ public class Stage extends InputAdapter implements Disposable {
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 
 	/** Creates a stage with a {@link #setViewport(float, float, boolean) viewport} equal to the device screen resolution. The stage
-	 * will use its own {@link SpriteBatch}. */
+	 * will use its own {@link Batch}. */
 	public Stage () {
 		this(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, null);
 	}
 
+	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} that doesn't keep the aspect ratio.
+	 * The stage will use its own {@link Batch}, which will be disposed when the stage is disposed. */
+	public Stage (float width, float height) {
+		this(width, height, false, null);
+	}
+
 	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport}. The stage will use its own
-	 * {@link SpriteBatch}, which will be disposed when the stage is disposed. */
+	 * {@link Batch}, which will be disposed when the stage is disposed. */
 	public Stage (float width, float height, boolean keepAspectRatio) {
 		this(width, height, keepAspectRatio, null);
 	}
 
-	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link SpriteBatch}. This can be
-	 * used to avoid creating a new SpriteBatch (which can be somewhat slow) if multiple stages are used during an applications
-	 * life time.
+	/** Creates a stage with the specified {@link #setViewport(float, float, boolean) viewport} and {@link Batch}. This can be used
+	 * to avoid creating a new Batch (which can be somewhat slow) if multiple stages are used during an applications life time.
 	 * @param batch Will not be disposed if {@link #dispose()} is called. Handle disposal yourself. */
-	public Stage (float width, float height, boolean keepAspectRatio, SpriteBatch batch) {
+	public Stage (float width, float height, boolean keepAspectRatio, Batch batch) {
 		ownsBatch = batch == null;
 		this.batch = ownsBatch ? new SpriteBatch() : batch;
- 
+
 		this.width = width;
 		this.height = height;
 
@@ -103,6 +109,12 @@ public class Stage extends InputAdapter implements Disposable {
 
 		camera = new OrthographicCamera();
 		setViewport(width, height, keepAspectRatio);
+	}
+
+	/** Sets up the stage size using a viewport that fills the entire screen without keeping the aspect ratio.
+	 * @see #setViewport(float, float, boolean, float, float, float, float) */
+	public void setViewport (float width, float height) {
+		setViewport(width, height, false, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	/** Sets up the stage size using a viewport that fills the entire screen.
@@ -156,9 +168,8 @@ public class Stage extends InputAdapter implements Disposable {
 			gutterHeight = 0;
 		}
 
-		centerX = this.width / 2;
-		centerY = this.height / 2;
-
+		float centerX = this.width / 2;
+		float centerY = this.height / 2;
 		camera.position.set(centerX, centerY, 0);
 		camera.viewportWidth = this.width;
 		camera.viewportHeight = this.height;
@@ -243,6 +254,9 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+		if (screenX < viewportX || screenX >= viewportX + viewportWidth) return false;
+		if (screenY < viewportY || screenY >= viewportY + viewportHeight) return false;
+
 		pointerTouched[pointer] = true;
 		pointerScreenX[pointer] = screenX;
 		pointerScreenY[pointer] = screenY;
@@ -339,6 +353,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
 	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
+		if (screenX < viewportX || screenX >= viewportX + viewportWidth) return false;
+		if (screenY < viewportY || screenY >= viewportY + viewportHeight) return false;
+
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
 
@@ -447,9 +464,9 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Sends a touchUp event to all listeners that are registered to receive touchDragged and touchUp events and removes their
-	 * touch focus. The location of the touchUp is {@link Integer#MIN_VALUE}. This method removes all touch focus listeners, but
-	 * sends a touchUp event so that the state of the listeners remains consistent (listeners typically expect to receive touchUp
-	 * eventually). */
+	 * touch focus. This method removes all touch focus listeners, but sends a touchUp event so that the state of the listeners
+	 * remains consistent (listeners typically expect to receive touchUp eventually). The location of the touchUp is
+	 * {@link Integer#MIN_VALUE}. Listeners can use {@link InputEvent#isTouchFocusCancel()} to ignore this event if needed. */
 	public void cancelTouchFocus () {
 		cancelTouchFocus(null, null);
 	}
@@ -631,7 +648,7 @@ public class Stage extends InputAdapter implements Disposable {
 		return gutterHeight;
 	}
 
-	public SpriteBatch getSpriteBatch () {
+	public Batch getSpriteBatch () {
 		return batch;
 	}
 
@@ -641,7 +658,7 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Sets the stage's camera. The camera must be configured properly or {@link #setViewport(float, float, boolean)} can be called
 	 * after the camera is set. {@link Stage#draw()} will call {@link Camera#update()} and use the {@link Camera#combined} matrix
-	 * for the SpriteBatch {@link SpriteBatch#setProjectionMatrix(com.badlogic.gdx.math.Matrix4) projection matrix}. */
+	 * for the Batch {@link Batch#setProjectionMatrix(com.badlogic.gdx.math.Matrix4) projection matrix}. */
 	public void setCamera (Camera camera) {
 		this.camera = camera;
 	}
@@ -680,12 +697,17 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	/** Transforms the coordinates to screen coordinates. The coordinates can be anywhere in the stage since the transform matrix
-	 * describes how to convert them. The transform matrix is typically obtained from {@link SpriteBatch#getTransformMatrix()}
-	 * during {@link Actor#draw(SpriteBatch, float)}.
+	 * describes how to convert them. The transform matrix is typically obtained from {@link Batch#getTransformMatrix()} during
+	 * {@link Actor#draw(Batch, float)}.
 	 * @see Actor#localToStageCoordinates(Vector2) */
 	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
 		ScissorStack.toWindowCoordinates(camera, transformMatrix, coords);
 		return coords;
+	}
+
+	public void calculateScissors (Rectangle area, Rectangle scissor) {
+		ScissorStack.calculateScissors(camera, viewportX, viewportY, viewportWidth, viewportHeight, batch.getTransformMatrix(),
+			area, scissor);
 	}
 
 	public void dispose () {

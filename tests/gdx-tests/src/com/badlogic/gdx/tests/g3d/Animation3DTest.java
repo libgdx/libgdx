@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
@@ -6,19 +22,21 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
@@ -33,14 +51,20 @@ public class Animation3DTest extends BaseG3dHudTest {
 	Model floorModel;
 	ModelInstance character;
 	AnimationController animation;
+	DirectionalShadowLight shadowLight;
+	ModelBatch shadowBatch;
 	
-	Lights lights = new Lights(0.4f, 0.4f, 0.4f).add(
-		new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -.8f, -.2f)
-	);
+	Environment lights;
 
 	@Override
 	public void create () {
 		super.create();
+		lights = new Environment();
+		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
+		lights.add(
+			(shadowLight = new DirectionalShadowLight(1024, 1024, 30f, 30f, 1f, 100f)).set(0.8f, 0.8f, 0.8f, -1f, -.8f, -.2f)
+		);
+		lights.shadowMap = shadowLight;
 		inputController.rotateLeftKey = inputController.rotateRightKey = inputController.forwardKey = inputController.backwardKey = 0;
 		cam.position.set(25, 25, 25);
 		cam.lookAt(0, 0, 0);
@@ -63,6 +87,8 @@ public class Animation3DTest extends BaseG3dHudTest {
 			}
 		}
 		floorModel = builder.end();
+		
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
 	}
 
 	final AnimationController.Transform trTmp = new AnimationController.Transform();
@@ -71,6 +97,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	final AnimationController.Transform trRight = new AnimationController.Transform();
 	final AnimationController.Transform trLeft = new AnimationController.Transform();
 	final Matrix4 tmpMatrix = new Matrix4();
+	final Vector3 tmpVector = new Vector3();
 	int status = 0;
 	final static int idle = 1;
 	final static int walk = 2;
@@ -78,7 +105,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 	final static int attack = 4;
 	float angle = 0f;
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	public void render () {
 		if (character != null) {
 			animation.update(Gdx.graphics.getDeltaTime());
 			if (upKey) {
@@ -114,6 +141,20 @@ public class Animation3DTest extends BaseG3dHudTest {
 				animation.action("Attack", 1, 1f, null, 0.2f);
 			}
 		}
+		
+		if (character != null) {
+			shadowLight.begin(character.transform.getTranslation(tmpVector), cam.direction);
+			shadowBatch.begin(shadowLight.getCamera());
+			if (character != null)
+				shadowBatch.render(character);
+			shadowBatch.end();
+			shadowLight.end();
+		}
+		super.render();
+	}
+	
+	@Override
+	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
 		batch.render(instances, lights);
 		if (skydome != null)
 			batch.render(skydome);
@@ -191,5 +232,6 @@ public class Animation3DTest extends BaseG3dHudTest {
 	public void dispose () {
 		super.dispose();
 		floorModel.dispose();
+		shadowLight.dispose();
 	}
 }

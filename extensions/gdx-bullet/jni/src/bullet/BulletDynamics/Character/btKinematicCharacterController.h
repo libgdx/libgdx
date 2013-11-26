@@ -81,6 +81,9 @@ protected:
 	int m_upAxis;
 
 	static btVector3* getUpAxisDirections();
+	bool  m_interpolateUp;
+	bool  full_drop;
+	bool  bounce_fix;
 
 	btVector3 computeReflectionDirection (const btVector3& direction, const btVector3& normal);
 	btVector3 parallelComponent (const btVector3& direction, const btVector3& normal);
@@ -133,7 +136,7 @@ public:
 	virtual void setVelocityForTimeInterval(const btVector3& velocity,
 				btScalar timeInterval);
 
-	void reset ();
+	void reset ( btCollisionWorld* collisionWorld );
 	void warp (const btVector3& origin);
 
 	void preStep (  btCollisionWorld* collisionWorld);
@@ -161,6 +164,7 @@ public:
 	}
 
 	bool onGround () const;
+	void setUpInterpolate (bool value);
 };
 
 #endif // BT_KINEMATIC_CHARACTER_CONTROLLER_H

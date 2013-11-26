@@ -22,23 +22,19 @@ class btConvexPenetrationDepthSolver;
 
 struct	btDefaultCollisionConstructionInfo
 {
-	btStackAlloc*		m_stackAlloc;
 	btPoolAllocator*	m_persistentManifoldPool;
 	btPoolAllocator*	m_collisionAlgorithmPool;
 	int					m_defaultMaxPersistentManifoldPoolSize;
 	int					m_defaultMaxCollisionAlgorithmPoolSize;
 	int					m_customCollisionAlgorithmMaxElementSize;
-	int					m_defaultStackAllocatorSize;
 	int					m_useEpaPenetrationAlgorithm;
 
 	btDefaultCollisionConstructionInfo()
-		:m_stackAlloc(0),
-		m_persistentManifoldPool(0),
+		:m_persistentManifoldPool(0),
 		m_collisionAlgorithmPool(0),
 		m_defaultMaxPersistentManifoldPoolSize(4096),
 		m_defaultMaxCollisionAlgorithmPoolSize(4096),
 		m_customCollisionAlgorithmMaxElementSize(0),
-		m_defaultStackAllocatorSize(0),
 		m_useEpaPenetrationAlgorithm(true)
 	{
 	}
@@ -56,8 +52,6 @@ protected:
 
 	int	m_persistentManifoldPoolSize;
 	
-	btStackAlloc*	m_stackAlloc;
-	bool	m_ownsStackAllocator;
 
 	btPoolAllocator*	m_persistentManifoldPool;
 	bool	m_ownsPersistentManifoldPool;
@@ -75,6 +69,8 @@ protected:
 	btCollisionAlgorithmCreateFunc*	m_convexConcaveCreateFunc;
 	btCollisionAlgorithmCreateFunc*	m_swappedConvexConcaveCreateFunc;
 	btCollisionAlgorithmCreateFunc*	m_compoundCreateFunc;
+	btCollisionAlgorithmCreateFunc*	m_compoundCompoundCreateFunc;
+	
 	btCollisionAlgorithmCreateFunc*	m_swappedCompoundCreateFunc;
 	btCollisionAlgorithmCreateFunc* m_emptyCreateFunc;
 	btCollisionAlgorithmCreateFunc* m_sphereSphereCF;
@@ -105,10 +101,6 @@ public:
 		return m_collisionAlgorithmPool;
 	}
 
-	virtual btStackAlloc*	getStackAllocator()
-	{
-		return m_stackAlloc;
-	}
 
 	virtual	btVoronoiSimplexSolver*	getSimplexSolver()
 	{

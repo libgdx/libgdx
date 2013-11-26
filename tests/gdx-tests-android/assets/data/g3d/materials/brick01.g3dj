@@ -1,0 +1,26 @@
+{
+	"version": [  0,   1], 
+	"id": "", 
+	"meshes": [], 
+	"materials": [
+		{
+			"id": "brick_01", 
+			"diffuse": [ 1.000000,  1.000000,  1.000000], 
+			"specular": [ 0.900000,  0.900000,  0.900000], 
+			"textures": [
+				{
+					"id": "brick_diffuse_01", 
+					"filename": "brick_diffuse_01.png", 
+					"type": "DIFFUSE"
+				}, 
+				{
+					"id": "brick_normal_01", 
+					"filename": "brick_normal_01.png", 
+					"type": "NORMAL"
+				}
+			]
+		}
+	],
+	"nodes": [], 
+	"animations": []
+}

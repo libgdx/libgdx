@@ -20,8 +20,8 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> matrix; useful for 2D transforms.
- * 
+/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> matrix; useful for 2D transforms.
+ *
  * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
@@ -61,8 +61,8 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Multiplies this matrix with the provided matrix and stores the result in this matrix. For example:
-	 * 
+	/** Postmultiplies this matrix with the provided matrix and stores the result in this matrix. For example:
+	 *
 	 * <pre>
 	 * A.mul(B) results in A := AB
 	 * </pre>
@@ -94,7 +94,7 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise order around the z-axis.
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
 	 * @param degrees the angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
@@ -186,7 +186,8 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Inverts this matrix given that the determinant is != 0.
-	 * @return This matrix for the purpose of chaining operations. */
+	 * @return This matrix for the purpose of chaining operations.
+	 * @throws GdxRuntimeException if the matrix is singular (not invertible) */
 	public Matrix3 inv () {
 		float det = det();
 		if (det == 0) throw new GdxRuntimeException("Can't invert a singular matrix");
@@ -311,13 +312,13 @@ public class Matrix3 implements Serializable {
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale.
-	 * @param angle The angle in degrees
+	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
-	public Matrix3 rotate (float angle) {
-		if (angle == 0) return this;
-		angle = DEGREE_TO_RAD * angle;
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+	public Matrix3 rotate (float degrees) {
+		if (degrees == 0) return this;
+		degrees = DEGREE_TO_RAD * degrees;
+		float cos = (float)Math.cos(degrees);
+		float sin = (float)Math.sin(degrees);
 
 		tmp[M00] = cos;
 		tmp[M10] = sin;

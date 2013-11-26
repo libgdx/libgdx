@@ -105,16 +105,17 @@ public class ScissorStack {
 	 * @param batchTransform the transformation {@link Matrix4}
 	 * @param area the {@link Rectangle} to transform to window coordinates
 	 * @param scissor the Rectangle to store the result in */
-	public static void calculateScissors (Camera camera, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
+	public static void calculateScissors (Camera camera, float viewportX, float viewportY, float viewportWidth,
+		float viewportHeight, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
 		tmp.set(area.x, area.y, 0);
 		tmp.mul(batchTransform);
-		camera.project(tmp);
+		camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
 		scissor.x = tmp.x;
 		scissor.y = tmp.y;
 
 		tmp.set(area.x + area.width, area.y + area.height, 0);
 		tmp.mul(batchTransform);
-		camera.project(tmp);
+		camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
 		scissor.width = tmp.x - scissor.x;
 		scissor.height = tmp.y - scissor.y;
 	}

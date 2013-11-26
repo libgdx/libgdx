@@ -1,8 +1,8 @@
 package de.swagner.paxbritannica.particlesystem;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
@@ -27,7 +27,7 @@ public class ParticleEmitter extends Sprite {
 	float delta;
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 		
 		this.setOrigin(0,0);
@@ -41,7 +41,7 @@ public class ParticleEmitter extends Sprite {
 				this.setScale(particle.scale);
 				this.setPosition(particle.position.x -dx, particle.position.y -dy);
 				if(!(particle.position.y -dy>=-10 && particle.position.y -dy<=10) && !(particle.position.x -dx>=-10 && particle.position.x -dx<=10)) {
-					super.draw(spriteBatch);
+					super.draw(batch);
 				} else {
 					particle.life = 0;
 				}

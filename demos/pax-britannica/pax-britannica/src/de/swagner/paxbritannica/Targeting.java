@@ -108,10 +108,6 @@ public class Targeting {
 
 	/**
 	 * return a random ship of the desired type that's in range
-	 * @param source
-	 * @param ships
-	 * @param range
-	 * @return
 	 */
 	private static Ship getTypeInRange(Ship source, Array<Ship> ships, float range) {
 		Array<Ship> shipsInRange = new Array<Ship>();

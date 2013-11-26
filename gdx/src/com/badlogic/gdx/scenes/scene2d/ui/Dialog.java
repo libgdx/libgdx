@@ -61,6 +61,7 @@ public class Dialog extends Window {
 
 	public Dialog (String title, Skin skin, String windowStyleName) {
 		super(title, skin.get(windowStyleName, WindowStyle.class));
+		setSkin(skin);
 		this.skin = skin;
 		initialize();
 	}

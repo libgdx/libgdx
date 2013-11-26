@@ -4,20 +4,13 @@
   <parent>
     <groupId>com.badlogicgames.gdx</groupId>
     <artifactId>gdx-parent</artifactId>
-    <version>0.9.9-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <artifactId>gdx-openal</artifactId>
   <packaging>jar</packaging>
   <name>libGDX OpenAL Support</name>
-
-  <repositories>
-    <repository>
-      <id>ooo-ext-repo</id>
-      <url>http://ooo-maven.googlecode.com/hg/repository</url>
-    </repository>
-  </repositories>
 
   <dependencies>
     <dependency>
@@ -36,21 +29,14 @@
       <groupId>com.badlogicgames.jlayer</groupId>
       <artifactId>jlayer</artifactId>
       <version>1.0.1-gdx</version>
-      <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>com.jcraft</groupId>
-      <artifactId>jorbis</artifactId>
-      <version>0.0.15</version>
-      <optional>true</optional>
+        <groupId>org.jcraft</groupId>
+        <artifactId>jorbis</artifactId>
+        <version>0.0.17</version>
     </dependency>
-    <dependency>
-      <groupId>com.jcraft</groupId>
-      <artifactId>jogg</artifactId>
-      <version>0.0.7</version>
-      <optional>true</optional>
-    </dependency>
+
   </dependencies>
 
   <build>

@@ -15,16 +15,19 @@
  ******************************************************************************/
 package aurelienribon.gdxsetupui;
 
-import aurelienribon.utils.XmlUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.xml.xpath.XPathConstants;
+
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import aurelienribon.utils.XmlUtils;
 
 /**
  * @author Aurelien Ribon | http://www.aurelienribon.com/
@@ -66,8 +69,8 @@ public class Helper {
 		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixHtml + "/", true);
 	}
 	
-	public static String getIosPrjPath (ProjectUpdateConfiguration cfg) {
-		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixIos + "/", true);
+	public static String getRobovmPrjPath (ProjectUpdateConfiguration cfg) {
+		return FilenameUtils.normalize(cfg.destinationPath + "/" + cfg.projectName + cfg.suffixRobovm + "/", true);
 	}
 
 	// -------------------------------------------------------------------------

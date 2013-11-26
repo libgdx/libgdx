@@ -102,7 +102,9 @@ public class AntScriptGenerator {
 					buildFiles.add(buildFileName);
 				} 
 				sharedLibFiles.add(getSharedLibFilename(target.os, target.is64Bit, config.sharedLibName));
-				libsDirs.add("../" + libsDir.path().replace('\\', '/'));
+				if(target.os != TargetOs.Android && target.os != TargetOs.IOS) {
+					libsDirs.add("../" + libsDir.path().replace('\\', '/'));
+				}
 			}
 		}
 

@@ -18,10 +18,10 @@ package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.InternalTickCallback;
-import com.badlogic.gdx.physics.bullet.btCollisionObjectArray;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectArray;
+import com.badlogic.gdx.physics.bullet.dynamics.InternalTickCallback;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 /** @author xoppa */
 public class InternalTickTest extends BaseBulletTest {

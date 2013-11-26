@@ -40,6 +40,7 @@ libgdx-*.zip
 #core & extension libs/ folders that have no 3rd party dependencies in them
 /gdx/libs
 /backends/gdx-backend-jglfw/libs/
+/backends/gdx-backend-robovm/libs/
 /extensions/gdx-audio/libs/
 /extensions/gdx-bullet/libs/
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/

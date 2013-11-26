@@ -52,7 +52,7 @@ public:
 	int			m_curIter;
 	int			m_degenerateSimplex;
 	int			m_catchDegeneracies;
-
+	int			m_fixContactNormalDirection;
 
 	btGjkPairDetector(const btConvexShape* objectA,const btConvexShape* objectB,btSimplexSolverInterface* simplexSolver,btConvexPenetrationDepthSolver*	penetrationDepthSolver);
 	btGjkPairDetector(const btConvexShape* objectA,const btConvexShape* objectB,int shapeTypeA,int shapeTypeB,btScalar marginA, btScalar marginB, btSimplexSolverInterface* simplexSolver,btConvexPenetrationDepthSolver*	penetrationDepthSolver);

@@ -447,4 +447,29 @@ public class Quaternion implements Serializable {
 		this.w *= scalar;
 		return this;
 	}
+	
+	/**
+	 * Get the angle and the axis of rotation
+	 * @param axis axis to get
+	 * @return the angle
+	 */
+	public float getAxisAngle(Vector3 axis) {
+		//source : http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
+      if (this.w > 1)
+      	this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
+      float angle = (float) (2.0 * Math.acos(this.w));
+      double s = Math.sqrt(1 - this.w * this.w); // assuming quaternion normalised then w is less than 1, so term always positive.
+      if (s < NORMALIZATION_TOLERANCE) { // test to avoid divide by zero, s is always positive due to sqrt
+              // if s close to zero then direction of axis not important
+              axis.x = this.x; // if it is important that axis is normalised then replace with x=1; y=z=0;
+              axis.y = this.y;
+              axis.z = this.z;
+      } else {
+              axis.x = (float) (this.x / s); // normalise axis
+              axis.y = (float) (this.y / s);
+              axis.z = (float) (this.z / s);
+      }
+
+      return MathUtils.radiansToDegrees * angle;
+	}
 }

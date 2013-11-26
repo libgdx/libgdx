@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import org.robovm.cocoatouch.coregraphics.CGPoint;
@@ -10,6 +26,9 @@ import org.robovm.cocoatouch.glkit.GLKViewController;
 import org.robovm.cocoatouch.glkit.GLKViewControllerDelegate;
 import org.robovm.cocoatouch.glkit.GLKViewDelegate;
 import org.robovm.cocoatouch.glkit.GLKViewDrawableColorFormat;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableDepthFormat;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableMultisample;
+import org.robovm.cocoatouch.glkit.GLKViewDrawableStencilFormat;
 import org.robovm.cocoatouch.opengles.EAGLContext;
 import org.robovm.cocoatouch.opengles.EAGLRenderingAPI;
 import org.robovm.cocoatouch.uikit.UIDevice;
@@ -57,10 +76,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 			CGSize bounds = app.getBounds(this);
 			graphics.width = (int) bounds.width();
 			graphics.height = (int) bounds.height();
-			graphics.makeCurrent(); // not sure if that's needed? badlogic: yes
-									// it is, so resize can do OpenGL stuff, not
-									// sure if
-			// it's on the correct thread though
+			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
 		}
 
@@ -115,17 +131,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 	volatile boolean paused;
 	boolean wasPaused;
 
+	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics(CGSize bounds, IOSApplication app, IOSInput input,
-			GL20 gl20) {
+	public IOSGraphics(CGSize bounds, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+		this.config = config;
 		// setup view and OpenGL
 		width = (int) bounds.width();
 		height = (int) bounds.height();
-		app.debug(tag, bounds.width() + "x" + bounds.height() + ", "
-				+ UIScreen.getMainScreen().getScale());
+		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + UIScreen.getMainScreen().getScale());
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
@@ -162,19 +178,42 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 		};
 		view.setDelegate(this);
-		view.setDrawableColorFormat(GLKViewDrawableColorFormat.RGB565);
+		view.setDrawableColorFormat(config.colorFormat);
+		view.setDrawableDepthFormat(config.depthFormat);
+		view.setDrawableStencilFormat(config.stencilFormat);
+		view.setDrawableMultisample(config.multisample);
+		view.setMultipleTouchEnabled(true);
 
 		viewController = new IOSUIViewController(app, this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
-		viewController.setPreferredFramesPerSecond(60);
+		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
 
 		this.app = app;
 		this.input = input;
 
 		// FIXME fix this if we add rgba/depth/stencil flags to
 		// IOSApplicationConfiguration
-		bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
+		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
+		if(config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
+			r = 5; g = 6; b = 5; a = 0;
+		} else {
+			r = g = b = a = 8;
+		}
+		if(config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
+			depth = 16;
+		} else if (config.depthFormat == GLKViewDrawableDepthFormat.Format24) {
+			depth = 24;
+		} else {
+			depth = 0;
+		}
+		if(config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
+			stencil = 8;
+		}
+		if(config.multisample == GLKViewDrawableMultisample.Sample4X) {
+			samples = 4;
+		}
+		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
 		this.gl20 = gl20;
 
 		// determine display density and PPI (PPI values via Wikipedia!)
@@ -183,11 +222,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		// if ((UIScreen.getMainScreen().respondsToSelector(new
 		// Selector("scale")))) {
 		float scale = UIScreen.getMainScreen().getScale();
-		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: "
-				+ scale);
-		if (scale == 2f)
-			density = 2f;
-		// }
+		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
+		if (scale == 2f) density = 2f;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -200,7 +236,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		ppiX = ppi;
 		ppiY = ppi;
 		ppcX = ppiX / 2.54f;
-		ppcY = ppcY / 2.54f;
+		ppcY = ppiY / 2.54f;
 		app.debug(tag, "Display: ppi=" + ppi + ", density=" + density);
 
 		// time + FPS
@@ -265,9 +301,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		}
 
 		makeCurrent();
-		((IOSInput) Gdx.input).processEvents();
+		input.processEvents();
 		app.listener.render();
-		// SwapBuffers();
 	}
 
 	void makeCurrent() {
@@ -288,17 +323,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 			resume();
 		}
 	}
-
-	// @Override
-	// protected void OnResize (EventArgs event) {
-	// super.OnResize(event);
-	//
-	// // not used on iOS
-	// // FIXME resize could happen if app supports both portrait and landscape,
-	// so this should be implemented
-	// Gdx.app.debug("IOSGraphics",
-	// "iOS OnResize(...) is not implement (don't think it is needed?).");
-	// }
 
 	@Override
 	public boolean isGL11Available() {
@@ -402,10 +426,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 	@Override
 	public DisplayMode getDesktopDisplayMode() {
-		return new IOSDisplayMode(getWidth(), getHeight(), 60, 0);
+		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
 	}
 
-	private static class IOSDisplayMode extends DisplayMode {
+	private class IOSDisplayMode extends DisplayMode {
 		protected IOSDisplayMode(int width, int height, int refreshRate,
 				int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);

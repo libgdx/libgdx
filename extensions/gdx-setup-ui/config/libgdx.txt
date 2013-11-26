@@ -22,10 +22,10 @@ http://libgdx.badlogicgames.com/
 http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/libgdx-logo.png
 
 [stable-version]
-0.9.8
+0.9.9
 
 [stable-url]
-http://libgdx.googlecode.com/files/libgdx-0.9.8.zip
+http://libgdx.badlogicgames.com/releases/libgdx-0.9.9.zip
 
 [latest-url]
 http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip
@@ -44,10 +44,9 @@ gdx-backend-lwjgl-sources.jar
 gdx-natives.jar
 
 [libs-android]
-armeabi/libandroidgl20.so
 armeabi/libgdx.so
-armeabi-v7a/libandroidgl20.so
 armeabi-v7a/libgdx.so
+x86/libgdx.so
 gdx-backend-android.jar
 gdx-backend-android-sources.jar
 
@@ -55,24 +54,7 @@ gdx-backend-android-sources.jar
 gdx-backend-gwt.jar
 gdx-backend-gwt-sources.jar
 
-[libs-ios]
-ios/gdx.dll
-ios/gdx.dll.mdb
-ios/gdx-backend-ios.dll
-ios/gdx-backend-ios.dll.mdb
+[libs-robovm]
+gdx-backend-robovm.jar
 ios/libgdx.a
-ios/objectal/libObjectAL.dll
-ios/ikvm/bin/ICSharpCode.SharpZipLib.dll
-ios/ikvm/bin/IKVM.OpenJDK.Beans.dll
-ios/ikvm/bin/IKVM.OpenJDK.Charsets.dll
-ios/ikvm/bin/IKVM.OpenJDK.Core.dll
-ios/ikvm/bin/IKVM.OpenJDK.Misc.dll
-ios/ikvm/bin/IKVM.OpenJDK.Text.dll
-ios/ikvm/bin/IKVM.OpenJDK.Util.dll
-ios/ikvm/bin/IKVM.Reflection.dll
-ios/ikvm/bin/IKVM.Runtime.JNI.dll
-ios/ikvm/bin/IKVM.Runtime.dll
-ios/ikvm/bin/ikvm.exe
-ios/ikvm/bin/ikvmc.exe
-ios/ikvm/bin/ikvmstub.exe
-ios/ikvm/bin/libikvm-natives.a
+ios/libObjectAL.a

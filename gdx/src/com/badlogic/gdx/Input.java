@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx;
 
+import com.badlogic.gdx.graphics.Pixmap;
+
 /** <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
  * some backends (desktop, gwt, etc) the touch screen is replaced by mouse input. The accelerometer is of course not available on
@@ -43,7 +45,7 @@ public interface Input {
 	/** Callback interface for {@link Input#getTextInput(TextInputListener, String, String)}
 	 * 
 	 * @author mzechner */
-	public interface TextInputListener {
+	static public interface TextInputListener {
 		public void input (String text);
 
 		public void canceled ();
@@ -51,7 +53,7 @@ public interface Input {
 
 	/** Mouse buttons.
 	 * @author mzechner */
-	public class Buttons {
+	static public class Buttons {
 		public static final int LEFT = 0;
 		public static final int RIGHT = 1;
 		public static final int MIDDLE = 2;
@@ -60,7 +62,7 @@ public interface Input {
 	/** Keys.
 	 * 
 	 * @author mzechner */
-	public class Keys {
+	static public class Keys {
 		public static final int ANY_KEY = -1;
 		public static final int NUM_0 = 7;
 		public static final int NUM_1 = 8;
@@ -436,4 +438,15 @@ public interface Input {
 	 * @param x the x-position
 	 * @param y the y-position */
 	public void setCursorPosition (int x, int y);
+
+  /**
+   * Only viable on the desktop. Will set the mouse cursor image to the image represented by the {@link com.badlogic.gdx.graphics.Pixmap}.
+   * The Pixmap must be in RGBA8888 format, width & height must be powers-of-two greater than zero (not necessarily equal), and alpha transparency must be single-bit (i.e., 0x00 or 0xFF only).
+   * To revert to the default operating system cursor, pass in a null Pixmap; xHotspot & yHotspot are ignored in this case.
+   *
+   * @param pixmap the mouse cursor image as a {@link com.badlogic.gdx.graphics.Pixmap}, or null to revert to the default operating system cursor
+   * @param xHotspot the x location of the hotspot pixel within the cursor image (origin top-left corner)
+   * @param yHotspot the y location of the hotspot pixel within the cursor image (origin top-left corner)
+   */
+  public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot);
 }

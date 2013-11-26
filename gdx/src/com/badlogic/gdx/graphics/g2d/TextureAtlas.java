@@ -32,6 +32,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Sort;
+import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -175,10 +176,7 @@ public class TextureAtlas implements Disposable {
 			} catch (Exception ex) {
 				throw new GdxRuntimeException("Error reading pack file: " + packFile, ex);
 			} finally {
-				try {
-					reader.close();
-				} catch (IOException ignored) {
-				}
+				StreamUtils.closeQuietly(reader);
 			}
 
 			new Sort().sort((Object[])regions.items, (Comparator)indexComparator, 0, regions.size);
@@ -561,6 +559,14 @@ public class TextureAtlas implements Disposable {
 
 		public void setPosition (float x, float y) {
 			super.setPosition(x + region.offsetX, y + region.offsetY);
+		}
+
+		public void setX (float x) {
+			super.setX(x + region.offsetX);
+		}
+
+		public void setY (float y) {
+			super.setY(y + region.offsetY);
 		}
 
 		public void setBounds (float x, float y, float width, float height) {

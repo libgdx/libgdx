@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.Gdx;
@@ -9,12 +25,16 @@ import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class DefaultShaderProvider extends BaseShaderProvider {
-	public String vertexShader;
-	public String fragmentShader;
+	public final DefaultShader.Config config;
+	
+	public DefaultShaderProvider(final DefaultShader.Config config) {
+		if (!Gdx.graphics.isGL20Available())
+			throw new RuntimeException("The default shader requires OpenGL ES 2.0");
+		this.config = (config == null) ? new DefaultShader.Config() : config;
+	}
 	
 	public DefaultShaderProvider(final String vertexShader, final String fragmentShader) {
-		this.vertexShader = vertexShader;
-		this.fragmentShader = fragmentShader;
+		this(new DefaultShader.Config(vertexShader, fragmentShader));
 	}
 	
 	public DefaultShaderProvider(final FileHandle vertexShader, final FileHandle fragmentShader) {
@@ -22,15 +42,11 @@ public class DefaultShaderProvider extends BaseShaderProvider {
 	}
 	
 	public DefaultShaderProvider() {
-		this(DefaultShader.getDefaultVertexShader(), DefaultShader.getDefaultFragmentShader());
+		this(null);
 	}
 	
 	@Override
 	protected Shader createShader(final Renderable renderable) {
-		Gdx.app.log("DefaultShaderProvider", "Creating new shader");
-		if (Gdx.graphics.isGL20Available()) {
-            return new DefaultShader(vertexShader, fragmentShader, renderable, renderable.lights != null, renderable.lights != null && renderable.lights.fog != null, 2, 5, 3, renderable.bones == null ? 0 : 12);
-        }
-		return new GLES10Shader();
+	   return new DefaultShader(renderable, config);
 	}
 }

@@ -71,7 +71,7 @@ public class IntFloatMap {
 	 * before growing the backing table. */
 	public IntFloatMap (int initialCapacity, float loadFactor) {
 		if (initialCapacity < 0) throw new IllegalArgumentException("initialCapacity must be >= 0: " + initialCapacity);
-		if (capacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
+		if (initialCapacity > 1 << 30) throw new IllegalArgumentException("initialCapacity is too large: " + initialCapacity);
 		capacity = MathUtils.nextPowerOfTwo(initialCapacity);
 
 		if (loadFactor <= 0) throw new IllegalArgumentException("loadFactor must be > 0: " + loadFactor);
@@ -309,6 +309,16 @@ public class IntFloatMap {
 	/** Returns the key's current value and increments the stored value. If the key is not in the map, defaultValue + increment is
 	 * put into the map. */
 	public float getAndIncrement (int key, float defaultValue, float increment) {
+		if (key == 0) {
+			if (hasZeroValue) {
+				zeroValue += increment;
+			} else {
+				hasZeroValue = true;
+				zeroValue = defaultValue + increment;
+				++size;
+			}
+			return zeroValue;
+		}
 		int index = key & mask;
 		if (key != keyTable[index]) {
 			index = hash2(key);
@@ -435,7 +445,7 @@ public class IntFloatMap {
 	/** Returns true if the specified value is in the map. Note this traverses the entire map and compares every value, which may be
 	 * an expensive operation. */
 	public boolean containsValue (float value, float epsilon) {
-		if (hasZeroValue && zeroValue == value) return true;
+		if (hasZeroValue && Math.abs(zeroValue - value) <= epsilon) return true;
 		float[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;)
 			if (Math.abs(valueTable[i] - value) <= epsilon) return true;

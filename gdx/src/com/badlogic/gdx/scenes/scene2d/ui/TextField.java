@@ -20,9 +20,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -55,7 +56,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * implementation will bring up the default IME.
  * @author mzechner
  * @author Nathan Sweet */
-public class TextField extends Widget {
+public class TextField extends Widget implements Disableable {
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
 	static private final char ENTER_ANDROID = '\n';
@@ -169,8 +170,6 @@ public class TextField extends Widget {
 
 			public boolean keyDown (InputEvent event, int keycode) {
 				if (disabled) return false;
-
-				final BitmapFont font = style.font;
 
 				lastBlink = 0;
 				cursorOn = false;
@@ -463,7 +462,7 @@ public class TextField extends Widget {
 	}
 
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;

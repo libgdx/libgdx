@@ -20,9 +20,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -68,19 +68,17 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 		return entity;
 	}
 	
-	public void render(final ModelBatch batch, final Lights lights) {
+	public void render(final ModelBatch batch, final Environment lights) {
 		render(batch, lights, entities);
 	}
 	
-	public void render(final ModelBatch batch, final Lights lights, final Iterable<T> entities) {
+	public void render(final ModelBatch batch, final Environment lights, final Iterable<T> entities) {
 		for (final T e : entities) {
-			e.modelInstance.calculateTransforms();
 			batch.render(e.modelInstance, lights);
 		}
 	}
 	
-	public void render(final ModelBatch batch, final Lights lights, final T entity) {
-		entity.modelInstance.calculateTransforms();
+	public void render(final ModelBatch batch, final Environment lights, final T entity) {
 		batch.render(entity.modelInstance, lights);
 	}
 	
@@ -96,8 +94,6 @@ public class BaseWorld<T extends BaseEntity> implements Disposable {
 			constructor.dispose();
 		constructors.clear();
 		
-		//for (int i = 0; i < models.size; i++)
-			//models.get(i).dispose();
 		models.clear();
 	}
 }

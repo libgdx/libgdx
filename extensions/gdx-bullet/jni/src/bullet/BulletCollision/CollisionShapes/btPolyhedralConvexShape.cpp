@@ -12,6 +12,9 @@ subject to the following restrictions:
 2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
+#if defined (_WIN32) || defined (__i386__)
+#define BT_USE_SSE_IN_API
+#endif
 
 #include "BulletCollision/CollisionShapes/btPolyhedralConvexShape.h"
 #include "btConvexPolyhedron.h"

@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.utils.BufferUtils.h>
 
-//@line:268
+//@line:374
  
 	#include <stdio.h>
 	#include <stdlib.h>
@@ -9,7 +9,7 @@
 	char* buffer = (char*)(obj_buffer?env->GetDirectBufferAddress(obj_buffer):0);
 
 
-//@line:330
+//@line:436
 
 		free(buffer);
 	 
@@ -19,7 +19,7 @@
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableByteBuffer(JNIEnv* env, jclass clazz, jint numBytes) {
 
 
-//@line:334
+//@line:440
 
 		char* ptr = (char*)malloc(numBytes);
 		return env->NewDirectByteBuffer(ptr, numBytes);
@@ -30,7 +30,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_utils_BufferUtils_newDisposableB
 static inline jlong wrapped_Java_com_badlogic_gdx_utils_BufferUtils_getBufferAddress
 (JNIEnv* env, jclass clazz, jobject obj_buffer, unsigned char* buffer) {
 
-//@line:339
+//@line:445
 
 	    return (jlong) buffer;
 	
@@ -49,7 +49,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_clear(JNIEnv* env
 	char* buffer = (char*)(obj_buffer?env->GetDirectBufferAddress(obj_buffer):0);
 
 
-//@line:344
+//@line:450
 
 		memset(buffer, 0, numBytes);
 	
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FLjava
 	float* src = (float*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:348
+//@line:454
 
 		memcpy(dst, src + offset, numFloats << 2 );
 	
@@ -74,7 +74,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3BILjav
 	char* src = (char*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:352
+//@line:458
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -87,7 +87,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3CILjav
 	unsigned short* src = (unsigned short*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:356
+//@line:462
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -100,7 +100,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3SILjav
 	short* src = (short*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:360
+//@line:466
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	 
@@ -113,7 +113,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3IILjav
 	int* src = (int*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:364
+//@line:470
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -126,7 +126,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3JILjav
 	long long* src = (long long*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:368
+//@line:474
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -139,7 +139,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3FILjav
 	float* src = (float*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:372
+//@line:478
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -152,7 +152,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni___3DILjav
 	double* src = (double*)env->GetPrimitiveArrayCritical(obj_src, 0);
 
 
-//@line:376
+//@line:482
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
@@ -165,10 +165,120 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
 	unsigned char* dst = (unsigned char*)(obj_dst?env->GetDirectBufferAddress(obj_dst):0);
 
 
-//@line:380
+//@line:486
 
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
 	
+
+}
+
+
+//@line:490
+
+	template<size_t n1, size_t n2> void transform(float * const &v, const float * const &m) {}
+	
+	template<> inline void transform<4, 4>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2], w = v[3];
+		v[0] = x * m[ 0] + y * m[ 4] + z * m[ 8] + w * m[12]; 
+		v[1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + w * m[13];
+		v[2] = x * m[ 2] + y * m[ 6] + z * m[10] + w * m[14];
+		v[3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15]; 
+	}
+	
+	template<> inline void transform<3, 4>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2];
+		v[0] = x * m[ 0] + y * m[ 4] + z * m[ 8] + m[12]; 
+		v[1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + m[13];
+		v[2] = x * m[ 2] + y * m[ 6] + z * m[10] + m[14]; 
+	}
+	
+	template<> inline void transform<2, 4>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2], w = v[3];
+		v[0] = x * m[ 0] + y * m[ 4] + m[12]; 
+		v[1] = x * m[ 1] + y * m[ 5] + m[13]; 
+	}
+	
+	template<> inline void transform<3, 3>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2];
+		v[0] = x * m[0] + y * m[3] + z * m[6]; 
+		v[1] = x * m[1] + y * m[4] + z * m[7];
+		v[2] = x * m[2] + y * m[5] + z * m[8]; 
+	}
+	
+	template<> inline void transform<2, 3>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1];
+		v[0] = x * m[0] + y * m[3] + m[6]; 
+		v[1] = x * m[1] + y * m[4] + m[7]; 
+	}
+	
+	template<size_t n1, size_t n2> void transform(float * const &v, int offset, int const &stride, int const &count, const float * const &m) {
+		for (int i = 0; i < count; i++) {
+			transform<n1, n2>(&v[offset], m);
+			offset += stride;
+		}
+	}
+	JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni(JNIEnv* env, jclass clazz, jobject obj_data, jint offsetInBytes, jint strideInBytes, jint count, jfloatArray obj_matrix) {
+	unsigned char* data = (unsigned char*)(obj_data?env->GetDirectBufferAddress(obj_data):0);
+	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
+
+
+//@line:535
+
+		transform<4, 4>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);  
+	
+	env->ReleasePrimitiveArrayCritical(obj_matrix, matrix, 0);
+
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni(JNIEnv* env, jclass clazz, jobject obj_data, jint offsetInBytes, jint strideInBytes, jint count, jfloatArray obj_matrix) {
+	unsigned char* data = (unsigned char*)(obj_data?env->GetDirectBufferAddress(obj_data):0);
+	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
+
+
+//@line:539
+
+		transform<3, 4>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	
+	env->ReleasePrimitiveArrayCritical(obj_matrix, matrix, 0);
+
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni(JNIEnv* env, jclass clazz, jobject obj_data, jint offsetInBytes, jint strideInBytes, jint count, jfloatArray obj_matrix) {
+	unsigned char* data = (unsigned char*)(obj_data?env->GetDirectBufferAddress(obj_data):0);
+	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
+
+
+//@line:543
+
+		transform<2, 4>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	
+	env->ReleasePrimitiveArrayCritical(obj_matrix, matrix, 0);
+
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni(JNIEnv* env, jclass clazz, jobject obj_data, jint offsetInBytes, jint strideInBytes, jint count, jfloatArray obj_matrix) {
+	unsigned char* data = (unsigned char*)(obj_data?env->GetDirectBufferAddress(obj_data):0);
+	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
+
+
+//@line:547
+
+		transform<3, 3>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	
+	env->ReleasePrimitiveArrayCritical(obj_matrix, matrix, 0);
+
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni(JNIEnv* env, jclass clazz, jobject obj_data, jint offsetInBytes, jint strideInBytes, jint count, jfloatArray obj_matrix) {
+	unsigned char* data = (unsigned char*)(obj_data?env->GetDirectBufferAddress(obj_data):0);
+	float* matrix = (float*)env->GetPrimitiveArrayCritical(obj_matrix, 0);
+
+
+//@line:551
+
+		transform<2, 3>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	
+	env->ReleasePrimitiveArrayCritical(obj_matrix, matrix, 0);
 
 }
 

@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
@@ -117,9 +133,9 @@ public class IOSApplication implements Application {
 		
 		// setup libgdx
 		this.input = new IOSInput(this);
-		this.graphics = new IOSGraphics(getBounds(null), this, input, gl20);
+		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
 		this.files = new IOSFiles();
-		this.audio = new IOSAudio();
+		this.audio = new IOSAudio(config);
 		this.net = new IOSNet(this);
 
 		Gdx.files = this.files;
@@ -183,12 +199,9 @@ public class IOSApplication implements Application {
 
 	final void didBecomeActive (UIApplication uiApp) {
 		Gdx.app.debug("IOSApplication", "resumed");
-		if (config.useObjectAL)
-		{
-			// workaround for ObjectAL crash problem
-			// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-//			OALAudioSession.sharedInstance().forceEndInterrupt();
-		}
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+		//	OALAudioSession.sharedInstance().forceEndInterrupt();
 		graphics.makeCurrent();
 		graphics.resume();
 	}
@@ -251,7 +264,7 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel > LOG_NONE) {
 			System.out.println("[info] " + tag + ": " + message);
 			exception.printStackTrace();
@@ -294,26 +307,28 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
+	public int getLogLevel() {
+		return logLevel;
+	}
+
+	@Override
 	public ApplicationType getType () {
 		return ApplicationType.iOS;
 	}
 
 	@Override
 	public int getVersion () {
-		// FIXME return iOS version
-		return 0;
+		return Integer.parseInt(UIDevice.getCurrentDevice().getSystemVersion().split("\\.")[0]);
 	}
 
 	@Override
 	public long getJavaHeap () {
-		// FIXME check what mono offers
-		return 0;
+		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 	}
 
 	@Override
 	public long getNativeHeap () {
-		// FIXME check what mono offers
-		return 0;
+		return getJavaHeap();
 	}
 
 	@Override

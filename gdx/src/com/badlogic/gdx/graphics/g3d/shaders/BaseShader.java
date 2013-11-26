@@ -1,15 +1,36 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Attributes;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
@@ -32,20 +53,34 @@ public abstract class BaseShader implements Shader {
 	public interface Setter {
 		/** @return True if the uniform only has to be set once per render call, false if the uniform must be set for each renderable. */
 		boolean isGlobal(final BaseShader shader, final int inputID);
-		void set(final BaseShader shader, final int inputID, final Renderable renderable);
+		void set(final BaseShader shader, final int inputID, final Renderable renderable, final Attributes combinedAttributes);
 	}
 	public static class Uniform implements Validator {
 		public final String alias;
 		public final long materialMask;
-		public Uniform(final String alias, final long materialMask) {
+		public final long environmentMask;
+		public final long overallMask;
+		public Uniform(final String alias, final long materialMask, final long environmentMask, final long overallMask) {
 			this.alias = alias;
 			this.materialMask = materialMask;
+			this.environmentMask = environmentMask;
+			this.overallMask = overallMask;
+		}
+		public Uniform(final String alias, final long materialMask, final long environmentMask) {
+			this(alias, materialMask, environmentMask, 0);
+		}
+		public Uniform(final String alias, final long overallMask) {
+			this(alias, 0, 0, overallMask);
 		}
 		public Uniform(final String alias) {
-			this(alias, 0);
+			this(alias, 0, 0);
 		}
 		public boolean validate(final BaseShader shader, final int inputID, final Renderable renderable) {
-			return (renderable == null ? 0 : (renderable.material.getMask() & materialMask)) == materialMask;
+			final long matFlags = (renderable != null && renderable.material != null) ? renderable.material.getMask() : 0;
+			final long envFlags = (renderable != null && renderable.environment != null) ? renderable.environment.getMask() : 0;
+			return ((matFlags & materialMask) == materialMask) 
+				&& ((envFlags & environmentMask) == environmentMask) 
+				&& (((matFlags | envFlags) & overallMask) == overallMask);
 		}
 	}
 	
@@ -158,7 +193,7 @@ public abstract class BaseShader implements Shader {
 		currentMesh = null;
 		for (final int i: globalUniforms.items)
 			if (setters.get(i) != null)
-				setters.get(i).set(this, i, null);
+				setters.get(i).set(this, i, null, null);
 	}
 	
 	private final IntArray tempArray = new IntArray();
@@ -171,11 +206,21 @@ public abstract class BaseShader implements Shader {
 		return tempArray.items;
 	}
 
+	private Attributes combinedAttributes = new Attributes();
 	@Override
 	public void render (Renderable renderable) {
+		combinedAttributes.clear();
+		if (renderable.environment != null)
+			combinedAttributes.set(renderable.environment);
+		if (renderable.material != null)
+			combinedAttributes.set(renderable.material);
+		render(renderable, combinedAttributes);
+	}
+	
+	public void render (Renderable renderable, final Attributes combinedAttributes) {
 		for (final int i: localUniforms.items)
 			if (setters.get(i) != null)
-				setters.get(i).set(this, i, renderable);
+				setters.get(i).set(this, i, renderable, combinedAttributes);
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
 				currentMesh.unbind(program, tempArray.items);
@@ -302,6 +347,20 @@ public abstract class BaseShader implements Shader {
 		if (locations[uniform] < 0)
 			return false;
 		program.setUniformi(locations[uniform], v1, v2, v3, v4);
+		return true;
+	}
+	
+	public final boolean set(final int uniform, final TextureDescriptor textureDesc) {
+		if (locations[uniform] < 0)
+			return false;
+		program.setUniformi(locations[uniform], context.textureBinder.bind(textureDesc));
+		return true;
+	}
+	
+	public final boolean set(final int uniform, final GLTexture texture) {
+		if (locations[uniform] < 0)
+			return false;
+		program.setUniformi(locations[uniform], context.textureBinder.bind(texture));
 		return true;
 	}
 }

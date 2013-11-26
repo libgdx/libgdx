@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics.g3d.loader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import com.badlogic.gdx.utils.Array;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -36,9 +36,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.materials.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
@@ -69,7 +69,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	final FloatArray verts = new FloatArray(300);
 	final FloatArray norms = new FloatArray(300);
 	final FloatArray uvs = new FloatArray(200);
-	final ArrayList<Group> groups = new ArrayList<Group>(10);
+	final Array<Group> groups = new Array<Group>(10);
 
 	public ObjLoader () {
 		this(null);
@@ -146,7 +146,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 					}
 				} else if (firstChar == 'f') {
 					String[] parts;
-					ArrayList<Integer> faces = activeGroup.faces;
+					Array<Integer> faces = activeGroup.faces;
 					for (int i = 1; i < tokens.length - 2; i--) {
 						parts = tokens[1].split("/");
 						faces.add(getIndex(parts[0], verts.size));
@@ -192,25 +192,25 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 		}
 
 		// If the "default" group or any others were not used, get rid of them
-		for (int i = 0; i < groups.size(); i++) {
+		for (int i = 0; i < groups.size; i++) {
 			if (groups.get(i).numFaces < 1) {
-				groups.remove(i);
+				groups.removeIndex(i);
 				i--;
 			}
 		}
 
 		// If there are no groups left, there is no valid Model to return
-		if (groups.size() < 1) return null;
+		if (groups.size < 1) return null;
 
 		// Get number of objects/groups remaining after removing empty ones
-		final int numGroups = groups.size();
+		final int numGroups = groups.size;
 
 		final ModelData data = new ModelData();
 
 		for (int g = 0; g < numGroups; g++) {
 			Group group = groups.get(g);
-			ArrayList<Integer> faces = group.faces;
-			final int numElements = faces.size();
+			Array<Integer> faces = group.faces;
+			final int numElements = faces.size;
 			final int numFaces = group.numFaces;
 			final boolean hasNorms = group.hasNorms;
 			final boolean hasUVs = group.hasUVs;
@@ -244,7 +244,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 				}
 			}
 
-			ArrayList<VertexAttribute> attributes = new ArrayList<VertexAttribute>();
+			Array<VertexAttribute> attributes = new Array<VertexAttribute>();
 			attributes.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 			if (hasNorms) attributes.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 			if (hasUVs) attributes.add(new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
@@ -268,7 +268,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			part.primitiveType = GL10.GL_TRIANGLES;
 			ModelMesh mesh = new ModelMesh();
 			mesh.id = meshId;
-			mesh.attributes = attributes.toArray(new VertexAttribute[attributes.size()]);
+			mesh.attributes = attributes.toArray(VertexAttribute.class);
 			mesh.vertices = finalVerts;
 			mesh.parts = new ModelMeshPart[] { part };
 			data.nodes.add(node);
@@ -281,20 +281,20 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 			//data.materials.add(m);
 		
 		// An instance of ObjLoader can be used to load more than one OBJ.
-		// Clearing the ArrayList cache instead of instantiating new
-		// ArrayLists should result in slightly faster load times for
+		// Clearing the Array cache instead of instantiating new
+		// Arrays should result in slightly faster load times for
 		// subsequent calls to loadObj
 		if (verts.size > 0) verts.clear();
 		if (norms.size > 0) norms.clear();
 		if (uvs.size > 0) uvs.clear();
-		if (groups.size() > 0) groups.clear();
+		if (groups.size > 0) groups.clear();
 
 		return data;
 	}
 
 	private Group setActiveGroup (String name) {
 		// TODO: Check if a HashMap.get calls are faster than iterating
-		// through an ArrayList
+		// through an Array
 		for (Group group : groups) {
 			if (group.name.equals(name)) return group;
 		}
@@ -315,7 +315,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	private class Group {
 		final String name;
 		String materialName;
-		ArrayList<Integer> faces;
+		Array<Integer> faces;
 		int numFaces;
 		boolean hasNorms;
 		boolean hasUVs;
@@ -323,7 +323,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 
 		Group (String name) {
 			this.name = name;
-			this.faces = new ArrayList<Integer>(200);
+			this.faces = new Array<Integer>(200);
 			this.numFaces = 0;
 			this.mat = new Material("");
 			this.materialName = "default";
@@ -332,7 +332,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 }
 
 class MtlLoader {
-	public ArrayList<ModelMaterial> materials = new ArrayList<ModelMaterial>();
+	public Array<ModelMaterial> materials = new Array<ModelMaterial>();
 
 	/** loads .mtl file */
 	public void load (FileHandle file) {

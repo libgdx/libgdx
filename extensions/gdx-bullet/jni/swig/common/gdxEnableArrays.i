@@ -5,6 +5,5 @@
  */
 
 /* Use Java float[] where Bullet wants btScalar *. */
-%include "arrays_java.i"
 %apply float[] { btScalar * };
 %apply float[] { const btScalar * }; 

@@ -1,10 +1,26 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -23,7 +39,7 @@ public interface MeshPartBuilder {
 	/** Set range of texture coordinates used (default is 0,0,1,1). */
 	public void setUVRange(float u1, float v1, float u2, float v2);
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
-	public short vertex(final float[] values);
+	public short vertex(final float... values);
 	/** Add a vertex, returns the index. Null values are allowed. Use {@link #getAttributes} to check which values are available. */
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv);
 	/** Add a vertex, returns the index. Use {@link #getAttributes} to check which values are available. */
@@ -72,6 +88,8 @@ public interface MeshPartBuilder {
 	public void patch(VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU, int divisionsV);
 	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void patch(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU, int divisionsV);
+	/** Add a rectangle. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
+	public void patch(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV);
 	/** Add a box. Requires GL_POINTS, GL_LINES or GL_TRIANGLES primitive type. */
 	public void box(VertexInfo corner000, VertexInfo corner010, VertexInfo corner100, VertexInfo corner110,
 						VertexInfo corner001, VertexInfo corner011, VertexInfo corner101, VertexInfo corner111);
@@ -85,21 +103,45 @@ public interface MeshPartBuilder {
 	/** Add a box at the specified location, with the specified dimensions */
 	public void box(float x, float y, float z, float width, float height, float depth);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions);
+	public void circle(float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions);
+	public void circle(float radius, int divisions, final Vector3 center, final Vector3 normal);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions);
+	public void circle(float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions);
+	public void circle(float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo);
 	/** Add a circle */
-	public void circle(float width, float height, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo);
 	/** Add a circle */
-	public void circle(float width, float height, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, int divisions, float angleFrom, float angleTo);
+	public void circle(float radius, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, final Vector3 center, final Vector3 normal);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, final Vector3 center, final Vector3 normal, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, final Vector3 center, final Vector3 normal, final Vector3 tangent, final Vector3 binormal, float angleFrom, float angleTo);
+	/** Add a circle */
+	public void ellipse(float width, float height, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo);
+	/** Add an ellipse */
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float tangentX, float tangentY, float tangentZ, float binormalX, float binormalY, float binormalZ, float angleFrom, float angleTo);
+	/** Add an ellipse */
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ, float angleFrom, float angleTo);
+	/** Add an ellipse */
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, int divisions, float centerX, float centerY, float centerZ, float normalX, float normalY, float normalZ);
+	/** Add an ellipse */
+	public void ellipse(float width, float height, float innerWidth, float innerHeight, int divisions, Vector3 center, Vector3 normal);
 	/** Add a cylinder */
 	public void cylinder(float width, float height, float depth, int divisions);
 	/** Add a cylinder */
@@ -152,6 +194,8 @@ public interface MeshPartBuilder {
 			return this;
 		}
 		public VertexInfo set(final VertexInfo other) {
+			if (other == null)
+				return set(null, null, null, null);
 			hasPosition = other.hasPosition;
 			position.set(other.position);
 			hasNormal = other.hasNormal;

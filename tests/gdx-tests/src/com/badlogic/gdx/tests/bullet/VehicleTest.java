@@ -20,25 +20,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.btBoxShape;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCylinderShape;
-import com.badlogic.gdx.physics.bullet.btCylinderShapeX;
-import com.badlogic.gdx.physics.bullet.btDefaultVehicleRaycaster;
-import com.badlogic.gdx.physics.bullet.btDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.btRaycastVehicle;
-import com.badlogic.gdx.physics.bullet.btRigidBody;
-import com.badlogic.gdx.physics.bullet.btVehicleRaycaster;
-import com.badlogic.gdx.physics.bullet.btVehicleTuning;
-import com.badlogic.gdx.physics.bullet.btWheelInfo;
-import com.badlogic.gdx.physics.bullet.gdxBullet;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btDefaultVehicleRaycaster;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btRaycastVehicle;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.dynamics.btVehicleRaycaster;
+import com.badlogic.gdx.physics.bullet.dynamics.btVehicleTuning;
+import com.badlogic.gdx.physics.bullet.dynamics.btWheelInfo;
 
 /** @author Xoppa */
 public class VehicleTest extends BaseBulletTest {
@@ -94,7 +91,7 @@ public class VehicleTest extends BaseBulletTest {
 		raycaster = new btDefaultVehicleRaycaster((btDynamicsWorld)world.collisionWorld);
 		tuning = new btVehicleTuning();
 		vehicle = new btRaycastVehicle(tuning, (btRigidBody)chassis.body, raycaster);
-		chassis.body.setActivationState(gdxBullet.DISABLE_DEACTIVATION);
+		chassis.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 		vehicle.setCoordinateSystem(0, 1, 2);
 
 		btWheelInfo wheelInfo;
