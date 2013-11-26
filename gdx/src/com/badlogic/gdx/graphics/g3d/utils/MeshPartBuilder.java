@@ -162,7 +162,15 @@ public interface MeshPartBuilder {
 	public void sphere(final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo);
 	/** Add a capsule */
 	public void capsule(float radius, float height, int divisions);
-	
+	/** Get the current vertex transformation matrix. */
+	public Matrix4 getVertexTransform(Matrix4 out);
+	/** Set the current vertex transformation matrix and enables vertex transformation. */
+	public void setVertexTransform(Matrix4 transform);
+	/** Indicates whether vertex transformation is enabled. */
+	public boolean isVertexTransformationEnabled();
+	/** Sets whether vertex transformation is enabled. */
+	public void setVertexTransformationEnabled(boolean enabled);
+
 	/** Class that contains all vertex information the builder can use.
 	 * @author Xoppa */
 	public static class VertexInfo implements Poolable {

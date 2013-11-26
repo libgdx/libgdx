@@ -104,6 +104,11 @@ public class MeshBuilder implements MeshPartBuilder {
 	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
 	private float[] vertex;
 	
+	private boolean vertexTransformationEnabled = false;
+	private final Matrix4 positionTransform = new Matrix4();
+	private final Matrix4 normalTransform = new Matrix4();
+	private final Vector3 tempVTransformed = new Vector3();
+	
 	/** @param usage bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public static VertexAttributes createAttributes(long usage) {
@@ -358,14 +363,28 @@ public class MeshBuilder implements MeshPartBuilder {
 		if (col == null && colorSet)
 			col = color;
 		if (pos != null) {
-			vertex[posOffset  ] = pos.x;
-			if (posSize > 1) vertex[posOffset+1] = pos.y;
-			if (posSize > 2) vertex[posOffset+2] = pos.z;
+			if(vertexTransformationEnabled) {
+				tempVTransformed.set(pos).mul(positionTransform);
+				vertex[posOffset  ] = tempVTransformed.x;
+				if (posSize > 1) vertex[posOffset+1] = tempVTransformed.y;
+				if (posSize > 2) vertex[posOffset+2] = tempVTransformed.z;
+			} else {
+				vertex[posOffset  ] = pos.x;
+				if (posSize > 1) vertex[posOffset+1] = pos.y;
+				if (posSize > 2) vertex[posOffset+2] = pos.z;
+			}
 		}
 		if (nor != null && norOffset >= 0) {
-			vertex[norOffset  ] = nor.x;
-			vertex[norOffset+1] = nor.y;
-			vertex[norOffset+2] = nor.z;
+			if(vertexTransformationEnabled) {
+				tempVTransformed.set(nor).mul(normalTransform).nor();
+				vertex[norOffset  ] = tempVTransformed.x;
+				vertex[norOffset+1] = tempVTransformed.y;
+				vertex[norOffset+2] = tempVTransformed.z;
+			} else {
+				vertex[norOffset  ] = nor.x;
+				vertex[norOffset+1] = nor.y;
+				vertex[norOffset+2] = nor.z;
+			}
 		}
 		if (col != null) {
 			if (colOffset >= 0) {
@@ -956,5 +975,28 @@ public class MeshBuilder implements MeshPartBuilder {
 		cylinder(d, height - d, d, divisions, 0, 360, false);
 		sphere(matTmp1.setToTranslation(0, .5f*(height-d), 0), d, d, d, divisions, divisions, 0, 360, 0, 90);
 		sphere(matTmp1.setToTranslation(0, -.5f*(height-d), 0), d, d, d, divisions, divisions, 0, 360, 90, 180);
+	}
+
+	@Override
+	public Matrix4 getVertexTransform(Matrix4 out) {
+		return out.set(positionTransform);
+	}
+
+	@Override
+	public void setVertexTransform(Matrix4 transform) {
+		if ((vertexTransformationEnabled = (transform != null))==true) {
+			this.positionTransform.set(transform);
+			this.normalTransform.set(transform).inv().tra();
+		}
+	}
+
+	@Override
+	public boolean isVertexTransformationEnabled() {
+		return vertexTransformationEnabled;
+	}
+
+	@Override
+	public void setVertexTransformationEnabled(boolean enabled) {
+		vertexTransformationEnabled = enabled;
 	}
 }
