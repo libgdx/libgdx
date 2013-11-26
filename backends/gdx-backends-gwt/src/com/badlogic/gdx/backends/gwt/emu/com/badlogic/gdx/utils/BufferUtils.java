@@ -215,6 +215,106 @@ public class BufferUtils {
 		buffer.limit(oldPosition + numElements);
 	}
 	
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (char[] src, int srcOffset, int numElements, Buffer dst) {
+		CharBuffer buffer = null;
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asCharBuffer();
+		else if (dst instanceof CharBuffer) buffer = (CharBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or CharBuffer");
+
+		int oldPosition = buffer.position();
+		buffer.put(src, srcOffset, numElements);
+		buffer.position(oldPosition);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (int[] src, int srcOffset, int numElements, Buffer dst) {
+		IntBuffer buffer = null;
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asIntBuffer();
+		else if (dst instanceof IntBuffer) buffer = (IntBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or IntBuffer");
+
+		int oldPosition = buffer.position();
+		buffer.put(src, srcOffset, numElements);
+		buffer.position(oldPosition);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (long[] src, int srcOffset, int numElements, Buffer dst) {
+		LongBuffer buffer = null;
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asLongBuffer();
+		else if (dst instanceof LongBuffer) buffer = (LongBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or LongBuffer");
+
+		int oldPosition = buffer.position();
+		buffer.put(src, srcOffset, numElements);
+		buffer.position(oldPosition);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (float[] src, int srcOffset, int numElements, Buffer dst) {
+		FloatBuffer buffer = null;
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asFloatBuffer();
+		else if (dst instanceof FloatBuffer) buffer = (FloatBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
+
+		int oldPosition = buffer.position();
+		buffer.put(src, srcOffset, numElements);
+		buffer.position(oldPosition);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (double[] src, int srcOffset, int numElements, Buffer dst) {
+		DoubleBuffer buffer = null;
+		if (dst instanceof ByteBuffer)
+			buffer = ((ByteBuffer)dst).asDoubleBuffer();
+		else if (dst instanceof DoubleBuffer) buffer = (DoubleBuffer)dst;
+		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or DoubleBuffer");
+
+		int oldPosition = buffer.position();
+		buffer.put(src, srcOffset, numElements);
+		buffer.position(oldPosition);
+	}
+	
 // /** Copies the contents of src to dst, starting from the current position of src, copying numElements elements (using the data
 // * type of src, no matter the datatype of dst). The dst {@link Buffer#position()} is used as the writing offset. The position
 // * of both Buffers will stay the same. The limit of the src Buffer will stay the same. The limit of the dst Buffer will be set

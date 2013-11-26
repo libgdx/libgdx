@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MeshTest extends GdxTest {
@@ -36,7 +37,7 @@ public class MeshTest extends GdxTest {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
 		texture.bind();
-		mesh.render(GL10.GL_TRIANGLES, 3, 3);
+		mesh.render(GL10.GL_TRIANGLES, 0, 6);
 	}
 
 	@Override
@@ -44,10 +45,21 @@ public class MeshTest extends GdxTest {
 		mesh = new Mesh(true, 4, 6, new VertexAttribute(Usage.Position, 3, "a_position"), new VertexAttribute(Usage.ColorPacked, 4,
 			"a_color"), new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoords"));
 
-		mesh.setVertices(new float[] {-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 0.5f, -0.5f, 0,
-			Color.toFloatBits(0, 255, 0, 255), 1, 0, 0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1, -0.5f, 0.5f, 0,
-			Color.toFloatBits(255, 255, 255, 255), 0, 1});
+		mesh.setVertices(new float[] {
+			-0.5f, -0.5f, 0, Color.toFloatBits(255, 0, 0, 255), 0, 0, 
+			0.5f, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 1, 0,
+			0.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1,
+			-0.5f, 0.5f, 0, Color.toFloatBits(255, 255, 255, 255), 0, 1
+		});
 		mesh.setIndices(new short[] {0, 1, 2, 2, 3, 0});
+		int stride = mesh.getVertexSize() / 4;
+		mesh.updateVertices(stride, new float[] { 
+			1.5f, -0.5f, 0, Color.toFloatBits(0, 255, 0, 255), 1, 0,
+			1.5f, 0.5f, 0, Color.toFloatBits(0, 0, 255, 255), 1f, 1
+		});
+		Matrix4 transform = new Matrix4();
+		transform.scale(1, 0.5f, 1);
+		mesh.transform(transform, 2, 2);
 
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
