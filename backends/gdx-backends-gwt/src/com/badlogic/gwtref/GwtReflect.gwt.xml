@@ -32,6 +32,8 @@
     value="com.badlogic.gdx.graphics.VertexAttribute" />
   <extend-configuration-property name="gdx.reflect.include"
     value="com.badlogic.gdx.graphics.g3d.model" />
+    <extend-configuration-property name="gdx.reflect.include"
+        value="java.util.List" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="java.util.ArrayList" />
 	<extend-configuration-property name="gdx.reflect.include"
