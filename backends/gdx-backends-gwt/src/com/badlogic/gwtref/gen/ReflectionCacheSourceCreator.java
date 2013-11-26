@@ -643,15 +643,15 @@ public class ReflectionCacheSourceCreator {
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
 			if (stub.type.equals("float")){
-				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).floatValue());");
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).floatValue());");
 			} else if (stub.type.equals("int")){
-				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).intValue());");
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).intValue());");
 			} else if (stub.type.equals("double")){
-				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).doubleValue());");
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).doubleValue());");
 			} else if (stub.type.equals("boolean")){
-				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Boolean) value).booleanValue());");
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Boolean) value).booleanValue());");
 			} else {
-				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, value);");
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
 			}
 		}
 		pc.print();
