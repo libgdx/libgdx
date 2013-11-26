@@ -142,6 +142,7 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
+		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.Map").getErasedType(), types);
@@ -394,7 +395,9 @@ public class ReflectionCacheSourceCreator {
 		pb("}-*/;");
 
 		if (!stub.isFinal) {
-			pb("public native void " + stub.setter + "(" + stub.enclosingType + " obj, Object value)  /*-{");
+			String vType = stub.type.equals("int") || stub.type.equals("float") || stub.type.equals("double")
+					|| stub.type.equals("boolean") ? stub.type : "Object";
+			pb("public native void " + stub.setter + "(" + stub.enclosingType + " obj, " + vType + " value)  /*-{");
 			if (stub.isStatic)
 				pb("    @" + stub.enclosingType + "::" + stub.name + " = value");
 			else
@@ -628,7 +631,17 @@ public class ReflectionCacheSourceCreator {
 		p("public void set(Field field, Object obj, Object value) throws IllegalAccessException {");
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
-			p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			if (stub.type.equals("float")){
+				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).floatValue());");
+			} else if (stub.type.equals("int")){
+				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).intValue());");
+			} else if (stub.type.equals("double")){
+				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).doubleValue());");
+			} else if (stub.type.equals("boolean")){
+				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, ((Boolean) value).booleanValue());");
+			} else {
+				p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			}
 		}
 		p("}");
 	}

@@ -863,7 +863,7 @@ public class Json {
 				return (T)newArray;
 			}
 			if (ClassReflection.isAssignableFrom(List.class, type)) {
-				List newArray = type == null ? new ArrayList() : (List)newInstance(type);
+				List newArray = type == List.class ? new ArrayList() : (List)newInstance(type);
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					newArray.add(readValue(elementType, null, child));
 				return (T)newArray;
