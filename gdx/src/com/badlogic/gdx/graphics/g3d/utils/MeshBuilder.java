@@ -984,9 +984,10 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void setVertexTransform(Matrix4 transform) {
-		this.positionTransform.set(transform);
-		this.normalTransform.set(transform).inv().tra();
-		vertexTransformationEnabled = true;
+		if ((vertexTransformationEnabled = (transform != null))==true) {
+			this.positionTransform.set(transform);
+			this.normalTransform.set(transform).inv().tra();
+		}
 	}
 
 	@Override
