@@ -305,7 +305,7 @@ public class Actor {
 		return parent != null;
 	}
 
-	/** Returns the parent actor, or null if not in a stage. */
+	/** Returns the parent actor, or null if not in a group. */
 	public Group getParent () {
 		return parent;
 	}
