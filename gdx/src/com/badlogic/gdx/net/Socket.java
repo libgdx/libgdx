@@ -49,4 +49,8 @@ public interface Socket extends Disposable {
 	 * @return the {@link OutputStream} used to write data to the other end of the connection.
 	 */
 	public OutputStream getOutputStream();
+	/**
+	 * @return the RemoteAddress of the Socket as String
+	 */
+	public String getRemoteAddress ();
 }

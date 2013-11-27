@@ -122,4 +122,9 @@ public class LwjglSocket implements Socket {
 			}
 		}
 	}
+	
+	@Override
+	public String getRemoteAddress () {
+		return socket.getRemoteSocketAddress().toString();
+	}
 }

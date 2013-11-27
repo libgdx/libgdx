@@ -109,6 +109,11 @@ public class IOSSocket implements Socket {
 			throw new GdxRuntimeException("Error getting output stream from socket.", e);
 		}
 	}
+	
+	@Override
+	public String getRemoteAddress () {
+		return socket.getRemoteSocketAddress().toString();
+	}
 
 	@Override
 	public void dispose() {
