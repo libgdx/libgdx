@@ -43,6 +43,13 @@ public class ChainShape extends Shape {
 	}
 
 	/** Create a loop. This automatically adjusts connectivity.
+	 * @param vertices an array of floats of alternating x, y coordinates. */
+	public void createLoop (float[] vertices) {
+		jniCreateLoop(addr, vertices, vertices.length / 2);
+		isLooped = true;
+	}
+
+	/** Create a loop. This automatically adjusts connectivity.
 	 * @param vertices an array of vertices, these are copied */
 	public void createLoop (Vector2[] vertices) {
 		float[] verts = new float[vertices.length * 2];

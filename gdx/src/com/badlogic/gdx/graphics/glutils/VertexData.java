@@ -51,6 +51,12 @@ public interface VertexData extends Disposable {
 	 * @param count the number of floats to copy */
 	public void setVertices (float[] vertices, int offset, int count);
 
+	/**  Update (a portion of) the vertices. Does not resize the backing buffer.
+	 * @param vertices the vertex data
+	 * @param sourceOffset the offset to start copying the data from
+	 * @param count the number of floats to copy */
+	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count);
+	
 	/** <p>
 	 * Returns the underlying FloatBuffer. If you modify the buffer contents they will be uploaded on the next call to
 	 * {@link #bind()}. If you need immediate uploading use {@link #setVertices(float[], int, int)};

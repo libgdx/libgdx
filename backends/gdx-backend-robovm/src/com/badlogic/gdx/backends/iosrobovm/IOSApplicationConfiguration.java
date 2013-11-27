@@ -95,4 +95,7 @@ public class IOSApplicationConfiguration {
 	
 	/** whether to use the compass, default true **/
 	public boolean useCompass = true;
+	
+	/** whether or not to allow background music from iPod **/
+	public boolean allowIpod = false;
 }

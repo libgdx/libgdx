@@ -147,6 +147,7 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
+		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.Map").getErasedType(), types);
@@ -399,7 +400,9 @@ public class ReflectionCacheSourceCreator {
 		pb("}-*/;");
 
 		if (!stub.isFinal) {
-			pb("public native void " + stub.setter + "(" + stub.enclosingType + " obj, Object value)  /*-{");
+			String vType = stub.type.equals("int") || stub.type.equals("float") || stub.type.equals("double")
+					|| stub.type.equals("boolean") ? stub.type : "Object";
+			pb("public native void " + stub.setter + "(" + stub.enclosingType + " obj, " + vType + " value)  /*-{");
 			if (stub.isStatic)
 				pb("    @" + stub.enclosingType + "::" + stub.name + " = value");
 			else
@@ -639,7 +642,17 @@ public class ReflectionCacheSourceCreator {
 		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
-			pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			if (stub.type.equals("float")){
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).floatValue());");
+			} else if (stub.type.equals("int")){
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).intValue());");
+			} else if (stub.type.equals("double")){
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value).doubleValue());");
+			} else if (stub.type.equals("boolean")){
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Boolean) value).booleanValue());");
+			} else {
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			}
 		}
 		pc.print();
 		p("}");
