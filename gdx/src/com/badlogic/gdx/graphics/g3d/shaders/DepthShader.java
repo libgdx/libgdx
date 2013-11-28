@@ -35,6 +35,7 @@ public class DepthShader extends DefaultShader {
 		
 		public Config () {
 			super();
+			defaultCullFace = GL10.GL_FRONT;
 		}
 		public Config (String vertexShader, String fragmentShader) {
 			super(vertexShader, fragmentShader);
@@ -113,11 +114,8 @@ public class DepthShader extends DefaultShader {
 		weights = w;
 	}
 	
-	private int originalCullFace;	
 	@Override
 	public void begin (Camera camera, RenderContext context) {
-		originalCullFace = DefaultShader.defaultCullFace;
-		DefaultShader.defaultCullFace = GL10.GL_FRONT; //0; //GL10.GL_BACK; //GL10.GL_FRONT;
 		super.begin(camera, context);
 		//Gdx.gl20.glEnable(GL20.GL_POLYGON_OFFSET_FILL);
 		//Gdx.gl20.glPolygonOffset(2.f, 100.f);
@@ -126,8 +124,7 @@ public class DepthShader extends DefaultShader {
 	@Override
 	public void end () {
 		super.end();
-		DefaultShader.defaultCullFace = originalCullFace;
-		Gdx.gl20.glDisable(GL20.GL_POLYGON_OFFSET_FILL);
+		//Gdx.gl20.glDisable(GL20.GL_POLYGON_OFFSET_FILL);
 	}
 	
 	@Override
