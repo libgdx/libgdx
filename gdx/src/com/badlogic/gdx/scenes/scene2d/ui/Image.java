@@ -143,12 +143,11 @@ public class Image extends Widget {
 	}
 
 	public void setDrawable (Drawable drawable) {
+		if (this.drawable == drawable) return;
 		if (drawable != null) {
-			if (this.drawable == drawable) return;
 			if (getPrefWidth() != drawable.getMinWidth() || getPrefHeight() != drawable.getMinHeight()) invalidateHierarchy();
-		} else {
-			if (getPrefWidth() != 0 || getPrefHeight() != 0) invalidateHierarchy();
-		}
+		} else
+			invalidateHierarchy();
 		this.drawable = drawable;
 	}
 
