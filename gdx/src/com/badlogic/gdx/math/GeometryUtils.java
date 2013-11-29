@@ -33,7 +33,7 @@ public class GeometryUtils {
 	 * float y = u * aa.y + barycentric.x * bb.y + barycentric.y * cc.y;
 	 * </pre>
 	 * @return barycentricOut */
-	static public Vector2 barycentric (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
+	static public Vector2 toBarycoord (Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 barycentricOut) {
 		Vector2 v0 = tmp1.set(b).sub(a);
 		Vector2 v1 = tmp2.set(c).sub(a);
 		Vector2 v2 = tmp3.set(p).sub(a);
@@ -49,14 +49,14 @@ public class GeometryUtils {
 	}
 
 	/** Returns true if the barycentric coordinates are inside the triangle. */
-	static public boolean barycentricInsideTriangle (Vector2 barycentric) {
+	static public boolean barycoordInsideTriangle (Vector2 barycentric) {
 		return barycentric.x >= 0 && barycentric.y >= 0 && barycentric.x + barycentric.y <= 1;
 	}
 
 	/** Returns interpolated values given the barycentric coordinates of a point in a triangle and the values at each vertex.
 	 * @return interpolatedOut */
-	static public Vector2 barycentricInterpolation (Vector2 barycentric, Vector2 a, Vector2 b, Vector2 c, Vector2 interpolatedOut) {
-		float u = 1.f - barycentric.x - barycentric.y;
+	static public Vector2 fromBarycoord (Vector2 barycentric, Vector2 a, Vector2 b, Vector2 c, Vector2 interpolatedOut) {
+		float u = 1 - barycentric.x - barycentric.y;
 		interpolatedOut.x = u * a.x + barycentric.x * b.x + barycentric.y * c.x;
 		interpolatedOut.y = u * a.y + barycentric.x * b.y + barycentric.y * c.y;
 		return interpolatedOut;
