@@ -45,6 +45,7 @@ public abstract class BaseG3dTest extends GdxTest {
 	public ModelInstance axesInstance;
 	public boolean showAxes = true;
 	public Array<ModelInstance> instances = new Array<ModelInstance>();
+	public final Color bgColor = new Color(0,0,0,1);
 	
 	@Override
 	public void create () {
@@ -113,6 +114,7 @@ public abstract class BaseG3dTest extends GdxTest {
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 		render(instances);
 	}
