@@ -47,14 +47,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * shapeRenderer.setProjectionMatrix(camera.combined);
  * 
  * shapeRenderer.begin(ShapeType.Line);
- * shapeRenderer.color(1, 1, 0, 1);
+ * shapeRenderer.setColor(1, 1, 0, 1);
  * shapeRenderer.line(x, y, x2, y2);
  * shapeRenderer.rect(x, y, width, height);
  * shapeRenderer.circle(x, y, radius);
  * shapeRenderer.end();
  * 
  * shapeRenderer.begin(ShapeType.Filled);
- * shapeRenderer.color(0, 1, 0, 1);
+ * shapeRenderer.setColor(0, 1, 0, 1);
  * shapeRenderer.rect(x, y, width, height);
  * shapeRenderer.circle(x, y, radius);
  * shapeRenderer.end();
