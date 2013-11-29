@@ -40,6 +40,7 @@ import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
+import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
@@ -128,6 +129,7 @@ public class GdxTests {
 		LetterBoxTest2.class,
 		LetterBoxTest3.class,
 		LifeCycleTest.class,
+		LightsTest.class,
 		LineDrawingTest.class,
 		ManagedTest.class,
 		ManualBindTest.class,
