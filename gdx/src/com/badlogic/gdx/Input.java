@@ -17,9 +17,7 @@
 package com.badlogic.gdx;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.IntMap;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectIntMap;
 
 /** <p>
  * Interface to the input facilities. This allows polling the state of the keyboard, the touch screen and the accelerometer. On
@@ -540,7 +538,7 @@ public interface Input {
 			}
 		}
 
-		private static ObjectMap<String, Integer> keyNames;
+		private static ObjectIntMap<String> keyNames;
 
 		/** @param keyname the keyname returned by the {@link Keys#toString(int)} method
 		 * @return the int keycode */
@@ -553,7 +551,7 @@ public interface Input {
 
 		/** lazily intialized in {@link Keys#valueOf(String)} */
 		private static void initializeKeyNames() {
-			keyNames = new ObjectMap<String, Integer>();
+			keyNames = new ObjectIntMap<String>();
 			for (int i = 0; i < 256; i++) {
 				String name = toString(i);
 				if (name != null) {
