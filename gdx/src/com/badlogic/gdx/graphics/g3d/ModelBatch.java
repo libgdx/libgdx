@@ -43,8 +43,9 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * @author xoppa, badlogic */
 public class ModelBatch implements Disposable {
-	protected Camera camera;
-	protected final Pool<Renderable> renderablesPool = new Pool<Renderable>() {
+	protected static class RenderablePool extends Pool<Renderable> {
+		protected Array<Renderable> obtained = new Array<Renderable>();
+		
 		@Override
 		protected Renderable newObject () {
 			return new Renderable();
@@ -57,13 +58,20 @@ public class ModelBatch implements Disposable {
 			renderable.material = null;
 			renderable.mesh = null;
 			renderable.shader = null;
+			obtained.add(renderable);
 			return renderable;
 		}
-	};
+		
+		public void flush() {
+			super.freeAll(obtained);
+			obtained.clear();
+		}
+	}
+	
+	protected Camera camera;
+	protected final RenderablePool renderablesPool = new RenderablePool();  
 	/** list of Renderables to be rendered in the current batch **/
 	protected final Array<Renderable> renderables = new Array<Renderable>();
-	/** list of Renderables that can be put back into the pool **/
-	protected final Array<Renderable> reuseableRenderables = new Array<Renderable>();
 	/** the {@link RenderContext} **/
 	protected final RenderContext context;
 	private final boolean ownContext;
@@ -208,8 +216,7 @@ public class ModelBatch implements Disposable {
 		}
 		if (currentShader != null)
 			currentShader.end();
-		renderablesPool.freeAll(reuseableRenderables);
-		reuseableRenderables.clear();
+		renderablesPool.flush();
 		renderables.clear();
 	}
 
@@ -237,7 +244,12 @@ public class ModelBatch implements Disposable {
 	 * and before a call to {@link #end()}.
 	 * @param renderableProvider the renderable provider */
 	public void render(final RenderableProvider renderableProvider) {
-		render(renderableProvider, null, null);
+		final int offset = renderables.size;
+		renderableProvider.getRenderables(renderables, renderablesPool);
+		for (int i = offset; i < renderables.size; i++) {
+			Renderable renderable = renderables.get(i);
+			renderable.shader = shaderProvider.getShader(renderable);
+		}
 	}
 	
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
@@ -245,25 +257,33 @@ public class ModelBatch implements Disposable {
 	 * and before a call to {@link #end()}.
 	 * @param renderableProviders one or more renderable providers */
 	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders) {
-		render(renderableProviders, null, null);
+		for (final RenderableProvider renderableProvider : renderableProviders)
+			render(renderableProvider);
 	}
 	
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
-	 * instances to the current batch to be rendered. Any lights set on the returned renderables will be replaced
-	 * with the given lights. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+	 * instances to the current batch to be rendered. Any environment set on the returned renderables will be replaced
+	 * with the given environment. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
 	 * @param renderableProvider the renderable provider
-	 * @param lights the lights to use for the renderables */
-	public void render(final RenderableProvider renderableProvider, final Environment lights) {
-		render(renderableProvider, lights, null);
+	 * @param environment the {@link Environment} to use for the renderables */
+	public void render(final RenderableProvider renderableProvider, final Environment environment) {
+		final int offset = renderables.size;
+		renderableProvider.getRenderables(renderables, renderablesPool);
+		for (int i = offset; i < renderables.size; i++) {
+			Renderable renderable = renderables.get(i);
+			renderable.environment = environment;
+			renderable.shader = shaderProvider.getShader(renderable);
+		}
 	}
 	
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
-	 * instances to the current batch to be rendered. Any lights set on the returned renderables will be replaced
-	 * with the given lights. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
+	 * instances to the current batch to be rendered. Any environment set on the returned renderables will be replaced
+	 * with the given environment. Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
 	 * @param renderableProviders one or more renderable providers
-	 * @param lights the lights to use for the renderables */
-	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Environment lights) {
-		render(renderableProviders, lights, null);
+	 * @param environment the {@link Environment} to use for the renderables */
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Environment environment) {
+		for (final RenderableProvider renderableProvider : renderableProviders)
+			render(renderableProvider, environment);
 	}
 	
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
@@ -272,7 +292,13 @@ public class ModelBatch implements Disposable {
 	 * @param renderableProvider the renderable provider
 	 * @param shader the shader to use for the renderables */
 	public void render(final RenderableProvider renderableProvider, final Shader shader) {
-		render(renderableProvider, null, shader);
+		final int offset = renderables.size;
+		renderableProvider.getRenderables(renderables, renderablesPool);
+		for (int i = offset; i < renderables.size; i++) {
+			Renderable renderable = renderables.get(i);
+			renderable.shader = shader;
+			renderable.shader = shaderProvider.getShader(renderable);
+		}
 	}
 	
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
@@ -281,38 +307,38 @@ public class ModelBatch implements Disposable {
 	 * @param renderableProviders one or more renderable providers
 	 * @param shader the shader to use for the renderables */
 	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Shader shader) {
-		render(renderableProviders, null, shader);
+		for (final RenderableProvider renderableProvider : renderableProviders)
+			render(renderableProvider, shader);
 	}
 
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
-	 * instances to the current batch to be rendered. Any lights set on the returned renderables will be replaced
-	 * with the given lights. Any shaders set on the returned renderables will be replaced with the given {@link Shader}. 
+	 * instances to the current batch to be rendered. Any environment set on the returned renderables will be replaced
+	 * with the given environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}. 
 	 * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
 	 * @param renderableProvider the renderable provider
-	 * @param lights the lights to use for the renderables
+	 * @param environment the {@link Environment} to use for the renderables
 	 * @param shader the shader to use for the renderables */
-	public void render(final RenderableProvider renderableProvider, final Environment lights, final Shader shader) {
+	public void render(final RenderableProvider renderableProvider, final Environment environment, final Shader shader) {
 		final int offset = renderables.size;
 		renderableProvider.getRenderables(renderables, renderablesPool);
 		for (int i = offset; i < renderables.size; i++) {
 			Renderable renderable = renderables.get(i);
-			renderable.environment = lights;
+			renderable.environment = environment;
 			renderable.shader = shader;
 			renderable.shader = shaderProvider.getShader(renderable);
-			reuseableRenderables.add(renderable);
 		}
 	}
 	
 	/** Calls {@link RenderableProvider#getRenderables(Array, Pool)} and adds all returned {@link Renderable}
-	 * instances to the current batch to be rendered. Any lights set on the returned renderables will be replaced
-	 * with the given lights. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
+	 * instances to the current batch to be rendered. Any environment set on the returned renderables will be replaced
+	 * with the given environment. Any shaders set on the returned renderables will be replaced with the given {@link Shader}.
 	 * Can only be called after a call to {@link #begin(Camera)} and before a call to {@link #end()}.
 	 * @param renderableProviders one or more renderable providers
-	 * @param lights the lights to use for the renderables
+	 * @param environment the {@link Environment} to use for the renderables
 	 * @param shader the shader to use for the renderables */
-	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Environment lights, final Shader shader) {
+	public <T extends RenderableProvider> void render(final Iterable<T> renderableProviders, final Environment environment, final Shader shader) {
 		for (final RenderableProvider renderableProvider : renderableProviders)
-			render(renderableProvider, lights, shader);
+			render(renderableProvider, environment, shader);
 	}
 
 	@Override
