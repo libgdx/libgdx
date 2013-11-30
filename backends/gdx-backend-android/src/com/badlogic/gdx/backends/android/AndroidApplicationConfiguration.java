@@ -25,7 +25,7 @@ import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 
-/** Class defining the configuration of an {@link AndroidApplication}. Allows you to disable the use of the accelerometer to save
+/** Class defining the configuration of an {@link AndroidApplicationBackend}. Allows you to disable the use of the accelerometer to save
  * battery among other things.
  * @author mzechner */
 public class AndroidApplicationConfiguration {

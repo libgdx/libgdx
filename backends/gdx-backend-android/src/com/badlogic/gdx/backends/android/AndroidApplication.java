@@ -16,409 +16,205 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-
 import android.app.Activity;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Debug;
-import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxNativesLoader;
 
-/** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
+/** An implementation of the {@link Application} interface for Android.
+ * Create an {@link Activity} that derives from this class. In
  * the {@link Activity#onCreate(Bundle)} method call the {@link #initialize(ApplicationListener, boolean)} method specifying the
  * configuration for the GLSurfaceView.
  * 
- * @author mzechner */
+ * @author Centril */
 public class AndroidApplication extends Activity implements Application {
-	static {
-		GdxNativesLoader.load();
-	}
+	protected AndroidApplicationBackend backend;
 
-	protected AndroidGraphics graphics;
-	protected AndroidInput input;
-	protected AndroidAudio audio;
-	protected AndroidFiles files;
-	protected AndroidNet net;
-	protected ApplicationListener listener;
-	public Handler handler;
-	protected boolean firstResume = true;
-	protected final Array<Runnable> runnables = new Array<Runnable>();
-	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
-	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	protected WakeLock wakeLock = null;
-	protected int logLevel = LOG_INFO;
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
-		initialize(listener, config);
-	}
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-	 * the {@link AndroidApplicationConfiguration} instance.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
-	 *           etc.). */
-	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
-		audio = new AndroidAudio(this, config);
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet(this);
-		this.listener = listener;
-		this.handler = new Handler();
-
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
-		Gdx.net = this.getNet();
-
-		try {
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		} catch (Exception ex) {
-			log("AndroidApplication", "Content already displayed, cannot request FEATURE_NO_TITLE", ex);
+	protected void initBackend() {
+		if ( backend == null ) {
+			backend = new AndroidApplicationBackend(this);
 		}
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-		setContentView(graphics.getView(), createLayoutParams());
-		createWakeLock(config);
-		hideStatusBar(config);
 	}
 
-	protected FrameLayout.LayoutParams createLayoutParams () {
-		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
-			android.view.ViewGroup.LayoutParams.FILL_PARENT);
-		layoutParams.gravity = Gravity.CENTER;
-		return layoutParams;
+	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
+		initBackend();
+		backend.initialize(listener, useGL2IfAvailable);
+	}
+
+	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		initBackend();
+		backend.initialize(listener, config);
+	}
+
+	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
+		initBackend();
+		return backend.initializeForView(listener, useGL2IfAvailable);
+	}
+
+	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		initBackend();
+		return backend.initializeForView(listener, config);
 	}
 
 	protected void createWakeLock (AndroidApplicationConfiguration config) {
-		if (config.useWakelock) {
-			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
-		}
+		backend.createWakeLock(config);
 	}
 
 	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11)
-			return;
-
-		View rootView = getWindow().getDecorView();
-
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
-			m.invoke(rootView, 0x1);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't hide status bar", e);
-		}
+		backend.hideStatusBar(config);
 	}
 
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * <p/>
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
-		return initializeForView(listener, config);
-	}
-
-	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
-	 * input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0
-	 * context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-	 * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-	 * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-	 * the {@link AndroidApplicationConfiguration} instance.
-	 * <p/>
-	 * Note: you have to add the returned view to your layout!
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
-	 *           etc.).
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
-		audio = new AndroidAudio(this, config);
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet(this);
-		this.listener = listener;
-		this.handler = new Handler();
-
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
-		Gdx.net = this.getNet();
-
-		createWakeLock(config);
-		hideStatusBar(config);
-		return graphics.getView();
+	protected FrameLayout.LayoutParams createLayoutParams () {
+		return backend.createLayoutParams();
 	}
 
 	@Override
 	protected void onPause () {
-		if (wakeLock != null) wakeLock.release();
-		boolean isContinuous = graphics.isContinuousRendering();
-		graphics.setContinuousRendering(true);
-		graphics.pause();
-
-		input.unregisterSensorListeners();
-		// erase pointer ids. this sucks donkeyballs...
-		int[] realId = input.realId;
-		for (int i = 0; i < realId.length; i++)
-			realId[i] = -1;
-
-		// erase touched state. this also sucks donkeyballs...
-		boolean[] touched = input.touched;
-		for (int i = 0; i < touched.length; i++)
-			touched[i] = false;
-
-		if (isFinishing()) {
-			graphics.clearManagedCaches();
-			graphics.destroy();
-		}
-		graphics.setContinuousRendering(isContinuous);
-
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
-		}
-
+		backend.onPause();
 		super.onPause();
 	}
 
 	@Override
 	protected void onResume () {
-		if (wakeLock != null) wakeLock.acquire();
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
-		Gdx.net = this.getNet();
-
-		((AndroidInput)getInput()).registerSensorListeners();
-
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
-		}
-
-		if (!firstResume) {
-			graphics.resume();
-		} else
-			firstResume = false;
+		backend.onResume();
 		super.onResume();
 	}
 
 	@Override
-	protected void onDestroy () {
-		super.onDestroy();
+	public void onConfigurationChanged (Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		backend.onConfigurationChanged(newConfig);
 	}
 
 	@Override
 	public ApplicationListener getApplicationListener () {
-		return listener;
-	}
-	
-	@Override
-	public Audio getAudio () {
-		return audio;
-	}
-
-	@Override
-	public Files getFiles () {
-		return files;
+		return backend.getApplicationListener();
 	}
 
 	@Override
 	public Graphics getGraphics () {
-		return graphics;
+		return backend.getGraphics();
+	}
+
+	@Override
+	public Audio getAudio () {
+		return backend.getAudio();
 	}
 
 	@Override
 	public Input getInput () {
-		return input;
+		return backend.getInput();
 	}
-	
+
+	@Override
+	public Files getFiles () {
+		return backend.getFiles();
+	}
+
 	@Override
 	public Net getNet () {
-		return net;
-	}
-
-	@Override
-	public ApplicationType getType () {
-		return ApplicationType.Android;
-	}
-
-	@Override
-	public int getVersion () {
-		return Integer.parseInt(android.os.Build.VERSION.SDK);
-	}
-
-	@Override
-	public long getJavaHeap () {
-		return Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-	}
-
-	@Override
-	public long getNativeHeap () {
-		return Debug.getNativeHeapAllocatedSize();
-	}
-
-	@Override
-	public Preferences getPreferences (String name) {
-		return new AndroidPreferences(getSharedPreferences(name, Context.MODE_PRIVATE));
-	}
-
-	AndroidClipboard clipboard;
-	
-	@Override
-	public Clipboard getClipboard() {
-		if (clipboard == null) {
-			clipboard = new AndroidClipboard(this);
-		}
-		return clipboard;
-	}
-	
-	@Override
-	public void postRunnable (Runnable runnable) {
-		synchronized (runnables) {
-			runnables.add(runnable);
-			Gdx.graphics.requestRendering();
-		}
-	}
-
-	@Override
-	public void onConfigurationChanged (Configuration config) {
-		super.onConfigurationChanged(config);
-		boolean keyboardAvailable = false;
-		if (config.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) keyboardAvailable = true;
-		input.keyboardAvailable = keyboardAvailable;
-	}
-
-	@Override
-	public void exit () {
-		handler.post(new Runnable() {
-			@Override
-			public void run () {
-				AndroidApplication.this.finish();
-			}
-		});
-	}
-
-	@Override
-	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message);
-		}
-	}
-
-	@Override
-	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			Log.d(tag, message, exception);
-		}
+		return backend.getNet();
 	}
 
 	@Override
 	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message);
+		backend.log(tag, message);
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
+		backend.log(tag, message, exception);
 	}
 
 	@Override
 	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message);
+		backend.error(tag, message);
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) Log.e(tag, message, exception);
+		backend.error(tag, message, exception);
+	}
+
+	@Override
+	public void debug (String tag, String message) {
+		backend.debug(tag, message);
+	}
+
+	@Override
+	public void debug (String tag, String message, Throwable exception) {
+		backend.debug(tag, message, exception);
 	}
 
 	@Override
 	public void setLogLevel (int logLevel) {
-		this.logLevel = logLevel;
+		backend.setLogLevel(logLevel);
 	}
 
 	@Override
-	public int getLogLevel() {
-		return logLevel;
+	public int getLogLevel () {
+		return backend.getLogLevel();
+	}
+
+	@Override
+	public ApplicationType getType () {
+		return backend.getType();
+	}
+
+	@Override
+	public int getVersion () {
+		return backend.getVersion();
+	}
+
+	@Override
+	public long getJavaHeap () {
+		return backend.getJavaHeap();
+	}
+
+	@Override
+	public long getNativeHeap () {
+		return backend.getNativeHeap();
+	}
+
+	@Override
+	public Preferences getPreferences (String name) {
+		return backend.getPreferences(name);
+	}
+
+	@Override
+	public Clipboard getClipboard () {
+		return backend.getClipboard();
+	}
+
+	@Override
+	public void postRunnable (Runnable runnable) {
+		backend.postRunnable(runnable);
+	}
+
+	@Override
+	public void exit () {
+		backend.exit();
 	}
 
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.add(listener);
-		}
+		backend.addLifecycleListener(listener);
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.removeValue(listener, true);
-		}		
+		backend.removeLifecycleListener(listener);
 	}
 }

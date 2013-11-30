@@ -64,10 +64,10 @@ public class AndroidNet implements Net {
 
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
 	// If you make changes here, make changes in the other backend as well.
-	final AndroidApplication app;
+	final AndroidApplicationBackend app;
 	NetJavaImpl netJavaImpl;
 
-	public AndroidNet (AndroidApplication activity) {
+	public AndroidNet (AndroidApplicationBackend activity) {
 		app = activity;
 		netJavaImpl = new NetJavaImpl();
 	}
@@ -94,10 +94,10 @@ public class AndroidNet implements Net {
 			return;
 		}
 		final Uri uri = Uri.parse(URI);
-		app.runOnUiThread(new Runnable() {
+		app.activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run () {
-				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+				app.activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));
 			}
 		});
 	}
