@@ -479,6 +479,7 @@ public class ArrayMap<K, V> {
 		}
 
 		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return index < map.size;
 		}
 
@@ -515,6 +516,7 @@ public class ArrayMap<K, V> {
 		}
 
 		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return index < map.size;
 		}
 
@@ -552,6 +554,7 @@ public class ArrayMap<K, V> {
 		}
 
 		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return index < map.size;
 		}
 
