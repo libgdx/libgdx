@@ -548,18 +548,18 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void rect(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal) {
-		rect(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMin),
-			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMin),
-			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMax),
-			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMax));
+		rect(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMax),
+			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMax),
+			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMin),
+			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMin));
 	}
 	
 	@Override
 	public void rect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ) {
-		rect(vertTmp1.set(null, null, null, null).setPos(x00,y00,z00).setNor(normalX,normalY,normalZ).setUV(uMin,vMin),
-			vertTmp2.set(null, null, null, null).setPos(x10,y10,z10).setNor(normalX,normalY,normalZ).setUV(uMax,vMin),
-			vertTmp3.set(null, null, null, null).setPos(x11,y11,z11).setNor(normalX,normalY,normalZ).setUV(uMax,vMax),
-			vertTmp4.set(null, null, null, null).setPos(x01,y01,z01).setNor(normalX,normalY,normalZ).setUV(uMin,vMax));
+		rect(vertTmp1.set(null, null, null, null).setPos(x00,y00,z00).setNor(normalX,normalY,normalZ).setUV(uMin,vMax),
+			vertTmp2.set(null, null, null, null).setPos(x10,y10,z10).setNor(normalX,normalY,normalZ).setUV(uMax,vMax),
+			vertTmp3.set(null, null, null, null).setPos(x11,y11,z11).setNor(normalX,normalY,normalZ).setUV(uMax,vMin),
+			vertTmp4.set(null, null, null, null).setPos(x01,y01,z01).setNor(normalX,normalY,normalZ).setUV(uMin,vMin));
 	}
 	
 	@Override
@@ -579,18 +579,18 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void patch(Vector3 corner00, Vector3 corner10, Vector3 corner11, Vector3 corner01, Vector3 normal, int divisionsU, int divisionsV) {
-		patch(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMin),
-			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMin),
-			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMax),
-			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMax),
+		patch(vertTmp1.set(corner00, normal, null, null).setUV(uMin,vMax),
+			vertTmp2.set(corner10, normal, null, null).setUV(uMax,vMax),
+			vertTmp3.set(corner11, normal, null, null).setUV(uMax,vMin),
+			vertTmp4.set(corner01, normal, null, null).setUV(uMin,vMin),
 			divisionsU, divisionsV);
 	}
 	
 	public void patch(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, int divisionsU, int divisionsV) {
-		patch(vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uMin,vMin),
-			vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uMax,vMin),
-			vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(uMax,vMax),
-			vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uMin,vMax),
+		patch(vertTmp1.set(null).setPos(x00, y00, z00).setNor(normalX, normalY, normalZ).setUV(uMin,vMax),
+			vertTmp2.set(null).setPos(x10, y10, z10).setNor(normalX, normalY, normalZ).setUV(uMax,vMax),
+			vertTmp3.set(null).setPos(x11, y11, z11).setNor(normalX, normalY, normalZ).setUV(uMax,vMin),
+			vertTmp4.set(null).setPos(x01, y01, z01).setNor(normalX, normalY, normalZ).setUV(uMin,vMin),
 			divisionsU, divisionsV);
 	}
 	
