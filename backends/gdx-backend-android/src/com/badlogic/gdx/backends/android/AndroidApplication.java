@@ -132,15 +132,12 @@ public class AndroidApplication extends Activity implements Application {
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
-				View rootView = getWindow().getDecorView();
-				rootView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-					@Override
-					public void onSystemUiVisibilityChange (int arg0) {
-						useImmersiveMode(useImmersiveMode);
-					}
-				});
-			} catch (Throwable t) {
-				log("AndroidApplication", "Can't create OnSystemUiVisibilityChangeListener", t);
+				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Object o = vlistener.newInstance();
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				method.invoke(o, this);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
 			}
 		}
 	}
@@ -247,15 +244,12 @@ public class AndroidApplication extends Activity implements Application {
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
-				View rootView = getWindow().getDecorView();
-				rootView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-					@Override
-					public void onSystemUiVisibilityChange (int arg0) {
-						useImmersiveMode(useImmersiveMode);
-					}
-				});
-			} catch (Throwable t) {
-				log("AndroidApplication", "Can't create OnSystemUiVisibilityChangeListener", t);
+				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Object o = vlistener.newInstance();
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				method.invoke(o, this);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
 			}
 		}
 		return graphics.getView();
