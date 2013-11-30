@@ -66,7 +66,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	}
 	
 	/** Removes all attributes */
-	public final void clear() {
+	public void clear() {
 		mask = 0;
 		attributes.clear();
 	}
