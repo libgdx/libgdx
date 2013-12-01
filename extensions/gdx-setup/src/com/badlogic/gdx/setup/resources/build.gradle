@@ -4,6 +4,8 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: "idea"
+    
     version = "1.0"
     ext.appName = "%APP_NAME%"
     ext.gdxVersion = "%GDX_VERSION%"
@@ -16,8 +18,7 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
+    apply plugin: "eclipse"    
 }
 
 project(":core") {
