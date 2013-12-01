@@ -48,7 +48,7 @@ public final class ClassReflection {
 	static public boolean isAssignableFrom (Class c1, Class c2) {
 		Type c1Type = ReflectionCache.getType(c1);
 		Type c2Type = ReflectionCache.getType(c2);
-		return c2Type.isAssignableFrom(c1Type);
+		return c1Type.isAssignableFrom(c2Type);
 	}
 
 	/** Returns true if the class or interface represented by the supplied Class is a member class. */
