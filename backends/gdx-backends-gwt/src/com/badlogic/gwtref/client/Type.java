@@ -70,7 +70,7 @@ public class Type {
 	/** @param otherType the other type
 	 * @return whether this type is assignable to the other type. */
 	public boolean isAssignableFrom (Type otherType) {
-		return assignables.contains(otherType.getClassOfType());
+		return otherType.assignables.contains(getClassOfType());
 	}
 
 	/** @param name the name of the field
@@ -117,7 +117,6 @@ public class Type {
 	 * @return the public method that matches the name and parameter types of this type or one of its super interfaces.
 	 * @throws NoSuchMethodException */
 	public Method getMethod (String name, Class... parameterTypes) throws NoSuchMethodException {
-		ArrayList<Method> allMethods = new ArrayList<Method>();
 		Type t = this;
 		while (t != null) {
 			Method[] declMethods = t.getDeclaredMethods();
