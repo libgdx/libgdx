@@ -285,6 +285,8 @@ public class Stage extends InputAdapter implements Disposable {
 	public boolean touchDragged (int screenX, int screenY, int pointer) {
 		pointerScreenX[pointer] = screenX;
 		pointerScreenY[pointer] = screenY;
+		mouseScreenX = screenX;
+		mouseScreenY = screenY;
 
 		if (touchFocuses.size == 0) return false;
 
