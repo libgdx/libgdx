@@ -676,10 +676,8 @@ public class DefaultShader extends BaseShader {
 					pointLights[i].set(points.get(i));
 
 				int idx = pointLightsLoc + i * pointLightsSize;
-				program.setUniformf(idx+pointLightsColorOffset, pointLights[i].color.r, pointLights[i].color.g, pointLights[i].color.b);
+				program.setUniformf(idx+pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity, pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
 				program.setUniformf(idx+pointLightsPositionOffset, pointLights[i].position);
-				if (pointLightsIntensityOffset >= 0)
-					program.setUniformf(idx+pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0)
 					break;
 			}

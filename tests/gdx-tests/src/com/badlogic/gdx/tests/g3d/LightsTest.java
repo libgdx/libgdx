@@ -62,7 +62,7 @@ public class LightsTest extends GdxTest {
 		model = modelBuilder.createSphere(2f, 3f, 2f, 10, 10, GL10.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(1, 1, 1, 1)), Usage.Position | Usage.Normal);
 		renderable = model.nodes.get(0).parts.get(0).setRenderable(new Renderable());
 		renderable.environment = environment;
-		if (false) {
+		if (true) {
 			DefaultShader.Config config = new DefaultShader.Config();
 			config.numPointLights = 2;
 			renderable.shader = shader = new DefaultShader(renderable, config);
