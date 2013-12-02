@@ -155,10 +155,11 @@ struct PointLight
 {
 	vec3 color;
 	vec3 position;
-	float intensity;
+	//float intensity;
 };
-uniform vec3 u_pointLightPosition;
-uniform vec3 u_pointLightColor;
+uniform PointLight u_pointLights[numPointLights];
+//uniform vec3 u_pointLightPosition;
+//uniform vec3 u_pointLightColor;
 uniform float u_pointLightIntensity;
 #endif // numPointLights
 
@@ -308,16 +309,18 @@ void main() {
 		#endif // numDirectionalLights
 
 		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
-			vec3 lightDir = u_pointLightPosition - pos.xyz;
-			float dist2 = dot(lightDir, lightDir);
-			lightDir *= inversesqrt(dist2);
-			float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
-			float falloff = clamp(u_pointLightIntensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
-			v_lightDiffuse += u_pointLightColor * (NdotL * falloff);
-			#ifdef specularFlag
-				float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
-				v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
-			#endif // specularFlag
+			for (int i = 0; i < numPointLights; i++) {
+				vec3 lightDir = u_pointLights[i].position - pos.xyz;
+				float dist2 = dot(lightDir, lightDir);
+				lightDir *= inversesqrt(dist2);
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
+				float falloff = clamp(u_pointLightIntensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
+				v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+				#ifdef specularFlag
+					float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
+					v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+				#endif // specularFlag
+			}
 		#endif // numPointLights
 	#endif // lightingFlag
 }
