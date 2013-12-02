@@ -60,26 +60,28 @@ public class LightsTest extends GdxTest {
 		model = modelBuilder.createCone(2f, 3f, 2f, 10, GL10.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(1, 1, 1, 1)), Usage.Position | Usage.Normal);
 		renderable = model.nodes.get(0).parts.get(0).setRenderable(new Renderable());
 		renderable.environment = environment;
+		if (true) {
+			DefaultShader.Config config = new DefaultShader.Config();
+			config.numPointLights = 2;
+			renderable.shader = shader = new DefaultShader(renderable, config);
+		} else
 		renderable.shader = shader = new DefaultShader(renderable, new DefaultShader.Config(Gdx.files.internal("data/g3d/shaders/lighttest.vertex.glsl").readString(), Gdx.files.internal("data/g3d/shaders/lighttest.fragment.glsl").readString())) {
 			protected final int u_pointLightPosition	= register(new Uniform("u_pointLightPosition"), new Setter() {
 				@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
 				@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 					shader.set(inputID, pointLight.position);
-					//Gdx.app.log("Test", "Position = "+pointLight.position.toString());
 				}
 			});
 			protected final int u_pointLightIntensity	= register(new Uniform("u_pointLightIntensity"), new Setter() {
 				@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
 				@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
 					shader.set(inputID, pointLight.intensity);
-					//Gdx.app.log("Test", "Intensity = "+pointLight.intensity);
 				}
 			});
 			protected final int u_pointLightColor		= register(new Uniform("u_pointLightColor"), new Setter() {
 				@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
 				@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-					shader.set(inputID, pointLight.color.r, pointLight.color.g, pointLight.color.b);
-					//Gdx.app.log("Test", "Color = "+pointLight.color.toString());
+					shader.set(inputID, pointLight.color.g, pointLight.color.r, pointLight.color.b);
 				}
 			});
 			
