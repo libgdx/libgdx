@@ -5,6 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
-	<classpathentry kind="lib" path="/gdx-backend-android/libs/android-4.2.jar"/>
+	<classpathentry kind="lib" path="/gdx-backend-android/libs/android-4.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
