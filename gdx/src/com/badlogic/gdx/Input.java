@@ -240,7 +240,8 @@ public interface Input {
 		public static final int F11 = 254;
 		public static final int F12 = 255;
 
-		/** @return a human readable representation of the keycode */
+		/** @return a human readable representation of the keycode.
+		 *  The returned value can be used in {@link Input.Keys#valueOf(String)} */
 		public static String toString(int keycode) {
 			if (keycode < 0) {
 				throw new IllegalArgumentException(
@@ -252,286 +253,287 @@ public interface Input {
 			}
 			switch (keycode) {
 				// META* variables should not be used with this method.
-				case 0:
-					return "UNKNOWN";
-				case 1:
-					return "SOFT_LEFT";
-				case 2:
-					return "SOFT_RIGHT";
-				case 3:
-					return "HOME";
-				case 4:
-					return "BACK";
-				case 5:
-					return "CALL";
-				case 6:
-					return "ENDCALL";
-				case 7:
-					return "NUM_0";
-				case 8:
-					return "NUM_1";
-				case 9:
-					return "NUM_2";
-				case 10:
-					return "NUM_3";
-				case 11:
-					return "NUM_4";
-				case 12:
-					return "NUM_5";
-				case 13:
-					return "NUM_6";
-				case 14:
-					return "NUM_7";
-				case 15:
-					return "NUM_8";
-				case 16:
-					return "NUM_9";
-				case 17:
-					return "*"; // STAR
-				case 18:
-					return "#";  // POUND
-				case 19:
-					return "UP";
-				case 20:
-					return "DOWN";
-				case 21:
-					return "LEFT";
-				case 22:
-					return "RIGHT";
-				case 23:
-					return "CENTER";
-				case 24:
-					return "VOLUME_UP";
-				case 25:
-					return "VOLUME_DOWN";
-				case 26:
-					return "POWER";
-				case 27:
-					return "CAMERA";
-				case 28:
-					return "CLEAR";
-				case 29:
+				case UNKNOWN:
+					return "Unknown";
+				case SOFT_LEFT:
+					return "Soft Left";
+				case SOFT_RIGHT:
+					return "Soft Right";
+				case HOME:
+					return "Home";
+				case BACK:
+					return "Back";
+				case CALL:
+					return "Call";
+				case ENDCALL:
+					return "End Call";
+				case NUM_0:
+					return "Num 0";
+				case NUM_1:
+					return "Num 1";
+				case NUM_2:
+					return "Num 2";
+				case NUM_3:
+					return "Num 3";
+				case NUM_4:
+					return "Num 4";
+				case NUM_5:
+					return "Num 5";
+				case NUM_6:
+					return "Num 6";
+				case NUM_7:
+					return "Num 7";
+				case NUM_8:
+					return "Num 8";
+				case NUM_9:
+					return "Num 9";
+				case STAR:
+					return "Star";
+				case POUND:
+					return "Pound";
+				case UP:
+					return "Up";
+				case DOWN:
+					return "Down";
+				case LEFT:
+					return "Left";
+				case RIGHT:
+					return "Right";
+				case CENTER:
+					return "Center";
+				case VOLUME_UP:
+					return "Volume Up";
+				case VOLUME_DOWN:
+					return "Volume Down";
+				case POWER:
+					return "Power";
+				case CAMERA:
+					return "Camera";
+				case CLEAR:
+					return "Clear";
+				case A:
 					return "A";
-				case 30:
+				case B:
 					return "B";
-				case 31:
+				case C:
 					return "C";
-				case 32:
+				case D:
 					return "D";
-				case 33:
+				case E:
 					return "E";
-				case 34:
+				case F:
 					return "F";
-				case 35:
+				case G:
 					return "G";
-				case 36:
+				case H:
 					return "H";
-				case 37:
+				case I:
 					return "I";
-				case 38:
+				case J:
 					return "J";
-				case 39:
+				case K:
 					return "K";
-				case 40:
+				case L:
 					return "L";
-				case 41:
+				case M:
 					return "M";
-				case 42:
+				case N:
 					return "N";
-				case 43:
+				case O:
 					return "O";
-				case 44:
+				case P:
 					return "P";
-				case 45:
+				case Q:
 					return "Q";
-				case 46:
+				case R:
 					return "R";
-				case 47:
+				case S:
 					return "S";
-				case 48:
+				case T:
 					return "T";
-				case 49:
+				case U:
 					return "U";
-				case 50:
+				case V:
 					return "V";
-				case 51:
+				case W:
 					return "W";
-				case 52:
+				case X:
 					return "X";
-				case 53:
+				case Y:
 					return "Y";
-				case 54:
+				case Z:
 					return "Z";
-				case 55:
-					return ","; // COMMA
-				case 56:
-					return "."; // PERIOD
-				case 57:
-					return "ALT_LEFT";
-				case 58:
-					return "ALT_RIGHT";
-				case 59:
-					return "SHIFT_LEFT";
-				case 60:
-					return "SHIFT_RIGHT";
-				case 61:
-					return "TAB";
-				case 62:
-					return " "; // SPACE
-				case 63:
+				case COMMA:
+					return "Comma";
+				case PERIOD:
+					return "Period";
+				case ALT_LEFT:
+					return "L-Alt";
+				case ALT_RIGHT:
+					return "R-Alt";
+				case SHIFT_LEFT:
+					return "L-Shift";
+				case SHIFT_RIGHT:
+					return "R-Shift";
+				case TAB:
+					return "Tab";
+				case SPACE:
+					return "Space";
+				case SYM:
 					return "SYM";
-				case 64:
-					return "EXPLORER";
-				case 65:
-					return "ENVELOPE";
-				case 66:
-					return "ENTER";
-				case 67:
-					return "DEL";  // DEL and BACKSPACE
-				case 68:
-					return "`"; // GRAVE (the tilde key)
-				case 69:
-					return "-"; // MINUS
-				case 70:
-					return "="; // EQUALS
-				case 71:
-					return "["; // LEFT_BRACKET
-				case 72:
-					return "]";  // RIGHT_BRACKET
-				case 73:
-					return "\\"; // BACKSLASH (escaped)
-				case 74:
-					return ";"; // SEMICOLON
-				case 75:
-					return "'"; // APOSTROPHE
-				case 76:
-					return "/"; // SLASH
-				case 77:
-					return "@"; // AT
-				case 78:
-					return "NUM";
-				case 79:
+				case EXPLORER:
+					return "Explorer";
+				case ENVELOPE:
+					return "Envelope";
+				case ENTER:
+					return "Enter";
+				case DEL:
+					return "Delete";  // also BACKSPACE
+				case GRAVE:
+					return "Grave";
+				case MINUS:
+					return "Minus";
+				case EQUALS:
+					return "Equals";
+				case LEFT_BRACKET:
+					return "Left Bracket";
+				case RIGHT_BRACKET:
+					return "Right Bracket";
+				case BACKSLASH:
+					return "Backslash";
+				case SEMICOLON:
+					return "Semicolon";
+				case APOSTROPHE:
+					return "Apostrophe";
+				case SLASH:
+					return "Slash";
+				case AT:
+					return "@";
+				case NUM:
+					return "Num";
+				case HEADSETHOOK:
 					return "HEADSETHOOK";
-				case 80:
-					return "FOCUS";
-				case 81:
-					return "PLUS";
-				case 82:
-					return "MENU";
-				case 83:
-					return "NOTIFICATION";
-				case 84:
-					return "SEARCH";
-				case 85:
-					return "MEDIA_PLAY_PAUSE";
-				case 86:
-					return "MEDIA_STOP";
-				case 87:
-					return "MEDIA_NEXT";
-				case 88:
-					return "MEDIA_PREVIOUS";
-				case 89:
-					return "MEDIA_REWIND";
-				case 90:
-					return "MEDIA_FAST_FORWARD";
-				case 91:
-					return "MUTE";
-				case 92:
-					return "PAGE_UP";
-				case 93:
-					return "PAGE_DOWN";
-				case 94:
+				case FOCUS:
+					return "Focus";
+				case PLUS:
+					return "Plus";
+				case MENU:
+					return "Menu";
+				case NOTIFICATION:
+					return "Notification";
+				case SEARCH:
+					return "Search";
+				case MEDIA_PLAY_PAUSE:
+					return "Play/Pause";
+				case MEDIA_STOP:
+					return "Stop Media";
+				case MEDIA_NEXT:
+					return "Next Media";
+				case MEDIA_PREVIOUS:
+					return "Prev Media";
+				case MEDIA_REWIND:
+					return "Rewind";
+				case MEDIA_FAST_FORWARD:
+					return "Fast Forward";
+				case MUTE:
+					return "Mute";
+				case PAGE_UP:
+					return "Page Up";
+				case PAGE_DOWN:
+					return "Page Down";
+				case PICTSYMBOLS:
 					return "PICTSYMBOLS";
-				case 95:
+				case SWITCH_CHARSET:
 					return "SWITCH_CHARSET";
-				case 96:
-					return "BUTTON_A";
-				case 97:
-					return "BUTTON_B";
-				case 98:
-					return "BUTTON_C";
-				case 99:
-					return "BUTTON_X";
-				case 100:
-					return "BUTTON_Y";
-				case 101:
-					return "BUTTON_Z";
-				case 102:
-					return "BUTTON_L1";
-				case 103:
-					return "BUTTON_R1";
-				case 104:
-					return "BUTTON_L2";
-				case 105:
-					return "BUTTON_R2";
-				case 106:
-					return "BUTTON_THUMBL";
-				case 107:
-					return "BUTTON_THUMBR";
-				case 108:
-					return "BUTTON_START";
-				case 109:
-					return "BUTTON_SELECT";
-				case 110:
-					return "BUTTON_MODE";
-				case 112:
-					return "FORWARD_DEL";
-				case 129:
-					return "CONTROL_LEFT";
-				case 130:
-					return "CONTROL_RIGHT";
-				case 131:
-					return "ESCAPE";
-				case 132:
-					return "END";
-				case 133:
-					return "INSERT";
-				case 144:
-					return "NUMPAD_0";
-				case 145:
-					return "NUMPAD_1";
-				case 146:
-					return "NUMPAD_2";
-				case 147:
-					return "NUMPAD_3";
-				case 148:
-					return "NUMPAD_4";
-				case 149:
-					return "NUMPAD_5";
-				case 150:
-					return "NUMPAD_6";
-				case 151:
-					return "NUMPAD_7";
-				case 152:
-					return "NUMPAD_8";
-				case 153:
-					return "NUMPAD_9";
-				case 243:
-					return ":"; // COLON
-				case 244:
+				case BUTTON_A:
+					return "A Button";
+				case BUTTON_B:
+					return "B Button";
+				case BUTTON_C:
+					return "C Button";
+				case BUTTON_X:
+					return "X Button";
+				case BUTTON_Y:
+					return "Y Button";
+				case BUTTON_Z:
+					return "Z Button";
+				case BUTTON_L1:
+					return "L1 Button";
+				case BUTTON_R1:
+					return "R1 Button";
+				case BUTTON_L2:
+					return "L2 Button";
+				case BUTTON_R2:
+					return "R2 Button";
+				case BUTTON_THUMBL:
+					return "Left Thumb";
+				case BUTTON_THUMBR:
+					return "Right Thumb";
+				case BUTTON_START:
+					return "Start";
+				case BUTTON_SELECT:
+					return "Select";
+				case BUTTON_MODE:
+					return "Button Mode";
+				case FORWARD_DEL:
+					return "Forward Delete";
+				case CONTROL_LEFT:
+					return "L-Ctrl";
+				case CONTROL_RIGHT:
+					return "R-Ctrl";
+				case ESCAPE:
+					return "Escape";
+				case END:
+					return "End";
+				case INSERT:
+					return "Insert";
+				case NUMPAD_0:
+					return "Numpad 0";
+				case NUMPAD_1:
+					return "Numpad 1";
+				case NUMPAD_2:
+					return "Numpad 2";
+				case NUMPAD_3:
+					return "Numpad 3";
+				case NUMPAD_4:
+					return "Numpad 4";
+				case NUMPAD_5:
+					return "Numpad 5";
+				case NUMPAD_6:
+					return "Numpad 6";
+				case NUMPAD_7:
+					return "Numpad 7";
+				case NUMPAD_8:
+					return "Numpad 8";
+				case NUMPAD_9:
+					return "Numpad 9";
+				case COLON:
+					return "Colon";
+				case F1:
 					return "F1";
-				case 245:
+				case F2:
 					return "F2";
-				case 246:
+				case F3:
 					return "F3";
-				case 247:
+				case F4:
 					return "F4";
-				case 248:
+				case F5:
 					return "F5";
-				case 249:
+				case F6:
 					return "F6";
-				case 250:
+				case F7:
 					return "F7";
-				case 251:
+				case F8:
 					return "F8";
-				case 252:
+				case F9:
 					return "F9";
-				case 253:
+				case F10:
 					return "F10";
-				case 254:
+				case F11:
 					return "F11";
-				case 255:
-					return "F12"; // also BUTTON_CIRCLE
+				case F12:
+					return "F12";
+				// BUTTON_CIRCLE unhandled, as it conflicts with the more likely to be pressed F12
 				default:
 					// key name not found
 					return null;
