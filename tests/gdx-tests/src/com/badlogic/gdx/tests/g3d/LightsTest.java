@@ -60,7 +60,7 @@ public class LightsTest extends GdxTest {
 		model = modelBuilder.createCone(2f, 3f, 2f, 10, GL10.GL_TRIANGLES, new Material(ColorAttribute.createDiffuse(1, 1, 1, 1)), Usage.Position | Usage.Normal);
 		renderable = model.nodes.get(0).parts.get(0).setRenderable(new Renderable());
 		renderable.environment = environment;
-		if (true) {
+		if (false) {
 			DefaultShader.Config config = new DefaultShader.Config();
 			config.numPointLights = 2;
 			renderable.shader = shader = new DefaultShader(renderable, config);
@@ -88,10 +88,10 @@ public class LightsTest extends GdxTest {
 			@Override
 			public void init () {
 				super.init();
-				if (!has(u_pointLightPosition))
-					Gdx.app.error("LightsTest", "No uniform called: u_pointLightPosition");
-				if (!has(u_pointLightColor))
-					Gdx.app.error("LightsTest", "No uniform called: u_pointLightColor");
+//				if (!has(u_pointLightPosition))
+//					Gdx.app.error("LightsTest", "No uniform called: u_pointLightPosition");
+//				if (!has(u_pointLightColor))
+//					Gdx.app.error("LightsTest", "No uniform called: u_pointLightColor");
 				if (!has(u_pointLightIntensity))
 					Gdx.app.error("LightsTest", "No uniform called: u_pointLightIntensity");
 				Gdx.app.log("LightsTest", "Shader log: "+program.getLog());
