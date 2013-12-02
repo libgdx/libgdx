@@ -153,8 +153,8 @@ uniform DirectionalLight u_dirLights[numDirectionalLights];
 #if defined(numPointLights) && (numPointLights > 0)
 struct PointLight
 {
-	vec3 color;
-	vec3 position;
+	vec4 color;
+	vec4 position;
 	//float intensity;
 };
 uniform PointLight u_pointLights[numPointLights];
@@ -310,12 +310,12 @@ void main() {
 
 		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
-				vec3 lightDir = u_pointLights[i].position - pos.xyz;
+				vec3 lightDir = u_pointLights[i].position.xyz - pos.xyz;
 				float dist2 = dot(lightDir, lightDir);
 				lightDir *= inversesqrt(dist2);
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
 				float falloff = clamp(u_pointLightIntensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
-				v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+				v_lightDiffuse += u_pointLights[i].color.xyz * (NdotL * falloff);
 				#ifdef specularFlag
 					float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
 					v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);

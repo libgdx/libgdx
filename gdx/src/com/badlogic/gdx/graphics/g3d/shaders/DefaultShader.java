@@ -602,7 +602,7 @@ public class DefaultShader extends BaseShader {
 	}
 	
 	Material currentMaterial;
-	protected final void bindMaterial(final Renderable renderable) {
+	protected void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
 		
@@ -640,7 +640,7 @@ public class DefaultShader extends BaseShader {
 	}
 
 	private final Vector3 tmpV1 = new Vector3();
-	protected final void bindLights(final Renderable renderable) {
+	protected void bindLights(final Renderable renderable) {
 		final Environment lights = renderable.environment;
 		final Array<DirectionalLight> dirs = lights.directionalLights; 
 		final Array<PointLight> points = lights.pointLights;
