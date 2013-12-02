@@ -353,7 +353,6 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsLoc;
 	protected int pointLightsColorOffset;
 	protected int pointLightsPositionOffset;
-	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
 
 	protected final boolean lighting;
@@ -459,7 +458,6 @@ public class DefaultShader extends BaseShader {
 		pointLightsLoc 				= loc(u_pointLights0color);
 		pointLightsColorOffset 		= loc(u_pointLights0color) - pointLightsLoc;
 		pointLightsPositionOffset 	= loc(u_pointLights0position) - pointLightsLoc;
-		pointLightsIntensityOffset = loc(u_pointLights0intensity) - pointLightsLoc;
 		pointLightsSize 				= loc(u_pointLights1color) - pointLightsLoc;
 		if (pointLightsSize < 0)
 			pointLightsSize = 0;
