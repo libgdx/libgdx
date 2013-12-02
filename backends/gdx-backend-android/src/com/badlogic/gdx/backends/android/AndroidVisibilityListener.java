@@ -29,7 +29,12 @@ public class AndroidVisibilityListener {
 			rootView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
 				@Override
 				public void onSystemUiVisibilityChange (int arg0) {
-					application.useImmersiveMode(true);
+					application.handler.post(new Runnable() {
+						@Override
+						public void run () {
+							application.useImmersiveMode(true);
+						}
+					});
 				}
 			});
 		} catch (Throwable t) {

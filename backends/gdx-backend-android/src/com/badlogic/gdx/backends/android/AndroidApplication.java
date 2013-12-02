@@ -182,7 +182,10 @@ public class AndroidApplication extends Activity implements Application {
 		View view = getWindow().getDecorView();
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_FULLSCREEN;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
 			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
