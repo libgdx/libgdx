@@ -97,12 +97,12 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		player.setVolume(volume, volume);
 		this.volume = volume;
 	}
-	
+
 	@Override
 	public float getVolume () {
 		return volume;
 	}
-	
+
 	@Override
 	public void setPan (float pan, float volume) {
 		float leftVolume = volume;
@@ -127,13 +127,31 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 		isPrepared = false;
 	}
 
+	public void setPosition (float position) {
+		try {
+			if (!isPrepared) {
+				player.prepare();
+				isPrepared = true;
+			}
+			player.seekTo((int)(position * 1000));
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public float getPosition () {
 		return player.getCurrentPosition() / 1000f;
 	}
-	
+
+	public float getDuration () {
+		return player.getDuration() / 1000f;
+	}
+
 	@Override
-	public void setOnCompletionListener(OnCompletionListener listener) {
+	public void setOnCompletionListener (OnCompletionListener listener) {
 		onCompletionListener = listener;
 	}
 
