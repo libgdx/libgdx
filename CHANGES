@@ -1,7 +1,7 @@
 [1.0.0]
 - added setAlpha(float a) method to Sprite class
 - added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
-
+- added Immersive Mode support to Android backend
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213
