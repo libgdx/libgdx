@@ -16,14 +16,14 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import static com.badlogic.gdx.utils.SharedLibraryLoader.isMac;
+import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -58,55 +58,49 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
 	static private final char ENTER_ANDROID = '\n';
 	static private final char TAB = '\t';
-   static private final char DELETE = 127;
+	static private final char DELETE = 127;
 	static private final char BULLET = 149;
 
 	static private final Vector2 tmp1 = new Vector2();
 	static private final Vector2 tmp2 = new Vector2();
 	static private final Vector2 tmp3 = new Vector2();
 
-	TextFieldStyle style;
-	String messageText;
 	protected String text;
+	protected int cursor, selectionStart;
+	protected boolean hasSelection;
+	protected final FloatArray glyphAdvances = new FloatArray(), glyphPositions = new FloatArray();
+
+	TextFieldStyle style;
+	private String messageText;
 	private CharSequence displayText;
 	private Clipboard clipboard;
-	protected int cursor;
+	InputListener inputListener;
 	TextFieldListener listener;
 	TextFieldFilter filter;
 	OnscreenKeyboard keyboard = new DefaultOnscreenKeyboard();
-	boolean focusTraversal = true, onlyFontChars = true, disabled;
+	boolean focusTraversal = true, onlyFontChars = true, disabled, rightAligned;
+	private float selectionX, selectionWidth;
 
-	private boolean passwordMode;
+	boolean passwordMode;
 	private StringBuilder passwordBuffer;
+	private char passwordCharacter = BULLET;
 
-	private float textHeight;
-	float renderOffset, textOffset;
+	private float textHeight, textOffset;
+	float renderOffset;
 	private int visibleTextStart, visibleTextEnd;
-	protected final FloatArray glyphAdvances = new FloatArray(), glyphPositions = new FloatArray();
-	InputListener inputListener;
+	private int maxLength = 0;
 
 	private float blinkTime = 0.32f;
 	boolean cursorOn = true;
 	long lastBlink;
 
-	protected boolean hasSelection;
-	protected int selectionStart;
-	protected int leftWordDelimiter = ' ', rightWordDelimiter = ' ';
-	private float selectionX, selectionWidth;
-
-	private char passwordCharacter = BULLET;
-
 	KeyRepeatTask keyRepeatTask = new KeyRepeatTask();
 	float keyRepeatInitialTime = 0.4f;
 	float keyRepeatTime = 0.1f;
-	boolean rightAligned;
-
-	int maxLength = 0;
 
 	public TextField (String text, Skin skin) {
 		this(text, skin.get(TextFieldStyle.class));
@@ -127,7 +121,6 @@ public class TextField extends Widget implements Disableable {
 
 	private void initialize () {
 		addListener(inputListener = new ClickListener() {
-
 			public void clicked (InputEvent event, float x, float y) {
 				int count = getTapCount() % 4;
 				if (count == 0) clearSelection();
@@ -169,115 +162,115 @@ public class TextField extends Widget implements Disableable {
 				cursorOn = false;
 
 				Stage stage = getStage();
-				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
-					boolean repeat = false;
-					boolean ctrl = false;
-					if (isMac)
-						ctrl = Gdx.input.isKeyPressed(Keys.SYM);
-					else
-						ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
-					boolean jump = ctrl && !passwordMode;
-					if (ctrl) {
-						if (keycode == Keys.V) {
-							paste();
-							return true;
-						}
-						if (keycode == Keys.C || keycode == Keys.INSERT) {
-							copy();
-							return true;
-						}
-						if (keycode == Keys.X || keycode == Keys.DEL) {
-							cut();
-							return true;
-						}
-						if (keycode == Keys.A) {
-							selectAll();
-							return true;
-						}
+				if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+
+				boolean repeat = false;
+				boolean ctrl;
+				if (isMac)
+					ctrl = Gdx.input.isKeyPressed(Keys.SYM);
+				else
+					ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+				boolean jump = ctrl && !passwordMode;
+
+				if (ctrl) {
+					if (keycode == Keys.V) {
+						paste();
+						return true;
 					}
-					if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
-						if (keycode == Keys.INSERT) paste();
-						if (keycode == Keys.FORWARD_DEL) {
-							if (hasSelection) {
-								copy();
-								delete(); // cut
-							}
-						}
-						selection:
-						{
-							int temp = cursor;
-							keys:
-							{
-								if (keycode == Keys.LEFT) {
-									while (--cursor > 0 && jump) {
-										if (check(text.charAt(cursor))) continue;
-										break;
-									}
-									repeat = true;
-									break keys;
-								}
-								if (keycode == Keys.RIGHT) {
-									while (++cursor < text.length() && jump) {
-										if (check(text.charAt(cursor - 1))) continue;
-										break;
-									}
-									repeat = true;
-									break keys;
-								}
-								if (keycode == Keys.HOME) {
-									cursor = 0;
-									break keys;
-								}
-								if (keycode == Keys.END) {
-									cursor = text.length();
-									break keys;
-								}
-								break selection;
-							}
-							if (!hasSelection) {
-								selectionStart = temp;
-								hasSelection = true;
-							}
-						}
-					} else {
-						// cursor movement or other keys (kill selection)
-						if (keycode == Keys.LEFT) {
-							while (cursor-- > 1 && jump) {
-								if (check(text.charAt(cursor - 1))) continue;
-								break;
-							}
-							clearSelection();
-							repeat = true;
-						}
-						if (keycode == Keys.RIGHT) {
-							while (++cursor < text.length() && jump) {
-								if (check(text.charAt(cursor - 1))) continue;
-								break;
-							}
-							clearSelection();
-							repeat = true;
-						}
-						if (keycode == Keys.HOME) {
-							cursor = 0;
-							clearSelection();
-						}
-						if (keycode == Keys.END) {
-							cursor = text.length();
-							clearSelection();
-						}
+					if (keycode == Keys.C || keycode == Keys.INSERT) {
+						copy();
+						return true;
 					}
-					cursor = MathUtils.clamp(cursor, 0, text.length());
-					if (repeat && (!keyRepeatTask.isScheduled() || keyRepeatTask.keycode != keycode)) {
-						keyRepeatTask.keycode = keycode;
-						keyRepeatTask.cancel();
-						Timer.schedule(keyRepeatTask, keyRepeatInitialTime, keyRepeatTime);
+					if (keycode == Keys.X || keycode == Keys.DEL) {
+						cut();
+						return true;
 					}
-					return true;
+					if (keycode == Keys.A) {
+						selectAll();
+						return true;
+					}
 				}
-				return false;
+
+				if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+					if (keycode == Keys.INSERT) paste();
+					if (keycode == Keys.FORWARD_DEL && hasSelection) {
+						copy();
+						delete(); // cut
+					}
+					selection:
+					{
+						int temp = cursor;
+						keys:
+						{
+							if (keycode == Keys.LEFT) {
+								while (--cursor > 0 && jump) {
+									if (isWordCharacter(text.charAt(cursor))) continue;
+									break;
+								}
+								repeat = true;
+								break keys;
+							}
+							if (keycode == Keys.RIGHT) {
+								while (++cursor < text.length() && jump) {
+									if (isWordCharacter(text.charAt(cursor - 1))) continue;
+									break;
+								}
+								repeat = true;
+								break keys;
+							}
+							if (keycode == Keys.HOME) {
+								cursor = 0;
+								break keys;
+							}
+							if (keycode == Keys.END) {
+								cursor = text.length();
+								break keys;
+							}
+							break selection;
+						}
+						if (!hasSelection) {
+							selectionStart = temp;
+							hasSelection = true;
+						}
+					}
+				} else {
+					// Cursor movement or other keys (kills selection).
+					if (keycode == Keys.LEFT) {
+						while (cursor-- > 1 && jump) {
+							if (isWordCharacter(text.charAt(cursor - 1))) continue;
+							break;
+						}
+						clearSelection();
+						repeat = true;
+					}
+					if (keycode == Keys.RIGHT) {
+						while (++cursor < text.length() && jump) {
+							if (isWordCharacter(text.charAt(cursor - 1))) continue;
+							break;
+						}
+						clearSelection();
+						repeat = true;
+					}
+					if (keycode == Keys.HOME) {
+						cursor = 0;
+						clearSelection();
+					}
+					if (keycode == Keys.END) {
+						cursor = text.length();
+						clearSelection();
+					}
+				}
+				cursor = MathUtils.clamp(cursor, 0, text.length());
+
+				if (repeat && (!keyRepeatTask.isScheduled() || keyRepeatTask.keycode != keycode)) {
+					keyRepeatTask.keycode = keycode;
+					keyRepeatTask.cancel();
+					Timer.schedule(keyRepeatTask, keyRepeatInitialTime, keyRepeatTime);
+				}
+				return true;
 			}
 
-			private boolean check (char c) {
+			private boolean isWordCharacter (char c) {
 				return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
 			}
 
@@ -291,51 +284,50 @@ public class TextField extends Widget implements Disableable {
 				if (disabled) return false;
 
 				Stage stage = getStage();
-				if (stage != null && stage.getKeyboardFocus() == TextField.this) {
-					if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
-						next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
-					} else
-						input:
-						{
-							boolean delete = character == DELETE;
-							boolean backspace = character == BACKSPACE;
-							boolean add = style.font.containsCharacter(character);
-							boolean remove = backspace || delete;
-							if (!add && !remove) break input;
-							if (hasSelection) {
-								cursor = delete(false);
-							} else {
-								if (backspace && cursor > 0) {
-									text = text.substring(0, cursor - 1) + text.substring(cursor--);
-									renderOffset = 0;
-								}
-								if (delete && cursor < text.length()) {
-									text = text.substring(0, cursor) + text.substring(cursor + 1);
-								}
+				if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
+
+				if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
+					next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+				} else {
+					boolean delete = character == DELETE;
+					boolean backspace = character == BACKSPACE;
+					boolean add = style.font.containsCharacter(character);
+					boolean remove = backspace || delete;
+					if (add || remove) {
+						if (hasSelection)
+							cursor = delete(false);
+						else {
+							if (backspace && cursor > 0) {
+								text = text.substring(0, cursor - 1) + text.substring(cursor--);
+								renderOffset = 0;
 							}
-							if (add && !remove) {
-								// Character may be added to the text.
-								if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
-									if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
-								}
-								if (inLimit(text.length())) return true;
-								text = insert(cursor++, String.valueOf(character), text);
+							if (delete && cursor < text.length()) {
+								text = text.substring(0, cursor) + text.substring(cursor + 1);
 							}
-							updateDisplayText();
 						}
-					if (listener != null) listener.keyTyped(TextField.this, character);
-					return true;
+						if (add && !remove) {
+							// Character may be added to the text.
+							if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
+								if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
+							}
+							if (!withinMaxLength(text.length())) return true;
+							text = insert(cursor++, String.valueOf(character), text);
+						}
+						updateDisplayText();
+					}
 				}
-				return false;
+				if (listener != null) listener.keyTyped(TextField.this, character);
+				return true;
 			}
 		});
 	}
 
-	private int letterUnderCursor (float x) {
+	int letterUnderCursor (float x) {
 		x -= renderOffset + textOffset;
 		int index = glyphPositions.size - 1;
-		for (int i = 0; i < glyphPositions.size; i++) {
-			if (glyphPositions.items[i] > x) {
+		float[] glyphPositions = this.glyphPositions.items;
+		for (int i = 0, n = this.glyphPositions.size; i < n; i++) {
+			if (glyphPositions[i] > x) {
 				index = i - 1;
 				break;
 			}
@@ -343,27 +335,30 @@ public class TextField extends Widget implements Disableable {
 		return Math.max(0, index);
 	}
 
-	protected int[] wordUnderCursor(int at) { 
+	protected int[] wordUnderCursor (int at) {
+		String text = this.text;
 		int start = at, right = text.length(), left = 0, index = start;
-		for (; index < right; index++)
-			if (text.charAt(index) == rightWordDelimiter) {
+		for (; index < right; index++) {
+			if (text.charAt(index) == ' ') {
 				right = index;
 				break;
 			}
-		for (index = start - 1; index > -1; index--)
-			if (text.charAt(index) == leftWordDelimiter) {
+		}
+		for (index = start - 1; index > -1; index--) {
+			if (text.charAt(index) == ' ') {
 				left = index + 1;
 				break;
 			}
+		}
 		return new int[] {left, right};
 	}
-	
-	private int[] wordUnderCursor (float x) {
+
+	int[] wordUnderCursor (float x) {
 		return wordUnderCursor(letterUnderCursor(x));
 	}
 
-	private boolean inLimit (int size) {
-		return maxLength > 0 && size + 1 > maxLength;
+	boolean withinMaxLength (int size) {
+		return maxLength <= 0 || size < maxLength;
 	}
 
 	public void setMaxLength (int maxLength) {
@@ -386,12 +381,6 @@ public class TextField extends Widget implements Disableable {
 		this.style = style;
 		textHeight = style.font.getCapHeight() - style.font.getDescent() * 2;
 		invalidateHierarchy();
-	}
-
-	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont} */
-	public void setPasswordCharacter (char passwordCharacter) {
-		this.passwordCharacter = passwordCharacter;
-		if (passwordMode) updateDisplayText();
 	}
 
 	/** Returns the text field's style. Modifying the returned style may not have an effect until {@link #setStyle(TextFieldStyle)}
@@ -421,11 +410,12 @@ public class TextField extends Widget implements Disableable {
 		textOffset = 0;
 		float start = Math.abs(renderOffset);
 		int len = glyphPositions.size;
+		float[] glyphPositions = this.glyphPositions.items;
 		float startPos = 0;
 		for (int i = 0; i < len; i++) {
-			if (glyphPositions.items[i] >= start) {
+			if (glyphPositions[i] >= start) {
 				visibleTextStart = i;
-				startPos = glyphPositions.items[i];
+				startPos = glyphPositions[i];
 				textOffset = startPos - start;
 				break;
 			}
@@ -434,7 +424,7 @@ public class TextField extends Widget implements Disableable {
 		// calculate last visible char based on visible width and render offset
 		visibleTextEnd = Math.min(displayText.length(), cursor + 1);
 		for (; visibleTextEnd <= displayText.length(); visibleTextEnd++) {
-			if (glyphPositions.items[visibleTextEnd] - startPos > visibleWidth) break;
+			if (glyphPositions[visibleTextEnd] - startPos > visibleWidth) break;
 		}
 		visibleTextEnd = Math.max(0, visibleTextEnd - 1);
 
@@ -442,21 +432,20 @@ public class TextField extends Widget implements Disableable {
 		if (hasSelection) {
 			int minIndex = Math.min(cursor, selectionStart);
 			int maxIndex = Math.max(cursor, selectionStart);
-			float minX = Math.max(glyphPositions.get(minIndex), startPos);
-			float maxX = Math.min(glyphPositions.get(maxIndex), glyphPositions.get(visibleTextEnd));
+			float minX = Math.max(glyphPositions[minIndex], startPos);
+			float maxX = Math.min(glyphPositions[maxIndex], glyphPositions[visibleTextEnd]);
 			selectionX = minX;
 			selectionWidth = maxX - minX;
 		}
 
 		if (rightAligned) {
-			textOffset = visibleWidth - (glyphPositions.items[visibleTextEnd] - startPos);
+			textOffset = visibleWidth - (glyphPositions[visibleTextEnd] - startPos);
 			if (hasSelection) selectionX += textOffset;
 		}
 	}
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
-
 		Stage stage = getStage();
 		boolean focused = stage != null && stage.getKeyboardFocus() == this;
 
@@ -511,7 +500,7 @@ public class TextField extends Widget implements Disableable {
 		if (focused && !disabled) {
 			blink();
 			if (cursorOn && cursorPatch != null) {
-				cursorPatch.draw(batch, x + bgLeftWidth + textOffset + glyphPositions.get(cursor)
+				cursorPatch.draw(batch, x + bgLeftWidth + textOffset + glyphPositions.items[cursor]
 					- glyphPositions.items[visibleTextStart] - 1, y + textY - textHeight - descent, cursorPatch.getMinWidth(),
 					textHeight + descent / 2);
 			}
@@ -519,27 +508,30 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	void updateDisplayText () {
-		StringBuilder buffer = new StringBuilder();
-		for (int i = 0; i < text.length(); i++) {
-			char c = text.charAt(i);
-			buffer.append(style.font.containsCharacter(c) ? c : ' ');
-		}
-		String text = buffer.toString();
-		int len = text.length();
+		BitmapFont font = style.font;
+		String text = this.text;
+		int textLength = text.length();
 
-		if (passwordMode && style.font.containsCharacter(passwordCharacter)) {
-			if (passwordBuffer == null) passwordBuffer = new StringBuilder(text.length());
-			if (passwordBuffer.length() > len) //
-				passwordBuffer.setLength(len);
+		StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < textLength; i++) {
+			char c = text.charAt(i);
+			buffer.append(font.containsCharacter(c) ? c : ' ');
+		}
+		String newDisplayText = buffer.toString();
+
+		if (passwordMode && font.containsCharacter(passwordCharacter)) {
+			if (passwordBuffer == null) passwordBuffer = new StringBuilder(newDisplayText.length());
+			if (passwordBuffer.length() > textLength) //
+				passwordBuffer.setLength(textLength);
 			else {
-				for (int i = passwordBuffer.length(), n = len; i < n; i++)
+				for (int i = passwordBuffer.length(); i < textLength; i++)
 					passwordBuffer.append(passwordCharacter);
 			}
 			displayText = passwordBuffer;
 		} else
-			displayText = text;
-		style.font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
-		if (selectionStart > text.length()) selectionStart = len;
+			displayText = newDisplayText;
+		font.computeGlyphAdvancesAndPositions(displayText, glyphAdvances, glyphPositions);
+		if (selectionStart > newDisplayText.length()) selectionStart = textLength;
 	}
 
 	private void blink () {
@@ -572,27 +564,25 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	void paste (String content, boolean onlyFontChars) {
-		if (content != null) {
-			StringBuilder buffer = new StringBuilder();
-			for (int i = 0; i < content.length(); i++) {
-				if (inLimit(text.length() + buffer.length())) break;
-				char c = content.charAt(i);
-				if (onlyFontChars && !style.font.containsCharacter(c)) continue;
-				if (filter != null && !filter.acceptChar(this, c)) continue;
-				buffer.append(c);
-			}
-			content = buffer.toString();
-
-			if (hasSelection) {
-				cursor = delete(false);
-			}
-			text = insert(cursor, content, text);
-			updateDisplayText();
-			cursor += content.length();
+		if (content == null) return;
+		StringBuilder buffer = new StringBuilder();
+		int textLength = text.length();
+		for (int i = 0, n = content.length(); i < n; i++) {
+			if (!withinMaxLength(textLength + buffer.length())) break;
+			char c = content.charAt(i);
+			if (onlyFontChars && !style.font.containsCharacter(c)) continue;
+			if (filter != null && !filter.acceptChar(this, c)) continue;
+			buffer.append(c);
 		}
+		content = buffer.toString();
+
+		if (hasSelection) cursor = delete(false);
+		text = insert(cursor, content, text);
+		updateDisplayText();
+		cursor += content.length();
 	}
 
-	private String insert (int position, CharSequence text, String to) {
+	String insert (int position, CharSequence text, String to) {
 		if (to.length() == 0) return text.toString();
 		return to.substring(0, position) + text + to.substring(position, to.length());
 	}
@@ -656,6 +646,10 @@ public class TextField extends Widget implements Disableable {
 		return best;
 	}
 
+	public InputListener getDefaultInputListener () {
+		return inputListener;
+	}
+
 	/** @param listener May be null. */
 	public void setTextFieldListener (TextFieldListener listener) {
 		this.listener = listener;
@@ -664,6 +658,10 @@ public class TextField extends Widget implements Disableable {
 	/** @param filter May be null. */
 	public void setTextFieldFilter (TextFieldFilter filter) {
 		this.filter = filter;
+	}
+
+	public TextFieldFilter getTextFieldFilter () {
+		return filter;
 	}
 
 	/** If true (the default), tab/shift+tab will move to the next text field. */
@@ -690,10 +688,6 @@ public class TextField extends Widget implements Disableable {
 		text = "";
 		paste(str, onlyFontChars);
 		cursor = 0;
-	}
-
-	public InputListener getDefaultInputListener () {
-		return inputListener;
 	}
 
 	/** @return Never null, might be an empty string. */
@@ -779,11 +773,22 @@ public class TextField extends Widget implements Disableable {
 		this.rightAligned = rightAligned;
 	}
 
-	/** If true, the text in this text field will be shown as bullet characters. The font must have character 149 or this will have
-	 * no affect. */
+	/** If true, the text in this text field will be shown as bullet characters.
+	 * @see #setPasswordCharacter(char) */
 	public void setPasswordMode (boolean passwordMode) {
 		this.passwordMode = passwordMode;
 		updateDisplayText();
+	}
+
+	public boolean isPasswordMode () {
+		return passwordMode;
+	}
+
+	/** Sets the password character for the text field. The character must be present in the {@link BitmapFont}. Default is 149
+	 * (bullet). */
+	public void setPasswordCharacter (char passwordCharacter) {
+		this.passwordCharacter = passwordCharacter;
+		if (passwordMode) updateDisplayText();
 	}
 
 	public void setBlinkTime (float blinkTime) {
@@ -796,14 +801,6 @@ public class TextField extends Widget implements Disableable {
 
 	public boolean isDisabled () {
 		return disabled;
-	}
-
-	public boolean isPasswordMode () {
-		return passwordMode;
-	}
-
-	public TextFieldFilter getTextFieldFilter () {
-		return filter;
 	}
 
 	class KeyRepeatTask extends Task {
