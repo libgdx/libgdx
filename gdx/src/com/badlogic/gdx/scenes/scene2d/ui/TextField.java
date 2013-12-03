@@ -409,10 +409,10 @@ public class TextField extends Widget implements Disableable {
 		visibleTextStart = 0;
 		textOffset = 0;
 		float start = Math.abs(renderOffset);
-		int len = glyphPositions.size;
+		int glyphCount = glyphPositions.size;
 		float[] glyphPositions = this.glyphPositions.items;
 		float startPos = 0;
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < glyphCount; i++) {
 			if (glyphPositions[i] >= start) {
 				visibleTextStart = i;
 				startPos = glyphPositions[i];
