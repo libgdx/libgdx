@@ -268,29 +268,29 @@ public interface Input {
 				case ENDCALL:
 					return "End Call";
 				case NUM_0:
-					return "Num 0";
+					return "0";
 				case NUM_1:
-					return "Num 1";
+					return "1";
 				case NUM_2:
-					return "Num 2";
+					return "2";
 				case NUM_3:
-					return "Num 3";
+					return "3";
 				case NUM_4:
-					return "Num 4";
+					return "4";
 				case NUM_5:
-					return "Num 5";
+					return "5";
 				case NUM_6:
-					return "Num 6";
+					return "6";
 				case NUM_7:
-					return "Num 7";
+					return "7";
 				case NUM_8:
-					return "Num 8";
+					return "8";
 				case NUM_9:
-					return "Num 9";
+					return "9";
 				case STAR:
-					return "Star";
+					return "*";
 				case POUND:
-					return "Pound";
+					return "#";
 				case UP:
 					return "Up";
 				case DOWN:
@@ -364,9 +364,9 @@ public interface Input {
 				case Z:
 					return "Z";
 				case COMMA:
-					return "Comma";
+					return ",";
 				case PERIOD:
-					return "Period";
+					return ".";
 				case ALT_LEFT:
 					return "L-Alt";
 				case ALT_RIGHT:
@@ -390,29 +390,29 @@ public interface Input {
 				case DEL:
 					return "Delete";  // also BACKSPACE
 				case GRAVE:
-					return "Grave";
+					return "`";
 				case MINUS:
-					return "Minus";
+					return "-";
 				case EQUALS:
-					return "Equals";
+					return "=";
 				case LEFT_BRACKET:
-					return "Left Bracket";
+					return "[";
 				case RIGHT_BRACKET:
-					return "Right Bracket";
+					return "]";
 				case BACKSLASH:
-					return "Backslash";
+					return "\\";
 				case SEMICOLON:
-					return "Semicolon";
+					return ";";
 				case APOSTROPHE:
-					return "Apostrophe";
+					return "'";
 				case SLASH:
-					return "Slash";
+					return "/";
 				case AT:
 					return "@";
 				case NUM:
 					return "Num";
 				case HEADSETHOOK:
-					return "HEADSETHOOK";
+					return "Headset Hook";
 				case FOCUS:
 					return "Focus";
 				case PLUS:
@@ -508,7 +508,7 @@ public interface Input {
 				case NUMPAD_9:
 					return "Numpad 9";
 				case COLON:
-					return "Colon";
+					return ":";
 				case F1:
 					return "F1";
 				case F2:
