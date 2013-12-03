@@ -353,7 +353,6 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsLoc;
 	protected int pointLightsColorOffset;
 	protected int pointLightsPositionOffset;
-	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
 
 	protected final boolean lighting;
@@ -459,7 +458,6 @@ public class DefaultShader extends BaseShader {
 		pointLightsLoc 				= loc(u_pointLights0color);
 		pointLightsColorOffset 		= loc(u_pointLights0color) - pointLightsLoc;
 		pointLightsPositionOffset 	= loc(u_pointLights0position) - pointLightsLoc;
-		pointLightsIntensityOffset = loc(u_pointLights0intensity) - pointLightsLoc;
 		pointLightsSize 				= loc(u_pointLights1color) - pointLightsLoc;
 		if (pointLightsSize < 0)
 			pointLightsSize = 0;
@@ -602,7 +600,7 @@ public class DefaultShader extends BaseShader {
 	}
 	
 	Material currentMaterial;
-	protected final void bindMaterial(final Renderable renderable) {
+	protected void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
 		
@@ -640,7 +638,7 @@ public class DefaultShader extends BaseShader {
 	}
 
 	private final Vector3 tmpV1 = new Vector3();
-	protected final void bindLights(final Renderable renderable) {
+	protected void bindLights(final Renderable renderable) {
 		final Environment lights = renderable.environment;
 		final Array<DirectionalLight> dirs = lights.directionalLights; 
 		final Array<PointLight> points = lights.pointLights;
@@ -676,10 +674,8 @@ public class DefaultShader extends BaseShader {
 					pointLights[i].set(points.get(i));
 
 				int idx = pointLightsLoc + i * pointLightsSize;
-				program.setUniformf(idx+pointLightsColorOffset, pointLights[i].color.r, pointLights[i].color.g, pointLights[i].color.b);
+				program.setUniformf(idx+pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity, pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
 				program.setUniformf(idx+pointLightsPositionOffset, pointLights[i].position);
-				if (pointLightsIntensityOffset >= 0)
-					program.setUniformf(idx+pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0)
 					break;
 			}

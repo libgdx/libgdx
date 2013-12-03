@@ -21,9 +21,10 @@ import java.util.Comparator;
 
 /**
  * Implementation of Tony Hoare's quickselect algorithm.
- * Running time is generally O(n), but worst case is O(n**2)
+ * Running time is generally O(n), but worst case is O(n^2)
  * Pivot choice is median of three method, providing better performance
  * than a random pivot for partially sorted data.
+ * http://en.wikipedia.org/wiki/Quickselect
  * @author Jon Renner
  */
 public class QuickSelect<T> {
@@ -75,7 +76,7 @@ public class QuickSelect<T> {
 		T right = array[rightIdx];
 
 		// spaghetti median of three algorithm
-		// does at most 2 comparisons
+		// does at most 3 comparisons
 		if (comp.compare(left, mid) > 0) {
 			if (comp.compare(mid, right) > 0) {
 				return midIdx;

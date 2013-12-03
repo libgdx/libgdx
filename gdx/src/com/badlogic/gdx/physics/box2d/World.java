@@ -268,6 +268,9 @@ b2ContactFilter defaultFilter;
 	}
 
 	/** Create a rigid body given a definition. No reference to the definition is retained.
+	 * Bodies created by this method are pooled internally by the World object.
+	 * They will be freed upon calling {@link World#destroyBody(Body)}
+	 * @see Pool
 	 * @warning This function is locked during callbacks. */
 	public Body createBody (BodyDef def) {
 		long bodyAddr = jniCreateBody(addr, def.type.getValue(), def.position.x, def.position.y, def.angle, def.linearVelocity.x,
