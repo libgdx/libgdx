@@ -53,4 +53,26 @@ public class GearJoint extends Joint {
 		b2GearJoint* joint =  (b2GearJoint*)addr;
 		return joint->GetRatio();
 	*/
+	
+	/**Get the first joint. */
+	public Joint getJoint1(){
+		jniGetJoint1(addr);
+	}
+	
+	/**Get the first joint. */
+	private native float jniGetJoint1 (long addr); /*
+		b2GearJoint* joint =  (b2GearJoint*)addr;
+		return joint->GetJoint1();
+	*/
+	
+	/**Get the second joint. */
+	public Joint getJoint2(){
+		jniGetJoint2(addr);
+	}
+	
+	/**Get the second joint. */
+	private native float jniGetJoint2 (long addr); /*
+		b2GearJoint* joint =  (b2GearJoint*)addr;
+		return joint->GetJoint2();
+	*/
 }
