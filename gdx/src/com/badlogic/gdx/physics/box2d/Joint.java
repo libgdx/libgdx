@@ -117,6 +117,18 @@ public abstract class Joint {
 		anchorB[1] = a.y;
 	*/
 
+
+		
+	/** Are the connected bodies colliding?**/
+	public boolean getCollideConnected() {
+		return jniGetCollideConnected(addr);
+	}
+     
+	private native boolean jniGetCollideConnected(long addr); /*
+		b2Joint* joint = (b2Joint*) addr;
+	return joint->GetCollideConnected();
+	*/
+
 	/** Get the reaction force on body2 at the joint anchor in Newtons. */
 	private final Vector2 reactionForce = new Vector2();
 
