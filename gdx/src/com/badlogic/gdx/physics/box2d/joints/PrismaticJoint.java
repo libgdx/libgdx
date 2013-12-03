@@ -151,6 +151,16 @@ public class PrismaticJoint extends Joint {
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetMaxMotorForce(force);
 	*/
+	
+	/** Get the maximum motor force, usually in N. */
+	public void getMaxMotorForce () {
+		jniGetMaxMotorForce(addr);
+	}
+
+	private native void jniGetMaxMotorForce (long addr); /*
+		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
+		joint->GetMaxMotorForce();
+	*/
 
 	/** Get the current motor force given the inverse time step, usually in N. */
 	public float getMotorForce (float invDt) {
@@ -160,5 +170,15 @@ public class PrismaticJoint extends Joint {
 	private native float jniGetMotorForce (long addr, float invDt); /*
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMotorForce(invDt);
+	*/
+	
+	/** Get the reference angle in radians.  */
+	public void getReferenceAngle () {
+		jniGetReferenceAngle(addr);
+	}
+
+	private native void jniGetReferenceAngle (long addr); /*
+		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
+		joint->GetReferenceAngle();
 	*/
 }
