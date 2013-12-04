@@ -55,6 +55,8 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.UDPSocket;
+import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonWriter;
 
@@ -102,4 +104,12 @@ public class AndroidNet implements Net {
 		});
 	}
 
+	@Override
+	public UDPSocket newUDPSocket (Protocol protocol, int port, UDPSocketHints hints) {
+		if (protocol != Protocol.UDP) {
+			Gdx.app.log("AndroidNet", "UDP socket only supports UDP protocol");
+			return null;
+		}
+		return new AndroidUDPSocket(protocol, port, hints);
+	}
 }
