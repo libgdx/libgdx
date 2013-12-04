@@ -56,7 +56,7 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-	static private boolean isMac = System.getProperty("os.name").contains("Mac");
+	static boolean isMac = System.getProperty("os.name").contains("Mac");
 
 	static private final char BACKSPACE = 8;
 	static private final char ENTER_DESKTOP = '\r';
