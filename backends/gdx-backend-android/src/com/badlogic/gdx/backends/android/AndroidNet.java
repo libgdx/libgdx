@@ -106,7 +106,7 @@ public class AndroidNet implements Net {
 	}
 
 	@Override
-	public UDPSocket newUDPSocket (Protocol protocol, String host, int port, UDPSocketHints hints) {
+	public UDPSocket newUDPSocket (Protocol protocol, UDPSocketHints hints) {
 		if (protocol != Protocol.UDP) {
 			Gdx.app.log("AndroidNet", "UDP socket only supports UDP protocol");
 			return null;

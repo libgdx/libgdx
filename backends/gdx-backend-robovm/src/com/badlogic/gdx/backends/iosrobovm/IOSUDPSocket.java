@@ -36,7 +36,7 @@ public class IOSUDPSocket implements UDPSocket{
 	private InetAddress address;
 	private int port;
 	
-	public IOSUDPSocket(String address, Protocol protocol, int port, UDPSocketHints hints) {
+	public IOSUDPSocket(Protocol protocol, UDPSocketHints hints) {
 		try {
 			this.address = InetAddress.getByName(address);
 			this.socket = new DatagramSocket(port);

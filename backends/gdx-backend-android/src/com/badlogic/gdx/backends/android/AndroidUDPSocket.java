@@ -36,7 +36,7 @@ public class AndroidUDPSocket implements UDPSocket{
 	private InetAddress address;
 	private int port;
 	
-	public AndroidUDPSocket(String address, Protocol protocol, int port, UDPSocketHints hints) {
+	public AndroidUDPSocket(Protocol protocol, UDPSocketHints hints) {
 		try {
 			this.address = InetAddress.getByName(address);
 			this.socket = new DatagramSocket(port);

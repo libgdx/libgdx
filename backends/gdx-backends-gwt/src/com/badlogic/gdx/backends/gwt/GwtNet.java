@@ -155,7 +155,7 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public UDPSocket newUDPSocket (Protocol protocol, String host, int port, UDPSocketHints hints) {
+	public UDPSocket newUDPSocket (Protocol protocol, UDPSocketHints hints) {
 		// TODO: Add socket support to Gwt. Not sure if currently possible
 		throw new UnsupportedOperationException("Not implemented");
 	}
