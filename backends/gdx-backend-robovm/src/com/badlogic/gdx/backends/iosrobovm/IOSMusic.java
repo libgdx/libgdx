@@ -99,10 +99,6 @@ public class IOSMusic implements Music {
 		return (float) (track.getCurrentTime() * 1000.0);
 	}
 
-	public float getDuration () {
-		return (float)track.getDuration() / 1000;
-	}
-
 	@Override
 	public void dispose () {
 		track.clear();
