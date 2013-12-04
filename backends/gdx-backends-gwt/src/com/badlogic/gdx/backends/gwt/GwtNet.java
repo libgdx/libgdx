@@ -32,6 +32,8 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.UDPSocket;
+import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.http.client.Header;
@@ -150,5 +152,11 @@ public class GwtNet implements Net {
 	@Override
 	public void openURI (String URI) {
 		Window.open(URI, "_blank", null);
+	}
+
+	@Override
+	public UDPSocket newUDPSocket (Protocol protocol, UDPSocketHints hints) {
+		// TODO: Add socket support to Gwt. Not sure if currently possible
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }
