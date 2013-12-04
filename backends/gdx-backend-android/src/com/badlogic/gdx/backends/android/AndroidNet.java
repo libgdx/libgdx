@@ -111,7 +111,7 @@ public class AndroidNet implements Net {
 			Gdx.app.log("AndroidNet", "UDP socket only supports UDP protocol");
 			return null;
 		}
-		return new AndroidUDPSocket(host, protocol, port, hints);
+		return new AndroidUDPSocket(protocol, hints);
 	}
 
 }

@@ -67,6 +67,6 @@ public class JglfwNet implements Net {
 			Gdx.app.log("JglfwNet", "UDP socket only supports UDP protocol");
 			return null;
 		}
-		return new JglfwUDPSocket(host, protocol, port, hints);
+		return new JglfwUDPSocket(protocol, hints);
 	}
 }
