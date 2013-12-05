@@ -37,7 +37,7 @@ public class DepthTestAttribute extends Attribute {
    public float depthRangeNear;
    /** Mapping of far clipping plane to window coordinates (default: 1) */
    public float depthRangeFar;
-   /** Whether to write to the depth mask, only applicable if depthFunc is non zero (default: true) */
+   /** Whether to write to the depth buffer (default: true) */
    public boolean depthMask;
 
    public DepthTestAttribute() {
