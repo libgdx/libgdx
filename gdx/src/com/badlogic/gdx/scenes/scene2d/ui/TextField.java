@@ -149,6 +149,11 @@ public class TextField extends Widget implements Disableable {
 				setCursorPosition(x);
 			}
 
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (selectionStart == cursor) hasSelection = false;
+				super.touchUp(event, x, y, pointer, button);
+			}
+
 			private void setCursorPosition (float x) {
 				lastBlink = 0;
 				cursorOn = false;
@@ -270,10 +275,6 @@ public class TextField extends Widget implements Disableable {
 				return true;
 			}
 
-			private boolean isWordCharacter (char c) {
-				return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
-			}
-
 			public boolean keyUp (InputEvent event, int keycode) {
 				if (disabled) return false;
 				keyRepeatTask.cancel();
@@ -335,17 +336,21 @@ public class TextField extends Widget implements Disableable {
 		return Math.max(0, index);
 	}
 
+	protected boolean isWordCharacter (char c) {
+		return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9');
+	}
+
 	protected int[] wordUnderCursor (int at) {
 		String text = this.text;
 		int start = at, right = text.length(), left = 0, index = start;
 		for (; index < right; index++) {
-			if (text.charAt(index) == ' ') {
+			if (!isWordCharacter(text.charAt(index))) {
 				right = index;
 				break;
 			}
 		}
 		for (index = start - 1; index > -1; index--) {
-			if (text.charAt(index) == ' ') {
+			if (!isWordCharacter(text.charAt(index))) {
 				left = index + 1;
 				break;
 			}
