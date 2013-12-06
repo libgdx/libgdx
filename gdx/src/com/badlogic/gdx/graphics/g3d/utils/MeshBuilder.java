@@ -100,7 +100,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	private boolean colorSet;
 	/** The current primitiveType */
 	private int primitiveType;
-	// FIXME makes this configurable
+	/** The UV range used when building */
 	private float uMin = 0, uMax = 1, vMin = 0, vMax = 1;
 	private float[] vertex;
 	
@@ -356,6 +356,17 @@ public class MeshBuilder implements MeshPartBuilder {
 		ensureRectangles(4 * numRectangles, numRectangles);
 	}
 	
+	private short lastIndex = -1;
+	@Override
+	public short lastIndex() {
+		return lastIndex;
+	}
+
+	private final void addVertex(final float[] values, final int offset) {
+		vertices.addAll(values, offset, stride);
+		lastIndex = (short)(vindex++);
+	}
+	
 	@Override
 	public short vertex(Vector3 pos, Vector3 nor, Color col, Vector2 uv) {
 		if (vindex >= Short.MAX_VALUE)
@@ -399,20 +410,16 @@ public class MeshBuilder implements MeshPartBuilder {
 			vertex[uvOffset  ] = uv.x;
 			vertex[uvOffset+1] = uv.y;
 		}
-		vertices.addAll(vertex);
-		return (short)(vindex++);
+		addVertex(vertex, 0);
+		return lastIndex;
 	}
 	
 	@Override
-	public short lastIndex() {
-		return (short)(vindex-1);
-	}
-
-	@Override
 	public short vertex(final float... values) {
-		vertices.addAll(values);
-		vindex += values.length / stride;
-		return (short)(vindex-1);
+		final int n = values.length - stride;
+		for (int i = 0; i <= n; i += stride)
+			addVertex(values, i);
+		return lastIndex;
 	}
 	
 	@Override
@@ -801,29 +808,35 @@ public class MeshBuilder implements MeshPartBuilder {
 		float angle = 0f;
 		final float us = 0.5f * (innerWidth / width);
 		final float vs = 0.5f * (innerHeight / height);
+		short i1, i2 = 0, i3 = 0, i4 = 0;
 		for (int i = 0; i <= divisions; i++) {
 			angle = ao + step * i;
 			final float x = MathUtils.cos(angle);
 			final float y = MathUtils.sin(angle);
 			currEx.position.set(centerX, centerY, centerZ).add(sxEx.x*x+syEx.x*y, sxEx.y*x+syEx.y*y, sxEx.z*x+syEx.z*y);
 			currEx.uv.set(.5f + .5f * x, .5f + .5f * y);				
-			vertex(currEx);
+			i1 = vertex(currEx);
 			
 			if(innerWidth <= 0f || innerHeight <= 0f)	{					
 				if (i != 0)
-					triangle((short)(vindex - 1), (short)(vindex - 2), center);
+					triangle(i1, i2, center);
+				i2 = i1;
 			}
 			else if (innerWidth == width && innerHeight == height){
 				if (i != 0)
-					line((short)(vindex - 1), (short)(vindex - 2));
+					line(i1, i2);
+				i2 = i1;
 			}
 			else {
 				currIn.position.set(centerX, centerY, centerZ).add(sxIn.x*x+syIn.x*y, sxIn.y*x+syIn.y*y, sxIn.z*x+syIn.z*y);
-				currIn.uv.set(.5f + us * x, .5f + vs * y);				
-				vertex(currIn);
+				currIn.uv.set(.5f + us * x, .5f + vs * y);
+				i2 = i1;
+				i1 = vertex(currIn);
 				
 				if( i != 0)
-					rect((short)(vindex - 1), (short)(vindex - 2),(short)(vindex - 4), (short)(vindex - 3));
+					rect(i1, i2, i4, i3);
+				i4 = i2;
+				i3 = i1;
 			}
 		}
 	}
@@ -853,6 +866,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null);
 		curr2.hasUV = curr2.hasPosition = curr2.hasNormal = true;
+		short i1, i2, i3 = 0, i4 = 0;
 		
 		ensureRectangles(2 * (divisions + 1), divisions);
 		for (int i = 0; i <= divisions; i++) {
@@ -866,10 +880,12 @@ public class MeshBuilder implements MeshPartBuilder {
 			curr2.normal.set(curr1.normal);
 			curr2.position.y = hh;
 			curr2.uv.set(u, 0);
-			vertex(curr1);
-			vertex(curr2);
+			i2 = vertex(curr1);
+			i1 = vertex(curr2);
 			if (i != 0)
-				rect((short)(vindex-3), (short)(vindex-1), (short)(vindex-2), (short)(vindex-4)); // FIXME don't duplicate lines and points
+				rect(i3, i1, i2, i4); // FIXME don't duplicate lines and points
+			i4 = i2;
+			i3 = i1;
 		}
 		if (close) {
 			ellipse(width, depth, 0, 0, divisions, 0, hh, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, angleFrom, angleTo);
@@ -898,7 +914,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		VertexInfo curr2 = vertTmp4.set(null, null, null, null).setPos(0,hh,0).setNor(0,1,0).setUV(0.5f, 0);
-		final int base = vertex(curr2);
+		final short base = vertex(curr2);
+		short i1, i2 = 0;
 		for (int i = 0; i <= divisions; i++) {
 			angle = ao + step * i;
 			u = 1f - us * i;
@@ -906,10 +923,10 @@ public class MeshBuilder implements MeshPartBuilder {
 			curr1.normal.set(curr1.position).nor();
 			curr1.position.y = -hh;
 			curr1.uv.set(u, 1);
-			vertex(curr1);
-			if (i == 0)
-				continue;
-			triangle((short)base, (short)(vindex-1), (short)(vindex-2)); // FIXME don't duplicate lines and points
+			i1 = vertex(curr1);
+			if (i != 0)
+				triangle(base, i1, i2); // FIXME don't duplicate lines and points
+			i2 = i1;
 		}
 		ellipse(width, depth, 0, 0, divisions, 0, -hh, 0, 0, -1, 0, -1, 0, 0, 0, 0, 1, 180f-angleTo, 180f-angleFrom);
 	}
@@ -929,6 +946,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		sphere(matTmp1.idt(), width, height, depth, divisionsU, divisionsV, angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
 
+	private static ShortArray tmpIndices;
 	@Override
 	public void sphere(final Matrix4 transform, float width, float height, float depth, int divisionsU, int divisionsV, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
 		// FIXME create better sphere method (- only one vertex for each pole, - position)
@@ -948,6 +966,16 @@ public class MeshBuilder implements MeshPartBuilder {
 		VertexInfo curr1 = vertTmp3.set(null, null, null, null);
 		curr1.hasUV = curr1.hasPosition = curr1.hasNormal = true;
 		
+		if (tmpIndices == null)
+			tmpIndices = new ShortArray(divisionsU * 2);
+		final int s = divisionsU+3;
+		tmpIndices.ensureCapacity(s);
+		while (tmpIndices.size > s)
+			tmpIndices.pop();
+		while (tmpIndices.size < s)
+			tmpIndices.add(-1);
+		int tempOffset = 0;
+		
 		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
 		for (int iv = 0; iv <= divisionsV; iv++) {
 			angleV = avo + stepV * iv;
@@ -960,9 +988,11 @@ public class MeshBuilder implements MeshPartBuilder {
 				curr1.position.set(MathUtils.cos(angleU) * hw * t, h, MathUtils.sin(angleU) * hd * t).mul(transform);
 				curr1.normal.set(curr1.position).nor();
 				curr1.uv.set(u, v);
-				vertex(curr1);
+				tmpIndices.set(tempOffset, vertex(curr1));
+				final int o = tempOffset+s;
 				if ((iv > 0) && (iu > 0)) // FIXME don't duplicate lines and points
-					rect((short)(vindex-1), (short)(vindex-2), (short)(vindex-(divisionsU+3)), (short)(vindex-(divisionsU+2))); 
+					rect(tmpIndices.get(tempOffset), tmpIndices.get((o-1)%s), tmpIndices.get((o-(divisionsU+2))%s), tmpIndices.get((o-(divisionsU+1))%s));
+				tempOffset = (tempOffset + 1) % tmpIndices.size;
 			}
 		}
 	}
