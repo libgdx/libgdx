@@ -53,7 +53,11 @@ public class PixmapPackerTest extends GdxTest {
 		PixmapPacker packer =  new PixmapPacker(1024, 1024, Format.RGBA8888, 2, true);
 		packer.pack("badlogic", pixmap1);
 		packer.pack("wheel", pixmap1);
-		packer.pack("egg", pixmap1);		
+		packer.pack("egg", pixmap1);
+		
+		pixmap1.dispose();
+		pixmap2.dispose();
+		pixmap3.dispose();
 		
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
 		Gdx.app.log("PixmaPackerTest", "Number of textures: " + atlas.getTextures().size());
@@ -66,6 +70,6 @@ public class PixmapPackerTest extends GdxTest {
 
 	@Override
 	public void dispose () {
-		
+		atlas.dispose();
 	}
 }
