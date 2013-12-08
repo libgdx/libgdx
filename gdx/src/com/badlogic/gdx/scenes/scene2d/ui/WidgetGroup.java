@@ -39,6 +39,7 @@ public class WidgetGroup extends Group implements Layout {
 	private boolean fillParent;
 	private boolean layoutEnabled = true;
 	private Object userData = null;
+
 	public float getMinWidth () {
 		return getPrefWidth();
 	}
@@ -154,16 +155,12 @@ public class WidgetGroup extends Group implements Layout {
 		super.draw(batch, parentAlpha);
 	}
 
-	/**
-	 * @return the userData
-	 */
+	/** @return the userData */
 	public Object getUserData () {
 		return userData;
 	}
 
-	/**
-	 * @param userData the userData to set
-	 */
+	/** @param userData the userData to set */
 	public void setUserData (Object userData) {
 		this.userData = userData;
 	}
