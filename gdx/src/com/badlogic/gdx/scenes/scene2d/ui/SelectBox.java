@@ -163,7 +163,7 @@ public class SelectBox extends Widget implements Disableable {
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		Drawable background;
-		if (disabled)
+		if (disabled && style.backgroundDisabled != null)
 			background = style.backgroundDisabled;
 		else if (list != null && list.getParent() != null && style.backgroundOpen != null)
 			background = style.backgroundOpen;
@@ -196,6 +196,7 @@ public class SelectBox extends Widget implements Disableable {
 	/** Sets the selected item via it's index
 	 * @param selection the selection index */
 	public void setSelection (int selection) {
+		if (selection < 0) throw new IllegalArgumentException("selection cannot be < 0.");
 		this.selectedIndex = selection;
 	}
 
