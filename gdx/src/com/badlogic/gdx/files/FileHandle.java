@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -265,6 +266,15 @@ public class FileHandle {
 				throw new GdxRuntimeException("Cannot open a stream to a directory: " + file + " (" + type + ")", ex);
 			throw new GdxRuntimeException("Error writing file: " + file + " (" + type + ")", ex);
 		}
+	}
+
+	/** Returns a buffered stream for writing to this file. Parent directories will be created if necessary.
+	 * @param append If false, this file will be overwritten if it exists, otherwise it will be appended.
+	 * @param bufferSize The size of the buffer.
+	 * @throws GdxRuntimeException if this file handle represents a directory, if it is a {@link FileType#Classpath} or
+	 *            {@link FileType#Internal} file, or if it could not be written. */
+	public OutputStream write (boolean append, int bufferSize) {
+		return new BufferedOutputStream(write(append), bufferSize);
 	}
 
 	/** Reads the remaining bytes from the specified stream and writes them to this file. The stream is closed. Parent directories
