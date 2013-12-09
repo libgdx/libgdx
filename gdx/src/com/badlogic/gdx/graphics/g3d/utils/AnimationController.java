@@ -96,7 +96,7 @@ public class AnimationController extends BaseAnimationController {
 						listener.onLoop(this);
 					if (loopCount == 0) {
 						final float result = ((loops - 1) - i) * duration + (diff < 0f ? duration - time : time); 
-						time = (diff < 0f) ? duration : 0f;
+						time = (diff < 0f) ? 0f : duration;
 						if (listener != null)
 							listener.onEnd(this);
 						return result;
