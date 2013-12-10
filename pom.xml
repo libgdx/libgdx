@@ -16,7 +16,7 @@
   <description>Android/desktop game development framework.</description>
   <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
-    <url>https://code.google.com/p/libgdx/issues/list</url>
+    <url>https://github.com/libgdx/libgdx/issues</url>
   </issueManagement>
 
   <licenses>
@@ -42,7 +42,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <android.version>4.2</android.version>
+    <android.version>4.4</android.version>
     <gwt.version>2.5.0</gwt.version>
     <lwjgl.version>2.9.0</lwjgl.version>
     <robovm.version>0.0.6</robovm.version>
