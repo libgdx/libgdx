@@ -76,6 +76,7 @@ public class AndroidApplication extends Activity implements Application {
 	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
+	protected boolean hideStatusBar = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -111,6 +112,7 @@ public class AndroidApplication extends Activity implements Application {
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
+		this.hideStatusBar = config.hideStatusBar;
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -128,7 +130,7 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config);
-		hideStatusBar(config);
+		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
@@ -156,8 +158,8 @@ public class AndroidApplication extends Activity implements Application {
 		}
 	}
 
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11) return;
+	protected void hideStatusBar (boolean hide) {
+		if (!hide || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
 
@@ -174,6 +176,7 @@ public class AndroidApplication extends Activity implements Application {
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
+		hideStatusBar(this.hideStatusBar);
 	}
 
 	protected void useImmersiveMode (boolean use) {
@@ -234,6 +237,7 @@ public class AndroidApplication extends Activity implements Application {
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
+		this.hideStatusBar = config.hideStatusBar;
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -243,7 +247,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.net = this.getNet();
 
 		createWakeLock(config);
-		hideStatusBar(config);
+		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
