@@ -299,7 +299,7 @@ void main() {
 				vec3 value = u_dirLights[i].color * NdotL;
 				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = max(0, dot(normal, normalize(lightDir + viewVec)));
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
 					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
@@ -314,7 +314,7 @@ void main() {
 				vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
 				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = max(0, dot(normal, normalize(lightDir + viewVec)));
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
 					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
