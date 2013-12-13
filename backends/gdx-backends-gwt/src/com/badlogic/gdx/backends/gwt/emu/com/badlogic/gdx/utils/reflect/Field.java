@@ -103,7 +103,8 @@ public final class Field {
 	/** If the type of the field is parameterized, returns the Class object representing the parameter type at the specified index,
 	 * null otherwise. */
 	public Class getElementType (int index) {
-		return field.getElementType(index).getClassOfType();
+		Type elementType = field.getElementType(index);
+		return elementType != null ? elementType.getClassOfType() : null;
 	}
 
 	/** Returns the value of the field on the supplied object. */
