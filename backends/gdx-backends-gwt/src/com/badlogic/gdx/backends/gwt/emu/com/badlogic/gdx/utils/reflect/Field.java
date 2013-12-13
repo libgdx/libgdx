@@ -16,11 +16,8 @@
 
 package com.badlogic.gdx.utils.reflect;
 
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import com.badlogic.gwtref.client.ReflectionCache;
+import com.badlogic.gwtref.client.Type;
 
 /** Provides information about, and access to, a single field of a class or interface.
  * @author nexsoftware */
