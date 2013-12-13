@@ -80,6 +80,9 @@ public class FrameBuffer implements Disposable {
 
 	/** format **/
 	protected final Pixmap.Format format;
+	
+	/** viewport **/
+	protected IntBuffer viewportIntBuffer;
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 * 
@@ -94,6 +97,7 @@ public class FrameBuffer implements Disposable {
 		this.height = height;
 		this.format = format;
 		this.hasDepth = hasDepth;
+		this.viewportIntBuffer = BufferUtils.newIntBuffer(16);
 		build();
 
 		addManagedFrameBuffer(Gdx.app, this);
@@ -208,13 +212,19 @@ public class FrameBuffer implements Disposable {
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void begin () {
+		viewportIntBuffer.clear();
+		Gdx.graphics.getGL20().glGetIntegerv(GL20.GL_VIEWPORT, viewportIntBuffer);
 		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public void end () {
-		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.graphics.getGL20().glViewport(
+			viewportIntBuffer.get(0),
+			viewportIntBuffer.get(1),
+			viewportIntBuffer.get(2),
+			viewportIntBuffer.get(3));
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 
