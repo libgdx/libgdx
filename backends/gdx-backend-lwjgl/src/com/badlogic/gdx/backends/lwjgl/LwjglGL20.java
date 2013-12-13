@@ -89,8 +89,8 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glBufferData (int target, int size, Buffer data, int usage) {
-		if(data == null)
-			throw new GdxRuntimeException("Using null for the data not possible, blame LWJGL");
+		if (data == null)
+			GL15.glBufferData(target, size, usage);
 		else if (data instanceof ByteBuffer)
 			GL15.glBufferData(target, (ByteBuffer)data, usage);
 		else if (data instanceof IntBuffer)
@@ -105,7 +105,7 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 
 	public void glBufferSubData (int target, int offset, int size, Buffer data) {
 		if(data == null)
-			throw new GdxRuntimeException("Using null for the data not possible, blame LWJGL");
+			throw new GdxRuntimeException("Using null for the data not possible");
 		else if (data instanceof ByteBuffer)
 			GL15.glBufferSubData(target, offset, (ByteBuffer)data);
 		else if (data instanceof IntBuffer)
