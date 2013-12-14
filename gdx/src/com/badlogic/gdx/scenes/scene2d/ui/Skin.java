@@ -442,7 +442,7 @@ public class Skin implements Disposable {
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
 			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
-				int size = json.readValue("size", int.class, -1, jsonData);
+				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
 				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
@@ -463,9 +463,9 @@ public class Skin implements Disposable {
 						else
 							font = new BitmapFont(fontFile, flip);
 					}
-					if (size != -1) {
+					if (scaledSize != -1) {
 						// Use scale factor based on lineHeight (as font size) to scale the font
-						font.setScale(size / font.getData().lineHeight);
+						font.setScale(scaledSize / font.getData().lineHeight);
 					}
 					return font;
 				} catch (RuntimeException ex) {
