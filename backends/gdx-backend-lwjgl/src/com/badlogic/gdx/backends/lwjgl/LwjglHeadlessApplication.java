@@ -47,6 +47,7 @@ public class LwjglHeadlessApplication implements Application {
 	protected int logLevel = LOG_INFO;
 
 	public LwjglHeadlessApplication(ApplicationListener listener) {
+		LwjglNativesLoader.load();
 		this.listener = listener;
 		this.files = new LwjglFiles();
 		this.net = new LwjglNet();
