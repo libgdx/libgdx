@@ -16,11 +16,8 @@
 
 package com.badlogic.gdx.utils.reflect;
 
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-
 import com.badlogic.gwtref.client.ReflectionCache;
+import com.badlogic.gwtref.client.Type;
 
 /** Provides information about, and access to, a single field of a class or interface.
  * @author nexsoftware */
@@ -103,7 +100,8 @@ public final class Field {
 	/** If the type of the field is parameterized, returns the Class object representing the parameter type at the specified index,
 	 * null otherwise. */
 	public Class getElementType (int index) {
-		return field.getElementType(index).getClassOfType();
+		Type elementType = field.getElementType(index);
+		return elementType != null ? elementType.getClassOfType() : null;
 	}
 
 	/** Returns the value of the field on the supplied object. */

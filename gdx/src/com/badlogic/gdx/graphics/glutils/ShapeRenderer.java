@@ -559,6 +559,11 @@ public class ShapeRenderer {
 
 	}
 
+	/** @see #rectLine(float, float, float, float, float) */
+	public void rectLine (Vector2 p1, Vector2 p2, float width) {
+		rectLine(p1.x, p1.y, p2.x, p2.y, width);
+	}
+
 	/** Draws a rectangle with one edge centered at x1, y1 and the opposite edge centered at x2, y2. */
 	public void rectLine (float x1, float y1, float x2, float y2, float width) {
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)
