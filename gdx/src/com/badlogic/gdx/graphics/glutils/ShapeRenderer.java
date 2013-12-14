@@ -431,54 +431,6 @@ public class ShapeRenderer {
 		}
 	}
 
-	public void rectLine (float x1, float y1, float x2, float y2, float width) {
-		if (currType != ShapeType.Filled && currType != ShapeType.Line)
-			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
-
-		checkDirty();
-		checkFlush(8);
-
-		Vector2 t = tmp.set(y2 - y1, x1 - x2).nor();
-		width *= 0.5f;
-		float tx = t.x * width;
-		float ty = t.y * width;
-		if (currType == ShapeType.Line) {
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 + tx, y1 + ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 - tx, y1 - ty, 0);
-
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 + tx, y2 + ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 - tx, y2 - ty, 0);
-
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 + tx, y2 + ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 + tx, y1 + ty, 0);
-
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 - tx, y2 - ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 - tx, y1 - ty, 0);
-		} else {
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 + tx, y1 + ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 - tx, y1 - ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 + tx, y2 + ty, 0);
-
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 - tx, y2 - ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x2 + tx, y2 + ty, 0);
-			renderer.color(color.r, color.g, color.b, color.a);
-			renderer.vertex(x1 - tx, y1 - ty, 0);
-		}
-	}
-
 	/** Draws a rectangle in the x/y plane. The x and y coordinate specify the bottom left corner of the rectangle. The
 	 * {@link ShapeType} passed to begin has to be {@link ShapeType#Filled} or {@link ShapeType#Line}.
 	 * @param col1 The color at (x, y)
@@ -607,7 +559,61 @@ public class ShapeRenderer {
 
 	}
 
-	/** Draws a box. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
+	/** @see #rectLine(float, float, float, float, float) */
+	public void rectLine (Vector2 p1, Vector2 p2, float width) {
+		rectLine(p1.x, p1.y, p2.x, p2.y, width);
+	}
+
+	/** Draws a rectangle with one edge centered at x1, y1 and the opposite edge centered at x2, y2. */
+	public void rectLine (float x1, float y1, float x2, float y2, float width) {
+		if (currType != ShapeType.Filled && currType != ShapeType.Line)
+			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
+
+		checkDirty();
+		checkFlush(8);
+
+		Vector2 t = tmp.set(y2 - y1, x1 - x2).nor();
+		width *= 0.5f;
+		float tx = t.x * width;
+		float ty = t.y * width;
+		if (currType == ShapeType.Line) {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		} else {
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 + tx, y1 + ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 - tx, y2 - ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x2 + tx, y2 + ty, 0);
+			renderer.color(color.r, color.g, color.b, color.a);
+			renderer.vertex(x1 - tx, y1 - ty, 0);
+		}
+	}
+
+	/** Draws a cube. The x, y and z coordinate specify the bottom left front corner of the rectangle. The {@link ShapeType} passed
 	 * to begin has to be {@link ShapeType#Line}. */
 	public void box (float x, float y, float z, float width, float height, float depth) {
 		if (currType != ShapeType.Filled && currType != ShapeType.Line)

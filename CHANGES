@@ -1,6 +1,12 @@
-[0.9.9]
+[1.0.0]
 - support 'size' as a json skin data value for BitmapFont
 - added setAlpha(float a) method to Sprite class
+- added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
+- added Immersive Mode support to Android backend
+- added user object to Actor
+- altered Android's hide status bar behavior
+-- changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
+[0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213
 - added Select class for selecting kth ordered statistic from arrays (see Array.selectRanked() method)

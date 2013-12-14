@@ -98,6 +98,7 @@ public class ParticleEmitter {
 	public ParticleEmitter (ParticleEmitter emitter) {
 		sprite = emitter.sprite;
 		name = emitter.name;
+		imagePath = emitter.imagePath;
 		setMaxParticleCount(emitter.maxParticleCount);
 		minParticleCount = emitter.minParticleCount;
 		delayValue.load(emitter.delayValue);

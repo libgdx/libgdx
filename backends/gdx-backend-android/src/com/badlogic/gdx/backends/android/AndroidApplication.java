@@ -24,8 +24,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -73,8 +71,10 @@ public class AndroidApplication extends Activity implements Application {
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
+	protected boolean useImmersiveMode = false;
+	protected boolean hideStatusBar = false;
+	protected boolean useWakelock = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -109,7 +109,10 @@ public class AndroidApplication extends Activity implements Application {
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
-
+		this.useImmersiveMode = config.useImmersiveMode;
+		this.hideStatusBar = config.hideStatusBar;
+		this.useWakelock = config.useWakelock;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -125,8 +128,19 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
-		createWakeLock(config);
-		hideStatusBar(config);
+		createWakeLock(this.useWakelock);
+		hideStatusBar(this.hideStatusBar);
+		useImmersiveMode(this.useImmersiveMode);
+		if (this.useImmersiveMode && getVersion() >= 19) {
+			try {
+				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Object o = vlistener.newInstance();
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				method.invoke(o, this);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
+			}
+		}
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
@@ -136,16 +150,14 @@ public class AndroidApplication extends Activity implements Application {
 		return layoutParams;
 	}
 
-	protected void createWakeLock (AndroidApplicationConfiguration config) {
-		if (config.useWakelock) {
-			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
+	protected void createWakeLock (boolean use) {
+		if (use) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 	}
 
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11)
-			return;
+	protected void hideStatusBar (boolean hide) {
+		if (!hide || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
 
@@ -155,6 +167,31 @@ public class AndroidApplication extends Activity implements Application {
 			m.invoke(rootView, 0x1);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't hide status bar", e);
+		}
+	}
+
+	@Override
+	public void onWindowFocusChanged (boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		useImmersiveMode(this.useImmersiveMode);
+		hideStatusBar(this.hideStatusBar);
+	}
+
+	protected void useImmersiveMode (boolean use) {
+		if (!use || getVersion() < 19) return;
+
+		View view = getWindow().getDecorView();
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			m.invoke(view, code);
+		} catch (Exception e) {
+			log("AndroidApplication", "Can't set immersive mode", e);
 		}
 	}
 
@@ -197,7 +234,10 @@ public class AndroidApplication extends Activity implements Application {
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
-
+		this.useImmersiveMode = config.useImmersiveMode;
+		this.hideStatusBar = config.hideStatusBar;
+		this.useWakelock = config.useWakelock;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -205,14 +245,24 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		createWakeLock(config);
-		hideStatusBar(config);
+		createWakeLock(this.useWakelock);
+		hideStatusBar(this.hideStatusBar);
+		useImmersiveMode(this.useImmersiveMode);
+		if (this.useImmersiveMode && getVersion() >= 19) {
+			try {
+				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Object o = vlistener.newInstance();
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				method.invoke(o, this);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
+			}
+		}
 		return graphics.getView();
 	}
 
 	@Override
 	protected void onPause () {
-		if (wakeLock != null) wakeLock.release();
 		boolean isContinuous = graphics.isContinuousRendering();
 		graphics.setContinuousRendering(true);
 		graphics.pause();
@@ -245,7 +295,6 @@ public class AndroidApplication extends Activity implements Application {
 
 	@Override
 	protected void onResume () {
-		if (wakeLock != null) wakeLock.acquire();
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -277,7 +326,7 @@ public class AndroidApplication extends Activity implements Application {
 	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
-	
+
 	@Override
 	public Audio getAudio () {
 		return audio;
@@ -297,7 +346,7 @@ public class AndroidApplication extends Activity implements Application {
 	public Input getInput () {
 		return input;
 	}
-	
+
 	@Override
 	public Net getNet () {
 		return net;
@@ -329,15 +378,15 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	AndroidClipboard clipboard;
-	
+
 	@Override
-	public Clipboard getClipboard() {
+	public Clipboard getClipboard () {
 		if (clipboard == null) {
 			clipboard = new AndroidClipboard(this);
 		}
 		return clipboard;
 	}
-	
+
 	@Override
 	public void postRunnable (Runnable runnable) {
 		synchronized (runnables) {
@@ -404,21 +453,21 @@ public class AndroidApplication extends Activity implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
 	}
 }

@@ -443,6 +443,7 @@ public class Skin implements Disposable {
 			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
 				int size = json.readValue("size", int.class, -1, jsonData);
+				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
@@ -454,13 +455,13 @@ public class Skin implements Disposable {
 					BitmapFont font;
 					TextureRegion region = skin.optional(regionName, TextureRegion.class);
 					if (region != null)
-						font = new BitmapFont(fontFile, region, false);
+						font = new BitmapFont(fontFile, region, flip);
 					else {
 						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
 						if (imageFile.exists())
-							font = new BitmapFont(fontFile, imageFile, false);
+							font = new BitmapFont(fontFile, imageFile, flip);
 						else
-							font = new BitmapFont(fontFile, false);
+							font = new BitmapFont(fontFile, flip);
 					}
 					if (size != -1) {
 						// Use scale factor based on lineHeight (as font size) to scale the font
