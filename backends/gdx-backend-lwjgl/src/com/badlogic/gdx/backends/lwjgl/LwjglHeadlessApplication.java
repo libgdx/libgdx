@@ -53,6 +53,7 @@ public class LwjglHeadlessApplication implements Application {
 		this.net = new LwjglNet();
 
 		Gdx.app = this;
+		Gdx.app.getType()
 		Gdx.files = files;
 		Gdx.net = net;
 		initialize();
@@ -149,7 +150,7 @@ public class LwjglHeadlessApplication implements Application {
 
 	@Override
 	public ApplicationType getType() {
-		return ApplicationType.Desktop;
+		return ApplicationType.HeadlessDesktop;
 	}
 
 	@Override
