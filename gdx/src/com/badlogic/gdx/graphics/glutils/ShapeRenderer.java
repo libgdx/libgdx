@@ -786,6 +786,11 @@ public class ShapeRenderer {
 		line(x - radius, y + radius, x + radius, y - radius);
 	}
 
+	/** @see #x(float, float, float) */
+	public void x (Vector2 p, float radius) {
+		x(p.x, p.y, radius);
+	}
+
 	/** Calls {@link #arc(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth arc. */
 	public void arc (float x, float y, float radius, float start, float angle) {
 		arc(x, y, radius, start, angle, Math.max(1, (int)(6 * (float)Math.cbrt(radius) * (angle / 360.0f))));
