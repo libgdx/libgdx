@@ -24,8 +24,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -73,9 +71,10 @@ public class AndroidApplication extends Activity implements Application {
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
+	protected boolean hideStatusBar = false;
+	protected boolean useWakelock = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -111,7 +110,9 @@ public class AndroidApplication extends Activity implements Application {
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
-
+		this.hideStatusBar = config.hideStatusBar;
+		this.useWakelock = config.useWakelock;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -127,8 +128,8 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
-		createWakeLock(config);
-		hideStatusBar(config);
+		createWakeLock(this.useWakelock);
+		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
@@ -149,15 +150,14 @@ public class AndroidApplication extends Activity implements Application {
 		return layoutParams;
 	}
 
-	protected void createWakeLock (AndroidApplicationConfiguration config) {
-		if (config.useWakelock) {
-			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
+	protected void createWakeLock (boolean use) {
+		if (use) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 	}
 
-	protected void hideStatusBar (AndroidApplicationConfiguration config) {
-		if (!config.hideStatusBar || getVersion() < 11) return;
+	protected void hideStatusBar (boolean hide) {
+		if (!hide || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
 
@@ -174,6 +174,7 @@ public class AndroidApplication extends Activity implements Application {
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
+		hideStatusBar(this.hideStatusBar);
 	}
 
 	protected void useImmersiveMode (boolean use) {
@@ -234,7 +235,9 @@ public class AndroidApplication extends Activity implements Application {
 		this.listener = listener;
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
-
+		this.hideStatusBar = config.hideStatusBar;
+		this.useWakelock = config.useWakelock;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -242,8 +245,8 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		createWakeLock(config);
-		hideStatusBar(config);
+		createWakeLock(this.useWakelock);
+		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
@@ -260,7 +263,6 @@ public class AndroidApplication extends Activity implements Application {
 
 	@Override
 	protected void onPause () {
-		if (wakeLock != null) wakeLock.release();
 		boolean isContinuous = graphics.isContinuousRendering();
 		graphics.setContinuousRendering(true);
 		graphics.pause();
@@ -293,7 +295,6 @@ public class AndroidApplication extends Activity implements Application {
 
 	@Override
 	protected void onResume () {
-		if (wakeLock != null) wakeLock.acquire();
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();

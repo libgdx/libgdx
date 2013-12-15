@@ -221,8 +221,12 @@ public class JglfwApplication implements Application {
 			if (graphics.shouldRender()) render(frameStartTime);
 		}
 
-		if (targetFPS != 0)
-			sleep(targetFPS == -1 ? 100 : (int)(1000f / targetFPS - (System.nanoTime() - frameStartTime) / 1000000f));
+		if (targetFPS != 0) {
+			if (targetFPS == -1)
+				sleep(100);
+			else
+				Sync.sync(targetFPS);
+		}
 	}
 
 	public boolean executeRunnables () {
@@ -354,7 +358,7 @@ public class JglfwApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

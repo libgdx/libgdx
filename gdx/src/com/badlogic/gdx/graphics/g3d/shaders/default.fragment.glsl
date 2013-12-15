@@ -165,8 +165,8 @@ void main() {
 	#endif //lightingFlag
 
 	#ifdef fogFlag
-    	gl_FragColor.rgb = mix(gl_FragColor.rgb, u_fogColor.rgb, v_fog);
-    #endif // end fogFlag
+		gl_FragColor.rgb = mix(gl_FragColor.rgb, u_fogColor.rgb, v_fog);
+	#endif // end fogFlag
 
 	#ifdef blendedFlag
 		gl_FragColor.a = diffuse.a * v_opacity;
@@ -174,6 +174,8 @@ void main() {
 			if (gl_FragColor.a <= v_alphaTest)
 				discard;
 		#endif
+	#else
+		gl_FragColor.a = 1.0;
 	#endif
 
 }

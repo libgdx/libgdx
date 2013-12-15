@@ -33,6 +33,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
 
 import static com.badlogic.gdx.graphics.g2d.Sprite.*;
@@ -79,7 +80,7 @@ public class SpriteCache implements Disposable {
 
 	private Cache currentCache;
 	private final Array<Texture> textures = new Array(8);
-	private final Array<Integer> counts = new Array(8);
+	private final IntArray counts = new IntArray(8);
 
 	private float color = Color.WHITE.toFloatBits();
 	private Color tempColor = new Color(1, 1, 1, 1);
@@ -247,7 +248,7 @@ public class SpriteCache implements Disposable {
 			textures.add(texture);
 			counts.add(count);
 		} else
-			counts.set(lastIndex, counts.get(lastIndex) + count);
+			counts.incr(lastIndex, count);
 
 		mesh.getVerticesBuffer().put(vertices, offset, length);
 	}
