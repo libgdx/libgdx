@@ -406,7 +406,8 @@ public class Skin implements Disposable {
 		final Json json = new Json() {
 			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
-				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type)) return get(jsonData.asString(), type);
+				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
+					return get(jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
 			}
 		};
@@ -433,7 +434,8 @@ public class Skin implements Disposable {
 					try {
 						add(valueEntry.name(), object, addType);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": " + valueEntry.name(), ex);
+						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": "
+							+ valueEntry.name(), ex);
 					}
 				}
 			}
@@ -463,10 +465,8 @@ public class Skin implements Disposable {
 						else
 							font = new BitmapFont(fontFile, flip);
 					}
-					if (scaledSize != -1) {
-						// Use scale factor based on lineHeight (as font size) to scale the font
-						font.setScale(scaledSize / font.getData().lineHeight);
-					}
+					// Scaled size is the desired cap height to scale the font to.
+					if (scaledSize != -1) font.setScale(scaledSize / font.getCapHeight());
 					return font;
 				} catch (RuntimeException ex) {
 					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);
