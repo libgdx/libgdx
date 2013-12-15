@@ -1,4 +1,5 @@
 [1.0.0]
+- support 'scaledSize' as a json skin data value for BitmapFont
 - added setAlpha(float a) method to Sprite class
 - added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
 - added Immersive Mode support to Android backend

@@ -442,6 +442,7 @@ public class Skin implements Disposable {
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
 			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
+				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
 				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
@@ -451,16 +452,22 @@ public class Skin implements Disposable {
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
 				String regionName = fontFile.nameWithoutExtension();
 				try {
+					BitmapFont font;
 					TextureRegion region = skin.optional(regionName, TextureRegion.class);
 					if (region != null)
-						return new BitmapFont(fontFile, region, flip);
+						font = new BitmapFont(fontFile, region, flip);
 					else {
 						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
 						if (imageFile.exists())
-							return new BitmapFont(fontFile, imageFile, flip);
+							font = new BitmapFont(fontFile, imageFile, flip);
 						else
-							return new BitmapFont(fontFile, flip);
+							font = new BitmapFont(fontFile, flip);
 					}
+					if (scaledSize != -1) {
+						// Use scale factor based on lineHeight (as font size) to scale the font
+						font.setScale(scaledSize / font.getData().lineHeight);
+					}
+					return font;
 				} catch (RuntimeException ex) {
 					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);
 				}
