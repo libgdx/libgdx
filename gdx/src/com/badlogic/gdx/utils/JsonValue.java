@@ -86,6 +86,11 @@ public class JsonValue implements Iterable<JsonValue> {
 		return current;
 	}
 
+	/** Returns true if a child with the specified name exists. */
+	public boolean has (String name) {
+		return get(name) != null;
+	}
+
 	/** Returns the child at the specified index.
 	 * @throws IllegalArgumentException if the child was not found. */
 	public JsonValue require (int index) {
@@ -511,12 +516,19 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	public String prettyPrint (OutputType outputType, int singleLineColumns) {
+		PrettyPrintSettings settings = new PrettyPrintSettings();
+		settings.outputType = outputType;
+		settings.singleLineColumns = singleLineColumns;
+		return prettyPrint(settings);
+	}
+
+	public String prettyPrint (PrettyPrintSettings settings) {
 		StringBuilder buffer = new StringBuilder(512);
-		prettyPrint(this, buffer, outputType, 0, singleLineColumns);
+		prettyPrint(this, buffer, 0, settings);
 		return buffer.toString();
 	}
 
-	private void prettyPrint (JsonValue object, StringBuilder buffer, OutputType outputType, int indent, int singleLineColumns) {
+	private void prettyPrint (JsonValue object, StringBuilder buffer, int indent, PrettyPrintSettings settings) {
 		if (object.isObject()) {
 			if (object.child() == null) {
 				buffer.append("{}");
@@ -529,12 +541,12 @@ public class JsonValue implements Iterable<JsonValue> {
 					int i = 0;
 					for (JsonValue child = object.child(); child != null; child = child.next()) {
 						if (newLines) indent(indent, buffer);
-						buffer.append(outputType.quoteName(child.name()));
+						buffer.append(settings.outputType.quoteName(child.name()));
 						buffer.append(": ");
-						prettyPrint(child, buffer, outputType, indent + 1, singleLineColumns);
+						prettyPrint(child, buffer, indent + 1, settings);
 						if (child.next() != null) buffer.append(",");
 						buffer.append(newLines ? '\n' : ' ');
-						if (!newLines && buffer.length() - start > singleLineColumns) {
+						if (!newLines && buffer.length() - start > settings.singleLineColumns) {
 							buffer.setLength(start);
 							newLines = true;
 							continue outer;
@@ -550,16 +562,17 @@ public class JsonValue implements Iterable<JsonValue> {
 				buffer.append("[]");
 			} else {
 				boolean newLines = !isFlat(object);
+				boolean wrap = settings.wrapNumericArrays || !isNumeric(object);
 				int start = buffer.length();
 				outer:
 				while (true) {
 					buffer.append(newLines ? "[\n" : "[ ");
 					for (JsonValue child = object.child(); child != null; child = child.next()) {
 						if (newLines) indent(indent, buffer);
-						prettyPrint(child, buffer, outputType, indent + 1, singleLineColumns);
+						prettyPrint(child, buffer, indent + 1, settings);
 						if (child.next() != null) buffer.append(",");
 						buffer.append(newLines ? '\n' : ' ');
-						if (!newLines && buffer.length() - start > singleLineColumns) {
+						if (wrap && !newLines && buffer.length() - start > settings.singleLineColumns) {
 							buffer.setLength(start);
 							newLines = true;
 							continue outer;
@@ -571,7 +584,7 @@ public class JsonValue implements Iterable<JsonValue> {
 				buffer.append(']');
 			}
 		} else if (object.isString()) {
-			buffer.append(outputType.quoteValue(object.asString()));
+			buffer.append(settings.outputType.quoteValue(object.asString()));
 		} else if (object.isDouble()) {
 			double doubleValue = object.asDouble();
 			long longValue = object.asLong();
@@ -589,6 +602,12 @@ public class JsonValue implements Iterable<JsonValue> {
 	static private boolean isFlat (JsonValue object) {
 		for (JsonValue child = object.child(); child != null; child = child.next())
 			if (child.isObject() || child.isArray()) return false;
+		return true;
+	}
+
+	static private boolean isNumeric (JsonValue object) {
+		for (JsonValue child = object.child(); child != null; child = child.next())
+			if (!child.isNumber()) return false;
 		return true;
 	}
 
@@ -634,5 +653,15 @@ public class JsonValue implements Iterable<JsonValue> {
 		public Iterator<JsonValue> iterator () {
 			return this;
 		}
+	}
+
+	static public class PrettyPrintSettings {
+		public OutputType outputType;
+
+		/** If an object on a single line fits this many columns, it won't wrap. */
+		public int singleLineColumns;
+
+		/** Arrays of floats won't wrap. */
+		public boolean wrapNumericArrays;
 	}
 }
