@@ -41,6 +41,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 			case MotionEvent.ACTION_DOWN:
 			case MotionEvent.ACTION_POINTER_DOWN:
 				realPointerIndex = input.getFreePointerIndex(); // get a free pointer index as reported by Input.getX() etc.
+				if (realPointerIndex > input.realId.length || realPointerIndex > input.touchX.length || realPointerIndex > input.touchY.length || realPointerIndex > input.deltaX.length || realPointerIndex > input.deltaY.length || realPointerIndex > input.touched.length) break;
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
@@ -58,6 +59,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 			case MotionEvent.ACTION_CANCEL:
 				realPointerIndex = input.lookUpPointerIndex(pointerId);
 				if (realPointerIndex == -1) break;
+				if (realPointerIndex > input.realId.length || realPointerIndex > input.touchX.length || realPointerIndex > input.touchY.length || realPointerIndex > input.deltaX.length || realPointerIndex > input.deltaY.length || realPointerIndex > input.touched.length) break;
 				input.realId[realPointerIndex] = -1;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
@@ -78,6 +80,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 					y = (int)event.getY(pointerIndex);
 					realPointerIndex = input.lookUpPointerIndex(pointerId);
 					if (realPointerIndex == -1) continue;
+					if (realPointerIndex > input.touchX.length || realPointerIndex > input.touchY.length || realPointerIndex > input.deltaX.length || realPointerIndex > input.deltaY.length) break;
 					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, timeStamp);
 					input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
 					input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
