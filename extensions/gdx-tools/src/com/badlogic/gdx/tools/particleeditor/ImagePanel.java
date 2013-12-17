@@ -73,7 +73,7 @@ class ImagePanel extends EditorPanel {
 				@Override
 				public void actionPerformed (ActionEvent e) {
 					final ParticleEmitter emitter = editor.getEmitter();
-					emitter.setImagePath("particle.png");
+					emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
 					emitter.setSprite(null);
 
 					editor.setIcon(emitter, null);
