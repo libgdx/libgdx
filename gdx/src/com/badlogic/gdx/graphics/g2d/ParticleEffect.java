@@ -30,14 +30,16 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */
 public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
-	private BoundingBox bounds;
-	private boolean ownsTexture;
+	private transient BoundingBox bounds;
+	private transient boolean ownsTexture;
 
 	public ParticleEffect () {
 		emitters = new Array(8);
@@ -127,15 +129,10 @@ public class ParticleEffect implements Disposable {
 	public void save (File file) {
 		Writer output = null;
 		try {
+			Json json = new Json();
+			String data = json.prettyPrint(this);
 			output = new FileWriter(file);
-			int index = 0;
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleEmitter emitter = emitters.get(i);
-				if (index++ > 0) output.write("\n\n");
-				emitter.save(output);
-				output.write("- Image Path -\n");
-				output.write(emitter.getImagePath() + "\n");
-			}
+			output.write(data);
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error saving effect: " + file, ex);
 		} finally {
@@ -154,24 +151,15 @@ public class ParticleEffect implements Disposable {
 	}
 
 	public void loadEmitters (FileHandle effectFile) {
-		InputStream input = effectFile.read();
+		Json json = new Json();
+		ParticleEffect effect = json.fromJson(ParticleEffect.class, effectFile);
+
 		emitters.clear();
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(input), 512);
-			while (true) {
-				ParticleEmitter emitter = new ParticleEmitter(reader);
-				reader.readLine();
-				emitter.setImagePath(reader.readLine());
-				emitters.add(emitter);
-				if (reader.readLine() == null) break;
-				if (reader.readLine() == null) break;
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
-		} finally {
-			StreamUtils.closeQuietly(reader);
+		for (ParticleEmitter emitter : effect.emitters) {
+			// Trigger creating the particles (array)
+			emitter.setMaxParticleCount(emitter.getMaxParticleCount());
 		}
+		emitters.addAll(effect.emitters);
 	}
 
 	public void loadEmitterImages (TextureAtlas atlas) {
@@ -211,7 +199,7 @@ public class ParticleEffect implements Disposable {
 			emitter.getSprite().getTexture().dispose();
 		}
 	}
-	
+
 	/** Returns the bounding box for all active particles. z axis will always be zero. */
 	public BoundingBox getBoundingBox () {
 		if (bounds == null) bounds = new BoundingBox();
