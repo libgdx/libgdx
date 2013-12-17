@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.tests.superkoalio;
 
 import com.badlogic.gdx.Gdx;
@@ -6,17 +22,13 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -25,7 +37,7 @@ import com.badlogic.gdx.utils.Pool;
 
 /**
  * Super Mario Brothers like very basic platformer, using a tile map build
- * via <a href="http://www.mapeditor.org/>Tiled</a> and a tileset
+ * via <a href="http://www.mapeditor.org/">Tiled</a> and a tileset
  * and sprites by <a href="http://www.vickiwenderlich.com/">Vicky Wenderlich</a></p>
  * 
  * Shows simple platformer collision detection as well as on-the-fly map modifications
@@ -279,7 +291,7 @@ public class SuperKoalio extends GdxTest {
 		// draw the koala, depending on the current velocity
 		// on the x-axis, draw the koala facing either right
 		// or left
-		SpriteBatch batch = renderer.getSpriteBatch();
+		Batch batch = renderer.getSpriteBatch();
 		batch.begin();
 		if(koala.facesRight) {
 			batch.draw(frame, koala.position.x, koala.position.y, Koala.WIDTH, Koala.HEIGHT);

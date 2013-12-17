@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g2d.freetype;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,11 +35,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphSlot;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.nio.ByteBuffer;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType font files.</p>
  * 
@@ -59,6 +63,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	final Library library;
 	final Face face;
 	final String filePath;
+	boolean bitmapped = false;
 
 	/** The maximum texture size allowed by generateData, when storing in a texture atlas. 
 	 * Multiple texture pages will be created if necessary. */
@@ -98,8 +103,30 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
 		face = FreeType.newFace(library, font, 0);
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font '" + font + "'");
+		if(checkForBitmapFont())
+		{
+			return;
+		}
 		if (!FreeType.setPixelSizes(face, 0, 15)) throw new GdxRuntimeException("Couldn't set size for font '" + font + "'");
 	}
+
+	private boolean checkForBitmapFont()
+	{
+		if(	((face.getFaceFlags()&FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
+		&& ((face.getFaceFlags()&FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL) )
+		{
+			if(FreeType.loadChar(face, 32, FreeType.FT_LOAD_DEFAULT))
+			{
+				GlyphSlot slot = face.getGlyph();
+				if(slot.getFormat()==1651078259)
+				{
+					bitmapped = true;
+				}
+			}
+		}
+		return bitmapped;
+	}
+
 
 	/** Generates a new {@link BitmapFont}, containing glyphs for the given characters. The size is expressed in pixels. Throws a
 	 * GdxRuntimeException in case the font could not be generated. Using big sizes might cause such an exception. All characters
@@ -127,7 +154,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 *  http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight
 	 */
 	public int scaleForPixelHeight(int size) {
-		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int ascent = FreeType.toInt(fontMetrics.getAscender());
 		int descent = FreeType.toInt(fontMetrics.getDescender());
@@ -143,7 +170,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * for example with various space characters, then bitmap is null.
 	 * */
 	public GlyphAndBitmap generateGlyphAndBitmap(int c, int size, boolean flip) {
-		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int baseline = FreeType.toInt(fontMetrics.getAscender());
@@ -163,7 +190,9 @@ public class FreeTypeFontGenerator implements Disposable {
 		
 		// Try to render to bitmap
 		Bitmap bitmap;
-		if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
+		if(bitmapped) {
+			bitmap = slot.getBitmap();
+		} else if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
 			bitmap = null;
 		} else {
 			bitmap = slot.getBitmap();
@@ -226,7 +255,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param packer the optional PixmapPacker to use */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip, PixmapPacker packer) {
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();
-		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		// set general font data
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
@@ -235,6 +264,19 @@ public class FreeTypeFontGenerator implements Disposable {
 		data.descent = FreeType.toInt(fontMetrics.getDescender());
 		data.lineHeight = FreeType.toInt(fontMetrics.getHeight());
 		float baseLine = data.ascent;
+
+		// if bitmapped
+		if(bitmapped && (data.lineHeight==0))
+		{
+			for(int c=32 ; c< (32+face.getNumGlyphs()); c++)
+			{
+				if(FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) 
+				{
+					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
+					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight ; 
+				}
+			}
+		}
 
 		// determine space width and set glyph
 		if (FreeType.loadChar(face, ' ', FreeType.FT_LOAD_DEFAULT)) {
@@ -261,7 +303,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// determine cap height
-		if (data.capHeight == 1) throw new GdxRuntimeException("No cap character found in font");
+		if (!bitmapped && data.capHeight == 1) throw new GdxRuntimeException("No cap character found in font");
 		data.ascent = data.ascent - data.capHeight;
 		data.down = -data.lineHeight;
 		if (flip) {
@@ -300,6 +342,31 @@ public class FreeTypeFontGenerator implements Disposable {
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
 			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
+			Glyph glyph = new Glyph();
+			glyph.id = (int)c;
+			glyph.width = pixmap.getWidth();
+			glyph.height = pixmap.getHeight();
+			glyph.xoffset = slot.getBitmapLeft();
+			glyph.yoffset = flip ? -slot.getBitmapTop() + (int)baseLine : -(glyph.height - slot.getBitmapTop()) - (int)baseLine;
+			glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
+
+			if(bitmapped)
+			{
+				pixmap.setColor(Color.CLEAR);
+				pixmap.fill();
+				ByteBuffer buf = bitmap.getBuffer();
+				for(int h=0; h<glyph.height; h++)
+				{
+					int idx = h*bitmap.getPitch();
+					for(int w=0; w<(glyph.width+glyph.xoffset); w++)
+					{
+						int bit = (buf.get(idx+(w/8)) >>> (7-(w%8))) & 1;
+						pixmap.drawPixel(w, h, ((bit==1)? Color.WHITE.toIntBits() : Color.CLEAR.toIntBits()));
+					}
+				}
+				
+			}
+
 			String name = packPrefix + c;
 			Rectangle rect = packer.pack(name, pixmap);
 			
@@ -308,16 +375,10 @@ public class FreeTypeFontGenerator implements Disposable {
 			if (pIndex==-1) //we should not get here
 				throw new IllegalStateException("packer was not able to insert '"+name+"' into a page");
 			
-			Glyph glyph = new Glyph();
-			glyph.id = (int)c;
 			glyph.page = pIndex;
-			glyph.width = pixmap.getWidth();
-			glyph.height = pixmap.getHeight();
-			glyph.xoffset = slot.getBitmapLeft();
-			glyph.yoffset = flip ? -slot.getBitmapTop() + (int)baseLine : -(glyph.height - slot.getBitmapTop()) - (int)baseLine;
-			glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
 			glyph.srcX = (int)rect.x;
 			glyph.srcY = (int)rect.y;
+			
 			data.setGlyph(c, glyph);
 			pixmap.dispose();
 		}
@@ -345,14 +406,17 @@ public class FreeTypeFontGenerator implements Disposable {
 			for (int i=0; i<pages.size; i++) {
 				Page p = pages.get(i);
 				
-				Texture tex = new Texture(p.getPixmap(), p.getPixmap().getFormat(), false);
+				Texture tex = new Texture(new PixmapTextureData(p.getPixmap(), p.getPixmap().getFormat(), false, false, true)) {
+					@Override
+					public void dispose () {
+						super.dispose();
+						getTextureData().consumePixmap().dispose();
+					}					
+				};
 				tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 				
 				data.regions[i] = new TextureRegion(tex); 
 			}
-			
-			//no more need for the PixmapPacker.. we can dispose it
-			packer.dispose();
 		}
 		return data;
 	}

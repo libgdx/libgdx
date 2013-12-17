@@ -111,10 +111,10 @@ int	btTriangleMesh::findOrAddVertex(const btVector3& vertex, bool removeDuplicat
 					return i/3;
 				}
 			}
-	}
-		m_3componentVertices.push_back((float)vertex.getX());
-		m_3componentVertices.push_back((float)vertex.getY());
-		m_3componentVertices.push_back((float)vertex.getZ());
+		}
+		m_3componentVertices.push_back(vertex.getX());
+		m_3componentVertices.push_back(vertex.getY());
+		m_3componentVertices.push_back(vertex.getZ());
 		m_indexedMeshes[0].m_numVertices++;
 		m_indexedMeshes[0].m_vertexBase = (unsigned char*)&m_3componentVertices[0];
 		return (m_3componentVertices.size()/3)-1;

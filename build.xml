@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="0.9.9-SNAPSHOT"/>
+	<property name="version" value="1.0-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -52,6 +52,8 @@
 		<fileset id="resourcefiles" dir="gdx/src">
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.vertex.glsl"/>
 			<include name="com/badlogic/gdx/utils/arial-15.png"/>
 			<include name="com/badlogic/gdx/utils/arial-15.fnt"/>
 		</fileset>
@@ -197,7 +199,7 @@
 			<pathelement location="${distDir}/gdx.jar"/>
 			<pathelement location="${distDir}/gdx-backend-android.jar"/>
 			<pathelement location="${distDir}/extensions/gdx-controllers/gdx-controllers.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.2.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
 		</path>
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-android">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>

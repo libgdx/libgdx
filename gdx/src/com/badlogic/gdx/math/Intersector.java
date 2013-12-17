@@ -672,9 +672,10 @@ public final class Intersector {
 		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 		if (d == 0) return false;
 
-		float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		if (intersection != null) {
+			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
+			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		}
 		return true;
 	}
 
@@ -686,9 +687,10 @@ public final class Intersector {
 		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 		if (d == 0) return false;
 
-		float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-
-		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		if (intersection != null) {
+			float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
+			intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		}
 		return true;
 	}
 
@@ -716,6 +718,21 @@ public final class Intersector {
 			}
 			x3 = x4;
 			y3 = y4;
+		}
+		return false;
+	}
+
+	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
+	 * area of overlap.
+	 * 
+	 * @return Whether the rectangles intersect */
+	static public boolean intersectRectangles (Rectangle rectangle1, Rectangle rectangle2, Rectangle intersection) {
+		if (rectangle1.overlaps(rectangle2)) {
+			intersection.x = Math.max(rectangle1.x, rectangle2.x);
+			intersection.width = Math.min(rectangle1.x + rectangle1.width, rectangle2.x + rectangle2.width) - intersection.x;
+			intersection.y = Math.max(rectangle1.y, rectangle2.y);
+			intersection.height = Math.min(rectangle1.y + rectangle1.height, rectangle2.y + rectangle2.height) - intersection.y;
+			return true;
 		}
 		return false;
 	}
@@ -761,10 +778,29 @@ public final class Intersector {
 		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 		if (d == 0) return false;
 
-		float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / d;
-		float ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / d;
-
+		float yd = y1 - y3;
+		float xd = x1 - x3;
+		float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
 		if (ua < 0 || ua > 1) return false;
+
+		float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
+		if (ub < 0 || ub > 1) return false;
+
+		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);
+		return true;
+	}
+
+	public static boolean intersectSegments (float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,
+		Vector2 intersection) {
+		float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+		if (d == 0) return false;
+
+		float yd = y1 - y3;
+		float xd = x1 - x3;
+		float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
+		if (ua < 0 || ua > 1) return false;
+
+		float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
 		if (ub < 0 || ub > 1) return false;
 
 		if (intersection != null) intersection.set(x1 + (x2 - x1) * ua, y1 + (y2 - y1) * ua);

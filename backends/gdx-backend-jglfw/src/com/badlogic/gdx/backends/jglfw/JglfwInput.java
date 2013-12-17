@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.backends.jglfw;
 
@@ -22,6 +37,7 @@ import javax.swing.event.DocumentListener;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
@@ -249,7 +265,11 @@ public class JglfwInput implements Input {
 		glfwSetCursorPos(app.graphics.window, x, y);
 	}
 
-	public void getTextInput (final TextInputListener listener, final String title, final String text) {
+  @Override
+  public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {
 				final String output = JOptionPane.showInputDialog(null, title, text);
@@ -348,32 +368,18 @@ public class JglfwInput implements Input {
 
 	static public int getGdxKeyCode (int lwjglKeyCode) {
 		switch (lwjglKeyCode) {
-		case GLFW_KEY_LEFT_BRACKET:
-			return Input.Keys.LEFT_BRACKET;
-		case GLFW_KEY_RIGHT_BRACKET:
-			return Input.Keys.RIGHT_BRACKET;
-		case GLFW_KEY_GRAVE_ACCENT:
-			return Input.Keys.GRAVE;
-		case GLFW_KEY_KP_MULTIPLY:
-			return Input.Keys.STAR;
-		case GLFW_KEY_NUM_LOCK:
-			return Input.Keys.NUM;
-		case GLFW_KEY_KP_DECIMAL:
+		case GLFW_KEY_SPACE:
+			return Input.Keys.SPACE;
+		case GLFW_KEY_APOSTROPHE:
+			return Input.Keys.APOSTROPHE;
+		case GLFW_KEY_COMMA:
+			return Input.Keys.COMMA;
+		case GLFW_KEY_MINUS:
+			return Input.Keys.MINUS;
+		case GLFW_KEY_PERIOD:
 			return Input.Keys.PERIOD;
-		case GLFW_KEY_KP_DIVIDE:
+		case GLFW_KEY_SLASH:
 			return Input.Keys.SLASH;
-		case GLFW_KEY_MENU:
-			return Input.Keys.MENU;
-		case GLFW_KEY_RIGHT_SUPER:
-			return Input.Keys.SYM;
-		case GLFW_KEY_LEFT_SUPER:
-			return Input.Keys.SYM;
-		case GLFW_KEY_KP_EQUAL:
-			return Input.Keys.EQUALS;
-		case GLFW_KEY_EQUAL:
-			return Input.Keys.EQUALS;
-		case GLFW_KEY_KP_ENTER:
-			return Input.Keys.ENTER;
 		case GLFW_KEY_0:
 			return Input.Keys.NUM_0;
 		case GLFW_KEY_1:
@@ -394,6 +400,10 @@ public class JglfwInput implements Input {
 			return Input.Keys.NUM_8;
 		case GLFW_KEY_9:
 			return Input.Keys.NUM_9;
+		case GLFW_KEY_SEMICOLON:
+			return Input.Keys.SEMICOLON;
+		case GLFW_KEY_EQUAL:
+			return Input.Keys.EQUALS;
 		case GLFW_KEY_A:
 			return Input.Keys.A;
 		case GLFW_KEY_B:
@@ -446,62 +456,51 @@ public class JglfwInput implements Input {
 			return Input.Keys.Y;
 		case GLFW_KEY_Z:
 			return Input.Keys.Z;
-		case GLFW_KEY_LALT:
-			return Input.Keys.ALT_LEFT;
-		case GLFW_KEY_RALT:
-			return Input.Keys.ALT_RIGHT;
+		case GLFW_KEY_LEFT_BRACKET:
+			return Input.Keys.LEFT_BRACKET;
 		case GLFW_KEY_BACKSLASH:
 			return Input.Keys.BACKSLASH;
-		case GLFW_KEY_COMMA:
-			return Input.Keys.COMMA;
-		case GLFW_KEY_DELETE:
-			return Input.Keys.FORWARD_DEL;
-		case GLFW_KEY_LEFT:
-			return Input.Keys.DPAD_LEFT;
-		case GLFW_KEY_RIGHT:
-			return Input.Keys.DPAD_RIGHT;
-		case GLFW_KEY_UP:
-			return Input.Keys.DPAD_UP;
-		case GLFW_KEY_DOWN:
-			return Input.Keys.DPAD_DOWN;
-		case GLFW_KEY_ENTER:
-			return Input.Keys.ENTER;
-		case GLFW_KEY_HOME:
-			return Input.Keys.HOME;
-		case GLFW_KEY_MINUS:
-			return Input.Keys.MINUS;
-		case GLFW_KEY_PERIOD:
-			return Input.Keys.PERIOD;
-		case GLFW_KEY_KP_ADD:
-			return Input.Keys.PLUS;
-		case GLFW_KEY_SEMICOLON:
-			return Input.Keys.SEMICOLON;
-		case GLFW_KEY_LSHIFT:
-			return Input.Keys.SHIFT_LEFT;
-		case GLFW_KEY_RSHIFT:
-			return Input.Keys.SHIFT_RIGHT;
-		case GLFW_KEY_SLASH:
-			return Input.Keys.SLASH;
-		case GLFW_KEY_SPACE:
-			return Input.Keys.SPACE;
-		case GLFW_KEY_TAB:
-			return Input.Keys.TAB;
-		case GLFW_KEY_LEFT_CONTROL:
-			return Input.Keys.CONTROL_LEFT;
-		case GLFW_KEY_RIGHT_CONTROL:
-			return Input.Keys.CONTROL_RIGHT;
+		case GLFW_KEY_RIGHT_BRACKET:
+			return Input.Keys.RIGHT_BRACKET;
+		case GLFW_KEY_GRAVE_ACCENT:
+			return Input.Keys.GRAVE;
+		case GLFW_KEY_WORLD_1:
+		case GLFW_KEY_WORLD_2:
+			return Input.Keys.UNKNOWN;
 		case GLFW_KEY_ESCAPE:
 			return Input.Keys.ESCAPE;
-		case GLFW_KEY_END:
-			return Input.Keys.END;
+		case GLFW_KEY_ENTER:
+			return Input.Keys.ENTER;
+		case GLFW_KEY_TAB:
+			return Input.Keys.TAB;
+		case GLFW_KEY_BACKSPACE:
+			return Input.Keys.BACKSPACE;
 		case GLFW_KEY_INSERT:
 			return Input.Keys.INSERT;
-		case GLFW_KEY_BACKSPACE:
-			return Input.Keys.DEL;
-		case GLFW_KEY_KP_SUBTRACT:
-			return Input.Keys.MINUS;
-		case GLFW_KEY_APOSTROPHE:
-			return Input.Keys.APOSTROPHE;
+		case GLFW_KEY_DELETE:
+			return Input.Keys.FORWARD_DEL;
+		case GLFW_KEY_RIGHT:
+			return Input.Keys.RIGHT;
+		case GLFW_KEY_LEFT:
+			return Input.Keys.LEFT;
+		case GLFW_KEY_DOWN:
+			return Input.Keys.DOWN;
+		case GLFW_KEY_UP:
+			return Input.Keys.UP;
+		case GLFW_KEY_PAGE_UP:
+			return Input.Keys.PAGE_UP;
+		case GLFW_KEY_PAGE_DOWN:
+			return Input.Keys.PAGE_DOWN;
+		case GLFW_KEY_HOME:
+			return Input.Keys.HOME;
+		case GLFW_KEY_END:
+			return Input.Keys.END;
+		case GLFW_KEY_CAPS_LOCK:
+		case GLFW_KEY_SCROLL_LOCK:
+		case GLFW_KEY_NUM_LOCK:
+		case GLFW_KEY_PRINT_SCREEN:
+		case GLFW_KEY_PAUSE:
+			return Input.Keys.UNKNOWN;
 		case GLFW_KEY_F1:
 			return Input.Keys.F1;
 		case GLFW_KEY_F2:
@@ -526,6 +525,20 @@ public class JglfwInput implements Input {
 			return Input.Keys.F11;
 		case GLFW_KEY_F12:
 			return Input.Keys.F12;
+		case GLFW_KEY_F13:
+		case GLFW_KEY_F14:
+		case GLFW_KEY_F15:
+		case GLFW_KEY_F16:
+		case GLFW_KEY_F17:
+		case GLFW_KEY_F18:
+		case GLFW_KEY_F19:
+		case GLFW_KEY_F20:
+		case GLFW_KEY_F21:
+		case GLFW_KEY_F22:
+		case GLFW_KEY_F23:
+		case GLFW_KEY_F24:
+		case GLFW_KEY_F25:
+			return Input.Keys.UNKNOWN;
 		case GLFW_KEY_KP_0:
 			return Input.Keys.NUMPAD_0;
 		case GLFW_KEY_KP_1:
@@ -546,6 +559,38 @@ public class JglfwInput implements Input {
 			return Input.Keys.NUMPAD_8;
 		case GLFW_KEY_KP_9:
 			return Input.Keys.NUMPAD_9;
+		case GLFW_KEY_KP_DECIMAL:
+			return Input.Keys.PERIOD;
+		case GLFW_KEY_KP_DIVIDE:
+			return Input.Keys.SLASH;
+		case GLFW_KEY_KP_MULTIPLY:
+			return Input.Keys.STAR;
+		case GLFW_KEY_KP_SUBTRACT:
+			return Input.Keys.MINUS;
+		case GLFW_KEY_KP_ADD:
+			return Input.Keys.PLUS;
+		case GLFW_KEY_KP_ENTER:
+			return Input.Keys.ENTER;
+		case GLFW_KEY_KP_EQUAL:
+			return Input.Keys.EQUALS;
+		case GLFW_KEY_LEFT_SHIFT:
+			return Input.Keys.SHIFT_LEFT;
+		case GLFW_KEY_LEFT_CONTROL:
+			return Input.Keys.CONTROL_LEFT;
+		case GLFW_KEY_LEFT_ALT:
+			return Input.Keys.ALT_LEFT;
+		case GLFW_KEY_LEFT_SUPER:
+			return Input.Keys.SYM;
+		case GLFW_KEY_RIGHT_SHIFT:
+			return Input.Keys.SHIFT_RIGHT;
+		case GLFW_KEY_RIGHT_CONTROL:
+			return Input.Keys.CONTROL_RIGHT;
+		case GLFW_KEY_RIGHT_ALT:
+			return Input.Keys.ALT_RIGHT;
+		case GLFW_KEY_RIGHT_SUPER:
+			return Input.Keys.SYM;
+		case GLFW_KEY_MENU:
+			return Input.Keys.MENU;
 		default:
 			return Input.Keys.UNKNOWN;
 		}
@@ -553,22 +598,14 @@ public class JglfwInput implements Input {
 
 	static public int getJglfwKeyCode (int gdxKeyCode) {
 		switch (gdxKeyCode) {
-		case Input.Keys.LEFT_BRACKET:
-			return GLFW_KEY_LEFT_BRACKET;
-		case Input.Keys.RIGHT_BRACKET:
-			return GLFW_KEY_RIGHT_BRACKET;
-		case Input.Keys.GRAVE:
-			return GLFW_KEY_GRAVE_ACCENT;
-		case Input.Keys.STAR:
-			return GLFW_KEY_KP_MULTIPLY;
-		case Input.Keys.NUM:
-			return GLFW_KEY_NUM_LOCK;
-		case Input.Keys.EQUALS:
-			return GLFW_KEY_MENU;
-		case Input.Keys.MENU:
-			return GLFW_KEY_MENU;
-		case Input.Keys.SYM:
-			return GLFW_KEY_LEFT_SUPER;
+		case Input.Keys.SPACE:
+			return GLFW_KEY_SPACE;
+		case Input.Keys.APOSTROPHE:
+			return GLFW_KEY_APOSTROPHE;
+		case Input.Keys.COMMA:
+			return GLFW_KEY_COMMA;
+		case Input.Keys.PERIOD:
+			return GLFW_KEY_PERIOD;
 		case Input.Keys.NUM_0:
 			return GLFW_KEY_0;
 		case Input.Keys.NUM_1:
@@ -589,6 +626,10 @@ public class JglfwInput implements Input {
 			return GLFW_KEY_8;
 		case Input.Keys.NUM_9:
 			return GLFW_KEY_9;
+		case Input.Keys.SEMICOLON:
+			return GLFW_KEY_SEMICOLON;
+		case Input.Keys.EQUALS:
+			return GLFW_KEY_EQUAL;
 		case Input.Keys.A:
 			return GLFW_KEY_A;
 		case Input.Keys.B:
@@ -641,54 +682,42 @@ public class JglfwInput implements Input {
 			return GLFW_KEY_Y;
 		case Input.Keys.Z:
 			return GLFW_KEY_Z;
-		case Input.Keys.ALT_LEFT:
-			return GLFW_KEY_LALT;
-		case Input.Keys.ALT_RIGHT:
-			return GLFW_KEY_RALT;
+		case Input.Keys.LEFT_BRACKET:
+			return GLFW_KEY_LEFT_BRACKET;
 		case Input.Keys.BACKSLASH:
 			return GLFW_KEY_BACKSLASH;
-		case Input.Keys.COMMA:
-			return GLFW_KEY_COMMA;
-		case Input.Keys.FORWARD_DEL:
-			return GLFW_KEY_DELETE;
-		case Input.Keys.DPAD_LEFT:
-			return GLFW_KEY_LEFT;
-		case Input.Keys.DPAD_RIGHT:
-			return GLFW_KEY_RIGHT;
-		case Input.Keys.DPAD_UP:
-			return GLFW_KEY_UP;
-		case Input.Keys.DPAD_DOWN:
-			return GLFW_KEY_DOWN;
-		case Input.Keys.ENTER:
-			return GLFW_KEY_ENTER;
-		case Input.Keys.HOME:
-			return GLFW_KEY_HOME;
-		case Input.Keys.MINUS:
-			return GLFW_KEY_MINUS;
-		case Input.Keys.PERIOD:
-			return GLFW_KEY_PERIOD;
-		case Input.Keys.PLUS:
-			return GLFW_KEY_KP_ADD;
-		case Input.Keys.SEMICOLON:
-			return GLFW_KEY_SEMICOLON;
-		case Input.Keys.SHIFT_LEFT:
-			return GLFW_KEY_LSHIFT;
-		case Input.Keys.SHIFT_RIGHT:
-			return GLFW_KEY_RSHIFT;
-		case Input.Keys.SLASH:
-			return GLFW_KEY_SLASH;
-		case Input.Keys.SPACE:
-			return GLFW_KEY_SPACE;
-		case Input.Keys.TAB:
-			return GLFW_KEY_TAB;
-		case Input.Keys.DEL:
-			return GLFW_KEY_BACKSPACE;
-		case Input.Keys.CONTROL_LEFT:
-			return GLFW_KEY_LEFT_CONTROL;
-		case Input.Keys.CONTROL_RIGHT:
-			return GLFW_KEY_RIGHT_CONTROL;
+		case Input.Keys.RIGHT_BRACKET:
+			return GLFW_KEY_RIGHT_BRACKET;
+		case Input.Keys.GRAVE:
+			return GLFW_KEY_GRAVE_ACCENT;
 		case Input.Keys.ESCAPE:
 			return GLFW_KEY_ESCAPE;
+		case Input.Keys.ENTER:
+			return GLFW_KEY_ENTER;
+		case Input.Keys.TAB:
+			return GLFW_KEY_TAB;
+		case Input.Keys.BACKSPACE:
+			return GLFW_KEY_BACKSPACE;
+		case Input.Keys.INSERT:
+			return GLFW_KEY_INSERT;
+		case Input.Keys.FORWARD_DEL:
+			return GLFW_KEY_DELETE;
+		case Input.Keys.RIGHT:
+			return GLFW_KEY_RIGHT;
+		case Input.Keys.LEFT:
+			return GLFW_KEY_LEFT;
+		case Input.Keys.DOWN:
+			return GLFW_KEY_DOWN;
+		case Input.Keys.UP:
+			return GLFW_KEY_UP;
+		case Input.Keys.PAGE_UP:
+			return GLFW_KEY_PAGE_UP;
+		case Input.Keys.PAGE_DOWN:
+			return GLFW_KEY_PAGE_DOWN;
+		case Input.Keys.HOME:
+			return GLFW_KEY_HOME;
+		case Input.Keys.END:
+			return GLFW_KEY_END;
 		case Input.Keys.F1:
 			return GLFW_KEY_F1;
 		case Input.Keys.F2:
@@ -732,7 +761,31 @@ public class JglfwInput implements Input {
 		case Input.Keys.NUMPAD_8:
 			return GLFW_KEY_KP_8;
 		case Input.Keys.NUMPAD_9:
-			return GLFW_KEY_KP_9;			
+			return GLFW_KEY_KP_9;
+		case Input.Keys.SLASH:
+			return GLFW_KEY_KP_DIVIDE;
+		case Input.Keys.STAR:
+			return GLFW_KEY_KP_MULTIPLY;
+		case Input.Keys.MINUS:
+			return GLFW_KEY_KP_SUBTRACT;
+		case Input.Keys.PLUS:
+			return GLFW_KEY_KP_ADD;
+		case Input.Keys.SHIFT_LEFT:
+			return GLFW_KEY_LEFT_SHIFT;
+		case Input.Keys.CONTROL_LEFT:
+			return GLFW_KEY_LEFT_CONTROL;
+		case Input.Keys.ALT_LEFT:
+			return GLFW_KEY_LEFT_ALT;
+		case Input.Keys.SYM:
+			return GLFW_KEY_LEFT_SUPER;
+		case Input.Keys.SHIFT_RIGHT:
+			return GLFW_KEY_RIGHT_SHIFT;
+		case Input.Keys.CONTROL_RIGHT:
+			return GLFW_KEY_RIGHT_CONTROL;
+		case Input.Keys.ALT_RIGHT:
+			return GLFW_KEY_RIGHT_ALT;
+		case Input.Keys.MENU:
+			return GLFW_KEY_MENU;
 		default:
 			return 0;
 		}

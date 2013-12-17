@@ -45,40 +45,42 @@ public class XmlReader {
 	}
 
 	public Element parse (Reader reader) throws IOException {
-		char[] data = new char[1024];
-		int offset = 0;
-		while (true) {
-			int length = reader.read(data, offset, data.length - offset);
-			if (length == -1) break;
-			if (length == 0) {
-				char[] newData = new char[data.length * 2];
-				System.arraycopy(data, 0, newData, 0, data.length);
-				data = newData;
-			} else
-				offset += length;
+		try {
+			char[] data = new char[1024];
+			int offset = 0;
+			while (true) {
+				int length = reader.read(data, offset, data.length - offset);
+				if (length == -1) break;
+				if (length == 0) {
+					char[] newData = new char[data.length * 2];
+					System.arraycopy(data, 0, newData, 0, data.length);
+					data = newData;
+				} else
+					offset += length;
+			}
+			return parse(data, 0, offset);
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
+		} finally {
+			StreamUtils.closeQuietly(reader);
 		}
-		return parse(data, 0, offset);
 	}
 
 	public Element parse (InputStream input) throws IOException {
-		Reader r = null;
 		try {
-			r = new InputStreamReader(input, "ISO-8859-1");
-			return parse(r);
+			return parse(new InputStreamReader(input, "UTF-8"));
+		} catch (IOException ex) {
+			throw new SerializationException(ex);
 		} finally {
-			StreamUtils.closeQuietly(r);
+			StreamUtils.closeQuietly(input);
 		}
 	}
 
 	public Element parse (FileHandle file) throws IOException {
-		InputStream is = null;
 		try {
-			is = file.read();
-			return parse(is);
+			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
-		} finally {
-			StreamUtils.closeQuietly(is);
 		}
 	}
 
@@ -89,12 +91,12 @@ public class XmlReader {
 		String attributeName = null;
 		boolean hasBody = false;
 
-		// line 3 "XmlReader.java"
+		// line 93 "XmlReader.java"
 		{
 			cs = xml_start;
 		}
 
-		// line 7 "XmlReader.java"
+		// line 97 "XmlReader.java"
 		{
 			int _klen;
 			int _trans = 0;
@@ -173,13 +175,13 @@ public class XmlReader {
 						while (_nacts-- > 0) {
 							switch (_xml_actions[_acts++]) {
 							case 0:
-							// line 80 "XmlReader.rl"
+								// line 94 "XmlReader.rl"
 							{
 								s = p;
 							}
 								break;
 							case 1:
-							// line 81 "XmlReader.rl"
+								// line 95 "XmlReader.rl"
 							{
 								char c = data[s];
 								if (c == '?' || c == '!') {
@@ -195,6 +197,13 @@ public class XmlReader {
 										while (data[p - 2] != ']' || data[p - 1] != ']' || data[p] != '>')
 											p++;
 										text(new String(data, s, p - s - 2));
+									} else if (c == '!' && data[s + 1] == '-' && data[s + 2] == '-') {
+										// from http://www.w3.org/TR/REC-xml/#syntax
+										// Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
+										p = s + 3;
+										while (data[p] != '-' || data[p + 1] != '-' || data[p + 2] != '>')
+											p++;
+										p += 2;
 									} else
 										while (data[p] != '>')
 											p++;
@@ -209,7 +218,7 @@ public class XmlReader {
 							}
 								break;
 							case 2:
-							// line 105 "XmlReader.rl"
+								// line 125 "XmlReader.rl"
 							{
 								hasBody = false;
 								close();
@@ -221,7 +230,7 @@ public class XmlReader {
 							}
 								break;
 							case 3:
-							// line 110 "XmlReader.rl"
+								// line 130 "XmlReader.rl"
 							{
 								close();
 								{
@@ -232,7 +241,7 @@ public class XmlReader {
 							}
 								break;
 							case 4:
-							// line 114 "XmlReader.rl"
+								// line 134 "XmlReader.rl"
 							{
 								if (hasBody) {
 									cs = 15;
@@ -242,19 +251,19 @@ public class XmlReader {
 							}
 								break;
 							case 5:
-							// line 117 "XmlReader.rl"
+								// line 137 "XmlReader.rl"
 							{
 								attributeName = new String(data, s, p - s);
 							}
 								break;
 							case 6:
-							// line 120 "XmlReader.rl"
+								// line 140 "XmlReader.rl"
 							{
 								attribute(attributeName, new String(data, s, p - s));
 							}
 								break;
 							case 7:
-							// line 123 "XmlReader.rl"
+								// line 143 "XmlReader.rl"
 							{
 								int end = p;
 								while (end != s) {
@@ -292,7 +301,7 @@ public class XmlReader {
 									text(new String(data, s, end - s));
 							}
 								break;
-							// line 190 "XmlReader.java"
+								// line 286 "XmlReader.java"
 							}
 						}
 					}
@@ -313,7 +322,7 @@ public class XmlReader {
 			}
 		}
 
-		// line 170 "XmlReader.rl"
+		// line 190 "XmlReader.rl"
 
 		if (p < pe) {
 			int lineNumber = 1;
@@ -331,7 +340,7 @@ public class XmlReader {
 		return root;
 	}
 
-	// line 210 "XmlReader.java"
+	// line 324 "XmlReader.java"
 	private static byte[] init__xml_actions_0 () {
 		return new byte[] {0, 1, 0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 2, 0, 6, 2, 1, 4, 2, 2, 4};
 	}
@@ -407,7 +416,7 @@ public class XmlReader {
 	static final int xml_en_elementBody = 15;
 	static final int xml_en_main = 1;
 
-	// line 189 "XmlReader.rl"
+	// line 209 "XmlReader.rl"
 
 	protected void open (String name) {
 		Element child = new Element(name, current);

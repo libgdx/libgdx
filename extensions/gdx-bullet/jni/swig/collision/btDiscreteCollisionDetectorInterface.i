@@ -1,8 +1,6 @@
 /*
  *	Interface module for a class with inner structs or classes.
  */
- 
-%module btDiscreteCollisionDetectorInterface
 
 // Nested struct or class copied from Bullet header
 struct Result
@@ -16,19 +14,16 @@ struct Result
 	virtual void addContactPoint(const btVector3& normalOnBInWorld,const btVector3& pointInWorld,btScalar depth)=0;
 };
 
-// Nested struct or class copied from Bullet header
 struct ClosestPointInput
 {
 	ClosestPointInput()
-		:m_maximumDistanceSquared(btScalar(BT_LARGE_FLOAT)),
-		m_stackAlloc(0)
+		:m_maximumDistanceSquared(btScalar(BT_LARGE_FLOAT))
 	{
 	}
 
 	btTransform m_transformA;
 	btTransform m_transformB;
 	btScalar	m_maximumDistanceSquared;
-	btStackAlloc* m_stackAlloc;
 };
 
 %nestedworkaround btDiscreteCollisionDetectorInterface::Result;

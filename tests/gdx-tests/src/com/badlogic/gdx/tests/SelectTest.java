@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.PerformanceCounter;
 import java.util.Comparator;
 
 /** For testing and benchmarking of gdx.utils.Select and its associated algorithms/classes
- * @author Jon renner */
+ * @author Jon Renner */
 public class SelectTest extends GdxTest {
 	static PerformanceCounter perf = new PerformanceCounter("bench");
 	static boolean verify; // verify and report the results of each selection
@@ -173,8 +173,6 @@ public class SelectTest extends GdxTest {
 		enemy.sort(distComp);
 		int idx = enemy.indexOf(d, true);
 		// remember that k = min value = 0 position in the array, therefore k - 1
-		// if (idx != k - 1) {
-		// print("verified - idx: " + idx + ", (k - 1): " + (k - 1));
 		if (enemy.get(idx) != enemy.get(k - 1)) {
 			System.out.println("origin dummy: " + originDummy);
 			System.out.println("TEST FAILURE: " + "idx: " + idx + " does not equal (k - 1): " + (k - 1));

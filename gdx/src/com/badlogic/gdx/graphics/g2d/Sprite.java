@@ -16,17 +16,17 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.NumberUtils;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
-
-/** Holds the geometry, color, and texture information for drawing 2D sprites using {@link SpriteBatch}. A Sprite has a position
- * and a size given as width and height. The position is relative to the origin of the coordinate system specified via
- * {@link SpriteBatch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
+/** Holds the geometry, color, and texture information for drawing 2D sprites using {@link Batch}. A Sprite has a position and a
+ * size given as width and height. The position is relative to the origin of the coordinate system specified via
+ * {@link Batch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
  * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed (that
  * is, the origin is not modified by rotation and scaling). The origin is given relative to the bottom left corner of the Sprite,
  * its position.
@@ -114,6 +114,8 @@ public class Sprite extends TextureRegion {
 		y = sprite.y;
 		width = sprite.width;
 		height = sprite.height;
+		regionWidth = sprite.regionWidth;
+		regionHeight = sprite.regionHeight;
 		originX = sprite.originX;
 		originY = sprite.originY;
 		rotation = sprite.rotation;
@@ -259,6 +261,22 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = color;
 	}
 
+	/** Sets the alpha portion of the color used to tint this sprite. */
+	public void setAlpha(float a) {
+		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
+		int alphaBits = (int)(255 * a) << 24;
+
+		// clear alpha on original color
+		intBits = intBits & 0x00FFFFFF;
+		// write new alpha
+		intBits = intBits | alphaBits;
+		float color = NumberUtils.intToFloatColor(intBits);
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
@@ -301,6 +319,7 @@ public class Sprite extends TextureRegion {
 	/** Sets the sprite's rotation in degrees relative to the current rotation. Rotation is centered on the origin set in
 	 * {@link #setOrigin(float, float)} */
 	public void rotate (float degrees) {
+		if (degrees == 0) return;
 		rotation += degrees;
 		dirty = true;
 	}
@@ -468,16 +487,16 @@ public class Sprite extends TextureRegion {
 		return bounds;
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
-		spriteBatch.draw(texture, getVertices(), 0, SPRITE_SIZE);
+	public void draw (Batch batch) {
+		batch.draw(texture, getVertices(), 0, SPRITE_SIZE);
 	}
 
-	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
+	public void draw (Batch batch, float alphaModulation) {
 		Color color = getColor();
 		float oldAlpha = color.a;
 		color.a *= alphaModulation;
 		setColor(color);
-		draw(spriteBatch);
+		draw(batch);
 		color.a = oldAlpha;
 		setColor(color);
 	}

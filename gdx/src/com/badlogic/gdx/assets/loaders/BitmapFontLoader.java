@@ -62,7 +62,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		for (int i=0; i<regs.length; i++) {
 			TextureRegion region = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));
 			if (parameter != null) { 
-				region.getTexture().setFilter(parameter.minFitler, parameter.maxFilter);
+				region.getTexture().setFilter(parameter.minFilter, parameter.magFilter);
 			}
 			regs[i] = region;
 		}
@@ -76,9 +76,9 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		/** whether to flipY the font or not **/
 		public boolean flip = false;
 		/** the minimum filter to be used for the backing texture */
-		public TextureFilter minFitler = TextureFilter.Nearest;
+		public TextureFilter minFilter = TextureFilter.Nearest;
 		/** the maximum filter to be used for the backing texture */
-		public TextureFilter maxFilter = TextureFilter.Nearest;
+		public TextureFilter magFilter = TextureFilter.Nearest;
 		/** optional BitmapFontData to be used instead of loading the texture directly. Use this if your font is embedded in a skin. **/
 		public BitmapFontData bitmapFontData = null;
 	}

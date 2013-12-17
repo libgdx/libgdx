@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /** Drawable for a {@link TextureRegion}.
@@ -37,7 +37,7 @@ public class TextureRegionDrawable extends BaseDrawable {
 		setRegion(drawable.region);
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 		batch.draw(region, x, y, width, height);
 	}
 

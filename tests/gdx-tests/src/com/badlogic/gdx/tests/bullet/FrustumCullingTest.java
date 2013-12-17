@@ -18,7 +18,6 @@ package com.badlogic.gdx.tests.bullet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -27,24 +26,18 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btBroadphasePair;
-import com.badlogic.gdx.physics.bullet.btBroadphasePairArray;
-import com.badlogic.gdx.physics.bullet.btCollisionAlgorithm;
-import com.badlogic.gdx.physics.bullet.btCollisionDispatcher;
-import com.badlogic.gdx.physics.bullet.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.btCollisionWorld;
-import com.badlogic.gdx.physics.bullet.btCompoundShape;
-import com.badlogic.gdx.physics.bullet.btConvexHullShape;
-import com.badlogic.gdx.physics.bullet.btDbvtBroadphase;
-import com.badlogic.gdx.physics.bullet.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.btGhostPairCallback;
-import com.badlogic.gdx.physics.bullet.btManifoldArray;
-import com.badlogic.gdx.physics.bullet.btPairCachingGhostObject;
-import com.badlogic.gdx.physics.bullet.btPersistentManifold;
-import com.badlogic.gdx.physics.bullet.gdxBulletJNI;
+import com.badlogic.gdx.physics.bullet.collision.btBroadphasePairArray;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
+import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
+import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
+import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
+import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
+import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
+import com.badlogic.gdx.physics.bullet.collision.btPersistentManifoldArray;
 import com.badlogic.gdx.utils.Array;
 
 /** @author Xoppa */
@@ -102,7 +95,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		return result;
 	}
 	
-	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btCollisionObject object, final Array<BulletEntity> out, final btManifoldArray tmpArr) {
+	public static Array<BulletEntity> getEntitiesCollidingWithObject(final BulletWorld world, final btCollisionObject object, final Array<BulletEntity> out, final btPersistentManifoldArray tmpArr) {
 		// Fetch the array of contacts
 		btBroadphasePairArray arr = world.broadphase.getOverlappingPairCache().getOverlappingPairArray();
 		// Get the user values (which are indices in the entities array) of all objects colliding with the object
@@ -127,7 +120,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 	private btPairCachingGhostObject frustumObject;
 	private BulletEntity frustumEntity;
 	private final Array<BulletEntity> visibleEntities = new Array<BulletEntity>();
-	private btManifoldArray tempManifoldArr;
+	private btPersistentManifoldArray tempManifoldArr;
 	private PerspectiveCamera frustumCam;
 	private PerspectiveCamera overviewCam;
 
@@ -137,7 +130,7 @@ public class FrustumCullingTest extends BaseBulletTest {
 		
 		instructions = "Tap to toggle view\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 		
-		tempManifoldArr = new btManifoldArray();
+		tempManifoldArr = new btPersistentManifoldArray();
 
 		world.addConstructor("collisionBox", new BulletConstructor(world.getConstructor("box").model));
 		

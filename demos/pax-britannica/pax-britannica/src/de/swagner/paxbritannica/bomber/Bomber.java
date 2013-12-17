@@ -1,7 +1,8 @@
 package de.swagner.paxbritannica.bomber;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+
 import de.swagner.paxbritannica.GameInstance;
 import de.swagner.paxbritannica.Resources;
 import de.swagner.paxbritannica.Ship;
@@ -35,10 +36,10 @@ public class Bomber extends Ship {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		ai.update();
 		
-		super.draw(spriteBatch);
+		super.draw(batch);
 	}
 
 	public void shoot(int approach) {

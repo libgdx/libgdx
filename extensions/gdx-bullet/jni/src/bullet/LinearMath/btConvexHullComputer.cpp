@@ -579,19 +579,10 @@ class btConvexHullInternal
 		template<typename UWord, typename UHWord> class DMul
 		{
 			private:
-                static uint32_t high(uint64_t value)
-                {
-                    struct cast_helper
-                    {
-                        union
-                        {
-                            uint32_t value64;
-                            struct { uint32_t low, high; } value32;
-                        };
-                        cast_helper(uint64_t value) : value64(value) {}
-                    };
-                    return cast_helper(value).value32.high;
-                }				
+				static uint32_t high(uint64_t value)
+				{
+					return (uint32_t) (value >> 32);
+				}
 				
 				static uint32_t low(uint64_t value)
 				{
@@ -1940,11 +1931,15 @@ void btConvexHullInternal::merge(IntermediateHull& h0, IntermediateHull& h1)
 	}
 }
 
-
-static bool pointCmp(const btConvexHullInternal::Point32& p, const btConvexHullInternal::Point32& q)
+class pointCmp
 {
-	return (p.y < q.y) || ((p.y == q.y) && ((p.x < q.x) || ((p.x == q.x) && (p.z < q.z))));
-}
+	public:
+
+    bool operator() ( const btConvexHullInternal::Point32& p, const btConvexHullInternal::Point32& q ) const
+		{
+			return (p.y < q.y) || ((p.y == q.y) && ((p.x < q.x) || ((p.x == q.x) && (p.z < q.z))));
+		}
+};
 
 void btConvexHullInternal::compute(const void* coords, bool doubleCoords, int stride, int count)
 {
@@ -2035,7 +2030,7 @@ void btConvexHullInternal::compute(const void* coords, bool doubleCoords, int st
 			points[i].index = i;
 		}
 	}
-	points.quickSort(pointCmp);
+	points.quickSort(pointCmp());
 
 	vertexPool.reset();
 	vertexPool.setArraySize(count);

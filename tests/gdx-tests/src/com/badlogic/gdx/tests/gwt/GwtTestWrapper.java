@@ -24,6 +24,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -77,7 +78,6 @@ import com.badlogic.gdx.tests.ParticleEmitterTest;
 import com.badlogic.gdx.tests.PixelsPerInchTest;
 import com.badlogic.gdx.tests.ProjectiveTextureTest;
 import com.badlogic.gdx.tests.RotationTest;
-import com.badlogic.gdx.tests.ShadowMappingTest;
 import com.badlogic.gdx.tests.ShapeRendererTest;
 import com.badlogic.gdx.tests.SimpleAnimationTest;
 import com.badlogic.gdx.tests.SimpleDecalTest;
@@ -95,6 +95,7 @@ import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
+import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
@@ -397,6 +398,10 @@ public class GwtTestWrapper extends GdxTest {
 		@Override
 		public void setCursorPosition (int x, int y) {
 			setCursorPosition(x, y);
+		}
+
+		@Override
+		public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
 		}
 	}
 

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.backends.jglfw;
 
@@ -206,8 +221,12 @@ public class JglfwApplication implements Application {
 			if (graphics.shouldRender()) render(frameStartTime);
 		}
 
-		if (targetFPS != 0)
-			sleep(targetFPS == -1 ? 100 : (int)(1000f / targetFPS - (System.nanoTime() - frameStartTime) / 1000000f));
+		if (targetFPS != 0) {
+			if (targetFPS == -1)
+				sleep(100);
+			else
+				Sync.sync(targetFPS);
+		}
 	}
 
 	public boolean executeRunnables () {
@@ -338,6 +357,11 @@ public class JglfwApplication implements Application {
 		this.logLevel = logLevel;
 	}
 
+	@Override
+	public int getLogLevel () {
+		return logLevel;
+	}
+
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
 			System.out.println(tag + ": " + message);
@@ -357,7 +381,7 @@ public class JglfwApplication implements Application {
 		}
 	}
 
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ": " + message);
 			exception.printStackTrace(System.out);

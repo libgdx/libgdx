@@ -132,10 +132,10 @@
 
 %{
 #include <BulletCollision/CollisionDispatch/btCollisionObject.h>
-#include <gdx/GdxCollisionObjectBridge.h>
+#include <gdx/collision/GdxCollisionObjectBridge.h>
 %}
 %include "BulletCollision/CollisionDispatch/btCollisionObject.h"
-%include "gdx/GdxCollisionObjectBridge.h"
+%include "gdx/collision/GdxCollisionObjectBridge.h"
 
 %javamethodmodifiers btCollisionObject::internalSetGdxBridge "private";
 %javamethodmodifiers btCollisionObject::internalGetGdxBridge "private";

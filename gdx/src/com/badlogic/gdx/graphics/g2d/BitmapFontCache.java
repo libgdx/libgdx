@@ -63,20 +63,22 @@ public class BitmapFontCache {
 		this.font = font;
 		this.integer = integer;
 		
-		if (font.regions == null || font.regions.length == 0)
-			throw new IllegalArgumentException("The specified font must be non-null and contain at least 1 texture page");
+		int regionsLength = font.regions.length;
+		if (regionsLength == 0)
+			throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
 		
-		this.vertexData = new float[font.regions.length][];
+		this.vertexData = new float[regionsLength][];
 		
-		this.idx = new int[font.regions.length];
-		if (vertexData.length > 1) { // if we have multiple pages...
+		this.idx = new int[regionsLength];
+		int vertexDataLength = vertexData.length;
+		if (vertexDataLength > 1) { // if we have multiple pages...
 			// contains the indices of the glyph in the Cache as they are added
-			glyphIndices = new IntArray[vertexData.length];
-			for (int i = 0; i < glyphIndices.length; i++) {
+			glyphIndices = new IntArray[vertexDataLength];
+			for (int i = 0, n = glyphIndices.length; i < n; i++) {
 				glyphIndices[i] = new IntArray();
 			}
 
-			tmpGlyphCount = new int[vertexData.length];
+			tmpGlyphCount = new int[vertexDataLength];
 		}
 	}
 
@@ -99,7 +101,7 @@ public class BitmapFontCache {
 		x += xAmount;
 		y += yAmount;
 
-		for (int j = 0; j < vertexData.length; j++) {
+		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 0, n = idx[j]; i < n; i += 5) {
 				vertices[i] += xAmount;
@@ -111,7 +113,7 @@ public class BitmapFontCache {
 	public void setColor (float color) {
 		if (color == this.color) return;
 		this.color = color;
-		for (int j = 0; j < vertexData.length; j++) {
+		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 2, n = idx[j]; i < n; i += 5)
 				vertices[i] = color;
@@ -122,7 +124,7 @@ public class BitmapFontCache {
 		final float color = tint.toFloatBits();
 		if (color == this.color) return;
 		this.color = color;
-		for (int j = 0; j < vertexData.length; j++) {
+		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 2, n = idx[j]; i < n; i += 5)
 				vertices[i] = color;
@@ -134,7 +136,7 @@ public class BitmapFontCache {
 		float color = NumberUtils.intToFloatColor(intBits);
 		if (color == this.color) return;
 		this.color = color;
-		for (int j = 0; j < vertexData.length; j++) {
+		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 2, n = idx[j]; i < n; i += 5)
 				vertices[i] = color;
@@ -158,7 +160,7 @@ public class BitmapFontCache {
 				float[] vertices = vertexData[i];
 
 				// we need to loop through the indices and determine whether the glyph is inside begin/end
-				for (int j = 0; j < glyphIndices[i].size; j++) {
+				for (int j = 0, n = glyphIndices[i].size; j < n; j++) {
 					int gInd = glyphIndices[i].items[j];
 
 					// break early if the glyph is outside our bounds
@@ -176,9 +178,9 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
+	public void draw (Batch spriteBatch) {
 		TextureRegion[] regions = font.getRegions();
-		for (int j = 0; j < vertexData.length; j++) {
+		for (int j = 0, n = vertexData.length; j < n; j++) {
 			if (idx[j] >= 0) { //ignore if this texture has no glyphs
 				float[] vertices = vertexData[j];
 				spriteBatch.draw(regions[j].getTexture(), vertices, 0, idx[j]);
@@ -186,7 +188,7 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void draw (SpriteBatch spriteBatch, int start, int end) {
+	public void draw (Batch spriteBatch, int start, int end) {
 		if (vertexData.length == 1) { // i.e. 1 page
 			spriteBatch.draw(font.getRegion().getTexture(), vertexData[0], start * 20, (end - start) * 20);
 		} else { // i.e. multiple pages
@@ -196,18 +198,18 @@ public class BitmapFontCache {
 			// Different pages might have different offsets and lengths
 			// Some pages might not need to be rendered at all..
 
-			int pageCount = vertexData.length;
 			TextureRegion[] regions = font.getRegions();
 
 			// for each page...
-			for (int i = 0; i < pageCount; i++) {
+			for (int i = 0, pageCount = vertexData.length; i < pageCount; i++) {
 
 				int offset = -1;
 				int count = 0;
 
 				// we need to loop through the indices and determine where we begin within the start/end bounds
-				for (int j = 0; j < glyphIndices[i].size; j++) {
-					int glyphIndex = glyphIndices[i].items[j];
+				IntArray currentGlyphIndices = glyphIndices[i];
+				for (int j = 0, n = currentGlyphIndices.size; j < n; j++) {
+					int glyphIndex = currentGlyphIndices.items[j];
 
 					// break early if the glyph is outside our bounds
 					if (glyphIndex >= end) break;
@@ -231,7 +233,7 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void draw (SpriteBatch spriteBatch, float alphaModulation) {
+	public void draw (Batch spriteBatch, float alphaModulation) {
 		if (alphaModulation == 1) {
 			draw(spriteBatch);
 			return;
@@ -261,7 +263,7 @@ public class BitmapFontCache {
 		x = 0;
 		y = 0;
 		glyphCount = 0;
-		for (int i = 0; i < idx.length; i++) {
+		for (int i = 0, n = idx.length; i < n; i++) {
 			if (glyphIndices != null) glyphIndices[i].clear();
 			idx[i] = 0;
 		}
@@ -272,7 +274,7 @@ public class BitmapFontCache {
 		if (vertexData.length == 1) {
 			require(0, newGlyphCount); // don't scan sequence if we just have one page
 		} else {
-			for (int i = 0; i < tmpGlyphCount.length; i++)
+			for (int i = 0, n = tmpGlyphCount.length; i < n; i++)
 				tmpGlyphCount[i] = 0;
 
 			// determine # of glyphs in each page
@@ -282,7 +284,7 @@ public class BitmapFontCache {
 				tmpGlyphCount[g.page]++;
 			}
 			// require that many for each page
-			for (int i = 0; i < tmpGlyphCount.length; i++)
+			for (int i = 0, n = tmpGlyphCount.length; i < n; i++)
 				require(i, tmpGlyphCount[i]);
 		}
 	}

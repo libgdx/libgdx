@@ -1,6 +1,6 @@
 package de.swagner.paxbritannica;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 public class Bullet extends Ship {
@@ -14,7 +14,7 @@ public class Bullet extends Ship {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		if(alive == false) return;
 		if( !Targeting.onScreen(collisionCenter,buffer)) {
 			alive = false;
@@ -22,7 +22,7 @@ public class Bullet extends Ship {
 			alive = false;
 			GameInstance.getInstance().explosionParticles.addTinyExplosion(collisionCenter);
 		} else {		
-			super.draw(spriteBatch);
+			super.draw(batch);
 		}
 		
 	}

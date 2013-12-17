@@ -83,7 +83,7 @@ public class CircularFloatBuffer {
 	}
 	
 	public int skip(int count) {
-		int total = count = Math.min(available, count);
+		int total = Math.min(available, count);
 		available -= total;
 		readPosition = (readPosition + total) % buffer.length;
 		return total;

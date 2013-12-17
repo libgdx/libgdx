@@ -26,19 +26,22 @@ public interface Vector<T extends Vector<T>> {
 	/** @return The euclidian length */
 	float len ();
 
-	/** @return The squared euclidian length */
+	/** This method is faster than {@link Vector#len()}
+	 * because it avoids calculating a square root. It is useful for comparisons,
+	 * but not for getting accurate lengths, as the return value is the square of the actual length.
+	 * @return The squared euclidian length */
 	float len2 ();
-	
+
 	/** Limits this vector's length to given value
 	 * @return This vector for chaining */
 	T limit (float limit);
 
-	/** Clamps this vector's length to given value
+	/** Clamps this vector's length to given min and max values
 	 * @param min Min length
 	 * @param max Max length
 	 * @return This vector for chaining */
 	T clamp (float min, float max);
-	
+
 	/** Sets this vector from the given vector
 	 * @param v The vector
 	 * @return This vector for chaining */
@@ -75,8 +78,9 @@ public interface Vector<T extends Vector<T>> {
 	 * @return the distance between this and the other vector */
 	float dst (T v);
 
-	/** This is much faster to calculate than {@link Vector#dst(Vector)}
-	 * It avoids a calculating square root, so it is mostly useful for comparisons
+	/** This method is faster than {@link Vector#dst(Vector)}
+	 * because it avoids calculating a square root. It is useful for comparisons,
+	 * but not for getting accurate distances, as the return value is the square of the actual distance.
 	 * @param v The other vector
 	 * @return the squared distance between this and the other vector */
 	float dst2 (T v);

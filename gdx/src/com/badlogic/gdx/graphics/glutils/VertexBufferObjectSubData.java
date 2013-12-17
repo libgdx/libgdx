@@ -106,31 +106,40 @@ public class VertexBufferObjectSubData implements VertexData {
 		return tmpHandle.get(0);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public VertexAttributes getAttributes () {
 		return attributes;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getNumVertices () {
 		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
-	/** {@inheritDoc} */
+	@Override
 	public int getNumMaxVertices () {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public FloatBuffer getBuffer () {
 		isDirty = true;
 		return buffer;
 	}
+	
+	private void bufferChanged() {
+		if (isBound) {
+			if (Gdx.gl20 != null) {
+				GL20 gl = Gdx.gl20;
+				gl.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			} else {
+				GL11 gl = Gdx.gl11;
+				gl.glBufferSubData(GL11.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			}
+			isDirty = false;
+		}
+	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void setVertices (float[] vertices, int offset, int count) {
 		isDirty = true;
@@ -146,19 +155,23 @@ public class VertexBufferObjectSubData implements VertexData {
 			byteBuffer.limit(buffer.limit() << 2);
 		}
 
-		if (isBound) {
-			if (Gdx.gl20 != null) {
-				GL20 gl = Gdx.gl20;
-				gl.glBufferSubData(GL20.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-			} else {
-				GL11 gl = Gdx.gl11;
-				gl.glBufferSubData(GL11.GL_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-			}
-			isDirty = false;
-		}
+		bufferChanged();
+	}
+	
+	@Override
+	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
+		isDirty = true;
+		if (isDirect) {
+			final int pos = byteBuffer.position();
+			byteBuffer.position(targetOffset * 4);
+			BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+			byteBuffer.position(pos);
+		} else
+			throw new GdxRuntimeException("Buffer must be allocated direct."); // Should never happen
+		
+		bufferChanged();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void bind () {
 		GL11 gl = Gdx.gl11;

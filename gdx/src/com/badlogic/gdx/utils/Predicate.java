@@ -24,6 +24,8 @@ import com.badlogic.gdx.utils.Array.ArrayIterator;
  * @author Xoppa
  */
 public interface Predicate<T> {
+
+	/** @return true if the item matches the criteria and should be included in the iterator's items */
 	boolean evaluate(T arg0);
 	
 	public class PredicateIterator<T> implements Iterator<T> {

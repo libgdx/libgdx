@@ -91,12 +91,14 @@ public class TextureRegion {
 		regionWidth = Math.round(Math.abs(u2 - u) * texWidth);
 		regionHeight = Math.round(Math.abs(v2 - v) * texHeight);
 
-		// For a 1x1 region, adjust UVs to pixel center to avoid filtering artifacts on AMD GPUs when drawing stretched.
+		// For a 1x1 region, adjust UVs toward pixel center to avoid filtering artifacts on AMD GPUs when drawing very stretched.
 		if (regionWidth == 1 && regionHeight == 1) {
-			u += 0.5f / texWidth;
-			u2 = u;
-			v += 0.5f / texHeight;
-			v2 = v;
+			float adjustX = 0.25f / texWidth;
+			u += adjustX;
+			u2 -= adjustX;
+			float adjustY = 0.25f / texHeight;
+			v += adjustY;
+			v2 -= adjustY;
 		}
 
 		this.u = u;

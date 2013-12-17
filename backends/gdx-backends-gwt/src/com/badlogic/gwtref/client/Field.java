@@ -17,6 +17,7 @@
 package com.badlogic.gwtref.client;
 
 import java.security.AccessControlException;
+import java.util.Arrays;
 
 public class Field {
 	final String name;
@@ -33,10 +34,11 @@ public class Field {
 	boolean accessible;
 	final String getter;
 	final String setter;
+	final Class[] elementTypes;
 
 	Field (String name, Class enclosingType, Class type, boolean isFinal, boolean isDefaultAccess, boolean isPrivate,
 		boolean isProtected, boolean isPublic, boolean isStatic, boolean isTransient, boolean isVolatile, String getter,
-		String setter) {
+		String setter, Class[] elementTypes) {
 		this.name = name;
 		this.enclosingType = enclosingType;
 		this.type = type;
@@ -50,6 +52,7 @@ public class Field {
 		this.isVolatile = isVolatile;
 		this.getter = getter;
 		this.setter = setter;
+		this.elementTypes = elementTypes;
 		accessible = isPublic;
 	}
 
@@ -59,6 +62,11 @@ public class Field {
 
 	public void set (Object obj, Object value) throws IllegalAccessException {
 		ReflectionCache.instance.set(this, obj, value);
+	}
+
+	public Type getElementType (int index) {
+		if (elementTypes != null && index < elementTypes.length) return ReflectionCache.getType(elementTypes[index]);
+		return null;
 	}
 
 	public String getName () {
@@ -122,6 +130,6 @@ public class Field {
 		return "Field [name=" + name + ", enclosingType=" + enclosingType + ", type=" + type + ", isFinal=" + isFinal
 			+ ", isDefaultAccess=" + isDefaultAccess + ", isPrivate=" + isPrivate + ", isProtected=" + isProtected + ", isPublic="
 			+ isPublic + ", isStatic=" + isStatic + ", isTransient=" + isTransient + ", isVolatile=" + isVolatile + ", accessible="
-			+ accessible + ", getter=" + getter + ", setter=" + setter + "]";
+			+ accessible + ", getter=" + getter + ", setter=" + setter + ", elementTypes=" + Arrays.toString(elementTypes) + "]";
 	}
 }

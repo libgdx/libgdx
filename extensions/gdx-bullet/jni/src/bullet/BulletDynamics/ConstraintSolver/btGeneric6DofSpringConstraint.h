@@ -21,6 +21,15 @@ subject to the following restrictions:
 #include "btTypedConstraint.h"
 #include "btGeneric6DofConstraint.h"
 
+#ifdef BT_USE_DOUBLE_PRECISION
+#define btGeneric6DofSpringConstraintData2		btGeneric6DofSpringConstraintDoubleData2
+#define btGeneric6DofSpringConstraintDataName	"btGeneric6DofSpringConstraintDoubleData2"
+#else
+#define btGeneric6DofSpringConstraintData2		btGeneric6DofSpringConstraintData
+#define btGeneric6DofSpringConstraintDataName	"btGeneric6DofSpringConstraintData"
+#endif //BT_USE_DOUBLE_PRECISION
+
+
 
 /// Generic 6 DOF constraint that allows to set spring motors to any translational and rotational DOF
 
@@ -65,7 +74,6 @@ public:
 };
 
 
-///do not change those serialization structures, it requires an updated sBulletDNAstr/sBulletDNAstr64
 struct btGeneric6DofSpringConstraintData
 {
 	btGeneric6DofConstraintData	m_6dofData;
@@ -76,26 +84,37 @@ struct btGeneric6DofSpringConstraintData
 	float		m_springDamping[6];
 };
 
+struct btGeneric6DofSpringConstraintDoubleData2
+{
+	btGeneric6DofConstraintDoubleData2	m_6dofData;
+	
+	int			m_springEnabled[6];
+	double		m_equilibriumPoint[6];
+	double		m_springStiffness[6];
+	double		m_springDamping[6];
+};
+
+
 SIMD_FORCE_INLINE	int	btGeneric6DofSpringConstraint::calculateSerializeBufferSize() const
 {
-	return sizeof(btGeneric6DofSpringConstraintData);
+	return sizeof(btGeneric6DofSpringConstraintData2);
 }
 
 	///fills the dataBuffer and returns the struct name (and 0 on failure)
 SIMD_FORCE_INLINE	const char*	btGeneric6DofSpringConstraint::serialize(void* dataBuffer, btSerializer* serializer) const
 {
-	btGeneric6DofSpringConstraintData* dof = (btGeneric6DofSpringConstraintData*)dataBuffer;
+	btGeneric6DofSpringConstraintData2* dof = (btGeneric6DofSpringConstraintData2*)dataBuffer;
 	btGeneric6DofConstraint::serialize(&dof->m_6dofData,serializer);
 
 	int i;
 	for (i=0;i<6;i++)
 	{
-		dof->m_equilibriumPoint[i] = (float)m_equilibriumPoint[i];
-		dof->m_springDamping[i] = (float)m_springDamping[i];
+		dof->m_equilibriumPoint[i] = m_equilibriumPoint[i];
+		dof->m_springDamping[i] = m_springDamping[i];
 		dof->m_springEnabled[i] = m_springEnabled[i]? 1 : 0;
-		dof->m_springStiffness[i] = (float)m_springStiffness[i];
+		dof->m_springStiffness[i] = m_springStiffness[i];
 	}
-	return "btGeneric6DofSpringConstraintData";
+	return btGeneric6DofSpringConstraintDataName;
 }
 
 #endif // BT_GENERIC_6DOF_SPRING_CONSTRAINT_H

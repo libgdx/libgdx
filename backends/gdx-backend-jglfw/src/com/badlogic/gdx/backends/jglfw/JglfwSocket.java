@@ -106,4 +106,9 @@ public class JglfwSocket implements Socket {
 			}
 		}
 	}
+
+	@Override
+	public String getRemoteAddress () {
+		return socket.getRemoteSocketAddress().toString();
+	}
 }

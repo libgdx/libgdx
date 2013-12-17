@@ -65,6 +65,9 @@ public class LwjglApplicationConfiguration {
 	public int foregroundFPS = 61;
 	/** Target framerate when the window is not in the foreground. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
 	public int backgroundFPS = 61;
+	/** Allows software OpenGL rendering if hardware acceleration was not available.
+	 * @see LwjglGraphics#isSoftwareMode() */
+	public boolean allowSoftwareMode = false;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();

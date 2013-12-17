@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -125,6 +125,10 @@ public class WidgetGroup extends Group implements Layout {
 		invalidateHierarchy();
 	}
 
+	protected void sizeChanged () {
+		invalidate();
+	}
+
 	public void pack () {
 		float newWidth = getPrefWidth();
 		float newHeight = getPrefHeight();
@@ -145,7 +149,7 @@ public class WidgetGroup extends Group implements Layout {
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget group is laid
 	 * out. */
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		super.draw(batch, parentAlpha);
 	}

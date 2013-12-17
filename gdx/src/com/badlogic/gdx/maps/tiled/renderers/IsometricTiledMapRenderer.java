@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.maps.tiled.renderers;
 
-import static com.badlogic.gdx.graphics.g2d.SpriteBatch.*;
+import static com.badlogic.gdx.graphics.g2d.Batch.*;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -34,16 +34,16 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 		super(map);
 	}
 
-	public IsometricTiledMapRenderer(TiledMap map, SpriteBatch spriteBatch) {
-		super(map, spriteBatch);
+	public IsometricTiledMapRenderer(TiledMap map, Batch batch) {
+		super(map, batch);
 	}
 
 	public IsometricTiledMapRenderer(TiledMap map, float unitScale) {
 		super(map, unitScale);
 	}	
 
-	public IsometricTiledMapRenderer(TiledMap map, float unitScale, SpriteBatch spriteBatch) {
-		super(map, unitScale, spriteBatch);
+	public IsometricTiledMapRenderer(TiledMap map, float unitScale, Batch batch) {
+		super(map, unitScale, batch);
 	}
 
 	@Override

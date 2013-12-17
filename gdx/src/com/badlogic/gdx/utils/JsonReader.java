@@ -63,7 +63,7 @@ public class JsonReader implements BaseJsonReader {
 	@Override
 	public JsonValue parse (InputStream input) {
 		try {
-			return parse(new InputStreamReader(input, "ISO-8859-1"));
+			return parse(new InputStreamReader(input, "UTF-8"));
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		} finally {
@@ -74,7 +74,7 @@ public class JsonReader implements BaseJsonReader {
 	@Override
 	public JsonValue parse (FileHandle file) {
 		try {
-			return parse(file.read());
+			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}
@@ -594,8 +594,11 @@ public class JsonReader implements BaseJsonReader {
 		} else if (current.isArray() || current.isObject()) {
 			if (current.size == 0)
 				current.child = child;
-			else
-				lastChild.pop().next = child;
+			else {
+				JsonValue last = lastChild.pop();
+				last.next = child;
+				child.prev = last;
+			}
 			lastChild.add(child);
 			current.size++;
 		} else

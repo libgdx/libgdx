@@ -111,7 +111,7 @@ public class Array<T> implements Iterable<T> {
 		addAll((T[])array.items, offset, length);
 	}
 
-	public void addAll (T[] array) {
+	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 
@@ -124,17 +124,17 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public T get (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
 
 	public void set (int index, T value) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
 
 	public void insert (int index, T value) {
-		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		T[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -146,8 +146,8 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	public void swap (int first, int second) {
-		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
-		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
+		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
 		T[] items = this.items;
 		T firstValue = items[first];
 		items[first] = items[second];
@@ -226,7 +226,7 @@ public class Array<T> implements Iterable<T> {
 
 	/** Removes and returns the item at the specified index. */
 	public T removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		T[] items = this.items;
 		T value = (T)items[index];
 		size--;
@@ -311,7 +311,7 @@ public class Array<T> implements Iterable<T> {
 	 * @return {@link #items} */
 	public T[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
 	}
 
@@ -335,16 +335,14 @@ public class Array<T> implements Iterable<T> {
 		Sort.instance().sort(items, comparator, 0, size);
 	}
 
-	/** Selects the nth-lowest element from the Array according to Comparator ranking.
-	 * This might partially sort the Array.
+	/** Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array.
+	 * The array must have a size greater than 0, or a {@link com.badlogic.gdx.utils.GdxRuntimeException} will be thrown.
 	 * @see Select
 	 * @param comparator used for comparison
-	 * @param kthLowest rank of desired object according to comparison,
-	 * n is based on ordinal numbers, not array indices.
-	 * for min value use 1, for max value use size of array, using 0 results in runtime exception.
-	 * @return the value of the Nth lowest ranked object.
-	 */
-	public T selectRanked(Comparator<T> comparator, int kthLowest) {
+	 * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
+	 *           value use 1, for max value use size of array, using 0 results in runtime exception.
+	 * @return the value of the Nth lowest ranked object. */
+	public T selectRanked (Comparator<T> comparator, int kthLowest) {
 		if (kthLowest < 1) {
 			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
@@ -352,13 +350,11 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** @see Array#selectRanked(java.util.Comparator, int)
-	* @param comparator used for comparison
-	 * @param kthLowest rank of desired object according to comparison,
-	 * n is based on ordinal numbers, not array indices.
-	 * for min value use 1, for max value use size of array, using 0 results in runtime exception.
-	 * @return the index of the Nth lowest ranked object.
-	 */
-	public int selectRankedIndex(Comparator<T> comparator, int kthLowest) {
+	 * @param comparator used for comparison
+	 * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
+	 *           value use 1, for max value use size of array, using 0 results in runtime exception.
+	 * @return the index of the Nth lowest ranked object. */
+	public int selectRankedIndex (Comparator<T> comparator, int kthLowest) {
 		if (kthLowest < 1) {
 			throw new GdxRuntimeException("nth_lowest must be greater than 0, 1 = first, 2 = second...");
 		}
@@ -472,7 +468,7 @@ public class Array<T> implements Iterable<T> {
 		return buffer.toString();
 	}
 
-	static public class ArrayIterator<T> implements Iterator<T> {
+	static public class ArrayIterator<T> implements Iterator<T>, Iterable<T> {
 		private final Array<T> array;
 		private final boolean allowRemove;
 		int index;
@@ -488,6 +484,7 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return index < array.size;
 		}
 
@@ -505,6 +502,10 @@ public class Array<T> implements Iterable<T> {
 
 		public void reset () {
 			index = 0;
+		}
+
+		public Iterator<T> iterator () {
+			return this;
 		}
 	}
 

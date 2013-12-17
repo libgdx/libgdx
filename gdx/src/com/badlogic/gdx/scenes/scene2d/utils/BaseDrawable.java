@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 /** Drawable that stores the size information but doesn't draw anything.
  * @author Nathan Sweet */
@@ -36,7 +36,7 @@ public class BaseDrawable implements Drawable {
 		minHeight = drawable.getMinHeight();
 	}
 
-	public void draw (SpriteBatch batch, float x, float y, float width, float height) {
+	public void draw (Batch batch, float x, float y, float width, float height) {
 	}
 
 	public float getLeftWidth () {

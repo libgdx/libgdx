@@ -31,6 +31,20 @@ public class StringBuilder implements Appendable, CharSequence {
 	public int length;
 
 	private static final char[] digits = new char[] {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+	
+	/** @return the number of characters required to represent the specified value with the specified radix */ 
+	public static int numChars(int value, int radix) {
+		int result = (value < 0) ? 2 : 1;
+		while ((value /= radix) != 0) ++result;
+		return result;
+	}
+	
+	/** @return the number of characters required to represent the specified value with the specified radix */
+	public static int numChars(long value, int radix) {
+		int result = (value < 0) ? 2 : 1;
+		while ((value /= radix) != 0) ++result;
+		return result;
+	}
 
 	/*
 	 * Returns the character array.
@@ -708,68 +722,120 @@ public class StringBuilder implements Appendable, CharSequence {
 	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
 	 * without memory allocation.
 	 * 
-	 * @param i the {@code int} value to append.
+	 * @param value the {@code int} value to append.
 	 * @return this builder.
 	 * @see String#valueOf(int) */
-	public StringBuilder append (int i) {
-		if (i == Integer.MIN_VALUE) {
+	public StringBuilder append (int value) {
+		return append(value, 0);
+	}
+	
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
+	 * without memory allocation.
+	 * 
+	 * @param value the {@code int} value to append.
+	 * @param minLength the minimum number of characters to add
+	 * @return this builder.
+	 * @see String#valueOf(int) */
+	public StringBuilder append (int value, int minLength) {
+		return append(value, minLength, '0');
+	}
+	
+	/** Appends the string representation of the specified {@code int} value. The {@code int} value is converted to a string
+	 * without memory allocation.
+	 * 
+	 * @param value the {@code int} value to append.
+	 * @param minLength the minimum number of characters to add
+	 * @param prefix the character to use as prefix
+	 * @return this builder.
+	 * @see String#valueOf(int) */
+	public StringBuilder append (int value, final int minLength, final char prefix) {
+		if (value == Integer.MIN_VALUE) {
 			append0("-2147483648");
 			return this;
 		}
-		if (i < 0) {
+		if (value < 0) {
 			append0('-');
-			i = -i;
+			value = -value;
 		}
-		if (i >= 10000) {
-			if (i >= 1000000000) append0(digits[(int)((long)i % 10000000000L / 1000000000L)]);
-			if (i >= 100000000) append0(digits[i % 1000000000 / 100000000]);
-			if (i >= 10000000) append0(digits[i % 100000000 / 10000000]);
-			if (i >= 1000000) append0(digits[i % 10000000 / 1000000]);
-			if (i >= 100000) append0(digits[i % 1000000 / 100000]);
-			append0(digits[i % 100000 / 10000]);
+		if (minLength > 1) {
+			for (int j = minLength - numChars(value, 10); j > 0; --j)
+				append(prefix);
 		}
-		if (i >= 1000) append0(digits[i % 10000 / 1000]);
-		if (i >= 100) append0(digits[i % 1000 / 100]);
-		if (i >= 10) append0(digits[i % 100 / 10]);
-		append0(digits[i % 10]);
+		if (value >= 10000) {
+			if (value >= 1000000000) append0(digits[(int)((long)value % 10000000000L / 1000000000L)]);
+			if (value >= 100000000) append0(digits[value % 1000000000 / 100000000]);
+			if (value >= 10000000) append0(digits[value % 100000000 / 10000000]);
+			if (value >= 1000000) append0(digits[value % 10000000 / 1000000]);
+			if (value >= 100000) append0(digits[value % 1000000 / 100000]);
+			append0(digits[value % 100000 / 10000]);
+		}
+		if (value >= 1000) append0(digits[value % 10000 / 1000]);
+		if (value >= 100) append0(digits[value % 1000 / 100]);
+		if (value >= 10) append0(digits[value % 100 / 10]);
+		append0(digits[value % 10]);
 		return this;
 	}
 
 	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
 	 * without memory allocation.
 	 * 
-	 * @param lng the {@code long} value.
+	 * @param value the {@code long} value.
 	 * @return this builder. */
-	public StringBuilder append (long lng) {
-		if (lng == Long.MIN_VALUE) {
+	public StringBuilder append (long value) {
+		return append(value, 0);
+	}
+	
+	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
+	 * without memory allocation.
+	 * 
+	 * @param value the {@code long} value.
+	 * @param minLength the minimum number of characters to add
+	 * @return this builder. */
+	public StringBuilder append (long value, int minLength) {
+		return append(value, minLength, '0');
+	}
+		
+	/** Appends the string representation of the specified {@code long} value. The {@code long} value is converted to a string
+	 * without memory allocation.
+	 * 
+	 * @param value the {@code long} value.
+	 * @param minLength the minimum number of characters to add
+	 * @param prefix the character to use as prefix
+	 * @return this builder. */
+	public StringBuilder append (long value, int minLength, char prefix) {
+		if (value == Long.MIN_VALUE) {
 			append0("-9223372036854775808");
 			return this;
 		}
-		if (lng < 0L) {
+		if (value < 0L) {
 			append0('-');
-			lng = -lng;
+			value = -value;
 		}
-		if (lng >= 10000) {
-			if (lng >= 1000000000000000000L) append0(digits[(int)(lng % 10000000000000000000D / 1000000000000000000L)]);
-			if (lng >= 100000000000000000L) append0(digits[(int)(lng % 1000000000000000000L / 100000000000000000L)]);
-			if (lng >= 10000000000000000L) append0(digits[(int)(lng % 100000000000000000L / 10000000000000000L)]);
-			if (lng >= 1000000000000000L) append0(digits[(int)(lng % 10000000000000000L / 1000000000000000L)]);
-			if (lng >= 100000000000000L) append0(digits[(int)(lng % 1000000000000000L / 100000000000000L)]);
-			if (lng >= 10000000000000L) append0(digits[(int)(lng % 100000000000000L / 10000000000000L)]);
-			if (lng >= 1000000000000L) append0(digits[(int)(lng % 10000000000000L / 1000000000000L)]);
-			if (lng >= 100000000000L) append0(digits[(int)(lng % 1000000000000L / 100000000000L)]);
-			if (lng >= 10000000000L) append0(digits[(int)(lng % 100000000000L / 10000000000L)]);
-			if (lng >= 1000000000L) append0(digits[(int)(lng % 10000000000L / 1000000000L)]);
-			if (lng >= 100000000L) append0(digits[(int)(lng % 1000000000L / 100000000L)]);
-			if (lng >= 10000000L) append0(digits[(int)(lng % 100000000L / 10000000L)]);
-			if (lng >= 1000000L) append0(digits[(int)(lng % 10000000L / 1000000L)]);
-			if (lng >= 100000L) append0(digits[(int)(lng % 1000000L / 100000L)]);
-			append0(digits[(int)(lng % 100000L / 10000L)]);
+		if (minLength > 1) {
+			for (int j = minLength - numChars(value, 10); j > 0; --j)
+				append(prefix);
 		}
-		if (lng >= 1000L) append0(digits[(int)(lng % 10000L / 1000L)]);
-		if (lng >= 100L) append0(digits[(int)(lng % 1000L / 100L)]);
-		if (lng >= 10L) append0(digits[(int)(lng % 100L / 10L)]);
-		append0(digits[(int)(lng % 10L)]);
+		if (value >= 10000) {
+			if (value >= 1000000000000000000L) append0(digits[(int)(value % 10000000000000000000D / 1000000000000000000L)]);
+			if (value >= 100000000000000000L) append0(digits[(int)(value % 1000000000000000000L / 100000000000000000L)]);
+			if (value >= 10000000000000000L) append0(digits[(int)(value % 100000000000000000L / 10000000000000000L)]);
+			if (value >= 1000000000000000L) append0(digits[(int)(value % 10000000000000000L / 1000000000000000L)]);
+			if (value >= 100000000000000L) append0(digits[(int)(value % 1000000000000000L / 100000000000000L)]);
+			if (value >= 10000000000000L) append0(digits[(int)(value % 100000000000000L / 10000000000000L)]);
+			if (value >= 1000000000000L) append0(digits[(int)(value % 10000000000000L / 1000000000000L)]);
+			if (value >= 100000000000L) append0(digits[(int)(value % 1000000000000L / 100000000000L)]);
+			if (value >= 10000000000L) append0(digits[(int)(value % 100000000000L / 10000000000L)]);
+			if (value >= 1000000000L) append0(digits[(int)(value % 10000000000L / 1000000000L)]);
+			if (value >= 100000000L) append0(digits[(int)(value % 1000000000L / 100000000L)]);
+			if (value >= 10000000L) append0(digits[(int)(value % 100000000L / 10000000L)]);
+			if (value >= 1000000L) append0(digits[(int)(value % 10000000L / 1000000L)]);
+			if (value >= 100000L) append0(digits[(int)(value % 1000000L / 100000L)]);
+			append0(digits[(int)(value % 100000L / 10000L)]);
+		}
+		if (value >= 1000L) append0(digits[(int)(value % 10000L / 1000L)]);
+		if (value >= 100L) append0(digits[(int)(value % 1000L / 100L)]);
+		if (value >= 10L) append0(digits[(int)(value % 100L / 10L)]);
+		append0(digits[(int)(value % 10L)]);
 		return this;
 	}
 

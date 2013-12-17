@@ -26,9 +26,12 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
 
+import com.badlogic.gdx.math.Matrix3;
+import com.badlogic.gdx.math.Matrix4;
+
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
  * 
- * @author mzechner */
+ * @author mzechner, xoppa */
 public class BufferUtils {
 	static Array<ByteBuffer> unsafeBuffers = new Array<ByteBuffer>();
 	static int allocatedUnsafe = 0;
@@ -78,6 +81,66 @@ public class BufferUtils {
 	public static void copy (short[] src, int srcOffset, Buffer dst, int numElements) {
 		copyJni(src, srcOffset << 1, dst, positionInBytes(dst), numElements << 1);
 		dst.limit(dst.position() + bytesToElements(dst, numElements << 1));
+	}
+	
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (char[] src, int srcOffset, int numElements, Buffer dst) {
+		copyJni(src, srcOffset << 1, dst, positionInBytes(dst), numElements << 1);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (int[] src, int srcOffset, int numElements, Buffer dst) {
+		copyJni(src, srcOffset << 2, dst, positionInBytes(dst), numElements << 2);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (long[] src, int srcOffset, int numElements, Buffer dst) {
+		copyJni(src, srcOffset << 3, dst, positionInBytes(dst), numElements << 3);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (float[] src, int srcOffset, int numElements, Buffer dst) {
+		copyJni(src, srcOffset << 2, dst, positionInBytes(dst), numElements << 2);
+	}
+
+	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
+	 * {@link Buffer#position()} is used to define the offset into the Buffer itself. The position and limit will stay the same.
+	 * <b>The Buffer must be a direct Buffer with native byte order. No error checking is performed</b>.
+	 * 
+	 * @param src the source array.
+	 * @param srcOffset the offset into the source array.
+	 * @param numElements the number of elements to copy.
+	 * @param dst the destination Buffer, its position is used as an offset. */
+	public static void copy (double[] src, int srcOffset, int numElements, Buffer dst) {
+		copyJni(src, srcOffset << 3, dst, positionInBytes(dst), numElements << 3);
 	}
 
 	/** Copies the contents of src to dst, starting from src[srcOffset], copying numElements elements. The {@link Buffer} instance's
@@ -165,6 +228,49 @@ public class BufferUtils {
 		dst.limit(dst.position() + bytesToElements(dst, numBytes));
 	}
 
+	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
+	 * the offset.
+	 * @param data The buffer to transform.
+	 * @param dimensions The number of components of the vector (2 for xy, 3 for xyz or 4 for xyzw)
+	 * @param strideInBytes The offset between the first and the second vector to transform
+	 * @param count The number of vectors to transform
+	 * @param matrix The matrix to multiply the vector with */
+	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix4 matrix) {
+		switch (dimensions) {
+		case 4:
+			transformV4M4Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		case 3:
+			transformV3M4Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		case 2:
+			transformV2M4Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+	
+	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
+	 * the offset.
+	 * @param data The buffer to transform.
+	 * @param dimensions The number of components (x, y, z) of the vector (2 for xy or 3 for xyz)
+	 * @param strideInBytes The offset between the first and the second vector to transform
+	 * @param count The number of vectors to transform
+	 * @param matrix The matrix to multiply the vector with */
+	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix) {
+		switch (dimensions) {
+		case 3:
+			transformV3M3Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		case 2:
+			transformV2M3Jni (data, positionInBytes(data), strideInBytes, count, matrix.val);
+			break;
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+	
 	private static int positionInBytes (Buffer dst) {
 		if (dst instanceof ByteBuffer)
 			return dst.position();
@@ -379,5 +485,70 @@ public class BufferUtils {
 
 	private native static void copyJni (Buffer src, int srcOffset, Buffer dst, int dstOffset, int numBytes); /*
 		memcpy(dst + dstOffset, src + srcOffset, numBytes);
+	*/
+	
+	/*JNI
+	template<size_t n1, size_t n2> void transform(float * const &v, const float * const &m) {}
+	
+	template<> inline void transform<4, 4>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2], w = v[3];
+		v[0] = x * m[ 0] + y * m[ 4] + z * m[ 8] + w * m[12]; 
+		v[1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + w * m[13];
+		v[2] = x * m[ 2] + y * m[ 6] + z * m[10] + w * m[14];
+		v[3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15]; 
+	}
+	
+	template<> inline void transform<3, 4>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2];
+		v[0] = x * m[ 0] + y * m[ 4] + z * m[ 8] + m[12]; 
+		v[1] = x * m[ 1] + y * m[ 5] + z * m[ 9] + m[13];
+		v[2] = x * m[ 2] + y * m[ 6] + z * m[10] + m[14]; 
+	}
+	
+	template<> inline void transform<2, 4>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2], w = v[3];
+		v[0] = x * m[ 0] + y * m[ 4] + m[12]; 
+		v[1] = x * m[ 1] + y * m[ 5] + m[13]; 
+	}
+	
+	template<> inline void transform<3, 3>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1], z = v[2];
+		v[0] = x * m[0] + y * m[3] + z * m[6]; 
+		v[1] = x * m[1] + y * m[4] + z * m[7];
+		v[2] = x * m[2] + y * m[5] + z * m[8]; 
+	}
+	
+	template<> inline void transform<2, 3>(float * const &v, const float * const &m) {
+		const float x = v[0], y = v[1];
+		v[0] = x * m[0] + y * m[3] + m[6]; 
+		v[1] = x * m[1] + y * m[4] + m[7]; 
+	}
+	
+	template<size_t n1, size_t n2> void transform(float * const &v, int offset, int const &stride, int const &count, const float * const &m) {
+		for (int i = 0; i < count; i++) {
+			transform<n1, n2>(&v[offset], m);
+			offset += stride;
+		}
+	}
+	*/
+	
+	private native static void transformV4M4Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		transform<4, 4>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);  
+	*/
+	
+	private native static void transformV3M4Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		transform<3, 4>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	*/
+	
+	private native static void transformV2M4Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		transform<2, 4>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	*/
+
+	private native static void transformV3M3Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		transform<3, 3>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
+	*/
+	
+	private native static void transformV2M3Jni (Buffer data, int offsetInBytes, int strideInBytes, int count, float[] matrix); /*
+		transform<2, 3>((float*)data, offsetInBytes / 4, strideInBytes / 4, count, (float*)matrix);
 	*/
 }

@@ -17,11 +17,11 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.StringBuilder;
@@ -126,8 +126,10 @@ public class Label extends Widget {
 			bounds.set(cache.getFont().getWrappedBounds(text, width));
 		} else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
-		bounds.width *= fontScaleX;
-		bounds.height *= fontScaleY;
+		if (!wrap) {
+			bounds.width *= fontScaleX;
+			bounds.height *= fontScaleY;
+		}
 	}
 
 	public void layout () {
@@ -192,7 +194,7 @@ public class Label extends Widget {
 		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		Color color = getColor();
 		if (style.background != null) {
@@ -201,7 +203,7 @@ public class Label extends Widget {
 		}
 		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
 		cache.setPosition(getX(), getY());
-		cache.draw(batch, color.a * parentAlpha);
+		cache.draw(batch, parentAlpha);
 	}
 
 	public float getPrefWidth () {

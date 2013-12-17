@@ -14,11 +14,11 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.btBoxShape;
-import com.badlogic.gdx.physics.bullet.btCapsuleShape;
-import com.badlogic.gdx.physics.bullet.btConeShape;
-import com.badlogic.gdx.physics.bullet.btCylinderShape;
-import com.badlogic.gdx.physics.bullet.btSphereShape;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.collision.btConeShape;
+import com.badlogic.gdx.physics.bullet.collision.btCylinderShape;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 
 public class BasicShapesTest extends BaseBulletTest {
 	@Override

@@ -561,6 +561,14 @@ public class TextureAtlas implements Disposable {
 			super.setPosition(x + region.offsetX, y + region.offsetY);
 		}
 
+		public void setX (float x) {
+			super.setX(x + region.offsetX);
+		}
+
+		public void setY (float y) {
+			super.setY(y + region.offsetY);
+		}
+
 		public void setBounds (float x, float y, float width, float height) {
 			float widthRatio = width / region.originalWidth;
 			float heightRatio = height / region.originalHeight;

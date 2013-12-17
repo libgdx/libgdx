@@ -1,113 +1,128 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.utils.reflect;
 
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import com.badlogic.gwtref.client.ReflectionCache;
+import com.badlogic.gwtref.client.Type;
 
 /** Provides information about, and access to, a single field of a class or interface.
  * @author nexsoftware */
 public final class Field {
-	
+
 	private final com.badlogic.gwtref.client.Field field;
-	
-	Field(com.badlogic.gwtref.client.Field field) {
+
+	Field (com.badlogic.gwtref.client.Field field) {
 		this.field = field;
 	}
-	
+
 	/** Returns the name of the field. */
-	public String getName() {
+	public String getName () {
 		return field.getName();
 	}
-	
+
 	/** Returns a Class object that identifies the declared type for the field. */
-	public Class getType() {
+	public Class getType () {
 		return field.getType().getClassOfType();
 	}
-	
+
 	/** Returns the Class object representing the class or interface that declares the field. */
-	public Class getDeclaringClass() {
+	public Class getDeclaringClass () {
 		return field.getEnclosingType().getClassOfType();
 	}
-	
-	public boolean isAccessible() {
-		return field.isAccessible();		
+
+	public boolean isAccessible () {
+		return field.isAccessible();
 	}
-	
-	public void setAccessible(boolean accessible) {
+
+	public void setAccessible (boolean accessible) {
 		field.setAccessible(accessible);
 	}
 
 	/** Return true if the field does not include any of the {@code private}, {@code protected}, or {@code public} modifiers. */
-	public boolean isDefaultAccess() {
-		return !isPrivate() && ! isProtected() && ! isPublic();
+	public boolean isDefaultAccess () {
+		return !isPrivate() && !isProtected() && !isPublic();
 	}
-	
+
 	/** Return true if the field includes the {@code final} modifier. */
-	public boolean isFinal() {
+	public boolean isFinal () {
 		return field.isFinal();
 	}
-	
+
 	/** Return true if the field includes the {@code private} modifier. */
-	public boolean isPrivate() {
+	public boolean isPrivate () {
 		return field.isPrivate();
 	}
-	
+
 	/** Return true if the field includes the {@code protected} modifier. */
-	public boolean isProtected() {
+	public boolean isProtected () {
 		return field.isProtected();
 	}
-	
+
 	/** Return true if the field includes the {@code public} modifier. */
-	public boolean isPublic() {
+	public boolean isPublic () {
 		return field.isPublic();
 	}
-	
+
 	/** Return true if the field includes the {@code static} modifier. */
-	public boolean isStatic() {
+	public boolean isStatic () {
 		return field.isStatic();
 	}
 
 	/** Return true if the field includes the {@code transient} modifier. */
-	public boolean isTransient() {
+	public boolean isTransient () {
 		return field.isTransient();
 	}
-	
+
 	/** Return true if the field includes the {@code volatile} modifier. */
-	public boolean isVolatile() {
+	public boolean isVolatile () {
 		return field.isVolatile();
 	}
 
 	/** Return true if the field is a synthetic field. */
-	public boolean isSynthetic() {
+	public boolean isSynthetic () {
 		return field.isSynthetic();
 	}
-	
+
 	/** If the type of the field is parameterized, returns the Class object representing the parameter type at the specified index,
 	 * null otherwise. */
 	public Class getElementType (int index) {
-		return null;
+		Type elementType = field.getElementType(index);
+		return elementType != null ? elementType.getClassOfType() : null;
 	}
-	
+
 	/** Returns the value of the field on the supplied object. */
-	public Object get(Object obj) throws ReflectionException {
+	public Object get (Object obj) throws ReflectionException {
 		try {
 			return field.get(obj);
 		} catch (IllegalArgumentException e) {
-			throw new ReflectionException("Object is not an instance of " + getDeclaringClass(), e);
+			throw new ReflectionException("Could not get " + getDeclaringClass() + "#" + getName() + ": " + e.getMessage(), e);
 		} catch (IllegalAccessException e) {
-			throw new ReflectionException("Illegal access to field: " + getName(), e);
-		}	
+			throw new ReflectionException("Illegal access to field " + getName() + ": " + e.getMessage(), e);
+		}
 	}
-	
+
 	/** Sets the value of the field on the supplied object. */
-	public void set(Object obj, Object value) throws ReflectionException {
+	public void set (Object obj, Object value) throws ReflectionException {
 		try {
 			field.set(obj, value);
 		} catch (IllegalArgumentException e) {
-			throw new ReflectionException("Argument not valid for field: " + getName(), e);
+			throw new ReflectionException("Could not set " + getDeclaringClass() + "#" + getName() + ": " + e.getMessage(), e);
 		} catch (IllegalAccessException e) {
-			throw new ReflectionException("Illegal access to field: " + getName(), e);
+			throw new ReflectionException("Illegal access to field " + getName() + ": " + e.getMessage(), e);
 		}
 	}
-	
 }

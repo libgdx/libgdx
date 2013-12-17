@@ -17,7 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -149,53 +149,37 @@ public class SplitPane extends WidgetGroup {
 			calculateVertBoundsAndPositions();
 
 		Actor firstWidget = this.firstWidget;
-		Rectangle firstWidgetBounds = this.firstWidgetBounds;
 		if (firstWidget != null) {
-			firstWidget.setX(firstWidgetBounds.x);
-			firstWidget.setY(firstWidgetBounds.y);
-			if (firstWidget.getWidth() != firstWidgetBounds.width || firstWidget.getHeight() != firstWidgetBounds.height) {
-				firstWidget.setWidth(firstWidgetBounds.width);
-				firstWidget.setHeight(firstWidgetBounds.height);
-				if (firstWidget instanceof Layout) {
-					Layout layout = (Layout)firstWidget;
-					layout.invalidate();
-					layout.validate();
-				}
-			} else {
-				if (firstWidget instanceof Layout) ((Layout)firstWidget).validate();
-			}
+			Rectangle firstWidgetBounds = this.firstWidgetBounds;
+			firstWidget.setBounds(firstWidgetBounds.x, firstWidgetBounds.y, firstWidgetBounds.width, firstWidgetBounds.height);
+			if (firstWidget instanceof Layout) ((Layout)firstWidget).validate();
 		}
 		Actor secondWidget = this.secondWidget;
-		Rectangle secondWidgetBounds = this.secondWidgetBounds;
 		if (secondWidget != null) {
-			secondWidget.setX(secondWidgetBounds.x);
-			secondWidget.setY(secondWidgetBounds.y);
-			if (secondWidget.getWidth() != secondWidgetBounds.width || secondWidget.getHeight() != secondWidgetBounds.height) {
-				secondWidget.setWidth(secondWidgetBounds.width);
-				secondWidget.setHeight(secondWidgetBounds.height);
-				if (secondWidget instanceof Layout) {
-					Layout layout = (Layout)secondWidget;
-					layout.invalidate();
-					layout.validate();
-				}
-			} else {
-				if (secondWidget instanceof Layout) ((Layout)secondWidget).validate();
-			}
+			Rectangle secondWidgetBounds = this.secondWidgetBounds;
+			secondWidget.setBounds(secondWidgetBounds.x, secondWidgetBounds.y, secondWidgetBounds.width, secondWidgetBounds.height);
+			if (secondWidget instanceof Layout) ((Layout)secondWidget).validate();
 		}
 	}
 
 	@Override
 	public float getPrefWidth () {
-		float width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth();
-		width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth();
+		float width = 0;
+		if (firstWidget != null)
+			width = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefWidth() : firstWidget.getWidth();
+		if (secondWidget != null)
+			width += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefWidth() : secondWidget.getWidth();
 		if (!vertical) width += style.handle.getMinWidth();
 		return width;
 	}
 
 	@Override
 	public float getPrefHeight () {
-		float height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight();
-		height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight();
+		float height = 0;
+		if (firstWidget != null)
+			height = firstWidget instanceof Layout ? ((Layout)firstWidget).getPrefHeight() : firstWidget.getHeight();
+		if (secondWidget != null)
+			height += secondWidget instanceof Layout ? ((Layout)secondWidget).getPrefHeight() : secondWidget.getHeight();
 		if (vertical) height += style.handle.getMinHeight();
 		return height;
 	}
@@ -244,7 +228,7 @@ public class SplitPane extends WidgetGroup {
 	}
 
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 
 		Color color = getColor();

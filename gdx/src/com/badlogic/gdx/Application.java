@@ -129,7 +129,7 @@ public interface Application {
 	public void log (String tag, String message);
 
 	/** Logs a message to the console or logcat */
-	public void log (String tag, String message, Exception exception);
+	public void log (String tag, String message, Throwable exception);
 
 	/** Logs an error message to the console or logcat */
 	public void error (String tag, String message);
@@ -147,6 +147,9 @@ public interface Application {
 	 * {@link #LOG_INFO} will let all non-debug messages through, and {@link #LOG_DEBUG} will let all messages through.
 	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}. */
 	public void setLogLevel (int logLevel);
+
+	/** Gets the log level. */
+	public int getLogLevel();
 
 	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
 	public ApplicationType getType ();
