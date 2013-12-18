@@ -317,6 +317,11 @@ public class Actor {
 		this.parent = parent;
 	}
 
+	/** Returns true if input events are processed by this actor. */
+	public boolean isTouchable () {
+		return touchable == Touchable.enabled;
+	}
+
 	public Touchable getTouchable () {
 		return touchable;
 	}
