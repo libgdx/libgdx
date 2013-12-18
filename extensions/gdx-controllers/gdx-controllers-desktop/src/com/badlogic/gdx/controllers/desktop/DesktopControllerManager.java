@@ -42,4 +42,9 @@ public class DesktopControllerManager implements ControllerManager {
 	public void removeListener (ControllerListener listener) {
 		listeners.removeValue(listener, true);
 	}
+
+	@Override
+	public void clearListeners() {
+		listeners.clear();
+	}
 }

@@ -196,4 +196,9 @@ public class GwtControllers implements ControllerManager, GamepadSupportListener
 		}
 	}
 
+	@Override
+	public void clearListeners () {
+		listeners.clear();
+	}
+
 }
