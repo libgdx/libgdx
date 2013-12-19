@@ -45,7 +45,7 @@ public class Pools {
 		pool.free(object);
 	}
 
-	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Object
+	/** Frees the specified objects from the {@link #get(Class) pool}. Null objects within the array are silently ignored. Objects
 	 * don't need to be from the same pool. */
 	static public void freeAll (Array objects) {
 		if (objects == null) throw new IllegalArgumentException("objects cannot be null.");
