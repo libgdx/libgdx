@@ -57,6 +57,9 @@ public class AndroidApplicationConfiguration {
 	 * less 14. default: false **/
 	public boolean hideStatusBar = false;
 
+    /** whether to disable Android audio support. default: false */
+	public boolean disableAudio = false;
+
 	/** the maximum number of {@link Sound} instances that can be played simultaneously, sets the corresponding {@link SoundPool}
 	 * constructor argument. */
 	public int maxSimultaneousSounds = 16;
