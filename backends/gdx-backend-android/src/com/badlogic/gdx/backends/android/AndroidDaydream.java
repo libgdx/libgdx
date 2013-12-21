@@ -24,12 +24,11 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
-import android.os.PowerManager;
-import android.os.PowerManager.WakeLock;
 import android.service.dreams.DreamService;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.badlogic.gdx.Application;
@@ -72,9 +71,9 @@ public class AndroidDaydream extends DreamService implements Application {
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	protected WakeLock wakeLock = null;
 	protected int logLevel = LOG_INFO;
-
+	protected boolean useWakelock = false;
+	
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
 	 * render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0 context
 	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
@@ -108,6 +107,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
+		this.useWakelock = config.useWakelock;
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -119,7 +119,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		setFullscreen(true);
 
 		setContentView(graphics.getView(), createLayoutParams());
-		createWakeLock(config);
+		createWakeLock(this.useWakelock);
 		hideStatusBar(config);
 	}
 
@@ -130,10 +130,9 @@ public class AndroidDaydream extends DreamService implements Application {
 		return layoutParams;
 	}
 
-	protected void createWakeLock (AndroidApplicationConfiguration config) {
-		if (config.useWakelock) {
-			PowerManager powerManager = (PowerManager)getSystemService(Context.POWER_SERVICE);
-			wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "libgdx wakelock");
+	protected void createWakeLock (boolean use) {
+		if (use) {
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		}
 	}
 
@@ -190,7 +189,8 @@ public class AndroidDaydream extends DreamService implements Application {
 		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
-
+		this.useWakelock = config.useWakelock;
+		
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -198,14 +198,13 @@ public class AndroidDaydream extends DreamService implements Application {
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		createWakeLock(config);
+		createWakeLock(this.useWakelock);
 		hideStatusBar(config);
 		return graphics.getView();
 	}
 
 	@Override
 	public void onDreamingStopped () {
-		if (wakeLock != null) wakeLock.release();
 		boolean isContinuous = graphics.isContinuousRendering();
 		graphics.setContinuousRendering(true);
 		graphics.pause();
@@ -235,7 +234,6 @@ public class AndroidDaydream extends DreamService implements Application {
 
 	@Override
 	public void onDreamingStarted () {
-		if (wakeLock != null) wakeLock.acquire();
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();

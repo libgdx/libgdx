@@ -22,11 +22,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A group that lays out its children side by side in a single column. This can be easier than using {@link Table} when actors
+/** A group that lays out its children side by side in a single row. This can be easier than using {@link Table} when actors
  * need to be inserted in the middle of the group.
  * <p>
- * The preferred width is the sum of the children's preferred widths. The preferred height is the largest preferred height of any
- * child. The min size is the preferred size and the max size is 0.
+ * The preferred width is the sum of the children's preferred widths, plus spacing if set. The preferred height is the largest
+ * preferred height of any child. The min size is the preferred size and the max size is 0 as <code>HorizontalGroup</code> can
+ * be stretched to cover any area.
+ * <p>
+ * This UI widget does not support <code>Layout</code>able actors that return 0 as their preferred width. A fine example is
+ * {@link Label} class with text wrapping turned on. 
  * @author Nathan Sweet */
 public class HorizontalGroup extends WidgetGroup {
 	private float prefWidth, prefHeight;
@@ -76,8 +80,8 @@ public class HorizontalGroup extends WidgetGroup {
 
 	public void layout () {
 		float spacing = this.spacing;
-		float groupHeight = getHeight();
-		float x = reverse ? getWidth() : 0;
+		float groupHeight = getHeight() > 0 ? getHeight() : getMinHeight();
+		float x = reverse ? (getWidth() > 0 ? getWidth() : getMinWidth()) : 0;
 		float dir = reverse ? -1 : 1;
 		SnapshotArray<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {

@@ -688,7 +688,6 @@ public class TextField extends Widget implements Disableable {
 	public void setText (String str) {
 		if (str == null) throw new IllegalArgumentException("text cannot be null.");
 
-		BitmapFont font = style.font;
 		clearSelection();
 		text = "";
 		paste(str, onlyFontChars);
@@ -705,7 +704,7 @@ public class TextField extends Widget implements Disableable {
 	}
 
 	public String getSelection () {
-		return text.substring(selectionStart, cursor);
+		return hasSelection ? text.substring(Math.min(selectionStart, cursor), Math.max(selectionStart, cursor)) : "";
 	}
 
 	/** Sets the selected text. */

@@ -66,7 +66,7 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setHigh(1);
 
 		emitter.setMaxParticleCount(25);
-		emitter.setImagePath("particle.png");
+		emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
 
 		addEmitter(name, select, emitter);
 		return emitter;
@@ -107,7 +107,7 @@ class EffectPanel extends JPanel {
 		emitter.getTransparency().setScaling(new float[] {0, 1, 0.75f, 0});
 		
 		emitter.setMaxParticleCount(200);
-		emitter.setImagePath("particle.png");
+		emitter.setImagePath(ParticleEditor.DEFAULT_PARTICLE);
 		
 		addEmitter(name, select, emitter);
 		return emitter;
