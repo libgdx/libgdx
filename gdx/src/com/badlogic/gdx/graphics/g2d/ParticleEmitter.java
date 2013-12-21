@@ -57,28 +57,28 @@ public class ParticleEmitter {
 	private ScaledNumericValue spawnHeightValue = new ScaledNumericValue();
 	private SpawnShapeValue spawnShapeValue = new SpawnShapeValue();
 
-	private float accumulator;
-	private Sprite sprite;
-	private Particle[] particles;
+	private transient float accumulator;
+	private transient Sprite sprite;
+	private transient Particle[] particles;
 	private int minParticleCount, maxParticleCount = 4;
-	private float x, y;
+	private transient float x, y;
 	private String name;
 	private String imagePath;
-	private int activeCount;
-	private boolean[] active;
-	private boolean firstUpdate;
-	private boolean flipX, flipY;
-	private int updateFlags;
-	private boolean allowCompletion;
-	private BoundingBox bounds;
+	private transient int activeCount;
+	private transient boolean[] active;
+	private transient boolean firstUpdate;
+	private transient boolean flipX, flipY;
+	private transient int updateFlags;
+	private transient boolean allowCompletion;
+	private transient BoundingBox bounds;
 
-	private int emission, emissionDiff, emissionDelta;
-	private int lifeOffset, lifeOffsetDiff;
-	private int life, lifeDiff;
-	private float spawnWidth, spawnWidthDiff;
-	private float spawnHeight, spawnHeightDiff;
-	public float duration = 1, durationTimer;
-	private float delay, delayTimer;
+	private transient int emission, emissionDiff, emissionDelta;
+	private transient int lifeOffset, lifeOffsetDiff;
+	private transient int life, lifeDiff;
+	private transient float spawnWidth, spawnWidthDiff;
+	private transient float spawnHeight, spawnHeightDiff;
+	public transient float duration = 1, durationTimer;
+	private transient float delay, delayTimer;
 
 	private boolean attached;
 	private boolean continuous;
@@ -88,11 +88,6 @@ public class ParticleEmitter {
 
 	public ParticleEmitter () {
 		initialize();
-	}
-
-	public ParticleEmitter (BufferedReader reader) throws IOException {
-		initialize();
-		load(reader);
 	}
 
 	public ParticleEmitter (ParticleEmitter emitter) {
@@ -808,127 +803,6 @@ public class ParticleEmitter {
 		return bounds;
 	}
 
-	public void save (Writer output) throws IOException {
-		output.write(name + "\n");
-		output.write("- Delay -\n");
-		delayValue.save(output);
-		output.write("- Duration - \n");
-		durationValue.save(output);
-		output.write("- Count - \n");
-		output.write("min: " + minParticleCount + "\n");
-		output.write("max: " + maxParticleCount + "\n");
-		output.write("- Emission - \n");
-		emissionValue.save(output);
-		output.write("- Life - \n");
-		lifeValue.save(output);
-		output.write("- Life Offset - \n");
-		lifeOffsetValue.save(output);
-		output.write("- X Offset - \n");
-		xOffsetValue.save(output);
-		output.write("- Y Offset - \n");
-		yOffsetValue.save(output);
-		output.write("- Spawn Shape - \n");
-		spawnShapeValue.save(output);
-		output.write("- Spawn Width - \n");
-		spawnWidthValue.save(output);
-		output.write("- Spawn Height - \n");
-		spawnHeightValue.save(output);
-		output.write("- Scale - \n");
-		scaleValue.save(output);
-		output.write("- Velocity - \n");
-		velocityValue.save(output);
-		output.write("- Angle - \n");
-		angleValue.save(output);
-		output.write("- Rotation - \n");
-		rotationValue.save(output);
-		output.write("- Wind - \n");
-		windValue.save(output);
-		output.write("- Gravity - \n");
-		gravityValue.save(output);
-		output.write("- Tint - \n");
-		tintValue.save(output);
-		output.write("- Transparency - \n");
-		transparencyValue.save(output);
-		output.write("- Options - \n");
-		output.write("attached: " + attached + "\n");
-		output.write("continuous: " + continuous + "\n");
-		output.write("aligned: " + aligned + "\n");
-		output.write("additive: " + additive + "\n");
-		output.write("behind: " + behind + "\n");
-	}
-
-	public void load (BufferedReader reader) throws IOException {
-		try {
-			name = readString(reader, "name");
-			reader.readLine();
-			delayValue.load(reader);
-			reader.readLine();
-			durationValue.load(reader);
-			reader.readLine();
-			setMinParticleCount(readInt(reader, "minParticleCount"));
-			setMaxParticleCount(readInt(reader, "maxParticleCount"));
-			reader.readLine();
-			emissionValue.load(reader);
-			reader.readLine();
-			lifeValue.load(reader);
-			reader.readLine();
-			lifeOffsetValue.load(reader);
-			reader.readLine();
-			xOffsetValue.load(reader);
-			reader.readLine();
-			yOffsetValue.load(reader);
-			reader.readLine();
-			spawnShapeValue.load(reader);
-			reader.readLine();
-			spawnWidthValue.load(reader);
-			reader.readLine();
-			spawnHeightValue.load(reader);
-			reader.readLine();
-			scaleValue.load(reader);
-			reader.readLine();
-			velocityValue.load(reader);
-			reader.readLine();
-			angleValue.load(reader);
-			reader.readLine();
-			rotationValue.load(reader);
-			reader.readLine();
-			windValue.load(reader);
-			reader.readLine();
-			gravityValue.load(reader);
-			reader.readLine();
-			tintValue.load(reader);
-			reader.readLine();
-			transparencyValue.load(reader);
-			reader.readLine();
-			attached = readBoolean(reader, "attached");
-			continuous = readBoolean(reader, "continuous");
-			aligned = readBoolean(reader, "aligned");
-			additive = readBoolean(reader, "additive");
-			behind = readBoolean(reader, "behind");
-		} catch (RuntimeException ex) {
-			if (name == null) throw ex;
-			throw new RuntimeException("Error parsing emitter: " + name, ex);
-		}
-	}
-
-	static String readString (BufferedReader reader, String name) throws IOException {
-		String line = reader.readLine();
-		if (line == null) throw new IOException("Missing value: " + name);
-		return line.substring(line.indexOf(":") + 1).trim();
-	}
-
-	static boolean readBoolean (BufferedReader reader, String name) throws IOException {
-		return Boolean.parseBoolean(readString(reader, name));
-	}
-
-	static int readInt (BufferedReader reader, String name) throws IOException {
-		return Integer.parseInt(readString(reader, name));
-	}
-
-	static float readFloat (BufferedReader reader, String name) throws IOException {
-		return Float.parseFloat(readString(reader, name));
-	}
-
 	public static class Particle extends Sprite {
 		protected int life, currentLife;
 		protected float scale, scaleDiff;
@@ -966,20 +840,6 @@ public class ParticleEmitter {
 			this.active = active;
 		}
 
-		public void save (Writer output) throws IOException {
-			if (!alwaysActive)
-				output.write("active: " + active + "\n");
-			else
-				active = true;
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			if (!alwaysActive)
-				active = readBoolean(reader, "active");
-			else
-				active = true;
-		}
-
 		public void load (ParticleValue value) {
 			active = value.active;
 			alwaysActive = value.alwaysActive;
@@ -995,18 +855,6 @@ public class ParticleEmitter {
 
 		public void setValue (float value) {
 			this.value = value;
-		}
-
-		public void save (Writer output) throws IOException {
-			super.save(output);
-			if (!active) return;
-			output.write("value: " + value + "\n");
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			super.load(reader);
-			if (!active) return;
-			value = readFloat(reader, "value");
 		}
 
 		public void load (NumericValue value) {
@@ -1046,20 +894,6 @@ public class ParticleEmitter {
 
 		public void setLowMax (float lowMax) {
 			this.lowMax = lowMax;
-		}
-
-		public void save (Writer output) throws IOException {
-			super.save(output);
-			if (!active) return;
-			output.write("lowMin: " + lowMin + "\n");
-			output.write("lowMax: " + lowMax + "\n");
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			super.load(reader);
-			if (!active) return;
-			lowMin = readFloat(reader, "lowMin");
-			lowMax = readFloat(reader, "lowMax");
 		}
 
 		public void load (RangedNumericValue value) {
@@ -1148,34 +982,6 @@ public class ParticleEmitter {
 			return startValue + (scaling[endIndex] - startValue) * ((percent - startTime) / (timeline[endIndex] - startTime));
 		}
 
-		public void save (Writer output) throws IOException {
-			super.save(output);
-			if (!active) return;
-			output.write("highMin: " + highMin + "\n");
-			output.write("highMax: " + highMax + "\n");
-			output.write("relative: " + relative + "\n");
-			output.write("scalingCount: " + scaling.length + "\n");
-			for (int i = 0; i < scaling.length; i++)
-				output.write("scaling" + i + ": " + scaling[i] + "\n");
-			output.write("timelineCount: " + timeline.length + "\n");
-			for (int i = 0; i < timeline.length; i++)
-				output.write("timeline" + i + ": " + timeline[i] + "\n");
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			super.load(reader);
-			if (!active) return;
-			highMin = readFloat(reader, "highMin");
-			highMax = readFloat(reader, "highMax");
-			relative = readBoolean(reader, "relative");
-			scaling = new float[readInt(reader, "scalingCount")];
-			for (int i = 0; i < scaling.length; i++)
-				scaling[i] = readFloat(reader, "scaling" + i);
-			timeline = new float[readInt(reader, "timelineCount")];
-			for (int i = 0; i < timeline.length; i++)
-				timeline[i] = readFloat(reader, "timeline" + i);
-		}
-
 		public void load (ScaledNumericValue value) {
 			super.load(value);
 			highMax = value.highMax;
@@ -1245,28 +1051,6 @@ public class ParticleEmitter {
 			return temp;
 		}
 
-		public void save (Writer output) throws IOException {
-			super.save(output);
-			if (!active) return;
-			output.write("colorsCount: " + colors.length + "\n");
-			for (int i = 0; i < colors.length; i++)
-				output.write("colors" + i + ": " + colors[i] + "\n");
-			output.write("timelineCount: " + timeline.length + "\n");
-			for (int i = 0; i < timeline.length; i++)
-				output.write("timeline" + i + ": " + timeline[i] + "\n");
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			super.load(reader);
-			if (!active) return;
-			colors = new float[readInt(reader, "colorsCount")];
-			for (int i = 0; i < colors.length; i++)
-				colors[i] = readFloat(reader, "colors" + i);
-			timeline = new float[readInt(reader, "timelineCount")];
-			for (int i = 0; i < timeline.length; i++)
-				timeline[i] = readFloat(reader, "timeline" + i);
-		}
-
 		public void load (GradientColorValue value) {
 			super.load(value);
 			colors = new float[value.colors.length];
@@ -1303,26 +1087,6 @@ public class ParticleEmitter {
 
 		public void setSide (SpawnEllipseSide side) {
 			this.side = side;
-		}
-
-		public void save (Writer output) throws IOException {
-			super.save(output);
-			if (!active) return;
-			output.write("shape: " + shape + "\n");
-			if (shape == SpawnShape.ellipse) {
-				output.write("edges: " + edges + "\n");
-				output.write("side: " + side + "\n");
-			}
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			super.load(reader);
-			if (!active) return;
-			shape = SpawnShape.valueOf(readString(reader, "shape"));
-			if (shape == SpawnShape.ellipse) {
-				edges = readBoolean(reader, "edges");
-				side = SpawnEllipseSide.valueOf(readString(reader, "side"));
-			}
 		}
 
 		public void load (SpawnShapeValue value) {
