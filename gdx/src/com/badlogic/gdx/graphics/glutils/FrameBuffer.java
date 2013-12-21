@@ -217,6 +217,18 @@ public class FrameBuffer implements Disposable {
 		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
+	
+	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
+	 * 
+	 * @param x the x-axis position of the viewport in pixels
+	 * @param y the y-asis position of the viewport in pixels
+	 * @param width the width of the viewport in pixels
+	 * @param height the height of the viewport in pixels
+	 * */
+	public void end (int x, int y, int width, int height) {
+		Gdx.graphics.getGL20().glViewport(x, y, width, height);
+		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+	}
 
 	/** @return the color buffer texture */
 	public Texture getColorBufferTexture () {
