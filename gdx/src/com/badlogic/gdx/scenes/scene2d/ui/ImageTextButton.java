@@ -48,24 +48,32 @@ public class ImageTextButton extends Button {
 	}
 
 	public ImageTextButton (String text, ImageTextButtonStyle style) {
-		super(style);
-		this.style = style;
-
-		defaults().space(3);
-
-		image = new Image();
-		image.setScaling(Scaling.fit);
-		add(image);
-
-		label = new Label(text, new LabelStyle(style.font, style.fontColor));
-		label.setAlignment(Align.center);
-		add(label);
-
-		setStyle(style);
-
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+        this(text, style, false);
 	}
+
+    public ImageTextButton (String text, ImageTextButtonStyle style, boolean vertical) {
+        super(style);
+        this.style = style;
+
+        defaults().space(3);
+
+        image = new Image();
+        image.setScaling(Scaling.fit);
+        add(image);
+
+        if (vertical) {
+            row();
+        }
+
+        label = new Label(text, new LabelStyle(style.font, style.fontColor));
+        label.setAlignment(Align.center);
+        add(label);
+
+        setStyle(style);
+
+        setWidth(getPrefWidth());
+        setHeight(getPrefHeight());
+    }
 
 	public void setStyle (ButtonStyle style) {
 		if (!(style instanceof ImageTextButtonStyle)) throw new IllegalArgumentException("style must be a ImageTextButtonStyle.");
