@@ -20,67 +20,62 @@ import android.net.Uri;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.JsonWriter;
 
 /** Android implementation of the {@link Net} API.
  * @author acoppes */
 public class AndroidNet implements Net {
 
-	// IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
-	// If you make changes here, make changes in the other backend as well.
-	final AndroidApplication app;
-	NetJavaImpl netJavaImpl;
+        // IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
+        // If you make changes here, make changes in the other backend as well.
+        final AndroidApplication app;
+        NetJavaImpl netJavaImpl;
 
-	public AndroidNet (AndroidApplication activity) {
-		app = activity;
-		netJavaImpl = new NetJavaImpl();
-	}
+        public AndroidNet (AndroidApplication activity) {
+                app = activity;
+                netJavaImpl = new NetJavaImpl();
+        }
 
-	@Override
-	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
-		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
-	}
+        @Override
+        public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
+                netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
+        }
 
-	@Override
-	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new AndroidServerSocket(protocol, port, hints);
-	}
+        @Override
+        public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
+                return new AndroidServerSocket(protocol, port, hints);
+        }
 
-	@Override
-	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new AndroidSocket(protocol, host, port, hints);
-	}
+        @Override
+        public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
+                return new AndroidSocket(protocol, host, port, hints);
+        }
 
-	@Override
-	public void openURI (String URI) {
-		if(app == null) {
-			Gdx.app.log("AndroidNet", "Can't open browser activity from livewallpaper");
-			return;
+        @Override
+        public void openURI (String URI) {
+                if(app == null) {
+                        Gdx.app.log("AndroidNet", "Can't open browser activity from livewallpaper");
+                        return;
+                }
+                final Uri uri = Uri.parse(URI);
+                app.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run () {
+                                app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                        }
+                });
+        }
+
+		@Override
+		public UDPSocket newUDPSocket (int port, UDPSocketHints hints) {
+			return new AndroidUDPSocket(port, hints);
 		}
-		final Uri uri = Uri.parse(URI);
-		app.runOnUiThread(new Runnable() {
-			@Override
-			public void run () {
-				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-			}
-		});
-	}
 
-	@Override
-	public UDPSocket newUDPSocket (Protocol protocol, int port, UDPSocketHints hints) {
-		if (protocol != Protocol.UDP) {
-			Gdx.app.log("AndroidNet", "UDP socket only supports UDP protocol");
-			return null;
-		}
-		return new AndroidUDPSocket(protocol, port, hints);
-	}
 }

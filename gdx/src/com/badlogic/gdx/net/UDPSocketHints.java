@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- *	 http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,7 +20,7 @@ package com.badlogic.gdx.net;
  * @author Unkn0wn0ne
  */
 public class UDPSocketHints {
-	
+
 	/**
 	 * Sets the SO_TIMEOUT to the specified timeout. (in miliseconds)
 	 * Note: Set timeout to zero for infinite timeouts
@@ -35,4 +35,9 @@ public class UDPSocketHints {
 	 */
 	public int TRAFFIC_CLASS = 0x04;
 	
+	/**
+	 * Sets the size of the receive buffer for the datagram in bytes.
+	 * Default: 256
+	 */
+	public int RECIEVE_LENGTH = 256;
 }

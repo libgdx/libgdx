@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import java.net.DatagramPacket;
@@ -21,23 +22,24 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Datagram;
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * The Android implementation of {@link UDPSocket}
- * @author Unkn0wn0ne
- */
-public class AndroidUDPSocket implements UDPSocket{
+/** The Android implementation of {@link UDPSocket}
+ * @author Unkn0wn0ne */
+public class AndroidUDPSocket implements UDPSocket {
 
-	private DatagramSocket socket;
-	
-	public AndroidUDPSocket(Protocol protocol, int port, UDPSocketHints hints) {
+	private DatagramSocket socket = null;
+	private DatagramPacket packet = null;
+	private Datagram datagram = null;
+	private InetAddress address = null;
+
+	public AndroidUDPSocket (int port, UDPSocketHints hints) {
 		try {
 			this.socket = new DatagramSocket(port);
+			this.packet = new DatagramPacket(new byte[hints.RECIEVE_LENGTH], hints.RECIEVE_LENGTH);
 			if (hints == null) {
 				applySocketHints(new UDPSocketHints());
 			} else {
@@ -46,31 +48,35 @@ public class AndroidUDPSocket implements UDPSocket{
 		} catch (Exception e) {
 			throw new GdxRuntimeException(e);
 		}
-		
+
 	}
-	
+
 	private void applySocketHints (UDPSocketHints hints) throws SocketException {
 		this.socket.setSoTimeout(hints.SO_TIMEOUT);
 		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
 	}
-	
+
 	@Override
 	public void dispose () {
 		try {
 			if (this.socket != null) {
 				this.socket.close();
-				this.socket = null;
 			}
-		} catch (Exception e) {
-			throw new GdxRuntimeException("Failed to close socket");
+		} catch (Throwable t) {
+			new GdxRuntimeException("Error closing UDP Socket");
 		}
-	}
+		this.socket = null;
+		this.packet = null;
+		this.datagram = null;
+		this.address = null;
 	}
 
 	@Override
 	public void writeData (Datagram datagram) throws Exception {
-		DatagramPacket packet = new DatagramPacket(datagram.getData(), datagram.getLength());
-		packet.setAddress(InetAddress.getByName(datagram.getAddress()));
+		if (this.address == null || !datagram.getAddress().equalsIgnoreCase(this.address.getHostAddress())) {
+			this.address = InetAddress.getByName(datagram.getAddress());
+		}
+		packet.setAddress(this.address);
 		packet.setPort(datagram.getPort());
 		packet.setData(datagram.getData());
 		packet.setLength(datagram.getLength());
@@ -79,13 +85,11 @@ public class AndroidUDPSocket implements UDPSocket{
 
 	@Override
 	public Datagram readData (byte[] buffer) throws Exception {
-		Datagram data = new Datagram();
-		DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 		this.socket.receive(packet);
-		data.setAddress(packet.getAddress().getHostAddress());
-		data.setData(packet.getData());
-		data.setLength(packet.getLength());
-		data.setPort(data.getPort());
-		return data;
+		datagram.setAddress(packet.getAddress().getHostAddress());
+		datagram.setData(packet.getData());
+		datagram.setLength(packet.getLength());
+		datagram.setPort(packet.getPort());
+		return datagram;
 	}
 }

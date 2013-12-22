@@ -16,7 +16,9 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -60,11 +62,7 @@ public class JglfwNet implements Net {
 	}
 
 	@Override
-	public UDPSocket newUDPSocket (Protocol protocol, int port, UDPSocketHints hints) {
-		if (protocol != Protocol.UDP) {
-			Gdx.app.log("JglfwNet", "UDP socket only supports UDP protocol");
-			return null;
-		}
-		return new JglfwUDPSocket(protocol, port, hints);
+	public UDPSocket newUDPSocket (int port, UDPSocketHints hints) {
+		return new JglfwUDPSocket(port, hints);
 	}
 }
