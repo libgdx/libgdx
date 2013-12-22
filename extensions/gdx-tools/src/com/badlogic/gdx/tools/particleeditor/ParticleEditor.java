@@ -55,6 +55,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter.GradientColorValue;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter.NumericValue;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -134,7 +135,7 @@ public class ParticleEditor extends JFrame {
 				addRow(new ScaledNumericPanel(emitter.getRotation(), "Life", "Rotation", "Particle rotation, in degrees."));
 				addRow(new ScaledNumericPanel(emitter.getWind(), "Life", "Wind", "Wind strength, in world units per second."));
 				addRow(new ScaledNumericPanel(emitter.getGravity(), "Life", "Gravity", "Gravity strength, in world units per second."));
-				addRow(new GradientPanel(emitter.getTint(), "Tint", ""));
+				addRow(new GradientPanel(emitter.getTint(), "Tint", "", false));
 				addRow(new PercentagePanel(emitter.getTransparency(), "Life", "Transparency", ""));
 				addRow(new OptionsPanel(ParticleEditor.this, "Options", ""));
 				for (Component component : rowsPanel.getComponents())
