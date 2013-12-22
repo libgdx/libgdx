@@ -171,6 +171,8 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	public void failed (Throwable t) {
 		textButton.setDisabled(false);
 		textButton.setTouchable(Touchable.enabled);
+		textButtonTxt.setDisabled(false);
+		textButtonTxt.setTouchable(Touchable.enabled);
 		statusLabel.setText("Failed to perform the HTTP Request: " + t.getMessage());
 		t.printStackTrace();
 	}
