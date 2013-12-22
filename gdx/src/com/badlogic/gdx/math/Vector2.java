@@ -139,7 +139,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		y *= scalar;
 		return this;
 	}
-	
+
 	/** @deprecated Use {@link #scl(float)} instead. */
 	public Vector2 mul (float scalar) {
 		return scl(scalar);
@@ -152,12 +152,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y *= y;
 		return this;
 	}
-	
+
 	/** @deprecated Use {@link #scl(float, float)} instead. */
 	public Vector2 mul (float x, float y) {
-		return scl(x,y);
+		return scl(x, y);
 	}
-	
+
 	/** Multiplies this vector by a vector
 	 * @return This vector for chaining */
 	public Vector2 scl (Vector2 v) {
@@ -165,7 +165,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y *= v.y;
 		return this;
 	}
-	
+
 	/** @deprecated Use {@link #scl(Vector2)} instead. */
 	public Vector2 mul (Vector2 v) {
 		return scl(v);
@@ -216,7 +216,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		final float y_d = y - this.y;
 		return x_d * x_d + y_d * y_d;
 	}
-	
+
 	/** Limits this vector's length to given value
 	 * @param limit Max length
 	 * @return This vector for chaining */
@@ -227,19 +227,16 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
-	
+
 	/** Clamps this vector's length to given value
 	 * @param min Min length
 	 * @param max Max length
 	 * @return This vector for chaining */
 	public Vector2 clamp (float min, float max) {
 		final float l2 = len2();
-		if (l2 == 0f)
-			return this;
-		if (l2 > max * max)
-			return nor().scl(max);
-		if (l2 < min * min)
-			return nor().scl(min);
+		if (l2 == 0f) return this;
+		if (l2 > max * max) return nor().scl(max);
+		if (l2 < min * min) return nor().scl(min);
 		return this;
 	}
 
@@ -283,8 +280,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this.x * y - this.y * x;
 	}
 
-	/** @return the angle in degrees of this vector (point) relative to the x-axis.
-	 * Angles are towards the positive y-axis (typically counter-clockwise) and between 0 and 360. */
+	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis (typically
+	 *         counter-clockwise) and between 0 and 360. */
 	public float angle () {
 		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
@@ -313,6 +310,19 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.x = newX;
 		this.y = newY;
 
+		return this;
+	}
+
+	/** Rotates the Vector2 by 90 degrees in the specified direction, where >= 0 is counter-clockwise and < 0 is clockwise. */
+	public Vector2 rotate90 (int dir) {
+		float x = this.x;
+		if (dir >= 0) {
+			this.x = -y;
+			y = x;
+		} else {
+			this.x = y;
+			y = -x;
+		}
 		return this;
 	}
 
@@ -359,7 +369,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (Math.abs(obj.y - y) > epsilon) return false;
 		return true;
 	}
-	
+
 	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
 	 * @param x
 	 * @param y

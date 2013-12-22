@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.android;
 
 import android.media.SoundPool;
-import android.os.PowerManager.WakeLock;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
@@ -51,13 +50,15 @@ public class AndroidApplicationConfiguration {
 	 * pre Android 2.0 devices. default: 0 **/
 	public int touchSleepTime = 0;
 
-	/** whether to use a {@link WakeLock} or not. In case this is true you have to add the permission "android.permission.WAKE_LOCK"
-	 * to your manifest file. default: false */
+	/** whether to keep the screen on and at full brightness or not while running the application. default: false */
 	public boolean useWakelock = false;
 
 	/** hide status bar buttons on Android 4.x and higher (API 14+). Doesn't work if "android:targetSdkVersion" less 11 or if API
 	 * less 14. default: false **/
 	public boolean hideStatusBar = false;
+
+    /** whether to disable Android audio support. default: false */
+	public boolean disableAudio = false;
 
 	/** the maximum number of {@link Sound} instances that can be played simultaneously, sets the corresponding {@link SoundPool}
 	 * constructor argument. */
@@ -73,4 +74,7 @@ public class AndroidApplicationConfiguration {
 	 * In case this is true {@link GLSurfaceViewAPI18} will be used. This implementation properly supports attach to and detach
 	 * from window. default: false */
 	public boolean useGLSurfaceViewAPI18 = false;
+	
+	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
+	public boolean useImmersiveMode = false;
 }

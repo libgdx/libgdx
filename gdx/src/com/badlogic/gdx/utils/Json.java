@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectMap.Values;
@@ -944,7 +945,7 @@ public class Json {
 		return String.valueOf(object);
 	}
 
-	private Object newInstance (Class type) {
+	protected Object newInstance (Class type) {
 		try {
 			return ClassReflection.newInstance(type);
 		} catch (Exception ex) {
@@ -985,6 +986,14 @@ public class Json {
 
 	public String prettyPrint (String json, int singleLineColumns) {
 		return new JsonReader().parse(json).prettyPrint(outputType, singleLineColumns);
+	}
+
+	public String prettyPrint (Object object, PrettyPrintSettings settings) {
+		return prettyPrint(toJson(object), settings);
+	}
+
+	public String prettyPrint (String json, PrettyPrintSettings settings) {
+		return new JsonReader().parse(json).prettyPrint(settings);
 	}
 
 	static private class FieldMetadata {

@@ -54,4 +54,11 @@ public class Environment extends Attributes {
 			throw new GdxRuntimeException("Unknown light type");
 		return this;
 	}
+	
+	@Override
+	public void clear () {
+		super.clear();
+		directionalLights.clear();
+		pointLights.clear();
+	}
 }

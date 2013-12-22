@@ -268,4 +268,10 @@ public class AndroidControllers implements LifecycleListener, ControllerManager,
 	@Override
 	public void dispose () {
 	}
+
+	@Override
+	public void clearListeners () {
+		listeners.clear();
+		
+	}
 }

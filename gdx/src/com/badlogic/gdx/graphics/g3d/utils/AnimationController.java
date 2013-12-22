@@ -70,13 +70,16 @@ public class AnimationController extends BaseAnimationController {
 		public float speed;
 		/** The current animation time. */
 		public float time;
+		/** The offset within the animation (animation time = offsetTime + time) */
+		public float offset;
+		/** The duration of the animation */
+		public float duration;
 		/** The number of remaining loops, negative for continuous, zero if stopped. */
 		public int loopCount;
 		protected AnimationDesc() { }
 		/** @return the remaining time or 0 if still animating. */
 		protected float update(float delta) {
 			if (loopCount != 0 && animation != null) {
-				final float duration = animation.duration;
 				final float diff = speed * delta; 
 				time += diff;
 				int loops = (int)Math.abs(time / duration);
@@ -93,7 +96,7 @@ public class AnimationController extends BaseAnimationController {
 						listener.onLoop(this);
 					if (loopCount == 0) {
 						final float result = ((loops - 1) - i) * duration + (diff < 0f ? duration - time : time); 
-						time = (diff < 0f) ? duration : 0f;
+						time = (diff < 0f) ? 0f : duration;
 						if (listener != null)
 							listener.onEnd(this);
 						return result;
@@ -134,7 +137,7 @@ public class AnimationController extends BaseAnimationController {
 		super(target);
 	}
 	
-	private AnimationDesc obtain(final Animation anim, int loopCount, float speed, final AnimationListener listener) {
+	private AnimationDesc obtain(final Animation anim, float offset, float duration, int loopCount, float speed, final AnimationListener listener) {
 		if (anim == null)
 			return null;
 		final AnimationDesc result = animationPool.obtain();
@@ -142,21 +145,23 @@ public class AnimationController extends BaseAnimationController {
 		result.listener = listener;
 		result.loopCount = loopCount;
 		result.speed = speed;
-		result.time = speed < 0 ? anim.duration : 0.f;
+		result.offset = offset;
+		result.duration = duration < 0 ? (anim.duration - offset) : duration;
+		result.time = speed < 0 ? result.duration : 0.f;
 		return result;
 	}
 	
-	private AnimationDesc obtain(final String id, int loopCount, float speed, final AnimationListener listener) {
+	private AnimationDesc obtain(final String id, float offset, float duration, int loopCount, float speed, final AnimationListener listener) {
 		if (id == null)
 			return null;
 		final Animation anim = target.getAnimation(id);
 		if (anim == null)
 			throw new GdxRuntimeException("Unknown animation: "+id);
-		return obtain(anim, loopCount, speed, listener);
+		return obtain(anim, offset, duration, loopCount, speed, listener);
 	}
 	
 	private AnimationDesc obtain(final AnimationDesc anim) {
-		return obtain(anim.animation, anim.loopCount, anim.speed, anim.listener);
+		return obtain(anim.animation, anim.offset, anim.duration, anim.loopCount, anim.speed, anim.listener);
 	}
 	
 	private boolean updating; //FIXME
@@ -187,9 +192,9 @@ public class AnimationController extends BaseAnimationController {
 			return;
 		}
 		if (previous != null)
-			applyAnimations(previous.animation, previous.time, current.animation, current.time, transitionCurrentTime / transitionTargetTime);
+			applyAnimations(previous.animation, previous.offset + previous.time, current.animation, current.offset + current.time, transitionCurrentTime / transitionTargetTime);
 		else
-			applyAnimation(current.animation, current.time);
+			applyAnimation(current.animation, current.offset + current.time);
 		updating = false;
 	}
 	
@@ -243,12 +248,29 @@ public class AnimationController extends BaseAnimationController {
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
 	 * animation is completed. */
 	public AnimationDesc setAnimation(final String id, int loopCount, float speed, final AnimationListener listener) {
-		return setAnimation(obtain(id, loopCount, speed, listener));
+		return setAnimation(id, 0f, -1f, loopCount, speed, listener);
+	}
+	
+	/** Set the active animation, replacing any current animation.
+	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
+	 * @param offset The offset in seconds to the start of the animation.
+	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
+	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, 
+	 * negative to continuously loop the animation. 
+	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play
+	 * the animation at twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc.
+	 * This value can be negative, causing the animation to played in reverse.
+	 * This value cannot be zero.
+	 * @param listener The {@link AnimationListener} which will be informed when the animation is looped or completed.
+	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
+	 * animation is completed. */
+	public AnimationDesc setAnimation(final String id, float offset, float duration, int loopCount, float speed, final AnimationListener listener) {
+		return setAnimation(obtain(id, offset, duration, loopCount, speed, listener));
 	}
 	
 	/** Set the active animation, replacing any current animation. */
-	protected AnimationDesc setAnimation(final Animation anim, int loopCount, float speed, final AnimationListener listener) {
-		return setAnimation(obtain(anim, loopCount, speed, listener));
+	protected AnimationDesc setAnimation(final Animation anim, float offset, float duration, int loopCount, float speed, final AnimationListener listener) {
+		return setAnimation(obtain(anim, offset, duration, loopCount, speed, listener));
 	}
 	
 	/** Set the active animation, replacing any current animation. */
@@ -313,12 +335,30 @@ public class AnimationController extends BaseAnimationController {
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
 	 * animation is completed. */
 	public AnimationDesc animate(final String id, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
-		return animate(obtain(id, loopCount, speed, listener), transitionTime);
+		return animate(id, 0f, -1f, loopCount, speed, listener, transitionTime);
+	}
+	
+	/** Changes the current animation by blending the new on top of the old during the transition time.
+	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
+	 * @param offset The offset in seconds to the start of the animation.
+	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
+	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, 
+	 * negative to continuously loop the animation. 
+	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play
+	 * the animation at twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc.
+	 * This value can be negative, causing the animation to played in reverse.
+	 * This value cannot be zero.
+	 * @param listener The {@link AnimationListener} which will be informed when the animation is looped or completed.
+	 * @param transitionTime The time to transition the new animation on top of the currently playing animation (if any).
+	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
+	 * animation is completed. */
+	public AnimationDesc animate(final String id, float offset, float duration, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+		return animate(obtain(id, offset, duration, loopCount, speed, listener), transitionTime);
 	}
 	
 	/** Changes the current animation by blending the new on top of the old during the transition time. */
-	protected AnimationDesc animate(final Animation anim, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
-		return animate(obtain(anim, loopCount, speed, listener), transitionTime);
+	protected AnimationDesc animate(final Animation anim, float offset, float duration, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+		return animate(obtain(anim, offset, duration, loopCount, speed, listener), transitionTime);
 	}
 	
 	/** Changes the current animation by blending the new on top of the old during the transition time. */ 
@@ -356,12 +396,31 @@ public class AnimationController extends BaseAnimationController {
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
 	 * animation is completed. */
 	public AnimationDesc queue(final String id, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
-		return queue(obtain(id, loopCount, speed, listener), transitionTime);	
+		return queue(id, 0f, -1f, loopCount, speed, listener, transitionTime);	
+	}
+	
+	/** Queue an animation to be applied when the {@link #current} animation is finished. 
+	 * If the current animation is continuously looping it will be synchronized on next loop.
+	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
+	 * @param offset The offset in seconds to the start of the animation.
+	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation).
+	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, 
+	 * negative to continuously loop the animation. 
+	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play
+	 * the animation at twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc.
+	 * This value can be negative, causing the animation to played in reverse.
+	 * This value cannot be zero.
+	 * @param listener The {@link AnimationListener} which will be informed when the animation is looped or completed.
+	 * @param transitionTime The time to transition the new animation on top of the currently playing animation (if any).
+	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
+	 * animation is completed. */
+	public AnimationDesc queue(final String id, float offset, float duration, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+		return queue(obtain(id, offset, duration, loopCount, speed, listener), transitionTime);	
 	}
 	
 	/** Queue an animation to be applied when the current is finished. If current is continuous it will be synced on next loop. */
-	protected AnimationDesc queue(final Animation anim, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
-		return queue(obtain(anim, loopCount, speed, listener), transitionTime);
+	protected AnimationDesc queue(final Animation anim, float offset, float duration, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+		return queue(obtain(anim, offset, duration, loopCount, speed, listener), transitionTime);
 	}
 	
 	/** Queue an animation to be applied when the current is finished. If current is continuous it will be synced on next loop. */
@@ -392,12 +451,30 @@ public class AnimationController extends BaseAnimationController {
 	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
 	 * animation is completed. */
 	public AnimationDesc action(final String id, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
-		return action(obtain(id, loopCount, speed, listener), transitionTime);	
+		return action(id, 0, -1f, loopCount, speed, listener, transitionTime);	
+	}
+	
+	/** Apply an action animation on top of the current animation.
+	 * @param id The ID of the {@link Animation} within the {@link ModelInstance}.
+	 * @param offset The offset in seconds to the start of the animation.
+	 * @param duration The duration in seconds of the animation (or negative to play till the end of the animation). 
+	 * @param loopCount The number of times to loop the animation, zero to play the animation only once, 
+	 * negative to continuously loop the animation. 
+	 * @param speed The speed at which the animation should be played. Default is 1.0f. A value of 2.0f will play
+	 * the animation at twice the normal speed, a value of 0.5f will play the animation at half the normal speed, etc.
+	 * This value can be negative, causing the animation to played in reverse.
+	 * This value cannot be zero.
+	 * @param listener The {@link AnimationListener} which will be informed when the animation is looped or completed.
+	 * @param transitionTime The time to transition the new animation on top of the currently playing animation (if any).
+	 * @return The {@link AnimationDesc} which can be read to get the progress of the animation. Will be invalid when the
+	 * animation is completed. */
+	public AnimationDesc action(final String id, float offset, float duration, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+		return action(obtain(id, offset, duration, loopCount, speed, listener), transitionTime);	
 	}
 	
 	/** Apply an action animation on top of the current animation. */
-	protected AnimationDesc action(final Animation anim, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
-		return action(obtain(anim, loopCount, speed, listener), transitionTime);
+	protected AnimationDesc action(final Animation anim, float offset, float duration, int loopCount, float speed, final AnimationListener listener, float transitionTime) {
+		return action(obtain(anim, offset, duration, loopCount, speed, listener), transitionTime);
 	}
 	
 	/** Apply an action animation on top of the current animation. */

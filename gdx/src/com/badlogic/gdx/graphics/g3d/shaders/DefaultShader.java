@@ -61,6 +61,12 @@ public class DefaultShader extends BaseShader {
 		public int numSpotLights = 0;
 		/** The number of bones to use */
 		public int numBones = 12;
+		/** */
+		public boolean ignoreUnimplemented = true;
+		/** Set to 0 to disable culling, -1 to inherit from {@link DefaultShader#defaultCullFace} */
+		public int defaultCullFace = -1;
+		/** Set to 0 to disable depth test, -1 to inherit from {@link DefaultShader#defaultDepthFunc} */
+		public int defaultDepthFunc = -1;
 		
 		public Config() { }
 		
@@ -290,10 +296,13 @@ public class DefaultShader extends BaseShader {
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse | 
 		ColorAttribute.Specular | FloatAttribute.Shininess;
 	
-	public static boolean ignoreUnimplemented = true;
-	/** Set to 0 to disable culling */
+	/** @Deprecated Replaced by {@link Config#defaultCullFace} 
+	 * Set to 0 to disable culling */
+	@Deprecated
 	public static int defaultCullFace = GL10.GL_BACK;
-	/** Set to 0 to disable depth test */
+	/** @Deprecated Replaced by {@link Config#defaultDepthFunc}
+	 * Set to 0 to disable depth test */
+	@Deprecated
 	public static int defaultDepthFunc = GL10.GL_LEQUAL;
 	
 	// Global uniforms
@@ -344,7 +353,6 @@ public class DefaultShader extends BaseShader {
 	protected int pointLightsLoc;
 	protected int pointLightsColorOffset;
 	protected int pointLightsPositionOffset;
-	protected int pointLightsIntensityOffset;
 	protected int pointLightsSize;
 
 	protected final boolean lighting;
@@ -359,6 +367,7 @@ public class DefaultShader extends BaseShader {
 	private Renderable renderable;
 	private long materialMask;
 	private long vertexMask;
+	protected final Config config;
 	/** Material attributes which are not required but always supported. */
 	private final static long optionalAttributes = IntAttribute.CullFace | DepthTestAttribute.Type;
 	
@@ -381,6 +390,7 @@ public class DefaultShader extends BaseShader {
 	}
 	
 	public DefaultShader(final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
+		this.config = config;
 		this.program = shaderProgram;
 		this.lighting = renderable.environment != null;
 		this.environmentCubemap = renderable.material.has(CubemapAttribute.EnvironmentMap) || (
@@ -398,7 +408,7 @@ public class DefaultShader extends BaseShader {
 		for (int i = 0; i < pointLights.length; i++)
 			pointLights[i] = new PointLight();
 
-		if (!ignoreUnimplemented && (implementedFlags & materialMask) != materialMask)
+		if (!config.ignoreUnimplemented && (implementedFlags & materialMask) != materialMask)
 			throw new GdxRuntimeException("Some attributes not implemented yet ("+materialMask+")");
 		
 		// Global uniforms
@@ -448,7 +458,6 @@ public class DefaultShader extends BaseShader {
 		pointLightsLoc 				= loc(u_pointLights0color);
 		pointLightsColorOffset 		= loc(u_pointLights0color) - pointLightsLoc;
 		pointLightsPositionOffset 	= loc(u_pointLights0position) - pointLightsLoc;
-		pointLightsIntensityOffset = loc(u_pointLights0intensity) - pointLightsLoc;
 		pointLightsSize 				= loc(u_pointLights1color) - pointLightsLoc;
 		if (pointLightsSize < 0)
 			pointLightsSize = 0;
@@ -591,12 +600,12 @@ public class DefaultShader extends BaseShader {
 	}
 	
 	Material currentMaterial;
-	protected final void bindMaterial(final Renderable renderable) {
+	protected void bindMaterial(final Renderable renderable) {
 		if (currentMaterial == renderable.material)
 			return;
 		
-		int cullFace = defaultCullFace;
-		int depthFunc = defaultDepthFunc;
+		int cullFace = config.defaultCullFace == -1 ? defaultCullFace : config.defaultCullFace;
+		int depthFunc = config.defaultDepthFunc == -1 ? defaultDepthFunc : config.defaultDepthFunc;
 		float depthRangeNear = 0f;
 		float depthRangeFar = 1f;
 		boolean depthMask = true;
@@ -619,7 +628,7 @@ public class DefaultShader extends BaseShader {
 				depthRangeFar = dta.depthRangeFar;
 				depthMask = dta.depthMask;
 			}
-			else if(!ignoreUnimplemented)
+			else if(!config.ignoreUnimplemented)
 				throw new GdxRuntimeException("Unknown material attribute: "+attr.toString());
 		}
 		
@@ -629,7 +638,7 @@ public class DefaultShader extends BaseShader {
 	}
 
 	private final Vector3 tmpV1 = new Vector3();
-	protected final void bindLights(final Renderable renderable) {
+	protected void bindLights(final Renderable renderable) {
 		final Environment lights = renderable.environment;
 		final Array<DirectionalLight> dirs = lights.directionalLights; 
 		final Array<PointLight> points = lights.pointLights;
@@ -665,10 +674,8 @@ public class DefaultShader extends BaseShader {
 					pointLights[i].set(points.get(i));
 
 				int idx = pointLightsLoc + i * pointLightsSize;
-				program.setUniformf(idx+pointLightsColorOffset, pointLights[i].color.r, pointLights[i].color.g, pointLights[i].color.b);
+				program.setUniformf(idx+pointLightsColorOffset, pointLights[i].color.r * pointLights[i].intensity, pointLights[i].color.g * pointLights[i].intensity, pointLights[i].color.b * pointLights[i].intensity);
 				program.setUniformf(idx+pointLightsPositionOffset, pointLights[i].position);
-				if (pointLightsIntensityOffset >= 0)
-					program.setUniformf(idx+pointLightsIntensityOffset, pointLights[i].intensity);
 				if (pointLightsSize <= 0)
 					break;
 			}
@@ -691,5 +698,21 @@ public class DefaultShader extends BaseShader {
 	public void dispose () {
 		program.dispose();
 		super.dispose();
+	}
+	
+	public int getDefaultCullFace() {
+		return config.defaultCullFace == -1 ? defaultCullFace : config.defaultCullFace; 
+	}
+	
+	public void setDefaultCullFace(int cullFace) {
+		config.defaultCullFace = cullFace;
+	}
+	
+	public int getDefaultDepthFunc() {
+		return config.defaultDepthFunc == -1 ? defaultDepthFunc : config.defaultDepthFunc; 
+	}
+	
+	public void setDefaultDepthFunc(int depthFunc) {
+		config.defaultDepthFunc = depthFunc;
 	}
 }

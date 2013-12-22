@@ -332,6 +332,12 @@ public class Tree extends WidgetGroup {
 		fireChangeEvent();
 	}
 
+	public void removeSelection (Node node) {
+		if (node == null) return;
+		selectedNodes.removeValue(node, true);
+		fireChangeEvent();
+	}
+
 	public void clearSelection () {
 		selectedNodes.clear();
 		fireChangeEvent();

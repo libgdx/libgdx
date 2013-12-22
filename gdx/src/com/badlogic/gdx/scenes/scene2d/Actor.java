@@ -63,6 +63,7 @@ public class Actor {
 	float scaleX = 1, scaleY = 1;
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
+	private Object userObject;
 
 	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -316,6 +317,11 @@ public class Actor {
 		this.parent = parent;
 	}
 
+	/** Returns true if input events are processed by this actor. */
+	public boolean isTouchable () {
+		return touchable == Touchable.enabled;
+	}
+
 	public Touchable getTouchable () {
 		return touchable;
 	}
@@ -332,6 +338,15 @@ public class Actor {
 	/** If false, the actor will not be drawn and will not receive touch events. Default is true. */
 	public void setVisible (boolean visible) {
 		this.visible = visible;
+	}
+
+	public Object getUserObject () {
+		return userObject;
+	}
+
+	/** Sets an application specific object for convenience. */
+	public void setUserObject (Object userObject) {
+		this.userObject = userObject;
 	}
 
 	public float getX () {

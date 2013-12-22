@@ -261,6 +261,22 @@ public class Sprite extends TextureRegion {
 		vertices[C4] = color;
 	}
 
+	/** Sets the alpha portion of the color used to tint this sprite. */
+	public void setAlpha(float a) {
+		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
+		int alphaBits = (int)(255 * a) << 24;
+
+		// clear alpha on original color
+		intBits = intBits & 0x00FFFFFF;
+		// write new alpha
+		intBits = intBits | alphaBits;
+		float color = NumberUtils.intToFloatColor(intBits);
+		vertices[C1] = color;
+		vertices[C2] = color;
+		vertices[C3] = color;
+		vertices[C4] = color;
+	}
+
 	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));

@@ -336,6 +336,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array.
+	 * The array must have a size greater than 0, or a {@link com.badlogic.gdx.utils.GdxRuntimeException} will be thrown.
 	 * @see Select
 	 * @param comparator used for comparison
 	 * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
@@ -483,6 +484,7 @@ public class Array<T> implements Iterable<T> {
 		}
 
 		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return index < array.size;
 		}
 

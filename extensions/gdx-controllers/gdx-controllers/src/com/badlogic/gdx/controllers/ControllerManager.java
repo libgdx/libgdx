@@ -24,4 +24,9 @@ public interface ControllerManager {
 	public void addListener (ControllerListener listener);
 
 	public void removeListener (ControllerListener listener);
+	
+	/**
+	 * Clear all listeners
+	 */
+	public void clearListeners();
 }

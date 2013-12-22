@@ -177,7 +177,7 @@ public class Skin implements Disposable {
 		Texture texture = optional(name, Texture.class);
 		if (texture == null) throw new GdxRuntimeException("No TextureRegion or Texture registered with name: " + name);
 		region = new TextureRegion(texture);
-		add(name, region, Texture.class);
+		add(name, region, TextureRegion.class);
 		return region;
 	}
 
@@ -406,7 +406,8 @@ public class Skin implements Disposable {
 		final Json json = new Json() {
 			public <T> T readValue (Class<T> type, Class elementType, JsonValue jsonData) {
 				// If the JSON is a string but the type is not, look up the actual value by name.
-				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type)) return get(jsonData.asString(), type);
+				if (jsonData.isString() && !ClassReflection.isAssignableFrom(CharSequence.class, type))
+					return get(jsonData.asString(), type);
 				return super.readValue(type, elementType, jsonData);
 			}
 		};
@@ -433,7 +434,8 @@ public class Skin implements Disposable {
 					try {
 						add(valueEntry.name(), object, addType);
 					} catch (Exception ex) {
-						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": " + valueEntry.name(), ex);
+						throw new SerializationException("Error reading " + ClassReflection.getSimpleName(type) + ": "
+							+ valueEntry.name(), ex);
 					}
 				}
 			}
@@ -442,6 +444,8 @@ public class Skin implements Disposable {
 		json.setSerializer(BitmapFont.class, new ReadOnlySerializer<BitmapFont>() {
 			public BitmapFont read (Json json, JsonValue jsonData, Class type) {
 				String path = json.readValue("file", String.class, jsonData);
+				int scaledSize = json.readValue("scaledSize", int.class, -1, jsonData);
+				Boolean flip = json.readValue("flip", Boolean.class, false, jsonData);
 
 				FileHandle fontFile = skinFile.parent().child(path);
 				if (!fontFile.exists()) fontFile = Gdx.files.internal(path);
@@ -450,16 +454,20 @@ public class Skin implements Disposable {
 				// Use a region with the same name as the font, else use a PNG file in the same directory as the FNT file.
 				String regionName = fontFile.nameWithoutExtension();
 				try {
+					BitmapFont font;
 					TextureRegion region = skin.optional(regionName, TextureRegion.class);
 					if (region != null)
-						return new BitmapFont(fontFile, region, false);
+						font = new BitmapFont(fontFile, region, flip);
 					else {
 						FileHandle imageFile = fontFile.parent().child(regionName + ".png");
 						if (imageFile.exists())
-							return new BitmapFont(fontFile, imageFile, false);
+							font = new BitmapFont(fontFile, imageFile, flip);
 						else
-							return new BitmapFont(fontFile, false);
+							font = new BitmapFont(fontFile, flip);
 					}
+					// Scaled size is the desired cap height to scale the font to.
+					if (scaledSize != -1) font.setScale(scaledSize / font.getCapHeight());
+					return font;
 				} catch (RuntimeException ex) {
 					throw new SerializationException("Error loading bitmap font: " + fontFile, ex);
 				}

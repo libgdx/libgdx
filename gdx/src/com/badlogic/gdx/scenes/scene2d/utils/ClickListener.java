@@ -123,6 +123,11 @@ public class ClickListener extends InputListener {
 		return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
 	}
 
+	/** Returns true if a touch is within the tap square. */
+	public boolean inTapSquare () {
+		return touchDownX != -1;
+	}
+
 	/** The tap square will not longer be used for the current touch. */
 	public void invalidateTapSquare () {
 		touchDownX = -1;

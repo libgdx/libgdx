@@ -28,10 +28,16 @@ import com.badlogic.gdx.utils.JsonWriter.OutputType;
  * <br>
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
  * methods to perform event driven parsing. When this is done, the parse methods will return null.
+ * <br>
  * @author Xoppa */
 public class UBJsonReader implements BaseJsonReader {
 	public boolean oldFormat = true;
-	
+
+	/**
+	 * Parses the UBJSON from the given stream.
+	 * <br>
+	 * For best performance you should provide buffered streams to this method!
+	 */
 	@Override
 	public JsonValue parse (InputStream input) {
 		DataInputStream din = null;
@@ -48,7 +54,7 @@ public class UBJsonReader implements BaseJsonReader {
 	@Override
 	public JsonValue parse (FileHandle file) {
 		try {
-			return parse(file.read());
+			return parse(file.read(8192));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}

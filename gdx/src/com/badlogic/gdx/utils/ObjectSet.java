@@ -471,6 +471,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		}
 
 		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			return hasNext;
 		}
 

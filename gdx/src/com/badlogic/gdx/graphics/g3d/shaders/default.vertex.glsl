@@ -155,7 +155,6 @@ struct PointLight
 {
 	vec3 color;
 	vec3 position;
-	float intensity;
 };
 uniform PointLight u_pointLights[numPointLights];
 #endif // numPointLights
@@ -297,10 +296,11 @@ void main() {
 			for (int i = 0; i < numDirectionalLights; i++) {
 				vec3 lightDir = -u_dirLights[i].direction;
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
-				v_lightDiffuse += u_dirLights[i].color * NdotL;
+				vec3 value = u_dirLights[i].color * NdotL;
+				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
-					v_lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
 		#endif // numDirectionalLights
@@ -310,12 +310,12 @@ void main() {
 				vec3 lightDir = u_pointLights[i].position - pos.xyz;
 				float dist2 = dot(lightDir, lightDir);
 				lightDir *= inversesqrt(dist2);
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
-				float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
-				v_lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
+				v_lightDiffuse += value;
 				#ifdef specularFlag
-					float halfDotView = clamp(dot(normal, normalize(lightDir + viewVec)), 0.0, 2.0);
-					v_lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					v_lightSpecular += value * pow(halfDotView, u_shininess);
 				#endif // specularFlag
 			}
 		#endif // numPointLights
