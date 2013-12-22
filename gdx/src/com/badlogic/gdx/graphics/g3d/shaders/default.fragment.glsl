@@ -82,7 +82,7 @@ float getShadow()
 			getShadowness(vec2(u_shadowPCFOffset, u_shadowPCFOffset)) +
 			getShadowness(vec2(-u_shadowPCFOffset, u_shadowPCFOffset)) +
 			getShadowness(vec2(u_shadowPCFOffset, -u_shadowPCFOffset)) +
-			getShadowness(vec2(-u_shadowPCFOffset, -u_shadowPCFOffset))) * 0.20;
+			getShadowness(vec2(-u_shadowPCFOffset, -u_shadowPCFOffset))) * 0.25;
 }
 #endif //shadowMapFlag
 

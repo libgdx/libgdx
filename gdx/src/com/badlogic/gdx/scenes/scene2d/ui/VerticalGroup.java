@@ -26,7 +26,7 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * actors need to be inserted in the middle of the group.
  * <p>
  * The preferred width is the largest preferred width of any child. The preferred height is the sum of the children's preferred
- * heights. The min size is the preferred size and the max size is 0.
+ * heights, plus spacing between them if set. The min size is the preferred size and the max size is 0.
  * @author Nathan Sweet */
 public class VerticalGroup extends WidgetGroup {
 	private float prefWidth, prefHeight;
@@ -76,8 +76,8 @@ public class VerticalGroup extends WidgetGroup {
 
 	public void layout () {
 		float spacing = this.spacing;
-		float groupWidth = getWidth();
-		float y = reverse ? 0 : getHeight();
+		float groupWidth = getWidth() > 0 ? getWidth() : getMinWidth();
+		float y = reverse ? 0 : (getHeight() > 0 ? getHeight() : getMinHeight());
 		float dir = reverse ? 1 : -1;
 		SnapshotArray<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
@@ -87,6 +87,9 @@ public class VerticalGroup extends WidgetGroup {
 				Layout layout = (Layout)child;
 				width = layout.getPrefWidth();
 				height = layout.getPrefHeight();
+				if (width == 0 || width > groupWidth) {
+					width = groupWidth;
+				}
 			} else {
 				width = child.getWidth();
 				height = child.getHeight();

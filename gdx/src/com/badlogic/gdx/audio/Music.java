@@ -36,6 +36,8 @@ import com.badlogic.gdx.utils.Disposable;
  * {@link ApplicationListener}.
  * </p>
  * 
+ * <p><b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so</p>
+ * 
  * @author mzechner */
 public interface Music extends Disposable {
 	/** Starts the play back of the music stream. In case the stream was paused this will resume the play back. In case the music

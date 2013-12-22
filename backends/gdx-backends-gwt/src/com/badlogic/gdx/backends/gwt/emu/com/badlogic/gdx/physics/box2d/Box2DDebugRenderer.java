@@ -118,9 +118,8 @@ public class Box2DDebugRenderer {
 
 		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
 		renderer.begin(ShapeType.Point);
-		int len = world.getContactList().size;
-		for (int i = 0; i < len; i++)
-			drawContact(world.getContactList().get(i));
+		for (Contact contact : world.getContactList())
+			drawContact(contact);
 		renderer.end();
 		if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
 	}

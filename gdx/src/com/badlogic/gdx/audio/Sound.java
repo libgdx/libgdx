@@ -34,6 +34,8 @@ import com.badlogic.gdx.utils.Disposable;
  * can use this id to modify the playback of that sound instance.
  * </p>
  * 
+ * <p><b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so</p>
+ * 
  * @author badlogicgames@gmail.com */
 public interface Sound extends Disposable {
 	/** Plays the sound. If the sound is already playing, it will be played again, concurrently.
