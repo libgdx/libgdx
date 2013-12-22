@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.badlogic.gdx.net;
 
-
 /**
  * Class for configuring datagrams
  * @author Unkn0wn0ne

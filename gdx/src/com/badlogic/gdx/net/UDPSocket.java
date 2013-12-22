@@ -31,8 +31,7 @@ public interface UDPSocket extends Disposable{
 	
 	/**
 	 * Reads data from a datagram packet
-	 * @param buffer The buffer for storing sent data
 	 * @return A datagram containing packet information
 	 */
-	public Datagram readData(byte[] buffer) throws Exception;
+	public Datagram readData() throws Exception;
 }

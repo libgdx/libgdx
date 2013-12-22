@@ -82,7 +82,7 @@ public class JglfwUDPSocket implements UDPSocket {
 	}
 
 	@Override
-	public Datagram readData (byte[] buffer) throws Exception {
+	public Datagram readData () throws Exception {
 		this.socket.receive(packet);
 		datagram.setAddress(packet.getAddress().getHostAddress());
 		datagram.setData(packet.getData());
