@@ -50,9 +50,8 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 		halfHeight = shadowViewportHeight * 0.5f;
 		halfDepth = shadowNear + 0.5f * (shadowFar - shadowNear);
 		textureDesc = new TextureDescriptor();
-		textureDesc.minFilter = textureDesc.minFilter = Texture.TextureFilter.Linear; //GL10.GL_NEAREST;
+		textureDesc.minFilter = textureDesc.minFilter = Texture.TextureFilter.Nearest;
 		textureDesc.uWrap = textureDesc.vWrap = Texture.TextureWrap.ClampToEdge;
-		Gdx.app.log("Test", Gdx.gl20.glGetString(GL20.GL_EXTENSIONS));
 	}
 	
 	public void update(final Camera camera) {

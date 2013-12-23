@@ -160,6 +160,12 @@ public class Animation {
 		
 		return frameNumber;
 	}
+	
+	/**Returns the keyFrames[] array where all the TextureRegions of the animation are stored.
+	 * @return keyFrames[] field */
+	 public TextureRegion[] getKeyFrames() {
+	 	return keyFrames;
+	 }
 
 	/** Returns the animation play mode. Will be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP,
 	 * Animation.LOOP_REVERSED, Animation.LOOP_PINGPONG, Animation.LOOP_RANDOM */
