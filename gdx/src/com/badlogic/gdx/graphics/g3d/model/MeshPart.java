@@ -39,6 +39,16 @@ public class MeshPart {
 	/** the Mesh the part references, also stored in {@link Model} **/
 	public Mesh mesh;
 	
+	public MeshPart() {}
+	
+	public MeshPart(final String id, final Mesh mesh, final int offset, final int size, final int type) {
+		this.id = id;
+		this.mesh = mesh;
+		this.indexOffset = offset;
+		this.numVertices = size;
+		this.primitiveType = type;
+	}
+	
 	@Override
 	public boolean equals (Object arg0) {
 		if (arg0 == null) return false;
