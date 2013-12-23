@@ -8,5 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-tests"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-gwt"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-box2d"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-box2d-gwt"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
