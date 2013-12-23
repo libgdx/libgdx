@@ -22,7 +22,8 @@ import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-/*** This is an example implementation of a basic UDP protocol using UDPSocket from a client perspective
+/** 
+ * This is an example implementation of a basic UDP protocol using UDPSocket from a client perspective
  * @author Unkn0wn0ne */
 public class DatagramClientExample extends GdxTest {
 

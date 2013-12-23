@@ -37,7 +37,25 @@ public class UDPSocketHints {
 	
 	/**
 	 * Sets the size of the receive buffer for the datagram in bytes.
-	 * Default: 256
+	 * Default: 4096
 	 */
-	public int RECIEVE_LENGTH = 256;
+	public int RECIEVE_LENGTH = 4096;
+	
+	/**
+	 * Sets the size of the send buffer for the datagram in bytes
+	 * Default: 4096
+	 */
+	public int SEND_LENGTH = 4096;
+	
+	/**
+	 * Enables SO_BROADCAST for the DatagramSocket. You may need special permissions to use this on certain operating systems or virtual machines
+	 * Default: false
+	 */
+	public boolean SO_BROADCAST = false;
+	
+	/**
+	 * Enables the SO_REUSEADDR for the DatagramSocket. This is not support on all platforms.
+	 * Default: false
+	 */
+	public boolean SO_REUSEADDR = false;
 }

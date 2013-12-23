@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-/*** 
+/**
  * This is an example implementation of a basic UDP protocol using UDPSocket from a server perspective
  * @author Unkn0wn0ne
  */

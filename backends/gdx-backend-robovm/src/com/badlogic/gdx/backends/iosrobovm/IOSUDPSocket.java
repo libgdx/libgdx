@@ -54,6 +54,10 @@ public class IOSUDPSocket implements UDPSocket{
 	private void applySocketHints (UDPSocketHints hints) throws SocketException {
 		this.socket.setSoTimeout(hints.SO_TIMEOUT);
 		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
+		this.socket.setReuseAddress(hints.SO_REUSEADDR);
+		this.socket.setBroadcast(hints.SO_BROADCAST);
+		this.socket.setReceiveBufferSize(hints.SEND_LENGTH);
+		this.socket.setSendBufferSize(hints.SEND_LENGTH);
 	}
 
 	@Override
