@@ -54,6 +54,9 @@ public class LwjglHeadlessApplication implements Application {
 	}
 	
 	public LwjglHeadlessApplication(ApplicationListener listener, LwjglHeadlessApplicationConfiguration config) {
+		if (config == null)
+			config = new LwjglHeadlessApplicationConfiguration();
+		
 		LwjglNativesLoader.load();
 		this.listener = listener;
 		this.files = new LwjglFiles();
@@ -63,7 +66,7 @@ public class LwjglHeadlessApplication implements Application {
 		Gdx.files = files;
 		Gdx.net = net;
 		
-		renderInterval = config == null ? -1 : (long)(config.renderInterval * 1000000000f);
+		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
 		
 		initialize();
 	}
