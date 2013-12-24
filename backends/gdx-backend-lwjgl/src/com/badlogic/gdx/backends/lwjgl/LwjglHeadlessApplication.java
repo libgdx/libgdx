@@ -53,7 +53,7 @@ public class LwjglHeadlessApplication implements Application {
 		this.net = new LwjglNet();
 
 		Gdx.app = this;
-		Gdx.app.getType()
+		Gdx.app.getType();
 		Gdx.files = files;
 		Gdx.net = net;
 		initialize();
