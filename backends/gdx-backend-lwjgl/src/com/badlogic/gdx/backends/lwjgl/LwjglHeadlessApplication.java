@@ -45,17 +45,24 @@ public class LwjglHeadlessApplication implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	protected final boolean loopRender;
 
 	public LwjglHeadlessApplication(ApplicationListener listener) {
+		this(listener, null);
+	}
+	
+	public LwjglHeadlessApplication(ApplicationListener listener, LwjglHeadlessApplicationConfiguration config) {
 		LwjglNativesLoader.load();
 		this.listener = listener;
 		this.files = new LwjglFiles();
 		this.net = new LwjglNet();
 
 		Gdx.app = this;
-		Gdx.app.getType()
 		Gdx.files = files;
 		Gdx.net = net;
+		
+		loopRender = config == null ? false : config.loopRender;
+		
 		initialize();
 	}
 
@@ -90,7 +97,7 @@ public class LwjglHeadlessApplication implements Application {
 			listener.render();
 
 			// If one of the runnables set running to false, for example after an exit().
-			if (!running) break;
+			if (!running || !loopRender) break;
 		}
 
 		synchronized (lifecycleListeners) {
