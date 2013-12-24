@@ -1,7 +1,6 @@
 package com.badlogic.gdx.backends.lwjgl;
 
 public class LwjglHeadlessApplicationConfiguration {
-	/** Whether to continuously loop the render method. 
-	 * If false the render method will be called once, after which the application will exit. */
-	public boolean loopRender = false;
+	/** The time (in seconds) between each call to the render method or negative to not call the render method at all. */
+	public float renderInterval = -1f;
 }
