@@ -45,12 +45,15 @@ class GradientPanel extends EditorPanel {
 	JPanel colorPanel;
 	private ColorSlider hueSlider;
 
-	public GradientPanel (GradientColorValue value, String name, String description) {
+	public GradientPanel (GradientColorValue value, String name, String description, boolean hideGradientEditor) {
 		super(value, name, description);
 		this.value = value;
 
 		initializeComponents();
 
+		if (hideGradientEditor) {
+			gradientEditor.setVisible(false);
+		}
 		gradientEditor.percentages.clear();
 		for (float percent : value.getTimeline())
 			gradientEditor.percentages.add(percent);

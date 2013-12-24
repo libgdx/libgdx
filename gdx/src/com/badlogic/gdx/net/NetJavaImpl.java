@@ -16,11 +16,8 @@
 
 package com.badlogic.gdx.net;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -37,7 +34,6 @@ import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
-import com.badlogic.gdx.utils.StringBuilder;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
  * backends.
@@ -75,22 +71,10 @@ public class NetJavaImpl {
 
 		@Override
 		public String getResultAsString () {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 			try {
-				int approxStringLength = connection.getContentLength();
-				StringBuilder b;
-				if (approxStringLength > 0)
-					b = new StringBuilder(approxStringLength);
-				else
-					b = new StringBuilder();
-				String line;
-				while ((line = reader.readLine()) != null)
-					b.append(line);
-				return b.toString();
+				return StreamUtils.copyStreamToString(inputStream, connection.getContentLength());
 			} catch (IOException e) {
 				return "";
-			} finally {
-				StreamUtils.closeQuietly(reader);
 			}
 		}
 
