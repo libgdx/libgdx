@@ -131,6 +131,7 @@ public class MipMapTest extends GdxTest {
 		mesh.render(shader, GL10.GL_TRIANGLE_FAN);
 		shader.end();
 
+		ui.act();
 		ui.draw();
 	}
 
