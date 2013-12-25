@@ -39,7 +39,7 @@ public class UDPSocketHints {
 	 * Sets the size of the receive buffer for the datagram in bytes.
 	 * Default: 4096
 	 */
-	public int RECIEVE_LENGTH = 4096;
+	public int RECEIVE_LENGTH = 4096;
 	
 	/**
 	 * Sets the size of the send buffer for the datagram in bytes

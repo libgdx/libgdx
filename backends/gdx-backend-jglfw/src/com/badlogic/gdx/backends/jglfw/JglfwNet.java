@@ -26,6 +26,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
+import com.badlogic.gdx.net.UDPSocketImpl;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.awt.Desktop;
@@ -63,6 +64,6 @@ public class JglfwNet implements Net {
 
 	@Override
 	public UDPSocket newUDPSocket (int port, UDPSocketHints hints) {
-		return new JglfwUDPSocket(port, hints);
+		return new UDPSocketImpl(port, hints);
 	}
 }

@@ -28,6 +28,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
+import com.badlogic.gdx.net.UDPSocketImpl;
 
 /** Android implementation of the {@link Net} API.
  * @author acoppes */
@@ -75,7 +76,7 @@ public class AndroidNet implements Net {
 
 		@Override
 		public UDPSocket newUDPSocket (int port, UDPSocketHints hints) {
-			return new AndroidUDPSocket(port, hints);
+			return new UDPSocketImpl(port, hints);
 		}
 
 }

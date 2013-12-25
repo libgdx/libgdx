@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.backends.iosrobovm;
+
+package com.badlogic.gdx.net;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import com.badlogic.gdx.net.Datagram;
 import com.badlogic.gdx.net.UDPSocket;
 import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/**
- * The iOS implementation of {@link UDPSocket}
- * @author Unkn0wn0ne
- */
-public class IOSUDPSocket implements UDPSocket{
+/** The Java-based implementation of {@link UDPSocket}
+ * This works on Desktop (lwjgl, jglfw), iOS (via RoboVM), and Android.
+ * Future backends with out java.net support will NOT work with this.
+ * Developers: please do not use this directly, use {@link UDPSocket} instead for compatibility reasons.
+ * @author Unkn0wn0ne */
+public class UDPSocketImpl implements UDPSocket {
 
 	private DatagramSocket socket = null;
 	private DatagramPacket packet = null;
 	private Datagram datagram = null;
 	private InetAddress address = null;
 
-	public IOSUDPSocket (int port, UDPSocketHints hints) {
+	public UDPSocketImpl (int port, UDPSocketHints hints) {
 		try {
 			this.socket = new DatagramSocket(port);
-			this.packet = new DatagramPacket(new byte[hints.RECIEVE_LENGTH], hints.RECIEVE_LENGTH);
+			this.packet = new DatagramPacket(new byte[hints.RECEIVE_LENGTH], hints.RECEIVE_LENGTH);
 			if (hints == null) {
 				applySocketHints(new UDPSocketHints());
 			} else {
@@ -56,7 +59,7 @@ public class IOSUDPSocket implements UDPSocket{
 		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
 		this.socket.setReuseAddress(hints.SO_REUSEADDR);
 		this.socket.setBroadcast(hints.SO_BROADCAST);
-		this.socket.setReceiveBufferSize(hints.SEND_LENGTH);
+		this.socket.setReceiveBufferSize(hints.RECEIVE_LENGTH);
 		this.socket.setSendBufferSize(hints.SEND_LENGTH);
 	}
 

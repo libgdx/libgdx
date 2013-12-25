@@ -316,6 +316,7 @@
 	    <include name="net/UDPSocket.java"/>
 		<include name="net/UDPSocketHints.java"/>
 		<include name="net/Datagram.java"/>
+		<exclude name="net/DatagramSocketImpl.java"/> <!-- Reason: Networking -->
 	
 	<!-- physics/box2d -->
 	<!-- Box2d is fully emulated in GWT backend -->
