@@ -992,7 +992,7 @@ final public class LwjglInput implements Input {
 
 	@Override
 	public void setCursorPosition (int x, int y) {
-		Mouse.setCursorPosition(x, y - 1);
+		Mouse.setCursorPosition(x, Gdx.graphics.getHeight() - 1 - y);
 	}
 
   @Override
