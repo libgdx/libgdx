@@ -53,6 +53,8 @@ import com.badlogic.gdx.utils.JsonWriter;
  * {@link #newServerSocket(Protocol, int, ServerSocketHints)} method. The returned {@link ServerSocket} offers an
  * {@link ServerSocket#accept(SocketHints options)} method that waits for an incoming connection.
  * 
+ * To create a UDP 'socket' (client or server) invoke the {@link #newUDPSocket(int, UDPSocketHints)} method. The returned {@link UDPSocket} offers the ability to send and receive data using datagrams.
+ * 
  * @author mzechner
  * @author noblemaster
  * @author arielsan
@@ -273,7 +275,7 @@ public interface Net {
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.
 	 * @author mzechner */
 	public enum Protocol {
-		TCP,
+		TCP
 	}
 
 	/** Creates a new server socket on the given port, using the given {@link Protocol}, waiting for incoming connections.
