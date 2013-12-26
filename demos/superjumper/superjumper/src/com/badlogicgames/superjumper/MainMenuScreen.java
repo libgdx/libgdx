@@ -50,26 +50,26 @@ public class MainMenuScreen implements Screen {
 		touchPoint = new Vector3();
 	}
 
-	public void update (float deltaTime) {
+	public void update () {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			if (OverlapTester.pointInRectangle(playBounds, touchPoint.x, touchPoint.y)) {
+			if (playBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new GameScreen(game));
 				return;
 			}
-			if (OverlapTester.pointInRectangle(highscoresBounds, touchPoint.x, touchPoint.y)) {
+			if (highscoresBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new HighscoresScreen(game));
 				return;
 			}
-			if (OverlapTester.pointInRectangle(helpBounds, touchPoint.x, touchPoint.y)) {
+			if (helpBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new HelpScreen(game));
 				return;
 			}
-			if (OverlapTester.pointInRectangle(soundBounds, touchPoint.x, touchPoint.y)) {
+			if (soundBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				Settings.soundEnabled = !Settings.soundEnabled;
 				if (Settings.soundEnabled)
@@ -81,7 +81,7 @@ public class MainMenuScreen implements Screen {
 	}
 
 	long last = System.nanoTime();
-	public void draw (float deltaTime) {
+	public void draw () {
 		GLCommon gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -113,8 +113,8 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void render (float delta) {
-		update(delta);
-		draw(delta);
+		update();
+		draw();
 	}
 
 	@Override
