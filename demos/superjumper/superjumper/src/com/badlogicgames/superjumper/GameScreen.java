@@ -16,12 +16,10 @@
 
 package com.badlogicgames.superjumper;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -123,7 +121,7 @@ public class GameScreen implements Screen {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			if (OverlapTester.pointInRectangle(pauseBounds, touchPoint.x, touchPoint.y)) {
+			if (pauseBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				state = GAME_PAUSED;
 				return;
@@ -163,13 +161,13 @@ public class GameScreen implements Screen {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			if (OverlapTester.pointInRectangle(resumeBounds, touchPoint.x, touchPoint.y)) {
+			if (resumeBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				state = GAME_RUNNING;
 				return;
 			}
 
-			if (OverlapTester.pointInRectangle(quitBounds, touchPoint.x, touchPoint.y)) {
+			if (quitBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new MainMenuScreen(game));
 				return;
@@ -192,7 +190,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public void draw (float deltaTime) {
+	public void draw () {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
@@ -254,7 +252,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void render (float delta) {
 		update(delta);
-		draw(delta);
+		draw();
 	}
 
 	@Override

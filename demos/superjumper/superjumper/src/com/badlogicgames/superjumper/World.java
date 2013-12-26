@@ -161,7 +161,7 @@ public class World {
 		for (int i = 0; i < len; i++) {
 			Platform platform = platforms.get(i);
 			if (bob.position.y > platform.position.y) {
-				if (OverlapTester.overlapRectangles(bob.bounds, platform.bounds)) {
+				if (bob.bounds.overlaps(platform.bounds)) {
 					bob.hitPlatform();
 					listener.jump();
 					if (rand.nextFloat() > 0.5f) {
@@ -177,7 +177,7 @@ public class World {
 		int len = squirrels.size();
 		for (int i = 0; i < len; i++) {
 			Squirrel squirrel = squirrels.get(i);
-			if (OverlapTester.overlapRectangles(squirrel.bounds, bob.bounds)) {
+			if (squirrel.bounds.overlaps(bob.bounds)) {
 				bob.hitSquirrel();
 				listener.hit();
 			}
@@ -188,7 +188,7 @@ public class World {
 		int len = coins.size();
 		for (int i = 0; i < len; i++) {
 			Coin coin = coins.get(i);
-			if (OverlapTester.overlapRectangles(bob.bounds, coin.bounds)) {
+			if (bob.bounds.overlaps(coin.bounds)) {
 				coins.remove(coin);
 				len = coins.size();
 				listener.coin();
@@ -203,7 +203,7 @@ public class World {
 		for (int i = 0; i < len; i++) {
 			Spring spring = springs.get(i);
 			if (bob.position.y > spring.position.y) {
-				if (OverlapTester.overlapRectangles(bob.bounds, spring.bounds)) {
+				if (bob.bounds.overlaps(spring.bounds)) {
 					bob.hitSpring();
 					listener.highJump();
 				}
@@ -212,7 +212,7 @@ public class World {
 	}
 
 	private void checkCastleCollisions () {
-		if (OverlapTester.overlapRectangles(castle.bounds, bob.bounds)) {
+		if (castle.bounds.overlaps(bob.bounds)) {
 			state = WORLD_STATE_NEXT_LEVEL;
 		}
 	}
