@@ -102,6 +102,7 @@ public class AssetManager implements Disposable {
 	 * @return the asset */
 	public synchronized <T> T get (String fileName) {
 		Class<T> type = assetTypes.get(fileName);
+		if(type==null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
 		if (assetsByType == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		RefCountedContainer assetContainer = assetsByType.get(fileName);
