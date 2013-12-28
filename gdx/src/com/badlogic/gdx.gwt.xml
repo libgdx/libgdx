@@ -256,6 +256,8 @@
 		<include name="maps/tiled/TiledMapTileSet.java"/>
 		<include name="maps/tiled/TiledMapTileSets.java"/>
 		<include name="maps/tiled/TmxMapLoader.java"/> <!-- Emulated: Compression -->
+		<include name="maps/tiled/AtlasTmxMapLoader.java"/>
+		<include name="maps/tiled/TmxMapHelper.java"/>
 		
 	<!-- maps/tiled/renderers -->
 		<include name="maps/tiled/renderers/BatchTiledMapRenderer.java"/>
