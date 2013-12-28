@@ -21,6 +21,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -43,6 +44,7 @@ public class LwjglGraphics implements Graphics {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
+	GL30 gl30;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -86,6 +88,10 @@ public class LwjglGraphics implements Graphics {
 	public GL20 getGL20 () {
 		return gl20;
 	}
+	
+	public GL30 getGL30() {
+		return gl30;
+	}
 
 	public int getHeight () {
 		if (canvas != null)
@@ -107,6 +113,10 @@ public class LwjglGraphics implements Graphics {
 
 	public boolean isGL20Available () {
 		return gl20 != null;
+	}
+	
+	public boolean isGL30Available () {
+		return gl30 != null;
 	}
 
 	public float getDeltaTime () {
@@ -238,13 +248,17 @@ public class LwjglGraphics implements Graphics {
 		String version = org.lwjgl.opengl.GL11.glGetString(GL11.GL_VERSION);
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
-
+		
 		if (config.useGL20 && (major >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
 			// FIXME add check whether gl 2.0 is supported
-			gl20 = new LwjglGL20();
+			if (major >= 4 && (major > 4 || minor >= 3)) // At least 4.3 is needed for all ES3.0 features
+				gl20 = gl30 = new LwjglGL30();
+			else
+				gl20 = new LwjglGL20();
 			gl = gl20;
 		} else {
 			gl20 = null;
+			gl30 = null;
 			if (major == 1 && minor < 5) {
 				gl10 = new LwjglGL10();
 			} else {
@@ -253,11 +267,12 @@ public class LwjglGraphics implements Graphics {
 			}
 			gl = gl10;
 		}
-
+		
 		Gdx.gl = gl;
 		Gdx.gl10 = gl10;
 		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
+		Gdx.gl30 = gl30;
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 
 package com.badlogic.gdx.graphics;
 
-/** Interface wrapping some methods of OpenGL ES 3.0
+import java.nio.IntBuffer;
+
+/** Interface wrapping some functions of OpenGL ES 3.0
  * @author mattijs driel */
 public interface GL30 extends GL20 {
 	public static final int GL_READ_BUFFER = 0x0C02;
@@ -310,6 +312,22 @@ public interface GL30 extends GL20 {
 	public static final int GL_NUM_SAMPLE_COUNTS = 0x9380;
 	public static final int GL_TEXTURE_IMMUTABLE_LEVELS = 0x82DF;
 
+	public void glBindBufferBase (int target, int index, int buffer);
+
+	public void glGetActiveUniformsiv (int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params);
+
+	public int glGetUniformBlockIndex (int program, String uniformBlockName);
+
+	public void glGetActiveUniformBlockiv (int program, int uniformBlockIndex, int pname, IntBuffer params);
+
+	public String glGetActiveUniformBlockName (int program, int uniformBlockIndex);
+
+	public void glUniformBlockBinding (int program, int uniformBlockIndex, int uniformBlockBinding);
+
+	public void glDrawArraysInstanced (int mode, int first, int count, int instancecount);
+
+	public void glDrawElementsInstanced (int mode, int count, int type, long indices, int instancecount);
+
 // public void glReadBuffer (GLenum mode);
 // public void glDrawRangeElements (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices);
 // public void glTexImage3D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint
@@ -353,7 +371,6 @@ public interface GL30 extends GL20 {
 // public void glBeginTransformFeedback (GLenum primitiveMode);
 // public void glEndTransformFeedback (void);
 // public void glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-// public void glBindBufferBase (GLenum target, GLuint index, GLuint buffer);
 // public void glTransformFeedbackVaryings (GLuint program, GLsizei count, const GLchar *const*varyings, GLenum bufferMode);
 // public void glGetTransformFeedbackVarying (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size,
 // GLenum *type, GLchar *name);
@@ -383,15 +400,6 @@ public interface GL30 extends GL20 {
 // size);
 // public void glGetUniformIndices (GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint
 // *uniformIndices);
-// public void glGetActiveUniformsiv (GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint
-// *params);
-// public GLuint glGetUniformBlockIndex (GLuint program, const GLchar *uniformBlockName);
-// public void glGetActiveUniformBlockiv (GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
-// public void glGetActiveUniformBlockName (GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar
-// *uniformBlockName);
-// public void glUniformBlockBinding (GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
-// public void glDrawArraysInstanced (GLenum mode, GLint first, GLsizei count, GLsizei instancecount);
-// public void glDrawElementsInstanced (GLenum mode, GLsizei count, GLenum type, const void *indices, GLsizei instancecount);
 // public GLsync glFenceSync (GLenum condition, GLbitfield flags);
 // public GLboolean glIsSync (GLsync sync);
 // public void glDeleteSync (GLsync sync);
