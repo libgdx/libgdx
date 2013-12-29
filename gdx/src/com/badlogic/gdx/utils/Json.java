@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.PrettyPrintSettings;
 import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.ObjectMap.Values;
@@ -40,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 /** Reads/writes Java objects to/from JSON, automatically. See the wiki for usage:
- * https://code.google.com/p/libgdx/wiki/JsonParsing
+ * https://github.com/libgdx/libgdx/wiki/Reading-%26-writing-JSON
  * @author Nathan Sweet */
 public class Json {
 	private static final boolean debug = false;
@@ -184,15 +185,12 @@ public class Json {
 	public void toJson (Object object, Class knownType, Class elementType, FileHandle file) {
 		Writer writer = null;
 		try {
-			writer = file.writer(false);
+			writer = file.writer(false, "UTF-8");
 			toJson(object, knownType, elementType, writer);
 		} catch (Exception ex) {
 			throw new SerializationException("Error writing file: " + file, ex);
 		} finally {
-			try {
-				if (writer != null) writer.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(writer);
 		}
 	}
 
@@ -212,10 +210,7 @@ public class Json {
 		try {
 			writeValue(object, knownType, elementType);
 		} finally {
-			try {
-				this.writer.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(this.writer);
 			this.writer = null;
 		}
 	}
@@ -231,6 +226,7 @@ public class Json {
 		return writer;
 	}
 
+	/** Writes all fields of the specified object to the current JSON object. */
 	public void writeFields (Object object) {
 		Class type = object.getClass();
 
@@ -301,20 +297,24 @@ public class Json {
 		return values;
 	}
 
+	/** @see #writeField(Object, String, String, Class) */
 	public void writeField (Object object, String name) {
 		writeField(object, name, name, null);
 	}
 
-	/** @param elementType May be null if the type is unknown. */
+	/** @param elementType May be null if the type is unknown.
+	 * @see #writeField(Object, String, String, Class) */
 	public void writeField (Object object, String name, Class elementType) {
 		writeField(object, name, name, elementType);
 	}
 
+	/** @see #writeField(Object, String, String, Class) */
 	public void writeField (Object object, String fieldName, String jsonName) {
 		writeField(object, fieldName, jsonName, null);
 	}
 
-	/** @param elementType May be null if the type is unknown. */
+	/** Writes the specified field to the current JSON object.
+	 * @param elementType May be null if the type is unknown. */
 	public void writeField (Object object, String fieldName, String jsonName, Class elementType) {
 		Class type = object.getClass();
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
@@ -339,7 +339,9 @@ public class Json {
 		}
 	}
 
-	/** @param value May be null. */
+	/** Writes the value as a field on the current JSON object, without writing the actual class.
+	 * @param value May be null.
+	 * @see #writeValue(String, Object, Class, Class) */
 	public void writeValue (String name, Object value) {
 		try {
 			writer.name(name);
@@ -352,8 +354,11 @@ public class Json {
 			writeValue(value, value.getClass(), null);
 	}
 
-	/** @param value May be null.
-	 * @param knownType May be null if the type is unknown. */
+	/** Writes the value as a field on the current JSON object, writing the class of the object if it differs from the specified
+	 * known type.
+	 * @param value May be null.
+	 * @param knownType May be null if the type is unknown.
+	 * @see #writeValue(String, Object, Class, Class) */
 	public void writeValue (String name, Object value, Class knownType) {
 		try {
 			writer.name(name);
@@ -363,7 +368,9 @@ public class Json {
 		writeValue(value, knownType, null);
 	}
 
-	/** @param value May be null.
+	/** Writes the value as a field on the current JSON object, writing the class of the object if it differs from the specified
+	 * known type. The specified element type is used as the default type for collections.
+	 * @param value May be null.
 	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void writeValue (String name, Object value, Class knownType, Class elementType) {
@@ -375,7 +382,8 @@ public class Json {
 		writeValue(value, knownType, elementType);
 	}
 
-	/** @param value May be null. */
+	/** Writes the value, without writing the class of the object.
+	 * @param value May be null. */
 	public void writeValue (Object value) {
 		if (value == null)
 			writeValue(value, null, null);
@@ -383,13 +391,16 @@ public class Json {
 			writeValue(value, value.getClass(), null);
 	}
 
-	/** @param value May be null.
+	/** Writes the value, writing the class of the object if it differs from the specified known type.
+	 * @param value May be null.
 	 * @param knownType May be null if the type is unknown. */
 	public void writeValue (Object value, Class knownType) {
 		writeValue(value, knownType, null);
 	}
 
-	/** @param value May be null.
+	/** Writes the value, writing the class of the object if it differs from the specified known type. The specified element type is
+	 * used as the default type for collections.
+	 * @param value May be null.
 	 * @param knownType May be null if the type is unknown.
 	 * @param elementType May be null if the type is unknown. */
 	public void writeValue (Object value, Class knownType, Class elementType) {
@@ -556,7 +567,8 @@ public class Json {
 		}
 	}
 
-	/** @param knownType May be null if the type is unknown. */
+	/** Starts writing an object, writing the actualType to a field if needed.
+	 * @param knownType May be null if the type is unknown. */
 	public void writeObjectStart (Class actualType, Class knownType) {
 		try {
 			writer.object();
@@ -863,7 +875,7 @@ public class Json {
 				return (T)newArray;
 			}
 			if (ClassReflection.isAssignableFrom(List.class, type)) {
-				List newArray = type == null ? new ArrayList() : (List)newInstance(type);
+				List newArray = (type == null || type.isInterface()) ? new ArrayList() : (List)newInstance(type);
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					newArray.add(readValue(elementType, null, child));
 				return (T)newArray;
@@ -871,7 +883,7 @@ public class Json {
 			if (type.isArray()) {
 				Class componentType = type.getComponentType();
 				if (elementType == null) elementType = componentType;
-				Object newArray = ArrayReflection.newInstance(componentType, jsonData.size());
+				Object newArray = ArrayReflection.newInstance(componentType, jsonData.size);
 				int i = 0;
 				for (JsonValue child = jsonData.child(); child != null; child = child.next())
 					ArrayReflection.set(newArray, i++, readValue(elementType, null, child));
@@ -933,7 +945,7 @@ public class Json {
 		return String.valueOf(object);
 	}
 
-	private Object newInstance (Class type) {
+	protected Object newInstance (Class type) {
 		try {
 			return ClassReflection.newInstance(type);
 		} catch (Exception ex) {
@@ -976,13 +988,23 @@ public class Json {
 		return new JsonReader().parse(json).prettyPrint(outputType, singleLineColumns);
 	}
 
+	public String prettyPrint (Object object, PrettyPrintSettings settings) {
+		return prettyPrint(toJson(object), settings);
+	}
+
+	public String prettyPrint (String json, PrettyPrintSettings settings) {
+		return new JsonReader().parse(json).prettyPrint(settings);
+	}
+
 	static private class FieldMetadata {
 		Field field;
 		Class elementType;
 
 		public FieldMetadata (Field field) {
 			this.field = field;
-			this.elementType = field.getElementType();
+			int index = (ClassReflection.isAssignableFrom(ObjectMap.class, field.getType()) || ClassReflection.isAssignableFrom(
+				Map.class, field.getType())) ? 1 : 0;
+			this.elementType = field.getElementType(index);
 		}
 	}
 

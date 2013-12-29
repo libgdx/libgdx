@@ -1,39 +1,39 @@
 /** Creates a pool for the type and sets SWIG to use the pool instead of creating a new java object every time.
  * TODO: Add better pointer support
  * @author Xoppa */
-%define CREATE_POOLED_OBJECT(_TYPE, _JCLASS)
+%define CREATE_POOLED_OBJECT_EXT(CTYPE, JTYPE, _JCLASS)
 
 // Add pooling to the java class
-%typemap(javacode) _TYPE %{
-	/** Temporary instance, use by native methods that return a _TYPE instance */
-	protected final static _TYPE temp = new _TYPE(0, false);
-	public static _TYPE internalTemp(long cPtr, boolean own) {
+%typemap(javacode) CTYPE %{
+	/** Temporary instance, use by native methods that return a JTYPE instance */
+	protected final static JTYPE temp = new JTYPE(0, false);
+	public static JTYPE internalTemp(long cPtr, boolean own) {
 		temp.reset(cPtr, own);
 		return temp;
 	}
-	/** Pool of _TYPE instances, used by director interface to provide the arguments. */
-	protected static final com.badlogic.gdx.utils.Pool<_TYPE> pool = new com.badlogic.gdx.utils.Pool<_TYPE>() {
+	/** Pool of JTYPE instances, used by director interface to provide the arguments. */
+	protected static final com.badlogic.gdx.utils.Pool<JTYPE> pool = new com.badlogic.gdx.utils.Pool<JTYPE>() {
 		@Override
-		protected _TYPE newObject() {
-			return new _TYPE(0, false);
+		protected JTYPE newObject() {
+			return new JTYPE(0, false);
 		}
 	};
 	/** Reuses a previous freed instance or creates a new instance and set it to reflect the specified native object */
-	public static _TYPE obtain(long cPtr, boolean own) {
-		final _TYPE result = pool.obtain();
+	public static JTYPE obtain(long cPtr, boolean own) {
+		final JTYPE result = pool.obtain();
 		result.reset(cPtr, own);
 		return result;
 	}
 	/** delete the native object if required and allow the instance to be reused by the obtain method */
-	public static void free(final _TYPE inst) {
+	public static void free(final JTYPE inst) {
 		inst.dispose();
 		pool.free(inst);
 	}
 %}
 
-%fragment(gdxToString(gdxPooled##_TYPE), "header") {
+%fragment(gdxToString(gdxPooled##JTYPE), "header") {
 	// Inline (cached) method to retrieve the type's jclass
-	SWIGINTERN inline jclass gdx_getClass##_TYPE(JNIEnv * jenv) {
+	SWIGINTERN inline jclass gdx_getClass##JTYPE(JNIEnv * jenv) {
 		static jclass cls = NULL;
 		if (cls == NULL)
 			cls = (jclass) jenv->NewGlobalRef(jenv->FindClass(gdxToString(_JCLASS)));
@@ -41,9 +41,9 @@
 	}
 	
 	// Inline method to get the termporary instance
-	SWIGINTERN inline jobject gdx_getTemp##_TYPE(JNIEnv * jenv, void *cPtr, bool ownMem) {
+	SWIGINTERN inline jobject gdx_getTemp##JTYPE(JNIEnv * jenv, void *cPtr, bool ownMem) {
 	  static jobject ret = NULL;
-	  static jclass clazz = gdx_getClass##_TYPE(jenv);
+	  static jclass clazz = gdx_getClass##JTYPE(jenv);
 	  if (ret == NULL) {
 	    jfieldID field = jenv->GetStaticFieldID(clazz, "temp", "_JCLASS");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(clazz, field));
@@ -51,7 +51,7 @@
 	  
 	  static jmethodID reuseMethod = NULL;
 	  if (reuseMethod == NULL)
-		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reuse", "(JZ)V");
+		  reuseMethod = (jmethodID) jenv->GetMethodID(clazz, "reset", "(JZ)V");
 	  
 	  long ptr;
 	  *(const void **)&ptr = cPtr;
@@ -60,7 +60,7 @@
 	}
 
 	// Inline method to obtain an instance from the pool
-	SWIGINTERN inline jobject gdx_obtain##_TYPE(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
+	SWIGINTERN inline jobject gdx_obtain##JTYPE(JNIEnv * jenv, jclass clazz, void *cPtr, bool ownMem) {
 		static jmethodID obtainMethod = NULL;
 		if (obtainMethod == NULL)
 			obtainMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "obtain", gdxToString((JZ)L##_JCLASS##;));
@@ -73,7 +73,7 @@
 	}
 	
 	// Inline method to free an instance from the pool
-	SWIGINTERN inline void gdx_free##_TYPE(JNIEnv * jenv, const jclass clazz, const jobject obj) {
+	SWIGINTERN inline void gdx_free##JTYPE(JNIEnv * jenv, const jclass clazz, const jobject obj) {
 		static jmethodID freeMethod = NULL;
 		if (freeMethod == NULL)
 			freeMethod = (jmethodID) jenv->GetStaticMethodID(clazz, "free", gdxToString((L##_JCLASS##;)V));
@@ -84,49 +84,53 @@
 	}
 	
 	// Simple raii class to auto free the instance from the pool 
-	class gdxAutoFree##_TYPE {
+	class gdxAutoFree##JTYPE {
 	private:
 		JNIEnv * jenv;
-		jobject j##_TYPE;
+		jobject j##JTYPE;
 		jclass jclazz;
 	public:
-		gdxAutoFree##_TYPE(JNIEnv * jenv, jclass jclazz, jobject j##_TYPE) : 
-			jenv(jenv), j##_TYPE(j##_TYPE), jclazz(jclazz) { }
-		virtual ~gdxAutoFree##_TYPE() {
-			gdx_free##_TYPE(this->jenv, this->jclazz, this->j##_TYPE);
+		gdxAutoFree##JTYPE(JNIEnv * jenv, jclass jclazz, jobject j##JTYPE) : 
+			jenv(jenv), j##JTYPE(j##JTYPE), jclazz(jclazz) { }
+		virtual ~gdxAutoFree##JTYPE() {
+			gdx_free##JTYPE(this->jenv, this->jclazz, this->j##JTYPE);
 		}
 	};
 }
 
 // The typemaps
-%typemap(jni)				_TYPE *	"jlong"
-%typemap(jtype)				_TYPE *	"long"
-%typemap(jstype)			_TYPE * "_TYPE"
-%typemap(jni) 				_TYPE, _TYPE &, const _TYPE &	"jobject"
-%typemap(jstype) 			_TYPE, _TYPE &, const _TYPE &	"_TYPE"
-%typemap(jtype) 			_TYPE, _TYPE &, const _TYPE &	"_TYPE"
-%typemap(javain)			_TYPE, _TYPE &, const _TYPE &	"$javainput"
-%typemap(javadirectorin)	_TYPE, _TYPE &, const _TYPE &	"$1"
-%typemap(javadirectorout)	_TYPE, _TYPE &, const _TYPE &	"$javacall"
+%typemap(jni)				CTYPE *	"jlong"
+%typemap(jtype)				CTYPE *	"long"
+%typemap(jstype)			CTYPE * "JTYPE"
+%typemap(jni) 				CTYPE, CTYPE &, const CTYPE &	"jobject"
+%typemap(jstype) 			CTYPE, CTYPE &, const CTYPE &	"JTYPE"
+%typemap(jtype) 			CTYPE, CTYPE &, const CTYPE &	"JTYPE"
+%typemap(javain)			CTYPE, CTYPE &, const CTYPE &	"$javainput"
+%typemap(javadirectorin)	CTYPE, CTYPE &, const CTYPE &	"$1"
+%typemap(javadirectorout)	CTYPE, CTYPE &, const CTYPE &	"$javacall"
 
-%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	const _TYPE &  {
-	jclass jc$1 = gdx_getClass##_TYPE(jenv);
-	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)$1, false);
-	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);
+//%typemap(directorin, fragment=gdxToString(gdxPooled##JTYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	const CTYPE &  {
+//	jclass jc$1 = gdx_getClass##JTYPE(jenv);
+//	$input = gdx_obtain##JTYPE(jenv, jc$1, (void*)$1, false);
+//	gdxAutoFree##JTYPE autoRelease_$input(jenv, jc$1, $input);
+//}
+%typemap(directorin, fragment=gdxToString(gdxPooled##JTYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	CTYPE, CTYPE &, const CTYPE &  {
+	jclass jc$1 = gdx_getClass##JTYPE(jenv);
+	$input = gdx_obtain##JTYPE(jenv, jc$1, (void*)&$1, false);
+	gdxAutoFree##JTYPE autoRelease_$input(jenv, jc$1, $input);
 }
-%typemap(directorin, fragment=gdxToString(gdxPooled##_TYPE), descriptor=gdxToString(L##_JCLASS;), noblock=1)	_TYPE, _TYPE &  {
-	jclass jc$1 = gdx_getClass##_TYPE(jenv);
-	$input = gdx_obtain##_TYPE(jenv, jc$1, (void*)&$1, false);
-	gdxAutoFree##_TYPE autoRelease_$input(jenv, jc$1, $input);
+%typemap(out, fragment=gdxToString(gdxPooled##JTYPE), noblock=1)		CTYPE, CTYPE &, const CTYPE &	{
+	$result = gdx_getTemp##JTYPE(jenv, &$1, false);
 }
-%typemap(out, fragment=gdxToString(gdxPooled##_TYPE), noblock=1)		_TYPE, _TYPE &, const _TYPE &	{
-	$result = gdx_getTemp##_TYPE(jenv, &$1, false);
-}
-%typemap(javaout)		_TYPE, _TYPE &, const _TYPE &	{
+%typemap(javaout)		CTYPE, CTYPE &, const CTYPE &	{
 	return $jnicall;
 }
-%typemap(javaout)		_TYPE * {
-	return _TYPE.internalTemp($jnicall, false);
+%typemap(javaout)		CTYPE * {
+	return JTYPE.internalTemp($jnicall, false);
 }
 
-%enddef // CREATE_POOLED_OBJECT
+%enddef // CREATE_POOLED_OBJECT_EXT
+
+%define CREATE_POOLED_OBJECT(_TYPE, _JCLASS)
+CREATE_POOLED_OBJECT_EXT(_TYPE, _TYPE, _JCLASS)
+%enddef

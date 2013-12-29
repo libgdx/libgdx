@@ -1,8 +1,8 @@
 package de.swagner.paxbritannica.factory;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -206,7 +206,7 @@ public class Production {
 		return spent;
 	}
 
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		update();
 
 		facing90.set(factory.facing);
@@ -258,7 +258,7 @@ public class Production {
 		production_tile1.setRotation(factory.facing.angle());
 		production_tile1.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32* facing90.x), 
 				factory.collisionCenter.y	- (35 * factory.facing.y) - (32 * facing90.y));
-		production_tile1.draw(spriteBatch);
+		production_tile1.draw(batch);
 		
 		angle = Math.min(1, Math.max(0, norm(scale_angle(factory.resourceAmount),0.25f,0.5f)));
 		production_tile2.setOrigin(0, 0);
@@ -270,7 +270,7 @@ public class Production {
 		production_tile2.setRotation(factory.facing.angle());
 		production_tile2.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 				factory.collisionCenter.y	- (35 * factory.facing.y) - (32 * facing90.y));
-		production_tile2.draw(spriteBatch);
+		production_tile2.draw(batch);
 		
 		angle = Math.min(1, Math.max(0, norm(scale_angle(factory.resourceAmount),0.5f,0.75f)));
 		production_tile3.setOrigin(0, 0);
@@ -282,7 +282,7 @@ public class Production {
 		production_tile3.setRotation(factory.facing.angle());
 		production_tile3.setPosition(factory.collisionCenter.x - (35* factory.facing.x)- (32 * facing90.x), 
 				factory.collisionCenter.y	- (35 * factory.facing.y) - (32 * facing90.y));
-		production_tile3.draw(spriteBatch);
+		production_tile3.draw(batch);
 		
 		angle = Math.min(1, Math.max(0, norm(scale_angle(factory.resourceAmount),0.75f,1f)));
 		production_tile4.setOrigin(0, 0);
@@ -294,7 +294,7 @@ public class Production {
 		production_tile4.setRotation(factory.facing.angle());
 		production_tile4.setPosition(factory.collisionCenter.x - (35 * factory.facing.x)- (32 * facing90.x), 
 				factory.collisionCenter.y	- (35* factory.facing.y) - (32 * facing90.y));
-		production_tile4.draw(spriteBatch);
+		production_tile4.draw(batch);
 		
 		// Draw the needle
 		angle = scale_angle(potential_cost);
@@ -314,19 +314,19 @@ public class Production {
 		needle.setPosition(factory.collisionCenter.x - (2 * factory.facing.x) - (-2 * facing90.x), 
 				factory.collisionCenter.y	- (2 * factory.facing.y) - (-2 * facing90.y));
 		needle.setRotation(factory.facing.angle() + ((-needle_angle) * 360) - 90);
-		needle.draw(spriteBatch);
+		needle.draw(batch);
 
 		production2.setOrigin(0, 0);
 		production2.setRotation(factory.facing.angle());
 		production2.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 				factory.collisionCenter.y	- (35 * factory.facing.y) - (32 * facing90.y));
-		production2.draw(spriteBatch);
+		production2.draw(batch);
 
 		production3.setOrigin(0, 0);
 		production3.setRotation(factory.facing.angle());
 		production3.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 				factory.collisionCenter.y	- (35 * factory.facing.y) - (32 * facing90.y));
-		production3.draw(spriteBatch);
+		production3.draw(batch);
 		
 		
 		// Draw the preview outline
@@ -336,28 +336,28 @@ public class Production {
 				upgrade_outline.setRotation(factory.facing.angle());
 				upgrade_outline.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32 * facing90.y));
-				upgrade_outline.draw(spriteBatch);
+				upgrade_outline.draw(batch);
 				currentBuildingUnit = 3;
 			} else if (potential_cost > frigateCost) {
 				frigate_outline.setOrigin(0, 0);
 				frigate_outline.setRotation(factory.facing.angle());
 				frigate_outline.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32* facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32 * facing90.y));
-				frigate_outline.draw(spriteBatch);
+				frigate_outline.draw(batch);
 				currentBuildingUnit = 2;
 			} else if (potential_cost > bomberCost) {
 				bomber_outline.setOrigin(0, 0);
 				bomber_outline.setRotation(factory.facing.angle());
 				bomber_outline.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32 * facing90.y));
-				bomber_outline.draw(spriteBatch);
+				bomber_outline.draw(batch);
 				currentBuildingUnit = 1;
 			} else if (potential_cost > fighterCost) {
 				fighter_outline.setOrigin(0, 0);
 				fighter_outline.setRotation(factory.facing.angle());
 				fighter_outline.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32 * facing90.y));
-				fighter_outline.draw(spriteBatch);
+				fighter_outline.draw(batch);
 				currentBuildingUnit = 0;
 			} else {
 				currentBuildingUnit = -1;
@@ -373,7 +373,7 @@ public class Production {
 				health_none.setColor(1, factor * 0.3f, factor * 0.3f, 1);
 				health_none.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32 * facing90.y));
-				health_none.draw(spriteBatch);
+				health_none.draw(batch);
 			} else if (health < Constants.highHealthThreshold) {
 				float factor = (health - Constants.lowHealthThreshold) / (Constants.highHealthThreshold - Constants.lowHealthThreshold);
 				health_some.setOrigin(0, 0);
@@ -381,7 +381,7 @@ public class Production {
 				health_some.setColor(1, factor * 0.7f + 0.3f, factor * 0.2f + 0.3f, 1);
 				health_some.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32*facing90.y));
-				health_some.draw(spriteBatch);
+				health_some.draw(batch);
 			} else {
 				float factor = (health - Constants.highHealthThreshold) / (1 - Constants.highHealthThreshold);
 				health_full.setOrigin(0, 0);
@@ -389,7 +389,7 @@ public class Production {
 				health_full.setColor((1 - factor) * 0.3f + 0.7f, 1, factor * 0.4f + 0.6f, 1);
 				health_full.setPosition(factory.collisionCenter.x - (35 * factory.facing.x) - (32 * facing90.x), 
 						factory.collisionCenter.y - (35 * factory.facing.y) - (32 * facing90.y));
-				health_full.draw(spriteBatch);
+				health_full.draw(batch);
 			}
 		}
 

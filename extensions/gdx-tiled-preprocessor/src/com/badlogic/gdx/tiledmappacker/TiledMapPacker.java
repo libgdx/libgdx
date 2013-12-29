@@ -60,14 +60,14 @@ import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** Given one or more TMX tilemaps, packs all tileset resources used across the maps into a <b>single</b> {@link TextureAtlas} and
- * produces a new TMX file to be loaded with an {@link AtlasTiledMapLoader} loader. Optionally, it can keep track of unused tiles
+ * produces a new TMX file to be loaded with an AtlasTiledMapLoader loader. Optionally, it can keep track of unused tiles
  * and omit them from the generated atlas, reducing the resource size.
  * 
  * The original TMX map file will be parsed by using the {@link TmxMapLoader} loader, thus access to a valid OpenGL context is
  * <b>required</b>, that's why an LwjglApplication is created by this preprocessor: this is probably subject to change in the
  * future, where loading both maps metadata and graphics resources should be made conditional.
  * 
- * The new TMX map file will contains a new property, namely "atlas", whose value will enable the {@link AtlasTiledMapLoader} to
+ * The new TMX map file will contains a new property, namely "atlas", whose value will enable the AtlasTiledMapLoader to
  * correctly read the associated TextureAtlas representing the tileset.
  * 
  * @author David Fraska and others (initial implementation, tell me who you are!)
@@ -251,7 +251,6 @@ public class TiledMapPacker {
 
 		packer = new TexturePacker2(texturePackerSettings);
 
-		int tileidx = 0;
 		for (TiledMapTileSet set : sets.values()) {
 			String tilesetName = set.getName();
 			System.out.println("Processing tileset " + tilesetName);
@@ -264,7 +263,7 @@ public class TiledMapPacker {
 
 			TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
 
-			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++, tileidx++) {
+			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
 				if (usedIds != null && !usedIds.contains(gid)) {
 					System.out.println("Stripped id #" + gid + " from tileset \"" + tilesetName + "\"");
 					continue;
@@ -280,7 +279,7 @@ public class TiledMapPacker {
 				if (isBlended(tile)) setBlended(gid);
 				System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y
 					+ ")");
-				packer.addImage(tile, this.settings.atlasOutputName + "_" + tileidx);
+				packer.addImage(tile, this.settings.atlasOutputName + "_" + (gid-1));
 			}
 		}
 
@@ -532,7 +531,7 @@ public class TiledMapPacker {
 				TiledMapPacker packer = new TiledMapPacker(packerSettings);
 
 				if (!inputDir.exists()) {
-					throw new RuntimeException("Input directory does not exist");
+					throw new RuntimeException("Input directory does not exist: " + inputDir);
 				}
 
 				try {

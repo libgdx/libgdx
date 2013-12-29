@@ -39,6 +39,8 @@ public class ClickListener extends InputListener {
 	private int tapCount;
 	private long lastTapTime;
 
+	/** Create a listener where {@link #clicked(InputEvent, float, float)} is only called for left clicks.
+	 * @see #ClickListener(int) */
 	public ClickListener () {
 	}
 
@@ -55,6 +57,7 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
+		over = false;
 		return true;
 	}
 
@@ -118,6 +121,11 @@ public class ClickListener extends InputListener {
 	public boolean inTapSquare (float x, float y) {
 		if (touchDownX == -1 && touchDownY == -1) return false;
 		return Math.abs(x - touchDownX) < tapSquareSize && Math.abs(y - touchDownY) < tapSquareSize;
+	}
+
+	/** Returns true if a touch is within the tap square. */
+	public boolean inTapSquare () {
+		return touchDownX != -1;
 	}
 
 	/** The tap square will not longer be used for the current touch. */

@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.Gdx;
@@ -7,8 +23,8 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -23,6 +39,14 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
+/** Helper class to create {@link Model}s from code.
+ * To start building use the {@link #begin()} method, when finished building use the {@link #end()} method. The end method
+ * returns the model just build. Building cannot be nested, only one model (per ModelBuilder) can be build at the time.
+ * The same ModelBuilder can be used to build multiple models sequential.
+ * Use the {@link #node()} method to start a new node. Use one of the #part(...) methods to add a part within a node.
+ * The {@link #part(String, int, VertexAttributes, Material)} method will return a {@link MeshPartBuilder} which can
+ * be used to build the node part.
+ * @author Xoppa */
 public class ModelBuilder {
 	/** The model currently being build */
 	private Model model;
@@ -339,8 +363,8 @@ public class ModelBuilder {
 		return end();
 	}
 	
-	/** Resets the references to materials, meshes and meshparts within the model to the ones used within it's nodes.
-	 * This will make the model responsible for disposing all referenced meshes. */ 
+	/** Resets the references to {@link Material}s, {@link Mesh}es and {@link MeshPart}s within the model to the ones used
+	 * within it's nodes. This will make the model responsible for disposing all referenced meshes. */ 
 	public static void rebuildReferences(final Model model) {
 		model.materials.clear();
 		model.meshes.clear();

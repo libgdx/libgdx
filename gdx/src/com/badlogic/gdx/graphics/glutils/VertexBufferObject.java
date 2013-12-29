@@ -98,38 +98,28 @@ public class VertexBufferObject implements VertexData {
 		return tmpHandle.get(0);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public VertexAttributes getAttributes () {
 		return attributes;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getNumVertices () {
 		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
-	/** {@inheritDoc} */
+	@Override
 	public int getNumMaxVertices () {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public FloatBuffer getBuffer () {
 		isDirty = true;
 		return buffer;
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setVertices (float[] vertices, int offset, int count) {
-		isDirty = true;
-		BufferUtils.copy(vertices, byteBuffer, count, offset);
-		buffer.position(0);
-		buffer.limit(count);
-
+	
+	private void bufferChanged() {
 		if (isBound) {
 			if (Gdx.gl20 != null) {
 				GL20 gl = Gdx.gl20;
@@ -142,7 +132,26 @@ public class VertexBufferObject implements VertexData {
 		}
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public void setVertices (float[] vertices, int offset, int count) {
+		isDirty = true;
+		BufferUtils.copy(vertices, byteBuffer, count, offset);
+		buffer.position(0);
+		buffer.limit(count);
+		bufferChanged();
+	}
+	
+	@Override
+	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
+		isDirty = true;
+		final int pos = byteBuffer.position();
+		byteBuffer.position(targetOffset * 4);
+		BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+		byteBuffer.position(pos);
+		buffer.position(0);
+		bufferChanged();
+	}
+
 	@Override
 	public void bind () {
 		GL11 gl = Gdx.gl11;

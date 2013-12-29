@@ -54,7 +54,7 @@ public class SharedLibraryLoader {
 		}
 	}
 
-	static private HashSet<String> loadedLibraries = new HashSet();
+	static private final HashSet<String> loadedLibraries = new HashSet();
 
 	private String nativesJar;
 
@@ -79,10 +79,7 @@ public class SharedLibraryLoader {
 				crc.update(buffer, 0, length);
 			}
 		} catch (Exception ex) {
-			try {
-				input.close();
-			} catch (Exception ignored) {
-			}
+			StreamUtils.closeQuietly(input);
 		}
 		return Long.toString(crc.getValue(), 16);
 	}

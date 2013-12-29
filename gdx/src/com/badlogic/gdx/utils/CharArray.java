@@ -67,7 +67,7 @@ public class CharArray {
 	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
 	 *           memory copy. */
 	public CharArray (boolean ordered, char[] array, int startIndex, int count) {
-		this(ordered, array.length);
+		this(ordered, count);
 		size = count;
 		System.arraycopy(array, startIndex, items, 0, count);
 	}
@@ -88,30 +88,40 @@ public class CharArray {
 		addAll(array.items, offset, length);
 	}
 
-	public void addAll (char[] array) {
+	public void addAll (char... array) {
 		addAll(array, 0, array.length);
 	}
 
 	public void addAll (char[] array, int offset, int length) {
 		char[] items = this.items;
 		int sizeNeeded = size + length ;
-		if (sizeNeeded >= items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
+		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
 	}
 
 	public char get (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		return items[index];
 	}
 
 	public void set (int index, char value) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
+	}
+	
+	public void incr (int index, char value) {
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		items[index] += value;
+	}
+	
+	public void mul (int index, char value) {
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		items[index] *= value;
 	}
 
 	public void insert (int index, char value) {
-		if (index > size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		char[] items = this.items;
 		if (size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
 		if (ordered)
@@ -123,8 +133,8 @@ public class CharArray {
 	}
 
 	public void swap (int first, int second) {
-		if (first >= size) throw new IndexOutOfBoundsException(String.valueOf(first));
-		if (second >= size) throw new IndexOutOfBoundsException(String.valueOf(second));
+		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
+		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
 		char[] items = this.items;
 		char firstValue = items[first];
 		items[first] = items[second];
@@ -166,7 +176,7 @@ public class CharArray {
 
 	/** Removes and returns the item at the specified index. */
 	public char removeIndex (int index) {
-		if (index >= size) throw new IndexOutOfBoundsException(String.valueOf(index));
+		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		char[] items = this.items;
 		char value = items[index];
 		size--;
@@ -219,6 +229,7 @@ public class CharArray {
 	/** Reduces the size of the backing array to the size of the actual items. This is useful to release memory when many items have
 	 * been removed, or if it is known that more items will not be added. */
 	public void shrink () {
+		if (items.length == size) return;
 		resize(size);
 	}
 
@@ -227,7 +238,7 @@ public class CharArray {
 	 * @return {@link #items} */
 	public char[] ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
-		if (sizeNeeded >= items.length) resize(Math.max(8, sizeNeeded));
+		if (sizeNeeded > items.length) resize(Math.max(8, sizeNeeded));
 		return items;
 	}
 

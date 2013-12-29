@@ -78,10 +78,7 @@ public class ProjectSetup {
 		if (cfg.isDesktopIncluded) templateManager.define("PRJ_DESKTOP_NAME", cfg.projectName + cfg.suffixDesktop);
 		if (cfg.isAndroidIncluded) templateManager.define("PRJ_ANDROID_NAME", cfg.projectName + cfg.suffixAndroid);
 		if (cfg.isHtmlIncluded) templateManager.define("PRJ_HTML_NAME", cfg.projectName + cfg.suffixHtml);
-		if (cfg.isIosIncluded) {
-			templateManager.define("PRJ_IOS_NAME", cfg.projectName + cfg.suffixIos);
-			templateManager.define("PRJ_ROBOVM_NAME", cfg.projectName + cfg.suffixRobovm);
-		}
+		if (cfg.isIosIncluded) templateManager.define("PRJ_ROBOVM_NAME", cfg.projectName + cfg.suffixRobovm);
 
 		// Android manifest definitions
 		if (!cfg.androidMinSdkVersion.equals("")) templateManager.define("ANDROID_MIN_SDK", cfg.androidMinSdkVersion);
@@ -156,8 +153,6 @@ public class ProjectSetup {
 					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, androidPrjLibsDir);
 				for (String elemName : def.libsHtml)
 					if (entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, htmlPrjLibsDir);
-				for (String elemName : def.libsIos)
-					if(entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, iosPrjLibsDir);
 				for (String elemName : def.libsRobovm)
 					if(entryName.endsWith(elemName)) copyEntry(new ByteArrayInputStream(bytes), elemName, robovmPrjLibsDir);
 				for (String elemName : def.data)
@@ -275,15 +270,8 @@ public class ProjectSetup {
 		}
 		
 		if(cfg.isIosIncluded) {
-			File src = new File(tmpDst, "prj-ios");
-			File dst = new File(tmpDst, cfg.projectName + cfg.suffixIos);
-			move(src, "my-gdx-game-ios.csproj", cfg.projectName + cfg.suffixIos + ".csproj");
-			move(src, "my-gdx-game-ios.sln", cfg.projectName + cfg.suffixIos + ".sln");
-			templateDir(src);
-			FileUtils.moveDirectory(src, dst);
-			
-			src = new File(tmpDst, "prj-robovm");
-			dst = new File(tmpDst, cfg.projectName + cfg.suffixRobovm);
+			File src = new File(tmpDst, "prj-robovm");
+			File dst = new File(tmpDst, cfg.projectName + cfg.suffixRobovm);
 			move(src, "src/RobovmLauncher.java", "src/" + cfg.packageName.replace('.', '/') + "/RobovmLauncher.java");
 			templateDir(src);
 			FileUtils.moveDirectory(src, dst);
@@ -315,9 +303,6 @@ public class ProjectSetup {
 		}
 		
 		if(cfg.isIosIncluded) {
-			src = new File(tmpDst, cfg.projectName + cfg.suffixIos);
-			FileUtils.copyDirectoryToDirectory(src, dst);
-			
 			src = new File(tmpDst, cfg.projectName + cfg.suffixRobovm);
 			FileUtils.copyDirectoryToDirectory(src, dst);
 		}

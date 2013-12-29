@@ -23,6 +23,7 @@ import java.io.IOException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** {@link Decoder} implementation for WAV files, pure Java, beware.
  * @author mzechner */
@@ -99,11 +100,7 @@ public class WavDecoder extends Decoder {
 
 	@Override
 	public void dispose () {
-		try {
-			if (in != null) in.close();
-		} catch (Exception e) {
-			// silent catch ftw...
-		}
+		StreamUtils.closeQuietly(in);
 	}
 
 	/** @author Nathan Sweet */

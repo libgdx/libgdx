@@ -35,6 +35,7 @@ import com.badlogic.gdx.utils.Array;
 public class PathTest extends GdxTest {
 	int SAMPLE_POINTS = 100;
 	float SAMPLE_POINT_DISTANCE = 1f/SAMPLE_POINTS;
+	float ZIGZAG_SCALE;
 	
 	SpriteBatch spriteBatch;
 	ImmediateModeRenderer10 renderer;
@@ -42,8 +43,11 @@ public class PathTest extends GdxTest {
 	Array<Path<Vector2>> paths = new Array<Path<Vector2>>();
 	int currentPath = 0;
 	float t;
+	float zt;
 	float speed = 0.3f;
+	float zspeed = 1.0f;
 	float wait = 0f;
+	boolean zigzag = false;
 
 	@Override
 	public boolean needsGL20 () {
@@ -55,6 +59,7 @@ public class PathTest extends GdxTest {
 		renderer = new ImmediateModeRenderer10();
 		spriteBatch = new SpriteBatch();
 		obj = new Sprite(new Texture(Gdx.files.internal("data/badlogicsmall.jpg")));
+		ZIGZAG_SCALE = Gdx.graphics.getDensity() * 96; //96DP
 		
 		float w = Gdx.graphics.getWidth() - obj.getWidth();
 		float h = Gdx.graphics.getHeight() - obj.getHeight();
@@ -75,6 +80,7 @@ public class PathTest extends GdxTest {
 	}
 	
 	final Vector2 tmpV = new Vector2();
+	final Vector2 tmpV2 = new Vector2();
 	@Override
 	public void render () {
 		GL10 gl = Gdx.graphics.getGL10();
@@ -85,13 +91,29 @@ public class PathTest extends GdxTest {
 			wait -= Gdx.graphics.getDeltaTime();
 		else {
 			t += speed * Gdx.graphics.getDeltaTime();
+			zt += zspeed * Gdx.graphics.getDeltaTime();
 			while (t >= 1f) {
 				currentPath = (currentPath + 1) % paths.size;
+				if(currentPath == 0) {
+					zigzag = !zigzag;
+					zt = 0;
+				}
 				t -= 1f;
 			}
 			
 			paths.get(currentPath).valueAt(tmpV, t);
+			paths.get(currentPath).derivativeAt(tmpV2, t);
+			
+			obj.setRotation(tmpV2.angle());
+			
+			if(zigzag){
+				tmpV2.nor();
+				tmpV2.set(-tmpV2.y, tmpV2.x);
+				tmpV2.scl((float)Math.sin(zt) * ZIGZAG_SCALE);
+				tmpV.add(tmpV2);
+			}
 			obj.setPosition(tmpV.x, tmpV.y);
+			
 		}
 			
 		spriteBatch.begin();

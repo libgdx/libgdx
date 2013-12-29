@@ -1,3 +1,19 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package com.badlogic.gdx.maps.tiled;
 
 import java.io.IOException;
@@ -48,6 +64,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		public TextureFilter textureMinFilter = TextureFilter.Nearest;
 		/** The TextureFilter to use for magnification **/
 		public TextureFilter textureMagFilter = TextureFilter.Nearest;
+		/** Whether to convert the objects' pixel position and size to the equivalent in tile space. **/
+		public boolean convertObjectToTileSpace = false;
 	}
 
 	protected static final int FLAG_FLIP_HORIZONTALLY = 0x80000000;
@@ -58,7 +76,10 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
 	protected boolean yUp;
+	protected boolean convertObjectToTileSpace;
 
+	protected int mapTileWidth;
+	protected int mapTileHeight;
 	protected int mapWidthInPixels;
 	protected int mapHeightInPixels;
 
@@ -92,6 +113,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	public TiledMap load (String fileName, TmxMapLoader.Parameters parameters) {
 		try {
 			this.yUp = parameters.yUp;
+			this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
 			ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
@@ -115,8 +137,10 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 
 		if (parameter != null) {
 			yUp = parameter.yUp;
+			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 		} else {
 			yUp = true;
+			convertObjectToTileSpace = false;
 		}
 		try {
 			map = loadTilemap(root, tmxFile, new AssetManagerImageResolver(manager));
@@ -126,7 +150,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	}
 
 	@Override
-	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle fileHandle, TmxMapLoader.Parameters parameter) {
+	public TiledMap loadSync (AssetManager manager, String fileName, FileHandle file, TmxMapLoader.Parameters parameter) {
 		return map;
 	}
 
@@ -182,6 +206,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		if (mapBackgroundColor != null) {
 			mapProperties.put("backgroundcolor", mapBackgroundColor);
 		}
+		mapTileWidth = tileWidth;
+		mapTileHeight = tileHeight;
 		mapWidthInPixels = mapWidth * tileWidth;
 		mapHeightInPixels = mapHeight * tileHeight;
 
@@ -463,11 +489,14 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		if (element.getName().equals("object")) {
 			MapObject object = null;
 
-			int x = element.getIntAttribute("x", 0);
-			int y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0));
+			float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
+			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
-			int width = element.getIntAttribute("width", 0);
-			int height = element.getIntAttribute("height", 0);
+			float x = element.getIntAttribute("x", 0) * scaleX;
+			float y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0)) * scaleY;
+
+			float width = element.getIntAttribute("width", 0) * scaleX;
+			float height = element.getIntAttribute("height", 0) * scaleY;
 
 			if (element.getChildCount() > 0) {
 				Element child = null;
@@ -476,8 +505,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]) * scaleX;
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]) * scaleY;
 						if (yUp) {
 							vertices[i * 2 + 1] *= -1;
 						}
@@ -490,8 +519,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = Integer.parseInt(point[0]);
-						vertices[i * 2 + 1] = Integer.parseInt(point[1]);
+						vertices[i * 2] = Integer.parseInt(point[0]) * scaleX;
+						vertices[i * 2 + 1] = Integer.parseInt(point[1]) * scaleY;
 						if (yUp) {
 							vertices[i * 2 + 1] *= -1;
 						}
@@ -515,8 +544,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			if (gid != -1) {
 				object.getProperties().put("gid", gid);
 			}
-			object.getProperties().put("x", x);
-			object.getProperties().put("y", yUp ? y - height : y);
+			object.getProperties().put("x", x * scaleX);
+			object.getProperties().put("y", (yUp ? y - height : y) * scaleY);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {

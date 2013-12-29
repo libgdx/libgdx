@@ -1,10 +1,11 @@
 package de.swagner.paxbritannica.factory;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+
 import de.swagner.paxbritannica.Constants;
 import de.swagner.paxbritannica.GameInstance;
 import de.swagner.paxbritannica.Resources;
@@ -81,12 +82,12 @@ public class FactoryProduction extends Ship {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 		
 		resourceAmount = Math.min(2000, resourceAmount + (harvestRate * delta));
-		super.draw(spriteBatch);
-		production.draw(spriteBatch);
+		super.draw(batch);
+		production.draw(batch);
 
 		// Damage
 		// ugh. . . sprite needs to be more flexible
@@ -131,7 +132,7 @@ public class FactoryProduction extends Ship {
 					- (60 * facing90.y));
 			current_damage.setRotation(facing.angle());
 			current_damage.setColor(1, 1, 1, MathUtils.random());
-			current_damage.draw(spriteBatch);
+			current_damage.draw(batch);
 		}
 	}
 

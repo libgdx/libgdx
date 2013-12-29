@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -25,13 +26,14 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * actors need to be inserted in the middle of the group.
  * <p>
  * The preferred width is the largest preferred width of any child. The preferred height is the sum of the children's preferred
- * heights. The min size is the preferred size and the max size is 0.
+ * heights, plus spacing between them if set. The min size is the preferred size and the max size is 0.
  * @author Nathan Sweet */
 public class VerticalGroup extends WidgetGroup {
 	private float prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private int alignment;
 	private boolean reverse;
+	private float spacing;
 
 	public VerticalGroup () {
 		setTouchable(Touchable.childrenOnly);
@@ -55,10 +57,11 @@ public class VerticalGroup extends WidgetGroup {
 
 	private void computeSize () {
 		sizeInvalid = false;
-		prefWidth = 0;
-		prefHeight = 0;
 		SnapshotArray<Actor> children = getChildren();
-		for (int i = 0, n = children.size; i < n; i++) {
+		int n = children.size;
+		prefWidth = 0;
+		prefHeight = spacing * (n - 1);
+		for (int i = 0; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Layout) {
 				Layout layout = (Layout)child;
@@ -72,8 +75,9 @@ public class VerticalGroup extends WidgetGroup {
 	}
 
 	public void layout () {
-		float groupWidth = getWidth();
-		float y = reverse ? 0 : getHeight();
+		float spacing = this.spacing;
+		float groupWidth = getWidth() > 0 ? getWidth() : getMinWidth();
+		float y = reverse ? 0 : (getHeight() > 0 ? getHeight() : getMinHeight());
 		float dir = reverse ? 1 : -1;
 		SnapshotArray<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
@@ -83,6 +87,9 @@ public class VerticalGroup extends WidgetGroup {
 				Layout layout = (Layout)child;
 				width = layout.getPrefWidth();
 				height = layout.getPrefHeight();
+				if (width == 0 || width > groupWidth) {
+					width = groupWidth;
+				}
 			} else {
 				width = child.getWidth();
 				height = child.getHeight();
@@ -94,9 +101,9 @@ public class VerticalGroup extends WidgetGroup {
 				x = groupWidth - width;
 			else
 				x = (groupWidth - width) / 2;
-			if (!reverse) y += height * dir;
+			if (!reverse) y += (height + spacing) * dir;
 			child.setBounds(x, y, width, height);
-			if (reverse) y += height * dir;
+			if (reverse) y += (height + spacing) * dir;
 		}
 	}
 
@@ -108,5 +115,10 @@ public class VerticalGroup extends WidgetGroup {
 	public float getPrefHeight () {
 		if (sizeInvalid) computeSize();
 		return prefHeight;
+	}
+
+	/** Sets the space between children. */
+	public void setSpacing (float spacing) {
+		this.spacing = spacing;
 	}
 }

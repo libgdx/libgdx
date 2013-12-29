@@ -18,9 +18,12 @@ package com.badlogic.gwtref.gen;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gwt.core.ext.BadPropertyValueException;
 import com.google.gwt.core.ext.ConfigurationProperty;
@@ -29,14 +32,17 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.typeinfo.JArrayType;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JConstructor;
 import com.google.gwt.core.ext.typeinfo.JEnumConstant;
 import com.google.gwt.core.ext.typeinfo.JEnumType;
 import com.google.gwt.core.ext.typeinfo.JField;
 import com.google.gwt.core.ext.typeinfo.JMethod;
 import com.google.gwt.core.ext.typeinfo.JPackage;
 import com.google.gwt.core.ext.typeinfo.JParameter;
+import com.google.gwt.core.ext.typeinfo.JParameterizedType;
 import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
+import com.google.gwt.core.ext.typeinfo.NotFoundException;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
@@ -49,7 +55,7 @@ public class ReflectionCacheSourceCreator {
 	final String packageName;
 	SourceWriter sw;
 	StringBuffer source = new StringBuffer();
-	Set<JType> types = new HashSet<JType>();
+	List<JType> types = new ArrayList<JType>();
 	List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
 	List<MethodStub> methodStubs = new ArrayList<MethodStub>();
 	int nextStub = 0;
@@ -114,7 +120,6 @@ public class ReflectionCacheSourceCreator {
 
 		sw.commit(logger);
 		createProxy(type);
-//		System.out.println(source.toString());
 		return packageName + "." + simpleName;
 	}
 
@@ -142,6 +147,7 @@ public class ReflectionCacheSourceCreator {
 			}
 		}
 
+		gatherTypes(typeOracle.findType("java.util.List").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.ArrayList").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.HashMap").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.util.Map").getErasedType(), types);
@@ -155,6 +161,13 @@ public class ReflectionCacheSourceCreator {
 		gatherTypes(typeOracle.findType("java.lang.CharSequence").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.lang.Double").getErasedType(), types);
 		gatherTypes(typeOracle.findType("java.lang.Object").getErasedType(), types);
+
+		// sort the types so the generated output will be stable between runs
+		Collections.sort(types, new Comparator<JType>() {
+			public int compare (JType o1, JType o2) {
+				return o1.getQualifiedSourceName().compareTo(o2.getQualifiedSourceName());
+			}
+		});
 
 		// generate Type lookup generator methods.
 		int id = 0;
@@ -173,6 +186,14 @@ public class ReflectionCacheSourceCreator {
 		}
 		p("}");
 
+		// sort the stubs so the generated output will be stable between runs
+		Collections.sort(setterGetterStubs, new Comparator<SetterGetterStub>() {
+			@Override
+			public int compare (SetterGetterStub o1, SetterGetterStub o2) {
+				return (o1.enclosingType + o1.name).compareTo(o2.enclosingType + o2.name);
+			}
+		});
+
 		// generate field setters/getters
 		for (SetterGetterStub stub : setterGetterStubs) {
 			String stubSource = generateSetterGetterStub(stub);
@@ -180,11 +201,19 @@ public class ReflectionCacheSourceCreator {
 			p(stubSource);
 		}
 
+		// sort the stubs so the generated output will be stable between runs
+		Collections.sort(methodStubs, new Comparator<MethodStub>() {
+			@Override
+			public int compare (MethodStub o1, MethodStub o2) {
+				return (o1.enclosingType + o1.name).compareTo(o2.enclosingType + o2.name);
+			}
+		});
+
 		// generate methods
 		for (MethodStub stub : methodStubs) {
 			String stubSource = generateMethodStub(stub);
 			if (stubSource.equals("")) stub.unused = true;
-				p(stubSource);
+			p(stubSource);
 		}
 		logger.log(Type.INFO, types.size() + " types reflected");
 	}
@@ -197,7 +226,7 @@ public class ReflectionCacheSourceCreator {
 
 	int nesting = 0;
 
-	private void gatherTypes (JType type, Set<JType> types) {
+	private void gatherTypes (JType type, List<JType> types) {
 		nesting++;
 		// came here from a type that has no super class
 		if (type == null) {
@@ -395,6 +424,9 @@ public class ReflectionCacheSourceCreator {
 
 		if (!stub.isFinal) {
 			pb("public native void " + stub.setter + "(" + stub.enclosingType + " obj, Object value)  /*-{");
+			// TODO changes from PR #1005 break things
+//			String vType = isPrimitive(stub.type) ? stub.type : "Object";
+//			pb("public native void " + stub.setter + "(" + stub.enclosingType + " obj, " + vType + " value)  /*-{");
 			if (stub.isStatic)
 				pb("    @" + stub.enclosingType + "::" + stub.name + " = value");
 			else
@@ -458,11 +490,12 @@ public class ReflectionCacheSourceCreator {
 					String fieldType = getType(f.getType());
 					String setter = "s" + (nextStub++);
 					String getter = "g" + (nextStub++);
+					String elementType = getElementTypes(f);
 
 					pb("new Field(\"" + f.getName() + "\", " + enclosingType + ", " + fieldType + ", " + f.isFinal() + ", "
 						+ f.isDefaultAccess() + ", " + f.isPrivate() + ", " + f.isProtected() + ", " + f.isPublic() + ", "
 						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + "\"" + getter + "\", " + "\"" + setter
-						+ "\" " + "), ");
+						+ "\", " + elementType + "), ");
 
 					SetterGetterStub stub = new SetterGetterStub();
 					stub.name = f.getName();
@@ -540,6 +573,31 @@ public class ReflectionCacheSourceCreator {
 		return buffer.toString();
 	}
 
+	private String getElementTypes (JField f) {
+		StringBuilder b = new StringBuilder();
+		JParameterizedType params = f.getType().isParameterized();
+		if (params != null) {
+			JClassType[] typeArgs = params.getTypeArgs();
+			b.append("new Class[] {");
+			for (JClassType typeArg : typeArgs) {
+				if (typeArg.isWildcard() != null)
+					b.append("Object.class");
+				else if(!isVisible(typeArg))
+					b.append("null");
+				else if (typeArg.isClassOrInterface() != null)
+					b.append(typeArg.isClassOrInterface().getQualifiedSourceName()).append(".class");
+				else if (typeArg.isParameterized() != null)
+					b.append(typeArg.isParameterized().getQualifiedBinaryName()).append(".class");
+				else
+					b.append("null");
+				b.append(", ");
+			}
+			b.append("}");
+			return b.toString();
+		}
+		return "null";
+	}
+	
 	private String getType (JType type) {
 		if (!isVisible(type)) return null;
 		return type.getErasedType().getQualifiedSourceName() + ".class";
@@ -553,6 +611,8 @@ public class ReflectionCacheSourceCreator {
 
 	private void invokeM () {
 		p("public Object invoke(Method m, Object obj, Object[] params) {");
+		p("    String param = m.methodId;");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		int subN = 0;
 		int nDispatch = 0;
 		for (MethodStub stub : methodStubs) {
@@ -568,24 +628,26 @@ public class ReflectionCacheSourceCreator {
 				}
 			}
 			if (!paramsOk) continue;
-			p("   if(m.methodId.equals(\"" + stub.methodId + "\")) {");
+			buffer.setLength(0);
 			if (stub.returnType.equals("void")) {
-				pn("      " + stub.methodId + "(");
+				pbn("      " + stub.methodId + "(");
 				addParameters(stub);
-				p(");");
-				p("      return null;");
+				pbn(");");
+				pbn(" return null;");
 			} else {
-				pn("      return " + stub.methodId + "(");
+				pbn("      return " + stub.methodId + "(");
 				addParameters(stub);
-				pn(");");
+				pbn(");");
 			}
-			p("   }");
+			pc.add(stub.methodId, buffer.toString());
 			nDispatch++;
 			if (nDispatch > 1000) {
+				pc.print();
+				pc = new SwitchedCodeBlocks();
 				subN++;
-				p("   return invoke" + subN + "(m, obj, params);");
+				p("   return invoke" + subN + "(m, obj, params, param);");
 				p("}");
-				p("public Object invoke" + subN + "(Method m, Object obj, Object[] params) {");
+				p("public Object invoke" + subN + "(Method m, Object obj, Object[] params, String param) {");
 				nDispatch = 0;
 			}
 		}
@@ -595,13 +657,13 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private void addParameters (MethodStub stub) {
-		pn("(" + stub.enclosingType + ")obj" + (stub.parameterTypes.size() > 0 ? "," : ""));
+		pbn("(" + stub.enclosingType + ")obj" + (stub.parameterTypes.size() > 0 ? "," : ""));
 		for (int i = 0; i < stub.parameterTypes.size(); i++) {
 			String paramType = stub.parameterTypes.get(i);
 			if (isPrimitive(paramType)) {
-				pn(castPrimitive(paramType, "params[" + i + "]") + (i < stub.parameterTypes.size() - 1 ? ", " : ""));
+				pbn(castPrimitive(paramType, "params[" + i + "]") + (i < stub.parameterTypes.size() - 1 ? ", " : ""));
 			} else {
-				pn("(" + stub.parameterTypes.get(i) + ")params[" + i + "]" + (i < stub.parameterTypes.size() - 1 ? ", " : ""));
+				pbn("(" + stub.parameterTypes.get(i) + ")params[" + i + "]" + (i < stub.parameterTypes.size() - 1 ? ", " : ""));
 			}
 		}
 	}
@@ -626,31 +688,42 @@ public class ReflectionCacheSourceCreator {
 
 	private void setF () {
 		p("public void set(Field field, Object obj, Object value) throws IllegalAccessException {");
+		p("    String param = field.setter;");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
-			p("   if(field.setter.equals(\"" + stub.setter + "\")) " + stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			 pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			 // TODO changes from PR #1005 break things
+//			if(isPrimitive(stub.type))
+//				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, " + castPrimitive(stub.type, "value") + ");");
+//			else
+//				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
 		}
+		pc.print();
 		p("}");
 	}
 
 	private void getF () {
 		p("public Object get(Field field, Object obj) throws IllegalAccessException {");
+		p("    String param = field.getter;");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.unused) continue;
-			p("   if(field.getter.equals(\"" + stub.getter + "\")) return " + stub.getter + "((" + stub.enclosingType + ")obj);");
+			pc.add( stub.getter, "return " + stub.getter + "((" + stub.enclosingType + ")obj);");
 		}
+		pc.print();
 		p("   return null;");
 		p("}");
 	}
 
 	private void newInstanceT () {
 		p("public Object newInstance (Type type) {");
+		p("    String param = type.getName();");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (JType type : types) {
 			if (type instanceof JClassType) {
-				JClassType clazzType = (JClassType)type;
-				if (clazzType.isDefaultInstantiable() && !(clazzType instanceof JArrayType) && !(clazzType instanceof JEnumType)) {
-					p("if(type.getName().equals(\"" + type.getErasedType().getQualifiedSourceName() + "\")) return new "
-						+ type.getErasedType().getQualifiedSourceName() + "();");
+				if (isInstantiableWithNewOperator((JClassType)type)) {
+					pc.add(type.getErasedType().getQualifiedSourceName(), "return new "+ type.getErasedType().getQualifiedSourceName() + "();");
 				} else {
 					logger.log(Type.INFO, "No public default constructor for '" + type.getQualifiedSourceName()
 						+ "', or type is an array, enum, abstract class or interface type");
@@ -659,12 +732,25 @@ public class ReflectionCacheSourceCreator {
 				logger.log(Type.INFO, "No public default constructor for primitive type '" + type.getQualifiedSourceName() + "'");
 			}
 		}
+		pc.print();
 		p("return null;");
 		p("}");
 	}
 
+	private static boolean isInstantiableWithNewOperator (JClassType t) {
+		if (!t.isDefaultInstantiable() || t instanceof JArrayType || t instanceof JEnumType) return false;
+		try {
+			JConstructor constructor = t.getConstructor(new JType[0]);
+			return constructor != null && constructor.isPublic();
+		} catch (NotFoundException e) {
+			return false;
+		}
+	}
+
 	private void setArrayElementT () {
 		p("public void setArrayElement(Type type, Object obj, int i, Object value) {");
+		p("    String param = type.getName();");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (JType type : types) {
 			if (!(type instanceof JArrayType)) continue;
 			String value = ((JArrayType)type).getComponentType().getErasedType().getQualifiedSourceName();
@@ -673,37 +759,42 @@ public class ReflectionCacheSourceCreator {
 			} else {
 				value = "(" + value + ")value";
 			}
-			p("   if(type.getName().equals(\"" + type.getQualifiedSourceName() + "\")) ((" + type.getQualifiedSourceName()
-				+ ")obj)[i] = " + value + ";");
+			pc.add(type.getQualifiedSourceName() , "((" + type.getQualifiedSourceName() + ")obj)[i] = " + value + ";");
 		}
+		pc.print();
 		p("}");
 	}
 
 	private void getArrayElementT () {
 		p("public Object getArrayElement(Type type, Object obj, int i) {");
+		p("    String param = type.getName();");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (JType type : types) {
 			if (!(type instanceof JArrayType)) continue;
-			p("   if(type.getName().equals(\"" + type.getQualifiedSourceName() + "\")) return ((" + type.getQualifiedSourceName()
-				+ ")obj)[i];");
+			pc.add(type.getQualifiedSourceName(), "return ((" + type.getQualifiedSourceName() + ")obj)[i];");
 		}
+		pc.print();
 		p("	return null;");
 		p("}");
 	}
 
 	private void getArrayLengthT () {
 		p("public int getArrayLength(Type type, Object obj) {");
+		p("    String param = type.getName();");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (JType type : types) {
 			if (!(type instanceof JArrayType)) continue;
-			p("   if(type.getName().equals(\"" + type.getQualifiedSourceName() + "\")) return ((" + type.getQualifiedSourceName()
-				+ ")obj).length;");
+			pc.add(type.getQualifiedSourceName(), "return ((" + type.getQualifiedSourceName() + ")obj).length;");
 		}
+		pc.print();
 		p("	return 0;");
 		p("}");
 	}
 
 	private void newArrayC () {
 		p("public Object newArray (Class componentType, int size) {");
-		p("    String typeName = componentType.getName().replace('$', '.');");
+		p("    String param = componentType.getName().replace('$', '.');");
+		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (JType type : types) {
 			if (type.getQualifiedSourceName().equals("void")) continue;
 			if (type.getQualifiedSourceName().endsWith("Void")) continue;
@@ -712,8 +803,9 @@ public class ReflectionCacheSourceCreator {
 				arrayType = type.getErasedType().getQualifiedSourceName();
 				arrayType = arrayType.replaceFirst("\\[\\]", "[size]") + "[]";
 			}
-			p("   if(typeName.equals(\"" + type.getQualifiedSourceName() + "\")) return new " + arrayType + ";");
+			pc.add(type.getQualifiedSourceName(), "return new " + arrayType + ";");
 		}
+		pc.print();
 		p("	throw new RuntimeException(\"Couldn't create array with element type \" + componentType.getName());");
 		p("}");
 	}
@@ -730,7 +822,7 @@ public class ReflectionCacheSourceCreator {
 		p("}");
 	}
 
-	private void p (String line) {
+	void p (String line) {
 		sw.println(line);
 		source.append(line);
 		source.append("\n");
@@ -750,5 +842,41 @@ public class ReflectionCacheSourceCreator {
 
 	private void pbn (String line) {
 		buffer.append(line);
+	}
+
+	class SwitchedCodeBlocks {
+		private Map<Integer, List<KeyedCodeBlock>> keyHash2CodeBlock = new HashMap();
+
+		public void add (String key, String codeBlock) {
+			int keyHash = key.hashCode();
+			List<KeyedCodeBlock> blocks = keyHash2CodeBlock.get(keyHash);
+			if (blocks == null) {
+				blocks = new ArrayList<SwitchedCodeBlocks.KeyedCodeBlock>();
+				keyHash2CodeBlock.put(keyHash, blocks);
+			}
+			KeyedCodeBlock c = new KeyedCodeBlock();
+			c.key = key;
+			c.codeBlock = codeBlock;
+			blocks.add(c);
+		}
+
+		void print () {
+			p("    switch(param.hashCode()) {");
+			for (Entry<Integer, List<KeyedCodeBlock>> e : keyHash2CodeBlock.entrySet()) {
+				p("    case " + e.getKey() + ":");
+				String prefix = "        ";
+				for (KeyedCodeBlock c : e.getValue()) {
+					p(prefix + "if(\"" + c.key + "\".equals(param)) {" + c.codeBlock + "}");
+					prefix = "        else ";
+				}
+				p("    break;");
+			}
+			p("}");
+		}
+
+		class KeyedCodeBlock {
+			String key;
+			String codeBlock;
+		}
 	}
 }

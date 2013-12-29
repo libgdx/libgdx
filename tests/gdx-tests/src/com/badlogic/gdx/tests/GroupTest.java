@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -33,8 +34,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.tests.utils.GdxTest;
-
-import javax.xml.stream.events.EndDocument;
 
 /** This tests both {@link Actor#parentToLocalCoordinates(Vector2)} and {@link Actor#localToParentCoordinates(Vector2)}. */
 public class GroupTest extends GdxTest {
@@ -125,7 +124,7 @@ public class GroupTest extends GdxTest {
 			});
 		}
 
-		public void draw (SpriteBatch batch, float parentAlpha) {
+		public void draw (Batch batch, float parentAlpha) {
 			// Use Stage#toScreenCoordinates, which we know is correct.
 			toScreenCoordinates.set(testX, testY).sub(getOriginX(), getOriginY()).scl(getScaleX(), getScaleY())
 				.rotate(getRotation()).add(getOriginX(), getOriginY()).add(getX(), getY());

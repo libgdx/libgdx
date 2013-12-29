@@ -70,7 +70,7 @@ public class EarClippingTriangulator {
 		indicesArray.ensureCapacity(vertexCount);
 		indicesArray.size = vertexCount;
 		short[] indices = this.indices = indicesArray.items;
-		if (areVerticesClockwise(vertices, 0, vertices.length)) {
+		if (areVerticesClockwise(vertices, offset, count)) {
 			for (short i = 0; i < vertexCount; i++)
 				indices[i] = i;
 		} else {

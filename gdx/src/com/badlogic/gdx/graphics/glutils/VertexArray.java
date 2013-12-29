@@ -65,37 +65,40 @@ public class VertexArray implements VertexData {
 		byteBuffer.flip();
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void dispose () {
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public FloatBuffer getBuffer () {
 		return buffer;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public int getNumVertices () {
 		return buffer.limit() * 4 / attributes.vertexSize;
 	}
 
-	/** {@inheritDoc} */
 	public int getNumMaxVertices () {
 		return byteBuffer.capacity() / attributes.vertexSize;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void setVertices (float[] vertices, int offset, int count) {
 		BufferUtils.copy(vertices, byteBuffer, count, offset);
 		buffer.position(0);
 		buffer.limit(count);
 	}
-
+	
+	@Override
+	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
+		final int pos = byteBuffer.position();
+		byteBuffer.position(targetOffset * 4);
+		BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
+		byteBuffer.position(pos);
+	}
+	
 	@Override
 	public void bind () {
 		GL10 gl = Gdx.gl10;

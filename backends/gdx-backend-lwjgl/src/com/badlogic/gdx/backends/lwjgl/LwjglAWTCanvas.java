@@ -357,7 +357,7 @@ public class LwjglAWTCanvas implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) {
 			System.out.println(tag + ": " + message);
 			exception.printStackTrace(System.out);
@@ -382,6 +382,11 @@ public class LwjglAWTCanvas implements Application {
 	@Override
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
+	}
+
+	@Override
+	public int getLogLevel() {
+		return logLevel;
 	}
 
 	@Override

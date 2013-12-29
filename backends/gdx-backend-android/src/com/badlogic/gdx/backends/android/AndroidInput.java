@@ -45,6 +45,7 @@ import com.badlogic.gdx.Graphics.DisplayMode;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
 
@@ -87,16 +88,18 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			return new TouchEvent();
 		}
 	};
+	
+	public static final int NUM_TOUCHES = 40;
 
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();	
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
-	int[] touchX = new int[20];
-	int[] touchY = new int[20];
-	int[] deltaX = new int[20];
-	int[] deltaY = new int[20];
-	boolean[] touched = new boolean[20];
-	int[] realId = new int[10];
+	int[] touchX = new int[NUM_TOUCHES];
+	int[] touchY = new int[NUM_TOUCHES];
+	int[] deltaX = new int[NUM_TOUCHES];
+	int[] deltaY = new int[NUM_TOUCHES];
+	boolean[] touched = new boolean[NUM_TOUCHES];
+	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private IntMap<Object> keys = new IntMap<Object>();
 	private SensorManager manager;
@@ -771,7 +774,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public void setCursorPosition (int x, int y) {
 	}
 
-	@Override
+  @Override
+  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
+  }
+
+  @Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}

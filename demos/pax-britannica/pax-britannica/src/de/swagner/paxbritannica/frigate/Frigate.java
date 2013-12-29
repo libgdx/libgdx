@@ -1,7 +1,7 @@
 package de.swagner.paxbritannica.frigate;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 import de.swagner.paxbritannica.GameInstance;
@@ -45,7 +45,7 @@ public class Frigate extends Ship {
 	}
 
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		delta = Math.min(0.06f, Gdx.graphics.getDeltaTime());
 		
 		ai.update();
@@ -53,7 +53,7 @@ public class Frigate extends Ship {
 		cooldown = Math.max(0, cooldown - delta*50f);
 		shots = Math.min(shots + (shotReloadRate * delta), shotCapacity);
 
-		super.draw(spriteBatch);
+		super.draw(batch);
 	}
 
 	public boolean isEmpty() {

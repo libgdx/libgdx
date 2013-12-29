@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.badlogicgames.gdx</groupId>
         <artifactId>gdx-parent</artifactId>
-        <version>0.9.9-SNAPSHOT</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../../..</relativePath>
     </parent>
     
@@ -43,6 +43,17 @@
                     
 
                     <execution>
+                        <id>x86-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
+                            <url>${base.url}/x86/libgdx.so</url>
+                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>armeabi-gdx</id>
                         <phase>process-resources</phase>
                         <goals><goal>wget</goal></goals>
@@ -61,6 +72,28 @@
                             <cacheDirectory>${project.build.directory}/download-cache/armeabi-v7a</cacheDirectory>
                             <url>${base.url}/armeabi-v7a/libgdx.so</url>
                             <outputDirectory>${project.build.directory}/armeabi-v7a</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>ios-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libgdx.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>ios-objectal</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/ios</cacheDirectory>
+                            <url>${base.url}/ios/libObjectAL.a</url>
+                            <outputDirectory>${project.build.directory}/ios</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -117,6 +150,20 @@
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-local-ios</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/ios32</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/ios</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             
@@ -127,8 +174,10 @@
                 <configuration>
                     <descriptors>
                         <descriptor>desktop.xml</descriptor>
+                        <descriptor>x86.xml</descriptor>
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
+                        <descriptor>ios.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

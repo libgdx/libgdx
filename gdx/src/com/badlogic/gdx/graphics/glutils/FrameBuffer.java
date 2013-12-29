@@ -19,9 +19,7 @@ package com.badlogic.gdx.graphics.glutils;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Application;
@@ -32,6 +30,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -54,7 +53,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class FrameBuffer implements Disposable {
 	/** the frame buffers **/
-	private final static Map<Application, List<FrameBuffer>> buffers = new HashMap<Application, List<FrameBuffer>>();
+	private final static Map<Application, Array<FrameBuffer>> buffers = new HashMap<Application, Array<FrameBuffer>>();
 
 	/** the color buffer texture **/
 	protected Texture colorTexture;
@@ -204,18 +203,30 @@ public class FrameBuffer implements Disposable {
 		handle.flip();
 		gl.glDeleteFramebuffers(1, handle);
 
-		if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).remove(this);
+		if (buffers.get(Gdx.app) != null) buffers.get(Gdx.app).removeValue(this, true);
 	}
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void begin () {
-		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public void end () {
+		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+	
+	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
+	 * 
+	 * @param x the x-axis position of the viewport in pixels
+	 * @param y the y-asis position of the viewport in pixels
+	 * @param width the width of the viewport in pixels
+	 * @param height the height of the viewport in pixels
+	 * */
+	public void end (int x, int y, int width, int height) {
+		Gdx.graphics.getGL20().glViewport(x, y, width, height);
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 
@@ -235,8 +246,8 @@ public class FrameBuffer implements Disposable {
 	}
 
 	private static void addManagedFrameBuffer (Application app, FrameBuffer frameBuffer) {
-		List<FrameBuffer> managedResources = buffers.get(app);
-		if (managedResources == null) managedResources = new ArrayList<FrameBuffer>();
+		Array<FrameBuffer> managedResources = buffers.get(app);
+		if (managedResources == null) managedResources = new Array<FrameBuffer>();
 		managedResources.add(frameBuffer);
 		buffers.put(app, managedResources);
 	}
@@ -246,10 +257,10 @@ public class FrameBuffer implements Disposable {
 	public static void invalidateAllFrameBuffers (Application app) {
 		if (Gdx.graphics.getGL20() == null) return;
 
-		List<FrameBuffer> bufferList = buffers.get(app);
-		if (bufferList == null) return;
-		for (int i = 0; i < bufferList.size(); i++) {
-			bufferList.get(i).build();
+		Array<FrameBuffer> bufferArray = buffers.get(app);
+		if (bufferArray == null) return;
+		for (int i = 0; i < bufferArray.size; i++) {
+			bufferArray.get(i).build();
 		}
 	}
 
@@ -260,7 +271,7 @@ public class FrameBuffer implements Disposable {
 	public static StringBuilder getManagedStatus (final StringBuilder builder) {
 		builder.append("Managed buffers/app: { ");
 		for (Application app : buffers.keySet()) {
-			builder.append(buffers.get(app).size());
+			builder.append(buffers.get(app).size);
 			builder.append(" ");
 		}
 		builder.append("}");

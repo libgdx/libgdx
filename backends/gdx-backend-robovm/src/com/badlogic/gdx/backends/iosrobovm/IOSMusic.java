@@ -90,6 +90,10 @@ public class IOSMusic implements Music {
 		track.setVolume(volume);
 	}
 
+	public void setPosition (float position) {
+		track.setCurrentTime(position / 1000);
+	}
+
 	@Override
 	public float getPosition () {
 		return (float) (track.getCurrentTime() * 1000.0);

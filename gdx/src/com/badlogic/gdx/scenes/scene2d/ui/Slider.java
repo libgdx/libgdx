@@ -17,14 +17,15 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
@@ -37,7 +38,7 @@ import com.badlogic.gdx.utils.Pools;
  * 140, a relatively arbitrary size.
  * @author mzechner
  * @author Nathan Sweet */
-public class Slider extends Widget {
+public class Slider extends Widget implements Disableable {
 	private SliderStyle style;
 	private float min, max, stepSize;
 	private float value, animateFromValue;
@@ -122,7 +123,7 @@ public class Slider extends Widget {
 	}
 
 	@Override
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		SliderStyle style = this.style;
 		boolean disabled = this.disabled;
 		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;

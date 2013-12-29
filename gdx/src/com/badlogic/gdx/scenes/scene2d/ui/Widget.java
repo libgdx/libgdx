@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -80,11 +80,7 @@ public class Widget extends Actor implements Layout {
 				parentWidth = parent.getWidth();
 				parentHeight = parent.getHeight();
 			}
-			if (getWidth() != parentWidth || getHeight() != parentHeight) {
-				setWidth(parentWidth);
-				setHeight(parentHeight);
-				invalidate();
-			}
+			setSize(parentWidth, parentHeight);
 		}
 
 		if (!needsLayout) return;
@@ -108,14 +104,12 @@ public class Widget extends Actor implements Layout {
 		if (parent instanceof Layout) ((Layout)parent).invalidateHierarchy();
 	}
 
+	protected void sizeChanged () {
+		invalidate();
+	}
+
 	public void pack () {
-		float newWidth = getPrefWidth();
-		float newHeight = getPrefHeight();
-		if (newWidth != getWidth() || newHeight != getHeight()) {
-			setWidth(newWidth);
-			setHeight(newHeight);
-			invalidate();
-		}
+		setSize(getPrefWidth(), getPrefHeight());
 		validate();
 	}
 
@@ -124,7 +118,7 @@ public class Widget extends Actor implements Layout {
 	}
 
 	/** If this method is overridden, the super method or {@link #validate()} should be called to ensure the widget is laid out. */
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		validate();
 	}
 

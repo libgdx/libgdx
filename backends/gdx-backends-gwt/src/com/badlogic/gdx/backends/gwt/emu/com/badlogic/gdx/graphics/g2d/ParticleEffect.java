@@ -28,12 +28,14 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** See <a href="http://www.badlogicgames.com/wordpress/?p=1255">http://www.badlogicgames.com/wordpress/?p=1255</a>
  * @author mzechner */
 public class ParticleEffect implements Disposable {
 	private final Array<ParticleEmitter> emitters;
 	private BoundingBox bounds;
+	private boolean ownsTexture;
 
 	public ParticleEffect () {
 		emitters = new Array(8);
@@ -59,14 +61,14 @@ public class ParticleEffect implements Disposable {
 			emitters.get(i).update(delta);
 	}
 
-	public void draw (SpriteBatch spriteBatch) {
+	public void draw (Batch batch) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.get(i).draw(spriteBatch);
+			emitters.get(i).draw(batch);
 	}
 
-	public void draw (SpriteBatch spriteBatch, float delta) {
+	public void draw (Batch batch, float delta) {
 		for (int i = 0, n = emitters.size; i < n; i++)
-			emitters.get(i).draw(spriteBatch, delta);
+			emitters.get(i).draw(batch, delta);
 	}
 
 	public void allowCompletion () {
@@ -150,10 +152,7 @@ public class ParticleEffect implements Disposable {
 		} catch (IOException ex) {
 			throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
 		} finally {
-			try {
-				if (reader != null) reader.close();
-			} catch (IOException ex) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 	}
 
@@ -172,6 +171,7 @@ public class ParticleEffect implements Disposable {
 	}
 
 	public void loadEmitterImages (FileHandle imagesDir) {
+		ownsTexture = true;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
@@ -188,6 +188,7 @@ public class ParticleEffect implements Disposable {
 	/** Disposes the texture for each sprite for each ParticleEmitter. */
 	@Override
 	public void dispose () {
+		if (!ownsTexture) return;
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			emitter.getSprite().getTexture().dispose();

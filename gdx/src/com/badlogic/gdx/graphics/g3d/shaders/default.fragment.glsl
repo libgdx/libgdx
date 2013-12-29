@@ -82,7 +82,7 @@ float getShadow()
 			getShadowness(vec2(u_shadowPCFOffset, u_shadowPCFOffset)) +
 			getShadowness(vec2(-u_shadowPCFOffset, u_shadowPCFOffset)) +
 			getShadowness(vec2(u_shadowPCFOffset, -u_shadowPCFOffset)) +
-			getShadowness(vec2(-u_shadowPCFOffset, -u_shadowPCFOffset))) * 0.20;
+			getShadowness(vec2(-u_shadowPCFOffset, -u_shadowPCFOffset))) * 0.25;
 }
 #endif //shadowMapFlag
 
@@ -135,7 +135,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * (diffuse.rgb * v_lightDiffuse);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse);
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#else
 		#if defined(specularTextureFlag) && defined(specularColorFlag)
@@ -160,13 +160,13 @@ void main() {
 				gl_FragColor.rgb = getShadow() * ((diffuse.rgb * v_lightDiffuse) + specular);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#endif //lightingFlag
 
 	#ifdef fogFlag
-    	gl_FragColor.rgb = mix(gl_FragColor.rgb, u_fogColor.rgb, v_fog);
-    #endif // end fogFlag
+		gl_FragColor.rgb = mix(gl_FragColor.rgb, u_fogColor.rgb, v_fog);
+	#endif // end fogFlag
 
 	#ifdef blendedFlag
 		gl_FragColor.a = diffuse.a * v_opacity;
@@ -174,6 +174,8 @@ void main() {
 			if (gl_FragColor.a <= v_alphaTest)
 				discard;
 		#endif
+	#else
+		gl_FragColor.a = 1.0;
 	#endif
 
 }

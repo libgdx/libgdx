@@ -17,18 +17,16 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pools;
 
 /** 2D scene graph node. An actor has a position, rectangular size, origin, scale, rotation, Z index, and color. The position
@@ -65,16 +63,17 @@ public class Actor {
 	float scaleX = 1, scaleY = 1;
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
+	private Object userObject;
 
-	/** Draws the actor. The SpriteBatch is configured to draw in the parent's coordinate system.
-	 * {@link SpriteBatch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
-	 * This draw method} is convenient to draw a rotated and scaled TextureRegion. {@link SpriteBatch#begin()} has already been
-	 * called on the SpriteBatch. If {@link SpriteBatch#end()} is called to draw without the SpriteBatch then
-	 * {@link SpriteBatch#begin()} must be called before the method returns.
+	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
+	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
+	 * This draw method} is convenient to draw a rotated and scaled TextureRegion. {@link Batch#begin()} has already been called on
+	 * the Batch. If {@link Batch#end()} is called to draw without the Batch then {@link Batch#begin()} must be called before the
+	 * method returns.
 	 * <p>
 	 * The default implementation does nothing.
 	 * @param parentAlpha Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 	}
 
 	/** Updates the actor based on time. Typically this is called each frame by {@link Stage#act(float)}.
@@ -307,7 +306,7 @@ public class Actor {
 		return parent != null;
 	}
 
-	/** Returns the parent actor, or null if not in a stage. */
+	/** Returns the parent actor, or null if not in a group. */
 	public Group getParent () {
 		return parent;
 	}
@@ -316,6 +315,11 @@ public class Actor {
 	 * @param parent May be null if the actor has been removed from the parent. */
 	protected void setParent (Group parent) {
 		this.parent = parent;
+	}
+
+	/** Returns true if input events are processed by this actor. */
+	public boolean isTouchable () {
+		return touchable == Touchable.enabled;
 	}
 
 	public Touchable getTouchable () {
@@ -334,6 +338,15 @@ public class Actor {
 	/** If false, the actor will not be drawn and will not receive touch events. Default is true. */
 	public void setVisible (boolean visible) {
 		this.visible = visible;
+	}
+
+	public Object getUserObject () {
+		return userObject;
+	}
+
+	/** Sets an application specific object for convenience. */
+	public void setUserObject (Object userObject) {
+		this.userObject = userObject;
 	}
 
 	public float getX () {
@@ -368,7 +381,9 @@ public class Actor {
 	}
 
 	public void setWidth (float width) {
+		float oldWidth = this.width;
 		this.width = width;
+		if (width != oldWidth) sizeChanged();
 	}
 
 	public float getHeight () {
@@ -376,7 +391,9 @@ public class Actor {
 	}
 
 	public void setHeight (float height) {
+		float oldHeight = this.height;
 		this.height = height;
+		if (height != oldHeight) sizeChanged();
 	}
 
 	/** Returns y plus height. */
@@ -389,30 +406,42 @@ public class Actor {
 		return x + width;
 	}
 
+	/** Called when the actor's size has been changed. */
+	protected void sizeChanged () {
+	}
+
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
+		float oldWidth = this.width;
+		float oldHeight = this.height;
 		this.width = width;
 		this.height = height;
+		if (width != oldWidth || height != oldHeight) sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
 	public void size (float size) {
 		width += size;
 		height += size;
+		sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
 	public void size (float width, float height) {
 		this.width += width;
 		this.height += height;
+		sizeChanged();
 	}
 
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
+		float oldWidth = this.width;
+		float oldHeight = this.height;
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		if (width != oldWidth || height != oldHeight) sizeChanged();
 	}
 
 	public float getOriginX () {
@@ -552,9 +581,9 @@ public class Actor {
 		return clipBegin(x, y, width, height);
 	}
 
-	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's SpriteBatch. The
-	 * transform matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call
-	 * to {@link #clipEnd()} if true is returned.
+	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's Batch. The transform
+	 * matrix and the stage's camera must not have rotational components. Calling this method must be followed by a call to
+	 * {@link #clipEnd()} if true is returned.
 	 * @return false if the clipping area is zero and no drawing should occur.
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {
@@ -565,7 +594,7 @@ public class Actor {
 		tableBounds.height = height;
 		Stage stage = this.stage;
 		Rectangle scissorBounds = Pools.obtain(Rectangle.class);
-		ScissorStack.calculateScissors(stage.getCamera(), stage.getSpriteBatch().getTransformMatrix(), tableBounds, scissorBounds);
+		stage.calculateScissors(tableBounds, scissorBounds);
 		if (ScissorStack.pushScissors(scissorBounds)) return true;
 		Pools.free(scissorBounds);
 		return false;

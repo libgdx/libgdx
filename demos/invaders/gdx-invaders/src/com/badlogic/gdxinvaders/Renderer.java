@@ -23,9 +23,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -60,7 +60,7 @@ public class Renderer {
 	private PerspectiveCamera camera;
 
 	/** the directional light **/
-	Lights lights = new Lights(Color.BLACK, new DirectionalLight().set(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()));
+	Environment lights;
 
 	ModelBatch modelBatch;
 	
@@ -68,6 +68,9 @@ public class Renderer {
 
 	public Renderer () {
 		try {
+			lights = new Environment();
+			lights.add(new DirectionalLight().set(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()));
+			
 			spriteBatch = new SpriteBatch();
 			modelBatch = new ModelBatch();
 

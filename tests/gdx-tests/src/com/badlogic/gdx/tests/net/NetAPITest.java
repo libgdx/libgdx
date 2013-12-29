@@ -21,9 +21,11 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -41,8 +43,13 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	Skin skin;
 	Stage stage;
 	TextButton textButton;
+	TextButton textButtonTxt;
 	Label statusLabel;
 	Texture texture;
+	String text;
+	BitmapFont font;
+
+	boolean doImageDownload;
 
 	public boolean needsGL20 () {
 		// just because the non pot, we could change the image instead...
@@ -54,6 +61,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		batch.dispose();
 		stage.dispose();
 		skin.dispose();
+		font.dispose();
 		if (texture != null) texture.dispose();
 	}
 
@@ -61,6 +69,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		font = new BitmapFont();
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
@@ -70,6 +79,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			statusLabel.setWidth(Gdx.graphics.getWidth() * 0.96f);
 			statusLabel.setAlignment(Align.center);
 			statusLabel.setPosition(Gdx.graphics.getWidth() * 0.5f - statusLabel.getWidth() * 0.5f, 30f);
+			statusLabel.setColor(Color.CYAN);
 			stage.addActor(statusLabel);
 		}
 
@@ -78,27 +88,40 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
+
+					doImageDownload = event.getListenerActor() == textButton;
+
 					textButton.setDisabled(true);
 					textButton.setTouchable(Touchable.disabled);
 
-					if (texture != null) {
-						texture.dispose();
-						texture = null;
-					}
+					textButtonTxt.setDisabled(true);
+					textButtonTxt.setTouchable(Touchable.disabled);
+
+					if (texture != null) texture.dispose();
+					texture = null;
+					text = null;
 
 					HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
-					httpRequest.setUrl("http://i.imgur.com/vxomF.jpg");
+					if (doImageDownload)
+						httpRequest.setUrl("http://i.imgur.com/vxomF.jpg");
+					else
+						httpRequest.setUrl("http://www.apache.org/licenses/LICENSE-2.0.txt");
 
 					Gdx.net.sendHttpRequest(httpRequest, NetAPITest.this);
 
-					statusLabel.setText("Downloading image from " + httpRequest.getUrl());
+					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
 			};
 
 			textButton = new TextButton("Download image", skin);
-			textButton.setPosition(Gdx.graphics.getWidth() * 0.5f - textButton.getWidth() * 0.5f, 60f);
+			textButton.setPosition(Gdx.graphics.getWidth() * 0.5f - textButton.getWidth(), 60f);
 			textButton.addListener(clickListener);
 			stage.addActor(textButton);
+
+			textButtonTxt = new TextButton("Download text", skin);
+			textButtonTxt.setPosition(Gdx.graphics.getWidth() * 0.5f, 60f);
+			textButtonTxt.addListener(clickListener);
+			stage.addActor(textButtonTxt);
 		}
 
 	}
@@ -114,6 +137,8 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				statusLabel.setText("HTTP Request status: " + statusCode);
 				textButton.setDisabled(false);
 				textButton.setTouchable(Touchable.enabled);
+				textButtonTxt.setDisabled(false);
+				textButtonTxt.setTouchable(Touchable.enabled);
 			}
 		});
 
@@ -122,21 +147,32 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			return;
 		}
 
-		final byte[] rawImageBytes = httpResponse.getResult();
-		Gdx.app.postRunnable(new Runnable() {
-			public void run () {
-				Texture.setEnforcePotImages(false);
-				Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
-				texture = new Texture(pixmap);
-				Texture.setEnforcePotImages(true);
-			}
-		});
+		if (doImageDownload) {
+			final byte[] rawImageBytes = httpResponse.getResult();
+			Gdx.app.postRunnable(new Runnable() {
+				public void run () {
+					Texture.setEnforcePotImages(false);
+					Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
+					texture = new Texture(pixmap);
+					Texture.setEnforcePotImages(true);
+				}
+			});
+		} else {
+			final String newText = httpResponse.getResultAsString();
+			Gdx.app.postRunnable(new Runnable() {
+				public void run () {
+					text = newText;
+				}
+			});
+		}
 	}
 
 	@Override
 	public void failed (Throwable t) {
 		textButton.setDisabled(false);
 		textButton.setTouchable(Touchable.enabled);
+		textButtonTxt.setDisabled(false);
+		textButtonTxt.setTouchable(Touchable.enabled);
 		statusLabel.setText("Failed to perform the HTTP Request: " + t.getMessage());
 		t.printStackTrace();
 	}
@@ -149,6 +185,10 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		if (texture != null) {
 			batch.begin();
 			batch.draw(texture, Gdx.graphics.getWidth() * 0.5f - texture.getWidth() * 0.5f, 100f);
+			batch.end();
+		} else if (text != null) {
+			batch.begin();
+			font.drawMultiLine(batch, text, 10, Gdx.graphics.getHeight() - 10);
 			batch.end();
 		}
 

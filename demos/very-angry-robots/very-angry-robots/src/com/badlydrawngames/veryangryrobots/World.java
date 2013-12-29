@@ -70,7 +70,7 @@ public class World {
 	private static final float FIRING_AMNESTY_INTERVAL = Config.asFloat("Global.amnestyTime", 2.0f);
 	private static final float CAPTAIN_LURK_MULTIPLIER = Config.asFloat("Captain.lurkMultiplier", 2.0f);
 	private static final float CAPTAIN_MIN_DELAY = Config.asFloat("Captain.minLurkTime", 2.0f);
-	private static final float FIRING_INTERVAL = Config.asFloat("Player.firingInterval", 0.25f);
+	static final float FIRING_INTERVAL = Config.asFloat("Player.firingInterval", 0.25f);
 	public static final float ROOM_TRANSITION_TIME = Config.asFloat("Global.roomTransitionTime", 0.5f);
 
 	// Game states.
@@ -89,18 +89,18 @@ public class World {
 	private final float maxX;
 	private final float minY;
 	private final float maxY;
-	private final WorldNotifier notifier;
+	final WorldNotifier notifier;
 	private final DifficultyManager difficultyManager;
 	private long roomSeed;
 	private int roomX;
 	private int roomY;
 	private float playingTime;
-	private float nextFireTime;
+	float nextFireTime;
 	private int numRobotShots;
 	private float robotShotSpeed;
 	private int numRobots;
 	private Vector2 playerPos;
-	private float now;
+	float now;
 	private Array<Rectangle> doorRects;
 	private Array<Rectangle> wallRects;
 	private int doorPosition;
@@ -202,7 +202,7 @@ public class World {
 		}
 	};
 
-	private void addPlayerShot (float dx, float dy) {
+	void addPlayerShot (float dx, float dy) {
 		if (state == PLAYING && playerShots.size < MAX_PLAYER_SHOTS) {
 			PlayerShot shot = shotPool.obtain();
 			shot.inCollision = false;
@@ -221,7 +221,7 @@ public class World {
 		}
 	};
 
-	private void addRobotShot (GameObject firer, float dx, float dy) {
+	void addRobotShot (GameObject firer, float dx, float dy) {
 		if (state == PLAYING && robotShots.size < numRobotShots && stateTime >= FIRING_AMNESTY_INTERVAL) {
 			RobotShot shot = robotShotPool.obtain();
 			shot.inCollision = false;

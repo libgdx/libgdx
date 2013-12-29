@@ -34,6 +34,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -183,13 +184,24 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				view.setRenderer(this);
 				return view;
 			} else {
-				GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
+				if (config.useGLSurfaceViewAPI18) {
+					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(activity, resolutionStrategy);
+					if (configChooser != null)
+						view.setEGLConfigChooser(configChooser);
+					else
+						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+					view.setRenderer(this);
+					return view;
+				}
+				else {
+					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
+					if (configChooser != null)
+						view.setEGLConfigChooser(configChooser);
+					else
+						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+					view.setRenderer(this);
+					return view;
+				}
 			}
 		}
 	}
@@ -401,7 +413,18 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			pause = true;
 			while (pause) {
 				try {
-					synch.wait();
+					// TODO: fix deadlock race condition with quick resume/pause.
+					// Temporary workaround:
+					// Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
+					// deadlock and killing process. This can easily be triggered by openning the
+					// Recent Apps list and then double-tapping the Recent Apps button with
+					// ~500ms between taps.
+					synch.wait(4000);
+					if (pause) {
+						Gdx.app.error("AndroidGraphics", "waiting for pause synchronization took too "
+						                                 + "long; assuming deadlock and killing");
+						android.os.Process.killProcess(android.os.Process.myPid());
+					}
 				} catch (InterruptedException ignored) {
 					Gdx.app.log("AndroidGraphics", "waiting for pause synchronization failed!");
 				}
@@ -649,6 +672,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			this.isContinuous = isContinuous;
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
@@ -662,6 +686,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public void requestRendering () {
 		if (view != null) {
 			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}

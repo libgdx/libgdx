@@ -17,9 +17,11 @@
 package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -54,7 +56,7 @@ public class GestureDetector extends InputAdapter {
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run () {
-			longPressFired = listener.longPress(pointer1.x, pointer1.y);
+			if (!longPressFired) longPressFired = listener.longPress(pointer1.x, pointer1.y);
 		}
 	};
 
@@ -173,9 +175,12 @@ public class GestureDetector extends InputAdapter {
 		// check if we are still tapping.
 		if (inTapSquare && !isWithinTapSquare(x, y, tapSquareCenterX, tapSquareCenterY)) inTapSquare = false;
 
-		longPressTask.cancel();
+		boolean wasPanning = panning;
 		panning = false;
+
+		longPressTask.cancel();
 		if (longPressFired) return false;
+
 		if (inTapSquare) {
 			// handle taps
 			if (lastTapButton != button || lastTapPointer != pointer || TimeUtils.nanoTime() - lastTapTime > tapCountInterval
@@ -188,7 +193,9 @@ public class GestureDetector extends InputAdapter {
 			lastTapPointer = pointer;
 			gestureStartTime = 0;
 			return listener.tap(x, y, tapCount, button);
-		} else if (pinching) {
+		}
+
+		if (pinching) {
 			// handle pinch end
 			pinching = false;
 			panning = true;
@@ -200,16 +207,27 @@ public class GestureDetector extends InputAdapter {
 				// second pointer has lifted off, set up panning to use the first pointer...
 				tracker.start(pointer1.x, pointer1.y, Gdx.input.getCurrentEventTime());
 			}
-		} else {
-			gestureStartTime = 0;
-			// handle fling
-			long time = Gdx.input.getCurrentEventTime();
-			if (time - tracker.lastTime < maxFlingDelay) {
-				tracker.update(x, y, time);
-				return listener.fling(tracker.getVelocityX(), tracker.getVelocityY(), button);
-			}
+			return false;
 		}
-		return false;
+
+		// handle no longer panning
+		boolean handled = false;
+		if (wasPanning && !panning) handled = listener.panStop(x, y, pointer, button);
+
+		// handle fling
+		gestureStartTime = 0;
+		long time = Gdx.input.getCurrentEventTime();
+		if (time - tracker.lastTime < maxFlingDelay) {
+			tracker.update(x, y, time);
+			handled = listener.fling(tracker.getVelocityX(), tracker.getVelocityY(), button) || handled;
+		}
+		return handled;
+	}
+
+	/** No further gesture events will be triggered for the current touch, if any. */
+	public void cancel () {
+		longPressTask.cancel();
+		longPressFired = true;
 	}
 
 	/** @return whether the user touched the screen long enough to trigger a long press event. */
@@ -265,7 +283,7 @@ public class GestureDetector extends InputAdapter {
 	 * to hand it to the next listener, true otherwise).
 	 * @author mzechner */
 	public static interface GestureListener {
-		/** Called when a finger went down on the screen or a mouse button was pressed. */
+		/** @see InputProcessor#touchDown(int, int, int, int) */
 		public boolean touchDown (float x, float y, int pointer, int button);
 
 		/** Called when a tap occured. A tap happens if a touch went down on the screen and was lifted again without moving outside
@@ -283,11 +301,12 @@ public class GestureDetector extends InputAdapter {
 		public boolean fling (float velocityX, float velocityY, int button);
 
 		/** Called when the user drags a finger over the screen.
-		 * @param x
-		 * @param y
 		 * @param deltaX the difference in pixels to the last drag event on x.
 		 * @param deltaY the difference in pixels to the last drag event on y. */
 		public boolean pan (float x, float y, float deltaX, float deltaY);
+
+		/** Called when no longer panning. */
+		public boolean panStop (float x, float y, int pointer, int button);
 
 		/** Called when the user performs a pinch zoom gesture. The original distance is the distance in pixels when the gesture
 		 * started.
@@ -329,6 +348,11 @@ public class GestureDetector extends InputAdapter {
 
 		@Override
 		public boolean pan (float x, float y, float deltaX, float deltaY) {
+			return false;
+		}
+
+		@Override
+		public boolean panStop (float x, float y, int pointer, int button) {
 			return false;
 		}
 

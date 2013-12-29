@@ -19,8 +19,8 @@ void main() {
 	
 	// Pass attributes values to the fragment shader
 	passLights();
-	passColor();
-	passTexCoord0();
+	pushColor();
+	pushTexCoord0();
 	passFog(calculateFog(g_position, u_cameraPosition));
 	passShadowMapUV(calcShadowMapUV(g_position));
 }
@@ -53,6 +53,8 @@ varying float v_fog;
 
 void main() {
 	pullLights();
+	pullColor();
+	pullTexCoord0();
 	
 	vec4 diffuse = applyColorDiffuse(g_color);
 
@@ -71,7 +73,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * (diffuse.rgb * g_lightDiffuse);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * g_lightDiffuse);
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#else
 		vec3 specular = applyColorSpecular(g_lightSpecular);
@@ -88,7 +90,7 @@ void main() {
 				gl_FragColor.rgb = getShadow() * ((diffuse.rgb * g_lightDiffuse) + specular);
 			#else
 				gl_FragColor.rgb = (diffuse.rgb * g_lightDiffuse) + specular;
-			#endif shadowMapFlag
+			#endif //shadowMapFlag
 		#endif
 	#endif //lightingFlag
 

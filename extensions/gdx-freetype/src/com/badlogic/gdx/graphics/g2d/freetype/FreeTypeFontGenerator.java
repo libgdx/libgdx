@@ -18,14 +18,16 @@ package com.badlogic.gdx.graphics.g2d.freetype;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.PixmapPacker.Page;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Bitmap;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Face;
@@ -33,10 +35,14 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphMetrics;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.GlyphSlot;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.Library;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeType.SizeMetrics;
+import com.badlogic.gdx.graphics.glutils.PixmapTextureData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.nio.ByteBuffer;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType font files.</p>
  * 
@@ -56,17 +62,71 @@ public class FreeTypeFontGenerator implements Disposable {
 	public static final String DEFAULT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*\u0080\u0081\u0082\u0083\u0084\u0085\u0086\u0087\u0088\u0089\u008A\u008B\u008C\u008D\u008E\u008F\u0090\u0091\u0092\u0093\u0094\u0095\u0096\u0097\u0098\u0099\u009A\u009B\u009C\u009D\u009E\u009F\u00A0\u00A1\u00A2\u00A3\u00A4\u00A5\u00A6\u00A7\u00A8\u00A9\u00AA\u00AB\u00AC\u00AD\u00AE\u00AF\u00B0\u00B1\u00B2\u00B3\u00B4\u00B5\u00B6\u00B7\u00B8\u00B9\u00BA\u00BB\u00BC\u00BD\u00BE\u00BF\u00C0\u00C1\u00C2\u00C3\u00C4\u00C5\u00C6\u00C7\u00C8\u00C9\u00CA\u00CB\u00CC\u00CD\u00CE\u00CF\u00D0\u00D1\u00D2\u00D3\u00D4\u00D5\u00D6\u00D7\u00D8\u00D9\u00DA\u00DB\u00DC\u00DD\u00DE\u00DF\u00E0\u00E1\u00E2\u00E3\u00E4\u00E5\u00E6\u00E7\u00E8\u00E9\u00EA\u00EB\u00EC\u00ED\u00EE\u00EF\u00F0\u00F1\u00F2\u00F3\u00F4\u00F5\u00F6\u00F7\u00F8\u00F9\u00FA\u00FB\u00FC\u00FD\u00FE\u00FF";
 	final Library library;
 	final Face face;
+	final String filePath;
+	boolean bitmapped = false;
 
+	/** The maximum texture size allowed by generateData, when storing in a texture atlas. 
+	 * Multiple texture pages will be created if necessary. */
+	private static int maxTextureSize = 1024;
+
+	/** A hint to scale the texture as needed, without capping it at any maximum size */
+	public static final int NO_MAXIMUM = -1; 
+	
+	/** Sets the maximum size that will be used when generating texture atlases for glyphs with <tt>generateData()</tt>.
+	 * The default is 1024. By specifying NO_MAXIMUM, the texture atlas will scale as needed. 
+	 * 
+	 * The power-of-two square texture size will be capped to the given <tt>texSize</tt>. It's recommended that
+	 * a power-of-two value be used here. 
+	 * 
+	 * Multiple pages may be used to fit all the generated glyphs. You can query the resulting number of pages
+	 * by calling <tt>bitmapFont.getRegions().length</tt> or <tt>freeTypeBitmapFontData.getTextureRegions().length</tt>. 
+	 * 
+	 * If PixmapPacker is specified when calling generateData, this parameter is ignored.
+	 * 
+	 * @param texSize the maximum texture size for one page of glyphs */
+	public static void setMaxTextureSize (int texSize) {
+		maxTextureSize = texSize;
+	}
+
+	/** Returns the maximum texture size that will be used by generateData() when creating a texture atlas for the glyphs. 
+	 * @return the power-of-two max texture size */
+	public static int getMaxTextureSize() {
+		return maxTextureSize;
+	}
+	
 	/** Creates a new generator from the given TrueType font file. Throws a {@link GdxRuntimeException} in case loading did not
 	 * succeed.
 	 * @param font the {@link FileHandle} to the TrueType font file */
 	public FreeTypeFontGenerator (FileHandle font) {
+		filePath = font.pathWithoutExtension();
 		library = FreeType.initFreeType();
 		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
 		face = FreeType.newFace(library, font, 0);
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font '" + font + "'");
+		if(checkForBitmapFont())
+		{
+			return;
+		}
 		if (!FreeType.setPixelSizes(face, 0, 15)) throw new GdxRuntimeException("Couldn't set size for font '" + font + "'");
 	}
+
+	private boolean checkForBitmapFont()
+	{
+		if(	((face.getFaceFlags()&FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
+		&& ((face.getFaceFlags()&FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL) )
+		{
+			if(FreeType.loadChar(face, 32, FreeType.FT_LOAD_DEFAULT))
+			{
+				GlyphSlot slot = face.getGlyph();
+				if(slot.getFormat()==1651078259)
+				{
+					bitmapped = true;
+				}
+			}
+		}
+		return bitmapped;
+	}
+
 
 	/** Generates a new {@link BitmapFont}, containing glyphs for the given characters. The size is expressed in pixels. Throws a
 	 * GdxRuntimeException in case the font could not be generated. Using big sizes might cause such an exception. All characters
@@ -75,8 +135,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param characters the characters the font should contain
 	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)} */
 	public BitmapFont generateFont (int size, String characters, boolean flip) {
-		FreeTypeBitmapFontData data = generateData(size, characters, flip);
-		BitmapFont font = new BitmapFont(data, data.getTextureRegion(), false);
+		FreeTypeBitmapFontData data = generateData(size, characters, flip, null);
+		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
 		font.setOwnsTexture(true);
 		return font;
 	}
@@ -94,7 +154,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 *  http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight
 	 */
 	public int scaleForPixelHeight(int size) {
-		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int ascent = FreeType.toInt(fontMetrics.getAscender());
 		int descent = FreeType.toInt(fontMetrics.getDescender());
@@ -110,7 +170,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * for example with various space characters, then bitmap is null.
 	 * */
 	public GlyphAndBitmap generateGlyphAndBitmap(int c, int size, boolean flip) {
-		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int baseline = FreeType.toInt(fontMetrics.getAscender());
@@ -130,7 +190,9 @@ public class FreeTypeFontGenerator implements Disposable {
 		
 		// Try to render to bitmap
 		Bitmap bitmap;
-		if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
+		if(bitmapped) {
+			bitmap = slot.getBitmap();
+		} else if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
 			bitmap = null;
 		} else {
 			bitmap = slot.getBitmap();
@@ -151,6 +213,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
 		glyph.srcX = 0;
 		glyph.srcY = 0;
+		glyph.id = c;
 
 		GlyphAndBitmap result = new GlyphAndBitmap();
 		result.glyph = glyph;
@@ -162,7 +225,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * wrong.
 	 * @param size the size in pixels */
 	public FreeTypeBitmapFontData generateData (int size) {
-		return generateData(size, DEFAULT_CHARS, false);
+		return generateData(size, DEFAULT_CHARS, false, null);
 	}
 
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException in case something went
@@ -172,8 +235,27 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param characters the characters the font should contain
 	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)} */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
+		return generateData(size, characters, flip, null);
+	}
+	
+	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException in case something went
+	 * wrong.
+	 * 
+	 * The packer argument is for advanced usage, where it is necessary to pack multiple BitmapFonts (i.e. styles, sizes, families) 
+	 * into a single Texture atlas. If no packer is specified, the method will use its own PixmapPacker to pack the glyphs into a
+	 * power-of-two sized texture, and the resulting FreeTypeBitmapFontData will have a valid TextureRegion which can be used 
+	 * to construct a new BitmapFont. 
+	 * 
+	 * If the packer is specified, the glyphs will be packed into it instead. The returned FreeTypeBitmapFontData will have a null
+	 * TextureRegion; it is up to the user to generate a TextureAtlas and TextureRegion once all packing is complete.
+	 * 
+	 * @param size the size in pixels
+	 * @param characters the characters the font should contain
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param packer the optional PixmapPacker to use */
+	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip, PixmapPacker packer) {
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();
-		if (!FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		// set general font data
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
@@ -183,6 +265,19 @@ public class FreeTypeFontGenerator implements Disposable {
 		data.lineHeight = FreeType.toInt(fontMetrics.getHeight());
 		float baseLine = data.ascent;
 
+		// if bitmapped
+		if(bitmapped && (data.lineHeight==0))
+		{
+			for(int c=32 ; c< (32+face.getNumGlyphs()); c++)
+			{
+				if(FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) 
+				{
+					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
+					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight ; 
+				}
+			}
+		}
+
 		// determine space width and set glyph
 		if (FreeType.loadChar(face, ' ', FreeType.FT_LOAD_DEFAULT)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
@@ -191,6 +286,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 		Glyph spaceGlyph = new Glyph();
 		spaceGlyph.xadvance = (int)data.spaceWidth;
+		spaceGlyph.id = (int)' ';
 		data.setGlyph(' ', spaceGlyph);
 
 		// determine x-height
@@ -207,7 +303,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// determine cap height
-		if (data.capHeight == 1) throw new GdxRuntimeException("No cap character found in font");
+		if (!bitmapped && data.capHeight == 1) throw new GdxRuntimeException("No cap character found in font");
 		data.ascent = data.ascent - data.capHeight;
 		data.down = -data.lineHeight;
 		if (flip) {
@@ -215,10 +311,23 @@ public class FreeTypeFontGenerator implements Disposable {
 			data.down = -data.down;
 		}
 
-		// generate the glyphs
-		int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
-		int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
-		PixmapPacker atlas = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
+			
+		boolean ownsAtlas = false;
+		if (packer==null) {
+			// generate the glyphs
+			int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
+			int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
+				
+			if (maxTextureSize > 0)
+				pageWidth = Math.min(pageWidth, maxTextureSize);
+
+			ownsAtlas = true;
+			packer = new PixmapPacker(pageWidth, pageWidth, Format.RGBA8888, 2, false);
+		}
+
+		//to minimize collisions we'll use this format : pathWithoutExtension_size[_flip]_glyph
+		String packPrefix = ownsAtlas ? "" : (filePath + '_' + size + (flip ? "_flip_" : '_') );
+		
 		for (int i = 0; i < characters.length(); i++) {
 			char c = characters.charAt(i);
 			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
@@ -233,15 +342,43 @@ public class FreeTypeFontGenerator implements Disposable {
 			GlyphMetrics metrics = slot.getMetrics();
 			Bitmap bitmap = slot.getBitmap();
 			Pixmap pixmap = bitmap.getPixmap(Format.RGBA8888);
-			Rectangle rect = atlas.pack("" + c, pixmap);
 			Glyph glyph = new Glyph();
+			glyph.id = (int)c;
 			glyph.width = pixmap.getWidth();
 			glyph.height = pixmap.getHeight();
 			glyph.xoffset = slot.getBitmapLeft();
 			glyph.yoffset = flip ? -slot.getBitmapTop() + (int)baseLine : -(glyph.height - slot.getBitmapTop()) - (int)baseLine;
 			glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
+
+			if(bitmapped)
+			{
+				pixmap.setColor(Color.CLEAR);
+				pixmap.fill();
+				ByteBuffer buf = bitmap.getBuffer();
+				for(int h=0; h<glyph.height; h++)
+				{
+					int idx = h*bitmap.getPitch();
+					for(int w=0; w<(glyph.width+glyph.xoffset); w++)
+					{
+						int bit = (buf.get(idx+(w/8)) >>> (7-(w%8))) & 1;
+						pixmap.drawPixel(w, h, ((bit==1)? Color.WHITE.toIntBits() : Color.CLEAR.toIntBits()));
+					}
+				}
+				
+			}
+
+			String name = packPrefix + c;
+			Rectangle rect = packer.pack(name, pixmap);
+			
+			//determine which page it was packed into
+			int pIndex = packer.getPageIndex(name);
+			if (pIndex==-1) //we should not get here
+				throw new IllegalStateException("packer was not able to insert '"+name+"' into a page");
+			
+			glyph.page = pIndex;
 			glyph.srcX = (int)rect.x;
 			glyph.srcY = (int)rect.y;
+			
 			data.setGlyph(c, glyph);
 			pixmap.dispose();
 		}
@@ -262,8 +399,25 @@ public class FreeTypeFontGenerator implements Disposable {
 			}
 		}
 
-		TextureAtlas textureAtlas = atlas.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
-		data.region = new TextureRegion(textureAtlas.getRegions().get(0).getTexture());
+		if (ownsAtlas) {
+			Array<Page> pages = packer.getPages();
+			data.regions = new TextureRegion[pages.size];
+			
+			for (int i=0; i<pages.size; i++) {
+				Page p = pages.get(i);
+				
+				Texture tex = new Texture(new PixmapTextureData(p.getPixmap(), p.getPixmap().getFormat(), false, false, true)) {
+					@Override
+					public void dispose () {
+						super.dispose();
+						getTextureData().consumePixmap().dispose();
+					}					
+				};
+				tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+				
+				data.regions[i] = new TextureRegion(tex); 
+			}
+		}
 		return data;
 	}
 
@@ -275,14 +429,23 @@ public class FreeTypeFontGenerator implements Disposable {
 	}
 
 	/** {@link BitmapFontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is
-	 * held in memory, thus the {@link #getImagePath()} and {@link #getFontFile()} methods will return null.
-	 * 
+	 * held in memory, thus the {@link #getImagePaths()} and {@link #getFontFile()} methods will return null.
 	 * @author mzechner */
 	public static class FreeTypeBitmapFontData extends BitmapFontData {
-		TextureRegion region;
+		TextureRegion[] regions;
 
+		/**
+		 * Returns the first texture region. Use getTextureRegions() instead
+		 * @return the first texture region in the array
+		 * @deprecated use getTextureRegions() instead
+		 */
+		@Deprecated
 		public TextureRegion getTextureRegion () {
-			return region;
+			return regions[0];
+		}
+		
+		public TextureRegion[] getTextureRegions () {
+			return regions;
 		}
 	}
 }

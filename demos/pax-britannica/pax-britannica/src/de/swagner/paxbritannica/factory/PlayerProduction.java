@@ -1,6 +1,6 @@
 package de.swagner.paxbritannica.factory;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 
 public class PlayerProduction extends FactoryProduction {
@@ -10,10 +10,10 @@ public class PlayerProduction extends FactoryProduction {
 	}
 	
 	@Override
-	public void draw(SpriteBatch spriteBatch) {
+	public void draw(Batch batch) {
 		thrust();
 		turn(1);
-		super.draw(spriteBatch);
+		super.draw(batch);
 	}
 
 	

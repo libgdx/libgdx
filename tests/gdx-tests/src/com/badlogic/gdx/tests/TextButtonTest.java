@@ -51,8 +51,9 @@ public class TextButtonTest extends GdxTest {
 		stage.draw();
 		Gdx.app.log("X", "FPS: " + Gdx.graphics.getFramesPerSecond());
 		Gdx.app.log("X", "GL20: " + Gdx.graphics.isGL20Available());
-		Gdx.app.log("X", "render calls: " + stage.getSpriteBatch().totalRenderCalls);
-		stage.getSpriteBatch().totalRenderCalls = 0;
+		SpriteBatch spriteBatch = (SpriteBatch)stage.getSpriteBatch();
+		Gdx.app.log("X", "render calls: " + spriteBatch.totalRenderCalls);
+		spriteBatch.totalRenderCalls = 0;
 	}
 
 	@Override

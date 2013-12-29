@@ -50,26 +50,26 @@ public class MainMenuScreen implements Screen {
 		touchPoint = new Vector3();
 	}
 
-	public void update (float deltaTime) {
+	public void update () {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			if (OverlapTester.pointInRectangle(playBounds, touchPoint.x, touchPoint.y)) {
+			if (playBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new GameScreen(game));
 				return;
 			}
-			if (OverlapTester.pointInRectangle(highscoresBounds, touchPoint.x, touchPoint.y)) {
+			if (highscoresBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new HighscoresScreen(game));
 				return;
 			}
-			if (OverlapTester.pointInRectangle(helpBounds, touchPoint.x, touchPoint.y)) {
+			if (helpBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new HelpScreen(game));
 				return;
 			}
-			if (OverlapTester.pointInRectangle(soundBounds, touchPoint.x, touchPoint.y)) {
+			if (soundBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				Settings.soundEnabled = !Settings.soundEnabled;
 				if (Settings.soundEnabled)
@@ -80,7 +80,8 @@ public class MainMenuScreen implements Screen {
 		}
 	}
 
-	public void draw (float deltaTime) {
+	long last = System.nanoTime();
+	public void draw () {
 		GLCommon gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -98,12 +99,22 @@ public class MainMenuScreen implements Screen {
 		batcher.draw(Assets.mainMenu, 10, 200 - 110 / 2, 300, 110);
 		batcher.draw(Settings.soundEnabled ? Assets.soundOn : Assets.soundOff, 0, 0, 64, 64);
 		batcher.end();
+		
+		if(System.nanoTime() - last > 2000000000) {
+			Gdx.app.log("SuperJumper", "version: " + Gdx.app.getVersion() + 
+												", memory: " + Gdx.app.getJavaHeap() + ", " + Gdx.app.getNativeHeap() + 
+												", native orientation:" + Gdx.input.getNativeOrientation() + 
+												", orientation: " + Gdx.input.getRotation() + 
+												", accel: " + (int)Gdx.input.getAccelerometerX() + ", " + (int)Gdx.input.getAccelerometerY() + ", " + (int)Gdx.input.getAccelerometerZ() +
+												", apr: " + (int)Gdx.input.getAzimuth() + ", " + (int)Gdx.input.getPitch() + ", " + (int)Gdx.input.getRoll());
+			last = System.nanoTime();
+		}
 	}
 
 	@Override
 	public void render (float delta) {
-		update(delta);
-		draw(delta);
+		update();
+		draw();
 	}
 
 	@Override

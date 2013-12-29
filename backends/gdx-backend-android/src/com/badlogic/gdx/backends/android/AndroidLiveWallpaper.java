@@ -51,6 +51,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20LW;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
@@ -141,6 +142,7 @@ public class AndroidLiveWallpaper implements Application {
 
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
+			else if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
 			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 			else throw new RuntimeException("unimplemented");
 		}
@@ -163,6 +165,7 @@ public class AndroidLiveWallpaper implements Application {
 		//if (!firstResume)	// mentioned condition
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
+			else if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
 			else if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 			else throw new RuntimeException("unimplemented");
 		}
@@ -328,7 +331,7 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	@Override
-	public void log (String tag, String message, Exception exception) {
+	public void log (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_INFO) Log.i(tag, message, exception);
 	}
 
@@ -345,6 +348,11 @@ public class AndroidLiveWallpaper implements Application {
 	@Override
 	public void setLogLevel (int logLevel) {
 		this.logLevel = logLevel;
+	}
+
+	@Override
+	public int getLogLevel() {
+		return logLevel;
 	}
 
 	@Override

@@ -117,9 +117,9 @@ void btSoftBodyTriangleCallback::processTriangle(btVector3* triangle,int partId,
 		//copy over user pointers to temporary shape
 		tm->setUserPointer(m_triBody->getCollisionShape()->getUserPointer());
 
-		btCollisionObjectWrapper softBody(0,m_softBody->getCollisionShape(),m_softBody,m_softBody->getWorldTransform());
+		btCollisionObjectWrapper softBody(0,m_softBody->getCollisionShape(),m_softBody,m_softBody->getWorldTransform(),-1,-1);
 		//btCollisionObjectWrapper triBody(0,tm, ob, btTransform::getIdentity());//ob->getWorldTransform());//??
-		btCollisionObjectWrapper triBody(0,tm, m_triBody, m_triBody->getWorldTransform());
+		btCollisionObjectWrapper triBody(0,tm, m_triBody, m_triBody->getWorldTransform(),partId, triangleIndex);
 
 		btCollisionAlgorithm* colAlgo = ci.m_dispatcher1->findAlgorithm(&softBody,&triBody,0);//m_manifoldPtr);
 
@@ -161,8 +161,8 @@ void btSoftBodyTriangleCallback::processTriangle(btVector3* triangle,int partId,
 		tm->setUserPointer(m_triBody->getCollisionShape()->getUserPointer());
 
 		
-		btCollisionObjectWrapper softBody(0,m_softBody->getCollisionShape(),m_softBody,m_softBody->getWorldTransform());
-		btCollisionObjectWrapper triBody(0,tm, m_triBody, m_triBody->getWorldTransform());//btTransform::getIdentity());//??
+		btCollisionObjectWrapper softBody(0,m_softBody->getCollisionShape(),m_softBody,m_softBody->getWorldTransform(),-1,-1);
+		btCollisionObjectWrapper triBody(0,tm, m_triBody, m_triBody->getWorldTransform(),partId, triangleIndex);//btTransform::getIdentity());//??
 
 		btCollisionAlgorithm* colAlgo = ci.m_dispatcher1->findAlgorithm(&softBody,&triBody,0);//m_manifoldPtr);
 

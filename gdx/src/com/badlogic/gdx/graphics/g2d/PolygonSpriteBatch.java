@@ -494,7 +494,7 @@ public class PolygonSpriteBatch {
 		lastTexture = texture;
 	}
 
-	/** @see SpriteBatch#setShader(ShaderProgram) */
+	/** @see Batch#setShader(ShaderProgram) */
 	public void setShader (ShaderProgram shader) {
 		if (drawing) {
 			flush();

@@ -85,6 +85,7 @@ import com.badlogic.gdx.utils.OrderedMap;
  * packer.dispose();
  * </pre> */
 public class PixmapPacker implements Disposable {
+
 	static final class Node {
 		public Node leftChild;
 		public Node rightChild;
@@ -161,7 +162,7 @@ public class PixmapPacker implements Disposable {
 		Rectangle rect = new Rectangle(0, 0, image.getWidth() + borderPixels, image.getHeight() + borderPixels);
 		if (rect.getWidth() > pageWidth || rect.getHeight() > pageHeight)
 			throw new GdxRuntimeException("page size for '" + name + "' to small");
-		
+
 		Node node = insert(currPage.root, rect);
 
 		if (node == null) {
@@ -189,16 +190,19 @@ public class PixmapPacker implements Disposable {
 			this.currPage.image.drawPixmap(image, 0, 0, 1, 1, (int)rect.x - 1, (int)rect.y - 1, 1, 1);
 			this.currPage.image.drawPixmap(image, imageWidth - 1, 0, 1, 1, (int)rect.x + (int)rect.width, (int)rect.y - 1, 1, 1);
 			this.currPage.image.drawPixmap(image, 0, imageHeight - 1, 1, 1, (int)rect.x - 1, (int)rect.y + (int)rect.height, 1, 1);
-			this.currPage.image.drawPixmap(image, imageWidth - 1, imageHeight - 1, 1, 1, (int)rect.x + (int)rect.width, (int)rect.y + (int)rect.height, 1, 1);
+			this.currPage.image.drawPixmap(image, imageWidth - 1, imageHeight - 1, 1, 1, (int)rect.x + (int)rect.width, (int)rect.y
+				+ (int)rect.height, 1, 1);
 			// Copy edge pixels into padding.
 			this.currPage.image.drawPixmap(image, 0, 0, imageWidth, 1, (int)rect.x, (int)rect.y - 1, (int)rect.width, 1);
-			this.currPage.image.drawPixmap(image, 0, imageHeight - 1, imageWidth, 1, (int)rect.x, (int)rect.y + (int)rect.height, (int)rect.width, 1);
+			this.currPage.image.drawPixmap(image, 0, imageHeight - 1, imageWidth, 1, (int)rect.x, (int)rect.y + (int)rect.height,
+				(int)rect.width, 1);
 			this.currPage.image.drawPixmap(image, 0, 0, 1, imageHeight, (int)rect.x - 1, (int)rect.y, 1, (int)rect.height);
-			this.currPage.image.drawPixmap(image, imageWidth - 1, 0, 1, imageHeight, (int)rect.x + (int)rect.width, (int)rect.y, 1, (int)rect.height);
+			this.currPage.image.drawPixmap(image, imageWidth - 1, 0, 1, imageHeight, (int)rect.x + (int)rect.width, (int)rect.y, 1,
+				(int)rect.height);
 		}
-		
+
 		Pixmap.setBlending(blending);
-		
+
 		currPage.addedRects.add(name);
 		return rect;
 	}
@@ -284,6 +288,17 @@ public class PixmapPacker implements Disposable {
 		return null;
 	}
 
+	/** Returns the index of the page containing the given packed rectangle.
+	 * @param name the name of the image
+	 * @return the index of the page the image is stored in or -1 */
+	public synchronized int getPageIndex (String name) {
+		for (int i = 0; i < pages.size; i++) {
+			Rectangle rect = pages.get(i).rects.get(name);
+			if (rect != null) return i;
+		}
+		return -1;
+	}
+
 	/** Disposes all resources, including Pixmap instances for the pages created so far. These page Pixmap instances are shared with
 	 * any {@link TextureAtlas} generated or updated by either {@link #generateTextureAtlas(TextureFilter, TextureFilter, boolean)}
 	 * or {@link #updateTextureAtlas(TextureAtlas, TextureFilter, TextureFilter, boolean)}. Do not call this method if you
@@ -303,7 +318,7 @@ public class PixmapPacker implements Disposable {
 		TextureAtlas atlas = new TextureAtlas();
 		for (Page page : pages) {
 			if (page.rects.size != 0) {
-				Texture texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+				Texture texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
 					@Override
 					public void dispose () {
 						super.dispose();
@@ -331,7 +346,7 @@ public class PixmapPacker implements Disposable {
 		for (Page page : pages) {
 			if (page.texture == null) {
 				if (page.rects.size != 0 && page.addedRects.size > 0) {
-					page.texture = new Texture(new ManagedPixmapTextureData(page.image, page.image.getFormat(), useMipMaps)) {
+					page.texture = new Texture(new PixmapTextureData(page.image, page.image.getFormat(), useMipMaps, false, true)) {
 						@Override
 						public void dispose () {
 							super.dispose();
@@ -376,18 +391,8 @@ public class PixmapPacker implements Disposable {
 		return padding;
 	}
 
-	public boolean duplicateBoarder () {
+	public boolean duplicateBorder () {
 		return duplicateBorder;
 	}
 
-	public class ManagedPixmapTextureData extends PixmapTextureData {
-		public ManagedPixmapTextureData (Pixmap pixmap, Format format, boolean useMipMaps) {
-			super(pixmap, format, useMipMaps, false);
-		}
-
-		@Override
-		public boolean isManaged () {
-			return true;
-		}
-	}
 }

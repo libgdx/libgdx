@@ -56,6 +56,7 @@ public class LwjglGraphics implements Graphics {
 	String extensions;
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
+	boolean softwareMode;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -209,8 +210,15 @@ public class LwjglGraphics implements Graphics {
 				try {
 					Display.create(new PixelFormat());
 				} catch (Exception ex3) {
-					if (ex3.getMessage().contains("Pixel format not accelerated"))
+					if (ex3.getMessage().contains("Pixel format not accelerated")) {
+						if (!softwareMode && config.allowSoftwareMode) {
+							softwareMode = true;
+							System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true");
+							createDisplayPixelFormat();
+							return;
+						}
 						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+					}
 					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
 				}
 				if (getDesktopDisplayMode().bitsPerPixel == 16) {
@@ -442,5 +450,9 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public boolean isFullscreen () {
 		return Display.isFullscreen();
+	}
+
+	public boolean isSoftwareMode () {
+		return softwareMode;
 	}
 }

@@ -48,12 +48,12 @@ public class StatusManager implements WorldListener {
 	}
 
 	// Achievements.
-	private static final int CLEAN_ROOMS = Config.asInt("achievements.cleanRoomsForPerfectionist", 5);
-	private static final int ROBOCIDE_ROBOTS = Config.asInt("achievements.robotsForRobocide", 50);
-	private static final int LUCKY_JIM_ROOMS = Config.asInt("achievements.roomsForLuckyJim", 10);
-	private static final int CHICKEN_ROOMS = Config.asInt("achievements.roomsForChicken", 5);
-	private static final int ADDICT_GAMES = Config.asInt("achievements.gamesForAddict", 5);
-	private static final float DAREDEVIL_SECONDS = Config.asInt("achievements.daredevilSeconds", 10);
+	static final int CLEAN_ROOMS = Config.asInt("achievements.cleanRoomsForPerfectionist", 5);
+	static final int ROBOCIDE_ROBOTS = Config.asInt("achievements.robotsForRobocide", 50);
+	static final int LUCKY_JIM_ROOMS = Config.asInt("achievements.roomsForLuckyJim", 10);
+	static final int CHICKEN_ROOMS = Config.asInt("achievements.roomsForChicken", 5);
+	static final int ADDICT_GAMES = Config.asInt("achievements.gamesForAddict", 5);
+	static final float DAREDEVIL_SECONDS = Config.asInt("achievements.daredevilSeconds", 10);
 
 	// Lives and scoring.
 	private static final int INITIAL_LIVES = Config.asInt("Player.lives", 3);

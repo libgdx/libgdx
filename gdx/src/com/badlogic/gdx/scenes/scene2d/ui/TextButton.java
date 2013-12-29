@@ -17,11 +17,12 @@
 package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import com.esotericsoftware.tablelayout.Cell;
 
 /** A button with a child {@link Label} to display text.
@@ -68,7 +69,7 @@ public class TextButton extends Button {
 		return style;
 	}
 
-	public void draw (SpriteBatch batch, float parentAlpha) {
+	public void draw (Batch batch, float parentAlpha) {
 		Color fontColor;
 		if (isDisabled && style.disabledFontColor != null)
 			fontColor = style.disabledFontColor;

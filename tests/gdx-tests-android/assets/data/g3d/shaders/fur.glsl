@@ -6,6 +6,7 @@
 #include "lights.glsl:lights"
 
 uniform float u_pass;
+varying float v_pass;
 float furLength = u_pass * 0.25;
 
 varying vec3 v_lightDir;
@@ -30,9 +31,10 @@ void main() {
 	v_lightDir = normalize(-u_dirLights[0].direction) * worldToTangent;
 	v_lightCol = u_dirLights[0].color;
 	v_viewDir = normalize(u_cameraPosition.xyz - g_position.xyz) * worldToTangent;
+	v_pass = u_pass;
 	
-	passColor();
-	passTexCoord0();	
+	pushColor();
+	pushTexCoord0();	
 }
 
 
@@ -60,10 +62,12 @@ varying vec3 v_viewDir;
 
 #define saturate(x) clamp( x, 0.0, 1.0 )
 
-uniform float u_pass;
-float furThinning = u_pass;
+varying float v_pass;
 
 void main() {
+	pullColor();
+	pullTexCoord0();
+	
 	vec4 diffuse = applyColorDiffuse(g_color);
 	vec3 specular = fetchColorSpecular();
 
@@ -78,6 +82,6 @@ void main() {
 	float spec = min(1.0, pow(NH, 10.0) * specOpacity);
 	float selfShadow = saturate(4.0 * NL);
 	
-	gl_FragColor = vec4(v_lightCol * diffuse.rgb * NL, saturate(diffuse.w - furThinning));
-	gl_FragColor.rgb += selfShadow * specular * (1.0 - furThinning) * spec;
+	gl_FragColor = vec4(v_lightCol * diffuse.rgb * NL, saturate(diffuse.w - v_pass));
+	gl_FragColor.rgb += selfShadow * specular * (1.0 - v_pass) * spec;
 }
