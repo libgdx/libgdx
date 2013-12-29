@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.tests.gles3;
 
@@ -9,6 +24,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** A basic implementation of a shader program with some OpenGL ES 3.0 function support.
  * <p>
@@ -30,7 +46,7 @@ public class ShaderProgramES3 implements Disposable {
 	/** Log containing any gl error encountered during construction. */
 	private String log = null;
 
-	private HashMap<String, UniformBlockInfo> uniformBlocks = new HashMap<String, UniformBlockInfo>();
+	private ObjectMap<String, UniformBlockInfo> uniformBlocks = new ObjectMap<String, UniformBlockInfo>();
 
 	/** Create a shader with a vertex and fragment shader. **/
 	public ShaderProgramES3 (String vertexSource, String fragmentSource) {
@@ -102,6 +118,7 @@ public class ShaderProgramES3 implements Disposable {
 		intbuf.position(0);
 		gl.glGetProgramiv(program, GL30.GL_ACTIVE_UNIFORM_BLOCKS, intbuf);
 		int numBlocks = intbuf.get(0);
+		uniformBlocks.ensureCapacity(numBlocks);
 		for (int i = 0; i < numBlocks; ++i) {
 			String blockName = gl.glGetActiveUniformBlockName(program, i);
 			uniformBlocks.put(blockName, new UniformBlockInfo(this, i));
@@ -159,6 +176,7 @@ public class ShaderProgramES3 implements Disposable {
 			Gdx.gl30.glUniformBlockBinding(owner.program, blockIndex, currentBindingPoint);
 		}
 
+		/** Accesses the information retrieved from the program about this uniform block. Should ONLY be used for debugging purposes. */
 		@Override
 		public String toString () {
 			IntBuffer ib = BufferUtils.newIntBuffer(16);
