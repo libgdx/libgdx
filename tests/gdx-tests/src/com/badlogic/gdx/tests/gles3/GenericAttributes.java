@@ -20,7 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Array;
 
-/** This class describes any number of attributes, of any type. 
+/** This class describes any number of attributes, of any type.
  * @author mattijs driel */
 public final class GenericAttributes {
 
@@ -32,7 +32,7 @@ public final class GenericAttributes {
 	/** Stride of all attributes, in bytes. */
 	public final int stride;
 	/** array of individual attributes. */
-	public final Array<GenericAttribute> allAttributes;
+	public final GenericAttribute[] allAttributes;
 
 	/** Adds generic attributes from the given types. The types describe the size of each attribute in number of floats. Generic
 	 * attributes are created with a zero-based index corresponding to their order. When writing a vertex shader, it's recommended
@@ -41,11 +41,11 @@ public final class GenericAttributes {
 	 * @param types */
 	public GenericAttributes (int... types) {
 		int localstride = 0;
-		allAttributes = new Array<GenericAttribute>(types.length);
+		allAttributes = new GenericAttribute[types.length];
 		for (int i = 0; i < types.length; ++i) {
-			allAttributes.set(i, new GenericAttribute(i, types[i], localstride));
+			allAttributes[i] = new GenericAttribute(i, types[i], localstride);
 
-			localstride += allAttributes.get(i).size * floatSize;
+			localstride += allAttributes[i].size * floatSize;
 		}
 		stride = localstride;
 	}

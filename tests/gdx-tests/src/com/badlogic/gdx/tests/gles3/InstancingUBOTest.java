@@ -65,7 +65,7 @@ public class InstancingUBOTest extends GdxTest {
 		}
 
 		String vertexShader = "#version 300 es                                                  \n"
-			+ "uniform InstancingOffsets {                                                                     \n"
+			+ "uniform InstancingOffsets {                                                       \n"
 			+ "   vec4 offset[" + numInstances + "];                                                   \n"
 			+ "};                                                                                \n"
 			+ "layout(location = 0)in vec4 vPos;                                                 \n"

@@ -63,7 +63,7 @@ public class UniformBufferObjectTest extends GdxTest {
 			+ "   gl_Position.xy += offset;                                                      \n"
 			+ "}                                                                                 \n";
 
-		// using highp instead of mediump so it's easier to store floats in UBO's
+		// using highp instead of mediump so it's easier to store correct floats in UBO's. 
 		String fragmentShader = "#version 300 es                                                \n"
 			+ "precision highp float;                                                            \n"
 			+ "uniform Colors {                                                                  \n"
