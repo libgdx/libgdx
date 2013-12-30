@@ -54,6 +54,7 @@ public class JglfwApplication implements Application {
 	private int logLevel = LOG_INFO;
 	volatile boolean running = true;
 	boolean isPaused;
+	protected String preferencesdir;
 
 	private boolean forceExit, runOnEDT;
 	private int foregroundFPS, backgroundFPS, hiddenFPS;
@@ -109,6 +110,7 @@ public class JglfwApplication implements Application {
 		foregroundFPS = config.foregroundFPS;
 		backgroundFPS = config.backgroundFPS;
 		hiddenFPS = config.hiddenFPS;
+		preferencesdir = config.prefrencesLocation;
 
 		final Thread glThread = Thread.currentThread();
 
@@ -312,7 +314,7 @@ public class JglfwApplication implements Application {
 		if (preferences.containsKey(name))
 			return preferences.get(name);
 		else {
-			Preferences prefs = new JglfwPreferences(name);
+			Preferences prefs = new JglfwPreferences(name, this.preferencesdir);
 			preferences.put(name, prefs);
 			return prefs;
 		}
