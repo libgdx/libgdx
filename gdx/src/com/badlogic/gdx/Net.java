@@ -32,6 +32,8 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.UDPSocket;
+import com.badlogic.gdx.net.UDPSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonWriter;
 
@@ -51,9 +53,12 @@ import com.badlogic.gdx.utils.JsonWriter;
  * {@link #newServerSocket(Protocol, int, ServerSocketHints)} method. The returned {@link ServerSocket} offers an
  * {@link ServerSocket#accept(SocketHints options)} method that waits for an incoming connection.
  * 
+ * To create a UDP 'socket' (client or server) invoke the {@link #newUDPSocket(int, UDPSocketHints)} method. The returned {@link UDPSocket} offers the ability to send and receive data using datagrams.
+ * 
  * @author mzechner
  * @author noblemaster
- * @author arielsan */
+ * @author arielsan
+ * @author Unkn0wn0ne */
 public interface Net {
 
 
@@ -297,4 +302,12 @@ public interface Net {
 	 * 
 	 * @param URI the URI to be opened. */
 	public void openURI (String URI);
+	
+	/** Creates a new UDP 'socket' that allows you to send data through datagrams
+	 * @param port The port
+	 * @param hints Sets the socket properties. See {@link UDPSocketHints} Set null to use the defaults
+	 * @return A UDPSocket
+	 * @throws GdxRuntimeException if there is an error creating the socket
+	 */
+	public UDPSocket newUDPSocket(int port, UDPSocketHints hints);
 }

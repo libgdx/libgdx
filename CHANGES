@@ -7,6 +7,7 @@
 - added userObject to Actor in scene2d, allowing for custom data storage
 - altered Android's hide status bar behavior
 - changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
+- added Datagram support to Gdx.Net
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213

@@ -19,39 +19,52 @@ package com.badlogic.gdx.backends.iosrobovm;
 import org.robovm.cocoatouch.foundation.NSURL;
 import org.robovm.cocoatouch.uikit.UIApplication;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.UDPSocket;
+import com.badlogic.gdx.net.UDPSocketHints;
+import com.badlogic.gdx.net.UDPSocketImpl;
 
 public class IOSNet implements Net {
 
 	NetJavaImpl netJavaImpl = new NetJavaImpl();
 	final UIApplication uiApp;
 
-	public IOSNet (IOSApplication app) {
+	public IOSNet(IOSApplication app) {
 		uiApp = app.uiApp;
 	}
 
 	@Override
-	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {
+	public void sendHttpRequest(HttpRequest httpRequest,
+			HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
 
 	@Override
-	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
+	public ServerSocket newServerSocket(Protocol protocol, int port,
+			ServerSocketHints hints) {
 		return new IOSServerSocket(protocol, port, hints);
 	}
 
 	@Override
-	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
+	public Socket newClientSocket(Protocol protocol, String host, int port,
+			SocketHints hints) {
 		return new IOSSocket(protocol, host, port, hints);
 	}
 
 	@Override
-	public void openURI (String URI) {
+	public void openURI(String URI) {
 		uiApp.openURL(new NSURL(URI));
+	}
+
+	@Override
+	public UDPSocket newUDPSocket(int port, UDPSocketHints hints) {
+		return new UDPSocketImpl(port, hints);
 	}
 }
