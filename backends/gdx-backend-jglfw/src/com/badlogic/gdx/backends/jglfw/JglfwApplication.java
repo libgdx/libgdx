@@ -110,7 +110,7 @@ public class JglfwApplication implements Application {
 		foregroundFPS = config.foregroundFPS;
 		backgroundFPS = config.backgroundFPS;
 		hiddenFPS = config.hiddenFPS;
-		preferencesdir = config.prefrencesLocation;
+		preferencesdir = config.preferencesLocation;
 
 		final Thread glThread = Thread.currentThread();
 
