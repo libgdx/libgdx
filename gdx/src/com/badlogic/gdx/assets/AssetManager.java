@@ -67,7 +67,7 @@ public class AssetManager implements Disposable {
 	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap<String, Array<String>>();
 
 	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<Class, ObjectMap<String, AssetLoader>>();
-	final Array<AssetDescriptor> loadQueue = new Array<AssetDescriptor>();
+	final Array<AssetDescriptor> loadQueue = Array.of(AssetDescriptor.class);
 	final AsyncExecutor executor;
 
 	Stack<AssetLoadingTask> tasks = new Stack<AssetLoadingTask>();
@@ -385,7 +385,7 @@ public class AssetManager implements Disposable {
 		// add the asset as a dependency of the parent asset
 		Array<String> dependencies = assetDependencies.get(parentAssetFilename);
 		if (dependencies == null) {
-			dependencies = new Array<String>();
+			dependencies = Array.of(String.class);
 			assetDependencies.put(parentAssetFilename, dependencies);
 		}
 		dependencies.add(dependendAssetDesc.fileName);
