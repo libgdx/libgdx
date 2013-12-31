@@ -76,8 +76,7 @@ public class Slider extends Widget implements Disableable {
 		this.stepSize = stepSize;
 		this.vertical = vertical;
 		this.value = min;
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

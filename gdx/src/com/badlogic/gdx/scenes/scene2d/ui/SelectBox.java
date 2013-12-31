@@ -69,8 +69,7 @@ public class SelectBox extends Widget implements Disableable {
 	public SelectBox (Object[] items, SelectBoxStyle style) {
 		setStyle(style);
 		setItems(items);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
