@@ -106,6 +106,7 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
 	public void setColors (float color) {
 		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
@@ -114,6 +115,7 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
 	public void setColors (Color tint) {
 		final float color = tint.toFloatBits();
 		for (int j = 0, length = vertexData.length; j < length; j++) {
@@ -123,6 +125,7 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
 	public void setColors (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
@@ -168,15 +171,18 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
 	public void setColor (Color tint) {
 		color = tint.toFloatBits();
 	}
 
+	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
 		color = NumberUtils.intToFloatColor(intBits);
 	}
 
+	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
 	public void setColor (float color) {
 		this.color = color;
 	}
