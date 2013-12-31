@@ -319,7 +319,7 @@ public class BitmapFont implements Disposable {
 	/** Returns the bounds of the specified text. Note the returned TextBounds instance is reused.
 	 * @see #getBounds(CharSequence, int, int, TextBounds) */
 	public TextBounds getBounds (CharSequence str) {
-		return getBounds(str, 0, str.length());
+		return getBounds(str, 0, str.length(), cache.getBounds());
 	}
 
 	/** Returns the bounds of the specified text.
