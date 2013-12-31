@@ -1,11 +1,12 @@
 [1.0.0]
+- added headless desktop application type for backends/servers, LwjglHeadlessApplication
 - support 'scaledSize' as a json skin data value for BitmapFont
 - added setAlpha(float a) method to Sprite class
 - added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
 - added Immersive Mode support to Android backend
-- added user object to Actor
+- added userObject to Actor in scene2d, allowing for custom data storage
 - altered Android's hide status bar behavior
--- changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
+- changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213

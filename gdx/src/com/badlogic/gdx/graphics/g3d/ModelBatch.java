@@ -82,7 +82,7 @@ public class ModelBatch implements Disposable {
 
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself. 
 	 * @param context The {@link RenderContext} to use.
-	 * @param shaderProvider The {@link ShaderProvider} to use.
+	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
 	public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		this.sorter = (sorter == null) ? new DefaultRenderableSorter() : sorter;
@@ -97,7 +97,7 @@ public class ModelBatch implements Disposable {
 	
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself. 
 	 * @param context The {@link RenderContext} to use.
-	 * @param shaderProvider The {@link ShaderProvider} to use. */
+	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
 	public ModelBatch(final RenderContext context, final ShaderProvider shaderProvider) {
 		this(context, shaderProvider, null);
 	}
@@ -116,7 +116,7 @@ public class ModelBatch implements Disposable {
 	}
 	
 	/** Construct a ModelBatch
-	 * @param shaderProvider The {@link ShaderProvider} to use.
+	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
 	public ModelBatch(final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		this(null, shaderProvider, sorter);
@@ -129,7 +129,7 @@ public class ModelBatch implements Disposable {
 	}
 	
 	/** Construct a ModelBatch
-	 * @param shaderProvider The {@link ShaderProvider} to use. */
+	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
 	public ModelBatch(final ShaderProvider shaderProvider) {
 		this(null, shaderProvider, null);
 	}
@@ -197,6 +197,16 @@ public class ModelBatch implements Disposable {
 	/** @return the {@link RenderContext} used by this ModelBatch. */
 	public RenderContext getRenderContext() {
 		return context;
+	}
+	
+	/** @return the {@link ShaderProvider} used by this ModelBatch. */
+	public ShaderProvider getShaderProvider() {
+		return shaderProvider;
+	}
+	
+	/** @eeturn the {@link RenderableSorter} used by this ModelBatch. */
+	public RenderableSorter getRenderableSorter() {
+		return sorter;
 	}
 	
 	/** Flushes the batch, causing all {@link Renderable}s in the batch to be rendered. Can only be called after the

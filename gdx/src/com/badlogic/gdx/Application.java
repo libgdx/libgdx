@@ -99,7 +99,7 @@ public interface Application {
 	 * 
 	 * @author mzechner */
 	public enum ApplicationType {
-		Android, Desktop, Applet, WebGL, iOS
+		Android, Desktop, HeadlessDesktop, Applet, WebGL, iOS
 	}
 
 	public static final int LOG_NONE = 0;

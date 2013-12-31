@@ -251,7 +251,6 @@ public class TiledMapPacker {
 
 		packer = new TexturePacker2(texturePackerSettings);
 
-		int tileidx = 0;
 		for (TiledMapTileSet set : sets.values()) {
 			String tilesetName = set.getName();
 			System.out.println("Processing tileset " + tilesetName);
@@ -264,7 +263,7 @@ public class TiledMapPacker {
 
 			TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
 
-			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++, tileidx++) {
+			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
 				if (usedIds != null && !usedIds.contains(gid)) {
 					System.out.println("Stripped id #" + gid + " from tileset \"" + tilesetName + "\"");
 					continue;
@@ -280,7 +279,7 @@ public class TiledMapPacker {
 				if (isBlended(tile)) setBlended(gid);
 				System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y
 					+ ")");
-				packer.addImage(tile, this.settings.atlasOutputName + "_" + tileidx);
+				packer.addImage(tile, this.settings.atlasOutputName + "_" + (gid-1));
 			}
 		}
 
@@ -532,7 +531,7 @@ public class TiledMapPacker {
 				TiledMapPacker packer = new TiledMapPacker(packerSettings);
 
 				if (!inputDir.exists()) {
-					throw new RuntimeException("Input directory does not exist");
+					throw new RuntimeException("Input directory does not exist: " + inputDir);
 				}
 
 				try {

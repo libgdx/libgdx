@@ -38,4 +38,8 @@ public class ControllerManagerStub implements ControllerManager {
 	@Override
 	public void removeListener (ControllerListener listener) {
 	}
+
+	@Override
+	public void clearListeners () {
+	}
 }
