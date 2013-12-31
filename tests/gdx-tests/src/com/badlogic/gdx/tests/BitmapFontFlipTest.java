@@ -147,7 +147,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	}
 
 	private void renderCached () {
-		cache5.setColor(red);
+		cache5.setColors(red);
 		cache5.draw(spriteBatch);
 
 		cache1.draw(spriteBatch);
@@ -160,7 +160,7 @@ public class BitmapFontFlipTest extends GdxTest {
 	}
 
 	private void renderCachedScaled () {
-		cacheScaled5.setColor(red);
+		cacheScaled5.setColors(red);
 		cacheScaled5.draw(spriteBatch);
 
 		cacheScaled1.draw(spriteBatch);

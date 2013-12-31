@@ -254,10 +254,10 @@ public class BitmapFontCache {
 		Color color = getColor();
 		float oldAlpha = color.a;
 		color.a *= alphaModulation;
-		setColor(color);
+		setColors(color);
 		draw(spriteBatch);
 		color.a = oldAlpha;
-		setColor(color);
+		setColors(color);
 	}
 
 	/** Removes all glyphs in the cache. */

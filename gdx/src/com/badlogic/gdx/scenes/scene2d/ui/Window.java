@@ -255,7 +255,7 @@ public class Window extends Table {
 			else
 				y -= (padTop - bounds.height) / 2;
 		}
-		titleCache.setColor(Color.tmp.set(getColor()).mul(style.titleFontColor));
+		titleCache.setColors(Color.tmp.set(getColor()).mul(style.titleFontColor));
 		titleCache.setPosition((int)x, (int)y);
 		titleCache.draw(batch, parentAlpha);
 	}
