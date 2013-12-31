@@ -24,12 +24,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Disposable;
 
-public class VBOGeometry {
+public class VBOGeometry implements Disposable {
 
 	GenericAttributes atts;
 	int vertexBuffer;
 	int elementBuffer;
+	int elementCount;
 
 	private VBOGeometry (GL20 gl) {
 		IntBuffer ib = BufferUtils.newIntBuffer(2);
@@ -45,11 +47,19 @@ public class VBOGeometry {
 	}
 
 	public void draw () {
-		Gdx.gl20.glDrawElements(GL30.GL_TRIANGLES, 3, GL30.GL_UNSIGNED_SHORT, 0);
+		Gdx.gl20.glDrawElements(GL30.GL_TRIANGLES, elementCount, GL30.GL_UNSIGNED_SHORT, 0);
 	}
 
 	public void drawInstances (int numInstances) {
-		Gdx.gl30.glDrawElementsInstanced(GL30.GL_TRIANGLES, 3, GL30.GL_UNSIGNED_SHORT, 0, numInstances);
+		Gdx.gl30.glDrawElementsInstanced(GL30.GL_TRIANGLES, elementCount, GL30.GL_UNSIGNED_SHORT, 0, numInstances);
+	}
+
+	public void dispose () {
+		IntBuffer ib = BufferUtils.newIntBuffer(2);
+		ib.put(vertexBuffer);
+		ib.put(elementBuffer);
+		ib.position(0);
+		Gdx.gl20.glDeleteBuffers(2, ib);
 	}
 
 	/** create a triangle VBO with POSITION attribute */
@@ -74,6 +84,91 @@ public class VBOGeometry {
 		//
 		gl.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, geom.elementBuffer);
 		gl.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, elementData.capacity() * 4, elementData, GL30.GL_STATIC_DRAW);
+
+		geom.elementCount = elementData.capacity();
+
+		return geom;
+	}
+
+	/** create a quad that fills the screen when not transformed */
+	public static VBOGeometry fsQuadV () {
+		GL20 gl = Gdx.gl20;
+
+		VBOGeometry geom = new VBOGeometry(gl);
+
+		geom.atts = new GenericAttributes(GenericAttributes.POSITION);
+
+		FloatBuffer vertexData = BufferUtils.newFloatBuffer(12).put(new float[] {1, 1, 0, -1, 1, 0, -1, -1, 0, 1, -1, 0});
+		vertexData.position(0);
+
+		ShortBuffer elementData = BufferUtils.newShortBuffer(6).put(new short[] {0, 1, 2, 0, 3, 2});
+		elementData.position(0);
+
+		//
+		gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, geom.vertexBuffer);
+		gl.glBufferData(GL30.GL_ARRAY_BUFFER, vertexData.capacity() * 4, vertexData, GL30.GL_STATIC_DRAW);
+
+		//
+		gl.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, geom.elementBuffer);
+		gl.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, elementData.capacity() * 4, elementData, GL30.GL_STATIC_DRAW);
+
+		geom.elementCount = elementData.capacity();
+
+		return geom;
+	}
+
+	/** create a quad moderately sized quad */
+	public static VBOGeometry quadV () {
+		GL20 gl = Gdx.gl20;
+
+		VBOGeometry geom = new VBOGeometry(gl);
+
+		geom.atts = new GenericAttributes(GenericAttributes.POSITION);
+
+		FloatBuffer vertexData = BufferUtils.newFloatBuffer(12).put(
+			new float[] {0.2f, 0.2f, 0, -0.2f, 0.2f, 0, -0.2f, -0.2f, 0, 0.2f, -0.2f, 0});
+		vertexData.position(0);
+
+		ShortBuffer elementData = BufferUtils.newShortBuffer(6).put(new short[] {0, 1, 2, 0, 3, 2});
+		elementData.position(0);
+
+		//
+		gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, geom.vertexBuffer);
+		gl.glBufferData(GL30.GL_ARRAY_BUFFER, vertexData.capacity() * 4, vertexData, GL30.GL_STATIC_DRAW);
+
+		//
+		gl.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, geom.elementBuffer);
+		gl.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, elementData.capacity() * 4, elementData, GL30.GL_STATIC_DRAW);
+
+		geom.elementCount = elementData.capacity();
+
+		return geom;
+	}
+
+	/** create a quad that fills the screen when not transformed */
+	public static VBOGeometry tinyQuadV () {
+		GL20 gl = Gdx.gl20;
+
+		VBOGeometry geom = new VBOGeometry(gl);
+
+		geom.atts = new GenericAttributes(GenericAttributes.POSITION);
+
+		FloatBuffer vertexData = BufferUtils.newFloatBuffer(12).put(
+			new float[] {0.05f, 0.05f, 0, -0.05f, 0.05f, 0, -0.05f, -0.05f, 0, 0.05f, -0.05f, 0});
+		vertexData.position(0);
+
+		ShortBuffer elementData = BufferUtils.newShortBuffer(6).put(new short[] {0, 1, 2, 0, 3, 2});
+		elementData.position(0);
+
+		//
+		gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, geom.vertexBuffer);
+		gl.glBufferData(GL30.GL_ARRAY_BUFFER, vertexData.capacity() * 4, vertexData, GL30.GL_STATIC_DRAW);
+
+		//
+		gl.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, geom.elementBuffer);
+		gl.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, elementData.capacity() * 4, elementData, GL30.GL_STATIC_DRAW);
+
+		geom.elementCount = elementData.capacity();
 
 		return geom;
 	}
@@ -100,6 +195,8 @@ public class VBOGeometry {
 		//
 		gl.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, geom.elementBuffer);
 		gl.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, elementData.capacity() * 4, elementData, GL30.GL_STATIC_DRAW);
+
+		geom.elementCount = elementData.capacity();
 
 		return geom;
 	}

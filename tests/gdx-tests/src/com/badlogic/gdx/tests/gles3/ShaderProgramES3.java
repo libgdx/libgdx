@@ -16,14 +16,17 @@
 
 package com.badlogic.gdx.tests.gles3;
 
+import java.nio.Buffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /** A basic implementation of a shader program with some OpenGL ES 3.0 function support.
@@ -40,13 +43,13 @@ public class ShaderProgramES3 implements Disposable {
 	public final String vertexShaderSource;
 	public final String fragmentShaderSource;
 
-	/** Buffer for a single int */
-	private IntBuffer intbuf = null;
+	static final IntBuffer ints = BufferUtils.newIntBuffer(16);
 
 	/** Log containing any gl error encountered during construction. */
 	private String log = null;
 
 	private ObjectMap<String, UniformBlockInfo> uniformBlocks = new ObjectMap<String, UniformBlockInfo>();
+	private ObjectMap<String, SamplerInfo> samplers = new ObjectMap<String, ShaderProgramES3.SamplerInfo>();
 
 	/** Create a shader with a vertex and fragment shader. **/
 	public ShaderProgramES3 (String vertexSource, String fragmentSource) {
@@ -74,17 +77,15 @@ public class ShaderProgramES3 implements Disposable {
 			return;
 		}
 
-		intbuf = BufferUtils.newIntBuffer(1);
-
 		// compile individual shader sources
 		int vertexShader, fragmentShader;
 		if ((vertexShader = initShader(gl, vertexShaderSource, GL20.GL_VERTEX_SHADER)) == 0) return;
 		if ((fragmentShader = initShader(gl, fragmentShaderSource, GL20.GL_FRAGMENT_SHADER)) == 0) return;
 
 		gl.glLinkProgram(program);
-		intbuf.position(0);
-		gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, intbuf);
-		if (intbuf.get(0) == 0) {
+		ints.position(0);
+		gl.glGetProgramiv(program, GL20.GL_LINK_STATUS, ints);
+		if (ints.get(0) == 0) {
 			log = gl.glGetProgramInfoLog(program);
 			return;
 		}
@@ -94,18 +95,15 @@ public class ShaderProgramES3 implements Disposable {
 		gl.glDetachShader(program, fragmentShader);
 		gl.glDeleteShader(vertexShader);
 		gl.glDeleteShader(fragmentShader);
-
-		// find all named inputs and outputs
-		initUniformBlocks(gl);
 	}
 
 	private int initShader (GL30 gl, String source, int type) {
 		int id = gl.glCreateShader(type);
 		gl.glShaderSource(id, source);
 		gl.glCompileShader(id);
-		intbuf.position(0);
-		gl.glGetShaderiv(id, GL20.GL_COMPILE_STATUS, intbuf);
-		if (intbuf.get(0) == 0) {
+		ints.position(0);
+		gl.glGetShaderiv(id, GL20.GL_COMPILE_STATUS, ints);
+		if (ints.get(0) == 0) {
 			log = gl.glGetShaderInfoLog(id);
 			gl.glDeleteShader(id);
 			return 0;
@@ -114,17 +112,34 @@ public class ShaderProgramES3 implements Disposable {
 		return id;
 	}
 
-	private void initUniformBlocks (GL30 gl) {
-		intbuf.position(0);
-		gl.glGetProgramiv(program, GL30.GL_ACTIVE_UNIFORM_BLOCKS, intbuf);
-		int numBlocks = intbuf.get(0);
-		uniformBlocks.ensureCapacity(numBlocks);
-		for (int i = 0; i < numBlocks; ++i) {
-			String blockName = gl.glGetActiveUniformBlockName(program, i);
-			uniformBlocks.put(blockName, new UniformBlockInfo(this, i));
-		}
+	public UniformBlockInfo registerUniformBlock (String name) {
+		UniformBlockInfo info = uniformBlocks.get(name);
+		if (info != null)
+			throw new GdxRuntimeException("Uniform block \""+name+"\" already registered.");
+		
+		int index = Gdx.gl30.glGetUniformBlockIndex(program, name);
+		if (index == GL30.GL_INVALID_INDEX)
+			throw new GdxRuntimeException("Uniform block \""+name+"\" not found. Make sure it is in use in the program. ");
+		
+		info = new UniformBlockInfo(this, index);
+		uniformBlocks.put(name, info);
+		return info;
 	}
 
+	public SamplerInfo registerTextureSampler (String name) {
+		SamplerInfo info = samplers.get(name);
+		if (info != null)
+			throw new GdxRuntimeException("Sampler \""+name+"\" already registered.");
+		
+		int index = Gdx.gl30.glGetUniformLocation(program, name);
+		if (index == GL30.GL_INVALID_INDEX)
+			throw new GdxRuntimeException("Sampler uniform \""+name+"\" not found. Make sure it is in use in the program. ");
+		
+		info = new SamplerInfo(this, index);
+		samplers.put(name, info);
+		return info;
+	}
+	
 	public boolean isCompiled () {
 		return log == null;
 	}
@@ -142,6 +157,9 @@ public class ShaderProgramES3 implements Disposable {
 		if (gl == null) return;
 
 		gl.glUseProgram(program);
+		
+		for (SamplerInfo info : samplers.values())
+			gl.glUniform1i(info.uniformIndex, info.bindingIndex);
 	}
 
 	public UniformBlockInfo getUniformBlock (String blockName) {
@@ -156,22 +174,42 @@ public class ShaderProgramES3 implements Disposable {
 		gl.glDeleteProgram(program);
 	}
 
+	public static final class SamplerInfo{
+		public final ShaderProgramES3 owner;
+		public final int uniformIndex;
+		int bindingIndex;
+		
+		SamplerInfo(ShaderProgramES3 owner, int uniformIndex)
+		{
+			this.owner = owner;
+			this.uniformIndex = uniformIndex;
+		}
+		
+		public int getBinding(){
+			return bindingIndex;
+		}
+		
+		public void setBinding(int bindingIndex) {
+			this.bindingIndex = bindingIndex;
+		}
+	}
+	
 	public static class UniformBlockInfo {
 		public final ShaderProgramES3 owner;
 		public final int blockIndex;
 
-		private int currentBindingPoint;
+		int currentBindingPoint;
 
 		UniformBlockInfo (ShaderProgramES3 owner, int index) {
 			this.owner = owner;
 			this.blockIndex = index;
 		}
 
-		public int getCurrentBindingPoint () {
+		public int getBinding () {
 			return currentBindingPoint;
 		}
 
-		public void bindToBindingPoint (int bindingPoint) {
+		public void setBinding (int bindingPoint) {
 			currentBindingPoint = bindingPoint;
 			Gdx.gl30.glUniformBlockBinding(owner.program, blockIndex, currentBindingPoint);
 		}
@@ -179,53 +217,51 @@ public class ShaderProgramES3 implements Disposable {
 		/** Accesses the information retrieved from the program about this uniform block. Should ONLY be used for debugging purposes. */
 		@Override
 		public String toString () {
-			IntBuffer ib = BufferUtils.newIntBuffer(16);
-
 			// name
 			String name = Gdx.gl30.glGetActiveUniformBlockName(owner.program, blockIndex);
 
 			// size
-			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_DATA_SIZE, ib);
-			int sizeBytes = ib.get(0);
+			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_DATA_SIZE, ints);
+			int sizeBytes = ints.get(0);
 
 			// num uniforms
-			ib.position(0);
-			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, ib);
-			int numUniforms = ib.get(0);
+			ints.position(0);
+			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, ints);
+			int numUniforms = ints.get(0);
 			String[] uniformNames = new String[numUniforms];
 			int[] uniformSizes = new int[numUniforms];
 			int[] uniformOffsets = new int[numUniforms];
 			IntBuffer ibuniforms = BufferUtils.newIntBuffer(numUniforms);
 
 			// uniform indices
-			ib.position(0);
-			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, ib);
-			ib.position(0);
+			ints.position(0);
+			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, ints);
+			ints.position(0);
 			while (ibuniforms.hasRemaining())
-				ibuniforms.put(ib.get());
+				ibuniforms.put(ints.get());
 
 			// uniform names
 			ibuniforms.position(0);
 			for (int i = 0; i < numUniforms; ++i) {
-				ib.position(0);
-				uniformNames[i] = Gdx.gl30.glGetActiveUniform(owner.program, ibuniforms.get(), ib, null);
+				ints.position(0);
+				uniformNames[i] = Gdx.gl30.glGetActiveUniform(owner.program, ibuniforms.get(), ints, null);
 			}
 
 			// uniform sizes
-			ib.position(0);
+			ints.position(0);
 			ibuniforms.position(0);
-			Gdx.gl30.glGetActiveUniformsiv(owner.program, numUniforms, ibuniforms, GL30.GL_UNIFORM_SIZE, ib);
-			ib.position(0);
+			Gdx.gl30.glGetActiveUniformsiv(owner.program, numUniforms, ibuniforms, GL30.GL_UNIFORM_SIZE, ints);
+			ints.position(0);
 			for (int i = 0; i < numUniforms; ++i)
-				uniformSizes[i] = ib.get();
+				uniformSizes[i] = ints.get();
 
 			// uniform offsets
-			ib.position(0);
+			ints.position(0);
 			ibuniforms.position(0);
-			Gdx.gl30.glGetActiveUniformsiv(owner.program, numUniforms, ibuniforms, GL30.GL_UNIFORM_OFFSET, ib);
-			ib.position(0);
+			Gdx.gl30.glGetActiveUniformsiv(owner.program, numUniforms, ibuniforms, GL30.GL_UNIFORM_OFFSET, ints);
+			ints.position(0);
 			for (int i = 0; i < numUniforms; ++i)
-				uniformOffsets[i] = ib.get();
+				uniformOffsets[i] = ints.get();
 
 			String t = "  ";
 

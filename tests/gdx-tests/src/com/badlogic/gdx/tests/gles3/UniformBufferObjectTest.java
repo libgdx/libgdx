@@ -83,8 +83,8 @@ public class UniformBufferObjectTest extends GdxTest {
 			return;
 		}
 		// set known binding points for the shader (that can be used used by UBO's)
-		shader.getUniformBlock("Colors").bindToBindingPoint(5);
-		shader.getUniformBlock("Offsets").bindToBindingPoint(3);
+		shader.registerUniformBlock("Colors").setBinding(5);
+		shader.registerUniformBlock("Offsets").setBinding(3);
 
 		// create UBO's (note the matching binding points as the block bindings)
 		colorBuffer = new UniformBufferObject(8 * 4, 5);

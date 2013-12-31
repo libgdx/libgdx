@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 /** Interface wrapping some functions of OpenGL ES 3.0
@@ -329,126 +332,168 @@ public interface GL30 extends GL20 {
 
 	public void glBindBufferBase (int target, int index, int buffer);
 
-	public void glGetActiveUniformsiv (int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params);
+	public void glDrawArraysInstanced (int mode, int first, int count, int instancecount);
 
-	public int glGetUniformBlockIndex (int program, String uniformBlockName);
+	public void glDrawBuffers (int n, IntBuffer bufs);
+
+	public void glDrawElementsInstanced (int mode, int count, int type, long indices, int instancecount);
 
 	public void glGetActiveUniformBlockiv (int program, int uniformBlockIndex, int pname, IntBuffer params);
 
 	public String glGetActiveUniformBlockName (int program, int uniformBlockIndex);
 
+	public void glGetActiveUniformsiv (int program, int uniformCount, IntBuffer uniformIndices, int pname, IntBuffer params);
+
+	public int glGetUniformBlockIndex (int program, String uniformBlockName);
+
 	public void glUniformBlockBinding (int program, int uniformBlockIndex, int uniformBlockBinding);
 
-	public void glDrawArraysInstanced (int mode, int first, int count, int instancecount);
+	// All functions below this comment might need an extra test
 
-	public void glDrawElementsInstanced (int mode, int count, int type, long indices, int instancecount);
-	
-// public void glReadBuffer (GLenum mode);
-// public void glDrawRangeElements (GLenum mode, GLuint start, GLuint end, GLsizei count, GLenum type, const void *indices);
-// public void glTexImage3D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint
-// border, GLenum format, GLenum type, const void *pixels);
-// public void glTexSubImage3D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei
-// height, GLsizei depth, GLenum format, GLenum type, const void *pixels);
-// public void glCopyTexSubImage3D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y,
-// GLsizei width, GLsizei height);
-// public void glCompressedTexImage3D (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei
-// depth, GLint border, GLsizei imageSize, const void *data);
-// public void glCompressedTexSubImage3D (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width,
-// GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const void *data);
-// public void glGenQueries (GLsizei n, GLuint *ids);
-// public void glDeleteQueries (GLsizei n, const GLuint *ids);
-// public GLboolean glIsQuery (GLuint id);
-// public void glBeginQuery (GLenum target, GLuint id);
-// public void glEndQuery (GLenum target);
-// public void glGetQueryiv (GLenum target, GLenum pname, GLint *params);
-// public void glGetQueryObjectuiv (GLuint id, GLenum pname, GLuint *params);
-// public GLboolean glUnmapBuffer (GLenum target);
-// public void glGetBufferPointerv (GLenum target, GLenum pname, void **params);
-// public void glDrawBuffers (GLsizei n, const GLenum *bufs);
-// public void glUniformMatrix2x3fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-// public void glUniformMatrix3x2fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-// public void glUniformMatrix2x4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-// public void glUniformMatrix4x2fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-// public void glUniformMatrix3x4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-// public void glUniformMatrix4x3fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
-// public void glBlitFramebuffer (GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1, GLint dstX0, GLint dstY0, GLint dstX1, GLint
-// dstY1, GLbitfield mask, GLenum filter);
-// public void glRenderbufferStorageMultisample (GLenum target, GLsizei samples, GLenum internalformat, GLsizei width, GLsizei
-// height);
-// public void glFramebufferTextureLayer (GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer);
-// public void *glMapBufferRange (GLenum target, GLintptr offset, GLsizeiptr length, GLbitfield access);
-// public void glFlushMappedBufferRange (GLenum target, GLintptr offset, GLsizeiptr length);
-// public void glBindVertexArray (GLuint array);
-// public void glDeleteVertexArrays (GLsizei n, const GLuint *arrays);
-// public void glGenVertexArrays (GLsizei n, GLuint *arrays);
-// public GLboolean glIsVertexArray (GLuint array);
-// public void glGetIntegeri_v (GLenum target, GLuint index, GLint *data);
-// public void glBeginTransformFeedback (GLenum primitiveMode);
-// public void glEndTransformFeedback (void);
-// public void glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
-// public void glTransformFeedbackVaryings (GLuint program, GLsizei count, const GLchar *const*varyings, GLenum bufferMode);
-// public void glGetTransformFeedbackVarying (GLuint program, GLuint index, GLsizei bufSize, GLsizei *length, GLsizei *size,
-// GLenum *type, GLchar *name);
-// public void glVertexAttribIPointer (GLuint index, GLint size, GLenum type, GLsizei stride, const void *pointer);
-// public void glGetVertexAttribIiv (GLuint index, GLenum pname, GLint *params);
-// public void glGetVertexAttribIuiv (GLuint index, GLenum pname, GLuint *params);
-// public void glVertexAttribI4i (GLuint index, GLint x, GLint y, GLint z, GLint w);
-// public void glVertexAttribI4ui (GLuint index, GLuint x, GLuint y, GLuint z, GLuint w);
-// public void glVertexAttribI4iv (GLuint index, const GLint *v);
-// public void glVertexAttribI4uiv (GLuint index, const GLuint *v);
-// public void glGetUniformuiv (GLuint program, GLint location, GLuint *params);
-// public GLint glGetFragDataLocation (GLuint program, const GLchar *name);
-// public void glUniform1ui (GLint location, GLuint v0);
-// public void glUniform2ui (GLint location, GLuint v0, GLuint v1);
-// public void glUniform3ui (GLint location, GLuint v0, GLuint v1, GLuint v2);
-// public void glUniform4ui (GLint location, GLuint v0, GLuint v1, GLuint v2, GLuint v3);
-// public void glUniform1uiv (GLint location, GLsizei count, const GLuint *value);
-// public void glUniform2uiv (GLint location, GLsizei count, const GLuint *value);
-// public void glUniform3uiv (GLint location, GLsizei count, const GLuint *value);
-// public void glUniform4uiv (GLint location, GLsizei count, const GLuint *value);
-// public void glClearBufferiv (GLenum buffer, GLint drawbuffer, const GLint *value);
-// public void glClearBufferuiv (GLenum buffer, GLint drawbuffer, const GLuint *value);
-// public void glClearBufferfv (GLenum buffer, GLint drawbuffer, const GLfloat *value);
-// public void glClearBufferfi (GLenum buffer, GLint drawbuffer, GLfloat depth, GLint stencil);
-// public const GLubyte *glGetStringi (GLenum name, GLuint index);
-// public void glCopyBufferSubData (GLenum readTarget, GLenum writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr
+	public void glBeginQuery (int target, int id);
+
+	public void glCopyTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int x, int y, int width,
+		int height);
+
+	public void glCompressedTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border,
+		int imageSize, ByteBuffer data);
+
+	public void glCompressedTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height,
+		int depth, int format, int imageSize, ByteBuffer data);
+
+	public void glDeleteQueries (int n, IntBuffer ids);
+
+	public void glDrawRangeElements (int mode, int start, int end, int count, int type, IntBuffer indices);
+
+	public void glEndQuery (int target);
+
+	public void glGenQueries (int n, IntBuffer ids);
+
+	// deviates
+	public ByteBuffer glGetBufferPointerv (int target, int pname);
+
+	public void glGetQueryiv (int target, int pname, IntBuffer params);
+
+	public void glGetQueryObjectuiv (int id, int pname, IntBuffer params);
+
+	public boolean glIsQuery (int id);
+
+	public void glReadBuffer (int mode);
+
+	public void glTexImage3D (int target, int level, int internalformat, int width, int height, int depth, int border, int format,
+		int type, Buffer pixels);
+
+	public void glTexSubImage3D (int target, int level, int xoffset, int yoffset, int zoffset, int width, int height, int depth,
+		int format, int type, Buffer pixels);
+
+	public void glUniformMatrix2x3fv (int location, int count, boolean transpose, FloatBuffer value);
+
+	public void glUniformMatrix3x2fv (int location, int count, boolean transpose, FloatBuffer value);
+
+	public void glUniformMatrix2x4fv (int location, int count, boolean transpose, FloatBuffer value);
+
+	public void glUniformMatrix4x2fv (int location, int count, boolean transpose, FloatBuffer value);
+
+	public void glUniformMatrix3x4fv (int location, int count, boolean transpose, FloatBuffer value);
+
+	public void glUniformMatrix4x3fv (int location, int count, boolean transpose, FloatBuffer value);
+
+	public boolean glUnmapBuffer (int target);
+
+	public void glBlitFramebuffer (int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1,
+		int mask, int filter);
+
+	public void glRenderbufferStorageMultisample (int target, int samples, int internalformat, int width, int height);
+
+	public void glFramebufferTextureLayer (int target, int attachment, int texture, int level, int layer);
+
+	/** FIXME: Deviates from spec: only provide a buffer returned by a previous call of this function, preferably of the same buffer
+	 * object. This is Lwjgl's solution, might need to change for other backends. */
+	public ByteBuffer glMapBufferRange (int target, long offset, long length, int access, ByteBuffer previousBuffer);
+
+	public void glFlushMappedBufferRange (int target, long offset, long length);
+
+	public void glBindVertexArray (int array);
+
+	public void glDeleteVertexArrays (int n, IntBuffer arrays);
+
+	public void glGenVertexArrays (int n, IntBuffer arrays);
+
+	public boolean glIsVertexArray (int array);
+
+	public void glGetIntegeri_v (int target, int index, IntBuffer data);
+
+	public void glBeginTransformFeedback (int primitiveMode);
+
+	public void glEndTransformFeedback ();
+
+	public void glBindBufferRange (int target, int index, int buffer, long offset, long size);
+
+	public void glTransformFeedbackVaryings (int program, int count, CharSequence[] varyings, int bufferMode);
+
+	public String glGetTransformFeedbackVarying (int program, int index, int bufSize, IntBuffer length, IntBuffer size,
+		IntBuffer type);
+
+// public void glVertexAttribIPointer (int index, int size, int type, int stride, const void *pointer);
+// public void glGetVertexAttribIiv (int index, int pname, int *params);
+// public void glGetVertexAttribIuiv (int index, int pname, int *params);
+// public void glVertexAttribI4i (int index, int x, int y, int z, int w);
+// public void glVertexAttribI4ui (int index, int x, int y, int z, int w);
+// public void glVertexAttribI4iv (int index, const int *v);
+// public void glVertexAttribI4uiv (int index, const int *v);
+// public void glGetUniformuiv (int program, int location, int *params);
+// public int glGetFragDataLocation (int program, const GLchar *name);
+// public void glUniform1ui (int location, int v0);
+// public void glUniform2ui (int location, int v0, int v1);
+// public void glUniform3ui (int location, int v0, int v1, int v2);
+// public void glUniform4ui (int location, int v0, int v1, int v2, int v3);
+// public void glUniform1uiv (int location, int count, const int *value);
+// public void glUniform2uiv (int location, int count, const int *value);
+// public void glUniform3uiv (int location, int count, const int *value);
+// public void glUniform4uiv (int location, int count, const int *value);
+// public void glClearBufferiv (int buffer, int drawbuffer, const int *value);
+// public void glClearBufferuiv (int buffer, int drawbuffer, const int *value);
+// public void glClearBufferfv (int buffer, int drawbuffer, const GLfloat *value);
+// public void glClearBufferfi (int buffer, int drawbuffer, GLfloat depth, int stencil);
+// public const GLubyte *glGetStringi (int name, int index);
+// public void glCopyBufferSubData (int readTarget, int writeTarget, GLintptr readOffset, GLintptr writeOffset, GLsizeiptr
 // size);
-// public void glGetUniformIndices (GLuint program, GLsizei uniformCount, const GLchar *const*uniformNames, GLuint
+// public void glGetUniformIndices (int program, int uniformCount, const GLchar *const*uniformNames, GLuint
 // *uniformIndices);
-// public GLsync glFenceSync (GLenum condition, GLbitfield flags);
+// public GLsync glFenceSync (int condition, GLbitfield flags);
 // public GLboolean glIsSync (GLsync sync);
 // public void glDeleteSync (GLsync sync);
-// public GLenum glClientWaitSync (GLsync sync, GLbitfield flags, GLuint64 timeout);
+// public int glClientWaitSync (GLsync sync, GLbitfield flags, GLuint64 timeout);
 // public void glWaitSync (GLsync sync, GLbitfield flags, GLuint64 timeout);
-// public void glGetInteger64v (GLenum pname, GLint64 *data);
-// public void glGetSynciv (GLsync sync, GLenum pname, GLsizei bufSize, GLsizei *length, GLint *values);
-// public void glGetInteger64i_v (GLenum target, GLuint index, GLint64 *data);
-// public void glGetBufferParameteri64v (GLenum target, GLenum pname, GLint64 *params);
-// public void glGenSamplers (GLsizei count, GLuint *samplers);
-// public void glDeleteSamplers (GLsizei count, const GLuint *samplers);
-// public GLboolean glIsSampler (GLuint sampler);
-// public void glBindSampler (GLuint unit, GLuint sampler);
-// public void glSamplerParameteri (GLuint sampler, GLenum pname, GLint param);
-// public void glSamplerParameteriv (GLuint sampler, GLenum pname, const GLint *param);
-// public void glSamplerParameterf (GLuint sampler, GLenum pname, GLfloat param);
-// public void glSamplerParameterfv (GLuint sampler, GLenum pname, const GLfloat *param);
-// public void glGetSamplerParameteriv (GLuint sampler, GLenum pname, GLint *params);
-// public void glGetSamplerParameterfv (GLuint sampler, GLenum pname, GLfloat *params);
-// public void glVertexAttribDivisor (GLuint index, GLuint divisor);
-// public void glBindTransformFeedback (GLenum target, GLuint id);
-// public void glDeleteTransformFeedbacks (GLsizei n, const GLuint *ids);
-// public void glGenTransformFeedbacks (GLsizei n, GLuint *ids);
-// public GLboolean glIsTransformFeedback (GLuint id);
+// public void glGetInteger64v (int pname, GLint64 *data);
+// public void glGetSynciv (GLsync sync, int pname, int bufSize, int *length, int *values);
+// public void glGetInteger64i_v (int target, int index, GLint64 *data);
+// public void glGetBufferParameteri64v (int target, int pname, GLint64 *params);
+// public void glGenSamplers (int count, int *samplers);
+// public void glDeleteSamplers (int count, const int *samplers);
+// public GLboolean glIsSampler (int sampler);
+// public void glBindSampler (int unit, int sampler);
+// public void glSamplerParameteri (int sampler, int pname, int param);
+// public void glSamplerParameteriv (int sampler, int pname, const int *param);
+// public void glSamplerParameterf (int sampler, int pname, GLfloat param);
+// public void glSamplerParameterfv (int sampler, int pname, const GLfloat *param);
+// public void glGetSamplerParameteriv (int sampler, int pname, int *params);
+// public void glGetSamplerParameterfv (int sampler, int pname, GLfloat *params);
+// public void glVertexAttribDivisor (int index, int divisor);
+// public void glBindTransformFeedback (int target, int id);
+// public void glDeleteTransformFeedbacks (int n, const int *ids);
+// public void glGenTransformFeedbacks (int n, int *ids);
+// public GLboolean glIsTransformFeedback (int id);
 // public void glPauseTransformFeedback (void);
 // public void glResumeTransformFeedback (void);
-// public void glGetProgramBinary (GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, void *binary);
-// public void glProgramBinary (GLuint program, GLenum binaryFormat, const void *binary, GLsizei length);
-// public void glProgramParameteri (GLuint program, GLenum pname, GLint value);
-// public void glInvalidateFramebuffer (GLenum target, GLsizei numAttachments, const GLenum *attachments);
-// public void glInvalidateSubFramebuffer (GLenum target, GLsizei numAttachments, const GLenum *attachments, GLint x, GLint y,
-// GLsizei width, GLsizei height);
-// public void glTexStorage2D (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height);
-// public void glTexStorage3D (GLenum target, GLsizei levels, GLenum internalformat, GLsizei width, GLsizei height, GLsizei
+// public void glGetProgramBinary (int program, int bufSize, int *length, int *binaryFormat, void *binary);
+// public void glProgramBinary (int program, int binaryFormat, const void *binary, int length);
+// public void glProgramParameteri (int program, int pname, int value);
+// public void glInvalidateFramebuffer (int target, int numAttachments, const int *attachments);
+// public void glInvalidateSubFramebuffer (int target, int numAttachments, const int *attachments, int x, int y,
+// int width, int height);
+// public void glTexStorage2D (int target, int levels, int internalformat, int width, int height);
+// public void glTexStorage3D (int target, int levels, int internalformat, int width, int height, GLsizei
 // depth);
-// public void glGetInternalformativ (GLenum target, GLenum internalformat, GLenum pname, GLsizei bufSize, GLint *params);
+// public void glGetInternalformativ (int target, int internalformat, int pname, int bufSize, int *params);
 }

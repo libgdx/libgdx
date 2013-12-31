@@ -89,7 +89,7 @@ public class InstancingUBOTest extends GdxTest {
 			System.out.println(shader.getErrorLog());
 			return;
 		}
-		shader.getUniformBlock("InstancingOffsets").bindToBindingPoint(3);
+		shader.registerUniformBlock("InstancingOffsets").setBinding(3);
 
 		offsetBuffer = new UniformBufferObject(4 * 4 * numInstances, 3);
 
