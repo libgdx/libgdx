@@ -81,8 +81,7 @@ public class Image extends Widget {
 		setDrawable(drawable);
 		this.scaling = scaling;
 		this.align = align;
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void layout () {

@@ -48,8 +48,7 @@ public class TextButton extends Button {
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
 		add(label).expand().fill();
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (ButtonStyle style) {

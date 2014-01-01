@@ -63,8 +63,7 @@ public class ImageTextButton extends Button {
 
 		setStyle(style);
 
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (ButtonStyle style) {

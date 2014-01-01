@@ -62,8 +62,7 @@ public class Touchpad extends Widget {
 		knobPosition.set(getWidth() / 2f, getHeight() / 2f);
 
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
 			@Override

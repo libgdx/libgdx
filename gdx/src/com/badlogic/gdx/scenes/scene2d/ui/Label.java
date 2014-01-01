@@ -67,8 +67,7 @@ public class Label extends Widget {
 	public Label (CharSequence text, LabelStyle style) {
 		if (text != null) this.text.append(text);
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (LabelStyle style) {
@@ -118,6 +117,17 @@ public class Label extends Widget {
 		sizeInvalid = true;
 	}
 
+	private void scaleAndComputeSize () {
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+
+		computeSize();
+
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
+	}
+
 	private void computeSize () {
 		sizeInvalid = false;
 		if (wrap) {
@@ -126,13 +136,14 @@ public class Label extends Widget {
 			bounds.set(cache.getFont().getWrappedBounds(text, width));
 		} else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
-		if (!wrap) {
-			bounds.width *= fontScaleX;
-			bounds.height *= fontScaleY;
-		}
 	}
 
 	public void layout () {
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+
 		if (sizeInvalid) computeSize();
 
 		if (wrap) {
@@ -142,11 +153,6 @@ public class Label extends Widget {
 				invalidateHierarchy();
 			}
 		}
-
-		BitmapFont font = cache.getFont();
-		float oldScaleX = font.getScaleX();
-		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
 
 		float width = getWidth(), height = getHeight();
 		StringBuilder text;
@@ -201,14 +207,14 @@ public class Label extends Widget {
 			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
-		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
+		cache.setColors(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
 		cache.setPosition(getX(), getY());
 		cache.draw(batch, parentAlpha);
 	}
 
 	public float getPrefWidth () {
 		if (wrap) return 0;
-		if (sizeInvalid) computeSize();
+		if (sizeInvalid) scaleAndComputeSize();
 		float width = bounds.width;
 		Drawable background = style.background;
 		if (background != null) width += background.getLeftWidth() + background.getRightWidth();
@@ -216,7 +222,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefHeight () {
-		if (sizeInvalid) computeSize();
+		if (sizeInvalid) scaleAndComputeSize();
 		float height = bounds.height - style.font.getDescent() * 2;
 		Drawable background = style.background;
 		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
@@ -224,7 +230,7 @@ public class Label extends Widget {
 	}
 
 	public TextBounds getTextBounds () {
-		if (sizeInvalid) computeSize();
+		if (sizeInvalid) scaleAndComputeSize();
 		return bounds;
 	}
 
