@@ -79,22 +79,20 @@ public class Test implements EntryPoint {
 
 	@Override
 	public void onModuleLoad () {
-		Type ta = ReflectionCache.getType(A.class);
-		Type tb = ReflectionCache.getType(B.class);
-		B b = (B)tb.newInstance();
-		for (Field f : tb.getFields())
-			System.out.println(f);
-		for (Method m : tb.getMethods())
-			System.out.println(m);
-
 		try {
+			Type ta = ReflectionCache.getType(A.class);
+			Type tb = ReflectionCache.getType(B.class);
+			B b = (B)tb.newInstance();
+			for (Field f : tb.getFields())
+				System.out.println(f);
+			for (Method m : tb.getMethods())
+				System.out.println(m);
+
 			tb.getDeclaredFields()[0].set(b, "Field of B");
 			ta.getDeclaredFields()[0].set(b, "Field of A");
 			System.out.println(ta.getMethod("getText").invoke(b));
 			System.out.println(ta.getMethod("getSum", float.class, float.class).invoke(b, 1, 2));
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

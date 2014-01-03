@@ -39,13 +39,14 @@ public class Type {
 
 	Field[] fields;
 	Method[] methods;
-	Constructor constructor;
+	Constructor[] constructors;
+
 	Class componentType;
 	Object[] enumConstants;
 
 	/** @return a new instance of this type created via the default constructor which must be public. */
-	public Object newInstance () {
-		return ReflectionCache.instance.newInstance(this);
+	public Object newInstance () throws NoSuchMethodException {
+		return getConstructor().newInstance();
 	}
 
 	/** @return the fully qualified name of this type. */
@@ -152,8 +153,21 @@ public class Type {
 		return methods;
 	}
 
-	public Constructor getDeclaredConstructor () throws NoSuchMethodException {
-		return constructor;
+	public Constructor[] getConstructors () {
+		return constructors;
+	}
+
+	public Constructor getDeclaredConstructor (Class... parameterTypes) throws NoSuchMethodException {
+		return getConstructor(parameterTypes);
+	}
+
+	public Constructor getConstructor (Class... parameterTypes) throws NoSuchMethodException {
+		if (constructors != null) {
+			for (Constructor c : constructors) {
+				if (c.isPublic() && c.match(parameterTypes)) return c;
+			}
+		}
+		throw new NoSuchMethodException();
 	}
 
 	public boolean isAbstract () {
@@ -220,7 +234,8 @@ public class Type {
 		return "Type [name=" + name + ",\n clazz=" + clazz + ",\n superClass=" + superClass + ",\n assignables=" + assignables
 			+ ",\n isAbstract=" + isAbstract + ",\n isInterface=" + isInterface + ",\n isPrimitive=" + isPrimitive + ",\n isEnum="
 			+ isEnum + ",\n isArray=" + isArray + ",\n isMemberClass=" + isMemberClass + ",\n isStatic=" + isStatic + ",\n fields="
-			+ Arrays.toString(fields) + ",\n methods=" + Arrays.toString(methods) + ",\n constructor=" + constructor
-			+ ",\n componentType=" + componentType + ",\n enumConstants=" + Arrays.toString(enumConstants) + "]";
+			+ Arrays.toString(fields) + ",\n methods=" + Arrays.toString(methods) + ",\n constructors="
+			+ Arrays.toString(constructors) + ",\n componentType=" + componentType + ",\n enumConstants="
+			+ Arrays.toString(enumConstants) + "]";
 	}
 }
