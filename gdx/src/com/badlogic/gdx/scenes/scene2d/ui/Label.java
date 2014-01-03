@@ -31,6 +31,8 @@ import com.badlogic.gdx.utils.StringBuilder;
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
 public class Label extends Widget {
+	static private final Color tempColor = new Color();
+
 	private LabelStyle style;
 	private final TextBounds bounds = new TextBounds();
 	private final StringBuilder text = new StringBuilder();
@@ -202,14 +204,16 @@ public class Label extends Widget {
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		Color color = getColor();
+		Color color = tempColor.set(getColor());
+		color.a *= parentAlpha;
 		if (style.background != null) {
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			batch.setColor(color.r, color.g, color.b, color.a);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
-		cache.setColors(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
+		if (style.fontColor != null) color.mul(style.fontColor);
+		cache.setColors(color);
 		cache.setPosition(getX(), getY());
-		cache.draw(batch, parentAlpha);
+		cache.draw(batch);
 	}
 
 	public float getPrefWidth () {
