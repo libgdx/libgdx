@@ -280,6 +280,34 @@
 		</ant>
 	</target>
 
+	<!-- gdx box2d -->
+	<target name="gdx-box2d" depends="gdx-core">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d">
+			<property name="distDir" value="${distDir}/extensions/gdx-box2d"/>
+			<property name="jar" value="gdx-box2d"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
+	<target name="gdx-box2d-gwt" depends="gdx-core,gdx-backend-gwt,gdx-box2d">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-gwt.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-box2d/gdx-box2d.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-dev.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backends-gwt/libs/gwt-user.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-box2d/gdx-box2d-gwt">
+			<property name="distDir" value="${distDir}/extensions/gdx-box2d"/>
+			<property name="jar" value="gdx-box2d-gwt"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+	
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
@@ -327,7 +355,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
+depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor,gdx-box2d,gdx-box2d-gwt"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

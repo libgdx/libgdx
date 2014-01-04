@@ -1,0 +1,45 @@
+[name]
+LibGDX Box2D
+
+[description]
+LibGDX Box2D bindings for all platforms.
+
+[author]
+Mario Zechner
+
+[author-website]
+http://libgdx.badlogicgames.com/
+
+[homepage]
+http://libgdx.badlogicgames.com/
+
+[logo]
+http://libgdx.googlecode.com/svn/trunk/extensions/gdx-setup-ui/config/libgdx-logo.png
+
+[stable-version]
+0.9.9
+
+[latest-url]
+http://libgdx.badlogicgames.com/nightlies/libgdx-nightly-latest.zip
+
+[gwt]
+com.badlogic.gdx.physics.box2d.box2d-gwt
+
+[libs-common]
+gdx-box2d.jar
+gdx-box2d-sources.jar
+
+[libs-desktop]
+gdx-box2d-natives.jar
+
+[libs-android]
+armeabi/libgdx-box2d.so
+armeabi-v7a/libgdx-box2d.so
+x86/libgdx-box2d.so
+
+[libs-html]
+gdx-box2d-gwt.jar
+gdx-box2d-gwt-sources.jar
+
+[libs-robovm]
+ios/libgdx-box2d.a

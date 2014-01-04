@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gdx-box2d"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
