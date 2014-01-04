@@ -38,12 +38,17 @@ public class DeferredShadingTest extends AbstractES3test {
 	FrameBufferObject fboGbufferModels;
 	FrameBufferObject fboGbufferLights;
 
-	GenericTexture modelAlbedo;
-	GenericTexture modelNormal;
+	// drawing utilities
 	VBOGeometry fsQuad;
 	VBOGeometry sphere;
+
+	// models
+	GenericTexture modelAlbedo;
+	GenericTexture modelNormal;
 	VBOGeometry model1;
+	Matrix4 model1world = new Matrix4();
 	VBOGeometry model2;
+	Matrix4 model2world = new Matrix4();
 
 	// gbuffer contents
 	TextureFormatES3 albedoFormat;
@@ -59,6 +64,7 @@ public class DeferredShadingTest extends AbstractES3test {
 	UniformBufferObject pointLightView;
 	UniformBufferObject pointLightParams;
 	UniformBufferObject cameraBuffer;
+	UniformBufferObject modelBuffer;
 	Pointlight[] lights;
 	Matrix4 proj = new Matrix4();
 	Matrix4 projInv = new Matrix4();
@@ -85,7 +91,10 @@ public class DeferredShadingTest extends AbstractES3test {
 
 		long usage = Usage.Position | Usage.Normal | Usage.Tangent | Usage.BiNormal | Usage.TextureCoordinates;
 		model1 = VBOGeometry.box(usage);
+		model1world.setToWorld(Vector3.Zero, new Vector3(1.1f, 0, 0), new Vector3(0.2f, 1.0f, 0.1f));
 		model2 = VBOGeometry.sphere(usage);
+		model2world.setToWorld(new Vector3(0.6f, 0.4f, 0.5f), Vector3.X, Vector3.Z);
+
 		sphere = VBOGeometry.sphere(Usage.Position);
 		fsQuad = VBOGeometry.fsQuad(Usage.Position);
 
@@ -178,6 +187,7 @@ public class DeferredShadingTest extends AbstractES3test {
 		gBufferProgram.registerTextureSampler("albedoTexture").setBinding(0);
 		gBufferProgram.registerTextureSampler("normalTexture").setBinding(1);
 		gBufferProgram.registerUniformBlock("CameraMatrices").setBinding(0);
+		gBufferProgram.registerUniformBlock("ModelMatrices").setBinding(3);
 
 		//
 		vert_src = Gdx.files.internal("data/shaders/def_lighting.vert").readString();
@@ -236,14 +246,18 @@ public class DeferredShadingTest extends AbstractES3test {
 	private void prepareUniformbuffers () {
 		final int floatSize = 4;
 
-		// 4 float matrices
+		// 4 matrices
 		cameraBuffer = new UniformBufferObject(floatSize * (16 * 4), 0);
 
+		// 1 matrix
+		modelBuffer = new UniformBufferObject(floatSize * (16), 3);
+		
 		// light 3d position, radius and magnitude (color+intensity)
 		final int numLights = 6;
 		pointLightView = new UniformBufferObject(floatSize * 4 * numLights, 1);
 		pointLightParams = new UniformBufferObject(floatSize * 8 * numLights, 2);
 
+		// fill everything that is ok to be filled in advance
 		MathUtils.random.setSeed(0);
 		lights = new Pointlight[numLights];
 		for (int i = 0, j = 0; i < numLights; ++i) {
@@ -255,20 +269,18 @@ public class DeferredShadingTest extends AbstractES3test {
 		}
 		lights[0].colorMagnitude.scl(4);
 
-		float[] rawParams = new float[numLights * 8];
+		float[] rawLightParams = new float[numLights * 8];
 		for (int i = 0, j = 0; i < numLights; ++i) {
-			rawParams[j++] = lights[i].worldPos.x;
-			rawParams[j++] = lights[i].worldPos.y;
-			rawParams[j++] = lights[i].worldPos.z;
-			rawParams[j++] = lights[i].distLimit;
-			rawParams[j++] = lights[i].colorMagnitude.x;
-			rawParams[j++] = lights[i].colorMagnitude.y;
-			rawParams[j++] = lights[i].colorMagnitude.z;
-			rawParams[j++] = 0;
+			rawLightParams[j++] = lights[i].worldPos.x;
+			rawLightParams[j++] = lights[i].worldPos.y;
+			rawLightParams[j++] = lights[i].worldPos.z;
+			rawLightParams[j++] = lights[i].distLimit;
+			rawLightParams[j++] = lights[i].colorMagnitude.x;
+			rawLightParams[j++] = lights[i].colorMagnitude.y;
+			rawLightParams[j++] = lights[i].colorMagnitude.z;
+			rawLightParams[j++] = 0;
 		}
-		FloatBuffer fb = pointLightParams.getDataBuffer().asFloatBuffer();
-		fb.position(0);
-		fb.put(rawParams);
+		pointLightParams.getDataBuffer().asFloatBuffer().put(rawLightParams);
 	}
 
 	@Override
@@ -300,8 +312,6 @@ public class DeferredShadingTest extends AbstractES3test {
 		renderGbufferContents();
 	}
 
-	private boolean once = true;
-
 	private void updateView (float aspectRatio) {
 
 		// update camera
@@ -317,9 +327,7 @@ public class DeferredShadingTest extends AbstractES3test {
 		viewProj.set(proj).mul(view);
 
 		// store camera matrices in buffer
-		FloatBuffer fb = cameraBuffer.getDataBuffer().asFloatBuffer();
-		fb.position(0);
-		fb.put(view.val).put(proj.val).put(viewProj.val).put(projInv.val);
+		cameraBuffer.getDataBuffer().asFloatBuffer().put(view.val).put(proj.val).put(viewProj.val).put(projInv.val);
 	}
 
 	/** Transform all lights from world space into view space in one go. */
@@ -333,9 +341,7 @@ public class DeferredShadingTest extends AbstractES3test {
 		}
 		Matrix4.mulVec(view.val, subData, 0, lights.length, 4);
 
-		FloatBuffer fb = pointLightView.getDataBuffer().asFloatBuffer();
-		fb.position(0);
-		fb.put(subData);
+		pointLightView.getDataBuffer().asFloatBuffer().put(subData);
 	}
 
 	/** Render all models in the scene into the gbuffer. */
@@ -350,10 +356,22 @@ public class DeferredShadingTest extends AbstractES3test {
 		gBufferProgram.use();
 		cameraBuffer.bind();
 
+		Matrix4 m = new Matrix4();
+		
 		modelAlbedo.bind(0);
 		modelNormal.bind(1);
+
+		m.set(viewProj).mul(model1world);
+		modelBuffer.getDataBuffer().asFloatBuffer().put(m.val);
+		modelBuffer.bind();
 		model1.bind();
 		model1.draw();
+
+		m.set(viewProj).mul(model2world);
+		modelBuffer.getDataBuffer().asFloatBuffer().put(m.val);
+		modelBuffer.bind();
+		model2.bind();
+		model2.draw();
 
 		// assume all models are drawn now
 

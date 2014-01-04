@@ -80,6 +80,8 @@ public class UniformBufferObject implements Disposable {
 		changeOffset = offset;
 		changeSize = length;
 		isDirty = true;
+		
+		dataBuffer.position(changeOffset);
 		return dataBuffer;
 	}
 

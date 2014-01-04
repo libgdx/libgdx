@@ -7,6 +7,10 @@ uniform CameraMatrices {
 	mat4 invProjection;
 };
 
+uniform ModelMatrices {
+	mat4 modelViewProjection;
+};
+
 layout(location = 0)in vec3 inPos;
 layout(location = 1)in vec3 inNorm;
 layout(location = 2)in vec3 inTan;
@@ -18,7 +22,7 @@ out vec2 texcoord;
 
 void main()
 {                                                   
-	gl_Position = viewProjection * vec4(inPos, 1);
+	gl_Position = modelViewProjection * vec4(inPos, 1);
 	
 	texcoord = inTex;
 	
