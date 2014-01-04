@@ -1,10 +1,30 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.tests.gles3;
 
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.GLTexture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
 
@@ -14,131 +34,103 @@ import com.badlogic.gdx.utils.BufferUtils;
  * The test first draws blue and red to 2 textures using a shader with 2 fragment outputs. This is done once, after which the
  * textures are used to fill in a quad and triangle shape, to show that the operation was successful.
  * @author mattijs driel */
-public class MultipleDrawBuffersTest extends GdxTest {
-	ShaderProgramES3 shader;
+public class MultipleDrawBuffersTest extends AbstractES3test {
+	ShaderProgramES3 drawTexProgram;
+	ShaderProgramES3 resultProgram;
 	GenericTexture tex0;
 	GenericTexture tex1;
 	VBOGeometry quad;
 	VBOGeometry tri;
 
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
+	private final String vertexShader = "#version 300 es                                    \n"
+		+ "layout(location = 0)in vec4 vPos;                                                 \n"
+		+ "void main()                                                                       \n"
+		+ "{                                                                                 \n"
+		+ "   gl_Position = vPos;                                                            \n"
+		+ "}                                                                                 \n";
 
+	private final String drawTexturesShader = "#version 300 es                              \n"
+		+ "precision highp float;                                                            \n"
+		+ "layout(location = 0)out vec4 redOutput;                                           \n"
+		+ "layout(location = 1)out vec4 blueOutput;                                          \n"
+		+ "void main()                                                                       \n"
+		+ "{                                                                                 \n"
+		+ "   redOutput = vec4(1,0,0,1);                                                     \n"
+		+ "   blueOutput = vec4(0,0,1,1);                                                    \n"
+		+ "}                                                                                 \n";
+	
+	private final String showResultShader = "#version 300 es                                \n"
+		+ "precision mediump float;                                                          \n"
+		+ "uniform sampler2D mytexture;                                                      \n"
+		+ "out vec4 fragColor;                                                               \n"
+		+ "void main()                                                                       \n"
+		+ "{                                                                                 \n"
+		+ "   fragColor = texture2D(mytexture, gl_FragCoord.xy);                             \n"
+		+ "}                                                                                 \n";
+	
 	@Override
-	public void create () {
-		if (Gdx.graphics.getGL30() == null) {
-			System.out.println("This test requires OpenGL ES 3.0.");
-			System.out.println("Make sure needsGL20() is returning true. (ES 2.0 is a subset of ES 3.0.)");
-			System.out
-				.println("Otherwise, your system does not support it, or it might not be available yet for the current backend.");
-			return;
-		}
-
+	public boolean createLocal () {
 		// create empty draw target textures
-		tex0 = new GenericTexture(128, 128, GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_NEAREST);
-		tex1 = new GenericTexture(128, 128, GL30.GL_RGB8, GL30.GL_RGB, GL30.GL_NEAREST);
+		TextureFormatES3 format = new TextureFormatES3();
+		format.width = format.height = 256;
+		
+		tex0 = new GenericTexture(format);
+		tex1 = new GenericTexture(format);
 
-		writeColorToTextures();
-
-		String vertexShader = "#version 300 es                                                  \n"
-			+ "layout(location = 0)in vec4 vPos;                                                 \n"
-			+ "void main()                                                                       \n"
-			+ "{                                                                                 \n"
-			+ "   gl_Position = vPos;                                                            \n"
-			+ "}                                                                                 \n";
-
-		String fragmentShader = "#version 300 es                                                \n"
-			+ "precision highp float;                                                            \n"
-			+ "uniform sampler2D texture0;                                                       \n"
-			+ "out vec4 fragColor;                                                               \n"
-			+ "void main()                                                                       \n"
-			+ "{                                                                                 \n"
-			+ "   fragColor = texture2D(texture0, gl_FragCoord.xy);                              \n"
-			+ "}                                                                                 \n";
-
-		// load the shader
-		shader = new ShaderProgramES3(vertexShader, fragmentShader);
-		if (!shader.isCompiled()) {
-			System.out.println(shader.getErrorLog());
-			return;
+		// load the shaders
+		drawTexProgram = new ShaderProgramES3(vertexShader, drawTexturesShader);
+		if (!drawTexProgram.isCompiled()) {
+			System.out.println(drawTexProgram.getErrorLog());
+			return false;
 		}
-		shader.registerTextureSampler("texture0").setBinding(0);
 
-		tri = VBOGeometry.triangleV();
-		quad = VBOGeometry.quadV();
+		resultProgram = new ShaderProgramES3(vertexShader, showResultShader);
+		if (!resultProgram.isCompiled()) {
+			System.out.println(resultProgram.getErrorLog());
+			return false;
+		}
+		resultProgram.registerTextureSampler("mytexture").setBinding(0);
+
+		tri = VBOGeometry.triangle(Usage.Position);
+		quad = VBOGeometry.quad(Usage.Position);
+
+		Gdx.gl30.glClearColor(0, 0, 0, 0);
+		
+		return writeColorToTextures();
 	}
 
-	void writeColorToTextures () {
+	boolean writeColorToTextures () {
 
 		// generate and bind FBO
-		IntBuffer ib = BufferUtils.newIntBuffer(1);
-		Gdx.gl30.glGenFramebuffers(1, ib);
-		int fboName = ib.get(0);
-		Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fboName);
+		FrameBufferObject fbo = new FrameBufferObject(GL30.GL_COLOR_ATTACHMENT0, GL30.GL_COLOR_ATTACHMENT1);
 
 		// bind textures to current FBO
-		tex0.bindToFBO(GL30.GL_COLOR_ATTACHMENT0);
-		tex1.bindToFBO(GL30.GL_COLOR_ATTACHMENT1);
+		fbo.bind();
+		tex0.setFBOBinding(GL30.GL_COLOR_ATTACHMENT0);
+		tex1.setFBOBinding(GL30.GL_COLOR_ATTACHMENT1);
 
-		// set FBO to draw to textures
-		IntBuffer cDrawBuffers = BufferUtils.newIntBuffer(2);
-		cDrawBuffers.put(GL30.GL_COLOR_ATTACHMENT0);
-		cDrawBuffers.put(GL30.GL_COLOR_ATTACHMENT1);
-		cDrawBuffers.position(0);
-		Gdx.gl30.glDrawBuffers(2, cDrawBuffers);
-
-		String vertexShader = "#version 300 es                                                  \n"
-			+ "layout(location = 0)in vec4 vPos;                                                 \n"
-			+ "void main()                                                                       \n"
-			+ "{                                                                                 \n"
-			+ "   gl_Position = vPos;                                                            \n"
-			+ "}                                                                                 \n";
-
-		String fragmentShader = "#version 300 es                                                \n"
-			+ "precision highp float;                                                            \n"
-			+ "layout(location = 0)out vec4 redOutput;                                           \n"
-			+ "layout(location = 1)out vec4 blueOutput;                                          \n"
-			+ "void main()                                                                       \n"
-			+ "{                                                                                 \n"
-			+ "   redOutput = vec4(1,0,0,1);                                                     \n"
-			+ "   blueOutput = vec4(0,0,1,1);                                                    \n"
-			+ "}                                                                                 \n";
-
-		// load the shader
-		shader = new ShaderProgramES3(vertexShader, fragmentShader);
-		if (!shader.isCompiled()) {
-			System.out.println(shader.getErrorLog());
-			return;
-		}
-
-		VBOGeometry geom = VBOGeometry.fsQuadV();
+		VBOGeometry geom = VBOGeometry.fsQuad(Usage.Position);
 
 		// render to texture
-		shader.use();
+		drawTexProgram.use();
 		geom.bind();
 		geom.draw();
 
 		geom.dispose();
-		shader.dispose();
 
 		// bind back to normal buffer
-		Gdx.gl30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, 0);
-
-		ib.position(0);
-		Gdx.gl30.glDeleteFramebuffers(1, ib);
+		fbo.unbind();
+		fbo.dispose();
+		
+		return true;
 	}
 
 	@Override
-	public void render () {
-		if (Gdx.graphics.getGL30() == null || !shader.isCompiled()) return;
-
-		Gdx.gl30.glClearColor(0, 0, 0, 0);
+	public void renderLocal () {
 		Gdx.gl30.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
 		// render results
-		shader.use();
+		resultProgram.use();
 
 		tex0.bind();
 		tri.bind();

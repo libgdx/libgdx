@@ -22,6 +22,7 @@ import java.nio.IntBuffer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.BufferUtils;
@@ -29,27 +30,14 @@ import com.badlogic.gdx.utils.BufferUtils;
 /** This test demonstrates the use of geometry instancing from OpenGL ES 3.0. In this specific implementation, an array of
  * positional offsets is stored in an Uniform Buffer Object, which are used in the vertex shader to offset each instance.
  * @author mattijs driel */
-public class InstancingUBOTest extends GdxTest {
+public class InstancingUBOTest extends AbstractES3test {
 	ShaderProgramES3 shader;
 	VBOGeometry geom;
 	UniformBufferObject offsetBuffer;
 	int numInstances; // defined by this system's limit
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
-	public void create () {
-		if (Gdx.graphics.getGL30() == null) {
-			System.out.println("This test requires OpenGL ES 3.0.");
-			System.out.println("Make sure needsGL20() is returning true. (ES 2.0 is a subset of ES 3.0.)");
-			System.out
-				.println("Otherwise, your system does not support it, or it might not be available yet for the current backend.");
-			return;
-		}
-
+	public boolean createLocal () {
 		Gdx.gl20.glClearColor(0, 0, 0, 0);
 
 		// Uniform Blocks (and UBO's as well) may store a limited number of bytes, which sets the limit for instancing for a single
@@ -65,7 +53,7 @@ public class InstancingUBOTest extends GdxTest {
 		}
 
 		String vertexShader = "#version 300 es                                                  \n"
-			+ "uniform InstancingOffsets {                                                       \n"
+			+ "uniform InstancingOffsets {                                                                         \n"
 			+ "   vec4 offset[" + numInstances + "];                                                   \n"
 			+ "};                                                                                \n"
 			+ "layout(location = 0)in vec4 vPos;                                                 \n"
@@ -87,7 +75,7 @@ public class InstancingUBOTest extends GdxTest {
 		shader = new ShaderProgramES3(vertexShader, fragmentShader);
 		if (!shader.isCompiled()) {
 			System.out.println(shader.getErrorLog());
-			return;
+			return false;
 		}
 		shader.registerUniformBlock("InstancingOffsets").setBinding(3);
 
@@ -100,11 +88,13 @@ public class InstancingUBOTest extends GdxTest {
 			fb.put(MathUtils.random(-0.9f, 0.9f));
 
 		// just a random geometry with a single attribute (POSITION)
-		geom = VBOGeometry.tinyTriangleV();
+		geom = VBOGeometry.tinyTriangle(Usage.Position);
+
+		return true;
 	}
 
 	@Override
-	public void render () {
+	public void renderLocal () {
 		if (Gdx.graphics.getGL30() == null || !shader.isCompiled()) return;
 
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

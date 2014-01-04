@@ -33,27 +33,27 @@ import com.badlogic.gdx.utils.Disposable;
  * 
  * @author mattijs driel */
 public class UniformBufferObject implements Disposable {
-	private int bufferID;
+	private final int glHandle;
 	private int currentBindingPoint;
 
-	private ByteBuffer dataBuffer;
-	private IntBuffer intbuf;
+	private final ByteBuffer dataBuffer;
+	private final int byteCapacity;
+	private static final IntBuffer singleInt = BufferUtils.newIntBuffer(1);
 
 	private boolean isDirty = false;
+	private int changeOffset;
+	private int changeSize;
 
 	public UniformBufferObject (int bytesize, int bindingPoint) {
-		this(BufferUtils.newByteBuffer(bytesize), bindingPoint);
-	}
+		this.dataBuffer = BufferUtils.newByteBuffer(bytesize);
+		this.byteCapacity = dataBuffer.capacity();
 
-	public UniformBufferObject (ByteBuffer dataBuffer, int bindingPoint) {
-		this.dataBuffer = dataBuffer;
+		singleInt.position(0);
+		Gdx.gl30.glGenBuffers(1, singleInt);
+		glHandle = singleInt.get(0);
 
-		intbuf = BufferUtils.newIntBuffer(1);
-		Gdx.gl30.glGenBuffers(1, intbuf);
-		bufferID = intbuf.get(0);
-
-		Gdx.gl30.glBindBuffer(GL30.GL_UNIFORM_BUFFER, bufferID);
-		Gdx.gl30.glBufferData(GL30.GL_UNIFORM_BUFFER, dataBuffer.capacity(), dataBuffer, GL30.GL_DYNAMIC_DRAW);
+		Gdx.gl30.glBindBuffer(GL30.GL_UNIFORM_BUFFER, glHandle);
+		Gdx.gl30.glBufferData(GL30.GL_UNIFORM_BUFFER, byteCapacity, dataBuffer, GL30.GL_DYNAMIC_DRAW);
 
 		remapBindingPoint(bindingPoint);
 	}
@@ -61,30 +61,43 @@ public class UniformBufferObject implements Disposable {
 	/** Changes the binding point used by this UBO */
 	public void remapBindingPoint (int newBindingPoint) {
 		currentBindingPoint = newBindingPoint;
-		Gdx.gl30.glBindBufferBase(GL30.GL_UNIFORM_BUFFER, currentBindingPoint, bufferID);
+		Gdx.gl30.glBindBufferBase(GL30.GL_UNIFORM_BUFFER, currentBindingPoint, glHandle);
 	}
 
 	public int getBindingPoint () {
 		return currentBindingPoint;
 	}
 
+	public int getByteCapacity () {
+		return byteCapacity;
+	}
+
 	public ByteBuffer getDataBuffer () {
+		return getDataBuffer(0, byteCapacity);
+	}
+
+	public ByteBuffer getDataBuffer (int offset, int length) {
+		changeOffset = offset;
+		changeSize = length;
 		isDirty = true;
 		return dataBuffer;
 	}
 
 	/** Binds the buffer to GL_UNIFORM_BUFFER. Modifies the data if a call to getDataBuffer was done. */
 	public void bind () {
-		Gdx.gl30.glBindBuffer(GL30.GL_UNIFORM_BUFFER, bufferID);
+		Gdx.gl30.glBindBuffer(GL30.GL_UNIFORM_BUFFER, glHandle);
 		if (isDirty) {
 			dataBuffer.position(0);
-			Gdx.gl30.glBufferSubData(GL30.GL_UNIFORM_BUFFER, 0, dataBuffer.capacity(), dataBuffer);
+			Gdx.gl30.glBufferSubData(GL30.GL_UNIFORM_BUFFER, changeOffset, changeSize, dataBuffer);
 			isDirty = false;
 		}
 	}
 
 	@Override
 	public void dispose () {
-		Gdx.gl30.glDeleteBuffers(1, intbuf);
+		singleInt.position(0);
+		singleInt.put(glHandle);
+		singleInt.position(0);
+		Gdx.gl30.glDeleteBuffers(1, singleInt);
 	}
 }

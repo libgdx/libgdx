@@ -21,66 +21,56 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** This test demonstrates the use of Uniform Buffer Objects from OpenGL ES 3.0
  * @author mattijs driel */
-public class UniformBufferObjectTest extends GdxTest {
+public class UniformBufferObjectTest extends AbstractES3test {
 	ShaderProgramES3 shader;
 	VBOGeometry geom;
 	UniformBufferObject offsetBuffer;
 	UniformBufferObject colorBuffer;
 	float progress = 0;
 
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
+	private final String vertexShader = "#version 300 es                                    \n"
+		+ "uniform Offsets {                                                                 \n"
+		+ "   vec2 offset;                                                                   \n"
+		+ "   float rotate;                                                                  \n"
+		+ "};                                                                                \n"
+		+ "layout(location = 0)in vec4 vPos;                                                 \n"
+		+ "void main()                                                                       \n"
+		+ "{                                                                                 \n"
+		+ "   gl_Position = vPos;                                                            \n"
+		+ "   gl_Position.x = vPos.x * cos(rotate) - vPos.y * sin(rotate);                   \n"
+		+ "   gl_Position.y = vPos.x * sin(rotate) + vPos.y * cos(rotate);                   \n"
+		+ "   gl_Position.xy += offset;                                                      \n"
+		+ "}                                                                                 \n";
+
+	private final String fragmentShader = "#version 300 es                                  \n"
+		+ "precision highp float;                                                            \n"
+		+ "uniform Colors {                                                                  \n"
+		+ "   vec4 colorA;                                                                   \n"
+		+ "   vec4 colorB;                                                                   \n"
+		+ "};                                                                                \n"
+		+ "out vec4 fragColor;                                                               \n"
+		+ "void main()                                                                       \n"
+		+ "{                                                                                 \n"
+		+ "   fragColor = colorA + colorB;                                                   \n"
+		+ "}                                                                                 \n";
 
 	@Override
-	public void create () {
-		if (Gdx.graphics.getGL30() == null) {
-			System.out.println("This test requires OpenGL ES 3.0.");
-			System.out.println("Make sure needsGL20() is returning true. (ES 2.0 is a subset of ES 3.0.)");
-			System.out.println("Otherwise, your system does not support it, or it might not be available yet for the current backend.");
-			return;
-		}
-
+	public boolean createLocal () {
 		Gdx.gl20.glClearColor(0, 0, 0, 0);
 
-		String vertexShader = "#version 300 es                                                  \n"
-			+ "uniform Offsets {                                                   \n"
-			+ "   vec2 offset;                                                                   \n"
-			+ "   float rotate;                                                                  \n"
-			+ "};                                                                                \n"
-			+ "layout(location = 0)in vec4 vPos;                                                 \n"
-			+ "void main()                                                                       \n"
-			+ "{                                                                                 \n"
-			+ "   gl_Position = vPos;                                                            \n"
-			+ "   gl_Position.x = vPos.x * cos(rotate) - vPos.y * sin(rotate);                   \n"
-			+ "   gl_Position.y = vPos.x * sin(rotate) + vPos.y * cos(rotate);                   \n"
-			+ "   gl_Position.xy += offset;                                                      \n"
-			+ "}                                                                                 \n";
-
-		// using highp instead of mediump so it's easier to store correct floats in UBO's. 
-		String fragmentShader = "#version 300 es                                                \n"
-			+ "precision highp float;                                                            \n"
-			+ "uniform Colors {                                                                  \n"
-			+ "   vec4 colorA;                                                                   \n"
-			+ "   vec4 colorB;                                                                   \n"
-			+ "};                                                                                \n"
-			+ "out vec4 fragColor;                                                               \n"
-			+ "void main()                                                                       \n"
-			+ "{                                                                                 \n"
-			+ "   fragColor = colorA + colorB;                                                   \n"
-			+ "}                                                                                 \n";
+		// using highp instead of mediump so it's easier to store correct floats in UBO's.
 
 		// load the shader
 		shader = new ShaderProgramES3(vertexShader, fragmentShader);
 		if (!shader.isCompiled()) {
 			System.out.println(shader.getErrorLog());
-			return;
+			return false;
 		}
 		// set known binding points for the shader (that can be used used by UBO's)
 		shader.registerUniformBlock("Colors").setBinding(5);
@@ -96,12 +86,13 @@ public class UniformBufferObjectTest extends GdxTest {
 		fb.put(new float[] {1, 0, 0, 1, 0, 1, 0, 1});
 
 		// just a random geometry with a single attribute (POSITION)
-		geom = VBOGeometry.triangleV();
+		geom = VBOGeometry.triangle(Usage.Position);
+
+		return true;
 	}
 
 	@Override
-	public void render () {
-		if (Gdx.graphics.getGL30() == null || !shader.isCompiled()) return;
+	public void renderLocal () {
 
 		// update only the offset
 		progress += 0.01f;

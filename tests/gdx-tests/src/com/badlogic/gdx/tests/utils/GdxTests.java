@@ -49,8 +49,10 @@ import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
+import com.badlogic.gdx.tests.gles3.DeferredShadingTest;
 import com.badlogic.gdx.tests.gles3.MultipleDrawBuffersTest;
 import com.badlogic.gdx.tests.gles3.InstancingUBOTest;
+import com.badlogic.gdx.tests.gles3.NormalMappingTest;
 import com.badlogic.gdx.tests.gles3.UniformBufferObjectTest;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
@@ -89,6 +91,7 @@ public class GdxTests {
 		ComplexActionTest.class,
 		CullTest.class,
 		MultipleDrawBuffersTest.class, 
+		DeferredShadingTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
@@ -151,6 +154,7 @@ public class GdxTests {
 		MyFirstTriangle.class,
 		NetAPITest.class,
 		NinePatchTest.class,
+		NormalMappingTest.class,
 		ObjTest.class,
 		OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class,

@@ -43,7 +43,7 @@ public class ShaderProgramES3 implements Disposable {
 	public final String vertexShaderSource;
 	public final String fragmentShaderSource;
 
-	static final IntBuffer ints = BufferUtils.newIntBuffer(16);
+	static final IntBuffer ints = BufferUtils.newIntBuffer(512);
 
 	/** Log containing any gl error encountered during construction. */
 	private String log = null;
@@ -159,7 +159,7 @@ public class ShaderProgramES3 implements Disposable {
 		gl.glUseProgram(program);
 		
 		for (SamplerInfo info : samplers.values())
-			gl.glUniform1i(info.uniformIndex, info.bindingIndex);
+			gl.glUniform1i(info.uniformIndex, info.unit);
 	}
 
 	public UniformBlockInfo getUniformBlock (String blockName) {
@@ -177,7 +177,7 @@ public class ShaderProgramES3 implements Disposable {
 	public static final class SamplerInfo{
 		public final ShaderProgramES3 owner;
 		public final int uniformIndex;
-		int bindingIndex;
+		int unit;
 		
 		SamplerInfo(ShaderProgramES3 owner, int uniformIndex)
 		{
@@ -186,11 +186,11 @@ public class ShaderProgramES3 implements Disposable {
 		}
 		
 		public int getBinding(){
-			return bindingIndex;
+			return unit;
 		}
 		
-		public void setBinding(int bindingIndex) {
-			this.bindingIndex = bindingIndex;
+		public void setBinding(int textureUnit) {
+			this.unit = textureUnit;
 		}
 	}
 	
@@ -213,69 +213,10 @@ public class ShaderProgramES3 implements Disposable {
 			currentBindingPoint = bindingPoint;
 			Gdx.gl30.glUniformBlockBinding(owner.program, blockIndex, currentBindingPoint);
 		}
-
-		/** Accesses the information retrieved from the program about this uniform block. Should ONLY be used for debugging purposes. */
-		@Override
-		public String toString () {
-			// name
-			String name = Gdx.gl30.glGetActiveUniformBlockName(owner.program, blockIndex);
-
-			// size
+		
+		public int getByteSize(){
 			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_DATA_SIZE, ints);
-			int sizeBytes = ints.get(0);
-
-			// num uniforms
-			ints.position(0);
-			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS, ints);
-			int numUniforms = ints.get(0);
-			String[] uniformNames = new String[numUniforms];
-			int[] uniformSizes = new int[numUniforms];
-			int[] uniformOffsets = new int[numUniforms];
-			IntBuffer ibuniforms = BufferUtils.newIntBuffer(numUniforms);
-
-			// uniform indices
-			ints.position(0);
-			Gdx.gl30.glGetActiveUniformBlockiv(owner.program, blockIndex, GL30.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, ints);
-			ints.position(0);
-			while (ibuniforms.hasRemaining())
-				ibuniforms.put(ints.get());
-
-			// uniform names
-			ibuniforms.position(0);
-			for (int i = 0; i < numUniforms; ++i) {
-				ints.position(0);
-				uniformNames[i] = Gdx.gl30.glGetActiveUniform(owner.program, ibuniforms.get(), ints, null);
-			}
-
-			// uniform sizes
-			ints.position(0);
-			ibuniforms.position(0);
-			Gdx.gl30.glGetActiveUniformsiv(owner.program, numUniforms, ibuniforms, GL30.GL_UNIFORM_SIZE, ints);
-			ints.position(0);
-			for (int i = 0; i < numUniforms; ++i)
-				uniformSizes[i] = ints.get();
-
-			// uniform offsets
-			ints.position(0);
-			ibuniforms.position(0);
-			Gdx.gl30.glGetActiveUniformsiv(owner.program, numUniforms, ibuniforms, GL30.GL_UNIFORM_OFFSET, ints);
-			ints.position(0);
-			for (int i = 0; i < numUniforms; ++i)
-				uniformOffsets[i] = ints.get();
-
-			String t = "  ";
-
-			String s = "";
-			s += name + "\n";
-			s += t + "byte size: " + sizeBytes + "\n";
-			s += t + "{\n";
-			for (int i = 0; i < numUniforms; ++i) {
-				s += t + t + uniformNames[i] + "\n";
-				s += t + t + t + "chunk count: " + uniformSizes[i] + "\n";
-				s += t + t + t + "byte offset: " + uniformOffsets[i] + "\n";
-			}
-			s += t + "}\n";
-			return s;
+			return ints.get(0);
 		}
 	}
 

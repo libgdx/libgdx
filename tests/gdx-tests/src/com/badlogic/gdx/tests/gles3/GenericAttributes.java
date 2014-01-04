@@ -49,7 +49,7 @@ public final class GenericAttributes {
 		}
 		stride = localstride;
 	}
-
+	
 	public void bindAttributes () {
 		for (GenericAttribute a : allAttributes) {
 			Gdx.gl20.glEnableVertexAttribArray(a.index);
