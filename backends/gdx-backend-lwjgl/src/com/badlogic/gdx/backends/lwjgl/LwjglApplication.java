@@ -50,6 +50,7 @@ public class LwjglApplication implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	protected String preferencesdir;
 
 	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
 		this(listener, createConfig(title, width, height, useGL2));
@@ -84,7 +85,8 @@ public class LwjglApplication implements Application {
 		input = new LwjglInput();
 		net = new LwjglNet();
 		this.listener = listener;
-
+		this.preferencesdir = config.preferencesLocation;
+		
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
@@ -304,7 +306,7 @@ public class LwjglApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name);
+			Preferences prefs = new LwjglPreferences(name, this.preferencesdir);
 			preferences.put(name, prefs);
 			return prefs;
 		}

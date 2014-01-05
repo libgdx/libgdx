@@ -71,7 +71,9 @@ public class JglfwApplicationConfiguration {
 	public int backgroundFPS;
 	/** Target framerate when the window is hidden or minimized. The CPU sleeps as needed. Use 0 to never sleep, -1 to not render. **/
 	public int hiddenFPS = -1;
-
+	/** Prefrences location on desktop. Default: current directory + ".prefs" */
+	public String preferencesLocation = ".prefs/";
+	
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		java.awt.DisplayMode desktopMode = device.getDisplayMode();

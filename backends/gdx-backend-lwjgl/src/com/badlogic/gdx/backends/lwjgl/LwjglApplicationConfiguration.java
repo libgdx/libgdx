@@ -68,6 +68,8 @@ public class LwjglApplicationConfiguration {
 	/** Allows software OpenGL rendering if hardware acceleration was not available.
 	 * @see LwjglGraphics#isSoftwareMode() */
 	public boolean allowSoftwareMode = false;
+	/** Preferences location on desktop. Default: current directory + ".prefs" */
+	public String preferencesLocation = ".prefs/";
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();
