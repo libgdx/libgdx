@@ -30,6 +30,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.TimeUtils;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
@@ -45,8 +47,16 @@ public class LwjglHeadlessApplication implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+	private final long renderInterval;
 
 	public LwjglHeadlessApplication(ApplicationListener listener) {
+		this(listener, null);
+	}
+	
+	public LwjglHeadlessApplication(ApplicationListener listener, LwjglHeadlessApplicationConfiguration config) {
+		if (config == null)
+			config = new LwjglHeadlessApplicationConfiguration();
+		
 		LwjglNativesLoader.load();
 		this.listener = listener;
 		this.files = new LwjglFiles();
@@ -55,6 +65,9 @@ public class LwjglHeadlessApplication implements Application {
 		Gdx.app = this;
 		Gdx.files = files;
 		Gdx.net = net;
+		
+		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
+		
 		initialize();
 	}
 
@@ -84,12 +97,24 @@ public class LwjglHeadlessApplication implements Application {
 
 		// unlike LwjglApplication, a headless application will eat up CPU in this while loop
 		// it is up to the implementation to call Thread.sleep as necessary
-		while (running) {
-			executeRunnables();
-			listener.render();
-
-			// If one of the runnables set running to false, for example after an exit().
-			if (!running) break;
+		long t = TimeUtils.nanoTime() + renderInterval;
+		if (renderInterval >= 0f) {
+			while (running) {
+				final long n = TimeUtils.nanoTime();
+				if (t > n) {
+					try {
+						Thread.sleep((t - n) / 1000000);
+					} catch (InterruptedException e) {}
+					t = TimeUtils.nanoTime() + renderInterval;
+				} else
+					t = n + renderInterval;
+				
+				executeRunnables();
+				listener.render();
+	
+				// If one of the runnables set running to false, for example after an exit().
+				if (!running) break;
+			}
 		}
 
 		synchronized (lifecycleListeners) {
