@@ -249,10 +249,32 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 	public void resume() {
 		paused = false;
+		
+		if (wasPaused) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
+					listener.resume();
+				}
+			}
+			app.listener.resume();
+			wasPaused = false;
+		}
 	}
 
 	public void pause() {
 		paused = true;
+		
+		if (!wasPaused) {
+			Array<LifecycleListener> listeners = app.lifecycleListeners;
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
+					listener.pause();
+				}
+			}
+			app.listener.pause();
+			wasPaused = true;
+		}
 	}
 
 	boolean created = false;
@@ -265,28 +287,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 			created = true;
 		}
 		if (paused) {
-			if (!wasPaused) {
-				Array<LifecycleListener> listeners = app.lifecycleListeners;
-				synchronized (listeners) {
-					for (LifecycleListener listener : listeners) {
-						listener.pause();
-					}
-				}
-				app.listener.pause();
-				wasPaused = true;
-			}
 			return;
-		} else {
-			if (wasPaused) {
-				Array<LifecycleListener> listeners = app.lifecycleListeners;
-				synchronized (listeners) {
-					for (LifecycleListener listener : listeners) {
-						listener.resume();
-					}
-				}
-				app.listener.resume();
-				wasPaused = false;
-			}
 		}
 
 		long time = System.nanoTime();
