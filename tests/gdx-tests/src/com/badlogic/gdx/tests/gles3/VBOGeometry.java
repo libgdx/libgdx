@@ -201,6 +201,18 @@ public class VBOGeometry implements Disposable {
 		return geom;
 	}
 
+	public static VBOGeometry unitsphere (long usageAttributes) {
+		GenericAttributes atts = fromUsage(usageAttributes);
+		Model model = createCenteredSphere(usageAttributes, 2);
+		VBOGeometry geom;
+		if (atts.allAttributes.length > 3)
+			geom = upgradeFromPrimitiveModel(model);
+		else
+			geom = createFromPrimitiveModel(model);
+		geom.atts = atts;
+		return geom;
+	}
+
 	public static VBOGeometry sphere (long usageAttributes) {
 		GenericAttributes atts = fromUsage(usageAttributes);
 		Model model = createCenteredSphere(usageAttributes, 1);

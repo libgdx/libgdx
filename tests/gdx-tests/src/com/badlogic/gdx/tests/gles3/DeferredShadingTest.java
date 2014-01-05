@@ -95,7 +95,7 @@ public class DeferredShadingTest extends AbstractES3test {
 		model2 = VBOGeometry.sphere(usage);
 		model2world.setToWorld(new Vector3(0.6f, 0.4f, 0.5f), Vector3.X, Vector3.Z);
 
-		sphere = VBOGeometry.sphere(Usage.Position);
+		sphere = VBOGeometry.unitsphere(Usage.Position);
 		fsQuad = VBOGeometry.fsQuad(Usage.Position);
 
 		return true;

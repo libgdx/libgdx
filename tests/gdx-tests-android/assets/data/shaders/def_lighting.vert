@@ -28,7 +28,7 @@ out vec4 screenCoord;
 void main()
 {   
 	LightStaticInfo light = lights[gl_InstanceID];
-	float radius = light.radius * 2.0; // why do i need to do *2 ?
+	float radius = light.radius;
 	vec3 worldOffset = light.worldPos;
 
 	gl_Position = viewProjection * vec4(radius * inPos + worldOffset, 1.0);
