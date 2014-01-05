@@ -25,6 +25,10 @@ import java.util.Set;
  * interfaces of the type. Only types that are visible (public) can be described by this class.
  * @author mzechner */
 public class Type {
+	private static final Field[] EMPTY_FIELDS = new Field[0];
+	private static final Method[] EMPTY_METHODS = new Method[0];
+	private static final Constructor[] EMPTY_CONSTRUCTORS = new Constructor[0];
+
 	String name;
 	Class clazz;
 	Class superClass;
@@ -37,9 +41,9 @@ public class Type {
 	boolean isMemberClass;
 	boolean isStatic;
 
-	Field[] fields;
-	Method[] methods;
-	Constructor[] constructors;
+	Field[] fields = EMPTY_FIELDS;
+	Method[] methods = EMPTY_METHODS;
+	Constructor[] constructors = EMPTY_CONSTRUCTORS;
 
 	Class componentType;
 	Object[] enumConstants;
