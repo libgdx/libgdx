@@ -163,6 +163,7 @@ public class GdxTests {
 		PreferencesTest.class,
 		ProjectTest.class,
 		ProjectiveTextureTest.class,
+		ReflectionTest.class,
 		RemoteTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
