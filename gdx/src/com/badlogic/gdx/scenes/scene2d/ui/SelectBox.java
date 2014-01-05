@@ -296,7 +296,7 @@ public class SelectBox extends Widget implements Disableable {
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
-			boolean below = true;
+			below = true;
 			if (height > heightBelow) {
 				if (heightAbove > heightBelow) {
 					below = false;
