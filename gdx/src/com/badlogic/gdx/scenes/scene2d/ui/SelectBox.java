@@ -57,6 +57,7 @@ public class SelectBox extends Widget implements Disableable {
 	private ClickListener clickListener;
 	int maxListCount;
 	boolean disabled;
+	boolean below;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -230,6 +231,11 @@ public class SelectBox extends Widget implements Disableable {
 		return prefHeight;
 	}
 
+	/** @return if the selectbox-list is opened below the selectbox. if false then it is opened above the selectbox */
+	public boolean isOpenedBelow () {
+		return below;
+	}
+	
 	public void hideList () {
 		if (list == null || list.getParent() == null) return;
 		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
