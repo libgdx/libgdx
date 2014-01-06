@@ -57,7 +57,6 @@ public class SelectBox extends Widget implements Disableable {
 	private ClickListener clickListener;
 	int maxListCount;
 	boolean disabled;
-	boolean below;
 
 	public SelectBox (Object[] items, Skin skin) {
 		this(items, skin.get(SelectBoxStyle.class));
@@ -193,6 +192,13 @@ public class SelectBox extends Widget implements Disableable {
 		}
 	}
 
+	/** Sets the highlighted list item via it's index
+	 * @param index the selection index */
+	public void setHighlightedItem (int index) {
+		if (index < -1) throw new IllegalArgumentException("selection cannot be < -1.");
+		list.list.setSelectedIndex(index);
+	}
+	
 	/** Sets the selected item via it's index
 	 * @param selection the selection index */
 	public void setSelection (int selection) {
@@ -229,11 +235,6 @@ public class SelectBox extends Widget implements Disableable {
 
 	public float getPrefHeight () {
 		return prefHeight;
-	}
-
-	/** @return if the selectbox-list is opened below the selectbox. if false then it is opened above the selectbox */
-	public boolean isOpenedBelow () {
-		return below;
 	}
 	
 	public void hideList () {
@@ -296,7 +297,7 @@ public class SelectBox extends Widget implements Disableable {
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
-			below = true;
+			boolean below = true;
 			if (height > heightBelow) {
 				if (heightAbove > heightBelow) {
 					below = false;
