@@ -91,7 +91,7 @@ public class StreamUtils {
 	public static void closeQuietly (Closeable c) {
 		if (c != null) try {
 			c.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// ignore
 		}
 	}
