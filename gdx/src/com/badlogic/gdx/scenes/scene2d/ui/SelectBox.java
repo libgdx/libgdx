@@ -52,7 +52,7 @@ public class SelectBox extends Widget implements Disableable {
 	String[] items;
 	int selectedIndex = 0;
 	private final TextBounds bounds = new TextBounds();
-	SelectList list;
+	ListScroll scroll;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	int maxListCount;
@@ -76,8 +76,8 @@ public class SelectBox extends Widget implements Disableable {
 				if (pointer == 0 && button != 0) return false;
 				if (disabled) return false;
 				Stage stage = getStage();
-				if (list == null) list = new SelectList();
-				list.show(stage);
+				if (scroll == null) scroll = new ListScroll();
+				scroll.show(stage);
 				return true;
 			}
 		});
@@ -164,7 +164,7 @@ public class SelectBox extends Widget implements Disableable {
 		Drawable background;
 		if (disabled && style.backgroundDisabled != null)
 			background = style.backgroundDisabled;
-		else if (list != null && list.getParent() != null && style.backgroundOpen != null)
+		else if (scroll != null && scroll.getParent() != null && style.backgroundOpen != null)
 			background = style.backgroundOpen;
 		else if (clickListener.isOver() && style.backgroundOver != null)
 			background = style.backgroundOver;
@@ -231,15 +231,21 @@ public class SelectBox extends Widget implements Disableable {
 	}
 
 	public void hideList () {
-		if (list == null || list.getParent() == null) return;
-		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
+		if (scroll == null || scroll.getParent() == null) return;
+		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
-	class SelectList extends ScrollPane {
+	/** Returns the list shown when the select box is open, or null of the select box is closed. */
+	public List getList () {
+		if (scroll == null || scroll.getParent() == null) return null;
+		return scroll.list;
+	}
+
+	class ListScroll extends ScrollPane {
 		final List list;
 		final Vector2 screenCoords = new Vector2();
 
-		public SelectList () {
+		public ListScroll () {
 			super(null, style.scrollStyle);
 
 			setOverscroll(false, false);
