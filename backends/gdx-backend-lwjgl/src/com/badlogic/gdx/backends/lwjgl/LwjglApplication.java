@@ -85,7 +85,7 @@ public class LwjglApplication implements Application {
 		input = new LwjglInput();
 		net = new LwjglNet();
 		this.listener = listener;
-		this.preferencesdir = config.preferencesLocation;
+		this.preferencesdir = config.preferencesDirectory;
 		
 		Gdx.app = this;
 		Gdx.graphics = graphics;
