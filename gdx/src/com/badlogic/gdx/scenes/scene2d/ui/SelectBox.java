@@ -192,6 +192,13 @@ public class SelectBox extends Widget implements Disableable {
 		}
 	}
 
+	/** Sets the highlighted list item via it's index
+	 * @param index the selection index */
+	public void setHighlightedItem (int index) {
+		if (index < -1) throw new IllegalArgumentException("selection cannot be < -1.");
+		list.list.setSelectedIndex(index);
+	}
+	
 	/** Sets the selected item via it's index
 	 * @param selection the selection index */
 	public void setSelection (int selection) {
@@ -229,7 +236,7 @@ public class SelectBox extends Widget implements Disableable {
 	public float getPrefHeight () {
 		return prefHeight;
 	}
-
+	
 	public void hideList () {
 		if (scroll == null || scroll.getParent() == null) return;
 		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
