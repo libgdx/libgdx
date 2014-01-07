@@ -129,19 +129,20 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 	private float density = 1;
 
 	volatile boolean paused;
-	boolean wasPaused;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics(CGSize bounds, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+	public IOSGraphics(CGSize bounds, IOSApplication app,
+			IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
 		width = (int) bounds.width();
 		height = (int) bounds.height();
-		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + UIScreen.getMainScreen().getScale());
+		app.debug(tag, bounds.width() + "x" + bounds.height() + ", "
+				+ UIScreen.getMainScreen().getScale());
 		this.gl20 = gl20;
 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
@@ -187,7 +188,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		viewController = new IOSUIViewController(app, this);
 		viewController.setView(view);
 		viewController.setDelegate(this);
-		viewController.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
+		viewController
+				.setPreferredFramesPerSecond(config.preferredFramesPerSecond);
 
 		this.app = app;
 		this.input = input;
@@ -195,25 +197,29 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		// FIXME fix this if we add rgba/depth/stencil flags to
 		// IOSApplicationConfiguration
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
-		if(config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
-			r = 5; g = 6; b = 5; a = 0;
+		if (config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
+			r = 5;
+			g = 6;
+			b = 5;
+			a = 0;
 		} else {
 			r = g = b = a = 8;
 		}
-		if(config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
+		if (config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
 			depth = 16;
 		} else if (config.depthFormat == GLKViewDrawableDepthFormat.Format24) {
 			depth = 24;
 		} else {
 			depth = 0;
 		}
-		if(config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
+		if (config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
 			stencil = 8;
 		}
-		if(config.multisample == GLKViewDrawableMultisample.Sample4X) {
+		if (config.multisample == GLKViewDrawableMultisample.Sample4X) {
 			samples = 4;
 		}
-		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
+		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples,
+				false);
 		this.gl20 = gl20;
 
 		// determine display density and PPI (PPI values via Wikipedia!)
@@ -222,8 +228,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		// if ((UIScreen.getMainScreen().respondsToSelector(new
 		// Selector("scale")))) {
 		float scale = UIScreen.getMainScreen().getScale();
-		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
-		if (scale == 2f) density = 2f;
+		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: "
+				+ scale);
+		if (scale == 2f)
+			density = 2f;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
@@ -244,43 +252,40 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		framesStart = lastFrameTime;
 
 		paused = false;
-		wasPaused = true;
 	}
 
 	public void resume() {
+		if (!paused)
+			return;
 		paused = false;
-		
-		if (wasPaused) {
-			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.resume();
-				}
+
+		Array<LifecycleListener> listeners = app.lifecycleListeners;
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
+				listener.resume();
 			}
-			app.listener.resume();
-			wasPaused = false;
 		}
+		app.listener.resume();
 	}
 
 	public void pause() {
-		paused = true;
-		
-		if (!wasPaused) {
-			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.pause();
-				}
+		if (paused)
+			return;
+
+		Array<LifecycleListener> listeners = app.lifecycleListeners;
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
+				listener.pause();
 			}
-			app.listener.pause();
-			wasPaused = true;
 		}
+		app.listener.pause();
 	}
 
 	boolean created = false;
+
 	@Override
 	public void draw(GLKView view, CGRect rect) {
-		if(!created) {
+		if (!created) {
 			app.graphics.makeCurrent();
 			app.listener.create();
 			app.listener.resize(width, height);
@@ -319,8 +324,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 	@Override
 	public void willPause(GLKViewController controller, boolean pause) {
 		if (pause) {
+			if (paused)
+				return;
 			pause();
 		} else {
+			if (!paused)
+				return;
 			resume();
 		}
 	}
@@ -427,7 +436,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 	@Override
 	public DisplayMode getDesktopDisplayMode() {
-		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
+		return new IOSDisplayMode(getWidth(), getHeight(),
+				config.preferredFramesPerSecond, bufferFormat.r
+						+ bufferFormat.g + bufferFormat.b + bufferFormat.a);
 	}
 
 	private class IOSDisplayMode extends DisplayMode {
