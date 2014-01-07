@@ -260,7 +260,8 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	public void pause () {
 		if (paused) return;
-
+		paused = true;
+		
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
 			for (LifecycleListener listener : listeners) {
