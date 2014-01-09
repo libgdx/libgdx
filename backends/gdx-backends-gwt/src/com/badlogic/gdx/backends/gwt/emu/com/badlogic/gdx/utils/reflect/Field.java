@@ -45,11 +45,11 @@ public final class Field {
 	}
 
 	public boolean isAccessible () {
-		return field.isAccessible();
+		return field.isPublic();
 	}
 
 	public void setAccessible (boolean accessible) {
-		field.setAccessible(accessible);
+		// NOOP in GWT
 	}
 
 	/** Return true if the field does not include any of the {@code private}, {@code protected}, or {@code public} modifiers. */

@@ -25,6 +25,10 @@ import java.util.Set;
  * interfaces of the type. Only types that are visible (public) can be described by this class.
  * @author mzechner */
 public class Type {
+	private static final Field[] EMPTY_FIELDS = new Field[0];
+	private static final Method[] EMPTY_METHODS = new Method[0];
+	private static final Constructor[] EMPTY_CONSTRUCTORS = new Constructor[0];
+
 	String name;
 	Class clazz;
 	Class superClass;
@@ -37,15 +41,16 @@ public class Type {
 	boolean isMemberClass;
 	boolean isStatic;
 
-	Field[] fields;
-	Method[] methods;
-	Constructor constructor;
+	Field[] fields = EMPTY_FIELDS;
+	Method[] methods = EMPTY_METHODS;
+	Constructor[] constructors = EMPTY_CONSTRUCTORS;
+
 	Class componentType;
 	Object[] enumConstants;
 
 	/** @return a new instance of this type created via the default constructor which must be public. */
-	public Object newInstance () {
-		return ReflectionCache.instance.newInstance(this);
+	public Object newInstance () throws NoSuchMethodException {
+		return getConstructor().newInstance();
 	}
 
 	/** @return the fully qualified name of this type. */
@@ -152,8 +157,21 @@ public class Type {
 		return methods;
 	}
 
-	public Constructor getDeclaredConstructor () throws NoSuchMethodException {
-		return constructor;
+	public Constructor[] getConstructors () {
+		return constructors;
+	}
+
+	public Constructor getDeclaredConstructor (Class... parameterTypes) throws NoSuchMethodException {
+		return getConstructor(parameterTypes);
+	}
+
+	public Constructor getConstructor (Class... parameterTypes) throws NoSuchMethodException {
+		if (constructors != null) {
+			for (Constructor c : constructors) {
+				if (c.isPublic() && c.match(parameterTypes)) return c;
+			}
+		}
+		throw new NoSuchMethodException();
 	}
 
 	public boolean isAbstract () {
@@ -220,7 +238,8 @@ public class Type {
 		return "Type [name=" + name + ",\n clazz=" + clazz + ",\n superClass=" + superClass + ",\n assignables=" + assignables
 			+ ",\n isAbstract=" + isAbstract + ",\n isInterface=" + isInterface + ",\n isPrimitive=" + isPrimitive + ",\n isEnum="
 			+ isEnum + ",\n isArray=" + isArray + ",\n isMemberClass=" + isMemberClass + ",\n isStatic=" + isStatic + ",\n fields="
-			+ Arrays.toString(fields) + ",\n methods=" + Arrays.toString(methods) + ",\n constructor=" + constructor
-			+ ",\n componentType=" + componentType + ",\n enumConstants=" + Arrays.toString(enumConstants) + "]";
+			+ Arrays.toString(fields) + ",\n methods=" + Arrays.toString(methods) + ",\n constructors="
+			+ Arrays.toString(constructors) + ",\n componentType=" + componentType + ",\n enumConstants="
+			+ Arrays.toString(enumConstants) + "]";
 	}
 }

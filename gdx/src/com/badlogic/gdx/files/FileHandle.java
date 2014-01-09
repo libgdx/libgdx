@@ -188,6 +188,7 @@ public class FileHandle {
 	}
 
 	/** Reads the entire file into a string using the specified charset.
+	 * @param charset If null the default charset is used.
 	 * @throws GdxRuntimeException if the file handle represents a directory, doesn't exist, or could not be read. */
 	public String readString (String charset) {
 		StringBuilder output = new StringBuilder(estimateLength());
