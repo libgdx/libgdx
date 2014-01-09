@@ -24,6 +24,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.headless.mock.audio.MockAudio;
+import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics;
+import com.badlogic.gdx.backends.headless.mock.input.MockInput;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -37,6 +40,9 @@ public class HeadlessApplication implements Application {
 	protected Thread mainLoopThread;
 	protected final HeadlessFiles files;
 	protected final HeadlessNet net;
+	protected final MockAudio audio;
+	protected final MockInput input;
+	protected final MockGraphics graphics;
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -56,10 +62,17 @@ public class HeadlessApplication implements Application {
 		this.listener = listener;
 		this.files = new HeadlessFiles();
 		this.net = new HeadlessNet();
+		// the following elements are not applicable for headless applications
+		// they are only implemented as mock objects
+		this.graphics = new MockGraphics();
+		this.audio = new MockAudio();
+		this.input = new MockInput();
 
 		Gdx.app = this;
 		Gdx.files = files;
 		Gdx.net = net;
+		Gdx.audio = audio;
+		Gdx.graphics = graphics;
 		
 		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
 		
