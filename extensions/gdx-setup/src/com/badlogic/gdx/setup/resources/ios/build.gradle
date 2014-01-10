@@ -1,0 +1,14 @@
+sourceSets.main.resources.srcDirs = [file("../android/assets").getAbsolutePath()]
+
+ext {
+    mainClassName = "%PACKAGE%.IOSLauncher"
+
+}
+
+eclipse.project {
+    name = appName + "-ios"
+}
+
+run {
+    ignoreExitValue = true
+}
