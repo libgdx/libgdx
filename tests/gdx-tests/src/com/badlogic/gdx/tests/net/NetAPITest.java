@@ -42,14 +42,16 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	SpriteBatch batch;
 	Skin skin;
 	Stage stage;
-	TextButton textButton;
-	TextButton textButtonTxt;
+	TextButton btnDownloadImage;
+	TextButton btnDownloadText;
+	TextButton btnDownloadError;
+	TextButton btnPost;
 	Label statusLabel;
 	Texture texture;
 	String text;
 	BitmapFont font;
 
-	boolean doImageDownload;
+	Object clickedButton;
 
 	public boolean needsGL20 () {
 		// just because the non pot, we could change the image instead...
@@ -89,39 +91,55 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
 
-					doImageDownload = event.getListenerActor() == textButton;
-
-					textButton.setDisabled(true);
-					textButton.setTouchable(Touchable.disabled);
-
-					textButtonTxt.setDisabled(true);
-					textButtonTxt.setTouchable(Touchable.disabled);
-
+					clickedButton = event.getListenerActor();
+					setButtonDisabled(true);
 					if (texture != null) texture.dispose();
 					texture = null;
 					text = null;
 
-					HttpRequest httpRequest = new HttpRequest(Net.HttpMethods.GET);
-					if (doImageDownload)
-						httpRequest.setUrl("http://i.imgur.com/vxomF.jpg");
-					else
-						httpRequest.setUrl("http://www.apache.org/licenses/LICENSE-2.0.txt");
+					String url;
+					String httpMethod = Net.HttpMethods.GET;
+					String requestContent = null;
+					if (clickedButton == btnDownloadImage)
+						url = "http://i.imgur.com/vxomF.jpg";
+					else if (clickedButton == btnDownloadText)
+						url = "http://www.apache.org/licenses/LICENSE-2.0.txt";
+					else if (clickedButton == btnDownloadError)
+						url = "http://www.badlogicgames.com/doesnotexist";
+					else {
+						url = "http://posttestserver.com/post.php?dump";
+						httpMethod = Net.HttpMethods.POST;
+						requestContent = "name1=value1&name2=value2";
+					}
 
+					HttpRequest httpRequest = new HttpRequest(httpMethod);
+					httpRequest.setUrl(url);
+					httpRequest.setContent(requestContent);
 					Gdx.net.sendHttpRequest(httpRequest, NetAPITest.this);
 
 					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
 			};
 
-			textButton = new TextButton("Download image", skin);
-			textButton.setPosition(Gdx.graphics.getWidth() * 0.5f - textButton.getWidth(), 60f);
-			textButton.addListener(clickListener);
-			stage.addActor(textButton);
+			btnDownloadImage = new TextButton("GET Image", skin);
+			btnDownloadImage.setPosition(Gdx.graphics.getWidth() * 0.5f - btnDownloadImage.getWidth() * 1.5f, 60f);
+			btnDownloadImage.addListener(clickListener);
+			stage.addActor(btnDownloadImage);
 
-			textButtonTxt = new TextButton("Download text", skin);
-			textButtonTxt.setPosition(Gdx.graphics.getWidth() * 0.5f, 60f);
-			textButtonTxt.addListener(clickListener);
-			stage.addActor(textButtonTxt);
+			btnDownloadText = new TextButton("GET Text", skin);
+			btnDownloadText.setPosition(btnDownloadImage.getX() + btnDownloadImage.getWidth() + 10, 60f);
+			btnDownloadText.addListener(clickListener);
+			stage.addActor(btnDownloadText);
+
+			btnDownloadError = new TextButton("GET Error", skin);
+			btnDownloadError.setPosition(btnDownloadText.getX() + btnDownloadText.getWidth() + 10, 60f);
+			btnDownloadError.addListener(clickListener);
+			stage.addActor(btnDownloadError);
+
+			btnPost = new TextButton("POST", skin);
+			btnPost.setPosition(btnDownloadError.getX() + btnDownloadError.getWidth() + 10, 60f);
+			btnPost.addListener(clickListener);
+			stage.addActor(btnPost);
 		}
 
 	}
@@ -135,19 +153,17 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			@Override
 			public void run () {
 				statusLabel.setText("HTTP Request status: " + statusCode);
-				textButton.setDisabled(false);
-				textButton.setTouchable(Touchable.enabled);
-				textButtonTxt.setDisabled(false);
-				textButtonTxt.setTouchable(Touchable.enabled);
+				setButtonDisabled(false);
 			}
 		});
 
 		if (statusCode != 200) {
 			Gdx.app.log("NetAPITest", "An error ocurred since statusCode is not OK");
+			setText(httpResponse);
 			return;
 		}
 
-		if (doImageDownload) {
+		if (clickedButton == btnDownloadImage) {
 			final byte[] rawImageBytes = httpResponse.getResult();
 			Gdx.app.postRunnable(new Runnable() {
 				public void run () {
@@ -158,21 +174,38 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				}
 			});
 		} else {
-			final String newText = httpResponse.getResultAsString();
-			Gdx.app.postRunnable(new Runnable() {
-				public void run () {
-					text = newText;
-				}
-			});
+			setText(httpResponse);
 		}
+	}
+
+	void setText (HttpResponse httpResponse) {
+		final String newText = httpResponse.getResultAsString();
+		Gdx.app.postRunnable(new Runnable() {
+			public void run () {
+				text = newText;
+			}
+		});
+	}
+
+	void setButtonDisabled (boolean disabled) {
+		Touchable t = disabled ? Touchable.disabled : Touchable.enabled;
+
+		btnDownloadImage.setDisabled(disabled);
+		btnDownloadImage.setTouchable(t);
+
+		btnDownloadText.setDisabled(disabled);
+		btnDownloadText.setTouchable(t);
+
+		btnDownloadError.setDisabled(disabled);
+		btnDownloadError.setTouchable(t);
+
+		btnPost.setDisabled(disabled);
+		btnPost.setTouchable(t);
 	}
 
 	@Override
 	public void failed (Throwable t) {
-		textButton.setDisabled(false);
-		textButton.setTouchable(Touchable.enabled);
-		textButtonTxt.setDisabled(false);
-		textButtonTxt.setTouchable(Touchable.enabled);
+		setButtonDisabled(false);
 		statusLabel.setText("Failed to perform the HTTP Request: " + t.getMessage());
 		t.printStackTrace();
 	}

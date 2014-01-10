@@ -43,16 +43,9 @@ public class NetJavaImpl {
 	static class HttpClientResponse implements HttpResponse {
 		private HttpURLConnection connection;
 		private HttpStatus status;
-		private InputStream inputStream;
 
 		public HttpClientResponse (HttpURLConnection connection) throws IOException {
 			this.connection = connection;
-			try {
-				this.inputStream = connection.getInputStream();
-			} catch (IOException e) {
-				this.inputStream = connection.getErrorStream();
-			}
-
 			try {
 				this.status = new HttpStatus(connection.getResponseCode());
 			} catch (IOException e) {
@@ -63,7 +56,7 @@ public class NetJavaImpl {
 		@Override
 		public byte[] getResult () {
 			try {
-				return StreamUtils.copyStreamToByteArray(inputStream, connection.getContentLength());
+				return StreamUtils.copyStreamToByteArray(getInputStream(), connection.getContentLength());
 			} catch (IOException e) {
 				return StreamUtils.EMPTY_BYTES;
 			}
@@ -72,7 +65,7 @@ public class NetJavaImpl {
 		@Override
 		public String getResultAsString () {
 			try {
-				return StreamUtils.copyStreamToString(inputStream, connection.getContentLength());
+				return StreamUtils.copyStreamToString(getInputStream(), connection.getContentLength());
 			} catch (IOException e) {
 				return "";
 			}
@@ -80,7 +73,7 @@ public class NetJavaImpl {
 
 		@Override
 		public InputStream getResultAsStream () {
-			return inputStream;
+			return getInputStream();
 		}
 
 		@Override
@@ -96,6 +89,14 @@ public class NetJavaImpl {
 		@Override
 		public Map<String, List<String>> getHeaders () {
 			return connection.getHeaderFields();
+		}
+
+		private InputStream getInputStream () {
+			try {
+				return connection.getInputStream();
+			} catch (IOException e) {
+				return connection.getErrorStream();
+			}
 		}
 	}
 
@@ -113,7 +114,6 @@ public class NetJavaImpl {
 
 		try {
 			final String method = httpRequest.getMethod();
-
 			URL url;
 
 			if (method.equalsIgnoreCase(HttpMethods.GET)) {
@@ -144,23 +144,27 @@ public class NetJavaImpl {
 				@Override
 				public void run () {
 					try {
-
 						// Set the content for POST and PUT (GET has the information embedded in the URL)
 						if (doingOutPut) {
 							// we probably need to use the content as stream here instead of using it as a string.
 							String contentAsString = httpRequest.getContent();
-							InputStream contentAsStream = httpRequest.getContentStream();
-
-							OutputStream outputStream = connection.getOutputStream();
 							if (contentAsString != null) {
-								OutputStreamWriter writer = new OutputStreamWriter(outputStream);
-								writer.write(contentAsString);
-								writer.flush();
-								writer.close();
-							} else if (contentAsStream != null) {
-								StreamUtils.copyStream(contentAsStream, outputStream);
-								outputStream.flush();
-								outputStream.close();
+								OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+								try {
+									writer.write(contentAsString);
+								} finally {
+									StreamUtils.closeQuietly(writer);
+								}
+							} else {
+								InputStream contentAsStream = httpRequest.getContentStream();
+								if (contentAsStream != null) {
+									OutputStream os = connection.getOutputStream();
+									try {
+										StreamUtils.copyStream(contentAsStream, os);
+									} finally {
+										StreamUtils.closeQuietly(os);
+									}
+								}
 							}
 						}
 
