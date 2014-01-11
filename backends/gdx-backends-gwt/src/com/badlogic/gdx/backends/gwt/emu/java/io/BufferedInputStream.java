@@ -16,19 +16,12 @@
 
 package java.io;
 
-public class BufferedInputStream extends InputStream {
-	InputStream in;
-
+public class BufferedInputStream extends FilterInputStream {
 	public BufferedInputStream (InputStream in) {
-		this.in = in;
+		super(in);
 	}
 
 	public BufferedInputStream (InputStream in, int size) {
-		this.in = in;
-	}
-
-	@Override
-	public int read () throws IOException {
-		return in.read();
+		super(in);
 	}
 }
