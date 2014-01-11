@@ -1,0 +1,9 @@
+<!doctype html>
+<html>
+    <head>
+        <title>%APP_NAME%</title>
+        <script src="%PACKAGE%.GdxDefinition/%PACKAGE%.GdxDefinition.nocache.js" type="text/javascript"></script>
+    </head>
+    <body>
+    </body>
+</html>
