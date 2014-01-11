@@ -70,6 +70,9 @@ public class LwjglApplicationConfiguration {
 	public boolean allowSoftwareMode = false;
 	/** Preferences directory on the desktop. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
+	/** Set window position at start */
+	public int windowX = -1;
+	public int windowY = -1;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();
