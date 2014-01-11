@@ -171,6 +171,9 @@ public class LwjglGraphics implements Graphics {
 		Display.setResizable(config.resizable);
 		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
 			config.initialBackgroundColor.b);
+		if (config.windowX > -1 && config.windowY > -1) {
+			Display.setLocation(config.windowX, config.windowY);
+		}
 
 		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
