@@ -266,10 +266,12 @@ public class AndroidApplication extends Activity implements Application {
 		graphics.pause();
 
 		input.unregisterSensorListeners();
-		// erase pointer ids + touch states
+
 		int[] realId = input.realId;
-		boolean[] touched = input.touched;
+		// erase pointer ids. this sucks donkeyballs...
 		Arrays.fill(realId, -1);
+		boolean[] touched = input.touched;
+		// erase touched state. this also sucks donkeyballs...
 		Arrays.fill(touched, false);
 
 		if (isFinishing()) {
