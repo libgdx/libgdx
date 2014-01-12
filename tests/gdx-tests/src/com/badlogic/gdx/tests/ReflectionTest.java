@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Method;
@@ -55,6 +56,8 @@ public class ReflectionTest extends GdxTest {
 
 			Method mNor = ClassReflection.getMethod(Vector2.class, "nor");
 			println("Normalized: " + mNor.invoke(fromCopyConstructor));
+
+			println("JSON serialized: " + new Json().toJson(fromCopyConstructor));
 		} catch (Exception e) {
 			message = "FAILED: " + e.getMessage();
 		}
