@@ -43,7 +43,7 @@ public class TiledMapAtlasAssetManagerTest extends GdxTest {
 	private AssetManager assetManager;
 	private BitmapFont font;
 	private SpriteBatch batch;
-	private String errorMessage;
+	String errorMessage;
 	private String fileName = "data/maps/tiled-atlas-processed/test.tmx";
 
 	@Override
