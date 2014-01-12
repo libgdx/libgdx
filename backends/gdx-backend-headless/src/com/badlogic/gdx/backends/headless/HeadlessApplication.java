@@ -119,6 +119,7 @@ public class HeadlessApplication implements Application {
 				
 				executeRunnables();
 				listener.render();
+				graphics.updateTime();
 	
 				// If one of the runnables set running to false, for example after an exit().
 				if (!running) break;

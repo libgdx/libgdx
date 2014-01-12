@@ -7,6 +7,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 
 public class MockGraphics implements Graphics {
+	float deltaTime = 0;
+	long frameStart = 0;
+	int frames = 0;
+	int fps;
+	long lastTime = System.nanoTime();
+
 	@Override
 	public boolean isGL11Available() {
 		return false;
@@ -49,7 +55,7 @@ public class MockGraphics implements Graphics {
 
 	@Override
 	public float getDeltaTime() {
-		return 0;
+		return deltaTime;
 	}
 
 	@Override
@@ -155,5 +161,18 @@ public class MockGraphics implements Graphics {
 	@Override
 	public boolean isFullscreen() {
 		return false;
+	}
+
+	public void updateTime () {
+		long time = System.nanoTime();
+		deltaTime = (time - lastTime) / 1000000000.0f;
+		lastTime = time;
+
+		if (time - frameStart >= 1000000000) {
+			fps = frames;
+			frames = 0;
+			frameStart = time;
+		}
+		frames++;
 	}
 }
