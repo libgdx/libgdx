@@ -1,4 +1,5 @@
 [1.0.0]
+- added liquidfun support (see http://google.github.io/liquidfun/)
 - added headless desktop application type for backends/servers, LwjglHeadlessApplication
 - support 'scaledSize' as a json skin data value for BitmapFont
 - added setAlpha(float a) method to Sprite class
