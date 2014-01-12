@@ -16,12 +16,8 @@
 
 package com.badlogic.gdx.maps.tiled;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.StringTokenizer;
-import java.util.zip.DataFormatException;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.Inflater;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -46,7 +42,6 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
@@ -418,135 +413,24 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			layer.setOpacity(opacity);
 			layer.setName(name);
 
+			int[] ids = TmxMapHelper.getTileIds(element, width, height);
 			TiledMapTileSets tilesets = map.getTileSets();
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					int id = ids[y * width + x];
+					boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
+					boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
+					boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
 
-			Element data = element.getChildByName("data");
-			String encoding = data.getAttribute("encoding", null);
-			String compression = data.getAttribute("compression", null);
-			if (encoding == null) { // no 'encoding' attribute means that the encoding is XML
-				throw new GdxRuntimeException("Unsupported encoding (XML) for TMX Layer Data");
-			}
-			if (encoding.equals("csv")) {
-				String[] array = data.getText().split(",");
-				for (int y = 0; y < height; y++) {
-					for (int x = 0; x < width; x++) {
-						int id = (int)Long.parseLong(array[y * width + x].trim());
-
-						final boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-						final boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-						final boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
-
-						id = id & ~MASK_CLEAR;
-
-						tilesets.getTile(id);
-						TiledMapTile tile = tilesets.getTile(id);
-						if (tile != null) {
-							Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
-							cell.setTile(tile);
-							layer.setCell(x, yUp ? height - 1 - y : y, cell);
-						}
+					TiledMapTile tile = tilesets.getTile(id & ~MASK_CLEAR);
+					if (tile != null) {
+						Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
+						cell.setTile(tile);
+						layer.setCell(x, yUp ? height - 1 - y : y, cell);
 					}
 				}
-			} else {
-				if (encoding.equals("base64")) {
-					byte[] bytes = Base64Coder.decode(data.getText());
-					if (compression == null) {
-						int read = 0;
-						for (int y = 0; y < height; y++) {
-							for (int x = 0; x < width; x++) {
-
-								int id = unsignedByteToInt(bytes[read++]) | unsignedByteToInt(bytes[read++]) << 8
-									| unsignedByteToInt(bytes[read++]) << 16 | unsignedByteToInt(bytes[read++]) << 24;
-
-								final boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-								final boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-								final boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
-
-								id = id & ~MASK_CLEAR;
-
-								tilesets.getTile(id);
-								TiledMapTile tile = tilesets.getTile(id);
-								if (tile != null) {
-									Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
-									cell.setTile(tile);
-									layer.setCell(x, yUp ? height - 1 - y : y, cell);
-								}
-							}
-						}
-					} else if (compression.equals("gzip")) {
-						GZIPInputStream GZIS = null;
-						try {
-							GZIS = new GZIPInputStream(new ByteArrayInputStream(bytes), bytes.length);
-						} catch (IOException e) {
-							throw new GdxRuntimeException("Error Reading TMX Layer Data - IOException: " + e.getMessage());
-						}
-
-						byte[] temp = new byte[4];
-						for (int y = 0; y < height; y++) {
-							for (int x = 0; x < width; x++) {
-								try {
-									GZIS.read(temp, 0, 4);
-									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-										| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
-
-									final boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-									final boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-									final boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
-
-									id = id & ~MASK_CLEAR;
-
-									tilesets.getTile(id);
-									TiledMapTile tile = tilesets.getTile(id);
-									if (tile != null) {
-										Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
-										cell.setTile(tile);
-										layer.setCell(x, yUp ? height - 1 - y : y, cell);
-									}
-								} catch (IOException e) {
-									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
-								}
-							}
-						}
-					} else if (compression.equals("zlib")) {
-						Inflater zlib = new Inflater();
-
-						byte[] temp = new byte[4];
-
-						zlib.setInput(bytes, 0, bytes.length);
-
-						for (int y = 0; y < height; y++) {
-							for (int x = 0; x < width; x++) {
-								try {
-									zlib.inflate(temp, 0, 4);
-									int id = unsignedByteToInt(temp[0]) | unsignedByteToInt(temp[1]) << 8
-										| unsignedByteToInt(temp[2]) << 16 | unsignedByteToInt(temp[3]) << 24;
-
-									final boolean flipHorizontally = ((id & FLAG_FLIP_HORIZONTALLY) != 0);
-									final boolean flipVertically = ((id & FLAG_FLIP_VERTICALLY) != 0);
-									final boolean flipDiagonally = ((id & FLAG_FLIP_DIAGONALLY) != 0);
-
-									id = id & ~MASK_CLEAR;
-
-									tilesets.getTile(id);
-									TiledMapTile tile = tilesets.getTile(id);
-									if (tile != null) {
-										Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
-										cell.setTile(tile);
-										layer.setCell(x, yUp ? height - 1 - y : y, cell);
-									}
-
-								} catch (DataFormatException e) {
-									throw new GdxRuntimeException("Error Reading TMX Layer Data.", e);
-								}
-							}
-						}
-					}
-				} else {
-					// any other value of 'encoding' is one we're not aware of, probably a feature of a future version of Tiled
-					// or another editor
-					throw new GdxRuntimeException("Unrecognised encoding (" + encoding + ") for TMX Layer Data");
-				}
 			}
+
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
 				loadProperties(layer.getProperties(), properties);
@@ -689,9 +573,5 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			}
 		}
 		return result;
-	}
-
-	protected static int unsignedByteToInt (byte b) {
-		return (int)b & 0xFF;
 	}
 }
