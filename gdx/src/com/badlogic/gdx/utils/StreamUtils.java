@@ -39,10 +39,14 @@ public class StreamUtils {
 	/** Copy the data from an {@link InputStream} to an {@link OutputStream}.
 	 * @throws IOException */
 	public static void copyStream (InputStream input, OutputStream output, int bufferSize) throws IOException {
-		byte[] buffer = new byte[bufferSize];
-		int bytesRead;
-		while ((bytesRead = input.read(buffer)) != -1) {
-			output.write(buffer, 0, bytesRead);
+		try {
+			byte[] buffer = new byte[bufferSize];
+			int bytesRead;
+			while ((bytesRead = input.read(buffer)) != -1) {
+				output.write(buffer, 0, bytesRead);
+			}
+		} finally {
+			closeQuietly(input);
 		}
 	}
 

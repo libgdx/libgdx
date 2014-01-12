@@ -715,7 +715,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			columnWeightedWidth = this.columnWeightedWidth = ensureSize(this.columnWeightedWidth, columns);
 			for (int i = 0; i < columns; i++) {
 				float growWidth = columnPrefWidth[i] - columnMinWidth[i];
-				float growRatio = growWidth / (float)totalGrowWidth;
+				float growRatio = growWidth / totalGrowWidth;
 				columnWeightedWidth[i] = columnMinWidth[i] + extraWidth * growRatio;
 			}
 		}
@@ -729,7 +729,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 			float extraHeight = Math.min(totalGrowHeight, Math.max(0, layoutHeight - tableMinHeight));
 			for (int i = 0; i < rows; i++) {
 				float growHeight = rowPrefHeight[i] - rowMinHeight[i];
-				float growRatio = growHeight / (float)totalGrowHeight;
+				float growRatio = growHeight / totalGrowHeight;
 				rowWeightedHeight[i] = rowMinHeight[i] + extraHeight * growRatio;
 			}
 		}

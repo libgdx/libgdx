@@ -93,6 +93,7 @@ import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextButtonTestGL2;
 import com.badlogic.gdx.tests.TextureAtlasTest;
+import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
@@ -111,8 +112,8 @@ public class GwtTestWrapper extends GdxTest {
 	@Override
 	public void create () {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
-		Gdx.app.log("GdxTestGwt", "Setting up for " +tests.length+ " tests.");
-		
+		Gdx.app.log("GdxTestGwt", "Setting up for " + tests.length + " tests.");
+
 		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
@@ -156,9 +157,8 @@ public class GwtTestWrapper extends GdxTest {
 
 			@Override
 			public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-				if(screenX < Gdx.graphics.getWidth() / 10.0 &&
-					screenY < Gdx.graphics.getHeight() / 10.0) {
-					if(test != null) {
+				if (screenX < Gdx.graphics.getWidth() / 10.0 && screenY < Gdx.graphics.getHeight() / 10.0) {
+					if (test != null) {
 						dispose = true;
 					}
 				}
@@ -166,10 +166,10 @@ public class GwtTestWrapper extends GdxTest {
 			}
 		};
 		((InputWrapper)Gdx.input).multiplexer.addProcessor(ui);
-		
+
 		Gdx.app.log("GdxTestGwt", "Test picker UI setup complete.");
 	}
-	
+
 	public void render () {
 		if (test == null) {
 			Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -588,7 +588,7 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new RotationTest();
 			}
-		}, 
+		},
 // new Instancer() {public GdxTest instance(){return new RunnablePostTest();}}, // Goes into infinite loop
 // new Instancer() {public GdxTest instance(){return new ScrollPaneTest();}}, // FIXME this messes up stuff, why?
 // new Instancer() {public GdxTest instance(){return new ShaderMultitextureTest();}}, // FIXME fucks up stuff
@@ -673,6 +673,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new ReflectionTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TiledMapAtlasAssetManagerTest();
 			}
 		}};
 
