@@ -29,8 +29,8 @@ import java.util.NoSuchElementException;
  * 
  * <pre>
  * JsonValue map = ...;
- * for (JsonValue entry = map.child(); entry != null; entry = entry.next())
- * 	System.out.println(entry.name() + " = " + entry.asString());
+ * for (JsonValue entry = map.child; entry != null; entry = entry.next)
+ * 	System.out.println(entry.name + " = " + entry.asString());
  * </pre>
  * @author Nathan Sweet */
 public class JsonValue implements Iterable<JsonValue> {
@@ -249,6 +249,318 @@ public class JsonValue implements Iterable<JsonValue> {
 		throw new IllegalStateException("Value cannot be converted to boolean: " + type);
 	}
 
+	/** Returns this value as a byte.
+	 * @throws IllegalStateException if this an array or object. */
+	public byte asByte () {
+		switch (type) {
+		case stringValue:
+			return Byte.parseByte(stringValue);
+		case doubleValue:
+			return (byte)doubleValue;
+		case longValue:
+			return (byte)longValue;
+		case booleanValue:
+			return longValue != 0 ? (byte)1 : 0;
+		}
+		throw new IllegalStateException("Value cannot be converted to byte: " + type);
+	}
+
+	/** Returns this value as a short.
+	 * @throws IllegalStateException if this an array or object. */
+	public short asShort () {
+		switch (type) {
+		case stringValue:
+			return Short.parseShort(stringValue);
+		case doubleValue:
+			return (short)doubleValue;
+		case longValue:
+			return (short)longValue;
+		case booleanValue:
+			return longValue != 0 ? (short)1 : 0;
+		}
+		throw new IllegalStateException("Value cannot be converted to short: " + type);
+	}
+
+	/** Returns this value as a char.
+	 * @throws IllegalStateException if this an array or object. */
+	public char asChar () {
+		switch (type) {
+		case stringValue:
+			return stringValue.length() == 0 ? 0 : stringValue.charAt(0);
+		case doubleValue:
+			return (char)doubleValue;
+		case longValue:
+			return (char)longValue;
+		case booleanValue:
+			return longValue != 0 ? (char)1 : 0;
+		}
+		throw new IllegalStateException("Value cannot be converted to char: " + type);
+	}
+
+	/** Returns the children of this value as a newly allocated String array.
+	 * @throws IllegalStateException if this not an array. */
+	public String[] asStringArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		String[] array = new String[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			String v;
+			switch (type) {
+			case stringValue:
+				v = value.stringValue;
+				break;
+			case doubleValue:
+				v = Double.toString(value.doubleValue);
+				break;
+			case longValue:
+				v = Long.toString(value.longValue);
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? "true" : "false";
+				break;
+			case nullValue:
+				v = null;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to string: " + type);
+			}
+			array[i] = value.asString();
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated float array.
+	 * @throws IllegalStateException if this not an array. */
+	public float[] asFloatArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		float[] array = new float[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			float v;
+			switch (value.type) {
+			case stringValue:
+				v = Float.parseFloat(value.stringValue);
+				break;
+			case doubleValue:
+				v = (float)value.doubleValue;
+				break;
+			case longValue:
+				v = (float)value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? 1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to float: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated double array.
+	 * @throws IllegalStateException if this not an array. */
+	public double[] asDoubleArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		double[] array = new double[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			double v;
+			switch (value.type) {
+			case stringValue:
+				v = Double.parseDouble(value.stringValue);
+				break;
+			case doubleValue:
+				v = value.doubleValue;
+				break;
+			case longValue:
+				v = (double)value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? 1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to double: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated long array.
+	 * @throws IllegalStateException if this not an array. */
+	public long[] asLongArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		long[] array = new long[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			long v;
+			switch (value.type) {
+			case stringValue:
+				v = Long.parseLong(value.stringValue);
+				break;
+			case doubleValue:
+				v = (long)value.doubleValue;
+				break;
+			case longValue:
+				v = value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? 1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to long: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated int array.
+	 * @throws IllegalStateException if this not an array. */
+	public int[] asIntArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		int[] array = new int[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			int v;
+			switch (value.type) {
+			case stringValue:
+				v = Integer.parseInt(value.stringValue);
+				break;
+			case doubleValue:
+				v = (int)value.doubleValue;
+				break;
+			case longValue:
+				v = (int)value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? 1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to int: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated boolean array.
+	 * @throws IllegalStateException if this not an array. */
+	public boolean[] asBooleanArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		boolean[] array = new boolean[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			boolean v;
+			switch (value.type) {
+			case stringValue:
+				v = Boolean.parseBoolean(value.stringValue);
+				break;
+			case doubleValue:
+				v = value.doubleValue == 0;
+				break;
+			case longValue:
+				v = value.longValue == 0;
+				break;
+			case booleanValue:
+				v = value.longValue != 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to boolean: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated byte array.
+	 * @throws IllegalStateException if this not an array. */
+	public byte[] asByteArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		byte[] array = new byte[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			byte v;
+			switch (value.type) {
+			case stringValue:
+				v = Byte.parseByte(value.stringValue);
+				break;
+			case doubleValue:
+				v = (byte)value.doubleValue;
+				break;
+			case longValue:
+				v = (byte)value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? (byte)1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to byte: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated short array.
+	 * @throws IllegalStateException if this not an array. */
+	public short[] asShortArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		short[] array = new short[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			short v;
+			switch (value.type) {
+			case stringValue:
+				v = Short.parseShort(value.stringValue);
+				break;
+			case doubleValue:
+				v = (short)value.doubleValue;
+				break;
+			case longValue:
+				v = (short)value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? (short)1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to short: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
+	/** Returns the children of this value as a newly allocated char array.
+	 * @throws IllegalStateException if this not an array. */
+	public char[] asCharArray () {
+		if (type != ValueType.array) throw new IllegalStateException("Value is not an array: " + type);
+		char[] array = new char[size];
+		int i = 0;
+		for (JsonValue value = child; value != null; value = value.next, i++) {
+			char v;
+			switch (value.type) {
+			case stringValue:
+				v = value.stringValue.length() == 0 ? 0 : value.stringValue.charAt(0);
+				break;
+			case doubleValue:
+				v = (char)value.doubleValue;
+				break;
+			case longValue:
+				v = (char)value.longValue;
+				break;
+			case booleanValue:
+				v = value.longValue != 0 ? (char)1 : 0;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to char: " + value.type);
+			}
+			array[i] = v;
+		}
+		return array;
+	}
+
 	/** Returns true if a child with the specified name exists and has a child. */
 	public boolean hasChild (String name) {
 		return getChild(name) != null;
@@ -296,6 +608,24 @@ public class JsonValue implements Iterable<JsonValue> {
 	public boolean getBoolean (String name, boolean defaultValue) {
 		JsonValue child = get(name);
 		return (child == null || !child.isValue()) ? defaultValue : child.asBoolean();
+	}
+
+	/** Finds the child with the specified name and returns it as a byte. Returns defaultValue if not found. */
+	public byte getByte (String name, byte defaultValue) {
+		JsonValue child = get(name);
+		return (child == null || !child.isValue()) ? defaultValue : child.asByte();
+	}
+
+	/** Finds the child with the specified name and returns it as a short. Returns defaultValue if not found. */
+	public short getShort (String name, short defaultValue) {
+		JsonValue child = get(name);
+		return (child == null || !child.isValue()) ? defaultValue : child.asShort();
+	}
+
+	/** Finds the child with the specified name and returns it as a char. Returns defaultValue if not found. */
+	public char getChar (String name, char defaultValue) {
+		JsonValue child = get(name);
+		return (child == null || !child.isValue()) ? defaultValue : child.asChar();
 	}
 
 	/** Finds the child with the specified name and returns it as a string.
@@ -346,6 +676,30 @@ public class JsonValue implements Iterable<JsonValue> {
 		return child.asBoolean();
 	}
 
+	/** Finds the child with the specified name and returns it as a byte.
+	 * @throws IllegalArgumentException if the child was not found. */
+	public byte getByte (String name) {
+		JsonValue child = get(name);
+		if (child == null) throw new IllegalArgumentException("Named value not found: " + name);
+		return child.asByte();
+	}
+
+	/** Finds the child with the specified name and returns it as a short.
+	 * @throws IllegalArgumentException if the child was not found. */
+	public short getShort (String name) {
+		JsonValue child = get(name);
+		if (child == null) throw new IllegalArgumentException("Named value not found: " + name);
+		return child.asShort();
+	}
+
+	/** Finds the child with the specified name and returns it as a char.
+	 * @throws IllegalArgumentException if the child was not found. */
+	public char getChar (String name) {
+		JsonValue child = get(name);
+		if (child == null) throw new IllegalArgumentException("Named value not found: " + name);
+		return child.asChar();
+	}
+
 	/** Finds the child with the specified index and returns it as a string.
 	 * @throws IllegalArgumentException if the child was not found. */
 	public String getString (int index) {
@@ -392,6 +746,30 @@ public class JsonValue implements Iterable<JsonValue> {
 		JsonValue child = get(index);
 		if (child == null) throw new IllegalArgumentException("Indexed value not found: " + name);
 		return child.asBoolean();
+	}
+
+	/** Finds the child with the specified index and returns it as a byte.
+	 * @throws IllegalArgumentException if the child was not found. */
+	public byte getByte (int index) {
+		JsonValue child = get(index);
+		if (child == null) throw new IllegalArgumentException("Indexed value not found: " + name);
+		return child.asByte();
+	}
+
+	/** Finds the child with the specified index and returns it as a short.
+	 * @throws IllegalArgumentException if the child was not found. */
+	public short getShort (int index) {
+		JsonValue child = get(index);
+		if (child == null) throw new IllegalArgumentException("Indexed value not found: " + name);
+		return child.asShort();
+	}
+
+	/** Finds the child with the specified index and returns it as a char.
+	 * @throws IllegalArgumentException if the child was not found. */
+	public char getChar (int index) {
+		JsonValue child = get(index);
+		if (child == null) throw new IllegalArgumentException("Indexed value not found: " + name);
+		return child.asChar();
 	}
 
 	public ValueType type () {
