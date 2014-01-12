@@ -131,6 +131,7 @@ public class GdxTests {
 		LifeCycleTest.class,
 		LightsTest.class,
 		LineDrawingTest.class,
+		LiquidFunTest.class,
 		ManagedTest.class,
 		ManualBindTest.class,
 		MaterialTest.class,
