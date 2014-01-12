@@ -142,6 +142,21 @@ public class Decal {
 		rotation.mul(rotator);
 		updated = false;
 	}
+	
+	/** 
+	 * @param radians rotation angle in radians */
+	public void setRotation(Vector3 axis, float radians) {
+		rotation.fromAxis(axis, radians);
+		updated = false;
+	}
+
+	/** 
+	 * @param radians rotation angle in radians */
+	public void rotate(Vector3 axis, float radians) {
+		rotator.fromAxis(axis, radians);
+		rotation.mul(rotator);
+		updated = false;
+	}
 
 	/** Sets the rotation of this decal based on the (normalized) direction and up vector.
 	 * @param dir the direction vector
