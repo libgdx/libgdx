@@ -18,7 +18,6 @@ package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -124,22 +123,14 @@ public class ParticleEffect implements Disposable {
 		return null;
 	}
 
-	public void save (File file) {
-		Writer output = null;
-		try {
-			output = new FileWriter(file);
-			int index = 0;
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleEmitter emitter = emitters.get(i);
-				if (index++ > 0) output.write("\n\n");
-				emitter.save(output);
-				output.write("- Image Path -\n");
-				output.write(emitter.getImagePath() + "\n");
-			}
-		} catch (IOException ex) {
-			throw new GdxRuntimeException("Error saving effect: " + file, ex);
-		} finally {
-			StreamUtils.closeQuietly(output);
+	public void save (Writer output) throws IOException {
+		int index = 0;
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleEmitter emitter = emitters.get(i);
+			if (index++ > 0) output.write("\n\n");
+			emitter.save(output);
+			output.write("- Image Path -\n");
+			output.write(emitter.getImagePath() + "\n");
 		}
 	}
 
@@ -211,7 +202,7 @@ public class ParticleEffect implements Disposable {
 			emitter.getSprite().getTexture().dispose();
 		}
 	}
-	
+
 	/** Returns the bounding box for all active particles. z axis will always be zero. */
 	public BoundingBox getBoundingBox () {
 		if (bounds == null) bounds = new BoundingBox();
