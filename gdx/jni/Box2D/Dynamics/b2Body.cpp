@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2007 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -58,6 +59,7 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 
 	m_xf.p = bd->position;
 	m_xf.q.Set(bd->angle);
+	m_xf0 = m_xf;
 
 	m_sweep.localCenter.SetZero();
 	m_sweep.c0 = m_xf.p;
@@ -424,6 +426,7 @@ void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 
 	m_xf.q.Set(angle);
 	m_xf.p = position;
+	m_xf0 = m_xf;
 
 	m_sweep.c = b2Mul(m_xf, m_sweep.localCenter);
 	m_sweep.a = angle;

@@ -1,5 +1,5 @@
 /*
-* Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -15,25 +15,31 @@
 * misrepresented as being the original software.
 * 3. This notice may not be removed or altered from any source distribution.
 */
+#include <Box2D/Particle/b2Particle.h>
+#include <Box2D/Common/b2Draw.h>
 
-#ifndef B2_CIRCLE_CONTACT_H
-#define B2_CIRCLE_CONTACT_H
+b2ParticleColor b2ParticleColor_zero(0, 0, 0, 0);
 
-#include <Box2D/Dynamics/Contacts/b2Contact.h>
-
-class b2BlockAllocator;
-
-class b2CircleContact : public b2Contact
+b2ParticleColor::b2ParticleColor(const b2Color& color)
 {
-public:
-	static b2Contact* Create(	b2Fixture* fixtureA, int32 indexA,
-								b2Fixture* fixtureB, int32 indexB, b2BlockAllocator* allocator);
-	static void Destroy(b2Contact* contact, b2BlockAllocator* allocator);
+	r = (int8) (255 * color.r);
+	g = (int8) (255 * color.g);
+	b = (int8) (255 * color.b);
+	a = (int8) 255;
+}
 
-	b2CircleContact(b2Fixture* fixtureA, b2Fixture* fixtureB);
-	~b2CircleContact() {}
+b2Color b2ParticleColor::GetColor() const
+{
+	return b2Color(
+		(float32) 1 / 255 * r,
+		(float32) 1 / 255 * g,
+		(float32) 1 / 255 * b);
+}
 
-	void Evaluate(b2Manifold* manifold, const b2Transform& xfA, const b2Transform& xfB);
-};
-
-#endif
+void b2ParticleColor::Set(const b2Color& color)
+{
+	r = (int8) (255 * color.r);
+	g = (int8) (255 * color.g);
+	b = (int8) (255 * color.b);
+	a = (int8) 255;
+}

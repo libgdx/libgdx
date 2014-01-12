@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -59,6 +60,12 @@ b2World::b2World(const b2Vec2& gravity)
 	m_inv_dt0 = 0.0f;
 
 	m_contactManager.m_allocator = &m_blockAllocator;
+
+	m_particleSystem.m_world = this;
+
+	m_liquidFunVersion = &b2_liquidFunVersion;
+	m_liquidFunVersionString = b2_liquidFunVersionString;
+
 
 	memset(&m_profile, 0, sizeof(b2Profile));
 }
@@ -385,6 +392,12 @@ void b2World::SetAllowSleeping(bool flag)
 // Find islands, integrate and solve constraints, solve position constraints
 void b2World::Solve(const b2TimeStep& step)
 {
+	// update previous transforms
+	for (b2Body* b = m_bodyList; b; b = b->m_next)
+	{
+		b->m_xf0 = b->m_xf;
+	}
+
 	m_profile.solveInit = 0.0f;
 	m_profile.solveVelocity = 0.0f;
 	m_profile.solvePosition = 0.0f;
@@ -839,7 +852,7 @@ void b2World::SolveTOI(const b2TimeStep& step)
 					{
 						continue;
 					}
-					
+
 					// Add the other body to the island.
 					other->m_flags |= b2Body::e_islandFlag;
 
@@ -923,7 +936,7 @@ void b2World::Step(float32 dt, int32 velocityIterations, int32 positionIteration
 	step.dtRatio = m_inv_dt0 * dt;
 
 	step.warmStarting = m_warmStarting;
-	
+
 	// Update contacts. This is where some contacts are destroyed.
 	{
 		b2Timer timer;
@@ -935,6 +948,7 @@ void b2World::Step(float32 dt, int32 velocityIterations, int32 positionIteration
 	if (m_stepComplete && step.dt > 0.0f)
 	{
 		b2Timer timer;
+		m_particleSystem.Solve(step); // Particle Simulation
 		Solve(step);
 		m_profile.solve = timer.GetMilliseconds();
 	}
@@ -989,6 +1003,7 @@ void b2World::QueryAABB(b2QueryCallback* callback, const b2AABB& aabb) const
 	wrapper.broadPhase = &m_contactManager.m_broadPhase;
 	wrapper.callback = callback;
 	m_contactManager.m_broadPhase.Query(&wrapper, aabb);
+	m_particleSystem.QueryAABB(callback, aabb);
 }
 
 struct b2WorldRayCastWrapper
@@ -1026,6 +1041,7 @@ void b2World::RayCast(b2RayCastCallback* callback, const b2Vec2& point1, const b
 	input.p1 = point1;
 	input.p2 = point2;
 	m_contactManager.m_broadPhase.RayCast(&wrapper, input);
+	m_particleSystem.RayCast(callback, point1, point2);
 }
 
 void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color& color)
@@ -1085,9 +1101,9 @@ void b2World::DrawShape(b2Fixture* fixture, const b2Transform& xf, const b2Color
 			m_debugDraw->DrawSolidPolygon(vertices, vertexCount, color);
 		}
 		break;
-            
-    default:
-        break;
+
+	default:
+		break;
 	}
 }
 
@@ -1132,6 +1148,25 @@ void b2World::DrawJoint(b2Joint* joint)
 	}
 }
 
+void b2World::DrawParticleSystem(const b2ParticleSystem& system)
+{
+	int32 particleCount = system.GetParticleCount();
+	if (particleCount)
+	{
+		float32 particleRadius = system.GetParticleRadius();
+		const b2Vec2* positionBuffer = system.GetParticlePositionBuffer();
+		if (system.m_colorBuffer.data)
+		{
+			const b2ParticleColor* colorBuffer = system.GetParticleColorBuffer();
+			m_debugDraw->DrawParticles(positionBuffer, particleRadius, colorBuffer, particleCount);
+		}
+		else
+		{
+			m_debugDraw->DrawParticles(positionBuffer, particleRadius, NULL, particleCount);
+		}
+	}
+}
+
 void b2World::DrawDebugData()
 {
 	if (m_debugDraw == NULL)
@@ -1170,6 +1205,7 @@ void b2World::DrawDebugData()
 				}
 			}
 		}
+		DrawParticleSystem(m_particleSystem);
 	}
 
 	if (flags & b2Draw::e_jointBit)
@@ -1336,4 +1372,223 @@ void b2World::Dump()
 	b2Log("b2Free(bodies);\n");
 	b2Log("joints = NULL;\n");
 	b2Log("bodies = NULL;\n");
+}
+
+int32 b2World::GetParticleMaxCount() const
+{
+	return m_particleSystem.GetParticleMaxCount();
+}
+
+void b2World::SetParticleMaxCount(int32 count)
+{
+	m_particleSystem.SetParticleMaxCount(count);
+}
+
+void b2World::SetParticleDensity(float32 density)
+{
+	m_particleSystem.SetParticleDensity(density);
+}
+
+float32 b2World::GetParticleDensity() const
+{
+	return m_particleSystem.GetParticleDensity();
+}
+
+void b2World::SetParticleGravityScale(float32 gravityScale)
+{
+	m_particleSystem.SetParticleGravityScale(gravityScale);
+}
+
+float32 b2World::GetParticleGravityScale() const
+{
+	return m_particleSystem.GetParticleGravityScale();
+}
+
+void b2World::SetParticleDamping(float32 damping)
+{
+	m_particleSystem.SetParticleDamping(damping);
+}
+
+float32 b2World::GetParticleDamping() const
+{
+	return m_particleSystem.GetParticleDamping();
+}
+
+void b2World::SetParticleRadius(float32 radius)
+{
+	m_particleSystem.SetParticleRadius(radius);
+}
+
+float32 b2World::GetParticleRadius() const
+{
+	return m_particleSystem.GetParticleRadius();
+}
+
+int32 b2World::CreateParticle(const b2ParticleDef& def)
+{
+	b2Assert(IsLocked() == false);
+	if (IsLocked())
+	{
+		return 0;
+	}
+	int32 p = m_particleSystem.CreateParticle(def);
+	return p;
+}
+
+void b2World::DestroyParticle(int32 index, bool callDestructionListener)
+{
+	m_particleSystem.DestroyParticle(index, callDestructionListener);
+}
+
+int32 b2World::DestroyParticlesInShape(
+	const b2Shape& shape, const b2Transform& xf, bool callDestructionListener)
+{
+	b2Assert(IsLocked() == false);
+	if (IsLocked())
+	{
+		return 0;
+	}
+	return m_particleSystem.DestroyParticlesInShape(shape, xf,
+													callDestructionListener);
+}
+
+b2ParticleGroup* b2World::CreateParticleGroup(const b2ParticleGroupDef& def)
+{
+	b2Assert(IsLocked() == false);
+	if (IsLocked())
+	{
+		return NULL;
+	}
+	b2ParticleGroup* g = m_particleSystem.CreateParticleGroup(def);
+	return g;
+}
+
+void b2World::JoinParticleGroups(b2ParticleGroup* groupA, b2ParticleGroup* groupB)
+{
+	b2Assert(IsLocked() == false);
+	if (IsLocked())
+	{
+		return;
+	}
+	m_particleSystem.JoinParticleGroups(groupA, groupB);
+}
+
+void b2World::DestroyParticlesInGroup(b2ParticleGroup* group, bool callDestructionListener)
+{
+	b2Assert(IsLocked() == false);
+	if (IsLocked())
+	{
+		return;
+	}
+	m_particleSystem.DestroyParticlesInGroup(group, callDestructionListener);
+}
+
+uint32* b2World::GetParticleFlagsBuffer()
+{
+	return m_particleSystem.GetParticleFlagsBuffer();
+}
+
+b2Vec2* b2World::GetParticlePositionBuffer()
+{
+	return m_particleSystem.GetParticlePositionBuffer();
+}
+
+b2Vec2* b2World::GetParticleVelocityBuffer()
+{
+	return m_particleSystem.GetParticleVelocityBuffer();
+}
+
+b2ParticleColor* b2World::GetParticleColorBuffer()
+{
+	return m_particleSystem.GetParticleColorBuffer();
+}
+
+void** b2World::GetParticleUserDataBuffer()
+{
+	return m_particleSystem.GetParticleUserDataBuffer();
+}
+
+const uint32* b2World::GetParticleFlagsBuffer() const
+{
+	return m_particleSystem.GetParticleFlagsBuffer();
+}
+
+const b2Vec2* b2World::GetParticlePositionBuffer() const
+{
+	return m_particleSystem.GetParticlePositionBuffer();
+}
+
+const b2Vec2* b2World::GetParticleVelocityBuffer() const
+{
+	return m_particleSystem.GetParticleVelocityBuffer();
+}
+
+const b2ParticleColor* b2World::GetParticleColorBuffer() const
+{
+	return m_particleSystem.GetParticleColorBuffer();
+}
+
+const b2ParticleGroup* const* b2World::GetParticleGroupBuffer() const
+{
+	return m_particleSystem.GetParticleGroupBuffer();
+}
+
+void* const* b2World::GetParticleUserDataBuffer() const
+{
+	return m_particleSystem.GetParticleUserDataBuffer();
+}
+
+void b2World::SetParticleFlagsBuffer(uint32* buffer, int32 capacity)
+{
+	m_particleSystem.SetParticleFlagsBuffer(buffer, capacity);
+}
+
+void b2World::SetParticlePositionBuffer(b2Vec2* buffer, int32 capacity)
+{
+	m_particleSystem.SetParticlePositionBuffer(buffer, capacity);
+}
+
+void b2World::SetParticleVelocityBuffer(b2Vec2* buffer, int32 capacity)
+{
+	m_particleSystem.SetParticleVelocityBuffer(buffer, capacity);
+}
+
+void b2World::SetParticleColorBuffer(b2ParticleColor* buffer, int32 capacity)
+{
+	m_particleSystem.SetParticleColorBuffer(buffer, capacity);
+}
+
+b2ParticleGroup* const* b2World::GetParticleGroupBuffer()
+{
+	return m_particleSystem.GetParticleGroupBuffer();
+}
+
+void b2World::SetParticleUserDataBuffer(void** buffer, int32 capacity)
+{
+	m_particleSystem.SetParticleUserDataBuffer(buffer, capacity);
+}
+
+const b2ParticleContact* b2World::GetParticleContacts()
+{
+	return m_particleSystem.m_contactBuffer;
+}
+
+int32 b2World::GetParticleContactCount()
+{
+	return m_particleSystem.m_contactCount;
+}
+
+const b2ParticleBodyContact* b2World::GetParticleBodyContacts()
+{
+	return m_particleSystem.m_bodyContactBuffer;
+}
+
+int32 b2World::GetParticleBodyContactCount()
+{
+	return m_particleSystem.m_bodyContactCount;
+}
+
+float32 b2World::ComputeParticleCollisionEnergy() const
+{
+	return m_particleSystem.ComputeParticleCollisionEnergy();
 }

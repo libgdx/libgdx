@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -25,6 +26,7 @@
 #include <Box2D/Dynamics/b2ContactManager.h>
 #include <Box2D/Dynamics/b2WorldCallbacks.h>
 #include <Box2D/Dynamics/b2TimeStep.h>
+#include <Box2D/Particle/b2ParticleSystem.h>
 
 struct b2AABB;
 struct b2BodyDef;
@@ -34,6 +36,7 @@ class b2Body;
 class b2Draw;
 class b2Fixture;
 class b2Joint;
+class b2ParticleGroup;
 
 /// The world class manages all physics entities, dynamic simulation,
 /// and asynchronous queries. The world also contains efficient memory
@@ -71,8 +74,8 @@ public:
 	/// @warning This function is locked during callbacks.
 	b2Body* CreateBody(const b2BodyDef* def);
 
-	/// Destroy a rigid body given a definition. No reference to the definition
-	/// is retained. This function is locked during callbacks.
+	/// Destroy a rigid body.
+	/// This function is locked during callbacks.
 	/// @warning This automatically deletes all associated shapes and joints.
 	/// @warning This function is locked during callbacks.
 	void DestroyBody(b2Body* body);
@@ -209,6 +212,180 @@ public:
 	/// @warning this should be called outside of a time step.
 	void Dump();
 
+	/// Create a particle whose properties have been defined.
+	/// No reference to the definition is retained.
+	/// A simulation step must occur before it's possible to interact with a
+	/// newly created particle.  For example, DestroyParticleInShape() will
+	/// not destroy a particle until Step() has been called.
+	/// @warning This function is locked during callbacks.
+	/// @return the index of the particle.
+	int32 CreateParticle(const b2ParticleDef& def);
+
+	/// Destroy a particle.
+	/// The particle is removed after the next step.
+	void DestroyParticle(int32 index)
+	{
+		DestroyParticle(index, false);
+	}
+
+	/// Destroy a particle.
+	/// The particle is removed after the next step.
+	/// @param Index of the particle to destroy.
+	/// @param Whether to call the destruction listener just before the
+	/// particle is destroyed.
+	void DestroyParticle(int32 index, bool callDestructionListener);
+
+	/// Destroy particles inside a shape without enabling the destruction
+	/// callback for destroyed particles.
+	/// This function is locked during callbacks.
+	/// For more information see
+	/// DestroyParticleInShape(const b2Shape&, const b2Transform&,bool).
+	/// @param Shape which encloses particles that should be destroyed.
+	/// @param Transform applied to the shape.
+	/// @warning This function is locked during callbacks.
+	/// @return Number of particles destroyed.
+	int32 DestroyParticlesInShape(const b2Shape& shape, const b2Transform& xf)
+	{
+		return DestroyParticlesInShape(shape, xf, false);
+	}
+
+	/// Destroy particles inside a shape.
+	/// This function is locked during callbacks.
+	/// In addition, this function immediately destroys particles in the shape
+	/// in constrast to DestroyParticle() which defers the destruction until
+	/// the next simulation step.
+	/// @param Shape which encloses particles that should be destroyed.
+	/// @param Transform applied to the shape.
+	/// @param Whether to call the world b2DestructionListener for each
+	/// particle destroyed.
+	/// @warning This function is locked during callbacks.
+	/// @return Number of particles destroyed.
+	int32 DestroyParticlesInShape(const b2Shape& shape, const b2Transform& xf,
+	                              bool callDestructionListener);
+
+
+	/// Create a particle group whose properties have been defined. No reference
+	/// to the definition is retained.
+	/// @warning This function is locked during callbacks.
+	b2ParticleGroup* CreateParticleGroup(const b2ParticleGroupDef& def);
+
+	/// Join two particle groups.
+	/// @param the first group. Expands to encompass the second group.
+	/// @param the second group. It is destroyed.
+	/// @warning This function is locked during callbacks.
+	void JoinParticleGroups(b2ParticleGroup* groupA, b2ParticleGroup* groupB);
+
+	/// Destroy particles in a group.
+	/// This function is locked during callbacks.
+	/// @param The particle group to destroy.
+	/// @param Whether to call the world b2DestructionListener for each
+	/// particle is destroyed.
+	/// @warning This function is locked during callbacks.
+	void DestroyParticlesInGroup(b2ParticleGroup* group, bool callDestructionListener);
+
+	/// Destroy particles in a group without enabling the destruction
+	/// callback for destroyed particles.
+	/// This function is locked during callbacks.
+	/// @param The particle group to destroy.
+	/// @warning This function is locked during callbacks.
+	void DestroyParticlesInGroup(b2ParticleGroup* group)
+	{
+		DestroyParticlesInGroup(group, false);
+	}
+
+	/// Get the world particle group list. With the returned group, use
+	/// b2ParticleGroup::GetNext to get the next group in the world list.
+	/// A NULL group indicates the end of the list.
+	/// @return the head of the world particle group list.
+	b2ParticleGroup* GetParticleGroupList();
+	const b2ParticleGroup* GetParticleGroupList() const;
+
+	/// Get the number of particle groups.
+	int32 GetParticleGroupCount() const;
+
+	/// Get the number of particles.
+	int32 GetParticleCount() const;
+
+	/// Get the maximum number of particles.
+	int32 GetParticleMaxCount() const;
+
+	/// Set the maximum number of particles.
+	void SetParticleMaxCount(int32 count);
+
+	/// Change the particle density.
+	void SetParticleDensity(float32 density);
+
+	/// Get the particle density.
+	float32 GetParticleDensity() const;
+
+	/// Change the particle gravity scale. Adjusts the effect of the global
+	/// gravity vector on particles. Default value is 1.0f.
+	void SetParticleGravityScale(float32 gravityScale);
+
+	/// Get the particle gravity scale.
+	float32 GetParticleGravityScale() const;
+
+	/// Damping is used to reduce the velocity of particles. The damping
+	/// parameter can be larger than 1.0f but the damping effect becomes
+	/// sensitive to the time step when the damping parameter is large.
+	void SetParticleDamping(float32 damping);
+
+	/// Get damping for particles
+	float32 GetParticleDamping() const;
+
+	/// Change the particle radius.
+	/// You should set this only once, on world start.
+	/// If you change the radius during execution, existing particles may explode, shrink, or behave unexpectedly.
+	void SetParticleRadius(float32 radius);
+
+	/// Get the particle radius.
+	float32 GetParticleRadius() const;
+
+	/// Get the particle data.
+	/// @return the pointer to the head of the particle data.
+	uint32* GetParticleFlagsBuffer();
+	b2Vec2* GetParticlePositionBuffer();
+	b2Vec2* GetParticleVelocityBuffer();
+	b2ParticleColor* GetParticleColorBuffer();
+	b2ParticleGroup* const* GetParticleGroupBuffer();
+	void** GetParticleUserDataBuffer();
+	const uint32* GetParticleFlagsBuffer() const;
+	const b2Vec2* GetParticlePositionBuffer() const;
+	const b2Vec2* GetParticleVelocityBuffer() const;
+	const b2ParticleColor* GetParticleColorBuffer() const;
+	const b2ParticleGroup* const* GetParticleGroupBuffer() const;
+	void* const* GetParticleUserDataBuffer() const;
+
+	/// Set a buffer for particle data.
+	/// @param buffer is a pointer to a block of memory.
+	/// @param size is the number of values in the block.
+	void SetParticleFlagsBuffer(uint32* buffer, int32 capacity);
+	void SetParticlePositionBuffer(b2Vec2* buffer, int32 capacity);
+	void SetParticleVelocityBuffer(b2Vec2* buffer, int32 capacity);
+	void SetParticleColorBuffer(b2ParticleColor* buffer, int32 capacity);
+	void SetParticleUserDataBuffer(void** buffer, int32 capacity);
+
+	/// Get contacts between particles
+	const b2ParticleContact* GetParticleContacts();
+	int32 GetParticleContactCount();
+
+	/// Get contacts between particles and bodies
+	const b2ParticleBodyContact* GetParticleBodyContacts();
+	int32 GetParticleBodyContactCount();
+
+	/// Compute the kinetic energy that can be lost by damping force
+	float32 ComputeParticleCollisionEnergy() const;
+
+	/// Get API version.
+	const b2Version* GetVersion() const {
+		return m_liquidFunVersion;
+	}
+
+	/// Get API version string.
+	const char* GetVersionString() const {
+		return m_liquidFunVersionString;
+	}
+
 private:
 
 	// m_flags
@@ -223,12 +400,15 @@ private:
 	friend class b2Fixture;
 	friend class b2ContactManager;
 	friend class b2Controller;
+	friend class b2ParticleSystem;
 
 	void Solve(const b2TimeStep& step);
 	void SolveTOI(const b2TimeStep& step);
 
 	void DrawJoint(b2Joint* joint);
 	void DrawShape(b2Fixture* shape, const b2Transform& xf, const b2Color& color);
+
+	void DrawParticleSystem(const b2ParticleSystem& system);
 
 	b2BlockAllocator m_blockAllocator;
 	b2StackAllocator m_stackAllocator;
@@ -261,6 +441,13 @@ private:
 	bool m_stepComplete;
 
 	b2Profile m_profile;
+
+	b2ParticleSystem m_particleSystem;
+
+	/// Used to reference b2_LiquidFunVersion so that it's not stripped from
+	/// the static library.
+	const b2Version *m_liquidFunVersion;
+	const char *m_liquidFunVersionString;
 };
 
 inline b2Body* b2World::GetBodyList()
@@ -349,6 +536,26 @@ inline const b2ContactManager& b2World::GetContactManager() const
 inline const b2Profile& b2World::GetProfile() const
 {
 	return m_profile;
+}
+
+inline b2ParticleGroup* b2World::GetParticleGroupList()
+{
+	return m_particleSystem.GetParticleGroupList();
+}
+
+inline const b2ParticleGroup* b2World::GetParticleGroupList() const
+{
+	return m_particleSystem.GetParticleGroupList();
+}
+
+inline int32 b2World::GetParticleGroupCount() const
+{
+	return m_particleSystem.GetParticleGroupCount();
+}
+
+inline int32 b2World::GetParticleCount() const
+{
+	return m_particleSystem.GetParticleCount();
 }
 
 #endif
