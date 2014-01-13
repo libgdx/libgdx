@@ -91,6 +91,10 @@ public abstract class Shape {
 		return shape->GetChildCount();
 	*/
 
+	public long getAddress() {
+		return addr;
+	}
+	
 // /// Test a point for containment in this shape. This only works for convex shapes.
 // /// @param xf the shape world transform.
 // /// @param p a point in world coordinates.

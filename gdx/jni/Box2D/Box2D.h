@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -20,13 +21,8 @@
 #define BOX2D_H
 
 /**
-\mainpage Box2D API Documentation
+\mainpage LiquidFun API Documentation
 
-\section intro_sec Getting Started
-
-For documentation please see http://box2d.org/documentation.html
-
-For discussion please visit http://box2d.org/forum
 */
 
 // These include files constitute the main Box2D API
@@ -64,5 +60,8 @@ For discussion please visit http://box2d.org/forum
 #include <Box2D/Dynamics/Joints/b2RopeJoint.h>
 #include <Box2D/Dynamics/Joints/b2WeldJoint.h>
 #include <Box2D/Dynamics/Joints/b2WheelJoint.h>
+
+#include <Box2D/Particle/b2Particle.h>
+#include <Box2D/Particle/b2ParticleGroup.h>
 
 #endif

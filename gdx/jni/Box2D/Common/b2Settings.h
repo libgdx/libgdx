@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -23,7 +24,13 @@
 #include <cmath>
 
 #define B2_NOT_USED(x) ((void)(x))
+#if DEBUG
 #define b2Assert(A) assert(A)
+#define B2_ASSERT_ENABLED 1
+#else
+#define b2Assert(A)
+#define B2_ASSERT_ENABLED 0
+#endif
 
 typedef signed char	int8;
 typedef signed short int16;
@@ -114,6 +121,27 @@ extern float b2_velocityThreshold;
 #define b2_toiBaugarte				0.75f
 
 
+// Particle
+
+/// A symbolic constant that stands for particle allocation error.
+#define b2_invalidParticleIndex		(-1)
+
+/// The standard distance between particles, divided by the particle radius.
+#define b2_particleStride			0.75f
+
+/// The minimum particle weight that produces pressure.
+#define b2_minParticleWeight			1.0f
+
+/// The upper limit for particle weight used in pressure calculation.
+#define b2_maxParticleWeight		5.0f
+
+/// The maximum distance between particles in a triad, divided by the particle radius.
+#define b2_maxTriadDistance			2
+#define b2_maxTriadDistanceSquared		(b2_maxTriadDistance * b2_maxTriadDistance)
+
+/// The initial size of particle data buffers.
+#define b2_minParticleBufferCapacity	256
+
 // Sleep
 
 /// The time that a body must be still before it will go to sleep.
@@ -146,6 +174,19 @@ struct b2Version
 };
 
 /// Current version.
+/// Version of Box2D, LiquidFun is based upon.
 extern b2Version b2_version;
+
+/// Global variable is used to identify the version of LiquidFun.
+extern const b2Version b2_liquidFunVersion;
+/// String which identifies the current version of LiquidFun.
+/// b2_liquidFunVersionString is used by Google developers to identify which
+/// applications uploaded to Google Play are using this library.  This allows
+/// the development team at Google to determine the popularity of the library.
+/// How it works: Applications that are uploaded to the Google Play Store are
+/// scanned for this version string.  We track which applications are using it
+/// to measure popularity.  You are free to remove it (of course) but we would
+/// appreciate if you left it in.
+extern const char *b2_liquidFunVersionString;
 
 #endif

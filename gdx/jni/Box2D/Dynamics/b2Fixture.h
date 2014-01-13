@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2009 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -155,6 +156,10 @@ public:
 	/// Test a point for containment in this fixture.
 	/// @param p a point in world coordinates.
 	bool TestPoint(const b2Vec2& p) const;
+
+	/// Compute the distance from this fixture.
+	/// @param p a point in world coordinates.
+	void ComputeDistance(const b2Vec2& p, float32* distance, b2Vec2* normal, int32 childIndex) const;
 
 	/// Cast a ray against this shape.
 	/// @param output the ray-cast results.
@@ -324,6 +329,11 @@ inline void b2Fixture::SetRestitution(float32 restitution)
 inline bool b2Fixture::TestPoint(const b2Vec2& p) const
 {
 	return m_shape->TestPoint(m_body->GetTransform(), p);
+}
+
+inline void b2Fixture::ComputeDistance(const b2Vec2& p, float32* d, b2Vec2* n, int32 childIndex) const
+{
+	m_shape->ComputeDistance(m_body->GetTransform(), p, d, n, childIndex);
 }
 
 inline bool b2Fixture::RayCast(b2RayCastOutput* output, const b2RayCastInput& input, int32 childIndex) const

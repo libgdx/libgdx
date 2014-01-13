@@ -1,5 +1,6 @@
 /*
 * Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+* Copyright (c) 2013 Google, Inc.
 *
 * This software is provided 'as-is', without any express or implied
 * warranty.  In no event will the authors be held liable for any damages
@@ -21,7 +22,7 @@
 
 #include <Box2D/Common/b2Math.h>
 #include <Box2D/Collision/Shapes/b2Shape.h>
-#include <new>
+#include <memory>
 
 class b2Fixture;
 class b2Joint;
@@ -403,6 +404,9 @@ private:
 	friend class b2WeldJoint;
 	friend class b2WheelJoint;
 
+	friend class b2ParticleSystem;
+	friend class b2ParticleGroup;
+
 	// m_flags
 	enum
 	{
@@ -434,6 +438,7 @@ private:
 	int32 m_islandIndex;
 
 	b2Transform m_xf;		// the body origin transform
+	b2Transform m_xf0;		// the previous transform for particle simulation
 	b2Sweep m_sweep;		// the swept motion for CCD
 
 	b2Vec2 m_linearVelocity;

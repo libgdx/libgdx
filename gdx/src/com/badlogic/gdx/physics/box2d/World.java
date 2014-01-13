@@ -964,4 +964,8 @@ b2ContactFilter defaultFilter;
 			return 0.0f;
 		}
 	}
+	
+	public long getAddress() {
+		return addr;
+	}
 }

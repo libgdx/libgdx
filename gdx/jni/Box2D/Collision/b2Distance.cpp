@@ -467,7 +467,7 @@ void b2Distance(b2DistanceOutput* output,
 	int32 saveCount = 0;
 
 	float32 distanceSqr1 = b2_maxFloat;
-	float32 distanceSqr2 = distanceSqr1;
+	float32 distanceSqr2;
 
 	// Main iteration loop.
 	int32 iter = 0;
