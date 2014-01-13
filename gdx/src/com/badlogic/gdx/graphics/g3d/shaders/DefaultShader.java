@@ -536,7 +536,6 @@ public class DefaultShader extends BaseShader {
 			prefix += "#define "+FloatAttribute.AlphaTestAlias+"Flag\n";
 		if (renderable.bones != null && config.numBones > 0)
 			prefix += "#define numBones "+config.numBones+"\n";
-		Gdx.app.log("Prefix","\n"+prefix);
 		return prefix;
 	}
 	

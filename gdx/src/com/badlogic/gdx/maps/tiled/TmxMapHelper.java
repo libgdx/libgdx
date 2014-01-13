@@ -49,7 +49,7 @@ class TmxMapHelper {
 		if (encoding.equals("csv")) {
 			String[] array = data.getText().split(",");
 			for (int i = 0; i < array.length; i++)
-				ids[i] = (int)Long.parseLong(array[i]);
+				ids[i] = (int)Long.parseLong(array[i].trim());
 		} else {
 			if (true)
 				if (encoding.equals("base64")) {
