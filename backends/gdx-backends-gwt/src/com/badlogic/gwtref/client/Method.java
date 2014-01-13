@@ -130,11 +130,8 @@ public class Method {
 	 * @param params the parameters to pass to the method or null.
 	 * @return the return value or null if the method does not return anything. */
 	public Object invoke (Object obj, Object... params) {
-		if (parameters != null && (params == null || params.length != parameters.length))
-			throw new IllegalArgumentException("Parameter mismatch");
-		if (parameters == null && params != null && params.length > 0) {
-			throw new IllegalArgumentException("Parameter mismatch");
-		}
+		if (parameters.length != (params != null ? params.length : 0)) throw new IllegalArgumentException("Parameter mismatch");
+
 		return ReflectionCache.instance.invoke(this, obj, params);
 	}
 
