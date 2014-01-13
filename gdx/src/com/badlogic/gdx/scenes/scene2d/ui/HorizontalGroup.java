@@ -22,21 +22,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.SnapshotArray;
 
-/** A group that lays out its children side by side in a single row. This can be easier than using {@link Table} when actors
- * need to be inserted in the middle of the group.
+/** A group that lays out its children side by side in a single row. This can be easier than using {@link Table} when actors need
+ * to be inserted in the middle of the group.
  * <p>
  * The preferred width is the sum of the children's preferred widths, plus spacing if set. The preferred height is the largest
- * preferred height of any child. The min size is the preferred size and the max size is 0 as <code>HorizontalGroup</code> can
- * be stretched to cover any area.
+ * preferred height of any child. The min size is the preferred size and the max size is 0 as <code>HorizontalGroup</code> can be
+ * stretched to cover any area.
  * <p>
  * This UI widget does not support <code>Layout</code>able actors that return 0 as their preferred width. A fine example is
- * {@link Label} class with text wrapping turned on. 
+ * {@link Label} class with text wrapping turned on.
  * @author Nathan Sweet */
 public class HorizontalGroup extends WidgetGroup {
 	private float prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private int alignment;
-	private boolean reverse;
+	private boolean reverse, round = true;
 	private float spacing;
 
 	public HorizontalGroup () {
@@ -75,6 +75,10 @@ public class HorizontalGroup extends WidgetGroup {
 				prefWidth += child.getWidth();
 				prefHeight = Math.max(prefHeight, child.getHeight());
 			}
+		}
+		if (round) {
+			prefWidth = Math.round(prefWidth);
+			prefHeight = Math.round(prefHeight);
 		}
 	}
 
@@ -121,5 +125,10 @@ public class HorizontalGroup extends WidgetGroup {
 	/** Sets the space between children. */
 	public void setSpacing (float spacing) {
 		this.spacing = spacing;
+	}
+
+	/** If true (the default), positions and sizes are rounded to integers. */
+	public void setRound (boolean round) {
+		this.round = round;
 	}
 }
