@@ -33,6 +33,7 @@ ipch/
 *.class
 
 libgdx-*.zip
+libgdx-*.zip.MD5
 
 *.iml
 /.idea/
@@ -46,3 +47,6 @@ libgdx-*.zip
 /extensions/gdx-controllers/gdx-controllers-desktop/libs/
 /extensions/gdx-freetype/libs/
 /extensions/gdx-image/libs/
+
+#ensure gdx-setup.jar works properly
+!/extensions/gdx-setup/src/com/badlogic/gdx/setup/resources/gwt/war
