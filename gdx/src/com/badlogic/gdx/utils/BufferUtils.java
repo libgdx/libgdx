@@ -447,6 +447,7 @@ public class BufferUtils {
 	 * {@link #freeMemory(ByteBuffer)}.
 	 * @param numBytes */
 	public static ByteBuffer newUnsafeByteBuffer (int numBytes) {
+		if(numBytes < 1) numBytes = 1;
 		ByteBuffer buffer = newDisposableByteBuffer(numBytes);
 		buffer.order(ByteOrder.nativeOrder());
 		allocatedUnsafe += numBytes;
