@@ -55,19 +55,25 @@ public class NetJavaImpl {
 
 		@Override
 		public byte[] getResult () {
+			InputStream input = getInputStream();
 			try {
-				return StreamUtils.copyStreamToByteArray(getInputStream(), connection.getContentLength());
+				return StreamUtils.copyStreamToByteArray(input, connection.getContentLength());
 			} catch (IOException e) {
 				return StreamUtils.EMPTY_BYTES;
+			} finally {
+				StreamUtils.closeQuietly(input);
 			}
 		}
 
 		@Override
 		public String getResultAsString () {
+			InputStream input = getInputStream();
 			try {
-				return StreamUtils.copyStreamToString(getInputStream(), connection.getContentLength());
+				return StreamUtils.copyStreamToString(input, connection.getContentLength());
 			} catch (IOException e) {
 				return "";
+			} finally {
+				StreamUtils.closeQuietly(input);
 			}
 		}
 

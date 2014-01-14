@@ -30,33 +30,29 @@ public class StreamUtils {
 	public static final int DEFAULT_BUFFER_SIZE = 8192;
 	public static final byte[] EMPTY_BYTES = new byte[0];
 
-	/** Copy the data from an {@link InputStream} to an {@link OutputStream}.
+	/** Copy the data from an {@link InputStream} to an {@link OutputStream} without closing the stream.
 	 * @throws IOException */
 	public static void copyStream (InputStream input, OutputStream output) throws IOException {
 		copyStream(input, output, DEFAULT_BUFFER_SIZE);
 	}
 
-	/** Copy the data from an {@link InputStream} to an {@link OutputStream}.
+	/** Copy the data from an {@link InputStream} to an {@link OutputStream} without closing the stream.
 	 * @throws IOException */
 	public static void copyStream (InputStream input, OutputStream output, int bufferSize) throws IOException {
-		try {
-			byte[] buffer = new byte[bufferSize];
-			int bytesRead;
-			while ((bytesRead = input.read(buffer)) != -1) {
-				output.write(buffer, 0, bytesRead);
-			}
-		} finally {
-			closeQuietly(input);
+		byte[] buffer = new byte[bufferSize];
+		int bytesRead;
+		while ((bytesRead = input.read(buffer)) != -1) {
+			output.write(buffer, 0, bytesRead);
 		}
 	}
 
-	/** Copy the data from an {@link InputStream} to a byte array.
+	/** Copy the data from an {@link InputStream} to a byte array without closing the stream.
 	 * @throws IOException */
 	public static byte[] copyStreamToByteArray (InputStream input) throws IOException {
 		return copyStreamToByteArray(input, input.available());
 	}
 
-	/** Copy the data from an {@link InputStream} to a byte array.
+	/** Copy the data from an {@link InputStream} to a byte array without closing the stream.
 	 * @param estimatedSize Used to preallocate a possibly correct sized byte array to avoid an array copy.
 	 * @throws IOException */
 	public static byte[] copyStreamToByteArray (InputStream input, int estimatedSize) throws IOException {
@@ -65,7 +61,7 @@ public class StreamUtils {
 		return baos.toByteArray();
 	}
 
-	/** Copy the data from an {@link InputStream} to a string using the default charset.
+	/** Copy the data from an {@link InputStream} to a string using the default charset without closing the stream.
 	 * @throws IOException */
 	public static String copyStreamToString (InputStream input) throws IOException {
 		return copyStreamToString(input, input.available());
@@ -76,19 +72,15 @@ public class StreamUtils {
 	 * @throws IOException */
 	public static String copyStreamToString (InputStream input, int approxStringLength) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-		try {
-			StringWriter w = new StringWriter(Math.max(0, approxStringLength));
-			char[] buffer = new char[DEFAULT_BUFFER_SIZE];
+		StringWriter w = new StringWriter(Math.max(0, approxStringLength));
+		char[] buffer = new char[DEFAULT_BUFFER_SIZE];
 
-			int charsRead;
-			while ((charsRead = reader.read(buffer)) != -1) {
-				w.write(buffer, 0, charsRead);
-			}
-
-			return w.toString();
-		} finally {
-			StreamUtils.closeQuietly(reader);
+		int charsRead;
+		while ((charsRead = reader.read(buffer)) != -1) {
+			w.write(buffer, 0, charsRead);
 		}
+
+		return w.toString();
 	}
 
 	/** Close and ignore all errors. */
