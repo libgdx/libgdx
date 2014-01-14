@@ -1,4 +1,4 @@
-package com.badlogic.gdx.backends.headless; /*******************************************************************************
+/*******************************************************************************
  * Copyright 2011 See AUTHORS file.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,8 @@ package com.badlogic.gdx.backends.headless; /***********************************
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
+package com.badlogic.gdx.backends.headless;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
