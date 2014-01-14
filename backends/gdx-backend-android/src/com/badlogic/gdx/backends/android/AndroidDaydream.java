@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Context;
@@ -72,8 +73,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
-	protected boolean useWakelock = false;
-	
+
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
 	 * render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0 context
 	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
@@ -107,7 +107,6 @@ public class AndroidDaydream extends DreamService implements Application {
 		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
-		this.useWakelock = config.useWakelock;
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -119,7 +118,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		setFullscreen(true);
 
 		setContentView(graphics.getView(), createLayoutParams());
-		createWakeLock(this.useWakelock);
+		createWakeLock(config.useWakelock);
 		hideStatusBar(config);
 	}
 
@@ -189,8 +188,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		net = new AndroidNet(null);
 		this.listener = listener;
 		this.handler = new Handler();
-		this.useWakelock = config.useWakelock;
-		
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -198,7 +196,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		createWakeLock(this.useWakelock);
+		createWakeLock(config.useWakelock);
 		hideStatusBar(config);
 		return graphics.getView();
 	}
@@ -210,15 +208,13 @@ public class AndroidDaydream extends DreamService implements Application {
 		graphics.pause();
 
 		input.unregisterSensorListeners();
-		// erase pointer ids. this sucks donkeyballs...
-		int[] realId = input.realId;
-		for (int i = 0; i < realId.length; i++)
-			realId[i] = -1;
-		// erase touched state. this also sucks donkeyballs...
-		boolean[] touched = input.touched;
-		for (int i = 0; i < touched.length; i++)
-			touched[i] = false;
 
+		int[] realId = input.realId;
+		// erase pointer ids. this sucks donkeyballs...
+		Arrays.fill(realId, -1);
+		boolean[] touched = input.touched;
+		// erase touched state. this also sucks donkeyballs...
+		Arrays.fill(touched, false);
 		graphics.clearManagedCaches();
 		graphics.destroy();
 		graphics.setContinuousRendering(isContinuous);
@@ -392,7 +388,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

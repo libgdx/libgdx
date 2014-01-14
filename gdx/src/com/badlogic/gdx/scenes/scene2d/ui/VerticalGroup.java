@@ -32,7 +32,7 @@ public class VerticalGroup extends WidgetGroup {
 	private float prefWidth, prefHeight;
 	private boolean sizeInvalid = true;
 	private int alignment;
-	private boolean reverse;
+	private boolean reverse, round = true;
 	private float spacing;
 
 	public VerticalGroup () {
@@ -72,6 +72,10 @@ public class VerticalGroup extends WidgetGroup {
 				prefHeight += child.getHeight();
 			}
 		}
+		if (round) {
+			prefWidth = Math.round(prefWidth);
+			prefHeight = Math.round(prefHeight);
+		}
 	}
 
 	public void layout () {
@@ -102,7 +106,10 @@ public class VerticalGroup extends WidgetGroup {
 			else
 				x = (groupWidth - width) / 2;
 			if (!reverse) y += (height + spacing) * dir;
-			child.setBounds(x, y, width, height);
+			if (round)
+				child.setBounds(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+			else
+				child.setBounds(x, y, width, height);
 			if (reverse) y += (height + spacing) * dir;
 		}
 	}
@@ -120,5 +127,10 @@ public class VerticalGroup extends WidgetGroup {
 	/** Sets the space between children. */
 	public void setSpacing (float spacing) {
 		this.spacing = spacing;
+	}
+
+	/** If true (the default), positions and sizes are rounded to integers. */
+	public void setRound (boolean round) {
+		this.round = round;
 	}
 }

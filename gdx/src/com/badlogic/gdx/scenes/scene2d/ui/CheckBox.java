@@ -43,8 +43,7 @@ public class CheckBox extends TextButton {
 		Label label = getLabel();
 		add(label);
 		label.setAlignment(Align.left);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (ButtonStyle style) {

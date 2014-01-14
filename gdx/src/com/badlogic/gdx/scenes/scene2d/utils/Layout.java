@@ -43,13 +43,12 @@ public interface Layout {
 	 * {@link Actor#draw(Batch, float)} before drawing is performed. */
 	public void validate ();
 
-	/** Sizes this actor to its preferred width and height and, if this changed the size, causes the actor to be laid out by calling
-	 * {@link #invalidate()} then {@link #validate()}.
+	/** Sizes this actor to its preferred width and height, then calls {@link #validate()}.
 	 * <p>
 	 * Generally this method should not be called in an actor's constructor because it calls {@link #layout()}, which means a
-	 * subclass would have layout() called before the subclass' constructor. Instead, in constructors, simply set the actors width
-	 * and height to {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction
-	 * time for more convenient use outside of a {@link Table}. */
+	 * subclass would have layout() called before the subclass' constructor. Instead, in constructors, simply set the actor's size
+	 * to {@link #getPrefWidth()} and {@link #getPrefHeight()}. This allows the actor to have a size at construction time for more
+	 * convenient use outside of a {@link Table}. */
 	public void pack ();
 
 	/** If true, this actor will be sized to the parent in {@link #validate()}. If the parent is the stage, the actor will be sized

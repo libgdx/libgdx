@@ -31,6 +31,8 @@ import com.badlogic.gdx.utils.StringBuilder;
  * The preferred size of the label is determined by the actual text bounds, unless {@link #setWrap(boolean) word wrap} is enabled.
  * @author Nathan Sweet */
 public class Label extends Widget {
+	static private final Color tempColor = new Color();
+
 	private LabelStyle style;
 	private final TextBounds bounds = new TextBounds();
 	private final StringBuilder text = new StringBuilder();
@@ -67,8 +69,7 @@ public class Label extends Widget {
 	public Label (CharSequence text, LabelStyle style) {
 		if (text != null) this.text.append(text);
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (LabelStyle style) {
@@ -118,6 +119,17 @@ public class Label extends Widget {
 		sizeInvalid = true;
 	}
 
+	private void scaleAndComputeSize () {
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+
+		computeSize();
+
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(oldScaleX, oldScaleY);
+	}
+
 	private void computeSize () {
 		sizeInvalid = false;
 		if (wrap) {
@@ -126,13 +138,14 @@ public class Label extends Widget {
 			bounds.set(cache.getFont().getWrappedBounds(text, width));
 		} else
 			bounds.set(cache.getFont().getMultiLineBounds(text));
-		if (!wrap) {
-			bounds.width *= fontScaleX;
-			bounds.height *= fontScaleY;
-		}
 	}
 
 	public void layout () {
+		BitmapFont font = cache.getFont();
+		float oldScaleX = font.getScaleX();
+		float oldScaleY = font.getScaleY();
+		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
+
 		if (sizeInvalid) computeSize();
 
 		if (wrap) {
@@ -142,11 +155,6 @@ public class Label extends Widget {
 				invalidateHierarchy();
 			}
 		}
-
-		BitmapFont font = cache.getFont();
-		float oldScaleX = font.getScaleX();
-		float oldScaleY = font.getScaleY();
-		if (fontScaleX != 1 || fontScaleY != 1) font.setScale(fontScaleX, fontScaleY);
 
 		float width = getWidth(), height = getHeight();
 		StringBuilder text;
@@ -196,19 +204,21 @@ public class Label extends Widget {
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		Color color = getColor();
+		Color color = tempColor.set(getColor());
+		color.a *= parentAlpha;
 		if (style.background != null) {
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+			batch.setColor(color.r, color.g, color.b, color.a);
 			style.background.draw(batch, getX(), getY(), getWidth(), getHeight());
 		}
-		cache.setColor(style.fontColor == null ? color : Color.tmp.set(color).mul(style.fontColor));
+		if (style.fontColor != null) color.mul(style.fontColor);
+		cache.setColors(color);
 		cache.setPosition(getX(), getY());
-		cache.draw(batch, parentAlpha);
+		cache.draw(batch);
 	}
 
 	public float getPrefWidth () {
 		if (wrap) return 0;
-		if (sizeInvalid) computeSize();
+		if (sizeInvalid) scaleAndComputeSize();
 		float width = bounds.width;
 		Drawable background = style.background;
 		if (background != null) width += background.getLeftWidth() + background.getRightWidth();
@@ -216,7 +226,7 @@ public class Label extends Widget {
 	}
 
 	public float getPrefHeight () {
-		if (sizeInvalid) computeSize();
+		if (sizeInvalid) scaleAndComputeSize();
 		float height = bounds.height - style.font.getDescent() * 2;
 		Drawable background = style.background;
 		if (background != null) height += background.getTopHeight() + background.getBottomHeight();
@@ -224,7 +234,7 @@ public class Label extends Widget {
 	}
 
 	public TextBounds getTextBounds () {
-		if (sizeInvalid) computeSize();
+		if (sizeInvalid) scaleAndComputeSize();
 		return bounds;
 	}
 

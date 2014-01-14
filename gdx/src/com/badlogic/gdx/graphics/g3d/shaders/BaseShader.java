@@ -191,9 +191,9 @@ public abstract class BaseShader implements Shader {
 		this.context = context;
 		program.begin();
 		currentMesh = null;
-		for (final int i: globalUniforms.items)
-			if (setters.get(i) != null)
-				setters.get(i).set(this, i, null, null);
+		for (int u, i = 0; i < globalUniforms.size; ++i)
+			if (setters.get(u = globalUniforms.get(i)) != null)
+				setters.get(u).set(this, u, null, null);
 	}
 	
 	private final IntArray tempArray = new IntArray();
@@ -218,9 +218,9 @@ public abstract class BaseShader implements Shader {
 	}
 	
 	public void render (Renderable renderable, final Attributes combinedAttributes) {
-		for (final int i: localUniforms.items)
-			if (setters.get(i) != null)
-				setters.get(i).set(this, i, renderable, combinedAttributes);
+		for (int u, i = 0; i < localUniforms.size; ++i)
+			if (setters.get(u = localUniforms.get(i)) != null)
+				setters.get(u).set(this, u, renderable, combinedAttributes);
 		if (currentMesh != renderable.mesh) {
 			if (currentMesh != null)
 				currentMesh.unbind(program, tempArray.items);

@@ -58,12 +58,8 @@ public class Node {
 	 * @return the local transform
 	 */
 	public Matrix4 calculateLocalTransform() {
-		if (!isAnimated) {
-			localTransform.idt();
-			localTransform.translate(translation);
-			localTransform.rotate(rotation);
-			localTransform.scale(scale.x, scale.y, scale.z);
-		}
+		if (!isAnimated)
+			localTransform.set(translation, rotation, scale);
 		return localTransform;
 	}
 

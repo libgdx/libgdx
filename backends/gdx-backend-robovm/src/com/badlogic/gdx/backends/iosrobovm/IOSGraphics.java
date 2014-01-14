@@ -50,8 +50,7 @@ import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.Array;
 
 // FIXME add GL 1.x support by ripping Android's classes
-public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
-		GLKViewControllerDelegate {
+public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
 
@@ -60,13 +59,13 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		final IOSGraphics graphics;
 		boolean created = false;
 
-		IOSUIViewController(IOSApplication app, IOSGraphics graphics) {
+		IOSUIViewController (IOSApplication app, IOSGraphics graphics) {
 			this.app = app;
 			this.graphics = graphics;
 		}
 
 		@Override
-		public void didRotate(UIInterfaceOrientation orientation) {
+		public void didRotate (UIInterfaceOrientation orientation) {
 			super.didRotate(orientation);
 			// get the view size and update graphics
 			// FIXME: supporting BOTH (landscape+portrait at same time) is
@@ -74,14 +73,13 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 			// FIXME screen orientation needs to be stored for
 			// Input#getNativeOrientation
 			CGSize bounds = app.getBounds(this);
-			graphics.width = (int) bounds.width();
-			graphics.height = (int) bounds.height();
+			graphics.width = (int)bounds.width();
+			graphics.height = (int)bounds.height();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
 		}
 
-		public boolean shouldAutorotateToInterfaceOrientation(
-				UIInterfaceOrientation orientation) {
+		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
 			// we return "true" if we support the orientation
 			switch (orientation) {
 			case LandscapeLeft:
@@ -95,16 +93,15 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 		@Callback
 		@BindSelector("shouldAutorotateToInterfaceOrientation:")
-		private static boolean shouldAutorotateToInterfaceOrientation(
-				IOSUIViewController self, Selector sel,
-				UIInterfaceOrientation orientation) {
+		private static boolean shouldAutorotateToInterfaceOrientation (IOSUIViewController self, Selector sel,
+			UIInterfaceOrientation orientation) {
 			return self.shouldAutorotateToInterfaceOrientation(orientation);
 		}
 	}
 
 	static class IOSUIView extends GLKView {
 
-		public IOSUIView(CGRect frame, EAGLContext context) {
+		public IOSUIView (CGRect frame, EAGLContext context) {
 			super(frame, context);
 		}
 	}
@@ -129,18 +126,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 	private float density = 1;
 
 	volatile boolean paused;
-	boolean wasPaused;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
 	GLKView view;
 	IOSUIViewController viewController;
 
-	public IOSGraphics(CGSize bounds, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
+	public IOSGraphics (CGSize bounds, IOSApplication app, IOSApplicationConfiguration config, IOSInput input, GL20 gl20) {
 		this.config = config;
 		// setup view and OpenGL
-		width = (int) bounds.width();
-		height = (int) bounds.height();
+		width = (int)bounds.width();
+		height = (int)bounds.height();
 		app.debug(tag, bounds.width() + "x" + bounds.height() + ", " + UIScreen.getMainScreen().getScale());
 		this.gl20 = gl20;
 
@@ -148,31 +144,31 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 
 		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
 			@Override
-			public void touchesBegan(NSSet touches, UIEvent event) {
+			public void touchesBegan (NSSet touches, UIEvent event) {
 				super.touchesBegan(touches, event);
 				IOSGraphics.this.input.touchDown(touches, event);
 			}
 
 			@Override
-			public void touchesCancelled(NSSet touches, UIEvent event) {
+			public void touchesCancelled (NSSet touches, UIEvent event) {
 				super.touchesCancelled(touches, event);
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
 			@Override
-			public void touchesEnded(NSSet touches, UIEvent event) {
+			public void touchesEnded (NSSet touches, UIEvent event) {
 				super.touchesEnded(touches, event);
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
 			@Override
-			public void touchesMoved(NSSet touches, UIEvent event) {
+			public void touchesMoved (NSSet touches, UIEvent event) {
 				super.touchesMoved(touches, event);
 				IOSGraphics.this.input.touchMoved(touches, event);
 			}
 
 			@Override
-			public void draw(CGRect rect) {
+			public void draw (CGRect rect) {
 				IOSGraphics.this.draw(this, rect);
 			}
 
@@ -195,22 +191,25 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		// FIXME fix this if we add rgba/depth/stencil flags to
 		// IOSApplicationConfiguration
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
-		if(config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
-			r = 5; g = 6; b = 5; a = 0;
+		if (config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
+			r = 5;
+			g = 6;
+			b = 5;
+			a = 0;
 		} else {
 			r = g = b = a = 8;
 		}
-		if(config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
+		if (config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
 			depth = 16;
 		} else if (config.depthFormat == GLKViewDrawableDepthFormat.Format24) {
 			depth = 24;
 		} else {
 			depth = 0;
 		}
-		if(config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
+		if (config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
 			stencil = 8;
 		}
-		if(config.multisample == GLKViewDrawableMultisample.Sample4X) {
+		if (config.multisample == GLKViewDrawableMultisample.Sample4X) {
 			samples = 4;
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
@@ -244,49 +243,46 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		framesStart = lastFrameTime;
 
 		paused = false;
-		wasPaused = true;
 	}
 
-	public void resume() {
+	public void resume () {
+		if (!paused) return;
 		paused = false;
+
+		Array<LifecycleListener> listeners = app.lifecycleListeners;
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
+				listener.resume();
+			}
+		}
+		app.listener.resume();
 	}
 
-	public void pause() {
+	public void pause () {
+		if (paused) return;
 		paused = true;
+		
+		Array<LifecycleListener> listeners = app.lifecycleListeners;
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
+				listener.pause();
+			}
+		}
+		app.listener.pause();
 	}
 
 	boolean created = false;
+
 	@Override
-	public void draw(GLKView view, CGRect rect) {
-		if(!created) {
+	public void draw (GLKView view, CGRect rect) {
+		if (!created) {
 			app.graphics.makeCurrent();
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
 		}
 		if (paused) {
-			if (!wasPaused) {
-				Array<LifecycleListener> listeners = app.lifecycleListeners;
-				synchronized (listeners) {
-					for (LifecycleListener listener : listeners) {
-						listener.pause();
-					}
-				}
-				app.listener.pause();
-				wasPaused = true;
-			}
 			return;
-		} else {
-			if (wasPaused) {
-				Array<LifecycleListener> listeners = app.lifecycleListeners;
-				synchronized (listeners) {
-					for (LifecycleListener listener : listeners) {
-						listener.resume();
-					}
-				}
-				app.listener.resume();
-				wasPaused = false;
-			}
 		}
 
 		long time = System.nanoTime();
@@ -305,185 +301,184 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate,
 		app.listener.render();
 	}
 
-	void makeCurrent() {
+	void makeCurrent () {
 		EAGLContext.setCurrentContext(context);
 	}
 
 	@Override
-	public void update(GLKViewController controller) {
+	public void update (GLKViewController controller) {
 		makeCurrent();
 		app.processRunnables();
 	}
 
 	@Override
-	public void willPause(GLKViewController controller, boolean pause) {
+	public void willPause (GLKViewController controller, boolean pause) {
 		if (pause) {
+			if (paused) return;
 			pause();
 		} else {
+			if (!paused) return;
 			resume();
 		}
 	}
 
 	@Override
-	public boolean isGL11Available() {
+	public boolean isGL11Available () {
 		return false;
 	}
 
 	@Override
-	public boolean isGL20Available() {
+	public boolean isGL20Available () {
 		return true;
 	}
 
 	@Override
-	public GLCommon getGLCommon() {
+	public GLCommon getGLCommon () {
 		return gl20;
 	}
 
 	@Override
-	public GL10 getGL10() {
+	public GL10 getGL10 () {
 		return null;
 	}
 
 	@Override
-	public GL11 getGL11() {
+	public GL11 getGL11 () {
 		return null;
 	}
 
 	@Override
-	public GL20 getGL20() {
+	public GL20 getGL20 () {
 		return gl20;
 	}
 
 	@Override
-	public int getWidth() {
+	public int getWidth () {
 		return width;
 	}
 
 	@Override
-	public int getHeight() {
+	public int getHeight () {
 		return height;
 	}
 
 	@Override
-	public float getDeltaTime() {
+	public float getDeltaTime () {
 		return deltaTime;
 	}
 
 	@Override
-	public float getRawDeltaTime() {
+	public float getRawDeltaTime () {
 		return deltaTime;
 	}
 
 	@Override
-	public int getFramesPerSecond() {
+	public int getFramesPerSecond () {
 		return fps;
 	}
 
 	@Override
-	public GraphicsType getType() {
+	public GraphicsType getType () {
 		return GraphicsType.iOSGL;
 	}
 
 	@Override
-	public float getPpiX() {
+	public float getPpiX () {
 		return ppiX;
 	}
 
 	@Override
-	public float getPpiY() {
+	public float getPpiY () {
 		return ppiY;
 	}
 
 	@Override
-	public float getPpcX() {
+	public float getPpcX () {
 		return ppcX;
 	}
 
 	@Override
-	public float getPpcY() {
+	public float getPpcY () {
 		return ppcY;
 	}
 
-	/**
-	 * Returns the display density.
+	/** Returns the display density.
 	 * 
-	 * @return 1.0f for non-retina devices, 2.0f for retina devices.
-	 */
+	 * @return 1.0f for non-retina devices, 2.0f for retina devices. */
 	@Override
-	public float getDensity() {
+	public float getDensity () {
 		return density;
 	}
 
 	@Override
-	public boolean supportsDisplayModeChange() {
+	public boolean supportsDisplayModeChange () {
 		return false;
 	}
 
 	@Override
-	public DisplayMode[] getDisplayModes() {
-		return new DisplayMode[] { getDesktopDisplayMode() };
+	public DisplayMode[] getDisplayModes () {
+		return new DisplayMode[] {getDesktopDisplayMode()};
 	}
 
 	@Override
-	public DisplayMode getDesktopDisplayMode() {
-		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g + bufferFormat.b + bufferFormat.a);
+	public DisplayMode getDesktopDisplayMode () {
+		return new IOSDisplayMode(getWidth(), getHeight(), config.preferredFramesPerSecond, bufferFormat.r + bufferFormat.g
+			+ bufferFormat.b + bufferFormat.a);
 	}
 
 	private class IOSDisplayMode extends DisplayMode {
-		protected IOSDisplayMode(int width, int height, int refreshRate,
-				int bitsPerPixel) {
+		protected IOSDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
 	}
 
 	@Override
-	public boolean setDisplayMode(DisplayMode displayMode) {
+	public boolean setDisplayMode (DisplayMode displayMode) {
 		return false;
 	}
 
 	@Override
-	public boolean setDisplayMode(int width, int height, boolean fullscreen) {
+	public boolean setDisplayMode (int width, int height, boolean fullscreen) {
 		return false;
 	}
 
 	@Override
-	public void setTitle(String title) {
+	public void setTitle (String title) {
 	}
 
 	@Override
-	public void setVSync(boolean vsync) {
+	public void setVSync (boolean vsync) {
 	}
 
 	@Override
-	public BufferFormat getBufferFormat() {
+	public BufferFormat getBufferFormat () {
 		return bufferFormat;
 	}
 
 	@Override
-	public boolean supportsExtension(String extension) {
-		if (extensions == null)
-			extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+	public boolean supportsExtension (String extension) {
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 
 	@Override
-	public void setContinuousRendering(boolean isContinuous) {
+	public void setContinuousRendering (boolean isContinuous) {
 		// FIXME implement this if possible
 	}
 
 	@Override
-	public boolean isContinuousRendering() {
+	public boolean isContinuousRendering () {
 		// FIXME implement this if possible
 		return true;
 	}
 
 	@Override
-	public void requestRendering() {
+	public void requestRendering () {
 		// FIXME implement this if possible
 	}
 
 	@Override
-	public boolean isFullscreen() {
+	public boolean isFullscreen () {
 		return true;
 	}
 }

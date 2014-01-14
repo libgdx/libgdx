@@ -56,8 +56,7 @@ public class List extends Widget implements Cullable {
 	public List (Object[] items, ListStyle style) {
 		setStyle(style);
 		setItems(items);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {

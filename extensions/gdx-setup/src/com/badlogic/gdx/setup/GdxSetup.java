@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,15 +33,13 @@ import java.util.Map;
  *
  */
 public class GdxSetup {
-	final static String[] GDX_VERSIONS = {"0.9.9", "1.0-SNAPSHOT"};
-	
-	public void build (String outputDir, String appName, String packageName, String mainClass, String gdxVersion) {
+	public void build (String outputDir, String appName, String packageName, String mainClass) {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
-		
+
 		// root dir/gradle files
-		project.files.add(new ProjectFile("build.gradle"));
+		project.files.add(new ProjectFile("build.gradle", true));
 		project.files.add(new ProjectFile("settings.gradle"));
 		project.files.add(new ProjectFile("gradlew", false));
 		project.files.add(new ProjectFile("gradlew.bat", false));
@@ -53,11 +49,13 @@ public class GdxSetup {
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
+        //core but gwt required
+        project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
 		
 		// desktop project
 		project.files.add(new ProjectFile("desktop/build.gradle"));
 		project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
-		
+
 		// android project
 		project.files.add(new ProjectFile("android/assets/badlogic.jpg", false));
 		project.files.add(new ProjectFile("android/res/values/strings.xml", false));
@@ -72,18 +70,24 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 		project.files.add(new ProjectFile("android/proguard-project.txt", false));
 		project.files.add(new ProjectFile("android/project.properties", false));
-		
+
+        //gwt project
+        project.files.add(new ProjectFile("gwt/build.gradle"));
+        project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
+        project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
+        project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/" + "index.html", true));
+        project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));
+
+
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
 		values.put("%MAIN_CLASS%", mainClass);
-		values.put("%GDX_VERSION%", gdxVersion);
 		
 		copyAndReplace(outputDir, project, values);
 		
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
-		System.out.println("Done! project created in " + outputDir +" directory");
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
@@ -170,8 +174,6 @@ public class GdxSetup {
 	
 	private static void printHelp() {
 		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass>");
-		System.out.println("[OPTIONAL]");
-		System.out.println("--gdxVersion <version> defaults to " + GDX_VERSIONS[0] + " if not specified");
 	}
 	
 	private static Map<String, String> parseArgs(String[] args) {
@@ -195,19 +197,7 @@ public class GdxSetup {
 			printHelp();
 			System.exit(-1);
 		}
-		if(params.containsKey("gdxVersion")){
-			List<String> versions = Arrays.asList(GDX_VERSIONS);
-			if(!versions.contains(params.get("gdxVersion"))){
-				System.out.println("Invalid gdxVersion : use one of the following versions");
-				System.out.println(versions);
-				System.exit(-1);
-			}
-		}
-		if(!params.containsKey("gdxVersion")){
-			params.put("gdxVersion", GDX_VERSIONS[0]);
-			System.out.println("No gdxVersion specified: using default [" + GDX_VERSIONS[0] + "]");
-		}
 		
-		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("gdxVersion"));
+		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
 	}
 }

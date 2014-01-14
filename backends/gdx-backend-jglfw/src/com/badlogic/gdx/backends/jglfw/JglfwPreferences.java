@@ -37,8 +37,8 @@ public class JglfwPreferences implements Preferences {
 	private final Properties properties = new Properties();
 	private final FileHandle file;
 
-	public JglfwPreferences (String name) {
-		this(new JglfwFileHandle(new File(".prefs/" + name), FileType.External));
+	public JglfwPreferences (String name, String directory) {
+		this(new JglfwFileHandle(new File(directory, name), FileType.External));
 	}
 
 	public JglfwPreferences (FileHandle file) {

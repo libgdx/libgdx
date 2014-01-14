@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Context;
@@ -74,7 +75,6 @@ public class AndroidApplication extends Activity implements Application {
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
-	protected boolean useWakelock = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -111,8 +111,7 @@ public class AndroidApplication extends Activity implements Application {
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.hideStatusBar = config.hideStatusBar;
-		this.useWakelock = config.useWakelock;
-		
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -128,7 +127,7 @@ public class AndroidApplication extends Activity implements Application {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 		setContentView(graphics.getView(), createLayoutParams());
-		createWakeLock(this.useWakelock);
+		createWakeLock(config.useWakelock);
 		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
@@ -236,8 +235,7 @@ public class AndroidApplication extends Activity implements Application {
 		this.handler = new Handler();
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.hideStatusBar = config.hideStatusBar;
-		this.useWakelock = config.useWakelock;
-		
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -245,7 +243,7 @@ public class AndroidApplication extends Activity implements Application {
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		createWakeLock(this.useWakelock);
+		createWakeLock(config.useWakelock);
 		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
@@ -268,15 +266,13 @@ public class AndroidApplication extends Activity implements Application {
 		graphics.pause();
 
 		input.unregisterSensorListeners();
-		// erase pointer ids. this sucks donkeyballs...
-		int[] realId = input.realId;
-		for (int i = 0; i < realId.length; i++)
-			realId[i] = -1;
 
-		// erase touched state. this also sucks donkeyballs...
+		int[] realId = input.realId;
+		// erase pointer ids. this sucks donkeyballs...
+		Arrays.fill(realId, -1);
 		boolean[] touched = input.touched;
-		for (int i = 0; i < touched.length; i++)
-			touched[i] = false;
+		// erase touched state. this also sucks donkeyballs...
+		Arrays.fill(touched, false);
 
 		if (isFinishing()) {
 			graphics.clearManagedCaches();

@@ -42,7 +42,7 @@ public class Sort {
 		comparableTimSort.doSort(a, fromIndex, toIndex);
 	}
 
-	public <T> void sort (Array<T> a, Comparator<T> c) {
+	public <T> void sort (Array<? extends T> a, Comparator<? extends T> c) {
 		if (timSort == null) timSort = new TimSort();
 		timSort.doSort((Object[])a.items, (Comparator)c, 0, a.size);
 	}

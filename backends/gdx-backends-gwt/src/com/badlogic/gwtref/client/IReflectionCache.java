@@ -26,9 +26,6 @@ public interface IReflectionCache {
 
 	public Object newArray (Class componentType, int size);
 
-	// Type methods
-	public Object newInstance (Type type);
-
 	public int getArrayLength (Type type, Object obj);
 
 	public Object getArrayElement (Type type, Object obj, int i);

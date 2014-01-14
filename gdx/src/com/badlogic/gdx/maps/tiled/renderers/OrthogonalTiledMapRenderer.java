@@ -206,8 +206,8 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 						}
 					}
 					spriteBatch.draw(region.getTexture(), vertices, 0, 20);
-					x += layerTileWidth;
 				}
+				x += layerTileWidth;
 			}
 			y += layerTileHeight;
 		}

@@ -31,7 +31,6 @@ public class Field {
 	final boolean isStatic;
 	final boolean isTransient;
 	final boolean isVolatile;
-	boolean accessible;
 	final String getter;
 	final String setter;
 	final Class[] elementTypes;
@@ -53,7 +52,6 @@ public class Field {
 		this.getter = getter;
 		this.setter = setter;
 		this.elementTypes = elementTypes;
-		accessible = isPublic;
 	}
 
 	public Object get (Object obj) throws IllegalAccessException {
@@ -83,14 +81,6 @@ public class Field {
 
 	public boolean isSynthetic () {
 		return false;
-	}
-
-	public boolean isAccessible () {
-		return accessible;
-	}
-
-	public void setAccessible (boolean accessible) throws AccessControlException {
-		this.accessible = accessible;
 	}
 
 	public boolean isFinal () {
@@ -129,7 +119,7 @@ public class Field {
 	public String toString () {
 		return "Field [name=" + name + ", enclosingType=" + enclosingType + ", type=" + type + ", isFinal=" + isFinal
 			+ ", isDefaultAccess=" + isDefaultAccess + ", isPrivate=" + isPrivate + ", isProtected=" + isProtected + ", isPublic="
-			+ isPublic + ", isStatic=" + isStatic + ", isTransient=" + isTransient + ", isVolatile=" + isVolatile + ", accessible="
-			+ accessible + ", getter=" + getter + ", setter=" + setter + ", elementTypes=" + Arrays.toString(elementTypes) + "]";
+			+ isPublic + ", isStatic=" + isStatic + ", isTransient=" + isTransient + ", isVolatile=" + isVolatile + ", getter="
+			+ getter + ", setter=" + setter + ", elementTypes=" + Arrays.toString(elementTypes) + "]";
 	}
 }
