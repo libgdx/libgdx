@@ -38,7 +38,15 @@ public class SharedLibraryLoader {
 	static public boolean isMac = System.getProperty("os.name").contains("Mac");
 	static public boolean isIos = false;
 	static public boolean isAndroid = false;
+	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
 	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
+	/** JDK 8 introduced sun.arch.abi
+	 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8005545
+	 * Here are some ARM specific examples:
+	 * gnueabi 	GNU softfp EABI
+	 * gnueabihf	GNU hard float EABI
+	 * androideabi	Android EABI */
+	static public String abi = (System.getProperty("sun.arch.abi")!=null ? System.getProperty("sun.arch.abi") : "");
 	static {
 		String vm = System.getProperty("java.vm.name");
 		if (vm != null && vm.contains("Dalvik")) {
@@ -87,7 +95,7 @@ public class SharedLibraryLoader {
 	/** Maps a platform independent library name to a platform dependent name. */
 	public String mapLibraryName (String libraryName) {
 		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
-		if (isLinux) return "lib" + libraryName + (is64Bit ? "64.so" : ".so");
+		if (isLinux) return "lib" + libraryName + (isARM ? "arm"+abi : "" ) + (is64Bit ? "64.so" : ".so");
 		if (isMac) return "lib" + libraryName + ".dylib";
 		return libraryName;
 	}
