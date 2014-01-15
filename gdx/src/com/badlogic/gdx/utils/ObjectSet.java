@@ -76,6 +76,13 @@ public class ObjectSet<T> implements Iterable<T> {
 		keyTable = (T[])new Object[capacity + stashCapacity];
 	}
 
+	public ObjectSet (ObjectSet set) {
+		this(set.capacity, set.loadFactor);
+		stashSize = set.stashSize;
+		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
+		size = set.size;
+	}
+
 	/** Returns true if the key was not already in the set. */
 	public boolean add (T key) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
