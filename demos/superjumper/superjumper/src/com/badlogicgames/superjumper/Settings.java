@@ -30,7 +30,7 @@ public class Settings {
 			
 			String[] strings = filehandle.readString().split("\n");
 			
-			soundEnabled = Boolean.parseBoolean(strings[0];
+			soundEnabled = Boolean.parseBoolean(strings[0]);
 			for (int i = 0; i < 5; i++) {
 				highscores[i] = Integer.parseInt(strings[i+1]);
 			}
