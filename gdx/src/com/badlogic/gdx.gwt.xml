@@ -388,6 +388,7 @@
 		<include name="scenes/scene2d/ui/TableToolkit.java"/>
 		<include name="scenes/scene2d/ui/TextButton.java"/>
 		<include name="scenes/scene2d/ui/TextField.java"/>
+		<include name="scenes/scene2d/ui/TextArea.java"/>
 		<include name="scenes/scene2d/ui/Touchpad.java"/>
 		<include name="scenes/scene2d/ui/Tree.java"/>
 		<include name="scenes/scene2d/ui/VerticalGroup.java"/>
