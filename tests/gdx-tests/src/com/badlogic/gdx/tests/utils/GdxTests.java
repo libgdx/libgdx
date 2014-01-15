@@ -199,6 +199,7 @@ public class GdxTests {
 		TableLayoutTest.class,
 		TableTest.class,
 		TerrainTest.class,
+		TextAreaTest.class,
 		TextButtonTest.class,
 		TextButtonTestGL2.class,
 		TextInputDialogTest.class,
