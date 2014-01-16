@@ -533,7 +533,11 @@ public class ReflectionCacheSourceCreator {
 			}
 
 			printMethods(c, varName, "Method", c.getMethods());
-			if (!c.isAbstract()) printMethods(c, varName, "Constructor", c.getConstructors());
+			if (!c.isAbstract() && ( c.getEnclosingType() == null || c.isStatic() )){
+				printMethods(c, varName, "Constructor", c.getConstructors());
+			} else {
+				logger.log(Type.INFO, c.getName() + " can't be instantiated. Constructors not generated");
+			}
 
 			if (c.isArray() != null) {
 				pb(varName + ".componentType = " + getType(c.isArray().getComponentType()) + ";");
