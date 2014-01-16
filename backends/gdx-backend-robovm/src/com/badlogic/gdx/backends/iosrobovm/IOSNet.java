@@ -25,6 +25,8 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 
 public class IOSNet implements Net {
 
@@ -42,12 +44,12 @@ public class IOSNet implements Net {
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new IOSServerSocket(protocol, port, hints);
+		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new IOSSocket(protocol, host, port, hints);
+		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
 
 	@Override
