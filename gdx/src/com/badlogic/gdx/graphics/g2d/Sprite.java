@@ -605,7 +605,6 @@ public class Sprite extends TextureRegion {
 	private boolean flipY = false;
 
 	/** Set the sprite's flip state regardless of current condition
-	 * flip state does not consider negative coordinates given in constructor
 	 * @param x the desired horizontal flip state
 	 * @param y the desired vertical flip state
 	 * */
