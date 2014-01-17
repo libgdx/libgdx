@@ -57,7 +57,8 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Creates a sprite with width, height, and texture region equal to the specified size. The texture region's upper left corner
-	 * will be 0,0. * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * will be 0,0.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn. */
 	public Sprite (Texture texture, int srcWidth, int srcHeight) {
 		this(texture, 0, 0, srcWidth, srcHeight);
@@ -69,6 +70,12 @@ public class Sprite extends TextureRegion {
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
 		this.texture = texture;
+		if (srcWidth < 0) {
+			flipX = true;
+		}
+		if (srcHeight < 0) {
+			flipY = true;
+		}
 		setRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
 		setSize(Math.abs(srcWidth), Math.abs(srcHeight));
@@ -594,9 +601,46 @@ public class Sprite extends TextureRegion {
 		vertices[V4] = v2;
 	}
 
-	/** boolean parameters are not setting a state, but performing a flip */
+	private boolean flipX = false;
+	private boolean flipY = false;
+
+	/** Set the sprite's flip state regardless of current condition
+	 * flip state does not consider negative coordinates given in constructor
+	 * @param x the desired horizontal flip state
+	 * @param y the desired vertical flip state
+	 * */
+	public void setFlip(boolean x, boolean y) {
+		boolean performX = false;
+		boolean performY = false;
+		if (flipX != x) {
+			performX = true;
+		}
+		if (flipY != y) {
+			performY = true;
+		}
+		flip(performX, performY);
+	}
+
+	public boolean getFlipX() {
+		return flipX;
+	}
+
+	public boolean getFlipY() {
+		return flipY;
+	}
+
+	/** boolean parameters are not setting a state, but performing a flip
+	 * @param x perform horizontal flip
+	 * @param y perform verticle flip
+	 * */
 	public void flip (boolean x, boolean y) {
 		super.flip(x, y);
+		if (x) {
+			flipX = !flipX;
+		}
+		if (y) {
+			flipY = !flipY;
+		}
 		float[] vertices = Sprite.this.vertices;
 		if (x) {
 			float temp = vertices[U1];
