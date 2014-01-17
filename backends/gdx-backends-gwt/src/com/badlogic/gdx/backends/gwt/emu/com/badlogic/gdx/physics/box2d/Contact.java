@@ -38,9 +38,11 @@ public class Contact {
 
 	public WorldManifold getWorldManifold () {
 		contact.getWorldManifold(worldManifold2);
+		int numContactPoints = contact.getManifold().pointCount;
+
+		worldManifold.numContactPoints = numContactPoints;
 		worldManifold.normal.set(worldManifold2.normal.x, worldManifold2.normal.y);
-		// FIXME jbox2d doesn't tell us the number of world manifold points :/
-		worldManifold.numContactPoints = worldManifold2.points.length;
+
 		for (int i = 0; i < worldManifold.points.length; i++) {
 			worldManifold.points[i] = new Vector2(worldManifold2.points[i].x, worldManifold2.points[i].y);
 		}
@@ -113,11 +115,11 @@ public class Contact {
 	public void ResetRestitution () {
 		contact.resetRestitution();
 	}
-	
+
 	public float getTangentSpeed () {
 		return contact.getTangentSpeed();
 	}
-	
+
 	public void setTangentSpeed (float speed) {
 		contact.setTangentSpeed(speed);
 	}

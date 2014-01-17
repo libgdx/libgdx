@@ -48,7 +48,7 @@ public class Box2DDebugRenderer {
 
 	private final static Array<Body> bodies = new Array<Body>();
 	private final static Array<Joint> joints = new Array<Joint>();
-	
+
 	private boolean drawBodies;
 	private boolean drawJoints;
 	private boolean drawAABBs;
@@ -268,7 +268,7 @@ public class Box2DDebugRenderer {
 			renderer.line(lv.x, lv.y, v.x, v.y);
 			lv.set(v);
 		}
-		if(closed) renderer.line(f.x, f.y, lv.x, lv.y);
+		if (closed) renderer.line(f.x, f.y, lv.x, lv.y);
 	}
 
 	private void drawJoint (Joint joint) {

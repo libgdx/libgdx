@@ -54,12 +54,12 @@ public abstract class Joint {
 
 	/** Get the first body attached to this joint. */
 	public Body getBodyA () {
-		return world.bodies.get(joint.m_bodyA);
+		return world.bodies.get(joint.getBodyA());
 	}
 
 	/** Get the second body attached to this joint. */
 	public Body getBodyB () {
-		return world.bodies.get(joint.m_bodyB);
+		return world.bodies.get(joint.getBodyB());
 	}
 
 	/** Get the anchor point on bodyA in world coordinates. */
@@ -104,6 +104,11 @@ public abstract class Joint {
 
 	/** Short-cut function to determine if either body is inactive. */
 	public boolean isActive () {
-		return joint.IsActive();
+		return joint.isActive();
 	}
+
+	public org.jbox2d.dynamics.joints.Joint getJBox2DJoint () {
+		return joint;
+	}
+
 }

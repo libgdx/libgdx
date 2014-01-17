@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -67,106 +67,85 @@ public class DefaultWorldPool implements IWorldPool {
 	private final HashMap<Integer, int[]> aints = new HashMap<Integer, int[]>();
 	private final HashMap<Integer, Vec2[]> avecs = new HashMap<Integer, Vec2[]>();
 
-	private final Class<?>[] classes = new Class<?>[] {IWorldPool.class};
-	private final Object[] args = new Object[] {this};
+	private final IWorldPool world = this;
 
-	private final MutableStack<Contact, PolygonContact> pcstack = new MutableStack<Contact, PolygonContact>(
-		new Generator<PolygonContact>() {
-			@Override
-			public PolygonContact gen () {
-				return new PolygonContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> pcstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new PolygonContact(world);
+		}
+	};
 
-	private final MutableStack<Contact, CircleContact> ccstack = new MutableStack<Contact, CircleContact>(
-		new Generator<CircleContact>() {
-			@Override
-			public CircleContact gen () {
-				return new CircleContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> ccstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new CircleContact(world);
+		}
+	};
 
-	private final MutableStack<Contact, PolygonAndCircleContact> cpstack = new MutableStack<Contact, PolygonAndCircleContact>(
-		new Generator<PolygonAndCircleContact>() {
-			@Override
-			public PolygonAndCircleContact gen () {
-				return new PolygonAndCircleContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> cpstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new PolygonAndCircleContact(world);
+		}
+	};
 
-	private final MutableStack<Contact, EdgeAndCircleContact> ecstack = new MutableStack<Contact, EdgeAndCircleContact>(
-		new Generator<EdgeAndCircleContact>() {
-			@Override
-			public EdgeAndCircleContact gen () {
-				return new EdgeAndCircleContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> ecstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new EdgeAndCircleContact(world);
+		}
+	};
 
-	private final MutableStack<Contact, EdgeAndPolygonContact> epstack = new MutableStack<Contact, EdgeAndPolygonContact>(
-		new Generator<EdgeAndPolygonContact>() {
-			@Override
-			public EdgeAndPolygonContact gen () {
-				return new EdgeAndPolygonContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> epstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new EdgeAndPolygonContact(world);
+		}
+	};
 
-	private final MutableStack<Contact, ChainAndCircleContact> chcstack = new MutableStack<Contact, ChainAndCircleContact>(
-		new Generator<ChainAndCircleContact>() {
-			@Override
-			public ChainAndCircleContact gen () {
-				return new ChainAndCircleContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> chcstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new ChainAndCircleContact(world);
+		}
+	};
 
-	private final MutableStack<Contact, ChainAndPolygonContact> chpstack = new MutableStack<Contact, ChainAndPolygonContact>(
-		new Generator<ChainAndPolygonContact>() {
-			@Override
-			public ChainAndPolygonContact gen () {
-				return new ChainAndPolygonContact(DefaultWorldPool.this);
-			}
-		}, Settings.CONTACT_STACK_INIT_SIZE);
+	private final MutableStack<Contact> chpstack = new MutableStack<Contact>(Settings.CONTACT_STACK_INIT_SIZE) {
+		protected Contact newInstance () {
+			return new ChainAndPolygonContact(world);
+		}
+	};
 
 	private final Collision collision;
 	private final TimeOfImpact toi;
 	private final Distance dist;
 
 	public DefaultWorldPool (int argSize, int argContainerSize) {
-		vecs = new OrderedStack<Vec2>(new Generator<Vec2>() {
-			@Override
-			public Vec2 gen () {
+		vecs = new OrderedStack<Vec2>(argSize, argContainerSize) {
+			protected Vec2 newInstance () {
 				return new Vec2();
 			}
-		}, argSize, new Vec2[argContainerSize]);
-		vec3s = new OrderedStack<Vec3>(new Generator<Vec3>() {
-			@Override
-			public Vec3 gen () {
+		};
+		vec3s = new OrderedStack<Vec3>(argSize, argContainerSize) {
+			protected Vec3 newInstance () {
 				return new Vec3();
 			}
-		}, argSize, new Vec3[argContainerSize]);
-		mats = new OrderedStack<Mat22>(new Generator<Mat22>() {
-			@Override
-			public Mat22 gen () {
+		};
+		mats = new OrderedStack<Mat22>(argSize, argContainerSize) {
+			protected Mat22 newInstance () {
 				return new Mat22();
 			}
-		}, argSize, new Mat22[argContainerSize]);
-		aabbs = new OrderedStack<AABB>(new Generator<AABB>() {
-			@Override
-			public AABB gen () {
+		};
+		aabbs = new OrderedStack<AABB>(argSize, argContainerSize) {
+			protected AABB newInstance () {
 				return new AABB();
 			}
-		}, argSize, new AABB[argContainerSize]);
-		rots = new OrderedStack<Rot>(new Generator<Rot>() {
-			@Override
-			public Rot gen () {
+		};
+		rots = new OrderedStack<Rot>(argSize, argContainerSize) {
+			protected Rot newInstance () {
 				return new Rot();
 			}
-		}, argSize, new Rot[argContainerSize]);
-		mat33s = new OrderedStack<Mat33>(new Generator<Mat33>() {
-			@Override
-			public Mat33 gen () {
+		};
+		mat33s = new OrderedStack<Mat33>(argSize, argContainerSize) {
+			protected Mat33 newInstance () {
 				return new Mat33();
 			}
-		}, argSize, new Mat33[argContainerSize]);
+		};
 
 		dist = new Distance();
 		collision = new Collision(this);

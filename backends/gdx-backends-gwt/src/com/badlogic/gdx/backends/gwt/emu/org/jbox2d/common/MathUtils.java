@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -48,10 +48,8 @@ package org.jbox2d.common;
 
 import java.util.Random;
 
-import com.badlogic.gdx.utils.NumberUtils;
-
 /** A few math methods that don't fit very well anywhere else. */
-public class MathUtils {
+public class MathUtils extends PlatformMathUtils {
 	public static final float PI = (float)Math.PI;
 	public static final float TWOPI = (float)(Math.PI * 2);
 	public static final float INV_PI = 1f / PI;
@@ -65,27 +63,26 @@ public class MathUtils {
 	/** Radians to degrees conversion factor */
 	public static final float RAD2DEG = 180 / PI;
 
-	private static final float SHIFT23 = 1 << 23;
-	private static final float INV_SHIFT23 = 1.0f / SHIFT23;
-
 	public static final float[] sinLUT = new float[Settings.SINCOS_LUT_LENGTH];
-	public static final float[] cosLUT = new float[Settings.SINCOS_LUT_LENGTH];
 
 	static {
 		for (int i = 0; i < Settings.SINCOS_LUT_LENGTH; i++) {
 			sinLUT[i] = (float)Math.sin(i * Settings.SINCOS_LUT_PRECISION);
-			cosLUT[i] = (float)Math.cos(i * Settings.SINCOS_LUT_PRECISION);
 		}
 	}
 
 	public static final float sin (float x) {
-		return sinLUT(x);
+		if (Settings.SINCOS_LUT_ENABLED) {
+			return sinLUT(x);
+		} else {
+			return (float)StrictMath.sin(x);
+		}
 	}
 
 	public static final float sinLUT (float x) {
 		x %= TWOPI;
 
-		while (x < 0) {
+		if (x < 0) {
 			x += TWOPI;
 		}
 
@@ -112,36 +109,19 @@ public class MathUtils {
 	}
 
 	public static final float cos (float x) {
-		x %= TWOPI;
-
-		while (x < 0) {
-			x += TWOPI;
-		}
-
-		if (Settings.SINCOS_LUT_LERP) {
-
-			x /= Settings.SINCOS_LUT_PRECISION;
-
-			final int index = (int)x;
-
-			if (index != 0) {
-				x %= index;
-			}
-
-			// the next index is 0
-			if (index == Settings.SINCOS_LUT_LENGTH - 1) {
-				return ((1 - x) * cosLUT[index] + x * cosLUT[0]);
-			} else {
-				return ((1 - x) * cosLUT[index] + x * cosLUT[index + 1]);
-			}
-
+		if (Settings.SINCOS_LUT_ENABLED) {
+			return sinLUT(HALF_PI - x);
 		} else {
-			return cosLUT[MathUtils.round(x / Settings.SINCOS_LUT_PRECISION) % Settings.SINCOS_LUT_LENGTH];
+			return (float)StrictMath.cos(x);
 		}
 	}
 
 	public static final float abs (final float x) {
-		return x > 0 ? x : -x;
+		if (Settings.FAST_ABS) {
+			return x > 0 ? x : -x;
+		} else {
+			return Math.abs(x);
+		}
 	}
 
 	public static final int abs (int x) {
@@ -150,23 +130,35 @@ public class MathUtils {
 	}
 
 	public static final int floor (final float x) {
-		int y = (int)x;
-		if (x < 0 && x != y) {
-			y--;
+		if (Settings.FAST_FLOOR) {
+			int y = (int)x;
+			if (x < 0 && x != y) {
+				return y - 1;
+			}
+			return y;
+		} else {
+			return (int)Math.floor(x);
 		}
-		return y;
 	}
 
 	public static final int ceil (final float x) {
-		int y = (int)x;
-		if (x > 0 && x != y) {
-			y++;
+		if (Settings.FAST_CEIL) {
+			int y = (int)x;
+			if (x > 0 && x != y) {
+				return y + 1;
+			}
+			return y;
+		} else {
+			return (int)Math.ceil(x);
 		}
-		return y;
 	}
 
 	public static final int round (final float x) {
-		return floor(x + .5f);
+		if (Settings.FAST_ROUND) {
+			return floor(x + .5f);
+		} else {
+			return StrictMath.round(x);
+		}
 	}
 
 	/** Rounds up the value to the nearest higher power^2 value.
@@ -240,19 +232,12 @@ public class MathUtils {
 		return x > 0 && (x & x - 1) == 0;
 	}
 
-	public static final float fastPow (float a, float b) {
-		float x = NumberUtils.floatToRawIntBits(a);
-		x *= INV_SHIFT23;
-		x -= 127;
-		float y = x - (x >= 0 ? (int)x : (int)x - 1);
-		b *= x + (y - y * y) * 0.346607f;
-		y = b - (b >= 0 ? (int)b : (int)b - 1);
-		y = (y - y * y) * 0.33971f;
-		return NumberUtils.intBitsToFloat((int)((b + 127 - y) * SHIFT23));
-	}
-
 	public static final float atan2 (final float y, final float x) {
-		return fastAtan2(y, x);
+		if (Settings.FAST_ATAN2) {
+			return fastAtan2(y, x);
+		} else {
+			return (float)StrictMath.atan2(y, x);
+		}
 	}
 
 	public static final float fastAtan2 (float y, float x) {
@@ -287,25 +272,6 @@ public class MathUtils {
 		return theta;
 	}
 
-	/** Computes a fast approximation to <code>Math.pow(a, b)</code>. Adapted from
-	 * <url>http://www.dctsystems.co.uk/Software/power.html</url>.
-	 * 
-	 * @param a a positive number
-	 * @param b a number
-	 * @return a^b */
-	// UNTESTED
-	public static final float pow (final float a, float b) {
-		// adapted from: http://www.dctsystems.co.uk/Software/power.html
-		float x = NumberUtils.floatToRawIntBits(a);
-		x *= 1.0f / (1 << 23);
-		x = x - 127;
-		float y = x - MathUtils.floor(x);
-		b *= x + (y - y * y) * 0.346607f;
-		y = b - MathUtils.floor(b);
-		y = (y - y * y) * 0.33971f;
-		return NumberUtils.intBitsToFloat((int)((b + 127 - y) * (1 << 23)));
-	}
-
 	public static final float randomFloat (float argLow, float argHigh) {
 		return (float)Math.random() * (argHigh - argLow) + argLow;
 	}
@@ -315,7 +281,7 @@ public class MathUtils {
 	}
 
 	public static final float sqrt (float x) {
-		return (float)Math.sqrt(x);
+		return (float)StrictMath.sqrt(x);
 	}
 
 	public final static float distanceSquared (Vec2 v1, Vec2 v2) {

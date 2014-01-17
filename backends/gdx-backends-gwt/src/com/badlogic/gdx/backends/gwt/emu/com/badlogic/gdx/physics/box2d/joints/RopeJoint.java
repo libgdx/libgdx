@@ -24,14 +24,15 @@ import com.badlogic.gdx.physics.box2d.World;
  * dynamically modify the length would have some sponginess, so I chose not to implement it that way. See b2DistanceJoint if you
  * want to dynamically control length. */
 public class RopeJoint extends Joint {
-	// FIXME not implemented in Jbox2d.
-	public RopeJoint (World world) {
-		super(world, null); // FIXME
+	org.jbox2d.dynamics.joints.RopeJoint joint;
+
+	public RopeJoint (World world, org.jbox2d.dynamics.joints.RopeJoint joint) {
+		super(world, joint);
+		this.joint = joint;
 	}
 
 	/** Get the maximum length of the rope. */
 	public float getMaxLength () {
-		// FIXME
-		return 0;
+		return joint.getMaxLength();
 	}
 }

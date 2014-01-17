@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -179,7 +179,7 @@ public class AABB {
 	 * @param output
 	 * @param input */
 	public final boolean raycast (final RayCastOutput output, final RayCastInput input, IWorldPool argPool) {
-		float tmin = Float.MIN_VALUE;
+		float tmin = -Float.MAX_VALUE;
 		float tmax = Float.MAX_VALUE;
 
 		final Vec2 p = argPool.popVec2();

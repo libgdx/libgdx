@@ -23,71 +23,73 @@ import com.badlogic.gdx.physics.box2d.World;
  * You can use a joint limit to restrict the range of motion and a joint motor to drive the rotation or to model rotational
  * friction. This joint is designed for vehicle suspensions. */
 public class WheelJoint extends Joint {
-	// FIXME not implemented by jbox2d
+	org.jbox2d.dynamics.joints.WheelJoint joint;
 
-	public WheelJoint (World world) {
-		super(world, null);
+	public WheelJoint (World world, org.jbox2d.dynamics.joints.WheelJoint joint) {
+		super(world, joint);
+		this.joint = joint;
 	}
 
 	/** Get the current joint translation, usually in meters. */
 	public float getJointTranslation () {
-		return 0; // FIXMe
+		return joint.getJointTranslation();
 	}
 
 	/** Get the current joint translation speed, usually in meters per second. */
 	public float getJointSpeed () {
-		return 0; // FIXME
+		return joint.getJointSpeed();
 	}
 
 	/** Is the joint motor enabled? */
 	private boolean isMotorEnabled () {
-		return false; // FIXME
+		return joint.isMotorEnabled();
 	}
 
 	/** Enable/disable the joint motor. */
 	public void enableMotor (boolean flag) {
-		// FIXME
+		joint.enableMotor(flag);
 	}
 
 	/** Set the motor speed, usually in radians per second. */
 	public void setMotorSpeed (float speed) {
-		// FIXME
+		joint.setMotorSpeed(speed);
 	}
 
 	/** Get the motor speed, usually in radians per second. */
 	public float getMotorSpeed () {
-		return 0; // FIXME
+		return joint.getMotorSpeed();
 	}
 
 	/** Set/Get the maximum motor force, usually in N-m. */
 	public void setMaxMotorTorque (float torque) {
-		// FIXME
+		joint.setMaxMotorTorque(torque);
 	}
 
 	public float getMaxMotorTorque () {
-		return 0; // FIXME
+		return joint.getMaxMotorTorque();
 	}
 
 	/** Get the current motor torque given the inverse time step, usually in N-m. */
 	public float getMotorTorque (float invDt) {
-		return 0; // FIXME
+		return joint.getMotorTorque(invDt);
 	}
 
 	/** Set/Get the spring frequency in hertz. Setting the frequency to zero disables the spring. */
 	public void setSpringFrequencyHz (float hz) {
-		// FIXME
+		joint.setSpringFrequencyHz(hz);
 	}
 
 	public float getSpringFrequencyHz () {
-		return 0; // FIXME
+		return joint.getSpringFrequencyHz();
 	}
 
 	/** Set/Get the spring damping ratio */
 	public void setSpringDampingRatio (float ratio) {
-		// FIXME
+		joint.setSpringDampingRatio(ratio);
 	}
 
 	public float getSpringDampingRatio () {
-		return 0; // FIXME
+		return joint.getSpringDampingRatio();
 	}
+
 }

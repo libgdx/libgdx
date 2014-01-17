@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -64,32 +64,32 @@ import org.jbox2d.pooling.IWorldPool;
  * massless, rigid rod. */
 public class DistanceJoint extends Joint {
 
-	public float m_frequencyHz;
-	public float m_dampingRatio;
-	public float m_bias;
+	private float m_frequencyHz;
+	private float m_dampingRatio;
+	private float m_bias;
 
 	// Solver shared
-	public final Vec2 m_localAnchorA;
-	public final Vec2 m_localAnchorB;
-	public float m_gamma;
-	public float m_impulse;
-	public float m_length;
+	private final Vec2 m_localAnchorA;
+	private final Vec2 m_localAnchorB;
+	private float m_gamma;
+	private float m_impulse;
+	private float m_length;
 
 	// Solver temp
-	public int m_indexA;
-	public int m_indexB;
-	public final Vec2 m_u = new Vec2();
-	public final Vec2 m_rA = new Vec2();
-	public final Vec2 m_rB = new Vec2();
-	public final Vec2 m_localCenterA = new Vec2();
-	public final Vec2 m_localCenterB = new Vec2();
-	public float m_invMassA;
-	public float m_invMassB;
-	public float m_invIA;
-	public float m_invIB;
-	public float m_mass;
+	private int m_indexA;
+	private int m_indexB;
+	private final Vec2 m_u = new Vec2();
+	private final Vec2 m_rA = new Vec2();
+	private final Vec2 m_rB = new Vec2();
+	private final Vec2 m_localCenterA = new Vec2();
+	private final Vec2 m_localCenterB = new Vec2();
+	private float m_invMassA;
+	private float m_invMassB;
+	private float m_invIA;
+	private float m_invIB;
+	private float m_mass;
 
-	public DistanceJoint (IWorldPool argWorld, final DistanceJointDef def) {
+	protected DistanceJoint (IWorldPool argWorld, final DistanceJointDef def) {
 		super(argWorld, def);
 		m_localAnchorA = def.localAnchorA.clone();
 		m_localAnchorB = def.localAnchorB.clone();
@@ -251,9 +251,9 @@ public class DistanceJoint extends Joint {
 		} else {
 			m_impulse = 0.0f;
 		}
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 	}
 
@@ -287,9 +287,9 @@ public class DistanceJoint extends Joint {
 		vB.y += m_invMassB * Py;
 		wB += m_invIB * (m_rB.x * Py - m_rB.y * Px);
 
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(2);
@@ -333,9 +333,9 @@ public class DistanceJoint extends Joint {
 		cB.y += m_invMassB * Py;
 		aB += m_invIB * (rB.x * Py - rB.y * Px);
 
-		data.positions[m_indexA].c.set(cA);
+// data.positions[m_indexA].c.set(cA);
 		data.positions[m_indexA].a = aA;
-		data.positions[m_indexB].c.set(cB);
+// data.positions[m_indexB].c.set(cB);
 		data.positions[m_indexB].a = aB;
 
 		pool.pushVec2(3);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -25,8 +25,6 @@
 package org.jbox2d.common;
 
 import java.io.Serializable;
-
-import com.badlogic.gdx.utils.NumberUtils;
 
 /** @author Daniel Murphy */
 public class Vec3 implements Serializable {
@@ -126,9 +124,9 @@ public class Vec3 implements Serializable {
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + NumberUtils.floatToIntBits(x);
-		result = prime * result + NumberUtils.floatToIntBits(y);
-		result = prime * result + NumberUtils.floatToIntBits(z);
+		result = prime * result + Float.floatToIntBits(x);
+		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + Float.floatToIntBits(z);
 		return result;
 	}
 
@@ -138,9 +136,9 @@ public class Vec3 implements Serializable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Vec3 other = (Vec3)obj;
-		if (NumberUtils.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x)) return false;
-		if (NumberUtils.floatToIntBits(y) != NumberUtils.floatToIntBits(other.y)) return false;
-		if (NumberUtils.floatToIntBits(z) != NumberUtils.floatToIntBits(other.z)) return false;
+		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
+		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
+		if (Float.floatToIntBits(z) != Float.floatToIntBits(other.z)) return false;
 		return true;
 	}
 

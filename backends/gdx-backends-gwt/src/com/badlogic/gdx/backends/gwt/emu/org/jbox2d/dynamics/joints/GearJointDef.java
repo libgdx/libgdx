@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -22,60 +22,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
 /**
- * Created at 7:27:31 AM Jan 21, 2011
+ * Created at 5:20:39 AM Jan 22, 2011
  */
 
 package org.jbox2d.dynamics.joints;
 
-import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
+/** Gear joint definition. This definition requires two existing revolute or prismatic joints (any combination will work). The
+ * provided joints must attach a dynamic body to a static body.
+ * @author Daniel Murphy */
+public class GearJointDef extends JointDef {
+	/** The first revolute/prismatic joint attached to the gear joint. */
+	public Joint joint1;
 
-/** @author Daniel Murphy */
-public class LineJointDef extends JointDef {
+	/** The second revolute/prismatic joint attached to the gear joint. */
+	public Joint joint2;
 
-	/** The local anchor point relative to body1's origin. */
-	public final Vec2 localAnchorA = new Vec2();
+	/** Gear ratio.
+	 * @see GearJoint */
+	public float ratio;
 
-	/** The local anchor point relative to body2's origin. */
-	public final Vec2 localAnchorB = new Vec2();
-
-	/** The local translation axis in body1. */
-	public final Vec2 localAxisA = new Vec2();
-
-	/** Enable/disable the joint limit. */
-	public boolean enableLimit;
-
-	/** The lower translation limit, usually in meters. */
-	public float lowerTranslation;
-
-	/** The upper translation limit, usually in meters. */
-	public float upperTranslation;
-
-	/** Enable/disable the joint motor. */
-	public boolean enableMotor;
-
-	/** The maximum motor torque, usually in N-m. */
-	public float maxMotorForce;
-
-	/** The desired motor speed in radians per second. */
-	public float motorSpeed;
-
-	public LineJointDef () {
-		type = JointType.WHEEL;
-		localAxisA.set(1, 0);
-		enableLimit = false;
-		lowerTranslation = 0;
-		upperTranslation = 0;
-		enableMotor = false;
-		maxMotorForce = 0f;
-		motorSpeed = 0f;
-	}
-
-	public void initialize (Body b1, Body b2, Vec2 anchor, Vec2 axis) {
-		bodyA = b1;
-		bodyB = b2;
-		b1.getLocalPointToOut(anchor, localAnchorA);
-		b2.getLocalPointToOut(anchor, localAnchorB);
-		bodyA.getLocalVectorToOut(axis, localAxisA);
+	public GearJointDef () {
+		type = JointType.GEAR;
+		joint1 = null;
+		joint2 = null;
 	}
 }

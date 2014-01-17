@@ -38,7 +38,14 @@ public class GearJointDef extends JointDef {
 
 	@Override
 	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
-		// FIXME
-		return null;
+		org.jbox2d.dynamics.joints.GearJointDef jd = new org.jbox2d.dynamics.joints.GearJointDef();
+		jd.bodyA = bodyA.body;
+		jd.bodyB = bodyB.body;
+		jd.collideConnected = collideConnected;
+		jd.joint1 = joint1.getJBox2DJoint();
+		jd.joint2 = joint2.getJBox2DJoint();
+		jd.ratio = ratio;
+		jd.type = org.jbox2d.dynamics.joints.JointType.GEAR;
+		return jd;
 	}
 }
