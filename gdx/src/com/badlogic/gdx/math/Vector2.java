@@ -380,4 +380,24 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		if (Math.abs(y - this.y) > epsilon) return false;
 		return true;
 	}
+
+	/** @return Whether this vector is a unit length vector */
+	public boolean isUnit () {
+		return isUnit(0.000000001f);
+	}
+
+	/** @return Whether this vector is a unit length vector within the given margin */
+	public boolean isUnit(final float margin) {
+		return Math.abs(len2() - 1f) < margin * margin;
+	}
+
+	/** @return Whether this vector is a zero vector */
+	public boolean isZero () {
+		return x == 0 && y == 0;
+	}
+
+	/** @return Whether the length of this vector is smaller than the given margin */
+	public boolean isZero (final float margin) {
+		return len2() < margin * margin;
+	}
 }
