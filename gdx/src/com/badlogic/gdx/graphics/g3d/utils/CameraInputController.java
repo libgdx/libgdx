@@ -71,8 +71,8 @@ public class CameraInputController extends GestureDetector {
 	protected int button = -1;
 	
 	private float startX, startY;
-	private final Vector3 tmpV1 = new Vector3();
-	private final Vector3 tmpV2 = new Vector3();
+	protected final Vector3 tmpV1 = new Vector3();
+	protected final Vector3 tmpV2 = new Vector3();
 	
 	protected static class CameraGestureListener extends GestureAdapter {
 		public CameraInputController controller;
