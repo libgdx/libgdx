@@ -45,6 +45,8 @@ public class CameraInputController extends GestureDetector {
 	public boolean alwaysScroll = true;
 	/** The weight for each scrolled amount. */
 	public float scrollFactor = -0.1f;
+	/** World units per screen size */
+	public float pinchZoomFactor = 10f;
 	/** Whether to update the camera after it has been changed. */
 	public boolean autoUpdate = true;
 	/** The target to rotate around. */
@@ -107,7 +109,7 @@ public class CameraInputController extends GestureDetector {
 			float amount = newZoom - previousZoom;
 			previousZoom = newZoom;
 			float w = Gdx.graphics.getWidth(), h = Gdx.graphics.getHeight();
-			return controller.zoom(amount / ((w > h) ? h : w));
+			return controller.pinchZoom(amount / ((w > h) ? h : w));
 		}
 
 		@Override
@@ -222,6 +224,10 @@ public class CameraInputController extends GestureDetector {
 		if (autoUpdate)
 			camera.update();
 		return true;
+	}
+	
+	protected boolean pinchZoom(float amount) {
+		return zoom(pinchZoomFactor * amount);
 	}
 	
 	@Override
