@@ -128,6 +128,8 @@ public class Sprite extends TextureRegion {
 		rotation = sprite.rotation;
 		scaleX = sprite.scaleX;
 		scaleY = sprite.scaleY;
+		flipX = sprite.flipX;
+		flipY = sprite.flipY;
 		color.set(sprite.color);
 		dirty = sprite.dirty;
 	}
@@ -628,7 +630,7 @@ public class Sprite extends TextureRegion {
 		return flipY;
 	}
 
-	/** boolean parameters are not setting a state, but performing a flip
+	/** boolean parameters x,y are not setting a state, but performing a flip
 	 * @param x perform horizontal flip
 	 * @param y perform verticle flip
 	 * */
