@@ -176,7 +176,6 @@ public class AndroidApplication extends Activity implements Application {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
 		hideStatusBar(this.hideStatusBar);
-		// issue 912
 		if (hasFocus) {
 			this.wasFocusChanged = 1;
 			if (this.isWaitingForAudio) {
@@ -323,7 +322,6 @@ public class AndroidApplication extends Activity implements Application {
 		} else
 			firstResume = false;
 
-		// issue 912
 		this.isWaitingForAudio = true;
 		if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
 			this.audio.resume();
