@@ -38,7 +38,14 @@ public class RopeJointDef extends JointDef {
 
 	@Override
 	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
-		// FIXME not implemented in jbox2d
-		return null;
+		org.jbox2d.dynamics.joints.RopeJointDef fd = new org.jbox2d.dynamics.joints.RopeJointDef();
+		fd.bodyA = bodyA.body;
+		fd.bodyB = bodyB.body;
+		fd.collideConnected = collideConnected;
+		fd.maxLength = maxLength;
+		fd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
+		fd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
+		fd.type = org.jbox2d.dynamics.joints.JointType.ROPE;
+		return fd;
 	}
 }

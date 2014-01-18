@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -28,6 +28,7 @@ import org.jbox2d.callbacks.ContactFilter;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.callbacks.PairCallback;
 import org.jbox2d.collision.broadphase.BroadPhase;
+import org.jbox2d.collision.broadphase.BroadPhaseStrategy;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.jbox2d.dynamics.contacts.ContactEdge;
 
@@ -44,12 +45,12 @@ public class ContactManager implements PairCallback {
 
 	private final World pool;
 
-	public ContactManager (World argPool) {
+	public ContactManager (World argPool, BroadPhaseStrategy strategy) {
 		m_contactList = null;
 		m_contactCount = 0;
 		m_contactFilter = new ContactFilter();
 		m_contactListener = null;
-		m_broadPhase = new BroadPhase();
+		m_broadPhase = new BroadPhase(strategy);
 		pool = argPool;
 	}
 
@@ -157,8 +158,10 @@ public class ContactManager implements PairCallback {
 		bodyB.m_contactList = c.m_nodeB;
 
 		// wake up the bodies
-		bodyA.setAwake(true);
-		bodyB.setAwake(true);
+		if (!fixtureA.isSensor() && !fixtureB.isSensor()) {
+			bodyA.setAwake(true);
+			bodyB.setAwake(true);
+		}
 
 		++m_contactCount;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -26,6 +26,8 @@ package org.jbox2d.dynamics.joints;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.joints.JointDef;
+import org.jbox2d.dynamics.joints.JointType;
 
 /**
  * Created at 3:38:52 AM Jan 15, 2011

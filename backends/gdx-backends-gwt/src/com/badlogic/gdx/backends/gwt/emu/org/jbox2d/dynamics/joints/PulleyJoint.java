@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -44,36 +44,34 @@ public class PulleyJoint extends Joint {
 
 	public static final float MIN_PULLEY_LENGTH = 2.0f;
 
-	public final Vec2 m_groundAnchorA = new Vec2();
-	public final Vec2 m_groundAnchorB = new Vec2();
+	private final Vec2 m_groundAnchorA = new Vec2();
+	private final Vec2 m_groundAnchorB = new Vec2();
 	private float m_lengthA;
-	private float m_LengthB;
+	private float m_lengthB;
 
 	// Solver shared
-	public final Vec2 m_localAnchorA = new Vec2();
-	public final Vec2 m_localAnchorB = new Vec2();
+	private final Vec2 m_localAnchorA = new Vec2();
+	private final Vec2 m_localAnchorB = new Vec2();
 	private float m_constant;
 	private float m_ratio;
 	private float m_impulse;
 
 	// Solver temp
-	public int m_indexA;
-	public int m_indexB;
+	private int m_indexA;
+	private int m_indexB;
 	private final Vec2 m_uA = new Vec2();
 	private final Vec2 m_uB = new Vec2();
-	public final Vec2 m_rA = new Vec2();
-	public final Vec2 m_rB = new Vec2();
+	private final Vec2 m_rA = new Vec2();
+	private final Vec2 m_rB = new Vec2();
 	private final Vec2 m_localCenterA = new Vec2();
 	private final Vec2 m_localCenterB = new Vec2();
-	public float m_invMassA;
-	public float m_invMassB;
-	public float m_invIA;
-	public float m_invIB;
+	private float m_invMassA;
+	private float m_invMassB;
+	private float m_invIA;
+	private float m_invIB;
 	private float m_mass;
 
-	/** @param argWorldPool
-	 * @param def */
-	public PulleyJoint (IWorldPool argWorldPool, PulleyJointDef def) {
+	protected PulleyJoint (IWorldPool argWorldPool, PulleyJointDef def) {
 		super(argWorldPool, def);
 		m_groundAnchorA.set(def.groundAnchorA);
 		m_groundAnchorB.set(def.groundAnchorB);
@@ -84,7 +82,7 @@ public class PulleyJoint extends Joint {
 		m_ratio = def.ratio;
 
 		m_lengthA = def.lengthA;
-		m_LengthB = def.lengthB;
+		m_lengthB = def.lengthB;
 
 		m_constant = def.lengthA + m_ratio * def.lengthB;
 		m_impulse = 0.0f;
@@ -95,7 +93,7 @@ public class PulleyJoint extends Joint {
 	}
 
 	public float getLengthB () {
-		return m_LengthB;
+		return m_lengthB;
 	}
 
 	public float getCurrentLengthA () {
@@ -114,6 +112,14 @@ public class PulleyJoint extends Joint {
 		float length = p.length();
 		pool.pushVec2(1);
 		return length;
+	}
+
+	public Vec2 getLocalAnchorA () {
+		return m_localAnchorA;
+	}
+
+	public Vec2 getLocalAnchorB () {
+		return m_localAnchorB;
 	}
 
 	@Override
@@ -254,9 +260,9 @@ public class PulleyJoint extends Joint {
 		} else {
 			m_impulse = 0.0f;
 		}
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(1);
@@ -293,9 +299,9 @@ public class PulleyJoint extends Joint {
 		vB.y += m_invMassB * PB.y;
 		wB += m_invIB * Vec2.cross(m_rB, PB);
 
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(4);
@@ -370,9 +376,9 @@ public class PulleyJoint extends Joint {
 		cB.y += m_invMassB * PB.y;
 		aB += m_invIB * Vec2.cross(rB, PB);
 
-		data.positions[m_indexA].c.set(cA);
+// data.positions[m_indexA].c.set(cA);
 		data.positions[m_indexA].a = aA;
-		data.positions[m_indexB].c.set(cB);
+// data.positions[m_indexB].c.set(cB);
 		data.positions[m_indexB].a = aB;
 
 		pool.pushRot(2);

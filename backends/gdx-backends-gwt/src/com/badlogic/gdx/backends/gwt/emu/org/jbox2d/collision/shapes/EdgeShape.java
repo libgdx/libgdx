@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ * 	* Redistributions of source code must retain the above copyright notice,
+ * 	  this list of conditions and the following disclaimer.
+ * 	* Redistributions in binary form must reproduce the above copyright notice,
+ * 	  this list of conditions and the following disclaimer in the documentation
+ * 	  and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -49,13 +49,6 @@ public class EdgeShape extends Shape {
 	public final Vec2 m_vertex3 = new Vec2();
 	public boolean m_hasVertex0 = false, m_hasVertex3 = false;
 
-	private final Vec2 pool0 = new Vec2();
-	private final Vec2 pool1 = new Vec2();
-	private final Vec2 pool2 = new Vec2();
-	private final Vec2 pool3 = new Vec2();
-	private final Vec2 pool4 = new Vec2();
-	private final Vec2 pool5 = new Vec2();
-
 	public EdgeShape () {
 		super(ShapeType.EDGE);
 		m_radius = Settings.polygonRadius;
@@ -77,28 +70,49 @@ public class EdgeShape extends Shape {
 		return false;
 	}
 
+	// for pooling
+	private final Vec2 normal = new Vec2();
+
 	@Override
 	public boolean raycast (RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
 
-		// Put the ray into the edge's frame of reference.
-		final Vec2 p1 = pool0.set(input.p1).subLocal(xf.p);
-		Rot.mulTrans(xf.q, p1, p1);
-		final Vec2 p2 = pool1.set(input.p2).subLocal(xf.p);
-		Rot.mulTrans(xf.q, p1, p1);
-		final Vec2 d = p2.subLocal(p1); // we don't use p2 later
-
+		float tempx, tempy;
 		final Vec2 v1 = m_vertex1;
 		final Vec2 v2 = m_vertex2;
-		final Vec2 normal = pool2.set(v2).subLocal(v1);
-		normal.set(normal.y, -normal.x);
+		final Rot xfq = xf.q;
+		final Vec2 xfp = xf.p;
+
+		// Put the ray into the edge's frame of reference.
+		// b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
+		// b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
+		tempx = input.p1.x - xfp.x;
+		tempy = input.p1.y - xfp.y;
+		final float p1x = xfq.c * tempx + xfq.s * tempy;
+		final float p1y = -xfq.s * tempx + xfq.c * tempy;
+
+		tempx = input.p2.x - xfp.x;
+		tempy = input.p2.y - xfp.y;
+		final float p2x = xfq.c * tempx + xfq.s * tempy;
+		final float p2y = -xfq.s * tempx + xfq.c * tempy;
+
+		final float dx = p2x - p1x;
+		final float dy = p2y - p1y;
+
+		// final Vec2 normal = pool2.set(v2).subLocal(v1);
+		// normal.set(normal.y, -normal.x);
+		normal.x = v2.y - v1.y;
+		normal.y = v1.x - v2.x;
 		normal.normalize();
+		final float normalx = normal.x;
+		final float normaly = normal.y;
 
 		// q = p1 + t * d
 		// dot(normal, q - v1) = 0
 		// dot(normal, p1 - v1) + t * dot(normal, d) = 0
-		pool3.set(v1).subLocal(p1);
-		float numerator = Vec2.dot(normal, pool3);
-		float denominator = Vec2.dot(normal, d);
+		tempx = v1.x - p1x;
+		tempy = v1.y - p1y;
+		float numerator = normalx * tempx + normaly * tempy;
+		float denominator = normalx * dx + normaly * dy;
 
 		if (denominator == 0.0f) {
 			return false;
@@ -109,23 +123,23 @@ public class EdgeShape extends Shape {
 			return false;
 		}
 
-		final Vec2 q = pool3;
-		final Vec2 r = pool4;
-
 		// Vec2 q = p1 + t * d;
-		q.set(d).mulLocal(t).addLocal(p1);
+		final float qx = p1x + t * dx;
+		final float qy = p1y + t * dy;
 
 		// q = v1 + s * r
 		// s = dot(q - v1, r) / dot(r, r)
 		// Vec2 r = v2 - v1;
-		r.set(v2).subLocal(v1);
-		float rr = Vec2.dot(r, r);
+		final float rx = v2.x - v1.x;
+		final float ry = v2.y - v1.y;
+		final float rr = rx * rx + ry * ry;
 		if (rr == 0.0f) {
 			return false;
 		}
-
-		pool5.set(q).subLocal(v1);
-		float s = Vec2.dot(pool5, r) / rr;
+		tempx = qx - v1.x;
+		tempy = qy - v1.y;
+		// float s = Vec2.dot(pool5, r) / rr;
+		float s = (tempx * rx + tempy * ry) / rr;
 		if (s < 0.0f || 1.0f < s) {
 			return false;
 		}
@@ -133,29 +147,36 @@ public class EdgeShape extends Shape {
 		output.fraction = t;
 		if (numerator > 0.0f) {
 			// argOutput.normal = -normal;
-			output.normal.set(normal).negateLocal();
+			output.normal.x = -normalx;
+			output.normal.y = -normaly;
 		} else {
 			// output.normal = normal;
-			output.normal.set(normal);
+			output.normal.x = normalx;
+			output.normal.y = normaly;
 		}
 		return true;
 	}
 
 	@Override
 	public void computeAABB (AABB aabb, Transform xf, int childIndex) {
-		final Vec2 v1 = pool1;
-		final Vec2 v2 = pool2;
+		final Vec2 lowerBound = aabb.lowerBound;
+		final Vec2 upperBound = aabb.upperBound;
+		final Rot xfq = xf.q;
 
-		Transform.mulToOutUnsafe(xf, m_vertex1, v1);
-		Transform.mulToOutUnsafe(xf, m_vertex2, v2);
+		final float v1x = (xfq.c * m_vertex1.x - xfq.s * m_vertex1.y) + xf.p.x;
+		final float v1y = (xfq.s * m_vertex1.x + xfq.c * m_vertex1.y) + xf.p.y;
+		final float v2x = (xfq.c * m_vertex2.x - xfq.s * m_vertex2.y) + xf.p.x;
+		final float v2y = (xfq.s * m_vertex2.x + xfq.c * m_vertex2.y) + xf.p.y;
 
-		Vec2.minToOut(v1, v2, aabb.lowerBound);
-		Vec2.maxToOut(v1, v2, aabb.upperBound);
+		lowerBound.x = v1x < v2x ? v1x : v2x;
+		lowerBound.y = v1y < v2y ? v1y : v2y;
+		upperBound.x = v1x > v2x ? v1x : v2x;
+		upperBound.y = v1y > v2y ? v1y : v2y;
 
-		aabb.lowerBound.x -= m_radius;
-		aabb.lowerBound.y -= m_radius;
-		aabb.upperBound.x += m_radius;
-		aabb.upperBound.y += m_radius;
+		lowerBound.x -= m_radius;
+		lowerBound.y -= m_radius;
+		upperBound.x += m_radius;
+		upperBound.y += m_radius;
 	}
 
 	@Override

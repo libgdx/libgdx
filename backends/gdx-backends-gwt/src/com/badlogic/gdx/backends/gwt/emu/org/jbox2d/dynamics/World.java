@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -39,6 +39,8 @@ import org.jbox2d.collision.TimeOfImpact.TOIInput;
 import org.jbox2d.collision.TimeOfImpact.TOIOutput;
 import org.jbox2d.collision.TimeOfImpact.TOIOutputState;
 import org.jbox2d.collision.broadphase.BroadPhase;
+import org.jbox2d.collision.broadphase.BroadPhaseStrategy;
+import org.jbox2d.collision.broadphase.DynamicTree;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.EdgeShape;
@@ -113,15 +115,21 @@ public class World {
 
 	private ContactRegister[][] contactStacks = new ContactRegister[ShapeType.values().length][ShapeType.values().length];
 
+	/** Construct a world object.
+	 * 
+	 * @param gravity the world gravity vector. */
 	public World (Vec2 gravity) {
 		this(gravity, new DefaultWorldPool(WORLD_POOL_SIZE, WORLD_POOL_CONTAINER_SIZE));
 	}
 
 	/** Construct a world object.
 	 * 
-	 * @param gravity the world gravity vector.
-	 * @param doSleep improve performance by not simulating inactive bodies. */
-	public World (Vec2 gravity, IWorldPool argPool) {
+	 * @param gravity the world gravity vector. */
+	public World (Vec2 gravity, IWorldPool pool) {
+		this(gravity, pool, new DynamicTree());
+	}
+
+	public World (Vec2 gravity, IWorldPool argPool, BroadPhaseStrategy broadPhaseStrategy) {
 		pool = argPool;
 		m_destructionListener = null;
 		m_debugDraw = null;
@@ -144,7 +152,7 @@ public class World {
 
 		m_inv_dt0 = 0f;
 
-		m_contactManager = new ContactManager(this);
+		m_contactManager = new ContactManager(this, broadPhaseStrategy);
 		m_profile = new Profile();
 
 		initializeRegisters();
@@ -161,6 +169,14 @@ public class World {
 				b.setAwake(true);
 			}
 		}
+	}
+
+	public void setSubStepping (boolean subStepping) {
+		this.m_subStepping = subStepping;
+	}
+
+	public boolean isSubStepping () {
+		return m_subStepping;
 	}
 
 	public boolean isAllowSleep () {
@@ -213,14 +229,16 @@ public class World {
 	}
 
 	public void pushContact (Contact contact) {
+		Fixture fixtureA = contact.getFixtureA();
+		Fixture fixtureB = contact.getFixtureB();
 
-		if (contact.m_manifold.pointCount > 0) {
-			contact.getFixtureA().getBody().setAwake(true);
-			contact.getFixtureB().getBody().setAwake(true);
+		if (contact.m_manifold.pointCount > 0 && !fixtureA.isSensor() && !fixtureB.isSensor()) {
+			fixtureA.getBody().setAwake(true);
+			fixtureB.getBody().setAwake(true);
 		}
 
-		ShapeType type1 = contact.getFixtureA().getType();
-		ShapeType type2 = contact.getFixtureB().getType();
+		ShapeType type1 = fixtureA.getType();
+		ShapeType type2 = fixtureB.getType();
 
 		IDynamicStack<Contact> creator = contactStacks[type1.ordinal()][type2.ordinal()].creator;
 		creator.push(contact);
@@ -382,22 +400,22 @@ public class World {
 
 		// Connect to the bodies' doubly linked lists.
 		j.m_edgeA.joint = j;
-		j.m_edgeA.other = j.m_bodyB;
+		j.m_edgeA.other = j.getBodyB();
 		j.m_edgeA.prev = null;
-		j.m_edgeA.next = j.m_bodyA.m_jointList;
-		if (j.m_bodyA.m_jointList != null) {
-			j.m_bodyA.m_jointList.prev = j.m_edgeA;
+		j.m_edgeA.next = j.getBodyA().m_jointList;
+		if (j.getBodyA().m_jointList != null) {
+			j.getBodyA().m_jointList.prev = j.m_edgeA;
 		}
-		j.m_bodyA.m_jointList = j.m_edgeA;
+		j.getBodyA().m_jointList = j.m_edgeA;
 
 		j.m_edgeB.joint = j;
-		j.m_edgeB.other = j.m_bodyA;
+		j.m_edgeB.other = j.getBodyA();
 		j.m_edgeB.prev = null;
-		j.m_edgeB.next = j.m_bodyB.m_jointList;
-		if (j.m_bodyB.m_jointList != null) {
-			j.m_bodyB.m_jointList.prev = j.m_edgeB;
+		j.m_edgeB.next = j.getBodyB().m_jointList;
+		if (j.getBodyB().m_jointList != null) {
+			j.getBodyB().m_jointList.prev = j.m_edgeB;
 		}
-		j.m_bodyB.m_jointList = j.m_edgeB;
+		j.getBodyB().m_jointList = j.m_edgeB;
 
 		Body bodyA = def.bodyA;
 		Body bodyB = def.bodyB;
@@ -431,7 +449,7 @@ public class World {
 			return;
 		}
 
-		boolean collideConnected = j.m_collideConnected;
+		boolean collideConnected = j.getCollideConnected();
 
 		// Remove from the doubly linked list.
 		if (j.m_prev != null) {
@@ -447,8 +465,8 @@ public class World {
 		}
 
 		// Disconnect from island graph.
-		Body bodyA = j.m_bodyA;
-		Body bodyB = j.m_bodyB;
+		Body bodyA = j.getBodyA();
+		Body bodyB = j.getBodyB();
 
 		// Wake up connected bodies.
 		bodyA.setAwake(true);
@@ -632,13 +650,11 @@ public class World {
 		if ((flags & DebugDraw.e_pairBit) == DebugDraw.e_pairBit) {
 			color.set(0.3f, 0.9f, 0.9f);
 			for (Contact c = m_contactManager.m_contactList; c != null; c = c.getNext()) {
-				// Fixture fixtureA = c.getFixtureA();
-				// Fixture fixtureB = c.getFixtureB();
-				//
-				// fixtureA.getAABB(childIndex).getCenterToOut(cA);
-				// fixtureB.getAABB().getCenterToOut(cB);
-				//
-				// m_debugDraw.drawSegment(cA, cB, color);
+				Fixture fixtureA = c.getFixtureA();
+				Fixture fixtureB = c.getFixtureB();
+				fixtureA.getAABB(c.getChildIndexA()).getCenterToOut(cA);
+				fixtureB.getAABB(c.getChildIndexB()).getCenterToOut(cB);
+				m_debugDraw.drawSegment(cA, cB, color);
 			}
 		}
 
@@ -651,7 +667,6 @@ public class World {
 				}
 
 				for (Fixture f = b.getFixtureList(); f != null; f = f.getNext()) {
-
 					for (int i = 0; i < f.m_proxyCount; ++i) {
 						FixtureProxy proxy = f.m_proxies[i];
 						AABB aabb = m_contactManager.m_broadPhase.getFatAABB(proxy.proxyId);
@@ -660,10 +675,8 @@ public class World {
 						vs[1].set(aabb.upperBound.x, aabb.lowerBound.y);
 						vs[2].set(aabb.upperBound.x, aabb.upperBound.y);
 						vs[3].set(aabb.lowerBound.x, aabb.upperBound.y);
-
 						m_debugDraw.drawPolygon(vs, 4, color);
 					}
-
 				}
 			}
 		}

@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
+ * 	* Redistributions of source code must retain the above copyright notice,
+ * 	  this list of conditions and the following disclaimer.
+ * 	* Redistributions in binary form must reproduce the above copyright notice,
+ * 	  this list of conditions and the following disclaimer in the documentation
+ * 	  and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -86,24 +86,6 @@ public class PolygonShape extends Shape {
 		shape.setRadius(this.getRadius());
 		shape.m_count = this.m_count;
 		return shape;
-	}
-
-	/** Set this as a single edge.
-	 * 
-	 * @param v1
-	 * @param v2
-	 * @deprecated */
-	public final void setAsEdge (final Vec2 v1, final Vec2 v2) {
-		m_count = 2;
-		m_vertices[0].set(v1);
-		m_vertices[1].set(v2);
-		m_centroid.set(v1).addLocal(v2).mulLocal(0.5f);
-		// = 0.5f * (v1 + v2);
-		m_normals[0].set(v2).subLocal(v1);
-		Vec2.crossToOut(m_normals[0], 1f, m_normals[0]);
-		// m_normals[0] = Cross(v2 - v1, 1.0f);
-		m_normals[0].normalize();
-		m_normals[1].set(m_normals[0]).negateLocal();
 	}
 
 	/** Create a convex hull from the given array of points. The count must be in the range [3, Settings.maxPolygonVertices].
@@ -262,13 +244,13 @@ public class PolygonShape extends Shape {
 
 	@Override
 	public final boolean testPoint (final Transform xf, final Vec2 p) {
+		float tempx, tempy;
+		final Rot xfq = xf.q;
 
-		final Vec2 pLocal = pool1;
-		final Vec2 temp = pool2;
-
-		pLocal.set(p).subLocal(xf.p);
-		Rot.mulTransUnsafe(xf.q, pLocal, temp);
-		pLocal.set(temp);
+		tempx = p.x - xf.p.x;
+		tempy = p.y - xf.p.y;
+		final float pLocalx = xfq.c * tempx + xfq.s * tempy;
+		final float pLocaly = -xfq.s * tempx + xfq.c * tempy;
 
 		if (m_debug) {
 			System.out.println("--testPoint debug--");
@@ -276,12 +258,15 @@ public class PolygonShape extends Shape {
 			for (int i = 0; i < m_count; ++i) {
 				System.out.println(m_vertices[i]);
 			}
-			System.out.println("pLocal: " + pLocal);
+			System.out.println("pLocal: " + pLocalx + ", " + pLocaly);
 		}
 
 		for (int i = 0; i < m_count; ++i) {
-			temp.set(pLocal).subLocal(m_vertices[i]);
-			final float dot = Vec2.dot(m_normals[i], temp);
+			Vec2 vertex = m_vertices[i];
+			Vec2 normal = m_normals[i];
+			tempx = pLocalx - vertex.x;
+			tempy = pLocaly - vertex.y;
+			final float dot = normal.x * tempx + normal.y * tempy;
 			if (dot > 0.0f) {
 				return false;
 			}
@@ -292,82 +277,33 @@ public class PolygonShape extends Shape {
 
 	@Override
 	public final void computeAABB (final AABB aabb, final Transform xf, int childIndex) {
-		final Vec2 v = pool1;
 		final Vec2 lower = aabb.lowerBound;
 		final Vec2 upper = aabb.upperBound;
 		final Vec2 v1 = m_vertices[0];
-		lower.x = (xf.q.c * v1.x - xf.q.s * v1.y) + xf.p.x;
-		lower.y = (xf.q.s * v1.x + xf.q.c * v1.y) + xf.p.y;
-		upper.set(lower);
+		final Rot xfq = xf.q;
+		final Vec2 xfp = xf.p;
+		float vx, vy;
+		lower.x = (xfq.c * v1.x - xfq.s * v1.y) + xfp.x;
+		lower.y = (xfq.s * v1.x + xfq.c * v1.y) + xfp.y;
+		upper.x = lower.x;
+		upper.y = lower.y;
 
 		for (int i = 1; i < m_count; ++i) {
 			Vec2 v2 = m_vertices[i];
-			v.x = (xf.q.c * v2.x - xf.q.s * v2.y) + xf.p.x;
-			v.y = (xf.q.s * v2.x + xf.q.c * v2.y) + xf.p.y;
 			// Vec2 v = Mul(xf, m_vertices[i]);
-			Vec2.minToOut(lower, v, lower);
-			Vec2.maxToOut(upper, v, upper);
+			vx = (xfq.c * v2.x - xfq.s * v2.y) + xfp.x;
+			vy = (xfq.s * v2.x + xfq.c * v2.y) + xfp.y;
+			lower.x = lower.x < vx ? lower.x : vx;
+			lower.y = lower.y < vy ? lower.y : vy;
+			upper.x = upper.x > vx ? upper.x : vx;
+			upper.y = upper.y > vy ? upper.y : vy;
 		}
 
-		// Vec2 r(m_radius, m_radius);
-		// aabb.lowerBound = lower - r;
-		// aabb.upperBound = upper + r;
-
-		aabb.lowerBound.x -= m_radius;
-		aabb.lowerBound.y -= m_radius;
-		aabb.upperBound.x += m_radius;
-		aabb.upperBound.y += m_radius;
+		lower.x -= m_radius;
+		lower.y -= m_radius;
+		upper.x += m_radius;
+		upper.y += m_radius;
 	}
-
-	// djm pooling, and from above
-	/*
-	 * private static final TLVec2 tlNormalL = new TLVec2(); private static final TLMassData tlMd = new TLMassData(); private
-	 * static final FloatArray tldepths = new FloatArray(); private static final TLVec2 tlIntoVec = new TLVec2(); private static
-	 * final TLVec2 tlOutoVec = new TLVec2(); private static final TLVec2 tlP2b = new TLVec2(); private static final TLVec2 tlP3 =
-	 * new TLVec2(); private static final TLVec2 tlcenter = new TLVec2(); /*
-	 * 
-	 * @see Shape#computeSubmergedArea(Vec2, float, XForm, Vec2) public float computeSubmergedArea(final Vec2 normal, float offset,
-	 * Transform xf, Vec2 c) { final Vec2 normalL = tlNormalL.get(); final MassData md = tlMd.get(); //Transform plane into shape
-	 * co-ordinates Mat22.mulTransToOut(xf.R,normal, normalL); float offsetL = offset - Vec2.dot(normal,xf.position); final Float[]
-	 * depths = tldepths.get(Settings.maxPolygonVertices); int diveCount = 0; int intoIndex = -1; int outoIndex = -1; boolean
-	 * lastSubmerged = false; int i = 0; for (i = 0; i < m_vertexCount; ++i){ depths[i] = Vec2.dot(normalL,m_vertices[i]) -
-	 * offsetL; boolean isSubmerged = depths[i]<-Settings.EPSILON; if (i > 0){ if (isSubmerged){ if (!lastSubmerged){ intoIndex =
-	 * i-1; diveCount++; } } else{ if (lastSubmerged){ outoIndex = i-1; diveCount++; } } } lastSubmerged = isSubmerged; }
-	 * switch(diveCount){ case 0: if (lastSubmerged){ //Completely submerged computeMass(md, 1.0f);
-	 * Transform.mulToOut(xf,md.center, c); return md.mass; } else{ return 0; } case 1: if(intoIndex==-1){ intoIndex =
-	 * m_vertexCount-1; } else{ outoIndex = m_vertexCount-1; } break; } final Vec2 intoVec = tlIntoVec.get(); final Vec2 outoVec =
-	 * tlOutoVec.get(); final Vec2 e1 = tle1.get(); final Vec2 e2 = tle2.get(); int intoIndex2 = (intoIndex+1) % m_vertexCount; int
-	 * outoIndex2 = (outoIndex+1) % m_vertexCount; float intoLambda = (0 - depths[intoIndex]) / (depths[intoIndex2] -
-	 * depths[intoIndex]); float outoLambda = (0 - depths[outoIndex]) / (depths[outoIndex2] - depths[outoIndex]);
-	 * intoVec.set(m_vertices[intoIndex].x*(1-intoLambda)+m_vertices[intoIndex2].x*intoLambda ,
-	 * m_vertices[intoIndex].y*(1-intoLambda)+m_vertices[intoIndex2].y*intoLambda);
-	 * outoVec.set(m_vertices[outoIndex].x*(1-outoLambda)+m_vertices[outoIndex2].x*outoLambda ,
-	 * m_vertices[outoIndex].y*(1-outoLambda)+m_vertices[outoIndex2].y*outoLambda); // Initialize accumulator float area = 0; final
-	 * Vec2 center = tlcenter.get(); center.setZero(); final Vec2 p2b = tlP2b.get().set(m_vertices[intoIndex2]); final Vec2 p3 =
-	 * tlP3.get(); p3.setZero(); float k_inv3 = 1.0f / 3.0f; // An awkward loop from intoIndex2+1 to outIndex2 i = intoIndex2;
-	 * while (i != outoIndex2){ i = (i+1) % m_vertexCount; if (i == outoIndex2){ p3.set(outoVec); } else{ p3.set(m_vertices[i]); }
-	 * // Add the triangle formed by intoVec,p2,p3 { e1.set(p2b).subLocal(intoVec); e2.set(p3).subLocal(intoVec); float D =
-	 * Vec2.cross(e1, e2); float triangleArea = 0.5f * D; area += triangleArea; // Area weighted centroid center.x += triangleArea
-	 * * k_inv3 * (intoVec.x + p2b.x + p3.x); center.y += triangleArea * k_inv3 * (intoVec.y + p2b.y + p3.y); } // p2b.set(p3); }
-	 * // Normalize and transform centroid center.x *= 1.0f / area; center.y *= 1.0f / area; Transform.mulToOut(xf, center, c);
-	 * return area; }
-	 */
-
-	/*
-	 * Get the supporting vertex index in the given direction.
-	 * 
-	 * @param d
-	 * 
-	 * @return public final int getSupport( final Vec2 d){ int bestIndex = 0; float bestValue = Vec2.dot(m_vertices[0], d); for
-	 * (int i = 1; i < m_vertexCount; ++i){ final float value = Vec2.dot(m_vertices[i], d); if (value > bestValue){ bestIndex = i;
-	 * bestValue = value; } } return bestIndex; } /** Get the supporting vertex in the given direction.
-	 * 
-	 * @param d
-	 * 
-	 * @return public final Vec2 getSupportVertex( final Vec2 d){ int bestIndex = 0; float bestValue = Vec2.dot(m_vertices[0], d);
-	 * for (int i = 1; i < m_vertexCount; ++i){ final float value = Vec2.dot(m_vertices[i], d); if (value > bestValue){ bestIndex =
-	 * i; bestValue = value; } } return m_vertices[bestIndex]; }
-	 */
 
 	/** Get the vertex count.
 	 * 
@@ -387,32 +323,38 @@ public class PolygonShape extends Shape {
 
 	@Override
 	public final boolean raycast (RayCastOutput output, RayCastInput input, Transform xf, int childIndex) {
-		final Vec2 p1 = pool1;
-		final Vec2 p2 = pool2;
-		final Vec2 d = pool3;
-		final Vec2 temp = pool4;
+		final Rot xfq = xf.q;
+		final Vec2 xfp = xf.p;
+		float tempx, tempy;
+		// b2Vec2 p1 = b2MulT(xf.q, input.p1 - xf.p);
+		// b2Vec2 p2 = b2MulT(xf.q, input.p2 - xf.p);
+		tempx = input.p1.x - xfp.x;
+		tempy = input.p1.y - xfp.y;
+		final float p1x = xfq.c * tempx + xfq.s * tempy;
+		final float p1y = -xfq.s * tempx + xfq.c * tempy;
 
-		p1.set(input.p1).subLocal(xf.p);
-		Rot.mulTrans(xf.q, p1, p1);
-		p2.set(input.p2).subLocal(xf.p);
-		Rot.mulTrans(xf.q, p2, p2);
-		d.set(p2).subLocal(p1);
+		tempx = input.p2.x - xfp.x;
+		tempy = input.p2.y - xfp.y;
+		final float p2x = xfq.c * tempx + xfq.s * tempy;
+		final float p2y = -xfq.s * tempx + xfq.c * tempy;
 
-		// if (count == 2) {
-
-		// } else {
+		final float dx = p2x - p1x;
+		final float dy = p2y - p1y;
 
 		float lower = 0, upper = input.maxFraction;
 
 		int index = -1;
 
 		for (int i = 0; i < m_count; ++i) {
+			Vec2 normal = m_normals[i];
+			Vec2 vertex = m_vertices[i];
 			// p = p1 + a * d
 			// dot(normal, p - v) = 0
 			// dot(normal, p1 - v) + a * dot(normal, d) = 0
-			temp.set(m_vertices[i]).subLocal(p1);
-			final float numerator = Vec2.dot(m_normals[i], temp);
-			final float denominator = Vec2.dot(m_normals[i], d);
+			float tempxn = vertex.x - p1x;
+			float tempyn = vertex.y - p1y;
+			final float numerator = normal.x * tempxn + normal.y * tempyn;
+			final float denominator = normal.x * dx + normal.y * dy;
 
 			if (denominator == 0.0f) {
 				if (numerator < 0.0f) {
@@ -445,8 +387,11 @@ public class PolygonShape extends Shape {
 
 		if (index >= 0) {
 			output.fraction = lower;
-			Rot.mulToOutUnsafe(xf.q, m_normals[index], output.normal);
 			// normal = Mul(xf.R, m_normals[index]);
+			Vec2 normal = m_normals[index];
+			Vec2 out = output.normal;
+			out.x = xfq.c * normal.x - xfq.s * normal.y;
+			out.y = xfq.s * normal.x + xfq.c * normal.y;
 			return true;
 		}
 		return false;
@@ -620,7 +565,7 @@ public class PolygonShape extends Shape {
 
 	/** Get the centroid and apply the supplied transform. */
 	public Vec2 centroidToOut (final Transform xf, final Vec2 out) {
-		Transform.mulToOut(xf, m_centroid, out);
+		Transform.mulToOutUnsafe(xf, m_centroid, out);
 		return out;
 	}
 }

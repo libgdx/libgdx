@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -52,12 +52,11 @@ public class MouseJoint extends Joint {
 	private float m_gamma;
 
 	// Solver temp
-	public int m_indexA;
-	public int m_indexB;
-	public final Vec2 m_rB = new Vec2();
-	public final Vec2 m_localCenterB = new Vec2();
-	public float m_invMassB;
-	public float m_invIB;
+	private int m_indexB;
+	private final Vec2 m_rB = new Vec2();
+	private final Vec2 m_localCenterB = new Vec2();
+	private float m_invMassB;
+	private float m_invIB;
 	private final Mat22 m_mass = new Mat22();
 	private final Vec2 m_C = new Vec2();
 
@@ -141,7 +140,6 @@ public class MouseJoint extends Joint {
 
 	@Override
 	public void initVelocityConstraints (final SolverData data) {
-		m_indexA = m_bodyA.m_islandIndex;
 		m_indexB = m_bodyB.m_islandIndex;
 		m_localCenterB.set(m_bodyB.m_sweep.localCenter);
 		m_invMassB = m_bodyB.m_invMass;
@@ -209,7 +207,7 @@ public class MouseJoint extends Joint {
 			m_impulse.setZero();
 		}
 
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(1);
@@ -248,11 +246,11 @@ public class MouseJoint extends Joint {
 		}
 		impulse.set(m_impulse).subLocal(oldImpulse);
 
-		vB.x += m_invMassB * m_impulse.x;
-		vB.y += m_invMassB * m_impulse.y;
+		vB.x += m_invMassB * impulse.x;
+		vB.y += m_invMassB * impulse.y;
 		wB += m_invIB * Vec2.cross(m_rB, impulse);
 
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(3);

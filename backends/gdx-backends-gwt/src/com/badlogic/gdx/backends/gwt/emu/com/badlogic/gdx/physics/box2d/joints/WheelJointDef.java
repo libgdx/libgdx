@@ -63,7 +63,19 @@ public class WheelJointDef extends JointDef {
 
 	@Override
 	public org.jbox2d.dynamics.joints.JointDef toJBox2d () {
-		// FIXME not implemented in jbox2d port.
-		return null;
+		org.jbox2d.dynamics.joints.WheelJointDef fd = new org.jbox2d.dynamics.joints.WheelJointDef();
+		fd.bodyA = bodyA.body;
+		fd.bodyB = bodyB.body;
+		fd.collideConnected = collideConnected;
+		fd.localAxisA.set(localAxisA.x, localAxisA.y);
+		fd.enableMotor = enableMotor;
+		fd.maxMotorTorque = maxMotorTorque;
+		fd.motorSpeed = motorSpeed;
+		fd.frequencyHz = frequencyHz;
+		fd.dampingRatio = dampingRatio;
+		fd.localAnchorA.set(localAnchorA.x, localAnchorA.y);
+		fd.localAnchorB.set(localAnchorB.x, localAnchorB.y);
+		fd.type = org.jbox2d.dynamics.joints.JointType.WHEEL;
+		return fd;
 	}
 }

@@ -102,21 +102,21 @@ public class RevoluteJoint extends Joint {
 	public float getMotorTorque (float invDt) {
 		return joint.getMotorTorque(invDt);
 	}
-	
+
 	public Vector2 getLocalAnchorA () {
-		return localAnchorA.set(joint.m_localAnchorA.x, joint.m_localAnchorA.y);
+		return localAnchorA.set(joint.getLocalAnchorA().x, joint.getLocalAnchorA().y);
 	}
 
 	public Vector2 getLocalAnchorB () {
-		return localAnchorA.set(joint.m_localAnchorB.x, joint.m_localAnchorB.y);
+		return localAnchorA.set(joint.getLocalAnchorB().x, joint.getLocalAnchorB().y);
 	}
 
 	/** Get the current motor torque, usually in N-m. */
 	public float getReferenceAngle () {
-		return joint.m_referenceAngle;
+		return joint.getReferenceAngle();
 	}
 
 	public float getMaxMotorTorque () {
-		return joint.m_maxMotorTorque;
+		return joint.getMaxMotorTorque();
 	}
 }

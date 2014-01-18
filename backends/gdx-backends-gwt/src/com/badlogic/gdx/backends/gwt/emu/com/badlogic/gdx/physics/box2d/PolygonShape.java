@@ -56,16 +56,16 @@ public class PolygonShape extends Shape {
 		set(vertices, 0, vertices.length);
 	}
 
-	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in
-	 * x,y order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
+	/** Copy vertices from the given float array, taking into account the offset and length. It is assumed the vertices are in x,y
+	 * order and define a convex polygon. It is assumed that the exterior is the the right of each edge. */
 	public void set (float[] vertices, int offset, int len) {
 		Vec2[] v = new org.jbox2d.common.Vec2[len / 2];
 		for (int i = 0; i < v.length; i++) {
 			v[i] = new Vec2(vertices[i * 2], vertices[i * 2 + 1]);
 		}
 		shape.set(v, v.length);
-	}	
-	
+	}
+
 	/** Build vertices to represent an axis-aligned box.
 	 * @param hx the half-width.
 	 * @param hy the half-height. */

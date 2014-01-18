@@ -27,7 +27,7 @@ public class WeldJoint extends Joint {
 	public WeldJoint (World world, org.jbox2d.dynamics.joints.WeldJoint joint) {
 		super(world, joint);
 	}
-	
+
 	public float getReferenceAngle () {
 		return 0;
 	}
