@@ -209,12 +209,22 @@ public class FrameBuffer implements Disposable {
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void begin () {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		setFrameBufferViewport();
+	}
+	
+	/** Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}. */
+	protected void setFrameBufferViewport () {
 		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public void end () {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+		setDefaultFrameBufferViewport();
+	}
+	
+	/** Sets viewport to the dimensions of default framebuffer (window). Called by {@link #end()}. */
+	protected void setDefaultFrameBufferViewport () {
 		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 	
