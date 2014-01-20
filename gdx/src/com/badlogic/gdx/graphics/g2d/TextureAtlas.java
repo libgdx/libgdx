@@ -49,7 +49,7 @@ public class TextureAtlas implements Disposable {
 	static final String[] tuple = new String[4];
 
 	private final HashSet<Texture> textures = new HashSet(4);
-	private final Array<AtlasRegion> regions = new Array<AtlasRegion>();
+	private final Array<AtlasRegion> regions = Array.of(AtlasRegion.class);
 
 	public static class TextureAtlasData {
 		public static class Page {
@@ -92,8 +92,8 @@ public class TextureAtlas implements Disposable {
 			public int[] pads;
 		}
 
-		final Array<Page> pages = new Array<Page>();
-		final Array<Region> regions = new Array<Region>();
+		final Array<Page> pages = Array.of(Page.class);
+		final Array<Region> regions = Array.of(Region.class);
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);

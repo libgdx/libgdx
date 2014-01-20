@@ -109,7 +109,7 @@ public class PixmapPacker implements Disposable {
 		OrderedMap<String, Rectangle> rects;
 		Pixmap image;
 		Texture texture;
-		Array<String> addedRects = new Array<String>();
+		Array<String> addedRects = Array.of(String.class);
 
 		public Pixmap getPixmap () {
 			return image;
@@ -121,7 +121,7 @@ public class PixmapPacker implements Disposable {
 	final Format pageFormat;
 	final int padding;
 	final boolean duplicateBorder;
-	final Array<Page> pages = new Array<Page>();
+	final Array<Page> pages = Array.of(Page.class);
 	Page currPage;
 	boolean disposed;
 

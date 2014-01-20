@@ -75,17 +75,17 @@ import com.badlogic.gdx.utils.Pool;
  * @author badlogic, xoppa */
 public class Model implements Disposable {
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes **/
-	public final Array<Material> materials = new Array<Material>();
+	public final Array<Material> materials = Array.of(Material.class);
 	/** root nodes of the model **/
-	public final Array<Node> nodes = new Array<Node>();
+	public final Array<Node> nodes = Array.of(Node.class);
 	/** animations of the model, modifying node transformations **/
-	public final Array<Animation> animations = new Array<Animation>();
+	public final Array<Animation> animations = Array.of(Animation.class);
 	/** the meshes of the model **/
-	public final Array<Mesh> meshes = new Array<Mesh>();
+	public final Array<Mesh> meshes = Array.of(Mesh.class);
 	/** parts of meshes, used by nodes that have a graphical representation FIXME not sure if superfluous, stored in Nodes as well, could be useful to create bullet meshes **/
-	public final Array<MeshPart> meshParts = new Array<MeshPart>();
+	public final Array<MeshPart> meshParts = Array.of(MeshPart.class);
 	/** Array of disposable resources like textures or meshes the Model is responsible for disposing **/
-	protected final Array<Disposable> disposables = new Array<Disposable>();
+	protected final Array<Disposable> disposables = Array.of(Disposable.class);
 	
 	/** Constructs an empty model. Manual created models do not manage their resources by default. 
 	 * Use {@link #manageDisposable(Disposable)} to add resources to be managed by this model. */
