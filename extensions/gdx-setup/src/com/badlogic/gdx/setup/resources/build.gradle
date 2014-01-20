@@ -5,9 +5,11 @@ buildscript {
         }
         mavenCentral()
     }
+
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.2'
-        classpath 'com.android.tools.build:gradle:0.6.1+'
+        classpath 'com.android.tools.build:gradle:0.7.3+'
+        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.2'
     }
 }
 
@@ -72,7 +74,6 @@ project(":gwt") {
 
     gwt {
         gwtVersion='2.5.0' // Should match the gwt version used for building the gwt backend
-
         maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
         minHeapSize="1G"
 
@@ -85,6 +86,27 @@ project(":gwt") {
             disableClassMetadata = true;
             disableCastChecking = true;
         }
+    }
+}
+
+project(":ios") {
+    apply plugin: 'java'
+    apply plugin: 'robovm'
+
+    ext {
+        mainClassName = "%PACKAGE%.IOSLauncher"
+        roboVMVersion = "0.0.8"
+    }
+
+    task wrapper(type: Wrapper) {
+        gradleVersion = '1.9'
+    }
+
+    dependencies {
+        compile "org.robovm:robovm-rt:${roboVMVersion}"
+        compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
     }
 }
 
