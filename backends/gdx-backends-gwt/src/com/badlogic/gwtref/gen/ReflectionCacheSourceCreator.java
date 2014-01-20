@@ -438,19 +438,21 @@ public class ReflectionCacheSourceCreator {
 		stub.enclosingType = stub.enclosingType.replace(".class", "");
 		stub.type = stub.type.replace(".class", "");
 
-		pb("public native Object " + stub.getter + "(" + stub.enclosingType + " obj) /*-{");
+		pb("// " + stub.enclosingType + "#" + stub.name);
+		pbn("private native " + stub.type + " " + stub.getter + "(" + stub.enclosingType + " obj) /*-{");
 		if (stub.isStatic)
-			pb("   return @" + stub.enclosingType + "::" + stub.name + ";");
+			pbn("return @" + stub.enclosingType + "::" + stub.name + ";");
 		else
-			pb("   return obj.@" + stub.enclosingType + "::" + stub.name + ";");
+			pbn("return obj.@" + stub.enclosingType + "::" + stub.name + ";");
 		pb("}-*/;");
 
 		if (!stub.isFinal) {
-			pb("private native void " + stub.setter + "(" + stub.enclosingType + " obj, Object value)  /*-{");
+			String vType = isPrimitive(stub.type) ? stub.type : "Object";
+			pbn("private native void " + stub.setter + "(" + stub.enclosingType + " obj, " + vType + " value)  /*-{");
 			if (stub.isStatic)
-				pb("    @" + stub.enclosingType + "::" + stub.name + " = value");
+				pbn("@" + stub.enclosingType + "::" + stub.name + " = value");
 			else
-				pb("    obj.@" + stub.enclosingType + "::" + stub.name + " = value;");
+				pbn("obj.@" + stub.enclosingType + "::" + stub.name + " = value;");
 			pb("}-*/;");
 		}
 
@@ -533,7 +535,7 @@ public class ReflectionCacheSourceCreator {
 			}
 
 			printMethods(c, varName, "Method", c.getMethods());
-			if (!c.isAbstract() && ( c.getEnclosingType() == null || c.isStatic() )){
+			if (!c.isAbstract() && (c.getEnclosingType() == null || c.isStatic())) {
 				printMethods(c, varName, "Constructor", c.getConstructors());
 			} else {
 				logger.log(Type.INFO, c.getName() + " can't be instantiated. Constructors not generated");
@@ -728,7 +730,16 @@ public class ReflectionCacheSourceCreator {
 		SwitchedCodeBlocks pc = new SwitchedCodeBlocks();
 		for (SetterGetterStub stub : setterGetterStubs) {
 			if (stub.enclosingType == null || stub.type == null || stub.isFinal || stub.unused) continue;
-			pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			if (stub.type.equals("float") || stub.type.equals("int") || stub.type.equals("double") || stub.type.equals("byte")
+				|| stub.type.equals("short") || stub.type.equals("long")) {
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Number) value)." + stub.type + "Value());");
+			} else if (stub.type.equals("boolean")) {
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Boolean) value).booleanValue());");
+			} else if (stub.type.equals("char")) {
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, ((Character) value).charValue());");
+			} else {
+				pc.add(stub.setter, stub.setter + "((" + stub.enclosingType + ")obj, value);");
+			}
 		}
 		pc.print();
 		p("}");

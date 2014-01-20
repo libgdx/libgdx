@@ -25,6 +25,7 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.Field;
 import com.badlogic.gdx.utils.reflect.Method;
 
 /** Performs some tests with {@link ClassReflection} and prints the results on the screen.
@@ -57,11 +58,25 @@ public class ReflectionTest extends GdxTest {
 			Method mNor = ClassReflection.getMethod(Vector2.class, "nor");
 			println("Normalized: " + mNor.invoke(fromCopyConstructor));
 
-			println("JSON serialized: " + new Json().toJson(fromCopyConstructor));
-		} catch (Exception e) {
-			message = "FAILED: " + e.getMessage();
-		}
+			Vector2 fieldCopy = new Vector2();
+			Field fx = ClassReflection.getField(Vector2.class, "x");
+			Field fy = ClassReflection.getField(Vector2.class, "y");
+			fx.set(fieldCopy, fx.get(fromCopyConstructor));
+			fy.set(fieldCopy, fy.get(fromCopyConstructor));
+			println("Copied field by field: " + fieldCopy);
 
+			Json json = new Json();
+			String jsonString = json.toJson(fromCopyConstructor);
+			Vector2 fromJson = json.fromJson(Vector2.class, jsonString);
+			println("JSON serialized: " + jsonString);
+			println("JSON deserialized: " + fromJson);
+			fromJson.x += 1;
+			fromJson.y += 1;
+			println("JSON deserialized + 1/1: " + fromJson);
+		} catch (Exception e) {
+			message = "FAILED: " + e.getMessage() + "\n";
+			message += e.getClass();
+		}
 	}
 
 	private void println (String line) {
