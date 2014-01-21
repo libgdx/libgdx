@@ -178,7 +178,7 @@ public class ParticleEmitter {
 	}
 
 	public void update (float delta) {
-		accumulator += Math.min(delta * 1000, 250);
+		accumulator += delta * 1000;
 		if (accumulator < 1) return;
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
@@ -245,7 +245,7 @@ public class ParticleEmitter {
 	/** Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
 	 * {@link #draw(Batch)} separately. */
 	public void draw (Batch batch, float delta) {
-		accumulator += Math.min(delta * 1000, 250);
+		accumulator += delta * 1000;
 		if (accumulator < 1) {
 			draw(batch);
 			return;
