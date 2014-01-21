@@ -70,12 +70,6 @@ public class Sprite extends TextureRegion {
 	public Sprite (Texture texture, int srcX, int srcY, int srcWidth, int srcHeight) {
 		if (texture == null) throw new IllegalArgumentException("texture cannot be null.");
 		this.texture = texture;
-		if (srcWidth < 0) {
-			flipX = true;
-		}
-		if (srcHeight < 0) {
-			flipY = true;
-		}
 		setRegion(srcX, srcY, srcWidth, srcHeight);
 		setColor(1, 1, 1, 1);
 		setSize(Math.abs(srcWidth), Math.abs(srcHeight));
@@ -128,8 +122,6 @@ public class Sprite extends TextureRegion {
 		rotation = sprite.rotation;
 		scaleX = sprite.scaleX;
 		scaleY = sprite.scaleY;
-		flipX = sprite.flipX;
-		flipY = sprite.flipY;
 		color.set(sprite.color);
 		dirty = sprite.dirty;
 	}
@@ -603,9 +595,6 @@ public class Sprite extends TextureRegion {
 		vertices[V4] = v2;
 	}
 
-	private boolean flipX = false;
-	private boolean flipY = false;
-
 	/** Set the sprite's flip state regardless of current condition
 	 * @param x the desired horizontal flip state
 	 * @param y the desired vertical flip state
@@ -613,21 +602,13 @@ public class Sprite extends TextureRegion {
 	public void setFlip(boolean x, boolean y) {
 		boolean performX = false;
 		boolean performY = false;
-		if (flipX != x) {
+		if (isFlipX() != x) {
 			performX = true;
 		}
-		if (flipY != y) {
+		if (isFlipY() != y) {
 			performY = true;
 		}
 		flip(performX, performY);
-	}
-
-	public boolean getFlipX() {
-		return flipX;
-	}
-
-	public boolean getFlipY() {
-		return flipY;
 	}
 
 	/** boolean parameters x,y are not setting a state, but performing a flip
@@ -636,12 +617,6 @@ public class Sprite extends TextureRegion {
 	 * */
 	public void flip (boolean x, boolean y) {
 		super.flip(x, y);
-		if (x) {
-			flipX = !flipX;
-		}
-		if (y) {
-			flipY = !flipY;
-		}
 		float[] vertices = Sprite.this.vertices;
 		if (x) {
 			float temp = vertices[U1];
