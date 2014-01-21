@@ -1,4 +1,6 @@
 [1.0.0]
+- Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
+- Vector2 now has isUnit and isZero methods (copied from Vector3)
 - added headless desktop application type for backends/servers, LwjglHeadlessApplication
 - support 'scaledSize' as a json skin data value for BitmapFont
 - added setAlpha(float a) method to Sprite class

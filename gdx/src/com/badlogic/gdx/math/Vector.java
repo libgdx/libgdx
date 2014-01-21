@@ -92,5 +92,17 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T lerp (T target, float alpha);
 
+	/** @return Whether this vector is a unit length vector */
+	public boolean isUnit ();
+
+	/** @return Whether this vector is a unit length vector within the given margin. */
+	public boolean isUnit(final float margin);
+
+	/** @return Whether this vector is a zero vector */
+	public boolean isZero ();
+
+	/** @return Whether the length of this vector is smaller than the given margin */
+	public boolean isZero (final float margin);
+
 	// TODO: T crs(T v);
 }

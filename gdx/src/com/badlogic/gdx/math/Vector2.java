@@ -386,9 +386,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return isUnit(0.000000001f);
 	}
 
-	/** @return Whether this vector is a unit length vector within the given margin */
+	/** @return Whether this vector is a unit length vector within the given margin.
+	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary.
+	 */
 	public boolean isUnit(final float margin) {
-		return Math.abs(len2() - 1f) < margin * margin;
+		return Math.abs(len2() - 1f) < margin;
 	}
 
 	/** @return Whether this vector is a zero vector */
@@ -396,8 +398,10 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return x == 0 && y == 0;
 	}
 
-	/** @return Whether the length of this vector is smaller than the given margin */
+	/** @return Whether the length of this vector is smaller than the given margin
+	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary.
+	 */
 	public boolean isZero (final float margin) {
-		return len2() < margin * margin;
+		return len2() < margin;
 	}
 }
