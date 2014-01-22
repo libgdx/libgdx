@@ -44,7 +44,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
- * EDT. This is slightly less efficient then a dedicated thread, but greatly simplifies synchronization. Note that you may need to
+ * EDT. This is slightly less efficient than a dedicated thread, but greatly simplifies synchronization. Note that you may need to
  * call {@link #stop()} or a Swing application may deadlock on System.exit due to how LWJGL and/or Swing deal with shutdown hooks.
  * @author Nathan Sweet */
 public class LwjglCanvas implements Application {
@@ -395,6 +395,7 @@ public class LwjglCanvas implements Application {
 			public void run () {
 				LwjglCanvas.this.listener.pause();
 				LwjglCanvas.this.listener.dispose();
+				if (audio != null) audio.dispose();
 				System.exit(-1);
 			}
 		});
