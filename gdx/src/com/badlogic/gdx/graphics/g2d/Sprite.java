@@ -613,7 +613,7 @@ public class Sprite extends TextureRegion {
 
 	/** boolean parameters x,y are not setting a state, but performing a flip
 	 * @param x perform horizontal flip
-	 * @param y perform verticle flip
+	 * @param y perform vertical flip
 	 * */
 	public void flip (boolean x, boolean y) {
 		super.flip(x, y);
