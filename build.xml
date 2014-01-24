@@ -75,6 +75,19 @@
 		</ant>
 	</target>
 
+        <!-- gdx headless backend -->
+        <target name="gdx-backend-headless" depends="gdx-core">
+                <path id="classpath">
+                        <pathelement location="${distDir}/gdx.jar"/>                    
+                </path>
+                <ant antfile="../../build-template.xml" dir="backends/gdx-backend-headless">
+                        <property name="jar" value="gdx-backend-headless"/>
+                        <reference refid="classpath"/>
+                        <reference refid="jarfiles"/>
+                </ant>
+        </target>
+
+
 	<!-- gdx lwjgl backend -->
 	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">
 		<path id="classpath">
