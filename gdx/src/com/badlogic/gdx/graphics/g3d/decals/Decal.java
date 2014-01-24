@@ -57,7 +57,7 @@ public class Decal {
 	protected DecalMaterial material = new DecalMaterial();
 	protected boolean updated = false;
 
-	public Decal () {
+	protected Decal () {
 	}
 
 	/** Sets the color of all four vertices to the specified color
