@@ -11,16 +11,6 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.math" />
 	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.assets.AssetDescriptor" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.Mesh" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.Material" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g2d.TextureAtlas" />
-	<extend-configuration-property name="gdx.reflect.include"
-		value="com.badlogic.gdx.graphics.g3d.decals.Decal" />
-	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.TextureRegion" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.BitmapFont" />
