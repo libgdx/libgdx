@@ -41,19 +41,6 @@ public class Array<T> implements Iterable<T> {
 	public Array () {
 		this(true, 16);
 	}
-	
-	/** Creates an ordered array with {@link #items} of the specified type and a capacity of 16. */
-	public static <T> Array<T> of(Class<T> arrayType) {
-		return new Array<T>(arrayType);
-	}
-	
-	/** Creates a new array with {@link #items} of the specified type.
-	 * @param ordered If false, methods that remove elements may change the order of other elements in the array, which avoids a
-	 *           memory copy.
-	 * @param capacity Any elements added beyond this will cause the backing array to be grown. */
-	public static <T> Array<T> of(boolean ordered, int capacity, Class<T> arrayType) {
-		return new Array<T>(ordered, capacity, arrayType);
-	}
 
 	/** Creates an ordered array with the specified capacity. */
 	public Array (int capacity) {
@@ -479,6 +466,16 @@ public class Array<T> implements Iterable<T> {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #Array(Class) */
+	static public <T> Array<T> of (Class<T> arrayType) {
+		return new Array<T>(arrayType);
+	}
+
+	/** @see #Array(boolean, int, Class) */
+	static public <T> Array<T> of (boolean ordered, int capacity, Class<T> arrayType) {
+		return new Array<T>(ordered, capacity, arrayType);
 	}
 
 	static public class ArrayIterator<T> implements Iterator<T>, Iterable<T> {

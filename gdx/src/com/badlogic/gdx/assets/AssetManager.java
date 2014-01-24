@@ -62,15 +62,15 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 /** Loads and stores assets like textures, bitmapfonts, tile maps, sounds, music and so on.
  * @author mzechner */
 public class AssetManager implements Disposable {
-	final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap<Class, ObjectMap<String, RefCountedContainer>>();
-	final ObjectMap<String, Class> assetTypes = new ObjectMap<String, Class>();
-	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap<String, Array<String>>();
+	final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap();
+	final ObjectMap<String, Class> assetTypes = new ObjectMap();
+	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap();
 
-	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap<Class, ObjectMap<String, AssetLoader>>();
-	final Array<AssetDescriptor> loadQueue = Array.of(AssetDescriptor.class);
+	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap();
+	final Array<AssetDescriptor> loadQueue = new Array();
 	final AsyncExecutor executor;
 
-	Stack<AssetLoadingTask> tasks = new Stack<AssetLoadingTask>();
+	final Stack<AssetLoadingTask> tasks = new Stack();
 	AssetErrorListener listener = null;
 	int loaded = 0;
 	int toLoad = 0;
@@ -385,7 +385,7 @@ public class AssetManager implements Disposable {
 		// add the asset as a dependency of the parent asset
 		Array<String> dependencies = assetDependencies.get(parentAssetFilename);
 		if (dependencies == null) {
-			dependencies = Array.of(String.class);
+			dependencies = new Array();
 			assetDependencies.put(parentAssetFilename, dependencies);
 		}
 		dependencies.add(dependendAssetDesc.fileName);

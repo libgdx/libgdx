@@ -58,7 +58,7 @@ public class TextureAtlasLoader extends SynchronousAssetLoader<TextureAtlas, Tex
 			data = new TextureAtlasData(atlasFile, imgDir, false);
 		}
 
-		Array<AssetDescriptor> dependencies = Array.of(AssetDescriptor.class);
+		Array<AssetDescriptor> dependencies = new Array();
 		for (Page page : data.getPages()) {
 			TextureParameter params = new TextureParameter();
 			params.format = page.format;
