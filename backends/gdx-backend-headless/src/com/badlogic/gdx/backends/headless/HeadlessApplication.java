@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.headless;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -26,22 +26,25 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.headless.mock.audio.MockAudio;
+import com.badlogic.gdx.backends.headless.mock.graphics.MockGraphics;
+import com.badlogic.gdx.backends.headless.mock.input.MockInput;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-
 /** a headless implementation of a GDX Application primarily intended to be used in servers
  *  @author Jon Renner */
-public class LwjglHeadlessApplication implements Application {
+public class HeadlessApplication implements Application {
 	protected final ApplicationListener listener;
 	protected Thread mainLoopThread;
-	protected final LwjglFiles files;
-	protected final LwjglNet net;
+	protected final HeadlessFiles files;
+	protected final HeadlessNet net;
+	protected final MockAudio audio;
+	protected final MockInput input;
+	protected final MockGraphics graphics;
 	protected boolean running = true;
 	protected final Array<Runnable> runnables = new Array<Runnable>();
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
@@ -49,22 +52,29 @@ public class LwjglHeadlessApplication implements Application {
 	protected int logLevel = LOG_INFO;
 	private final long renderInterval;
 
-	public LwjglHeadlessApplication(ApplicationListener listener) {
+	public HeadlessApplication(ApplicationListener listener) {
 		this(listener, null);
 	}
 	
-	public LwjglHeadlessApplication(ApplicationListener listener, LwjglHeadlessApplicationConfiguration config) {
+	public HeadlessApplication(ApplicationListener listener, HeadlessApplicationConfiguration config) {
 		if (config == null)
-			config = new LwjglHeadlessApplicationConfiguration();
+			config = new HeadlessApplicationConfiguration();
 		
-		LwjglNativesLoader.load();
+		HeadlessNativesLoader.load();
 		this.listener = listener;
-		this.files = new LwjglFiles();
-		this.net = new LwjglNet();
+		this.files = new HeadlessFiles();
+		this.net = new HeadlessNet();
+		// the following elements are not applicable for headless applications
+		// they are only implemented as mock objects
+		this.graphics = new MockGraphics();
+		this.audio = new MockAudio();
+		this.input = new MockInput();
 
 		Gdx.app = this;
 		Gdx.files = files;
 		Gdx.net = net;
+		Gdx.audio = audio;
+		Gdx.graphics = graphics;
 		
 		renderInterval = config.renderInterval > 0 ? (long)(config.renderInterval * 1000000000f) : (config.renderInterval < 0 ? -1 : 0);
 		
@@ -72,11 +82,11 @@ public class LwjglHeadlessApplication implements Application {
 	}
 
 	private void initialize () {
-		mainLoopThread = new Thread("LWJGL HeadlessApplication") {
+		mainLoopThread = new Thread("HeadlessApplication") {
 			@Override
 			public void run () {
 				try {
-					LwjglHeadlessApplication.this.mainLoop();
+					HeadlessApplication.this.mainLoop();
 				} catch (Throwable t) {
 					if (t instanceof RuntimeException)
 						throw (RuntimeException)t;
@@ -111,6 +121,7 @@ public class LwjglHeadlessApplication implements Application {
 				
 				executeRunnables();
 				listener.render();
+				graphics.updateTime();
 	
 				// If one of the runnables set running to false, for example after an exit().
 				if (!running) break;
@@ -199,7 +210,7 @@ public class LwjglHeadlessApplication implements Application {
 		if (preferences.containsKey(name)) {
 			return preferences.get(name);
 		} else {
-			Preferences prefs = new LwjglPreferences(name, ".prefs/");
+			Preferences prefs = new HeadlessPreferences(name, ".prefs/");
 			preferences.put(name, prefs);
 			return prefs;
 		}
@@ -207,7 +218,8 @@ public class LwjglHeadlessApplication implements Application {
 
 	@Override
 	public Clipboard getClipboard () {
-		return new LwjglClipboard();
+		// no clipboards for headless apps
+		return null;
 	}
 
 	@Override

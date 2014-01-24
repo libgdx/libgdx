@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.badlogic.gdx.backends.android;
+package com.badlogic.gdx.backends.headless;
+
+import com.badlogic.gdx.Net.Protocol;
+import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-
-import com.badlogic.gdx.Net.Protocol;
-import com.badlogic.gdx.net.ServerSocketHints;
-import com.badlogic.gdx.net.Socket;
-import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /**
  * Socket implementation using java.net.Socket.
  * 
  * @author noblemaster
  */
-public class AndroidSocket implements Socket {
+public class Headless implements Socket {
 
 	/** Our socket or null for disposed, aka closed. */
 	private java.net.Socket socket;
 	
 	
-	public AndroidSocket(Protocol protocol, String host, int port, SocketHints hints) {
+	public Headless(Protocol protocol, String host, int port, SocketHints hints) {
 		try {
 			// create the socket
 			socket = new java.net.Socket();
@@ -56,7 +55,7 @@ public class AndroidSocket implements Socket {
 		}
 	}
 	
-	public AndroidSocket(java.net.Socket socket, SocketHints hints) {
+	public Headless(java.net.Socket socket, SocketHints hints) {
 		this.socket = socket;
 		applyHints(hints);
 	}
@@ -109,11 +108,6 @@ public class AndroidSocket implements Socket {
 			throw new GdxRuntimeException("Error getting output stream from socket.", e);
 		}
 	}
-	
-	@Override
-	public String getRemoteAddress () {
-		return socket.getRemoteSocketAddress().toString();
-	}
 
 	@Override
 	public void dispose() {
@@ -126,5 +120,10 @@ public class AndroidSocket implements Socket {
 				throw new GdxRuntimeException("Error closing socket.", e);
 			}
 		}
+	}
+	
+	@Override
+	public String getRemoteAddress () {
+		return socket.getRemoteSocketAddress().toString();
 	}
 }

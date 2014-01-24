@@ -13,35 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
-package com.badlogic.gdx.backends.iosrobovm;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
+package com.badlogic.gdx.backends.headless;
 
 import com.badlogic.gdx.Net.Protocol;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+
 /**
  * Socket implementation using java.net.Socket.
  * 
  * @author noblemaster
  */
-public class IOSSocket implements Socket {
+public class HeadlessSocket implements Socket {
 
 	/** Our socket or null for disposed, aka closed. */
 	private java.net.Socket socket;
-	
-	
-	public IOSSocket(Protocol protocol, String host, int port, SocketHints hints) {
+
+
+	public HeadlessSocket(Protocol protocol, String host, int port, SocketHints hints) {
 		try {
 			// create the socket
 			socket = new java.net.Socket();
 			applyHints(hints);  // better to call BEFORE socket is connected!
-			
+
 			// and connect...
 			InetSocketAddress address = new InetSocketAddress(host, port);
 			if (hints != null) {
@@ -55,8 +54,8 @@ public class IOSSocket implements Socket {
 			throw new GdxRuntimeException("Error making a socket connection to " + host + ":" + port, e);
 		}
 	}
-	
-	public IOSSocket(java.net.Socket socket, SocketHints hints) {
+
+	public HeadlessSocket(java.net.Socket socket, SocketHints hints) {
 		this.socket = socket;
 		applyHints(hints);
 	}
@@ -109,11 +108,6 @@ public class IOSSocket implements Socket {
 			throw new GdxRuntimeException("Error getting output stream from socket.", e);
 		}
 	}
-	
-	@Override
-	public String getRemoteAddress () {
-		return socket.getRemoteSocketAddress().toString();
-	}
 
 	@Override
 	public void dispose() {
@@ -126,5 +120,10 @@ public class IOSSocket implements Socket {
 				throw new GdxRuntimeException("Error closing socket.", e);
 			}
 		}
+	}
+	
+	@Override
+	public String getRemoteAddress () {
+		return socket.getRemoteSocketAddress().toString();
 	}
 }

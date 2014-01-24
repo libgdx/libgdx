@@ -14,25 +14,20 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.lwjgl;
+package com.badlogic.gdx.backends.headless;
 
-import org.lwjgl.Sys;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.badlogic.gdx.net.NetJavaSocketImpl;
-import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
 
-/** LWJGL implementation of the {@link Net} API, it could be reused in other Desktop backends since it doesn't depend on LWJGL.
- * @author acoppes */
-public class LwjglNet implements Net {
+/** Headless implementation of the {@link com.badlogic.gdx.Net} API, based on LWJGL implementation
+ * @author acoppes
+ * @author Jon Renner */
+public class HeadlessNet implements Net {
 
 	NetJavaImpl netJavaImpl = new NetJavaImpl();
 
@@ -43,17 +38,19 @@ public class LwjglNet implements Net {
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new NetJavaServerSocketImpl(protocol, port, hints);
+		return new HeadlessServerSocket(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new NetJavaSocketImpl(protocol, host, port, hints);
+		return new Headless(protocol, host, port, hints);
 	}
 
 	@Override
 	public void openURI (String URI) {
-		Sys.openURL(URI);
+		// don't throw the exception, don't want to kill the app, just let the headless app know it can't open URIs
+		Exception e = new GdxRuntimeException("ERROR: cannot open URI on a headless application");
+		e.printStackTrace();
 	}
 
 }
