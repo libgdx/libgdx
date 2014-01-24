@@ -76,6 +76,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		keyTable = (T[])new Object[capacity + stashCapacity];
 	}
 
+	/** Creates a new set identical to the specified set. */
 	public ObjectSet (ObjectSet set) {
 		this(set.capacity, set.loadFactor);
 		stashSize = set.stashSize;

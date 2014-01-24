@@ -80,6 +80,15 @@ public class ObjectMap<K, V> {
 		valueTable = (V[])new Object[keyTable.length];
 	}
 
+	/** Creates a new map identical to the specified map. */
+	public ObjectMap (ObjectMap<? extends K, ? extends V> map) {
+		this(map.capacity, map.loadFactor);
+		stashSize = map.stashSize;
+		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
+		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
+		size = map.size;
+	}
+
 	/** Returns the old value associated with the specified key, or null. */
 	public V put (K key, V value) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");

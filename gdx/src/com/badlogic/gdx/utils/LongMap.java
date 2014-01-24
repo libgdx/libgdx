@@ -83,6 +83,17 @@ public class LongMap<V> {
 		valueTable = (V[])new Object[keyTable.length];
 	}
 
+	/** Creates a new map identical to the specified map. */
+	public LongMap (LongMap<? extends V> map) {
+		this(map.capacity, map.loadFactor);
+		stashSize = map.stashSize;
+		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
+		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
+		size = map.size;
+		zeroValue = map.zeroValue;
+		hasZeroValue = map.hasZeroValue;
+	}
+
 	public V put (long key, V value) {
 		if (key == 0) {
 			V oldValue = zeroValue;

@@ -80,6 +80,15 @@ public class ObjectFloatMap<K> {
 		valueTable = new float[keyTable.length];
 	}
 
+	/** Creates a new map identical to the specified map. */
+	public ObjectFloatMap (ObjectFloatMap<? extends K> map) {
+		this(map.capacity, map.loadFactor);
+		stashSize = map.stashSize;
+		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
+		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
+		size = map.size;
+	}
+
 	public void put (K key, float value) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
 		K[] keyTable = this.keyTable;

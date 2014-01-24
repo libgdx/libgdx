@@ -77,6 +77,15 @@ public class IntSet {
 		keyTable = new int[capacity + stashCapacity];
 	}
 
+	/** Creates a new map identical to the specified map. */
+	public IntSet (IntSet map) {
+		this(map.capacity, map.loadFactor);
+		stashSize = map.stashSize;
+		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
+		size = map.size;
+		hasZeroValue = map.hasZeroValue;
+	}
+
 	/** Returns true if the key was not already in the set. */
 	public boolean add (int key) {
 		if (key == 0) {

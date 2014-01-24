@@ -30,12 +30,17 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 
 	public OrderedMap (int initialCapacity) {
 		super(initialCapacity);
-		keys = new Array(initialCapacity);
+		keys = new Array(capacity);
 	}
 
 	public OrderedMap (int initialCapacity, float loadFactor) {
 		super(initialCapacity, loadFactor);
-		keys = new Array(initialCapacity);
+		keys = new Array(capacity);
+	}
+
+	public OrderedMap (ObjectMap<? extends K, ? extends V> map) {
+		super(map);
+		keys = new Array(capacity);
 	}
 
 	public V put (K key, V value) {

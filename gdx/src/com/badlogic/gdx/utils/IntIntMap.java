@@ -85,6 +85,17 @@ public class IntIntMap {
 		valueTable = new int[keyTable.length];
 	}
 
+	/** Creates a new map identical to the specified map. */
+	public IntIntMap (IntIntMap map) {
+		this(map.capacity, map.loadFactor);
+		stashSize = map.stashSize;
+		System.arraycopy(map.keyTable, 0, keyTable, 0, map.keyTable.length);
+		System.arraycopy(map.valueTable, 0, valueTable, 0, map.valueTable.length);
+		size = map.size;
+		zeroValue = map.zeroValue;
+		hasZeroValue = map.hasZeroValue;
+	}
+
 	public void put (int key, int value) {
 		if (key == 0) {
 			zeroValue = value;
