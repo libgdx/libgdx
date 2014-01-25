@@ -46,7 +46,7 @@ import javax.imageio.stream.ImageOutputStream;
 /** @author Nathan Sweet */
 public class TexturePacker2 {
 	private final Settings settings;
-	private final MaxRectsPacker maxRectsPacker;
+	private final Packer packer;
 	private final ImageProcessor imageProcessor;
 
 	/** @param rootDir Can be null. */
@@ -60,7 +60,10 @@ public class TexturePacker2 {
 				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
 		}
 
-		maxRectsPacker = new MaxRectsPacker(settings);
+		if (settings.grid)
+			packer = new GridPacker(settings);
+		else
+			packer = new MaxRectsPacker(settings);
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
@@ -81,7 +84,7 @@ public class TexturePacker2 {
 
 		if (packFileName.indexOf('.') == -1) packFileName += ".atlas";
 
-		Array<Page> pages = maxRectsPacker.pack(imageProcessor.getImages());
+		Array<Page> pages = packer.pack(imageProcessor.getImages());
 		writeImages(outputDir, pages, packFileName);
 		try {
 			writePackFile(outputDir, pages, packFileName);
@@ -380,7 +383,8 @@ public class TexturePacker2 {
 	static public class Rect {
 		public String name;
 		public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
-		public int x, y, width, height; // Portion of page taken by this region, including padding.
+		public int x, y;
+		public int width, height; // Portion of page taken by this region, including padding.
 		public int index;
 		public boolean rotated;
 		public Set<Alias> aliases = new HashSet<Alias>();
@@ -512,6 +516,7 @@ public class TexturePacker2 {
 		public boolean useIndexes = true;
 		public boolean bleed = true;
 		public boolean limitMemory = true;
+		public boolean grid;
 
 		public Settings () {
 		}
@@ -562,11 +567,10 @@ public class TexturePacker2 {
 	 * @param packFileName The name of the pack file. Also used to name the page images. */
 	static public void process (Settings settings, String input, String output, String packFileName) {
 		try {
-			TexturePackerFileProcessor processor =
-				new TexturePackerFileProcessor(settings, packFileName);
+			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName);
 			// Sort input files by name to avoid platform-dependent atlas output changes.
 			processor.setComparator(new Comparator<File>() {
-				public int compare(File file1, File file2) {
+				public int compare (File file1, File file2) {
 					return file1.getName().compareTo(file2.getName());
 				}
 			});
@@ -596,6 +600,10 @@ public class TexturePacker2 {
 
 	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
 		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
+	}
+
+	static public interface Packer {
+		public Array<Page> pack (Array<Rect> inputRects);
 	}
 
 	static public void main (String[] args) throws Exception {
