@@ -22,6 +22,8 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Headless implementation of the {@link com.badlogic.gdx.Net} API, based on LWJGL implementation
@@ -38,12 +40,12 @@ public class HeadlessNet implements Net {
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new HeadlessServerSocket(protocol, port, hints);
+		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new Headless(protocol, host, port, hints);
+		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
 
 	@Override
