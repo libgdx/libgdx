@@ -183,7 +183,7 @@ public class Dialog extends Window {
 
 		previousScrollFocus = null;
 		actor = stage.getScrollFocus();
-		if (actor != null && !actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
+		if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 
 		pack();
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
