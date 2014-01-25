@@ -212,7 +212,7 @@ public class FrameBuffer implements Disposable {
 	}
 	
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
-	public void unbind () {
+	public static void unbind () {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 	
