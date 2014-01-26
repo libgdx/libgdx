@@ -82,7 +82,7 @@ public class Dialog extends Window {
 		contentTable.defaults().space(6);
 		buttonTable.defaults().space(6);
 
-		buttonTable.addCaptureListener(new ChangeListener() {
+		buttonTable.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
 				if (!values.containsKey(actor)) return;
 				while (actor.getParent() != buttonTable)
