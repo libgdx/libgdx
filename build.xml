@@ -33,15 +33,10 @@
 		<copy tofile="${distDir}/gdx-setup-ui.jar" file="extensions/gdx-setup-ui/gdx-setup-ui.jar"/>
 	</target>
     
-    <!-- new gdx setup -->
+    <!-- new gdx setup, custom target -->
     <target name="gdx-setup">
-		<fileset id="resourcefiles" dir="extensions/gdx-setup/src">
-            <exclude name="**/*.java"/>
-		</fileset>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-setup">
-			<property name="jar" value="gdx-setup"/>
-			<reference refid="resourcefiles"/>
-		</ant>
+		<ant antfile="build.xml" dir="extensions/gdx-setup/"/>
+		<copy tofile="${distDir}/gdx-setup.jar" file="extensions/gdx-setup/gdx-setup.jar"/>
     </target>
 
 	<!-- gdx core -->
