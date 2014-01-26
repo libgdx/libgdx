@@ -58,7 +58,7 @@ public class GdxSetup {
 
 		// android project
 		project.files.add(new ProjectFile("android/assets/badlogic.jpg", false));
-		project.files.add(new ProjectFile("android/res/values/strings.xml", false));
+		project.files.add(new ProjectFile("android/res/values/strings.xml"));
 		project.files.add(new ProjectFile("android/res/values/styles.xml", false));
 		project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
 		project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
