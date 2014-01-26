@@ -200,16 +200,16 @@ public class Dialog extends Window {
 	/** Hides the dialog. Called automatically when a button is clicked. The default implementation fades out the dialog over
 	 * {@link #fadeDuration} seconds and then removes it from the stage. */
 	public void hide () {
-        Stage stage = getStage();
-        if (stage != null) {
-            if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
-            Actor actor = stage.getKeyboardFocus();
-            if (actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);
+		Stage stage = getStage();
+		if (stage != null) {
+			if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
+			Actor actor = stage.getKeyboardFocus();
+			if (actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);
 
-            if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
-            actor = stage.getScrollFocus();
-            if (actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
-        }
+			if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
+			actor = stage.getScrollFocus();
+			if (actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
+		}
 		if (fadeDuration > 0) {
 			addCaptureListener(ignoreTouchDown);
 			addAction(sequence(fadeOut(fadeDuration, Interpolation.fade), Actions.removeListener(ignoreTouchDown, true),
