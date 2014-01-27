@@ -53,6 +53,7 @@ public class SelectBox extends Widget implements Disableable {
 	int selectedIndex = 0;
 	private final TextBounds bounds = new TextBounds();
 	ListScroll scroll;
+	Actor previousScrollFocus;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	int maxListCount;
@@ -232,6 +233,12 @@ public class SelectBox extends Widget implements Disableable {
 
 	public void hideList () {
 		if (scroll == null || scroll.getParent() == null) return;
+		Stage stage = scroll.getStage();
+		if (stage != null) {
+			if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
+			Actor actor = stage.getScrollFocus();
+			if (actor == null || actor.isDescendantOf(scroll)) stage.setScrollFocus(previousScrollFocus);
+		}
 		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
@@ -319,6 +326,10 @@ public class SelectBox extends Widget implements Disableable {
 			clearActions();
 			getColor().a = 0;
 			addAction(fadeIn(0.3f, Interpolation.fade));
+
+			previousScrollFocus = null;
+			Actor actor = stage.getScrollFocus();
+			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 
 			stage.setScrollFocus(this);
 		}
