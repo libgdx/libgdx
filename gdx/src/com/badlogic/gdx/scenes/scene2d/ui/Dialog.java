@@ -183,7 +183,7 @@ public class Dialog extends Window {
 
 		previousScrollFocus = null;
 		actor = stage.getScrollFocus();
-		if (actor != null && !actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
+		if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 
 		pack();
 		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
@@ -200,28 +200,22 @@ public class Dialog extends Window {
 	/** Hides the dialog. Called automatically when a button is clicked. The default implementation fades out the dialog over
 	 * {@link #fadeDuration} seconds and then removes it from the stage. */
 	public void hide () {
+		Stage stage = getStage();
+		if (stage != null) {
+			if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
+			Actor actor = stage.getKeyboardFocus();
+			if (actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);
+
+			if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
+			actor = stage.getScrollFocus();
+			if (actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
+		}
 		if (fadeDuration > 0) {
 			addCaptureListener(ignoreTouchDown);
 			addAction(sequence(fadeOut(fadeDuration, Interpolation.fade), Actions.removeListener(ignoreTouchDown, true),
 				Actions.removeActor()));
 		} else
 			remove();
-	}
-
-	protected void setParent (Group parent) {
-		super.setParent(parent);
-		if (parent == null) {
-			Stage stage = getStage();
-			if (stage != null) {
-				if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
-				Actor actor = stage.getKeyboardFocus();
-				if (actor == null || actor.isDescendantOf(this)) stage.setKeyboardFocus(previousKeyboardFocus);
-
-				if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
-				actor = stage.getScrollFocus();
-				if (actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
-			}
-		}
 	}
 
 	public void setObject (Actor actor, Object object) {
