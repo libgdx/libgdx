@@ -116,40 +116,80 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_copyJni__Ljava_ni
  * Method:    transformV4M4Jni
  * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni__Ljava_nio_Buffer_2II_3FI
   (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV4M4Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV4M4Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV3M4Jni
  * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni__Ljava_nio_Buffer_2II_3FI
   (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV3M4Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M4Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV2M4Jni
  * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni__Ljava_nio_Buffer_2II_3FI
   (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV2M4Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M4Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV3M3Jni
  * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni__Ljava_nio_Buffer_2II_3FI
   (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV3M3Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV3M3Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
  * Method:    transformV2M3Jni
  * Signature: (Ljava/nio/Buffer;II[FI)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni__Ljava_nio_Buffer_2II_3FI
   (JNIEnv *, jclass, jobject, jint, jint, jfloatArray, jint);
+
+/*
+ * Class:     com_badlogic_gdx_utils_BufferUtils
+ * Method:    transformV2M3Jni
+ * Signature: ([FII[FI)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_utils_BufferUtils_transformV2M3Jni___3FII_3FI
+  (JNIEnv *, jclass, jfloatArray, jint, jint, jfloatArray, jint);
 
 /*
  * Class:     com_badlogic_gdx_utils_BufferUtils
