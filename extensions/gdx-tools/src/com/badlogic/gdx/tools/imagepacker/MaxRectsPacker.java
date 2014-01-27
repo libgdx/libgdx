@@ -117,7 +117,8 @@ public class MaxRectsPacker implements Packer {
 		// Find the minimal page size that fits all rects.
 		BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
 		BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot);
-		int width = widthSearch.reset(), height = heightSearch.reset(), i = 0;
+		int width = widthSearch.reset(), i = 0;
+		int height = settings.square ? width : heightSearch.reset();
 		Page bestResult = null;
 		while (true) {
 			Page bestWidthResult = null;
@@ -127,8 +128,10 @@ public class MaxRectsPacker implements Packer {
 				System.out.print(".");
 				bestWidthResult = getBest(bestWidthResult, result);
 				width = widthSearch.next(result == null);
+				if (settings.square) height = width;
 			}
 			bestResult = getBest(bestResult, bestWidthResult);
+			if (settings.square) break;
 			height = heightSearch.next(bestWidthResult == null);
 			if (height == -1) break;
 			width = widthSearch.reset();

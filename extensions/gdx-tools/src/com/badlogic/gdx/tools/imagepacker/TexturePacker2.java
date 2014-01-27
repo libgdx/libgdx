@@ -122,7 +122,7 @@ public class TexturePacker2 {
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
-			if (settings.forceSquareOutput) {
+			if (settings.square) {
 				if (width > height) {
 					height = width;
 				} else {
@@ -498,7 +498,7 @@ public class TexturePacker2 {
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
-		public boolean forceSquareOutput = false;
+		public boolean square = false;
 		public boolean stripWhitespaceX, stripWhitespaceY;
 		public int alphaThreshold;
 		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
@@ -549,7 +549,7 @@ public class TexturePacker2 {
 			combineSubdirectories = settings.combineSubdirectories;
 			flattenPaths = settings.flattenPaths;
 			premultiplyAlpha = settings.premultiplyAlpha;
-			forceSquareOutput = settings.forceSquareOutput;
+			square = settings.square;
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
 			limitMemory = settings.limitMemory;
