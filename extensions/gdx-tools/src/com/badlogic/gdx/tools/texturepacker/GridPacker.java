@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tools.imagepacker;
+package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Packer;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Page;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Rect;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Packer;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Page;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Rect;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.Collections;
