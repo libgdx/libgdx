@@ -11,6 +11,7 @@
 - changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
 - BitmapFontCache setColor changes to match SpriteBatch and friends. http://www.badlogicgames.com/forum/viewtopic.php?f=23&t=12112
 - changed ParticleEffect: the ParticleEffect.save method now takes a Writer instead of a File
+- TexturePacker2 renamed to TexturePacker, added grid and scaling settings.
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
