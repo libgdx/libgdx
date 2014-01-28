@@ -222,6 +222,11 @@ public class Table extends WidgetGroup {
 		return layout.add(actor);
 	}
 
+	public void add (Actor... actors) {
+		for (int i = 0, n = actors.length; i < n; i++)
+			layout.add(actors[i]);
+	}
+
 	public boolean removeActor (Actor actor) {
 		if (!super.removeActor(actor)) return false;
 		Cell cell = getCell(actor);
