@@ -331,10 +331,10 @@ public class BufferUtils {
 	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix, int offset) {
 		switch (dimensions) {
 		case 3:
-			transformV3M3Jni (data, strideInBytes, count, matrix.val, positionInBytes(data) + offset * 3);
+			transformV3M3Jni (data, strideInBytes, count, matrix.val, positionInBytes(data) + offset);
 			break;
 		case 2:
-			transformV2M3Jni (data, strideInBytes, count, matrix.val, positionInBytes(data) + offset * 3);
+			transformV2M3Jni (data, strideInBytes, count, matrix.val, positionInBytes(data) + offset);
 			break;
 		default:
 			throw new IllegalArgumentException();
@@ -352,10 +352,10 @@ public class BufferUtils {
 	public static void transform (float[] data, int dimensions, int strideInBytes, int count, Matrix3 matrix, int offset) {
 		switch (dimensions) {
 		case 3:
-			transformV3M3Jni (data, strideInBytes, count, matrix.val, offset * 3);
+			transformV3M3Jni (data, strideInBytes, count, matrix.val, offset);
 			break;
 		case 2:
-			transformV2M3Jni (data, strideInBytes, count, matrix.val, offset * 3);
+			transformV2M3Jni (data, strideInBytes, count, matrix.val, offset);
 			break;
 		default:
 			throw new IllegalArgumentException();
