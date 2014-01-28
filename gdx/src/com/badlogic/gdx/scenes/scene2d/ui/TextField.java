@@ -658,21 +658,18 @@ public class TextField extends Widget implements Disableable {
 	/** Interface for listening to typed characters.
 	 * @author mzechner */
 	static public interface TextFieldListener {
-		public void keyTyped (TextField textField, char key);
+		public void keyTyped (TextField textField, char c);
 	}
 
 	/** Interface for filtering characters entered into the text field.
 	 * @author mzechner */
 	static public interface TextFieldFilter {
-		/** @param textField
-		 * @param key
-		 * @return whether to accept the character */
-		public boolean acceptChar (TextField textField, char key);
+		public boolean acceptChar (TextField textField, char c);
 
 		static public class DigitsOnlyFilter implements TextFieldFilter {
 			@Override
-			public boolean acceptChar (TextField textField, char key) {
-				return Character.isDigit(key);
+			public boolean acceptChar (TextField textField, char c) {
+				return Character.isDigit(c);
 			}
 
 		}
