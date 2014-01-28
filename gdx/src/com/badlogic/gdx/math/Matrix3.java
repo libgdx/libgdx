@@ -396,7 +396,23 @@ public class Matrix3 implements Serializable {
 	public float[] getValues () {
 		return val;
 	}
-
+	
+	public Vector2 getTranslation (Vector2 position) {
+		position.x = val[M02];
+		position.y = val[M12];
+		return position;
+	}
+	
+	public Vector2 getScale (Vector2 scale) {
+		scale.x = (float)Math.sqrt(val[M00]*val[M00] + val[M01]*val[M01]);
+		scale.y = (float)Math.sqrt(val[M10]*val[M10] + val[M11]*val[M11]);
+		return scale;
+	}
+	
+	public float getRotation () {
+		return MathUtils.radDeg * (float)Math.atan2(val[M10], val[M00]);
+	}
+	
 	/** Scale the matrix in the both the x and y components by the scalar value.
 	 * @param scale The single value that will be used to scale both the x and y components.
 	 * @return This matrix for the purpose of chaining methods together. */
