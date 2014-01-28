@@ -409,6 +409,10 @@ public class Matrix3 implements Serializable {
 		return scale;
 	}
 	
+	public float getRotation () {
+		return MathUtils.radDeg * (float)Math.atan2(val[M10], val[M00]);
+	}
+	
 	/** Scale the matrix in the both the x and y components by the scalar value.
 	 * @param scale The single value that will be used to scale both the x and y components.
 	 * @return This matrix for the purpose of chaining methods together. */
