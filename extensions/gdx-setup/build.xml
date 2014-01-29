@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="gdx-setup" default="all" basedir=".">
+    <!-- ****************************************************************** -->
+	<!-- Definitions -->
+	<!-- ****************************************************************** -->
+
+	<property name="name" value="gdx-setup" />
+	<property name="mainClass" value="com.badlogic.gdx.setup.GdxSetup" />
+
+	<!-- ****************************************************************** -->
+	<!-- Build tasks -->
+	<!-- ****************************************************************** -->
+
+	<target name="clean">
+		<delete dir="bin/" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="bin/" />
+		<javac destdir="bin/" srcdir="src/" target="1.6" source="1.6" includeAntRuntime="false" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<copy todir="bin/"><fileset dir="src/" excludes="**/*.java"/></copy>
+		
+		<jar destfile="${name}.jar" basedir="bin/">
+			<manifest>
+				<attribute name="Main-Class" value="${mainClass}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<target name="bundle" depends="jar">
+        <jar destfile="${name}-tmp.jar" filesetmanifest="skip">
+            <zipgroupfileset dir="." includes="${name}.jar"/>
+            <manifest><attribute name="Main-Class" value="${mainClass}"/></manifest>
+        </jar>
+
+        <zip destfile="${name}.jar">
+            <zipfileset src="${name}-tmp.jar" excludes="META-INF/*.txt, META-INF/maven/"/>
+        </zip>
+
+        <delete file="${name}-tmp.jar"/>
+    </target>
+
+	<!-- ****************************************************************** -->
+	<!-- Main task -->
+	<!-- ****************************************************************** -->
+
+	<target name="all" depends="bundle">
+		<antcall target="clean"/>
+	</target>
+	
+	<target name="zip" depends="all">
+		<zip destfile="${name}-${version}.zip" basedir="." includes="${name}.jar"/>
+	</target>
+	
+</project>

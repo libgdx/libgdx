@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tools.imagepacker;
+package com.badlogic.gdx.tools.texturepacker;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -44,13 +44,16 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
 /** @author Nathan Sweet */
-public class TexturePacker2 {
+public class TexturePacker {
 	private final Settings settings;
-	private final MaxRectsPacker maxRectsPacker;
+	private final Packer packer;
 	private final ImageProcessor imageProcessor;
+	private final Array<InputImage> inputImages = new Array();
+	private File rootDir;
 
-	/** @param rootDir Can be null. */
-	public TexturePacker2 (File rootDir, Settings settings) {
+	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
+	public TexturePacker (File rootDir, Settings settings) {
+		this.rootDir = rootDir;
 		this.settings = settings;
 
 		if (settings.pot) {
@@ -60,33 +63,60 @@ public class TexturePacker2 {
 				throw new RuntimeException("If pot is true, maxHeight must be a power of two: " + settings.maxHeight);
 		}
 
-		maxRectsPacker = new MaxRectsPacker(settings);
+		if (settings.grid)
+			packer = new GridPacker(settings);
+		else
+			packer = new MaxRectsPacker(settings);
 		imageProcessor = new ImageProcessor(rootDir, settings);
 	}
 
-	public TexturePacker2 (Settings settings) {
+	public TexturePacker (Settings settings) {
 		this(null, settings);
 	}
 
 	public void addImage (File file) {
-		imageProcessor.addImage(file);
+		InputImage inputImage = new InputImage();
+		inputImage.file = file;
+		inputImages.add(inputImage);
 	}
 
 	public void addImage (BufferedImage image, String name) {
-		imageProcessor.addImage(image, name);
+		InputImage inputImage = new InputImage();
+		inputImage.image = image;
+		inputImage.name = name;
+		inputImages.add(inputImage);
 	}
 
 	public void pack (File outputDir, String packFileName) {
 		outputDir.mkdirs();
 
-		if (packFileName.indexOf('.') == -1) packFileName += ".atlas";
+		if (packFileName.indexOf('.') == -1 || packFileName.endsWith(".png") || packFileName.endsWith(".jpg"))
+			packFileName += ".atlas";
 
-		Array<Page> pages = maxRectsPacker.pack(imageProcessor.getImages());
-		writeImages(outputDir, pages, packFileName);
-		try {
-			writePackFile(outputDir, pages, packFileName);
-		} catch (IOException ex) {
-			throw new RuntimeException("Error writing pack file.", ex);
+		for (float scale : settings.scale) {
+			String scaledPackFileName = packFileName;
+			if (scale != 1 || settings.scale.length != 1) {
+				FileHandle file = new FileHandle(scaledPackFileName);
+				String suffix = scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale);
+				scaledPackFileName = file.nameWithoutExtension() + suffix + "." + file.extension();
+			}
+
+			imageProcessor.setScale(scale);
+			for (InputImage inputImage : inputImages) {
+				if (inputImage.file != null)
+					imageProcessor.addImage(inputImage.file);
+				else
+					imageProcessor.addImage(inputImage.image, inputImage.name);
+			}
+
+			Array<Page> pages = packer.pack(imageProcessor.getImages());
+			writeImages(outputDir, pages, scaledPackFileName);
+			try {
+				writePackFile(outputDir, pages, scaledPackFileName);
+			} catch (IOException ex) {
+				throw new RuntimeException("Error writing pack file.", ex);
+			}
+			imageProcessor.clear();
 		}
 	}
 
@@ -119,7 +149,7 @@ public class TexturePacker2 {
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
-			if (settings.forceSquareOutput) {
+			if (settings.square) {
 				if (width > height) {
 					height = width;
 				} else {
@@ -129,7 +159,8 @@ public class TexturePacker2 {
 
 			File outputFile;
 			while (true) {
-				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
+				fileIndex++;
+				outputFile = new File(outputDir, imageName + "-" + fileIndex + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
 			page.imageName = outputFile.getName();
@@ -380,7 +411,8 @@ public class TexturePacker2 {
 	static public class Rect {
 		public String name;
 		public int offsetX, offsetY, regionWidth, regionHeight, originalWidth, originalHeight;
-		public int x, y, width, height; // Portion of page taken by this region, including padding.
+		public int x, y;
+		public int width, height; // Portion of page taken by this region, including padding.
 		public int index;
 		public boolean rotated;
 		public Set<Alias> aliases = new HashSet<Alias>();
@@ -494,7 +526,7 @@ public class TexturePacker2 {
 		public boolean rotation;
 		public int minWidth = 16, minHeight = 16;
 		public int maxWidth = 1024, maxHeight = 1024;
-		public boolean forceSquareOutput = false;
+		public boolean square = false;
 		public boolean stripWhitespaceX, stripWhitespaceY;
 		public int alphaThreshold;
 		public TextureFilter filterMin = TextureFilter.Nearest, filterMag = TextureFilter.Nearest;
@@ -512,6 +544,8 @@ public class TexturePacker2 {
 		public boolean useIndexes = true;
 		public boolean bleed = true;
 		public boolean limitMemory = true;
+		public boolean grid;
+		public float[] scale = {1};
 
 		public Settings () {
 		}
@@ -544,15 +578,16 @@ public class TexturePacker2 {
 			combineSubdirectories = settings.combineSubdirectories;
 			flattenPaths = settings.flattenPaths;
 			premultiplyAlpha = settings.premultiplyAlpha;
-			forceSquareOutput = settings.forceSquareOutput;
+			square = settings.square;
 			useIndexes = settings.useIndexes;
 			bleed = settings.bleed;
 			limitMemory = settings.limitMemory;
+			scale = settings.scale;
 		}
 	}
 
 	/** Packs using defaults settings.
-	 * @see TexturePacker2#process(Settings, String, String, String) */
+	 * @see TexturePacker#process(Settings, String, String, String) */
 	static public void process (String input, String output, String packFileName) {
 		process(new Settings(), input, output, packFileName);
 	}
@@ -562,11 +597,10 @@ public class TexturePacker2 {
 	 * @param packFileName The name of the pack file. Also used to name the page images. */
 	static public void process (Settings settings, String input, String output, String packFileName) {
 		try {
-			TexturePackerFileProcessor processor =
-				new TexturePackerFileProcessor(settings, packFileName);
+			TexturePackerFileProcessor processor = new TexturePackerFileProcessor(settings, packFileName);
 			// Sort input files by name to avoid platform-dependent atlas output changes.
 			processor.setComparator(new Comparator<File>() {
-				public int compare(File file1, File file2) {
+				public int compare (File file1, File file2) {
 					return file1.getName().compareTo(file2.getName());
 				}
 			});
@@ -596,6 +630,16 @@ public class TexturePacker2 {
 
 	static public void processIfModified (Settings settings, String input, String output, String packFileName) {
 		if (isModified(input, output, packFileName)) process(settings, input, output, packFileName);
+	}
+
+	static public interface Packer {
+		public Array<Page> pack (Array<Rect> inputRects);
+	}
+
+	static final class InputImage {
+		File file;
+		String name;
+		BufferedImage image;
 	}
 
 	static public void main (String[] args) throws Exception {

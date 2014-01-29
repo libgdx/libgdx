@@ -53,8 +53,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -74,7 +74,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Manuel Bua */
 public class TiledMapPacker {
 
-	private TexturePacker2 packer;
+	private TexturePacker packer;
 	private TiledMap map;
 
 	private ArrayList<Integer> blendedTiles = new ArrayList<Integer>();
@@ -240,7 +240,7 @@ public class TiledMapPacker {
 		return bucket;
 	}
 
-	/** Traverse the specified tilesets, optionally lookup the used ids and pass every tile image to the {@link TexturePacker2},
+	/** Traverse the specified tilesets, optionally lookup the used ids and pass every tile image to the {@link TexturePacker},
 	 * optionally ignoring unused tile ids */
 	private void packTilesets (ObjectMap<String, TiledMapTileSet> sets, FileHandle inputDirHandle, File outputDir,
 		Settings texturePackerSettings) throws IOException {
@@ -249,7 +249,7 @@ public class TiledMapPacker {
 		TileSetLayout packerTileSet;
 		Graphics g;
 
-		packer = new TexturePacker2(texturePackerSettings);
+		packer = new TexturePacker(texturePackerSettings);
 
 		for (TiledMapTileSet set : sets.values()) {
 			String tilesetName = set.getName();

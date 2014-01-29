@@ -1,7 +1,7 @@
 [1.0.0]
 - Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
 - Vector2 now has isUnit and isZero methods (copied from Vector3)
-- added headless desktop application type for backends/servers, LwjglHeadlessApplication
+- added new headless backend for server applications
 - support 'scaledSize' as a json skin data value for BitmapFont
 - added setAlpha(float a) method to Sprite class
 - added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
@@ -11,7 +11,10 @@
 - changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
 - BitmapFontCache setColor changes to match SpriteBatch and friends. http://www.badlogicgames.com/forum/viewtopic.php?f=23&t=12112
 - changed ParticleEffect: the ParticleEffect.save method now takes a Writer instead of a File
-
+- TexturePacker2 renamed to TexturePacker, added grid and scaling settings.
+- Added support for custom prefrences on the desktop backends.
+- Fixed double resume calls on iOS.
+- Android Music no longer throws exceptions if MediaPlayer is null.
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213

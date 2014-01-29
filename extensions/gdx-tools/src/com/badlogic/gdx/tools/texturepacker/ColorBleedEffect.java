@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tools.imagepacker;
+package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.tools.imagepacker.ColorBleedEffect.Mask.MaskIterator;
+import com.badlogic.gdx.tools.texturepacker.ColorBleedEffect.Mask.MaskIterator;
 
 import java.awt.image.BufferedImage;
 import java.util.NoSuchElementException;

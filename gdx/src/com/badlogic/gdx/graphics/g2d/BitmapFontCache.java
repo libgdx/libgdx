@@ -200,7 +200,7 @@ public class BitmapFontCache {
 	public void draw (Batch spriteBatch) {
 		TextureRegion[] regions = font.getRegions();
 		for (int j = 0, n = vertexData.length; j < n; j++) {
-			if (idx[j] >= 0) { // ignore if this texture has no glyphs
+			if (idx[j] > 0) { // ignore if this texture has no glyphs
 				float[] vertices = vertexData[j];
 				spriteBatch.draw(regions[j].getTexture(), vertices, 0, idx[j]);
 			}
