@@ -106,9 +106,15 @@ public class Matrix3 implements Serializable {
 	 * @param degrees the angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
-		float angle = DEGREE_TO_RAD * degrees;
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+		return setToRotationRad(DEGREE_TO_RAD * degrees);
+	}
+
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
+	 * @param radians the angle in degrees.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 setToRotationRad (float radians) {
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		this.val[M00] = cos;
 		this.val[M10] = sin;
@@ -334,10 +340,17 @@ public class Matrix3 implements Serializable {
 	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 rotate (float degrees) {
-		if (degrees == 0) return this;
-		degrees = DEGREE_TO_RAD * degrees;
-		float cos = (float)Math.cos(degrees);
-		float sin = (float)Math.sin(degrees);
+		return rotateRad(DEGREE_TO_RAD * degrees);
+	}
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param radians The angle in degrees
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 rotateRad (float radians) {
+		if (radians == 0) return this;
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		tmp[M00] = cos;
 		tmp[M10] = sin;
@@ -411,6 +424,10 @@ public class Matrix3 implements Serializable {
 	
 	public float getRotation () {
 		return MathUtils.radDeg * (float)Math.atan2(val[M10], val[M00]);
+	}
+	
+	public float getRotationRad () {
+		return (float)Math.atan2(val[M10], val[M00]);
 	}
 	
 	/** Scale the matrix in the both the x and y components by the scalar value.

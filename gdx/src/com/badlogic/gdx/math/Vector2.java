@@ -15,6 +15,8 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.math;
+import static com.badlogic.gdx.math.MathUtils.RADIANS;
+import static com.badlogic.gdx.math.MathUtils.DEGREES;
 
 import java.io.Serializable;
 
@@ -283,16 +285,28 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis (typically
 	 *         counter-clockwise) and between 0 and 360. */
 	public float angle () {
-		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
+		float angle = (float)Math.atan2(y, x) * DEGREES;
 		if (angle < 0) angle += 360;
 		return angle;
 	}
 
+	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis. (typically
+	 *         counter-clockwise) */
+	public float getAngleRad () {
+		return (float)Math.atan2(y, x);
+	}
+
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
-	 * @param degrees The angle to set. */
+	 * @param degrees The angle in degrees to set. */
 	public Vector2 setAngle (float degrees) {
+		return setAngleRad(degrees * RADIANS);
+	}
+
+	/** Sets the angle of the vector in radians relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
+	 * @param radians The angle in radians to set. */
+	public Vector2 setAngleRad (float radians) {
 		this.set(len(), 0f);
-		this.rotate(degrees);
+		this.rotateRad(radians);
 
 		return this;
 	}
@@ -300,9 +314,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param degrees the angle in degrees */
 	public Vector2 rotate (float degrees) {
-		float rad = degrees * MathUtils.degreesToRadians;
-		float cos = (float)Math.cos(rad);
-		float sin = (float)Math.sin(rad);
+		return rotateRad(degrees * RADIANS);
+	}
+
+	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
+	 * @param radians the angle in radians */
+	public Vector2 rotateRad (float radians) {
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		float newX = this.x * cos - this.y * sin;
 		float newY = this.x * sin + this.y * cos;
