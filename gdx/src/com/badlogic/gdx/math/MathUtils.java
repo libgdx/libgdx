@@ -167,6 +167,11 @@ public class MathUtils {
 		return start + random.nextFloat() * (end - start);
 	}
 
+	/** Returns a random element from an array. */
+	static public final <T> T randomItem(T[] array) {
+		return array[MathUtils.random(array.length)];
+	}
+
 	// ---
 
 	/** Returns the next power of two. Returns the specified value if the value is already a power of two. */
