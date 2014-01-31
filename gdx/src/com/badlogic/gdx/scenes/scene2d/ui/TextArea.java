@@ -170,8 +170,7 @@ public class TextArea extends TextField {
 	// OVERRIDE from TextField
 
 	@Override
-	public void setHeight (float height) {
-		super.setHeight(height);
+	protected void sizeChanged () {
 		// The number of lines showed must be updated whenever the height is updated
 		BitmapFont font = style.font;
 		Drawable background = style.background;
@@ -218,7 +217,7 @@ public class TextArea extends TextField {
 	}
 
 	@Override
-	protected void drawText(Batch batch, BitmapFont font, float x, float y) {
+	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		float offsetY = 0;
 		for (int i = firstLineShowing * 2; i < (firstLineShowing + linesShowing) * 2 && i < linesBreak.size; i += 2) {
 			font.draw(batch, displayText, x, y + offsetY, linesBreak.items[i], linesBreak.items[i + 1]);

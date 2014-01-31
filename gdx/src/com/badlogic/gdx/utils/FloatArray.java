@@ -298,8 +298,23 @@ public class FloatArray {
 		FloatArray array = (FloatArray)object;
 		int n = size;
 		if (n != array.size) return false;
+		float[] items = this.items;
+		float[] arrayItems = array.items;
 		for (int i = 0; i < n; i++)
-			if (items[i] != array.items[i]) return false;
+			if (items[i] != arrayItems[i]) return false;
+		return true;
+	}
+
+	public boolean equals (Object object, float epsilon) {
+		if (object == this) return true;
+		if (!(object instanceof FloatArray)) return false;
+		FloatArray array = (FloatArray)object;
+		int n = size;
+		if (n != array.size) return false;
+		float[] items = this.items;
+		float[] arrayItems = array.items;
+		for (int i = 0; i < n; i++)
+			if (Math.abs(items[i] - arrayItems[i]) > epsilon) return false;
 		return true;
 	}
 
