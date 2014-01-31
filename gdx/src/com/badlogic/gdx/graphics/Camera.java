@@ -188,8 +188,8 @@ public abstract class Camera {
 	 * {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the bottom left corner of the screen.
 	 * 
 	 * @param vec the point in window coordinates (origin top left)
-	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
-	 * @param viewportY the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
+	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
 	 * @param viewportHeight the height of the viewport in pixels */
 	public void unproject (Vector3 vec, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
@@ -231,8 +231,8 @@ public abstract class Camera {
 	 * bottom left corner of the screen.
 	 * 
 	 * @param vec the point in object/world space
-	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
-	 * @param viewportY the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
+	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
 	 * @param viewportHeight the height of the viewport in pixels */
 	public void project (Vector3 vec, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
@@ -250,6 +250,10 @@ public abstract class Camera {
 	 * 
 	 * @param x the x-coordinate in window coordinates.
 	 * @param y the y-coordinate in window coordinates.
+	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportWidth the width of the viewport in pixels
+	 * @param viewportHeight the height of the viewport in pixels
 	 * @return the picking Ray. */
 	public Ray getPickRay (float x, float y, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		unproject(ray.origin.set(x, y, 0), viewportX, viewportY, viewportWidth, viewportHeight);
