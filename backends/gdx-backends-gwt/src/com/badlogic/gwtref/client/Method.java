@@ -37,11 +37,11 @@ public class Method {
 	final boolean isMethod;
 	final boolean isConstructor;
 	final Parameter[] parameters;
-	final String methodId;
+	final int methodId;
 
 	public Method (String name, Class enclosingType, Class returnType, Parameter[] parameters, boolean isAbstract,
 		boolean isFinal, boolean isStatic, boolean isDefaultAccess, boolean isPrivate, boolean isProtected, boolean isPublic,
-		boolean isNative, boolean isVarArgs, boolean isMethod, boolean isConstructor, String methodId) {
+		boolean isNative, boolean isVarArgs, boolean isMethod, boolean isConstructor, int methodId) {
 		this.name = name;
 		this.enclosingType = enclosingType;
 		this.parameters = parameters != null ? parameters : EMPTY_PARAMS;
