@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.reflect.ArrayReflection;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.Constructor;
 import com.badlogic.gdx.utils.reflect.Field;
@@ -73,6 +74,14 @@ public class ReflectionTest extends GdxTest {
 			fromJson.x += 1;
 			fromJson.y += 1;
 			println("JSON deserialized + 1/1: " + fromJson);
+
+			Object array = ArrayReflection.newInstance(int.class, 5);
+			ArrayReflection.set(array, 0, 42);
+			println("Array int: length=" + ArrayReflection.getLength(array) + ", access=" + ArrayReflection.get(array, 0));
+
+			array = ArrayReflection.newInstance(String.class, 5);
+			ArrayReflection.set(array, 0, "test string");
+			println("Array String: length=" + ArrayReflection.getLength(array) + ", access=" + ArrayReflection.get(array, 0));
 		} catch (Exception e) {
 			message = "FAILED: " + e.getMessage() + "\n";
 			message += e.getClass();

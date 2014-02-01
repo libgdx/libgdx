@@ -31,13 +31,13 @@ public class Field {
 	final boolean isStatic;
 	final boolean isTransient;
 	final boolean isVolatile;
-	final String getter;
-	final String setter;
+	final int getter;
+	final int setter;
 	final Class[] elementTypes;
 
 	Field (String name, Class enclosingType, Class type, boolean isFinal, boolean isDefaultAccess, boolean isPrivate,
-		boolean isProtected, boolean isPublic, boolean isStatic, boolean isTransient, boolean isVolatile, String getter,
-		String setter, Class[] elementTypes) {
+		boolean isProtected, boolean isPublic, boolean isStatic, boolean isTransient, boolean isVolatile, int getter, int setter,
+		Class[] elementTypes) {
 		this.name = name;
 		this.enclosingType = enclosingType;
 		this.type = type;
