@@ -125,12 +125,12 @@ public class SpriteBatch implements Batch {
 		short[] indices = new short[len];
 		short j = 0;
 		for (int i = 0; i < len; i += 6, j += 4) {
-			indices[i + 0] = (short)(j + 0);
+			indices[i] = j;
 			indices[i + 1] = (short)(j + 1);
 			indices[i + 2] = (short)(j + 2);
 			indices[i + 3] = (short)(j + 2);
 			indices[i + 4] = (short)(j + 3);
-			indices[i + 5] = (short)(j + 0);
+			indices[i + 5] = j;
 		}
 		for (int i = 0; i < buffers; i++) {
 			this.buffers[i].setIndices(indices);
@@ -525,44 +525,7 @@ public class SpriteBatch implements Batch {
 
 	@Override
 	public void draw (Texture texture, float x, float y) {
-		if (!drawing) throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
-
-		float[] vertices = this.vertices;
-
-		if (texture != lastTexture)
-			switchTexture(texture);
-		else if (idx == vertices.length) //
-			flush();
-
-		final float fx2 = x + texture.getWidth();
-		final float fy2 = y + texture.getHeight();
-
-		float color = this.color;
-		int idx = this.idx;
-		vertices[idx++] = x;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = 0;
-		vertices[idx++] = 1;
-
-		vertices[idx++] = x;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = 0;
-		vertices[idx++] = 0;
-
-		vertices[idx++] = fx2;
-		vertices[idx++] = fy2;
-		vertices[idx++] = color;
-		vertices[idx++] = 1;
-		vertices[idx++] = 0;
-
-		vertices[idx++] = fx2;
-		vertices[idx++] = y;
-		vertices[idx++] = color;
-		vertices[idx++] = 1;
-		vertices[idx++] = 1;
-		this.idx = idx;
+		draw(texture, x, y, texture.getWidth(), texture.getHeight());
 	}
 
 	@Override
@@ -1095,8 +1058,8 @@ public class SpriteBatch implements Batch {
 	public boolean isBlendingEnabled () {
 		return !blendingDisabled;
 	}
-	
-	public boolean isDrawing(){
+
+	public boolean isDrawing () {
 		return drawing;
 	}
 }
