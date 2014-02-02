@@ -17,7 +17,7 @@
 - Android Music no longer throws exceptions if MediaPlayer is null.
 - PolygonSpriteBatch implements Batch.
 - New scene2d actions: EventAction, CountdownEventAction.
-
+- Update GWT/HTML5 Backend to GWT 2.6.0
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213
