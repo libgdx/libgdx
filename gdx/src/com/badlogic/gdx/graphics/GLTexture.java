@@ -185,6 +185,8 @@ public abstract class GLTexture implements Disposable {
 	protected void delete() {
 		if (glHandle != 0) {
 			buffer.put(0, glHandle);
+			buffer.position(0);
+			buffer.limit(1);
 			Gdx.gl.glDeleteTextures(1, buffer);
 			glHandle = 0;
 		}

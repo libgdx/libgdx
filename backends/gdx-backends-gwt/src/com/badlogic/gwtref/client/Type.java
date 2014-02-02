@@ -30,6 +30,7 @@ public class Type {
 	private static final Constructor[] EMPTY_CONSTRUCTORS = new Constructor[0];
 
 	String name;
+	int id;
 	Class clazz;
 	Class superClass;
 	Set<Class> assignables = new HashSet<Class>();

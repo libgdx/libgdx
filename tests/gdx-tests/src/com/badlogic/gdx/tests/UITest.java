@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -56,14 +57,12 @@ public class UITest extends GdxTest {
 
 	Skin skin;
 	Stage stage;
-	SpriteBatch batch;
 	Texture texture1;
 	Texture texture2;
 	Label fpsLabel;
 
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		texture1 = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
 		texture2 = new Texture(Gdx.files.internal("data/badlogic.jpg"));
@@ -71,6 +70,7 @@ public class UITest extends GdxTest {
 		TextureRegion imageFlipped = new TextureRegion(image);
 		imageFlipped.flip(true, true);
 		TextureRegion image2 = new TextureRegion(texture2);
+		// stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, new PolygonSpriteBatch());
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 		Gdx.input.setInputProcessor(stage);
 
@@ -98,7 +98,9 @@ public class UITest extends GdxTest {
 		final Slider slider = new Slider(0, 10, 1, false, skin);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX","Android", "Windows", "Linux", "OSX"}, skin);
+		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux",
+			"OSX", "Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux", "OSX",
+			"Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux", "OSX"}, skin);
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
 		List list = new List(listEntries, skin);
