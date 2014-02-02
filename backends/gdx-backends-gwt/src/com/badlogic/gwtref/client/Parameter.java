@@ -18,12 +18,12 @@ package com.badlogic.gwtref.client;
 
 public class Parameter {
 	final String name;
-	final Class type;
+	final CachedTypeLookup type;
 	final String jnsi;
 
 	Parameter (String name, Class type, String jnsi) {
 		this.name = name;
-		this.type = type;
+		this.type = new CachedTypeLookup(type);
 		this.jnsi = jnsi;
 	}
 
@@ -31,8 +31,12 @@ public class Parameter {
 		return name;
 	}
 
-	public Class getType () {
-		return type;
+	public Type getType () {
+		return type.getType();
+	}
+
+	public Class getClazz () {
+		return type.clazz;
 	}
 
 	public String getJnsi () {
