@@ -55,9 +55,7 @@ public class ReflectionPool<T> extends Pool<T> {
 	}
 
 	protected T newObject () {
-		if (constructor == null)
-			throw new RuntimeException("Class cannot be created (missing no-arg constructor): "
-				+ constructor.getDeclaringClass().getName());
+		if (constructor == null) throw new RuntimeException("Class cannot be created (missing no-arg constructor)");
 
 		try {
 			return (T)constructor.newInstance((Object[])null);
