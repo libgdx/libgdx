@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Bartol Karuza (me@bartolkaruza.com)
  *
  */
-public interface AndroidGraphicsApplication extends Application {
+public interface AndroidApplicationBase extends Application {
 	
 	/**
 	 * The application or activity context

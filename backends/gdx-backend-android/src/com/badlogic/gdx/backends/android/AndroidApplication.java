@@ -56,7 +56,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * configuration for the GLSurfaceView.
  * 
  * @author mzechner */
-public class AndroidApplication extends Activity implements AndroidGraphicsApplication {
+public class AndroidApplication extends Activity implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}

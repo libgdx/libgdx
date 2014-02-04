@@ -68,7 +68,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
-	AndroidGraphicsApplication app;
+	AndroidApplicationBase app;
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -99,7 +99,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
-	public AndroidGraphics (AndroidGraphicsApplication application, AndroidApplicationConfiguration config,
+	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
 		view = createGLSurfaceView(application, config.useGL20, resolutionStrategy);
@@ -128,7 +128,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	private View createGLSurfaceView (AndroidGraphicsApplication application, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (AndroidApplicationBase application, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
 		if (useGL2 && checkGL20()) {
