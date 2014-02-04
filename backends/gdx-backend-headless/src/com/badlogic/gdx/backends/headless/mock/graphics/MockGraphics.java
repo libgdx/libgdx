@@ -22,6 +22,9 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 
+/** The headless backend does its best to mock elements. This is intended to make code-sharing between
+ * server and client as simple as possible.
+ */
 public class MockGraphics implements Graphics {
 	float deltaTime = 0;
 	long frameStart = 0;
