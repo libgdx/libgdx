@@ -504,6 +504,10 @@ public class Stage extends InputAdapter implements Disposable {
 		Pools.free(event);
 	}
 
+	public int getTouchFocusesSize() {
+		return touchFocuses.size;
+	}
+
 	/** Adds an actor to the root of the stage.
 	 * @see Group#addActor(Actor)
 	 * @see Actor#remove() */
