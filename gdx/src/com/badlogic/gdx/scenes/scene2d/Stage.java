@@ -504,6 +504,11 @@ public class Stage extends InputAdapter implements Disposable {
 		Pools.free(event);
 	}
 
+	/** Returns the actors that have touch focus. If this array is modified, the actor may never receive a touch up event. */
+	public SnapshotArray<TouchFocus> getTouchFocuses () {
+		return touchFocuses;
+	}
+
 	/** Adds an actor to the root of the stage.
 	 * @see Group#addActor(Actor)
 	 * @see Actor#remove() */
