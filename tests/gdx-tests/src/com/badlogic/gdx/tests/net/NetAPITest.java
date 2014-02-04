@@ -234,4 +234,10 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		stage.setViewport(width, height, false);
 	}
 
+	@Override
+	public void cancelled () {
+		setButtonDisabled(false);
+		statusLabel.setText("HTTP request cancelled");
+	}
+
 }
