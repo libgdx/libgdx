@@ -524,7 +524,7 @@ public class Json {
 				if (knownType == null || !knownType.equals(actualType)) {
 					
 					// Ensures that enums with specific implementations (abstract logic) serialize correctly
-					if(actualType.isAnonymousClass())
+					if(actualType.getEnumConstants() == null)
 						actualType = actualType.getSuperclass();
 					
 					writeObjectStart(actualType, null);
@@ -962,12 +962,12 @@ public class Json {
 			} catch (SecurityException ignored) {
 			} catch (ReflectionException ignored) {
 				
-				if (type.isEnum()) {
+				if(ClassReflection.isAssignableFrom(Enum.class, type)){
+
+					if(type.getEnumConstants() == null)
+						type = type.getSuperclass();
+					
 					return type.getEnumConstants()[0];
-				}
-			
-				if(type.isAnonymousClass() && type.getSuperclass().isEnum()){
-					return type.getSuperclass().getEnumConstants()[0];
 				}
 				
 				if (type.isArray())
