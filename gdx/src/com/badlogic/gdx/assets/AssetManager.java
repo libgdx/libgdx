@@ -102,7 +102,7 @@ public class AssetManager implements Disposable {
 	 * @return the asset */
 	public synchronized <T> T get (String fileName) {
 		Class<T> type = assetTypes.get(fileName);
-		if(type==null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		if (type == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
 		if (assetsByType == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		RefCountedContainer assetContainer = assetsByType.get(fileName);
@@ -131,7 +131,7 @@ public class AssetManager implements Disposable {
 		return get(assetDescriptor.fileName, assetDescriptor.type);
 	}
 
-	/** Removes the asset and all its dependencies if they are not used by other assets.
+	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
 		// check if it's in the queue
@@ -143,6 +143,7 @@ public class AssetManager implements Disposable {
 			}
 		}
 		if (foundIndex != -1) {
+			toLoad--;
 			loadQueue.removeIndex(foundIndex);
 			log.debug("Unload (from queue): " + fileName);
 			return;
@@ -277,6 +278,7 @@ public class AssetManager implements Disposable {
 		AssetLoader loader = getLoader(type, fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + ClassReflection.getSimpleName(type));
 
+		// reset stats
 		if (loadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
