@@ -53,6 +53,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
@@ -65,6 +66,7 @@ public class AssetManager implements Disposable {
 	final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap();
 	final ObjectMap<String, Class> assetTypes = new ObjectMap();
 	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap();
+	final ObjectSet<String> injected = new ObjectSet();
 
 	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap();
 	final Array<AssetDescriptor> loadQueue = new Array();
@@ -378,9 +380,13 @@ public class AssetManager implements Disposable {
 	}
 
 	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
+		ObjectSet<String> injected = this.injected;
 		for (AssetDescriptor desc : dependendAssetDescs) {
+			if (injected.contains(desc.fileName)) continue; // Ignore subsequent dependencies if there are duplicates.
+			injected.add(desc.fileName);
 			injectDependency(parentAssetFilename, desc);
 		}
+		injected.clear();
 	}
 
 	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {
