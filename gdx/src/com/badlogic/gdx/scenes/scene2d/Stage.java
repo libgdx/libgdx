@@ -729,7 +729,7 @@ public class Stage extends InputAdapter implements Disposable {
 	public static final class TouchFocus implements Poolable {
 		EventListener listener;
 		Actor listenerActor, target;
-		int pointer, button;
+		public int pointer, button;
 
 		public void reset () {
 			listenerActor = null;
