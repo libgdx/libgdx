@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MainMenuScreen implements Screen {
 	Game game;
@@ -80,7 +81,8 @@ public class MainMenuScreen implements Screen {
 		}
 	}
 
-	long last = System.nanoTime();
+	long last = TimeUtils.nanoTime();
+
 	public void draw () {
 		GLCommon gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
@@ -99,15 +101,15 @@ public class MainMenuScreen implements Screen {
 		batcher.draw(Assets.mainMenu, 10, 200 - 110 / 2, 300, 110);
 		batcher.draw(Settings.soundEnabled ? Assets.soundOn : Assets.soundOff, 0, 0, 64, 64);
 		batcher.end();
-		
-		if(System.nanoTime() - last > 2000000000) {
-			Gdx.app.log("SuperJumper", "version: " + Gdx.app.getVersion() + 
-												", memory: " + Gdx.app.getJavaHeap() + ", " + Gdx.app.getNativeHeap() + 
-												", native orientation:" + Gdx.input.getNativeOrientation() + 
-												", orientation: " + Gdx.input.getRotation() + 
-												", accel: " + (int)Gdx.input.getAccelerometerX() + ", " + (int)Gdx.input.getAccelerometerY() + ", " + (int)Gdx.input.getAccelerometerZ() +
-												", apr: " + (int)Gdx.input.getAzimuth() + ", " + (int)Gdx.input.getPitch() + ", " + (int)Gdx.input.getRoll());
-			last = System.nanoTime();
+
+		if (TimeUtils.nanoTime() - last > 2000000000) {
+			Gdx.app.log("SuperJumper",
+				"version: " + Gdx.app.getVersion() + ", memory: " + Gdx.app.getJavaHeap() + ", " + Gdx.app.getNativeHeap()
+					+ ", native orientation:" + Gdx.input.getNativeOrientation() + ", orientation: " + Gdx.input.getRotation()
+					+ ", accel: " + (int)Gdx.input.getAccelerometerX() + ", " + (int)Gdx.input.getAccelerometerY() + ", "
+					+ (int)Gdx.input.getAccelerometerZ() + ", apr: " + (int)Gdx.input.getAzimuth() + ", " + (int)Gdx.input.getPitch()
+					+ ", " + (int)Gdx.input.getRoll());
+			last = TimeUtils.nanoTime();
 		}
 	}
 
