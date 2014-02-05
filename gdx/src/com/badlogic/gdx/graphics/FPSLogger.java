@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.TileUtils;
 
 /** A simple helper class to log the frames per seconds achieved. Just invoke the {@link #log()} method in your rendering method.
  * The output will be logged once per second.
