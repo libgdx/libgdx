@@ -26,14 +26,14 @@ public class FPSLogger {
 	long startTime;
 
 	public FPSLogger () {
-		startTime = System.currentTimeMillis();
+		startTime = System.nanoTime();
 	}
 
 	/** Logs the current frames per second to the console. */
 	public void log () {
-		if (System.currentTimeMillis() - startTime > 1000) {
+		if (System.nanoTime() - startTime > 1000000000 /* 1,000,000,000ns == one second*/ {
 			Gdx.app.log("FPSLogger", "fps: " + Gdx.graphics.getFramesPerSecond());
-			startTime = System.currentTimeMillis();
+			startTime = System.nanoTime();
 		}
 	}
 }
