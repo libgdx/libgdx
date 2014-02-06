@@ -108,7 +108,7 @@ public class Quaternion implements Serializable {
 		return "[" + x + "|" + y + "|" + z + "|" + w + "]";
 	}
 
-	/** Sets the quaternion to the given euler angles.
+	/** Sets the quaternion to the given euler angles in degrees.
 	 * @param yaw the yaw in degrees
 	 * @param pitch the pitch in degress
 	 * @param roll the roll in degess
@@ -117,6 +117,17 @@ public class Quaternion implements Serializable {
 		yaw = (float)Math.toRadians(yaw);
 		pitch = (float)Math.toRadians(pitch);
 		roll = (float)Math.toRadians(roll);
+		
+		return setEuler(yaw, pitch, roll);
+	}
+	
+
+	/** Sets the quaternion to the given euler angles in radians.
+	 * @param yaw the yaw in radians
+	 * @param pitch the pitch in radians
+	 * @param roll the roll in radians
+	 * @return this quaternion */
+	public Quaternion setEuler(float yaw, float pitch, float roll) {
 		float num9 = roll * 0.5f;
 		float num6 = (float)Math.sin(num9);
 		float num5 = (float)Math.cos(num9);
@@ -271,11 +282,30 @@ public class Quaternion implements Serializable {
 	 * @param angle The angle in degrees
 	 * @return This quaternion for chaining. */
 	public Quaternion setFromAxis (final float x, final float y, final float z, final float angle) {
+		return this.fromAxis(x, y, z, angle * MathUtils.degreesToRadians);
+	}
+	
+	/** Sets the quaternion components from the given axis and angle around that axis.
+	 * 
+	 * @param axis The axis
+	 * @param angle The angle in radians
+	 * @return This quaternion for chaining. */
+	public Quaternion fromAxis (final Vector3 axis, final float angle) {
+		return fromAxis(axis.x, axis.y, axis.z, angle);
+	}
+
+	/** Sets the quaternion components from the given axis and angle around that axis.
+	 * @param x X direction of the axis
+	 * @param y Y direction of the axis
+	 * @param z Z direction of the axis
+	 * @param angle The angle in radians
+	 * @return This quaternion for chaining. */
+	public Quaternion fromAxis(final float x, final float y, final float z, final float angle) {
 		float d = Vector3.len(x, y, z);
 		if (d == 0f)
 			return idt();
 		d = 1f /d;
-		float l_ang = angle * MathUtils.degreesToRadians;
+		float l_ang = angle;
 		float l_sin = (float)Math.sin(l_ang / 2);
 		float l_cos = (float)Math.cos(l_ang / 2);
 		return this.set(d * x * l_sin, d * y * l_sin, d * z * l_sin, l_cos).nor();
@@ -360,8 +390,8 @@ public class Quaternion implements Serializable {
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final Vector3 v1, final Vector3 v2) {
 		final float dot = MathUtils.clamp(v1.dot(v2), -1f, 1f);
-		final float angle = (float)Math.acos(dot) * MathUtils.radiansToDegrees;
-		return setFromAxis(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x, angle);
+		final float angle = (float)Math.acos(dot);
+		return fromAxis(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x, angle);
 	}
 	
 	/** Set this quaternion to the rotation between two vectors.
@@ -374,8 +404,8 @@ public class Quaternion implements Serializable {
 	 * @return This quaternion for chaining */
 	public Quaternion setFromCross (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		final float dot = MathUtils.clamp(Vector3.dot(x1, y1, z1, x2, y2, z2), -1f, 1f);
-		final float angle = (float)Math.acos(dot) * MathUtils.radiansToDegrees;
-		return setFromAxis(y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2, angle);
+		final float angle = (float)Math.acos(dot);
+		return fromAxis(y1 * z2 - z1 * y2, z1 * x2 - x1 * z2, x1 * y2 - y1 * x2, angle);
 	}
 
 	/** Spherical linear interpolation between this quaternion and the other quaternion, based on the alpha value in the range
@@ -451,9 +481,18 @@ public class Quaternion implements Serializable {
 	/**
 	 * Get the angle and the axis of rotation
 	 * @param axis axis to get
-	 * @return the angle
+	 * @return the angle in degrees
 	 */
 	public float getAxisAngle(Vector3 axis) {
+      return angle(axis) * MathUtils.radiansToDegrees;
+	}
+	
+	/**
+	 * Get the angle and the axis of rotation
+	 * @param axis axis to get
+	 * @return the angle in radians
+	 */
+	public float angle(Vector3 axis) {
 		//source : http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
       if (this.w > 1)
       	this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
@@ -470,6 +509,6 @@ public class Quaternion implements Serializable {
               axis.z = (float) (this.z / s);
       }
 
-      return MathUtils.radiansToDegrees * angle;
+      return angle;
 	}
 }

@@ -454,6 +454,27 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.mul(tmpMat);
 	}
 
+	/** Rotates this vector by the given angle in degrees around the given axis.
+	 *
+	 * @param radians the angle in radians
+	 * @param axisX the x-component of the axis
+	 * @param axisY the y-component of the axis
+	 * @param axisZ the z-component of the axis
+	 * @return This vector for chaining */
+	public Vector3 rot (float radians, float axisX, float axisY, float axisZ) {
+		return this.mul(tmpMat.setToRot(axisX, axisY, axisZ, radians));
+	}
+
+	/** Rotates this vector by the given angle in degrees around the given axis.
+	 *
+	 * @param axis the axis
+	 * @param radians the angle in radians
+	 * @return This vector for chaining */
+	public Vector3 rot (final Vector3 axis, float radians) {
+		tmpMat.setToRot(axis, radians);
+		return this.mul(tmpMat);
+	}
+
 	/** @return Whether this vector is a unit length vector */
 	public boolean isUnit () {
 		return isUnit(0.000000001f);

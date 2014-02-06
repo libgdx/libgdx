@@ -282,7 +282,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis (typically
 	 *         counter-clockwise) and between 0 and 360. */
-	public float angle () {
+	public float getAngle () {
 		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
 		return angle;
@@ -296,13 +296,32 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 		return this;
 	}
+	
+	/** Sets the angle of the vector in radians relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
+	 * @param radians The angle to set. */
+	public Vector2 angle (float radians) {
+		this.set(len(), 0f);
+		this.rot(radians);
+
+		return this;
+	}
+	
+	/** @return the angle in radians */
+	public float angle () {
+		return (float)Math.atan2(y, x);
+	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param degrees the angle in degrees */
 	public Vector2 rotate (float degrees) {
-		float rad = degrees * MathUtils.degreesToRadians;
-		float cos = (float)Math.cos(rad);
-		float sin = (float)Math.sin(rad);
+		return rot(degrees * MathUtils.degreesToRadians);
+	}
+
+	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
+	 * @param radians the angle in radians */
+	public Vector2 rot(float radians) {
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		float newX = this.x * cos - this.y * sin;
 		float newY = this.x * sin + this.y * cos;
