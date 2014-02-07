@@ -142,9 +142,9 @@ public class ParticleEditor3D extends JFrame {
                                 addRow(new ScaledNumericPanel(emitter.getSpawnDepth(), "Duration", "Spawn Depth",
                                         "Depth of the spawn shape, in world units."));
                                 addRow(new ScaledNumericPanel(emitter.getScaleValue(), "Life", "Size", "Particle size, in world units."));
-                                addRow(new ForcePanel(emitter.getVelocityValue(0), "Life", "Velocity 1", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
-                                addRow(new ForcePanel(emitter.getVelocityValue(1), "Life", "Velocity 2", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
-                                addRow(new ForcePanel(emitter.getVelocityValue(2), "Life", "Velocity 3", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
+                                addRow(new VelocityPanel(emitter.getVelocityValue(0), "Life", "Velocity 1", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
+                                addRow(new VelocityPanel(emitter.getVelocityValue(1), "Life", "Velocity 2", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
+                                addRow(new VelocityPanel(emitter.getVelocityValue(2), "Life", "Velocity 3", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
                                 addRow(new ScaledNumericPanel(emitter.getRotation(), "Life", "Rotation", "Particle rotation, in degrees.", false));                                
                                 addRow(new GradientPanel(emitter.getTint(), "Tint", "", false));
                                 addRow(new PercentagePanel(emitter.getTransparency(), "Life", "Transparency", ""));
