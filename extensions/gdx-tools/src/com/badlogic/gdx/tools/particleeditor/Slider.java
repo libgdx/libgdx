@@ -36,7 +36,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 // BOZO - Slider is a placeholder that uses a spinner until the slider (in NewSlider) is complete.
-class Slider extends JPanel {
+public class Slider extends JPanel {
 	private JSpinner spinner;
 
 	public Slider (float initialValue, final float min, final float max, float stepSize, final float sliderMin,

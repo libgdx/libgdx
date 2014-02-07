@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
-class Chart extends JPanel {
+public class Chart extends JPanel {
 	static private final int POINT_SIZE = 6;
 	static private final int POINT_SIZE_EXPANDED = 10;
 
