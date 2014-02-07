@@ -28,22 +28,54 @@ import java.io.Serializable;
  * @author badlogicgames@gmail.com */
 public class Matrix4 implements Serializable {
 	private static final long serialVersionUID = -2717655254359579617L;
-	public static final int M00 = 0;// 0;
-	public static final int M01 = 4;// 1;
-	public static final int M02 = 8;// 2;
-	public static final int M03 = 12;// 3;
-	public static final int M10 = 1;// 4;
-	public static final int M11 = 5;// 5;
-	public static final int M12 = 9;// 6;
-	public static final int M13 = 13;// 7;
-	public static final int M20 = 2;// 8;
-	public static final int M21 = 6;// 9;
-	public static final int M22 = 10;// 10;
-	public static final int M23 = 14;// 11;
-	public static final int M30 = 3;// 12;
-	public static final int M31 = 7;// 13;
-	public static final int M32 = 11;// 14;
-	public static final int M33 = 15;// 15;
+	/** XX: Typically the unrotated X component for scaling, also the cosine of the angle when rotated on the Y and/or Z axis. 
+	 * On Vector3 multiplication this value is multiplied with the source X component and added to the target X component. */ 
+	public static final int M00 = 0;
+	/** XY: Typically the negative sine of the angle when rotated on the Z axis.
+	 * On Vector3 multiplication this value is multiplied with the source Y component and added to the target X component. */
+	public static final int M01 = 4;
+	/** XZ: Typically the sine of the angle when rotated on the Y axis.
+	 * On Vector3 multiplication this value is multiplied with the source Z component and added to the target X component. */
+	public static final int M02 = 8;
+	/** XW: Typically the translation of the X component.
+	 * On Vector3 multiplication this value is added to the target X component. */ 
+	public static final int M03 = 12;
+	/** YX: Typically the sine of the angle when rotated on the Z axis.
+	 * On Vector3 multiplication this value is multiplied with the source X component and added to the target Y component. */
+	public static final int M10 = 1;
+	/** YY: Typically the unrotated Y component for scaling, also the cosine of the angle when rotated on the X and/or Z axis.
+	 * On Vector3 multiplication this value is multiplied with the source Y component and added to the target Y component. */
+	public static final int M11 = 5;
+	/** YZ: Typically the negative sine of the angle when rotated on the X axis.
+	 * On Vector3 multiplication this value is multiplied with the source Z component and added to the target Y component. */
+	public static final int M12 = 9;
+	/** YW: Typically the translation of the Y component.
+	 * On Vector3 multiplication this value is added to the target Y component. */
+	public static final int M13 = 13;
+	/** ZX: Typically the negative sine of the angle when rotated on the Y axis.
+	 * On Vector3 multiplication this value is multiplied with the source X component and added to the target Z component. */
+	public static final int M20 = 2;
+	/** ZY: Typical the sine of the angle when rotated on the X axis.
+	 * On Vector3 multiplication this value is multiplied with the source Y component and added to the target Z component. */
+	public static final int M21 = 6;
+	/** ZZ: Typically the unrotated Z component for scaling, also the cosine of the angle when rotated on the X and/or Y axis.
+	 * On Vector3 multiplication this value is multiplied with the source Z component and added to the target Z component. */
+	public static final int M22 = 10;
+	/** ZW: Typically the translation of the Z component.
+	 * On Vector3 multiplication this value is added to the target Z component. */
+	public static final int M23 = 14;
+	/** WX: Typically the value zero.
+	 * On Vector3 multiplication this value is ignored. */
+	public static final int M30 = 3;
+	/** WY: Typically the value zero.
+	 * On Vector3 multiplication this value is ignored. */
+	public static final int M31 = 7;
+	/** WZ: Typically the value zero.
+	 * On Vector3 multiplication this value is ignored. */
+	public static final int M32 = 11;
+	/** WW: Typically the value one.
+	 * On Vector3 multiplication this value is ignored. */
+	public static final int M33 = 15;
 
 	public final float tmp[] = new float[16];
 	public final float val[] = new float[16];
@@ -114,38 +146,58 @@ public class Matrix4 implements Serializable {
 	
 	/** Sets the matrix to a rotation matrix representing the quaternion.
 	 * 
-	 * @param x The X component of the quaternion that is to be used to set this matrix.
-	 * @param y The Y component of the quaternion that is to be used to set this matrix.
-	 * @param z The Z component of the quaternion that is to be used to set this matrix.
-	 * @param w The W component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionX The X component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionY The Y component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionZ The Z component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 set(float x, float y, float z, float w) {
-		float l_xx = x * x;
-		float l_xy = x * y;
-		float l_xz = x * z;
-		float l_xw = x * w;
-		float l_yy = y * y;
-		float l_yz = y * z;
-		float l_yw = y * w;
-		float l_zz = z * z;
-		float l_zw = z * w;
-		// Set matrix from quaternion
-		val[M00] = 1 - 2 * (l_yy + l_zz);
-		val[M01] = 2 * (l_xy - l_zw);
-		val[M02] = 2 * (l_xz + l_yw);
-		val[M03] = 0;
-		val[M10] = 2 * (l_xy + l_zw);
-		val[M11] = 1 - 2 * (l_xx + l_zz);
-		val[M12] = 2 * (l_yz - l_xw);
-		val[M13] = 0;
-		val[M20] = 2 * (l_xz - l_yw);
-		val[M21] = 2 * (l_yz + l_xw);
-		val[M22] = 1 - 2 * (l_xx + l_yy);
-		val[M23] = 0;
-		val[M30] = 0;
-		val[M31] = 0;
-		val[M32] = 0;
-		val[M33] = 1;
+	public Matrix4 set(float quaternionX, float quaternionY, float quaternionZ, float quaternionW) {
+		return set(0f, 0f, 0f, quaternionX, quaternionY, quaternionZ, quaternionW);
+	}
+	
+	/** Set this matrix to the specified translation and rotation.
+	 * @param position The translation
+	 * @param orientation The rotation, must be normalized
+	 * @return This matrix for chaining */
+	public Matrix4 set (Vector3 position, Quaternion orientation) {
+		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w);
+	}
+		
+	/** Sets the matrix to a rotation matrix representing the translation and quaternion.
+	 * 
+	 * @param translationX The X component of the translation that is to be used to set this matrix.
+	 * @param translationY The Y component of the translation that is to be used to set this matrix.
+	 * @param translationZ The Z component of the translation that is to be used to set this matrix.
+	 * @param quaternionX The X component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionY The Y component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionZ The Z component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY, float quaternionZ, float quaternionW) {
+		final float xs = quaternionX * 2f,	ys = quaternionY * 2f,	zs = quaternionZ * 2f;
+		final float wx = quaternionW * xs,	wy = quaternionW * ys, 	wz = quaternionW * zs;
+		final float xx = quaternionX * xs,	xy = quaternionX * ys, 	xz = quaternionX * zs;
+		final float yy = quaternionY * ys,	yz = quaternionY * zs,	zz = quaternionZ * zs;
+
+		val[M00] = (1.0f - (yy + zz));
+		val[M01] = (xy - wz);
+		val[M02] = (xz + wy);
+		val[M03] = translationX;
+		
+		val[M10] = (xy + wz);
+		val[M11] = (1.0f - (xx + zz));
+		val[M12] = (yz - wx);
+		val[M13] = translationY;
+		
+		val[M20] = (xz - wy);
+		val[M21] = (yz + wx);
+		val[M22] = (1.0f - (xx + yy));
+		val[M23] = translationZ;
+		
+		val[M30] = 0.f;
+		val[M31] = 0.f;
+		val[M32] = 0.f;
+		val[M33] = 1.0f;
 		return this;
 	}
 	
@@ -155,31 +207,47 @@ public class Matrix4 implements Serializable {
 	 * @param scale The scale
 	 * @return This matrix for chaining */
 	public Matrix4 set (Vector3 position, Quaternion orientation, Vector3 scale) {
-		final float xs = orientation.x * 2f,	ys = orientation.y * 2f,	zs = orientation.z * 2f;
-		final float wx = orientation.w * xs,	wy = orientation.w * ys, 	wz = orientation.w * zs;
-		final float xx = orientation.x * xs,	xy = orientation.x * ys, 	xz = orientation.x * zs;
-		final float yy = orientation.y * ys,	yz = orientation.y * zs,	zz = orientation.z * zs;
+		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w, scale.x, scale.y, scale.z);
+	}
+	
+	/** Sets the matrix to a rotation matrix representing the translation and quaternion.
+	 * 
+	 * @param translationX The X component of the translation that is to be used to set this matrix.
+	 * @param translationY The Y component of the translation that is to be used to set this matrix.
+	 * @param translationZ The Z component of the translation that is to be used to set this matrix.
+	 * @param quaternionX The X component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionY The Y component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionZ The Z component of the quaternion that is to be used to set this matrix.
+	 * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
+	 * @param scaleX The X component of the scaling that is to be used to set this matrix.
+	 * @param scaleY The Y component of the scaling that is to be used to set this matrix.
+	 * @param scaleZ The Z component of the scaling that is to be used to set this matrix. 
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY, float quaternionZ, float quaternionW, float scaleX, float scaleY, float scaleZ) {
+		final float xs = quaternionX * 2f,	ys = quaternionY * 2f,	zs = quaternionZ * 2f;
+		final float wx = quaternionW * xs,	wy = quaternionW * ys, 	wz = quaternionW * zs;
+		final float xx = quaternionX * xs,	xy = quaternionX * ys, 	xz = quaternionX * zs;
+		final float yy = quaternionY * ys,	yz = quaternionY * zs,	zz = quaternionZ * zs;
 
-		val[M00] = scale.x * (1.0f - (yy + zz));
-		val[M01] = scale.x * (xy - wz);
-		val[M02] = scale.x * (xz + wy);
-		val[M03] = position.x;
+		val[M00] = scaleX * (1.0f - (yy + zz));
+		val[M01] = scaleY * (xy - wz);
+		val[M02] = scaleZ * (xz + wy);
+		val[M03] = translationX;
 		
-		val[M10] = scale.y * (xy + wz);
-		val[M11] = scale.y * (1.0f - (xx + zz));
-		val[M12] = scale.y * (yz - wx);
-		val[M13] = position.y;
+		val[M10] = scaleX * (xy + wz);
+		val[M11] = scaleY * (1.0f - (xx + zz));
+		val[M12] = scaleZ * (yz - wx);
+		val[M13] = translationY;
 		
-		val[M20] = scale.z * (xz - wy);
-		val[M21] = scale.z * (yz + wx);
-		val[M22] = scale.z * (1.0f - (xx + yy));
-		val[M23] = position.z;
+		val[M20] = scaleX * (xz - wy);
+		val[M21] = scaleY * (yz + wx);
+		val[M22] = scaleZ * (1.0f - (xx + yy));
+		val[M23] = translationZ;
 		
-		val[M30] = 0.0f;
-		val[M31] = 0.0f;
-		val[M32] = 0.0f;
+		val[M30] = 0.f;
+		val[M31] = 0.f;
+		val[M32] = 0.f;
 		val[M33] = 1.0f;
-		
 		return this;
 	}
 
