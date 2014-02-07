@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<module rename-to="com.esotericsoftware.tablelayout">
-	<source path="tablelayout">
-	<include name="**/*"/>
-	</source>
-</module>
