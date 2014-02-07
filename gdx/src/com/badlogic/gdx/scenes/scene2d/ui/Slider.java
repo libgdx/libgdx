@@ -171,14 +171,14 @@ public class Slider extends Widget implements Disableable {
 				sliderPos = Math.min(sliderPosWidth - knobWidth, sliderPos) + bg.getLeftWidth();
 			}
 
-			float knobHeightHalf = knobHeight * 0.5f;
+			float knobWidthHalf = knobWidth * 0.5f;
 			if (knobBefore != null) {
-				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(sliderPos + knobHeightHalf),
+				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(sliderPos + knobWidthHalf),
 					knobBefore.getMinHeight());
 			}
 			if (knobAfter != null) {
-				knobAfter.draw(batch, x + (int)(sliderPos + knobHeightHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
-					width - (int)(sliderPos + knobHeightHalf), knobAfter.getMinHeight());
+				knobAfter.draw(batch, x + (int)(sliderPos + knobWidthHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
+					width - (int)(sliderPos + knobWidthHalf), knobAfter.getMinHeight());
 			}
 			if (knob != null)
 				knob.draw(batch, (int)(x + sliderPos), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
