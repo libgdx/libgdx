@@ -103,6 +103,9 @@ public class AndroidDaydream extends DreamService implements Application {
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
+		if (this.getFilesDir() == null) {
+			// try again to fix Android bug 10515463 on pre-4.4 devices
+		}
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(null);
 		this.listener = listener;
@@ -184,6 +187,9 @@ public class AndroidDaydream extends DreamService implements Application {
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
+		if (this.getFilesDir() == null) {
+			// try again to fix Android bug 10515463 on pre-4.4 devices
+		}
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(null);
 		this.listener = listener;

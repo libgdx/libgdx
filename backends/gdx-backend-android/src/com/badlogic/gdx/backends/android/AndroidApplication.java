@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -105,6 +106,9 @@ public class AndroidApplication extends Activity implements Application {
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
+		if (this.getFilesDir() == null) {
+			// try again to fix Android bug 10515463 on pre-4.4 devices
+		}
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
 		this.listener = listener;
@@ -229,6 +233,9 @@ public class AndroidApplication extends Activity implements Application {
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
+		if (this.getFilesDir() == null) {
+			// try again to fix Android bug 10515463 on pre-4.4 devices
+		}
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
 		this.listener = listener;
