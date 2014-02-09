@@ -405,7 +405,6 @@ public class IntIntMap {
 		if (index < lastIndex) {
 			keyTable[index] = keyTable[lastIndex];
 			valueTable[index] = valueTable[lastIndex];
-			valueTable[lastIndex] = 0;
 		}
 	}
 
