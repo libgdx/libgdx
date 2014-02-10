@@ -43,6 +43,8 @@ public class DragAndDrop {
 	long dragStartTime;
 	int dragTime = 250;
 	int activePointer = -1;
+	private int detectX = 0;
+        private int detectY = 0;
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
@@ -74,7 +76,7 @@ public class DragAndDrop {
 				// Find target.
 				Target newTarget = null;
 				isValidTarget = false;
-				Actor hit = event.getStage().hit(event.getStageX(), event.getStageY(), true); // Prefer touchable actors.
+				Actor hit = event.getStage().hit(event.getStageX()+getDetectX(), event.getStageY()+getDetectY(), true); // Prefer touchable actors.
 				if (hit == null) hit = event.getStage().hit(event.getStageX(), event.getStageY(), false);
 				if (hit != null) {
 					for (int i = 0, n = targets.size; i < n; i++) {
@@ -180,6 +182,25 @@ public class DragAndDrop {
 	public void setDragTime (int dragMillis) {
 		this.dragTime = dragMillis;
 	}
+	
+	
+	public int getDetectY() {
+	    return detectY;
+	}
+	
+	 /** if you dont want to detect only finger location, you can set it with event.StageY **/
+	 public void setDetectY(int detectY) {
+	    this.detectY = detectY;
+	 }
+	    
+	 /** if you dont want to detect only finger location, you can set it with event.StageX **/
+	 public int getDetectX() {
+	     return detectX;
+	 }
+	
+	 public void setDetectX(int detectX) {
+	     this.detectX = detectX;
+	 }
 
 	/** A target where a payload can be dragged from.
 	 * @author Nathan Sweet */
