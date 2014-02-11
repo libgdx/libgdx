@@ -59,7 +59,7 @@ public class Node {
 	 */
 	public Matrix4 calculateLocalTransform() {
 		if (!isAnimated)
-			localTransform.idt().translate(translation).rotate(rotation).scale(scale.x, scale.y, scale.z);
+			localTransform.set(translation, rotation, scale);
 		return localTransform;
 	}
 
