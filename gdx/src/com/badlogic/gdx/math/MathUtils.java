@@ -47,6 +47,15 @@ public class MathUtils {
 	static public final float radDeg = radiansToDegrees;
 	static public final float degreesToRadians = PI / 180;
 	static public final float degRad = degreesToRadians;
+	
+	// TODO: decide on what to do with radian/degree conversion values
+	// They are constants in practice, so they should be written in all caps
+	
+	/** multiply by this to convert from degrees to radians */
+	public static final float RADIANS = (float)(Math.PI / 180);
+	
+	/** multiply by this to convert from radians to degrees */
+	public static final float DEGREES = (float)(180 / Math.PI);
 
 	static private class Sin {
 		static final float[] table = new float[SIN_COUNT];
