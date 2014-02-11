@@ -421,7 +421,11 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		mean.addValue(deltaTime);
+		if(!resume) {
+			mean.addValue(deltaTime);
+		} else {
+			deltaTime = 0;
+		}
 
 		boolean lrunning = false;
 		boolean lpause = false;

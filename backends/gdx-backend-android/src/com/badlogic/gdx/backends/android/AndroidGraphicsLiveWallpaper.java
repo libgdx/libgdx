@@ -573,7 +573,11 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		lastFrameTime = time;
 		
 		// jw: after pause deltaTime can have somewhat huge value and it destabilize mean, so I propose to just cut it of
-		mean.addValue(resume ? 0.0f : deltaTime);
+		if(!resume) {
+			mean.addValue(deltaTime);
+		} else {
+			deltaTime = 0;
+		}
 		//mean.addValue(deltaTime);
 
 		boolean lrunning = false;
