@@ -798,6 +798,16 @@ public class ScrollPane extends WidgetGroup {
 		return style.vScrollKnob == null || !scrollY ? 0 : style.vScrollKnob.getMinWidth();
 	}
 
+	/** Returns the width of the scrolled viewport. */
+	public float getScrollWidth () {
+		return areaHeight;
+	}
+
+	/** Returns the height of the scrolled viewport. */
+	public float getScrollHeight () {
+		return areaHeight;
+	}
+
 	public boolean isScrollX () {
 		return scrollX;
 	}
