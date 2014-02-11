@@ -17,8 +17,6 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
-import static com.badlogic.gdx.math.MathUtils.RADIANS;
-import static com.badlogic.gdx.math.MathUtils.DEGREES;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -107,7 +105,7 @@ public class Matrix3 implements Serializable {
 	 * @param degrees the angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
-		return setToRotationRad(RADIANS * degrees);
+		return setToRotationRad(MathUtils.degreesToRadians * degrees);
 	}
 
 	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
@@ -341,7 +339,7 @@ public class Matrix3 implements Serializable {
 	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 rotate (float degrees) {
-		return rotateRad(RADIANS * degrees);
+		return rotateRad(MathUtils.degreesToRadians * degrees);
 	}
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
@@ -424,7 +422,7 @@ public class Matrix3 implements Serializable {
 	}
 	
 	public float getRotation () {
-		return DEGREES * (float)Math.atan2(val[M10], val[M00]);
+		return MathUtils.radiansToDegrees * (float)Math.atan2(val[M10], val[M00]);
 	}
 	
 	public float getRotationRad () {

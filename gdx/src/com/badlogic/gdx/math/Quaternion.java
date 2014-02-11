@@ -17,8 +17,6 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
-import static com.badlogic.gdx.math.MathUtils.RADIANS;
-import static com.badlogic.gdx.math.MathUtils.DEGREES;
 
 /** A simple quaternion class. See 
  * <a href="http://en.wikipedia.org/wiki/Quaternion">http://en.wikipedia.org/wiki/Quaternion</a>
@@ -116,7 +114,7 @@ public class Quaternion implements Serializable {
 	 * @param roll the roll in degess
 	 * @return this quaternion */
 	public Quaternion setEulerAngles (float yaw, float pitch, float roll) {
-		return setEulerAnglesRad(yaw * RADIANS, pitch * RADIANS, roll * RADIANS);
+		return setEulerAnglesRad(yaw * MathUtils.degreesToRadians, pitch * MathUtils.degreesToRadians, roll * MathUtils.degreesToRadians);
 	}
 
 	/** Sets the quaternion to the given euler angles in radians.
@@ -288,7 +286,7 @@ public class Quaternion implements Serializable {
 	 * @param degrees The angle in degrees
 	 * @return This quaternion for chaining. */
 	public Quaternion setFromAxis (final float x, final float y, final float z, final float degrees) {
-		return setFromAxisRad(x, y, z, degrees * RADIANS);
+		return setFromAxisRad(x, y, z, degrees * MathUtils.degreesToRadians);
 	}
 
 	/** Sets the quaternion components from the given axis and angle around that axis.
@@ -527,7 +525,7 @@ public class Quaternion implements Serializable {
 	 * @return the angle
 	 */
 	public float getAxisAngle(Vector3 axis) {
-		return getAxisAngleRad(axis) * DEGREES;
+		return getAxisAngleRad(axis) * MathUtils.radiansToDegrees;
 	}
 	
 	/**

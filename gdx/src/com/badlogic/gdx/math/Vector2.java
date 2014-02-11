@@ -15,8 +15,6 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.math;
-import static com.badlogic.gdx.math.MathUtils.RADIANS;
-import static com.badlogic.gdx.math.MathUtils.DEGREES;
 
 import java.io.Serializable;
 
@@ -285,7 +283,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** @return the angle in degrees of this vector (point) relative to the x-axis. Angles are towards the positive y-axis (typically
 	 *         counter-clockwise) and between 0 and 360. */
 	public float angle () {
-		float angle = (float)Math.atan2(y, x) * DEGREES;
+		float angle = (float)Math.atan2(y, x) * MathUtils.radiansToDegrees;
 		if (angle < 0) angle += 360;
 		return angle;
 	}
@@ -299,7 +297,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
 	 * @param degrees The angle in degrees to set. */
 	public Vector2 setAngle (float degrees) {
-		return setAngleRad(degrees * RADIANS);
+		return setAngleRad(degrees * MathUtils.degreesToRadians);
 	}
 
 	/** Sets the angle of the vector in radians relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
@@ -314,7 +312,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param degrees the angle in degrees */
 	public Vector2 rotate (float degrees) {
-		return rotateRad(degrees * RADIANS);
+		return rotateRad(degrees * MathUtils.degreesToRadians);
 	}
 
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
