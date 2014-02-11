@@ -660,6 +660,19 @@ public class Matrix4 implements Serializable {
 
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
+	 * @param axis The axis
+	 * @param radians The angle in degrees
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 setToRotationRad (Vector3 axis, float radians) {
+		if (radians == 0) {
+			idt();
+			return this;
+		}
+		return set(quat.setFromAxisRad(axis, radians));
+	}
+
+	/** Sets the matrix to a rotation matrix around the given axis.
+	 * 
 	 * @param axisX The x-component of the axis
 	 * @param axisY The y-component of the axis
 	 * @param axisZ The z-component of the axis
@@ -671,6 +684,21 @@ public class Matrix4 implements Serializable {
 			return this;
 		}
 		return set(quat.setFromAxis(axisX, axisY, axisZ, degrees));
+	}
+
+	/** Sets the matrix to a rotation matrix around the given axis.
+	 * 
+	 * @param axisX The x-component of the axis
+	 * @param axisY The y-component of the axis
+	 * @param axisZ The z-component of the axis
+	 * @param radians The angle in degrees
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 setToRotationRad (float axisX, float axisY, float axisZ, float radians) {
+		if (radians == 0) {
+			idt();
+			return this;
+		}
+		return set(quat.setFromAxisRad(axisX, axisY, axisZ, radians));
 	}
 
 	/** Set the matrix to a rotation matrix between two vectors.
@@ -854,6 +882,21 @@ public class Matrix4 implements Serializable {
 		return position;
 	}
 
+	/**
+	 * Gets the rotation of this matrix.
+	 * @param rotation The {@link Quaternion} to receive the rotation
+	 * @param normalizeAxes True to normalize the axes, necessary when the matrix might also include scaling.
+	 * @return The provided {@link Quaternion} for chaining.
+	 */
+	public Quaternion getRotation (Quaternion rotation, boolean normalizeAxes) {
+		return rotation.setFromMatrix(normalizeAxes, this);
+	}
+	
+	/**
+	 * Gets the rotation of this matrix.
+	 * @param rotation The {@link Quaternion} to receive the rotation
+	 * @return The provided {@link Quaternion} for chaining.
+	 */
 	public Quaternion getRotation (Quaternion rotation) {
 		return rotation.setFromMatrix(this);
 	}
@@ -1177,6 +1220,18 @@ public class Matrix4 implements Serializable {
 	}
 
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * 
+	 * @param axis The vector axis to rotate around.
+	 * @param radians The angle in radians.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 rotateRad (Vector3 axis, float radians) {
+		if (radians == 0) return this;
+		quat.setFromAxisRad(axis, radians);
+		return rotate(quat);
+	}
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale
 	 * @param axisX The x-axis component of the vector to rotate around.
 	 * @param axisY The y-axis component of the vector to rotate around.
@@ -1186,6 +1241,19 @@ public class Matrix4 implements Serializable {
 	public Matrix4 rotate (float axisX, float axisY, float axisZ, float degrees) {
 		if (degrees == 0) return this;
 		quat.setFromAxis(axisX, axisY, axisZ, degrees);
+		return rotate(quat);
+	}
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale
+	 * @param axisX The x-axis component of the vector to rotate around.
+	 * @param axisY The y-axis component of the vector to rotate around.
+	 * @param axisZ The z-axis component of the vector to rotate around.
+	 * @param radians The angle in radians
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix4 rotateRad (float axisX, float axisY, float axisZ, float radians) {
+		if (radians == 0) return this;
+		quat.setFromAxisRad(axisX, axisY, axisZ, radians);
 		return rotate(quat);
 	}
 
