@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import android.app.Activity;
+import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -26,6 +27,7 @@ import android.view.Display;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -58,12 +60,15 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 /** An implementation of {@link Graphics} for Android.
  * 
- * @author mzechner */
+ * @author mzechner 
+ * 
+ * 
+ * */
 public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
 	int height;
-	AndroidApplication app;
+	AndroidApplicationBase app;
 	GLCommon gl;
 	GL10 gl10;
 	GL11 gl11;
@@ -94,14 +99,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
-	public AndroidGraphics (AndroidApplication activity, AndroidApplicationConfiguration config,
+	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
-		view = createGLSurfaceView(activity, config.useGL20, resolutionStrategy);
+		view = createGLSurfaceView(application, config.useGL20, resolutionStrategy);
 		setPreserveContext(view);
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
-		this.app = activity;
+		this.app = application;
 	}
 
 	private void setPreserveContext (View view) {
@@ -123,11 +128,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	private View createGLSurfaceView (Activity activity, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (AndroidApplicationBase application, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
 		if (useGL2 && checkGL20()) {
-			GLSurfaceView20 view = new GLSurfaceView20(activity, resolutionStrategy);
+			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
 			if (configChooser != null)
 				view.setEGLConfigChooser(configChooser);
 			else
@@ -140,7 +145,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
 
 			if (sdkVersion >= 11) {
-				GLSurfaceView view = new GLSurfaceView(activity) {
+				GLSurfaceView view = new GLSurfaceView(application.getContext()) {
 					@Override
 					protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
 						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec,
@@ -185,7 +190,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				return view;
 			} else {
 				if (config.useGLSurfaceViewAPI18) {
-					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(activity, resolutionStrategy);
+					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(application.getContext(), resolutionStrategy);
 					if (configChooser != null)
 						view.setEGLConfigChooser(configChooser);
 					else
@@ -194,7 +199,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 					return view;
 				}
 				else {
-					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
+					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(application.getContext(), resolutionStrategy);
 					if (configChooser != null)
 						view.setEGLConfigChooser(configChooser);
 					else
@@ -213,7 +218,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		((WindowManager) app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -331,13 +336,13 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		updatePpi();
 		gl.glViewport(0, 0, this.width, this.height);
 		if (created == false) {
-			app.listener.create();
+			app.getApplicationListener().create();
 			created = true;
 			synchronized (this) {
 				running = true;
 			}
 		}
-		app.listener.resize(width, height);
+		app.getApplicationListener().resize(width, height);
 	}
 
 	@Override
@@ -357,7 +362,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
 
-		Display display = app.getWindowManager().getDefaultDisplay();
+		Display display = ((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		this.width = display.getWidth();
 		this.height = display.getHeight();
 		mean = new WindowedMean(5);
@@ -481,44 +486,44 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			((AndroidApplication)app).audio.resume();
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
+			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.resume();
 				}
 			}
-			app.listener.resume();
+			app.getApplicationListener().resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
 
 		if (lrunning) {
-			synchronized (app.runnables) {
-				app.executedRunnables.clear();
-				app.executedRunnables.addAll(app.runnables);
-				app.runnables.clear();
+			synchronized (app.getRunnables()) {
+				app.getExecutedRunnables().clear();
+				app.getExecutedRunnables().addAll(app.getRunnables());
+				app.getRunnables().clear();
 			}
 
-			for (int i = 0; i < app.executedRunnables.size; i++) {
+			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
 				try {
-					app.executedRunnables.get(i).run();
+					app.getExecutedRunnables().get(i).run();
 				} catch (Throwable t) {
 					t.printStackTrace();
 				}
 			}
-			app.input.processEvents();
-			app.listener.render();
+			((AndroidInput)app.getInput()).processEvents();
+			app.getApplicationListener().render();
 		}
 
 		if (lpause) {
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.pause();
 				}
 			}
-			app.listener.pause();
-			((AndroidApplication)app).audio.pause();
+			app.getApplicationListener().pause();
+			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
@@ -529,7 +534,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 					listener.dispose();
 				}
 			}
-			app.listener.dispose();
+			app.getApplicationListener().dispose();
 			((AndroidApplication)app).audio.dispose();
 			((AndroidApplication)app).audio = null;
 			Gdx.app.log("AndroidGraphics", "destroyed");
@@ -647,7 +652,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
 	}
 
