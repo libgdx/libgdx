@@ -854,6 +854,21 @@ public class Matrix4 implements Serializable {
 		return position;
 	}
 
+	/**
+	 * Gets the rotation of this matrix.
+	 * @param rotation The {@link Quaternion} to receive the rotation
+	 * @param normalizeAxes True to normalize the axes, necessary when the matrix might also include scaling.
+	 * @return The provided {@link Quaternion} for chaining.
+	 */
+	public Quaternion getRotation (Quaternion rotation, boolean normalizeAxes) {
+		return rotation.setFromMatrix(normalizeAxes, this);
+	}
+	
+	/**
+	 * Gets the rotation of this matrix.
+	 * @param rotation The {@link Quaternion} to receive the rotation
+	 * @return The provided {@link Quaternion} for chaining.
+	 */
 	public Quaternion getRotation (Quaternion rotation) {
 		return rotation.setFromMatrix(this);
 	}

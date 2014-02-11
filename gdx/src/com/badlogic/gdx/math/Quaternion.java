@@ -281,18 +281,30 @@ public class Quaternion implements Serializable {
 		return this.set(d * x * l_sin, d * y * l_sin, d * z * l_sin, l_cos).nor();
 	}
 
-// fromRotationMatrix(xAxis.x, yAxis.x, zAxis.x, xAxis.y, yAxis.y, zAxis.y,
-// xAxis.z, yAxis.z, zAxis.z);
-
-// final float m00, final float m01, final float m02, final float m10,
-// final float m11, final float m12, final float m20, final float m21, final float m22
-
-	public Quaternion setFromMatrix (Matrix4 matrix) {
-		return setFromAxes(matrix.val[Matrix4.M00], matrix.val[Matrix4.M01], matrix.val[Matrix4.M02], matrix.val[Matrix4.M10],
-			matrix.val[Matrix4.M11], matrix.val[Matrix4.M12], matrix.val[Matrix4.M20], matrix.val[Matrix4.M21],
-			matrix.val[Matrix4.M22]);
+	/** Sets the Quaternion from the given matrix, optionally removing any scaling. */
+	public Quaternion setFromMatrix (boolean normalizeAxes, Matrix4 matrix) {
+		return setFromAxes(normalizeAxes,  matrix.val[Matrix4.M00], matrix.val[Matrix4.M01], matrix.val[Matrix4.M02],
+			matrix.val[Matrix4.M10], matrix.val[Matrix4.M11], matrix.val[Matrix4.M12],
+			matrix.val[Matrix4.M20], matrix.val[Matrix4.M21], matrix.val[Matrix4.M22]);
 	}
-
+	
+	/** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
+	public Quaternion setFromMatrix (Matrix4 matrix) {
+		return setFromMatrix(false, matrix);
+	}
+	
+	/** Sets the Quaternion from the given matrix, optionally removing any scaling. */
+	public Quaternion setFromMatrix (boolean normalizeAxes, Matrix3 matrix) {
+		return setFromAxes(normalizeAxes, matrix.val[Matrix3.M00], matrix.val[Matrix3.M01], matrix.val[Matrix3.M02],
+			matrix.val[Matrix3.M10], matrix.val[Matrix3.M11], matrix.val[Matrix3.M12],
+			matrix.val[Matrix3.M20], matrix.val[Matrix3.M21], matrix.val[Matrix3.M22]);
+	}
+	
+	/** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */ 
+	public Quaternion setFromMatrix (Matrix3 matrix) {
+		return setFromMatrix(false, matrix);
+	}
+	
 	/** <p>
 	 * Sets the Quaternion from the given x-, y- and z-axis which have to be orthonormal.
 	 * </p>
@@ -312,12 +324,46 @@ public class Quaternion implements Serializable {
 	 * @param zy z-axis y-coordinate
 	 * @param zz z-axis z-coordinate */
 	public Quaternion setFromAxes (float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz) {
+		return setFromAxes (false, xx, xy, xz, yx, yy, yz, zx, zy, zz);
+	}
+
+	/** <p>
+	 * Sets the Quaternion from the given x-, y- and z-axis.
+	 * </p>
+	 * 
+	 * <p>
+	 * Taken from Bones framework for JPCT, see http://www.aptalkarga.com/bones/ which in turn took it from Graphics Gem code at
+	 * ftp://ftp.cis.upenn.edu/pub/graphics/shoemake/quatut.ps.Z.
+	 * </p>
+	 * 
+	 * @param normalizeAxes whether to normalize the axes (necessary when they contain scaling)
+	 * @param xx x-axis x-coordinate
+	 * @param xy x-axis y-coordinate
+	 * @param xz x-axis z-coordinate
+	 * @param yx y-axis x-coordinate
+	 * @param yy y-axis y-coordinate
+	 * @param yz y-axis z-coordinate
+	 * @param zx z-axis x-coordinate
+	 * @param zy z-axis y-coordinate
+	 * @param zz z-axis z-coordinate */
+	public Quaternion setFromAxes (boolean normalizeAxes, float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz) {
+		if (normalizeAxes) {
+			final float lx = 1f / Vector3.len(xx, xy, xz);
+			final float ly = 1f / Vector3.len(yx, yy, yz);
+			final float lz = 1f / Vector3.len(zx, zy, zz);
+			xx *= lx;
+			xy *= lx;
+			xz *= lx;
+			yz *= ly;
+			yy *= ly;
+			yz *= ly;
+			zx *= lz;
+			zy *= lz;
+			zz *= lz;
+		}
 		// the trace is the sum of the diagonal elements; see
 		// http://mathworld.wolfram.com/MatrixTrace.html
-		final float m00 = xx, m01 = xy, m02 = xz;
-		final float m10 = yx, m11 = yy, m12 = yz;
-		final float m20 = zx, m21 = zy, m22 = zz;
-		final float t = m00 + m11 + m22;
+		final float t = xx + yy + zz;
 
 		// we protect the division by s by ensuring that s>=1
 		double x, y, z, w;
@@ -325,30 +371,30 @@ public class Quaternion implements Serializable {
 			double s = Math.sqrt(t + 1); // |s|>=1 ...
 			w = 0.5 * s;
 			s = 0.5 / s; // so this division isn't bad
-			x = (m21 - m12) * s;
-			y = (m02 - m20) * s;
-			z = (m10 - m01) * s;
-		} else if ((m00 > m11) && (m00 > m22)) {
-			double s = Math.sqrt(1.0 + m00 - m11 - m22); // |s|>=1
+			x = (zy - yz) * s;
+			y = (xz - zx) * s;
+			z = (yx - xy) * s;
+		} else if ((xx > yy) && (xx > zz)) {
+			double s = Math.sqrt(1.0 + xx - yy - zz); // |s|>=1
 			x = s * 0.5; // |x| >= .5
 			s = 0.5 / s;
-			y = (m10 + m01) * s;
-			z = (m02 + m20) * s;
-			w = (m21 - m12) * s;
-		} else if (m11 > m22) {
-			double s = Math.sqrt(1.0 + m11 - m00 - m22); // |s|>=1
+			y = (yx + xy) * s;
+			z = (xz + zx) * s;
+			w = (zy - yz) * s;
+		} else if (yy > zz) {
+			double s = Math.sqrt(1.0 + yy - xx - zz); // |s|>=1
 			y = s * 0.5; // |y| >= .5
 			s = 0.5 / s;
-			x = (m10 + m01) * s;
-			z = (m21 + m12) * s;
-			w = (m02 - m20) * s;
+			x = (yx + xy) * s;
+			z = (zy + yz) * s;
+			w = (xz - zx) * s;
 		} else {
-			double s = Math.sqrt(1.0 + m22 - m00 - m11); // |s|>=1
+			double s = Math.sqrt(1.0 + zz - xx - yy); // |s|>=1
 			z = s * 0.5; // |z| >= .5
 			s = 0.5 / s;
-			x = (m02 + m20) * s;
-			y = (m21 + m12) * s;
-			w = (m10 - m01) * s;
+			x = (xz + zx) * s;
+			y = (zy + yz) * s;
+			w = (yx - xy) * s;
 		}
 
 		return set((float)x, (float)y, (float)z, (float)w);
