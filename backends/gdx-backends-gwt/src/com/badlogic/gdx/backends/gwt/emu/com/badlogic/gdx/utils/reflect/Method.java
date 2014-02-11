@@ -46,7 +46,7 @@ public final class Method {
 		Parameter[] parameters = method.getParameters();
 		Class[] parameterTypes = new Class[parameters.length];
 		for (int i = 0, j = parameters.length; i < j; i++) {
-			parameterTypes[i] = parameters[i].getType();
+			parameterTypes[i] = parameters[i].getClazz();
 		}
 		return parameterTypes;
 	}

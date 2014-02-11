@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.backends.headless;
 
+import java.awt.Desktop;
+import java.awt.GraphicsEnvironment;
+import java.awt.Desktop.Action;
+
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
@@ -50,9 +54,19 @@ public class HeadlessNet implements Net {
 
 	@Override
 	public void openURI (String URI) {
+		try {
+			if (!GraphicsEnvironment.isHeadless() && Desktop.isDesktopSupported()) {
+				if (Desktop.getDesktop().isSupported(Action.BROWSE)) {
+					Desktop.getDesktop().browse(java.net.URI.create(URI));
+					return;
+				}
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return;
+		}
 		// don't throw the exception, don't want to kill the app, just let the headless app know it can't open URIs
 		Exception e = new GdxRuntimeException("ERROR: cannot open URI on a headless application");
 		e.printStackTrace();
 	}
-
 }

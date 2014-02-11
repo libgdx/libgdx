@@ -45,6 +45,11 @@ public class HttpRequestExample extends GdxTest {
 			public void failed(Throwable t) {
 				Gdx.app.error("HttpRequestExample", "something went wrong", t);
 			}
+
+			@Override
+			public void cancelled () {
+				Gdx.app.log("HttpRequestExample", "cancelled");
+			}
 		});
 	}
 }

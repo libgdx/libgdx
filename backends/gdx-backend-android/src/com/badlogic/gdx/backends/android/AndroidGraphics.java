@@ -155,9 +155,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 							public boolean deleteSurroundingText (int beforeLength, int afterLength) {
 								int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
 								if (sdkVersion >= 16) {
-									/* In Jelly Bean, they don't send key events for delete.
-									 *  Instead, they send beforeLength = 1, afterLength = 0.
-									 *  So, we'll just simulate what it used to do. */
+									/*
+									 * In Jelly Bean, they don't send key events for delete. Instead, they send beforeLength = 1,
+									 * afterLength = 0. So, we'll just simulate what it used to do.
+									 */
 									if (beforeLength == 1 && afterLength == 0) {
 										sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
 										return true;
@@ -165,6 +166,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 								}
 								return super.deleteSurroundingText(beforeLength, afterLength);
 							}
+
 							private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
 								final long eventTime = SystemClock.uptimeMillis();
 								super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,
@@ -192,8 +194,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 					view.setRenderer(this);
 					return view;
-				}
-				else {
+				} else {
 					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(activity, resolutionStrategy);
 					if (configChooser != null)
 						view.setEGLConfigChooser(configChooser);
@@ -422,7 +423,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 					synch.wait(4000);
 					if (pause) {
 						Gdx.app.error("AndroidGraphics", "waiting for pause synchronization took too "
-						                                 + "long; assuming deadlock and killing");
+							+ "long; assuming deadlock and killing");
 						android.os.Process.killProcess(android.os.Process.myPid());
 					}
 				} catch (InterruptedException ignored) {
@@ -452,7 +453,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		mean.addValue(deltaTime);
+		if(!resume) {
+			mean.addValue(deltaTime);
+		} else {
+			deltaTime = 0;
+		}
 
 		boolean lrunning = false;
 		boolean lpause = false;
@@ -481,10 +486,9 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			((AndroidApplication)app).audio.resume();
 			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.resume();
 				}
 			}
@@ -512,8 +516,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 		if (lpause) {
 			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.pause();
 				}
 			}
@@ -524,8 +528,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 		if (ldestroy) {
 			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.dispose();
 				}
 			}

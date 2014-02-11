@@ -43,11 +43,13 @@ public class MathUtils {
 	static private final float radToIndex = SIN_COUNT / radFull;
 	static private final float degToIndex = SIN_COUNT / degFull;
 
+	/** multiply by this to convert from radians to degrees */
 	static public final float radiansToDegrees = 180f / PI;
 	static public final float radDeg = radiansToDegrees;
+	/** multiply by this to convert from degrees to radians */
 	static public final float degreesToRadians = PI / 180;
 	static public final float degRad = degreesToRadians;
-
+	
 	static private class Sin {
 		static final float[] table = new float[SIN_COUNT];
 		static {
