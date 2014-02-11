@@ -481,4 +481,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Array<Runnable> getExecutedRunnables () {
 		return executedRunnables;
 	}
+
+	@Override
+	public Array<LifecycleListener> getLifecycleListeners () {
+		return lifecycleListeners;
+	}
 }

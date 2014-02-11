@@ -486,8 +486,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			((AndroidApplication)app).audio.resume();
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
+			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.resume();
@@ -516,14 +516,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lpause) {
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized(listeners) {
 				for(LifecycleListener listener: listeners) {
 					listener.pause();
 				}
 			}
 			app.getApplicationListener().pause();
-			((AndroidApplication)app).audio.pause();
+			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 

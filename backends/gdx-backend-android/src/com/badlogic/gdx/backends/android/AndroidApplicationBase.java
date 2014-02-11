@@ -6,7 +6,9 @@ import android.content.Intent;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -60,5 +62,19 @@ public interface AndroidApplicationBase extends Application {
 	 * @param intent The {@link Intent} for starting an activity
 	 */
 	void startActivity(Intent intent);
+	
+	/**
+	 * Returns the {@link Audio} object associated with this {@link AndroidApplicationBase}
+	 * 
+	 * @return the {@link Audio} object
+	 */
+	Audio getAudio();
+	
+	/**
+	 * Returns the {@link LifecycleListener} array associated with this {@link AndroidApplicationBase}
+	 * 
+	 * @return the array of {@link LifecycleListener}'s
+	 */
+	Array<LifecycleListener> getLifecycleListeners();
 
 }

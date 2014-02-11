@@ -378,4 +378,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	public void runOnUiThread (Runnable runnable) {
 		getActivity().runOnUiThread(runnable);
 	}
+
+	@Override
+	public Array<LifecycleListener> getLifecycleListeners () {
+		return lifecycleListeners;
+	}
 }
