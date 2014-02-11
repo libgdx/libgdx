@@ -47,6 +47,8 @@ public class OpenALAudio implements Audio {
 	private long nextSoundId = 0;
 	private ObjectMap<String, Class<? extends OpenALSound>> extensionToSoundClass = new ObjectMap();
 	private ObjectMap<String, Class<? extends OpenALMusic>> extensionToMusicClass = new ObjectMap();
+	private OpenALSound[] recentSounds;
+	private int mostRecetSound = -1;
 
 	Array<OpenALMusic> music = new Array(false, 1, OpenALMusic.class);
 	boolean noDevice = false;
@@ -91,6 +93,8 @@ public class OpenALAudio implements Audio {
 		alListener(AL_VELOCITY, velocity);
 		FloatBuffer position = (FloatBuffer)BufferUtils.createFloatBuffer(3).put(new float[] {0.0f, 0.0f, 0.0f}).flip();
 		alListener(AL_POSITION, position);
+		
+		recentSounds = new OpenALSound[simultaneousSources];
 	}
 
 	public void registerSound (String extension, Class<? extends OpenALSound> soundClass) {
@@ -337,5 +341,27 @@ public class OpenALAudio implements Audio {
 			}
 		};
 		return new JavaSoundAudioRecorder(samplingRate, isMono);
+	}
+
+	/** Retains a list of the most recently played sounds and stops the sound played least recently if necessary for a new sound to
+	 * play */
+	protected void retain (OpenALSound sound, boolean stop) {
+		// Move the pointer ahead and wrap
+		mostRecetSound++;
+		mostRecetSound %= recentSounds.length;
+
+		if (stop) {
+			// Stop the least recent sound (the one we are about to bump off the buffer)
+			if (recentSounds[mostRecetSound] != null) recentSounds[mostRecetSound].stop();
+		}
+
+		recentSounds[mostRecetSound] = sound;
+	}
+
+	/** Removes the disposed sound from the least recently played list */
+	public void forget (OpenALSound sound) {
+		for (int i = 0; i < recentSounds.length; i++) {
+			if (recentSounds[i] == sound) recentSounds[i] = null;
+		}
 	}
 }
