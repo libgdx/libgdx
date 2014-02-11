@@ -46,10 +46,12 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	TextButton btnDownloadText;
 	TextButton btnDownloadError;
 	TextButton btnPost;
+	TextButton btnCancel;
 	Label statusLabel;
 	Texture texture;
 	String text;
 	BitmapFont font;
+	HttpRequest httpRequest;
 
 	Object clickedButton;
 
@@ -112,7 +114,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 						requestContent = "name1=value1&name2=value2";
 					}
 
-					HttpRequest httpRequest = new HttpRequest(httpMethod);
+					httpRequest = new HttpRequest(httpMethod);
 					httpRequest.setUrl(url);
 					httpRequest.setContent(requestContent);
 					Gdx.net.sendHttpRequest(httpRequest, NetAPITest.this);
@@ -120,9 +122,23 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
 			};
+			
+			ClickListener cancelListener = new ClickListener() {
+				@Override
+				public void clicked (InputEvent event, float x, float y) {
+					super.clicked(event, x, y);
+					Gdx.net.cancelHttpRequest(httpRequest);					
+					statusLabel.setText("Cancelling request " + httpRequest.getUrl());
+				}
+			};
 
+			btnCancel = new TextButton("Cancel", skin);
+			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.5f - btnCancel.getWidth() * 1.5f, 60f);
+			btnCancel.addListener(cancelListener);
+			stage.addActor(btnCancel);
+			
 			btnDownloadImage = new TextButton("GET Image", skin);
-			btnDownloadImage.setPosition(Gdx.graphics.getWidth() * 0.5f - btnDownloadImage.getWidth() * 1.5f, 60f);
+			btnDownloadImage.setPosition(btnCancel.getX() + btnCancel.getWidth() + 10, 60f);
 			btnDownloadImage.addListener(clickListener);
 			stage.addActor(btnDownloadImage);
 
@@ -232,6 +248,16 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	@Override
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, false);
+	}
+
+	@Override
+	public void cancelled () {
+		Gdx.app.postRunnable(new Runnable() {
+			public void run () {
+				setButtonDisabled(false);
+				statusLabel.setText("HTTP request cancelled");
+			}
+		});
 	}
 
 }
