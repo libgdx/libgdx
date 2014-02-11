@@ -75,6 +75,8 @@ public class AndroidApplication extends Activity implements Application {
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
+	private int wasFocusChanged = -1;
+	private boolean isWaitingForAudio = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -174,6 +176,15 @@ public class AndroidApplication extends Activity implements Application {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
 		hideStatusBar(this.hideStatusBar);
+		if (hasFocus) {
+			this.wasFocusChanged = 1;
+			if (this.isWaitingForAudio) {
+				this.audio.resume();
+				this.isWaitingForAudio = false;
+			}
+		} else {
+			this.wasFocusChanged = 0;
+		}
 	}
 
 	protected void useImmersiveMode (boolean use) {
@@ -310,6 +321,12 @@ public class AndroidApplication extends Activity implements Application {
 			graphics.resume();
 		} else
 			firstResume = false;
+
+		this.isWaitingForAudio = true;
+		if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
+			this.audio.resume();
+			this.isWaitingForAudio = false;
+		}
 		super.onResume();
 	}
 
