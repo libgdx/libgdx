@@ -167,7 +167,8 @@ public class IOSApplication implements Application {
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
-		CGSize bounds = UIScreen.getMainScreen().getBounds().size();
+//		CGSize bounds = UIScreen.getMainScreen().getBounds().size();
+		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
 
 		// determine orientation and resulting width + height
 		UIInterfaceOrientation orientation = viewController != null 
