@@ -105,7 +105,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	}
 
 	private void setPreserveContext (View view) {
-		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) {
 			try {
 				Method method = null;
@@ -137,7 +137,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+			int sdkVersion = android.os.Build.VERSION.SDK_INT;
 
 			if (sdkVersion >= 11) {
 				GLSurfaceView view = new GLSurfaceView(activity) {
@@ -153,7 +153,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 						BaseInputConnection connection = new BaseInputConnection(this, false) {
 							@Override
 							public boolean deleteSurroundingText (int beforeLength, int afterLength) {
-								int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+								int sdkVersion = android.os.Build.VERSION.SDK_INT;
 								if (sdkVersion >= 16) {
 									/*
 									 * In Jelly Bean, they don't send key events for delete. Instead, they send beforeLength = 1,
