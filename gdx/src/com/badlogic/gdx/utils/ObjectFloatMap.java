@@ -611,6 +611,8 @@ public class ObjectFloatMap<K> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			if (currentIndex >= map.capacity) {
 				map.removeStashIndex(currentIndex);
+				nextIndex = currentIndex;
+				findNextIndex();
 			} else {
 				map.keyTable[currentIndex] = null;
 			}

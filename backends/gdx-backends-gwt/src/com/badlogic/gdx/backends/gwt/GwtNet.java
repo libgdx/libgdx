@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.gwt;
 
 import java.io.InputStream;
@@ -46,7 +47,7 @@ public class GwtNet implements Net {
 
 	private ObjectMap<HttpRequest, Request> requests;
 	private ObjectMap<HttpRequest, HttpResponseListener> listeners;
-	
+
 	private final class HttpClientResponse implements HttpResponse {
 
 		private Response response;
@@ -90,16 +91,16 @@ public class GwtNet implements Net {
 				}
 				headerValues.add(responseHeaders[i].getValue());
 			}
-			return headers;			
+			return headers;
 		}
-		
+
 		@Override
 		public String getHeader (String name) {
 			return response.getHeader(name);
 		}
 	}
-	
-	public GwtNet() {
+
+	public GwtNet () {
 		requests = new ObjectMap<HttpRequest, Request>();
 		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
 	}
@@ -131,7 +132,7 @@ public class GwtNet implements Net {
 				@Override
 				public void onResponseReceived (Request request, Response response) {
 					HttpRequest httpRequest = requests.findKey(requests, true);
-					
+
 					if (httpRequest != null) {
 						httpResultListener.handleHttpResponse(new HttpClientResponse(response));
 						requests.remove(httpRequest);
@@ -142,7 +143,7 @@ public class GwtNet implements Net {
 				@Override
 				public void onError (Request request, Throwable exception) {
 					HttpRequest httpRequest = requests.findKey(requests, true);
-					
+
 					if (httpRequest != null) {
 						httpResultListener.failed(exception);
 						requests.remove(httpRequest);
@@ -150,21 +151,21 @@ public class GwtNet implements Net {
 					}
 				}
 			});
-			
+
 			requests.put(httpRequest, request);
 			listeners.put(httpRequest, httpResultListener);
-			
+
 		} catch (RequestException e) {
 			httpResultListener.failed(e);
 		}
 
 	}
-	
+
 	@Override
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
 		Request request = requests.get(httpRequest);
-		
+
 		if (httpResponseListener != null && request != null) {
 			request.cancel();
 			httpResponseListener.cancelled();

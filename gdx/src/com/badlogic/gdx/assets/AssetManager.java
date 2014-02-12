@@ -53,6 +53,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.ObjectIntMap;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.UBJsonReader;
 import com.badlogic.gdx.utils.async.AsyncExecutor;
@@ -65,6 +66,7 @@ public class AssetManager implements Disposable {
 	final ObjectMap<Class, ObjectMap<String, RefCountedContainer>> assets = new ObjectMap();
 	final ObjectMap<String, Class> assetTypes = new ObjectMap();
 	final ObjectMap<String, Array<String>> assetDependencies = new ObjectMap();
+	final ObjectSet<String> injected = new ObjectSet();
 
 	final ObjectMap<Class, ObjectMap<String, AssetLoader>> loaders = new ObjectMap();
 	final Array<AssetDescriptor> loadQueue = new Array();
@@ -102,7 +104,7 @@ public class AssetManager implements Disposable {
 	 * @return the asset */
 	public synchronized <T> T get (String fileName) {
 		Class<T> type = assetTypes.get(fileName);
-		if(type==null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
+		if (type == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
 		if (assetsByType == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		RefCountedContainer assetContainer = assetsByType.get(fileName);
@@ -131,7 +133,7 @@ public class AssetManager implements Disposable {
 		return get(assetDescriptor.fileName, assetDescriptor.type);
 	}
 
-	/** Removes the asset and all its dependencies if they are not used by other assets.
+	/** Removes the asset and all its dependencies, if they are not used by other assets.
 	 * @param fileName the file name */
 	public synchronized void unload (String fileName) {
 		// check if it's in the queue
@@ -143,6 +145,7 @@ public class AssetManager implements Disposable {
 			}
 		}
 		if (foundIndex != -1) {
+			toLoad--;
 			loadQueue.removeIndex(foundIndex);
 			log.debug("Unload (from queue): " + fileName);
 			return;
@@ -277,6 +280,7 @@ public class AssetManager implements Disposable {
 		AssetLoader loader = getLoader(type, fileName);
 		if (loader == null) throw new GdxRuntimeException("No loader for type: " + ClassReflection.getSimpleName(type));
 
+		// reset stats
 		if (loadQueue.size == 0) {
 			loaded = 0;
 			toLoad = 0;
@@ -376,9 +380,13 @@ public class AssetManager implements Disposable {
 	}
 
 	synchronized void injectDependencies (String parentAssetFilename, Array<AssetDescriptor> dependendAssetDescs) {
+		ObjectSet<String> injected = this.injected;
 		for (AssetDescriptor desc : dependendAssetDescs) {
+			if (injected.contains(desc.fileName)) continue; // Ignore subsequent dependencies if there are duplicates.
+			injected.add(desc.fileName);
 			injectDependency(parentAssetFilename, desc);
 		}
+		injected.clear();
 	}
 
 	private synchronized void injectDependency (String parentAssetFilename, AssetDescriptor dependendAssetDesc) {

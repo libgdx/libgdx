@@ -110,9 +110,9 @@ public class NetJavaImpl {
 	}
 
 	private final ExecutorService executorService;
-	private final ObjectMap<HttpRequest, HttpURLConnection> connections;
-	private final ObjectMap<HttpRequest, HttpResponseListener> listeners;
-	private final Lock lock;
+	final ObjectMap<HttpRequest, HttpURLConnection> connections;
+	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
+	final Lock lock;
 
 	public NetJavaImpl () {
 		executorService = Executors.newCachedThreadPool();

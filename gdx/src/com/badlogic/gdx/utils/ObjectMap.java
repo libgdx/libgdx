@@ -643,6 +643,8 @@ public class ObjectMap<K, V> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			if (currentIndex >= map.capacity) {
 				map.removeStashIndex(currentIndex);
+				nextIndex = currentIndex;
+				advance();
 			} else {
 				map.keyTable[currentIndex] = null;
 				map.valueTable[currentIndex] = null;

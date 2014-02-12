@@ -23,8 +23,8 @@ import java.util.Arrays;
 public class Method {
 	private static final Parameter[] EMPTY_PARAMS = new Parameter[0];
 	final String name;
-	final Class enclosingType;
-	final Class returnType;
+	final CachedTypeLookup enclosingType;
+	final CachedTypeLookup returnType;
 	final boolean isAbstract;
 	final boolean isFinal;
 	final boolean isStatic;
@@ -43,9 +43,9 @@ public class Method {
 		boolean isFinal, boolean isStatic, boolean isDefaultAccess, boolean isPrivate, boolean isProtected, boolean isPublic,
 		boolean isNative, boolean isVarArgs, boolean isMethod, boolean isConstructor, int methodId) {
 		this.name = name;
-		this.enclosingType = enclosingType;
+		this.enclosingType = new CachedTypeLookup(enclosingType);
 		this.parameters = parameters != null ? parameters : EMPTY_PARAMS;
-		this.returnType = returnType;
+		this.returnType = new CachedTypeLookup(returnType);
 		this.isAbstract = isAbstract;
 		this.isFinal = isFinal;
 		this.isStatic = isStatic;
@@ -62,12 +62,12 @@ public class Method {
 
 	/** @return the {@link Class} of the enclosing type. */
 	public Class getEnclosingType () {
-		return enclosingType;
+		return enclosingType.getClass();
 	}
 
 	/** @return the {@link Class} of the return type or null. */
 	public Class getReturnType () {
-		return returnType;
+		return returnType.getClass();
 	}
 
 	/** @return the list of parameters, can be a zero size array. */
@@ -132,7 +132,7 @@ public class Method {
 	public Object invoke (Object obj, Object... params) {
 		if (parameters.length != (params != null ? params.length : 0)) throw new IllegalArgumentException("Parameter mismatch");
 
-		return ReflectionCache.instance.invoke(this, obj, params);
+		return ReflectionCache.invoke(this, obj, params);
 	}
 
 	boolean match (String name, Class... types) {
@@ -143,8 +143,8 @@ public class Method {
 		if (types == null) return parameters.length == 0;
 		if (types.length != parameters.length) return false;
 		for (int i = 0; i < types.length; i++) {
-			Type t1 = ReflectionCache.instance.forName(parameters[i].getType().getName());
-			Type t2 = ReflectionCache.instance.forName(types[i].getName());
+			Type t1 = parameters[i].getType();
+			Type t2 = ReflectionCache.getType(types[i]);
 			if (t1 != t2 && !t1.isAssignableFrom(t2)) return false;
 		}
 		return true;
