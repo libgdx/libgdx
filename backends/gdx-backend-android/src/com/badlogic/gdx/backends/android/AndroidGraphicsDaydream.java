@@ -146,7 +146,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+			int sdkVersion = android.os.Build.VERSION.SDK_INT;
 
 			if (sdkVersion >= 11) {
 				GLSurfaceView view = new GLSurfaceView(dream) {

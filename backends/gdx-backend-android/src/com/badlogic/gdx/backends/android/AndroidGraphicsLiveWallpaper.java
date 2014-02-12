@@ -106,7 +106,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	// will be replaced by subclass of original GLSurfaceView, i'm working on it:)
 	// <- ok it is in use now
 	private void setPreserveContext (Object view) {
-		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		if (sdkVersion >= 11 && view instanceof GLSurfaceView) {
 			try {
 				Method method = null;
@@ -166,7 +166,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+			int sdkVersion = android.os.Build.VERSION.SDK_INT;
 
 			if (sdkVersion >= 11) {
 				GLSurfaceView view = new GLSurfaceView(context) {
