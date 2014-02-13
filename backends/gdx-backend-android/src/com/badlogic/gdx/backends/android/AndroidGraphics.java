@@ -60,10 +60,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 
 /** An implementation of {@link Graphics} for Android.
  * 
- * @author mzechner 
- * 
- * 
- * */
+ * @author mzechner */
 public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
 	int width;
@@ -128,7 +125,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	private View createGLSurfaceView (AndroidApplicationBase application, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (AndroidApplicationBase application, boolean useGL2,
+		final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
 		if (useGL2 && checkGL20()) {
@@ -219,7 +217,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager) app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -458,7 +456,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		if(!resume) {
+		if (!resume) {
 			mean.addValue(deltaTime);
 		} else {
 			deltaTime = 0;
@@ -491,10 +489,12 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
+			if (app instanceof AndroidFragmentApplication) {
+				((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
+			}
 			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.resume();
 				}
 			}
@@ -522,8 +522,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 		if (lpause) {
 			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.pause();
 				}
 			}
