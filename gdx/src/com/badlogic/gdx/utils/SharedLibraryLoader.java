@@ -185,7 +185,7 @@ public class SharedLibraryLoader {
 
 	/** Returns true if the parent directories of the file can be created and the file can be written. */
 	private boolean canWrite (File file) {
-		if (file.canWrite()) return true; // File exists and is writable.
+		if (file.canWrite() && file.canExecute()) return true; // File exists and is writable.
 		File parent = file.getParentFile();
 		parent.mkdirs();
 		if (!parent.isDirectory()) return false;

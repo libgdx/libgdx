@@ -287,7 +287,7 @@ public class AndroidLiveWallpaper implements Application {
 
 	@Override
 	public int getVersion () {
-		return Integer.parseInt(android.os.Build.VERSION.SDK);
+		return android.os.Build.VERSION.SDK_INT;
 	}
 
 	@Override

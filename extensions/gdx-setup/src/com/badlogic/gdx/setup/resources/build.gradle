@@ -1,4 +1,7 @@
 buildscript {
+
+    ext.gdxVersion = "1.0-SNAPSHOT"
+
     repositories {
         maven {
             url 'https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/'
@@ -9,7 +12,8 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.2'
         classpath 'com.android.tools.build:gradle:0.7.3+'
-        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.2'
+        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.4'
+        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     }
 }
 
@@ -19,7 +23,12 @@ allprojects {
     
     version = "1.0"
     ext.appName = "%APP_NAME%"
-    ext.gdxVersion = "1.0-SNAPSHOT"
+
+    // Uncomment line below with proper parameters to pass to TexturePacker
+    // and TexturePacker will be invoked automagically whenever the target
+    // "texurePacker" is invoked, e.g. "./gradlew texturePacker desktop:run"
+
+    // ext.texturePacker = ['images', 'android/assets/data', 'gamegdx']
     
     repositories {
         mavenCentral()
@@ -95,7 +104,7 @@ project(":ios") {
 
     ext {
         mainClassName = "%PACKAGE%.IOSLauncher"
-        roboVMVersion = "0.0.8"
+        roboVMVersion = "0.0.9"
     }
 
     task wrapper(type: Wrapper) {

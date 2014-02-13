@@ -144,7 +144,7 @@ public class SnapshotArray<T> extends Array<T> {
 		super.sort();
 	}
 
-	public void sort (Comparator<T> comparator) {
+	public void sort (Comparator<? super T> comparator) {
 		modified();
 		super.sort(comparator);
 	}

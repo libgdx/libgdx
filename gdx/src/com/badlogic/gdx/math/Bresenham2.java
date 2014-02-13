@@ -45,7 +45,7 @@ public class Bresenham2 {
 	 * @return the list of points on the line at integer coordinates
 	 */
 	public Array<GridPoint2> line(GridPoint2 start, GridPoint2 end) {
-		return line(start.x, start.y, end.y, end.y);
+		return line(start.x, start.y, end.x, end.y);
 	}
 	
 	/**

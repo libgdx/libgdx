@@ -69,12 +69,7 @@ public class HorizontalGroup extends WidgetGroup {
 			Actor child = children.get(i);
 			if (child instanceof Layout) {
 				Layout layout = (Layout)child;
-				float width = layout.getPrefWidth();
-				if (width == 0) {
-					// a Label with text-wrapping on?
-					width = child.getWidth();
-				}
-				prefWidth += width;
+				prefWidth += layout.getPrefWidth();
 				prefHeight = Math.max(prefHeight, layout.getPrefHeight());
 			} else {
 				prefWidth += child.getWidth();

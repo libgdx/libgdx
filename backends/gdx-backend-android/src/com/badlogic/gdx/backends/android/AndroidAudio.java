@@ -48,7 +48,7 @@ public final class AndroidAudio implements Audio {
 		if (!config.disableAudio) {
 			soundPool = new SoundPool(config.maxSimultaneousSounds, AudioManager.STREAM_MUSIC, 100);
 			manager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
-			if(context instanceof Activity) {
+			if (context instanceof Activity) {
 				((Activity)context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 			}
 		} else {
@@ -71,6 +71,7 @@ public final class AndroidAudio implements Audio {
 					music.wasPlaying = false;
 			}
 		}
+		this.soundPool.autoPause();
 	}
 
 	protected void resume () {
@@ -82,6 +83,7 @@ public final class AndroidAudio implements Audio {
 				if (musics.get(i).wasPlaying == true) musics.get(i).play();
 			}
 		}
+		this.soundPool.autoResume();
 	}
 
 	/** {@inheritDoc} */

@@ -97,7 +97,7 @@ public class ModelBuilder {
 		}
 	}
 
-	/** Adds the {@link Node} to the model and sets it active for building. */
+	/** Adds the {@link Node} to the model and sets it active for building. Use any of the part(...) method to add a NodePart. */
 	protected Node node(final Node node) {
 		if (model == null)
 			throw new GdxRuntimeException("Call begin() first");
@@ -110,7 +110,7 @@ public class ModelBuilder {
 		return node;
 	}
 	
-	/** Add a node to the model. 
+	/** Add a node to the model. Use any of the part(...) method to add a NodePart.
 	 * @return The node being created. */
 	public Node node() {
 		final Node node = new Node();
@@ -119,7 +119,7 @@ public class ModelBuilder {
 		return node;
 	}
 	
-	/** Adds the nodes of the specified model to a new node the model being build.
+	/** Adds the nodes of the specified model to a new node of the model being build.
 	 * After this method the given model can no longer be used. Do not call the {@link Model#dispose()} method on that model. 
 	 * @return The newly created node containing the nodes of the given model. */
 	public Node node(final String id, final Model model) {
@@ -171,7 +171,9 @@ public class ModelBuilder {
 		return part(id, mesh, primitiveType, 0, mesh.getNumIndices(), material);
 	}
 	
-	/** Creates a new MeshPart within the current Node.
+	/** Creates a new MeshPart within the current Node and returns a {@link MeshPartBuilder} which can be used to build the
+	 * shape of the part. If possible a previously used {@link MeshPartBuilder} will be reused, to reduce the number of mesh
+	 * binds. Therefore you can only build one part at a time. 
 	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model.
 	 * @return The {@link MeshPartBuilder} you can use to build the MeshPart. */ 
 	private MeshPartBuilder part(final String id, int primitiveType, final VertexAttributes attributes, final Material material) {
@@ -180,7 +182,9 @@ public class ModelBuilder {
 		return builder;
 	}
 	
-	/** Creates a new MeshPart within the current Node.
+	/** Creates a new MeshPart within the current Node and returns a {@link MeshPartBuilder} which can be used to build the
+	 * shape of the part. If possible a previously used {@link MeshPartBuilder} will be reused, to reduce the number of mesh
+	 * binds. Therefore you can only build one part at a time.
 	 * The resources the Material might contain are not managed, use {@link #manage(Disposable)} to add those to the model.
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported.

@@ -149,14 +149,6 @@ public class TexturePacker {
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
-			if (settings.square) {
-				if (width > height) {
-					height = width;
-				} else {
-					width = height;
-				}
-			}
-
 			File outputFile;
 			while (true) {
 				fileIndex++;

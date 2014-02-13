@@ -178,6 +178,10 @@ public class GdxSetup {
 	
 	private static void printHelp() {
 		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass>");
+		System.out.println("dir ... the directory to write the project files to");
+		System.out.println("name ... the name of the application");
+		System.out.println("package ... the Java package name of the application");
+		System.out.println("mainClass ... the name of your main ApplicationListener");
 	}
 	
 	private static Map<String, String> parseArgs(String[] args) {

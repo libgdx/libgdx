@@ -136,13 +136,15 @@ public class ScissorStack {
 	 * left and the the y-axis is pointing downwards
 	 * @param camera the {@link Camera}
 	 * @param transformMatrix the transformation {@link Matrix4}
-	 * @param point the point to be transformed. */
-	public static void toWindowCoordinates (Camera camera, Matrix4 transformMatrix, Vector2 point) {
+	 * @param point the point to be transformed.
+	 * @return point */
+	public static Vector2 toWindowCoordinates (Camera camera, Matrix4 transformMatrix, Vector2 point) {
 		tmp.set(point.x, point.y, 0);
 		tmp.mul(transformMatrix);
 		camera.project(tmp);
 		tmp.y = Gdx.graphics.getHeight() - tmp.y;
 		point.x = tmp.x;
 		point.y = tmp.y;
+		return point;
 	}
 }

@@ -24,7 +24,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 
 /**
  * A truncated rectangular pyramid.  Used to define the viewable region and its projection onto the screen.  
- * See {@link Camera#frustum}.
+ * @see Camera#frustum
  */
 public class Frustum {
 	protected static final Vector3[] clipSpacePlanePoints = {new Vector3(-1, -1, -1), new Vector3(1, -1, -1),
@@ -41,7 +41,7 @@ public class Frustum {
 		}
 	}
 
-	/** the six clipping planes, near, far, left, right, top, bottm **/
+	/** the six clipping planes, near, far, left, right, top, bottom **/
 	public final Plane[] planes = new Plane[6];
 
 	/** eight points making up the near and far clipping "rectangles". order is counter clockwise, starting at bottom left **/
@@ -169,6 +169,30 @@ public class Frustum {
 				if (planes[i].testPoint(corners[j]) == PlaneSide.Back) out++;
 
 			if (out == 8) return false;
+		}
+
+		return true;
+	}
+	
+	/** Returns whether the given bounding box is in the frustum.
+	 * @return Whether the bounding box is in the frustum */
+	public boolean boundsInFrustum (Vector3 center, Vector3 dimensions) {
+		return boundsInFrustum(center.x, center.y, center.z, dimensions.x/2, dimensions.y/2, dimensions.z/2);
+	}
+	
+	/** Returns whether the given bounding box is in the frustum.
+	 * @return Whether the bounding box is in the frustum */
+	public boolean boundsInFrustum (float x, float y, float z, float halfWidth, float halfHeight, float halfDepth) {
+		for (int i = 0, len2 = planes.length; i < len2; i++) {
+			if (planes[i].testPoint(x+halfWidth, y+halfHeight, z+halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x+halfWidth, y+halfHeight, z-halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x+halfWidth, y-halfHeight, z+halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x+halfWidth, y-halfHeight, z-halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x-halfWidth, y+halfHeight, z+halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x-halfWidth, y+halfHeight, z-halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x-halfWidth, y-halfHeight, z+halfDepth) != PlaneSide.Back) continue;
+			if (planes[i].testPoint(x-halfWidth, y-halfHeight, z-halfDepth) != PlaneSide.Back) continue;
+			return false;
 		}
 
 		return true;
