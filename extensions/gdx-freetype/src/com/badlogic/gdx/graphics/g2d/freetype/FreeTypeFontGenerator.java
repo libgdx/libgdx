@@ -133,7 +133,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * need to fit onto a single texture.
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)} */
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
 	public BitmapFont generateFont (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip, null);
 		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
@@ -144,9 +145,21 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws a GdxRuntimeException in case the font could not
 	 * be generated. Using big sizes might cause such an exception. All characters need to fit onto a single texture.
 	 * 
-	 * @param size the size of the font in pixels */
+	 * @param size the size of the font in pixels
+	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
 	public BitmapFont generateFont (int size) {
 		return generateFont(size, DEFAULT_CHARS, false);
+	}
+	
+	/** Generates a new {@link BitmapFont}. The size is expressed in pixels. Throws a GdxRuntimeException in case the font could not
+	 * be generated. Using big sizes might cause such an exception. All characters need to fit onto a single texture.
+	 * 
+	 * @param parameter configures how the font is generated */
+	public BitmapFont generateFont (FreeTypeFontParameter parameter) {
+		FreeTypeBitmapFontData data = generateData(parameter);
+		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
+		font.setOwnsTexture(true);
+		return font;
 	}
 	
 	/** Uses ascender and descender of font to calculate real height that makes
@@ -233,7 +246,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)} */
+	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
 		return generateData(size, characters, flip, null);
 	}
@@ -241,25 +255,33 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException in case something went
 	 * wrong.
 	 * 
-	 * The packer argument is for advanced usage, where it is necessary to pack multiple BitmapFonts (i.e. styles, sizes, families) 
-	 * into a single Texture atlas. If no packer is specified, the method will use its own PixmapPacker to pack the glyphs into a
-	 * power-of-two sized texture, and the resulting FreeTypeBitmapFontData will have a valid TextureRegion which can be used 
-	 * to construct a new BitmapFont. 
-	 * 
-	 * If the packer is specified, the glyphs will be packed into it instead. The returned FreeTypeBitmapFontData will have a null
-	 * TextureRegion; it is up to the user to generate a TextureAtlas and TextureRegion once all packing is complete.
-	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
 	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
-	 * @param packer the optional PixmapPacker to use */
+	 * @param packer the optional PixmapPacker to use
+	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip, PixmapPacker packer) {
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = size;
+		parameter.characters = characters;
+		parameter.flip = flip;
+		parameter.packer = packer;
+		return generateData(parameter);
+	}
+	
+	/** Generates a new {@link BitmapFontData} instance, expert usage only. Throws a GdxRuntimeException in case something went
+	 * wrong.
+	 * 
+	 * @param parameter configures how the font is generated */
+	public FreeTypeBitmapFontData generateData (FreeTypeFontParameter parameter) {
+		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
+		
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, parameter.size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		// set general font data
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
-		data.flipped = flip;
+		data.flipped = parameter.flip;
 		data.ascent = FreeType.toInt(fontMetrics.getAscender());
 		data.descent = FreeType.toInt(fontMetrics.getDescender());
 		data.lineHeight = FreeType.toInt(fontMetrics.getHeight());
@@ -306,17 +328,20 @@ public class FreeTypeFontGenerator implements Disposable {
 		if (!bitmapped && data.capHeight == 1) throw new GdxRuntimeException("No cap character found in font");
 		data.ascent = data.ascent - data.capHeight;
 		data.down = -data.lineHeight;
-		if (flip) {
+		if (parameter.flip) {
 			data.ascent = -data.ascent;
 			data.down = -data.down;
 		}
 
 			
 		boolean ownsAtlas = false;
+		
+		PixmapPacker packer = parameter.packer;
+		
 		if (packer==null) {
 			// generate the glyphs
 			int maxGlyphHeight = (int)Math.ceil(data.lineHeight);
-			int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * characters.length()));
+			int pageWidth = MathUtils.nextPowerOfTwo((int)Math.sqrt(maxGlyphHeight * maxGlyphHeight * parameter.characters.length()));
 				
 			if (maxTextureSize > 0)
 				pageWidth = Math.min(pageWidth, maxTextureSize);
@@ -326,10 +351,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		//to minimize collisions we'll use this format : pathWithoutExtension_size[_flip]_glyph
-		String packPrefix = ownsAtlas ? "" : (filePath + '_' + size + (flip ? "_flip_" : '_') );
+		String packPrefix = ownsAtlas ? "" : (filePath + '_' + parameter.size + (parameter.flip ? "_flip_" : '_') );
 		
-		for (int i = 0; i < characters.length(); i++) {
-			char c = characters.charAt(i);
+		for (int i = 0; i < parameter.characters.length(); i++) {
+			char c = parameter.characters.charAt(i);
 			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
 				Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char '" + c + "'");
 				continue;
@@ -347,7 +372,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			glyph.width = pixmap.getWidth();
 			glyph.height = pixmap.getHeight();
 			glyph.xoffset = slot.getBitmapLeft();
-			glyph.yoffset = flip ? -slot.getBitmapTop() + (int)baseLine : -(glyph.height - slot.getBitmapTop()) - (int)baseLine;
+			glyph.yoffset = parameter.flip ? -slot.getBitmapTop() + (int)baseLine : -(glyph.height - slot.getBitmapTop()) - (int)baseLine;
 			glyph.xadvance = FreeType.toInt(metrics.getHoriAdvance());
 
 			if(bitmapped)
@@ -384,12 +409,12 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// generate kerning
-		for (int i = 0; i < characters.length(); i++) {
-			for (int j = 0; j < characters.length(); j++) {
-				char firstChar = characters.charAt(i);
+		for (int i = 0; i < parameter.characters.length(); i++) {
+			for (int j = 0; j < parameter.characters.length(); j++) {
+				char firstChar = parameter.characters.charAt(i);
 				Glyph first = data.getGlyph(firstChar);
 				if (first == null) continue;
-				char secondChar = characters.charAt(j);
+				char secondChar = parameter.characters.charAt(j);
 				Glyph second = data.getGlyph(secondChar);
 				if (second == null) continue;
 				int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
@@ -406,14 +431,14 @@ public class FreeTypeFontGenerator implements Disposable {
 			for (int i=0; i<pages.size; i++) {
 				Page p = pages.get(i);
 				
-				Texture tex = new Texture(new PixmapTextureData(p.getPixmap(), p.getPixmap().getFormat(), false, false, true)) {
+				Texture tex = new Texture(new PixmapTextureData(p.getPixmap(), p.getPixmap().getFormat(), parameter.genMipMaps, false, true)) {
 					@Override
 					public void dispose () {
 						super.dispose();
 						getTextureData().consumePixmap().dispose();
 					}					
 				};
-				tex.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+				tex.setFilter(parameter.minFilter, parameter.magFilter);
 				
 				data.regions[i] = new TextureRegion(tex); 
 			}
@@ -447,5 +472,34 @@ public class FreeTypeFontGenerator implements Disposable {
 		public TextureRegion[] getTextureRegions () {
 			return regions;
 		}
+	}
+	
+	/**
+	 * Parameter container class that helps configure how {@link FreeTypeBitmapFontData} and
+	 * {@link BitmapFont} instances are generated.
+	 * 
+	 * The packer field is for advanced usage, where it is necessary to pack multiple BitmapFonts
+	 * (i.e. styles, sizes, families) into a single Texture atlas. If no packer is specified,
+	 * the generator will use its own PixmapPacker to pack the glyphs into a power-of-two sized
+	 * texture, and the resulting {@link FreeTypeBitmapFontData} will have a valid {@link TextureRegion}
+	 * which can be used to construct a new {@link BitmapFont}. 
+	 * 
+	 * @author siondream
+	 */
+	public static class FreeTypeFontParameter {
+		/** The size in pixels */
+		public int size = 16;
+		/** The characters the font should contain */
+		public String characters = DEFAULT_CHARS;
+		/** The optional PixmapPacker to use */
+		public PixmapPacker packer = null;
+		/**Whether to flip the font horizontally */
+		public boolean flip = false;
+		/** Whether or not to generate mip maps for the resulting texture */
+		public boolean genMipMaps = false;
+		/** Minification filter */
+		public TextureFilter minFilter = TextureFilter.Nearest;
+		/** Magnification filter */
+		public TextureFilter magFilter = TextureFilter.Nearest;
 	}
 }
