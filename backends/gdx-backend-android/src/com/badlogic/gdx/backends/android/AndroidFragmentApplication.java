@@ -30,6 +30,7 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -101,7 +102,27 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
           getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
       }
   }
+  
+   @Override
+	public void useImmersiveMode (boolean use) {
+		if (!use || getVersion() < 19) return;
 
+		View view = getApplicationWindow().getDecorView();
+		
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			m.invoke(view, code);
+		} catch (Exception e) {
+			log("AndroidApplication", "Can't set immersive mode", e);
+		}
+	}
+	
   /** This method has to be called in the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method. 
    * It sets up all the things necessary to get input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to 
    * create an OpenGL ES 2.0 context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
@@ -140,7 +161,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       net = new AndroidNet(this);
       this.listener = listener;
       this.handler = new Handler();
-
+      
       Gdx.app = this;
       Gdx.input = this.getInput();
       Gdx.audio = this.getAudio();
@@ -148,6 +169,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       Gdx.graphics = this.getGraphics();
       Gdx.net = this.getNet();
       createWakeLock(config.useWakelock);
+      useImmersiveMode(config.useImmersiveMode);
+      if (config.useImmersiveMode && getVersion() >= 19) {
+			try {
+				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Object o = vlistener.newInstance();
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
+				method.invoke(o, this);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
+			}
+		}
       return graphics.getView();
   }
 
@@ -387,5 +419,15 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public boolean isFragment () {
 		return true;
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		return this.getActivity().getWindow();
+	}
+
+	@Override
+	public Handler getHandler () {
+		return this.handler;
 	}
 }

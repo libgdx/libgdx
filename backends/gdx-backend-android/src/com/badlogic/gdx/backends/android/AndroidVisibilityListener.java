@@ -23,13 +23,13 @@ import android.view.View;
  */
 public class AndroidVisibilityListener {
 
-	public void createListener (final AndroidApplication application) {
+	public void createListener (final AndroidApplicationBase application) {
 		try {
-			View rootView = application.getWindow().getDecorView();
+			View rootView = application.getApplicationWindow().getDecorView();
 			rootView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
 				@Override
 				public void onSystemUiVisibilityChange (int arg0) {
-					application.handler.post(new Runnable() {
+					application.getHandler().post(new Runnable() {
 						@Override
 						public void run () {
 							application.useImmersiveMode(true);
