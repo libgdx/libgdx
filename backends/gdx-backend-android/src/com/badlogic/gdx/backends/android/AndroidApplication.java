@@ -503,4 +503,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
+
+	@Override
+	public boolean isFragment () {
+		return false;
+	}
 }
