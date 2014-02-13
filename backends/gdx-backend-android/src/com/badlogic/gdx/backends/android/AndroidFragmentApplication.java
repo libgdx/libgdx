@@ -383,4 +383,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
 	}
+
+	@Override
+	public boolean isFragment () {
+		return true;
+	}
 }

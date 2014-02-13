@@ -489,7 +489,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			if (app instanceof AndroidFragmentApplication) {
+			if (app.isFragment()) {
 				((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
 			}
 			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
