@@ -22,6 +22,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -53,10 +54,18 @@ public class GestureDetector extends InputAdapter {
 	private final Vector2 initialPointer1 = new Vector2();
 	private final Vector2 initialPointer2 = new Vector2();
 
+	static ObjectSet<Task> longPressTasks = new ObjectSet<Task>();
+	
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run () {
 			if (!longPressFired) longPressFired = listener.longPress(pointer1.x, pointer1.y);
+		}
+		
+		@Override
+		public void cancel() {
+			longPressTasks.remove(this);
+			super.cancel();
 		}
 	};
 
@@ -109,7 +118,10 @@ public class GestureDetector extends InputAdapter {
 				longPressFired = false;
 				tapSquareCenterX = x;
 				tapSquareCenterY = y;
-				if (!longPressTask.isScheduled()) Timer.schedule(longPressTask, longPressSeconds);
+				if (!longPressTask.isScheduled()) {
+					Timer.schedule(longPressTask, longPressSeconds);
+					longPressTasks.add(longPressTask);
+				}
 			}
 		} else {
 			// Start pinch.
@@ -192,7 +204,16 @@ public class GestureDetector extends InputAdapter {
 			lastTapButton = button;
 			lastTapPointer = pointer;
 			gestureStartTime = 0;
-			return listener.tap(x, y, tapCount, button);
+			
+			boolean tapResult = listener.tap(x, y, tapCount, button);
+			
+			if (tapResult) {
+				while (longPressTasks.size > 0) {
+					longPressTasks.iterator().next().cancel();
+				}
+			}
+			
+			return tapResult;
 		}
 
 		if (pinching) {
