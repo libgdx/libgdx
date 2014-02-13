@@ -91,7 +91,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
   protected FrameLayout.LayoutParams createLayoutParams () {
-      FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.FILL_PARENT);
+      FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT);
       layoutParams.gravity = Gravity.CENTER;
       return layoutParams;
   }
@@ -247,7 +247,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
   @Override
   public int getVersion () {
-      return Integer.parseInt(android.os.Build.VERSION.SDK);
+      return android.os.Build.VERSION.SDK_INT;
   }
 
   @Override
