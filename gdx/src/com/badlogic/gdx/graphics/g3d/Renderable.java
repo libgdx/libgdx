@@ -98,4 +98,18 @@ public class Renderable {
 	public Shader shader;
 	/** User definable value, may be null. */
 	public Object userData;
+	
+	public Renderable set(Renderable renderable) {
+		worldTransform.set(renderable.worldTransform);
+		material = renderable.material;
+		mesh = renderable.mesh;
+		meshPartOffset = renderable.meshPartOffset;
+		meshPartSize = renderable.meshPartSize;
+		primitiveType = renderable.primitiveType;
+		bones = renderable.bones;
+		environment = renderable.environment;
+		shader = renderable.shader;
+		userData = renderable.userData;
+		return this;
+	}
 }
