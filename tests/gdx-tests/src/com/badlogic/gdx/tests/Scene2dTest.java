@@ -117,7 +117,7 @@ public class Scene2dTest extends GdxTest {
 			}
 
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
-				event.getListenerActor().translate(deltaX, deltaY);
+				event.getListenerActor().moveBy(deltaX, deltaY);
 				if (deltaX < 0) System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTarget());
 			}
 		});

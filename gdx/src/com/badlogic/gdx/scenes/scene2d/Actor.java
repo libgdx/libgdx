@@ -371,7 +371,7 @@ public class Actor {
 		this.y = y;
 	}
 
-	public void translate (float x, float y) {
+	public void moveBy (float x, float y) {
 		this.x += x;
 		this.y += y;
 	}
@@ -420,14 +420,14 @@ public class Actor {
 	}
 
 	/** Adds the specified size to the current size. */
-	public void size (float size) {
+	public void sizeBy (float size) {
 		width += size;
 		height += size;
 		sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
-	public void size (float width, float height) {
+	public void sizeBy (float width, float height) {
 		this.width += width;
 		this.height += height;
 		sizeChanged();
@@ -495,13 +495,13 @@ public class Actor {
 	}
 
 	/** Adds the specified scale to the current scale. */
-	public void scale (float scale) {
+	public void scaleBy (float scale) {
 		scaleX += scale;
 		scaleY += scale;
 	}
 
 	/** Adds the specified scale to the current scale. */
-	public void scale (float scaleX, float scaleY) {
+	public void scaleBy (float scaleX, float scaleY) {
 		this.scaleX += scaleX;
 		this.scaleY += scaleY;
 	}
@@ -515,7 +515,7 @@ public class Actor {
 	}
 
 	/** Adds the specified rotation to the current rotation. */
-	public void rotate (float amountInDegrees) {
+	public void rotateBy (float amountInDegrees) {
 		rotation += amountInDegrees;
 	}
 

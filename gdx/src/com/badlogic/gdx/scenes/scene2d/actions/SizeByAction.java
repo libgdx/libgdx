@@ -22,7 +22,7 @@ public class SizeByAction extends RelativeTemporalAction {
 	private float amountWidth, amountHeight;
 
 	protected void updateRelative (float percentDelta) {
-		actor.size(amountWidth * percentDelta, amountHeight * percentDelta);
+		actor.sizeBy(amountWidth * percentDelta, amountHeight * percentDelta);
 	}
 
 	public void setAmount (float width, float height) {

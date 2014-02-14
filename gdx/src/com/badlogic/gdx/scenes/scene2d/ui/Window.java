@@ -236,9 +236,9 @@ public class Window extends Table {
 		buttonTable.getColor().a = getColor().a;
 		buttonTable.pack();
 		buttonTable.setPosition(width - buttonTable.getWidth(), Math.min(height - padTop, height - buttonTable.getHeight()));
-		buttonTable.translate(x, y);
+		buttonTable.moveBy(x, y);
 		buttonTable.draw(batch, parentAlpha);
-		buttonTable.translate(-x, -y);
+		buttonTable.moveBy(-x, -y);
 
 		// Draw the title without the batch transformed or clipping applied.
 		y += height;

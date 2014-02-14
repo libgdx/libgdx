@@ -200,10 +200,10 @@ public class Button extends Table implements Disableable {
 
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
-			children.get(i).translate(offsetX, offsetY);
+			children.get(i).moveBy(offsetX, offsetY);
 		super.draw(batch, parentAlpha);
 		for (int i = 0; i < children.size; i++)
-			children.get(i).translate(-offsetX, -offsetY);
+			children.get(i).moveBy(-offsetX, -offsetY);
 	}
 
 	protected void drawBackground (Batch batch, float parentAlpha) {
