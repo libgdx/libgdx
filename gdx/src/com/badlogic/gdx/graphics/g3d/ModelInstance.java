@@ -113,8 +113,9 @@ public class ModelInstance implements RenderableProvider {
 		this.model = model;
 		this.transform = transform == null ? new Matrix4() : transform; 
 		nodePartBones.clear();
-		Node copy, node = model.getNode(nodeId, recursive);
-		this.nodes.add(copy = copyNode(null, node));
+		Node node = model.getNode(nodeId, recursive), copy = node.copy(nodePartBones, materials);
+		copy.parent = null;
+		this.nodes.add(copy);
 		if (mergeTransform) {
 			this.transform.mul(parentTransform ? node.globalTransform : node.localTransform);
 			copy.translation.set(0,0,0);
@@ -199,7 +200,9 @@ public class ModelInstance implements RenderableProvider {
 		nodePartBones.clear();
 		for(int i = 0, n = nodes.size; i<n; ++i) {
 			final Node node = nodes.get(i);
-			this.nodes.add(copyNode(null, node));
+			Node copy = node.copy(nodePartBones, materials);
+			copy.parent = null;
+			this.nodes.add(copy);
 		}
 		setBones();
 	}
@@ -210,7 +213,9 @@ public class ModelInstance implements RenderableProvider {
 			final Node node = nodes.get(i);
 			for (final String nodeId : nodeIds) {
 				if (nodeId.equals(node.id)) {
-					this.nodes.add(copyNode(null, node));
+					Node copy = node.copy(nodePartBones, materials);
+					copy.parent = null;
+					this.nodes.add(copy);
 					break;
 				}
 			}
@@ -224,7 +229,9 @@ public class ModelInstance implements RenderableProvider {
 			final Node node = nodes.get(i);
 			for (final String nodeId : nodeIds) {
 				if (nodeId.equals(node.id)) {
-					this.nodes.add(copyNode(null, node));
+					Node copy = node.copy(nodePartBones, materials);
+					copy.parent = null;
+					this.nodes.add(copy);
 					break;
 				}
 			}
@@ -247,6 +254,7 @@ public class ModelInstance implements RenderableProvider {
 		}
 	}
 	
+	/*
 	private Node copyNode(Node parent, Node node) {
 		Node copy = new Node();
 		copy.id = node.id;
@@ -286,6 +294,7 @@ public class ModelInstance implements RenderableProvider {
 		
 		return copy;
 	}
+	*/
 	
 	private void copyAnimations (final Iterable<Animation> source) {
 		for (final Animation anim : source) {
@@ -325,18 +334,21 @@ public class ModelInstance implements RenderableProvider {
 	 */
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
 		for(Node node: nodes) {
-			getRenderables(node, renderables, pool);
+			node.getRenderables(renderables, pool, transform, userData);
+			//getRenderables(node, renderables, pool);
 		}
 	}
 
-	/** @return The renderable of the first node's first part. */
+	/*
+	//* @return The renderable of the first node's first part.
 	public Renderable getRenderable(final Renderable out) {
-		return getRenderable(out, nodes.get(0));
+		return nodes.get(0).getRenderable(out, transform, userData);
+		//return getRenderable(out, nodes.get(0));
 	}
 	
-	/** @return The renderable of the node's first part. */
+	/** @return The renderable of the node's first part.
 	public Renderable getRenderable(final Renderable out, final Node node) {
-		return getRenderable(out, node, node.parts.get(0));
+		return node.getRenderable(out, node.parts.get(0), transform, userData);
 	}
 	
 	public Renderable getRenderable(final Renderable out, final Node node, final NodePart nodePart) {
@@ -362,6 +374,7 @@ public class ModelInstance implements RenderableProvider {
 			getRenderables(child, renderables, pool);
 		}
 	}
+	*/
 	
 	/** Calculates the local and world transform of all {@link Node} instances in this model, recursively.
 	 * First each {@link Node#localTransform} transform is calculated based on the translation, rotation and

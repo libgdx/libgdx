@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** A combination of {@link MeshPart} and {@link Material}, used to represent a {@link Node}'s graphical
  * properties. A NodePart is the smallest visible part of a {@link Model}, each NodePart implies a render
@@ -69,4 +70,33 @@ public class NodePart {
 		out.bones = bones;
 		return out;
 	}
+	
+	public NodePart copy(ObjectMap<NodePart, ArrayMap<Node, Matrix4>> nodePartBones, Array<Material> materials) {
+		NodePart copy = new NodePart();
+		copy.meshPart = new MeshPart(meshPart);
+		
+		if (invBoneBindTransforms != null)
+			nodePartBones.put(copy, invBoneBindTransforms);
+		
+		final int index = materials.indexOf(material, false);
+		if (index < 0)
+			materials.add(copy.material = material.copy());
+		else
+			copy.material = materials.get(index);
+		
+		return copy;
+	}
+	
+	public Renderable getRenderable(final Renderable out, Matrix4 nodeGlobalTransform, Matrix4 modelTransform, Object userData) {
+		setRenderable(out);
+		if (bones == null && modelTransform != null)
+			out.worldTransform.set(modelTransform).mul(nodeGlobalTransform);
+		else if (modelTransform != null)
+			out.worldTransform.set(modelTransform);
+		else
+			out.worldTransform.idt();
+		out.userData = userData;
+		return out;
+	}
+	
 }
