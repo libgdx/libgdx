@@ -35,10 +35,10 @@ public class AndroidNet implements Net {
 
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
 	// If you make changes here, make changes in the other backend as well.
-	final AndroidApplication app;
+	final AndroidApplicationBase app;
 	NetJavaImpl netJavaImpl;
 
-	public AndroidNet (AndroidApplication activity) {
+	public AndroidNet (AndroidApplicationBase activity) {
 		app = activity;
 		netJavaImpl = new NetJavaImpl();
 	}

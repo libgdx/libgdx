@@ -22,7 +22,7 @@ public class ScaleByAction extends RelativeTemporalAction {
 	private float amountX, amountY;
 
 	protected void updateRelative (float percentDelta) {
-		actor.scale(amountX * percentDelta, amountY * percentDelta);
+		actor.scaleBy(amountX * percentDelta, amountY * percentDelta);
 	}
 
 	public void setAmount (float x, float y) {

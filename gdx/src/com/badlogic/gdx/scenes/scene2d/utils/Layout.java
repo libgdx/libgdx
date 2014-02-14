@@ -67,7 +67,9 @@ public interface Layout {
 
 	public float getPrefHeight ();
 
+	/** Zero indicates no max width. */
 	public float getMaxWidth ();
 
+	/** Zero indicates no max height. */
 	public float getMaxHeight ();
 }

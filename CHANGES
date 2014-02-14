@@ -18,6 +18,10 @@
 - PolygonSpriteBatch implements Batch.
 - New scene2d actions: EventAction, CountdownEventAction.
 - Adds cancelHttpRequest() method to Net interface
+- Update GWT/HTML5 Backend to GWT 2.6.0
+- Minimal Android version is 2.2, see http://www.badlogicgames.com/wordpress/?p=3297
+- Updated to LWJGL 2.9.1
+- You can now embed your libgdx app as a fragment, more info on the wiki
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop

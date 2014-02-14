@@ -86,7 +86,6 @@ public class HorizontalGroup extends WidgetGroup {
 		float spacing = this.spacing;
 		float groupHeight = getHeight() > 0 ? getHeight() : getMinHeight();
 		float x = reverse ? (getWidth() > 0 ? getWidth() : getMinWidth()) : 0;
-		float dir = reverse ? -1 : 1;
 		SnapshotArray<Actor> children = getChildren();
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
@@ -106,9 +105,9 @@ public class HorizontalGroup extends WidgetGroup {
 				y = groupHeight - height;
 			else
 				y = (groupHeight - height) / 2;
-			if (reverse) x += (width + spacing) * dir;
+			if (reverse) x -= (width + spacing);
 			child.setBounds(x, y, width, height);
-			if (!reverse) x += (width + spacing) * dir;
+			if (!reverse) x += (width + spacing);
 		}
 	}
 

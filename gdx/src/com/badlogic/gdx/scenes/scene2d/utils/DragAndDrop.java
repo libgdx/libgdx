@@ -24,13 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
 public class DragAndDrop {
 	static final Vector2 tmpVector = new Vector2();
 
-	Source source;
 	Payload payload;
 	Actor dragActor;
 	Target target;
@@ -128,7 +128,6 @@ public class DragAndDrop {
 				}
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
-				DragAndDrop.this.source = null;
 				payload = null;
 				target = null;
 				isValidTarget = false;
@@ -152,6 +151,14 @@ public class DragAndDrop {
 
 	public void removeTarget (Target target) {
 		targets.removeValue(target, true);
+	}
+
+	/** Removes all targets and sources. */
+	public void clear () {
+		targets.clear();
+		for (Entry<Source, DragListener> entry : sourceListeners.entries())
+			entry.key.actor.removeCaptureListener(entry.value);
+		sourceListeners.clear();
 	}
 
 	/** Sets the distance a touch must travel before being considered a drag. */

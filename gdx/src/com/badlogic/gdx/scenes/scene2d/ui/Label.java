@@ -307,6 +307,11 @@ public class Label extends Widget {
 		this.ellipse = ellipse;
 	}
 
+	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
+	protected BitmapFontCache getBitmapFontCache () {
+		return cache;
+	}
+
 	/** The style for a label, see {@link Label}.
 	 * @author Nathan Sweet */
 	static public class LabelStyle {

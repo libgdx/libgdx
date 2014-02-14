@@ -414,6 +414,7 @@
 		<include name="scenes/scene2d/utils/SpriteDrawable.java"/>
 		<include name="scenes/scene2d/utils/TextureRegionDrawable.java"/>		
 		<include name="scenes/scene2d/utils/TiledDrawable.java"/>
+		<include name="scenes/scene2d/utils/TransformDrawable.java"/>
 		
 	<!-- utils -->
 		<include name="utils/Array.java"/> <!-- Emulated: Reflection -->

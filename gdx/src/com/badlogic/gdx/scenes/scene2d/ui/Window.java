@@ -213,13 +213,6 @@ public class Window extends Table {
 
 	public void draw (Batch batch, float parentAlpha) {
 		keepWithinStage();
-		super.draw(batch, parentAlpha);
-	}
-
-	protected void drawBackground (Batch batch, float parentAlpha) {
-		float x = getX(), y = getY();
-		float width = getWidth(), height = getHeight();
-		float padTop = getPadTop();
 
 		if (style.stageBackground != null) {
 			Color color = getColor();
@@ -227,18 +220,24 @@ public class Window extends Table {
 			Stage stage = getStage();
 			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
 			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground.draw(batch, x + tmpPosition.x, y + tmpPosition.y, x + tmpSize.x, y + tmpSize.y);
+			style.stageBackground
+				.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
 		}
 
-		super.drawBackground(batch, parentAlpha);
+		super.draw(batch, parentAlpha);
+	}
+
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+		float width = getWidth(), height = getHeight();
+		float padTop = getPadTop();
+
+		super.drawBackground(batch, parentAlpha, x, y);
 
 		// Draw button table.
 		buttonTable.getColor().a = getColor().a;
 		buttonTable.pack();
 		buttonTable.setPosition(width - buttonTable.getWidth(), Math.min(height - padTop, height - buttonTable.getHeight()));
-		buttonTable.translate(x, y);
 		buttonTable.draw(batch, parentAlpha);
-		buttonTable.translate(-x, -y);
 
 		// Draw the title without the batch transformed or clipping applied.
 		y += height;

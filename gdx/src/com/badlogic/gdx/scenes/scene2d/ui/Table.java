@@ -32,9 +32,7 @@ import com.esotericsoftware.tablelayout.Cell;
 import com.esotericsoftware.tablelayout.Toolkit;
 import com.esotericsoftware.tablelayout.Value;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -77,10 +75,11 @@ public class Table extends WidgetGroup {
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		drawBackground(batch, parentAlpha);
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
+			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
+				batch.flush();
 				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(layout.getPadLeft(),
 					layout.getPadBottom(), getWidth() - layout.getPadLeft() - layout.getPadRight(),
 					getHeight() - layout.getPadBottom() - layout.getPadTop());
@@ -91,18 +90,19 @@ public class Table extends WidgetGroup {
 			} else
 				drawChildren(batch, parentAlpha);
 			resetTransform(batch);
-		} else
+		} else {
+			drawBackground(batch, parentAlpha, getX(), getY());
 			super.draw(batch, parentAlpha);
+		}
 	}
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
 	 * drawable. */
-	protected void drawBackground (Batch batch, float parentAlpha) {
-		if (background != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+		if (background == null) return;
+		Color color = getColor();
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		background.draw(batch, x, y, getWidth(), getHeight());
 	}
 
 	public void invalidate () {
@@ -143,12 +143,21 @@ public class Table extends WidgetGroup {
 		if (background == null)
 			pad(null);
 		else {
-			padBottom(background.getBottomHeight());
-			padTop(background.getTopHeight());
-			padLeft(background.getLeftWidth());
-			padRight(background.getRightWidth());
+			pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
 		}
+	}
+
+	/** @see #setBackground(Drawable) */
+	public Table background (Drawable background) {
+		setBackground(background);
+		return this;
+	}
+
+	/** @see #setBackground(String) */
+	public Table background (String drawableName) {
+		setBackground(drawableName);
+		return this;
 	}
 
 	public Drawable getBackground () {

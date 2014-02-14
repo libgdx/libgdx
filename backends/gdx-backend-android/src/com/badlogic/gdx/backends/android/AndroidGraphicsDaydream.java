@@ -146,7 +146,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+			int sdkVersion = android.os.Build.VERSION.SDK_INT;
 
 			if (sdkVersion >= 11) {
 				GLSurfaceView view = new GLSurfaceView(dream) {
@@ -421,7 +421,11 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		mean.addValue(deltaTime);
+		if(!resume) {
+			mean.addValue(deltaTime);
+		} else {
+			deltaTime = 0;
+		}
 
 		boolean lrunning = false;
 		boolean lpause = false;
