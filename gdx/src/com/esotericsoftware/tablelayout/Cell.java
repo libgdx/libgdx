@@ -56,9 +56,6 @@ public class Cell<C> {
 	int cellAboveIndex = -1;
 	float computedPadTop, computedPadLeft, computedPadBottom, computedPadRight;
 
-	public Cell () {
-	}
-
 	public void setLayout (BaseTableLayout layout) {
 		this.layout = layout;
 	}
