@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
- * {@link Table} with a single cell.
+ * {@link Table} with a single cell. Adding more than one {@link Actor} is not supported and results in an exception.
  * @author Nathan Sweet */
 public class Container extends WidgetGroup {
 	private Actor widget;
@@ -34,6 +34,13 @@ public class Container extends WidgetGroup {
 		setWidget(widget);
 	}
 
+	public Container (Actor widget, float width, float height) {
+		this();
+		setWidget(widget);
+		minSize(width, height);
+		prefSize(width, height);
+	}
+
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
 		if (widget == null) return;
@@ -47,8 +54,9 @@ public class Container extends WidgetGroup {
 					drawChildren(batch, parentAlpha);
 					clipEnd();
 				}
-			} else
+			} else {
 				drawChildren(batch, parentAlpha);
+			}
 			resetTransform(batch);
 		} else {
 			drawBackground(batch, parentAlpha, getX(), getY());
@@ -71,9 +79,9 @@ public class Container extends WidgetGroup {
 	public void setBackground (Drawable background) {
 		if (this.background == background) return;
 		this.background = background;
-		if (background == null)
+		if (background == null) {
 			pad(0);
-		else {
+		} else {
 			pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
 		}
@@ -154,26 +162,29 @@ public class Container extends WidgetGroup {
 		return widget;
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may contain a single child only. */
 	public void addActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may contain a single child only. */
 	public void addActorAt (int index, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may contain a single child only. */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may contain a single child only. */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
+	/** Empties the container if given actor matches the one stored inside.
+	 * @param actor A widget to be removed from the container.
+	 * @return <em>true</em> if container was emptied. */
 	public boolean removeActor (Actor actor) {
 		if (actor != widget) return false;
 		setWidget(null);
