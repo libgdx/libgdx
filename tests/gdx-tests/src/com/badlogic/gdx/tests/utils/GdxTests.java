@@ -28,11 +28,6 @@
 
 package com.badlogic.gdx.tests.utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
@@ -51,6 +46,16 @@ import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.StreamUtils;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -84,6 +89,7 @@ public class GdxTests {
 		BulletTestCollection.class,
 		CompassTest.class,
 		ComplexActionTest.class,
+		ContainerTest.class,
 		CullTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
@@ -236,21 +242,51 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		));
 
+	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();
+	static final ObjectMap<String, String> originalToObfuscated = new ObjectMap();
+	static {
+		InputStream mappingInput = GdxTests.class.getResourceAsStream("/mapping.txt");
+		if (mappingInput != null) {
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new InputStreamReader(mappingInput), 512);
+				while (true) {
+					String line = reader.readLine();
+					if (line == null) break;
+					if (line.startsWith("    ")) continue;
+					String[] split = line.replace(":", "").split(" -> ");
+					String original = split[0];
+					if (original.indexOf('.') != -1) original = original.substring(original.lastIndexOf('.') + 1);
+					originalToObfuscated.put(original, split[1]);
+					obfuscatedToOriginal.put(split[1], original);
+				}
+				reader.close();
+			} catch (Exception ex) {
+				System.out.println("GdxTests: Error reading mapping file: mapping.txt");
+				ex.printStackTrace();
+			} finally {
+				StreamUtils.closeQuietly(reader);
+			}
+		}
+	}
+
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());
 		for (Class clazz : tests)
-			names.add(clazz.getSimpleName());
+			names.add(obfuscatedToOriginal.get(clazz.getSimpleName(), clazz.getSimpleName()));
 		Collections.sort(names);
 		return names;
 	}
 
 	private static Class<? extends GdxTest> forName (String name) {
+		name = originalToObfuscated.get(name, name);
 		for (Class clazz : tests)
 			if (clazz.getSimpleName().equals(name)) return clazz;
 		return null;
 	}
 
 	public static GdxTest newTest (String testName) {
+		testName = originalToObfuscated.get(testName, testName);
 		try {
 			return forName(testName).newInstance();
 		} catch (InstantiationException e) {
