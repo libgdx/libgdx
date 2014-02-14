@@ -440,16 +440,18 @@ public class ModelBuilder {
 		float dirX, dirY, dirZ,
 		rotAxisX, rotAxisY, rotAxisZ,
 		sclDirX, sclDirY, sclDirZ;
+		Material material = new Material();
+		Color color;
+		MeshPartBuilder partBuilder;
 		for(int i=0; i< 3; ++i)
 		{
-			Material material;
 
 			if(i ==0)
 			{
 				//X
 				dirX = 1; dirY = dirZ = 0;
 				rotAxisX = rotAxisY = 0; rotAxisZ = -1;
-				material = new Material(ColorAttribute.createDiffuse(Color.RED));
+				color = Color.RED;
 				axisId = "axisX";
 				axisCapId = "axisCapX";
 			}
@@ -458,7 +460,7 @@ public class ModelBuilder {
 				//Y
 				dirX = 0; dirY = 1; dirZ = 0;
 				rotAxisX = rotAxisY = rotAxisZ = 0;
-				material = new Material(ColorAttribute.createDiffuse(Color.GREEN));
+				color = Color.GREEN;
 				axisId = "axisY";
 				axisCapId = "axisCapY";
 			}
@@ -467,7 +469,7 @@ public class ModelBuilder {
 				//Z
 				dirX = dirY = 0; dirZ = 1;
 				rotAxisX = 1; rotAxisY = 0; rotAxisZ = 0;
-				material = new Material(ColorAttribute.createDiffuse(Color.BLUE));
+				color = Color.BLUE;
 				axisId = "axisZ";
 				axisCapId = "axisCapZ";
 			}
@@ -475,11 +477,16 @@ public class ModelBuilder {
 			sclDirX = dirX*axisLength; sclDirY = dirY*axisLength; sclDirZ = dirZ*axisLength;
 
 			node();
-			part(axisId, GL10.GL_LINES, Usage.Position, material).line(0,0,0, sclDirX, sclDirY, sclDirZ);
+			partBuilder = part(axisId, GL10.GL_LINES, Usage.Position|Usage.Color, material);
+			partBuilder.setColor(color);
+			partBuilder.line(0,0,0, sclDirX, sclDirY, sclDirZ);
+			
 			Node coneNode = node();
+			partBuilder = part(axisCapId, GL10.GL_TRIANGLES, Usage.Position|Usage.Color, material);
+			partBuilder.setColor(color);
+			partBuilder.cone(capWidth, capHeight, capWidth, 5);
 			coneNode.rotation.setFromAxis(rotAxisX, rotAxisY, rotAxisZ, 90);
 			coneNode.translation.set(sclDirX, sclDirY, sclDirZ);
-			part(axisCapId, GL10.GL_TRIANGLES, Usage.Position, material).cone(capWidth, capHeight, capWidth, 5);
 		}
 		return end();
 	}
@@ -494,15 +501,17 @@ public class ModelBuilder {
     * @param color Color of the lines. */
 	public Model createLineGrid(int xDivisions, int zDivisions, float xSize, float zSize, Color color) 
 	{
-		Material material = new Material(ColorAttribute.createDiffuse(color));
+		Material material = new Material();
 		begin();
+		MeshPartBuilder partBuilder = part("lines", GL10.GL_LINES, Usage.Position | Usage.Color, material);
+		partBuilder.setColor(color);
 		float xlength = xDivisions*xSize, zlength = zDivisions*zSize,
 			hxlength = xlength/2, hzlength = zlength /2;
 		float x1 = -hxlength, y1 = 0, z1 = hzlength,
 			x2 = -hxlength, y2 = 0, z2 = -hzlength;
 		for(int i=0; i<= xDivisions; ++i)
 		{
-			part("linex"+i, GL10.GL_LINES, Usage.Position, material).line(x1, y1, z1, x2, y2, z2);
+			partBuilder.line(x1, y1, z1, x2, y2, z2);
 			x1 += xSize;
 			x2 += xSize;
 		}
@@ -511,7 +520,7 @@ public class ModelBuilder {
 		x2=hxlength; y2=0; z2=-hzlength;
 		for(int j=0; j<= zDivisions; ++j)
 		{
-			part("linez"+j, GL10.GL_LINES, Usage.Position, material).line(x1, y1, z1, x2, y2, z2);
+			partBuilder.line(x1, y1, z1, x2, y2, z2);
 			z1 += zSize;
 			z2 += zSize;
 		}

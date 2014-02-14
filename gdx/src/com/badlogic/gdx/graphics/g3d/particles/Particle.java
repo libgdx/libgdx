@@ -15,29 +15,33 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g3d.particles;
 
+import com.badlogic.gdx.math.Matrix4;
+
 /** This class contains all the informations relative to a Particle
  * scale, position, rotation, velocities, color, etc...*/
-public class Particle extends EmitObject 
-{
+public class Particle extends EmitObject {
 	public static final int VEL_STRENGTH_INDEX = 0, 
 							VEL_THETA_INDEX = 2,
 							VEL_PHI_INDEX = 4;
 
 	//Scale & Rotation
-	protected float scale, scaleStart, scaleDiff;
-	protected float rotation, rotationStart, rotationDiff; //Rotation around camera direction
-	protected float dirX, dirY, dirZ; //Direction of travel
+	public float scale, scaleStart, scaleDiff;
+	public float rotation, rotationStart, rotationDiff; //Rotation around camera direction
+	public float dirX, dirY, dirZ; //Direction of travel
 	
 	//Velocities
-	float[] velocity0Data = new float[6], velocity1Data = new float[6], velocity2Data = new float[6];
+	public float[] velocity0Data = new float[6], velocity1Data = new float[6], velocity2Data = new float[6];
 	
 	//Color
-	protected float tintR, tintG, tintB;
-	protected float transparency, transparencyStart, transparencyDiff;
+	public float tintR, tintG, tintB;
+	public float transparency, transparencyStart, transparencyDiff;
 	
 	//Transform
-	protected float x, y, z; //Position
-	protected float qx, qy, qz, qw; //Orientation
-	protected float ox, oy, oz; //Position of the emitter when this particle has been emitted
-
+	public float x, y, z; //Position
+	
+	/** Emitter transform 
+	 * This is a 4x3 column major matrix representing the translation, rotation, scale of the emitter when this
+	 * particle was generated.
+	 * It is needed because in this way it's possible to make the particle move with the emitter or not. */
+	public float[] emitterTransform = new float[12];
 }

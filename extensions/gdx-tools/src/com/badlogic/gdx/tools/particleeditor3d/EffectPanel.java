@@ -130,12 +130,14 @@ class EffectPanel extends JPanel {
 
 	private void addEmitter (String name, boolean select, final ParticleEmitter emitter) {
 		Array<ParticleEmitter> emitters = editor.effect.getEmitters();
+		/*
 		if (emitters.size == 0)
 			emitter.setPosition(0, 0, 0);
 		else {
 			ParticleEmitter p = emitters.get(0);
 			emitter.setPosition(p.getPosition());
 		}
+		*/
 		emitters.add(emitter);
 
 		emitterTableModel.addRow(new Object[] {name, true});
@@ -178,7 +180,7 @@ class EffectPanel extends JPanel {
 			return;
 		}
 		for (ParticleEmitter emitter : effect.getEmitters()) {
-			emitter.setPosition(0,0,0);
+			//emitter.setPosition(0,0,0);
 			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
 		}
 		editIndex = 0;

@@ -24,22 +24,27 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** It's a composition of particles emitters.
  * It can be updated, rendered, transformed which means the changes will be applied
  * on all the particles emitters.*/
-public class ParticleEffect implements Disposable {
+public class ParticleEffect implements Disposable, RenderableProvider{
 		private final Array<ParticleEmitter> emitters;
 		private BoundingBox bounds;
 		private boolean ownsTexture;
@@ -69,9 +74,11 @@ public class ParticleEffect implements Disposable {
 				emitters.get(i).update(delta);
 		}
 
-		public void render (ModelBatch batch){
+
+		@Override
+		public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
 			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).render(batch);
+				emitters.get(i).getRenderables(renderables, pool);
 		}
 		
 		public void allowCompletion () {
@@ -96,34 +103,47 @@ public class ParticleEffect implements Disposable {
 			}
 		}
 
-		public void setPosition (float x, float y, float z) {
+		/** Sets the given transform matrix on each emitter.*/
+		public void setTransform (Matrix4 transform) {
 			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).setPosition(x, y, z);
+				emitters.get(i).setTransform(transform);
 		}
 		
-		public void setPosition(Vector3 position) {
+		/** Applies the rotation to the current transformation matrix.*/
+		public void rotate(Quaternion rotation){
 			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).setPosition(position);
+				emitters.get(i).rotate(rotation);
 		}
 		
-		public void setOrientation (Quaternion orientation) {
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).setOrientation(orientation);
-		}
-		
-		public void setOrientation(Vector3 axis, float angle) {
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).setOrientation(axis, angle);
-		}
-		
-		public void rotate(Vector3 axis, float angle) {
+		/** Applies the rotation by the given angle around the given axis to the current transformation matrix of each emitter.
+		 * @param axis the rotation axis
+		 * @param angle the rotation angle in degrees*/
+		public void rotate(Vector3 axis, float angle){
 			for (int i = 0, n = emitters.size; i < n; i++)
 				emitters.get(i).rotate(axis, angle);
 		}
-
-		public void setScale(float scale) {
+		
+		/** Applies the translation to the current transformation matrix of each emitter.*/
+		public void translate(Vector3 translation){
 			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).setScale(scale);
+				emitters.get(i).translate(translation);
+		}
+		
+		/** Applies the scale to the current transformation matrix of each emitter.*/
+		public void scale(float scaleX, float scaleY, float scaleZ){
+			for (int i = 0, n = emitters.size; i < n; i++)
+				emitters.get(i).scale(scaleX, scaleY, scaleZ);
+		}
+		
+		/** Applies the scale to the current transformation matrix of each emitter.*/
+		public void scale(Vector3 scale){
+			for (int i = 0, n = emitters.size; i < n; i++)
+				emitters.get(i).scale(scale.x, scale.y, scale.z);
+		}
+
+		public void setCamera (Camera camera) {
+			for (int i = 0, n = emitters.size; i < n; i++)
+				emitters.get(i).setCamera(camera);
 		}
 
 		public Array<ParticleEmitter> getEmitters () {
@@ -239,5 +259,4 @@ public class ParticleEffect implements Disposable {
 				bounds.ext(emitter.getBoundingBox());
 			return bounds;
 		}
-
 }

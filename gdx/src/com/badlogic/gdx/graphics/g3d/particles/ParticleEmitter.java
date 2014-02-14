@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -30,21 +31,25 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 
 /** A particle emitter.
  * It extends Emitter to handle particles custom properties like
  * position, rotation, color, etc...
  * It can be rendered on a ModelBatch too*/
-public class ParticleEmitter extends Emitter<Particle> implements Disposable{
+public class ParticleEmitter extends Emitter<Particle> implements Disposable, RenderableProvider{
 	private static final VertexAttributes ATTRIBUTES = new VertexAttributes(
 			new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE),
 			new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE),
@@ -60,9 +65,7 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 								 TMP_V4 = new Vector3(), 
 								 TMP_V5 = new Vector3(),
 								 TMP_V6 = new Vector3();
-	private static final Quaternion TMP_Q1 = new Quaternion();
-	
-	
+
 	static private final int UPDATE_SCALE = 1 << 0;
 	static private final int UPDATE_ROTATION = 1 << 1;
 	static private final int UPDATE_VELOCITY_0 = 1 << 2;
@@ -86,18 +89,18 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 	private String imagePath;
 	private Renderable renderable;
 	private TextureRegion region;
-	private Vector3 position;
-	private Quaternion orientation; //The orientation and rotation of the emitter
-	private float scaleX, scaleY, scaleZ;
+	private Matrix4 transform;
 	private float[] vertices;
 	private short[] indices;
-	private boolean isAdditive, isAttached;
+	private boolean isAdditive, isAttached, isDirty = false, isRecomputeScale;
 	private int flags;
 	private float spawnWidth, spawnWidthDiff;
 	private float spawnHeight, spawnHeightDiff;
 	private float spawnDepth, spawnDepthDiff;
 	private float halfParticlesWidth, halfParticlesHeight;
+	private float particlesRefScaleX = 1f, particlesRefScaleY = 1f;
 	private BoundingBox boundingBox;
+	private Camera camera;	//The camera used to generate the mesh
 	
 	public ParticleEmitter (BufferedReader reader) throws IOException {
 		super(reader);
@@ -121,11 +124,8 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		setRegion(emitter.region);
 		setAttached(emitter.isAttached);
 		setAdditive(emitter.isAdditive);
-		setOrientation(emitter.getOrientation());
-		setPosition(emitter.getPosition());
-		setScale(emitter.getScale(TMP_V1) );
-		//setScale(emitter.getScale());
-		//behind = emitter.behind;
+		setTransform(emitter.transform);
+		setCamera(emitter.camera);
 	}
 	
 	public ParticleEmitter() {
@@ -163,10 +163,7 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		spawnDepthValue.setActive(true);
 		facingValue.setActive(true);
 		tintValue.setActive(true);
-		
-		position = new Vector3(0,0,0);
-		scaleX = scaleY = scaleZ = 1f;
-		orientation = new Quaternion();
+		transform = new Matrix4();
 		halfParticlesWidth = halfParticlesHeight = 0.5f;
 		
 		//Create the renderable
@@ -176,7 +173,6 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		renderable.material = new Material(new BlendingAttribute(1f),
 											new DepthTestAttribute(GL10.GL_LEQUAL, false), 
 											TextureAttribute.createDiffuse(null));
-		renderable.worldTransform.idt();
 	}
 
 	private Mesh allocMesh(int particleCount){
@@ -201,8 +197,6 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		if (!spawnDepthValue.isRelative()) spawnDepthDiff -= spawnDepth;
 
 		flags = 0;
-		//if (thetaValue.active && thetaValue.timeline.length > 1) mFlags |= UPDATE_THETA_ANGLE;
-		//if (phiValue.active && phiValue.timeline.length > 1) mFlags |= UPDATE_PHI_ANGLE;
 		if (velocity0Value.active) flags |= UPDATE_VELOCITY_0;
 		if (velocity1Value.active) flags |= UPDATE_VELOCITY_1;
 		if (velocity2Value.active) flags |= UPDATE_VELOCITY_2;
@@ -214,8 +208,6 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 	private void updateTextureAttribute(){
 		TextureAttribute attribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
 		attribute.textureDescription.texture = region.getTexture();
-		//float aspect = (float)mRegion.getRegionWidth()/mRegion.getRegionHeight();
-		//particlesHeight = (particlesWidth/aspect);
 		float invAspect = (float)region.getRegionHeight()/region.getRegionWidth();
 		halfParticlesHeight = invAspect*0.5f;
 	}
@@ -236,98 +228,72 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 	
 	public void setAdditive(boolean isAdditive){
 		BlendingAttribute blendingAttribute = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
-		if(isAdditive)
-		{
+		if(isAdditive){
 			blendingAttribute.sourceFunction =  GL10.GL_SRC_ALPHA; 
 			blendingAttribute.destFunction = GL10.GL_ONE;
 		}
-		else 
-		{
+		else {
 			blendingAttribute.sourceFunction = GL10.GL_SRC_ALPHA; 
 			blendingAttribute.destFunction = GL10.GL_ONE_MINUS_SRC_ALPHA;
 		}
 		this.isAdditive = isAdditive;
 	}
 	
-	public Vector3 getPosition() {
-		return position;
+	/** Sets the current transformation to the given one.
+	 * @param transform the new transform matrix */
+	public void setTransform (Matrix4 transform) {
+		this.transform.set(transform);
+		isRecomputeScale = true;
+		isDirty = true;
 	}
 
-	public void setPosition(Vector3 position) {
-		setPosition(position.x, position.y, position.z);
+	/** Postmultiplies the current transformation with a rotation matrix represented by the given quaternion.*/
+	public void rotate(Quaternion rotation){
+		transform.rotate(rotation);
+		isDirty = true;
 	}
 	
-	public void setPosition (float x, float y, float z) {
-		if (isAttached) 
-		{
-			for (int i = 0; i < activeCount; ++i)
-			{
-				Particle particle = particles[i];
-				particle.ox = x;
-				particle.oy = y;
-				particle.oz = z;
-			}
-		}
-		position.set(x, y, z);
+	/** Postmultiplies the current transformation with a rotation matrix by the given angle around the given axis.
+	 * @param axis the rotation axis
+	 * @param angle the rotation angle in degrees*/
+	public void rotate(Vector3 axis, float angle){
+		transform.rotate(axis, angle);
+		isDirty = true;
 	}
 	
-	/** Set the orientation of the emitter, if attached all the particles will get the same exact orientation */
-	public void setOrientation(Quaternion orientation){
-		if(isAttached)
-		{
-			for (int i = 0; i < activeCount; ++i)
-			{
-				Particle particle = particles[i];
-				particle.qx = orientation.x;
-				particle.qy = orientation.y;
-				particle.qz = orientation.z;
-				particle.qw = orientation.w;
-			}
-		}
-		this.orientation.set(orientation);
+	/** Postmultiplies the current transformation with a translation matrix represented by the given translation.*/
+	public void translate(Vector3 translation){
+		transform.translate(translation);
+		isDirty = true;
 	}
 	
-	public void setOrientation(Vector3 axis, float angle) {
-		setOrientation(TMP_Q1.set(axis, angle));
+	/** Postmultiplies the current transformation with a scale matrix represented by the given scale on x,y,z.*/
+	public void scale(float scaleX, float scaleY, float scaleZ){
+		transform.scale(scaleX, scaleY, scaleZ);
+		isRecomputeScale = true;
+		isDirty = true;
 	}
 	
-	public void rotate(Vector3 axis, float angle) {
-		setOrientation(TMP_Q1.set(axis,angle).mul(orientation));
-	}
-
-	public Quaternion getOrientation(){
-		return orientation;
-	}
-
-	public void setScale(float x, float y, float z){
-		scaleX = x;
-		scaleY = y;
-		scaleZ = z;
+	/** Postmultiplies the current transformation with a scale matrix represented by the given scale vector.*/
+	public void scale(Vector3 scale){
+		scale(scale.x, scale.y, scale.z);
 	}
 	
-	public void setScale(Vector3 scale){
-		scaleX = scale.x;
-		scaleY = scale.y;
-		scaleZ = scale.z;
+	/** Postmultiplies the current transformation with the given matrix.*/
+	public void mul(Matrix4 transform){
+		this.transform.mul(transform);
+		isDirty = true;
 	}
 	
-	public void setScale(float scale) {
-		scaleX = scaleY = scaleZ = scale;
-	}
-
-	public float getScale(){
-		return scaleX;
+	/** Set the given matrix to the current transformation matrix.*/
+	public void getTransform(Matrix4 transform){
+		transform.set(this.transform);
 	}
 	
-	public Vector3 getScale(Vector3 scale){
-		return scale.set(scaleX, scaleY, scaleZ);
-	}
-
 	@Override
 	protected Particle[] allocParticles(int particleCount) {
 		boolean isMeshNull = renderable.mesh == null;
-		if(isMeshNull|| (renderable.mesh.getMaxVertices() < particleCount*4))
-		{
+		if(isMeshNull|| (renderable.mesh.getMaxVertices() < particleCount*4)){
 			if(!isMeshNull) renderable.mesh.dispose(); 
 			renderable.mesh = allocMesh(particleCount);
 		}
@@ -339,48 +305,44 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 	private void setVelocityData(VelocityValue velocityValue, float[] velocityData){
 		velocityData[Particle.VEL_STRENGTH_INDEX] = velocityValue.strength.newLowValue();
 		velocityData[Particle.VEL_STRENGTH_INDEX+1] = velocityValue.strength.newHighValue();
-		if (!velocityValue.strength.isRelative()) velocityData[Particle.VEL_STRENGTH_INDEX+1] -= velocityData[Particle.VEL_STRENGTH_INDEX];
+		if (!velocityValue.strength.isRelative()) 
+			velocityData[Particle.VEL_STRENGTH_INDEX+1] -= velocityData[Particle.VEL_STRENGTH_INDEX];
 
-		if(velocityValue.theta.active)
-		{
+		if(velocityValue.theta.active){
 			velocityData[Particle.VEL_THETA_INDEX] = velocityValue.theta.newLowValue();
 			velocityData[Particle.VEL_THETA_INDEX+1] = velocityValue.theta.newHighValue();
-			if (!velocityValue.theta.isRelative()) velocityData[Particle.VEL_THETA_INDEX+1] -= velocityData[Particle.VEL_THETA_INDEX];
+			if (!velocityValue.theta.isRelative()) 
+				velocityData[Particle.VEL_THETA_INDEX+1] -= velocityData[Particle.VEL_THETA_INDEX];
 		}
-		else 
-		{ 
+		else { 
 			velocityData[Particle.VEL_THETA_INDEX] = velocityData[Particle.VEL_THETA_INDEX +1] = 0;
 		}
 			
-		if(velocityValue.phi.active)
-		{
+		if(velocityValue.phi.active){
 			velocityData[Particle.VEL_PHI_INDEX] = velocityValue.phi.newLowValue();
 			velocityData[Particle.VEL_PHI_INDEX+1] = velocityValue.phi.newHighValue();
-			if (!velocityValue.phi.isRelative())  velocityData[Particle.VEL_PHI_INDEX+1] -= velocityData[Particle.VEL_PHI_INDEX];
+			if (!velocityValue.phi.isRelative())  
+				velocityData[Particle.VEL_PHI_INDEX+1] -= velocityData[Particle.VEL_PHI_INDEX];
 		}
-		else
-		{
+		else{
 			velocityData[Particle.VEL_PHI_INDEX] = velocityData[Particle.VEL_PHI_INDEX+1] = 0;
 		}
 	}
 	
 	@Override
 	protected void activateParticle(Particle particle) {	
-		//Gdx.app.log("INFERNO", "Activating particle");
 		float percent = durationTimer / (float)duration;
 		
 		if (velocity0Value.active) setVelocityData(velocity0Value, particle.velocity0Data);
 		if (velocity1Value.active) setVelocityData(velocity1Value, particle.velocity1Data);
 		if (velocity2Value.active) setVelocityData(velocity2Value, particle.velocity2Data);
 
-		//float spriteWidth = particlesWidth;
 		particle.scaleStart = scaleValue.newLowValue();
 		particle.scaleDiff = scaleValue.newHighValue();
 		if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
 		particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(0);
 		
-		if (rotationValue.active)
-		{
+		if (rotationValue.active){
 			particle.rotationStart = rotationValue.newLowValue();
 			particle.rotationDiff = rotationValue.newHighValue();
 			if (!rotationValue.isRelative()) particle.rotationDiff -= particle.rotationStart;
@@ -403,8 +365,7 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		if (yOffsetValue.active) y += yOffsetValue.newLowValue();
 		if (zOffsetValue.active) z += zOffsetValue.newLowValue();
 		
-		switch (spawnShapeValue.shape) 
-		{
+		switch (spawnShapeValue.shape) {
 		case rectangle: 
 		{
 			float width = spawnWidth + (spawnWidthDiff * spawnWidthValue.getScale(percent));
@@ -415,55 +376,44 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			{
 					int a = MathUtils.random(-1,1);
 					float tx=0, ty=0, tz=0;
-					if(a == -1)
-					{
-						//X
+					if(a == -1){
 						tx = MathUtils.random(1)==0 ? -width/ 2 : width/ 2; 
-						if(tx == 0)
-						{
+						if(tx == 0){
 							ty = MathUtils.random(1)==0 ? -height / 2 : height/ 2;	
 							tz = MathUtils.random(1)==0 ? -depth/2 : depth/2;
 						}
-						else 
-						{
+						else {
 							ty = MathUtils.random(height) - height / 2;	
 							tz = MathUtils.random(depth) - depth / 2;
 						}
 					}
-					else if(a == 0)
-					{
+					else if(a == 0){
 						//Z
 						tz = MathUtils.random(1)==0 ? -depth/ 2 : depth/ 2; 
-						if(tz == 0)
-						{
+						if(tz == 0){
 							ty = MathUtils.random(1)==0 ? -height / 2 : height/ 2;	
 							tx = MathUtils.random(1)==0 ? -width/2 : width/2;
 						}
-						else 
-						{
+						else {
 							ty = MathUtils.random(height) - height / 2;	
 							tx = MathUtils.random(width) - width / 2;
 						}
 					}
-					else 
-					{
+					else {
 						//Y
 						ty = MathUtils.random(1)==0 ? -height/ 2 : height / 2; 
-						if(ty == 0)
-						{
+						if(ty == 0){
 							tx = MathUtils.random(1)==0 ? -width / 2 : width / 2;	
 							tz = MathUtils.random(1)==0 ? -depth/2 : depth/2;
 						}
-						else 
-						{
+						else {
 							tx = MathUtils.random(width) - width / 2;	
 							tz = MathUtils.random(depth) - depth / 2;
 						}
 					}			
 					x += tx; y+= ty; z +=tz;
 			}
-			else 
-			{
+			else {
 				x += MathUtils.random(width) - width / 2;
 				y += MathUtils.random(height) - height / 2;
 				z += MathUtils.random(depth) - depth/2;	
@@ -480,14 +430,12 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			
 			float radiusX, radiusY, radiusZ;
 			//Where generate the point, on edges or inside ?
-			if(spawnShapeValue.edges)
-			{
+			if(spawnShapeValue.edges){
 				radiusX = width / 2;
 				radiusY = height / 2;
 				radiusZ = depth/2;
 			}
-			else 
-			{
+			else {
 				radiusX = MathUtils.random(width)/2;
 				radiusY = MathUtils.random(height)/2;
 				radiusZ = MathUtils.random(depth)/2;
@@ -498,16 +446,14 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			//Generate theta
 			boolean isRadiusXZero = radiusX == 0, isRadiusZZero = radiusZ == 0;
 			if(!isRadiusXZero && !isRadiusZZero)spawnTheta = MathUtils.random(360f);
-			else 
-			{
+			else {
 				if(isRadiusXZero) spawnTheta = MathUtils.random(0, 1) == 0 ? -90 : 90;
 				else if(isRadiusZZero) spawnTheta = MathUtils.random(0, 1)*180;
 			}
 			
 			//Generate phi
 			if(radiusY == 0) spawnPhi = 0;
-			else
-			{
+			else{
 				switch (spawnShapeValue.side) 
 				{
 				case top:
@@ -549,13 +495,11 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			float ty = MathUtils.random(height) - hf;
 			
 			//Where generate the point, on edges or inside ?
-			if(spawnShapeValue.edges && Math.abs(ty) != hf )
-			{
+			if(spawnShapeValue.edges && Math.abs(ty) != hf ){
 				radiusX = width / 2;
 				radiusZ = depth/2;
 			}
-			else 
-			{
+			else {
 				radiusX = MathUtils.random(width)/2;
 				radiusZ = MathUtils.random(depth)/2;
 			}
@@ -564,9 +508,9 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			
 			//Generate theta
 			boolean isRadiusXZero = radiusX == 0, isRadiusZZero = radiusZ == 0;
-			if(!isRadiusXZero && !isRadiusZZero)spawnTheta = MathUtils.random(360f);
-			else 
-			{
+			if(!isRadiusXZero && !isRadiusZZero)
+				spawnTheta = MathUtils.random(360f);
+			else {
 				if(isRadiusXZero) spawnTheta = MathUtils.random(1) == 0 ? -90 : 90;
 				else if(isRadiusZZero) spawnTheta = MathUtils.random(1)==0 ? 0 : 180;
 			}
@@ -596,24 +540,18 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 
 		//Position
 		particle.x = x; particle.y = y; particle.z = z;
-		particle.ox = position.x; particle.oy = position.y; particle.oz = position.z;
 		
-		//Orientation
-		particle.qx = orientation.x; 
-		particle.qy = orientation.y;
-		particle.qz = orientation.z;
-		particle.qw = orientation.w;
+		//Emitter data
+		transform.extract4x3Matrix(particle.emitterTransform);
 	}
-	
+
 	protected void addVelocity(Particle particle, Vector3 velocity, VelocityValue velocityValue, float[] velocityData, float percent, float delta){
 		float strength = (velocityData[Particle.VEL_STRENGTH_INDEX] + velocityData[Particle.VEL_STRENGTH_INDEX+1] * velocityValue.strength.getScale(percent)) * delta;
-		if(velocityValue.type == VelocityType.centripetal)
-		{
+		if(velocityValue.type == VelocityType.centripetal){
 			//Centripetal
 			TMP_V3.set(particle.x, particle.y, particle.z).nor();
 		}
-		else if(velocityValue.type == VelocityType.tangential)
-		{
+		else if(velocityValue.type == VelocityType.tangential){
 			//Tangential
 			float phi = velocityData[Particle.VEL_PHI_INDEX] + velocityData[Particle.VEL_PHI_INDEX+1] * velocityValue.phi.getScale(percent),  
 				  theta = velocityData[Particle.VEL_THETA_INDEX] + velocityData[Particle.VEL_THETA_INDEX+1] * velocityValue.theta.getScale(percent);
@@ -623,8 +561,7 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			TMP_V3.rotate(TMP_V2, phi);
 			TMP_V3.crs(TMP_V2.set(particle.x, particle.y, particle.z).nor());
 		}
-		else 
-		{
+		else {
 			//Polar
 			float phi = velocityData[Particle.VEL_PHI_INDEX] + velocityData[Particle.VEL_PHI_INDEX+1] * velocityValue.phi.getScale(percent),  
 				  theta = velocityData[Particle.VEL_THETA_INDEX] + velocityData[Particle.VEL_THETA_INDEX+1] * velocityValue.theta.getScale(percent);
@@ -637,10 +574,29 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		velocity.add(TMP_V3.scl(strength));
 	}
 
+	/** Updates the emitter state and all particles data
+	 * @param delta time in seconds*/
 	public void update(float delta) {
+		//Update transform first
+		if(isDirty){
+			if(isAttached){
+				for (int i = 0; i < activeCount; ++i){
+					Particle particle = particles[i];
+					transform.extract4x3Matrix(particle.emitterTransform);
+				}
+			}
+			if(isRecomputeScale){
+				//Compute x and y scale
+				float[] val = transform.val;
+				particlesRefScaleX = (float)Math.sqrt(val[Matrix4.M00]*val[Matrix4.M00] + val[Matrix4.M01]*val[Matrix4.M01] + val[Matrix4.M02]*val[Matrix4.M02]);
+				particlesRefScaleY = (float)Math.sqrt(val[Matrix4.M10]*val[Matrix4.M10] + val[Matrix4.M11]*val[Matrix4.M11] + val[Matrix4.M12]*val[Matrix4.M12]);
+				isRecomputeScale = false;
+			}
+			isDirty = false;
+		}
+		
 		super.update(delta);
-		for(int i=0; i< activeCount; ++i)
-		{
+		for(int i=0; i< activeCount; ++i){
 			Particle particle = particles[i];
 			float percent = 1 - particle.currentLife / (float)particle.life;
 
@@ -655,8 +611,7 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 			
 			particle.x += velocity.x; particle.y += velocity.y; particle.z += velocity.z;
 			
-			if(facingValue.align == Align.particleDirection)
-			{
+			if(facingValue.align == Align.particleDirection){
 				//Direction is used only in this case for now
 				velocity.nor();
 				particle.dirX = velocity.x;
@@ -664,10 +619,10 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 				particle.dirZ = velocity.z;
 			}
 			
-			if ((flags & UPDATE_ROTATION) != 0) particle.rotation = particle.rotationStart + particle.rotationDiff * rotationValue.getScale(percent);
+			if ((flags & UPDATE_ROTATION) != 0) 
+				particle.rotation = particle.rotationStart + particle.rotationDiff * rotationValue.getScale(percent);
 
-			if ((flags & UPDATE_TINT) != 0)
-			{
+			if ((flags & UPDATE_TINT) != 0){
 				float[] color = tintValue.getColor(percent);
 				particle.tintR = color[0];
 				particle.tintG = color[1];
@@ -678,31 +633,26 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		}
 	}
 
-	private void updateMesh(Camera camera) {
-
+	/** Updates the mesh which will be rendered.
+	 *  If the emitter is not inside a Node, just call update and render.
+	 *  Call this method only if you know what you are doing. */
+	public void updateMesh() {
 		short vo = 0; // the current vertex
 		int fo = 0; // the current offset in the vertex array
 		int io = 0; // the current offset in the indices array
 		float 	u = region.getU(), v = region.getV(), 
-				u2 = region.getU2(), v2 = region.getV2();				
+				u2 = region.getU2(), v2 = region.getV2();
 		
-		float hwidth = halfParticlesWidth*scaleX, hheight = halfParticlesHeight *scaleY;
-		
-		if(facingValue.align == Align.screen)
-		{
+		if(facingValue.align == Align.screen){
 			Vector3 look = TMP_V3.set(camera.direction).scl(-1),  //normal
 					right = TMP_V4.set(camera.up).crs(look).nor(), //tangent
 					up = camera.up;
 			
-			for (int i = 0; i < activeCount; ++i) 
-			{
+			for (int i = 0; i < activeCount; ++i) {
 				Particle particle = particles[i];
-				TMP_V1.set(right).scl(particle.scale * hwidth);
-				TMP_V2.set(up).scl(particle.scale * hheight);
-
-				TMP_V5.set(particle.x, particle.y, particle.z).scl(scaleX, scaleY, scaleZ)
-						.mul(TMP_Q1.set(particle.qx, particle.qy, particle.qz, particle.qw ))
-						.add(particle.ox, particle.oy, particle.oz );
+				TMP_V1.set(right).scl(halfParticlesWidth*particle.scale *particlesRefScaleX);
+				TMP_V2.set(up).scl(halfParticlesHeight *particle.scale *particlesRefScaleY);
+				TMP_V5.set(particle.x, particle.y, particle.z).mul4x3(particle.emitterTransform);
 				
 				//bottom left
 				putVertex(vertices, fo, TMP_V6.set(0,0,0).sub(TMP_V1).sub(TMP_V2).rotate(look, particle.rotation).add(TMP_V5.x, TMP_V5.y, TMP_V5.z), particle.tintR, particle.tintG, particle.tintB, particle.transparency,  u, v2); fo+= VERTEX_SIZE;
@@ -723,22 +673,16 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 				io += 6;
 			}
 		}
-		else if(facingValue.align == Align.viewPoint)
-		{
-			for (int i = 0; i < activeCount; ++i) 
-			{
+		else if(facingValue.align == Align.viewPoint){
+			for (int i = 0; i < activeCount; ++i) {
 				Particle particle = particles[i];
-				
-				TMP_V1.set(particle.x, particle.y, particle.z).scl(scaleX, scaleY, scaleZ)
-					.mul(TMP_Q1.set(particle.qx, particle.qy, particle.qz, particle.qw ))
-					.add(particle.ox, particle.oy, particle.oz );
-				
+				TMP_V1.set(particle.x, particle.y, particle.z).mul4x3(particle.emitterTransform);
 				Vector3 look = TMP_V3.set(camera.position).sub(TMP_V1).nor(), //normal
 						right = TMP_V4.set(camera.up).crs(look).nor(), //tangent
 						up = TMP_V5.set(look).crs(right);
 				
-				right.scl(particle.scale * hwidth);
-				up.scl(particle.scale * hheight);
+				right.scl(halfParticlesWidth*particle.scale *particlesRefScaleX);
+				up.scl(halfParticlesHeight *particle.scale *particlesRefScaleY);
 
 				
 				//bottom left
@@ -760,24 +704,19 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 				io += 6;
 			}
 		}
-		else if(facingValue.align == Align.particleDirection)
-		{
-			for (int i = 0; i < activeCount; ++i) 
-			{
+		else if(facingValue.align == Align.particleDirection){
+			for (int i = 0; i < activeCount; ++i) {
 				Particle particle = particles[i];
 				
-				TMP_V1.set(particle.x, particle.y, particle.z).scl(scaleX, scaleY, scaleZ)
-					.mul(TMP_Q1.set(particle.qx, particle.qy, particle.qz, particle.qw ))
-					.add(particle.ox, particle.oy, particle.oz );
-				
+				TMP_V1.set(particle.x, particle.y, particle.z).mul4x3(particle.emitterTransform);
 				Vector3 up = TMP_V5.set(particle.dirX, particle.dirY, particle.dirZ).nor(),		
 						look = TMP_V3.set(camera.position).sub(TMP_V1).nor(), //normal
 						right = TMP_V4.set(up).crs(look); //tangent
 				
 				look.set(right).crs(up);
 				
-				right.scl(particle.scale * hwidth);
-				up.scl(particle.scale * hheight);
+				right.scl(halfParticlesWidth*particle.scale *particlesRefScaleX);
+				up.scl(halfParticlesHeight *particle.scale *particlesRefScaleY);
 
 				//bottom left
 				putVertex(vertices, fo, TMP_V6.set(0,0,0).sub(right).sub(up).rotate(look, particle.rotation).add(TMP_V1), particle.tintR, particle.tintG, particle.tintB, particle.transparency,  u, v2); fo+= VERTEX_SIZE;
@@ -816,13 +755,19 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 		vertices[offset + UV_OFFSET+1] = v;
 	}
 	
-	public void render (ModelBatch batch) {
-		updateMesh(batch.getCamera());
-		batch.render(renderable);
-	}
-	
 	public Renderable getRenderable() {
 		return renderable;
+	}
+	
+	/** This is the main method which will be invoked by ModelBatch to render the emitter.
+	 * It is also invoked by {@link ParticleEffectNode#getRenderables(Array, Pool, Matrix4, Object)}.
+	 * Each time this method is called it will update the emitter mesh, so should be called one time only during the rendering. */
+	@Override
+	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
+		if(activeCount > 0){
+			updateMesh();
+			renderables.add(pool.obtain().set(renderable));
+		}
 	}
 	
 	public String getImagePath () {
@@ -1005,5 +950,9 @@ public class ParticleEmitter extends Emitter<Particle> implements Disposable{
 	public AlignmentValue getFacingValue() {
 		return facingValue;
 	}
-
+	
+	public void setCamera(Camera camera)
+	{
+		this.camera = camera;
+	}
 }

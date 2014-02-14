@@ -36,7 +36,6 @@ public abstract class Emitter<T extends EmitObject>
 	protected int minParticleCount, maxParticleCount = 4;
 	private String name;
 	protected int activeCount = 0;
-	private boolean firstUpdate;
 	private boolean allowCompletion;
 
 	protected int emission, emissionDiff, emissionDelta;
@@ -119,20 +118,15 @@ public abstract class Emitter<T extends EmitObject>
 			delayTimer += deltaMillis;
 		} else {
 			boolean done = false;
-			if (firstUpdate) {
-				firstUpdate = false;
-				addParticle();
-			}
-	
-			if (durationTimer < duration) durationTimer += deltaMillis;
-			else 
-			{
+			//End check
+			if (durationTimer < duration) 
+				durationTimer += deltaMillis;
+			else {
 				if (!continuous || allowCompletion) done = true;
 				else restart();
 			}
 
-			if(!done) 
-			{
+			if(!done) {
 				emissionDelta += deltaMillis;
 				float emissionTime = emission + emissionDiff * emissionValue.getScale(durationTimer / (float)duration);
 				if (emissionTime > 0) {
@@ -147,33 +141,29 @@ public abstract class Emitter<T extends EmitObject>
 				}
 				if (activeCount < minParticleCount) addParticles(minParticleCount - activeCount);
 			}
-		}
-
-		int activeCount = this.activeCount;
-		T[] particles = this.particles;
-		for (int i = 0; i < activeCount;) 
-		{
-			T particle = particles[i];
-			particle.currentLife -= deltaMillis;
-			if (particle.currentLife <= 0) 
-			{
-				//swap the particle
-				int lastIndex = activeCount-1;
-				if(i != lastIndex)
-				{
-					particles[i] = particles[lastIndex];
-					particles[lastIndex] = particle;
+			
+			int activeCount = this.activeCount;
+			T[] particles = this.particles;
+			for (int i = 0; i < activeCount;) {
+				T particle = particles[i];
+				particle.currentLife -= deltaMillis;
+				if (particle.currentLife <= 0) {
+					//swap the particle
+					int lastIndex = activeCount-1;
+					if(i != lastIndex){
+						particles[i] = particles[lastIndex];
+						particles[lastIndex] = particle;
+					}
+					--activeCount;
+					continue;
 				}
-				--activeCount;
-				continue;
+				++i;
 			}
-			++i;
+			this.activeCount = activeCount;
 		}
-		this.activeCount = activeCount;
 	}
 
 	public void start () {
-		firstUpdate = true;
 		allowCompletion = false;
 		restart();
 	}

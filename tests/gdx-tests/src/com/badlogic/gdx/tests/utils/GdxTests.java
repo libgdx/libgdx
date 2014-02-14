@@ -43,6 +43,8 @@ import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
+import com.badlogic.gdx.tests.g3d.ParticleEmitter3dTest;
+import com.badlogic.gdx.tests.g3d.ParticleEmitterNodeTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
@@ -150,6 +152,8 @@ public class GdxTests {
 		OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class,
 		ParallaxTest.class,
+		ParticleEmitter3dTest.class,
+		ParticleEmitterNodeTest.class,
 		ParticleEmitterTest.class,
 		PathTest.class,
 		PickingTest.class,

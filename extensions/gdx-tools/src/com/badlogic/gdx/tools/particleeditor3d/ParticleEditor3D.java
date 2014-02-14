@@ -65,6 +65,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitter;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -396,11 +397,14 @@ public class ParticleEditor3D extends JFrame {
                 	boolean complete = true;
                 	for (ParticleEmitter emitter : effect.getEmitters()) 
                 	{
-                		if (emitter.getRegion() == null && emitter.getImagePath() != null) loadImage(emitter);
+                		if (emitter.getRegion() == null && emitter.getImagePath() != null){ 
+                			loadImage(emitter);
+                        emitter.setCamera(worldCamera);
+                		}
                 		if (isEnabled(emitter)) 
                 		{	
                 			emitter.update(delta);
-                			if (emitter.getRegion() != null) emitter.render(modelBatch);
+                			if (emitter.getRegion() != null) modelBatch.render(emitter);
                 			activeCount += emitter.getActiveCount();
                 			if (!emitter.isComplete()) complete = false;
                 		}
