@@ -154,24 +154,28 @@ public class Container extends WidgetGroup {
 		return widget;
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorAt (int index, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
 	public boolean removeActor (Actor actor) {
