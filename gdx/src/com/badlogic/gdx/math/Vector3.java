@@ -394,6 +394,18 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(this.y * z - this.z * y, this.z * x - this.x * z, this.x * y - this.y * x);
 	}
 
+	/** Left-multiplies the vector by the given 4x3 column major matrix.
+	 * The matrix should be composed by a 3x3 matrix representing rotation and scale
+	 * plus a 1x3 matrix representing the translation.
+	 * @param matrix The matrix
+	 * @return This vector for chaining */
+	public Vector3 mul4x3(float[] matrix)
+	{
+		return set(x * matrix[0] + y * matrix[3] + z * matrix[6] + matrix[9], 
+			x * matrix[1] + y * matrix[4] + z * matrix[7] + matrix[10], 
+			x * matrix[2] + y * matrix[5] + z * matrix[8] + matrix[11]);
+	}
+	
 	/** Left-multiplies the vector by the given matrix, assuming the fourth (w) component of the vector is 1.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
@@ -497,6 +509,47 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 */
 	public boolean isZero (final float margin) {
 		return len2() < margin;
+	}
+	
+	/** @return Whether this vector is collinear with the given vector.
+	 * True if the normalized dot product is 1.
+	 */
+	public boolean isCollinear(Vector3 vector){
+		float mag = len() * vector.len();
+		if(mag != 0 ) 
+			return dot(vector)/mag == 1;
+		return false;
+	}
+	
+	/** @return Whether this vector is collinear with the given vector but has opposite direction.
+	 * True if the normalized dot product is -1.
+	 */
+	public boolean isCollinearOpposite(Vector3 vector){
+		float mag = len() * vector.len();
+		if(mag != 0 ) 
+			return dot(vector)/mag == -1;
+		return false;
+	}
+	
+	/** @return Whether this vector is perpendicular with the given vector.
+	 * True if the dot product is 0.
+	 */
+	public boolean isPerpendicular(Vector3 vector){
+		return dot(vector) == 0;
+	}
+	
+	/** @return Whether this vector has similar direction compared to the given vector.
+	 * True if the normalized dot product is > 0.
+	 */
+	public boolean hasSameDirection(Vector3 vector){
+		return dot(vector) > 0;
+	}
+
+	/** @return Whether this vector has opposite direction compared to the given vector.
+	 * True if the normalized dot product is < 0.
+	 */
+	public boolean hasOppositeDirection(Vector3 vector){
+		return dot(vector) < 0;
 	}
 
 	/** Linearly interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is stored

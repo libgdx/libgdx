@@ -16,13 +16,18 @@
 
 package com.badlogic.gdx.graphics.g3d.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Pool;
 
 /**
  * A node is part of a hierarchy of Nodes in a {@link Model}. A Node encodes
@@ -172,5 +177,47 @@ public class Node {
 					return node;
 		}
 		return null;
+	}
+	
+	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool, Matrix4 transform, Object userData) {
+		if(parts.size > 0) {
+			for(NodePart nodePart: parts) {
+				renderables.add(nodePart.getRenderable(pool.obtain(), globalTransform, transform, userData));
+			}
+		}
+		
+		for(Node child: children) {
+			child.getRenderables(renderables, pool, transform, userData);
+		}
+	}
+	
+	/*
+	public Renderable getRenderable (Renderable out, Matrix4 transform, Object userData) {
+		return getRenderable(out, parts.get(0), transform, userData);
+	}
+	*/
+
+	public <T extends Node> T copy( T outNode, ObjectMap<NodePart, ArrayMap<Node, Matrix4>> nodePartBones, Array<Material> materials) {
+		outNode.id = id;
+		//copy.boneId = node.boneId;
+		outNode.parent = parent;
+		outNode.translation.set(translation);
+		outNode.rotation.set(rotation);
+		outNode.scale.set(scale);
+		outNode.localTransform.set(localTransform);
+		outNode.globalTransform.set(globalTransform);
+		for(NodePart nodePart: parts) {
+			outNode.parts.add(nodePart.copy(nodePartBones, materials));
+		}
+		for(Node child: children) {
+			Node copychild = child.copy(nodePartBones, materials);
+			copychild.parent = outNode;
+			outNode.children.add(copychild);
+		}
+		return outNode;
+	}
+
+	public Node copy(ObjectMap<NodePart, ArrayMap<Node, Matrix4>> nodePartBones, Array<Material> materials) {
+		return copy(new Node(), nodePartBones, materials);
 	}
 }
