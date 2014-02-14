@@ -79,6 +79,7 @@ public class Table extends WidgetGroup {
 			applyTransform(batch, computeTransform());
 			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
+				batch.flush();
 				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(layout.getPadLeft(),
 					layout.getPadBottom(), getWidth() - layout.getPadLeft() - layout.getPadRight(),
 					getHeight() - layout.getPadBottom() - layout.getPadTop());

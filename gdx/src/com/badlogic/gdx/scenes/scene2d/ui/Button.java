@@ -206,7 +206,8 @@ public class Button extends Table implements Disableable {
 			children.get(i).moveBy(-offsetX, -offsetY);
 	}
 
-	protected void drawBackground (Batch batch, float parentAlpha) {
+	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
+		super.drawBackground(batch, parentAlpha, x, y);
 	}
 
 	public float getPrefWidth () {
