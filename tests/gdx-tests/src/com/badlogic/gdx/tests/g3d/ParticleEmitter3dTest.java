@@ -63,6 +63,7 @@ public class ParticleEmitter3dTest extends BaseG3dTest{
 		ParticleEmitter emitter = createEmitter(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture);
 		emitter.translate(Vector3.tmp.set(5,5,0));
 		emitter.rotate(Vector3.X, -90);
+		//emitter.setAttached(true);
 		actions.add(new EmitterAction(emitter, Vector3.X, 360));
 		emitters.add(emitter);
 		
@@ -70,6 +71,7 @@ public class ParticleEmitter3dTest extends BaseG3dTest{
 		emitter = createEmitter(new float[] { 0.12156863f, 1, 0.047058824f}, particleTexture);
 		emitter.translate(Vector3.tmp.set(5,5,0));
 		emitter.rotate(Vector3.Y, -90);
+		//emitter.setAttached(true);
 		actions.add(new EmitterAction(emitter, Vector3.Y, -360));
 		emitters.add(emitter);
 		
@@ -77,6 +79,7 @@ public class ParticleEmitter3dTest extends BaseG3dTest{
 		emitter = createEmitter(new float[] {0.12156863f, 0.047058824f, 1}, particleTexture);
 		emitter.translate(Vector3.tmp.set(0,5,5));
 		emitter.rotate(Vector3.Z, -90);
+		//emitter.setAttached(true);
 		actions.add(new EmitterAction(emitter, Vector3.Z, -360));		
 		emitters.add(emitter);
 	}
