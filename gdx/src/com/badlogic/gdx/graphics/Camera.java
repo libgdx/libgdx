@@ -82,6 +82,7 @@ public abstract class Camera {
 	}
 
 	/** Recalculates the direction of the camera to look at the point (x, y, z).
+	 * This function assumes the up vector is normalized.
 	 * @param x the x-coordinate of the point to look at
 	 * @param y the x-coordinate of the point to look at
 	 * @param z the x-coordinate of the point to look at */
@@ -89,11 +90,11 @@ public abstract class Camera {
 		tmpVec.set(x,y,z).sub(position).nor();
 		if(!tmpVec.isZero()){
 			float dot = tmpVec.dot(up); //up and direction must ALWAYS be orthonormal vectors
-			if(dot == 1){ 
+			if(Math.abs(dot-1) < 0.000000001f){ 
 				//Collinear
 				up.set(direction).scl(-1);
 			}
-			else if(dot == -1){ 
+			else if(Math.abs(dot+1) < 0.000000001f){ 
 				//Collinear opposite
 				up.set(direction);
 			}
