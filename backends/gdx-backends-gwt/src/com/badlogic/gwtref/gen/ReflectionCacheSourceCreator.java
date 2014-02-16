@@ -63,7 +63,9 @@ public class ReflectionCacheSourceCreator {
 	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
 	final Map<String, String> parameterName2ParameterInstantiation = new HashMap();
 	final Map<String, Integer> typeNames2typeIds = new HashMap();
-	int nextId = 0;
+	int nextTypeId;
+	int nextSetterGetterId;
+	int nextInvokableId;
 
 	class SetterGetterStub {
 		int getter;
@@ -102,10 +104,6 @@ public class ReflectionCacheSourceCreator {
 		logger.log(Type.INFO, type.getQualifiedSourceName());
 	}
 
-	private int nextId () {
-		return nextId++;
-	}
-
 	public String create () {
 		ClassSourceFileComposerFactory composer = new ClassSourceFileComposerFactory(packageName, simpleName);
 		composer.addImplementedInterface("com.badlogic.gwtref.client.IReflectionCache");
@@ -118,7 +116,6 @@ public class ReflectionCacheSourceCreator {
 
 		generateLookups();
 
-		getKnownTypesC();
 		forNameC();
 		newArrayC();
 
@@ -148,8 +145,6 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private void generateLookups () {
-		p("Map<String, Type> types = new HashMap<String, Type>();");
-
 		TypeOracle typeOracle = context.getTypeOracle();
 		JPackage[] packages = typeOracle.getPackages();
 
@@ -184,25 +179,12 @@ public class ReflectionCacheSourceCreator {
 		});
 
 		// generate Type lookup generator methods.
-		int id = 0;
 		for (JType t : types) {
-			String typeGen = createTypeGenerator(t);
-			p("private void c" + (id++) + "() {");
-			p(typeGen);
-			p("}");
+			p(createTypeGenerator(t));
 		}
 
 		// generate reusable parameter objects
 		parameterInitialization();
-
-		// generate constructor that calls all the type generators
-		// that populate the map.
-		p("public " + simpleName + "() {");
-		p("initializeParameters();");
-		for (int i = 0; i < id; i++) {
-			p("c" + i + "();");
-		}
-		p("}");
 
 		// sort the stubs so the generated output will be stable between runs
 		Collections.sort(setterGetterStubs, new Comparator<SetterGetterStub>() {
@@ -458,7 +440,6 @@ public class ReflectionCacheSourceCreator {
 		stub.enclosingType = stub.enclosingType.replace(".class", "");
 		stub.type = stub.type.replace(".class", "");
 
-		pb("// " + stub.enclosingType + "#" + stub.name);
 		pbn("private native " + stub.type + " g" + stub.getter + "(" + stub.enclosingType + " obj) /*-{");
 		if (stub.isStatic)
 			pbn("return @" + stub.enclosingType + "::" + stub.name + ";");
@@ -499,9 +480,7 @@ public class ReflectionCacheSourceCreator {
 
 	private String createTypeGenerator (JType t) {
 		buffer.setLength(0);
-		String varName = "t";
-		if (t instanceof JPrimitiveType) varName = "p";
-		int id = nextId();
+		int id = nextTypeId++;
 		typeNames2typeIds.put(t.getErasedType().getQualifiedSourceName(), id);
 		JClassType c = t.isClass();
 
@@ -526,8 +505,11 @@ public class ReflectionCacheSourceCreator {
 				assignables = null;
 		}
 
-		pb("Type " + varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables
-			+ ");");
+		String varName = "c" + id;
+		pb("private static Type " + varName + ";");
+		pb("private static Type " + varName + "() {");
+		pb("if(" + varName + "!=null) return " + varName + ";");
+		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ");");
 
 		if (c != null) {
 			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
@@ -542,14 +524,13 @@ public class ReflectionCacheSourceCreator {
 				for (JField f : c.getFields()) {
 					String enclosingType = getType(c);
 					String fieldType = getType(f.getType());
-					int setter = nextId();
-					int getter = nextId();
+					int setterGetter = nextSetterGetterId++;
 					String elementType = getElementTypes(f);
 
 					pb("    new Field(\"" + f.getName() + "\", " + enclosingType + ", " + fieldType + ", " + f.isFinal() + ", "
 						+ f.isDefaultAccess() + ", " + f.isPrivate() + ", " + f.isProtected() + ", " + f.isPublic() + ", "
-						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + getter + ", " + setter + ", "
-						+ elementType + "), ");
+						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + setterGetter + ", " + setterGetter
+						+ ", " + elementType + "), ");
 
 					SetterGetterStub stub = new SetterGetterStub();
 					stub.name = f.getName();
@@ -558,8 +539,8 @@ public class ReflectionCacheSourceCreator {
 					stub.isStatic = f.isStatic();
 					stub.isFinal = f.isFinal();
 					if (enclosingType != null && fieldType != null) {
-						stub.getter = getter;
-						stub.setter = setter;
+						stub.getter = setterGetter;
+						stub.setter = setterGetter;
 					}
 					setterGetterStubs.add(stub);
 				}
@@ -590,29 +571,20 @@ public class ReflectionCacheSourceCreator {
 			pb(varName + ".isPrimitive = true;");
 		}
 
-		pbn("types.put(\"" + t.getErasedType().getQualifiedSourceName() + "\", " + varName + ");");
+		pb("return " + varName + ";");
+		pb("}");
 		return buffer.toString();
 	}
 
 	private void parameterInitialization () {
 		p("private static final Parameter[] EMPTY_PARAMETERS = new Parameter[0];");
 		for (Map.Entry<String, String> e : parameterName2ParameterInstantiation.entrySet()) {
-			p("private Parameter " + e.getKey() + ";");
+			p("private static Parameter " + e.getKey() + ";");
+			p("private static Parameter " + e.getKey() + "() {");
+			p("    if (" + e.getKey() + " != null) return " + e.getKey() + ";");
+			p("    return " + e.getKey() + " = " + e.getValue() + ";");
+			p("}");
 		}
-
-		p("private void initializeParameters() {");
-		int i = 0;
-		for (Map.Entry<String, String> e : parameterName2ParameterInstantiation.entrySet()) {
-			p("    " + e.getKey() + " = " + e.getValue() + ";");
-			i++;
-			if (i % 1000 == 0) {
-				String nextCall = "initializeParameters" + (i / 1000);
-				p("    " + nextCall + "();");
-				p("}");
-				p("private void " + nextCall + "() {");
-			}
-		}
-		p("}");
 	}
 
 	private void createTypeInvokables (JClassType c, String varName, String methodType, JAbstractMethod[] methodTypes) {
@@ -643,7 +615,7 @@ public class ReflectionCacheSourceCreator {
 				}
 
 				stub.jnsi = "";
-				stub.methodId = nextId();
+				stub.methodId = nextInvokableId++;
 				stub.name = m.getName();
 				methodStubs.add(stub);
 
@@ -661,7 +633,7 @@ public class ReflectionCacheSourceCreator {
 						String paramInstantiation = "new Parameter(\"" + p.getName() + "\", " + getType(p.getType()) + ", \""
 							+ p.getType().getJNISignature() + "\")";
 						parameterName2ParameterInstantiation.put(paramName, paramInstantiation);
-						pbn(paramName + ", ");
+						pbn(paramName + "(), ");
 					}
 					pbn("}, ");
 				} else {
@@ -875,13 +847,23 @@ public class ReflectionCacheSourceCreator {
 
 	private void forNameC () {
 		p("public Type forName(String name) {");
-		p("	return types.get(name);");
-		p("}");
-	}
+		p("    int hashCode = name.hashCode();");
+		int i = 0;
 
-	private void getKnownTypesC () {
-		p("public Collection<Type> getKnownTypes() {");
-		p("	return types.values();");
+		SwitchedCodeBlockByString cb = new SwitchedCodeBlockByString("hashCode", "name");
+		for (String typeName : typeNames2typeIds.keySet()) {
+			cb.add(typeName, "return c" + typeNames2typeIds.get(typeName) + "();");
+			i++;
+			if (i % 1000 == 0) {
+				cb.print();
+				cb = new SwitchedCodeBlockByString("hashCode", "name");
+				p("    return forName" + i + "(name, hashCode);");
+				p("}");
+				p("private Type forName" + i + ("(String name, int hashCode) {"));
+			}
+		}
+		cb.print();
+		p("    return null;");
 		p("}");
 	}
 
@@ -934,6 +916,48 @@ public class ReflectionCacheSourceCreator {
 
 		class KeyedCodeBlock {
 			int key;
+			String codeBlock;
+		}
+	}
+
+	class SwitchedCodeBlockByString {
+		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap();
+		private final String switchStatement;
+		private final String expectedValue;
+
+		SwitchedCodeBlockByString (String switchStatement, String expectedValue) {
+			this.switchStatement = switchStatement;
+			this.expectedValue = expectedValue;
+		}
+
+		void add (String key, String codeBlock) {
+			KeyedCodeBlock b = new KeyedCodeBlock();
+			b.key = key;
+			b.codeBlock = codeBlock;
+			List<KeyedCodeBlock> blockList = blocks.get(key);
+			if (blockList == null) {
+				blockList = new ArrayList();
+				blocks.put(key, blockList);
+			}
+			blockList.add(b);
+		}
+
+		void print () {
+			if (blocks.isEmpty()) return;
+
+			p("    switch(" + switchStatement + ") {");
+			for (String key : blocks.keySet()) {
+				p("    case " + key.hashCode() + ": ");
+				for (KeyedCodeBlock block : blocks.get(key)) {
+					p("        if(" + expectedValue + ".equals(\"" + block.key + "\"))" + block.codeBlock);
+					p("    break;");
+				}
+			}
+			p("}");
+		}
+
+		class KeyedCodeBlock {
+			String key;
 			String codeBlock;
 		}
 	}

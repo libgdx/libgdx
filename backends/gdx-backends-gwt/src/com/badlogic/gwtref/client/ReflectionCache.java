@@ -82,10 +82,6 @@ public class ReflectionCache {
 		return instance.newArray(getType(componentType), size);
 	}
 
-	public static Collection<Type> getKnownTypes () {
-		return instance.getKnownTypes();
-	}
-
 	public static Object getFieldValue (Field field, Object obj) throws IllegalAccessException {
 		return instance.get(field, obj);
 	}
