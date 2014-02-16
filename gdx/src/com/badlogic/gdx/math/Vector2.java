@@ -421,4 +421,63 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public boolean isZero (final float margin) {
 		return len2() < margin;
 	}
+	
+	/** @return Whether this vector is collinear with the given vector.
+	 * The vectors need to be normalized for this to work.
+	 * True if the normalized dot product is 1.
+	 * @param vector the vector to check
+	 * @param epsilon a positive small number close to zero */
+	public boolean isCollinear(Vector2 vector, float epsilon){
+		return MathUtils.isZero(dot(vector)-1, epsilon);
+	}
+	
+	/** @return Whether this vector is collinear with the given vector.
+	 * The vectors need to be normalized for this to work.
+	 * True if the normalized dot product is 1.
+	 * @param vector the vector to check */
+	public boolean isCollinear(Vector2 vector){
+		return MathUtils.isZero(dot(vector)-1);
+	}
+	
+	/** @return Whether this vector is collinear with the given vector but has opposite direction.
+	 * True if the normalized dot product is -1.
+	 * The vectors need to be normalized for this to work.
+	 * @param vector the vector to check
+	 * @param epsilon a positive small number close to zero */
+	public boolean isCollinearOpposite(Vector2 vector, float epsilon){
+		return MathUtils.isZero(dot(vector)+1, epsilon);
+	}
+	
+	/** @return Whether this vector is collinear with the given vector but has opposite direction.
+	 * True if the normalized dot product is -1.
+	 * The vectors need to be normalized for this to work.
+	 * @param vector the vector to check */
+	public boolean isCollinearOpposite(Vector2 vector){
+		return MathUtils.isZero(dot(vector)+1);
+	}
+	
+	/** @return Whether this vector is perpendicular with the given vector.
+	 * True if the dot product is 0.*/
+	public boolean isPerpendicular(Vector2 vector){
+		return MathUtils.isZero(dot(vector));
+	}
+	
+	/** @return Whether this vector is perpendicular with the given vector.
+	 * True if the dot product is 0.
+	 * @param epsilon a positive small number close to zero */
+	public boolean isPerpendicular(Vector2 vector, float epsilon){
+		return MathUtils.isZero(dot(vector), epsilon);
+	}
+	
+	/** @return Whether this vector has similar direction compared to the given vector.
+	 * True if the normalized dot product is > 0.*/
+	public boolean hasSameDirection(Vector2 vector){
+		return dot(vector) > 0;
+	}
+
+	/** @return Whether this vector has opposite direction compared to the given vector.
+	 * True if the normalized dot product is < 0.*/
+	public boolean hasOppositeDirection(Vector2 vector){
+		return dot(vector) < 0;
+	}
 }
