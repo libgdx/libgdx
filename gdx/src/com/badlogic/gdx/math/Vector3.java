@@ -487,83 +487,62 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.mul(tmpMat);
 	}
 
-	/** @return Whether this vector is a unit length vector */
+	@Override
 	public boolean isUnit () {
 		return isUnit(0.000000001f);
 	}
 
-	/** @return Whether this vector is a unit length vector within the given margin
-	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary. */
+	@Override
 	public boolean isUnit(final float margin) {
 		return Math.abs(len2() - 1f) < margin;
 	}
 
-	/** @return Whether this vector is a zero vector */
+	@Override
 	public boolean isZero () {
 		return x == 0 && y == 0 && z == 0;
 	}
 	
-	/** @return Whether the length of this vector is smaller than the given margin
-	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary. */
+	@Override
 	public boolean isZero (final float margin) {
 		return len2() < margin;
 	}
 	
-	/** @return Whether this vector is collinear with the given vector.
-	 * The vectors need to be normalized for this to work.
-	 * True if the normalized dot product is 1.
-	 * @param vector the vector to check
-	 * @param epsilon a positive small number close to zero */
+	@Override
 	public boolean isCollinear(Vector3 vector, float epsilon){
 		return MathUtils.isZero(dot(vector)-1, epsilon);
 	}
 	
-	/** @return Whether this vector is collinear with the given vector.
-	 * The vectors need to be normalized for this to work.
-	 * True if the normalized dot product is 1.
-	 * @param vector the vector to check */
+	@Override
 	public boolean isCollinear(Vector3 vector){
 		return MathUtils.isZero(dot(vector)-1);
 	}
 	
-	/** @return Whether this vector is collinear with the given vector but has opposite direction.
-	 * True if the normalized dot product is -1.
-	 * The vectors need to be normalized for this to work.
-	 * @param vector the vector to check
-	 * @param epsilon a positive small number close to zero */
+	@Override
 	public boolean isCollinearOpposite(Vector3 vector, float epsilon){
 		return MathUtils.isZero(dot(vector)+1, epsilon);
 	}
 	
-	/** @return Whether this vector is collinear with the given vector but has opposite direction.
-	 * True if the normalized dot product is -1.
-	 * The vectors need to be normalized for this to work.
-	 * @param vector the vector to check */
+	@Override
 	public boolean isCollinearOpposite(Vector3 vector){
 		return MathUtils.isZero(dot(vector)+1);
 	}
 	
-	/** @return Whether this vector is perpendicular with the given vector.
-	 * True if the dot product is 0.*/
+	@Override
 	public boolean isPerpendicular(Vector3 vector){
 		return MathUtils.isZero(dot(vector));
 	}
 	
-	/** @return Whether this vector is perpendicular with the given vector.
-	 * True if the dot product is 0.
-	 * @param epsilon a positive small number close to zero */
+	@Override
 	public boolean isPerpendicular(Vector3 vector, float epsilon){
 		return MathUtils.isZero(dot(vector), epsilon);
 	}
 	
-	/** @return Whether this vector has similar direction compared to the given vector.
-	 * True if the normalized dot product is > 0.*/
+	@Override
 	public boolean hasSameDirection(Vector3 vector){
 		return dot(vector) > 0;
 	}
 
-	/** @return Whether this vector has opposite direction compared to the given vector.
-	 * True if the normalized dot product is < 0.*/
+	@Override
 	public boolean hasOppositeDirection(Vector3 vector){
 		return dot(vector) < 0;
 	}
