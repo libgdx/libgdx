@@ -428,7 +428,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * @param vector the vector to check
 	 * @param epsilon a positive small number close to zero */
 	public boolean isCollinear(Vector2 vector, float epsilon){
-		return Math.abs(dot(vector)-1) < epsilon;
+		return MathUtils.isZero(dot(vector)-1, epsilon);
 	}
 	
 	/** @return Whether this vector is collinear with the given vector.
@@ -436,7 +436,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * True if the normalized dot product is 1.
 	 * @param vector the vector to check */
 	public boolean isCollinear(Vector2 vector){
-		return Math.abs(dot(vector)-1) < 0.000000001f;
+		return MathUtils.isZero(dot(vector)-1);
 	}
 	
 	/** @return Whether this vector is collinear with the given vector but has opposite direction.
@@ -445,7 +445,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * @param vector the vector to check
 	 * @param epsilon a positive small number close to zero */
 	public boolean isCollinearOpposite(Vector2 vector, float epsilon){
-		return Math.abs(dot(vector)+1) < epsilon;
+		return MathUtils.isZero(dot(vector)+1, epsilon);
 	}
 	
 	/** @return Whether this vector is collinear with the given vector but has opposite direction.
@@ -453,20 +453,20 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * The vectors need to be normalized for this to work.
 	 * @param vector the vector to check */
 	public boolean isCollinearOpposite(Vector2 vector){
-		return Math.abs(dot(vector)+1) < 0.000000001f;
+		return MathUtils.isZero(dot(vector)+1);
 	}
 	
 	/** @return Whether this vector is perpendicular with the given vector.
 	 * True if the dot product is 0.*/
 	public boolean isPerpendicular(Vector2 vector){
-		return dot(vector) == 0.000000001f;
+		return MathUtils.isZero(dot(vector));
 	}
 	
 	/** @return Whether this vector is perpendicular with the given vector.
 	 * True if the dot product is 0.
 	 * @param epsilon a positive small number close to zero */
 	public boolean isPerpendicular(Vector2 vector, float epsilon){
-		return dot(vector)  == epsilon;
+		return MathUtils.isZero(dot(vector), epsilon);
 	}
 	
 	/** @return Whether this vector has similar direction compared to the given vector.
