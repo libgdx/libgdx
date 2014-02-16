@@ -136,10 +136,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			try {
 				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
 			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
 	}
@@ -187,7 +187,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	protected void useImmersiveMode (boolean use) {
+	@Override
+	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < 19) return;
 
 		View view = getWindow().getDecorView();
@@ -261,10 +262,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			try {
 				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
 			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
 		return graphics.getView();
@@ -507,5 +508,15 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public boolean isFragment () {
 		return false;
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		return this.getWindow();
+	}
+
+	@Override
+	public Handler getHandler () {
+		return this.handler;
 	}
 }
