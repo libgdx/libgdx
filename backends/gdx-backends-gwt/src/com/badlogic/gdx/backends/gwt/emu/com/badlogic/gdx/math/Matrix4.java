@@ -922,9 +922,20 @@ public class Matrix4 implements Serializable {
 	}
 	
 	public Vector3 getScale (Vector3 scale) {		
-		scale.x = (float)Math.sqrt(val[M00]*val[M00] + val[M01]*val[M01] + val[M02]*val[M02]);
-		scale.y = (float)Math.sqrt(val[M10]*val[M10] + val[M11]*val[M11] + val[M12]*val[M12]);
-		scale.z = (float)Math.sqrt(val[M20]*val[M20] + val[M21]*val[M21] + val[M22]*val[M22]);
+		// Deal with the 0 rotation case first
+		if(MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02]) &&
+			MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12]) &&
+			MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])){
+			scale.x = val[Matrix4.M00];
+			scale.y = val[Matrix4.M11];
+			scale.z = val[Matrix4.M22];
+		}
+		else {
+			// We have to do the full calculation. 
+			scale.x = (float)Math.sqrt(val[Matrix4.M00]*val[Matrix4.M00] + val[Matrix4.M01]*val[Matrix4.M01] + val[Matrix4.M02]*val[Matrix4.M02]);
+			scale.y = (float)Math.sqrt(val[Matrix4.M10]*val[Matrix4.M10] + val[Matrix4.M11]*val[Matrix4.M11] + val[Matrix4.M12]*val[Matrix4.M12]);
+			scale.z = (float)Math.sqrt(val[Matrix4.M20]*val[Matrix4.M20] + val[Matrix4.M21]*val[Matrix4.M21] + val[Matrix4.M22]*val[Matrix4.M22]);	
+		}
 		return scale;
 	}
 
