@@ -96,6 +96,12 @@ public class ScissorStack {
 		}
 	}
 
+	/** Calculates a scissor rectangle using 0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight() as the viewport.
+	 * @see #calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
+	public static void calculateScissors (Camera camera, Matrix4 batchTransform, Rectangle area, Rectangle scissor) {
+		calculateScissors(camera, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), batchTransform, area, scissor);
+	}
+
 	/** Calculates a scissor rectangle in OpenGL ES window coordinates from a {@link Camera}, a transformation {@link Matrix4} and
 	 * an axis aligned {@link Rectangle}. The rectangle will get transformed by the camera and transform matrices and is then
 	 * projected to screen coordinates. Note that only axis aligned rectangles will work with this method. If either the Camera or
