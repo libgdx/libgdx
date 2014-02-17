@@ -109,4 +109,12 @@ public class UniformBufferObjectTest extends AbstractES3test {
 		geom.bind();
 		geom.draw();
 	}
+
+	@Override
+	protected void disposeLocal () {
+		shader.dispose();
+		geom.dispose();
+		offsetBuffer.dispose();
+		colorBuffer.dispose();
+	}
 }

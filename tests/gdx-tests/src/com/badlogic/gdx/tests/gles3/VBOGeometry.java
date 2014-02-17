@@ -41,6 +41,10 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** This utility class provides the tests with basic geometric shapes, through the use of Libgdx's own 3d primitive generation
+ * classes. This might not be the most elegant approach (which would be directly using existing classes of Libgdx), but I required
+ * something simpler, that allowed me to just fill buffers, and not much more.
+ * @author Mattijs Driel */
 public class VBOGeometry implements Disposable {
 
 	private static IntBuffer ib = BufferUtils.newIntBuffer(2);

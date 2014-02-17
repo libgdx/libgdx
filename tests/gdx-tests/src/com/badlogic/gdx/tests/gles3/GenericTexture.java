@@ -28,9 +28,17 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.tests.gles3.PixelFormatES3.GLInternalFormat;
 import com.badlogic.gdx.tests.gles3.TextureFormatES3.TextureParameters;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** This class utilizes Libgdx functionality of loading textures, and adds the ability for the texture to be constructed according
+ * to a specific pixel format as described by the ES 3.0 spec. 3d texture is supported in theory, but this is not yet tested.
+ * <p>
+ * The implementation is not very clean, as it uses both Libgdx's Pixmap.Format and my specific TextureFormatES3. I would prefer
+ * to have the option to have a file be loaded into a specific pixel format (if supported), but this would require significant
+ * nontrivial refactoring on the texture loading implementation of Libgdx.
+ * @author Mattijs Driel */
 public class GenericTexture extends GLTexture {
 
 	public final FileHandle sourceFile;
@@ -101,11 +109,11 @@ public class GenericTexture extends GLTexture {
 
 		// texture is bound by setTexParameters, no need to rebind.
 		if (is2d)
-			Gdx.gl20.glTexImage2D(glTarget, 0, localFormat.glInternalFormat, localFormat.width, localFormat.height, 0,
-				localFormat.glFormat, localFormat.glType, null);
+			Gdx.gl20.glTexImage2D(glTarget, 0, localFormat.pixelFormat.internalFormat, localFormat.width, localFormat.height, 0,
+				localFormat.pixelFormat.format, localFormat.pixelFormat.type, null);
 		else
-			Gdx.gl30.glTexImage3D(glTarget, 0, localFormat.glInternalFormat, localFormat.width, localFormat.height,
-				localFormat.depth, 0, localFormat.glFormat, localFormat.glType, null);
+			Gdx.gl30.glTexImage3D(glTarget, 0, localFormat.pixelFormat.internalFormat, localFormat.width, localFormat.height,
+				localFormat.depth, 0, localFormat.pixelFormat.format, localFormat.pixelFormat.type, null);
 	}
 
 	private void setData (FileHandle file, Format format) {
@@ -124,26 +132,22 @@ public class GenericTexture extends GLTexture {
 	private void getLoadedFormatAndType (Format format) {
 		switch (format) {
 		case Alpha:
-			localFormat.glFormat = GL10.GL_ALPHA;
-			localFormat.glType = GL10.GL_UNSIGNED_BYTE;
+			localFormat.pixelFormat.set(GLInternalFormat.GL_ALPHA);
 			break;
 		case LuminanceAlpha:
-			localFormat.glFormat = GL10.GL_LUMINANCE_ALPHA;
-			localFormat.glType = GL10.GL_UNSIGNED_BYTE;
+			localFormat.pixelFormat.set(GLInternalFormat.GL_LUMINANCE_ALPHA);
 			break;
 		case RGB565:
-			localFormat.glFormat = GL10.GL_RGB;
-			localFormat.glType = GL10.GL_UNSIGNED_SHORT_5_6_5;
+			localFormat.pixelFormat.set(GLInternalFormat.GL_RGB565);
+			break;
 		case RGB888:
-			localFormat.glFormat = GL10.GL_RGB;
-			localFormat.glType = GL10.GL_UNSIGNED_BYTE;
+			localFormat.pixelFormat.set(GLInternalFormat.GL_RGB);
 			break;
 		case RGBA4444:
-			localFormat.glFormat = GL10.GL_RGBA;
-			localFormat.glType = GL10.GL_UNSIGNED_SHORT_4_4_4_4;
+			localFormat.pixelFormat.set(GLInternalFormat.GL_RGBA4);
+			break;
 		case RGBA8888:
-			localFormat.glFormat = GL10.GL_RGBA;
-			localFormat.glType = GL10.GL_UNSIGNED_BYTE;
+			localFormat.pixelFormat.set(GLInternalFormat.GL_RGBA8);
 			break;
 		default:
 			throw new GdxRuntimeException("unknown format: " + format);
@@ -153,13 +157,15 @@ public class GenericTexture extends GLTexture {
 	public void setSubData (ByteBuffer pixels, int level, int x, int y, int width, int height) {
 		if (is2d) throw new GdxRuntimeException("Can't set data of a 3d texture with 2d data. ");
 		bind();
-		Gdx.gl20.glTexSubImage2D(glTarget, level, x, y, width, height, localFormat.glFormat, localFormat.glType, pixels);
+		Gdx.gl20.glTexSubImage2D(glTarget, level, x, y, width, height, localFormat.pixelFormat.format,
+			localFormat.pixelFormat.type, pixels);
 	}
 
 	public void setSubData (ByteBuffer pixels, int level, int x, int y, int z, int width, int height, int depth) {
 		if (!is2d) throw new GdxRuntimeException("Can't set data of a 2d texture with 3d data. ");
 		bind();
-		Gdx.gl30.glTexSubImage3D(glTarget, level, x, y, z, width, height, depth, localFormat.glFormat, localFormat.glType, pixels);
+		Gdx.gl30.glTexSubImage3D(glTarget, level, x, y, z, width, height, depth, localFormat.pixelFormat.format,
+			localFormat.pixelFormat.type, pixels);
 	}
 
 	@Override
@@ -173,8 +179,6 @@ public class GenericTexture extends GLTexture {
 
 	public void setFBOBinding (int attachment) {
 		if (!is2d) throw new GdxRuntimeException("Can not bind a 3d texture to a framebuffer");
-
-		bind();
 		Gdx.gl30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, attachment, glTarget, glHandle, 0);
 	}
 

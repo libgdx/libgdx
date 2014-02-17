@@ -35,7 +35,7 @@ public class InstancingUBOTest extends AbstractES3test {
 	VBOGeometry geom;
 	UniformBufferObject offsetBuffer;
 	int numInstances; // defined by this system's limit
-
+	
 	@Override
 	public boolean createLocal () {
 		Gdx.gl20.glClearColor(0, 0, 0, 0);
@@ -105,4 +105,12 @@ public class InstancingUBOTest extends AbstractES3test {
 		geom.bind();
 		geom.drawInstances(numInstances);
 	}
+
+	@Override
+	protected void disposeLocal () {
+		geom.dispose();
+		offsetBuffer.dispose();
+		shader.dispose();
+	}
+
 }

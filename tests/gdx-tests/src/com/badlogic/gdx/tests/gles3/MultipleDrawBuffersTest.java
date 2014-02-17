@@ -140,4 +140,14 @@ public class MultipleDrawBuffersTest extends AbstractES3test {
 		quad.bind();
 		quad.draw();
 	}
+
+	@Override
+	protected void disposeLocal () {
+		drawTexProgram.dispose();
+		resultProgram.dispose();
+		tex0.dispose();
+		tex1.dispose();
+		quad.dispose();
+		tri.dispose();
+	}
 }

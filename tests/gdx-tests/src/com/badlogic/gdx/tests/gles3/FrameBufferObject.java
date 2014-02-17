@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 
+/** This class provides a wrapper around some basic opengl FBO and drawbuffer logic.
+ * @author Mattijs Driel */
 public class FrameBufferObject implements Disposable {
 
 	private static IntBuffer singleInt = BufferUtils.newIntBuffer(1);

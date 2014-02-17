@@ -20,7 +20,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Array;
 
-/** This class describes any number of attributes, of any type.
+/** This class describes any number of attributes, of any type. I prefer that the attributes themselves should not know what they
+ * are used for. That is for the mesh and vertex shader to know.
  * @author mattijs driel */
 public final class GenericAttributes {
 
@@ -49,7 +50,7 @@ public final class GenericAttributes {
 		}
 		stride = localstride;
 	}
-	
+
 	public void bindAttributes () {
 		for (GenericAttribute a : allAttributes) {
 			Gdx.gl20.glEnableVertexAttribArray(a.index);

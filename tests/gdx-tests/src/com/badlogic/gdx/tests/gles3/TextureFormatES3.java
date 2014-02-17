@@ -20,20 +20,23 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.tests.gles3.PixelFormatES3.GLInternalFormat;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** An alternative to Libgdx's Pixmap.Format. TextureFormatES3 is used primarily during construction of specific GenericTexture
+ * instances (those that require newer pixel formats). An instance of this class is used privately by GenericTexture to keep track
+ * of the state of the loaded texture (though not its contents).
+ * @author Mattijs Driel */
 public class TextureFormatES3 {
 
 	// general
 	public int glTarget = GL20.GL_TEXTURE_2D;
 
 	// storage
-	public int glFormat = GL20.GL_RGBA;
-	public int glType = GL20.GL_UNSIGNED_BYTE;
-	public int glInternalFormat = GL20.GL_RGBA;
+	public PixelFormatES3 pixelFormat = new PixelFormatES3(GLInternalFormat.GL_RGBA);
 
 	// dimensions
-	public int width = 1;
+	public int width = 1; // at least 1 pixel
 	public int height = 0;
 	public int depth = 0;
 
@@ -57,9 +60,7 @@ public class TextureFormatES3 {
 	public TextureFormatES3 copy () {
 		TextureFormatES3 copy = new TextureFormatES3();
 		copy.glTarget = glTarget;
-		copy.glFormat = glFormat;
-		copy.glType = glType;
-		copy.glInternalFormat = glInternalFormat;
+		copy.pixelFormat = pixelFormat.copy();
 		copy.width = width;
 		copy.height = height;
 		copy.depth = depth;

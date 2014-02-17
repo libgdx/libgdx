@@ -20,14 +20,33 @@ import java.nio.FloatBuffer;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
+
 import static com.badlogic.gdx.Gdx.gl30;
 import static com.badlogic.gdx.graphics.GL30.*;
+
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.tests.gles3.PixelFormatES3.GLInternalFormat;
 import com.badlogic.gdx.tests.gles3.TextureFormatES3.TextureParameters;
 
+/** This test demonstrates the ability to run a number of ES features available from GL ES 3.0. These include all those presented
+ * in this package: <li>Uniform Buffer Objects <li>Normal Mapping (technique not actually restricted to 3.0) <li>Multiple frame
+ * buffers (in multiple passes) <li>Instancing (well, only a bit here) <br>
+ * In addition, this feature is introduced: <li>Extended pixel formats for textures (those used by the screen size write/read
+ * textures in deferred shading)
+ * <p>
+ * Deferred Shading is a rendering approach that defers some more expensive shading operations to later. In this test, lighting of
+ * pixels is deferred to after the mesh geometries are drawn. This is made possible by drawing all material (albedo/diffuse map,
+ * normal map) and view depth information to a set of screen-sized-textures (also known as the GBuffer) that may be used in later
+ * stages of the rendering process. This approach usually makes it cheaper to calculate lighing, enabling many dynamic lights in a
+ * scene. Other than that, the availability of the GBuffer makes many post processing techniques easier to implement, such as
+ * Screen Space Ambient Occlusion (not included here).
+ * <p>
+ * Details of this test are in the comments.
+ * 
+ * @author Mattijs Driel */
 public class DeferredShadingTest extends AbstractES3test {
 	ShaderProgramES3 gBufferProgram;
 	ShaderProgramES3 pointLightProgram;
@@ -75,6 +94,7 @@ public class DeferredShadingTest extends AbstractES3test {
 	final int numShownGbufferTextures = 4;
 	float w, h;
 
+	/** Implementation of a point light with linear attenuation. */
 	static final class Pointlight {
 		Vector3 worldPos = new Vector3();
 		float distLimit = 1; // = dropoff limit
@@ -147,27 +167,19 @@ public class DeferredShadingTest extends AbstractES3test {
 		TextureParameters bufferParams = new TextureParameters();
 
 		albedoFormat = new TextureFormatES3();
-		albedoFormat.glInternalFormat = GL_RGBA8;
-		albedoFormat.glFormat = GL_RGBA;
-		albedoFormat.glType = GL_UNSIGNED_BYTE;
+		albedoFormat.pixelFormat.set(GLInternalFormat.GL_RGBA8);
 		albedoFormat.params.copyFrom(bufferParams);
 
 		normalFormat = new TextureFormatES3();
-		normalFormat.glInternalFormat = GL_RGBA8;
-		normalFormat.glFormat = GL_RGBA;
-		normalFormat.glType = GL_UNSIGNED_BYTE;
+		normalFormat.pixelFormat.set(GLInternalFormat.GL_RGBA8);
 		normalFormat.params.copyFrom(bufferParams);
 
 		depthFormat = new TextureFormatES3();
-		depthFormat.glInternalFormat = GL_DEPTH_COMPONENT24;
-		depthFormat.glFormat = GL_DEPTH_COMPONENT;
-		depthFormat.glType = GL_UNSIGNED_INT;
+		depthFormat.pixelFormat.set(GLInternalFormat.GL_DEPTH_COMPONENT24);
 		depthFormat.params.copyFrom(bufferParams);
 
 		lightFormat = new TextureFormatES3();
-		lightFormat.glInternalFormat = GL_RGB16F;
-		lightFormat.glFormat = GL_RGBA;
-		lightFormat.glType = GL_HALF_FLOAT;
+		lightFormat.pixelFormat.set(GLInternalFormat.GL_RGB16F);
 		lightFormat.params.copyFrom(bufferParams);
 
 		return true;
@@ -237,6 +249,7 @@ public class DeferredShadingTest extends AbstractES3test {
 		return true;
 	}
 
+	/** Creates FBOs for the two stages in the rendering process that draw to buffers other than the backbuffer (/the screen). */
 	private void prepareFramebuffers () {
 		fboGbufferModels = new FrameBufferObject(GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1);
 
@@ -246,12 +259,12 @@ public class DeferredShadingTest extends AbstractES3test {
 	private void prepareUniformbuffers () {
 		final int floatSize = 4;
 
-		// 4 matrices
+		// 4 matrices (see shader implementation)
 		cameraBuffer = new UniformBufferObject(floatSize * (16 * 4), 0);
 
-		// 1 matrix
+		// 1 matrix (see shader implementation)
 		modelBuffer = new UniformBufferObject(floatSize * (16), 3);
-		
+
 		// light 3d position, radius and magnitude (color+intensity)
 		final int numLights = 6;
 		pointLightView = new UniformBufferObject(floatSize * 4 * numLights, 1);
@@ -285,18 +298,24 @@ public class DeferredShadingTest extends AbstractES3test {
 
 	@Override
 	public void renderLocal () {
+		// fill uniform buffers according to changes in camera position. This includes lights because they need to be in view-space.
 		updateView(w / h);
 		updateLights();
 
 		gl30.glClearColor(0, 0, 0, 0);
 		gl30.glEnable(GL_CULL_FACE);
 
+		// models need to be rendered front facing, writing and reading the depth buffer.
 		gl30.glDepthMask(true);
 		gl30.glDepthFunc(GL_LESS);
 		gl30.glEnable(GL_DEPTH_TEST);
 		gl30.glCullFace(GL_BACK);
 		renderModels();
 
+		// lights are rendered as meshes corresponding to the pixels they can influence. They are rendered backfacing, as this will
+		// avoid camera near-plane issues (far-plane issues are ignored here). Lights are also additive, meaning multiple lights may
+		// easily contribute to the same pixel. Overdraw could be reduced further if a more clever depth testing scheme is applied
+		// using the stencil buffer, but not used here.
 		gl30.glBlendFunc(GL_ONE, GL_ONE);
 		gl30.glEnable(GL_BLEND);
 		gl30.glDepthMask(false);
@@ -304,11 +323,14 @@ public class DeferredShadingTest extends AbstractES3test {
 		gl30.glCullFace(GL_FRONT);
 		renderLights();
 
+		// final composition of the lights and mesh albedos. This is essentially screen sized postprocessing pass, drawing the
+		// composited pixels to the backbuffer (/ the screen).
 		gl30.glDisable(GL_CULL_FACE);
 		gl30.glDisable(GL_BLEND);
 		gl30.glDisable(GL_DEPTH_TEST);
 		renderComposition();
 
+		// debug viewing for the contents of the GBuffer textures (albedo, viewspace normals, depth, lighting)
 		renderGbufferContents();
 	}
 
@@ -357,7 +379,7 @@ public class DeferredShadingTest extends AbstractES3test {
 		cameraBuffer.bind();
 
 		Matrix4 m = new Matrix4();
-		
+
 		modelAlbedo.bind(0);
 		modelNormal.bind(1);
 
@@ -450,6 +472,37 @@ public class DeferredShadingTest extends AbstractES3test {
 
 		fsQuad.bind();
 		fsQuad.draw();
+	}
+
+	@Override
+	protected void disposeLocal () {
+
+		gBufferProgram.dispose();
+		pointLightProgram.dispose();
+		compositionProgram.dispose();
+		intermediaryColorProgram.dispose();
+		intermediaryDepthProgram.dispose();
+
+		fboGbufferModels.dispose();
+		fboGbufferLights.dispose();
+
+		fsQuad.dispose();
+		sphere.dispose();
+
+		modelAlbedo.dispose();
+		modelNormal.dispose();
+		model1.dispose();
+		model2.dispose();
+
+		gbufferAlbedo.dispose();
+		gbufferNormals.dispose();
+		gbufferDepth.dispose();
+		gbufferLight.dispose();
+
+		pointLightView.dispose();
+		pointLightParams.dispose();
+		cameraBuffer.dispose();
+		modelBuffer.dispose();
 	}
 
 }

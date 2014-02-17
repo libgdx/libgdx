@@ -31,7 +31,7 @@ import com.badlogic.gdx.tests.gles3.TextureFormatES3.TextureParameters;
 public class NormalMappingTest extends AbstractES3test {
 	ShaderProgramES3 shader;
 	VBOGeometry geom;
-	GenericTexture t;
+	GenericTexture normalTexture;
 	UniformBufferObject cameraBuffer;
 	Matrix4 proj = new Matrix4();
 	Matrix4 view = new Matrix4();
@@ -112,8 +112,8 @@ public class NormalMappingTest extends AbstractES3test {
 		TextureParameters tParams = new TextureParameters();
 		tParams.magFilter = tParams.minFilter = GL20.GL_LINEAR;
 		FileHandle texFile = Gdx.files.internal("data/brick_normal.jpg");
-		t = new GenericTexture(texFile);
-		t.setTexParameters(tParams);
+		normalTexture = new GenericTexture(texFile);
+		normalTexture.setTexParameters(tParams);
 
 		//
 		long atts = Usage.Position | Usage.Normal | Usage.Tangent | Usage.BiNormal | Usage.TextureCoordinates;
@@ -147,9 +147,17 @@ public class NormalMappingTest extends AbstractES3test {
 		Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		shader.use();
-		t.bind();
+		normalTexture.bind();
 		cameraBuffer.bind();
 		geom.bind();
 		geom.draw();
+	}
+
+	@Override
+	protected void disposeLocal () {
+		shader.dispose();
+		geom.dispose();
+		normalTexture.dispose();
+		cameraBuffer.dispose();
 	}
 }
