@@ -22,17 +22,17 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
-/** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress
- * bar has a range (min, max) and a stepping between each value it represents. The percentage of completeness typically starts out
- * as an empty progress bar and gradually becomes filled in as the task or variable value progresses. 
+/** A progress bar is a widget that visually displays the progress of some activity or a value within given range. The progress bar
+ * has a range (min, max) and a stepping between each value it represents. The percentage of completeness typically starts out as
+ * an empty progress bar and gradually becomes filled in as the task or variable value progresses.
  * <p>
- * {@link ChangeEvent} is fired when the progress bar knob is moved. Cancelling the event will move the knob to where it was previously.
+ * {@link ChangeEvent} is fired when the progress bar knob is moved. Cancelling the event will move the knob to where it was
+ * previously.
  * <p>
  * The preferred height of a progress bar is determined by the larger of the knob and background. The preferred width of progress
  * bar is 140, a relatively arbitrary size.
@@ -42,7 +42,7 @@ public class ProgressBar extends Widget implements Disableable {
 	private ProgressBarStyle style;
 	private float min, max, stepSize;
 	private float value, animateFromValue;
-	float sliderPos;
+	float position;
 	final boolean vertical;
 	private float animateDuration, animateTime;
 	private Interpolation animateInterpolation = Interpolation.linear;
@@ -59,9 +59,9 @@ public class ProgressBar extends Widget implements Disableable {
 	}
 
 	/** Creates a new progress bar. It's width is determined by the given prefWidth parameter, its height is determined by the
-	 * maximum of the height of either the progress bar {@link NinePatch} or progress bar handle {@link TextureRegion}. The min
-	 * and max values determine the range the values of this progress bar can take on, the stepSize parameter specifies the
-	 * distance between individual values.
+	 * maximum of the height of either the progress bar {@link NinePatch} or progress bar handle {@link TextureRegion}. The min and
+	 * max values determine the range the values of this progress bar can take on, the stepSize parameter specifies the distance
+	 * between individual values.
 	 * <p>
 	 * E.g. min could be 4, max could be 10 and stepSize could be 0.2, giving you a total of 30 values, 4.0 4.2, 4.4 and so on.
 	 * @param min the minimum value
@@ -121,44 +121,43 @@ public class ProgressBar extends Widget implements Disableable {
 		if (vertical) {
 			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
 
-			float sliderPosHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
+			float positionHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
 			if (min != max) {
-				sliderPos = (value - min) / (max - min) * (sliderPosHeight - knobHeight);
-				sliderPos = Math.max(0, sliderPos);
-				sliderPos = Math.min(sliderPosHeight - knobHeight, sliderPos) + bg.getBottomHeight();
+				position = (value - min) / (max - min) * (positionHeight - knobHeight);
+				position = Math.max(0, position);
+				position = Math.min(positionHeight - knobHeight, position) + bg.getBottomHeight();
 			}
 
 			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
 				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y, knobBefore.getMinWidth(),
-					(int)(sliderPos + knobHeightHalf));
+					(int)(position + knobHeightHalf));
 			}
 			if (knobAfter != null) {
-				knobAfter.draw(batch, x + (int)((width - knobAfter.getMinWidth()) * 0.5f), y + (int)(sliderPos + knobHeightHalf),
-					knobAfter.getMinWidth(), height - (int)(sliderPos + knobHeightHalf));
+				knobAfter.draw(batch, x + (int)((width - knobAfter.getMinWidth()) * 0.5f), y + (int)(position + knobHeightHalf),
+					knobAfter.getMinWidth(), height - (int)(position + knobHeightHalf));
 			}
-			if (knob != null) knob.draw(batch, x + (int)((width - knobWidth) * 0.5f), (int)(y + sliderPos), knobWidth, knobHeight);
+			if (knob != null) knob.draw(batch, x + (int)((width - knobWidth) * 0.5f), (int)(y + position), knobWidth, knobHeight);
 		} else {
 			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
 
-			float sliderPosWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
+			float positionWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
 			if (min != max) {
-				sliderPos = (value - min) / (max - min) * (sliderPosWidth - knobWidth);
-				sliderPos = Math.max(0, sliderPos);
-				sliderPos = Math.min(sliderPosWidth - knobWidth, sliderPos) + bg.getLeftWidth();
+				position = (value - min) / (max - min) * (positionWidth - knobWidth);
+				position = Math.max(0, position);
+				position = Math.min(positionWidth - knobWidth, position) + bg.getLeftWidth();
 			}
 
 			float knobWidthHalf = knobWidth * 0.5f;
 			if (knobBefore != null) {
-				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(sliderPos + knobWidthHalf),
+				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(position + knobWidthHalf),
 					knobBefore.getMinHeight());
 			}
 			if (knobAfter != null) {
-				knobAfter.draw(batch, x + (int)(sliderPos + knobWidthHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
-					width - (int)(sliderPos + knobWidthHalf), knobAfter.getMinHeight());
+				knobAfter.draw(batch, x + (int)(position + knobWidthHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
+					width - (int)(position + knobWidthHalf), knobAfter.getMinHeight());
 			}
-			if (knob != null)
-				knob.draw(batch, (int)(x + sliderPos), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
+			if (knob != null) knob.draw(batch, (int)(x + position), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
 		}
 	}
 
@@ -172,14 +171,14 @@ public class ProgressBar extends Widget implements Disableable {
 		return value;
 	}
 
-	/** Returns slider knob visual position within the range. */
+	/** Returns progress bar visual position within the range. */
 	protected float getKnobPosition () {
-		return this.sliderPos;
+		return this.position;
 	}
 
 	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minumum and maximim values.
 	 * {@link #clamp(float)} can be overidden to allow values outside of the progress bar's min/max range.
-	 * @return false if the value was not changed because the slider already had the value or it was canceled by a listener. */
+	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
 		value = snap(clamp(Math.round(value / stepSize) * stepSize));
 		float oldValue = this.value;
@@ -198,13 +197,13 @@ public class ProgressBar extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** Clamps the value to the progress bar's min/max range. This can be overidden to allow a range different from the progress
-	 * bar knob's range. */
+	/** Clamps the value to the progress bar's min/max range. This can be overidden to allow a range different from the progress bar
+	 * knob's range. */
 	protected float clamp (float value) {
 		return MathUtils.clamp(value, min, max);
 	}
 
-	/** Sets the range of this progress bar. The progress bar's current value is reset to min. */
+	/** Sets the range of this progress bar. The progress bar's current value is clamped to the range. */
 	public void setRange (float min, float max) {
 		if (min > max) throw new IllegalArgumentException("min must be <= max");
 		this.min = min;
@@ -214,7 +213,6 @@ public class ProgressBar extends Widget implements Disableable {
 		else if (value > max) setValue(max);
 	}
 
-	/** Sets the step size of the progress bar */
 	public void setStepSize (float stepSize) {
 		if (stepSize <= 0) throw new IllegalArgumentException("steps must be > 0: " + stepSize);
 		this.stepSize = stepSize;
@@ -262,13 +260,13 @@ public class ProgressBar extends Widget implements Disableable {
 		this.animateInterpolation = animateInterpolation;
 	}
 
-	/** Will make this progress bar snap to the specified values, if the knob is within the threshold */
+	/** Will make this progress bar snap to the specified values, if the knob is within the threshold. */
 	public void setSnapToValues (float[] values, float threshold) {
 		this.snapValues = values;
 		this.threshold = threshold;
 	}
 
-	/** Returns a snapped value, or the original value */
+	/** Returns a snapped value. */
 	private float snap (float value) {
 		if (snapValues == null) return value;
 		for (int i = 0; i < snapValues.length; i++) {
@@ -285,11 +283,11 @@ public class ProgressBar extends Widget implements Disableable {
 		return disabled;
 	}
 
-	/** The style for a progress bar or slider, see {@link ProgressBar}.
+	/** The style for a progress bar, see {@link ProgressBar}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class ProgressBarStyle {
-		/** The slider background, stretched only in one direction. */
+		/** The progress bar background, stretched only in one direction. */
 		public Drawable background;
 		/** Optional. **/
 		public Drawable disabledBackground;

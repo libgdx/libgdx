@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.assets.loaders;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -30,11 +29,11 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** {@link AssetLoader} for {@link Skin} instances. All {@link Texture} and {@link BitmapFont} instances will be loaded as
- * dependencies. Passing a {@link SkinParameter} allows one to specify the exact name of the texture associated with the skin.
- * Otherwise the skin texture is looked up just as with a call to {@link Skin#Skin(com.badlogic.gdx.files.FileHandle)}.
- * Also a {@link SkinParameter} allows one to specify a set of named resources that will be added to the skin before loading
- * the json file, meaning that they can be referenced from inside the json file itself. This is extremely useful for dynamic
- * resources such as a BitmapFont generated through a {@link FreeTypeFontGenerator}.
+ * dependencies. Passing a {@link SkinParameter} allows the exact name of the texture associated with the skin to be specified.
+ * Otherwise the skin texture is looked up just as with a call to {@link Skin#Skin(com.badlogic.gdx.files.FileHandle)}. A
+ * {@link SkinParameter} also allows named resources to be set that will be added to the skin before loading the json file,
+ * meaning that they can be referenced from inside the json file itself. This is useful for dynamic resources such as a BitmapFont
+ * generated through FreeTypeFontGenerator.
  * @author Nathan Sweet */
 public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinParameter> {
 	public SkinLoader (FileHandleResolver resolver) {
@@ -46,8 +45,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		Array<AssetDescriptor> deps = new Array();
 		if (parameter == null)
 			deps.add(new AssetDescriptor(file.pathWithoutExtension() + ".atlas", TextureAtlas.class));
-		else if (parameter.textureAtlasPath != null)
-			deps.add(new AssetDescriptor(parameter.textureAtlasPath, TextureAtlas.class));
+		else if (parameter.textureAtlasPath != null) deps.add(new AssetDescriptor(parameter.textureAtlasPath, TextureAtlas.class));
 		return deps;
 	}
 
@@ -62,8 +60,7 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 		if (parameter == null) {
 			textureAtlasPath = file.pathWithoutExtension() + ".atlas";
 			resources = null;
-		}
-		else {
+		} else {
 			textureAtlasPath = parameter.textureAtlasPath;
 			resources = parameter.resources;
 		}

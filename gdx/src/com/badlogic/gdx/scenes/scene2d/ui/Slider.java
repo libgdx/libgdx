@@ -16,17 +16,11 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar.ProgressBarStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
@@ -88,17 +82,15 @@ public class Slider extends ProgressBar {
 	}
 
 	public void setStyle (SliderStyle style) {
-		if (style == null)
-			throw new NullPointerException("style cannot be null");
-		if (!(style instanceof SliderStyle))
-			throw new IllegalArgumentException("style must be a SliderStyle.");
+		if (style == null) throw new NullPointerException("style cannot be null");
+		if (!(style instanceof SliderStyle)) throw new IllegalArgumentException("style must be a SliderStyle.");
 		super.setStyle(style);
 	}
 
 	/** Returns the slider's style. Modifying the returned style may not have an effect until {@link #setStyle(SliderStyle)} is
 	 * called. */
 	public SliderStyle getStyle () {
-		return (SliderStyle) super.getStyle();
+		return (SliderStyle)super.getStyle();
 	}
 
 	boolean calculatePositionAndValue (float x, float y) {
@@ -107,7 +99,7 @@ public class Slider extends ProgressBar {
 		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
 
 		float value;
-		float oldPosition = sliderPos;
+		float oldPosition = position;
 
 		final float min = getMinValue();
 		final float max = getMaxValue();
@@ -115,22 +107,22 @@ public class Slider extends ProgressBar {
 		if (vertical) {
 			float height = getHeight() - bg.getTopHeight() - bg.getBottomHeight();
 			float knobHeight = knob == null ? 0 : knob.getMinHeight();
-			sliderPos = y - bg.getBottomHeight() - knobHeight * 0.5f;
-			value = min + (max - min) * (sliderPos / (height - knobHeight));
-			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(height - knobHeight, sliderPos);
+			position = y - bg.getBottomHeight() - knobHeight * 0.5f;
+			value = min + (max - min) * (position / (height - knobHeight));
+			position = Math.max(0, position);
+			position = Math.min(height - knobHeight, position);
 		} else {
 			float width = getWidth() - bg.getLeftWidth() - bg.getRightWidth();
 			float knobWidth = knob == null ? 0 : knob.getMinWidth();
-			sliderPos = x - bg.getLeftWidth() - knobWidth * 0.5f;
-			value = min + (max - min) * (sliderPos / (width - knobWidth));
-			sliderPos = Math.max(0, sliderPos);
-			sliderPos = Math.min(width - knobWidth, sliderPos);
+			position = x - bg.getLeftWidth() - knobWidth * 0.5f;
+			value = min + (max - min) * (position / (width - knobWidth));
+			position = Math.max(0, position);
+			position = Math.min(width - knobWidth, position);
 		}
 
 		float oldValue = value;
 		boolean valueSet = setValue(value);
-		if (value == oldValue) sliderPos = oldPosition;
+		if (value == oldValue) position = oldPosition;
 		return valueSet;
 	}
 
