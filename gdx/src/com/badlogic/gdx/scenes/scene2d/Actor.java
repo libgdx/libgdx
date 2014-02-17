@@ -648,10 +648,10 @@ public class Actor {
 			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
 			final float originX = this.originX;
 			final float originY = this.originY;
-			final float tox = localCoords.x - originX;
-			final float toy = localCoords.y - originY;
-			localCoords.x = (tox * cos + toy * sin) * scaleX + originX + x;
-			localCoords.y = (tox * -sin + toy * cos) * scaleY + originY + y;
+			final float tox = (localCoords.x - originX) * scaleX;
+			final float toy = (localCoords.y - originY) * scaleY;
+			localCoords.x = (tox * cos + toy * sin) + originX + x;
+			localCoords.y = (tox * -sin + toy * cos) + originY + y;
 		}
 		return localCoords;
 	}
