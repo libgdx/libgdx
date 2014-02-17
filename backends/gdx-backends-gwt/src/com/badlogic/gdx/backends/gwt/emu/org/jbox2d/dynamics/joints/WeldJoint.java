@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -80,8 +80,6 @@ public class WeldJoint extends Joint {
 	private float m_invIB;
 	private final Mat33 m_mass = new Mat33();
 
-	/** @param argWorld
-	 * @param def */
 	protected WeldJoint (IWorldPool argWorld, WeldJointDef def) {
 		super(argWorld, def);
 		m_localAnchorA = new Vec2(def.localAnchorA);
@@ -92,7 +90,10 @@ public class WeldJoint extends Joint {
 
 		m_impulse = new Vec3();
 		m_impulse.setZero();
+	}
 
+	public float getReferenceAngle () {
+		return m_referenceAngle;
 	}
 
 	public Vec2 getLocalAnchorA () {
@@ -246,9 +247,9 @@ public class WeldJoint extends Joint {
 			m_impulse.setZero();
 		}
 
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(1);
@@ -323,9 +324,9 @@ public class WeldJoint extends Joint {
 			pool.pushVec3(2);
 		}
 
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(3);
@@ -407,9 +408,9 @@ public class WeldJoint extends Joint {
 			pool.pushVec3(2);
 		}
 
-		data.positions[m_indexA].c.set(cA);
+// data.positions[m_indexA].c.set(cA);
 		data.positions[m_indexA].a = aA;
-		data.positions[m_indexB].c.set(cB);
+// data.positions[m_indexB].c.set(cB);
 		data.positions[m_indexB].a = aB;
 
 		pool.pushVec2(5);

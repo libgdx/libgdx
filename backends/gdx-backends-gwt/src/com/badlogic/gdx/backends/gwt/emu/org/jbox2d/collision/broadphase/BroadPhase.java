@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -43,7 +43,7 @@ public class BroadPhase implements TreeCallback {
 
 	public static final int NULL_PROXY = -1;
 
-	private final DynamicTree m_tree;
+	private final BroadPhaseStrategy m_tree;
 
 	private int m_proxyCount;
 
@@ -57,7 +57,7 @@ public class BroadPhase implements TreeCallback {
 
 	private int m_queryProxyId;
 
-	public BroadPhase () {
+	public BroadPhase (BroadPhaseStrategy strategy) {
 		m_proxyCount = 0;
 
 		m_pairCapacity = 16;
@@ -71,7 +71,7 @@ public class BroadPhase implements TreeCallback {
 		m_moveCount = 0;
 		m_moveBuffer = new int[m_moveCapacity];
 
-		m_tree = new DynamicTree();
+		m_tree = strategy;
 		m_queryProxyId = NULL_PROXY;
 	}
 
@@ -256,8 +256,6 @@ public class BroadPhase implements TreeCallback {
 	// private final PairStack pairStack = new PairStack();
 	/** This is called from DynamicTree::query when we are gathering pairs. */
 	public final boolean treeCallback (int proxyId) {
-
-		// log.debug("Got a proxy back: " + proxyId);
 		// A proxy cannot form a pair with itself.
 		if (proxyId == m_queryProxyId) {
 			// log.debug("It was us...");

@@ -16,13 +16,8 @@
 
 package com.badlogicgames.superjumper;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 
 public class Settings {
 	public static boolean soundEnabled = true;
@@ -30,38 +25,29 @@ public class Settings {
 	public final static String file = ".superjumper";
 
 	public static void load () {
-		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader(Gdx.files.external(file).read()));
-			soundEnabled = Boolean.parseBoolean(in.readLine());
+			FileHandle filehandle = Gdx.files.external(file);
+			
+			String[] strings = filehandle.readString().split("\n");
+			
+			soundEnabled = Boolean.parseBoolean(strings[0]);
 			for (int i = 0; i < 5; i++) {
-				highscores[i] = Integer.parseInt(in.readLine());
+				highscores[i] = Integer.parseInt(strings[i+1]);
 			}
 		} catch (Throwable e) {
 			// :( It's ok we have defaults
-		} finally {
-			try {
-				if (in != null) in.close();
-			} catch (IOException e) {
-			}
 		}
 	}
 
 	public static void save () {
-		BufferedWriter out = null;
 		try {
-			out = new BufferedWriter(new OutputStreamWriter(Gdx.files.external(file).write(false)));
-			out.write(Boolean.toString(soundEnabled));
+			FileHandle filehandle = Gdx.files.external(file);
+			
+			filehandle.writeString(Boolean.toString(soundEnabled)+"\n", false);
 			for (int i = 0; i < 5; i++) {
-				out.write(Integer.toString(highscores[i]));
+				filehandle.writeString(Integer.toString(highscores[i])+"\n", true);
 			}
-
 		} catch (Throwable e) {
-		} finally {
-			try {
-				if (out != null) out.close();
-			} catch (IOException e) {
-			}
 		}
 	}
 

@@ -48,11 +48,13 @@ public class TextButton extends Button {
 		label = new Label(text, new LabelStyle(style.font, style.fontColor));
 		label.setAlignment(Align.center);
 		add(label).expand().fill();
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public void setStyle (ButtonStyle style) {
+		if (style == null) {
+			throw new NullPointerException("style cannot be null");
+		}
 		if (!(style instanceof TextButtonStyle)) throw new IllegalArgumentException("style must be a TextButtonStyle.");
 		super.setStyle(style);
 		this.style = (TextButtonStyle)style;

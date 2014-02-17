@@ -85,7 +85,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 	Pool<Array<Decal>> arrayPool = new Pool<Array<Decal>>(16) {
 		@Override
 		protected Array<Decal> newObject () {
-			return new Array<Decal>();
+			return new Array();
 		}
 	};
 	Array<Array<Decal>> usedArrays = new Array<Array<Decal>>();

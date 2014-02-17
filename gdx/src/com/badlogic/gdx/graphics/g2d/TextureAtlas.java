@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -48,8 +49,8 @@ import java.util.Set;
 public class TextureAtlas implements Disposable {
 	static final String[] tuple = new String[4];
 
-	private final HashSet<Texture> textures = new HashSet(4);
-	private final Array<AtlasRegion> regions = new Array<AtlasRegion>();
+	private final ObjectSet<Texture> textures = new ObjectSet(4);
+	private final Array<AtlasRegion> regions = new Array();
 
 	public static class TextureAtlasData {
 		public static class Page {
@@ -92,8 +93,8 @@ public class TextureAtlas implements Disposable {
 			public int[] pads;
 		}
 
-		final Array<Page> pages = new Array<Page>();
-		final Array<Region> regions = new Array<Region>();
+		final Array<Page> pages = new Array();
+		final Array<Region> regions = new Array();
 
 		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
@@ -397,7 +398,7 @@ public class TextureAtlas implements Disposable {
 	}
 
 	/** @return the textures of the pages, unordered */
-	public Set<Texture> getTextures () {
+	public ObjectSet<Texture> getTextures () {
 		return textures;
 	}
 

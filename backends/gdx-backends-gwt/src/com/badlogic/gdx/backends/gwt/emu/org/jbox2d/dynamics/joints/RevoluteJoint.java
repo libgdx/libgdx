@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -57,36 +57,36 @@ import org.jbox2d.pooling.IWorldPool;
 public class RevoluteJoint extends Joint {
 
 	// Solver shared
-	public final Vec2 m_localAnchorA = new Vec2();
-	public final Vec2 m_localAnchorB = new Vec2();
-	public final Vec3 m_impulse = new Vec3();
-	public float m_motorImpulse;
+	protected final Vec2 m_localAnchorA = new Vec2();
+	protected final Vec2 m_localAnchorB = new Vec2();
+	private final Vec3 m_impulse = new Vec3();
+	private float m_motorImpulse;
 
-	public boolean m_enableMotor;
-	public float m_maxMotorTorque;
-	public float m_motorSpeed;
+	private boolean m_enableMotor;
+	private float m_maxMotorTorque;
+	private float m_motorSpeed;
 
-	public boolean m_enableLimit;
-	public float m_referenceAngle;
-	public float m_lowerAngle;
-	public float m_upperAngle;
+	private boolean m_enableLimit;
+	protected float m_referenceAngle;
+	private float m_lowerAngle;
+	private float m_upperAngle;
 
 	// Solver temp
-	public int m_indexA;
-	public int m_indexB;
-	public final Vec2 m_rA = new Vec2();
-	public final Vec2 m_rB = new Vec2();
-	public final Vec2 m_localCenterA = new Vec2();
-	public final Vec2 m_localCenterB = new Vec2();
-	public float m_invMassA;
-	public float m_invMassB;
-	public float m_invIA;
-	public float m_invIB;
-	public final Mat33 m_mass = new Mat33(); // effective mass for point-to-point constraint.
-	public float m_motorMass; // effective mass for motor/limit angular constraint.
-	public LimitState m_limitState;
+	private int m_indexA;
+	private int m_indexB;
+	private final Vec2 m_rA = new Vec2();
+	private final Vec2 m_rB = new Vec2();
+	private final Vec2 m_localCenterA = new Vec2();
+	private final Vec2 m_localCenterB = new Vec2();
+	private float m_invMassA;
+	private float m_invMassB;
+	private float m_invIA;
+	private float m_invIB;
+	private final Mat33 m_mass = new Mat33(); // effective mass for point-to-point constraint.
+	private float m_motorMass; // effective mass for motor/limit angular constraint.
+	private LimitState m_limitState;
 
-	public RevoluteJoint (IWorldPool argWorld, RevoluteJointDef def) {
+	protected RevoluteJoint (IWorldPool argWorld, RevoluteJointDef def) {
 		super(argWorld, def);
 		m_localAnchorA.set(def.localAnchorA);
 		m_localAnchorB.set(def.localAnchorB);
@@ -211,9 +211,9 @@ public class RevoluteJoint extends Joint {
 			m_impulse.setZero();
 			m_motorImpulse = 0.0f;
 		}
-		data.velocities[m_indexA].v.set(vA);
+		// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+		// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(1);
@@ -337,9 +337,9 @@ public class RevoluteJoint extends Joint {
 			pool.pushVec2(2);
 		}
 
-		data.velocities[m_indexA].v.set(vA);
+		// data.velocities[m_indexA].v.set(vA);
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+		// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(1);
@@ -428,14 +428,26 @@ public class RevoluteJoint extends Joint {
 			pool.pushVec2(4);
 			pool.pushMat22(1);
 		}
-		data.positions[m_indexA].c.set(cA);
+		// data.positions[m_indexA].c.set(cA);
 		data.positions[m_indexA].a = aA;
-		data.positions[m_indexB].c.set(cB);
+		// data.positions[m_indexB].c.set(cB);
 		data.positions[m_indexB].a = aB;
 
 		pool.pushRot(2);
 
 		return positionError <= Settings.linearSlop && angularError <= Settings.angularSlop;
+	}
+
+	public Vec2 getLocalAnchorA () {
+		return m_localAnchorA;
+	}
+
+	public Vec2 getLocalAnchorB () {
+		return m_localAnchorB;
+	}
+
+	public float getReferenceAngle () {
+		return m_referenceAngle;
 	}
 
 	@Override
@@ -494,6 +506,14 @@ public class RevoluteJoint extends Joint {
 		m_bodyA.setAwake(true);
 		m_bodyB.setAwake(true);
 		m_maxMotorTorque = torque;
+	}
+
+	public float getMotorSpeed () {
+		return m_motorSpeed;
+	}
+
+	public float getMaxMotorTorque () {
+		return m_maxMotorTorque;
 	}
 
 	public boolean isLimitEnabled () {

@@ -20,11 +20,14 @@ import android.net.Uri;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 
 /** Android implementation of the {@link Net} API.
  * @author acoppes */
@@ -32,10 +35,10 @@ public class AndroidNet implements Net {
 
 	// IMPORTANT: The Gdx.net classes are a currently duplicated for JGLFW/LWJGL + Android!
 	// If you make changes here, make changes in the other backend as well.
-	final AndroidApplication app;
+	final AndroidApplicationBase app;
 	NetJavaImpl netJavaImpl;
 
-	public AndroidNet (AndroidApplication activity) {
+	public AndroidNet (AndroidApplicationBase activity) {
 		app = activity;
 		netJavaImpl = new NetJavaImpl();
 	}
@@ -44,15 +47,20 @@ public class AndroidNet implements Net {
 	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
+	
+	@Override
+	public void cancelHttpRequest (HttpRequest httpRequest) {
+		netJavaImpl.cancelHttpRequest(httpRequest);
+	}
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new AndroidServerSocket(protocol, port, hints);
+		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new AndroidSocket(protocol, host, port, hints);
+		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Frustum;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -81,19 +82,31 @@ public abstract class Camera {
 	}
 
 	/** Recalculates the direction of the camera to look at the point (x, y, z).
+	 * This function assumes the up vector is normalized.
 	 * @param x the x-coordinate of the point to look at
 	 * @param y the x-coordinate of the point to look at
 	 * @param z the x-coordinate of the point to look at */
 	public void lookAt (float x, float y, float z) {
-		direction.set(x, y, z).sub(position).nor();
-		normalizeUp();
+		tmpVec.set(x,y,z).sub(position).nor();
+		if(!tmpVec.isZero()){
+			float dot = tmpVec.dot(up); //up and direction must ALWAYS be orthonormal vectors
+			if(Math.abs(dot-1) < 0.000000001f){ 
+				//Collinear
+				up.set(direction).scl(-1);
+			}
+			else if(Math.abs(dot+1) < 0.000000001f){ 
+				//Collinear opposite
+				up.set(direction);
+			}
+			direction.set(tmpVec);
+			normalizeUp();
+		}
 	}
 
 	/** Recalculates the direction of the camera to look at the point (x, y, z).
 	 * @param target the point to look at */
 	public void lookAt (Vector3 target) {
-		direction.set(target).sub(position).nor();
-		normalizeUp();
+		lookAt(target.x, target.y, target.z);
 	}
 
 	/** Normalizes the up vector by first calculating the right vector via a cross product between direction and up, and then
@@ -188,8 +201,8 @@ public abstract class Camera {
 	 * {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the bottom left corner of the screen.
 	 * 
 	 * @param vec the point in window coordinates (origin top left)
-	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
-	 * @param viewportY the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
+	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
 	 * @param viewportHeight the height of the viewport in pixels */
 	public void unproject (Vector3 vec, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
@@ -231,8 +244,8 @@ public abstract class Camera {
 	 * bottom left corner of the screen.
 	 * 
 	 * @param vec the point in object/world space
-	 * @param viewportX the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
-	 * @param viewportY the coordinate of the top left corner of the viewport in glViewport coordinates (origin bottom left)
+	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth the width of the viewport in pixels
 	 * @param viewportHeight the height of the viewport in pixels */
 	public void project (Vector3 vec, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
@@ -250,6 +263,10 @@ public abstract class Camera {
 	 * 
 	 * @param x the x-coordinate in window coordinates.
 	 * @param y the y-coordinate in window coordinates.
+	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY the coordinate of the bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportWidth the width of the viewport in pixels
+	 * @param viewportHeight the height of the viewport in pixels
 	 * @return the picking Ray. */
 	public Ray getPickRay (float x, float y, float viewportX, float viewportY, float viewportWidth, float viewportHeight) {
 		unproject(ray.origin.set(x, y, 0), viewportX, viewportY, viewportWidth, viewportHeight);

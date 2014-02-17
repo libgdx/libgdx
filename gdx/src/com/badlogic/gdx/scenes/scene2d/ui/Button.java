@@ -46,16 +46,14 @@ public class Button extends Table implements Disableable {
 		super(skin);
 		initialize();
 		setStyle(skin.get(ButtonStyle.class));
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public Button (Skin skin, String styleName) {
 		super(skin);
 		initialize();
 		setStyle(skin.get(styleName, ButtonStyle.class));
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public Button (Actor child, Skin skin, String styleName) {
@@ -66,15 +64,13 @@ public class Button extends Table implements Disableable {
 		initialize();
 		add(child);
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public Button (ButtonStyle style) {
 		initialize();
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	/** Creates a button without setting the style or size. At least a style must be set before using this button. */
@@ -195,22 +191,14 @@ public class Button extends Table implements Disableable {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
-
-		if (background != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
+		setBackground(background, false);
 
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
-			children.get(i).translate(offsetX, offsetY);
+			children.get(i).moveBy(offsetX, offsetY);
 		super.draw(batch, parentAlpha);
 		for (int i = 0; i < children.size; i++)
-			children.get(i).translate(-offsetX, -offsetY);
-	}
-
-	protected void drawBackground (Batch batch, float parentAlpha) {
+			children.get(i).moveBy(-offsetX, -offsetY);
 	}
 
 	public float getPrefWidth () {

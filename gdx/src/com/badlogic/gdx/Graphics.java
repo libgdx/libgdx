@@ -58,7 +58,7 @@ public interface Graphics {
 	 * 
 	 * @author mzechner */
 	public enum GraphicsType {
-		AndroidGL, LWJGL, Angle, WebGL, iOSGL, JGLFW
+		AndroidGL, LWJGL, Angle, WebGL, iOSGL, JGLFW, Mock
 	}
 
 	/** Describe a fullscreen display mode

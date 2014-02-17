@@ -53,22 +53,20 @@ public class ScreenUtils {
 	 * @param w the width of the framebuffer contents to capture
 	 * @param h the height of the framebuffer contents to capture */
 	public static TextureRegion getFrameBufferTexture (int x, int y, int w, int h) {
-		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
 		final int potW = MathUtils.nextPowerOfTwo(w);
 		final int potH = MathUtils.nextPowerOfTwo(h);
 
-		final Pixmap pixmap = new Pixmap(potW, potH, Format.RGBA8888);
-		ByteBuffer pixels = pixmap.getPixels();
-		Gdx.gl.glReadPixels(x, y, potW, potH, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, pixels);
-
-		Texture texture = new Texture(pixmap);
+		final Pixmap pixmap = getFrameBufferPixmap(x, y, w, h);
+		final Pixmap potPixmap = new Pixmap(potW, potH, Format.RGBA8888);
+		potPixmap.drawPixmap(pixmap, 0, 0);
+		Texture texture = new Texture(potPixmap);
 		TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);
 		pixmap.dispose();
 
 		return textureRegion;
 	}
-	
-	public static Pixmap getFrameBufferPixmap(int x, int y, int w, int h) {
+
+	public static Pixmap getFrameBufferPixmap (int x, int y, int w, int h) {
 		Gdx.gl.glPixelStorei(GL10.GL_PACK_ALIGNMENT, 1);
 
 		final Pixmap pixmap = new Pixmap(w, h, Format.RGBA8888);

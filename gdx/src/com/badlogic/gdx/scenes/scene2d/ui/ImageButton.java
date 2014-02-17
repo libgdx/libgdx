@@ -45,8 +45,7 @@ public class ImageButton extends Button {
 		image.setScaling(Scaling.fit);
 		add(image);
 		setStyle(style);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 	}
 
 	public ImageButton (Drawable imageUp) {

@@ -57,7 +57,8 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Creates a sprite with width, height, and texture region equal to the specified size. The texture region's upper left corner
-	 * will be 0,0. * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
+	 * will be 0,0.
+	 * @param srcWidth The width of the texture region. May be negative to flip the sprite when drawn.
 	 * @param srcHeight The height of the texture region. May be negative to flip the sprite when drawn. */
 	public Sprite (Texture texture, int srcWidth, int srcHeight) {
 		this(texture, 0, 0, srcWidth, srcHeight);
@@ -594,7 +595,26 @@ public class Sprite extends TextureRegion {
 		vertices[V4] = v2;
 	}
 
-	/** boolean parameters are not setting a state, but performing a flip */
+	/** Set the sprite's flip state regardless of current condition
+	 * @param x the desired horizontal flip state
+	 * @param y the desired vertical flip state
+	 * */
+	public void setFlip(boolean x, boolean y) {
+		boolean performX = false;
+		boolean performY = false;
+		if (isFlipX() != x) {
+			performX = true;
+		}
+		if (isFlipY() != y) {
+			performY = true;
+		}
+		flip(performX, performY);
+	}
+
+	/** boolean parameters x,y are not setting a state, but performing a flip
+	 * @param x perform horizontal flip
+	 * @param y perform vertical flip
+	 * */
 	public void flip (boolean x, boolean y) {
 		super.flip(x, y);
 		float[] vertices = Sprite.this.vertices;

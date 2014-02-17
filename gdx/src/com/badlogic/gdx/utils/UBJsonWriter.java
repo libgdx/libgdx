@@ -398,6 +398,12 @@ public class UBJsonWriter implements Closeable {
 		return name(name).value(value);
 	}
 
+	/** Appends a named {@code boolean} value to the stream.
+	 * @return this writer, for chaining */
+	public UBJsonWriter set (String name, boolean value) throws IOException {
+		return name(name).value(value);
+	}
+
 	/** Appends a named {@code char} value to the stream.
 	 * @return this writer, for chaining */
 	public UBJsonWriter set (String name, char value) throws IOException {

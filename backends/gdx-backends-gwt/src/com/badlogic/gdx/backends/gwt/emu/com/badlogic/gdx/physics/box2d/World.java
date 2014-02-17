@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.physics.box2d;
 
-
 import java.util.Iterator;
 
 import org.jbox2d.collision.AABB;
@@ -33,7 +32,9 @@ import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
 import com.badlogic.gdx.physics.box2d.joints.PulleyJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
+import com.badlogic.gdx.physics.box2d.joints.RopeJoint;
 import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
+import com.badlogic.gdx.physics.box2d.joints.WheelJoint;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -167,14 +168,14 @@ public final class World implements Disposable {
 		Joint joint = null;
 		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
 		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, (org.jbox2d.dynamics.joints.FrictionJoint)j);
-		// FIXME if(def.type == JointType.GearJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
+		if (def.type == JointType.GearJoint) joint = new DistanceJoint(this, (org.jbox2d.dynamics.joints.DistanceJoint)j);
 		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, (org.jbox2d.dynamics.joints.MouseJoint)j);
 		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, (org.jbox2d.dynamics.joints.PrismaticJoint)j);
 		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, (org.jbox2d.dynamics.joints.PulleyJoint)j);
 		if (def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, (org.jbox2d.dynamics.joints.RevoluteJoint)j);
-		// FIXME if(def.type == JointType.RopeJoint) joint = new RopeJoint(this, (org.jbox2d.dynamics.joints.RopeJoint)j);
+		if (def.type == JointType.RopeJoint) joint = new RopeJoint(this, (org.jbox2d.dynamics.joints.RopeJoint)j);
 		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, (org.jbox2d.dynamics.joints.WeldJoint)j);
-// FIXME if(def.type == JointType.WheelJoint) joint = new WheelJoint(this, (org.jbox2d.dynamics.joints.WheelJoint)j);
+		if (def.type == JointType.WheelJoint) joint = new WheelJoint(this, (org.jbox2d.dynamics.joints.WheelJoint)j);
 		if (joint == null) throw new GdxRuntimeException("Joint type '" + def.type + "' not yet supported by GWT backend");
 		joints.put(j, joint);
 		return joint;
@@ -305,7 +306,7 @@ public final class World implements Disposable {
 		bodies.ensureCapacity(this.bodies.size);
 		for (Iterator<Body> iter = this.bodies.values(); iter.hasNext();) {
 			bodies.add(iter.next());
-		}		
+		}
 	}
 
 	/** @return all joints currently in the simulation */

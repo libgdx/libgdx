@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeBitmapFontData;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class FreeTypeTest extends GdxTest {
@@ -46,8 +47,14 @@ public class FreeTypeTest extends GdxTest {
 		FileHandle fontFile = Gdx.files.internal("data/arial.ttf");
 		
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
-		FreeTypeBitmapFontData fontData = generator.generateData(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
-		ftFont = generator.generateFont(15, FreeTypeFontGenerator.DEFAULT_CHARS, flip);
+		
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 15;
+		parameter.flip = flip;
+		parameter.genMipMaps = true;
+		
+		FreeTypeBitmapFontData fontData = generator.generateData(parameter);
+		ftFont = generator.generateFont(parameter);
 		generator.dispose();
 	}
 

@@ -24,13 +24,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 /** Manages drag and drop operations through registered drag sources and drop targets.
  * @author Nathan Sweet */
 public class DragAndDrop {
 	static final Vector2 tmpVector = new Vector2();
 
-	Source source;
 	Payload payload;
 	Actor dragActor;
 	Target target;
@@ -40,6 +40,7 @@ public class DragAndDrop {
 	private float tapSquareSize = 8;
 	private int button;
 	float dragActorX = 14, dragActorY = -20;
+	float touchOffsetX, touchOffsetY;
 	long dragStartTime;
 	int dragTime = 250;
 	int activePointer = -1;
@@ -74,14 +75,15 @@ public class DragAndDrop {
 				// Find target.
 				Target newTarget = null;
 				isValidTarget = false;
-				Actor hit = event.getStage().hit(event.getStageX(), event.getStageY(), true); // Prefer touchable actors.
-				if (hit == null) hit = event.getStage().hit(event.getStageX(), event.getStageY(), false);
+				float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
+				Actor hit = event.getStage().hit(stageX, stageY, true); // Prefer touchable actors.
+				if (hit == null) hit = event.getStage().hit(stageX, stageY, false);
 				if (hit != null) {
 					for (int i = 0, n = targets.size; i < n; i++) {
 						Target target = targets.get(i);
 						if (!target.actor.isAscendantOf(hit)) continue;
 						newTarget = target;
-						target.actor.stageToLocalCoordinates(tmpVector.set(event.getStageX(), event.getStageY()));
+						target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
 						isValidTarget = target.drag(source, payload, tmpVector.x, tmpVector.y, pointer);
 						break;
 					}
@@ -120,12 +122,12 @@ public class DragAndDrop {
 				if (System.currentTimeMillis() - dragStartTime < dragTime) isValidTarget = false;
 				if (dragActor != null) dragActor.remove();
 				if (isValidTarget) {
-					target.actor.stageToLocalCoordinates(tmpVector.set(event.getStageX(), event.getStageY()));
+					float stageX = event.getStageX() + touchOffsetX, stageY = event.getStageY() + touchOffsetY;
+					target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
 					target.drop(source, payload, tmpVector.x, tmpVector.y, pointer);
 				}
 				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
-				DragAndDrop.this.source = null;
 				payload = null;
 				target = null;
 				isValidTarget = false;
@@ -151,6 +153,14 @@ public class DragAndDrop {
 		targets.removeValue(target, true);
 	}
 
+	/** Removes all targets and sources. */
+	public void clear () {
+		targets.clear();
+		for (Entry<Source, DragListener> entry : sourceListeners.entries())
+			entry.key.actor.removeCaptureListener(entry.value);
+		sourceListeners.clear();
+	}
+
 	/** Sets the distance a touch must travel before being considered a drag. */
 	public void setTapSquareSize (float halfTapSquareSize) {
 		tapSquareSize = halfTapSquareSize;
@@ -164,6 +174,12 @@ public class DragAndDrop {
 	public void setDragActorPosition (float dragActorX, float dragActorY) {
 		this.dragActorX = dragActorX;
 		this.dragActorY = dragActorY;
+	}
+
+	/** Sets an offset in stage coordinates from the touch position which is used to determine the drop location. Default is 0,0. */
+	public void setTouchOffset (float touchOffsetX, float touchOffsetY) {
+		this.touchOffsetX = touchOffsetX;
+		this.touchOffsetY = touchOffsetY;
 	}
 
 	public boolean isDragging () {

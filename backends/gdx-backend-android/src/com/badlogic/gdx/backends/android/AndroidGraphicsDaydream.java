@@ -57,7 +57,6 @@ import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -147,7 +146,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		} else {
 			config.useGL20 = false;
 			configChooser = getEglConfigChooser();
-			int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+			int sdkVersion = android.os.Build.VERSION.SDK_INT;
 
 			if (sdkVersion >= 11) {
 				GLSurfaceView view = new GLSurfaceView(dream) {
@@ -237,12 +236,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	@Override
 	public GL20 getGL20 () {
 		return gl20;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GL30 getGL30 () {
-		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -428,7 +421,11 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		mean.addValue(deltaTime);
+		if(!resume) {
+			mean.addValue(deltaTime);
+		} else {
+			deltaTime = 0;
+		}
 
 		boolean lrunning = false;
 		boolean lpause = false;

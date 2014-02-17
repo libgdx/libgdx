@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -34,10 +34,14 @@ public class Settings {
 	public static final float PI = (float)Math.PI;
 
 	// JBox2D specific settings
-	/** needs to be final, or will slow down math methods */
-	public static final boolean FAST_MATH = true;
-	public static final int CONTACT_STACK_INIT_SIZE = 10;
-	public static final boolean SINCOS_LUT_ENABLED = true;
+	public static boolean FAST_ABS = true;
+	public static boolean FAST_FLOOR = true;
+	public static boolean FAST_CEIL = true;
+	public static boolean FAST_ROUND = true;
+	public static boolean FAST_ATAN2 = true;
+
+	public static int CONTACT_STACK_INIT_SIZE = 10;
+	public static boolean SINCOS_LUT_ENABLED = true;
 	/** smaller the precision, the larger the table. If a small table is used (eg, precision is .006 or greater), make sure you set
 	 * the table to lerp it's results. Accuracy chart is in the MathUtils source. Or, run the tests yourself in {@link SinCosTest}
 	 * .</br> </br> Good lerp precision values:
@@ -64,7 +68,7 @@ public class Settings {
 	/** Use if the table's precision is large (eg .006 or greater). Although it is more expensive, it greatly increases accuracy.
 	 * Look in the MathUtils source for some test results on the accuracy and speed of lerp vs non lerp. Or, run the tests yourself
 	 * in {@link SinCosTest}. */
-	public static final boolean SINCOS_LUT_LERP = false;
+	public static boolean SINCOS_LUT_LERP = false;
 
 	// Collision
 

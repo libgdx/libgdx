@@ -88,16 +88,18 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			return new TouchEvent();
 		}
 	};
+	
+	public static final int NUM_TOUCHES = 40;
 
 	ArrayList<OnKeyListener> keyListeners = new ArrayList();	
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
-	int[] touchX = new int[20];
-	int[] touchY = new int[20];
-	int[] deltaX = new int[20];
-	int[] deltaY = new int[20];
-	boolean[] touched = new boolean[20];
-	int[] realId = new int[10];
+	int[] touchX = new int[NUM_TOUCHES];
+	int[] touchY = new int[NUM_TOUCHES];
+	int[] deltaX = new int[NUM_TOUCHES];
+	int[] deltaY = new int[NUM_TOUCHES];
+	boolean[] touched = new boolean[NUM_TOUCHES];
+	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private IntMap<Object> keys = new IntMap<Object>();
 	private SensorManager manager;
@@ -151,7 +153,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		this.app = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
-		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		if (sdkVersion >= 5)
 			touchHandler = new AndroidMultiTouchHandler();
 		else
@@ -715,9 +717,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		int orientation = 0;
 
 		if (context instanceof Activity) {
-			orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getOrientation();
+			orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getRotation();
 		} else {
-			orientation = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+			orientation = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		}
 
 		switch (orientation) {

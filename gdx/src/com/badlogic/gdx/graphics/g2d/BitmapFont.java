@@ -319,7 +319,7 @@ public class BitmapFont implements Disposable {
 	/** Returns the bounds of the specified text. Note the returned TextBounds instance is reused.
 	 * @see #getBounds(CharSequence, int, int, TextBounds) */
 	public TextBounds getBounds (CharSequence str) {
-		return getBounds(str, 0, str.length());
+		return getBounds(str, 0, str.length(), cache.getBounds());
 	}
 
 	/** Returns the bounds of the specified text.
@@ -528,7 +528,16 @@ public class BitmapFont implements Disposable {
 		return cache.getColor();
 	}
 
+	/** Scales the font by the specified amounts on both axes <br>
+	 * <br>
+	 * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}. The
+	 * default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}.
+	 * 
+	 * @throws IllegalArgumentException When scaleXY is zero */
 	public void setScale (float scaleX, float scaleY) {
+		if (scaleX == 0 || scaleY == 0) {
+			throw new IllegalArgumentException("Scale must not be zero");
+		}
 		BitmapFontData data = this.data;
 		float x = scaleX / data.scaleX;
 		float y = scaleY / data.scaleY;
@@ -543,15 +552,16 @@ public class BitmapFont implements Disposable {
 		data.scaleY = scaleY;
 	}
 
-	/** Scales the font by the specified amount in both directions.<br>
-	 * <br>
-	 * Note that smoother scaling can be achieved if the texture backing the BitmapFont is using {@link TextureFilter#Linear}. The
-	 * default is Nearest, so use a BitmapFont constructor that takes a {@link TextureRegion}. */
+	/** Scales the font by the specified amount in both directions.
+	 * @see #setScale(float, float)
+	 * @throws IllegalArgumentException When scaleXY is zero */
 	public void setScale (float scaleXY) {
 		setScale(scaleXY, scaleXY);
 	}
 
-	/** Sets the font's scale relative to the current scale. */
+	/** Sets the font's scale relative to the current scale.
+	 * @see #setScale(float, float)
+	 * @throws IllegalArgumentException When resulting scale is zero */
 	public void scale (float amount) {
 		setScale(data.scaleX + amount, data.scaleY + amount);
 	}
@@ -911,7 +921,9 @@ public class BitmapFont implements Disposable {
 					Glyph glyph = getGlyph((char)first);
 					tokens.nextToken();
 					int amount = Integer.parseInt(tokens.nextToken());
-					glyph.setKerning(second, amount);
+					if(glyph != null) { // it appears BMFont outputs kerning for glyph pairs not contained in the font, hence the null check						
+						glyph.setKerning(second, amount);
+					}
 				}
 
 				Glyph spaceGlyph = getGlyph(' ');

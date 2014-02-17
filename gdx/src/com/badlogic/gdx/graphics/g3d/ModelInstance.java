@@ -42,11 +42,11 @@ import com.badlogic.gdx.utils.Pool;
  * @author badlogic, xoppa */
 public class ModelInstance implements RenderableProvider {
 	/** the materials of the model, used by nodes that have a graphical representation FIXME not sure if superfluous, allows modification of materials without having to traverse the nodes **/
-	public final Array<Material> materials = new Array<Material>();
+	public final Array<Material> materials = new Array();
 	/** root nodes of the model **/
-	public final Array<Node> nodes = new Array<Node>();
+	public final Array<Node> nodes = new Array();
 	/** animations of the model, modifying node transformations **/
-	public final Array<Animation> animations = new Array<Animation>();
+	public final Array<Animation> animations = new Array();
 	/** the {@link Model} this instances derives from **/
 	public final Model model;
 	/** the world transform **/

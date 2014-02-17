@@ -53,8 +53,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2;
-import com.badlogic.gdx.tools.imagepacker.TexturePacker2.Settings;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker.Settings;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -74,7 +74,7 @@ import com.badlogic.gdx.utils.ObjectMap;
  * @author Manuel Bua */
 public class TiledMapPacker {
 
-	private TexturePacker2 packer;
+	private TexturePacker packer;
 	private TiledMap map;
 
 	private ArrayList<Integer> blendedTiles = new ArrayList<Integer>();
@@ -240,7 +240,7 @@ public class TiledMapPacker {
 		return bucket;
 	}
 
-	/** Traverse the specified tilesets, optionally lookup the used ids and pass every tile image to the {@link TexturePacker2},
+	/** Traverse the specified tilesets, optionally lookup the used ids and pass every tile image to the {@link TexturePacker},
 	 * optionally ignoring unused tile ids */
 	private void packTilesets (ObjectMap<String, TiledMapTileSet> sets, FileHandle inputDirHandle, File outputDir,
 		Settings texturePackerSettings) throws IOException {
@@ -249,9 +249,8 @@ public class TiledMapPacker {
 		TileSetLayout packerTileSet;
 		Graphics g;
 
-		packer = new TexturePacker2(texturePackerSettings);
+		packer = new TexturePacker(texturePackerSettings);
 
-		int tileidx = 0;
 		for (TiledMapTileSet set : sets.values()) {
 			String tilesetName = set.getName();
 			System.out.println("Processing tileset " + tilesetName);
@@ -264,7 +263,7 @@ public class TiledMapPacker {
 
 			TileSetLayout layout = new TileSetLayout(firstgid, set, inputDirHandle);
 
-			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++, tileidx++) {
+			for (int gid = layout.firstgid, i = 0; i < layout.numTiles; gid++, i++) {
 				if (usedIds != null && !usedIds.contains(gid)) {
 					System.out.println("Stripped id #" + gid + " from tileset \"" + tilesetName + "\"");
 					continue;
@@ -280,7 +279,7 @@ public class TiledMapPacker {
 				if (isBlended(tile)) setBlended(gid);
 				System.out.println("Adding " + tileWidth + "x" + tileHeight + " (" + (int)tileLocation.x + ", " + (int)tileLocation.y
 					+ ")");
-				packer.addImage(tile, this.settings.atlasOutputName + "_" + tileidx);
+				packer.addImage(tile, this.settings.atlasOutputName + "_" + (gid-1));
 			}
 		}
 
@@ -532,7 +531,7 @@ public class TiledMapPacker {
 				TiledMapPacker packer = new TiledMapPacker(packerSettings);
 
 				if (!inputDir.exists()) {
-					throw new RuntimeException("Input directory does not exist");
+					throw new RuntimeException("Input directory does not exist: " + inputDir);
 				}
 
 				try {

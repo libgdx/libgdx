@@ -21,9 +21,10 @@ import java.util.Arrays;
 /** Describes a method of a {@link Type}.
  * @author mzechner */
 public class Method {
+	private static final Parameter[] EMPTY_PARAMS = new Parameter[0];
 	final String name;
-	final Class enclosingType;
-	final Class returnType;
+	final CachedTypeLookup enclosingType;
+	final CachedTypeLookup returnType;
 	final boolean isAbstract;
 	final boolean isFinal;
 	final boolean isStatic;
@@ -36,16 +37,15 @@ public class Method {
 	final boolean isMethod;
 	final boolean isConstructor;
 	final Parameter[] parameters;
-	final String methodId;
-	boolean accessible;
+	final int methodId;
 
 	public Method (String name, Class enclosingType, Class returnType, Parameter[] parameters, boolean isAbstract,
 		boolean isFinal, boolean isStatic, boolean isDefaultAccess, boolean isPrivate, boolean isProtected, boolean isPublic,
-		boolean isNative, boolean isVarArgs, boolean isMethod, boolean isConstructor, String methodId) {
+		boolean isNative, boolean isVarArgs, boolean isMethod, boolean isConstructor, int methodId) {
 		this.name = name;
-		this.enclosingType = enclosingType;
-		this.parameters = parameters;
-		this.returnType = returnType;
+		this.enclosingType = new CachedTypeLookup(enclosingType);
+		this.parameters = parameters != null ? parameters : EMPTY_PARAMS;
+		this.returnType = new CachedTypeLookup(returnType);
 		this.isAbstract = isAbstract;
 		this.isFinal = isFinal;
 		this.isStatic = isStatic;
@@ -60,22 +60,14 @@ public class Method {
 		this.methodId = methodId;
 	}
 
-	public boolean isAccessible () {
-		return accessible;
-	}
-
-	public void setAccessible (boolean accessible) {
-		this.accessible = accessible;
-	}
-
 	/** @return the {@link Class} of the enclosing type. */
 	public Class getEnclosingType () {
-		return enclosingType;
+		return enclosingType.getClass();
 	}
 
 	/** @return the {@link Class} of the return type or null. */
 	public Class getReturnType () {
-		return returnType;
+		return returnType.getClass();
 	}
 
 	/** @return the list of parameters, can be a zero size array. */
@@ -138,20 +130,21 @@ public class Method {
 	 * @param params the parameters to pass to the method or null.
 	 * @return the return value or null if the method does not return anything. */
 	public Object invoke (Object obj, Object... params) {
-		if (parameters != null && (params == null || params.length != parameters.length))
-			throw new IllegalArgumentException("Parameter mismatch");
-		if (parameters == null && params != null && params.length > 0) {
-			throw new IllegalArgumentException("Parameter mismatch");
-		}
-		return ReflectionCache.instance.invoke(this, obj, params);
+		if (parameters.length != (params != null ? params.length : 0)) throw new IllegalArgumentException("Parameter mismatch");
+
+		return ReflectionCache.invoke(this, obj, params);
 	}
 
 	boolean match (String name, Class... types) {
-		if (!this.name.equals(name)) return false;
+		return this.name.equals(name) && match(types);
+	}
+
+	boolean match (Class... types) {
+		if (types == null) return parameters.length == 0;
 		if (types.length != parameters.length) return false;
 		for (int i = 0; i < types.length; i++) {
-			Type t1 = ReflectionCache.instance.forName(parameters[i].getType().getName());
-			Type t2 = ReflectionCache.instance.forName(types[i].getName());
+			Type t1 = parameters[i].getType();
+			Type t2 = ReflectionCache.getType(types[i]);
 			if (t1 != t2 && !t1.isAssignableFrom(t2)) return false;
 		}
 		return true;
@@ -163,6 +156,6 @@ public class Method {
 			+ isAbstract + ", isFinal=" + isFinal + ", isStatic=" + isStatic + ", isNative=" + isNative + ", isDefaultAccess="
 			+ isDefaultAccess + ", isPrivate=" + isPrivate + ", isProtected=" + isProtected + ", isPublic=" + isPublic
 			+ ", isVarArgs=" + isVarArgs + ", isMethod=" + isMethod + ", isConstructor=" + isConstructor + ", parameters="
-			+ Arrays.toString(parameters) + ", accessible=" + accessible + "]";
+			+ Arrays.toString(parameters) + "]";
 	}
 }

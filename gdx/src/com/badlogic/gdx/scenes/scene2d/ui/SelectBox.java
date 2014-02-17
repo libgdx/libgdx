@@ -52,7 +52,8 @@ public class SelectBox extends Widget implements Disableable {
 	String[] items;
 	int selectedIndex = 0;
 	private final TextBounds bounds = new TextBounds();
-	SelectList list;
+	ListScroll scroll;
+	Actor previousScrollFocus;
 	private float prefWidth, prefHeight;
 	private ClickListener clickListener;
 	int maxListCount;
@@ -69,16 +70,15 @@ public class SelectBox extends Widget implements Disableable {
 	public SelectBox (Object[] items, SelectBoxStyle style) {
 		setStyle(style);
 		setItems(items);
-		setWidth(getPrefWidth());
-		setHeight(getPrefHeight());
+		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == 0 && button != 0) return false;
 				if (disabled) return false;
 				Stage stage = getStage();
-				if (list == null) list = new SelectList();
-				list.show(stage);
+				if (scroll == null) scroll = new ListScroll();
+				scroll.show(stage);
 				return true;
 			}
 		});
@@ -165,7 +165,7 @@ public class SelectBox extends Widget implements Disableable {
 		Drawable background;
 		if (disabled && style.backgroundDisabled != null)
 			background = style.backgroundDisabled;
-		else if (list != null && list.getParent() != null && style.backgroundOpen != null)
+		else if (scroll != null && scroll.getParent() != null && style.backgroundOpen != null)
 			background = style.backgroundOpen;
 		else if (clickListener.isOver() && style.backgroundOver != null)
 			background = style.backgroundOver;
@@ -232,15 +232,27 @@ public class SelectBox extends Widget implements Disableable {
 	}
 
 	public void hideList () {
-		if (list == null || list.getParent() == null) return;
-		list.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
+		if (scroll == null || scroll.getParent() == null) return;
+		Stage stage = scroll.getStage();
+		if (stage != null) {
+			if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
+			Actor actor = stage.getScrollFocus();
+			if (actor == null || actor.isDescendantOf(scroll)) stage.setScrollFocus(previousScrollFocus);
+		}
+		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
 	}
 
-	class SelectList extends ScrollPane {
+	/** Returns the list shown when the select box is open, or null of the select box is closed. */
+	public List getList () {
+		if (scroll == null || scroll.getParent() == null) return null;
+		return scroll.list;
+	}
+
+	class ListScroll extends ScrollPane {
 		final List list;
 		final Vector2 screenCoords = new Vector2();
 
-		public SelectList () {
+		public ListScroll () {
 			super(null, style.scrollStyle);
 
 			setOverscroll(false, false);
@@ -314,6 +326,10 @@ public class SelectBox extends Widget implements Disableable {
 			clearActions();
 			getColor().a = 0;
 			addAction(fadeIn(0.3f, Interpolation.fade));
+
+			previousScrollFocus = null;
+			Actor actor = stage.getScrollFocus();
+			if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 
 			stage.setScrollFocus(this);
 		}

@@ -21,6 +21,8 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.Color" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.Texture" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.utils.Array" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.utils.ObjectMap" />

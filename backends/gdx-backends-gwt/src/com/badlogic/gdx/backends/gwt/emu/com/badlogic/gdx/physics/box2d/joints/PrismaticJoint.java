@@ -32,8 +32,7 @@ public class PrismaticJoint extends Joint {
 
 	/** Get the current joint translation, usually in meters. */
 	public float getJointTranslation () {
-		// FIXME not available in jbox2d
-		return 0;
+		return joint.getJointTranslation();
 	}
 
 	/** Get the current joint translation speed, usually in meters per second. */

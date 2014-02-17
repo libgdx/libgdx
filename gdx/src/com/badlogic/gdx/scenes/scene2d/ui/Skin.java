@@ -416,7 +416,7 @@ public class Skin implements Disposable {
 
 		json.setSerializer(Skin.class, new ReadOnlySerializer<Skin>() {
 			public Skin read (Json json, JsonValue typeToValueMap, Class ignored) {
-				for (JsonValue valueMap = typeToValueMap.child(); valueMap != null; valueMap = valueMap.next()) {
+				for (JsonValue valueMap = typeToValueMap.child; valueMap != null; valueMap = valueMap.next) {
 					try {
 						readNamedObjects(json, ClassReflection.forName(valueMap.name()), valueMap);
 					} catch (ReflectionException ex) {
@@ -428,7 +428,7 @@ public class Skin implements Disposable {
 
 			private void readNamedObjects (Json json, Class type, JsonValue valueMap) {
 				Class addType = type == TintedDrawable.class ? Drawable.class : type;
-				for (JsonValue valueEntry = valueMap.child(); valueEntry != null; valueEntry = valueEntry.next()) {
+				for (JsonValue valueEntry = valueMap.child; valueEntry != null; valueEntry = valueEntry.next) {
 					Object object = json.readValue(type, valueEntry);
 					if (object == null) continue;
 					try {

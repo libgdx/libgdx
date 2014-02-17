@@ -16,31 +16,18 @@
 
 package com.badlogic.gwtref.client;
 
-/** The default constructor for the enclosing type.
+/** A constructor for the enclosing type.
  * @author mzechner */
-public class Constructor {
-	final Class enclosingType;
-	boolean isAccessible = false;
-
-	Constructor (Class enclosingType) {
-		this.enclosingType = enclosingType;
+public class Constructor extends Method {
+	Constructor (String name, Class enclosingType, Class returnType, Parameter[] parameters, boolean isAbstract, boolean isFinal,
+		boolean isStatic, boolean isDefaultAccess, boolean isPrivate, boolean isProtected, boolean isPublic, boolean isNative,
+		boolean isVarArgs, boolean isMethod, boolean isConstructor, int methodId) {
+		super(name, enclosingType, returnType, parameters, isAbstract, isFinal, isStatic, isDefaultAccess, isPrivate, isProtected,
+			isPublic, isNative, isVarArgs, isMethod, isConstructor, methodId);
 	}
 
 	/** @return a new instance of the enclosing type of this constructor. */
-	public Object newInstance () {
-		return ReflectionCache.getType(enclosingType).newInstance();
-	}
-
-	/** @return the enclosing type this constructor belongs to. */
-	public Type getEnclosingType () {
-		return ReflectionCache.getType(enclosingType);
-	}
-
-	public boolean isAccessible () {
-		return isAccessible;
-	}
-
-	public void setAccessible (boolean accessible) throws SecurityException {
-		isAccessible = accessible;
+	public Object newInstance (Object... params) {
+		return super.invoke(null, params);
 	}
 }

@@ -150,7 +150,7 @@ public class YDownTest extends GdxTest {
 
 					// adjust the actor's position by (current mouse position - last mouse position)
 					// in the actor's coordinate system.
-					translate(x - lastX, y - lastY);
+					moveBy(x - lastX, y - lastY);
 
 					// save the current mouse position as the basis for the next drag event.
 					// we adjust by the same delta so next time drag is called, lastX/lastY

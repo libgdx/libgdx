@@ -128,6 +128,10 @@ public class AnimationController extends BaseAnimationController {
 	public float transitionTargetTime;
 	/** Whether an action is being performed. Do not alter this value. */
 	public boolean inAction;
+	/** When true a call to {@link #update(float)} will not be processed. */ 
+	public boolean paused;
+	/** Whether to allow the same animation to be played while playing that animation. */ 
+	public boolean allowSameAnimation;
 	
 	private boolean justChangedAnimation = false;
 
@@ -168,6 +172,8 @@ public class AnimationController extends BaseAnimationController {
 	/** Update any animations currently being played.
 	 * @param delta The time elapsed since last update, change this to alter the overall speed (can be negative). */
 	public void update(float delta) {
+		if (paused)
+			return;
 		if (previous != null && ((transitionCurrentTime += delta) >= transitionTargetTime)) {
 			removeAnimation(previous.animation);
 			justChangedAnimation = true;
@@ -367,7 +373,7 @@ public class AnimationController extends BaseAnimationController {
 			current = anim;
 		else if (inAction)
 			queue(anim, transitionTime);
-		else if (anim != null && current.animation == anim.animation) {
+		else if (!allowSameAnimation && anim != null && current.animation == anim.animation) {
 			anim.time = current.time;
 			animationPool.free(current);
 			current = anim;

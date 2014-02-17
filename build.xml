@@ -32,17 +32,12 @@
 		<ant antfile="build.xml" dir="extensions/gdx-setup-ui/"/>
 		<copy tofile="${distDir}/gdx-setup-ui.jar" file="extensions/gdx-setup-ui/gdx-setup-ui.jar"/>
 	</target>
-    
-    <!-- new gdx setup -->
-    <target name="gdx-setup">
-		<fileset id="resourcefiles" dir="extensions/gdx-setup/src">
-            <exclude name="**/*.java"/>
-		</fileset>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-setup">
-			<property name="jar" value="gdx-setup"/>
-			<reference refid="resourcefiles"/>
-		</ant>
-    </target>
+
+	<!-- new gdx setup, custom target -->
+	<target name="gdx-setup">
+		<ant antfile="build.xml" dir="extensions/gdx-setup/"/>
+		<copy tofile="${distDir}/gdx-setup.jar" file="extensions/gdx-setup/gdx-setup.jar"/>
+	</target>
 
 	<!-- gdx core -->
 	<target name="gdx-core" depends="gdx-jnigen">
@@ -74,6 +69,19 @@
 			<reference refid="classpath"/>
 		</ant>
 	</target>
+
+        <!-- gdx headless backend -->
+        <target name="gdx-backend-headless" depends="gdx-core">
+                <path id="classpath">
+                        <pathelement location="${distDir}/gdx.jar"/>                    
+                </path>
+                <ant antfile="../../build-template.xml" dir="backends/gdx-backend-headless">
+                        <property name="jar" value="gdx-backend-headless"/>
+                        <reference refid="classpath"/>
+                        <reference refid="jarfiles"/>
+                </ant>
+        </target>
+
 
 	<!-- gdx lwjgl backend -->
 	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">

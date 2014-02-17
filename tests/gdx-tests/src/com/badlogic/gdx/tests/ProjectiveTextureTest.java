@@ -81,7 +81,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		multiplexer.addProcessor(controller);
 		Gdx.input.setInputProcessor(multiplexer);
 
-		renderer = new ImmediateModeRenderer20(false, true, 0);
+		//renderer = new ImmediateModeRenderer20(false, true, 0);
 	}
 
 	public void setupScene () {
@@ -171,6 +171,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		projTexShader.end();
 
 		fps.setText("fps: " + Gdx.graphics.getFramesPerSecond());
+		ui.act();
 		ui.draw();
 		Table.drawDebug(ui);
 	}
@@ -198,6 +199,6 @@ public class ProjectiveTextureTest extends GdxTest {
 		projTexShader.dispose();
 		ui.dispose();
 		skin.dispose();
-		renderer.dispose();
+		//renderer.dispose();
 	}
 }

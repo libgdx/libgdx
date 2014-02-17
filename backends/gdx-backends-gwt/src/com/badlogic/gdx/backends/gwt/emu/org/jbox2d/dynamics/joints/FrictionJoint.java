@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -47,22 +47,20 @@ public class FrictionJoint extends Joint {
 	private float m_maxTorque;
 
 	// Solver temp
-	public int m_indexA;
-	public int m_indexB;
-	public final Vec2 m_rA = new Vec2();
-	public final Vec2 m_rB = new Vec2();
-	public final Vec2 m_localCenterA = new Vec2();
-	public final Vec2 m_localCenterB = new Vec2();
-	public float m_invMassA;
-	public float m_invMassB;
-	public float m_invIA;
-	public float m_invIB;
-	public final Mat22 m_linearMass = new Mat22();
-	public float m_angularMass;
+	private int m_indexA;
+	private int m_indexB;
+	private final Vec2 m_rA = new Vec2();
+	private final Vec2 m_rB = new Vec2();
+	private final Vec2 m_localCenterA = new Vec2();
+	private final Vec2 m_localCenterB = new Vec2();
+	private float m_invMassA;
+	private float m_invMassB;
+	private float m_invIA;
+	private float m_invIB;
+	private final Mat22 m_linearMass = new Mat22();
+	private float m_angularMass;
 
-	/** @param argWorldPool
-	 * @param def */
-	public FrictionJoint (IWorldPool argWorldPool, FrictionJointDef def) {
+	protected FrictionJoint (IWorldPool argWorldPool, FrictionJointDef def) {
 		super(argWorldPool, def);
 		m_localAnchorA = new Vec2(def.localAnchorA);
 		m_localAnchorB = new Vec2(def.localAnchorB);
@@ -197,12 +195,12 @@ public class FrictionJoint extends Joint {
 			m_linearImpulse.setZero();
 			m_angularImpulse = 0.0f;
 		}
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		if (data.velocities[m_indexA].w != wA) {
 			assert (data.velocities[m_indexA].w != wA);
 		}
 		data.velocities[m_indexA].w = wA;
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushRot(2);
@@ -272,13 +270,13 @@ public class FrictionJoint extends Joint {
 
 		}
 
-		data.velocities[m_indexA].v.set(vA);
+// data.velocities[m_indexA].v.set(vA);
 		if (data.velocities[m_indexA].w != wA) {
 			assert (data.velocities[m_indexA].w != wA);
 		}
 		data.velocities[m_indexA].w = wA;
 
-		data.velocities[m_indexB].v.set(vB);
+// data.velocities[m_indexB].v.set(vB);
 		data.velocities[m_indexB].w = wB;
 
 		pool.pushVec2(4);

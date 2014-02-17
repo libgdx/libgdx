@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -26,39 +26,32 @@ package org.jbox2d.pooling.normal;
 
 import org.jbox2d.pooling.IDynamicStack;
 
-public class MutableStack<E, T extends E> implements IDynamicStack<E> {
+public abstract class MutableStack<E> implements IDynamicStack<E> {
 
 	private Object[] stack;
 	private int index;
 	private int size;
-	private final Generator<T> gen;
 
-	public MutableStack (Generator<T> gen, int argInitSize) {
+	public MutableStack (int argInitSize) {
 		index = 0;
-		this.gen = gen;
 		stack = null;
 		index = 0;
 		extendStack(argInitSize);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void extendStack (int argSize) {
-		Object[] newStack = new Object[argSize]; // (T[]) Array.newInstance(sClass, argSize);
+		Object[] newStack = new Object[argSize];
 		if (stack != null) {
 			System.arraycopy(stack, 0, newStack, 0, size);
 		}
 		for (int i = 0; i < newStack.length; i++) {
-			newStack[i] = gen.gen();
+			newStack[i] = newInstance();
 		}
 		stack = newStack;
 		size = newStack.length;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jbox2d.pooling.IDynamicStack#pop()
-	 */
+	@SuppressWarnings("unchecked")
 	public final E pop () {
 		if (index >= size) {
 			extendStack(size * 2);
@@ -66,14 +59,11 @@ public class MutableStack<E, T extends E> implements IDynamicStack<E> {
 		return (E)stack[index++];
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.jbox2d.pooling.IDynamicStack#push(E)
-	 */
-	@SuppressWarnings("unchecked")
 	public final void push (E argObject) {
 		assert (index > 0);
-		stack[--index] = (T)argObject;
+		stack[--index] = argObject;
 	}
+
+	/** Creates a new instance of the object contained by this stack. */
+	protected abstract E newInstance ();
 }

@@ -1,11 +1,33 @@
 [1.0.0]
-- support 'scaledSize' as a json skin data value for BitmapFont
-- added setAlpha(float a) method to Sprite class
-- added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
-- added Immersive Mode support to Android backend
-- added user object to Actor
-- altered Android's hide status bar behavior
--- changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
+- Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
+- Vector2 now has isUnit and isZero methods (copied from Vector3)
+- Added new headless backend for server applications
+- Support 'scaledSize' as a json skin data value for BitmapFont
+- Added setAlpha(float a) method to Sprite class
+- Added Input.Keys.toString(int keycode) and Input.Keys.valueOf(String keyname) methods
+- Added Immersive Mode support to Android backend
+- Added userObject to Actor in scene2d, allowing for custom data storage
+- Altered Android's hide status bar behavior
+- Changed the way wakelocks are implemented. You no longer need any special permissions for the libgdx wakelock
+- BitmapFontCache setColor changes to match SpriteBatch and friends. http://www.badlogicgames.com/forum/viewtopic.php?f=23&t=12112
+- Changed ParticleEffect: the ParticleEffect.save method now takes a Writer instead of a File
+- TexturePacker2 renamed to TexturePacker, added grid and scaling settings.
+- Added support for custom prefrences on the desktop backends.
+- Fixed double resume calls on iOS.
+- Android Music no longer throws exceptions if MediaPlayer is null.
+- PolygonSpriteBatch implements Batch.
+- New scene2d actions: EventAction, CountdownEventAction.
+- Adds cancelHttpRequest() method to Net interface
+- Update GWT/HTML5 Backend to GWT 2.6.0
+- Minimal Android version is 2.2, see http://www.badlogicgames.com/wordpress/?p=3297
+- Updated to LWJGL 2.9.1
+- Can now embed your libgdx app as a fragment, more info on the wiki
+- scene2d.ui, renamed Actor methods translate, rotate, scale, size to moveBy, rotateBy, scaleBy, sizeBy. May have conflicts with Actions static import, eg you'll need to use "Actions.moveBy"
+- scene2d.ui, Table background is now drawn usign the table's transform
+- scene2d.ui, added Container which is similar to a Table with one cell, but more lightweight
+- Added texture filters and mip map generation to BitMapFontLoader and FreeTypeFontGenerator
+- scene2d.ui, VerticalGroup and HorizontalGroup got pad, fill and an API similar to Table/Container
+
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
 - removed Xamarin backend, see http://www.badlogicgames.com/wordpress/?p=3213

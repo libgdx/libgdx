@@ -40,16 +40,13 @@ public class BitmapFontCache {
 
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
-	private final Color tempColor = new Color(Color.WHITE);
+	private final Color tempColor = new Color(1, 1, 1, 1);
 	private final TextBounds textBounds = new TextBounds();
 	private boolean integer = true;
-	
 	private int glyphCount = 0;
 
-	// For multi-page fonts, the vertices are not laid out in order.
-	// This means that we have no frame of reference for setColor(Color, int, int)
-	// since the "start" and "end" indices will not work here.
-	// So for multi-page fonts, we need to store the INDEX of the glyph in terms of the full string
+	/** An array for each page containing an entry for each glyph from that page, where the entry is the index of the character in
+	 * the full text being cached. */
 	private IntArray[] glyphIndices;
 
 	public BitmapFontCache (BitmapFont font) {
@@ -62,13 +59,12 @@ public class BitmapFontCache {
 	public BitmapFontCache (BitmapFont font, boolean integer) {
 		this.font = font;
 		this.integer = integer;
-		
+
 		int regionsLength = font.regions.length;
-		if (regionsLength == 0)
-			throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
-		
+		if (regionsLength == 0) throw new IllegalArgumentException("The specified font must contain at least 1 texture page");
+
 		this.vertexData = new float[regionsLength][];
-		
+
 		this.idx = new int[regionsLength];
 		int vertexDataLength = vertexData.length;
 		if (vertexDataLength > 1) { // if we have multiple pages...
@@ -110,9 +106,8 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void setColor (float color) {
-		if (color == this.color) return;
-		this.color = color;
+	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
+	public void setColors (float color) {
 		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 2, n = idx[j]; i < n; i += 5)
@@ -120,10 +115,9 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void setColor (Color tint) {
+	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
+	public void setColors (Color tint) {
 		final float color = tint.toFloatBits();
-		if (color == this.color) return;
-		this.color = color;
 		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 2, n = idx[j]; i < n; i += 5)
@@ -131,11 +125,10 @@ public class BitmapFontCache {
 		}
 	}
 
-	public void setColor (float r, float g, float b, float a) {
+	/** Sets the color of all text currently in the cache. Does not affect subsequently added text. */
+	public void setColors (float r, float g, float b, float a) {
 		int intBits = ((int)(255 * a) << 24) | ((int)(255 * b) << 16) | ((int)(255 * g) << 8) | ((int)(255 * r));
 		float color = NumberUtils.intToFloatColor(intBits);
-		if (color == this.color) return;
-		this.color = color;
 		for (int j = 0, length = vertexData.length; j < length; j++) {
 			float[] vertices = vertexData[j];
 			for (int i = 2, n = idx[j]; i < n; i += 5)
@@ -145,7 +138,7 @@ public class BitmapFontCache {
 
 	/** Sets the color of the specified characters. This may only be called after {@link #setText(CharSequence, float, float)} and
 	 * is reset every time setText is called. */
-	public void setColor (Color tint, int start, int end) {
+	public void setColors (Color tint, int start, int end) {
 		final float color = tint.toFloatBits();
 
 		if (vertexData.length == 1) { // only one page...
@@ -178,10 +171,36 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
+	public void setColor (Color tint) {
+		color = tint.toFloatBits();
+	}
+
+	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
+	public void setColor (float r, float g, float b, float a) {
+		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
+		color = NumberUtils.intToFloatColor(intBits);
+	}
+
+	/** Sets the color of subsequently added text. Does not affect text currently in the cache. */
+	public void setColor (float color) {
+		this.color = color;
+	}
+
+	public Color getColor () {
+		int intBits = NumberUtils.floatToIntColor(color);
+		Color color = tempColor;
+		color.r = (intBits & 0xff) / 255f;
+		color.g = ((intBits >>> 8) & 0xff) / 255f;
+		color.b = ((intBits >>> 16) & 0xff) / 255f;
+		color.a = ((intBits >>> 24) & 0xff) / 255f;
+		return color;
+	}
+
 	public void draw (Batch spriteBatch) {
 		TextureRegion[] regions = font.getRegions();
 		for (int j = 0, n = vertexData.length; j < n; j++) {
-			if (idx[j] >= 0) { //ignore if this texture has no glyphs
+			if (idx[j] > 0) { // ignore if this texture has no glyphs
 				float[] vertices = vertexData[j];
 				spriteBatch.draw(regions[j].getTexture(), vertices, 0, idx[j]);
 			}
@@ -241,21 +260,10 @@ public class BitmapFontCache {
 		Color color = getColor();
 		float oldAlpha = color.a;
 		color.a *= alphaModulation;
-		setColor(color);
+		setColors(color);
 		draw(spriteBatch);
 		color.a = oldAlpha;
-		setColor(color);
-	}
-
-	public Color getColor () {
-		float floatBits = color;
-		int intBits = NumberUtils.floatToIntColor(color);
-		Color color = tempColor;
-		color.r = (intBits & 0xff) / 255f;
-		color.g = ((intBits >>> 8) & 0xff) / 255f;
-		color.b = ((intBits >>> 16) & 0xff) / 255f;
-		color.a = ((intBits >>> 24) & 0xff) / 255f;
-		return color;
+		setColors(color);
 	}
 
 	/** Removes all glyphs in the cache. */

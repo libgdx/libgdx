@@ -16,11 +16,17 @@
 
 package com.badlogic.gdx.graphics;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 /** Instances of this class specify the vertex attributes of a mesh. VertexAttributes are used by {@link Mesh} instances to define
  * its vertex structure. Vertex attributes have an order. The order is specified by the order they are added to this class.
  * 
  * @author mzechner */
-public final class VertexAttributes {
+public final class VertexAttributes implements Iterable<VertexAttribute> {
 	/** The usage of a vertex attribute.
 	 * 
 	 * @author mzechner */
@@ -44,6 +50,8 @@ public final class VertexAttributes {
 	
 	/** cache of the value calculated by {@link #getMask()} **/
 	private long mask = -1;
+	
+	private ReadonlyIterable<VertexAttribute> iterable;
 
 	/** Constructor, sets the vertex attributes in a specific order */
 	public VertexAttributes (VertexAttribute... attributes) {
@@ -55,7 +63,9 @@ public final class VertexAttributes {
 
 		this.attributes = list;
 
-		checkValidity();
+		if (!Gdx.graphics.isGL20Available())
+			checkGLES1Validity();
+		
 		vertexSize = calculateOffsets();
 	}
 
@@ -90,7 +100,7 @@ public final class VertexAttributes {
 		return count;
 	}
 
-	private void checkValidity () {
+	private void checkGLES1Validity () {
 		boolean pos = false;
 		boolean cols = false;
 		boolean nors = false;
@@ -172,5 +182,75 @@ public final class VertexAttributes {
 			mask = result;
 		}
 		return mask;
+	}
+	
+	@Override
+	public Iterator<VertexAttribute> iterator () {
+		if (iterable == null) iterable = new ReadonlyIterable<VertexAttribute>(attributes);
+		return iterable.iterator();
+	}
+	
+	static private class ReadonlyIterator<T> implements Iterator<T>, Iterable<T> {
+		private final T[] array;
+		int index;
+		boolean valid = true;
+
+		public ReadonlyIterator (T[] array) {
+			this.array = array;
+		}
+
+		@Override
+		public boolean hasNext () {
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			return index < array.length;
+		}
+
+		@Override
+		public T next () {
+			if (index >= array.length) throw new NoSuchElementException(String.valueOf(index));
+			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
+			return array[index++];
+		}
+
+		@Override
+		public void remove () {
+			throw new GdxRuntimeException("Remove not allowed.");
+		}
+
+		public void reset () {
+			index = 0;
+		}
+
+		@Override
+		public Iterator<T> iterator () {
+			return this;
+		}
+	}
+	
+	static private class ReadonlyIterable<T> implements Iterable<T> {
+		private final T[] array;
+		private ReadonlyIterator iterator1, iterator2;
+
+		public ReadonlyIterable (T[] array) {
+			this.array = array;
+		}
+		
+		@Override
+		public Iterator<T> iterator () {
+			if (iterator1 == null) {
+				iterator1 = new ReadonlyIterator(array);
+				iterator2 = new ReadonlyIterator(array);
+			}
+			if (!iterator1.valid) {
+				iterator1.index = 0;
+				iterator1.valid = true;
+				iterator2.valid = false;
+				return iterator1;
+			}
+			iterator2.index = 0;
+			iterator2.valid = true;
+			iterator1.valid = false;
+			return iterator2;
+		}
 	}
 }

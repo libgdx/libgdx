@@ -25,7 +25,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
-	private final static float DEGREE_TO_RAD = (float)Math.PI / 180;
 	public static final int M00 = 0;
 	public static final int M01 = 3;
 	public static final int M02 = 6;
@@ -106,9 +105,15 @@ public class Matrix3 implements Serializable {
 	 * @param degrees the angle in degrees.
 	 * @return This matrix for the purpose of chaining operations. */
 	public Matrix3 setToRotation (float degrees) {
-		float angle = DEGREE_TO_RAD * degrees;
-		float cos = (float)Math.cos(angle);
-		float sin = (float)Math.sin(angle);
+		return setToRotationRad(MathUtils.degreesToRadians * degrees);
+	}
+
+	/** Sets this matrix to a rotation matrix that will rotate any vector in counter-clockwise direction around the z-axis.
+	 * @param radians the angle in degrees.
+	 * @return This matrix for the purpose of chaining operations. */
+	public Matrix3 setToRotationRad (float radians) {
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		this.val[M00] = cos;
 		this.val[M10] = sin;
@@ -334,10 +339,17 @@ public class Matrix3 implements Serializable {
 	 * @param degrees The angle in degrees
 	 * @return This matrix for the purpose of chaining. */
 	public Matrix3 rotate (float degrees) {
-		if (degrees == 0) return this;
-		degrees = DEGREE_TO_RAD * degrees;
-		float cos = (float)Math.cos(degrees);
-		float sin = (float)Math.sin(degrees);
+		return rotateRad(MathUtils.degreesToRadians * degrees);
+	}
+
+	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
+	 * glTranslate/glRotate/glScale.
+	 * @param radians The angle in degrees
+	 * @return This matrix for the purpose of chaining. */
+	public Matrix3 rotateRad (float radians) {
+		if (radians == 0) return this;
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		tmp[M00] = cos;
 		tmp[M10] = sin;
@@ -396,7 +408,27 @@ public class Matrix3 implements Serializable {
 	public float[] getValues () {
 		return val;
 	}
-
+	
+	public Vector2 getTranslation (Vector2 position) {
+		position.x = val[M02];
+		position.y = val[M12];
+		return position;
+	}
+	
+	public Vector2 getScale (Vector2 scale) {
+		scale.x = (float)Math.sqrt(val[M00]*val[M00] + val[M01]*val[M01]);
+		scale.y = (float)Math.sqrt(val[M10]*val[M10] + val[M11]*val[M11]);
+		return scale;
+	}
+	
+	public float getRotation () {
+		return MathUtils.radiansToDegrees * (float)Math.atan2(val[M10], val[M00]);
+	}
+	
+	public float getRotationRad () {
+		return (float)Math.atan2(val[M10], val[M00]);
+	}
+	
 	/** Scale the matrix in the both the x and y components by the scalar value.
 	 * @param scale The single value that will be used to scale both the x and y components.
 	 * @return This matrix for the purpose of chaining methods together. */

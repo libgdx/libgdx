@@ -74,25 +74,26 @@ public class Scene2dTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		VerticalGroup g = new VerticalGroup();
-		g.setPosition(10, 100);
-		g.setReverse(true);
-		g.setSpacing(5);
-		stage.addActor(g);
-		for (int i = 0; i < 10; i++) {
+		VerticalGroup g = new VerticalGroup().space(5).reverse().pad(5).fill();
+		for (int i = 0; i < 10; i++)
 			g.addActor(new TextButton("button " + i, skin));
-		}
-		g.pack();
+		g.addActor(new TextButton("longer button", skin));
+		Table table = new Table().debug();
+		table.add(g);
+		table.pack();
+		table.setPosition(5, 100);
+		stage.addActor(table);
 
-		HorizontalGroup h = new HorizontalGroup();
-		h.setPosition(100, 100);
-		h.setReverse(true);
-		h.setSpacing(5);
-		stage.addActor(h);
-		for (int i = 0; i < 7; i++) {
+		HorizontalGroup h = new HorizontalGroup().space(5).reverse().pad(5).fill();
+		for (int i = 0; i < 5; i++)
 			h.addActor(new TextButton("button " + i, skin));
-		}
-		h.pack();
+		h.addActor(new TextButton("some taller\nbutton", skin));
+		table = new Table().debug();
+		table.add(h);
+		table.pack();
+		table.setPosition(130, 100);
+		stage.addActor(table);
+		table.toFront();
 
 		final TextButton button = new TextButton("Fancy Background", skin);
 
@@ -117,7 +118,7 @@ public class Scene2dTest extends GdxTest {
 			}
 
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
-				event.getListenerActor().translate(deltaX, deltaY);
+				event.getListenerActor().moveBy(deltaX, deltaY);
 				if (deltaX < 0) System.out.println("panning " + deltaX + ", " + deltaY + " " + event.getTarget());
 			}
 		});

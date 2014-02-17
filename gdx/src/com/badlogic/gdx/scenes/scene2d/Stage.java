@@ -131,8 +131,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * If keepAspectRatio is true, the stage is first scaled to fit the viewport in the longest dimension. Next the shorter
 	 * dimension is lengthened to fill the viewport, which keeps the aspect ratio from changing. The {@link #getGutterWidth()} and
 	 * {@link #getGutterHeight()} provide access to the amount that was lengthened.
-	 * @param viewportX The top left corner of the viewport in glViewport coordinates (the origin is bottom left).
-	 * @param viewportY The top left corner of the viewport in glViewport coordinates (the origin is bottom left).
+	 * @param viewportX The bottom left corner of the viewport in glViewport coordinates.
+	 * @param viewportY The bottom left corner of the viewport in glViewport coordinates.
 	 * @param viewportWidth The width of the viewport in pixels.
 	 * @param viewportHeight The height of the viewport in pixels. */
 	public void setViewport (float stageWidth, float stageHeight, boolean keepAspectRatio, float viewportX, float viewportY,
@@ -255,7 +255,8 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
 		if (screenX < viewportX || screenX >= viewportX + viewportWidth) return false;
-		if (screenY < viewportY || screenY >= viewportY + viewportHeight) return false;
+		if (Gdx.graphics.getHeight() - screenY < viewportY || Gdx.graphics.getHeight() - screenY >= viewportY + viewportHeight)
+			return false;
 
 		pointerTouched[pointer] = true;
 		pointerScreenX[pointer] = screenX;
@@ -356,7 +357,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
 		if (screenX < viewportX || screenX >= viewportX + viewportWidth) return false;
-		if (screenY < viewportY || screenY >= viewportY + viewportHeight) return false;
+		if (Gdx.graphics.getHeight() - screenY < viewportY || Gdx.graphics.getHeight() - screenY >= viewportY + viewportHeight)
+			return false;
 
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;

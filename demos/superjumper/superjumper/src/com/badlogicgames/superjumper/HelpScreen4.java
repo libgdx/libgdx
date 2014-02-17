@@ -50,19 +50,18 @@ public class HelpScreen4 implements Screen {
 		helpRegion = new TextureRegion(helpImage, 0, 0, 320, 480);
 	}
 
-	public void update (float deltaTime) {
+	public void update () {
 		if (Gdx.input.justTouched()) {
 			guiCam.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-			if (OverlapTester.pointInRectangle(nextBounds, touchPoint.x, touchPoint.y)) {
+			if (nextBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
 				game.setScreen(new HelpScreen5(game));
-				return;
 			}
 		}
 	}
 
-	public void draw (float deltaTime) {
+	public void draw () {
 		GLCommon gl = Gdx.gl;
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		guiCam.update();
@@ -83,8 +82,8 @@ public class HelpScreen4 implements Screen {
 
 	@Override
 	public void render (float delta) {
-		update(delta);
-		draw(delta);
+		update();
+		draw();
 	}
 
 	@Override

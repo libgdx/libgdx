@@ -42,8 +42,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -76,6 +74,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	Preloader preloader;
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
+	private Clipboard clipboard;
 
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
@@ -171,6 +170,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.input = this.input;
 		this.net = new GwtNet();
 		Gdx.net = this.net;
+		this.clipboard = new GwtClipboard();
 
 		// tell listener about app creation
 		try {
@@ -400,17 +400,8 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	}
 
 	@Override
-	public Clipboard getClipboard() {
-		return new Clipboard() {
-			@Override
-			public String getContents () {
-				return null;
-			}
-
-			@Override
-			public void setContents (String content) {
-			}			
-		};		
+	public Clipboard getClipboard () {
+		return clipboard;
 	}
 	
 	@Override

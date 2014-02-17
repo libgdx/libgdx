@@ -261,7 +261,7 @@ public class GestureDetector extends InputAdapter {
 		inTapSquare = false;
 	}
 
-	public void setTapSquareSize (int tapSquareSize) {
+	public void setTapSquareSize (float tapSquareSize) {
 		this.tapSquareSize = tapSquareSize;
 	}
 

@@ -33,18 +33,18 @@ import com.badlogic.gdx.utils.Pools;
  * corresponds to the unrotated, unscaled bottom left corner of the actor. The position is relative to the actor's parent. The
  * origin is relative to the position and is used for scale and rotation.
  * <p>
- * An actor has a list of in-progress {@link Action actions} that are applied to the actor (over time). These are generally used to
- * change the presentation of the actor (moving it, resizing it, etc). See {@link #act(float)} and {@link Action}.
+ * An actor has a list of in progress {@link Action actions} that are applied to the actor (often over time). These are generally
+ * used to change the presentation of the actor (moving it, resizing it, etc). See {@link #act(float)}, {@link Action} and its
+ * many subclasses.
  * <p>
  * An actor has two kinds of listeners associated with it: "capture" and regular. The listeners are notified of events the actor
- * or its children receive. The capture listeners are designed to allow a parent or container actor to hide events from child
- * actors. The regular listeners are designed to allow an actor to respond to events that have been delivered. See {@link #fire}
+ * or its children receive. The regular listeners are designed to allow an actor to respond to events that have been delivered.
+ * The capture listeners are designed to allow a parent or container actor to handle events before child actors. See {@link #fire}
  * for more details.
  * <p>
- * An {@link InputListener} can receive all the basic input events, and more complex listeners (like {@link ClickListener} and
- * {@link ActorGestureListener}) can listen for and combine primitive events and recognize complex interactions like multi-click
+ * An {@link InputListener} can receive all the basic input events. More complex listeners (like {@link ClickListener} and
+ * {@link ActorGestureListener}) can listen for and combine primitive events and recognize complex interactions like multi-touch
  * or pinch.
- * 
  * @author mzechner
  * @author Nathan Sweet */
 public class Actor {
@@ -371,7 +371,7 @@ public class Actor {
 		this.y = y;
 	}
 
-	public void translate (float x, float y) {
+	public void moveBy (float x, float y) {
 		this.x += x;
 		this.y += y;
 	}
@@ -420,14 +420,14 @@ public class Actor {
 	}
 
 	/** Adds the specified size to the current size. */
-	public void size (float size) {
+	public void sizeBy (float size) {
 		width += size;
 		height += size;
 		sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
-	public void size (float width, float height) {
+	public void sizeBy (float width, float height) {
 		this.width += width;
 		this.height += height;
 		sizeChanged();
@@ -495,13 +495,13 @@ public class Actor {
 	}
 
 	/** Adds the specified scale to the current scale. */
-	public void scale (float scale) {
+	public void scaleBy (float scale) {
 		scaleX += scale;
 		scaleY += scale;
 	}
 
 	/** Adds the specified scale to the current scale. */
-	public void scale (float scaleX, float scaleY) {
+	public void scaleBy (float scaleX, float scaleY) {
 		this.scaleX += scaleX;
 		this.scaleY += scaleY;
 	}
@@ -515,7 +515,7 @@ public class Actor {
 	}
 
 	/** Adds the specified rotation to the current rotation. */
-	public void rotate (float amountInDegrees) {
+	public void rotateBy (float amountInDegrees) {
 		rotation += amountInDegrees;
 	}
 
@@ -648,10 +648,10 @@ public class Actor {
 			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
 			final float originX = this.originX;
 			final float originY = this.originY;
-			final float tox = localCoords.x - originX;
-			final float toy = localCoords.y - originY;
-			localCoords.x = (tox * cos + toy * sin) * scaleX + originX + x;
-			localCoords.y = (tox * -sin + toy * cos) * scaleY + originY + y;
+			final float tox = (localCoords.x - originX) * scaleX;
+			final float toy = (localCoords.y - originY) * scaleY;
+			localCoords.x = (tox * cos + toy * sin) + originX + x;
+			localCoords.y = (tox * -sin + toy * cos) + originY + y;
 		}
 		return localCoords;
 	}

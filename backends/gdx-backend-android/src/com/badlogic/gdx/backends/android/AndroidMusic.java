@@ -57,21 +57,25 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public boolean isLooping () {
+		if (player == null) return false;
 		return player.isLooping();
 	}
 
 	@Override
 	public boolean isPlaying () {
+		if (player == null) return false;
 		return player.isPlaying();
 	}
 
 	@Override
 	public void pause () {
+		if (player == null) return;
 		if (player.isPlaying()) player.pause();
 	}
 
 	@Override
 	public void play () {
+		if (player == null) return;
 		if (player.isPlaying()) return;
 
 		try {
@@ -89,11 +93,13 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public void setLooping (boolean isLooping) {
+		if (player == null) return;
 		player.setLooping(isLooping);
 	}
 
 	@Override
 	public void setVolume (float volume) {
+		if (player == null) return;
 		player.setVolume(volume, volume);
 		this.volume = volume;
 	}
@@ -105,6 +111,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public void setPan (float pan, float volume) {
+		if (player == null) return;
 		float leftVolume = volume;
 		float rightVolume = volume;
 
@@ -120,6 +127,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public void stop () {
+		if (player == null) return;
 		if (isPrepared) {
 			player.seekTo(0);
 		}
@@ -128,6 +136,7 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	}
 
 	public void setPosition (float position) {
+		if (player == null) return;
 		try {
 			if (!isPrepared) {
 				player.prepare();
@@ -143,10 +152,12 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 
 	@Override
 	public float getPosition () {
+		if (player == null) return 0.0f;
 		return player.getCurrentPosition() / 1000f;
 	}
 
 	public float getDuration () {
+		if (player == null) return 0.0f;
 		return player.getDuration() / 1000f;
 	}
 

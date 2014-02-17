@@ -25,6 +25,8 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.badlogic.gdx.net.NetJavaSocketImpl;
+import com.badlogic.gdx.net.NetJavaServerSocketImpl;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -38,15 +40,20 @@ public class LwjglNet implements Net {
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
+	
+	@Override
+	public void cancelHttpRequest (HttpRequest httpRequest) {
+		netJavaImpl.cancelHttpRequest(httpRequest);
+	}
 
 	@Override
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {
-		return new LwjglServerSocket(protocol, port, hints);
+		return new NetJavaServerSocketImpl(protocol, port, hints);
 	}
 
 	@Override
 	public Socket newClientSocket (Protocol protocol, String host, int port, SocketHints hints) {
-		return new LwjglSocket(protocol, host, port, hints);
+		return new NetJavaSocketImpl(protocol, host, port, hints);
 	}
 
 	@Override

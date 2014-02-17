@@ -24,10 +24,7 @@ public interface IReflectionCache {
 
 	public Type forName (String name);
 
-	public Object newArray (Class componentType, int size);
-
-	// Type methods
-	public Object newInstance (Type type);
+	public Object newArray (Type componentType, int size);
 
 	public int getArrayLength (Type type, Object obj);
 

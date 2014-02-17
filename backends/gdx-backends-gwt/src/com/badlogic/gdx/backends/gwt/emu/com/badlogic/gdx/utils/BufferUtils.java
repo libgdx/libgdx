@@ -45,14 +45,7 @@ public class BufferUtils {
 	 * @param numFloats the number of floats to copy
 	 * @param offset the offset in src to start copying from */
 	public static void copy (float[] src, Buffer dst, int numFloats, int offset) {
-		FloatBuffer floatBuffer = null;
-		if (dst instanceof ByteBuffer) {
-			floatBuffer = ((ByteBuffer)dst).asFloatBuffer();
-		} else if (dst instanceof FloatBuffer) {
-			floatBuffer = (FloatBuffer)dst;
-		} else {
-			throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
-		}
+		FloatBuffer floatBuffer = asFloatBuffer(dst);
 
 		floatBuffer.clear();
 		dst.position(0);
@@ -181,11 +174,7 @@ public class BufferUtils {
 	 * @param dst the destination Buffer, its position is used as an offset.
 	 * @param numElements the number of elements to copy. */
 	public static void copy (float[] src, int srcOffset, Buffer dst, int numElements) {
-		FloatBuffer buffer = null;
-		if (dst instanceof ByteBuffer)
-			buffer = ((ByteBuffer)dst).asFloatBuffer();
-		else if (dst instanceof FloatBuffer) buffer = (FloatBuffer)dst;
-		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
+		FloatBuffer buffer = asFloatBuffer(dst);
 
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
@@ -284,12 +273,7 @@ public class BufferUtils {
 	 * @param numElements the number of elements to copy.
 	 * @param dst the destination Buffer, its position is used as an offset. */
 	public static void copy (float[] src, int srcOffset, int numElements, Buffer dst) {
-		FloatBuffer buffer = null;
-		if (dst instanceof ByteBuffer)
-			buffer = ((ByteBuffer)dst).asFloatBuffer();
-		else if (dst instanceof FloatBuffer) buffer = (FloatBuffer)dst;
-		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
-
+		FloatBuffer buffer = asFloatBuffer(dst);
 		int oldPosition = buffer.position();
 		buffer.put(src, srcOffset, numElements);
 		buffer.position(oldPosition);
@@ -330,6 +314,23 @@ public class BufferUtils {
 // dst.limit(dst.position() + bytesToElements(dst, numBytes));
 // }
 	
+	private final static FloatBuffer asFloatBuffer(final Buffer data) {
+		FloatBuffer buffer = null;
+		if (data instanceof ByteBuffer)
+			buffer = ((ByteBuffer)data).asFloatBuffer();
+		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
+		if (buffer == null) throw new GdxRuntimeException("data must be a ByteBuffer or FloatBuffer");
+		return buffer;
+	}
+	
+	private final static float[] asFloatArray(final FloatBuffer buffer) {
+		final int pos = buffer.position();
+		final float[] result = new float[buffer.remaining()];
+		buffer.get(result);
+		buffer.position(pos);
+		return result;
+	}
+	
 	/** Multiply float vector components within the buffer with the specified matrix. The {@link Buffer#position()} is used as
 	 * the offset.
 	 * @param data The buffer to transform.
@@ -338,16 +339,10 @@ public class BufferUtils {
 	 * @param count The number of vectors to transform
 	 * @param matrix The matrix to multiply the vector with */
 	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix4 matrix) {
-		FloatBuffer buffer = null;
-		if (data instanceof ByteBuffer)
-			buffer = ((ByteBuffer)data).asFloatBuffer();
-		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
-		if (buffer == null) throw new GdxRuntimeException("data must be a ByteBuffer or FloatBuffer");
-		// FIXME untested code:
-		int pos = buffer.position();
-		float[] arr = new float[buffer.remaining()];
-		buffer.get(arr);
-		int idx = buffer.position();
+		FloatBuffer buffer = asFloatBuffer(data);
+		final int pos = buffer.position();
+		int idx = pos;
+		float[] arr = asFloatArray(buffer);
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
 		for (int i = 0; i < count; i++) {
@@ -364,7 +359,6 @@ public class BufferUtils {
 					arr[idx+3] = x * m[ 3] + y * m[ 7] + z * m[11] + w * m[15];
 			}
 		}
-		buffer.position(pos);
 		buffer.put(arr);
 		buffer.position(pos);
 	}
@@ -377,16 +371,11 @@ public class BufferUtils {
 	 * @param count The number of vectors to transform
 	 * @param matrix The matrix to multiply the vector with */
 	public static void transform (Buffer data, int dimensions, int strideInBytes, int count, Matrix3 matrix) {
-		FloatBuffer buffer = null;
-		if (data instanceof ByteBuffer)
-			buffer = ((ByteBuffer)data).asFloatBuffer();
-		else if (data instanceof FloatBuffer) buffer = (FloatBuffer)data;
-		if (buffer == null) throw new GdxRuntimeException("dst must be a ByteBuffer or FloatBuffer");
+		FloatBuffer buffer = asFloatBuffer(data);
 		// FIXME untested code:
-		int pos = buffer.position();
-		float[] arr = new float[buffer.remaining()];
-		buffer.get(arr);
-		int idx = buffer.position();
+		final int pos = buffer.position();
+		int idx = pos;
+		float[] arr = asFloatArray(buffer);
 		int stride = strideInBytes / 4;
 		float[] m = matrix.val;
 		for (int i = 0; i < count; i++) {
@@ -399,11 +388,62 @@ public class BufferUtils {
 			if (dimensions >= 3)
 				arr[idx+2] = x * m[ 2] + y * m[ 5] + z * m[8];
 		}
-		buffer.position(pos);
 		buffer.put(arr);
 		buffer.position(pos);
 	}
 
+	public static long findFloats(Buffer vertex, int strideInBytes, Buffer vertices, int numVertices) {
+		return findFloats(asFloatArray(asFloatBuffer(vertex)), strideInBytes, asFloatArray(asFloatBuffer(vertices)), numVertices);
+	}
+
+	public static long findFloats(float[] vertex, int strideInBytes, Buffer vertices, int numVertices) {
+		return findFloats(vertex, strideInBytes, asFloatArray(asFloatBuffer(vertices)), numVertices);
+	}
+	
+	public static long findFloats(Buffer vertex, int strideInBytes, float[] vertices, int numVertices) {
+		return findFloats(asFloatArray(asFloatBuffer(vertex)), strideInBytes, vertices, numVertices);
+	}
+	
+	public static long findFloats(float[] vertex, int strideInBytes, float[] vertices, int numVertices) {
+		final int size = strideInBytes / 4;
+		for (int i = 0; i < numVertices; i++) {
+			final int offset = i * size;
+			boolean found = true;
+			for (int j = 0; !found && j < size; j++)
+				if (vertices[offset+j] != vertex[j])
+					found = false;
+			if (found)
+				return (long)i;
+		}
+		return -1;
+	}
+	
+	public static long findFloats(Buffer vertex, int strideInBytes, Buffer vertices, int numVertices, float epsilon) {
+		return findFloats(asFloatArray(asFloatBuffer(vertex)), strideInBytes, asFloatArray(asFloatBuffer(vertices)), numVertices, epsilon);
+	}
+
+	public static long findFloats(float[] vertex, int strideInBytes, Buffer vertices, int numVertices, float epsilon) {
+		return findFloats(vertex, strideInBytes, asFloatArray(asFloatBuffer(vertices)), numVertices, epsilon);
+	}
+	
+	public static long findFloats(Buffer vertex, int strideInBytes, float[] vertices, int numVertices, float epsilon) {
+		return findFloats(asFloatArray(asFloatBuffer(vertex)), strideInBytes, vertices, numVertices, epsilon);
+	}
+	
+	public static long findFloats(float[] vertex, int strideInBytes, float[] vertices, int numVertices, float epsilon) {
+		final int size = strideInBytes / 4;
+		for (int i = 0; i < numVertices; i++) {
+			final int offset = i * size;
+			boolean found = true;
+			for (int j = 0; !found && j < size; j++)
+				if ((vertices[offset+j] > vertex[j] ? vertices[offset+j] - vertex[j] : vertex[j] - vertices[offset+j]) > epsilon)
+					found = false;
+			if (found)
+				return (long)i;
+		}
+		return -1;
+	}
+	
 	public static FloatBuffer newFloatBuffer (int numFloats) {
 		if (GWT.isProdMode()) {
 			ByteBuffer buffer = ByteBuffer.allocateDirect(numFloats * 4);

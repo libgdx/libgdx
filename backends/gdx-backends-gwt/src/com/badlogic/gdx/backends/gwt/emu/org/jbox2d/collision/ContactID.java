@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -75,7 +75,7 @@ public class ContactID implements Comparable<ContactID> {
 
 	public void set (final ContactID c) {
 		indexA = c.indexA;
-		indexB = c.indexA;
+		indexB = c.indexB;
 		typeA = c.typeA;
 		typeB = c.typeB;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -26,7 +26,6 @@ package org.jbox2d.dynamics.joints;
 
 import org.jbox2d.dynamics.Body;
 
-//updated to rev 100
 /** Joint definitions are used to construct joints.
  * @author Daniel Murphy */
 public class JointDef {

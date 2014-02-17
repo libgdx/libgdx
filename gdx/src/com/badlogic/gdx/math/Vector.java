@@ -92,5 +92,60 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T lerp (T target, float alpha);
 
+	/** @return Whether this vector is a unit length vector */
+	public boolean isUnit ();
+
+	/** @return Whether this vector is a unit length vector within the given margin. */
+	public boolean isUnit(final float margin);
+
+	/** @return Whether this vector is a zero vector */
+	public boolean isZero ();
+
+	/** @return Whether the length of this vector is smaller than the given margin */
+	public boolean isZero (final float margin);
+
+	/** @return Whether this vector is collinear with the given vector.
+	 * The vectors need to be normalized for this to work.
+	 * True if the normalized dot product is 1.
+	 * @param vector the vector to check
+	 * @param epsilon a positive small number close to zero */
+	public boolean isCollinear(T vector, float epsilon);
+	
+	/** @return Whether this vector is collinear with the given vector.
+	 * The vectors need to be normalized for this to work.
+	 * True if the normalized dot product is 1.
+	 * @param vector the vector to check */
+	public boolean isCollinear(T vector);
+	
+	/** @return Whether this vector is collinear with the given vector but has opposite direction.
+	 * True if the normalized dot product is -1.
+	 * The vectors need to be normalized for this to work.
+	 * @param vector the vector to check
+	 * @param epsilon a positive small number close to zero */
+	public boolean isCollinearOpposite(T vector, float epsilon);
+	
+	/** @return Whether this vector is collinear with the given vector but has opposite direction.
+	 * True if the normalized dot product is -1.
+	 * The vectors need to be normalized for this to work.
+	 * @param vector the vector to check */
+	public boolean isCollinearOpposite(T vector);
+	
+	/** @return Whether this vector is perpendicular with the given vector.
+	 * True if the dot product is 0.*/
+	public boolean isPerpendicular(T vector);
+	
+	/** @return Whether this vector is perpendicular with the given vector.
+	 * True if the dot product is 0.
+	 * @param epsilon a positive small number close to zero */
+	public boolean isPerpendicular(T vector, float epsilon);
+	
+	/** @return Whether this vector has similar direction compared to the given vector.
+	 * True if the normalized dot product is > 0.*/
+	public boolean hasSameDirection(T vector);
+
+	/** @return Whether this vector has opposite direction compared to the given vector.
+	 * True if the normalized dot product is < 0.*/
+	public boolean hasOppositeDirection(T vector);
+	
 	// TODO: T crs(T v);
 }

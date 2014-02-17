@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, Daniel Murphy
+ * Copyright (c) 2013, Daniel Murphy
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -32,8 +32,8 @@ import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.MathUtils;
 import org.jbox2d.common.Rot;
 import org.jbox2d.common.Settings;
-import org.jbox2d.common.Transform;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.common.Transform;
 
 // updated to rev 100
 /** This is non-static for faster pooling. To get an instance, use the {@link SingletonPool}, don't construct a distance object.

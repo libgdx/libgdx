@@ -359,6 +359,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			
 			notifyPreviewState();
 			notifyOffsetsChanged();
+			if (!Gdx.graphics.isContinuousRendering()) {
+				Gdx.graphics.requestRendering();
+			}
 		}
 		
 		
@@ -479,6 +482,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 				notifyPreviewState();
 				notifyOffsetsChanged();
+				if (!Gdx.graphics.isContinuousRendering()) {
+					Gdx.graphics.requestRendering();
+				}
 			}
 		}
 		
@@ -599,6 +605,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			
 			// can fail if linkedApp == null, so we repeat it in Engine.onResume
 			notifyOffsetsChanged();
+			if (!Gdx.graphics.isContinuousRendering()) {
+				Gdx.graphics.requestRendering();
+			}
 			
 			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
 		}

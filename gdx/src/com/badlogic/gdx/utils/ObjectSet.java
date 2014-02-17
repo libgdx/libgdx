@@ -76,6 +76,14 @@ public class ObjectSet<T> implements Iterable<T> {
 		keyTable = (T[])new Object[capacity + stashCapacity];
 	}
 
+	/** Creates a new set identical to the specified set. */
+	public ObjectSet (ObjectSet set) {
+		this(set.capacity, set.loadFactor);
+		stashSize = set.stashSize;
+		System.arraycopy(set.keyTable, 0, keyTable, 0, set.keyTable.length);
+		size = set.size;
+	}
+
 	/** Returns true if the key was not already in the set. */
 	public boolean add (T key) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
@@ -463,6 +471,8 @@ public class ObjectSet<T> implements Iterable<T> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			if (currentIndex >= set.capacity) {
 				set.removeStashIndex(currentIndex);
+				nextIndex = currentIndex;
+				findNextIndex();
 			} else {
 				set.keyTable[currentIndex] = null;
 			}

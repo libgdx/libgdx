@@ -68,8 +68,8 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		JsonValue json = reader.parse(handle);
 		ModelData model = new ModelData();
 		JsonValue version = json.require("version");
-		model.version[0] = (short)version.getInt(0);
-		model.version[1] = (short)version.getInt(1);
+		model.version[0] = version.getShort(0);
+		model.version[1] = version.getShort(1);
 		if (model.version[0] != VERSION_HI || model.version[1] != VERSION_LO)
 			throw new GdxRuntimeException("Model version not supported");
 
@@ -85,7 +85,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		JsonValue meshes = json.require("meshes");
 		
 		model.meshes.ensureCapacity(meshes.size);
-		for (JsonValue mesh = meshes.child(); mesh != null; mesh = mesh.next()) {
+		for (JsonValue mesh = meshes.child; mesh != null; mesh = mesh.next) {
 			ModelMesh jsonMesh = new ModelMesh();
 			
 			String id = mesh.getString("id", "");
@@ -93,18 +93,11 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			
 			JsonValue attributes = mesh.require("attributes");
 			jsonMesh.attributes = parseAttributes(attributes);
-			
-			JsonValue vertices = mesh.require("vertices");
-			float[] verts = new float[vertices.size];
-			int j = 0;
-			for (JsonValue value = vertices.child(); value != null; value = value.next(), j++) {
-				verts[j] = value.asFloat();
-			}
-			jsonMesh.vertices = verts;
-			
+			jsonMesh.vertices = mesh.require("vertices").asFloatArray();
+
 			JsonValue meshParts = mesh.require("parts");
 			Array<ModelMeshPart> parts = new Array<ModelMeshPart>();
-			for (JsonValue meshPart = meshParts.child(); meshPart != null; meshPart = meshPart.next()) {
+			for (JsonValue meshPart = meshParts.child; meshPart != null; meshPart = meshPart.next) {
 				ModelMeshPart jsonPart = new ModelMeshPart();
 				String partId = meshPart.getString("id", null);
 				if(id == null) {
@@ -122,14 +115,8 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 					throw new GdxRuntimeException("No primitive type given for mesh part '" + partId + "'");
 				}
 				jsonPart.primitiveType = parseType(type);
-				
-				JsonValue indices = meshPart.require("indices");
-				short[] partIndices = new short[indices.size];
-				int k = 0;
-				for (JsonValue value = indices.child(); value != null; value = value.next(), k++) {
-					partIndices[k] = (short)value.asInt();
-				}
-				jsonPart.indices = partIndices;
+
+				jsonPart.indices = meshPart.require("indices").asShortArray();
 				parts.add(jsonPart);
 			}
 			jsonMesh.parts = parts.toArray(ModelMeshPart.class);
@@ -157,7 +144,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		Array<VertexAttribute> vertexAttributes = new Array<VertexAttribute>();
 		int unit = 0;
 		int blendWeightCount = 0;
-		for (JsonValue value = attributes.child(); value != null; value = value.next()) {
+		for (JsonValue value = attributes.child; value != null; value = value.next) {
 			String attribute = value.asString();
 			String attr = (String)attribute;
 			if(attr.equals("POSITION")) {
@@ -190,7 +177,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		}
 		else {
 			model.materials.ensureCapacity(materials.size);
-			for (JsonValue material = materials.child(); material != null; material = material.next()) {
+			for (JsonValue material = materials.child; material != null; material = material.next) {
 				ModelMaterial jsonMaterial = new ModelMaterial();
 				
 				String id = material.getString("id", null);
@@ -223,7 +210,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				// Read textures
 				JsonValue textures = material.get("textures");
 				if(textures != null){
-					for (JsonValue texture = textures.child(); texture != null; texture = texture.next()) {
+					for (JsonValue texture = textures.child; texture != null; texture = texture.next) {
 						ModelTexture jsonTexture = new ModelTexture();
 						
 						String textureId = texture.getString("id", null);
@@ -303,7 +290,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		}
 		
 		model.nodes.ensureCapacity(nodes.size);
-		for (JsonValue node = nodes.child(); node != null; node = node.next()) {
+		for (JsonValue node = nodes.child; node != null; node = node.next) {
 			model.nodes.add(parseNodesRecursively(node));
 		}
 		return model.nodes;
@@ -341,7 +328,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		if(materials != null){
 			jsonNode.parts = new ModelNodePart[materials.size];
 			int i = 0;
-			for (JsonValue material = materials.child(); material != null; material = material.next(), i++) {
+			for (JsonValue material = materials.child; material != null; material = material.next, i++) {
 				ModelNodePart nodePart = new ModelNodePart();
 				
 				String meshPartId = material.getString("meshpartid", null);
@@ -356,7 +343,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				if (bones != null) {
 					nodePart.bones = new ArrayMap<String, Matrix4>(true, bones.size, String.class, Matrix4.class);
 					int j = 0;
-					for (JsonValue bone = bones.child(); bone != null; bone = bone.next(), j++) {
+					for (JsonValue bone = bones.child; bone != null; bone = bone.next, j++) {
 						String nodeId = bone.getString("node", null);
 						if (nodeId == null)
 							throw new GdxRuntimeException("Bone node ID missing");
@@ -388,7 +375,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			jsonNode.children = new ModelNode[children.size];
 
 			int i = 0;
-			for (JsonValue child = children.child(); child != null; child = child.next(), i++) {
+			for (JsonValue child = children.child; child != null; child = child.next, i++) {
 				jsonNode.children[i] = parseNodesRecursively(child);
 			}
 		}
@@ -403,7 +390,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 		
 		model.animations.ensureCapacity(animations.size);
 		
-		for (JsonValue anim = animations.child(); anim != null; anim = anim.next()) {
+		for (JsonValue anim = animations.child; anim != null; anim = anim.next) {
 			JsonValue nodes = anim.get("bones");
 			if (nodes == null)
 				continue;
@@ -411,7 +398,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 			model.animations.add(animation);
 			animation.nodeAnimations.ensureCapacity(nodes.size);
 			animation.id = anim.getString("id");
-			for (JsonValue node = nodes.child(); node != null; node = node.next()) {
+			for (JsonValue node = nodes.child; node != null; node = node.next) {
 				JsonValue keyframes = node.get("keyframes");
 
 				ModelNodeAnimation nodeAnim = new ModelNodeAnimation();
@@ -419,7 +406,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 				nodeAnim.nodeId = node.getString("boneId");
 				nodeAnim.keyframes.ensureCapacity(keyframes.size);
 
-				for (JsonValue keyframe = keyframes.child(); keyframe != null; keyframe = keyframe.next()) {
+				for (JsonValue keyframe = keyframes.child; keyframe != null; keyframe = keyframe.next) {
 					ModelNodeKeyframe kf = new ModelNodeKeyframe();
 					nodeAnim.keyframes.add(kf);
 					kf.keytime = keyframe.getFloat("keytime") / 1000.f;

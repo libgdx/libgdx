@@ -121,7 +121,9 @@ public final class Intersector {
 		return oddNodes;
 	}
 
-	/** Returns true if the specified point is in the polygon. */
+	/** Returns true if the specified point is in the polygon.
+	 * @param offset Starting polygon index.
+	 * @param count Number of array indices to use after offset. */
 	public static boolean isPointInPolygon (float[] polygon, int offset, int count, float x, float y) {
 		boolean oddNodes = false;
 		int j = offset + count - 2;

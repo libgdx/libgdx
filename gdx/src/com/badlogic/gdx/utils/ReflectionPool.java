@@ -16,48 +16,50 @@
 
 package com.badlogic.gdx.utils;
 
-import java.lang.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.Constructor;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /** Pool that creates new instances of a type using reflection. The type must have a zero argument constructor.
  * {@link Constructor#setAccessible(boolean)} will be used if the class and/or constructor is not visible.
  * @author Nathan Sweet */
 public class ReflectionPool<T> extends Pool<T> {
-	private final Class<T> type;
+	private final Constructor constructor;
 
 	public ReflectionPool (Class<T> type) {
-		this.type = type;
+		this(type, 16, Integer.MAX_VALUE);
+	}
+
+	public ReflectionPool (Class<T> type, int initialCapacity) {
+		this(type, initialCapacity, Integer.MAX_VALUE);
 	}
 
 	public ReflectionPool (Class<T> type, int initialCapacity, int max) {
 		super(initialCapacity, max);
-		this.type = type;
+		constructor = findConstructor(type);
+		if (constructor == null)
+			throw new RuntimeException("Class cannot be created (missing no-arg constructor): " + type.getName());
 	}
 
-	public ReflectionPool (Class<T> type, int initialCapacity) {
-		super(initialCapacity);
-		this.type = type;
+	private Constructor findConstructor (Class<T> type) {
+		try {
+			return ClassReflection.getConstructor(type, (Class[])null);
+		} catch (Exception ex1) {
+			try {
+				Constructor constructor = ClassReflection.getDeclaredConstructor(type, (Class[])null);
+				constructor.setAccessible(true);
+				return constructor;
+			} catch (ReflectionException ex2) {
+				return null;
+			}
+		}
 	}
 
 	protected T newObject () {
 		try {
-			return type.newInstance();
+			return (T)constructor.newInstance((Object[])null);
 		} catch (Exception ex) {
-			Constructor ctor;
-			try {
-				ctor = type.getConstructor((Class[])null);
-			} catch (Exception ex2) {
-				try {
-					ctor = type.getDeclaredConstructor((Class[])null);
-					ctor.setAccessible(true);
-				} catch (NoSuchMethodException ex3) {
-					throw new RuntimeException("Class cannot be created (missing no-arg constructor): " + type.getName());
-				}
-			}
-			try {
-				return (T)ctor.newInstance();
-			} catch (Exception ex3) {
-				throw new GdxRuntimeException("Unable to create new instance: " + type.getName(), ex);
-			}
+			throw new GdxRuntimeException("Unable to create new instance: " + constructor.getDeclaringClass().getName(), ex);
 		}
 	}
 }

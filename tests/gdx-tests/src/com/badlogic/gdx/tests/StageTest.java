@@ -167,7 +167,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		int len = actors.size;
 		if (rotateSprites) {
 			for (int i = 0; i < len; i++)
-				actors.get(i).rotate(Gdx.graphics.getDeltaTime() * 10);
+				actors.get(i).rotateBy(Gdx.graphics.getDeltaTime() * 10);
 		}
 
 		scale += vScale * Gdx.graphics.getDeltaTime();
@@ -184,7 +184,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		for (int i = 0; i < len; i++) {
 			Image img = images.get(i);
 			if (rotateSprites)
-				img.rotate(-40 * Gdx.graphics.getDeltaTime());
+				img.rotateBy(-40 * Gdx.graphics.getDeltaTime());
 			else
 				img.setRotation(0);
 

@@ -201,7 +201,7 @@ public class Array<T> implements Iterable<T> {
 		return -1;
 	}
 
-	/** Removes value from an array if it exists.
+	/** Removes the first instance of the specified value in the array.
 	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used.
 	 * @return true if value was found and removed, false otherwise */
 	public boolean removeValue (T value, boolean identity) {
@@ -331,12 +331,12 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Sorts the array. This method is not thread safe (uses {@link Sort#instance()}). */
-	public void sort (Comparator<T> comparator) {
+	public void sort (Comparator<? super T> comparator) {
 		Sort.instance().sort(items, comparator, 0, size);
 	}
 
-	/** Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array.
-	 * The array must have a size greater than 0, or a {@link com.badlogic.gdx.utils.GdxRuntimeException} will be thrown.
+	/** Selects the nth-lowest element from the Array according to Comparator ranking. This might partially sort the Array. The
+	 * array must have a size greater than 0, or a {@link com.badlogic.gdx.utils.GdxRuntimeException} will be thrown.
 	 * @see Select
 	 * @param comparator used for comparison
 	 * @param kthLowest rank of desired object according to comparison, n is based on ordinal numbers, not array indices. for min
@@ -466,6 +466,16 @@ public class Array<T> implements Iterable<T> {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #Array(Class) */
+	static public <T> Array<T> of (Class<T> arrayType) {
+		return new Array<T>(arrayType);
+	}
+
+	/** @see #Array(boolean, int, Class) */
+	static public <T> Array<T> of (boolean ordered, int capacity, Class<T> arrayType) {
+		return new Array<T>(ordered, capacity, arrayType);
 	}
 
 	static public class ArrayIterator<T> implements Iterator<T>, Iterable<T> {

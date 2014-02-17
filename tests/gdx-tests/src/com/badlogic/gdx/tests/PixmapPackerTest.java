@@ -60,7 +60,7 @@ public class PixmapPackerTest extends GdxTest {
 		pixmap3.dispose();
 
 		atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest, false);
-		Gdx.app.log("PixmaPackerTest", "Number of textures: " + atlas.getTextures().size());
+		Gdx.app.log("PixmaPackerTest", "Number of textures: " + atlas.getTextures().size);
 	}
 
 	@Override
