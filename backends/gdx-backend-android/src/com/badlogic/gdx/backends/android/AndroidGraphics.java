@@ -533,15 +533,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (ldestroy) {
-			Array<LifecycleListener> listeners = ((AndroidApplication)app).lifecycleListeners;
+			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized (listeners) {
 				for (LifecycleListener listener : listeners) {
 					listener.dispose();
 				}
 			}
-			app.getApplicationListener().dispose();
-			((AndroidApplication)app).audio.dispose();
-			((AndroidApplication)app).audio = null;
+			((AndroidApplicationBase)app).getApplicationListener().dispose();
+			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).dispose();
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
