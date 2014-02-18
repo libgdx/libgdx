@@ -20,6 +20,7 @@ import java.awt.Desktop;
 import java.awt.GraphicsEnvironment;
 import java.awt.Desktop.Action;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
@@ -62,11 +63,9 @@ public class HeadlessNet implements Net {
 				}
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
+			Gdx.app.error("HeadlessNet", "Failed to open URI. ", t);
 			return;
 		}
-		// don't throw the exception, don't want to kill the app, just let the headless app know it can't open URIs
-		Exception e = new GdxRuntimeException("ERROR: cannot open URI on a headless application");
-		e.printStackTrace();
+		Gdx.app.error("HeadlessNet", "Opening URIs on this environment is not supported. Ignoring.");
 	}
 }
