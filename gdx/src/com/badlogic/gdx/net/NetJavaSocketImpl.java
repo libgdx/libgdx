@@ -68,6 +68,7 @@ public class NetJavaSocketImpl implements Socket {
 				socket.setSendBufferSize(hints.sendBufferSize);
 				socket.setReceiveBufferSize(hints.receiveBufferSize);
 				socket.setSoLinger(hints.linger, hints.lingerDuration);
+				socket.setSoTimeout(hints.socketTimeout);
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Error setting socket hints.", e);
 			}
