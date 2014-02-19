@@ -20,8 +20,6 @@ import java.util.Collection;
 
 public interface IReflectionCache {
 	// Class level methods
-	public Collection<Type> getKnownTypes ();
-
 	public Type forName (String name);
 
 	public Object newArray (Type componentType, int size);
