@@ -91,13 +91,14 @@ public class AndroidLiveWallpaper implements Application {
 			: config.resolutionStrategy);
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
-// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
+		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
 		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
 		// input = new AndroidInput(this, this.getService(), null, config);
 
 		audio = new AndroidAudio(this.getService(), config);
 
 		// added initialization of android local storage: /data/data/<app package>/files/
+		this.getService().getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
 
 		this.listener = listener;
