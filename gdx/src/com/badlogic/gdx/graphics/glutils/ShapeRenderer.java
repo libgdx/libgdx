@@ -863,7 +863,7 @@ public class ShapeRenderer {
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 
-		float angle = 2 * 3.1415926f / segments;
+		float angle = 2 * 3.1415927f / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
@@ -921,7 +921,7 @@ public class ShapeRenderer {
 		checkDirty();
 		checkFlush(segments * 3);
 
-		float angle = 2 * 3.1415926f / segments;
+		float angle = 2 * 3.1415927f / segments;
 
 		float cx = x + width / 2, cy = y + height / 2;
 		if (currType == ShapeType.Line) {
@@ -960,7 +960,7 @@ public class ShapeRenderer {
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(segments * 4 + 2);
-		float angle = 2 * 3.1415926f / segments;
+		float angle = 2 * 3.1415927f / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
