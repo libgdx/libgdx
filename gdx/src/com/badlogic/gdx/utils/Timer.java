@@ -185,6 +185,11 @@ public class Timer {
 		public boolean isScheduled () {
 			return repeatCount != CANCELLED;
 		}
+		
+		/** Returns the time when this task will be executed in milliseconds*/
+		public long getExecuteTimeMillis(){
+			return executeTimeMillis;
+		}
 	}
 
 	/** Manages the single timer thread. Stops thread on libgdx application pause and dispose, starts thread on resume.

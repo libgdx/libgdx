@@ -25,7 +25,8 @@
 - scene2d.ui, renamed Actor methods translate, rotate, scale, size to moveBy, rotateBy, scaleBy, sizeBy. May have conflicts with Actions static import, eg you'll need to use "Actions.moveBy"
 - scene2d.ui, Table background is now drawn usign the table's transform
 - scene2d.ui, added Container which is similar to a Table with one cell, but more lightweight
-- Adds texture filters and mip map generation to BitMapFontLoader and FreeTypeFontGenerator
+- Added texture filters and mip map generation to BitMapFontLoader and FreeTypeFontGenerator
+- scene2d.ui, VerticalGroup and HorizontalGroup got pad, fill and an API similar to Table/Container
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop

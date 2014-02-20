@@ -149,6 +149,10 @@ public class BaseAnimationController {
 	private final static Transform tmpT = new Transform();
 	/** Helper method to apply one animation to either an objectmap for blending or directly to the bones. */
 	protected static void applyAnimation(final ObjectMap<Node, Transform> out, final Pool<Transform> pool, final float alpha, final Animation animation, final float time) {
+		if (out != null) {
+			for (final Node node : out.keys())
+				node.isAnimated = false;
+		}
 		for (final NodeAnimation nodeAnim : animation.nodeAnimations) {
 			final Node node = nodeAnim.node;
 			node.isAnimated = true;
@@ -176,13 +180,25 @@ public class BaseAnimationController {
 			if (out == null)
 				transform.toMatrix4(node.localTransform);
 			else {
-				if (out.containsKey(node)) {
-					if (alpha == 1.f)
-						out.get(node).set(transform);
+				Transform t = out.get(node, null);
+				if (t != null) {
+					if (alpha > 0.999999f)
+						t.set(transform);
 					else
-						out.get(node).lerp(transform, alpha);
+						t.lerp(transform, alpha);
 				} else {
-					out.put(node, pool.obtain().set(transform));
+					if (alpha > 0.999999f)
+						out.put(node, pool.obtain().set(transform));
+					else
+						out.put(node, pool.obtain().set(node.translation, node.rotation, node.scale).lerp(transform, alpha));
+				}
+			}
+		}
+		if (out != null) {
+			for (final ObjectMap.Entry<Node, Transform> e : out.entries()) {
+				if (!e.key.isAnimated) {
+					e.key.isAnimated = true;
+					e.value.lerp(e.key.translation, e.key.rotation, e.key.scale, alpha);
 				}
 			}
 		}

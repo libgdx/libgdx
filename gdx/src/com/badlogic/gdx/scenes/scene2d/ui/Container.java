@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
- * {@link Table} with a single cell.
+ * {@link Table} with a single cell but is more lightweight.
  * @author Nathan Sweet */
 public class Container extends WidgetGroup {
 	private Actor widget;
@@ -380,41 +380,41 @@ public class Container extends WidgetGroup {
 		return this;
 	}
 
-	/** Sets the alignment of the widget within the cell. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
+	/** Sets the alignment of the widget within the container. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
 	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
 	public Container align (int align) {
 		this.align = align;
 		return this;
 	}
 
-	/** Sets the alignment of the widget within the cell to {@link Align#center}. This clears any other alignment. */
+	/** Sets the alignment of the widget within the container to {@link Align#center}. This clears any other alignment. */
 	public Container center () {
 		align = Align.center;
 		return this;
 	}
 
-	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the widget within the container. */
 	public Container top () {
 		align |= Align.top;
 		align &= ~Align.bottom;
 		return this;
 	}
 
-	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the widget within the container. */
 	public Container left () {
 		align |= Align.left;
 		align &= ~Align.right;
 		return this;
 	}
 
-	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the widget within the container. */
 	public Container bottom () {
 		align |= Align.bottom;
 		align &= ~Align.top;
 		return this;
 	}
 
-	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the widget within the container. */
 	public Container right () {
 		align |= Align.right;
 		align &= ~Align.left;
@@ -497,17 +497,14 @@ public class Container extends WidgetGroup {
 		return padRight;
 	}
 
-	/** @return May be null if this value is not set. */
 	public float getFillX () {
 		return fillX;
 	}
 
-	/** @return May be null. */
 	public float getFillY () {
 		return fillY;
 	}
 
-	/** @return May be null. */
 	public int getAlign () {
 		return align;
 	}
