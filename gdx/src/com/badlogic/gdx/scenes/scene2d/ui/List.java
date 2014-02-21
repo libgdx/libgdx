@@ -114,15 +114,23 @@ public class List extends Widget implements Cullable {
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
-		float x = getX();
-		float y = getY();
+		float x = getX(), y = getY(), width = getWidth(), height = getHeight();
+		float itemY = height;
+
+		Drawable background = style.background;
+		if (background != null) {
+			background.draw(batch, x, y, width, height);
+			float leftWidth = background.getLeftWidth();
+			x += leftWidth;
+			itemY -= background.getTopHeight();
+			width -= leftWidth + background.getRightWidth();
+		}
 
 		font.setColor(fontColorUnselected.r, fontColorUnselected.g, fontColorUnselected.b, fontColorUnselected.a * parentAlpha);
-		float itemY = getHeight();
 		for (int i = 0; i < items.length; i++) {
 			if (cullingArea == null || (itemY - itemHeight <= cullingArea.y + cullingArea.height && itemY >= cullingArea.y)) {
 				if (selectedIndex == i) {
-					selectedDrawable.draw(batch, x, y + itemY - itemHeight, getWidth(), itemHeight);
+					selectedDrawable.draw(batch, x, y + itemY - itemHeight, width, itemHeight);
 					font.setColor(fontColorSelected.r, fontColorSelected.g, fontColorSelected.b, fontColorSelected.a * parentAlpha);
 				}
 				font.draw(batch, items[i], x + textOffsetX, y + itemY - textOffsetY);
@@ -197,6 +205,12 @@ public class List extends Widget implements Cullable {
 		prefWidth += selectedDrawable.getLeftWidth() + selectedDrawable.getRightWidth();
 		prefHeight = items.length * itemHeight;
 
+		Drawable background = style.background;
+		if (background != null) {
+			prefWidth += background.getLeftWidth() + background.getRightWidth();
+			prefHeight += background.getTopHeight() + background.getBottomHeight();
+		}
+
 		invalidateHierarchy();
 	}
 
@@ -228,6 +242,8 @@ public class List extends Widget implements Cullable {
 		public Color fontColorSelected = new Color(1, 1, 1, 1);
 		public Color fontColorUnselected = new Color(1, 1, 1, 1);
 		public Drawable selection;
+		/** Optional. */
+		public Drawable background;
 
 		public ListStyle () {
 		}
