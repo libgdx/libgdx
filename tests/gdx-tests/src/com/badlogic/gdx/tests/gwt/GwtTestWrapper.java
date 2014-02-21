@@ -94,6 +94,7 @@ import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextButtonTestGL2;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
@@ -677,6 +678,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TiledMapAtlasAssetManagerTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TimeUtilsTest();
 			}
 		}};
 

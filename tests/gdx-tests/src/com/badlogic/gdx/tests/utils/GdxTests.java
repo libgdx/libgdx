@@ -222,6 +222,7 @@ public class GdxTests {
 		TiledMapAtlasAssetManagerTest.class,
 		TiledMapBench.class,
 		TimerTest.class,
+		TimeUtilsTest.class,
 		TouchpadTest.class,
 		TreeTest.class,
 		UISimpleTest.class,
