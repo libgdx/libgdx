@@ -51,8 +51,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
 
-import java.lang.reflect.Method;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -109,19 +107,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private void setPreserveContext (View view) {
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) {
-			try {
-				Method method = null;
-				for (Method m : view.getClass().getMethods()) {
-					if (m.getName().equals("setPreserveEGLContextOnPause")) {
-						method = m;
-						break;
-					}
-				}
-				if (method != null) {
-					method.invoke((GLSurfaceView20)view, true);
-				}
-			} catch (Exception e) {
-			}
+			((GLSurfaceView20) view).setPreserveEGLContextOnPause(true);
 		}
 	}
 

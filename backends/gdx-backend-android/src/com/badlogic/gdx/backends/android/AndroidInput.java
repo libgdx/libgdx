@@ -153,11 +153,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		this.app = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
-		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion >= 5)
-			touchHandler = new AndroidMultiTouchHandler();
-		else
-			touchHandler = new AndroidSingleTouchHandler();
+		touchHandler = new AndroidMultiTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
 		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);

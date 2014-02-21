@@ -14,7 +14,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.badlogic.gdx.Application;
@@ -189,7 +188,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		
 		app.initialize(listener, config);
 		
-		if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) >= 7)
+		if (config.getTouchEventsForLiveWallpaper)
 			linkedEngine.setTouchEventsEnabled(true);
 		
 		//onResume(); do not call it there
