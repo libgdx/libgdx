@@ -478,6 +478,11 @@ public class Array<T> implements Iterable<T> {
 		return new Array<T>(ordered, capacity, arrayType);
 	}
 
+	/** @see #Array(Object[]) */
+	static public <T> Array<T> with (T... array) {
+		return new Array(array);
+	}
+
 	static public class ArrayIterator<T> implements Iterator<T>, Iterable<T> {
 		private final Array<T> array;
 		private final boolean allowRemove;

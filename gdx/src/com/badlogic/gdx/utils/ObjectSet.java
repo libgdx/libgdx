@@ -140,7 +140,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		addAll((T[])array.items, offset, length);
 	}
 
-	public void addAll (T[] array) {
+	public void addAll (T... array) {
 		addAll(array, 0, array.length);
 	}
 
@@ -436,6 +436,12 @@ public class ObjectSet<T> implements Iterable<T> {
 		iterator2.valid = true;
 		iterator1.valid = false;
 		return iterator2;
+	}
+
+	static public <T> ObjectSet<T> with (T... array) {
+		ObjectSet set = new ObjectSet();
+		set.addAll(array);
+		return set;
 	}
 
 	static public class SetIterator<K> implements Iterable<K>, Iterator<K> {

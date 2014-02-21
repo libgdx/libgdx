@@ -137,7 +137,27 @@ public class IntSet {
 		return true;
 	}
 
-	public void putAll (IntSet set) {
+	public void addAll (IntArray array) {
+		addAll(array, 0, array.size);
+	}
+
+	public void addAll (IntArray array, int offset, int length) {
+		if (offset + length > array.size)
+			throw new IllegalArgumentException("offset + length must be <= size: " + offset + " + " + length + " <= " + array.size);
+		addAll(array.items, offset, length);
+	}
+
+	public void addAll (int... array) {
+		addAll(array, 0, array.length);
+	}
+
+	public void addAll (int[] array, int offset, int length) {
+		ensureCapacity(length);
+		for (int i = offset, n = i + length; i < n; i++)
+			add(array[i]);
+	}
+
+	public void addAll (IntSet set) {
 		ensureCapacity(set.size);
 		IntSetIterator iterator = set.iterator();
 		while (iterator.hasNext)
@@ -438,6 +458,12 @@ public class IntSet {
 		iterator2.valid = true;
 		iterator1.valid = false;
 		return iterator2;
+	}
+
+	static public IntSet with (int... array) {
+		IntSet set = new IntSet();
+		set.addAll(array);
+		return set;
 	}
 
 	static public class Entry<V> {
