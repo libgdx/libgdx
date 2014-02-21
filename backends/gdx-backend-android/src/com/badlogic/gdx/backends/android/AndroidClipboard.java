@@ -17,7 +17,6 @@
 package com.badlogic.gdx.backends.android;
 
 import android.content.Context;
-import android.os.Build;
 
 import com.badlogic.gdx.utils.Clipboard;
 

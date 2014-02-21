@@ -2,6 +2,19 @@ package com.badlogic.gdx.backends.android;
 
 import java.util.Arrays;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Debug;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -19,19 +32,6 @@ import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Debug;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 /**
  * Implementation of the {@link AndroidApplicationBase} that is based on the {@link Fragment} class. This class is similar

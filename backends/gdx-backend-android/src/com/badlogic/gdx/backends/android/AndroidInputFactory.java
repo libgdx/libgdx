@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Constructor;
-
 import android.content.Context;
 
 import com.badlogic.gdx.Application;

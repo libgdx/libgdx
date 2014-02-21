@@ -21,7 +21,6 @@ import java.util.Arrays;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
 import android.service.dreams.DreamService;
