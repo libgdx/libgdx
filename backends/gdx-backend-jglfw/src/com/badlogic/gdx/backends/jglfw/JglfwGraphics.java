@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -405,5 +406,15 @@ public class JglfwGraphics implements Graphics {
 		protected JglfwDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return false;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return null;
 	}
 }

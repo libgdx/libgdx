@@ -46,6 +46,7 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.Array;
 
@@ -480,5 +481,15 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public boolean isFullscreen () {
 		return true;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return false;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return null;
 	}
 }

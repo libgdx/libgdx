@@ -57,6 +57,7 @@ import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -77,6 +78,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
+	GL30 gl30;
 	EGLContext eglContext;
 	String extensions;
 
@@ -667,5 +669,15 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	@Override
 	public boolean isFullscreen () {
 		return true;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
 	}
 }

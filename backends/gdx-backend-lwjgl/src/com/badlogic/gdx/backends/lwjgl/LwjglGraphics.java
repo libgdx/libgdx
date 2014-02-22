@@ -21,6 +21,7 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -43,6 +44,7 @@ public class LwjglGraphics implements Graphics {
 	GL10 gl10;
 	GL11 gl11;
 	GL20 gl20;
+	GL30 gl30;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -454,5 +456,15 @@ public class LwjglGraphics implements Graphics {
 
 	public boolean isSoftwareMode () {
 		return softwareMode;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
 	}
 }

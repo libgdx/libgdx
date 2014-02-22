@@ -19,6 +19,7 @@ package com.badlogic.gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -121,6 +122,14 @@ public interface Graphics {
 	 * 
 	 * @return whether OpenGL ES 2.0 is available */
 	public boolean isGL20Available ();
+	
+
+	/** Returns whether OpenGL ES 3.0 is available. If it is you can get an instance of {@link GL30} via {@link #getGL30()} to
+	 * access OpenGL ES 3.0 functionality. Note that this functionality will only be available if you instructed the
+	 * {@link Application} instance to use OpenGL ES 3.0!
+	 * 
+	 * @return whether OpenGL ES 2.0 is available */
+	public boolean isGL30Available ();
 
 	/** @return a {@link GLCommon} instance */
 	public GLCommon getGLCommon ();
@@ -133,7 +142,12 @@ public interface Graphics {
 
 	/** @return the {@link GL20} instance or null if not supported */
 	public GL20 getGL20 ();
+	
+	/** @return the {@link GL30} instane or null if not supported */
+	public GL30 getGL30 ();
 
+	/** @return the (@link GL30} instance or null if not supported */
+	
 	/** @return the width in pixels of the display surface */
 	public int getWidth ();
 
@@ -238,46 +252,4 @@ public interface Graphics {
 
 	/** Whether the app is fullscreen or not */
 	public boolean isFullscreen ();
-
-	// /**
-	// * Opens the first back facing video camera. Only one camera
-	// * can be opened at any given time.
-	// * @param width the width of the image to be taken in pixels.
-	// * @param height the height of the image to be taken in pixels.
-	// * @param portrait whether the camera should be opened in portrait mode or
-	// not (landscape otherwise)
-	// * @return true if this succeeded, false otherwise.
-	// */
-	// public boolean openCamera(int width, int height, boolean portrait);
-	//
-	// /**
-	// * @return true in case a new camera frame arrived since the last call to
-	// {@link #getCameraFrame()}.
-	// */
-	// public boolean hasNewCameraFrame();
-	//
-	// /**
-	// * Returns a {@link TextureRegion} containing the latest frame of the
-	// currently opened camera. Will
-	// * throw a GdxRuntimeException in case the camera is not opened.
-	// * @return a TextureRegion containing the camera snapshot.
-	// */
-	// public TextureRegion getCameraFrame();
-	//
-	// /**
-	// * Saves the latest frame of the currently opened camera to the given
-	// {@link ByteBuffer}. The pixels are stored
-	// * in RGB565 format. The provided ByteBuffer must be able to store 2 *
-	// cameraWidth * cameraHeight bytes. The ByteBuffer <b>must</b>
-	// * be a direct ByteBuffer. The method will write pixels starting from the
-	// ByteBuffer's current position.
-	// * @param pixels the direct ByteBuffer to store the pixels in.
-	// */
-	// public void getCameraFrame(ByteBuffer pixels);
-	//
-	// /**
-	// * Closes the camera. Has no effect in case the camera has not been
-	// opened.
-	// */
-	// public void closeCamera();
 }
