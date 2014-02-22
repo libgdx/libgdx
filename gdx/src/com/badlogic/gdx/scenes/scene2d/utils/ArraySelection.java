@@ -5,7 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.utils.Array;
 
-/** A selection that supports range selection by knowing about the array of items being selected. */
+/** A selection that supports range selection by knowing about the array of items being selected.
+ * @author Nathan Sweet */
 public class ArraySelection<T> extends Selection<T> {
 	private Array<T> items;
 	private boolean rangeSelect = true;
