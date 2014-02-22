@@ -355,7 +355,7 @@ public class ObjectSet<T> implements Iterable<T> {
 
 	public T first () {
 		T[] keyTable = this.keyTable;
-		for (int i = 0, n = capacity + stashSize; i < n;)
+		for (int i = 0, n = capacity + stashSize; i < n; i++)
 			if (keyTable[i] != null) return keyTable[i];
 		throw new IllegalStateException("IntSet is empty.");
 	}
