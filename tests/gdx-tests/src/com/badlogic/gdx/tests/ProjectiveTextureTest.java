@@ -110,7 +110,8 @@ public class ProjectiveTextureTest extends GdxTest {
 		ui = new Stage(480, 320, true);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		TextButton reload = new TextButton("Reload Shaders", skin.get(TextButtonStyle.class));
-		camera = new SelectBox(new String[] {"Camera", "Light"}, skin.get(SelectBoxStyle.class));
+		camera = new SelectBox(skin.get(SelectBoxStyle.class));
+		camera.setItems("Camera", "Light");
 		fps = new Label("fps: ", skin.get(LabelStyle.class));
 
 		Table table = new Table();
@@ -156,7 +157,7 @@ public class ProjectiveTextureTest extends GdxTest {
 		texture.bind();
 		projTexShader.begin();
 
-		if (camera.getSelectionIndex() == 0) {
+		if (camera.getSelectedIndex() == 0) {
 			renderMesh(projTexShader, cam.combined, projector.combined, planeTrans, plane, Color.WHITE);
 			/* TODO: Fix method rendering
 			renderMesh(projTexShader, cam.combined, projector.combined, cubeTrans, cube, Color.WHITE);

@@ -40,7 +40,7 @@ public class GamepadTest extends GdxTest {
 	Table ui;
 	Stage stage;
 	ScrollPane scrollPane;
-	List console;
+	List<String> console;
 	
 	@Override
 	public void create () {
@@ -124,7 +124,7 @@ public class GamepadTest extends GdxTest {
 	}
 	
 	void print(String message) {
-		String[] lines = console.getItems();
+		String[] lines = console.getItems().toArray();
 		String[] newLines = new String[lines.length + 1];
 		System.arraycopy(lines, 0, newLines, 0, lines.length);
 		newLines[newLines.length-1] = message;
@@ -135,7 +135,7 @@ public class GamepadTest extends GdxTest {
 	}
 	
 	void clear() {
-		console.setItems(new Object[0]);
+		console.setItems(new String[0]);
 	}
 
 	private void setupUi() {
@@ -144,7 +144,7 @@ public class GamepadTest extends GdxTest {
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		ui = new Table();
 		ui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		console = new List(new String[0], skin);
+		console = new List(skin);
 		scrollPane = new ScrollPane(console);
 		scrollPane.setScrollbarsOnTop(true);
 		TextButton clear = new TextButton("Clear", skin);

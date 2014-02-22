@@ -49,11 +49,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class UITest extends GdxTest {
-	String[] listEntries = {"This is a list entry", "And another one", "The meaning of life", "Is hard to come by",
-		"This is a list entry", "And another one", "The meaning of life", "Is hard to come by", "This is a list entry",
-		"And another one", "The meaning of life", "Is hard to come by", "This is a list entry", "And another one",
-		"The meaning of life", "Is hard to come by", "This is a list entry", "And another one", "The meaning of life",
-		"Is hard to come by"};
+	String[] listEntries = {"This is a list entry1", "And another one1", "The meaning of life1", "Is hard to come by1",
+		"This is a list entry2", "And another one2", "The meaning of life2", "Is hard to come by2", "This is a list entry3",
+		"And another one3", "The meaning of life3", "Is hard to come by3", "This is a list entry4", "And another one4",
+		"The meaning of life4", "Is hard to come by4", "This is a list entry5", "And another one5", "The meaning of life5",
+		"Is hard to come by5"};
 
 	Skin skin;
 	Stage stage;
@@ -98,12 +98,17 @@ public class UITest extends GdxTest {
 		final Slider slider = new Slider(0, 10, 1, false, skin);
 		TextField textfield = new TextField("", skin);
 		textfield.setMessageText("Click here!");
-		SelectBox dropdown = new SelectBox(new String[] {"Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux",
-			"OSX", "Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux", "OSX",
-			"Android", "Windows", "Linux", "OSX", "Android", "Windows", "Linux", "OSX"}, skin);
+		SelectBox dropdown = new SelectBox(skin);
+		dropdown.setItems("Android1", "Windows1", "Linux1", "OSX1", "Android2", "Windows2", "Linux2", "OSX2", "Android3",
+			"Windows3", "Linux3", "OSX3", "Android4", "Windows4", "Linux4", "OSX4", "Android5", "Windows5", "Linux5", "OSX5",
+			"Android6", "Windows6", "Linux6", "OSX6", "Android7", "Windows7", "Linux7", "OSX7");
 		Image imageActor = new Image(image2);
 		ScrollPane scrollPane = new ScrollPane(imageActor);
-		List list = new List(listEntries, skin);
+		List list = new List(skin);
+		list.setItems(listEntries);
+		list.getSelection().setMultiple(true);
+		list.getSelection().setRequired(false);
+		// list.getSelection().setToggle(true);
 		ScrollPane scrollPane2 = new ScrollPane(list, skin);
 		scrollPane2.setFlickScroll(false);
 		SplitPane splitPane = new SplitPane(scrollPane, scrollPane2, false, skin, "default-horizontal");

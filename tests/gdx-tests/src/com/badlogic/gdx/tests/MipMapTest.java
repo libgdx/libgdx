@@ -55,8 +55,8 @@ public class MipMapTest extends GdxTest {
 	Stage ui;
 	Skin skin;
 	InputMultiplexer multiplexer;
-	SelectBox minFilter;
-	SelectBox magFilter;
+	SelectBox<String> minFilter;
+	SelectBox<String> magFilter;
 	CheckBox hwMipMap;
 
 	@Override
@@ -99,8 +99,10 @@ public class MipMapTest extends GdxTest {
 			filters[idx++] = filter.toString();
 		}
 		hwMipMap = new CheckBox("Hardware Mips", skin);
-		minFilter = new SelectBox(filters, skin);
-		magFilter = new SelectBox(new String[] {"Nearest", "Linear"}, skin.get(SelectBoxStyle.class));
+		minFilter = new SelectBox(skin);
+		minFilter.setItems(filters);
+		magFilter = new SelectBox(skin.get(SelectBoxStyle.class));
+		magFilter.setItems("Nearest", "Linear");
 
 		Table table = new Table();
 		table.setSize(ui.getWidth(), 30);
@@ -123,7 +125,7 @@ public class MipMapTest extends GdxTest {
 
 		currTexture = hwMipMap.isChecked() ? textureHW : textureSW;
 		currTexture.bind();
-		currTexture.setFilter(TextureFilter.valueOf(minFilter.getSelection()), TextureFilter.valueOf(magFilter.getSelection()));
+		currTexture.setFilter(TextureFilter.valueOf(minFilter.getSelected()), TextureFilter.valueOf(magFilter.getSelected()));
 
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", camera.combined);

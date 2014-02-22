@@ -76,12 +76,13 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 		hudHeight = hud.getHeight();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		final List modelsList = new List(models, skin);
+		final List<String> modelsList = new List(skin);
+		modelsList.setItems(models);
 		modelsList.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				if (!modelsWindow.isCollapsed() && getTapCount() == 2) {
-					onModelClicked(modelsList.getSelection());
+					onModelClicked(modelsList.getSelected());
 					modelsWindow.collapse();
 				}
 			}
