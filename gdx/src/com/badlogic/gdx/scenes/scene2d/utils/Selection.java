@@ -18,14 +18,14 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	static boolean isMac = System.getProperty("os.name").contains("Mac");
 
 	private Actor actor;
-	private final ObjectSet<T> selected = new ObjectSet();
+	final ObjectSet<T> selected = new ObjectSet();
 	private final ObjectSet<T> old = new ObjectSet();
-	private boolean isDisabled;
+	boolean isDisabled;
 	private boolean toggle;
-	private boolean multiple;
+	boolean multiple;
 	private boolean required;
 	private boolean programmaticChangeEvents = true;
-	private T lastSelected;
+	T lastSelected;
 
 	/** @param actor An actor to fire {@link ChangeEvent} on when the selection changes, or null. */
 	public void setActor (Actor actor) {
@@ -39,7 +39,6 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		snapshot();
 		if ((toggle || (!required && selected.size == 1) || isCtrlPressed()) && selected.contains(item)) {
 			if (required && selected.size == 1) return;
-			// if ((required || selected.size > 1) && !isCtrlPressed()) return;
 			selected.remove(item);
 			lastSelected = null;
 		} else {
@@ -76,17 +75,17 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.size == 0 ? null : selected.first();
 	}
 
-	private void snapshot () {
+	void snapshot () {
 		old.clear();
 		old.addAll(selected);
 	}
 
-	private void revert () {
+	void revert () {
 		selected.clear();
 		selected.addAll(old);
 	}
 
-	private void cleanup () {
+	void cleanup () {
 		old.clear(32);
 	}
 
