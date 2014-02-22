@@ -69,19 +69,44 @@ task buildRoboVMXML << {
 
 }
 
+// Updates a robovm.xml file.
+task updateRoboVMXML << {
+  def xml = file('robovm.xml')
+
+  if (!xml.exists()) {
+    return
+  }
+  
+  // Find all native (*.a) libraries beneath libs
+  def libtree = fileTree(dir: 'build/libs', include: '**/*.a')
+  
+  def config = new groovy.util.XmlParser().parse(xml)
+  config.libs.each {libs ->
+      libs.children().clear()
+      libtree.each { File file ->
+          libs.appendNode('lib', file.getAbsolutePath())
+      }
+  }
+  
+  def writer = new FileWriter(xml)
+  def printer = new XmlNodePrinter(new PrintWriter(writer))
+  printer.setPreserveWhitespace true
+  printer.print(config)
+}
+
 // Setup build dependencies so the robovm.xml gets put in
 // place before robovm does its thing.
 buildRoboVMXML.dependsOn copyNatives
-launchIPhoneSimulator.dependsOn buildRoboVMXML
-launchIPadSimulator.dependsOn buildRoboVMXML
-launchIOSDevice.dependsOn buildRoboVMXML
-createIPA.dependsOn buildRoboVMXML
+updateRoboVMXML.dependsOn copyNatives
+launchIPhoneSimulator.dependsOn updateRoboVMXML
+launchIPadSimulator.dependsOn updateRoboVMXML
+launchIOSDevice.dependsOn updateRoboVMXML
+createIPA.dependsOn updateRoboVMXML
 
 // idea doesn't like relative paths outside of content root...
 tasks.ideaModule.doFirst {
     sourceSets.main.resources.srcDirs = []
 }
-
 
 eclipse.project {
     name = appName + "-ios"
