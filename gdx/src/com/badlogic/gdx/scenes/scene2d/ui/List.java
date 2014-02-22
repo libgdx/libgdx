@@ -35,7 +35,8 @@ import com.badlogic.gdx.utils.ObjectSet;
  * {@link ChangeEvent} is fired when the list selection changes.
  * <p>
  * The preferred size of the list is determined by the text bounds of the items and the size of the {@link ListStyle#selection}.
- * @author mzechner */
+ * @author mzechner
+ * @author Nathan Sweet */
 public class List<T> extends Widget implements Cullable {
 	static boolean isMac = System.getProperty("os.name").contains("Mac");
 
@@ -189,7 +190,7 @@ public class List<T> extends Widget implements Cullable {
 		selection.set(items.get(index));
 	}
 
-	public void setItems (T[] newItems) {
+	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 
 		items.clear();

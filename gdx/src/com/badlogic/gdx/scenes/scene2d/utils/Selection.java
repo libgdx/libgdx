@@ -12,7 +12,8 @@ import com.badlogic.gdx.utils.Pools;
 import java.util.Iterator;
 
 /** Manages selected objects. Optionally fires a {@link ChangeEvent} on an actor. Selection changes can be vetoed via
- * {@link ChangeEvent#cancel()}. */
+ * {@link ChangeEvent#cancel()}.
+ * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
 	static boolean isMac = System.getProperty("os.name").contains("Mac");
 
@@ -36,14 +37,14 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	public void choose (T item) {
 		if (isDisabled) return;
 		snapshot();
-		if ((toggle || isCtrlPressed()) && selected.contains(item)) {
+		if ((toggle || (!required && selected.size == 1) || isCtrlPressed()) && selected.contains(item)) {
 			if (required && selected.size == 1) return;
-			if ((required || selected.size > 1) && !isCtrlPressed()) return;
+			// if ((required || selected.size > 1) && !isCtrlPressed()) return;
 			selected.remove(item);
 			lastSelected = null;
 		} else {
 			boolean modified = false;
-			if (!toggle && (!multiple || !isCtrlPressed())) {
+			if (!multiple || (!toggle && !isCtrlPressed())) {
 				modified = selected.size > 0;
 				selected.clear();
 			}
