@@ -23,10 +23,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.Selection;
+import com.badlogic.gdx.scenes.scene2d.utils.ArraySelection;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectSet;
 
@@ -46,7 +47,7 @@ public class List<T> extends Widget implements Cullable {
 	private float prefWidth, prefHeight;
 	private float itemHeight;
 	private float textOffsetX, textOffsetY;
-	final Selection<T> selection;
+	final ArraySelection<T> selection;
 
 	public List (Skin skin) {
 		this(skin.get(ListStyle.class));
@@ -57,7 +58,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	public List (ListStyle style) {
-		selection = new Selection();
+		selection = new ArraySelection(items);
 		selection.setActor(this);
 		selection.setRequired(true);
 
@@ -168,7 +169,7 @@ public class List<T> extends Widget implements Cullable {
 		}
 	}
 
-	public Selection<T> getSelection () {
+	public ArraySelection<T> getSelection () {
 		return selection;
 	}
 
@@ -204,7 +205,7 @@ public class List<T> extends Widget implements Cullable {
 		invalidateHierarchy();
 	}
 
-	/** Sets the items and clears the selection. If a selection is {@link Selection#getRequired()}, the first item is selected. */
+	/** Sets the items and clears the selection. If a selection is {@link ArraySelection#getRequired()}, the first item is selected. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 
