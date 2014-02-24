@@ -386,43 +386,46 @@ public class Quaternion implements Serializable {
 			zy *= lz;
 			zz *= lz;
 		}
+		// Use the Graphics Gems code, from 
+		// ftp://ftp.cis.upenn.edu/pub/graphics/shoemake/quatut.ps.Z
+		// *NOT* the "Matrix and Quaternions FAQ", which has errors!
+
 		// the trace is the sum of the diagonal elements; see
 		// http://mathworld.wolfram.com/MatrixTrace.html
-		final float t = xx + yy + zz;
+		float t = xx + yy + zz;
 
 		// we protect the division by s by ensuring that s>=1
-		double x, y, z, w;
 		if (t >= 0) { // |w| >= .5
-			double s = Math.sqrt(t + 1); // |s|>=1 ...
-			w = 0.5 * s;
-			s = 0.5 / s; // so this division isn't bad
-			x = (zy - yz) * s;
-			y = (xz - zx) * s;
-			z = (yx - xy) * s;
+			float s = (float)Math.sqrt(t+1); // |s|>=1 ...
+			w = 0.5f * s;
+			s = 0.5f / s;                 // so this division isn't bad
+			x = (yz - zy) * s;
+			y = (zx - xz) * s;
+			z = (xy - yx) * s;
 		} else if ((xx > yy) && (xx > zz)) {
-			double s = Math.sqrt(1.0 + xx - yy - zz); // |s|>=1
-			x = s * 0.5; // |x| >= .5
-			s = 0.5 / s;
-			y = (yx + xy) * s;
-			z = (xz + zx) * s;
-			w = (zy - yz) * s;
+			float s = (float)Math.sqrt(1.0f + xx - yy - zz); // |s|>=1
+			x = s * 0.5f; // |x| >= .5
+			s = 0.5f / s;
+			y = (xy + yx) * s;
+			z = (zx + xz) * s;
+			w = (yz - zy) * s;
 		} else if (yy > zz) {
-			double s = Math.sqrt(1.0 + yy - xx - zz); // |s|>=1
-			y = s * 0.5; // |y| >= .5
-			s = 0.5 / s;
-			x = (yx + xy) * s;
-			z = (zy + yz) * s;
-			w = (xz - zx) * s;
+			float s = (float)Math.sqrt(1.0f + yy - xx - zz); // |s|>=1
+			y = s * 0.5f; // |y| >= .5
+			s = 0.5f / s;
+			x = (xy + yx) * s;
+			z = (yz + zy) * s;
+			w = (zx - xz) * s;
 		} else {
-			double s = Math.sqrt(1.0 + zz - xx - yy); // |s|>=1
-			z = s * 0.5; // |z| >= .5
-			s = 0.5 / s;
-			x = (xz + zx) * s;
-			y = (zy + yz) * s;
-			w = (yx - xy) * s;
+			float s = (float)Math.sqrt(1.0f + zz - xx - yy); // |s|>=1
+			z = s * 0.5f; // |z| >= .5
+			s = 0.5f / s;
+			x = (zx + xz) * s;
+			y = (yz + zy) * s;
+			w = (xy - yx) * s;
 		}
 
-		return set((float)x, (float)y, (float)z, (float)w);
+		return this;
 	}
 	
 	/** Set this quaternion to the rotation between two vectors.
