@@ -416,6 +416,13 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 			* l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
 	}
 
+	public Vector3 mul (Matrix3 matrix) {
+		final float l_mat[] = matrix.val;
+		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02], x
+			* l_mat[Matrix3.M10] + y * l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12], x * l_mat[Matrix3.M20] + y
+			* l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
+	}
+	
 	/** Multiplies the vector by the given {@link Quaternion}.
 	 * @return This vector for chaining */	
 	public Vector3 mul (final Quaternion quat) {
