@@ -358,6 +358,13 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.scl(1f/(float)Math.sqrt(len2));
 	}
 	
+	/** Normalizes this vector to unit length.
+	 * This use fast inverse square root function.
+	 * @return This vector for chaining */
+	public Vector3 fastNor () {
+		return this.scl(MathUtils.fastInvSqrt(this.len2()));
+	}
+	
 	/** @return The dot product between the two vectors */
 	public static float dot(float x1, float y1, float z1, float x2, float y2, float z2) {
 		return x1 * x2 + y1 * y2 + z1 * z2;
@@ -416,6 +423,9 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 			* l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
 	}
 
+	/** Left-multiplies the vector by the given matrix.
+	 * @param matrix The matrix
+	 * @return This vector for chaining */
 	public Vector3 mul (Matrix3 matrix) {
 		final float l_mat[] = matrix.val;
 		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02], x

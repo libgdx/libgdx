@@ -105,6 +105,13 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
+	
+	/** Normalizes this vector.
+	 *  This use fast inverse square root function.
+	 * @return This vector for chaining */
+	public Vector2 fastNor () {
+		return this.scl(MathUtils.fastInvSqrt(len2()));
+	}
 
 	/** Adds the given vector to this vector
 	 * @param v The vector
