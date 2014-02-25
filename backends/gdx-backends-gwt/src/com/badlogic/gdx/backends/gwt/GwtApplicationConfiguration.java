@@ -40,6 +40,8 @@ public class GwtApplicationConfiguration {
 	public TextArea log;
 	/** whether to use debugging mode for OpenGL calls. Errors will result in a RuntimeException being thrown. */
 	public boolean useDebugGL = false;
+	/** whether SoundManager2 should prefer to use flash instead of html5 audio (it should fall back if not available) */
+	public boolean preferFlash = true;
 
 	public GwtApplicationConfiguration (int width, int height) {
 		this.width = width;

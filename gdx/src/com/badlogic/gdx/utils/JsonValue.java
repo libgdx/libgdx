@@ -305,7 +305,7 @@ public class JsonValue implements Iterable<JsonValue> {
 		int i = 0;
 		for (JsonValue value = child; value != null; value = value.next, i++) {
 			String v;
-			switch (type) {
+			switch (value.type) {
 			case stringValue:
 				v = value.stringValue;
 				break;
