@@ -484,7 +484,7 @@ public class ObjectSet<T> implements Iterable<T> {
 			if (currentIndex < 0) throw new IllegalStateException("next must be called before remove.");
 			if (currentIndex >= set.capacity) {
 				set.removeStashIndex(currentIndex);
-				nextIndex = currentIndex;
+				nextIndex = currentIndex - 1;
 				findNextIndex();
 			} else {
 				set.keyTable[currentIndex] = null;

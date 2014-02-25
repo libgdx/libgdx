@@ -525,7 +525,7 @@ public class IntSet {
 				throw new IllegalStateException("next must be called before remove.");
 			} else if (currentIndex >= set.capacity) {
 				set.removeStashIndex(currentIndex);
-				nextIndex = currentIndex;
+				nextIndex = currentIndex - 1;
 				findNextIndex();
 			} else {
 				set.keyTable[currentIndex] = EMPTY;
