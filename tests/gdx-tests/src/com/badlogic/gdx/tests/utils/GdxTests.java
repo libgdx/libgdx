@@ -38,6 +38,7 @@ import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
+import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
 import com.badlogic.gdx.tests.g3d.ParticleEmitter3dTest;
 import com.badlogic.gdx.tests.g3d.ParticleEmitterAnimationTest;
 import com.badlogic.gdx.tests.g3d.ParticleEmitterNodeTest;
@@ -104,6 +105,7 @@ public class GdxTests {
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
+		FastMathTest.class,
 		FilterPerformanceTest.class,
 		FloatTest.class,
 		FloatTextureTest.class,
@@ -159,10 +161,6 @@ public class GdxTests {
 		OnscreenKeyboardTest.class,
 		OrthoCamBorderTest.class,
 		ParallaxTest.class,
-		ParticleEmitter3dTest.class,
-		ParticleEmitterAnimationTest.class,
-		ParticleEmitterNodeTest.class,
-		ParticleEmitterTest.class,
 		PathTest.class,
 		PickingTest.class,
 		PixelsPerInchTest.class,
