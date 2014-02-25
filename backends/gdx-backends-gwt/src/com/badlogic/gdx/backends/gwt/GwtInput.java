@@ -524,7 +524,7 @@ public class GwtInput implements Input {
 			e.preventDefault();
 		}
 		if (e.getType().equals("keydown") && hasFocus) {
-			System.out.println("keydown");
+			//System.out.println("keydown");
 			int code = keyForCode(e.getKeyCode());
 			if (code == 67) {
 				e.preventDefault();
@@ -540,13 +540,13 @@ public class GwtInput implements Input {
 		}
 
 		if (e.getType().equals("keypress") && hasFocus) {
-			System.out.println("keypress");
+			//System.out.println("keypress");
 			char c = (char)e.getCharCode();
 			if (processor != null) processor.keyTyped(c);
 		}
 
 		if (e.getType().equals("keyup") && hasFocus) {
-			System.out.println("keyup");
+			//System.out.println("keyup");
 			int code = keyForCode(e.getKeyCode());
 			this.pressedKeys.remove(code);
 			if (processor != null) {
