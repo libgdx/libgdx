@@ -63,7 +63,6 @@ public class List<T> extends Widget implements Cullable {
 		selection.setRequired(true);
 
 		setStyle(style);
-		setItems(new Array(0));
 		setSize(getPrefWidth(), getPrefHeight());
 
 		addListener(new InputListener() {

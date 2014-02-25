@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
@@ -209,8 +210,14 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return selection.first();
 	}
 
+	/** Sets the selection to only the item if found, else selects the first item. */
 	public void setSelected (T item) {
-		selection.set(item);
+		if (items.contains(item, false))
+			selection.set(item);
+		else if (items.size > 0)
+			selection.set(items.first());
+		else
+			selection.clear();
 	}
 
 	/** @return The index of the first selected item. The top item has an index of 0. Nothing selected has an index of -1. */
@@ -221,8 +228,6 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	/** Sets the selection to only the selected index. */
 	public void setSelectedIndex (int index) {
-		if (index < -1 || index >= items.size)
-			throw new IllegalArgumentException("index must be >= -1 and < " + items.size + ": " + index);
 		selection.set(items.get(index));
 	}
 
@@ -243,12 +248,14 @@ public class SelectBox<T> extends Widget implements Disableable {
 
 	public void showList () {
 		selected = selection.first();
+		scroll.list.setTouchable(Touchable.enabled);
 		scroll.show(getStage());
 	}
 
 	public void hideList () {
 		if (!scroll.hasParent()) return;
 		selected = null;
+		scroll.list.setTouchable(Touchable.disabled);
 		Stage stage = scroll.getStage();
 		if (stage != null) {
 			if (previousScrollFocus != null && previousScrollFocus.getStage() == null) previousScrollFocus = null;
@@ -290,7 +297,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			addListener(new InputListener() {
 				public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 					if (event.getTarget() == list) return true;
-					selection.set(selected); // Revert.
+					setSelected(selected); // Revert.
 					hideList();
 					return false;
 				}
