@@ -533,8 +533,9 @@ public class GwtInput implements Input {
 					processor.keyTyped('\b');
 				}
 			} else {
-				this.pressedKeys.add(code);
-				if (processor != null) processor.keyDown(code);
+				if (this.pressedKeys.add(code) && processor != null) {
+					processor.keyDown(code);
+				}
 			}
 		}
 
@@ -548,7 +549,9 @@ public class GwtInput implements Input {
 			System.out.println("keyup");
 			int code = keyForCode(e.getKeyCode());
 			this.pressedKeys.remove(code);
-			if (processor != null) processor.keyUp(code);
+			if (processor != null) {
+				processor.keyUp(code);
+			}
 		}
 
 		if (e.getType().equals("touchstart")) {
