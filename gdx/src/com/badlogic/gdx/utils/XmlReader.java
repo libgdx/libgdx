@@ -496,9 +496,9 @@ public class XmlReader {
 		}
 
 		/** @throws GdxRuntimeException if the element has no children. */
-		public Element getChild (int i) {
+		public Element getChild (int index) {
 			if (children == null) throw new GdxRuntimeException("Element has no children: " + name);
-			return children.get(i);
+			return children.get(index);
 		}
 
 		public void addChild (Element element) {
