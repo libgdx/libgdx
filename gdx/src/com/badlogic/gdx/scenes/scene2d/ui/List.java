@@ -76,6 +76,7 @@ public class List<T> extends Widget implements Cullable {
 	}
 
 	void touchDown (float y) {
+		if (items.size == 0) return;
 		float height = getHeight();
 		if (style.background != null) {
 			height -= style.background.getTopHeight() + style.background.getBottomHeight();
