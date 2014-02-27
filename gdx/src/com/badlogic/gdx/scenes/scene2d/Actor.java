@@ -483,9 +483,9 @@ public class Actor {
 	}
 
 	/** Sets the scalex and scaley. */
-	public void setScale (float scale) {
-		this.scaleX = scale;
-		this.scaleY = scale;
+	public void setScale (float scaleXY) {
+		this.scaleX = scaleXY;
+		this.scaleY = scaleXY;
 	}
 
 	/** Sets the scalex and scaley. */
