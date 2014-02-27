@@ -205,17 +205,21 @@ public class List<T> extends Widget implements Cullable {
 		invalidateHierarchy();
 	}
 
-	/** Sets the items and clears the selection. If a selection is {@link ArraySelection#getRequired()}, the first item is selected. */
+	/** Sets the current items, clearing the selection if it is no longer valid. If a selection is
+	 * {@link ArraySelection#getRequired()}, the first item is selected. */
 	public void setItems (Array newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
 
 		items.clear();
 		items.addAll(newItems);
 
-		if (selection.getRequired() && items.size > 0)
-			selection.set(items.first());
-		else
-			selection.clear();
+		T selected = getSelected();
+		if (!items.contains(selected, false)) {
+			if (selection.getRequired() && items.size > 0)
+				selection.set(items.first());
+			else
+				selection.clear();
+		}
 
 		invalidateHierarchy();
 	}
