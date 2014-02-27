@@ -48,8 +48,10 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	public TexturePackerFileProcessor (Settings defaultSettings, String packFileName) {
 		this.defaultSettings = defaultSettings;
 
-		if (packFileName.indexOf('.') == -1 || packFileName.endsWith(".png") || packFileName.endsWith(".jpg"))
+		if (packFileName.indexOf('.') == -1 || packFileName.toLowerCase().endsWith(".png")
+			|| packFileName.toLowerCase().endsWith(".jpg")) {
 			packFileName += ".atlas";
+		}
 		this.packFileName = packFileName;
 
 		setFlattenOutput(true);
@@ -114,8 +116,8 @@ public class TexturePackerFileProcessor extends FileProcessor {
 			String prefix = packFileName;
 			int dotIndex = prefix.lastIndexOf('.');
 			if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
-			deleteProcessor.addInputRegex(Pattern.quote(prefix) + "([\\d\\.]*)?-\\d*\\.(png|jpg)");
-			deleteProcessor.addInputRegex(Pattern.quote(prefix) + "([\\d\\.]*)?\\.(atlas)");
+			deleteProcessor.addInputRegex("(?i)" + Pattern.quote(prefix) + "([\\d\\.]*)?-\\d*\\.(png|jpg)");
+			deleteProcessor.addInputRegex("(?i)" + Pattern.quote(prefix) + "([\\d\\.]*)?\\.(atlas)");
 
 			deleteProcessor.process(outputRoot, null);
 		}
