@@ -96,9 +96,8 @@ public class TexturePacker {
 		for (float scale : settings.scale) {
 			String scaledPackFileName = packFileName;
 			if (scale != 1 || settings.scale.length != 1) {
-				FileHandle file = new FileHandle(scaledPackFileName);
-				String suffix = scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale);
-				scaledPackFileName = file.nameWithoutExtension() + suffix + "." + file.extension();
+				scaledPackFileName = (scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale)) + "/"
+					+ scaledPackFileName;
 			}
 
 			imageProcessor.setScale(scale);
@@ -151,10 +150,10 @@ public class TexturePacker {
 
 			File outputFile;
 			while (true) {
-				fileIndex++;
-				outputFile = new File(outputDir, imageName + "-" + fileIndex + "." + settings.outputFormat);
+				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
+			new FileHandle(outputFile).parent().mkdirs();
 			page.imageName = outputFile.getName();
 
 			BufferedImage canvas = new BufferedImage(width, height, getBufferedImageType(settings.format));
@@ -635,20 +634,24 @@ public class TexturePacker {
 	}
 
 	static public void main (String[] args) throws Exception {
-		String input = null, output = null, packFileName = "pack.atlas";
+// String input = null, output = null, packFileName = "pack.atlas";
+//
+// switch (args.length) {
+// case 3:
+// packFileName = args[2];
+// case 2:
+// output = args[1];
+// case 1:
+// input = args[0];
+// break;
+// default:
+// System.out.println("Usage: inputDir [outputDir] [packFileName]");
+// System.exit(0);
+// }
 
-		switch (args.length) {
-		case 3:
-			packFileName = args[2];
-		case 2:
-			output = args[1];
-		case 1:
-			input = args[0];
-			break;
-		default:
-			System.out.println("Usage: inputDir [outputDir] [packFileName]");
-			System.exit(0);
-		}
+		String input = "C:/Users/Nate/Desktop/test/images";
+		String output = null;
+		String packFileName = "pack.atlas";
 
 		if (output == null) {
 			File inputFile = new File(input);
