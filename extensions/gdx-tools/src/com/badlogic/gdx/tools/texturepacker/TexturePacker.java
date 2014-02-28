@@ -634,24 +634,20 @@ public class TexturePacker {
 	}
 
 	static public void main (String[] args) throws Exception {
-// String input = null, output = null, packFileName = "pack.atlas";
-//
-// switch (args.length) {
-// case 3:
-// packFileName = args[2];
-// case 2:
-// output = args[1];
-// case 1:
-// input = args[0];
-// break;
-// default:
-// System.out.println("Usage: inputDir [outputDir] [packFileName]");
-// System.exit(0);
-// }
+		String input = null, output = null, packFileName = "pack.atlas";
 
-		String input = "C:/Users/Nate/Desktop/test/images";
-		String output = null;
-		String packFileName = "pack.atlas";
+		switch (args.length) {
+		case 3:
+			packFileName = args[2];
+		case 2:
+			output = args[1];
+		case 1:
+			input = args[0];
+			break;
+		default:
+			System.out.println("Usage: inputDir [outputDir] [packFileName]");
+			System.exit(0);
+		}
 
 		if (output == null) {
 			File inputFile = new File(input);
