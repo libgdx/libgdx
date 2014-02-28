@@ -132,6 +132,8 @@ public class MaxRectsPacker implements Packer {
 			// Rects don't fit on one page. Fill a whole page and return.
 			if (bestResult == null) bestResult = packAtSize(false, maxSize - edgePaddingX, maxSize - edgePaddingY, inputRects);
 			sort.sort(bestResult.outputRects, rectComparator);
+			bestResult.width = Math.max(bestResult.width, bestResult.height);
+			bestResult.height = Math.max(bestResult.width, bestResult.height);
 			return bestResult;
 		} else {
 			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
