@@ -19,6 +19,7 @@ package com.badlogic.gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -133,6 +134,9 @@ public interface Graphics {
 
 	/** @return the {@link GL20} instance or null if not supported */
 	public GL20 getGL20 ();
+
+	/** @return the {@link GL30} instance or null if not supported */
+	public GL30 getGL30 ();
 
 	/** @return the width in pixels of the display surface */
 	public int getWidth ();

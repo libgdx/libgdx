@@ -35,7 +35,7 @@ public abstract class GdxTest extends InputAdapter implements ApplicationListene
 	public boolean needsGL20 () {
 		return false;
 	}
-
+	
 	public void create () {
 	}
 
