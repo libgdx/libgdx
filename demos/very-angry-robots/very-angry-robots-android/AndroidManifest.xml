@@ -4,7 +4,7 @@
       android:installLocation="preferExternal"
       android:versionCode="3"
       android:versionName="0.1.0.2">
-    <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
     
     
     <application android:icon="@drawable/icon" android:label="@string/app_name">
