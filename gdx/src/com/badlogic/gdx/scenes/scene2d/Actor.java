@@ -483,9 +483,9 @@ public class Actor {
 	}
 
 	/** Sets the scalex and scaley. */
-	public void setScale (float scale) {
-		this.scaleX = scale;
-		this.scaleY = scale;
+	public void setScale (float scaleXY) {
+		this.scaleX = scaleXY;
+		this.scaleY = scaleXY;
 	}
 
 	/** Sets the scalex and scaley. */
@@ -587,6 +587,7 @@ public class Actor {
 	 * @return false if the clipping area is zero and no drawing should occur.
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {
+		if (width <= 0 || height <= 0) return false;
 		Rectangle tableBounds = Rectangle.tmp;
 		tableBounds.x = x;
 		tableBounds.y = y;

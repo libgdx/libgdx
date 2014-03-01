@@ -250,10 +250,10 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** @param wrapAlign Aligns each line of text horizontally and all the text vertically.
+	/** @param alignment Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
-	public void setAlignment (int wrapAlign) {
-		setAlignment(wrapAlign, wrapAlign);
+	public void setAlignment (int alignment) {
+		setAlignment(alignment, alignment);
 	}
 
 	/** @param labelAlign Aligns all the text with the label widget.

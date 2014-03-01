@@ -89,7 +89,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		old.clear(32);
 	}
 
-	/** Sets the selection to only the item if found, else clears the selection. */
+	/** Sets the selection to only the specified item. */
 	public void set (T item) {
 		if (selected.size == 1 && selected.first() == item) return;
 		snapshot();

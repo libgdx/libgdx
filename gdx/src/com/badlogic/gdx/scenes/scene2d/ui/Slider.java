@@ -55,6 +55,8 @@ public class Slider extends ProgressBar {
 	public Slider (float min, float max, float stepSize, boolean vertical, SliderStyle style) {
 		super(min, max, stepSize, vertical, style);
 
+		shiftIgnoresSnap = true;
+
 		addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				if (disabled) return false;

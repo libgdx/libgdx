@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -49,6 +51,7 @@ public class ProgressBar extends Widget implements Disableable {
 	private float[] snapValues;
 	private float threshold;
 	boolean disabled;
+	boolean shiftIgnoresSnap;
 
 	public ProgressBar (float min, float max, float stepSize, boolean vertical, Skin skin) {
 		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
@@ -180,7 +183,9 @@ public class ProgressBar extends Widget implements Disableable {
 	 * {@link #clamp(float)} can be overidden to allow values outside of the progress bar's min/max range.
 	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
-		value = snap(clamp(Math.round(value / stepSize) * stepSize));
+		value = clamp(Math.round(value / stepSize) * stepSize);
+		if (!shiftIgnoresSnap || (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)))
+			value = snap(value);
 		float oldValue = this.value;
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();

@@ -206,10 +206,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Scales this vector by the given value
-	 * @param value The value
+	 * @param scalar The value
 	 * @return This vector for chaining */
-	public Vector3 scl (float value) {
-		return this.set(this.x * value, this.y * value, this.z * value);
+	public Vector3 scl (float scalar) {
+		return this.set(this.x * scalar, this.y * scalar, this.z * scalar);
 	}
 	
 	/** @deprecated Use {@link #scl(float)} instead. */
