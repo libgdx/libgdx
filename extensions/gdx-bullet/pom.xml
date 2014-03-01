@@ -43,7 +43,7 @@
             </goals>
             <configuration>
               <sources>                
-                <source>jni/swig-src/</source>
+                <source>jni/swig-src/collision</source>
               </sources>
             </configuration>
           </execution>
