@@ -58,6 +58,7 @@ task buildRoboVMXML << {
         includes {
           include '**'
         }
+        skipPngCrush true
       }
     }
   }
