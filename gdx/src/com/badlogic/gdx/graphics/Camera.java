@@ -69,18 +69,6 @@ public abstract class Camera {
 	 * true. Use this after you've manipulated any of the attributes of the camera. */
 	public abstract void update (boolean updateFrustum);
 
-	/** Sets the current projection and model-view matrix of this camera. Only works with {@link GL10} and {@link GL11} of course.
-	 * The parameter is there to remind you that it does not work with GL20. Make sure to call {@link #update()} before calling
-	 * this method so all matrices are up to date.
-	 * 
-	 * @param gl the GL10 or GL11 instance. */
-	public void apply (GL10 gl) {
-		gl.glMatrixMode(GL10.GL_PROJECTION);
-		gl.glLoadMatrixf(projection.val, 0);
-		gl.glMatrixMode(GL10.GL_MODELVIEW);
-		gl.glLoadMatrixf(view.val, 0);
-	}
-
 	/** Recalculates the direction of the camera to look at the point (x, y, z).
 	 * This function assumes the up vector is normalized.
 	 * @param x the x-coordinate of the point to look at

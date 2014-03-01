@@ -16,28 +16,18 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** Helper class to create {@link Model}s from code.
  * To start building use the {@link #begin()} method, when finished building use the {@link #end()} method. The end method
@@ -199,7 +189,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */ 
 	public Model createBox(float width, float height, float depth, final Material material, final long attributes) {
-		return createBox(width, height, depth, GL10.GL_TRIANGLES, material, attributes);
+		return createBox(width, height, depth, GL20.GL_TRIANGLES, material, attributes);
 	}
 	
 	/** Convenience method to create a model with a single node containing a box shape.
@@ -219,7 +209,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createRect(float x00, float y00, float z00, float x10, float y10, float z10, float x11, float y11, float z11, float x01, float y01, float z01, float normalX, float normalY, float normalZ, final Material material, final long attributes) {
-		return createRect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ, GL10.GL_TRIANGLES, material, attributes);
+		return createRect(x00, y00, z00, x10, y10, z10, x11, y11, z11, x01, y01, z01, normalX, normalY, normalZ, GL20.GL_TRIANGLES, material, attributes);
 	}
 	
 	/** Convenience method to create a model with a single node containing a rectangle shape. 
@@ -239,7 +229,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCylinder(float width, float height, float depth, int divisions, final Material material, final long attributes) {
-		return createCylinder(width, height, depth, divisions, GL10.GL_TRIANGLES, material, attributes);
+		return createCylinder(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
 	
 	/** Convenience method to create a model with a single node containing a cylinder shape.
@@ -257,7 +247,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCylinder(float width, float height, float depth, int divisions, final Material material, final long attributes, float angleFrom, float angleTo) {
-		return createCylinder(width, height, depth, divisions, GL10.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
+		return createCylinder(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
 	}
 	
 	/** Convenience method to create a model with a single node containing a cylinder shape.
@@ -277,7 +267,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCone(float width, float height, float depth, int divisions, final Material material, final long attributes) {
-		return createCone(width, height, depth, divisions, GL10.GL_TRIANGLES, material, attributes);
+		return createCone(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
 		
 	/** Convenience method to create a model with a single node containing a cone shape.
@@ -295,7 +285,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCone(float width, float height, float depth, int divisions, final Material material, final long attributes, float angleFrom, float angleTo) {
-		return createCone(width, height, depth, divisions, GL10.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
+		return createCone(width, height, depth, divisions, GL20.GL_TRIANGLES, material, attributes, angleFrom, angleTo);
 	}
 		
 	/** Convenience method to create a model with a single node containing a cone shape.
@@ -315,7 +305,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final Material material, final long attributes) {
-		return createSphere(width, height, depth, divisionsU, divisionsV, GL10.GL_TRIANGLES, material, attributes);
+		return createSphere(width, height, depth, divisionsU, divisionsV, GL20.GL_TRIANGLES, material, attributes);
 	}
 	
 	/** Convenience method to create a model with a single node containing a sphere shape.
@@ -333,7 +323,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createSphere(float width, float height, float depth, int divisionsU, int divisionsV, final Material material, final long attributes, float angleUFrom, float angleUTo, float angleVFrom, float angleVTo) {
-		return createSphere(width, height, depth, divisionsU, divisionsV, GL10.GL_TRIANGLES, material, attributes, angleUFrom, angleUTo, angleVFrom, angleVTo);
+		return createSphere(width, height, depth, divisionsU, divisionsV, GL20.GL_TRIANGLES, material, attributes, angleUFrom, angleUTo, angleVFrom, angleVTo);
 	}
 	
 	/** Convenience method to create a model with a single node containing a sphere shape.
@@ -353,7 +343,7 @@ public class ModelBuilder {
 	 * @param attributes bitwise mask of the {@link com.badlogic.gdx.graphics.VertexAttributes.Usage}, 
 	 * only Position, Color, Normal and TextureCoordinates is supported. */
 	public Model createCapsule(float radius, float height, int divisions, final Material material, final long attributes) {
-		return createCapsule(radius, height, divisions, GL10.GL_TRIANGLES, material, attributes);
+		return createCapsule(radius, height, divisions, GL20.GL_TRIANGLES, material, attributes);
 	}
 	
 	/** Convenience method to create a model with a single node containing a capsule shape.

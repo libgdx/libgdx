@@ -16,32 +16,29 @@
 
 package com.badlogic.gdx.backends.android;
 
-import android.app.Activity;
+import java.lang.reflect.Method;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
+
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
-import android.os.SystemClock;
 import android.util.DisplayMetrics;
 import android.view.Display;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -52,13 +49,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
 
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 /** An implementation of {@link Graphics} for Android.
  * 
  * @author mzechner */
@@ -68,8 +58,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	int height;
 	AndroidApplicationBase app;
 	GLCommon gl;
-	GL10 gl10;
-	GL11 gl11;
 	GL20 gl20;
 	GL30 gl30;
 	EGLContext eglContext;
@@ -101,7 +89,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
-		view = createGLSurfaceView(application, config.useGL20, resolutionStrategy);
+		view = createGLSurfaceView(application, resolutionStrategy);
 		setPreserveContext(view);
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
@@ -127,94 +115,20 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
-	private View createGLSurfaceView (AndroidApplicationBase application, boolean useGL2,
-		final ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
-
-		if (useGL2 && checkGL20()) {
-			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		} else {
-			config.useGL20 = false;
-			configChooser = getEglConfigChooser();
-			int sdkVersion = android.os.Build.VERSION.SDK_INT;
-
-			if (sdkVersion >= 11) {
-				GLSurfaceView view = new GLSurfaceView(application.getContext()) {
-					@Override
-					protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
-						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec,
-							heightMeasureSpec);
-						setMeasuredDimension(measures.width, measures.height);
-					}
-
-					@Override
-					public InputConnection onCreateInputConnection (EditorInfo outAttrs) {
-						BaseInputConnection connection = new BaseInputConnection(this, false) {
-							@Override
-							public boolean deleteSurroundingText (int beforeLength, int afterLength) {
-								int sdkVersion = android.os.Build.VERSION.SDK_INT;
-								if (sdkVersion >= 16) {
-									/*
-									 * In Jelly Bean, they don't send key events for delete. Instead, they send beforeLength = 1,
-									 * afterLength = 0. So, we'll just simulate what it used to do.
-									 */
-									if (beforeLength == 1 && afterLength == 0) {
-										sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
-										return true;
-									}
-								}
-								return super.deleteSurroundingText(beforeLength, afterLength);
-							}
-
-							private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
-								final long eventTime = SystemClock.uptimeMillis();
-								super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,
-									KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
-								super.sendKeyEvent(new KeyEvent(SystemClock.uptimeMillis(), eventTime, KeyEvent.ACTION_UP, code, 0, 0,
-									KeyCharacterMap.VIRTUAL_KEYBOARD, 0, KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
-							}
-						};
-						return connection;
-					}
-
-				};
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
-			} else {
-				if (config.useGLSurfaceViewAPI18) {
-					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(application.getContext(), resolutionStrategy);
-					if (configChooser != null)
-						view.setEGLConfigChooser(configChooser);
-					else
-						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-					view.setRenderer(this);
-					return view;
-				} else {
-					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(application.getContext(), resolutionStrategy);
-					if (configChooser != null)
-						view.setEGLConfigChooser(configChooser);
-					else
-						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-					view.setRenderer(this);
-					return view;
-				}
-			}
-		}
+		if(!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+		if (configChooser != null)
+			view.setEGLConfigChooser(configChooser);
+		else
+			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+		view.setRenderer(this);
+		return view;		
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
-		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
-			config.useGL20);
+		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
 
 	private void updatePpi () {
@@ -248,18 +162,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	/** {@inheritDoc} */
 	@Override
-	public GL10 getGL10 () {
-		return gl10;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GL11 getGL11 () {
-		return gl11;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public GL20 getGL20 () {
 		return gl20;
 	}
@@ -276,18 +178,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		return width;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isGL11Available () {
-		return gl11 != null;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isGL20Available () {
-		return gl20 != null;
-	}
-
 	private static boolean isPowerOfTwo (int value) {
 		return ((value != 0) && (value & (value - 1)) == 0);
 	}
@@ -298,30 +188,12 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		if (gl10 != null || gl20 != null) return;
+		if (gl20 != null) return;
 
-		if (view instanceof GLSurfaceView20) {
-			gl20 = new AndroidGL20();
-			this.gl = gl20;
-		} else {
-			gl10 = new AndroidGL10(gl);
-			this.gl = gl10;
-			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
-				String renderer = gl.glGetString(GL10.GL_RENDERER);
-				if (renderer != null) { // silly GT-I7500
-					if (!renderer.toLowerCase().contains("pixelflinger")
-						&& !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220") || android.os.Build.MODEL
-							.contains("Behold"))) {
-						gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
-						gl10 = gl11;
-					}
-				}
-			}
-		}
+		gl20 = new AndroidGL20();
+		this.gl = gl20;
 
 		Gdx.gl = this.gl;
-		Gdx.gl10 = gl10;
-		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
 
 		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
@@ -682,8 +554,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		if (view != null) {
 			this.isContinuous = isContinuous;
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
@@ -696,8 +566,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void requestRendering () {
 		if (view != null) {
-			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}

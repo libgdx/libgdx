@@ -19,7 +19,7 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -83,7 +83,7 @@ public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner, stbachmann */
 	public enum ShapeType {
-		Point(GL10.GL_POINTS), Line(GL10.GL_LINES), Filled(GL10.GL_TRIANGLES);
+		Point(GL20.GL_POINTS), Line(GL20.GL_LINES), Filled(GL20.GL_TRIANGLES);
 
 		private final int glType;
 
@@ -110,10 +110,7 @@ public class ShapeRenderer {
 	}
 
 	public ShapeRenderer (int maxVertices) {
-		if (Gdx.graphics.isGL20Available())
-			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
-		else
-			renderer = new ImmediateModeRenderer10(maxVertices);
+		renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
 		projView.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		matrixDirty = true;
 	}

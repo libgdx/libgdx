@@ -16,14 +16,47 @@
 
 package com.badlogic.gdx.backends.jglfw;
 
-import static com.badlogic.jglfw.Glfw.*;
+import static com.badlogic.jglfw.Glfw.GLFW_ALPHA_BITS;
+import static com.badlogic.jglfw.Glfw.GLFW_BLUE_BITS;
+import static com.badlogic.jglfw.Glfw.GLFW_CURSOR_CAPTURED;
+import static com.badlogic.jglfw.Glfw.GLFW_CURSOR_MODE;
+import static com.badlogic.jglfw.Glfw.GLFW_CURSOR_NORMAL;
+import static com.badlogic.jglfw.Glfw.GLFW_DEPTH_BITS;
+import static com.badlogic.jglfw.Glfw.GLFW_GREEN_BITS;
+import static com.badlogic.jglfw.Glfw.GLFW_RED_BITS;
+import static com.badlogic.jglfw.Glfw.GLFW_RESIZABLE;
+import static com.badlogic.jglfw.Glfw.GLFW_SAMPLES;
+import static com.badlogic.jglfw.Glfw.GLFW_STENCIL_BITS;
+import static com.badlogic.jglfw.Glfw.GLFW_UNDECORATED;
+import static com.badlogic.jglfw.Glfw.GLFW_VISIBLE;
+import static com.badlogic.jglfw.Glfw.glfwCreateWindow;
+import static com.badlogic.jglfw.Glfw.glfwDestroyWindow;
+import static com.badlogic.jglfw.Glfw.glfwExtensionSupported;
+import static com.badlogic.jglfw.Glfw.glfwGetInputMode;
+import static com.badlogic.jglfw.Glfw.glfwGetMonitors;
+import static com.badlogic.jglfw.Glfw.glfwGetPrimaryMonitor;
+import static com.badlogic.jglfw.Glfw.glfwGetVideoMode;
+import static com.badlogic.jglfw.Glfw.glfwGetVideoModes;
+import static com.badlogic.jglfw.Glfw.glfwGetWindowMonitor;
+import static com.badlogic.jglfw.Glfw.glfwHideWindow;
+import static com.badlogic.jglfw.Glfw.glfwIconifyWindow;
+import static com.badlogic.jglfw.Glfw.glfwMakeContextCurrent;
+import static com.badlogic.jglfw.Glfw.glfwRestoreWindow;
+import static com.badlogic.jglfw.Glfw.glfwSetInputMode;
+import static com.badlogic.jglfw.Glfw.glfwSetWindowPos;
+import static com.badlogic.jglfw.Glfw.glfwSetWindowSize;
+import static com.badlogic.jglfw.Glfw.glfwSetWindowTitle;
+import static com.badlogic.jglfw.Glfw.glfwShowWindow;
+import static com.badlogic.jglfw.Glfw.glfwSwapBuffers;
+import static com.badlogic.jglfw.Glfw.glfwSwapInterval;
+import static com.badlogic.jglfw.Glfw.glfwWindowHint;
+
+import java.awt.Toolkit;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -31,8 +64,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
 import com.badlogic.jglfw.gl.GL;
-
-import java.awt.Toolkit;
 
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
@@ -57,8 +88,6 @@ public class JglfwGraphics implements Graphics {
 	private int frames, fps;
 
 	private GLCommon gl;
-	private JglfwGL10 gl10;
-	private JglfwGL11 gl11;
 	private JglfwGL20 gl20;
 
 	public JglfwGraphics (JglfwApplicationConfiguration config) {
@@ -83,25 +112,13 @@ public class JglfwGraphics implements Graphics {
 		}
 
 		// Create GL.
-		String version = GL.glGetString(GL11.GL_VERSION);
+		String version = GL.glGetString(GL20.GL_VERSION);
 		glMajorVersion = Integer.parseInt("" + version.charAt(0));
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
-		if (config.useGL20 && (glMajorVersion >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
-			gl20 = new JglfwGL20();
-			gl = gl20;
-		} else {
-			gl20 = null;
-			if (glMajorVersion == 1 && glMinorVersion < 5)
-				gl10 = new JglfwGL10();
-			else {
-				gl11 = new JglfwGL11();
-				gl10 = gl11;
-			}
-			gl = gl10;
-		}
+		if(glMajorVersion < 2)  throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		gl20 = new JglfwGL20();
+		gl = gl20;
 		Gdx.gl = gl;
-		Gdx.gl10 = gl10;
-		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
 
 		if (!config.hidden) show();
@@ -180,24 +197,12 @@ public class JglfwGraphics implements Graphics {
 		this.y = y;
 	}
 
-	public boolean isGL11Available () {
-		return gl11 != null;
-	}
-
 	public boolean isGL20Available () {
 		return gl20 != null;
 	}
 
 	public GLCommon getGLCommon () {
 		return gl;
-	}
-
-	public GL10 getGL10 () {
-		return gl10;
-	}
-
-	public GL11 getGL11 () {
-		return gl11;
 	}
 
 	public GL20 getGL20 () {
@@ -370,7 +375,7 @@ public class JglfwGraphics implements Graphics {
 		glfwShowWindow(window);
 
 		Gdx.gl.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b, initialBackgroundColor.a);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(window);
 	}
 

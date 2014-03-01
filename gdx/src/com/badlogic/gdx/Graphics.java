@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx;
 
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -110,20 +108,6 @@ public interface Graphics {
 		}
 	}
 
-	/** Returns whether OpenGL ES 1.1 is available. If it is you can get an instance of {@link GL11} via {@link #getGL11()} to
-	 * access OpenGL ES 1.1 functionality. This also implies that {@link #getGL10()} will return an instance.
-	 * 
-	 * @return whether OpenGL ES 1.1 is available */
-	public boolean isGL11Available ();
-
-	/** Returns whether OpenGL ES 2.0 is available. If it is you can get an instance of {@link GL20} via {@link #getGL20()} to
-	 * access OpenGL ES 2.0 functionality. Note that this functionality will only be available if you instructed the
-	 * {@link Application} instance to use OpenGL ES 2.0!
-	 * 
-	 * @return whether OpenGL ES 2.0 is available */
-	public boolean isGL20Available ();
-	
-
 	/** Returns whether OpenGL ES 3.0 is available. If it is you can get an instance of {@link GL30} via {@link #getGL30()} to
 	 * access OpenGL ES 3.0 functionality. Note that this functionality will only be available if you instructed the
 	 * {@link Application} instance to use OpenGL ES 3.0!
@@ -134,16 +118,10 @@ public interface Graphics {
 	/** @return a {@link GLCommon} instance */
 	public GLCommon getGLCommon ();
 
-	/** @return the {@link GL10} instance or null if not supported */
-	public GL10 getGL10 ();
-
-	/** @return the {@link GL11} instance or null if not supported */
-	public GL11 getGL11 ();
-
-	/** @return the {@link GL20} instance or null if not supported */
+	/** @return the {@link GL20} instance */
 	public GL20 getGL20 ();
 	
-	/** @return the {@link GL30} instane or null if not supported */
+	/** @return the {@link GL30} instance or null if not supported */
 	public GL30 getGL30 ();
 
 	/** @return the (@link GL30} instance or null if not supported */

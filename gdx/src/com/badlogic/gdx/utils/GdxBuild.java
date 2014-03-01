@@ -33,9 +33,6 @@ public class GdxBuild {
 		// generate C/C++ code
 		new NativeCodeGenerator().generate("src", "bin", JNI_DIR, new String[] {"**/*"}, null);
 		
-		// generate iOS GL ES 1.x bindings
-		new NativeCodeGenerator().generate("../backends/gdx-backend-robovm/src", "../backends/gdx-backend-robovm/bin", JNI_DIR + "/iosgl", new String[] {"**/IOSGLES10.java"}, null);
-		
 		String[] excludeCpp = { "android/**", "iosgl/**" };
 		
 		// generate build scripts, for win32 only

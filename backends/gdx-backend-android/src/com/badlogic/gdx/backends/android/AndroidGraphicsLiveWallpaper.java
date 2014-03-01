@@ -22,6 +22,7 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -36,12 +37,8 @@ import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
@@ -65,8 +62,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	AndroidLiveWallpaper app;
 	
 	protected GLCommon gl;
-	protected GL10 gl10;
-	protected GL11 gl11;
 	protected GL20 gl20;
 	protected GL30 gl30;
 	protected GLU glu;
@@ -100,7 +95,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper app, AndroidApplicationConfiguration config, ResolutionStrategy resolutionStrategy) {
 		this.config = config;
 		this.app = app;
-		view = createGLSurfaceView(app.service, config.useGL20, resolutionStrategy);
+		view = createGLSurfaceView(app.service, resolutionStrategy);
 		setPreserveContext(view);
 	}
 	
@@ -143,152 +138,35 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	// Grabbed from original AndroidGraphics class, with modifications:
 	//	+ overrided getHolder in created GLSurfaceView instances
 	// + Activity changed to Context (as it should be in AndroidGraphics I think;p)
-	private View createGLSurfaceView (Context context, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (Context context, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
-		if (useGL2 && checkGL20()) {
-			GLSurfaceView20 view = new GLSurfaceView20(context, resolutionStrategy) {
-				// -> specific for live wallpapers
-				@Override
-				public SurfaceHolder getHolder () {
-					return getSurfaceHolder();
-				}
-				public void onDestroy () {
-					onDetachedFromWindow();	// calls GLSurfaceView.mGLThread.requestExitAndWait();
-				}
-				// <- specific for live wallpapers
-			};
-			
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		} else {
-			config.useGL20 = false;
-			configChooser = getEglConfigChooser();
-			int sdkVersion = android.os.Build.VERSION.SDK_INT;
+		if(!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
 
-			if (sdkVersion >= 11) {
-				GLSurfaceView view = new GLSurfaceView(context) {
-					@Override
-					protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
-						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec,
-							heightMeasureSpec);
-						setMeasuredDimension(measures.width, measures.height);
-					}
-					// -> specific for live wallpapers
-					@Override
-					public SurfaceHolder getHolder () {
-						return getSurfaceHolder();
-					}
-					public void onDestroy () {
-						onDetachedFromWindow();	// calls GLSurfaceView.mGLThread.requestExitAndWait();
-					}
-					// <- specific for live wallpapers
-				};
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
-			} else {
-				if (config.useGLSurfaceViewAPI18) {
-					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(context, resolutionStrategy) {
-						// -> specific for live wallpapers
-						@Override
-						public SurfaceHolder getHolder () {
-							return getSurfaceHolder();
-						}
-						// <- specific for live wallpapers
-					};
-					if (configChooser != null)
-						view.setEGLConfigChooser(configChooser);
-					else
-						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-					view.setRenderer(this);
-					return view;
-				}
-				else {
-					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(context, resolutionStrategy) {
-						// -> specific for live wallpapers
-						@Override
-						public SurfaceHolder getHolder () {
-							return getSurfaceHolder();
-						}
-						// <- specific for live wallpapers
-					};
-					if (configChooser != null)
-						view.setEGLConfigChooser(configChooser);
-					else
-						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-					view.setRenderer(this);
-					return view;
-				}
+		GLSurfaceView20 view = new GLSurfaceView20(context, resolutionStrategy) {
+			// -> specific for live wallpapers
+			@Override
+			public SurfaceHolder getHolder () {
+				return getSurfaceHolder();
 			}
-		}
+			public void onDestroy () {
+				onDetachedFromWindow();	// calls GLSurfaceView.mGLThread.requestExitAndWait();
+			}
+			// <- specific for live wallpapers
+		};
+		
+		if (configChooser != null)
+			view.setEGLConfigChooser(configChooser);
+		else
+			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+		view.setRenderer(this);
+		return view;		
 	}
-	
-	
-	// jw: old implementation, makes use of GL..SurfaceViewLW
-	/*
-	private GLBaseSurfaceViewLW createGLSurfaceView (AndroidLiveWallpaper app, boolean useGL2,
-		ResolutionStrategy resolutionStrategy) {
-
-		// jw: synchronized with original AndroidGraphics 
-		EGLConfigChooser configChooser = getEglConfigChooser();
-
-		if (useGL2 && checkGL20()) {
-			GLSurfaceView20LW view = new GLSurfaceView20LW(app.getService(), resolutionStrategy);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		} else {
-			config.useGL20 = false;
-			configChooser = getEglConfigChooser();
-
-			GLBaseSurfaceViewLW view = new DefaultGLSurfaceViewLW(app.getService(), resolutionStrategy);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		}
-	}*/
-	
 	
 	// jw: changed, method replaced with implementation from original AndroidGraphics
 	private EGLConfigChooser getEglConfigChooser () {
-		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
-			config.useGL20);
+		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
-	
-	/*
-	private EGLConfigChooser getEglConfigChooser () {
-		if (!Build.DEVICE.equalsIgnoreCase("GT-I7500"))
-			return null;
-		else
-			return new android.opengl.GLSurfaceView.EGLConfigChooser() {
-
-				public EGLConfig chooseConfig (EGL10 egl, EGLDisplay display) {
-
-					// Ensure that we get a 16bit depth-buffer. Otherwise, we'll
-					// fall
-					// back to Pixelflinger on some device (read: Samsung I7500)
-					int[] attributes = new int[] {EGL10.EGL_DEPTH_SIZE, 16, EGL10.EGL_NONE};
-					EGLConfig[] configs = new EGLConfig[1];
-					int[] result = new int[1];
-					egl.eglChooseConfig(display, attributes, configs, 1, result);
-					return configs[0];
-				}
-			};
-	}*/
 
 	private void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
@@ -325,18 +203,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 
 	/** {@inheritDoc} */
 	@Override
-	public GL10 getGL10 () {
-		return gl10;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GL11 getGL11 () {
-		return gl11;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public GL20 getGL20 () {
 		return gl20;
 	}
@@ -353,18 +219,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		return width;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isGL11Available () {
-		return gl11 != null;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isGL20Available () {
-		return gl20 != null;
-	}
-	
 	private static boolean isPowerOfTwo(int value) {
 		return ((value != 0) && (value & (value - 1)) == 0);
 	}
@@ -375,43 +229,13 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		if (gl10 != null || gl20 != null) return;
-
-		// jw: disabled
-		//boolean isGL20 = checkGL20();
-		//Gdx.app.log("AndroidGraphics", "GL20: " + isGL20);
-
-		// jw: changed
-		//if (view instanceof GLSurfaceView20LW) {
-		if (view instanceof GLSurfaceView20) {
-			gl20 = new AndroidGL20();
-			this.gl = gl20;
-		} else {
-			gl10 = new AndroidGL10(gl);
-			this.gl = gl10;
-			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
-				String renderer = gl.glGetString(GL10.GL_RENDERER);
-				if (renderer != null) { // silly GT-I7500
-					if (!renderer.toLowerCase().contains("pixelflinger")
-						&& !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220") || android.os.Build.MODEL
-							.contains("Behold"))) {
-						gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
-						gl10 = gl11;
-					}
-				}
-			}
-		}
+		if (gl20 != null) return;
+		
+		gl20 = new AndroidGL20();
+		this.gl = gl20;
 
 		Gdx.gl = this.gl;
-		Gdx.gl10 = gl10;
-		Gdx.gl11 = gl11;
 		Gdx.gl20 = gl20;
-
-		// moved to logConfig
-		//Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
-		//Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
-		//Gdx.app.log("AndroidGraphics", "OGL version: " + gl.glGetString(GL10.GL_VERSION));
-		//Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
 	}
 
 	@Override
@@ -620,7 +444,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		// error in renderer
 		// jw: this hack is not working always, renderer ends with error for some devices - because of uninitialized gl context
 		// jw: now it shouldn't be necessary - after wallpaper backend refactoring:)
-		if (lrunning && (Gdx.graphics.getGL10() != null || Gdx.graphics.getGL11() != null || Gdx.graphics.getGL20() != null)) {
+		if (lrunning && (Gdx.graphics.getGL20() != null)) {
 
 			// jw: changed
 			synchronized (app.runnables) {
@@ -806,9 +630,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			// jw: changed
 			//view.setRenderMode(renderMode);
-			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
-			else if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
-			else if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			else throw new RuntimeException("unimplemented");
 			mean.clear();
 		}
@@ -823,9 +645,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		if (view != null) {
 			// jw: changed
 			//view.requestRender();
-			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
-			else if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
-			else if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 			else throw new RuntimeException("unimplemented");
 		}
 	}
