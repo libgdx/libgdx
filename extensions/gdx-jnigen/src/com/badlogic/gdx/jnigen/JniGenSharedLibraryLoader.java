@@ -37,6 +37,7 @@ import java.util.zip.ZipFile;
 public class JniGenSharedLibraryLoader {
 	private static Set<String> loadedLibraries = new HashSet<String>();
 	private String nativesJar;
+	private SharedLibraryFinder libraryFinder;
 
 	public JniGenSharedLibraryLoader () {
 	}
@@ -45,6 +46,20 @@ public class JniGenSharedLibraryLoader {
 	 * @param nativesJar */
 	public JniGenSharedLibraryLoader (String nativesJar) {
 		this.nativesJar = nativesJar;
+	}
+
+	/** Fetches the natives from the given natives jar file. Used for testing a shared lib on the fly, see MyJniClass.
+	 * @param nativesJar
+	 * @param libraryFinder A custom libraryfinder, which enables the use of different dynamic libs naming. */
+	public JniGenSharedLibraryLoader (String nativesJar, SharedLibraryFinder libraryFinder) {
+		this.nativesJar = nativesJar;
+		this.libraryFinder = libraryFinder;
+	}
+
+	/** Setting a SharedLibraryFinder enables you to load libraries according to a nondefault natives jar layout or library names.
+	 * @param libraryFinder */
+	public void setSharedLibraryFinder (SharedLibraryFinder libraryFinder) {
+		this.libraryFinder = libraryFinder;
 	}
 
 	/** Returns a CRC of the remaining bytes in the stream. */
@@ -68,6 +83,8 @@ public class JniGenSharedLibraryLoader {
 	}
 
 	private boolean loadLibrary (String sharedLibName) {
+		if (sharedLibName == null) return false;
+
 		String path = extractLibrary(sharedLibName);
 		if (path != null) System.load(path);
 		return path != null;
@@ -77,7 +94,7 @@ public class JniGenSharedLibraryLoader {
 		String srcCrc = crc(JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName));
 		File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/jnigen/" + srcCrc);
 		File nativeFile = new File(nativesDir, sharedLibName);
-		
+
 		String extractedCrc = null;
 		if (nativeFile.exists()) {
 			try {
@@ -85,8 +102,8 @@ public class JniGenSharedLibraryLoader {
 			} catch (FileNotFoundException ignored) {
 			}
 		}
-		
-		if(extractedCrc == null || !extractedCrc.equals(srcCrc)) {
+
+		if (extractedCrc == null || !extractedCrc.equals(srcCrc)) {
 			try {
 				// Extract native from classpath to temp dir.
 				InputStream input = null;
@@ -95,7 +112,7 @@ public class JniGenSharedLibraryLoader {
 				else
 					input = getFromJar(nativesJar, sharedLibName);
 				if (input == null) return null;
-				nativesDir.mkdirs();
+				nativeFile.getParentFile().mkdirs();
 				FileOutputStream output = new FileOutputStream(nativeFile);
 				byte[] buffer = new byte[4096];
 				while (true) {
@@ -141,22 +158,48 @@ public class JniGenSharedLibraryLoader {
 
 		boolean loaded = false;
 		if (isWindows) {
-			if (!is64Bit)
+			if (libraryFinder != null)
+				try {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameWindows(sharedLibName, is64Bit, new ZipFile(nativesJar)));
+				} catch (IOException e) {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameWindows(sharedLibName, is64Bit, null));
+				}
+			else if (!is64Bit)
 				loaded = loadLibrary(sharedLibName + ".dll");
 			else
 				loaded = loadLibrary(sharedLibName + "64.dll");
 		}
 		if (isLinux) {
-			if (!is64Bit)
+			if (libraryFinder != null)
+				try {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, new ZipFile(nativesJar)));
+				} catch (IOException e) {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, null));
+				}
+			else if (!is64Bit)
 				loaded = loadLibrary("lib" + sharedLibName + ".so");
 			else
 				loaded = loadLibrary("lib" + sharedLibName + "64.so");
 		}
 		if (isMac) {
-			loaded = loadLibrary("lib" + sharedLibName + ".dylib");
+			if (libraryFinder != null)
+				try {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, new ZipFile(nativesJar)));
+				} catch (IOException e) {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, null));
+				}
+			else
+				loaded = loadLibrary("lib" + sharedLibName + ".dylib");
 		}
 		if (isAndroid) {
-			System.loadLibrary(sharedLibName);
+			if (libraryFinder != null)
+				try {
+					System.loadLibrary(libraryFinder.getSharedLibraryNameAndroid(sharedLibName, new ZipFile(nativesJar)));
+				} catch (IOException e) {
+					loaded = loadLibrary(libraryFinder.getSharedLibraryNameAndroid(sharedLibName, null));
+				}
+			else
+				System.loadLibrary(sharedLibName);
 			loaded = true;
 		}
 		if (loaded) loadedLibraries.add(sharedLibName);
