@@ -124,8 +124,6 @@ public interface Graphics {
 	/** @return the {@link GL30} instance or null if not supported */
 	public GL30 getGL30 ();
 
-	/** @return the (@link GL30} instance or null if not supported */
-	
 	/** @return the width in pixels of the display surface */
 	public int getWidth ();
 

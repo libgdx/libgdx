@@ -170,7 +170,13 @@ public class LwjglGraphics implements Graphics {
 		try {
 			if(config.useGL30) {
 				ContextAttribs context = new ContextAttribs(3, 2).withForwardCompatible(false).withProfileCore(true);
-				Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+				try {
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+				} catch(Exception e) {
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
+				}
+				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
 			} else {
 				Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
 			}

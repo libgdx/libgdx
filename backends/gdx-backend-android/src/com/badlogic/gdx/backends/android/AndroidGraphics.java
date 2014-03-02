@@ -582,7 +582,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	@Override
 	public GL30 getGL30 () {
-		// TODO Auto-generated method stub
 		return gl30;
 	}
 }
