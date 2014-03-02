@@ -69,7 +69,6 @@ public class LwjglTestStarter extends JFrame {
 		config.width = 640;
 		config.height = 480;
 		config.title = testName;
-		config.useGL20 = test.needsGL20();
 		config.forceExit = false;
 		new LwjglApplication(test, config);
 		return true;

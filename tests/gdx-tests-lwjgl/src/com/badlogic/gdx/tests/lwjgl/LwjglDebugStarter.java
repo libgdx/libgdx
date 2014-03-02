@@ -16,15 +16,9 @@
 
 package com.badlogic.gdx.tests.lwjgl;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
-import com.badlogic.gdx.tests.FullscreenTest;
 import com.badlogic.gdx.tests.Scene2dTest;
-import com.badlogic.gdx.tests.UBJsonTest;
-import com.badlogic.gdx.tests.UtfFontTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -38,7 +32,6 @@ public class LwjglDebugStarter {
 
 		GdxTest test = new Scene2dTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = test.needsGL20();
 //		config.width = 320;
 //		config.height = 241;
 		new LwjglApplication(test, config);

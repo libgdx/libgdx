@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -40,11 +40,6 @@ import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MipMapTest extends GdxTest {
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 	PerspectiveCamera camera;
 	PerspectiveCamController controller;
 	Mesh mesh;
@@ -118,8 +113,8 @@ public class MipMapTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
 		camera.update();
 
@@ -130,7 +125,7 @@ public class MipMapTest extends GdxTest {
 		shader.begin();
 		shader.setUniformMatrix("u_projTrans", camera.combined);
 		shader.setUniformi("s_texture", 0);
-		mesh.render(shader, GL10.GL_TRIANGLE_FAN);
+		mesh.render(shader, GL20.GL_TRIANGLE_FAN);
 		shader.end();
 
 		ui.act();

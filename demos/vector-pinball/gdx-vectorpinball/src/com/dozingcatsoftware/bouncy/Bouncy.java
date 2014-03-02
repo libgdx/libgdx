@@ -4,7 +4,7 @@ package com.dozingcatsoftware.bouncy;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.WindowedMean;
@@ -42,7 +42,7 @@ public class Bouncy extends InputAdapter implements ApplicationListener {
 		field.tick((long)(Gdx.graphics.getDeltaTime() * 3000), 4);
 		physicsMean.addValue((TimeUtils.nanoTime() - startPhysics) / 1000000000.0f);
 
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		cam.viewportWidth = field.getWidth();
 		cam.viewportHeight = field.getHeight();
 		cam.position.set(field.getWidth() / 2, field.getHeight() / 2, 0);

@@ -37,10 +37,6 @@ public class RunnablePostTest extends GdxTest {
 		}
 	};
 	
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 	
 	public void create () {
 		Thread.setDefaultUncaughtExceptionHandler(exHandler);		

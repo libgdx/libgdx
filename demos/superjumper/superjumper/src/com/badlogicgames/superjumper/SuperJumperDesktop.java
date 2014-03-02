@@ -20,6 +20,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public class SuperJumperDesktop {
 	public static void main (String[] argv) {
-		new LwjglApplication(new SuperJumper(), "Super Jumper", 320, 480, false);
+		new LwjglApplication(new SuperJumper(), "Super Jumper", 320, 480);
 	}
 }

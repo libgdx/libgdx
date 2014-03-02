@@ -26,7 +26,6 @@ import java.util.Arrays;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -458,7 +457,7 @@ public class FilesTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
@@ -469,10 +468,4 @@ public class FilesTest extends GdxTest {
 		batch.dispose();
 		font.dispose();
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 }

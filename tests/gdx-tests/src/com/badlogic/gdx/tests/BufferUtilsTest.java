@@ -34,11 +34,6 @@ public class BufferUtilsTest extends GdxTest {
 	static final int NUM_MB = 5;
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
 	public void create () {
 		ByteBuffer bytebuffer = BufferUtils.newUnsafeByteBuffer(1000 * 1000);
 		BufferUtils.disposeUnsafeByteBuffer(bytebuffer);

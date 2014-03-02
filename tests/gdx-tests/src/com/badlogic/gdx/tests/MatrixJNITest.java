@@ -25,11 +25,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class MatrixJNITest extends GdxTest {
 	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
 	public void create () {
 		Matrix4 mat1 = new Matrix4();
 		Matrix4 mat2 = new Matrix4();
