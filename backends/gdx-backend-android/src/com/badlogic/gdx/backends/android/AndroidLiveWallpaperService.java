@@ -14,9 +14,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.service.wallpaper.WallpaperService;
