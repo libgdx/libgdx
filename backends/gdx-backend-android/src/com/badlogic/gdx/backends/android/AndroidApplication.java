@@ -19,9 +19,6 @@ package com.badlogic.gdx.backends.android;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
