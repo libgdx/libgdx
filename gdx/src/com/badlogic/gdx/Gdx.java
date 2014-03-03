@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.GLCommon;
  * static access to all sub systems. It is your responsiblity to keep things thread safe. Don't use Graphics in a thread that is
  * not the rendering thread or things will go crazy. Really.
  * <p>
- * There's also references to {@link GLCommon, {@link GL20} and {@link GL30}. The same rules as above apply. Don't
+ * There's also references to {@link GLCommon}, {@link GL20} and {@link GL30}. The same rules as above apply. Don't
  * mess with this or things will break!
  * <p>
  * This is kind of messy but better than throwing around Graphics and similar instances. I'm aware of the design faux pas.
