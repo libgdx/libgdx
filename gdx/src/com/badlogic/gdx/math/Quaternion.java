@@ -259,7 +259,12 @@ public class Quaternion implements Serializable {
 	public Quaternion idt () {
 		return this.set(0, 0, 0, 1);
 	}
-
+	
+	/** @return If this quaternion is an identity Quaternion */
+	public boolean isIdentity(){
+		return x == 0 && y==0 && z==0 && w==1;
+	}
+	
 	// todo : the setFromAxis(v3,float) method should replace the set(v3,float) method
 	/** Sets the quaternion components from the given axis and angle around that axis.
 	 * 
