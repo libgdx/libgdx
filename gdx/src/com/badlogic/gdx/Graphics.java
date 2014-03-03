@@ -112,7 +112,7 @@ public interface Graphics {
 	 * access OpenGL ES 3.0 functionality. Note that this functionality will only be available if you instructed the
 	 * {@link Application} instance to use OpenGL ES 3.0!
 	 * 
-	 * @return whether OpenGL ES 2.0 is available */
+	 * @return whether OpenGL ES 3.0 is available */
 	public boolean isGL30Available ();
 
 	/** @return a {@link GLCommon} instance */
