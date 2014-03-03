@@ -30,7 +30,7 @@ import com.badlogic.gdx.graphics.glutils.VertexBufferObject;
 
 /** <p>
  * This interface encapsulates communication with the graphics processor. Depending on the available hardware and the current
- * {@link Application} configuration, access to the {@link GL10}, {@link GL11}, {@link GL20}, and/or {@link GLCommon} are provided
+ * {@link Application} configuration, access to the {@link GL20}, {@link GL30}, and/or {@link GLCommon} are provided
  * here.
  * </p>
  * 
