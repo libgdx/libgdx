@@ -363,9 +363,9 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			if (app.isFragment()) {
+//			if (app.isFragment()) {
 				((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
-			}
+//			}
 			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized (listeners) {
 				for (LifecycleListener listener : listeners) {
@@ -384,11 +384,11 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			}
 
 			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
-				try {
+//				try {
 					app.getExecutedRunnables().get(i).run();
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+//				} catch (Throwable t) {
+//					t.printStackTrace();
+//				}
 			}
 			((AndroidInput)app.getInput()).processEvents();
 			app.getApplicationListener().render();
