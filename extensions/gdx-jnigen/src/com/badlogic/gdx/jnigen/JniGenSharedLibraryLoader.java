@@ -39,6 +39,8 @@ public class JniGenSharedLibraryLoader {
 	private String nativesJar;
 	private SharedLibraryFinder libraryFinder;
 
+	private ZipFile nativesZip = null;
+
 	public JniGenSharedLibraryLoader () {
 	}
 
@@ -54,12 +56,26 @@ public class JniGenSharedLibraryLoader {
 	public JniGenSharedLibraryLoader (String nativesJar, SharedLibraryFinder libraryFinder) {
 		this.nativesJar = nativesJar;
 		this.libraryFinder = libraryFinder;
+		if (nativesJar != null) {
+			try {
+				nativesZip = new ZipFile(nativesJar);
+			} catch (IOException e) {
+				nativesZip = null;
+			}
+		}
 	}
 
 	/** Setting a SharedLibraryFinder enables you to load libraries according to a nondefault natives jar layout or library names.
 	 * @param libraryFinder */
 	public void setSharedLibraryFinder (SharedLibraryFinder libraryFinder) {
 		this.libraryFinder = libraryFinder;
+		if (nativesJar != null) {
+			try {
+				nativesZip = new ZipFile(nativesJar);
+			} catch (IOException e) {
+				nativesZip = null;
+			}
+		}
 	}
 
 	/** Returns a CRC of the remaining bytes in the stream. */
@@ -159,11 +175,7 @@ public class JniGenSharedLibraryLoader {
 		boolean loaded = false;
 		if (isWindows) {
 			if (libraryFinder != null)
-				try {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameWindows(sharedLibName, is64Bit, new ZipFile(nativesJar)));
-				} catch (IOException e) {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameWindows(sharedLibName, is64Bit, null));
-				}
+				loaded = loadLibrary(libraryFinder.getSharedLibraryNameWindows(sharedLibName, is64Bit, nativesZip));
 			else if (!is64Bit)
 				loaded = loadLibrary(sharedLibName + ".dll");
 			else
@@ -171,11 +183,7 @@ public class JniGenSharedLibraryLoader {
 		}
 		if (isLinux) {
 			if (libraryFinder != null)
-				try {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, new ZipFile(nativesJar)));
-				} catch (IOException e) {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, null));
-				}
+				loaded = loadLibrary(libraryFinder.getSharedLibraryNameLinux(sharedLibName, is64Bit, nativesZip));
 			else if (!is64Bit)
 				loaded = loadLibrary("lib" + sharedLibName + ".so");
 			else
@@ -183,21 +191,13 @@ public class JniGenSharedLibraryLoader {
 		}
 		if (isMac) {
 			if (libraryFinder != null)
-				try {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, new ZipFile(nativesJar)));
-				} catch (IOException e) {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, null));
-				}
+				loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, nativesZip));
 			else
 				loaded = loadLibrary("lib" + sharedLibName + ".dylib");
 		}
 		if (isAndroid) {
 			if (libraryFinder != null)
-				try {
-					System.loadLibrary(libraryFinder.getSharedLibraryNameAndroid(sharedLibName, new ZipFile(nativesJar)));
-				} catch (IOException e) {
-					loaded = loadLibrary(libraryFinder.getSharedLibraryNameAndroid(sharedLibName, null));
-				}
+				System.loadLibrary(libraryFinder.getSharedLibraryNameAndroid(sharedLibName, nativesZip));
 			else
 				System.loadLibrary(sharedLibName);
 			loaded = true;
