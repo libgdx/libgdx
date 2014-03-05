@@ -26,8 +26,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 
@@ -152,11 +150,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	/** 
 	 * Look at {@link AndroidLiveWallpaperService#initialize(ApplicationListener, AndroidApplicationConfiguration)}}
 	 * @param listener
-	 * @param useGL2IfAvailable
 	 */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
+	public void initialize (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
 		initialize(listener, config);
 	}
 

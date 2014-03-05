@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -94,7 +94,7 @@ public class ReflectionTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		font.drawMultiLine(batch, message, 20, Gdx.graphics.getHeight() - 20);
 		batch.end();
@@ -105,10 +105,4 @@ public class ReflectionTest extends GdxTest {
 		batch.dispose();
 		font.dispose();
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 }

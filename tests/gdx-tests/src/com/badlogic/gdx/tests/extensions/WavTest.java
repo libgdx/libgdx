@@ -66,9 +66,4 @@ public class WavTest extends GdxTest {
 		device.dispose();
 		decoder.dispose();
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 }

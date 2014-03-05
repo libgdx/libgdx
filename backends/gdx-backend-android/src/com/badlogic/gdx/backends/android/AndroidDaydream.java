@@ -18,6 +18,9 @@ package com.badlogic.gdx.backends.android;
 
 import java.util.Arrays;
 
+import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -41,10 +44,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -80,9 +79,8 @@ public class AndroidDaydream extends DreamService implements Application {
 	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
+	public void initialize (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
 		initialize(listener, config);
 	}
 
@@ -151,11 +149,9 @@ public class AndroidDaydream extends DreamService implements Application {
 	 * Note: you have to add the returned view to your layout!
 	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
 	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
+	public View initializeForView (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
 		return initializeForView(listener, config);
 	}
 
@@ -214,8 +210,6 @@ public class AndroidDaydream extends DreamService implements Application {
 		graphics.setContinuousRendering(isContinuous);
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 		}
 
@@ -234,8 +228,6 @@ public class AndroidDaydream extends DreamService implements Application {
 		((AndroidInput)getInput()).registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 		}
 

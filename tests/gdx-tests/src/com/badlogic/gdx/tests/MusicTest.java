@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,11 +26,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MusicTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	static final int NUM_STREAMS = 1;
 	Music[] music = new Music[NUM_STREAMS];
@@ -58,7 +53,7 @@ public class MusicTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
 // font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);

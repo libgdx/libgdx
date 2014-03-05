@@ -94,7 +94,7 @@ public class CharArray {
 
 	public void addAll (char[] array, int offset, int length) {
 		char[] items = this.items;
-		int sizeNeeded = size + length ;
+		int sizeNeeded = size + length;
 		if (sizeNeeded > items.length) items = resize(Math.max(8, (int)(sizeNeeded * 1.75f)));
 		System.arraycopy(array, offset, items, size, length);
 		size += length;
@@ -109,12 +109,12 @@ public class CharArray {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
-	
+
 	public void incr (int index, char value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] += value;
 	}
-	
+
 	public void mul (int index, char value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
@@ -327,5 +327,10 @@ public class CharArray {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #CharArray(char[]) */
+	static public CharArray with (char... array) {
+		return new CharArray(array);
 	}
 }

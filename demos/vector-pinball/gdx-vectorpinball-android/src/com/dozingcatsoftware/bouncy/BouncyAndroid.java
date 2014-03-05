@@ -10,6 +10,6 @@ public class BouncyAndroid extends AndroidApplication {
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initialize(new Bouncy(), false);
+		initialize(new Bouncy());
 	}
 }

@@ -163,4 +163,9 @@ public class SnapshotArray<T> extends Array<T> {
 		modified();
 		super.truncate(newSize);
 	}
+
+	/** @see #SnapshotArray(Object[]) */
+	static public <T> SnapshotArray<T> with (T... array) {
+		return new SnapshotArray(array);
+	}
 }

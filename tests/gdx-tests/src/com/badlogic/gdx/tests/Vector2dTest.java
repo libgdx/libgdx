@@ -18,14 +18,12 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Vector2dTest extends GdxTest {
@@ -55,7 +53,7 @@ public class Vector2dTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		renderer.setProjectionMatrix(camera.combined);
 		
@@ -104,10 +102,5 @@ public class Vector2dTest extends GdxTest {
 		int h = 10;
 		int w = (int)(h * ratio);
 		camera = new OrthographicCamera(w, h);
-	}
-	
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

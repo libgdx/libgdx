@@ -25,7 +25,6 @@ import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;

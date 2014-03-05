@@ -13,9 +13,13 @@
 
 package com.badlydrawngames.veryangryrobots;
 
+import static com.badlydrawngames.general.MathUtils.min;
+import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_HEIGHT;
+import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_WIDTH;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -38,9 +42,6 @@ import com.badlydrawngames.veryangryrobots.mobiles.GameObject;
 import com.badlydrawngames.veryangryrobots.mobiles.Player;
 import com.badlydrawngames.veryangryrobots.mobiles.PlayerShot;
 import com.badlydrawngames.veryangryrobots.mobiles.Robot;
-
-import static com.badlydrawngames.general.MathUtils.*;
-import static com.badlydrawngames.veryangryrobots.Assets.*;
 
 /** The <code>WorldView</code> displays the {@link World} on screen. It also provides the means by which the player can control the
  * game.
@@ -393,27 +394,27 @@ public class WorldView {
 	}
 
 	private void drawParticles () {
-		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		for (Particle particle : particleManager.getParticles()) {
 			if (particle.active) {
 				spriteBatch.setColor(particle.color);
 				spriteBatch.draw(Assets.pureWhiteTextureRegion, particle.x, particle.y, particle.size, particle.size);
 			}
 		}
-		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	private void drawFlyups () {
 		BitmapFont font = Assets.flyupFont;
 		float scale = font.getScaleX();
 		font.setScale(1.0f / Assets.pixelDensity);
-		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		for (Flyup flyup : flyupManager.flyups) {
 			if (flyup.active) {
 				font.draw(spriteBatch, flyup.scoreString, flyup.x, flyup.y);
 			}
 		}
-		spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		font.setScale(scale);
 	}
 

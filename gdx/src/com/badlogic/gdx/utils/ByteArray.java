@@ -328,4 +328,9 @@ public class ByteArray {
 		}
 		return buffer.toString();
 	}
+
+	/** @see #ByteArray(byte[]) */
+	static public ByteArray with (byte... array) {
+		return new ByteArray(array);
+	}
 }

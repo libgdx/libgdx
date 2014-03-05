@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
@@ -27,7 +26,6 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.Logger;
 
 public class ModelLoaderTest extends GdxTest {
 	AssetManager assets;
@@ -48,11 +46,6 @@ public class ModelLoaderTest extends GdxTest {
 		spriteBatch = new SpriteBatch();
 		modelBatch = new ModelBatch();
 //		assets.getLogger().setLevel(Logger.DEBUG);
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 
 	private void doneLoading() {

@@ -32,7 +32,6 @@ public class Daydream extends AndroidDaydream {
 		Log.i("Andrew", "hi");
 
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-		cfg.useGL20 = true;
 
 		setInteractive(false);
 

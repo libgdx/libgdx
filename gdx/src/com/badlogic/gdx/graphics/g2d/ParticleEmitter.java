@@ -20,7 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -231,7 +231,7 @@ public class ParticleEmitter {
 	}
 
 	public void draw (Batch batch) {
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		if (additive) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
@@ -239,7 +239,7 @@ public class ParticleEmitter {
 		for (int i = 0, n = active.length; i < n; i++)
 			if (active[i]) particles[i].draw(batch);
 
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (additive) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	/** Updates and draws the particles. This is slightly more efficient than calling {@link #update(float)} and
@@ -253,7 +253,7 @@ public class ParticleEmitter {
 		int deltaMillis = (int)accumulator;
 		accumulator -= deltaMillis;
 
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE);
+		if (additive) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
 		Particle[] particles = this.particles;
 		boolean[] active = this.active;
@@ -271,7 +271,7 @@ public class ParticleEmitter {
 		}
 		this.activeCount = activeCount;
 
-		if (additive) batch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		if (additive) batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;

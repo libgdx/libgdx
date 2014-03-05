@@ -36,8 +36,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -125,11 +123,7 @@ public class AndroidLiveWallpaper implements Application {
 		Arrays.fill(touched, false);
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake)
-				((GLSurfaceViewCupcake)graphics.view).onPause();
-			else if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onPause();
-			else if (graphics.view instanceof android.opengl.GLSurfaceView)
+			if (graphics.view instanceof android.opengl.GLSurfaceView)
 				((android.opengl.GLSurfaceView)graphics.view).onPause();
 			else
 				throw new RuntimeException("unimplemented");
@@ -152,11 +146,7 @@ public class AndroidLiveWallpaper implements Application {
 		// so I disabled it.
 		// if (!firstResume) // mentioned condition
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake)
-				((GLSurfaceViewCupcake)graphics.view).onResume();
-			else if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onResume();
-			else if (graphics.view instanceof android.opengl.GLSurfaceView)
+			if (graphics.view instanceof android.opengl.GLSurfaceView)
 				((android.opengl.GLSurfaceView)graphics.view).onResume();
 			else
 				throw new RuntimeException("unimplemented");

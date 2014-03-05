@@ -18,13 +18,12 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.g2d.BitmapFontCache;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -53,7 +52,7 @@ public class BitmapFontTest extends GdxTest {
 		int viewHeight = Gdx.graphics.getHeight();
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 
 		String text = "Sphinx of black quartz, judge my vow.";
@@ -116,10 +115,6 @@ public class BitmapFontTest extends GdxTest {
 		renderer.setColor(Color.BLACK);
 		renderer.rect(x, viewHeight - y, x + alignmentWidth, 300);
 		renderer.end();
-	}
-
-	public boolean needsGL20 () {
-		return false;
 	}
 
 	@Override

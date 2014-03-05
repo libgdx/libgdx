@@ -335,4 +335,9 @@ public class ShortArray {
 		}
 		return buffer.toString();
 	}
+
+	/** @see #ShortArray(short[]) */
+	static public ShortArray with (short... array) {
+		return new ShortArray(array);
+	}
 }

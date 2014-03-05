@@ -118,7 +118,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 
 		// initialize SoundManager2
-		SoundManager.init(GWT.getModuleBaseURL(), 9, true, new SoundManager.SoundManagerCallback(){
+		SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback(){
 
 			@Override
 			public void onready () {

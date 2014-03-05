@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -33,10 +33,6 @@ import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Disposable;
 
 public class PolygonRegionTest extends GdxTest {
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	PolygonSpriteBatch batch;
 	PolygonRegionDebugRenderer debugRenderer;
@@ -77,12 +73,10 @@ public class PolygonRegionTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.gl10;
-
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.gl.glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 
-		camera.apply(Gdx.gl10);
+		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();

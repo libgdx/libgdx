@@ -44,7 +44,7 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 		Button b2 = new Button(this);
 		b2.setText("New Window");
 		b2.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-		View view = initializeForView(this, false);
+		View view = initializeForView(this);
 
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);
@@ -89,8 +89,8 @@ public class WindowedTest extends AndroidApplication implements ApplicationListe
 
 	@Override
 	public void render () {
-		Gdx.graphics.getGL10().glClearColor(color.r, color.g, color.g, color.a);
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClearColor(color.r, color.g, color.g, color.a);
+		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 	}
 

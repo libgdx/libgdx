@@ -49,8 +49,8 @@ public class GdxSetup {
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
-        //core but gwt required
-        project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
+		//core but gwt required
+		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
 		
 		// desktop project
 		project.files.add(new ProjectFile("desktop/build.gradle"));
@@ -71,17 +71,19 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("android/proguard-project.txt", false));
 		project.files.add(new ProjectFile("android/project.properties", false));
 
-        //gwt project
-        project.files.add(new ProjectFile("gwt/build.gradle"));
-        project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
-        project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
-        project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/" + "index.html", true));
-        project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));
+		//gwt project
+		project.files.add(new ProjectFile("gwt/build.gradle"));
+		project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
+		project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
+		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/" + "index.html", true));
+		project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));
 
-        //ios robovm
-        project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-        project.files.add(new ProjectFile("ios/build.gradle"));
-
+		//ios robovm
+		project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
+		project.files.add(new ProjectFile("ios/build.gradle", false));
+		project.files.add(new ProjectFile("ios/Info.plist.xml", false));
+		project.files.add(new ProjectFile("ios/robovm.properties"));
+		project.files.add(new ProjectFile("ios/robovm.xml", false));
 
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);

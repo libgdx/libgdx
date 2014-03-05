@@ -117,9 +117,4 @@ public class FrameBufferTest extends GdxTest {
 		meshShader.dispose();
 	}
 
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 }

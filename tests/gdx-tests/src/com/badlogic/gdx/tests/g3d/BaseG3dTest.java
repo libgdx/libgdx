@@ -19,10 +19,8 @@ package com.badlogic.gdx.tests.g3d;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -31,7 +29,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 
@@ -72,13 +69,13 @@ public abstract class BaseG3dTest extends GdxTest {
 	private void createAxes() {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
-		MeshPartBuilder builder = modelBuilder.part("grid", GL10.GL_LINES, Usage.Position | Usage.Color, new Material());
+		MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, Usage.Position | Usage.Color, new Material());
 		builder.setColor(Color.LIGHT_GRAY);
 		for (float t = GRID_MIN; t <= GRID_MAX; t+=GRID_STEP) {
 			builder.line(t, 0, GRID_MIN, t, 0, GRID_MAX);
 			builder.line(GRID_MIN, 0, t, GRID_MAX, 0, t);
 		}
-		builder = modelBuilder.part("axes", GL10.GL_LINES, Usage.Position | Usage.Color, new Material());
+		builder = modelBuilder.part("axes", GL20.GL_LINES, Usage.Position | Usage.Color, new Material());
 		builder.setColor(Color.RED);
 		builder.line(0, 0, 0, 100, 0, 0);
 		builder.setColor(Color.GREEN);
@@ -113,7 +110,7 @@ public abstract class BaseG3dTest extends GdxTest {
 		inputController.update();
 		
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 		render(instances);

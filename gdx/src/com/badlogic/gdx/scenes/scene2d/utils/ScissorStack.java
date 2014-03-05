@@ -18,7 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -46,7 +46,7 @@ public class ScissorStack {
 
 		if (scissors.size == 0) {
 			if (scissor.width < 1 || scissor.height < 1) return false;
-			Gdx.gl.glEnable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 		} else {
 			// merge scissors
 			Rectangle parent = scissors.get(scissors.size - 1);
@@ -73,7 +73,7 @@ public class ScissorStack {
 	public static Rectangle popScissors () {
 		Rectangle old = scissors.pop();
 		if (scissors.size == 0)
-			Gdx.gl.glDisable(GL10.GL_SCISSOR_TEST);
+			Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		else {
 			Rectangle scissor = scissors.peek();
 			Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);

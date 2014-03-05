@@ -502,7 +502,6 @@ public class TiledMapPacker {
 		config.forceExit = false;
 		config.width = 100;
 		config.height = 50;
-		config.useGL20 = true;
 		config.title = "TiledMapPacker";
 		new LwjglApplication(new ApplicationListener() {
 

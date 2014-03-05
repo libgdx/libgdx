@@ -47,7 +47,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
-	private float[] vertices = new float[20];
 
 	public OrthogonalTiledMapRenderer(TiledMap map) {
 		super(map);
