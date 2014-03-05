@@ -1,10 +1,6 @@
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
-
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
 
 import android.app.Activity;
 import android.content.Context;
@@ -106,20 +102,15 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < 19) return;
 
-		View view = getApplicationWindow().getDecorView();
+		int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+		code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+		code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+		code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+		code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+		code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 		
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			m.invoke(view, code);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
-		}
+		View view = getApplicationWindow().getDecorView();
+		view.setSystemUiVisibility(code);
 	}
 	
   /** This method has to be called in the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method. 
@@ -169,14 +160,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       createWakeLock(config.useWakelock);
       useImmersiveMode(config.useImmersiveMode);
       if (config.useImmersiveMode && getVersion() >= 19) {
-			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
-				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
-				method.invoke(o, this);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
-			}
+      	new AndroidVisibilityListener().createListener(this);
 		}
       return graphics.getView();
   }

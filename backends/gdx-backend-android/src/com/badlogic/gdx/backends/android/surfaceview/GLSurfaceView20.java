@@ -70,7 +70,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		BaseInputConnection connection = new BaseInputConnection(this, false) {
 			@Override
 			public boolean deleteSurroundingText (int beforeLength, int afterLength) {
-				int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+				int sdkVersion = android.os.Build.VERSION.SDK_INT;
 				if (sdkVersion >= 16) {
 					/* In Jelly Bean, they don't send key events for delete.
 					 *  Instead, they send beforeLength = 1, afterLength = 0.

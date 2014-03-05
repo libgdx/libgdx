@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import javax.microedition.khronos.opengles.GL10;
@@ -137,14 +136,8 @@ public class AndroidDaydream extends DreamService implements Application {
 		if (!config.hideStatusBar || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
-
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
-			m.invoke(rootView, 0x1);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't hide status bar", e);
-		}
+		rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	}
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,

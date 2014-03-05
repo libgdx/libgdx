@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import android.app.Activity;
@@ -129,14 +128,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
-			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
-				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
-				method.invoke(o, this);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
-			}
+			new AndroidVisibilityListener().createListener(this);
 		}
 	}
 
@@ -157,14 +149,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		if (!hide || getVersion() < 11) return;
 
 		View rootView = getWindow().getDecorView();
-
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
-			m.invoke(rootView, 0x1);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't hide status bar", e);
-		}
+		rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+		rootView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
 	}
 
 	@Override
@@ -187,19 +173,15 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < 19) return;
 
+		int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+		code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+		code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+		code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+		code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+		code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+		
 		View view = getWindow().getDecorView();
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			m.invoke(view, code);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
-		}
+		view.setSystemUiVisibility(code);
 	}
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
@@ -254,14 +236,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		hideStatusBar(this.hideStatusBar);
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
-			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
-				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
-				method.invoke(o, this);
-			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
-			}
+			new AndroidVisibilityListener().createListener(this);
 		}
 		return graphics.getView();
 	}

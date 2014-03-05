@@ -173,7 +173,7 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 		
 		app.initialize(listener, config);
 		
-		if (config.getTouchEventsForLiveWallpaper && Integer.parseInt(android.os.Build.VERSION.SDK) >= 7)
+		if (config.getTouchEventsForLiveWallpaper)
 			linkedEngine.setTouchEventsEnabled(true);
 		
 		//onResume(); do not call it there

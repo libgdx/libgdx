@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -105,19 +103,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	private void setPreserveContext (Object view) {
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		if (sdkVersion >= 11 && view instanceof GLSurfaceView) {
-			try {
-				Method method = null;
-				for (Method m : view.getClass().getMethods()) {
-					if (m.getName().equals("setPreserveEGLContextOnPause")) {
-						method = m;
-						break;
-					}
-				}
-				if (method != null) {
-					method.invoke((GLSurfaceView)view, true);
-				}
-			} catch (Exception e) {
-			}
+			((GLSurfaceView) view).setPreserveEGLContextOnPause(true);
 		}
 	}
 
