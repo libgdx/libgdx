@@ -71,10 +71,8 @@ public interface AndroidApplicationBase extends Application {
 	/** Activates Android 4.4 KitKat's 'Immersive Mode' feature.
 	 * @param b Whether or not to use immersive mode */
 	void useImmersiveMode (boolean b);
-	
-	/**
-	 * Returns the Handler object created by the application
-	 * @return The {@link Handler} object created by the application
-	 */
-	Handler getHandler();
+
+	/** Returns the Handler object created by the application
+	 * @return The {@link Handler} object created by the application */
+	Handler getHandler ();
 }

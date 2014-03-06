@@ -122,12 +122,12 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
 			};
-			
+
 			ClickListener cancelListener = new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
-					Gdx.net.cancelHttpRequest(httpRequest);					
+					Gdx.net.cancelHttpRequest(httpRequest);
 					statusLabel.setText("Cancelling request " + httpRequest.getUrl());
 				}
 			};
@@ -136,7 +136,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.5f - btnCancel.getWidth() * 1.5f, 60f);
 			btnCancel.addListener(cancelListener);
 			stage.addActor(btnCancel);
-			
+
 			btnDownloadImage = new TextButton("GET Image", skin);
 			btnDownloadImage.setPosition(btnCancel.getX() + btnCancel.getWidth() + 10, 60f);
 			btnDownloadImage.addListener(clickListener);

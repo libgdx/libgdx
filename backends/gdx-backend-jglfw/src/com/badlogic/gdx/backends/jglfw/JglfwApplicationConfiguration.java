@@ -71,7 +71,7 @@ public class JglfwApplicationConfiguration {
 	public int hiddenFPS = -1;
 	/** Prefrences location on desktop. Default: current directory + ".prefs" */
 	public String preferencesLocation = ".prefs/";
-	
+
 	static public DisplayMode[] getDisplayModes () {
 		GraphicsDevice device = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		java.awt.DisplayMode desktopMode = device.getDisplayMode();

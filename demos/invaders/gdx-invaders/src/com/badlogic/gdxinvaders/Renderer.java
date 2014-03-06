@@ -63,14 +63,14 @@ public class Renderer {
 	Environment lights;
 
 	ModelBatch modelBatch;
-	
+
 	final Vector3 tmpV = new Vector3();
 
 	public Renderer () {
 		try {
 			lights = new Environment();
 			lights.add(new DirectionalLight().set(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()));
-			
+
 			spriteBatch = new SpriteBatch();
 			modelBatch = new ModelBatch();
 
@@ -94,16 +94,15 @@ public class Renderer {
 		gl.glEnable(GL20.GL_DEPTH_TEST);
 		gl.glEnable(GL20.GL_CULL_FACE);
 		setProjectionAndCamera(simulation.ship);
-		
+
 		modelBatch.begin(camera);
 		modelBatch.render(simulation.explosions);
-		if (!simulation.ship.isExploding)
-			modelBatch.render(simulation.ship, lights);
+		if (!simulation.ship.isExploding) modelBatch.render(simulation.ship, lights);
 		modelBatch.render(simulation.invaders, lights);
 		modelBatch.render(simulation.blocks);
 		modelBatch.render(simulation.shots);
 		modelBatch.end();
-		
+
 		gl.glDisable(GL20.GL_CULL_FACE);
 		gl.glDisable(GL20.GL_DEPTH_TEST);
 

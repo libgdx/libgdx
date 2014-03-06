@@ -16,43 +16,31 @@ package com.badlogic.gdx.backends.android;
 
 import com.badlogic.gdx.ApplicationListener;
 
-/**
- * Implement this listener in your libGDX application additionally to {@link ApplicationListener} if you want 
- * receive live wallpaper specific events, ex:
- * MyApplication implements ApplicationListener, AndroidWallpaperListener
+/** Implement this listener in your libGDX application additionally to {@link ApplicationListener} if you want receive live
+ * wallpaper specific events, ex: MyApplication implements ApplicationListener, AndroidWallpaperListener
  * 
- * Notice!
- * This callbacks will work only if app is running as android live wallpaper: 
- * you have to link application with AndroidLiveWallpaperService from
- * in gdx-android-backend
+ * Notice! This callbacks will work only if app is running as android live wallpaper: you have to link application with
+ * AndroidLiveWallpaperService from in gdx-android-backend
  * 
- * Notice libGDX developers!
- * If you do not like android specific classes in gdx backend, you can rename this class to for example:
- * com.badlogic.gdx.WallpaperListener so it will be 'generic' and not 'android specific', 
- * but besides of point of view the fact is that live wallpapers are available only on android devices so far.
+ * Notice libGDX developers! If you do not like android specific classes in gdx backend, you can rename this class to for example:
+ * com.badlogic.gdx.WallpaperListener so it will be 'generic' and not 'android specific', but besides of point of view the fact is
+ * that live wallpapers are available only on android devices so far.
  * 
- * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
- *
- */
+ * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com> */
 public interface AndroidWallpaperListener {
 
-	/**
-	 * Called on the rendering thread after the live wallpaper's offset had changed.
+	/** Called on the rendering thread after the live wallpaper's offset had changed.
 	 * @param xOffset
 	 * @param yOffset
 	 * @param xOffsetStep
 	 * @param yOffsetStep
 	 * @param xPixelOffset
-	 * @param yPixelOffset
-	 */
-	abstract void offsetChange (float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset, int yPixelOffset);
+	 * @param yPixelOffset */
+	abstract void offsetChange (float xOffset, float yOffset, float xOffsetStep, float yOffsetStep, int xPixelOffset,
+		int yPixelOffset);
 
-	/**
-	 * Called after 'isPreview' state had changed. First time called just after application initialization.
-	 * @param isPreview current status, save this value and update always when this method is called if you want
-	 * track live wallpaper isPreview status.
-	 * 
-	 * 
-	 */
+	/** Called after 'isPreview' state had changed. First time called just after application initialization.
+	 * @param isPreview current status, save this value and update always when this method is called if you want track live
+	 *           wallpaper isPreview status. */
 	abstract void previewStateChange (boolean isPreview);
 }

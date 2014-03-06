@@ -34,7 +34,6 @@ import com.badlogic.gdx.utils.Array;
 
 public class StagePerformanceTest extends GdxTest {
 
-
 	Texture texture;
 	TextureRegion[] regions;
 	Stage stage;

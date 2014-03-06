@@ -54,10 +54,10 @@ public class YDownTest extends GdxTest {
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		region.flip(false, true);
-		
+
 		// a texture atlas, note the boolean
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"), true);
-		
+
 		// a sprite, created from a region in the atlas
 		sprite = atlas.createSprite("badlogicsmall");
 		sprite.setPosition(0, 0);

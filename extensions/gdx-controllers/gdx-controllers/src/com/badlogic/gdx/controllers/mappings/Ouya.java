@@ -20,11 +20,8 @@ import java.lang.reflect.Field;
 
 import com.badlogic.gdx.controllers.Controller;
 
-/**
- * Button and axis indices for the OUYA {@link Controller}.
- * @author mzechner
- *
- */
+/** Button and axis indices for the OUYA {@link Controller}.
+ * @author mzechner */
 public class Ouya {
 	public static final String ID = "OUYA Game Controller";
 	public static final int BUTTON_O;
@@ -51,7 +48,7 @@ public class Ouya {
 	public static final float STICK_DEADZONE = 0.25F;
 	/** whether the app is running on a real Ouya device **/
 	public static final boolean runningOnOuya;
-	
+
 	static {
 		boolean isOuya = false;
 		try {
@@ -59,11 +56,11 @@ public class Ouya {
 			Field deviceField = buildClass.getDeclaredField("DEVICE");
 			Object device = deviceField.get(null);
 			isOuya = "ouya_1_1".equals(device) || "cardhu".equals(device);
-		} catch(Exception e) {
+		} catch (Exception e) {
 		}
 		runningOnOuya = isOuya;
-		
-		if(isOuya) {
+
+		if (isOuya) {
 			BUTTON_O = 96;
 			BUTTON_U = 99;
 			BUTTON_Y = 100;

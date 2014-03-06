@@ -117,14 +117,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		if(!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
 		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
 			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 		view.setRenderer(this);
-		return view;		
+		return view;
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {

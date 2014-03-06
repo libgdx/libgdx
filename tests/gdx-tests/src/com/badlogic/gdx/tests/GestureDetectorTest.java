@@ -72,7 +72,7 @@ public class GestureDetectorTest extends GdxTest implements ApplicationListener 
 			camera.position.add(-deltaX * camera.zoom, deltaY * camera.zoom, 0);
 			return false;
 		}
-		
+
 		@Override
 		public boolean panStop (float x, float y, int pointer, int button) {
 			Gdx.app.log("GestureDetectorTest", "pan stop at " + x + ", " + y);

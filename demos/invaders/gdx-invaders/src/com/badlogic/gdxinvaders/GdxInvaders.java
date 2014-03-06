@@ -27,11 +27,11 @@ import com.badlogic.gdxinvaders.screens.InvadersScreen;
 import com.badlogic.gdxinvaders.screens.MainMenu;
 
 public class GdxInvaders extends Game {
-	
+
 	/** Music needs to be a class property to prevent being disposed. */
 	private Music music;
 	private FPSLogger fps;
-	
+
 	@Override
 	public void render () {
 		InvadersScreen currentScreen = getScreen();
@@ -62,7 +62,7 @@ public class GdxInvaders extends Game {
 				}
 			}
 		}
-		
+
 		fps.log();
 	}
 
@@ -81,7 +81,7 @@ public class GdxInvaders extends Game {
 				return true;
 			}
 		});
-		
+
 		fps = new FPSLogger();
 	}
 

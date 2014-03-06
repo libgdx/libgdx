@@ -115,7 +115,7 @@ public class JglfwGraphics implements Graphics {
 		String version = GL.glGetString(GL20.GL_VERSION);
 		glMajorVersion = Integer.parseInt("" + version.charAt(0));
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
-		if(glMajorVersion < 2)  throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		if (glMajorVersion < 2) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
 		gl20 = new JglfwGL20();
 		gl = gl20;
 		Gdx.gl = gl;

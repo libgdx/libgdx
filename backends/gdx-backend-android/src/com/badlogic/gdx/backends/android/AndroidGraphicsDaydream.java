@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 /*******************************************************************************
@@ -132,14 +133,14 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	private View createGLSurfaceView (DreamService dream, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
-		if(!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
 		GLSurfaceView20 view = new GLSurfaceView20(dream, resolutionStrategy);
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
 			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 		view.setRenderer(this);
-		return view;		
+		return view;
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
@@ -334,7 +335,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		if(!resume) {
+		if (!resume) {
 			mean.addValue(deltaTime);
 		} else {
 			deltaTime = 0;
@@ -368,8 +369,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 		if (lresume) {
 			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.resume();
 				}
 			}
@@ -398,8 +399,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 		if (lpause) {
 			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.pause();
 				}
 			}
@@ -410,8 +411,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 		if (ldestroy) {
 			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.dispose();
 				}
 			}
