@@ -19,10 +19,10 @@ import com.badlogic.gdx.Screen;
  * @author mzechner */
 public abstract class InvadersScreen implements Screen {
 	/** Called when the screen should update itself, e.g. continue a simulation etc. */
-	public abstract void update (float delta);
+	protected abstract void update(float delta);
 
 	/** Called when a screen should render itself */
-	public abstract void draw (float delta);
+	protected abstract void draw(float delta);
 
 	/** Called by GdxInvaders to check whether the screen is done.
 	 * @return true when the screen is done, false otherwise */

@@ -19,7 +19,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 /** Entry point for desktop version of Gdx Invaders. Constructs an LwjglApplication and registers the renderer.
  * @author mzechner */
 public class GdxInvadersDesktop {
-	public static void main (String[] argv) {
+	public static void main (String[] args) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "Gdx Invaders";
 		config.vSyncEnabled = true;
