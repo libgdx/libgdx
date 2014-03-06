@@ -35,13 +35,13 @@ public class AndroidClipboard implements Clipboard {
 	 public String getContents () {
 		  if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 				android.text.ClipboardManager clipboard =
-					(ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
+					(ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 				if (clipboard.getText() == null)
 					 return null;
 				return clipboard.getText().toString();
 		  } else {
 				android.content.ClipboardManager clipboard =
-					(android.content.ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
+					(android.content.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 				ClipData clip = clipboard.getPrimaryClip();
 				if (clip == null)
 					 return null;
@@ -59,11 +59,11 @@ public class AndroidClipboard implements Clipboard {
 					 public void run () {
 						  if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
 								android.text.ClipboardManager clipboard =
-									(ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
+									(ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 								clipboard.setText(contents);
 						  } else {
 								android.content.ClipboardManager clipboard =
-									(android.content.ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
+									(android.content.ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
 								ClipData data = ClipData.newPlainText(contents, contents);
 								clipboard.setPrimaryClip(data);
 						  }
