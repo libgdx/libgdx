@@ -262,7 +262,13 @@ public class Quaternion implements Serializable {
 	
 	/** @return If this quaternion is an identity Quaternion */
 	public boolean isIdentity(){
-		return x == 0 && y==0 && z==0 && w==1;
+		return MathUtils.isZero(x) && MathUtils.isZero(y) && MathUtils.isZero(z) && MathUtils.isEqual(w, 1f);
+	}
+	
+	/** @return If this quaternion is an identity Quaternion */
+	public boolean isIdentity(float tolerance){
+		return 	MathUtils.isZero(x, tolerance) && MathUtils.isZero(y, tolerance) && 
+					MathUtils.isZero(z, tolerance) && MathUtils.isEqual(w, 1f, tolerance);
 	}
 	
 	// todo : the setFromAxis(v3,float) method should replace the set(v3,float) method

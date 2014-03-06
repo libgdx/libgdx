@@ -263,6 +263,22 @@ public class MathUtils {
 		return Math.abs(value) <= tolerance;
 	}
 	
+	/** Returns true if a is nearly equal to b.
+	 * The function uses the default floating error tolerance.
+	 * @param a the first value.
+	 * @param b the second value. */
+	static public boolean isEqual(float a, float b){
+		return Math.abs(a-b) <= FLOAT_ROUNDING_ERROR;
+	}
+	
+	/** Returns true if a is nearly equal to b.
+	 * @param a the first value.
+	 * @param b the second value. 
+	 * @param tolerance represent an upper bound below which the value is considered zero. */
+	static public boolean isEqual(float a, float b, float tolerance){
+		return Math.abs(a-b) <= tolerance;
+	}
+	
 	/** Returns the inverse square root of x (the code is based on Quake 3 version)*/
 	public static float fastInvSqrt(float x) {
 		float xHalf = 0.5F * x;
