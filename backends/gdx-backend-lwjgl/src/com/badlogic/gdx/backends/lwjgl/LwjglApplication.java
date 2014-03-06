@@ -86,7 +86,7 @@ public class LwjglApplication implements Application {
 		net = new LwjglNet();
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
-		
+
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
@@ -375,7 +375,7 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

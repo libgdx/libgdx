@@ -80,7 +80,16 @@ public class JglfwGraphics implements Graphics {
 		String version = GL.glGetString(GL20.GL_VERSION);
 		glMajorVersion = Integer.parseInt("" + version.charAt(0));
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
-		if (glMajorVersion < 2) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+
+		if (glMajorVersion <= 1)
+			throw new RuntimeException("libgdx requires OpenGL 2.0 or higher with FBO extension. OpenGL version: " + version);
+		if (glMajorVersion == 2 || version.contains("2.1")) {
+			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
+				throw new RuntimeException("libgdx requires OpenGL 2.0 or higher with FBO extension. OpenGL version: " + version
+					+ ", FBO extension: false");
+			}
+		}
+
 		gl20 = new JglfwGL20();
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;

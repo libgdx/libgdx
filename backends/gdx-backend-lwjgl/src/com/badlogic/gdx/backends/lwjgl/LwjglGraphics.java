@@ -161,19 +161,23 @@ public class LwjglGraphics implements Graphics {
 
 	private void createDisplayPixelFormat () {
 		try {
-			if(config.useGL30) {
+			if (config.useGL30) {
 				ContextAttribs context = new ContextAttribs(3, 2).withForwardCompatible(false).withProfileCore(true);
 				try {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
-				} catch(Exception e) {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
+						config.samples));
+				} catch (Exception e) {
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
+						config.samples));
 					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
 				}
 				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
 			} else {
-				Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+				Display
+					.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
 			}
-			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
+			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
+				false);
 		} catch (Exception ex) {
 			Display.destroy();
 			try {
@@ -229,8 +233,15 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if (!(major >= 2 || version.contains("2.1"))) throw new RuntimeException("libgdx requires OpenGL 2.1 or higher."); 
-		
+		if (major <= 1)
+			throw new RuntimeException("libgdx requires OpenGL 2.0 or higher with FBO extension. OpenGL version: " + version);
+		if (major == 2 || version.contains("2.1")) {
+			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
+				throw new RuntimeException("libgdx requires OpenGL 2.0 or higher with FBO extension. OpenGL version: " + version
+					+ ", FBO extension: false");
+			}
+		}
+
 		gl20 = new LwjglGL20();
 
 		Gdx.gl = gl20;
