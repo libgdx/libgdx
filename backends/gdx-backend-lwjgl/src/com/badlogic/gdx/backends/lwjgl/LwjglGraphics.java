@@ -16,6 +16,14 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
@@ -26,21 +34,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
 public class LwjglGraphics implements Graphics {
 	static int major, minor;
 
-	GLCommon gl;
 	GL20 gl20;
 	GL30 gl30;
 	float deltaTime = 0;
@@ -110,11 +108,6 @@ public class LwjglGraphics implements Graphics {
 
 	public int getFramesPerSecond () {
 		return fps;
-	}
-
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
 	}
 
 	void updateTime () {
@@ -236,12 +229,11 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if(!(major >= 2 || version.contains("2.1"))) throw new RuntimeException("Libgdx requires OpenGL 2.1"); 
+		if (!(major >= 2 || version.contains("2.1"))) throw new RuntimeException("libgdx requires OpenGL 2.1 or higher."); 
 		
 		gl20 = new LwjglGL20();
-		gl = gl20;
 
-		Gdx.gl = gl;
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 	}
 

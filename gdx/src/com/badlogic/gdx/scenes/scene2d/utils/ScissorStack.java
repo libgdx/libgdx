@@ -19,14 +19,13 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-/** A stack of {@link Rectangle} objects to be used for clipping via {@link GLCommon#glScissor(int, int, int, int)}. When a new
+/** A stack of {@link Rectangle} objects to be used for clipping via {@link GL20#glScissor(int, int, int, int)}. When a new
  * Rectangle is pushed onto the stack, it will be merged with the current top of stack. The minimum area of overlap is then set as
  * the real top of the stack.
  * @author mzechner */
@@ -37,7 +36,7 @@ public class ScissorStack {
 
 	/** Pushes a new scissor {@link Rectangle} onto the stack, merging it with the current top of the stack. The minimal area of
 	 * overlap between the top of stack rectangle and the provided rectangle is pushed onto the stack. This will invoke
-	 * {@link GLCommon#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
+	 * {@link GL20#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
 	 * this will also enable {@link GL20#GL_SCISSOR_TEST} automatically.
 	 * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
 	 *         no drawing should occur. */
@@ -106,7 +105,7 @@ public class ScissorStack {
 	 * an axis aligned {@link Rectangle}. The rectangle will get transformed by the camera and transform matrices and is then
 	 * projected to screen coordinates. Note that only axis aligned rectangles will work with this method. If either the Camera or
 	 * the Matrix4 have rotational components, the output of this method will not be suitable for
-	 * {@link GLCommon#glScissor(int, int, int, int)}.
+	 * {@link GL20#glScissor(int, int, int, int)}.
 	 * @param camera the {@link Camera}
 	 * @param batchTransform the transformation {@link Matrix4}
 	 * @param area the {@link Rectangle} to transform to window coordinates

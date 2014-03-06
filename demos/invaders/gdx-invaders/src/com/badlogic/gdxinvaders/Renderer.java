@@ -16,7 +16,6 @@ package com.badlogic.gdxinvaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -88,7 +87,7 @@ public class Renderer {
 	public void render (Simulation simulation, float delta) {
 		// We explicitly require GL10, otherwise we could've used the GLCommon
 		// interface via Gdx.gl
-		GLCommon gl = Gdx.gl;
+		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		renderBackground();
 		gl.glEnable(GL20.GL_DEPTH_TEST);

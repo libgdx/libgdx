@@ -16,14 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
@@ -41,12 +33,19 @@ import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
+
+import java.lang.reflect.Method;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -61,7 +60,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	int height;
 	AndroidLiveWallpaper app;
 
-	protected GLCommon gl;
 	protected GL20 gl20;
 	protected GL30 gl30;
 	protected GLU glu;
@@ -233,9 +231,8 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		if (gl20 != null) return;
 
 		gl20 = new AndroidGL20();
-		this.gl = gl20;
 
-		Gdx.gl = this.gl;
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 	}
 
@@ -307,11 +304,11 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 // every time when screen turns on and off)
 		if (!configLogged) {
 
-			if (gl != null) {
-				Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
-				Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
-				Gdx.app.log("AndroidGraphics", "OGL version: " + gl.glGetString(GL10.GL_VERSION));
-				Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
+			if (gl20 != null) {
+				Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl20.glGetString(GL10.GL_RENDERER));
+				Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl20.glGetString(GL10.GL_VENDOR));
+				Gdx.app.log("AndroidGraphics", "OGL version: " + gl20.glGetString(GL10.GL_VERSION));
+				Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl20.glGetString(GL10.GL_EXTENSIONS));
 				configLogged = true;
 			}
 
@@ -527,12 +524,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	// public GLBaseSurfaceViewLW getView () {
 	public View getView () {
 		return view;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
 	}
 
 	@Override
