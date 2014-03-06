@@ -28,13 +28,12 @@ import javax.swing.JFrame;
 public class LwjglFrame extends JFrame {
 	LwjglCanvas lwjglCanvas;
 
-	public LwjglFrame (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
+	public LwjglFrame (ApplicationListener listener, String title, int width, int height) {
 		super(title);
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = title;
 		config.width = width;
 		config.height = height;
-		config.useGL20 = useGL2;
 		construct(listener, config);
 	}
 

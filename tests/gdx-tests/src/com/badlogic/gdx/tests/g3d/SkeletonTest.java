@@ -19,14 +19,13 @@ package com.badlogic.gdx.tests.g3d;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -123,7 +122,7 @@ public class SkeletonTest extends BaseG3dHudTest {
 		instances.clear();
 		animationControllers.clear();
 		final ModelInstance instance = new ModelInstance(assets.get(currentlyLoading, Model.class));
-		instance.materials.get(0).set(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, 0.5f));
+		instance.materials.get(0).set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 0.5f));
 		instances.add(instance);
 		if (instance.animations.size > 0)
 			animationControllers.put(instance, new AnimationController(instance));
@@ -145,11 +144,6 @@ public class SkeletonTest extends BaseG3dHudTest {
 			animIndex = (animIndex + 1) % e.key.animations.size;
 			e.value.animate(e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
 		}
-	}
-	
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 	
 	@Override

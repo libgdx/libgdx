@@ -17,11 +17,13 @@
 package com.badlogic.gdx.backends.headless.mock.graphics;
 
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.GLCommon;
 
+/** The headless backend does its best to mock elements. This is intended to make code-sharing between
+ * server and client as simple as possible.
+ */
 public class MockGraphics implements Graphics {
 	float deltaTime = 0;
 	long frameStart = 0;
@@ -30,12 +32,7 @@ public class MockGraphics implements Graphics {
 	long lastTime = System.nanoTime();
 
 	@Override
-	public boolean isGL11Available() {
-		return false;
-	}
-
-	@Override
-	public boolean isGL20Available() {
+	public boolean isGL30Available() {
 		return false;
 	}
 
@@ -45,17 +42,12 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
-	public GL10 getGL10() {
-		return null;
-	}
-
-	@Override
-	public GL11 getGL11() {
-		return null;
-	}
-
-	@Override
 	public GL20 getGL20() {
+		return null;
+	}
+
+	@Override
+	public GL30 getGL30() {
 		return null;
 	}
 
@@ -191,4 +183,5 @@ public class MockGraphics implements Graphics {
 		}
 		frames++;
 	}
+
 }

@@ -21,6 +21,9 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
 
+/** The headless backend does its best to mock elements. This is intended to make code-sharing between
+ * server and client as simple as possible.
+ */
 public class MockInput implements Input {
 
 	@Override

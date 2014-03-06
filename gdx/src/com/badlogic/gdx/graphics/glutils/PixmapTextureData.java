@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.glutils;
 
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;

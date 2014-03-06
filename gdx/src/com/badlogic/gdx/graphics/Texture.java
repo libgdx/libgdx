@@ -61,9 +61,9 @@ public class Texture extends GLTexture {
 	final static Map<Application, Array<Texture>> managedTextures = new HashMap<Application, Array<Texture>>();
 	
 	public enum TextureFilter {
-		Nearest(GL10.GL_NEAREST), Linear(GL10.GL_LINEAR), MipMap(GL10.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
-			GL10.GL_NEAREST_MIPMAP_NEAREST), MipMapLinearNearest(GL10.GL_LINEAR_MIPMAP_NEAREST), MipMapNearestLinear(
-			GL10.GL_NEAREST_MIPMAP_LINEAR), MipMapLinearLinear(GL10.GL_LINEAR_MIPMAP_LINEAR);
+		Nearest(GL20.GL_NEAREST), Linear(GL20.GL_LINEAR), MipMap(GL20.GL_LINEAR_MIPMAP_LINEAR), MipMapNearestNearest(
+			GL20.GL_NEAREST_MIPMAP_NEAREST), MipMapLinearNearest(GL20.GL_LINEAR_MIPMAP_NEAREST), MipMapNearestLinear(
+			GL20.GL_NEAREST_MIPMAP_LINEAR), MipMapLinearLinear(GL20.GL_LINEAR_MIPMAP_LINEAR);
 
 		final int glEnum;
 
@@ -72,7 +72,7 @@ public class Texture extends GLTexture {
 		}
 
 		public boolean isMipMap () {
-			return glEnum != GL10.GL_NEAREST && glEnum != GL10.GL_LINEAR;
+			return glEnum != GL20.GL_NEAREST && glEnum != GL20.GL_LINEAR;
 		}
 
 		public int getGLEnum () {
@@ -81,7 +81,7 @@ public class Texture extends GLTexture {
 	}
 
 	public enum TextureWrap {
-		MirroredRepeat(GL20.GL_MIRRORED_REPEAT),ClampToEdge(GL10.GL_CLAMP_TO_EDGE), Repeat(GL10.GL_REPEAT);
+		MirroredRepeat(GL20.GL_MIRRORED_REPEAT),ClampToEdge(GL20.GL_CLAMP_TO_EDGE), Repeat(GL20.GL_REPEAT);
 
 		final int glEnum;
 
@@ -129,7 +129,7 @@ public class Texture extends GLTexture {
 	}
 
 	public Texture (TextureData data) {
-		super(GL10.GL_TEXTURE_2D, createGLHandle());
+		super(GL20.GL_TEXTURE_2D, createGLHandle());
 		load(data);
 		if (data.isManaged()) addManagedTexture(Gdx.app, this);
 	}
@@ -142,7 +142,7 @@ public class Texture extends GLTexture {
 		if (!data.isPrepared()) data.prepare();
 
 		bind();
-		uploadImageData(GL10.GL_TEXTURE_2D, data);
+		uploadImageData(GL20.GL_TEXTURE_2D, data);
 
 		setFilter(minFilter, magFilter);
 		setWrap(uWrap, vWrap);

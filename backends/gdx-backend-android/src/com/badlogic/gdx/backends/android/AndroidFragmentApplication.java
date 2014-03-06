@@ -3,6 +3,19 @@ package com.badlogic.gdx.backends.android;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Debug;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -13,25 +26,9 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Debug;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 /**
  * Implementation of the {@link AndroidApplicationBase} that is based on the {@link Fragment} class. This class is similar
@@ -91,7 +88,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
   protected FrameLayout.LayoutParams createLayoutParams () {
-      FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.FILL_PARENT);
+      FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT, android.view.ViewGroup.LayoutParams.MATCH_PARENT);
       layoutParams.gravity = Gravity.CENTER;
       return layoutParams;
   }
@@ -101,30 +98,42 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
           getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
       }
   }
+  
+   @Override
+	public void useImmersiveMode (boolean use) {
+		if (!use || getVersion() < 19) return;
 
+		View view = getApplicationWindow().getDecorView();
+		
+		try {
+			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
+			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			m.invoke(view, code);
+		} catch (Exception e) {
+			log("AndroidApplication", "Can't set immersive mode", e);
+		}
+	}
+	
   /** This method has to be called in the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method. 
-   * It sets up all the things necessary to get input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to 
-   * create an OpenGL ES 2.0 context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-   * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-   * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
+   * It sets up all the things necessary to get input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
    * <p/>
    * Note: you have to return the returned view from the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}!
    *
    * @param listener the {@link ApplicationListener} implementing the program logic
-   * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
    * @return the GLSurfaceView of the application */
-  public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
+  public View initializeForView (ApplicationListener listener) {
       AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-      config.useGL20 = useGL2IfAvailable;
       return initializeForView(listener, config);
   }
 
   /** This method has to be called in the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method. 
-   * It sets up all the things necessary to get input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create 
-   * an OpenGL ES 2.0 context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-   * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-   * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-   * the {@link AndroidApplicationConfiguration} instance.
+   * It sets up all the things necessary to get input, render via OpenGL and so on. You can configure other aspects of the application with the rest of
+   * the fields in the {@link AndroidApplicationConfiguration} instance.
    * <p/>
    * Note: you have to return the returned view from {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}}
    *
@@ -140,7 +149,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       net = new AndroidNet(this);
       this.listener = listener;
       this.handler = new Handler();
-
+      
       Gdx.app = this;
       Gdx.input = this.getInput();
       Gdx.audio = this.getAudio();
@@ -148,6 +157,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       Gdx.graphics = this.getGraphics();
       Gdx.net = this.getNet();
       createWakeLock(config.useWakelock);
+      useImmersiveMode(config.useImmersiveMode);
+      if (config.useImmersiveMode && getVersion() >= 19) {
+			try {
+				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Object o = vlistener.newInstance();
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
+				method.invoke(o, this);
+			} catch (Exception e) {
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
+			}
+		}
       return graphics.getView();
   }
 
@@ -173,8 +193,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       graphics.setContinuousRendering(isContinuous);
 
       if (graphics != null && graphics.view != null) {
-          if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
-          if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
           if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
       }
 
@@ -193,8 +211,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       ((AndroidInput)getInput()).registerSensorListeners();
 
       if (graphics != null && graphics.view != null) {
-          if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-          if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
           if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
       }
 
@@ -247,7 +263,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
   @Override
   public int getVersion () {
-      return Integer.parseInt(android.os.Build.VERSION.SDK);
+      return android.os.Build.VERSION.SDK_INT;
   }
 
   @Override
@@ -382,5 +398,20 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
+	}
+
+	@Override
+	public boolean isFragment () {
+		return true;
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		return this.getActivity().getWindow();
+	}
+
+	@Override
+	public Handler getHandler () {
+		return this.handler;
 	}
 }

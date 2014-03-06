@@ -16,16 +16,13 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
-import com.badlogic.gdx.graphics.g3d.utils.MeshPartBuilder.VertexInfo;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -35,7 +32,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.ShortArray;
 
 /** Class to construct a mesh, optionally splitting it into one or more mesh parts.
@@ -304,7 +300,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	 * Useful before adding many triangles to avoid multiple backing array resizes.
 	 * @param numTriangles The number of triangles you are about to add */
 	public void ensureTriangleIndices(int numTriangles) {
-		if (primitiveType == GL10.GL_LINES)
+		if (primitiveType == GL20.GL_LINES)
 			ensureIndices(6 * numTriangles);
 		else // GL_TRIANGLES || GL_POINTS
 			ensureIndices(3 * numTriangles);
@@ -331,9 +327,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	 * Useful before adding many rectangles to avoid multiple backing array resizes.
 	 * @param numRectangles The number of rectangles you are about to add */
 	public void ensureRectangleIndices(int numRectangles) {
-		if (primitiveType == GL10.GL_POINTS) 
+		if (primitiveType == GL20.GL_POINTS) 
 			ensureIndices(4 * numRectangles);
-		else if (primitiveType == GL10.GL_LINES) 
+		else if (primitiveType == GL20.GL_LINES) 
 			ensureIndices(8 * numRectangles);
 		else // GL_TRIANGLES
 			ensureIndices(6 * numRectangles);
@@ -483,7 +479,7 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void line(short index1, short index2) {
-		if (primitiveType != GL10.GL_LINES)
+		if (primitiveType != GL20.GL_LINES)
 			throw new GdxRuntimeException("Incorrect primitive type");
 		index(index1, index2);
 	}
@@ -511,9 +507,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void triangle(short index1, short index2, short index3) {
-		if (primitiveType == GL10.GL_TRIANGLES || primitiveType == GL10.GL_POINTS) {
+		if (primitiveType == GL20.GL_TRIANGLES || primitiveType == GL20.GL_POINTS) {
 			index(index1, index2, index3);
-		} else if (primitiveType == GL10.GL_LINES) {
+		} else if (primitiveType == GL20.GL_LINES) {
 			index(index1, index2, index2, index3, index3, index1);
 		} else
 			throw new GdxRuntimeException("Incorrect primitive type");
@@ -537,11 +533,11 @@ public class MeshBuilder implements MeshPartBuilder {
 	
 	@Override
 	public void rect(short corner00, short corner10, short corner11, short corner01) {
-		if (primitiveType == GL10.GL_TRIANGLES) {
+		if (primitiveType == GL20.GL_TRIANGLES) {
 			index(corner00, corner10, corner11, corner11, corner01, corner00);
-		} else if (primitiveType == GL10.GL_LINES) {
+		} else if (primitiveType == GL20.GL_LINES) {
 			index(corner00, corner10, corner10, corner11, corner11, corner01, corner01, corner00);
-		} else if (primitiveType == GL10.GL_POINTS) {
+		} else if (primitiveType == GL20.GL_POINTS) {
 			index(corner00, corner10, corner11, corner01);
 		} else
 			throw new GdxRuntimeException("Incorrect primitive type");
@@ -614,12 +610,12 @@ public class MeshBuilder implements MeshPartBuilder {
 		final short i111 = vertex(corner111);
 		final short i011 = vertex(corner011);
 		
-		if (primitiveType == GL10.GL_LINES) {
+		if (primitiveType == GL20.GL_LINES) {
 			ensureIndices(24);
 			rect(i000, i100, i110, i010);
 			rect(i101, i001, i011, i111);
 			index(i000, i001, i010, i011, i110, i111, i100, i101);
-		} else if (primitiveType == GL10.GL_POINTS) {
+		} else if (primitiveType == GL20.GL_POINTS) {
 			ensureRectangleIndices(2);
 			rect(i000, i100, i110, i010);
 			rect(i101, i001, i011, i111);
@@ -781,7 +777,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		else if (innerWidth == width && innerHeight == height){
 			ensureVertices(divisions + 1);
 			ensureIndices(divisions + 1);
-			if(primitiveType != GL10.GL_LINES)
+			if(primitiveType != GL20.GL_LINES)
 				throw new GdxRuntimeException("Incorrect primitive type : expect GL_LINES because innerWidth == width && innerHeight == height");
 		}
 		else {

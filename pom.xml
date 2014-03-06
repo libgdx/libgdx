@@ -13,7 +13,7 @@
   <version>1.0-SNAPSHOT</version>
 
   <name>libGDX Parent</name>
-  <description>Android/desktop game development framework.</description>
+  <description>Android/Desktop/iOS/HTML5 game development framework.</description>
   <url>http://libgdx.badlogicgames.com</url>
   <issueManagement>
     <url>https://github.com/libgdx/libgdx/issues</url>
@@ -43,9 +43,9 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <android.version>4.4</android.version>
-    <gwt.version>2.5.0</gwt.version>
-    <lwjgl.version>2.9.0</lwjgl.version>
-    <robovm.version>0.0.6</robovm.version>
+    <gwt.version>2.6.0</gwt.version>
+    <lwjgl.version>2.9.1</lwjgl.version>
+    <robovm.version>0.0.9</robovm.version>
   </properties>
 
   <modules>

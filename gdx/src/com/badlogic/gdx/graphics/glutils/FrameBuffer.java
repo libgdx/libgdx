@@ -109,8 +109,6 @@ public class FrameBuffer implements Disposable {
 	}
 
 	private void build () {
-		if (!Gdx.graphics.isGL20Available()) throw new GdxRuntimeException("GL2 is required.");
-
 		GL20 gl = Gdx.graphics.getGL20();
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)

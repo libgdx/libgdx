@@ -256,7 +256,8 @@ public interface Net {
 		 * other reason (not an HTTP error).
 		 * @param t If the HTTP request failed because an Exception, t encapsulates it to give more information. */
 		void failed (Throwable t);
-
+		
+		void cancelled();
 	}
 
 	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
@@ -265,6 +266,8 @@ public interface Net {
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
+	
+	public void cancelHttpRequest(HttpRequest httpRequest);
 
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.

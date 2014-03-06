@@ -99,11 +99,6 @@ public class InputTest extends GdxTest implements InputProcessor {
 		return false;
 	}
 
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 	private String getButtonString (int button) {
 		if (button == Buttons.LEFT) return "left";
 		if (button == Buttons.RIGHT) return "right";

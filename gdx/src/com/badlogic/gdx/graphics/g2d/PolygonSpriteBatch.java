@@ -16,12 +16,11 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import static com.badlogic.gdx.graphics.g2d.Sprite.*;
+import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
@@ -75,8 +74,8 @@ public class PolygonSpriteBatch implements Batch {
 	private final Matrix4 combinedMatrix = new Matrix4();
 
 	private boolean blendingDisabled;
-	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
-	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
+	private int blendSrcFunc = GL20.GL_SRC_ALPHA;
+	private int blendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 
 	private final ShaderProgram shader;
 	private ShaderProgram customShader;
@@ -143,7 +142,7 @@ public class PolygonSpriteBatch implements Batch {
 		vertices = new float[size * VERTEX_SIZE];
 		triangles = new short[size * 3];
 
-		if (Gdx.graphics.isGL20Available() && defaultShader == null) {
+		if (defaultShader == null) {
 			shader = SpriteBatch.createDefaultShader();
 			ownsShader = true;
 		} else
@@ -161,14 +160,10 @@ public class PolygonSpriteBatch implements Batch {
 		renderCalls = 0;
 
 		Gdx.gl.glDepthMask(false);
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				customShader.begin();
-			else
-				shader.begin();
-		} else {
-			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-		}
+		if (customShader != null)
+			customShader.begin();
+		else
+			shader.begin();
 		setupMatrices();
 
 		drawing = true;
@@ -184,16 +179,12 @@ public class PolygonSpriteBatch implements Batch {
 
 		GLCommon gl = Gdx.gl;
 		gl.glDepthMask(true);
-		if (isBlendingEnabled()) gl.glDisable(GL10.GL_BLEND);
+		if (isBlendingEnabled()) gl.glDisable(GL20.GL_BLEND);
 
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				customShader.end();
-			else
-				shader.end();
-		} else {
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-		}
+		if (customShader != null)
+			customShader.end();
+		else
+			shader.end();
 	}
 
 	/** Sets the color used to tint images when they are added to the PolygonSpriteBatch. Default is {@link Color#WHITE}. */
@@ -1147,10 +1138,7 @@ public class PolygonSpriteBatch implements Batch {
 			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
-		if (Gdx.graphics.isGL20Available())
-			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, trianglesInBatch);
-		else
-			mesh.render(GL10.GL_TRIANGLES, 0, trianglesInBatch);
+		mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, trianglesInBatch);
 
 		vertexIndex = 0;
 		triangleIndex = 0;
@@ -1223,22 +1211,14 @@ public class PolygonSpriteBatch implements Batch {
 		if (drawing) setupMatrices();
 	}
 
-	private void setupMatrices () {
-		if (!Gdx.graphics.isGL20Available()) {
-			GL10 gl = Gdx.gl10;
-			gl.glMatrixMode(GL10.GL_PROJECTION);
-			gl.glLoadMatrixf(projectionMatrix.val, 0);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-			gl.glLoadMatrixf(transformMatrix.val, 0);
+	private void setupMatrices () {		
+		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
+		if (customShader != null) {
+			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+			customShader.setUniformi("u_texture", 0);
 		} else {
-			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-			if (customShader != null) {
-				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-				customShader.setUniformi("u_texture", 0);
-			} else {
-				shader.setUniformMatrix("u_projTrans", combinedMatrix);
-				shader.setUniformi("u_texture", 0);
-			}
+			shader.setUniformMatrix("u_projTrans", combinedMatrix);
+			shader.setUniformi("u_texture", 0);
 		}
 	}
 

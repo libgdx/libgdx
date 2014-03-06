@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.jglfw;
 
 import com.badlogic.gdx.Net;
+import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.NetJavaImpl;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -36,6 +37,11 @@ public class JglfwNet implements Net {
 
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
+	}
+	
+	@Override
+	public void cancelHttpRequest (HttpRequest httpRequest) {
+		netJavaImpl.cancelHttpRequest(httpRequest);
 	}
 
 	public ServerSocket newServerSocket (Protocol protocol, int port, ServerSocketHints hints) {

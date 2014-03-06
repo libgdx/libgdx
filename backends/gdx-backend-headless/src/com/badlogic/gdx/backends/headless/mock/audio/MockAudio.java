@@ -23,6 +23,9 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 
+/** The headless backend does its best to mock elements. This is intended to make code-sharing between
+ * server and client as simple as possible.
+ */
 public class MockAudio implements Audio {
 
 	@Override

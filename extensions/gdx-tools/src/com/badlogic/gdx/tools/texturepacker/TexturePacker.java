@@ -96,9 +96,8 @@ public class TexturePacker {
 		for (float scale : settings.scale) {
 			String scaledPackFileName = packFileName;
 			if (scale != 1 || settings.scale.length != 1) {
-				FileHandle file = new FileHandle(scaledPackFileName);
-				String suffix = scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale);
-				scaledPackFileName = file.nameWithoutExtension() + suffix + "." + file.extension();
+				scaledPackFileName = (scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale)) + "/"
+					+ scaledPackFileName;
 			}
 
 			imageProcessor.setScale(scale);
@@ -149,20 +148,12 @@ public class TexturePacker {
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
 
-			if (settings.square) {
-				if (width > height) {
-					height = width;
-				} else {
-					width = height;
-				}
-			}
-
 			File outputFile;
 			while (true) {
-				fileIndex++;
-				outputFile = new File(outputDir, imageName + "-" + fileIndex + "." + settings.outputFormat);
+				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
+			new FileHandle(outputFile).parent().mkdirs();
 			page.imageName = outputFile.getName();
 
 			BufferedImage canvas = new BufferedImage(width, height, getBufferedImageType(settings.format));

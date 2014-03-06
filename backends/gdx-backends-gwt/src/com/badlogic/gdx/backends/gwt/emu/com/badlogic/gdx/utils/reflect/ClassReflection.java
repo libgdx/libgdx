@@ -39,7 +39,7 @@ public final class ClassReflection {
 
 	/** Determines if the supplied Object is assignment-compatible with the object represented by supplied Class. */
 	static public boolean isInstance (Class c, Object obj) {
-		return isAssignableFrom(c, obj.getClass());
+		return obj != null && isAssignableFrom(c, obj.getClass());
 	}
 
 	/** Determines if the class or interface represented by first Class parameter is either the same as, or is a superclass or

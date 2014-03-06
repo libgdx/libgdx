@@ -32,8 +32,9 @@ public class LwjglApplicationConfiguration {
 	 * natives are not needed. */
 	static public boolean disableAudio;
 
-	/** whether to attempt to use OpenGL ES 2.0. Note GL2 may not be available even if this is true. default: false **/
-	public boolean useGL20 = false;
+	/** whether to attempt use OpenGL ES 3.0. **/
+	public boolean useGL30 = false;
+	
 	/** number of bits per color channel **/
 	public int r = 8, g = 8, b = 8, a = 8;
 	/** number of bits for depth and stencil buffer **/
@@ -72,7 +73,7 @@ public class LwjglApplicationConfiguration {
 	public String preferencesDirectory = ".prefs/";
 
 	Array<String> iconPaths = new Array();
-	Array<FileType> iconFileTypes = new Array();
+	Array<FileType> iconFileTypes = new Array();	
 
 	/** Adds a window icon. Icons are tried in the order added, the first one that works is used. Typically three icons should be
 	 * provided: 128x128 (for Mac), 32x32 (for Windows and Linux), and 16x16 (for Windows). */

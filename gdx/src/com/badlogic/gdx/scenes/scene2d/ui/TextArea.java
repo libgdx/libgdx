@@ -311,6 +311,18 @@ public class TextArea extends TextField {
 			&& (pos < 0 || pos >= linesBreak.size || (linesBreak.items[pos + 1] != index) || (linesBreak.items[pos + 1] == linesBreak.items[pos + 2]));
 	}
 
+	public int getCursorLine () {
+		return cursorLine;
+	}
+
+	public int getFirstLineShowing () {
+		return firstLineShowing;
+	}
+
+	public int getLinesShowing () {
+		return linesShowing;
+	}
+
 	/** Input listener for the text area **/
 	public class TextAreaListener extends TextFieldClickListener {
 

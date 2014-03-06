@@ -57,11 +57,15 @@ public class ReflectionCacheSourceCreator {
 	final String simpleName;
 	final String packageName;
 	SourceWriter sw;
-	StringBuffer source = new StringBuffer();
-	List<JType> types = new ArrayList<JType>();
-	List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
-	List<MethodStub> methodStubs = new ArrayList<MethodStub>();
-	int nextId = 0;
+	final StringBuffer source = new StringBuffer();
+	final List<JType> types = new ArrayList<JType>();
+	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
+	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
+	final Map<String, String> parameterName2ParameterInstantiation = new HashMap();
+	final Map<String, Integer> typeNames2typeIds = new HashMap();
+	int nextTypeId;
+	int nextSetterGetterId;
+	int nextInvokableId;
 
 	class SetterGetterStub {
 		int getter;
@@ -86,6 +90,7 @@ public class ReflectionCacheSourceCreator {
 		boolean isNative;
 		boolean isConstructor;
 		boolean isMethod;
+		boolean isPublic;
 		String name;
 		boolean unused;
 	}
@@ -97,10 +102,6 @@ public class ReflectionCacheSourceCreator {
 		this.packageName = type.getPackage().getName();
 		this.simpleName = type.getSimpleSourceName() + "Generated";
 		logger.log(Type.INFO, type.getQualifiedSourceName());
-	}
-
-	private int nextId () {
-		return nextId++;
 	}
 
 	public String create () {
@@ -115,7 +116,6 @@ public class ReflectionCacheSourceCreator {
 
 		generateLookups();
 
-		getKnownTypesC();
 		forNameC();
 		newArrayC();
 
@@ -145,8 +145,6 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private void generateLookups () {
-		p("Map<String, Type> types = new HashMap<String, Type>();");
-
 		TypeOracle typeOracle = context.getTypeOracle();
 		JPackage[] packages = typeOracle.getPackages();
 
@@ -181,21 +179,12 @@ public class ReflectionCacheSourceCreator {
 		});
 
 		// generate Type lookup generator methods.
-		int id = 0;
 		for (JType t : types) {
-			String typeGen = createTypeGenerator(t);
-			p("private void c" + (id++) + "() {");
-			p(typeGen);
-			p("}\n");
+			p(createTypeGenerator(t));
 		}
 
-		// generate constructor that calls all the type generators
-		// that populate the map.
-		p("public " + simpleName + "() {");
-		for (int i = 0; i < id; i++) {
-			p("c" + i + "();");
-		}
-		p("}");
+		// generate reusable parameter objects
+		parameterInitialization();
 
 		// sort the stubs so the generated output will be stable between runs
 		Collections.sort(setterGetterStubs, new Comparator<SetterGetterStub>() {
@@ -390,7 +379,7 @@ public class ReflectionCacheSourceCreator {
 				pbn(paramType + " p" + i + (i < stub.parameterTypes.size() - 1 ? "," : ""));
 				i++;
 			}
-			pb(") /*-{");
+			pbn(") /*-{");
 
 			if (!isVoid) pbn("return ");
 			if (stub.isStatic)
@@ -401,9 +390,9 @@ public class ReflectionCacheSourceCreator {
 			for (i = 0; i < stub.parameterTypes.size(); i++) {
 				pbn("p" + i + (i < stub.parameterTypes.size() - 1 ? ", " : ""));
 			}
-			pb(");");
-			if (isVoid) pb("return null;");
-			pb("}-*/;");
+			pbn(");");
+			if (isVoid) pbn("return null;");
+			pbn("}-*/;");
 		} else {
 			pbn("private static " + stub.returnType + " m" + stub.methodId + "(");
 			int i = 0;
@@ -411,15 +400,19 @@ public class ReflectionCacheSourceCreator {
 				pbn(paramType + " p" + i + (i < stub.parameterTypes.size() - 1 ? "," : ""));
 				i++;
 			}
-			pb(") {");
-
+			pbn(") {");
 			pbn("return new " + stub.returnType + "(");
 			for (i = 0; i < stub.parameterTypes.size(); i++) {
 				pbn("p" + i + (i < stub.parameterTypes.size() - 1 ? ", " : ""));
 			}
-			pb(");");
+			pbn(")");
+			if (!stub.isPublic) {
+				// Access non-public constructors through an anonymous class
+				pbn("{}");
+			}
+			pbn(";");
 
-			pb("}");
+			pbn("}");
 		}
 
 		return buffer.toString();
@@ -447,7 +440,6 @@ public class ReflectionCacheSourceCreator {
 		stub.enclosingType = stub.enclosingType.replace(".class", "");
 		stub.type = stub.type.replace(".class", "");
 
-		pb("// " + stub.enclosingType + "#" + stub.name);
 		pbn("private native " + stub.type + " g" + stub.getter + "(" + stub.enclosingType + " obj) /*-{");
 		if (stub.isStatic)
 			pbn("return @" + stub.enclosingType + "::" + stub.name + ";");
@@ -486,30 +478,40 @@ public class ReflectionCacheSourceCreator {
 		return true;
 	}
 
-	private Map<String, Integer> typeNames2typeIds = new HashMap();
-
 	private String createTypeGenerator (JType t) {
 		buffer.setLength(0);
-		String varName = "t";
-		if (t instanceof JPrimitiveType) varName = "p";
-		int id = nextId();
+		int id = nextTypeId++;
 		typeNames2typeIds.put(t.getErasedType().getQualifiedSourceName(), id);
-		pb("Type " + varName + " = new Type();");
-		pb(varName + ".name = \"" + t.getErasedType().getQualifiedSourceName() + "\";");
-		pb(varName + ".id = " + id + ";");
-		pb(varName + ".clazz = " + t.getErasedType().getQualifiedSourceName() + ".class;");
-		if (t instanceof JClassType) {
-			JClassType c = (JClassType)t;
-			if (isVisible(c.getSuperclass()))
-				pb(varName + ".superClass = " + c.getSuperclass().getErasedType().getQualifiedSourceName() + ".class;");
-			if (c.getFlattenedSupertypeHierarchy() != null) {
-				pb("Set<Class> " + varName + "Assignables = new HashSet<Class>();");
-				for (JType i : c.getFlattenedSupertypeHierarchy()) {
-					if (!isVisible(i)) continue;
-					pb(varName + "Assignables.add(" + i.getErasedType().getQualifiedSourceName() + ".class);");
-				}
-				pb(varName + ".assignables = " + varName + "Assignables;");
+		JClassType c = t.isClass();
+
+		String name = t.getErasedType().getQualifiedSourceName();
+		String superClass = null;
+		if (c != null && (isVisible(c.getSuperclass())))
+			superClass = c.getSuperclass().getErasedType().getQualifiedSourceName() + ".class";
+		String assignables = null;
+
+		if (c != null && c.getFlattenedSupertypeHierarchy() != null) {
+			assignables = "new HashSet<Class>(Arrays.asList(";
+			boolean used = false;
+			for (JType i : c.getFlattenedSupertypeHierarchy()) {
+				if (!isVisible(i) || i.equals(t) || "java.lang.Object".equals(i.getErasedType().getQualifiedSourceName())) continue;
+				if (used) assignables += ", ";
+				assignables += i.getErasedType().getQualifiedSourceName() + ".class";
+				used = true;
 			}
+			if (used)
+				assignables += "))";
+			else
+				assignables = null;
+		}
+
+		String varName = "c" + id;
+		pb("private static Type " + varName + ";");
+		pb("private static Type " + varName + "() {");
+		pb("if(" + varName + "!=null) return " + varName + ";");
+		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ");");
+
+		if (c != null) {
 			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
 			if (c.isArray() != null) pb(varName + ".isArray = true;");
@@ -517,19 +519,18 @@ public class ReflectionCacheSourceCreator {
 			pb(varName + ".isStatic = " + c.isStatic() + ";");
 			pb(varName + ".isAbstract = " + c.isAbstract() + ";");
 
-			if (c.getFields() != null) {
+			if (c.getFields() != null && c.getFields().length > 0) {
 				pb(varName + ".fields = new Field[] {");
 				for (JField f : c.getFields()) {
 					String enclosingType = getType(c);
 					String fieldType = getType(f.getType());
-					int setter = nextId();
-					int getter = nextId();
+					int setterGetter = nextSetterGetterId++;
 					String elementType = getElementTypes(f);
 
-					pb("new Field(\"" + f.getName() + "\", " + enclosingType + ", " + fieldType + ", " + f.isFinal() + ", "
+					pb("    new Field(\"" + f.getName() + "\", " + enclosingType + ", " + fieldType + ", " + f.isFinal() + ", "
 						+ f.isDefaultAccess() + ", " + f.isPrivate() + ", " + f.isProtected() + ", " + f.isPublic() + ", "
-						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + getter + ", " + setter + ", "
-						+ elementType + "), ");
+						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + setterGetter + ", " + setterGetter
+						+ ", " + elementType + "), ");
 
 					SetterGetterStub stub = new SetterGetterStub();
 					stub.name = f.getName();
@@ -538,17 +539,17 @@ public class ReflectionCacheSourceCreator {
 					stub.isStatic = f.isStatic();
 					stub.isFinal = f.isFinal();
 					if (enclosingType != null && fieldType != null) {
-						stub.getter = getter;
-						stub.setter = setter;
+						stub.getter = setterGetter;
+						stub.setter = setterGetter;
 					}
 					setterGetterStubs.add(stub);
 				}
 				pb("};");
 			}
 
-			printMethods(c, varName, "Method", c.getMethods());
-			if (!c.isAbstract() && (c.getEnclosingType() == null || c.isStatic())) {
-				printMethods(c, varName, "Constructor", c.getConstructors());
+			createTypeInvokables(c, varName, "Method", c.getMethods());
+			if (c.isPublic() && !c.isAbstract() && (c.getEnclosingType() == null || c.isStatic())) {
+				createTypeInvokables(c, varName, "Constructor", c.getConstructors());
 			} else {
 				logger.log(Type.INFO, c.getName() + " can't be instantiated. Constructors not generated");
 			}
@@ -570,15 +571,28 @@ public class ReflectionCacheSourceCreator {
 			pb(varName + ".isPrimitive = true;");
 		}
 
-		pb("types.put(\"" + t.getErasedType().getQualifiedSourceName() + "\", " + varName + ");");
+		pb("return " + varName + ";");
+		pb("}");
 		return buffer.toString();
 	}
 
-	private void printMethods (JClassType c, String varName, String methodType, JAbstractMethod[] methodTypes) {
-		if (methodTypes != null) {
+	private void parameterInitialization () {
+		p("private static final Parameter[] EMPTY_PARAMETERS = new Parameter[0];");
+		for (Map.Entry<String, String> e : parameterName2ParameterInstantiation.entrySet()) {
+			p("private static Parameter " + e.getKey() + ";");
+			p("private static Parameter " + e.getKey() + "() {");
+			p("    if (" + e.getKey() + " != null) return " + e.getKey() + ";");
+			p("    return " + e.getKey() + " = " + e.getValue() + ";");
+			p("}");
+		}
+	}
+
+	private void createTypeInvokables (JClassType c, String varName, String methodType, JAbstractMethod[] methodTypes) {
+		if (methodTypes != null && methodTypes.length > 0) {
 			pb(varName + "." + methodType.toLowerCase() + "s = new " + methodType + "[] {");
 			for (JAbstractMethod m : methodTypes) {
 				MethodStub stub = new MethodStub();
+				stub.isPublic = m.isPublic();
 				stub.enclosingType = getType(c);
 				if (m.isMethod() != null) {
 					stub.isMethod = true;
@@ -588,28 +602,43 @@ public class ReflectionCacheSourceCreator {
 					stub.isNative = m.isMethod().isAbstract();
 					stub.isFinal = m.isMethod().isFinal();
 				} else {
+					if (m.isPrivate() || m.isDefaultAccess()) {
+						logger.log(Type.INFO, "Skipping non-visible constructor for class " + c.getName());
+						continue;
+					}
+					if (m.getEnclosingType().isFinal() && !m.isPublic()) {
+						logger.log(Type.INFO, "Skipping non-public constructor for final class" + c.getName());
+						continue;
+					}
 					stub.isConstructor = true;
 					stub.returnType = stub.enclosingType;
 				}
+
 				stub.jnsi = "";
-				stub.methodId = nextId();
+				stub.methodId = nextInvokableId++;
 				stub.name = m.getName();
 				methodStubs.add(stub);
 
-				pb("new " + methodType + "(\"" + m.getName() + "\", ");
-				pb(stub.enclosingType + ", ");
-				pb(stub.returnType + ", ");
+				pbn("    new " + methodType + "(\"" + m.getName() + "\", ");
+				pbn(stub.enclosingType + ", ");
+				pbn(stub.returnType + ", ");
 
-				pb("new Parameter[] {");
-				if (m.getParameters() != null) {
+				if (m.getParameters() != null && m.getParameters().length > 0) {
+					pbn("new Parameter[] {");
 					for (JParameter p : m.getParameters()) {
 						stub.parameterTypes.add(getType(p.getType()));
 						stub.jnsi += p.getType().getErasedType().getJNISignature();
-						pb("new Parameter(\"" + p.getName() + "\", " + getType(p.getType()) + ", \"" + p.getType().getJNISignature()
-							+ "\"), ");
+						String paramName = (p.getName() + "__" + p.getType().getErasedType().getJNISignature()).replaceAll(
+							"[/;\\[\\]]", "_");
+						String paramInstantiation = "new Parameter(\"" + p.getName() + "\", " + getType(p.getType()) + ", \""
+							+ p.getType().getJNISignature() + "\")";
+						parameterName2ParameterInstantiation.put(paramName, paramInstantiation);
+						pbn(paramName + "(), ");
 					}
+					pbn("}, ");
+				} else {
+					pbn("EMPTY_PARAMETERS,");
 				}
-				pb("}, ");
 
 				pb(stub.isAbstract + ", " + stub.isFinal + ", " + stub.isStatic + ", " + m.isDefaultAccess() + ", " + m.isPrivate()
 					+ ", " + m.isProtected() + ", " + m.isPublic() + ", " + stub.isNative + ", " + m.isVarArgs() + ", "
@@ -797,8 +826,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	private void newArrayC () {
-		p("public Object newArray (Class componentType, int size) {");
-		p("    Type t = forName(componentType.getName().replace('$', '.'));");
+		p("public Object newArray (Type t, int size) {");
 		p("    if (t != null) {");
 		SwitchedCodeBlock pc = new SwitchedCodeBlock("t.id");
 		for (JType type : types) {
@@ -813,19 +841,29 @@ public class ReflectionCacheSourceCreator {
 		}
 		pc.print();
 		p("    }");
-		p("    throw new RuntimeException(\"Couldn't create array with element type \" + componentType.getName());");
+		p("    throw new RuntimeException(\"Couldn't create array\");");
 		p("}");
 	}
 
 	private void forNameC () {
 		p("public Type forName(String name) {");
-		p("	return types.get(name);");
-		p("}");
-	}
+		p("    int hashCode = name.hashCode();");
+		int i = 0;
 
-	private void getKnownTypesC () {
-		p("public Collection<Type> getKnownTypes() {");
-		p("	return types.values();");
+		SwitchedCodeBlockByString cb = new SwitchedCodeBlockByString("hashCode", "name");
+		for (String typeName : typeNames2typeIds.keySet()) {
+			cb.add(typeName, "return c" + typeNames2typeIds.get(typeName) + "();");
+			i++;
+			if (i % 1000 == 0) {
+				cb.print();
+				cb = new SwitchedCodeBlockByString("hashCode", "name");
+				p("    return forName" + i + "(name, hashCode);");
+				p("}");
+				p("private Type forName" + i + ("(String name, int hashCode) {"));
+			}
+		}
+		cb.print();
+		p("    return null;");
 		p("}");
 	}
 
@@ -878,6 +916,48 @@ public class ReflectionCacheSourceCreator {
 
 		class KeyedCodeBlock {
 			int key;
+			String codeBlock;
+		}
+	}
+
+	class SwitchedCodeBlockByString {
+		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap();
+		private final String switchStatement;
+		private final String expectedValue;
+
+		SwitchedCodeBlockByString (String switchStatement, String expectedValue) {
+			this.switchStatement = switchStatement;
+			this.expectedValue = expectedValue;
+		}
+
+		void add (String key, String codeBlock) {
+			KeyedCodeBlock b = new KeyedCodeBlock();
+			b.key = key;
+			b.codeBlock = codeBlock;
+			List<KeyedCodeBlock> blockList = blocks.get(key);
+			if (blockList == null) {
+				blockList = new ArrayList();
+				blocks.put(key, blockList);
+			}
+			blockList.add(b);
+		}
+
+		void print () {
+			if (blocks.isEmpty()) return;
+
+			p("    switch(" + switchStatement + ") {");
+			for (String key : blocks.keySet()) {
+				p("    case " + key.hashCode() + ": ");
+				for (KeyedCodeBlock block : blocks.get(key)) {
+					p("        if(" + expectedValue + ".equals(\"" + block.key + "\"))" + block.codeBlock);
+					p("    break;");
+				}
+			}
+			p("}");
+		}
+
+		class KeyedCodeBlock {
+			String key;
 			String codeBlock;
 		}
 	}

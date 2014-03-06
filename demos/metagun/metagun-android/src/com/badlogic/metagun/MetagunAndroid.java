@@ -11,6 +11,6 @@ public class MetagunAndroid extends AndroidApplication {
 	@Override
 	public void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		initialize(new Metagun(), false);
+		initialize(new Metagun());
 	}
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -237,7 +237,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we clear the color buffer and set the camera
 		// matrices
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 
 		// next we render the ground body
@@ -401,10 +401,5 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		debugRenderer.dispose();
 		font.dispose();
 		textureRegion.getTexture().dispose();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -93,7 +93,7 @@ public class YDownTest extends GdxTest {
 	public void render () {
 		// clear the screen, update the camera and make the sprite batch
 		// use its matrices.
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 
@@ -150,7 +150,7 @@ public class YDownTest extends GdxTest {
 
 					// adjust the actor's position by (current mouse position - last mouse position)
 					// in the actor's coordinate system.
-					translate(x - lastX, y - lastY);
+					moveBy(x - lastX, y - lastY);
 
 					// save the current mouse position as the basis for the next drag event.
 					// we adjust by the same delta so next time drag is called, lastX/lastY

@@ -16,15 +16,10 @@
 
 package com.badlogic.gdx.tests.g3d;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
 import com.badlogic.gdx.graphics.Cubemap.CubemapSide;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -36,21 +31,17 @@ import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.tests.g3d.shaders.MultiPassShader;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -323,36 +314,39 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	protected void createHUD () {
 		super.createHUD();
 
-		final List shadersList = new List(shaders, skin);
+		final List<String> shadersList = new List(skin);
+		shadersList.setItems(shaders);
 		shadersList.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				if (!shadersWindow.isCollapsed() && getTapCount() == 2) {
-					setShader(shadersList.getSelection());
+					setShader(shadersList.getSelected());
 					shadersWindow.collapse();
 				}
 			}
 		});
 		shadersWindow = addListWindow("Shaders", shadersList, -1, -1);
 		
-		final List materialsList = new List(materials, skin);
+		final List<String> materialsList = new List(skin);
+		materialsList.setItems(materials);
 		materialsList.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				if (!materialsWindow.isCollapsed() && getTapCount() == 2) {
-					setMaterial(materialsList.getSelection());
+					setMaterial(materialsList.getSelected());
 					materialsWindow.collapse();
 				}
 			}
 		});
 		materialsWindow = addListWindow("Materials", materialsList, modelsWindow.getWidth(), -1);
 		
-		final List environmentsList = new List(environments, skin);
+		final List<String> environmentsList = new List(skin);
+		environmentsList.setItems(environments);
 		environmentsList.addListener(new ClickListener() {
 			@Override
 			public void clicked (InputEvent event, float x, float y) {
 				if (!environmentsWindow.isCollapsed() && getTapCount() == 2) {
-					setEnvironment(environmentsList.getSelection());
+					setEnvironment(environmentsList.getSelected());
 					environmentsWindow.collapse();
 				}
 			}
@@ -375,11 +369,6 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			animIndex = (animIndex + 1) % e.key.animations.size;
 			e.value.animate(e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
 		}
-	}
-	
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 	
 	@Override

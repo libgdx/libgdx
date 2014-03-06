@@ -100,8 +100,7 @@ public class ScrollPane extends WidgetGroup {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		setWidget(widget);
-		setWidth(150);
-		setHeight(150);
+		setSize(150, 150);
 
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
@@ -620,7 +619,7 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget May be null to remove any current actor. */
 	public void setWidget (Actor widget) {
-		if (widget == this) throw new IllegalArgumentException("widget cannot be same object");
+		if (widget == this) throw new IllegalArgumentException("widget cannot be the ScrollPane.");
 		if (this.widget != null) super.removeActor(this.widget);
 		this.widget = widget;
 		if (widget != null) super.addActor(widget);
@@ -631,22 +630,26 @@ public class ScrollPane extends WidgetGroup {
 		return widget;
 	}
 
-	/** @deprecated */
+	/** @deprecated ScrollPane may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated ScrollPane may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated ScrollPane may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated ScrollPane may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
@@ -796,6 +799,16 @@ public class ScrollPane extends WidgetGroup {
 
 	public float getScrollBarWidth () {
 		return style.vScrollKnob == null || !scrollY ? 0 : style.vScrollKnob.getMinWidth();
+	}
+
+	/** Returns the width of the scrolled viewport. */
+	public float getScrollWidth () {
+		return areaHeight;
+	}
+
+	/** Returns the height of the scrolled viewport. */
+	public float getScrollHeight () {
+		return areaHeight;
 	}
 
 	public boolean isScrollX () {

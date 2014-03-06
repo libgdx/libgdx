@@ -34,11 +34,6 @@ public class VertexBufferObjectShaderTest extends GdxTest {
 	IndexBufferObject indices;
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void dispose () {
 		texture.dispose();
 		vbo.dispose();

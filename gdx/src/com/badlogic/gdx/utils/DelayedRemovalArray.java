@@ -131,7 +131,7 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		super.sort();
 	}
 
-	public void sort (Comparator<T> comparator) {
+	public void sort (Comparator<? super T> comparator) {
 		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.sort(comparator);
 	}
@@ -149,5 +149,10 @@ public class DelayedRemovalArray<T> extends Array<T> {
 	public void truncate (int newSize) {
 		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.truncate(newSize);
+	}
+
+	/** @see #DelayedRemovalArray(Object[]) */
+	static public <T> DelayedRemovalArray<T> with (T... array) {
+		return new DelayedRemovalArray(array);
 	}
 }

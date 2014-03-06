@@ -153,11 +153,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		this.app = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
-		int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
-		if (sdkVersion >= 5)
-			touchHandler = new AndroidMultiTouchHandler();
-		else
-			touchHandler = new AndroidSingleTouchHandler();
+		int sdkVersion = android.os.Build.VERSION.SDK_INT;
+		touchHandler = new AndroidMultiTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
 		vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -717,9 +714,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		int orientation = 0;
 
 		if (context instanceof Activity) {
-			orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getOrientation();
+			orientation = ((Activity)context).getWindowManager().getDefaultDisplay().getRotation();
 		} else {
-			orientation = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getOrientation();
+			orientation = ((WindowManager)context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRotation();
 		}
 
 		switch (orientation) {

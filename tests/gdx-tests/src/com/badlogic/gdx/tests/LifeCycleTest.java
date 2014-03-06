@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** A simple test to demonstrate the life cycle of an application.
@@ -42,7 +42,7 @@ public class LifeCycleTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 	@Override
@@ -55,10 +55,4 @@ public class LifeCycleTest extends GdxTest {
 		Gdx.app.log("Test", "app resized: " + width + "x" + height + ", Graphics says: " + Gdx.graphics.getWidth() + "x"
 			+ Gdx.graphics.getHeight());
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
 }

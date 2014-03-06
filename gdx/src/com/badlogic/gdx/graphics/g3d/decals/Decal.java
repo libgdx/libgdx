@@ -17,7 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.decals;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
@@ -580,7 +580,7 @@ public class Decal {
 	 * @return Created decal */
 	public static Decal newDecal (TextureRegion textureRegion, boolean hasTransparency) {
 		return newDecal(textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), textureRegion,
-			hasTransparency ? GL10.GL_SRC_ALPHA : DecalMaterial.NO_BLEND, hasTransparency ? GL10.GL_ONE_MINUS_SRC_ALPHA
+			hasTransparency ? GL20.GL_SRC_ALPHA : DecalMaterial.NO_BLEND, hasTransparency ? GL20.GL_ONE_MINUS_SRC_ALPHA
 				: DecalMaterial.NO_BLEND);
 	}
 
@@ -604,8 +604,8 @@ public class Decal {
 	 * @param hasTransparency Whether or not this sprite will be treated as having transparency (transparent png, etc.)
 	 * @return Created decal */
 	public static Decal newDecal (float width, float height, TextureRegion textureRegion, boolean hasTransparency) {
-		return newDecal(width, height, textureRegion, hasTransparency ? GL10.GL_SRC_ALPHA : DecalMaterial.NO_BLEND,
-			hasTransparency ? GL10.GL_ONE_MINUS_SRC_ALPHA : DecalMaterial.NO_BLEND);
+		return newDecal(width, height, textureRegion, hasTransparency ? GL20.GL_SRC_ALPHA : DecalMaterial.NO_BLEND,
+			hasTransparency ? GL20.GL_ONE_MINUS_SRC_ALPHA : DecalMaterial.NO_BLEND);
 	}
 
 	/** Creates a decal using the region for texturing and the specified blending parameters for blending

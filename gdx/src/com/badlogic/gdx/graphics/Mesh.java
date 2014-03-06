@@ -59,11 +59,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * attributes such as position, normal, color or texture coordinate. Note that not all of this attributes must be given, except
  * for position which is non-optional. Each attribute has an alias which is used when rendering a Mesh in OpenGL ES 2.0. The alias
  * is used to bind a specific vertex attribute to a shader attribute. The shader source and the alias of the attribute must match
- * exactly for this to work. For OpenGL ES 1.x rendering this aliases are irrelevant.
- * </p>
- * 
- * <p>
- * Meshes can be used with either OpenGL ES 1.x or OpenGL ES 2.0.
+ * exactly for this to work.
  * </p>
  * 
  * @author mzechner, Dave Clayton <contact@redskyforge.com> */
@@ -74,9 +70,6 @@ public class Mesh implements Disposable {
 
 	/** list of all meshes **/
 	static final Map<Application, Array<Mesh>> meshes = new HashMap<Application, Array<Mesh>>();
-
-	/** used for benchmarking **/
-	public static boolean forceVBO = false;
 
 	final VertexData vertices;
 	final IndexData indices;
@@ -91,15 +84,9 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
-			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObject(isStatic, maxIndices);
-			isVertexArray = false;
-		} else {
-			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexArray(maxIndices);
-			isVertexArray = true;
-		}
+		vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+		indices = new IndexBufferObject(isStatic, maxIndices);
+		isVertexArray = false;
 
 		addManagedMesh(Gdx.app, this);
 	}
@@ -112,15 +99,9 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttributes}. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (boolean isStatic, int maxVertices, int maxIndices, VertexAttributes attributes) {
-		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
-			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
-			indices = new IndexBufferObject(isStatic, maxIndices);
-			isVertexArray = false;
-		} else {
-			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexArray(maxIndices);
-			isVertexArray = true;
-		}
+		vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
+		indices = new IndexBufferObject(isStatic, maxIndices);
+		isVertexArray = false;
 
 		addManagedMesh(Gdx.app, this);
 	}
@@ -139,28 +120,9 @@ public class Mesh implements Disposable {
 	 * @author Jaroslaw Wisniewski <j.wisniewski@appsisle.com>           
 	 **/
 	public Mesh (boolean staticVertices, boolean staticIndices, int maxVertices, int maxIndices, VertexAttributes attributes) {
-		if (Gdx.gl20 != null || Gdx.gl11 != null || Mesh.forceVBO) {
-			
-			// buffers do not update when initialized with ..ObjectSubData classes
-			/*if (staticVertices) 
-				vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
-			else 
-				vertices = new VertexBufferObjectSubData(staticVertices, maxVertices, attributes);	// when updating vertices - updates buffer instead recreating it
-
-			if (staticIndices) 
-				indices = new IndexBufferObject(staticIndices, maxIndices);
-			else 
-				indices = new IndexBufferObjectSubData(staticIndices, maxIndices);	// when updating indices - updates buffer instead recreating it
-			*/
-			
-			vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
-			indices = new IndexBufferObject(staticIndices, maxIndices);
-			isVertexArray = false;
-		} else {
-			vertices = new VertexArray(maxVertices, attributes);
-			indices = new IndexArray(maxIndices);
-			isVertexArray = true;
-		}
+		vertices = new VertexBufferObject(staticVertices, maxVertices, attributes);
+		indices = new IndexBufferObject(staticIndices, maxIndices);
+		isVertexArray = false;
 
 		addManagedMesh(Gdx.app, this);
 	}
@@ -174,9 +136,7 @@ public class Mesh implements Disposable {
 	 * @param attributes the {@link VertexAttribute}s. Each vertex attribute defines one property of a vertex such as position,
 	 *           normal or texture coordinate */
 	public Mesh (VertexDataType type, boolean isStatic, int maxVertices, int maxIndices, VertexAttribute... attributes) {
-// if (type == VertexDataType.VertexArray && Gdx.graphics.isGL20Available()) type = VertexDataType.VertexBufferObject;
-
-		if (type == VertexDataType.VertexBufferObject || Mesh.forceVBO) {
+		if (type == VertexDataType.VertexBufferObject) {
 			vertices = new VertexBufferObject(isStatic, maxVertices, attributes);
 			indices = new IndexBufferObject(isStatic, maxIndices);
 			isVertexArray = false;
@@ -450,23 +410,7 @@ public class Mesh implements Disposable {
 	 * @param autoBind whether to autobind meshes. */
 	public void setAutoBind (boolean autoBind) {
 		this.autoBind = autoBind;
-	}
-
-	/** Binds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} if indices were given. Use
-	 * this with OpenGL ES 1.x and when auto-bind is disabled. */
-	public void bind () {
-		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-		vertices.bind();
-		if (!isVertexArray && indices.getNumIndices() > 0) indices.bind();
-	}
-
-	/** Unbinds the underlying {@link VertexArray}/{@link VertexBufferObject} and {@link IndexBufferObject} is indices were given.
-	 * Use this with OpenGL ES 1.x and when auto-bind is disabled. */
-	public void unbind () {
-		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-		vertices.unbind();
-		if (!isVertexArray && indices.getNumIndices() > 0) indices.unbind();
-	}
+	}	
 
 	/** Binds the underlying {@link VertexBufferObject} and {@link IndexBufferObject} if indices where given. Use this with OpenGL
 	 * ES 2.0 and when auto-bind is disabled.
@@ -482,8 +426,6 @@ public class Mesh implements Disposable {
 	 * @param shader the shader (does not bind the shader) 
 	 * @param locations array containing the attribute locations. */
 	public void bind (final ShaderProgram shader, final int[] locations) {
-		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
-
 		vertices.bind(shader, locations);
 		if (indices.getNumIndices() > 0) indices.bind();
 	}
@@ -502,84 +444,8 @@ public class Mesh implements Disposable {
 	 * @param shader the shader (does not unbind the shader)
 	 * @param locations array containing the attribute locations. */
 	public void unbind (final ShaderProgram shader, final int[] locations) {
-		if (!Gdx.graphics.isGL20Available()) {
-			throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
-		}
-
 		vertices.unbind(shader, locations);
 		if (indices.getNumIndices() > 0) indices.unbind();
-	}
-
-	/** <p>
-	 * Renders the mesh using the given primitive type. If indices are set for this mesh then getNumIndices() / #vertices per
-	 * primitive primitives are rendered. If no indices are set then getNumVertices() / #vertices per primitive are rendered.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
-	 * </p>
-	 * 
-	 * @param primitiveType the primitive type */
-	public void render (int primitiveType) {
-		render(primitiveType, 0, indices.getNumMaxIndices() > 0 ? getNumIndices() : getNumVertices(), autoBind);
-	}
-
-	/** <p>
-	 * Renders the mesh using the given primitive type. offset specifies the offset into vertex buffer and is ignored for the index
-	 * buffer. Count specifies the number of vertices or indices to use thus count / #vertices per primitive primitives are
-	 * rendered.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
-	 * </p>
-	 * 
-	 * @param primitiveType the primitive type
-	 * @param offset the offset into the vertex buffer, ignored for indexed rendering
-	 * @param count number of vertices or indices to use */
-	public void render (int primitiveType, int offset, int count) {
-		render (primitiveType, offset, count, autoBind);
-	}
-	
-	/** <p>
-	 * Renders the mesh using the given primitive type. offset specifies the offset into vertex buffer and is ignored for the index
-	 * buffer. Count specifies the number of vertices or indices to use thus count / #vertices per primitive primitives are
-	 * rendered.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method is intended for use with OpenGL ES 1.x and will throw an IllegalStateException when OpenGL ES 2.0 is used.
-	 * </p>
-	 * 
-	 * @param primitiveType the primitive type
-	 * @param offset the offset into the vertex buffer, ignored for indexed rendering
-	 * @param count number of vertices or indices to use
-	 * @param autoBind overrides the autoBind member of this Mesh */
-	public void render (int primitiveType, int offset, int count, boolean autoBind) {
-		if (Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 2.0");
-		if (count == 0) return;
-		if (autoBind) bind();
-
-		if (isVertexArray) {
-			if (indices.getNumIndices() > 0) {
-				ShortBuffer buffer = indices.getBuffer();
-				int oldPosition = buffer.position();
-				int oldLimit = buffer.limit();
-				buffer.position(offset);
-				buffer.limit(offset + count);
-				Gdx.gl10.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, buffer);
-				buffer.position(oldPosition);
-				buffer.limit(oldLimit);
-			} else
-				Gdx.gl10.glDrawArrays(primitiveType, offset, count);
-		} else {
-			if (indices.getNumIndices() > 0)
-				Gdx.gl11.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
-			else
-				Gdx.gl11.glDrawArrays(primitiveType, offset, count);
-		}
-
-		if (autoBind) unbind();
 	}
 
 	/** <p>
@@ -657,7 +523,6 @@ public class Mesh implements Disposable {
 	 * @param count number of vertices or indices to use
 	 * @param autoBind overrides the autoBind member of this Mesh */
 	public void render (ShaderProgram shader, int primitiveType, int offset, int count, boolean autoBind) {
-		if (!Gdx.graphics.isGL20Available()) throw new IllegalStateException("can't use this render method with OpenGL ES 1.x");
 		if (count == 0) return;
 
 		if (autoBind) bind(shader);
@@ -669,7 +534,7 @@ public class Mesh implements Disposable {
 				int oldLimit = buffer.limit();
 				buffer.position(offset);
 				buffer.limit(offset + count);
-				Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, buffer);
+				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, buffer);
 				buffer.position(oldPosition);
 				buffer.limit(oldLimit);
 			} else {
@@ -677,7 +542,7 @@ public class Mesh implements Disposable {
 			}
 		} else {
 			if (indices.getNumIndices() > 0)
-				Gdx.gl20.glDrawElements(primitiveType, count, GL10.GL_UNSIGNED_SHORT, offset * 2);
+				Gdx.gl20.glDrawElements(primitiveType, count, GL20.GL_UNSIGNED_SHORT, offset * 2);
 			else
 				Gdx.gl20.glDrawArrays(primitiveType, offset, count);
 		}

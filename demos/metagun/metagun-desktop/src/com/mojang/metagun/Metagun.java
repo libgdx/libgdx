@@ -3,7 +3,7 @@ package com.mojang.metagun;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.mojang.metagun.screen.Screen;
 import com.mojang.metagun.screen.TitleScreen;
 
@@ -47,7 +47,7 @@ public class Metagun implements ApplicationListener {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		accum += Gdx.graphics.getDeltaTime();
 		while (accum > 1.0f / 60.0f) {
 			screen.tick(input);

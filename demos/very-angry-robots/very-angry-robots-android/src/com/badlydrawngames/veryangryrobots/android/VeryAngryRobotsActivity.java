@@ -15,7 +15,6 @@ public class VeryAngryRobotsActivity extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useCompass = false;
 		config.useAccelerometer = false;
-		config.useGL20 = false;
 		VeryAngryRobotsGame game = new VeryAngryRobotsGame();
 		initialize(game, config);
 	}

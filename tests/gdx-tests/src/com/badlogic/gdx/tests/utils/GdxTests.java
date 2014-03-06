@@ -28,6 +28,9 @@
 
 package com.badlogic.gdx.tests.utils;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -51,6 +54,8 @@ import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -76,32 +81,28 @@ public class GdxTests {
 		BitmapFontMetricsTest.class,
 		BitmapFontTest.class,
 		BlitTest.class,
-		BobTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
-		CompassTest.class,
-		ComplexActionTest.class,
+		ContainerTest.class,
 		CullTest.class,
 		DelaunayTriangulatorTest.class,
 		DeltaTimeTest.class,
 		DirtyRenderingTest.class,
 		DragAndDropTest.class,
 		ETC1Test.class,
-		EarClippingTriangulatorTest.class,
+//		EarClippingTriangulatorTest.class,
 		EdgeDetectionTest.class,
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
 		FilterPerformanceTest.class,
-		FloatTest.class,
 		FloatTextureTest.class,
 		FogTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
-		FrustumTest.class,
 		FullscreenTest.class,
 		GamepadTest.class,
 		Gdx2DTest.class,
@@ -113,9 +114,7 @@ public class GdxTests {
 		HexagonalTiledMapTest.class,
 		ImageScaleTest.class,
 		ImageTest.class,
-		ImmediateModeRendererAlphaTest.class,
 		ImmediateModeRendererTest.class,
-		IndexBufferObjectClassTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
 		IntegerBitmapFontTest.class,
@@ -130,45 +129,32 @@ public class GdxTests {
 		LetterBoxTest3.class,
 		LifeCycleTest.class,
 		LightsTest.class,
-		LineDrawingTest.class,
-		ManagedTest.class,
-		ManualBindTest.class,
 		MaterialTest.class,
 		MatrixJNITest.class,
-		MeshMultitextureTest.class,
 		MeshShaderTest.class,
-		MeshTest.class,
 		MipMapTest.class,
 		ModelTest.class,
 		MoveSpriteExample.class,
 		MultitouchTest.class,
 		MusicTest.class,
-		MyFirstTriangle.class,
 		NetAPITest.class,
 		NinePatchTest.class,
-		ObjTest.class,
 		OnscreenKeyboardTest.class,
-		OrthoCamBorderTest.class,
 		ParallaxTest.class,
 		ParticleEmitterTest.class,
-		PathTest.class,
-		PickingTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
 		PixmapTest.class,
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
-		Pong.class,
 		PreferencesTest.class,
 		ProjectTest.class,
 		ProjectiveTextureTest.class,
 		ReflectionTest.class,
-		RemoteTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
 		Scene2dTest.class,
-		ScreenCaptureTest.class,
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,
 		ScrollPaneTest.class,
@@ -191,24 +177,18 @@ public class GdxTests {
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,
 		SpriteCacheTest.class,
-		SpritePerformanceTest.class,
-		SpritePerformanceTest2.class,
 		StagePerformanceTest.class,
 		StageTest.class,
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
-		TerrainTest.class,
 		TextAreaTest.class,
 		TextButtonTest.class,
-		TextButtonTestGL2.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
-		TextureBindTest.class,
 		TextureDataTest.class,
 		TextureDownloadTest.class,
 		TextureFormatTest.class,
-		TextureRenderTest.class,
 		TideMapAssetManagerTest.class,
 		TideMapDirectLoaderTest.class,
 		TileTest.class,
@@ -216,19 +196,14 @@ public class GdxTests {
 		TiledMapAtlasAssetManagerTest.class,
 		TiledMapBench.class,
 		TimerTest.class,
+		TimeUtilsTest.class,
 		TouchpadTest.class,
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
-		VBOVATest.class,
 		Vector2dTest.class,
-		VertexArrayClassTest.class,
-		VertexArrayTest.class,
-		VertexBufferObjectClassTest.class,
 		VertexBufferObjectShaderTest.class,
-		VertexBufferObjectTest.class,
 		VibratorTest.class,
-		WaterRipples.class,
 		YDownTest.class
 		// @on
 
@@ -236,21 +211,51 @@ public class GdxTests {
 		// InternationalFontsTest.class, VorbisTest.class
 		));
 
+	static final ObjectMap<String, String> obfuscatedToOriginal = new ObjectMap();
+	static final ObjectMap<String, String> originalToObfuscated = new ObjectMap();
+	static {
+		InputStream mappingInput = GdxTests.class.getResourceAsStream("/mapping.txt");
+		if (mappingInput != null) {
+			BufferedReader reader = null;
+			try {
+				reader = new BufferedReader(new InputStreamReader(mappingInput), 512);
+				while (true) {
+					String line = reader.readLine();
+					if (line == null) break;
+					if (line.startsWith("    ")) continue;
+					String[] split = line.replace(":", "").split(" -> ");
+					String original = split[0];
+					if (original.indexOf('.') != -1) original = original.substring(original.lastIndexOf('.') + 1);
+					originalToObfuscated.put(original, split[1]);
+					obfuscatedToOriginal.put(split[1], original);
+				}
+				reader.close();
+			} catch (Exception ex) {
+				System.out.println("GdxTests: Error reading mapping file: mapping.txt");
+				ex.printStackTrace();
+			} finally {
+				StreamUtils.closeQuietly(reader);
+			}
+		}
+	}
+
 	public static List<String> getNames () {
 		List<String> names = new ArrayList<String>(tests.size());
 		for (Class clazz : tests)
-			names.add(clazz.getSimpleName());
+			names.add(obfuscatedToOriginal.get(clazz.getSimpleName(), clazz.getSimpleName()));
 		Collections.sort(names);
 		return names;
 	}
 
 	private static Class<? extends GdxTest> forName (String name) {
+		name = originalToObfuscated.get(name, name);
 		for (Class clazz : tests)
 			if (clazz.getSimpleName().equals(name)) return clazz;
 		return null;
 	}
 
 	public static GdxTest newTest (String testName) {
+		testName = originalToObfuscated.get(testName, testName);
 		try {
 			return forName(testName).newInstance();
 		} catch (InstantiationException e) {

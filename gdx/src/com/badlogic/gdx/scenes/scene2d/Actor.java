@@ -371,7 +371,7 @@ public class Actor {
 		this.y = y;
 	}
 
-	public void translate (float x, float y) {
+	public void moveBy (float x, float y) {
 		this.x += x;
 		this.y += y;
 	}
@@ -420,14 +420,14 @@ public class Actor {
 	}
 
 	/** Adds the specified size to the current size. */
-	public void size (float size) {
+	public void sizeBy (float size) {
 		width += size;
 		height += size;
 		sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
-	public void size (float width, float height) {
+	public void sizeBy (float width, float height) {
 		this.width += width;
 		this.height += height;
 		sizeChanged();
@@ -483,9 +483,9 @@ public class Actor {
 	}
 
 	/** Sets the scalex and scaley. */
-	public void setScale (float scale) {
-		this.scaleX = scale;
-		this.scaleY = scale;
+	public void setScale (float scaleXY) {
+		this.scaleX = scaleXY;
+		this.scaleY = scaleXY;
 	}
 
 	/** Sets the scalex and scaley. */
@@ -495,13 +495,13 @@ public class Actor {
 	}
 
 	/** Adds the specified scale to the current scale. */
-	public void scale (float scale) {
+	public void scaleBy (float scale) {
 		scaleX += scale;
 		scaleY += scale;
 	}
 
 	/** Adds the specified scale to the current scale. */
-	public void scale (float scaleX, float scaleY) {
+	public void scaleBy (float scaleX, float scaleY) {
 		this.scaleX += scaleX;
 		this.scaleY += scaleY;
 	}
@@ -515,7 +515,7 @@ public class Actor {
 	}
 
 	/** Adds the specified rotation to the current rotation. */
-	public void rotate (float amountInDegrees) {
+	public void rotateBy (float amountInDegrees) {
 		rotation += amountInDegrees;
 	}
 
@@ -587,6 +587,7 @@ public class Actor {
 	 * @return false if the clipping area is zero and no drawing should occur.
 	 * @see ScissorStack */
 	public boolean clipBegin (float x, float y, float width, float height) {
+		if (width <= 0 || height <= 0) return false;
 		Rectangle tableBounds = Rectangle.tmp;
 		tableBounds.x = x;
 		tableBounds.y = y;
@@ -648,10 +649,10 @@ public class Actor {
 			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
 			final float originX = this.originX;
 			final float originY = this.originY;
-			final float tox = localCoords.x - originX;
-			final float toy = localCoords.y - originY;
-			localCoords.x = (tox * cos + toy * sin) * scaleX + originX + x;
-			localCoords.y = (tox * -sin + toy * cos) * scaleY + originY + y;
+			final float tox = (localCoords.x - originX) * scaleX;
+			final float toy = (localCoords.y - originY) * scaleY;
+			localCoords.x = (tox * cos + toy * sin) + originX + x;
+			localCoords.y = (tox * -sin + toy * cos) + originY + y;
 		}
 		return localCoords;
 	}
