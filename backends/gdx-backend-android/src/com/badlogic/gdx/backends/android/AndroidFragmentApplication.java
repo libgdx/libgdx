@@ -1,7 +1,5 @@
 package com.badlogic.gdx.backends.android;
 
-import java.util.Arrays;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -28,6 +26,9 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * Implementation of the {@link AndroidApplicationBase} that is based on the {@link Fragment} class. This class is similar
