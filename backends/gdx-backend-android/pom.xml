@@ -34,7 +34,8 @@
 	    <artifactId>support-v4</artifactId>
 	    <version>19.0.1</version>
 	    <scope>system</scope>
-      <systemPath>${basedir}/libs/support-v4-19.0.1.jar</systemPath>
+		<systemPath>${basedir}/libs/support-v4-19.0.1.jar</systemPath>
+		<optional>true</optional>
 	  </dependency>
   </dependencies>
 

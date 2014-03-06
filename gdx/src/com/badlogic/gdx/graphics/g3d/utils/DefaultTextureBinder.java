@@ -19,10 +19,8 @@ package com.badlogic.gdx.graphics.g3d.utils;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GLTexture;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -83,10 +81,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 
 	private static int getMaxTextureUnits () {
 		IntBuffer buffer = BufferUtils.newIntBuffer(16);
-		if (Gdx.graphics.isGL20Available())
-			Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
-		else
-			Gdx.gl.glGetIntegerv(GL10.GL_MAX_TEXTURE_UNITS, buffer);
+		Gdx.gl.glGetIntegerv(GL20.GL_MAX_TEXTURE_IMAGE_UNITS, buffer);
 		return buffer.get(0);
 	}
 
@@ -139,7 +134,7 @@ public final class DefaultTextureBinder implements TextureBinder {
 			if (rebind)
 				texture.bind(result);
 			else
-				Gdx.gl.glActiveTexture(GL10.GL_TEXTURE0 + result);
+				Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + result);
 		} else
 			bindCount++;
 		texture.unsafeSetWrap(textureDesc.uWrap, textureDesc.vWrap);

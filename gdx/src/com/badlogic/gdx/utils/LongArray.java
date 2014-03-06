@@ -109,7 +109,7 @@ public class LongArray {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
-	
+
 	public void incr (int index, long value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] += value;
@@ -119,7 +119,7 @@ public class LongArray {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
 	}
-	
+
 	public void insert (int index, long value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		long[] items = this.items;
@@ -327,5 +327,10 @@ public class LongArray {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #LongArray(long[]) */
+	static public LongArray with (long... array) {
+		return new LongArray(array);
 	}
 }

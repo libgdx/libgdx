@@ -23,10 +23,6 @@ import com.badlogic.gdx.utils.IntMap;
 
 public class DeviceInfoTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	@Override
 	public void create () {

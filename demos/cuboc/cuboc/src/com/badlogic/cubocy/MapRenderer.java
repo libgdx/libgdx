@@ -3,7 +3,7 @@ package com.badlogic.cubocy;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -124,7 +124,7 @@ public class MapRenderer {
 		renderLaserBeams();
 
 		cache.setProjectionMatrix(cam.combined);
-		Gdx.gl.glDisable(GL10.GL_BLEND);
+		Gdx.gl.glDisable(GL20.GL_BLEND);
 		cache.begin();
 		int b = 0;
 		for (int blockY = 0; blockY < 4; blockY++) {
@@ -226,7 +226,7 @@ public class MapRenderer {
 
 	private void renderLaserBeams () {
 		cam.update(false);
-		renderer.begin(cam.combined, GL10.GL_LINES);
+		renderer.begin(cam.combined, GL20.GL_LINES);
 		for (int i = 0; i < map.lasers.size; i++) {
 			Laser laser = map.lasers.get(i);
 			float sx = laser.startPoint.x, sy = laser.startPoint.y;

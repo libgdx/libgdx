@@ -206,10 +206,10 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	/** Scales this vector by the given value
-	 * @param value The value
+	 * @param scalar The value
 	 * @return This vector for chaining */
-	public Vector3 scl (float value) {
-		return this.set(this.x * value, this.y * value, this.z * value);
+	public Vector3 scl (float scalar) {
+		return this.set(this.x * scalar, this.y * scalar, this.z * scalar);
 	}
 	
 	/** @deprecated Use {@link #scl(float)} instead. */
@@ -394,6 +394,18 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.set(this.y * z - this.z * y, this.z * x - this.x * z, this.x * y - this.y * x);
 	}
 
+	/** Left-multiplies the vector by the given 4x3 column major matrix.
+	 * The matrix should be composed by a 3x3 matrix representing rotation and scale
+	 * plus a 1x3 matrix representing the translation.
+	 * @param matrix The matrix
+	 * @return This vector for chaining */
+	public Vector3 mul4x3(float[] matrix)
+	{
+		return set(x * matrix[0] + y * matrix[3] + z * matrix[6] + matrix[9], 
+			x * matrix[1] + y * matrix[4] + z * matrix[7] + matrix[10], 
+			x * matrix[2] + y * matrix[5] + z * matrix[8] + matrix[11]);
+	}
+	
 	/** Left-multiplies the vector by the given matrix, assuming the fourth (w) component of the vector is 1.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
@@ -444,6 +456,17 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.mul(tmpMat.setToRotation(axisX, axisY, axisZ, degrees));
 	}
 
+	/** Rotates this vector by the given angle in radians around the given axis.
+	 *
+	 * @param radians the angle in radians
+	 * @param axisX the x-component of the axis
+	 * @param axisY the y-component of the axis
+	 * @param axisZ the z-component of the axis
+	 * @return This vector for chaining */
+	public Vector3 rotateRad (float radians, float axisX, float axisY, float axisZ) {
+		return this.mul(tmpMat.setToRotationRad(axisX, axisY, axisZ, radians));
+	}
+
 	/** Rotates this vector by the given angle in degrees around the given axis.
 	 *
 	 * @param axis the axis
@@ -454,28 +477,74 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return this.mul(tmpMat);
 	}
 
-	/** @return Whether this vector is a unit length vector */
+	/** Rotates this vector by the given angle in radians around the given axis.
+	 *
+	 * @param axis the axis
+	 * @param radians the angle in radians
+	 * @return This vector for chaining */
+	public Vector3 rotateRad (final Vector3 axis, float radians) {
+		tmpMat.setToRotationRad(axis, radians);
+		return this.mul(tmpMat);
+	}
+
+	@Override
 	public boolean isUnit () {
 		return isUnit(0.000000001f);
 	}
 
-	/** @return Whether this vector is a unit length vector within the given margin
-	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary.
-	 */
+	@Override
 	public boolean isUnit(final float margin) {
 		return Math.abs(len2() - 1f) < margin;
 	}
 
-	/** @return Whether this vector is a zero vector */
+	@Override
 	public boolean isZero () {
 		return x == 0 && y == 0 && z == 0;
 	}
 	
-	/** @return Whether the length of this vector is smaller than the given margin
-	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary.
-	 */
+	@Override
 	public boolean isZero (final float margin) {
 		return len2() < margin;
+	}
+	
+	@Override
+	public boolean isCollinear(Vector3 vector, float epsilon){
+		return MathUtils.isZero(dot(vector)-1, epsilon);
+	}
+	
+	@Override
+	public boolean isCollinear(Vector3 vector){
+		return MathUtils.isZero(dot(vector)-1);
+	}
+	
+	@Override
+	public boolean isCollinearOpposite(Vector3 vector, float epsilon){
+		return MathUtils.isZero(dot(vector)+1, epsilon);
+	}
+	
+	@Override
+	public boolean isCollinearOpposite(Vector3 vector){
+		return MathUtils.isZero(dot(vector)+1);
+	}
+	
+	@Override
+	public boolean isPerpendicular(Vector3 vector){
+		return MathUtils.isZero(dot(vector));
+	}
+	
+	@Override
+	public boolean isPerpendicular(Vector3 vector, float epsilon){
+		return MathUtils.isZero(dot(vector), epsilon);
+	}
+	
+	@Override
+	public boolean hasSameDirection(Vector3 vector){
+		return dot(vector) > 0;
+	}
+
+	@Override
+	public boolean hasOppositeDirection(Vector3 vector){
+		return dot(vector) < 0;
 	}
 
 	/** Linearly interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is stored

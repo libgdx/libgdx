@@ -106,6 +106,6 @@ public class UxAndroid extends AndroidApplication {
 			public void dispose () {
 
 			}
-		}, false);
+		});
 	}
 }

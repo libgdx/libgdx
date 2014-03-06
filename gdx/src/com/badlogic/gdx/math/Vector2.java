@@ -288,11 +288,23 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return angle;
 	}
 
+	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis. (typically
+	 *         counter-clockwise) */
+	public float getAngleRad () {
+		return (float)Math.atan2(y, x);
+	}
+
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
-	 * @param degrees The angle to set. */
+	 * @param degrees The angle in degrees to set. */
 	public Vector2 setAngle (float degrees) {
+		return setAngleRad(degrees * MathUtils.degreesToRadians);
+	}
+
+	/** Sets the angle of the vector in radians relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
+	 * @param radians The angle in radians to set. */
+	public Vector2 setAngleRad (float radians) {
 		this.set(len(), 0f);
-		this.rotate(degrees);
+		this.rotateRad(radians);
 
 		return this;
 	}
@@ -300,9 +312,14 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
 	 * @param degrees the angle in degrees */
 	public Vector2 rotate (float degrees) {
-		float rad = degrees * MathUtils.degreesToRadians;
-		float cos = (float)Math.cos(rad);
-		float sin = (float)Math.sin(rad);
+		return rotateRad(degrees * MathUtils.degreesToRadians);
+	}
+
+	/** Rotates the Vector2 by the given angle, counter-clockwise assuming the y-axis points up.
+	 * @param radians the angle in radians */
+	public Vector2 rotateRad (float radians) {
+		float cos = (float)Math.cos(radians);
+		float sin = (float)Math.sin(radians);
 
 		float newX = this.x * cos - this.y * sin;
 		float newY = this.x * sin + this.y * cos;
@@ -381,27 +398,63 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return true;
 	}
 
-	/** @return Whether this vector is a unit length vector */
+	@Override
 	public boolean isUnit () {
 		return isUnit(0.000000001f);
 	}
 
-	/** @return Whether this vector is a unit length vector within the given margin.
-	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary.
-	 */
+	@Override
 	public boolean isUnit(final float margin) {
 		return Math.abs(len2() - 1f) < margin;
 	}
 
-	/** @return Whether this vector is a zero vector */
+	@Override
 	public boolean isZero () {
 		return x == 0 && y == 0;
 	}
 
-	/** @return Whether the length of this vector is smaller than the given margin
-	 * Comparison is done using len2(), it is up to the application to supply margin^2 argument if necessary.
-	 */
+	@Override
 	public boolean isZero (final float margin) {
 		return len2() < margin;
+	}
+	
+	@Override
+	public boolean isCollinear(Vector2 vector, float epsilon){
+		return MathUtils.isZero(dot(vector)-1, epsilon);
+	}
+	
+	@Override
+	public boolean isCollinear(Vector2 vector){
+		return MathUtils.isZero(dot(vector)-1);
+	}
+	
+	@Override
+	public boolean isCollinearOpposite(Vector2 vector, float epsilon){
+		return MathUtils.isZero(dot(vector)+1, epsilon);
+	}
+	
+	@Override
+	public boolean isCollinearOpposite(Vector2 vector){
+		return MathUtils.isZero(dot(vector)+1);
+	}
+	
+	@Override
+	public boolean isPerpendicular(Vector2 vector){
+		return MathUtils.isZero(dot(vector));
+	}
+	
+	@Override
+	public boolean isPerpendicular(Vector2 vector, float epsilon){
+		return MathUtils.isZero(dot(vector), epsilon);
+	}
+	
+	@Override
+	public boolean hasSameDirection(Vector2 vector){
+		return dot(vector) > 0;
+	}
+
+	@Override
+	public boolean hasOppositeDirection(Vector2 vector){
+		return dot(vector) < 0;
 	}
 }

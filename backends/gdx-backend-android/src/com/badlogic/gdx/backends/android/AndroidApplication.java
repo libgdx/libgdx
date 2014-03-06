@@ -43,10 +43,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -75,6 +71,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected int logLevel = LOG_INFO;
 	protected boolean useImmersiveMode = false;
 	protected boolean hideStatusBar = false;
+	private int wasFocusChanged = -1;
+	private boolean isWaitingForAudio = false;
 
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0
@@ -83,10 +81,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	 * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
 	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
+	 **/
+	public void initialize (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
 		initialize(listener, config);
 	}
 
@@ -105,6 +102,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
+		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
 		this.listener = listener;
@@ -134,17 +132,17 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			try {
 				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
 			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
 	}
 
 	protected FrameLayout.LayoutParams createLayoutParams () {
-		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
-			android.view.ViewGroup.LayoutParams.FILL_PARENT);
+		FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+			android.view.ViewGroup.LayoutParams.MATCH_PARENT);
 		layoutParams.gravity = Gravity.CENTER;
 		return layoutParams;
 	}
@@ -174,9 +172,19 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
 		hideStatusBar(this.hideStatusBar);
+		if (hasFocus) {
+			this.wasFocusChanged = 1;
+			if (this.isWaitingForAudio) {
+				this.audio.resume();
+				this.isWaitingForAudio = false;
+			}
+		} else {
+			this.wasFocusChanged = 0;
+		}
 	}
 
-	protected void useImmersiveMode (boolean use) {
+	@Override
+	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < 19) return;
 
 		View view = getWindow().getDecorView();
@@ -203,11 +211,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	 * Note: you have to add the returned view to your layout!
 	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
 	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, boolean useGL2IfAvailable) {
+	public View initializeForView (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
 		return initializeForView(listener, config);
 	}
 
@@ -229,6 +235,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
+		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
 		net = new AndroidNet(this);
 		this.listener = listener;
@@ -250,10 +257,10 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			try {
 				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
-				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplication.class);
+				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
 			} catch (Exception e) {
-				log("AndroidApplication", "Failed to create AndroidVisibilityListener");
+				log("AndroidApplication", "Failed to create AndroidVisibilityListener", e);
 			}
 		}
 		return graphics.getView();
@@ -281,8 +288,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		graphics.setContinuousRendering(isContinuous);
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onPause();
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 		}
 
@@ -301,8 +306,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		((AndroidInput)getInput()).registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)graphics.view).onResume();
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 		}
 
@@ -310,6 +313,12 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			graphics.resume();
 		} else
 			firstResume = false;
+
+		this.isWaitingForAudio = true;
+		if (this.wasFocusChanged == 1 || this.wasFocusChanged == -1) {
+			this.audio.resume();
+			this.isWaitingForAudio = false;
+		}
 		super.onResume();
 	}
 
@@ -355,7 +364,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 	@Override
 	public int getVersion () {
-		return Integer.parseInt(android.os.Build.VERSION.SDK);
+		return android.os.Build.VERSION.SDK_INT;
 	}
 
 	@Override
@@ -485,5 +494,20 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
+	}
+
+	@Override
+	public boolean isFragment () {
+		return false;
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		return this.getWindow();
+	}
+
+	@Override
+	public Handler getHandler () {
+		return this.handler;
 	}
 }

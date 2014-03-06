@@ -14,33 +14,19 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.locks.ReentrantLock;
+import android.content.Context;
+import android.os.Bundle;
+import android.service.wallpaper.WallpaperService;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.WindowManager;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-
-import android.app.Activity;
-import android.app.WallpaperManager;
-import android.content.Context;
-import android.opengl.GLSurfaceView;
-import android.os.Bundle;
-import android.os.Handler;
-import android.provider.LiveFolders;
-import android.service.wallpaper.WallpaperService;
-import android.service.wallpaper.WallpaperService.Engine;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.WindowManager;
 
 
 /** 
@@ -164,11 +150,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 	/** 
 	 * Look at {@link AndroidLiveWallpaperService#initialize(ApplicationListener, AndroidApplicationConfiguration)}}
 	 * @param listener
-	 * @param useGL2IfAvailable
 	 */
-	public void initialize (ApplicationListener listener, boolean useGL2IfAvailable) {
+	public void initialize (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = useGL2IfAvailable;
 		initialize(listener, config);
 	}
 
@@ -359,6 +343,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			
 			notifyPreviewState();
 			notifyOffsetsChanged();
+			if (!Gdx.graphics.isContinuousRendering()) {
+				Gdx.graphics.requestRendering();
+			}
 		}
 		
 		
@@ -479,6 +466,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 
 				notifyPreviewState();
 				notifyOffsetsChanged();
+				if (!Gdx.graphics.isContinuousRendering()) {
+					Gdx.graphics.requestRendering();
+				}
 			}
 		}
 		
@@ -599,6 +589,9 @@ public abstract class AndroidLiveWallpaperService extends WallpaperService {
 			
 			// can fail if linkedApp == null, so we repeat it in Engine.onResume
 			notifyOffsetsChanged();
+			if (!Gdx.graphics.isContinuousRendering()) {
+				Gdx.graphics.requestRendering();
+			}
 			
 			super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset);
 		}

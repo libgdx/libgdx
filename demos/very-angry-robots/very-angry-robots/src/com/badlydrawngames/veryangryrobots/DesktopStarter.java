@@ -21,6 +21,6 @@ public class DesktopStarter {
 	private final static int WINDOW_HEIGHT = 480;
 
 	public static void main (String[] args) {
-		new LwjglApplication(new VeryAngryRobotsGame(), "Very Angry Robots", WINDOW_WIDTH, WINDOW_HEIGHT, false);
+		new LwjglApplication(new VeryAngryRobotsGame(), "Very Angry Robots", WINDOW_WIDTH, WINDOW_HEIGHT);
 	}
 }

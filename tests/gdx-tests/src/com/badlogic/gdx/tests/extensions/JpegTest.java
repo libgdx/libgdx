@@ -17,7 +17,7 @@
 package com.badlogic.gdx.tests.extensions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Jpeg;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -39,14 +39,9 @@ public class JpegTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(texture, 0, 0);
 		batch.end();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

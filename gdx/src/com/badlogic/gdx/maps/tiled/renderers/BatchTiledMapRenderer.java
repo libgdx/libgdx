@@ -40,6 +40,8 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 
 	protected boolean ownsSpriteBatch;
 
+	protected float vertices[] = new float[20];
+
 	public TiledMap getMap () {
 		return map;
 	}

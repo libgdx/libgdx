@@ -102,7 +102,7 @@ public class LwjglAWTCanvas implements Application {
 			throw new GdxRuntimeException(ex);
 		}
 
-		graphics = new LwjglGraphics(canvas, useGL2) {
+		graphics = new LwjglGraphics(canvas) {
 			public void setTitle (String title) {
 				super.setTitle(title);
 				LwjglAWTCanvas.this.setTitle(title);

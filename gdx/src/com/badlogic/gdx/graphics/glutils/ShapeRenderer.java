@@ -19,11 +19,7 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -87,7 +83,7 @@ public class ShapeRenderer {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner, stbachmann */
 	public enum ShapeType {
-		Point(GL10.GL_POINTS), Line(GL10.GL_LINES), Filled(GL10.GL_TRIANGLES);
+		Point(GL20.GL_POINTS), Line(GL20.GL_LINES), Filled(GL20.GL_TRIANGLES);
 
 		private final int glType;
 
@@ -114,10 +110,7 @@ public class ShapeRenderer {
 	}
 
 	public ShapeRenderer (int maxVertices) {
-		if (Gdx.graphics.isGL20Available())
-			renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
-		else
-			renderer = new ImmediateModeRenderer10(maxVertices);
+		renderer = new ImmediateModeRenderer20(maxVertices, false, true, 0);
 		projView.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		matrixDirty = true;
 	}
@@ -802,7 +795,7 @@ public class ShapeRenderer {
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 
-		float theta = (2 * 3.1415926f * (angle / 360.0f)) / segments;
+		float theta = (2 * MathUtils.PI * (angle / 360.0f)) / segments;
 		float cos = MathUtils.cos(theta);
 		float sin = MathUtils.sin(theta);
 		float cx = radius * MathUtils.cos(start * MathUtils.degreesToRadians);
@@ -863,7 +856,7 @@ public class ShapeRenderer {
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 
-		float angle = 2 * 3.1415926f / segments;
+		float angle = 2 * MathUtils.PI / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;
@@ -921,7 +914,7 @@ public class ShapeRenderer {
 		checkDirty();
 		checkFlush(segments * 3);
 
-		float angle = 2 * 3.1415926f / segments;
+		float angle = 2 * MathUtils.PI / segments;
 
 		float cx = x + width / 2, cy = y + height / 2;
 		if (currType == ShapeType.Line) {
@@ -960,7 +953,7 @@ public class ShapeRenderer {
 			throw new GdxRuntimeException("Must call begin(ShapeType.Filled) or begin(ShapeType.Line)");
 		checkDirty();
 		checkFlush(segments * 4 + 2);
-		float angle = 2 * 3.1415926f / segments;
+		float angle = 2 * MathUtils.PI / segments;
 		float cos = MathUtils.cos(angle);
 		float sin = MathUtils.sin(angle);
 		float cx = radius, cy = 0;

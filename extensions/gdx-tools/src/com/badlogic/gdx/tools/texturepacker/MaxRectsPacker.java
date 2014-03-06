@@ -115,36 +115,54 @@ public class MaxRectsPacker implements Packer {
 		System.out.print("Packing");
 
 		// Find the minimal page size that fits all rects.
-		BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
-		BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot);
-		int width = widthSearch.reset(), i = 0;
-		int height = settings.square ? width : heightSearch.reset();
 		Page bestResult = null;
-		while (true) {
-			Page bestWidthResult = null;
-			while (width != -1) {
-				Page result = packAtSize(true, width - edgePaddingX, height - edgePaddingY, inputRects);
+		if (settings.square) {
+			int minSize = Math.max(minWidth, minHeight);
+			int maxSize = Math.min(settings.maxWidth, settings.maxHeight);
+			BinarySearch sizeSearch = new BinarySearch(minSize, maxSize, settings.fast ? 25 : 15, settings.pot);
+			int size = sizeSearch.reset(), i = 0;
+			while (size != -1) {
+				Page result = packAtSize(true, size - edgePaddingX, size - edgePaddingY, inputRects);
 				if (++i % 70 == 0) System.out.println();
 				System.out.print(".");
-				bestWidthResult = getBest(bestWidthResult, result);
-				width = widthSearch.next(result == null);
-				if (settings.square) height = width;
+				bestResult = getBest(bestResult, result);
+				size = sizeSearch.next(result == null);
 			}
-			bestResult = getBest(bestResult, bestWidthResult);
-			if (settings.square) break;
-			height = heightSearch.next(bestWidthResult == null);
-			if (height == -1) break;
-			width = widthSearch.reset();
+			System.out.println();
+			// Rects don't fit on one page. Fill a whole page and return.
+			if (bestResult == null) bestResult = packAtSize(false, maxSize - edgePaddingX, maxSize - edgePaddingY, inputRects);
+			sort.sort(bestResult.outputRects, rectComparator);
+			bestResult.width = Math.max(bestResult.width, bestResult.height);
+			bestResult.height = Math.max(bestResult.width, bestResult.height);
+			return bestResult;
+		} else {
+			BinarySearch widthSearch = new BinarySearch(minWidth, settings.maxWidth, settings.fast ? 25 : 15, settings.pot);
+			BinarySearch heightSearch = new BinarySearch(minHeight, settings.maxHeight, settings.fast ? 25 : 15, settings.pot);
+			int width = widthSearch.reset(), i = 0;
+			int height = settings.square ? width : heightSearch.reset();
+			while (true) {
+				Page bestWidthResult = null;
+				while (width != -1) {
+					Page result = packAtSize(true, width - edgePaddingX, height - edgePaddingY, inputRects);
+					if (++i % 70 == 0) System.out.println();
+					System.out.print(".");
+					bestWidthResult = getBest(bestWidthResult, result);
+					width = widthSearch.next(result == null);
+					if (settings.square) height = width;
+				}
+				bestResult = getBest(bestResult, bestWidthResult);
+				if (settings.square) break;
+				height = heightSearch.next(bestWidthResult == null);
+				if (height == -1) break;
+				width = widthSearch.reset();
+			}
+			System.out.println();
+			// Rects don't fit on one page. Fill a whole page and return.
+			if (bestResult == null)
+				bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
+			sort.sort(bestResult.outputRects, rectComparator);
+			return bestResult;
 		}
-		System.out.println();
-
-		// Rects don't fit on one page. Fill a whole page and return.
-		if (bestResult == null)
-			bestResult = packAtSize(false, settings.maxWidth - edgePaddingX, settings.maxHeight - edgePaddingY, inputRects);
-
-		sort.sort(bestResult.outputRects, rectComparator);
-
-		return bestResult;
 	}
 
 	/** @param fully If true, the only results that pack all rects will be considered. If false, all results are considered, not all

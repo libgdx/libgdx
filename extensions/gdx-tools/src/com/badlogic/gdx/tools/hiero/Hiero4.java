@@ -165,7 +165,7 @@ public class Hiero4 extends JFrame {
 		initialize();
 		splash.close();
 
-		gamePanel.add(new LwjglCanvas(renderer = new Renderer(), false).getCanvas());
+		gamePanel.add(new LwjglCanvas(renderer = new Renderer()).getCanvas());
 
 		prefs = Preferences.userNodeForPackage(Hiero4.class);
 		java.awt.Color backgroundColor = EffectUtil.fromString(prefs.get("background", "000000"));

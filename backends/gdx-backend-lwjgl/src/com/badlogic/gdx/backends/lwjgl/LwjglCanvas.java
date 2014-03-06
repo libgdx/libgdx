@@ -62,9 +62,8 @@ public class LwjglCanvas implements Application {
 	int logLevel = LOG_INFO;
 	Cursor cursor;
 
-	public LwjglCanvas (ApplicationListener listener, boolean useGL2) {
+	public LwjglCanvas (ApplicationListener listener) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.useGL20 = useGL2;
 		initialize(listener, config);
 	}
 

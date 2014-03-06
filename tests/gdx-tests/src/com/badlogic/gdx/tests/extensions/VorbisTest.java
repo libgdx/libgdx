@@ -75,9 +75,4 @@ public class VorbisTest extends GdxTest {
 		// kill the file again
 		Gdx.files.external("tmp/test.ogg").delete();
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 }

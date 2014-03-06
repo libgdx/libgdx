@@ -19,21 +19,18 @@ package com.badlogic.gdx.tests;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class AudioRecorderTest extends GdxTest {
 	short[] samples = new short[1024 * 4];
 	AudioDevice device;
 	AudioRecorder recorder;
-	ImmediateModeRenderer10 renderer;
 
 	@Override
 	public void create () {
 		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecorder(44100, true);
-		renderer = new ImmediateModeRenderer10();
 
 		Thread t = new Thread(new Runnable() {
 
@@ -51,16 +48,7 @@ public class AudioRecorderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.graphics.getGL10();
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-// float incX = 2.0f / samples.length;
-// float x = -1;
-// renderer.begin( GL10.GL_LINE_STRIP );
-// for( int i = 0; i < samples.length/100; i++, x+=incX )
-// renderer.vertex( x, samples[i] / (float)Short.MAX_VALUE, 0 );
-// renderer.end();
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 	}
 
 	@Override
@@ -73,10 +61,5 @@ public class AudioRecorderTest extends GdxTest {
 	public void resume () {
 		device = Gdx.audio.newAudioDevice(44100, true);
 		recorder = Gdx.audio.newAudioRecorder(44100, true);
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

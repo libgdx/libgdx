@@ -678,6 +678,8 @@ public class LongMap<V> {
 				throw new IllegalStateException("next must be called before remove.");
 			} else if (currentIndex >= map.capacity) {
 				map.removeStashIndex(currentIndex);
+				nextIndex = currentIndex - 1;
+				findNextIndex();
 			} else {
 				map.keyTable[currentIndex] = EMPTY;
 				map.valueTable[currentIndex] = null;

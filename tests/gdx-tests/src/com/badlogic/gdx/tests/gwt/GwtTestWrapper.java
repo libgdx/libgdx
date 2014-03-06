@@ -91,9 +91,9 @@ import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
-import com.badlogic.gdx.tests.TextButtonTestGL2;
 import com.badlogic.gdx.tests.TextureAtlasTest;
 import com.badlogic.gdx.tests.TiledMapAtlasAssetManagerTest;
+import com.badlogic.gdx.tests.TimeUtilsTest;
 import com.badlogic.gdx.tests.UITest;
 import com.badlogic.gdx.tests.VertexBufferObjectShaderTest;
 import com.badlogic.gdx.tests.YDownTest;
@@ -648,7 +648,7 @@ public class GwtTestWrapper extends GdxTest {
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
-				return new TextButtonTestGL2();
+				return new TextButtonTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
@@ -678,10 +678,9 @@ public class GwtTestWrapper extends GdxTest {
 			public GdxTest instance () {
 				return new TiledMapAtlasAssetManagerTest();
 			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new TimeUtilsTest();
+			}
 		}};
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
 }

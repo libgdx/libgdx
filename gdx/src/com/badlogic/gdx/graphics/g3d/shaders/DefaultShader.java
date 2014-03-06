@@ -18,10 +18,8 @@ package com.badlogic.gdx.graphics.g3d.shaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
@@ -299,11 +297,11 @@ public class DefaultShader extends BaseShader {
 	/** @Deprecated Replaced by {@link Config#defaultCullFace} 
 	 * Set to 0 to disable culling */
 	@Deprecated
-	public static int defaultCullFace = GL10.GL_BACK;
+	public static int defaultCullFace = GL20.GL_BACK;
 	/** @Deprecated Replaced by {@link Config#defaultDepthFunc}
 	 * Set to 0 to disable depth test */
 	@Deprecated
-	public static int defaultDepthFunc = GL10.GL_LEQUAL;
+	public static int defaultDepthFunc = GL20.GL_LEQUAL;
 	
 	// Global uniforms
 	public final int u_projTrans;
@@ -585,7 +583,7 @@ public class DefaultShader extends BaseShader {
 	@Override
 	public void render (final Renderable renderable) {
 		if (!renderable.material.has(BlendingAttribute.Type))
-			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+			context.setBlending(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		bindMaterial(renderable);
 		if (lighting)
 			bindLights(renderable);

@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.graphics.g3d.attributes;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -41,11 +40,11 @@ public class DepthTestAttribute extends Attribute {
    public boolean depthMask;
 
    public DepthTestAttribute() {
-   	this(GL10.GL_LEQUAL);
+   	this(GL20.GL_LEQUAL);
    }
    
    public DepthTestAttribute(boolean depthMask) {
-   	this(GL10.GL_LEQUAL, depthMask);
+   	this(GL20.GL_LEQUAL, depthMask);
    }
    
    public DepthTestAttribute(final int depthFunc) {

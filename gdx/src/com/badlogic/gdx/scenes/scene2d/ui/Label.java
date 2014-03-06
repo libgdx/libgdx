@@ -250,10 +250,10 @@ public class Label extends Widget {
 		invalidateHierarchy();
 	}
 
-	/** @param wrapAlign Aligns each line of text horizontally and all the text vertically.
+	/** @param alignment Aligns each line of text horizontally and all the text vertically.
 	 * @see Align */
-	public void setAlignment (int wrapAlign) {
-		setAlignment(wrapAlign, wrapAlign);
+	public void setAlignment (int alignment) {
+		setAlignment(alignment, alignment);
 	}
 
 	/** @param labelAlign Aligns all the text with the label widget.
@@ -305,6 +305,11 @@ public class Label extends Widget {
 	/** When true the text will be truncated with an ellipse if it does not fit within the width of the label. Default is false. */
 	public void setEllipse (boolean ellipse) {
 		this.ellipse = ellipse;
+	}
+
+	/** Allows subclasses to access the cache in {@link #draw(Batch, float)}. */
+	protected BitmapFontCache getBitmapFontCache () {
+		return cache;
 	}
 
 	/** The style for a label, see {@link Label}.

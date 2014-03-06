@@ -25,7 +25,6 @@ import java.nio.ShortBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -87,7 +86,7 @@ public class GwtGL20 implements GL20 {
 			shortBuffer = TypedArrays.createInt16Array(buffer.remaining());
 		}
 	}
-	
+
 	private void ensureCapacity (IntBuffer buffer) {
 		if (buffer.remaining() > intBuffer.length()) {
 			intBuffer = TypedArrays.createInt32Array(buffer.remaining());
@@ -117,7 +116,7 @@ public class GwtGL20 implements GL20 {
 			return shortBuffer.subarray(0, buffer.remaining());
 		}
 	}
-	
+
 	public Int32Array copy (IntBuffer buffer) {
 		if (GWT.isProdMode()) {
 			return ((Int32Array)((HasArrayBufferView)buffer).getTypedArray()).subarray(buffer.position(), buffer.remaining());
@@ -348,18 +347,33 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGetIntegerv (int pname, IntBuffer params) {
-		// FIXME this is a hack, a nasty nasty hack
-		if(pname == GL10.GL_MAX_TEXTURE_UNITS || pname == GL20.GL_MAX_TEXTURE_IMAGE_UNITS) {
-			params.put(16);
-			return;
-		}
-		throw new GdxRuntimeException("glGetInteger not supported by GWT WebGL backend");
+		if (pname == GL20.GL_ACTIVE_TEXTURE || pname == GL20.GL_ALPHA_BITS || pname == GL20.GL_BLEND_DST_ALPHA
+			|| pname == GL20.GL_BLEND_DST_RGB || pname == GL20.GL_BLEND_EQUATION_ALPHA || pname == GL20.GL_BLEND_EQUATION_RGB
+			|| pname == GL20.GL_BLEND_SRC_ALPHA || pname == GL20.GL_BLEND_SRC_RGB || pname == GL20.GL_BLUE_BITS
+			|| pname == GL20.GL_CULL_FACE_MODE || pname == GL20.GL_DEPTH_BITS || pname == GL20.GL_DEPTH_FUNC
+			|| pname == GL20.GL_FRONT_FACE || pname == GL20.GL_GENERATE_MIPMAP_HINT || pname == GL20.GL_GREEN_BITS
+			|| pname == GL20.GL_IMPLEMENTATION_COLOR_READ_FORMAT || pname == GL20.GL_IMPLEMENTATION_COLOR_READ_TYPE
+			|| pname == GL20.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS || pname == GL20.GL_MAX_CUBE_MAP_TEXTURE_SIZE
+			|| pname == GL20.GL_MAX_FRAGMENT_UNIFORM_VECTORS || pname == GL20.GL_MAX_RENDERBUFFER_SIZE
+			|| pname == GL20.GL_MAX_TEXTURE_IMAGE_UNITS || pname == GL20.GL_MAX_TEXTURE_SIZE || pname == GL20.GL_MAX_VARYING_VECTORS
+			|| pname == GL20.GL_MAX_VERTEX_ATTRIBS || pname == GL20.GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
+			|| pname == GL20.GL_MAX_VERTEX_UNIFORM_VECTORS || pname == GL20.GL_NUM_COMPRESSED_TEXTURE_FORMATS
+			|| pname == GL20.GL_PACK_ALIGNMENT || pname == GL20.GL_RED_BITS || pname == GL20.GL_SAMPLE_BUFFERS
+			|| pname == GL20.GL_SAMPLES || pname == GL20.GL_STENCIL_BACK_FAIL || pname == GL20.GL_STENCIL_BACK_FUNC
+			|| pname == GL20.GL_STENCIL_BACK_PASS_DEPTH_FAIL || pname == GL20.GL_STENCIL_BACK_PASS_DEPTH_PASS
+			|| pname == GL20.GL_STENCIL_BACK_REF || pname == GL20.GL_STENCIL_BACK_VALUE_MASK
+			|| pname == GL20.GL_STENCIL_BACK_WRITEMASK || pname == GL20.GL_STENCIL_BITS || pname == GL20.GL_STENCIL_CLEAR_VALUE
+			|| pname == GL20.GL_STENCIL_FAIL || pname == GL20.GL_STENCIL_FUNC || pname == GL20.GL_STENCIL_PASS_DEPTH_FAIL
+			|| pname == GL20.GL_STENCIL_PASS_DEPTH_PASS || pname == GL20.GL_STENCIL_REF || pname == GL20.GL_STENCIL_VALUE_MASK
+			|| pname == GL20.GL_STENCIL_WRITEMASK || pname == GL20.GL_SUBPIXEL_BITS || pname == GL20.GL_UNPACK_ALIGNMENT)
+			params.put(0, gl.getParameteri(pname));
+		else
+			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
 	}
 
 	@Override
 	public String glGetString (int name) {
-		// FIXME
-		throw new GdxRuntimeException("not implemented");
+		return gl.getParameterString(name);
 	}
 
 	@Override
@@ -391,14 +405,14 @@ public class GwtGL20 implements GL20 {
 		if (!(pixels instanceof ByteBuffer)) {
 			throw new GdxRuntimeException("Inputed pixels buffer needs to be of type ByteBuffer for glReadPixels(...).");
 		}
-		
+
 		// create new ArrayBufferView (4 bytes per pixel)
 		int size = 4 * width * height;
 		Uint8Array buffer = Uint8ArrayNative.create(size);
-		
+
 		// read bytes to ArrayBufferView
 		gl.readPixels(x, y, width, height, format, type, buffer);
-	
+
 		// copy ArrayBufferView to our pixels array
 		ByteBuffer pixelsByte = (ByteBuffer)pixels;
 		for (int i = 0; i < size; i++) {
@@ -690,7 +704,11 @@ public class GwtGL20 implements GL20 {
 
 	@Override
 	public void glGetFloatv (int pname, FloatBuffer params) {
-		throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
+		if (pname == GL20.GL_DEPTH_CLEAR_VALUE || pname == GL20.GL_LINE_WIDTH || pname == GL20.GL_POLYGON_OFFSET_FACTOR
+			|| pname == GL20.GL_POLYGON_OFFSET_UNITS || pname == GL20.GL_SAMPLE_COVERAGE_VALUE)
+			params.put(0, gl.getParameterf(pname));
+		else
+			throw new GdxRuntimeException("glGetFloat not supported by GWT WebGL backend");
 	}
 
 	@Override

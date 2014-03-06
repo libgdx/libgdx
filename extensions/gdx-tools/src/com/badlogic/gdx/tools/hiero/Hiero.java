@@ -169,7 +169,7 @@ public class Hiero extends JFrame {
 		initialize();
 		splash.close();
 
-		gamePanel.add(new LwjglCanvas(new Renderer(), false).getCanvas());
+		gamePanel.add(new LwjglCanvas(new Renderer()).getCanvas());
 
 		prefs = Preferences.userNodeForPackage(Hiero.class);
 		java.awt.Color backgroundColor = EffectUtil.fromString(prefs.get("background", "000000"));

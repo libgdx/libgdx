@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Net.HttpMethods;
@@ -33,6 +35,7 @@ import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** Implements part of the {@link Net} API using {@link HttpURLConnection}, to be easily reused between the Android and Desktop
@@ -107,9 +110,15 @@ public class NetJavaImpl {
 	}
 
 	private final ExecutorService executorService;
+	final ObjectMap<HttpRequest, HttpURLConnection> connections;
+	final ObjectMap<HttpRequest, HttpResponseListener> listeners;
+	final Lock lock;
 
 	public NetJavaImpl () {
 		executorService = Executors.newCachedThreadPool();
+		connections = new ObjectMap<HttpRequest, HttpURLConnection>();
+		listeners = new ObjectMap<HttpRequest, HttpResponseListener>();
+		lock = new ReentrantLock();
 	}
 
 	public void sendHttpRequest (final HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
@@ -137,6 +146,11 @@ public class NetJavaImpl {
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
+			
+			lock.lock();
+			connections.put(httpRequest, connection);
+			listeners.put(httpRequest, httpResponseListener);
+			lock.unlock();
 
 			// Headers get set regardless of the method
 			for (Map.Entry<String, String> header : httpRequest.getHeaders().entrySet())
@@ -178,20 +192,49 @@ public class NetJavaImpl {
 
 						final HttpClientResponse clientResponse = new HttpClientResponse(connection);
 						try {
-							httpResponseListener.handleHttpResponse(clientResponse);
+							lock.lock();
+							HttpResponseListener listener = listeners.get(httpRequest);
+							
+							if (listener != null) {
+								listener.handleHttpResponse(clientResponse);
+								listeners.remove(httpRequest);
+							}
+							
+							connections.remove(httpRequest);
 						} finally {
 							connection.disconnect();
+							lock.unlock();
 						}
 					} catch (final Exception e) {
 						connection.disconnect();
+						lock.lock();
 						httpResponseListener.failed(e);
+						connections.remove(httpRequest);
+						listeners.remove(httpRequest);
+						lock.unlock();
 					}
 				}
 			});
 
 		} catch (Exception e) {
+			lock.lock();
 			httpResponseListener.failed(e);
+			connections.remove(httpRequest);
+			listeners.remove(httpRequest);
+			lock.unlock();
 			return;
 		}
+	}
+	
+	public void cancelHttpRequest (HttpRequest httpRequest) {
+		lock.lock();
+		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
+		
+		if (httpResponseListener != null) {
+			httpResponseListener.cancelled();
+			connections.remove(httpRequest);
+			listeners.remove(httpRequest);
+		}
+		lock.unlock();
 	}
 }

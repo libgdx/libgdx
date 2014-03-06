@@ -331,7 +331,7 @@ public class Array<T> implements Iterable<T> {
 	}
 
 	/** Sorts the array. This method is not thread safe (uses {@link Sort#instance()}). */
-	public void sort (Comparator<T> comparator) {
+	public void sort (Comparator<? super T> comparator) {
 		Sort.instance().sort(items, comparator, 0, size);
 	}
 
@@ -476,6 +476,11 @@ public class Array<T> implements Iterable<T> {
 	/** @see #Array(boolean, int, Class) */
 	static public <T> Array<T> of (boolean ordered, int capacity, Class<T> arrayType) {
 		return new Array<T>(ordered, capacity, arrayType);
+	}
+
+	/** @see #Array(Object[]) */
+	static public <T> Array<T> with (T... array) {
+		return new Array(array);
 	}
 
 	static public class ArrayIterator<T> implements Iterator<T>, Iterable<T> {
