@@ -1,11 +1,5 @@
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
-import javax.microedition.khronos.opengles.GL10;
-import javax.microedition.khronos.opengles.GL11;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -33,6 +27,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 /**
  * Implementation of the {@link AndroidApplicationBase} that is based on the {@link Fragment} class. This class is similar
  * in use to the {@link AndroidApplication} class, which is based on an {@link Activity}.
@@ -44,7 +41,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	
 	/**
 	 * Callbacks interface for letting the fragment interact with the Activitiy, parent fragment or target fragment.
-	 * @author x077186
+     *
+	 * @author Bartol Karuza (me@bartolkaruza.com)
 	 *
 	 */
 	public interface Callbacks {
@@ -123,15 +121,11 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 	
   /** This method has to be called in the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method. 
-   * It sets up all the things necessary to get input, render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to 
-   * create an OpenGL ES 2.0 context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-   * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-   * {@link Graphics#isGL20Available()} method. Uses a default {@link AndroidApplicationConfiguration}.
+   * It sets up all the things necessary to get input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
    * <p/>
    * Note: you have to return the returned view from the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}!
    *
    * @param listener the {@link ApplicationListener} implementing the program logic
-   * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available.
    * @return the GLSurfaceView of the application */
   public View initializeForView (ApplicationListener listener) {
       AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
@@ -139,11 +133,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
   }
 
   /** This method has to be called in the {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)} method. 
-   * It sets up all the things necessary to get input, render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create 
-   * an OpenGL ES 2.0 context which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be
-   * used when OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the
-   * {@link Graphics#isGL20Available()} method. You can configure other aspects of the application with the rest of the fields in
-   * the {@link AndroidApplicationConfiguration} instance.
+   * It sets up all the things necessary to get input, render via OpenGL and so on. You can configure other aspects of the application with the rest of
+   * the fields in the {@link AndroidApplicationConfiguration} instance.
    * <p/>
    * Note: you have to return the returned view from {@link Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)}}
    *
@@ -196,10 +187,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       // erase touched state. this also sucks donkeyballs...
       Arrays.fill(touched, false);
 
-      if (getActivity().isFinishing()) {
-          graphics.clearManagedCaches();
-          graphics.destroy();
-      }
       graphics.setContinuousRendering(isContinuous);
 
       if (graphics != null && graphics.view != null) {
@@ -232,8 +219,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
   }
 
   @Override
-  public void onDestroy () {
-      super.onDestroy();
+  public void onDestroyView() {
+      super.onDestroyView();
+      graphics.clearManagedCaches();
+      graphics.destroy();
   }
 
   @Override
