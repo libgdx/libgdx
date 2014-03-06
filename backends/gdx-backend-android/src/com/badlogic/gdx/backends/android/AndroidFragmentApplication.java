@@ -1,6 +1,5 @@
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -44,7 +43,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	
 	/**
 	 * Callbacks interface for letting the fragment interact with the Activitiy, parent fragment or target fragment.
-	 * @author x077186
+     *
+	 * @author Bartol Karuza (me@bartolkaruza.com)
 	 *
 	 */
 	public interface Callbacks {
@@ -166,10 +166,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       // erase touched state. this also sucks donkeyballs...
       Arrays.fill(touched, false);
 
-      if (getActivity().isFinishing()) {
-          graphics.clearManagedCaches();
-          graphics.destroy();
-      }
       graphics.setContinuousRendering(isContinuous);
 
       if (graphics != null && graphics.view != null) {
@@ -206,8 +202,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
   }
 
   @Override
-  public void onDestroy () {
-      super.onDestroy();
+  public void onDestroyView() {
+      super.onDestroyView();
+      graphics.clearManagedCaches();
+      graphics.destroy();
   }
 
   @Override
