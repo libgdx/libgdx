@@ -211,7 +211,14 @@ public class LwjglGraphics implements Graphics {
 							createDisplayPixelFormat();
 							return;
 						}
-						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+						String glInfo = ".";
+						try {
+							glInfo = ": " + GL11.glGetString(GL11.GL_VENDOR) + " " //
+								+ GL11.glGetString(GL11.GL_RENDERER) + " " //
+								+ GL11.glGetString(GL11.GL_VERSION);
+						} catch (Throwable ignored) {
+						}
+						throw new GdxRuntimeException("OpenGL is not supported by the video driver" + glInfo, ex3);
 					}
 					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
 				}
@@ -234,10 +241,10 @@ public class LwjglGraphics implements Graphics {
 		minor = Integer.parseInt("" + version.charAt(2));
 
 		if (major <= 1)
-			throw new RuntimeException("libgdx requires OpenGL 2.0 or higher with FBO extension. OpenGL version: " + version);
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with FBO extension is required. OpenGL version: " + version);
 		if (major == 2 || version.contains("2.1")) {
 			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
-				throw new RuntimeException("libgdx requires OpenGL 2.0 or higher with FBO extension. OpenGL version: " + version
+				throw new GdxRuntimeException("OpenGL 2.0 or higher with FBO extension is required. OpenGL version: " + version
 					+ ", FBO extension: false");
 			}
 		}
