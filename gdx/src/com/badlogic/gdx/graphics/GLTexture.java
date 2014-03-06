@@ -37,6 +37,8 @@ import java.nio.IntBuffer;
  * Also provides some (protected) static methods to create TextureData and upload image data.
  * @author badlogic, Xoppa */
 public abstract class GLTexture implements Disposable {
+	private static final IntBuffer buffer = BufferUtils.newIntBuffer(1);
+
 	/** The target of this texture, used when binding the texture, e.g. GL_TEXTURE_2D */
 	public final int glTarget;
 	protected int glHandle;
@@ -189,18 +191,6 @@ public abstract class GLTexture implements Disposable {
 		delete();
 	}
 
-	private static boolean enforcePotImages = true;
-	private static final IntBuffer buffer = BufferUtils.newIntBuffer(1);
-
-	/** @param enforcePotImages whether to enforce power of two images in OpenGL ES 1.0 or not. */
-	public static void setEnforcePotImages (boolean enforcePotImages) {
-		GLTexture.enforcePotImages = enforcePotImages;
-	}
-
-	public static boolean getEnforcePotImage () {
-		return enforcePotImages;
-	}
-
 	protected static TextureData createTextureData (FileHandle file, Format format, boolean useMipMaps) {
 		if (file == null) return null;
 		if (file.name().endsWith(".etc1")) return new ETC1TextureData(file, useMipMaps);
@@ -225,12 +215,6 @@ public abstract class GLTexture implements Disposable {
 		}
 
 		if (!data.isPrepared()) data.prepare();
-
-		if (enforcePotImages && Gdx.gl20 == null
-			&& (!MathUtils.isPowerOfTwo(data.getWidth()) || !MathUtils.isPowerOfTwo(data.getHeight()))) {
-			throw new GdxRuntimeException("Texture width and height must be powers of two: " + data.getWidth() + "x"
-				+ data.getHeight());
-		}
 
 		final TextureDataType type = data.getType();
 		if (type == TextureDataType.Compressed || type == TextureDataType.Float) {

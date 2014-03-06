@@ -183,10 +183,8 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			final byte[] rawImageBytes = httpResponse.getResult();
 			Gdx.app.postRunnable(new Runnable() {
 				public void run () {
-					Texture.setEnforcePotImages(false);
 					Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
 					texture = new Texture(pixmap);
-					Texture.setEnforcePotImages(true);
 				}
 			});
 		} else {
