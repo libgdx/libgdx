@@ -17,18 +17,11 @@ package com.badlogic.gdx.tests.android;
 
 import android.util.Log;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService;
 import com.badlogic.gdx.backends.android.AndroidWallpaperListener;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.tests.Box2DTest;
 import com.badlogic.gdx.tests.MeshShaderTest;
-import com.badlogic.gdx.tests.SpritePerformanceTest2;
-import com.badlogic.gdx.tests.WaterRipples;
 
 public class LiveWallpaper extends AndroidLiveWallpaperService {
 	
@@ -37,7 +30,6 @@ public class LiveWallpaper extends AndroidLiveWallpaperService {
 		super.onCreateApplication();
 		
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		config.useGL20 = true;
 		
 		ApplicationListener listener = new MyLiveWallpaperListener();
 		initialize(listener, config);

@@ -16,11 +16,6 @@ public class UtfFontTest extends GdxTest {
 	SpriteBatch batch;
 	
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("data/utf-font.fnt"));

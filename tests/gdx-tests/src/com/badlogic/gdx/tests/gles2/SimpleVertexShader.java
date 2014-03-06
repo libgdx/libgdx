@@ -36,11 +36,6 @@ public class SimpleVertexShader extends GdxTest {
 	float angle = 45;
 
 	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
-	@Override
 	public void create () {
 		String vertexShader = "uniform mat4 u_mvpMatrix;                   \n" + "attribute vec4 a_position;                  \n"
 			+ "void main()                                 \n" + "{                                           \n"

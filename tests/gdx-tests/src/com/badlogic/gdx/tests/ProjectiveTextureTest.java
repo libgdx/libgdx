@@ -48,11 +48,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ProjectiveTextureTest extends GdxTest {
 
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
-
 	PerspectiveCamera cam;
 	PerspectiveCamera projector;
 	Texture texture;

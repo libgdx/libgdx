@@ -13,10 +13,13 @@
 
 package com.badlydrawngames.veryangryrobots;
 
+import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_HEIGHT;
+import static com.badlydrawngames.veryangryrobots.Assets.VIRTUAL_WIDTH;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -25,8 +28,6 @@ import com.badlydrawngames.general.CameraHelper;
 import com.badlydrawngames.general.CameraHelper.ViewportMode;
 import com.badlydrawngames.general.GameScreen;
 import com.badlydrawngames.general.SimpleButton;
-
-import static com.badlydrawngames.veryangryrobots.Assets.*;
 
 public class MainMenuScreen extends GameScreen<VeryAngryRobotsGame> {
 
@@ -86,7 +87,7 @@ public class MainMenuScreen extends GameScreen<VeryAngryRobotsGame> {
 			showScores();
 		} else {
 			Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			spriteBatch.begin();
 			Assets.scoreFont.setColor(Color.WHITE);
 			float y = VIRTUAL_HEIGHT - Assets.scoreFont.getCapHeight() / 2.0f;

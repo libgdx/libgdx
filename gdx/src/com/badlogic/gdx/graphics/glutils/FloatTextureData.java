@@ -20,13 +20,10 @@ import java.nio.FloatBuffer;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.graphics.glutils.ETC1.ETC1Data;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -76,14 +73,12 @@ public class FloatTextureData implements TextureData {
 		if (Gdx.app.getType() == ApplicationType.Android
 			|| Gdx.app.getType() == ApplicationType.iOS
 			|| Gdx.app.getType() == ApplicationType.WebGL) {
-			Gdx.gl.glTexImage2D(target, 0, GL10.GL_RGBA, width, height, 0,
-						GL10.GL_RGBA, GL10.GL_FLOAT, buffer);
+			Gdx.gl.glTexImage2D(target, 0, GL20.GL_RGBA, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
 		}
 		else {
 			//in desktop OpenGL the texture format is defined only by the third argument,
 			//hence we need to use GL_RGBA32F there (this constant is unavailable in GLES/WebGL)
-		    Gdx.gl.glTexImage2D(target, 0, GL_RGBA32F, width, height, 0,
-				GL10.GL_RGBA, GL10.GL_FLOAT, buffer);
+		    Gdx.gl.glTexImage2D(target, 0, GL_RGBA32F, width, height, 0, GL20.GL_RGBA, GL20.GL_FLOAT, buffer);
 		}
 	}
 

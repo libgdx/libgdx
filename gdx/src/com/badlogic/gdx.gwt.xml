@@ -67,9 +67,8 @@
 		<include name="graphics/Color.java"/>
 		<include name="graphics/Cubemap.java"/>
 		<include name="graphics/FPSLogger.java"/>
-		<include name="graphics/GL10.java"/>
-		<include name="graphics/GL11.java"/>
 		<include name="graphics/GL20.java"/>
+		<include name="graphics/GL30.java"/>
 		<include name="graphics/GLCommon.java"/>
 		<include name="graphics/GLTexture.java"/>
 		<include name="graphics/Mesh.java"/>

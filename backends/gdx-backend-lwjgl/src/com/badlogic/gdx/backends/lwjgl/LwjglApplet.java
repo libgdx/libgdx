@@ -30,8 +30,8 @@ public class LwjglApplet extends Applet {
 
 	class LwjglAppletApplication extends LwjglApplication {
 
-		public LwjglAppletApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
-			super(listener, useGL2, canvas);
+		public LwjglAppletApplication (ApplicationListener listener, Canvas canvas) {
+			super(listener, canvas);
 		}
 
 		public LwjglAppletApplication (ApplicationListener listener, Canvas canvas, LwjglApplicationConfiguration config) {
@@ -69,7 +69,7 @@ public class LwjglApplet extends Applet {
 		canvas = new Canvas() {
 			public final void addNotify () {
 				super.addNotify();
-				app = new LwjglAppletApplication(listener, useGL2, canvas);
+				app = new LwjglAppletApplication(listener, canvas);
 			}
 
 			public final void removeNotify () {

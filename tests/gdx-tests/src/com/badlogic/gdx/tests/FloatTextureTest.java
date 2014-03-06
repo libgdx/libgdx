@@ -20,10 +20,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.FloatFrameBuffer;
@@ -39,11 +37,6 @@ public class FloatTextureTest extends GdxTest {
 	Texture texture;
 	Mesh quad, screenQuad;
 	OrthographicCamera screenCamera;
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
 
 	@Override
 	public void create () {

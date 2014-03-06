@@ -16,7 +16,7 @@ package com.badlogic.gdxinvaders.simulation;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -81,7 +81,7 @@ public class Simulation implements Disposable {
 		invaderModel.materials.get(0).set(TextureAttribute.createDiffuse(invaderTexture));
 		
 		((ColorAttribute)blockModel.materials.get(0).get(ColorAttribute.Diffuse)).color.set(0, 0, 1, 0.5f);
-		blockModel.materials.get(0).set(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA));
+		blockModel.materials.get(0).set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
 		
 		shotModel.materials.get(0).set(ColorAttribute.createDiffuse(1, 1, 0, 1f));
 		
@@ -134,8 +134,8 @@ public class Simulation implements Disposable {
 		explosionMesh.setVertices(vertices);
 		explosionMesh.setIndices(indices);
 		
-		explosionModel = ModelBuilder.createFromMesh(explosionMesh, GL10.GL_TRIANGLES, 
-			new Material(new BlendingAttribute(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA), 
+		explosionModel = ModelBuilder.createFromMesh(explosionMesh, GL20.GL_TRIANGLES, 
+			new Material(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA), 
 				TextureAttribute.createDiffuse(explosionTexture)));
 		
 		ship = new Ship(shipModel);

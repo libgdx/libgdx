@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, GDXLauncher!</string>
     <string name="app_name">GDX Tests</string>
+    <string name="app_name_fragments">GDX Tests (Fragments)</string>
 </resources>
