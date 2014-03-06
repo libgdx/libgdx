@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import static com.badlogic.gdx.graphics.g2d.Sprite.SPRITE_SIZE;
-import static com.badlogic.gdx.graphics.g2d.Sprite.VERTEX_SIZE;
+import static com.badlogic.gdx.graphics.g2d.Sprite.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -59,8 +58,6 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author Nathan Sweet */
 public class PolygonSpriteBatch implements Batch {
 	private Mesh mesh;
-	private Mesh[] buffers;
-	private int bufferIndex;
 
 	private final float[] vertices;
 	private final short[] triangles;
@@ -94,27 +91,15 @@ public class PolygonSpriteBatch implements Batch {
 	public int maxTrianglesInBatch = 0;
 
 	/** Constructs a new PolygonSpriteBatch with a size of 2000, the default shader, and one buffer.
-	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
+	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, ShaderProgram) */
 	public PolygonSpriteBatch () {
 		this(2000, null);
 	}
 
 	/** Constructs a PolygonSpriteBatch with the default shader and one buffer.
-	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
+	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, ShaderProgram) */
 	public PolygonSpriteBatch (int size) {
-		this(size, 1, null);
-	}
-
-	/** Constructs a new PolygonSpriteBatch with one buffer.
-	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
-	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
-		this(size, 1, defaultShader);
-	}
-
-	/** Constructs a PolygonSpriteBatch with the default shader.
-	 * @see PolygonSpriteBatch#PolygonSpriteBatch(int, int, ShaderProgram) */
-	public PolygonSpriteBatch (int size, int buffers) {
-		this(size, buffers, null);
+		this(size, null);
 	}
 
 	/** Constructs a new PolygonSpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards,
@@ -124,20 +109,14 @@ public class PolygonSpriteBatch implements Batch {
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link SpriteBatch#createDefaultShader()}.
 	 * @param size The max number of vertices and number of triangles in a single batch. Max of 10920.
-	 * @param buffers The number of meshes to use. This is an expert function. It only makes sense with VBOs (see
-	 *           {@link Mesh#forceVBO}).
 	 * @param defaultShader The default shader to use. This is not owned by the PolygonSpriteBatch and must be disposed separately. */
-	public PolygonSpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
+	public PolygonSpriteBatch (int size, ShaderProgram defaultShader) {
 		// 32767 is max index, so 32767 / 3 - (32767 / 3 % 3) = 10920.
 		if (size > 10920) throw new IllegalArgumentException("Can't have more than 10920 triangles per batch: " + size);
 
-		this.buffers = new Mesh[buffers];
-		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size, size * 3, new VertexAttribute(Usage.Position, 2,
-				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-		}
-		mesh = this.buffers[0];
+		mesh = new Mesh(VertexDataType.VertexArray, false, size, size * 3, new VertexAttribute(Usage.Position, 2,
+			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		vertices = new float[size * VERTEX_SIZE];
 		triangles = new short[size * 3];
@@ -1142,9 +1121,6 @@ public class PolygonSpriteBatch implements Batch {
 
 		vertexIndex = 0;
 		triangleIndex = 0;
-		bufferIndex++;
-		if (bufferIndex == buffers.length) bufferIndex = 0;
-		this.mesh = buffers[bufferIndex];
 	}
 
 	/** Disables blending for drawing sprites. Calling this within {@link #begin()}/{@link #end()} will flush the batch. */
@@ -1180,8 +1156,7 @@ public class PolygonSpriteBatch implements Batch {
 
 	/** Disposes all resources associated with this PolygonSpriteBatch. */
 	public void dispose () {
-		for (int i = 0; i < buffers.length; i++)
-			buffers[i].dispose();
+		mesh.dispose();
 		if (ownsShader && shader != null) shader.dispose();
 	}
 
@@ -1211,7 +1186,7 @@ public class PolygonSpriteBatch implements Batch {
 		if (drawing) setupMatrices();
 	}
 
-	private void setupMatrices () {		
+	private void setupMatrices () {
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 		if (customShader != null) {
 			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
