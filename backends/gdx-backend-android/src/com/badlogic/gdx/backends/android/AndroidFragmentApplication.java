@@ -1,8 +1,5 @@
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -30,6 +27,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 /**
  * Implementation of the {@link AndroidApplicationBase} that is based on the {@link Fragment} class. This class is similar
  * in use to the {@link AndroidApplication} class, which is based on an {@link Activity}.
@@ -41,7 +41,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	
 	/**
 	 * Callbacks interface for letting the fragment interact with the Activitiy, parent fragment or target fragment.
-	 * @author x077186
+     *
+	 * @author Bartol Karuza (me@bartolkaruza.com)
 	 *
 	 */
 	public interface Callbacks {
@@ -186,10 +187,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
       // erase touched state. this also sucks donkeyballs...
       Arrays.fill(touched, false);
 
-      if (getActivity().isFinishing()) {
-          graphics.clearManagedCaches();
-          graphics.destroy();
-      }
       graphics.setContinuousRendering(isContinuous);
 
       if (graphics != null && graphics.view != null) {
@@ -222,8 +219,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
   }
 
   @Override
-  public void onDestroy () {
-      super.onDestroy();
+  public void onDestroyView() {
+      super.onDestroyView();
+      graphics.clearManagedCaches();
+      graphics.destroy();
   }
 
   @Override
