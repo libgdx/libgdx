@@ -13,8 +13,6 @@
 
 package com.badlogic.gdxinvaders.simulation;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
@@ -33,31 +31,33 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 
+import java.util.ArrayList;
+
 public class Simulation implements Disposable {
-	public final static float PLAYFIELD_MIN_X = -14;
+	private final static float PLAYFIELD_MIN_X = -14;
 	public final static float PLAYFIELD_MAX_X = 14;
 	public final static float PLAYFIELD_MIN_Z = -15;
 	public final static float PLAYFIELD_MAX_Z = 2;
 
-	public ArrayList<Invader> invaders = new ArrayList<Invader>();
-	public ArrayList<Block> blocks = new ArrayList<Block>();
-	public ArrayList<Shot> shots = new ArrayList<Shot>();
-	public ArrayList<Explosion> explosions = new ArrayList<Explosion>();
+	public final ArrayList<Invader> invaders = new ArrayList<Invader>();
+	public final ArrayList<Block> blocks = new ArrayList<Block>();
+	public final ArrayList<Shot> shots = new ArrayList<Shot>();
+	public final ArrayList<Explosion> explosions = new ArrayList<Explosion>();
 	public Ship ship;
-	public Shot shipShot = null;
+	private Shot shipShot = null;
 	public transient SimulationListener listener;
-	public float multiplier = 1;
+	private float multiplier = 1;
 	public int score;
 	public int wave = 1;
 
-	public Model shipModel;
-	public Model invaderModel;
-	public Model blockModel;
-	public Model shotModel;
-	public Model explosionModel;
+	private Model shipModel;
+	private Model invaderModel;
+	private Model blockModel;
+	private Model shotModel;
+	private Model explosionModel;
 	
-	private ArrayList<Shot> removedShots = new ArrayList<Shot>();
-	private ArrayList<Explosion> removedExplosions = new ArrayList<Explosion>();
+	private final ArrayList<Shot> removedShots = new ArrayList<Shot>();
+	private final ArrayList<Explosion> removedExplosions = new ArrayList<Explosion>();
 	
 	private final Vector3 tmpV1 = new Vector3();
 	private final Vector3 tmpV2 = new Vector3();

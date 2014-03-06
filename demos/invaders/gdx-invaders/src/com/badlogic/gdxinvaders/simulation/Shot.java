@@ -18,8 +18,8 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Vector3;
 
 public class Shot extends ModelInstance {
-	public static float SHOT_VELOCITY = 10;
-	public boolean isInvaderShot;
+	private static final float SHOT_VELOCITY = 10;
+	public final boolean isInvaderShot;
 	public boolean hasLeftField = false;
 	private final static Vector3 tmpV = new Vector3();
 

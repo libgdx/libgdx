@@ -15,20 +15,19 @@ package com.badlogic.gdxinvaders.simulation;
 
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Vector3;
 
 public class Invader extends ModelInstance {
-	public static float INVADER_ROTATION = 45f;
-	public static float INVADER_RADIUS = 0.75f;
-	public static float INVADER_VELOCITY = 1;
-	public static int INVADER_POINTS = 40;
-	public final static int STATE_MOVE_LEFT = 0;
-	public final static int STATE_MOVE_DOWN = 1;
-	public final static int STATE_MOVE_RIGHT = 2;
+	private static final float INVADER_ROTATION = 45f;
+	public static final float INVADER_RADIUS = 0.75f;
+	private static final float INVADER_VELOCITY = 1;
+	public static final int INVADER_POINTS = 40;
+	private static final int STATE_MOVE_LEFT = 0;
+	private static final int STATE_MOVE_DOWN = 1;
+	private static final int STATE_MOVE_RIGHT = 2;
 
-	public int state = STATE_MOVE_LEFT;
-	public boolean wasLastStateLeft = true;
-	public float movedDistance = Simulation.PLAYFIELD_MAX_X / 2;;
+	private int state = STATE_MOVE_LEFT;
+	private boolean wasLastStateLeft = true;
+	private float movedDistance = Simulation.PLAYFIELD_MAX_X / 2;
 
 	public Invader (Model model, float x, float y, float z) {
 		super(model, x, y, z);

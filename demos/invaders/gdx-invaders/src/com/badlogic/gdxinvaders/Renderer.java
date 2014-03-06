@@ -14,19 +14,14 @@
 package com.badlogic.gdxinvaders;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdxinvaders.simulation.Ship;
@@ -52,19 +47,16 @@ public class Renderer {
 
 	/** view and transform matrix for text rendering and transforming 3D objects **/
 	private final Matrix4 viewMatrix = new Matrix4();
-	private final Matrix4 transform = new Matrix4();
-	private final Matrix4 normal = new Matrix4();
-	private final Matrix3 normal3 = new Matrix3();
 
 	/** perspective camera **/
 	private PerspectiveCamera camera;
 
 	/** the directional light **/
-	Environment lights;
+    private Environment lights;
 
-	ModelBatch modelBatch;
+	private ModelBatch modelBatch;
 	
-	final Vector3 tmpV = new Vector3();
+	private final Vector3 tmpV = new Vector3();
 
 	public Renderer () {
 		try {
@@ -132,8 +124,6 @@ public class Renderer {
 		spriteBatch.draw(backgroundTexture, 0, 0, 480, 320, 0, 0, 512, 512, false, false);
 		spriteBatch.end();
 	}
-
-	final Vector3 dir = new Vector3();
 
 	private void setProjectionAndCamera (Ship ship) {
 		ship.transform.getTranslation(tmpV);
