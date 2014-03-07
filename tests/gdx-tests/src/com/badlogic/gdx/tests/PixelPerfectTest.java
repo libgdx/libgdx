@@ -38,7 +38,7 @@ public class PixelPerfectTest extends GdxTest {
 		pixmap.setColor(Color.RED);
 		pixmap.drawLine(0, 0, 15, 15);
 		pixmap.drawLine(0, 15, 15, 0);
-		
+
 		tex = new Texture(pixmap);
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();

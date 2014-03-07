@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
@@ -35,65 +36,65 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MaterialTest extends GdxTest {
-	
+
 	float angleY = 0;
-	
+
 	Model model, backModel;
 	ModelInstance modelInstance;
 	ModelInstance background;
 	ModelBatch modelBatch;
-	
+
 	TextureAttribute textureAttribute;
 	ColorAttribute colorAttribute;
 	BlendingAttribute blendingAttribute;
 
 	Material material;
-	
+
 	Texture texture;
-	
+
 	Camera camera;
 
 	@Override
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
-		
+
 		// Create material attributes. Each material can contain x-number of attributes.
 		textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, texture);
 		colorAttribute = new ColorAttribute(ColorAttribute.Diffuse, Color.ORANGE);
 		blendingAttribute = new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		
-		
+
 		ModelBuilder builder = new ModelBuilder();
 		model = builder.createBox(1, 1, 1, new Material(), Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		model.manageDisposable(texture);
 		modelInstance = new ModelInstance(model);
 		modelInstance.transform.rotate(Vector3.X, 45);
-		
+
 		material = modelInstance.materials.get(0);
-		
+
 		builder.begin();
-		MeshPartBuilder mpb = builder.part("back", GL20.GL_TRIANGLES, 
-			Usage.Position | Usage.TextureCoordinates, new Material(textureAttribute));
+		MeshPartBuilder mpb = builder.part("back", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates, new Material(
+			textureAttribute));
 		mpb.rect(-2, -2, -2, 2, -2, -2, 2, 2, -2, -2, 2, -2, 0, 0, 1);
 		backModel = builder.end();
 		background = new ModelInstance(backModel);
-		
+
 		modelBatch = new ModelBatch();
-		
+
 		camera = new PerspectiveCamera(45, 4, 4);
 		camera.position.set(0, 0, 3);
 		camera.direction.set(0, 0, -1);
 		camera.update();
-		
+
 		Gdx.input.setInputProcessor(this);
 	}
 
 	private float counter = 0.f;
+
 	@Override
 	public void render () {
 		counter = (counter + Gdx.graphics.getDeltaTime()) % 1.f;
 		blendingAttribute.opacity = 0.25f + Math.abs(0.5f - counter);
-		
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -106,16 +107,16 @@ public class MaterialTest extends GdxTest {
 
 	@Override
 	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		
-		if(!material.has(TextureAttribute.Diffuse))
+
+		if (!material.has(TextureAttribute.Diffuse))
 			material.set(textureAttribute);
-		else if(!material.has(ColorAttribute.Diffuse))
+		else if (!material.has(ColorAttribute.Diffuse))
 			material.set(colorAttribute);
-		else if(!material.has(BlendingAttribute.Type))
+		else if (!material.has(BlendingAttribute.Type))
 			material.set(blendingAttribute);
 		else
 			material.clear();
-		
+
 		return super.touchUp(screenX, screenY, pointer, button);
 	}
 

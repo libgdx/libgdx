@@ -52,7 +52,7 @@ public class AndroidApplicationConfiguration {
 	 * less 14. default: false **/
 	public boolean hideStatusBar = false;
 
-    /** whether to disable Android audio support. default: false */
+	/** whether to disable Android audio support. default: false */
 	public boolean disableAudio = false;
 
 	/** the maximum number of {@link Sound} instances that can be played simultaneously, sets the corresponding {@link SoundPool}
@@ -61,10 +61,10 @@ public class AndroidApplicationConfiguration {
 
 	/** the {@link ResolutionStrategy}. default: {@link FillResolutionStrategy} **/
 	public ResolutionStrategy resolutionStrategy = new FillResolutionStrategy();
-	
+
 	/** if the app is a livewallpaper, whether it should get full touch events **/
-	public boolean getTouchEventsForLiveWallpaper = false; 
-	
+	public boolean getTouchEventsForLiveWallpaper = false;
+
 	/** set this to true to enable Android 4.4 KitKat's 'Immersive mode' **/
 	public boolean useImmersiveMode = false;
 }

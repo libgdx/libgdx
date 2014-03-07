@@ -42,11 +42,11 @@ public class DebugDrawer extends btIDebugDraw {
 	@Override
 	public void reportErrorWarning (String warningString) {
 	}
-	
+
 	@Override
 	public void draw3dText (btVector3 location, String textString) {
 	}
-	
+
 	@Override
 	public void setDebugMode (int debugMode) {
 		this.debugMode = debugMode;
@@ -56,12 +56,12 @@ public class DebugDrawer extends btIDebugDraw {
 	public int getDebugMode () {
 		return debugMode;
 	}
-	
-	public void begin() {
+
+	public void begin () {
 		lineRenderer.begin(ShapeType.Line);
 	}
-	
-	public void end() {
+
+	public void end () {
 		lineRenderer.end();
 	}
 }

@@ -49,7 +49,7 @@ public class FullscreenTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (Gdx.input.justTouched()) {
-			if(fullscreen) {
+			if (fullscreen) {
 				Gdx.graphics.setDisplayMode(480, 320, false);
 				fullscreen = false;
 			} else {

@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.graphics;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /** <p>
  * A Pixmap represents an image in memory. It has a width and height expressed in pixels as well as a {@link Format} specifying
@@ -327,21 +327,21 @@ public class Pixmap implements Disposable {
 	}
 
 	/** Returns the OpenGL ES format of this Pixmap. Used as the seventh parameter to
-	 * {@link GLCommon#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA. */
 	public int getGLFormat () {
 		return pixmap.getGLFormat();
 	}
 
 	/** Returns the OpenGL ES format of this Pixmap. Used as the third parameter to
-	 * {@link GLCommon#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_ALPHA, GL_RGB, GL_RGBA, GL_LUMINANCE, or GL_LUMINANCE_ALPHA. */
 	public int getGLInternalFormat () {
 		return pixmap.getGLInternalFormat();
 	}
 
 	/** Returns the OpenGL ES type of this Pixmap. Used as the eighth parameter to
-	 * {@link GLCommon#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
+	 * {@link GL20#glTexImage2D(int, int, int, int, int, int, int, int, java.nio.Buffer)}.
 	 * @return one of GL_UNSIGNED_BYTE, GL_UNSIGNED_SHORT_5_6_5, GL_UNSIGNED_SHORT_4_4_4_4 */
 	public int getGLType () {
 		return pixmap.getGLType();
