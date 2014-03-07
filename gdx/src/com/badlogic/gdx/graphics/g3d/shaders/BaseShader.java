@@ -209,7 +209,7 @@ public abstract class BaseShader implements Shader {
 	private Attributes combinedAttributes = new Attributes();
 	@Override
 	public void render (Renderable renderable) {
-		if(renderable.worldTransform.det() == 0) return;
+		if(renderable.worldTransform.det3x3() == 0) return;
 		combinedAttributes.clear();
 		if (renderable.environment != null)
 			combinedAttributes.set(renderable.environment);
