@@ -29,7 +29,7 @@ import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
  */
 public class IOSMusic implements Music {
 	private final OALAudioTrack track;
-	private OnCompletionListener onCompletionListener;
+	OnCompletionListener onCompletionListener;
 
 	public IOSMusic(OALAudioTrack track) {
 		this.track = track;
