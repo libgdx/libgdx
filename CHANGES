@@ -27,6 +27,8 @@
 - scene2d.ui, added Container which is similar to a Table with one cell, but more lightweight
 - Added texture filters and mip map generation to BitMapFontLoader and FreeTypeFontGenerator
 - scene2d.ui, VerticalGroup and HorizontalGroup got pad, fill and an API similar to Table/Container
+- Removed GL10/GL11 support
+- Added preliminary GL30 interface and LWJGL/Android implementations
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
