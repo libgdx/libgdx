@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
- * {@link Table} with a single cell.
+ * {@link Table} with a single cell but is more lightweight.
  * @author Nathan Sweet */
 public class Container extends WidgetGroup {
 	private Actor widget;
@@ -41,6 +41,7 @@ public class Container extends WidgetGroup {
 			applyTransform(batch, computeTransform());
 			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
+				batch.flush();
 				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
 					getWidth() - padLeft - padRight, getHeight() - padBottom - padTop);
 				if (draw) {
@@ -93,14 +94,23 @@ public class Container extends WidgetGroup {
 		if (widget == null) return;
 
 		float containerWidth = getWidth() - padLeft - padRight, containerHeight = getHeight() - padTop - padBottom;
+		float minWidth, minHeight, prefWidth, prefHeight, maxWidth, maxHeight;
 		Layout layout = widget instanceof Layout ? (Layout)widget : null;
-		float minWidth = this.minWidth == null ? (layout != null ? layout.getMinWidth() : widget.getWidth()) : this.minWidth;
-		float minHeight = this.minHeight == null ? (layout != null ? layout.getMinHeight() : widget.getHeight()) : this.minHeight;
-		float prefWidth = this.prefWidth == null ? (layout != null ? layout.getPrefWidth() : widget.getWidth()) : this.prefWidth;
-		float prefHeight = this.prefHeight == null ? (layout != null ? layout.getPrefHeight() : widget.getHeight())
-			: this.prefHeight;
-		float maxWidth = this.maxWidth == null ? (layout != null ? layout.getMaxWidth() : widget.getWidth()) : this.maxWidth;
-		float maxHeight = this.maxHeight == null ? (layout != null ? layout.getMaxHeight() : widget.getHeight()) : this.maxHeight;
+		if (layout != null) {
+			minWidth = this.minWidth == null ? layout.getMinWidth() : this.minWidth;
+			minHeight = this.minHeight == null ? layout.getMinHeight() : this.minHeight;
+			prefWidth = this.prefWidth == null ? layout.getPrefWidth() : this.prefWidth;
+			prefHeight = this.prefHeight == null ? layout.getPrefHeight() : this.prefHeight;
+			maxWidth = this.maxWidth == null ? layout.getMaxWidth() : this.maxWidth;
+			maxHeight = this.maxHeight == null ? layout.getMaxHeight() : this.maxHeight;
+		} else {
+			minWidth = this.minWidth == null ? widget.getWidth() : this.minWidth;
+			minHeight = this.minHeight == null ? widget.getHeight() : this.minHeight;
+			prefWidth = this.prefWidth == null ? widget.getWidth() : this.prefWidth;
+			prefHeight = this.prefHeight == null ? widget.getHeight() : this.prefHeight;
+			maxWidth = this.maxWidth == null ? widget.getWidth() : this.maxWidth;
+			maxHeight = this.maxHeight == null ? widget.getHeight() : this.maxHeight;
+		}
 
 		float width;
 		if (fillX > 0)
@@ -154,24 +164,28 @@ public class Container extends WidgetGroup {
 		return widget;
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActor (Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorAt (int index, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
-	/** @deprecated */
+	/** @deprecated Container may have only a single child.
+	 * @see #setWidget(Actor) */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setWidget.");
 	}
 
 	public boolean removeActor (Actor actor) {
@@ -366,41 +380,41 @@ public class Container extends WidgetGroup {
 		return this;
 	}
 
-	/** Sets the alignment of the widget within the cell. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
+	/** Sets the alignment of the widget within the container. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
 	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
 	public Container align (int align) {
 		this.align = align;
 		return this;
 	}
 
-	/** Sets the alignment of the widget within the cell to {@link Align#center}. This clears any other alignment. */
+	/** Sets the alignment of the widget within the container to {@link Align#center}. This clears any other alignment. */
 	public Container center () {
 		align = Align.center;
 		return this;
 	}
 
-	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the widget within the container. */
 	public Container top () {
 		align |= Align.top;
 		align &= ~Align.bottom;
 		return this;
 	}
 
-	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the widget within the container. */
 	public Container left () {
 		align |= Align.left;
 		align &= ~Align.right;
 		return this;
 	}
 
-	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the widget within the container. */
 	public Container bottom () {
 		align |= Align.bottom;
 		align &= ~Align.top;
 		return this;
 	}
 
-	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the widget within the cell. */
+	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the widget within the container. */
 	public Container right () {
 		align |= Align.right;
 		align &= ~Align.left;
@@ -483,17 +497,14 @@ public class Container extends WidgetGroup {
 		return padRight;
 	}
 
-	/** @return May be null if this value is not set. */
 	public float getFillX () {
 		return fillX;
 	}
 
-	/** @return May be null. */
 	public float getFillY () {
 		return fillY;
 	}
 
-	/** @return May be null. */
 	public int getAlign () {
 		return align;
 	}

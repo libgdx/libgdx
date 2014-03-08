@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -54,10 +54,10 @@ public class YDownTest extends GdxTest {
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		region.flip(false, true);
-		
+
 		// a texture atlas, note the boolean
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"), true);
-		
+
 		// a sprite, created from a region in the atlas
 		sprite = atlas.createSprite("badlogicsmall");
 		sprite.setPosition(0, 0);
@@ -93,7 +93,7 @@ public class YDownTest extends GdxTest {
 	public void render () {
 		// clear the screen, update the camera and make the sprite batch
 		// use its matrices.
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 

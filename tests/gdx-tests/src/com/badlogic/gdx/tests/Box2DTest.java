@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -118,11 +118,12 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// we instantiate a new World with a proper gravity vector
 		// and tell it to sleep when possible.
 		world = new World(new Vector2(0, -10), true);
-		
-		 float[] vertices = { -0.07421887f, -0.16276085f, -0.12109375f, -0.22786504f, -0.157552f, -0.7122401f, 0.04296875f, -0.7122401f, 0.110677004f, -0.6419276f, 0.13151026f, -0.49869835f, 0.08984375f, -0.3190109f };
-		 
-         PolygonShape shape = new PolygonShape();
-         shape.set(vertices);
+
+		float[] vertices = {-0.07421887f, -0.16276085f, -0.12109375f, -0.22786504f, -0.157552f, -0.7122401f, 0.04296875f,
+			-0.7122401f, 0.110677004f, -0.6419276f, 0.13151026f, -0.49869835f, 0.08984375f, -0.3190109f};
+
+		PolygonShape shape = new PolygonShape();
+		shape.set(vertices);
 
 		// next we create a static ground platform. This platform
 		// is not moveable and will not react to any influences from
@@ -237,7 +238,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 
 		// next we clear the color buffer and set the camera
 		// matrices
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		camera.update();
 
 		// next we render the ground body
@@ -401,10 +402,5 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		debugRenderer.dispose();
 		font.dispose();
 		textureRegion.getTexture().dispose();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

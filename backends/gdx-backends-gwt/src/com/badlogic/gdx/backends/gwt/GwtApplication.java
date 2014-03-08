@@ -118,7 +118,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 
 		// initialize SoundManager2
-		SoundManager.init(GWT.getModuleBaseURL(), 9, true, new SoundManager.SoundManagerCallback(){
+		SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback(){
 
 			@Override
 			public void onready () {
@@ -164,7 +164,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		Gdx.audio = new GwtAudio();
 		Gdx.graphics = graphics;
 		Gdx.gl20 = graphics.getGL20();
-		Gdx.gl = graphics.getGLCommon();
+		Gdx.gl = Gdx.gl20;
 		Gdx.files = new GwtFiles(preloader);
 		this.input = new GwtInput(graphics.canvas);
 		Gdx.input = this.input;

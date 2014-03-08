@@ -22,7 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -37,11 +37,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ProjectTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	Model sphere;
 	Camera cam;
@@ -61,8 +56,8 @@ public class ProjectTest extends GdxTest {
 		cam.far = 200;
 		Random rand = new Random();
 		for (int i = 0; i < instances.length; i++) {
-			instances[i] = new ModelInstance(sphere, rand.nextFloat() * 100 - rand.nextFloat() * 100, 
-				rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * -100 - 3);
+			instances[i] = new ModelInstance(sphere, rand.nextFloat() * 100 - rand.nextFloat() * 100, rand.nextFloat() * 100
+				- rand.nextFloat() * 100, rand.nextFloat() * -100 - 3);
 		}
 		batch = new SpriteBatch();
 		font = new BitmapFont();
@@ -72,13 +67,12 @@ public class ProjectTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.gl10;
 
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		cam.update();
-		
+
 		modelBatch.begin(cam);
 
 		int visible = 0;
@@ -97,7 +91,7 @@ public class ProjectTest extends GdxTest {
 		if (Gdx.input.isKeyPressed(Keys.A)) cam.rotate(20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.D)) cam.rotate(-20 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 
-		gl.glDisable(GL10.GL_DEPTH_TEST);
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		batch.begin();
 		for (int i = 0; i < instances.length; i++) {
 			instances[i].transform.getTranslation(tmp);

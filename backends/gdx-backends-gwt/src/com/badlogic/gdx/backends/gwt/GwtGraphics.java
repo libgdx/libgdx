@@ -18,13 +18,8 @@ package com.badlogic.gdx.backends.gwt;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Graphics.BufferFormat;
-import com.badlogic.gdx.Graphics.DisplayMode;
-import com.badlogic.gdx.Graphics.GraphicsType;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.google.gwt.canvas.client.Canvas;
 import com.google.gwt.dom.client.CanvasElement;
@@ -67,31 +62,6 @@ public class GwtGraphics implements Graphics {
 
 	public WebGLRenderingContext getContext () {
 		return context;
-	}
-
-	@Override
-	public boolean isGL11Available () {
-		return false;
-	}
-
-	@Override
-	public boolean isGL20Available () {
-		return true;
-	}
-
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
-	}
-
-	@Override
-	public GL10 getGL10 () {
-		return null;
-	}
-
-	@Override
-	public GL11 getGL11 () {
-		return null;
 	}
 
 	@Override
@@ -237,7 +207,7 @@ public class GwtGraphics implements Graphics {
 
 	@Override
 	public boolean supportsExtension (String extension) {
-		if (extensions == null) extensions = Gdx.gl.glGetString(GL10.GL_EXTENSIONS);
+		if (extensions == null) extensions = Gdx.gl.glGetString(GL20.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 
@@ -288,5 +258,15 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public boolean isFullscreen () {
 		return isFullscreenJSNI();
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return false;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return null;
 	}
 }

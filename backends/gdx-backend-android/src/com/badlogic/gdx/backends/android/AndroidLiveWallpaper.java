@@ -17,24 +17,13 @@
 package com.badlogic.gdx.backends.android;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Debug;
-import android.os.Handler;
-import android.service.wallpaper.WallpaperService;
-import android.service.wallpaper.WallpaperService.Engine;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout.LayoutParams;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -46,15 +35,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLBaseSurfaceViewLW;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20LW;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -91,13 +72,14 @@ public class AndroidLiveWallpaper implements Application {
 			: config.resolutionStrategy);
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
-// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
+		// construct AndroidInput, this should never happen, proguard deletes constructor used only by reflection
 		input = AndroidInputFactory.newAndroidInput(this, this.getService(), graphics.view, config);
 		// input = new AndroidInput(this, this.getService(), null, config);
 
 		audio = new AndroidAudio(this.getService(), config);
 
 		// added initialization of android local storage: /data/data/<app package>/files/
+		this.getService().getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
 
 		this.listener = listener;
@@ -141,11 +123,7 @@ public class AndroidLiveWallpaper implements Application {
 		Arrays.fill(touched, false);
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake)
-				((GLSurfaceViewCupcake)graphics.view).onPause();
-			else if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onPause();
-			else if (graphics.view instanceof android.opengl.GLSurfaceView)
+			if (graphics.view instanceof android.opengl.GLSurfaceView)
 				((android.opengl.GLSurfaceView)graphics.view).onPause();
 			else
 				throw new RuntimeException("unimplemented");
@@ -168,11 +146,7 @@ public class AndroidLiveWallpaper implements Application {
 		// so I disabled it.
 		// if (!firstResume) // mentioned condition
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewCupcake)
-				((GLSurfaceViewCupcake)graphics.view).onResume();
-			else if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onResume();
-			else if (graphics.view instanceof android.opengl.GLSurfaceView)
+			if (graphics.view instanceof android.opengl.GLSurfaceView)
 				((android.opengl.GLSurfaceView)graphics.view).onResume();
 			else
 				throw new RuntimeException("unimplemented");

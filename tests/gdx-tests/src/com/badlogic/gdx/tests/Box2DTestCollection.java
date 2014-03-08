@@ -115,11 +115,6 @@ public class Box2DTestCollection extends GdxTest implements InputProcessor, Gest
 	}
 
 	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
-
-	@Override
 	public boolean mouseMoved (int x, int y) {
 		return false;
 	}

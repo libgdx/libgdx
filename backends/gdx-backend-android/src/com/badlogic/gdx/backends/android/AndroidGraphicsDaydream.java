@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 /*******************************************************************************
@@ -31,13 +32,6 @@ package com.badlogic.gdx.backends.android;
  * limitations under the License.
  ******************************************************************************/
 
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -50,20 +44,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewCupcake;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
+
+import java.lang.reflect.Method;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -73,10 +71,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	int width;
 	int height;
 	AndroidDaydream app;
-	GLCommon gl;
-	GL10 gl10;
-	GL11 gl11;
 	GL20 gl20;
+	GL30 gl30;
 	EGLContext eglContext;
 	String extensions;
 
@@ -106,7 +102,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	public AndroidGraphicsDaydream (AndroidDaydream daydream, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
-		view = createGLSurfaceView(daydream, config.useGL20, resolutionStrategy);
+		view = createGLSurfaceView(daydream, resolutionStrategy);
 		setPreserveContext(view);
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
@@ -132,63 +128,21 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		}
 	}
 
-	private View createGLSurfaceView (DreamService dream, boolean useGL2, final ResolutionStrategy resolutionStrategy) {
+	private View createGLSurfaceView (DreamService dream, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
-		if (useGL2 && checkGL20()) {
-			GLSurfaceView20 view = new GLSurfaceView20(dream, resolutionStrategy);
-			if (configChooser != null)
-				view.setEGLConfigChooser(configChooser);
-			else
-				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-			view.setRenderer(this);
-			return view;
-		} else {
-			config.useGL20 = false;
-			configChooser = getEglConfigChooser();
-			int sdkVersion = android.os.Build.VERSION.SDK_INT;
-
-			if (sdkVersion >= 11) {
-				GLSurfaceView view = new GLSurfaceView(dream) {
-					@Override
-					protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
-						ResolutionStrategy.MeasuredDimension measures = resolutionStrategy.calcMeasures(widthMeasureSpec,
-							heightMeasureSpec);
-						setMeasuredDimension(measures.width, measures.height);
-					}
-				};
-				if (configChooser != null)
-					view.setEGLConfigChooser(configChooser);
-				else
-					view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-				view.setRenderer(this);
-				return view;
-			} else {
-				if (config.useGLSurfaceViewAPI18) {
-					GLSurfaceViewAPI18 view = new GLSurfaceViewAPI18(dream, resolutionStrategy);
-					if (configChooser != null)
-						view.setEGLConfigChooser(configChooser);
-					else
-						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-					view.setRenderer(this);
-					return view;
-				}
-				else {
-					GLSurfaceViewCupcake view = new GLSurfaceViewCupcake(dream, resolutionStrategy);
-					if (configChooser != null)
-						view.setEGLConfigChooser(configChooser);
-					else
-						view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-					view.setRenderer(this);
-					return view;
-				}
-			}
-		}
+		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		GLSurfaceView20 view = new GLSurfaceView20(dream, resolutionStrategy);
+		if (configChooser != null)
+			view.setEGLConfigChooser(configChooser);
+		else
+			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+		view.setRenderer(this);
+		return view;
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
-		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples,
-			config.useGL20);
+		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
 
 	private void updatePpi () {
@@ -222,18 +176,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 	/** {@inheritDoc} */
 	@Override
-	public GL10 getGL10 () {
-		return gl10;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GL11 getGL11 () {
-		return gl11;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public GL20 getGL20 () {
 		return gl20;
 	}
@@ -250,18 +192,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		return width;
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public boolean isGL11Available () {
-		return gl11 != null;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean isGL20Available () {
-		return gl20 != null;
-	}
-
 	private static boolean isPowerOfTwo (int value) {
 		return ((value != 0) && (value & (value - 1)) == 0);
 	}
@@ -272,30 +202,11 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	 * 
 	 * @param gl */
 	private void setupGL (javax.microedition.khronos.opengles.GL10 gl) {
-		if (gl10 != null || gl20 != null) return;
+		if (gl20 != null) return;
 
-		if (view instanceof GLSurfaceView20) {
-			gl20 = new AndroidGL20();
-			this.gl = gl20;
-		} else {
-			gl10 = new AndroidGL10(gl);
-			this.gl = gl10;
-			if (gl instanceof javax.microedition.khronos.opengles.GL11) {
-				String renderer = gl.glGetString(GL10.GL_RENDERER);
-				if (renderer != null) { // silly GT-I7500
-					if (!renderer.toLowerCase().contains("pixelflinger")
-						&& !(android.os.Build.MODEL.equals("MB200") || android.os.Build.MODEL.equals("MB220") || android.os.Build.MODEL
-							.contains("Behold"))) {
-						gl11 = new AndroidGL11((javax.microedition.khronos.opengles.GL11)gl);
-						gl10 = gl11;
-					}
-				}
-			}
-		}
+		gl20 = new AndroidGL20();
 
-		Gdx.gl = this.gl;
-		Gdx.gl10 = gl10;
-		Gdx.gl11 = gl11;
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 
 		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
@@ -421,7 +332,7 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
-		if(!resume) {
+		if (!resume) {
 			mean.addValue(deltaTime);
 		} else {
 			deltaTime = 0;
@@ -455,8 +366,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 		if (lresume) {
 			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.resume();
 				}
 			}
@@ -485,8 +396,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 		if (lpause) {
 			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.pause();
 				}
 			}
@@ -497,8 +408,8 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 		if (ldestroy) {
 			Array<LifecycleListener> listeners = app.lifecycleListeners;
-			synchronized(listeners) {
-				for(LifecycleListener listener: listeners) {
+			synchronized (listeners) {
+				for (LifecycleListener listener : listeners) {
 					listener.dispose();
 				}
 			}
@@ -553,12 +464,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 
 	public View getView () {
 		return view;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
 	}
 
 	@Override
@@ -644,8 +549,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 		if (view != null) {
 			this.isContinuous = isContinuous;
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).setRenderMode(renderMode);
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
@@ -658,8 +561,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	@Override
 	public void requestRendering () {
 		if (view != null) {
-			if (view instanceof GLSurfaceViewCupcake) ((GLSurfaceViewCupcake)view).requestRender();
-			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}
@@ -667,5 +568,15 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 	@Override
 	public boolean isFullscreen () {
 		return true;
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return gl30 != null;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return gl30;
 	}
 }

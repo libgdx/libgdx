@@ -18,7 +18,6 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import java.awt.Canvas;
 
-import com.badlogic.gdx.utils.ObjectMap;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 
@@ -35,6 +34,7 @@ import com.badlogic.gdx.backends.openal.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** An OpenGL surface fullscreen or in a lightweight window. */
 public class LwjglApplication implements Application {
@@ -52,20 +52,20 @@ public class LwjglApplication implements Application {
 	protected int logLevel = LOG_INFO;
 	protected String preferencesdir;
 
-	public LwjglApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
-		this(listener, createConfig(title, width, height, useGL2));
+	public LwjglApplication (ApplicationListener listener, String title, int width, int height) {
+		this(listener, createConfig(title, width, height));
 	}
 
 	public LwjglApplication (ApplicationListener listener) {
-		this(listener, null, 640, 480, false);
+		this(listener, null, 640, 480);
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config) {
 		this(listener, config, new LwjglGraphics(config));
 	}
 
-	public LwjglApplication (ApplicationListener listener, boolean useGL2, Canvas canvas) {
-		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas, useGL2));
+	public LwjglApplication (ApplicationListener listener, Canvas canvas) {
+		this(listener, new LwjglApplicationConfiguration(), new LwjglGraphics(canvas));
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, Canvas canvas) {
@@ -86,7 +86,7 @@ public class LwjglApplication implements Application {
 		net = new LwjglNet();
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
-		
+
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
@@ -96,12 +96,11 @@ public class LwjglApplication implements Application {
 		initialize();
 	}
 
-	private static LwjglApplicationConfiguration createConfig (String title, int width, int height, boolean useGL2) {
+	private static LwjglApplicationConfiguration createConfig (String title, int width, int height) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = title;
 		config.width = width;
 		config.height = height;
-		config.useGL20 = useGL2;
 		config.vSyncEnabled = true;
 		return config;
 	}
@@ -376,7 +375,7 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

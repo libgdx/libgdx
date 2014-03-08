@@ -123,7 +123,7 @@ public class Preloader {
 			@Override
 			public void onSuccess (String result) {
 				String[] lines = result.split("\n");
-				Array<Asset> assets = new Array<Asset>();
+				Array<Asset> assets = new Array<Asset>(lines.length);
 				for (String line : lines) {
 					String[] tokens = line.split(":");
 					if (tokens.length != 4) {

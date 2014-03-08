@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -30,17 +30,11 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class FramebufferToTextureTest extends GdxTest {
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 
 	TextureRegion fbTexture;
 	Texture texture;
@@ -58,7 +52,7 @@ public class FramebufferToTextureTest extends GdxTest {
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), true);
 		texture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		ObjLoader objLoader = new ObjLoader();
-		mesh =  objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
+		mesh = objLoader.loadObj(Gdx.files.internal("data/cube.obj"));
 		mesh.materials.get(0).set(new TextureAttribute(TextureAttribute.Diffuse, texture));
 		modelInstance = new ModelInstance(mesh);
 		modelBatch = new ModelBatch();
@@ -72,13 +66,11 @@ public class FramebufferToTextureTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL10 gl = Gdx.graphics.getGL10();
-
-		gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		gl.glClearColor(clearColor.g, clearColor.g, clearColor.b, clearColor.a);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		gl.glEnable(GL10.GL_DEPTH_TEST);
-		gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(clearColor.g, clearColor.g, clearColor.b, clearColor.a);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 
 		cam.update();
 

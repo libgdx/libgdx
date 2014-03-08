@@ -16,11 +16,14 @@
 
 package com.badlogic.gdx.tests;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.forever;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -74,25 +77,26 @@ public class Scene2dTest extends GdxTest {
 
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-		VerticalGroup g = new VerticalGroup();
-		g.setPosition(10, 100);
-		g.setReverse(true);
-		g.setSpacing(5);
-		stage.addActor(g);
-		for (int i = 0; i < 10; i++) {
+		VerticalGroup g = new VerticalGroup().space(5).reverse().pad(5).fill();
+		for (int i = 0; i < 10; i++)
 			g.addActor(new TextButton("button " + i, skin));
-		}
-		g.pack();
+		g.addActor(new TextButton("longer button", skin));
+		Table table = new Table().debug();
+		table.add(g);
+		table.pack();
+		table.setPosition(5, 100);
+		stage.addActor(table);
 
-		HorizontalGroup h = new HorizontalGroup();
-		h.setPosition(100, 100);
-		h.setReverse(true);
-		h.setSpacing(5);
-		stage.addActor(h);
-		for (int i = 0; i < 7; i++) {
+		HorizontalGroup h = new HorizontalGroup().space(5).reverse().pad(5).fill();
+		for (int i = 0; i < 5; i++)
 			h.addActor(new TextButton("button " + i, skin));
-		}
-		h.pack();
+		h.addActor(new TextButton("some taller\nbutton", skin));
+		table = new Table().debug();
+		table.add(h);
+		table.pack();
+		table.setPosition(130, 100);
+		stage.addActor(table);
+		table.toFront();
 
 		final TextButton button = new TextButton("Fancy Background", skin);
 
@@ -167,7 +171,7 @@ public class Scene2dTest extends GdxTest {
 
 	public void render () {
 		// System.out.println(meow.getValue());
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Table.drawDebug(stage);
@@ -179,10 +183,6 @@ public class Scene2dTest extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, true);
-	}
-
-	public boolean needsGL20 () {
-		return true;
 	}
 
 	public void dispose () {

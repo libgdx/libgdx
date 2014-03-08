@@ -28,6 +28,14 @@
 
 package com.badlogic.gdx.tests.utils;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
@@ -38,7 +46,6 @@ import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
-import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
@@ -49,14 +56,6 @@ import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -82,14 +81,11 @@ public class GdxTests {
 		BitmapFontMetricsTest.class,
 		BitmapFontTest.class,
 		BlitTest.class,
-		BobTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
-		CompassTest.class,
-		ComplexActionTest.class,
 		ContainerTest.class,
 		CullTest.class,
 		DelaunayTriangulatorTest.class,
@@ -97,18 +93,16 @@ public class GdxTests {
 		DirtyRenderingTest.class,
 		DragAndDropTest.class,
 		ETC1Test.class,
-		EarClippingTriangulatorTest.class,
+//		EarClippingTriangulatorTest.class,
 		EdgeDetectionTest.class,
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
 		FilterPerformanceTest.class,
-		FloatTest.class,
 		FloatTextureTest.class,
 		FogTest.class,
 		FrameBufferTest.class,
 		FramebufferToTextureTest.class,
-		FrustumTest.class,
 		FullscreenTest.class,
 		GamepadTest.class,
 		Gdx2DTest.class,
@@ -120,9 +114,7 @@ public class GdxTests {
 		HexagonalTiledMapTest.class,
 		ImageScaleTest.class,
 		ImageTest.class,
-		ImmediateModeRendererAlphaTest.class,
 		ImmediateModeRendererTest.class,
-		IndexBufferObjectClassTest.class,
 		IndexBufferObjectShaderTest.class,
 		InputTest.class,
 		IntegerBitmapFontTest.class,
@@ -137,45 +129,32 @@ public class GdxTests {
 		LetterBoxTest3.class,
 		LifeCycleTest.class,
 		LightsTest.class,
-		LineDrawingTest.class,
-		ManagedTest.class,
-		ManualBindTest.class,
 		MaterialTest.class,
 		MatrixJNITest.class,
-		MeshMultitextureTest.class,
 		MeshShaderTest.class,
-		MeshTest.class,
 		MipMapTest.class,
 		ModelTest.class,
 		MoveSpriteExample.class,
 		MultitouchTest.class,
 		MusicTest.class,
-		MyFirstTriangle.class,
 		NetAPITest.class,
 		NinePatchTest.class,
-		ObjTest.class,
 		OnscreenKeyboardTest.class,
-		OrthoCamBorderTest.class,
-		ParticleEmitterTest.class,
 		ParallaxTest.class,
-		PathTest.class,
-		PickingTest.class,
+		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
 		PixmapPackerTest.class,
 		PixmapTest.class,
 		PolygonRegionTest.class,
 		PolygonSpriteTest.class,
-		Pong.class,
 		PreferencesTest.class,
 		ProjectTest.class,
 		ProjectiveTextureTest.class,
 		ReflectionTest.class,
-		RemoteTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
 		Scene2dTest.class,
-		ScreenCaptureTest.class,
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,
 		ScrollPaneTest.class,
@@ -198,24 +177,18 @@ public class GdxTests {
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,
 		SpriteCacheTest.class,
-		SpritePerformanceTest.class,
-		SpritePerformanceTest2.class,
 		StagePerformanceTest.class,
 		StageTest.class,
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
-		TerrainTest.class,
 		TextAreaTest.class,
 		TextButtonTest.class,
-		TextButtonTestGL2.class,
 		TextInputDialogTest.class,
 		TextureAtlasTest.class,
-		TextureBindTest.class,
 		TextureDataTest.class,
 		TextureDownloadTest.class,
 		TextureFormatTest.class,
-		TextureRenderTest.class,
 		TideMapAssetManagerTest.class,
 		TideMapDirectLoaderTest.class,
 		TileTest.class,
@@ -223,19 +196,14 @@ public class GdxTests {
 		TiledMapAtlasAssetManagerTest.class,
 		TiledMapBench.class,
 		TimerTest.class,
+		TimeUtilsTest.class,
 		TouchpadTest.class,
 		TreeTest.class,
 		UISimpleTest.class,
 		UITest.class,
-		VBOVATest.class,
 		Vector2dTest.class,
-		VertexArrayClassTest.class,
-		VertexArrayTest.class,
-		VertexBufferObjectClassTest.class,
 		VertexBufferObjectShaderTest.class,
-		VertexBufferObjectTest.class,
 		VibratorTest.class,
-		WaterRipples.class,
 		YDownTest.class
 		// @on
 

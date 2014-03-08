@@ -65,4 +65,6 @@ public class SocketHints {
 	public boolean linger = false;
 	/** The linger duration in seconds (NOT milliseconds!). Only used if linger is true! */
 	public int lingerDuration = 0;
+	/** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds. With this option set to a non-zero timeout, a read() call on the InputStream associated with this Socket will block for only this amount of time */
+	public int socketTimeout = 0;
 }

@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -30,20 +29,15 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class EdgeDetectionTest extends GdxTest {
-	@Override
-	public boolean needsGL20 () {
-		return true;
-	}
 
 	FPSLogger logger;
-	//ShaderProgram shader;
+	// ShaderProgram shader;
 	Model scene;
 	ModelInstance sceneInstance;
 	ModelBatch modelBatch;
@@ -61,11 +55,11 @@ public class EdgeDetectionTest extends GdxTest {
 
 	public void create () {
 		ShaderProgram.pedantic = false;
-		/*shader = new ShaderProgram(Gdx.files.internal("data/shaders/default.vert").readString(), Gdx.files.internal(
-			"data/shaders/depthtocolor.frag").readString());
-		if (!shader.isCompiled()) {
-			Gdx.app.log("EdgeDetectionTest", "couldn't compile scene shader: " + shader.getLog());
-		}*/
+		/*
+		 * shader = new ShaderProgram(Gdx.files.internal("data/shaders/default.vert").readString(), Gdx.files.internal(
+		 * "data/shaders/depthtocolor.frag").readString()); if (!shader.isCompiled()) { Gdx.app.log("EdgeDetectionTest",
+		 * "couldn't compile scene shader: " + shader.getLog()); }
+		 */
 		batchShader = new ShaderProgram(Gdx.files.internal("data/shaders/batch.vert").readString(), Gdx.files.internal(
 			"data/shaders/convolution.frag").readString());
 		if (!batchShader.isCompiled()) {
@@ -75,7 +69,7 @@ public class EdgeDetectionTest extends GdxTest {
 		ObjLoader objLoader = new ObjLoader();
 		scene = objLoader.loadObj(Gdx.files.internal("data/scene.obj"));
 		sceneInstance = new ModelInstance(scene);
-		modelBatch = new ModelBatch();		
+		modelBatch = new ModelBatch();
 		fbo = new FrameBuffer(Format.RGB565, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(0, 0, 10);
@@ -110,14 +104,14 @@ public class EdgeDetectionTest extends GdxTest {
 
 	public void render () {
 		angle += 45 * Gdx.graphics.getDeltaTime();
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		cam.update();
 		matrix.setToRotation(0, 1, 0, angle);
 		cam.combined.mul(matrix);
 
 		fbo.begin();
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		modelBatch.begin(cam);
 		modelBatch.render(sceneInstance);

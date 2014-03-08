@@ -185,10 +185,10 @@ public class Rectangle implements Serializable {
 		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
 	}
 
-	/** @param vector The coordinates vector
-	 * @return whether the vector is contained in the rectangle */
-	public boolean contains (Vector2 vector) {
-		return contains(vector.x, vector.y);
+	/** @param point The coordinates vector
+	 * @return whether the point is contained in the rectangle */
+	public boolean contains (Vector2 point) {
+		return contains(point.x, point.y);
 	}
 
 	/** @param rectangle the other {@link Rectangle}.

@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.GLTexture;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 
 public class TextureDescriptor<T extends GLTexture> {

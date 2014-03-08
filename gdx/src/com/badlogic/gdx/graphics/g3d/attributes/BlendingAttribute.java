@@ -16,9 +16,8 @@
 
 package com.badlogic.gdx.graphics.g3d.attributes;
 
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class BlendingAttribute extends Attribute {
 	public final static String Alias = "blended";
@@ -59,7 +58,7 @@ public class BlendingAttribute extends Attribute {
 	}
 	
 	public BlendingAttribute(final boolean blended, final float opacity) {
-		this(blended, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA, opacity);
+		this(blended, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, opacity);
 	}
 	
 	public BlendingAttribute(final float opacity) {
@@ -68,8 +67,8 @@ public class BlendingAttribute extends Attribute {
 	
 	public BlendingAttribute(final BlendingAttribute copyFrom) {
 		this(copyFrom == null ? true : copyFrom.blended,
-			copyFrom == null ? GL10.GL_SRC_ALPHA : copyFrom.sourceFunction,
-			copyFrom == null ? GL10.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunction,
+			copyFrom == null ? GL20.GL_SRC_ALPHA : copyFrom.sourceFunction,
+			copyFrom == null ? GL20.GL_ONE_MINUS_SRC_ALPHA : copyFrom.destFunction,
 			copyFrom == null ? 1.f : copyFrom.opacity);
 	}
 	

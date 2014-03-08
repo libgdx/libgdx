@@ -62,10 +62,6 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 			list[i] = attributes[i];
 
 		this.attributes = list;
-
-		if (!Gdx.graphics.isGL20Available())
-			checkGLES1Validity();
-		
 		vertexSize = calculateOffsets();
 	}
 

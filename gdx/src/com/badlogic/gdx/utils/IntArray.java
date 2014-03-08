@@ -114,12 +114,12 @@ public class IntArray {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] += value;
 	}
-	
+
 	public void mul (int index, int value) {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] *= value;
 	}
-	
+
 	public void insert (int index, int value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
 		int[] items = this.items;
@@ -327,5 +327,10 @@ public class IntArray {
 			buffer.append(items[i]);
 		}
 		return buffer.toString();
+	}
+
+	/** @see #IntArray(int[]) */
+	static public IntArray with (int... array) {
+		return new IntArray(array);
 	}
 }

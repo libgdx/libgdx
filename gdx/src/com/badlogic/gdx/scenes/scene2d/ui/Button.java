@@ -191,12 +191,7 @@ public class Button extends Table implements Disableable {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
-
-		if (background != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			background.draw(batch, getX(), getY(), getWidth(), getHeight());
-		}
+		setBackground(background, false);
 
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
@@ -204,10 +199,6 @@ public class Button extends Table implements Disableable {
 		super.draw(batch, parentAlpha);
 		for (int i = 0; i < children.size; i++)
 			children.get(i).moveBy(-offsetX, -offsetY);
-	}
-
-	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
-		super.drawBackground(batch, parentAlpha, x, y);
 	}
 
 	public float getPrefWidth () {

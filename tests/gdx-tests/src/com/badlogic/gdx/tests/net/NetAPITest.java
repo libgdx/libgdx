@@ -22,7 +22,7 @@ import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponse;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -122,12 +122,12 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
 			};
-			
+
 			ClickListener cancelListener = new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
-					Gdx.net.cancelHttpRequest(httpRequest);					
+					Gdx.net.cancelHttpRequest(httpRequest);
 					statusLabel.setText("Cancelling request " + httpRequest.getUrl());
 				}
 			};
@@ -136,7 +136,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.5f - btnCancel.getWidth() * 1.5f, 60f);
 			btnCancel.addListener(cancelListener);
 			stage.addActor(btnCancel);
-			
+
 			btnDownloadImage = new TextButton("GET Image", skin);
 			btnDownloadImage.setPosition(btnCancel.getX() + btnCancel.getWidth() + 10, 60f);
 			btnDownloadImage.addListener(clickListener);
@@ -183,10 +183,8 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			final byte[] rawImageBytes = httpResponse.getResult();
 			Gdx.app.postRunnable(new Runnable() {
 				public void run () {
-					Texture.setEnforcePotImages(false);
 					Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
 					texture = new Texture(pixmap);
-					Texture.setEnforcePotImages(true);
 				}
 			});
 		} else {
@@ -229,7 +227,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if (texture != null) {
 			batch.begin();

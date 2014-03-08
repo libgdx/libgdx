@@ -17,33 +17,20 @@
 package com.badlogic.gdx.tests.g3d.voxel;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.shaders.GLES10Shader;
-import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.tests.utils.PerspectiveCamController;
 
 public class VoxelTest extends GdxTest {
 	SpriteBatch spriteBatch;
@@ -60,20 +47,19 @@ public class VoxelTest extends GdxTest {
 		font = new BitmapFont();
 		modelBatch = new ModelBatch();
 		DefaultShader.defaultCullFace = GL20.GL_FRONT;
-		GLES10Shader.defaultCullFace = GL20.GL_FRONT;
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.near = 0.5f;
 		camera.far = 1000;
 		controller = new FirstPersonCameraController(camera);
 		Gdx.input.setInputProcessor(controller);
-		
+
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add(new DirectionalLight().set(1, 1, 1, 0, -1, 0));
-		
+
 		Texture texture = new Texture(Gdx.files.internal("data/g3d/tiles.png"));
 		TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
-		
+
 		MathUtils.random.setSeed(0);
 		voxelWorld = new VoxelWorld(tiles[0], 20, 4, 20);
 		PerlinNoiseGenerator.generateVoxels(voxelWorld, 0, 63, 10);
@@ -91,22 +77,18 @@ public class VoxelTest extends GdxTest {
 		modelBatch.render(voxelWorld, lights);
 		modelBatch.end();
 		controller.update();
-		
+
 		spriteBatch.begin();
-		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks + "/" + voxelWorld.numChunks, 0, 20);
+		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks
+			+ "/" + voxelWorld.numChunks, 0, 20);
 		spriteBatch.end();
 	}
-	
+
 	@Override
 	public void resize (int width, int height) {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 		camera.viewportWidth = width;
 		camera.viewportHeight = height;
 		camera.update();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
 	}
 }

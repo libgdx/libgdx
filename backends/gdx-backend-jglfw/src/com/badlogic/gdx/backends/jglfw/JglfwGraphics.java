@@ -22,10 +22,8 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.jglfw.GlfwVideoMode;
@@ -55,9 +53,6 @@ public class JglfwGraphics implements Graphics {
 	private long frameStart, lastTime = -1;
 	private int frames, fps;
 
-	private GLCommon gl;
-	private JglfwGL10 gl10;
-	private JglfwGL11 gl11;
 	private JglfwGL20 gl20;
 
 	public JglfwGraphics (JglfwApplicationConfiguration config) {
@@ -82,25 +77,21 @@ public class JglfwGraphics implements Graphics {
 		}
 
 		// Create GL.
-		String version = GL.glGetString(GL11.GL_VERSION);
+		String version = GL.glGetString(GL20.GL_VERSION);
 		glMajorVersion = Integer.parseInt("" + version.charAt(0));
 		glMinorVersion = Integer.parseInt("" + version.charAt(2));
-		if (config.useGL20 && (glMajorVersion >= 2 || version.contains("2.1"))) { // special case for MESA, wtf...
-			gl20 = new JglfwGL20();
-			gl = gl20;
-		} else {
-			gl20 = null;
-			if (glMajorVersion == 1 && glMinorVersion < 5)
-				gl10 = new JglfwGL10();
-			else {
-				gl11 = new JglfwGL11();
-				gl10 = gl11;
+
+		if (glMajorVersion <= 1)
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
+		if (glMajorVersion == 2 || version.contains("2.1")) {
+			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
+				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
+					+ ", FBO extension: false");
 			}
-			gl = gl10;
 		}
-		Gdx.gl = gl;
-		Gdx.gl10 = gl10;
-		Gdx.gl11 = gl11;
+
+		gl20 = new JglfwGL20();
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 
 		if (!config.hidden) show();
@@ -179,24 +170,8 @@ public class JglfwGraphics implements Graphics {
 		this.y = y;
 	}
 
-	public boolean isGL11Available () {
-		return gl11 != null;
-	}
-
 	public boolean isGL20Available () {
 		return gl20 != null;
-	}
-
-	public GLCommon getGLCommon () {
-		return gl;
-	}
-
-	public GL10 getGL10 () {
-		return gl10;
-	}
-
-	public GL11 getGL11 () {
-		return gl11;
 	}
 
 	public GL20 getGL20 () {
@@ -369,7 +344,7 @@ public class JglfwGraphics implements Graphics {
 		glfwShowWindow(window);
 
 		Gdx.gl.glClearColor(initialBackgroundColor.r, initialBackgroundColor.g, initialBackgroundColor.b, initialBackgroundColor.a);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		glfwSwapBuffers(window);
 	}
 
@@ -405,5 +380,15 @@ public class JglfwGraphics implements Graphics {
 		protected JglfwDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
 		}
+	}
+
+	@Override
+	public boolean isGL30Available () {
+		return false;
+	}
+
+	@Override
+	public GL30 getGL30 () {
+		return null;
 	}
 }

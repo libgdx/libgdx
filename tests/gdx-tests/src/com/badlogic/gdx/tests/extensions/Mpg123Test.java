@@ -76,9 +76,4 @@ public class Mpg123Test extends GdxTest {
 		// kill the file again
 		Gdx.files.external("tmp/test.mp3").delete();
 	}
-
-	@Override
-	public boolean needsGL20 () {
-		return false;
-	}
 }

@@ -80,9 +80,14 @@ public class Table extends WidgetGroup {
 			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
 				batch.flush();
-				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(layout.getPadLeft(),
-					layout.getPadBottom(), getWidth() - layout.getPadLeft() - layout.getPadRight(),
-					getHeight() - layout.getPadBottom() - layout.getPadTop());
+				float x = 0, y = 0, width = getWidth(), height = getHeight();
+				if (background != null) {
+					x = layout.getPadLeft();
+					y = layout.getPadBottom();
+					width -= layout.getPadLeft() + layout.getPadRight();
+					height -= layout.getPadBottom() + layout.getPadTop();
+				}
+				boolean draw = clipBegin(x, y, width, height);
 				if (draw) {
 					drawChildren(batch, parentAlpha);
 					clipEnd();
@@ -128,22 +133,30 @@ public class Table extends WidgetGroup {
 		return layout.getMinHeight();
 	}
 
-	/** Sets the background drawable from the skin. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)}
-	 * was used. */
+	/** Sets the background drawable from the skin and adjusts the table's padding to match the backgruond. This may only be called
+	 * if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used.
+	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (String drawableName) {
-		setBackground(skin.getDrawable(drawableName));
+		setBackground(skin.getDrawable(drawableName), true);
 	}
 
-	/** Sets the background drawable and sets the table's padding to {@link Drawable#getBottomHeight()} ,
-	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, the background will be cleared and all padding is removed. */
+	/** Sets the background drawable and adjusts the table's padding to match the backgruond.
+	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (Drawable background) {
+		setBackground(background, true);
+	}
+
+	/** Sets the background drawable and, if adjustPadding is true, sets the table's padding to {@link Drawable#getBottomHeight()} ,
+	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
+	 * @param background If null, the background will be cleared and padding removed. */
+	public void setBackground (Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
 		this.background = background;
-		if (background == null)
-			pad(null);
-		else {
-			pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+		if (adjustPadding) {
+			if (background == null)
+				pad(null);
+			else
+				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
 		}
 	}

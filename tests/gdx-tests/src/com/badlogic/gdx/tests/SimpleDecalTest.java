@@ -18,7 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.FPSLogger;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -80,8 +80,8 @@ public class SimpleDecalTest extends GdxTest {
 	private boolean billboard = true;
 
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		camera.update();
 		for (int i = 0; i < decals.size; i++) {
@@ -103,10 +103,5 @@ public class SimpleDecalTest extends GdxTest {
 	@Override
 	public void dispose () {
 		batch.dispose();
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

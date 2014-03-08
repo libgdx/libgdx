@@ -624,6 +624,10 @@ public class AssetManager implements Disposable {
 		return log;
 	}
 
+	public void setLogger (Logger logger) {
+		log = logger;
+	}
+
 	/** Returns the reference count of an asset.
 	 * @param fileName */
 	public synchronized int getReferenceCount (String fileName) {

@@ -23,11 +23,9 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultRenderableSorter;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
-import com.badlogic.gdx.graphics.g3d.utils.GLES10ShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.RenderableSorter;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -91,7 +89,7 @@ public class ModelBatch implements Disposable {
 			? new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1))
 			: context;
 		this.shaderProvider = (shaderProvider == null)
-			? (Gdx.graphics.isGL20Available() ? new DefaultShaderProvider() : new GLES10ShaderProvider()) 
+			? new DefaultShaderProvider() 
 			: shaderProvider;
 	}
 	

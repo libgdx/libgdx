@@ -18,10 +18,7 @@ package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,7 +27,6 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Draws batched quads using indices.
@@ -39,8 +35,6 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author Nathan Sweet */
 public class SpriteBatch implements Batch {
 	private Mesh mesh;
-	private Mesh[] buffers;
-	private int currBufferIdx = 0;
 
 	private final float[] vertices;
 	private int idx = 0;
@@ -53,8 +47,8 @@ public class SpriteBatch implements Batch {
 	private final Matrix4 combinedMatrix = new Matrix4();
 
 	private boolean blendingDisabled = false;
-	private int blendSrcFunc = GL11.GL_SRC_ALPHA;
-	private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
+	private int blendSrcFunc = GL20.GL_SRC_ALPHA;
+	private int blendDstFunc = GL20.GL_ONE_MINUS_SRC_ALPHA;
 
 	private final ShaderProgram shader;
 	private ShaderProgram customShader = null;
@@ -73,27 +67,15 @@ public class SpriteBatch implements Batch {
 	public int maxSpritesInBatch = 0;
 
 	/** Constructs a new SpriteBatch with a size of 1000, one buffer, and the default shader.
-	 * @see SpriteBatch#SpriteBatch(int, int, ShaderProgram) */
+	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram) */
 	public SpriteBatch () {
-		this(1000, 1, null);
+		this(1000, null);
 	}
 
 	/** Constructs a SpriteBatch with one buffer and the default shader.
-	 * @see SpriteBatch#SpriteBatch(int, int, ShaderProgram) */
+	 * @see SpriteBatch#SpriteBatch(int, ShaderProgram) */
 	public SpriteBatch (int size) {
-		this(size, 1, null);
-	}
-
-	/** Constructs a new SpriteBatch with one buffer.
-	 * @see SpriteBatch#SpriteBatch(int, int, ShaderProgram) */
-	public SpriteBatch (int size, ShaderProgram defaultShader) {
-		this(size, 1, defaultShader);
-	}
-
-	/** Constructs a SpriteBatch with the default shader.
-	 * @see SpriteBatch#SpriteBatch(int, int, ShaderProgram) */
-	public SpriteBatch (int size, int buffers) {
-		this(size, buffers, null);
+		this(size, null);
 	}
 
 	/** Constructs a new SpriteBatch. Sets the projection matrix to an orthographic projection with y-axis point upwards, x-axis
@@ -103,19 +85,14 @@ public class SpriteBatch implements Batch {
 	 * The defaultShader specifies the shader to use. Note that the names for uniforms for this default shader are different than
 	 * the ones expect for shaders set with {@link #setShader(ShaderProgram)}. See {@link #createDefaultShader()}.
 	 * @param size The max number of sprites in a single batch. Max of 5460.
-	 * @param buffers The number of meshes to use. This is an expert function. It only makes sense with VBOs (see
-	 *           {@link Mesh#forceVBO}).
 	 * @param defaultShader The default shader to use. This is not owned by the SpriteBatch and must be disposed separately. */
-	public SpriteBatch (int size, int buffers, ShaderProgram defaultShader) {
+	public SpriteBatch (int size, ShaderProgram defaultShader) {
 		// 32767 is max index, so 32767 / 6 - (32767 / 6 % 3) = 5460.
 		if (size > 5460) throw new IllegalArgumentException("Can't have more than 5460 sprites per batch: " + size);
 
-		this.buffers = new Mesh[buffers];
-		for (int i = 0; i < buffers; i++) {
-			this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
-				ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
-				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-		}
+		mesh = new Mesh(VertexDataType.VertexArray, false, size * 4, size * 6, new VertexAttribute(Usage.Position, 2,
+			ShaderProgram.POSITION_ATTRIBUTE), new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE),
+			new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
 
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -132,12 +109,9 @@ public class SpriteBatch implements Batch {
 			indices[i + 4] = (short)(j + 3);
 			indices[i + 5] = j;
 		}
-		for (int i = 0; i < buffers; i++) {
-			this.buffers[i].setIndices(indices);
-		}
-		mesh = this.buffers[0];
+		mesh.setIndices(indices);
 
-		if (Gdx.graphics.isGL20Available() && defaultShader == null) {
+		if (defaultShader == null) {
 			shader = createDefaultShader();
 			ownsShader = true;
 		} else
@@ -184,14 +158,10 @@ public class SpriteBatch implements Batch {
 		renderCalls = 0;
 
 		Gdx.gl.glDepthMask(false);
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				customShader.begin();
-			else
-				shader.begin();
-		} else {
-			Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
-		}
+		if (customShader != null)
+			customShader.begin();
+		else
+			shader.begin();
 		setupMatrices();
 
 		drawing = true;
@@ -204,18 +174,14 @@ public class SpriteBatch implements Batch {
 		lastTexture = null;
 		drawing = false;
 
-		GLCommon gl = Gdx.gl;
+		GL20 gl = Gdx.gl;
 		gl.glDepthMask(true);
-		if (isBlendingEnabled()) gl.glDisable(GL10.GL_BLEND);
+		if (isBlendingEnabled()) gl.glDisable(GL20.GL_BLEND);
 
-		if (Gdx.graphics.isGL20Available()) {
-			if (customShader != null)
-				customShader.end();
-			else
-				shader.end();
-		} else {
-			gl.glDisable(GL10.GL_TEXTURE_2D);
-		}
+		if (customShader != null)
+			customShader.end();
+		else
+			shader.end();
 	}
 
 	@Override
@@ -935,15 +901,9 @@ public class SpriteBatch implements Batch {
 			if (blendSrcFunc != -1) Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
 		}
 
-		if (Gdx.graphics.isGL20Available())
-			mesh.render(customShader != null ? customShader : shader, GL10.GL_TRIANGLES, 0, count);
-		else
-			mesh.render(GL10.GL_TRIANGLES, 0, count);
+		mesh.render(customShader != null ? customShader : shader, GL20.GL_TRIANGLES, 0, count);
 
 		idx = 0;
-		currBufferIdx++;
-		if (currBufferIdx == buffers.length) currBufferIdx = 0;
-		this.mesh = buffers[currBufferIdx];
 	}
 
 	@Override
@@ -980,8 +940,7 @@ public class SpriteBatch implements Batch {
 
 	@Override
 	public void dispose () {
-		for (int i = 0; i < buffers.length; i++)
-			buffers[i].dispose();
+		mesh.dispose();
 		if (ownsShader && shader != null) shader.dispose();
 	}
 
@@ -1010,21 +969,13 @@ public class SpriteBatch implements Batch {
 	}
 
 	private void setupMatrices () {
-		if (!Gdx.graphics.isGL20Available()) {
-			GL10 gl = Gdx.gl10;
-			gl.glMatrixMode(GL10.GL_PROJECTION);
-			gl.glLoadMatrixf(projectionMatrix.val, 0);
-			gl.glMatrixMode(GL10.GL_MODELVIEW);
-			gl.glLoadMatrixf(transformMatrix.val, 0);
+		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
+		if (customShader != null) {
+			customShader.setUniformMatrix("u_projTrans", combinedMatrix);
+			customShader.setUniformi("u_texture", 0);
 		} else {
-			combinedMatrix.set(projectionMatrix).mul(transformMatrix);
-			if (customShader != null) {
-				customShader.setUniformMatrix("u_projTrans", combinedMatrix);
-				customShader.setUniformi("u_texture", 0);
-			} else {
-				shader.setUniformMatrix("u_projTrans", combinedMatrix);
-				shader.setUniformi("u_texture", 0);
-			}
+			shader.setUniformMatrix("u_projTrans", combinedMatrix);
+			shader.setUniformi("u_texture", 0);
 		}
 	}
 

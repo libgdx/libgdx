@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import com.badlogic.gdx.InputProcessor;
 
+public interface InputProcessorLW extends InputProcessor {
 
-public interface InputProcessorLW extends InputProcessor{
-		
-	public void touchDrop(int x, int y);
-	
+	public void touchDrop (int x, int y);
+
 }

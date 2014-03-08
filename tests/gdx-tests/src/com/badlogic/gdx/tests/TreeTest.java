@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -64,7 +65,7 @@ public class TreeTest extends GdxTest {
 
 	public void render () {
 		// System.out.println(meow.getValue());
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 		Table.drawDebug(stage);
@@ -72,10 +73,6 @@ public class TreeTest extends GdxTest {
 
 	public void resize (int width, int height) {
 		stage.setViewport(width, height, true);
-	}
-
-	public boolean needsGL20 () {
-		return true;
 	}
 
 	public void dispose () {

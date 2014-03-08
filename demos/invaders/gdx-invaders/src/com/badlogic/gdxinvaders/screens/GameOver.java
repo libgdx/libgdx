@@ -15,7 +15,7 @@ package com.badlogic.gdxinvaders.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -52,19 +52,19 @@ public class GameOver extends InvadersScreen {
 		logo.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		font = new BitmapFont(Gdx.files.internal("data/font16.fnt"), Gdx.files.internal("data/font16.png"), false);
-		
-//		if(Controllers.getControllers().size > 0) {
-//			Controller controller = Controllers.getControllers().get(0);
-//			if(Ouya.ID.equals(controller.getName())) {
-//				controller.addListener(new ControllerAdapter() {
-//					@Override
-//					public boolean buttonUp (Controller controller, int buttonIndex) {
-//						isDone = true;
-//						return false;
-//					}
-//				});
-//			}
-//		}
+
+// if(Controllers.getControllers().size > 0) {
+// Controller controller = Controllers.getControllers().get(0);
+// if(Ouya.ID.equals(controller.getName())) {
+// controller.addListener(new ControllerAdapter() {
+// @Override
+// public boolean buttonUp (Controller controller, int buttonIndex) {
+// isDone = true;
+// return false;
+// }
+// });
+// }
+// }
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class GameOver extends InvadersScreen {
 
 	@Override
 	public void draw (float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		viewMatrix.setToOrtho2D(0, 0, 480, 320);
 		spriteBatch.setProjectionMatrix(viewMatrix);
@@ -95,7 +95,7 @@ public class GameOver extends InvadersScreen {
 		spriteBatch.draw(logo, 0, 320 - 128, 480, 128, 0, 256, 512, 256, false, false);
 		String text = "It is the end my friend.\nTouch to continue!";
 		TextBounds bounds = font.getMultiLineBounds(text);
-		spriteBatch.setBlendFunction(GL10.GL_ONE, GL10.GL_ONE_MINUS_SRC_ALPHA);
+		spriteBatch.setBlendFunction(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		font.drawMultiLine(spriteBatch, text, 0, 160 + bounds.height / 2, 480, HAlignment.CENTER);
 		spriteBatch.end();
 	}

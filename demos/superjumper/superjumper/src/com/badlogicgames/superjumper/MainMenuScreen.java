@@ -19,8 +19,7 @@ package com.badlogicgames.superjumper;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GLCommon;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -84,9 +83,9 @@ public class MainMenuScreen implements Screen {
 	long last = TimeUtils.nanoTime();
 
 	public void draw () {
-		GLCommon gl = Gdx.gl;
+		GL20 gl = Gdx.gl;
 		gl.glClearColor(1, 0, 0, 1);
-		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		guiCam.update();
 		batcher.setProjectionMatrix(guiCam.combined);
 

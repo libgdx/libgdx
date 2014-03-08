@@ -49,7 +49,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -85,7 +85,7 @@ public class ParticleEditor extends JFrame {
 	public ParticleEditor () {
 		super("Particle Editor");
 
-		lwjglCanvas = new LwjglCanvas(new Renderer(), false);
+		lwjglCanvas = new LwjglCanvas(new Renderer());
 		addWindowListener(new WindowAdapter() {
 			public void windowClosed (WindowEvent event) {
 				System.exit(0);
@@ -314,8 +314,6 @@ public class ParticleEditor extends JFrame {
 		public void create () {
 			if (spriteBatch != null) return;
 
-			Texture.setEnforcePotImages(false);
-
 			spriteBatch = new SpriteBatch();
 
 			worldCamera = new OrthographicCamera();
@@ -367,7 +365,7 @@ public class ParticleEditor extends JFrame {
 
 			float[] colors = backgroundColor.getColors();
 			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 1.0f);
-			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 			if ((pixelsPerMeter.getValue() != pixelsPerMeterPrev) || (zoomLevel.getValue() != zoomLevelPrev)) {
 				if (pixelsPerMeter.getValue() <= 0) {
@@ -386,7 +384,7 @@ public class ParticleEditor extends JFrame {
 
 			spriteBatch.begin();
 			spriteBatch.enableBlending();
-			spriteBatch.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+			spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
 			if (bgImage != null) {
 				bgImage.setPosition(viewWidth / 2 - bgImage.getWidth() / 2, viewHeight / 2 - bgImage.getHeight() / 2);

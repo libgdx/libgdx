@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.extensions;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** Shows how to use fonts for languages other than english. Note that only alphabets with a humble amount of glyphs can be used
@@ -45,15 +47,24 @@ public class InternationalFontsTest extends GdxTest {
 	@Override
 	public void create () {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("data/unbom.ttf"));
-		koreanFont = generator.generateFont(18, "한국어/조선�?", false);
+
+		FreeTypeFontParameter parameter = new FreeTypeFontParameter();
+		parameter.size = 18;
+		parameter.characters = "한국어/조선�?";
+
+		koreanFont = generator.generateFont(parameter);
 		generator.dispose();
+
+		parameter.characters = FreeTypeFontGenerator.DEFAULT_CHARS;
 
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/russkij.ttf"));
-		cyrillicFont = generator.generateFont(18, FreeTypeFontGenerator.DEFAULT_CHARS, false);
+		cyrillicFont = generator.generateFont(parameter);
 		generator.dispose();
 
+		parameter.characters = "วรณยุ�?ต์";
+
 		generator = new FreeTypeFontGenerator(Gdx.files.internal("data/garuda.ttf"));
-		thaiFont = generator.generateFont(18, "วรณยุ�?ต์", false);
+		thaiFont = generator.generateFont(parameter);
 		generator.dispose();
 
 		batch = new SpriteBatch();
@@ -65,7 +76,7 @@ public class InternationalFontsTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		batch.setProjectionMatrix(cam.combined);
 		batch.begin();

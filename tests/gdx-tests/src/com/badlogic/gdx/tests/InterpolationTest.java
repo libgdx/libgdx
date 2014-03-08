@@ -42,7 +42,7 @@ public class InterpolationTest extends GdxTest {
 	Stage stage;
 	private Skin skin;
 	private Table table;
-	List list;
+	List<String> list;
 	String interpolationNames[], selectedInterpolation;
 	private ShapeRenderer renderer;
 	float graphSize = 400, steps = graphSize / 2, time = 0, duration = 2.5f;
@@ -96,10 +96,11 @@ public class InterpolationTest extends GdxTest {
 				interpolationNames[i] = interpolationFields[i].getName();
 		selectedInterpolation = interpolationNames[0];
 
-		list = new List(interpolationNames, skin);
+		list = new List(skin);
+		list.setItems(interpolationNames);
 		list.addListener(new ChangeListener() {
 			public void changed (ChangeEvent event, Actor actor) {
-				selectedInterpolation = list.getSelection();
+				selectedInterpolation = list.getSelected();
 				time = 0;
 				resetPositions();
 			}

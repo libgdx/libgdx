@@ -32,14 +32,13 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link GL20} interface based on LWJGL. Note that LWJGL shaders and OpenGL ES shaders will not be 100%
  * compatible. Some glGetXXX methods are not implemented.
  * 
  * @author mzechner */
-final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
+class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	public void glActiveTexture (int texture) {
 		GL13.glActiveTexture(texture);
 	}
@@ -234,11 +233,11 @@ final class LwjglGL20 implements com.badlogic.gdx.graphics.GL20 {
 	}
 
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
-		if (indices instanceof ShortBuffer && type == GL10.GL_UNSIGNED_SHORT)
+		if (indices instanceof ShortBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
 			GL11.glDrawElements(mode, (ShortBuffer)indices);
-		else if (indices instanceof ByteBuffer && type == GL10.GL_UNSIGNED_SHORT)
+		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_SHORT)
 			GL11.glDrawElements(mode, ((ByteBuffer)indices).asShortBuffer()); // FIXME yay...
-		else if (indices instanceof ByteBuffer && type == GL10.GL_UNSIGNED_BYTE)
+		else if (indices instanceof ByteBuffer && type == com.badlogic.gdx.graphics.GL20.GL_UNSIGNED_BYTE)
 			GL11.glDrawElements(mode, (ByteBuffer)indices);
 		else
 			throw new GdxRuntimeException("Can't use " + indices.getClass().getName()

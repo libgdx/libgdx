@@ -107,12 +107,10 @@ public class Box2DDebugRenderer {
 		}
 		renderer.end();
 		if (drawContacts) {
-			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(3);
 			renderer.begin(ShapeType.Point);
 			for (Contact contact : world.getContactList())
 				drawContact(contact);
 			renderer.end();
-			if (Gdx.gl10 != null) Gdx.gl10.glPointSize(1);
 		}
 	}
 

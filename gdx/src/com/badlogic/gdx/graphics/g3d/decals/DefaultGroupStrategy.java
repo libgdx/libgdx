@@ -17,7 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.decals;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.Array;
 
@@ -81,25 +81,25 @@ public class DefaultGroupStrategy implements GroupStrategy {
 	@Override
 	public void beforeGroup (int group, Array<Decal> contents) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glEnable(GL10.GL_BLEND);
+			Gdx.gl.glEnable(GL20.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void afterGroup (int group) {
 		if (group == GROUP_BLEND) {
-			Gdx.gl.glDisable(GL10.GL_BLEND);
+			Gdx.gl.glDisable(GL20.GL_BLEND);
 		}
 	}
 
 	@Override
 	public void beforeGroups () {
-		Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glEnable(GL20.GL_TEXTURE_2D);
 	}
 
 	@Override
 	public void afterGroups () {
-		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
+		Gdx.gl.glDisable(GL20.GL_TEXTURE_2D);
 	}
 
 	@Override
