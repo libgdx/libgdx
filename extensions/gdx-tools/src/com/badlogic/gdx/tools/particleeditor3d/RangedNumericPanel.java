@@ -27,7 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.RangedNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.RangedNumericValue;
 import com.badlogic.gdx.tools.particleeditor.Slider;
 
 

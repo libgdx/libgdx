@@ -59,13 +59,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.GradientColorValue;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.NumericValue;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.newparticles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.GradientColorValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.NumericValue;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitter;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -135,14 +134,9 @@ public class ParticleEditor3D extends JFrame {
                                         "Amount to offset a particle's starting Z location, in world units.", false));
                                 addRow(new FacingPanel(ParticleEditor3D.this, emitter.getFacingValue(), "Facing",
                                         "Controls the direction used to align the particle to the camera."));
-                                addRow(new SpawnPanel(ParticleEditor3D.this, emitter.getSpawnShape(), "Spawn", "Shape used to spawn particles."));
-                                addRow(new ScaledNumericPanel(emitter.getSpawnWidth(), "Duration", "Spawn Width",
-                                        "Width of the spawn shape, in world units."));
-                                addRow(new ScaledNumericPanel(emitter.getSpawnHeight(), "Duration", "Spawn Height",
-                                        "Height of the spawn shape, in world units."));
-                                addRow(new ScaledNumericPanel(emitter.getSpawnDepth(), "Duration", "Spawn Depth",
-                                        "Depth of the spawn shape, in world units."));
+                                addRow(new SpawnPanel(ParticleEditor3D.this, emitter.getSpawnShape(), "Duration", "Spawn", "Shape used to spawn particles."));
                                 addRow(new ScaledNumericPanel(emitter.getScaleValue(), "Life", "Size", "Particle size, in world units."));
+                                //addRow(new ScaledNumericPanel(emitter.getAttachWeightValue(), "Life", "Size", "Particle size, in world units."));
                                 addRow(new VelocityPanel(emitter.getVelocityValue(0), "Life", "Velocity 1", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
                                 addRow(new VelocityPanel(emitter.getVelocityValue(1), "Life", "Velocity 2", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
                                 addRow(new VelocityPanel(emitter.getVelocityValue(2), "Life", "Velocity 3", "Velocity vector applied to particle, in world units per second (ie. gravity, wind, etc...).", false));
@@ -399,7 +393,6 @@ public class ParticleEditor3D extends JFrame {
                 	{
                 		if (emitter.getRegion() == null && emitter.getImagePath() != null){ 
                 			loadImage(emitter);
-                        emitter.setCamera(worldCamera);
                 		}
                 		if (isEnabled(emitter)) 
                 		{	

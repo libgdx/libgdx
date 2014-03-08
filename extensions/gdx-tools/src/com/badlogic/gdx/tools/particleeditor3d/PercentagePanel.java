@@ -26,7 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.ScaledNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.ScaledNumericValue;
 import com.badlogic.gdx.tools.particleeditor.Chart;
 
 

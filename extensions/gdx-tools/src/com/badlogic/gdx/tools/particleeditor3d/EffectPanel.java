@@ -37,9 +37,11 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.ScaledNumericValue;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.VelocityValue;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.newparticles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.PrimitiveSpawnShapeValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.ScaledNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.SpawnShapeValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.VelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.StreamUtils;
@@ -111,9 +113,10 @@ class EffectPanel extends JPanel {
 		velocityValue.setActive(true);
 
 		//Spawn
-		emitter.getSpawnDepth().setHigh(5);
-		emitter.getSpawnHeight().setHigh(5);
-		emitter.getSpawnWidth().setHigh(5);
+		PrimitiveSpawnShapeValue value = (PrimitiveSpawnShapeValue)emitter.getSpawnShape();
+		value.getSpawnDepth().setHigh(0);
+		value.getSpawnHeight().setHigh(0);
+		value.getSpawnWidth().setHigh(0);
 		
 		//Color
 		emitter.getTint().setColors(new float[] {1, 0.12156863f, 0.047058824f});

@@ -35,7 +35,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.GradientColorValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.GradientColorValue;
 
 class GradientPanel extends EditorPanel {
 	private final GradientColorValue value;

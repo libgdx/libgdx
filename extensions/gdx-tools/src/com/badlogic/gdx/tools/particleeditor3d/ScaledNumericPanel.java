@@ -30,12 +30,12 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.ScaledNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.ScaledNumericValue;
 import com.badlogic.gdx.tools.particleeditor.Chart;
 import com.badlogic.gdx.tools.particleeditor.Slider;
 
 class ScaledNumericPanel extends EditorPanel {
-	final ScaledNumericValue value;
+	ScaledNumericValue value;
 	Slider lowMinSlider, lowMaxSlider;
 	Slider highMinSlider, highMaxSlider;
 	JCheckBox relativeCheckBox;
@@ -45,49 +45,43 @@ class ScaledNumericPanel extends EditorPanel {
 	JButton lowRangeButton;
 	JButton highRangeButton;
 
-	public ScaledNumericPanel (final ScaledNumericValue value, String chartTitle, String name, String description){
+	public ScaledNumericPanel (ScaledNumericValue value, String chartTitle, String name, String description){
 		this(value, chartTitle, name, description, true);
 	}
 	
-	public ScaledNumericPanel (final ScaledNumericValue value, String chartTitle, String name, String description, boolean isAlwaysActive){
+	public ScaledNumericPanel (ScaledNumericValue value, String chartTitle, String name, String description, boolean isAlwaysActive){
 		super(value, name, description, isAlwaysActive);
-		this.value = value;
 
 		initializeComponents(chartTitle);
 
-		lowMinSlider.setValue(value.getLowMin());
-		lowMaxSlider.setValue(value.getLowMax());
-		highMinSlider.setValue(value.getHighMin());
-		highMaxSlider.setValue(value.getHighMax());
-		chart.setValues(value.getTimeline(), value.getScaling());
-		relativeCheckBox.setSelected(value.isRelative());
+		setValue(value);
 
 		lowMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setLowMin((Float)lowMinSlider.getValue());
-				if (!lowMaxSlider.isVisible()) value.setLowMax((Float)lowMinSlider.getValue());
+				ScaledNumericPanel.this.value.setLowMin((Float)lowMinSlider.getValue());
+				if (!lowMaxSlider.isVisible()) ScaledNumericPanel.this.value.setLowMax((Float)lowMinSlider.getValue());
 			}
 		});
 		lowMaxSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setLowMax((Float)lowMaxSlider.getValue());
+				ScaledNumericPanel.this.value.setLowMax((Float)lowMaxSlider.getValue());
 			}
 		});
 		highMinSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setHighMin((Float)highMinSlider.getValue());
-				if (!highMaxSlider.isVisible()) value.setHighMax((Float)highMinSlider.getValue());
+				ScaledNumericPanel.this.value.setHighMin((Float)highMinSlider.getValue());
+				if (!highMaxSlider.isVisible()) ScaledNumericPanel.this.value.setHighMax((Float)highMinSlider.getValue());
 			}
 		});
 		highMaxSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				value.setHighMax((Float)highMaxSlider.getValue());
+				ScaledNumericPanel.this.value.setHighMax((Float)highMaxSlider.getValue());
 			}
 		});
 
 		relativeCheckBox.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
-				value.setRelative(relativeCheckBox.isSelected());
+				ScaledNumericPanel.this.value.setRelative(relativeCheckBox.isSelected());
 			}
 		});
 
@@ -101,7 +95,7 @@ class ScaledNumericPanel extends EditorPanel {
 				constraints.gridx = visible ? 5 : 4;
 				layout.setConstraints(lowRangeButton, constraints);
 				Slider slider = visible ? lowMaxSlider : lowMinSlider;
-				value.setLowMax((Float)slider.getValue());
+				ScaledNumericPanel.this.value.setLowMax((Float)slider.getValue());
 			}
 		});
 
@@ -115,7 +109,7 @@ class ScaledNumericPanel extends EditorPanel {
 				constraints.gridx = visible ? 5 : 4;
 				layout.setConstraints(highRangeButton, constraints);
 				Slider slider = visible ? highMaxSlider : highMinSlider;
-				value.setHighMax((Float)slider.getValue());
+				ScaledNumericPanel.this.value.setHighMax((Float)slider.getValue());
 			}
 		});
 
@@ -145,8 +139,8 @@ class ScaledNumericPanel extends EditorPanel {
 			}
 		});
 
-		if (value.getLowMin() == value.getLowMax()) lowRangeButton.doClick(0);
-		if (value.getHighMin() == value.getHighMax()) highRangeButton.doClick(0);
+		if (this.value.getLowMin() == this.value.getLowMax()) lowRangeButton.doClick(0);
+		if (this.value.getHighMin() == this.value.getHighMax()) highRangeButton.doClick(0);
 	}
 
 	public JPanel getFormPanel () {
@@ -224,5 +218,15 @@ class ScaledNumericPanel extends EditorPanel {
 			contentPanel.add(relativeCheckBox, new GridBagConstraints(7, 5, 1, 1, 0, 0, GridBagConstraints.NORTHWEST,
 				GridBagConstraints.NONE, new Insets(0, 6, 0, 0), 0, 0));
 		}
+	}
+	
+	public void setValue(ScaledNumericValue value){
+		this.value = value;
+		lowMinSlider.setValue(value.getLowMin());
+		lowMaxSlider.setValue(value.getLowMax());
+		highMinSlider.setValue(value.getHighMin());
+		highMaxSlider.setValue(value.getHighMax());
+		chart.setValues(value.getTimeline(), value.getScaling());
+		relativeCheckBox.setSelected(value.isRelative());
 	}
 }

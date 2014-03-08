@@ -339,4 +339,8 @@ public class Chart extends JPanel {
 	public void setExpanded (boolean isExpanded) {
 		this.isExpanded = isExpanded;
 	}
+	
+	public void setTitle(String title){
+		this.title = title;
+	}
 }

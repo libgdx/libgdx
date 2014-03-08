@@ -11,8 +11,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.Align;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.AlignmentValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.AlignmentValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.AlignmentValue.Align;
 
 
 class FacingPanel extends EditorPanel {
@@ -28,7 +28,8 @@ class FacingPanel extends EditorPanel {
 		alignCombo.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				Align align = (Align)alignCombo.getSelectedItem();
-				spawnShapeValue.setAlign(align);
+				editor.getEmitter().setAlign(align);
+				//spawnShapeValue.setAlign(align);
 			}
 		});
 	}

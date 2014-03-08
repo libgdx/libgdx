@@ -7,17 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.VelocityType;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.VelocityValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.VelocityValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.VelocityValue.VelocityType;
 
 public class VelocityPanel extends EditorPanel
 {
 	JComboBox mTypeBox;
+	JCheckBox isGlobalCheckBox;
 	ScaledNumericPanel mThetaPanel;
 	ScaledNumericPanel mPhiPanel;
 	ScaledNumericPanel mMagnitudePanel;
@@ -53,8 +54,17 @@ public class VelocityPanel extends EditorPanel
 				}
 			}
 		});
+		
+		isGlobalCheckBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed (ActionEvent e) {
+				aValue.setGlobal(isGlobalCheckBox.isSelected());
+			}
+		});
 
 		mTypeBox.setSelectedItem(aValue.getType());
+		isGlobalCheckBox.setSelected(aValue.isGlobal());
 	}
 
 	private void initializeComponents(VelocityValue aValue, String charTitle) 
@@ -66,6 +76,11 @@ public class VelocityPanel extends EditorPanel
 			panel.add(label, new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 			panel.add(mTypeBox = new JComboBox(new DefaultComboBoxModel(VelocityType.values())), new GridBagConstraints(1, 0, 1, 1, 0, 0, 
+				GridBagConstraints.WEST, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+			panel.add(new JLabel("Global"), new GridBagConstraints(2, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+			panel.add(isGlobalCheckBox = new JCheckBox(), new GridBagConstraints(3, 0, 1, 1, 0, 0, 
 				GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 			contentPanel.add(panel,new GridBagConstraints(0, 1, 1, 1, 0, 0, 

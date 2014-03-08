@@ -25,7 +25,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.NumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.NumericValue;
 
 
 class NumericPanel extends EditorPanel {
