@@ -6,8 +6,6 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -79,10 +77,10 @@ public class PointRenderer extends Renderer<PointParticle> {
 		boolean initShader = false;
 		if(renderable == null){
 			renderable = new Renderable();
-			renderable.primitiveType = GL10.GL_POINTS;
+			renderable.primitiveType = GL20.GL_POINTS;
 			renderable.meshPartOffset = 0;
 			renderable.material = new Material(	new BlendingAttribute(1f),
-															new DepthTestAttribute(GL10.GL_LEQUAL, false),
+															new DepthTestAttribute(GL20.GL_LEQUAL, false),
 															TextureAttribute.createDiffuse(null),
 															new RegionSizeAttribute());
 			initShader = true;
@@ -103,7 +101,7 @@ public class PointRenderer extends Renderer<PointParticle> {
 		
 		Gdx.gl.glEnable(GL20.GL_VERTEX_PROGRAM_POINT_SIZE);
 		if(Gdx.app.getType() == ApplicationType.Desktop) 
-			Gdx.gl20.glEnable(GL11.GL_POINT_SPRITE_OES);
+			Gdx.gl20.glEnable(0x8861); // GL_POINT_OES
 		setAdditive(isAdditive);
 		setTexture(texture, regionSizeX, regionSizeY);
 	}
@@ -151,12 +149,12 @@ public class PointRenderer extends Renderer<PointParticle> {
 		if(renderable != null){
 			BlendingAttribute blendingAttribute = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
 			if(isAdditive){
-				blendingAttribute.sourceFunction =  GL10.GL_SRC_ALPHA; 
-				blendingAttribute.destFunction = GL10.GL_ONE;
+				blendingAttribute.sourceFunction =  GL20.GL_SRC_ALPHA; 
+				blendingAttribute.destFunction = GL20.GL_ONE;
 			}
 			else {
-				blendingAttribute.sourceFunction = GL10.GL_SRC_ALPHA; 
-				blendingAttribute.destFunction = GL10.GL_ONE_MINUS_SRC_ALPHA;
+				blendingAttribute.sourceFunction = GL20.GL_SRC_ALPHA; 
+				blendingAttribute.destFunction = GL20.GL_ONE_MINUS_SRC_ALPHA;
 			}
 		}
 		this.isAdditive = isAdditive;

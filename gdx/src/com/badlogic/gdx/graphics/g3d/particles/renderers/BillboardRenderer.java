@@ -2,7 +2,7 @@ package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -355,10 +355,10 @@ public class BillboardRenderer extends Renderer<BillboardParticle> {
 		//Renderable allocation
 		if(renderable == null){
 			renderable = new Renderable();
-			renderable.primitiveType = GL10.GL_TRIANGLES;
+			renderable.primitiveType = GL20.GL_TRIANGLES;
 			renderable.meshPartOffset = 0;
 			renderable.material = new Material(new BlendingAttribute(1f),
-				new DepthTestAttribute(GL10.GL_LEQUAL, false), 
+				new DepthTestAttribute(GL20.GL_LEQUAL, false), 
 				TextureAttribute.createDiffuse(null));
 		}
 		
@@ -401,12 +401,12 @@ public class BillboardRenderer extends Renderer<BillboardParticle> {
 		if(renderable != null){
 			BlendingAttribute blendingAttribute = (BlendingAttribute) renderable.material.get(BlendingAttribute.Type);
 			if(isAdditive){
-				blendingAttribute.sourceFunction =  GL10.GL_SRC_ALPHA; 
-				blendingAttribute.destFunction = GL10.GL_ONE;
+				blendingAttribute.sourceFunction =  GL20.GL_SRC_ALPHA; 
+				blendingAttribute.destFunction = GL20.GL_ONE;
 			}
 			else {
-				blendingAttribute.sourceFunction = GL10.GL_SRC_ALPHA; 
-				blendingAttribute.destFunction = GL10.GL_ONE_MINUS_SRC_ALPHA;
+				blendingAttribute.sourceFunction = GL20.GL_SRC_ALPHA; 
+				blendingAttribute.destFunction = GL20.GL_ONE_MINUS_SRC_ALPHA;
 			}
 		}
 		this.isAdditive = isAdditive;

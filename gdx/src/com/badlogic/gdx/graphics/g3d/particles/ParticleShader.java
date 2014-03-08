@@ -18,7 +18,7 @@ package com.badlogic.gdx.graphics.g3d.particles;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
@@ -125,14 +125,14 @@ public class ParticleShader extends BaseShader {
 	private static String defaultVertexShader = null;
 	public static String getDefaultVertexShader() {
 		if (defaultVertexShader == null)
-			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/billboardScreen.vertex.glsl").readString();
+			defaultVertexShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl").readString();
 		return defaultVertexShader;
 	}
 	
 	private static String defaultFragmentShader = null;
 	public static String getDefaultFragmentShader() {
 		if (defaultFragmentShader == null)
-			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/shaders/billboardScreen.fragment.glsl").readString();
+			defaultFragmentShader = Gdx.files.classpath("com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl").readString();
 		return defaultFragmentShader;
 	}
 	
@@ -306,7 +306,7 @@ public class ParticleShader extends BaseShader {
 	@Override
 	public void render (final Renderable renderable) {
 		if (!renderable.material.has(BlendingAttribute.Type))
-			context.setBlending(false, GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+			context.setBlending(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		bindMaterial(renderable);
 		super.render(renderable);
 	}
@@ -322,8 +322,8 @@ public class ParticleShader extends BaseShader {
 		if (currentMaterial == renderable.material)
 			return;
 		
-		int cullFace = config.defaultCullFace == -1 ? GL10.GL_BACK : config.defaultCullFace;
-		int depthFunc = config.defaultDepthFunc == -1 ? GL10.GL_LEQUAL : config.defaultDepthFunc;
+		int cullFace = config.defaultCullFace == -1 ? GL20.GL_BACK : config.defaultCullFace;
+		int depthFunc = config.defaultDepthFunc == -1 ? GL20.GL_LEQUAL : config.defaultDepthFunc;
 		float depthRangeNear = 0f;
 		float depthRangeFar = 1f;
 		boolean depthMask = true;
@@ -362,7 +362,7 @@ public class ParticleShader extends BaseShader {
 	}
 	
 	public int getDefaultCullFace() {
-		return config.defaultCullFace == -1 ? GL10.GL_BACK : config.defaultCullFace; 
+		return config.defaultCullFace == -1 ? GL20.GL_BACK : config.defaultCullFace; 
 	}
 	
 	public void setDefaultCullFace(int cullFace) {
@@ -370,7 +370,7 @@ public class ParticleShader extends BaseShader {
 	}
 	
 	public int getDefaultDepthFunc() {
-		return config.defaultDepthFunc == -1 ? GL10.GL_LEQUAL : config.defaultDepthFunc; 
+		return config.defaultDepthFunc == -1 ? GL20.GL_LEQUAL : config.defaultDepthFunc; 
 	}
 	
 	public void setDefaultDepthFunc(int depthFunc) {

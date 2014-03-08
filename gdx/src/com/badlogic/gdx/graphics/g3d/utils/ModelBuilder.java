@@ -16,10 +16,12 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
@@ -470,12 +472,12 @@ public class ModelBuilder {
 			sclDirX = dirX*axisLength; sclDirY = dirY*axisLength; sclDirZ = dirZ*axisLength;
 
 			node();
-			partBuilder = part(axisId, GL10.GL_LINES, Usage.Position|Usage.Color, material);
+			partBuilder = part(axisId, GL20.GL_LINES, Usage.Position|Usage.Color, material);
 			partBuilder.setColor(color);
 			partBuilder.line(0,0,0, sclDirX, sclDirY, sclDirZ);
 			
 			Node coneNode = node();
-			partBuilder = part(axisCapId, GL10.GL_TRIANGLES, Usage.Position|Usage.Color, material);
+			partBuilder = part(axisCapId, GL20.GL_TRIANGLES, Usage.Position|Usage.Color, material);
 			partBuilder.setColor(color);
 			partBuilder.cone(capWidth, capHeight, capWidth, 5);
 			coneNode.rotation.setFromAxis(rotAxisX, rotAxisY, rotAxisZ, 90);
@@ -496,7 +498,7 @@ public class ModelBuilder {
 	{
 		Material material = new Material();
 		begin();
-		MeshPartBuilder partBuilder = part("lines", GL10.GL_LINES, Usage.Position | Usage.Color, material);
+		MeshPartBuilder partBuilder = part("lines", GL20.GL_LINES, Usage.Position | Usage.Color, material);
 		partBuilder.setColor(color);
 		float xlength = xDivisions*xSize, zlength = zDivisions*zSize,
 			hxlength = xlength/2, hzlength = zlength /2;

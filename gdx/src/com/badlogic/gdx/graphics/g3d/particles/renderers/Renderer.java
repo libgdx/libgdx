@@ -1,6 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
