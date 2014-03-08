@@ -101,7 +101,6 @@ public class GdxTests {
 		ExitTest.class,
 		ExternalMusicTest.class,
 		FilesTest.class,
-		FastMathTest.class,
 		FilterPerformanceTest.class,
 		FloatTest.class,
 		FloatTextureTest.class,
