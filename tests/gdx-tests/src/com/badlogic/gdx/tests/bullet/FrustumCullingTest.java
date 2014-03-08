@@ -232,10 +232,10 @@ public class FrustumCullingTest extends BaseBulletTest {
 
 		modelBatch.begin(camera);
 		if ((state & CULL_FRUSTUM) == CULL_FRUSTUM) {
-			world.render(modelBatch, lights, visibleEntities);
-			world.render(modelBatch, lights, frustumEntity);
+			world.render(modelBatch, environment, visibleEntities);
+			world.render(modelBatch, environment, frustumEntity);
 		} else
-			world.render(modelBatch, lights);
+			world.render(modelBatch, environment);
 		modelBatch.end();
 		
 		for (int i = 0; i < visibleEntities.size; i++)
