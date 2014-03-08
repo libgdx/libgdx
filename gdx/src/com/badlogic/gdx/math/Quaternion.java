@@ -259,7 +259,18 @@ public class Quaternion implements Serializable {
 	public Quaternion idt () {
 		return this.set(0, 0, 0, 1);
 	}
-
+	
+	/** @return If this quaternion is an identity Quaternion */
+	public boolean isIdentity(){
+		return MathUtils.isZero(x) && MathUtils.isZero(y) && MathUtils.isZero(z) && MathUtils.isEqual(w, 1f);
+	}
+	
+	/** @return If this quaternion is an identity Quaternion */
+	public boolean isIdentity(float tolerance){
+		return 	MathUtils.isZero(x, tolerance) && MathUtils.isZero(y, tolerance) && 
+					MathUtils.isZero(z, tolerance) && MathUtils.isEqual(w, 1f, tolerance);
+	}
+	
 	// todo : the setFromAxis(v3,float) method should replace the set(v3,float) method
 	/** Sets the quaternion components from the given axis and angle around that axis.
 	 * 
@@ -391,38 +402,37 @@ public class Quaternion implements Serializable {
 		final float t = xx + yy + zz;
 
 		// we protect the division by s by ensuring that s>=1
-		double x, y, z, w;
 		if (t >= 0) { // |w| >= .5
-			double s = Math.sqrt(t + 1); // |s|>=1 ...
-			w = 0.5 * s;
-			s = 0.5 / s; // so this division isn't bad
+			float s = (float)Math.sqrt(t + 1); // |s|>=1 ...
+			w = 0.5f * s;
+			s = 0.5f / s; // so this division isn't bad
 			x = (zy - yz) * s;
 			y = (xz - zx) * s;
 			z = (yx - xy) * s;
 		} else if ((xx > yy) && (xx > zz)) {
-			double s = Math.sqrt(1.0 + xx - yy - zz); // |s|>=1
-			x = s * 0.5; // |x| >= .5
-			s = 0.5 / s;
+			float s = (float)Math.sqrt(1.0 + xx - yy - zz); // |s|>=1
+			x = s * 0.5f; // |x| >= .5
+			s = 0.5f / s;
 			y = (yx + xy) * s;
 			z = (xz + zx) * s;
 			w = (zy - yz) * s;
 		} else if (yy > zz) {
-			double s = Math.sqrt(1.0 + yy - xx - zz); // |s|>=1
-			y = s * 0.5; // |y| >= .5
-			s = 0.5 / s;
+			float s = (float)Math.sqrt(1.0 + yy - xx - zz); // |s|>=1
+			y = s * 0.5f; // |y| >= .5
+			s = 0.5f / s;
 			x = (yx + xy) * s;
 			z = (zy + yz) * s;
 			w = (xz - zx) * s;
 		} else {
-			double s = Math.sqrt(1.0 + zz - xx - yy); // |s|>=1
-			z = s * 0.5; // |z| >= .5
-			s = 0.5 / s;
+			float s = (float)Math.sqrt(1.0 + zz - xx - yy); // |s|>=1
+			z = s * 0.5f; // |z| >= .5
+			s = 0.5f / s;
 			x = (xz + zx) * s;
 			y = (zy + yz) * s;
 			w = (yx - xy) * s;
 		}
 
-		return set((float)x, (float)y, (float)z, (float)w);
+		return this;
 	}
 	
 	/** Set this quaternion to the rotation between two vectors.
