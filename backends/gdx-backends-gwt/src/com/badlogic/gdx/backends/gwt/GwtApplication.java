@@ -37,6 +37,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.CanvasElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
@@ -480,6 +481,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 
 	public Preloader getPreloader () {
 		return preloader;
+	}
+	
+	public CanvasElement getCanvasElement(){
+		return graphics.canvas;
 	}
 	
 	@Override
