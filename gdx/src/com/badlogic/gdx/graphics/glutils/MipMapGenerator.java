@@ -19,7 +19,6 @@ package com.badlogic.gdx.graphics.glutils;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,7 +26,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MipMapGenerator {
 
-	private MipMapGenerator() {
+	private MipMapGenerator () {
 		// disallow, static methods only
 	}
 
@@ -41,9 +40,9 @@ public class MipMapGenerator {
 	 * <code>disposePixmap</code> is true, the pixmap will be disposed at the end of the method.
 	 * @param pixmap the Pixmap */
 	public static void generateMipMap (Pixmap pixmap, int textureWidth, int textureHeight) {
-		generateMipMap (GL20.GL_TEXTURE_2D, pixmap, textureWidth, textureHeight);
+		generateMipMap(GL20.GL_TEXTURE_2D, pixmap, textureWidth, textureHeight);
 	}
-	
+
 	/** Sets the image data of the {@link Texture} based on the {@link Pixmap}. The texture must be bound for this to work. If
 	 * <code>disposePixmap</code> is true, the pixmap will be disposed at the end of the method. */
 	public static void generateMipMap (int target, Pixmap pixmap, int textureWidth, int textureHeight) {
@@ -52,7 +51,8 @@ public class MipMapGenerator {
 			return;
 		}
 
-		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.WebGL || Gdx.app.getType() == ApplicationType.iOS) {
+		if (Gdx.app.getType() == ApplicationType.Android || Gdx.app.getType() == ApplicationType.WebGL
+			|| Gdx.app.getType() == ApplicationType.iOS) {
 			generateMipMapGLES20(target, pixmap);
 		} else {
 			generateMipMapDesktop(target, pixmap, textureWidth, textureHeight);
@@ -60,13 +60,16 @@ public class MipMapGenerator {
 	}
 
 	private static void generateMipMapGLES20 (int target, Pixmap pixmap) {
-		Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+		Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+			pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 		Gdx.gl20.glGenerateMipmap(target);
 	}
 
 	private static void generateMipMapDesktop (int target, Pixmap pixmap, int textureWidth, int textureHeight) {
-		if (Gdx.graphics.supportsExtension("GL_ARB_framebuffer_object") || Gdx.graphics.supportsExtension("GL_EXT_framebuffer_object") || Gdx.gl30 != null) {
-			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0, pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
+		if (Gdx.graphics.supportsExtension("GL_ARB_framebuffer_object")
+			|| Gdx.graphics.supportsExtension("GL_EXT_framebuffer_object") || Gdx.gl30 != null) {
+			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 			Gdx.gl20.glGenerateMipmap(target);
 		} else {
 			generateMipMapCPU(target, pixmap, textureWidth, textureHeight);

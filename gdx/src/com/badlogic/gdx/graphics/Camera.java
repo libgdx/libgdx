@@ -21,7 +21,6 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Frustum;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -69,21 +68,19 @@ public abstract class Camera {
 	 * true. Use this after you've manipulated any of the attributes of the camera. */
 	public abstract void update (boolean updateFrustum);
 
-	/** Recalculates the direction of the camera to look at the point (x, y, z).
-	 * This function assumes the up vector is normalized.
+	/** Recalculates the direction of the camera to look at the point (x, y, z). This function assumes the up vector is normalized.
 	 * @param x the x-coordinate of the point to look at
 	 * @param y the x-coordinate of the point to look at
 	 * @param z the x-coordinate of the point to look at */
 	public void lookAt (float x, float y, float z) {
-		tmpVec.set(x,y,z).sub(position).nor();
-		if(!tmpVec.isZero()){
-			float dot = tmpVec.dot(up); //up and direction must ALWAYS be orthonormal vectors
-			if(Math.abs(dot-1) < 0.000000001f){ 
-				//Collinear
+		tmpVec.set(x, y, z).sub(position).nor();
+		if (!tmpVec.isZero()) {
+			float dot = tmpVec.dot(up); // up and direction must ALWAYS be orthonormal vectors
+			if (Math.abs(dot - 1) < 0.000000001f) {
+				// Collinear
 				up.set(direction).scl(-1);
-			}
-			else if(Math.abs(dot+1) < 0.000000001f){ 
-				//Collinear opposite
+			} else if (Math.abs(dot + 1) < 0.000000001f) {
+				// Collinear opposite
 				up.set(direction);
 			}
 			direction.set(tmpVec);
@@ -186,7 +183,7 @@ public abstract class Camera {
 	 * corner, y pointing down, x pointing to the right) as reported by the touch methods in {@link Input}. A z-coordinate of 0
 	 * will return a point on the near plane, a z-coordinate of 1 will return a point on the far plane. This method allows you to
 	 * specify the viewport position and dimensions in the coordinate system expected by
-	 * {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the bottom left corner of the screen.
+	 * {@link GL20#glViewport(int, int, int, int)}, with the origin in the bottom left corner of the screen.
 	 * 
 	 * @param vec the point in window coordinates (origin top left)
 	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.
@@ -228,8 +225,8 @@ public abstract class Camera {
 	 * small deviation: The viewport is assumed to span the whole screen. The window coordinate system has its origin in the
 	 * <b>bottom</b> left, with the y-axis pointing <b>upwards</b> and the x-axis pointing to the right. This makes it easily
 	 * useable in conjunction with {@link Batch} and similar classes. This method allows you to specify the viewport position and
-	 * dimensions in the coordinate system expected by {@link GLCommon#glViewport(int, int, int, int)}, with the origin in the
-	 * bottom left corner of the screen.
+	 * dimensions in the coordinate system expected by {@link GL20#glViewport(int, int, int, int)}, with the origin in the bottom
+	 * left corner of the screen.
 	 * 
 	 * @param vec the point in object/world space
 	 * @param viewportX the coordinate of the bottom left corner of the viewport in glViewport coordinates.

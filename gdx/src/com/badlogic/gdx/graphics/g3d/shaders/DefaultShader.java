@@ -83,7 +83,7 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform cameraUp = new Uniform("u_cameraUp");
 		
 		public final static Uniform worldTrans = new Uniform("u_worldTrans");
-		public final static Uniform worldViewTrans = new Uniform("u_worldViewTrans");
+		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");
 		public final static Uniform projViewWorldTrans = new Uniform("u_projViewWorldTrans");
 		public final static Uniform normalMatrix = new Uniform("u_normalMatrix");
 		public final static Uniform bones = new Uniform("u_bones");
@@ -148,11 +148,11 @@ public class DefaultShader extends BaseShader {
 				shader.set(inputID, renderable.worldTransform);
 			}
 		};
-		public final static Setter worldViewTrans = new Setter() {
+		public final static Setter viewWorldTrans = new Setter() {
 			final Matrix4 temp = new Matrix4();
 			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
 			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				shader.set(inputID, temp.set(renderable.worldTransform).mul(shader.camera.view));
+				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
 			}
 		};
 		public final static Setter projViewWorldTrans = new Setter() {
@@ -419,7 +419,7 @@ public class DefaultShader extends BaseShader {
 		u_time					= register(new Uniform("u_time"));
 		// Object uniforms
 		u_worldTrans			= register(Inputs.worldTrans, Setters.worldTrans);
-		u_viewWorldTrans		= register(Inputs.worldViewTrans, Setters.worldViewTrans);
+		u_viewWorldTrans		= register(Inputs.viewWorldTrans, Setters.viewWorldTrans);
 		u_projViewWorldTrans	= register(Inputs.projViewWorldTrans, Setters.projViewWorldTrans);
 		u_normalMatrix			= register(Inputs.normalMatrix, Setters.normalMatrix);
 		u_bones 					= (renderable.bones != null && config.numBones > 0) ? register(Inputs.bones, new Setters.Bones(config.numBones)) : -1;

@@ -41,7 +41,7 @@ public class FogTest extends GdxTest implements ApplicationListener {
 	public Model model;
 	public ModelInstance instance;
 	public Environment environment;
-	
+
 	@Override
 	public void create () {
 		modelBatch = new ModelBatch();
@@ -49,16 +49,17 @@ public class FogTest extends GdxTest implements ApplicationListener {
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		environment.set(new ColorAttribute(ColorAttribute.Fog, 0.13f, 0.13f, 0.13f, 1f));
 		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-		
+
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(30f, 10f, 30f);
-		cam.lookAt(0,0,0);
+		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 45f;
 		cam.update();
 
 		ModelBuilder modelBuilder = new ModelBuilder();
-		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position | Usage.Normal);
+		model = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position
+			| Usage.Normal);
 		instance = new ModelInstance(model);
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(this, inputController = new CameraInputController(cam)));
@@ -67,38 +68,39 @@ public class FogTest extends GdxTest implements ApplicationListener {
 	@Override
 	public void render () {
 
-        animate();
+		animate();
 
 		inputController.update();
-		
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        Gdx.gl.glClearColor(0.13f, 0.13f, 0.13f, 1);
+		Gdx.gl.glClearColor(0.13f, 0.13f, 0.13f, 1);
 
 		modelBatch.begin(cam);
 		modelBatch.render(instance, environment);
 		modelBatch.end();
 	}
 
-    float delta = 0f, dir = 1;
-    private void animate() {
+	float delta = 0f, dir = 1;
 
-        delta = Gdx.graphics.getDeltaTime();
+	private void animate () {
 
-        instance.transform.val[14] += delta*4*dir;
+		delta = Gdx.graphics.getDeltaTime();
 
-        if(Math.abs(instance.transform.val[14]) > 5) {
-            dir *= -1;
-        }
-    }
-	
+		instance.transform.val[14] += delta * 4 * dir;
+
+		if (Math.abs(instance.transform.val[14]) > 5) {
+			dir *= -1;
+		}
+	}
+
 	@Override
 	public void dispose () {
 		modelBatch.dispose();
 		model.dispose();
 	}
-	
+
 	public boolean needsGL20 () {
 		return true;
 	}

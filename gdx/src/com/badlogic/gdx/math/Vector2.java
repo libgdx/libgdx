@@ -105,7 +105,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
-
+	
 	/** Adds the given vector to this vector
 	 * @param v The vector
 	 * @return This vector for chaining */

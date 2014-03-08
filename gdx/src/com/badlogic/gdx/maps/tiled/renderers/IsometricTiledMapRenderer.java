@@ -28,34 +28,33 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 
 public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
-	private float[] vertices = new float[20];
 
-	public IsometricTiledMapRenderer(TiledMap map) {
+	public IsometricTiledMapRenderer (TiledMap map) {
 		super(map);
 	}
 
-	public IsometricTiledMapRenderer(TiledMap map, Batch batch) {
+	public IsometricTiledMapRenderer (TiledMap map, Batch batch) {
 		super(map, batch);
 	}
 
-	public IsometricTiledMapRenderer(TiledMap map, float unitScale) {
+	public IsometricTiledMapRenderer (TiledMap map, float unitScale) {
 		super(map, unitScale);
-	}	
+	}
 
-	public IsometricTiledMapRenderer(TiledMap map, float unitScale, Batch batch) {
+	public IsometricTiledMapRenderer (TiledMap map, float unitScale, Batch batch) {
 		super(map, unitScale, batch);
 	}
 
 	@Override
 	public void renderObject (MapObject object) {
-		
+
 	}
 
 	@Override
 	public void renderTileLayer (TiledMapTileLayer layer) {
 		final Color batchColor = spriteBatch.getColor();
 		final float color = Color.toFloatBits(batchColor.r, batchColor.g, batchColor.b, batchColor.a * layer.getOpacity());
-	
+
 		int col1 = 0;
 		int col2 = layer.getWidth() - 1;
 
@@ -73,7 +72,7 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 				float y = (row * halfTileHeight) - (col * halfTileHeight);
 
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
-				if(cell == null) continue;
+				if (cell == null) continue;
 				final TiledMapTile tile = cell.getTile();
 
 				if (tile != null) {
@@ -135,49 +134,49 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 					}
 					if (rotations != 0) {
 						switch (rotations) {
-							case Cell.ROTATE_90: {
-								float tempV = vertices[V1];
-								vertices[V1] = vertices[V2];
-								vertices[V2] = vertices[V3];
-								vertices[V3] = vertices[V4];
-								vertices[V4] = tempV;
+						case Cell.ROTATE_90: {
+							float tempV = vertices[V1];
+							vertices[V1] = vertices[V2];
+							vertices[V2] = vertices[V3];
+							vertices[V3] = vertices[V4];
+							vertices[V4] = tempV;
 
-								float tempU = vertices[U1];
-								vertices[U1] = vertices[U2];
-								vertices[U2] = vertices[U3];
-								vertices[U3] = vertices[U4];
-								vertices[U4] = tempU;
-								break;
-							}
-							case Cell.ROTATE_180: {
-								float tempU = vertices[U1];
-								vertices[U1] = vertices[U3];
-								vertices[U3] = tempU;
-								tempU = vertices[U2];
-								vertices[U2] = vertices[U4];
-								vertices[U4] = tempU;
-								float tempV = vertices[V1];
-								vertices[V1] = vertices[V3];
-								vertices[V3] = tempV;
-								tempV = vertices[V2];
-								vertices[V2] = vertices[V4];
-								vertices[V4] = tempV;
-								break;
-							}
-							case Cell.ROTATE_270: {
-								float tempV = vertices[V1];
-								vertices[V1] = vertices[V4];
-								vertices[V4] = vertices[V3];
-								vertices[V3] = vertices[V2];
-								vertices[V2] = tempV;
+							float tempU = vertices[U1];
+							vertices[U1] = vertices[U2];
+							vertices[U2] = vertices[U3];
+							vertices[U3] = vertices[U4];
+							vertices[U4] = tempU;
+							break;
+						}
+						case Cell.ROTATE_180: {
+							float tempU = vertices[U1];
+							vertices[U1] = vertices[U3];
+							vertices[U3] = tempU;
+							tempU = vertices[U2];
+							vertices[U2] = vertices[U4];
+							vertices[U4] = tempU;
+							float tempV = vertices[V1];
+							vertices[V1] = vertices[V3];
+							vertices[V3] = tempV;
+							tempV = vertices[V2];
+							vertices[V2] = vertices[V4];
+							vertices[V4] = tempV;
+							break;
+						}
+						case Cell.ROTATE_270: {
+							float tempV = vertices[V1];
+							vertices[V1] = vertices[V4];
+							vertices[V4] = vertices[V3];
+							vertices[V3] = vertices[V2];
+							vertices[V2] = tempV;
 
-								float tempU = vertices[U1];
-								vertices[U1] = vertices[U4];
-								vertices[U4] = vertices[U3];
-								vertices[U3] = vertices[U2];
-								vertices[U2] = tempU;
-								break;
-							}
+							float tempU = vertices[U1];
+							vertices[U1] = vertices[U4];
+							vertices[U4] = vertices[U3];
+							vertices[U3] = vertices[U2];
+							vertices[U2] = tempU;
+							break;
+						}
 						}
 					}
 					spriteBatch.draw(region.getTexture(), vertices, 0, 20);
