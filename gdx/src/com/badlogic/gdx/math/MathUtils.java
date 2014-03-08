@@ -278,14 +278,4 @@ public class MathUtils {
 	static public boolean isEqual(float a, float b, float tolerance){
 		return Math.abs(a-b) <= tolerance;
 	}
-	
-	/** Returns the inverse square root of x (the code is based on Quake 3 version)*/
-	public static float fastInvSqrt(float x) {
-		float xHalf = 0.5F * x;
-		int temp = Float.floatToRawIntBits(x);
-		temp = 0x5F3759DF - (temp >> 1);
-		x = Float.intBitsToFloat(temp);
-		x = x * (1.5F - xHalf * x * x);
-		return x;
-	}
 }
