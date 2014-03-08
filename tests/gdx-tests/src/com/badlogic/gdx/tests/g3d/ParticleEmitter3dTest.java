@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.ScaledNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.VelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitter;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.ScaledNumericValue;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.VelocityValue;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -63,14 +63,14 @@ public class ParticleEmitter3dTest extends BaseG3dTest{
 		ParticleEmitter emitter = createEmitter(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture);
 		emitter.translate(Vector3.tmp.set(5,5,0));
 		emitter.rotate(Vector3.X, -90);
-		//emitter.setAttached(true);
+		emitter.setAttached(true);
 		actions.add(new EmitterAction(emitter, Vector3.X, 360));
 		emitters.add(emitter);
 		
 		//Y
 		emitter = createEmitter(new float[] { 0.12156863f, 1, 0.047058824f}, particleTexture);
-		emitter.translate(Vector3.tmp.set(5,5,0));
-		emitter.rotate(Vector3.Y, -90);
+		emitter.translate(Vector3.tmp.set(0,5,-5));
+		emitter.rotate(Vector3.Z, -90);
 		//emitter.setAttached(true);
 		actions.add(new EmitterAction(emitter, Vector3.Y, -360));
 		emitters.add(emitter);
@@ -118,12 +118,9 @@ public class ParticleEmitter3dTest extends BaseG3dTest{
 
 		velocityValue.getStrength().setHigh(5, 10);
 		velocityValue.getStrength().setActive(true);
+		//velocityValue.setGlobal(true);
 		velocityValue.setActive(true);
 
-		//Spawn
-		emitter.getSpawnDepth().setHigh(5);
-		emitter.getSpawnHeight().setHigh(5);
-		emitter.getSpawnWidth().setHigh(5);
 		
 		//Color
 		emitter.getTint().setColors(color);
@@ -134,7 +131,6 @@ public class ParticleEmitter3dTest extends BaseG3dTest{
 		emitter.setMaxParticleCount(200);
 		emitter.setContinuous(true);
 		emitter.setRegionFromTexture(texture);
-		emitter.setCamera(cam);
 		return emitter;
 	}
 

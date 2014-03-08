@@ -13,11 +13,11 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.SpawnShape;
+import com.badlogic.gdx.graphics.g3d.newparticles.ParticleEmitterNode;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.LineSpawnShapeValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.ScaledNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.VelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitter;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.ScaledNumericValue;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.VelocityValue;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitterNode;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -111,10 +111,11 @@ public class ParticleEmitterAnimationTest extends BaseG3dTest{
 
 
 		//Spawn
-		emitter.getSpawnShape().setShape(SpawnShape.line);
-		emitter.getSpawnDepth().setHigh(0);
-		emitter.getSpawnHeight().setHigh(5);
-		emitter.getSpawnWidth().setHigh(0);
+		LineSpawnShapeValue line = new LineSpawnShapeValue();
+		emitter.setSpawnShape(line);
+		line.getSpawnDepth().setHigh(0);
+		line.getSpawnHeight().setHigh(5);
+		line.getSpawnWidth().setHigh(0);
 		
 		//Color
 		emitter.getTint().setColors(color);
@@ -125,7 +126,6 @@ public class ParticleEmitterAnimationTest extends BaseG3dTest{
 		emitter.setContinuous(true);
 		emitter.setRegionFromTexture(texture);
 		emitter.setAttached(true);
-		emitter.setCamera(cam);
 		return emitter;
 	}
 

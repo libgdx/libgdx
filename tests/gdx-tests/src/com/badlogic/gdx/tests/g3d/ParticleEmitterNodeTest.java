@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.newparticles.ParticleEmitterNode;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.ScaledNumericValue;
+import com.badlogic.gdx.graphics.g3d.newparticles.values.VelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitter;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.ScaledNumericValue;
-import com.badlogic.gdx.graphics.g3d.particles.Emitter.VelocityValue;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEmitterNode;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -83,11 +83,6 @@ public class ParticleEmitterNodeTest extends BaseG3dTest{
 		velocityValue.getStrength().setHigh(5, 10);
 		velocityValue.getStrength().setActive(true);
 		velocityValue.setActive(true);
-
-		//Spawn
-		emitter.getSpawnDepth().setHigh(5);
-		emitter.getSpawnHeight().setHigh(5);
-		emitter.getSpawnWidth().setHigh(5);
 		
 		//Color
 		emitter.getTint().setColors(color);
@@ -99,7 +94,6 @@ public class ParticleEmitterNodeTest extends BaseG3dTest{
 		emitter.setContinuous(true);
 		emitter.setRegionFromTexture(texture);
 		emitter.setAttached(true);
-		emitter.setCamera(cam);
 		return emitter;
 	}
 
