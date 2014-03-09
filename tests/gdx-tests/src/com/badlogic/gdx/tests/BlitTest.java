@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
-public class BlitTest extends GdxTest {	
+public class BlitTest extends GdxTest {
 
 	Texture rgb888;
 	Texture rgba8888;

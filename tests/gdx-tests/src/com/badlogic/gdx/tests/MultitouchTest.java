@@ -31,8 +31,8 @@ public class MultitouchTest extends GdxTest {
 	OrthographicCamera camera;
 	long startTime = TimeUtils.nanoTime();
 
-	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE, Color.PINK, Color.ORANGE, 
-		Color.YELLOW, Color.MAGENTA, Color.CYAN, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY};
+	Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.WHITE, Color.PINK, Color.ORANGE, Color.YELLOW, Color.MAGENTA,
+		Color.CYAN, Color.LIGHT_GRAY, Color.GRAY, Color.DARK_GRAY};
 
 	@Override
 	public void render () {

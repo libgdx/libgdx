@@ -468,7 +468,7 @@ public final class Intersector {
 			}
 		}
 		// min z
-		if (ray.origin.z <= box.min.y && ray.direction.z > 0) {
+		if (ray.origin.z <= box.min.z && ray.direction.z > 0) {
 			t = (box.min.z - ray.origin.z) / ray.direction.z;
 			if (t >= 0) {
 				Vector3.tmp3.set(ray.direction).scl(t).add(ray.origin);

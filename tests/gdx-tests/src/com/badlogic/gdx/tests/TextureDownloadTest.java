@@ -54,7 +54,7 @@ public class TextureDownloadTest extends GdxTest {
 					while (true) {
 						int length = in.read(out, readBytes, out.length - readBytes);
 						if (length == -1) break;
-						readBytes += length;						
+						readBytes += length;
 					}
 					return readBytes;
 				} catch (Exception ex) {

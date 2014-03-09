@@ -118,11 +118,12 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// we instantiate a new World with a proper gravity vector
 		// and tell it to sleep when possible.
 		world = new World(new Vector2(0, -10), true);
-		
-		 float[] vertices = { -0.07421887f, -0.16276085f, -0.12109375f, -0.22786504f, -0.157552f, -0.7122401f, 0.04296875f, -0.7122401f, 0.110677004f, -0.6419276f, 0.13151026f, -0.49869835f, 0.08984375f, -0.3190109f };
-		 
-         PolygonShape shape = new PolygonShape();
-         shape.set(vertices);
+
+		float[] vertices = {-0.07421887f, -0.16276085f, -0.12109375f, -0.22786504f, -0.157552f, -0.7122401f, 0.04296875f,
+			-0.7122401f, 0.110677004f, -0.6419276f, 0.13151026f, -0.49869835f, 0.08984375f, -0.3190109f};
+
+		PolygonShape shape = new PolygonShape();
+		shape.set(vertices);
 
 		// next we create a static ground platform. This platform
 		// is not moveable and will not react to any influences from

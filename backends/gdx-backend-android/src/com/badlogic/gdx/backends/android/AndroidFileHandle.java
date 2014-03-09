@@ -155,7 +155,11 @@ public class AndroidFileHandle extends FileHandle {
 			} catch (IOException ignored) {
 			} finally {
 				if (fileDescriptor != null) {
-					try { fileDescriptor.close(); } catch(IOException e) { };
+					try {
+						fileDescriptor.close();
+					} catch (IOException e) {
+					}
+					;
 				}
 			}
 		}

@@ -126,6 +126,7 @@ import android.view.SurfaceHolder;
  * 
  * 
  * 
+ * 
  * </pre> */
 public class GLBaseSurfaceView extends GLSurfaceView implements SurfaceHolder.Callback {
 	private final static boolean LOG_THREADS = false;
