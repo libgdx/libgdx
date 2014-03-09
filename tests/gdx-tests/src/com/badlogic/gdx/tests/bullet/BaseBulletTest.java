@@ -30,9 +30,11 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
@@ -47,7 +49,9 @@ public class BaseBulletTest extends BulletTest {
 	private final static String customDesktopLib = null;// "D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 
 	private static boolean initialized = false;
-
+	
+	public static boolean shadows = true;
+	
 	public static void init () {
 		if (initialized) return;
 		// Need to initialize bullet before using it.
@@ -59,8 +63,8 @@ public class BaseBulletTest extends BulletTest {
 		initialized = true;
 	}
 
-	public Environment lights;
-	public DirectionalLight shadowLight;
+	public Environment environment;
+	public DirectionalLight light;
 	public ModelBatch shadowBatch;
 
 	public BulletWorld world;
@@ -77,10 +81,13 @@ public class BaseBulletTest extends BulletTest {
 	@Override
 	public void create () {
 		init();
-		lights = new Environment();
-		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
-		lights.add((shadowLight = new DirectionalLight()).set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f));
-// lights.shadowMap = shadowLight;
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
+		light = shadows ? new DirectionalShadowLight(1024, 1024, 20f, 20f, 1f, 300f) : new DirectionalLight();
+		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
+		environment.add(light);
+		if (shadows)
+			environment.shadowMap = (DirectionalShadowLight)light;
 		shadowBatch = new ModelBatch(new DepthShaderProvider());
 
 		modelBatch = new ModelBatch();
@@ -143,8 +150,9 @@ public class BaseBulletTest extends BulletTest {
 		shadowBatch.dispose();
 		shadowBatch = null;
 
-// shadowLight.dispose();
-		shadowLight = null;
+		if (shadows)
+			((DirectionalShadowLight)light).dispose();
+		light = null;
 
 		super.dispose();
 	}
@@ -180,14 +188,16 @@ public class BaseBulletTest extends BulletTest {
 	}
 
 	protected void renderWorld () {
-// shadowLight.begin(Vector3.Zero, camera.direction);
-// shadowBatch.begin(shadowLight.getCamera());
-// world.render(shadowBatch, null);
-// shadowBatch.end();
-// shadowLight.end();
+		if (shadows) {
+			((DirectionalShadowLight)light).begin(Vector3.Zero, camera.direction);
+			shadowBatch.begin(((DirectionalShadowLight)light).getCamera());
+			world.render(shadowBatch, null);
+			shadowBatch.end();
+			((DirectionalShadowLight)light).end();
+		}
 
 		modelBatch.begin(camera);
-		world.render(modelBatch, lights);
+		world.render(modelBatch, environment);
 		modelBatch.end();
 	}
 
