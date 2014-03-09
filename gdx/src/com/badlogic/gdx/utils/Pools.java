@@ -19,15 +19,19 @@ package com.badlogic.gdx.utils;
 /** Stores a map of {@link ReflectionPool}s by type for convenient static access.
  * @author Nathan Sweet */
 public class Pools {
-	static private final ObjectMap<Class, ReflectionPool> typePools = new ObjectMap();
+	static private final ThreadLocal<ObjectMap<Class, ReflectionPool>> typePools = new ThreadLocal<ObjectMap<Class, ReflectionPool>>() {
+		protected ObjectMap<Class, ReflectionPool> initialValue () {
+			return new ObjectMap<Class, ReflectionPool>();
+		};
+	};
 
 	/** Returns a new or existing pool for the specified type, stored in a a Class to {@link ReflectionPool} map. The max size of
 	 * the pool used is 100. */
 	static public <T> Pool<T> get (Class<T> type) {
-		ReflectionPool pool = typePools.get(type);
+		ReflectionPool pool = typePools.get().get(type);
 		if (pool == null) {
 			pool = new ReflectionPool(type, 4, 100);
-			typePools.put(type, pool);
+			typePools.get().put(type, pool);
 		}
 		return pool;
 	}
@@ -40,7 +44,7 @@ public class Pools {
 	/** Frees an object from the {@link #get(Class) pool}. */
 	static public void free (Object object) {
 		if (object == null) throw new IllegalArgumentException("object cannot be null.");
-		ReflectionPool pool = typePools.get(object.getClass());
+		ReflectionPool pool = typePools.get().get(object.getClass());
 		if (pool == null) return; // Ignore freeing an object that was never retained.
 		pool.free(object);
 	}
@@ -52,7 +56,7 @@ public class Pools {
 		for (int i = 0, n = objects.size; i < n; i++) {
 			Object object = objects.get(i);
 			if (object == null) continue;
-			ReflectionPool pool = typePools.get(object.getClass());
+			ReflectionPool pool = typePools.get().get(object.getClass());
 			if (pool == null) continue; // Ignore freeing an object that was never retained.
 			pool.free(object);
 		}
