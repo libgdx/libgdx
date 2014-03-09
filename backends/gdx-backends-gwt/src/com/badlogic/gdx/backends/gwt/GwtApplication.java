@@ -76,6 +76,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	private static AgentInfo agentInfo;
 	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
 	private Clipboard clipboard;
+	LoadingListener loadingListener;
 
 	/** @return the configuration for the {@link GwtApplication}. */
 	public abstract GwtApplicationConfiguration getConfig ();
@@ -136,7 +137,11 @@ public abstract class GwtApplication implements EntryPoint, Application {
 						callback.update(state);
 						if (state.hasEnded()) {
 							getRootPanel().clear();
+							if(loadingListener != null)
+								loadingListener.beforeSetup();
 							setupLoop();
+							if(loadingListener != null)
+								loadingListener.afterSetup();
 						}
 					}
 				});
@@ -486,7 +491,15 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	public CanvasElement getCanvasElement(){
 		return graphics.canvas;
 	}
-	
+
+	public LoadingListener getLoadingListener () {
+		return loadingListener;
+	}
+
+	public void setLoadingListener (LoadingListener loadingListener) {
+		this.loadingListener = loadingListener;
+	}
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
 		synchronized(lifecycleListeners) {
@@ -504,4 +517,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
+	
+	public interface LoadingListener{
+		public void beforeSetup();
+		
+		public void afterSetup();
+	}
 }
