@@ -14,9 +14,9 @@ abstract public class EventAction<T extends Event> extends Action {
 	boolean result;
 
 	private final EventListener listener = new EventListener() {
-		public boolean handle (Event event) {			
+		public boolean handle (Event event) {
 			if (!ClassReflection.isInstance(eventClass, event)) return false;
-			result = EventAction.this.handle(event);
+			result = EventAction.this.handle((T) event);
 			return result;
 		}
 	};
