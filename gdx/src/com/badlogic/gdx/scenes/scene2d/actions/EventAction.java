@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.scenes.scene2d.actions;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -17,7 +16,7 @@ abstract public class EventAction<T extends Event> extends Action {
 	private final EventListener listener = new EventListener() {
 		public boolean handle (Event event) {			
 			if (!ClassReflection.isInstance(eventClass, event)) return false;
-			result = handle(event);
+			result = EventAction.this.handle(event);
 			return result;
 		}
 	};
