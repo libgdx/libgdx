@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers.desktop.ois;
 
 /** @author mzechner
@@ -99,12 +100,12 @@ public class OisJoystick {
 	}
 
 	public float getAxis (int axisIndex) {
-		if(axisIndex < 0 || axisIndex >= axes.length) return 0;
+		if (axisIndex < 0 || axisIndex >= axes.length) return 0;
 		return axes[axisIndex];
 	}
 
 	public OisPov getPov (int povIndex) {
-		if(povIndex < 0 || povIndex >= povs.length) return OisPov.Centered;
+		if (povIndex < 0 || povIndex >= povs.length) return OisPov.Centered;
 		switch (povs[povIndex]) {
 		case 0x00000000:
 			return OisPov.Centered;
@@ -130,18 +131,18 @@ public class OisJoystick {
 	}
 
 	public boolean isButtonPressed (int buttonIndex) {
-		if(buttonIndex < 0 || buttonIndex >= buttons.length) return false;
+		if (buttonIndex < 0 || buttonIndex >= buttons.length) return false;
 		return buttons[buttonIndex];
 	}
 
 	public boolean getSliderX (int sliderIndex) {
-		if(sliderIndex < 0 || sliderIndex >= slidersX.length) return false;
+		if (sliderIndex < 0 || sliderIndex >= slidersX.length) return false;
 
 		return slidersX[sliderIndex];
 	}
 
 	public boolean getSliderY (int sliderIndex) {
-		if(sliderIndex < 0 || sliderIndex >= slidersY.length) return false;
+		if (sliderIndex < 0 || sliderIndex >= slidersY.length) return false;
 		return slidersY[sliderIndex];
 	}
 

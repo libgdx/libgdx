@@ -16,6 +16,14 @@
 
 package com.badlogic.gdx.backends.lwjgl;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.awt.Canvas;
 import java.awt.Toolkit;
 import java.nio.ByteBuffer;
@@ -26,21 +34,11 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.PixelFormat;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
 /** An implementation of the {@link Graphics} interface based on Lwjgl.
  * @author mzechner */
 public class LwjglGraphics implements Graphics {
 	static int major, minor;
 
-	GLCommon gl;
 	GL20 gl20;
 	GL30 gl30;
 	float deltaTime = 0;
@@ -112,11 +110,6 @@ public class LwjglGraphics implements Graphics {
 		return fps;
 	}
 
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
-	}
-
 	void updateTime () {
 		long time = System.nanoTime();
 		deltaTime = (time - lastTime) / 1000000000.0f;
@@ -168,19 +161,23 @@ public class LwjglGraphics implements Graphics {
 
 	private void createDisplayPixelFormat () {
 		try {
-			if(config.useGL30) {
+			if (config.useGL30) {
 				ContextAttribs context = new ContextAttribs(3, 2).withForwardCompatible(false).withProfileCore(true);
 				try {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
-				} catch(Exception e) {
-					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
+						config.samples));
+				} catch (Exception e) {
+					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
+						config.samples));
 					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
 				}
 				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
 			} else {
-				Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
+				Display
+					.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil, config.samples));
 			}
-			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples, false);
+			bufferFormat = new BufferFormat(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.samples,
+				false);
 		} catch (Exception ex) {
 			Display.destroy();
 			try {
@@ -214,7 +211,14 @@ public class LwjglGraphics implements Graphics {
 							createDisplayPixelFormat();
 							return;
 						}
-						throw new GdxRuntimeException("OpenGL is not supported by the video driver.", ex3);
+						String glInfo = ".";
+						try {
+							glInfo = ": " + GL11.glGetString(GL11.GL_VENDOR) + " " //
+								+ GL11.glGetString(GL11.GL_RENDERER) + " " //
+								+ GL11.glGetString(GL11.GL_VERSION);
+						} catch (Throwable ignored) {
+						}
+						throw new GdxRuntimeException("OpenGL is not supported by the video driver" + glInfo, ex3);
 					}
 					throw new GdxRuntimeException("Unable to create OpenGL display.", ex3);
 				}
@@ -236,12 +240,18 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		if(!(major >= 2 || version.contains("2.1"))) throw new RuntimeException("Libgdx requires OpenGL 2.1"); 
-		
 		gl20 = new LwjglGL20();
-		gl = gl20;
 
-		Gdx.gl = gl;
+		if (major <= 1)
+			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
+		if (major == 2 || version.contains("2.1")) {
+			if (!supportsExtension("GL_EXT_framebuffer_object") && !supportsExtension("GL_ARB_framebuffer_object")) {
+				throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version
+					+ ", FBO extension: false");
+			}
+		}
+
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 	}
 
@@ -403,7 +413,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public boolean supportsExtension (String extension) {
-		if (extensions == null) extensions = Gdx.gl.glGetString(GL20.GL_EXTENSIONS);
+		if (extensions == null) extensions = gl20.glGetString(GL20.GL_EXTENSIONS);
 		return extensions.contains(extension);
 	}
 

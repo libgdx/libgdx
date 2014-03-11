@@ -36,40 +36,39 @@ public class RayCastTest extends BaseBulletTest {
 	final float BOXOFFSET_X = 0f;
 	final float BOXOFFSET_Y = 0.5f;
 	final float BOXOFFSET_Z = 2.5f;
-	
+
 	ClosestRayResultCallback rayTestCB;
 	Vector3 rayFrom = new Vector3();
 	Vector3 rayTo = new Vector3();
-	
+
 	@Override
 	public void create () {
 		super.create();
 		instructions = "Tap a box to ray cast\nLong press to toggle debug mode\nSwipe for next test\nCtrl+drag to rotate\nScroll to zoom";
 
 		// Create the entities
-		world.add("ground", -7f, 0f, -7f)
-			.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(), 1f);
+		world.add("ground", -7f, 0f, -7f).setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 1f);
 
 		for (int x = 0; x < BOXCOUNT_X; x++) {
 			for (int y = 0; y < BOXCOUNT_Y; y++) {
 				for (int z = 0; z < BOXCOUNT_Z; z++) {
-					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z)
-						.setColor(0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
+					world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float)Math.random(),
+						0.5f + 0.5f * (float)Math.random(), 0.5f + 0.5f * (float)Math.random(), 1f);
 				}
 			}
 		}
-		
+
 		rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 	}
-	
+
 	@Override
 	public void dispose () {
-		if (rayTestCB != null)
-			rayTestCB.dispose();
+		if (rayTestCB != null) rayTestCB.dispose();
 		rayTestCB = null;
 		super.dispose();
 	}
-	
+
 	@Override
 	public boolean tap (float x, float y, int count, int button) {
 		Ray ray = camera.getPickRay(x, y);
@@ -81,9 +80,9 @@ public class RayCastTest extends BaseBulletTest {
 		rayTestCB.setClosestHitFraction(1f);
 		rayTestCB.getRayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
 		rayTestCB.getRayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
-		
+
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
-		
+
 		if (rayTestCB.hasHit()) {
 			final btCollisionObject obj = rayTestCB.getCollisionObject();
 			if (!obj.isStaticOrKinematicObject()) {

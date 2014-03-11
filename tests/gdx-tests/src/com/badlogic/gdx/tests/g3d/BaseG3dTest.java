@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.Array;
 
 public abstract class BaseG3dTest extends GdxTest {
 	public AssetManager assets;
-	
+
 	public PerspectiveCamera cam;
 	public CameraInputController inputController;
 	public ModelBatch modelBatch;
@@ -42,36 +42,36 @@ public abstract class BaseG3dTest extends GdxTest {
 	public ModelInstance axesInstance;
 	public boolean showAxes = true;
 	public Array<ModelInstance> instances = new Array<ModelInstance>();
-	public final Color bgColor = new Color(0,0,0,1);
-	
+	public final Color bgColor = new Color(0, 0, 0, 1);
+
 	@Override
 	public void create () {
-		if (assets == null)
-			assets = new AssetManager();
-		
+		if (assets == null) assets = new AssetManager();
+
 		modelBatch = new ModelBatch();
-		
+
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
-		cam.lookAt(0,0,0);
+		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 1000f;
 		cam.update();
-		
+
 		createAxes();
 
 		Gdx.input.setInputProcessor(inputController = new CameraInputController(cam));
 	}
-	
+
 	final float GRID_MIN = -10f;
 	final float GRID_MAX = 10f;
 	final float GRID_STEP = 1f;
-	private void createAxes() {
+
+	private void createAxes () {
 		ModelBuilder modelBuilder = new ModelBuilder();
 		modelBuilder.begin();
 		MeshPartBuilder builder = modelBuilder.part("grid", GL20.GL_LINES, Usage.Position | Usage.Color, new Material());
 		builder.setColor(Color.LIGHT_GRAY);
-		for (float t = GRID_MIN; t <= GRID_MAX; t+=GRID_STEP) {
+		for (float t = GRID_MIN; t <= GRID_MAX; t += GRID_STEP) {
 			builder.line(t, 0, GRID_MIN, t, 0, GRID_MAX);
 			builder.line(GRID_MIN, 0, t, GRID_MAX, 0, t);
 		}
@@ -85,37 +85,37 @@ public abstract class BaseG3dTest extends GdxTest {
 		axesModel = modelBuilder.end();
 		axesInstance = new ModelInstance(axesModel);
 	}
-	
-	protected abstract void render(final ModelBatch batch, final Array<ModelInstance> instances);
-	
+
+	protected abstract void render (final ModelBatch batch, final Array<ModelInstance> instances);
+
 	protected boolean loading = false;
-	protected void onLoaded() {}
-	
-	public void render(final Array<ModelInstance> instances) {
+
+	protected void onLoaded () {
+	}
+
+	public void render (final Array<ModelInstance> instances) {
 		modelBatch.begin(cam);
-		if (showAxes)
-			modelBatch.render(axesInstance);
-		if (instances != null)
-			render(modelBatch, instances);
+		if (showAxes) modelBatch.render(axesInstance);
+		if (instances != null) render(modelBatch, instances);
 		modelBatch.end();
 	}
-	
+
 	@Override
 	public void render () {
 		if (loading && assets.update()) {
 			loading = false;
 			onLoaded();
 		}
-		
+
 		inputController.update();
-		
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(bgColor.r, bgColor.g, bgColor.b, bgColor.a);
 
 		render(instances);
 	}
-	
+
 	@Override
 	public void resize (int width, int height) {
 		super.resize(width, height);
@@ -123,7 +123,7 @@ public abstract class BaseG3dTest extends GdxTest {
 		cam.viewportHeight = height;
 		cam.update();
 	}
-	
+
 	@Override
 	public void dispose () {
 		modelBatch.dispose();

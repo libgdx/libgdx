@@ -16,6 +16,7 @@ public class ArraySelection<T> extends Selection<T> {
 	}
 
 	public void choose (T item) {
+		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 		if (selected.size > 0 && rangeSelect && multiple
 			&& (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {

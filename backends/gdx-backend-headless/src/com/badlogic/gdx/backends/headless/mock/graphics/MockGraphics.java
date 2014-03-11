@@ -19,7 +19,6 @@ package com.badlogic.gdx.backends.headless.mock.graphics;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
 
 /** The headless backend does its best to mock elements. This is intended to make code-sharing between
  * server and client as simple as possible.
@@ -34,11 +33,6 @@ public class MockGraphics implements Graphics {
 	@Override
 	public boolean isGL30Available() {
 		return false;
-	}
-
-	@Override
-	public GLCommon getGLCommon() {
-		return null;
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class Invader extends ModelInstance {
 			}
 		}
 		if (state == STATE_MOVE_DOWN) {
-			transform.trn(0,0,delta * INVADER_VELOCITY * speedMultiplier);
+			transform.trn(0, 0, delta * INVADER_VELOCITY * speedMultiplier);
 			if (movedDistance > 1) {
 				if (wasLastStateLeft)
 					state = STATE_MOVE_RIGHT;
