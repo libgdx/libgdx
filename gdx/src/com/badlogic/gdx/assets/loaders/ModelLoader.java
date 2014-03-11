@@ -85,7 +85,7 @@ public abstract class ModelLoader<P extends ModelLoader.ModelParameters> extends
 		for (final ModelMaterial modelMaterial : data.materials) {
 			if (modelMaterial.textures != null) {
 				for (final ModelTexture modelTexture : modelMaterial.textures)
-					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class, parameters));
+					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class, parameters.textureParameter));
 			}
 		}
 		return deps;
