@@ -32,7 +32,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extends AsynchronousAssetLoader<Model, P> {
+public abstract class ModelLoader<P extends ModelLoader.ModelParameters> extends AsynchronousAssetLoader<Model, P> {
 	public ModelLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -85,7 +85,7 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 		for (final ModelMaterial modelMaterial : data.materials) {
 			if (modelMaterial.textures != null) {
 				for (final ModelTexture modelTexture : modelMaterial.textures)
-					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class));
+					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class, parameters.textureParameter));
 			}
 		}
 		return deps;
@@ -121,4 +121,9 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 		data = null;
 		return result;
 	}
+
+    static public class ModelParameters extends AssetLoaderParameters<Model>
+    {
+        public TextureLoader.TextureParameter textureParameter = new TextureLoader.TextureParameter();
+    }
 }
