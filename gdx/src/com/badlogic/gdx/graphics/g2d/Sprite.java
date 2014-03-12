@@ -493,13 +493,10 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void draw (Batch batch, float alphaModulation) {
-		Color color = getColor();
-		float oldAlpha = color.a;
-		color.a *= alphaModulation;
-		setColor(color);
+		float oldAlpha = getColor().a;
+		setAlpha(oldAlpha * alphaModulation);
 		draw(batch);
-		color.a = oldAlpha;
-		setColor(color);
+		setAlpha(oldAlpha);
 	}
 
 	public float getX () {
