@@ -32,7 +32,7 @@
 			<arg value="${module.package}" />
 			<arg value="-I${basedir}/../src/bullet" />
 			<arg value="-I${basedir}/../src/custom" />
-			<arg value="-I${basedir}/../src/extras/serialize" />
+			<arg value="-I${basedir}/../src/extras/Serialize" />
 			<!-- Disable Bullet profiling -->
 			<arg value="-DBT_NO_PROFILE" />
 			<arg value="-outdir" />
