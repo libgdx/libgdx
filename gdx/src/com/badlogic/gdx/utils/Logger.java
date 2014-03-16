@@ -41,12 +41,24 @@ public class Logger {
 		this.level = level;
 	}
 
+	public Logger(Class clazz) {
+		this(clazz.getSimpleName());
+	}
+
+	public Logger(Class clazz, int level) {
+		this(clazz.getSimpleName(), level);
+	}
+
 	public void debug (String message) {
 		if (level >= DEBUG) Gdx.app.debug(tag, message);
 	}
 
 	public void debug (String message, Exception exception) {
 		if (level >= DEBUG) Gdx.app.debug(tag, message, exception);
+	}
+
+	public void debug(String format, Object... args) {
+		debug(String.format(format, args));
 	}
 
 	public void info (String message) {
@@ -57,12 +69,20 @@ public class Logger {
 		if (level >= INFO) Gdx.app.log(tag, message, exception);
 	}
 
+	public void info (String format, Object... args) {
+		info(String.format(format, args));
+	}
+
 	public void error (String message) {
 		if (level >= ERROR) Gdx.app.error(tag, message);
 	}
 
 	public void error (String message, Throwable exception) {
 		if (level >= ERROR) Gdx.app.error(tag, message, exception);
+	}
+
+	public void error (String format, Object... args) {
+		error(String.format(format, args));
 	}
 
 	/** Sets the log level. {@link #NONE} will mute all log output. {@link #ERROR} will only let error messages through.
