@@ -361,7 +361,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	 * @param v The vector whose values will be first scaled by the scalar, then added
 	 * @param scalar The scalar by which to scale the addition values
 	 * @return This vector for chaining */
-	public Vector2 mad (Vector2 v, float scalar) {
+	public Vector2 mulAdd (Vector2 v, float scalar) {
 		this.x += v.x * scalar;
 		this.y += v.y * scalar;
 		return this;
