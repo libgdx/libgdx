@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.Clipboard;
  * <li>a desktop application (see <code>JglfwApplication</code> found in gdx-backends-jglfw.jar)</li>
  * <li>an Android application (see <code>AndroidApplication</code> found in gdx-backends-android.jar)</li>
  * <li>a HTML5 application (see <code>GwtApplication</code> found in gdx-backends-gwt.jar)</li>
- * <li>an iOS application (see <code>IOSApplication</code> found in gdx-backends-iosmonotouch.jar)</li>
+ * <li>an iOS application (see <code>IOSApplication</code> found in gdx-backends-robovm.jar)</li>
  * </ul>
  * Each application class has it's own startup and
  * initialization methods. Please refer to their documentation for more information.
@@ -52,8 +52,8 @@ import com.badlogic.gdx.utils.Clipboard;
  * </p>
  * 
  * <p>
- * {@link Graphics} offers you various methods to output visuals to the screen. This is achieved via OpenGL ES 1.0, 1.1 or 2.0
- * depending on what's available an the platform. On the desktop the features of OpenGL ES 2.0 are emulated via desktop OpenGL. On
+ * {@link Graphics} offers you various methods to output visuals to the screen. This is achieved via OpenGL ES 2.0 or 3.0
+ * depending on what's available an the platform. On the desktop the features of OpenGL ES 2.0 and 3.0 are emulated via desktop OpenGL. On
  * Android the functionality of the Java OpenGL ES bindings is used.
  * </p>
  * 
