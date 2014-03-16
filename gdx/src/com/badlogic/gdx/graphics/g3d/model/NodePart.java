@@ -40,6 +40,8 @@ public class NodePart {
 	 * When the part is skinned, this will be updated by a call to {@link ModelInstance#calculateTransforms()}.
 	 * Do not set or change this value manually. */
 	public Matrix4[] bones;
+	/** true by default. If set to false, this part will not participate in rendering and bounding box calculation. */
+	public boolean enabled = true;
 	
 	/** Construct a new NodePart with null values. At least the {@link #meshPart} and {@link #material} member
 	 * must be set before the newly created part can be used. */

@@ -354,7 +354,8 @@ public class ModelInstance implements RenderableProvider {
 	protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
 		if(node.parts.size > 0) {
 			for(NodePart nodePart: node.parts) {
-				renderables.add(getRenderable(pool.obtain(), node, nodePart));
+				if(nodePart.enabled)
+					renderables.add(getRenderable(pool.obtain(), node, nodePart));
 			}
 		}
 		
