@@ -356,6 +356,17 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
+	/** Adds the values of a vector that are first scaled (multiplied) by a scalar value.
+	 * The Vector passed as argument is not modified.
+	 * @param v The vector whose values will be first scaled by the scalar, then added
+	 * @param scalar The scalar by which to scale the addition values
+	 * @return This vector for chaining */
+	public Vector2 mad (Vector2 v, float scalar) {
+		this.x += v.x * scalar;
+		this.y += v.y * scalar;
+		return this;
+	}
+
 	@Override
 	public int hashCode () {
 		final int prime = 31;

@@ -596,6 +596,18 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return scl((float)Math.cos(theta)).add(tx * dl, ty * dl, tz * dl).nor();
 	}
 
+	/** Adds the values of a vector that are first scaled (multiplied) by a scalar value.
+	 * The Vector passed as argument is not modified.
+	 * @param v The vector whose values will be first scaled by the scalar, then added
+	 * @param scalar The scalar by which to scale the addition values
+	 * @return This vector for chaining */
+	public Vector3 mad (Vector3 v, float scalar) {
+		this.x += v.x * scalar;
+		this.y += v.y * scalar;
+		this.z += v.z * scalar;
+		return this;
+	}
+
 	public String toString () {
 		return x + "," + y + "," + z;
 	}
