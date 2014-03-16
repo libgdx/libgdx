@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.2'
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.3'
         classpath 'com.android.tools.build:gradle:0.7.3+'
         classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.4'
         classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
