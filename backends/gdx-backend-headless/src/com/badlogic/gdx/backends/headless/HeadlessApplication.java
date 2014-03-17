@@ -307,4 +307,9 @@ public class HeadlessApplication implements Application {
 			lifecycleListeners.removeValue(listener, true);
 		}
 	}
+
+	@Override
+	public float getBatteryPercentage () {
+		return 100;
+	}
 }

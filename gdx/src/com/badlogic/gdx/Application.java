@@ -168,6 +168,9 @@ public interface Application {
 	 * @return the preferences. */
 	public Preferences getPreferences (String name);
 
+	/** Returns the {@link Clipboard} instance of this Application. It can be used to store text in the system clipboard and
+	 * retrieve the text in the system clipboard
+	 * @return the clipboard */
 	public Clipboard getClipboard ();
 
 	/** Posts a {@link Runnable} on the main loop thread.
@@ -187,4 +190,8 @@ public interface Application {
 	/** Removes the {@link LifecycleListener}.
 	 * @param listener */
 	public void removeLifecycleListener (LifecycleListener listener);
+
+	/** Returns the remaining charge on the battery for iOS and Android. Returns 100 on Desktop and GWT/HTML5 backends.
+	 * @return a float containing the remaining battery left on the battery. */
+	public float getBatteryPercentage ();
 }

@@ -30,6 +30,7 @@
 - Removed OpenGL ES 1.0, 1.1 support; see http://www.badlogicgames.com/wordpress/?p=3311
 - Added OpenGL ES 3 support
 - Updated Android backend, demos, tests to 4.4
+- Added Application#getBatteryPercentage to allow cross-platform battery level reading
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop

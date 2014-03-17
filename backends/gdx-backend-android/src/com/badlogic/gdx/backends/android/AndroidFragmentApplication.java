@@ -3,7 +3,10 @@ package com.badlogic.gdx.backends.android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.os.BatteryManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -60,7 +63,8 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
-
+	private IntentFilter intentFilter = null;
+	
 	protected Callbacks callbacks;
 
 	@Override
@@ -414,5 +418,14 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public float getBatteryPercentage () {
+		if (this.intentFilter == null) {
+			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		}
+		Intent status = this.getActivity().registerReceiver(null, intentFilter);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 	}
 }

@@ -24,7 +24,10 @@ import javax.microedition.khronos.opengles.GL11;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.os.BatteryManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.service.dreams.DreamService;
@@ -71,7 +74,8 @@ public class AndroidDaydream extends DreamService implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
-
+	private IntentFilter intentFilter = null;
+	
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
 	 * render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
 	 * @param listener the {@link ApplicationListener} implementing the program logic */
@@ -380,5 +384,14 @@ public class AndroidDaydream extends DreamService implements Application {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
+	}
+
+	@Override
+	public float getBatteryPercentage () {
+		if (this.intentFilter == null) {
+			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		}
+		Intent status = this.registerReceiver(null, intentFilter);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 	}
 }

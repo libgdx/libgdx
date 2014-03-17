@@ -438,4 +438,9 @@ public class LwjglAWTCanvas implements Application {
 			lifecycleListeners.removeValue(listener, true);
 		}
 	}
+
+	@Override
+	public float getBatteryPercentage () {
+		return 100;
+	}
 }

@@ -499,4 +499,10 @@ public abstract class GwtApplication implements EntryPoint, Application {
 	native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
+
+
+	@Override
+	public float getBatteryPercentage () {
+		return 100;
+	}
 }
