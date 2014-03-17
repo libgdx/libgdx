@@ -367,6 +367,6 @@ public class AndroidLiveWallpaper implements Application {
 			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		}
 		Intent status = this.getService().registerReceiver(null, intentFilter);
-		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) / status.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 	}
 }

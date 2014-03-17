@@ -511,6 +511,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		}
 		Intent status = this.registerReceiver(null, intentFilter);
-		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) / status.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 	}
 }

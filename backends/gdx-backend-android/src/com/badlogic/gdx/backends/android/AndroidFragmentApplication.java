@@ -426,6 +426,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 		}
 		Intent status = this.getActivity().registerReceiver(null, intentFilter);
-		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) / status.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 	}
 }
