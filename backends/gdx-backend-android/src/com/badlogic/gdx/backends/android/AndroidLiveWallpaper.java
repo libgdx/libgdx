@@ -20,7 +20,10 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.opengl.GLSurfaceView;
+import android.os.BatteryManager;
 import android.os.Debug;
 import android.util.Log;
 import android.view.WindowManager;
@@ -62,7 +65,8 @@ public class AndroidLiveWallpaper implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
-
+	private IntentFilter intentFilter = null;
+	
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
 		this.service = service;
 	}
@@ -355,5 +359,14 @@ public class AndroidLiveWallpaper implements Application {
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
+	}
+
+	@Override
+	public float getBatteryPercentage () {
+		if (this.intentFilter == null) {
+			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		}
+		Intent status = this.getService().registerReceiver(null, intentFilter);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) / status.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
 	}
 }

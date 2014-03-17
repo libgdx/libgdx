@@ -408,4 +408,9 @@ public class IOSApplication implements Application {
 			lifecycleListeners.removeValue(listener, true);
 		}		
 	}
+
+	@Override
+	public float getBatteryPercentage () {
+		return UIDevice.getCurrentDevice().getBatteryLevel();
+	}
 }

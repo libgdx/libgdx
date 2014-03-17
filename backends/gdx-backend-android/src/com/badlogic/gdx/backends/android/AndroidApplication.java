@@ -18,7 +18,10 @@ package com.badlogic.gdx.backends.android;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -76,7 +79,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
 	private boolean isWaitingForAudio = false;
-
+   private IntentFilter intentFilter = null;
+   
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
 	 * 
@@ -499,5 +503,14 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public float getBatteryPercentage () {
+		if (this.intentFilter == null) {
+			this.intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+		}
+		Intent status = this.registerReceiver(null, intentFilter);
+		return status.getIntExtra(BatteryManager.EXTRA_LEVEL, 100) / status.getIntExtra(BatteryManager.EXTRA_SCALE, 1);
 	}
 }

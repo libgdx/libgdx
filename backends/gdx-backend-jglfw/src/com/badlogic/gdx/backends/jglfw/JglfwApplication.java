@@ -417,4 +417,9 @@ public class JglfwApplication implements Application {
 	public GlfwCallbacks getCallbacks () {
 		return callbacks;
 	}
+
+	@Override
+	public float getBatteryPercentage () {
+		return 100;
+	}
 }
