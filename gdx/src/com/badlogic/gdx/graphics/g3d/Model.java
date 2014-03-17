@@ -270,7 +270,7 @@ public class Model implements Disposable {
 		
 		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 		
-		// FIXME mipmapping totally ignored, filters totally ignored, uvScaling/uvTranslation totally ignored
+		// FIXME uvScaling/uvTranslation totally ignored
 		if(mtl.textures != null) {
 			for(ModelTexture tex: mtl.textures) {
 				Texture texture;
@@ -283,10 +283,10 @@ public class Model implements Disposable {
 				}
 				
 				TextureDescriptor descriptor = new TextureDescriptor(texture);
-				descriptor.minFilter = Texture.TextureFilter.Linear;
-				descriptor.magFilter = Texture.TextureFilter.Linear;
-				descriptor.uWrap = Texture.TextureWrap.Repeat;
-				descriptor.vWrap = Texture.TextureWrap.Repeat;
+				descriptor.minFilter = texture.getMinFilter();
+				descriptor.magFilter = texture.getMagFilter();
+				descriptor.uWrap = texture.getUWrap();
+				descriptor.vWrap = texture.getVWrap();
 				switch (tex.usage) {
 				case ModelTexture.USAGE_DIFFUSE:
 					result.set(new TextureAttribute(TextureAttribute.Diffuse, descriptor));
