@@ -79,7 +79,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	protected boolean hideStatusBar = false;
 	private int wasFocusChanged = -1;
 	private boolean isWaitingForAudio = false;
-   private IntentFilter intentFilter = null;
+        private IntentFilter intentFilter = null;
    
 	/** This method has to be called in the {@link Activity#onCreate(Bundle)} method. It sets up all the things necessary to get
 	 * input, render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.

@@ -411,6 +411,9 @@ public class IOSApplication implements Application {
 
 	@Override
 	public float getBatteryPercentage () {
+		if (!UIDevice.getCurrentDevice().isBatteryMonitoringEnabled()) {
+			UIDevice.getCurrentDevice().setBatteryMonitoringEnabled(true);
+		}
 		return UIDevice.getCurrentDevice().getBatteryLevel();
 	}
 }
