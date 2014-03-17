@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -55,8 +56,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 				textureParams.magFilter = parameter.magFilter;
 			}
 			
-			AssetDescriptor descriptor = new AssetDescriptor(data.getImagePath(i), Texture.class, textureParams);
-			
+			AssetDescriptor descriptor = new AssetDescriptor(resolve(data.getImagePath(i)), Texture.class, textureParams);
 			deps.add(descriptor);
 		}
 		return deps;

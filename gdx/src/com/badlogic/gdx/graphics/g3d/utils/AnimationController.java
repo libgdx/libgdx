@@ -286,7 +286,7 @@ public class AnimationController extends BaseAnimationController {
 		if (current == null)
 			current = anim;
 		else {
-			if (anim != null && current.animation == anim.animation)
+			if (!allowSameAnimation && anim != null && current.animation == anim.animation)
 				anim.time = current.time;
 			else
 				removeAnimation(current.animation);

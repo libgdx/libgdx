@@ -1,6 +1,6 @@
 #include <com.badlogic.gdx.controllers.desktop.ois.Ois.h>
 
-//@line:61
+//@line:58
 
 	#include <OISJoyStick.h>
 	#include <OISInputManager.h>
@@ -8,7 +8,7 @@
 	JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_createInputManager(JNIEnv* env, jobject object, jlong hwnd) {
 
 
-//@line:67
+//@line:64
 
 		OIS::ParamList params;
 		#ifndef __APPLE__
@@ -26,7 +26,7 @@
 JNIEXPORT jobjectArray JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getJoystickNames(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:79
+//@line:76
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 		OIS::DeviceList map = inputManager->listFreeDevices();
@@ -45,7 +45,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getVersionNumber(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:92
+//@line:89
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 	 	return inputManager->getVersionNumber();
@@ -56,7 +56,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getVers
 JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getVersionName(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:97
+//@line:94
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 	 	return env->NewStringUTF(inputManager->getVersionName().c_str());
@@ -67,7 +67,7 @@ JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getV
 JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getInputSystemName(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:102
+//@line:99
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 	 	return env->NewStringUTF(inputManager->inputSystemName().c_str());
@@ -78,7 +78,7 @@ JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_getI
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_controllers_desktop_ois_Ois_createJoystick(JNIEnv* env, jobject object, jlong inputManagerPtr) {
 
 
-//@line:107
+//@line:104
 
 		OIS::InputManager* inputManager = (OIS::InputManager*)inputManagerPtr;
 		try {
