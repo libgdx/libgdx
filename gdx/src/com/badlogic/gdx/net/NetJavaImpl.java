@@ -146,7 +146,7 @@ public class NetJavaImpl {
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
-			
+
 			lock.lock();
 			connections.put(httpRequest, connection);
 			listeners.put(httpRequest, httpResponseListener);
@@ -194,12 +194,12 @@ public class NetJavaImpl {
 						try {
 							lock.lock();
 							HttpResponseListener listener = listeners.get(httpRequest);
-							
+
 							if (listener != null) {
 								listener.handleHttpResponse(clientResponse);
 								listeners.remove(httpRequest);
 							}
-							
+
 							connections.remove(httpRequest);
 						} finally {
 							connection.disconnect();
@@ -225,11 +225,11 @@ public class NetJavaImpl {
 			return;
 		}
 	}
-	
+
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		lock.lock();
 		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
-		
+
 		if (httpResponseListener != null) {
 			httpResponseListener.cancelled();
 			connections.remove(httpRequest);

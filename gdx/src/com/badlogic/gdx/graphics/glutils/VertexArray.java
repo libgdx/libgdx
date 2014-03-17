@@ -87,20 +87,20 @@ public class VertexArray implements VertexData {
 		buffer.position(0);
 		buffer.limit(count);
 	}
-	
+
 	@Override
 	public void updateVertices (int targetOffset, float[] vertices, int sourceOffset, int count) {
 		final int pos = byteBuffer.position();
 		byteBuffer.position(targetOffset * 4);
 		BufferUtils.copy(vertices, sourceOffset, count, byteBuffer);
 		byteBuffer.position(pos);
-	}		
-	
+	}
+
 	@Override
 	public void bind (final ShaderProgram shader) {
 		bind(shader, null);
 	}
-	
+
 	@Override
 	public void bind (final ShaderProgram shader, final int[] locations) {
 		final GL20 gl = Gdx.gl20;
@@ -110,38 +110,36 @@ public class VertexArray implements VertexData {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = shader.getAttributeLocation(attribute.alias);
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-				
+
 				byteBuffer.position(attribute.offset);
 				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
-						attributes.vertexSize, byteBuffer);
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+						byteBuffer);
 				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
-						attributes.vertexSize, byteBuffer);
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+						byteBuffer);
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final VertexAttribute attribute = attributes.get(i);
 				final int location = locations[i];
-				if (location < 0)
-					continue;
+				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
-				
+
 				byteBuffer.position(attribute.offset);
 				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, 
-						attributes.vertexSize, byteBuffer);
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+						byteBuffer);
 				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, 
-						attributes.vertexSize, byteBuffer);
+					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+						byteBuffer);
 			}
 		}
 		isBound = true;
 	}
-	
+
 	/** Unbinds this VertexBufferObject.
 	 * 
 	 * @param shader the shader */
@@ -149,7 +147,7 @@ public class VertexArray implements VertexData {
 	public void unbind (ShaderProgram shader) {
 		unbind(shader, null);
 	}
-	
+
 	@Override
 	public void unbind (ShaderProgram shader, int[] locations) {
 		final GL20 gl = Gdx.gl20;
@@ -161,8 +159,7 @@ public class VertexArray implements VertexData {
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
 				final int location = locations[i];
-				if (location >= 0)
-					shader.disableVertexAttribute(location);
+				if (location >= 0) shader.disableVertexAttribute(location);
 			}
 		}
 		isBound = false;

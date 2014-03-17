@@ -20,8 +20,8 @@ import com.badlogic.gdx.Input.Buttons;
 
 /** An InputProcessor is used to receive input events from the keyboard and the touch screen (mouse on the desktop). For this it
  * has to be registered with the {@link Input#setInputProcessor(InputProcessor)} method. It will be called each frame before the
- * call to {@link ApplicationListener#render()}. Each method returns a boolean in case you want to use this with the {@link InputMultiplexer}
- * to chain input processors.
+ * call to {@link ApplicationListener#render()}. Each method returns a boolean in case you want to use this with the
+ * {@link InputMultiplexer} to chain input processors.
  * 
  * @author mzechner */
 public interface InputProcessor {
@@ -52,8 +52,8 @@ public interface InputProcessor {
 	 * @return whether the input was processed */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button);
 
-	/** Called when a finger was lifted or a mouse button was released. The button parameter will be {@link Buttons#LEFT} on
-	 * Android and iOS.
+	/** Called when a finger was lifted or a mouse button was released. The button parameter will be {@link Buttons#LEFT} on Android
+	 * and iOS.
 	 * @param pointer the pointer for the event.
 	 * @param button the button
 	 * @return whether the input was processed */

@@ -105,7 +105,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		}
 		return this;
 	}
-	
+
 	/** Adds the given vector to this vector
 	 * @param v The vector
 	 * @return This vector for chaining */
@@ -288,8 +288,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return angle;
 	}
 
-	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis. (typically
-	 *         counter-clockwise) */
+	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
+	 *         (typically counter-clockwise) */
 	public float getAngleRad () {
 		return (float)Math.atan2(y, x);
 	}
@@ -404,7 +404,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
-	public boolean isUnit(final float margin) {
+	public boolean isUnit (final float margin) {
 		return Math.abs(len2() - 1f) < margin;
 	}
 
@@ -417,44 +417,44 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public boolean isZero (final float margin) {
 		return len2() < margin;
 	}
-	
+
 	@Override
-	public boolean isCollinear(Vector2 vector, float epsilon){
-		return MathUtils.isZero(dot(vector)-1, epsilon);
+	public boolean isCollinear (Vector2 vector, float epsilon) {
+		return MathUtils.isZero(dot(vector) - 1, epsilon);
 	}
-	
+
 	@Override
-	public boolean isCollinear(Vector2 vector){
-		return MathUtils.isZero(dot(vector)-1);
+	public boolean isCollinear (Vector2 vector) {
+		return MathUtils.isZero(dot(vector) - 1);
 	}
-	
+
 	@Override
-	public boolean isCollinearOpposite(Vector2 vector, float epsilon){
-		return MathUtils.isZero(dot(vector)+1, epsilon);
+	public boolean isCollinearOpposite (Vector2 vector, float epsilon) {
+		return MathUtils.isZero(dot(vector) + 1, epsilon);
 	}
-	
+
 	@Override
-	public boolean isCollinearOpposite(Vector2 vector){
-		return MathUtils.isZero(dot(vector)+1);
+	public boolean isCollinearOpposite (Vector2 vector) {
+		return MathUtils.isZero(dot(vector) + 1);
 	}
-	
+
 	@Override
-	public boolean isPerpendicular(Vector2 vector){
+	public boolean isPerpendicular (Vector2 vector) {
 		return MathUtils.isZero(dot(vector));
 	}
-	
+
 	@Override
-	public boolean isPerpendicular(Vector2 vector, float epsilon){
+	public boolean isPerpendicular (Vector2 vector, float epsilon) {
 		return MathUtils.isZero(dot(vector), epsilon);
 	}
-	
+
 	@Override
-	public boolean hasSameDirection(Vector2 vector){
+	public boolean hasSameDirection (Vector2 vector) {
 		return dot(vector) > 0;
 	}
 
 	@Override
-	public boolean hasOppositeDirection(Vector2 vector){
+	public boolean hasOppositeDirection (Vector2 vector) {
 		return dot(vector) < 0;
 	}
 }

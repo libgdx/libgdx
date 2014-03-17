@@ -18,8 +18,7 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-/** A simple quaternion class. See 
- * <a href="http://en.wikipedia.org/wiki/Quaternion">http://en.wikipedia.org/wiki/Quaternion</a>
+/** A simple quaternion class. See <a href="http://en.wikipedia.org/wiki/Quaternion">http://en.wikipedia.org/wiki/Quaternion</a>
  * for more information.
  * 
  * @author badlogicgames@gmail.com
@@ -107,14 +106,15 @@ public class Quaternion implements Serializable {
 	public String toString () {
 		return "[" + x + "|" + y + "|" + z + "|" + w + "]";
 	}
-	
+
 	/** Sets the quaternion to the given euler angles in degrees.
 	 * @param yaw the yaw in degrees
 	 * @param pitch the pitch in degress
 	 * @param roll the roll in degess
 	 * @return this quaternion */
 	public Quaternion setEulerAngles (float yaw, float pitch, float roll) {
-		return setEulerAnglesRad(yaw * MathUtils.degreesToRadians, pitch * MathUtils.degreesToRadians, roll * MathUtils.degreesToRadians);
+		return setEulerAnglesRad(yaw * MathUtils.degreesToRadians, pitch * MathUtils.degreesToRadians, roll
+			* MathUtils.degreesToRadians);
 	}
 
 	/** Sets the quaternion to the given euler angles in radians.
@@ -259,18 +259,18 @@ public class Quaternion implements Serializable {
 	public Quaternion idt () {
 		return this.set(0, 0, 0, 1);
 	}
-	
+
 	/** @return If this quaternion is an identity Quaternion */
-	public boolean isIdentity(){
+	public boolean isIdentity () {
 		return MathUtils.isZero(x) && MathUtils.isZero(y) && MathUtils.isZero(z) && MathUtils.isEqual(w, 1f);
 	}
-	
+
 	/** @return If this quaternion is an identity Quaternion */
-	public boolean isIdentity(float tolerance){
-		return 	MathUtils.isZero(x, tolerance) && MathUtils.isZero(y, tolerance) && 
-					MathUtils.isZero(z, tolerance) && MathUtils.isEqual(w, 1f, tolerance);
+	public boolean isIdentity (float tolerance) {
+		return MathUtils.isZero(x, tolerance) && MathUtils.isZero(y, tolerance) && MathUtils.isZero(z, tolerance)
+			&& MathUtils.isEqual(w, 1f, tolerance);
 	}
-	
+
 	// todo : the setFromAxis(v3,float) method should replace the set(v3,float) method
 	/** Sets the quaternion components from the given axis and angle around that axis.
 	 * 
@@ -280,7 +280,7 @@ public class Quaternion implements Serializable {
 	public Quaternion setFromAxis (final Vector3 axis, final float degrees) {
 		return setFromAxis(axis.x, axis.y, axis.z, degrees);
 	}
-	
+
 	/** Sets the quaternion components from the given axis and angle around that axis.
 	 * 
 	 * @param axis The axis
@@ -308,9 +308,8 @@ public class Quaternion implements Serializable {
 	 * @return This quaternion for chaining. */
 	public Quaternion setFromAxisRad (final float x, final float y, final float z, final float radians) {
 		float d = Vector3.len(x, y, z);
-		if (d == 0f)
-			return idt();
-		d = 1f /d;
+		if (d == 0f) return idt();
+		d = 1f / d;
 		float l_ang = radians;
 		float l_sin = (float)Math.sin(l_ang / 2);
 		float l_cos = (float)Math.cos(l_ang / 2);
@@ -319,28 +318,28 @@ public class Quaternion implements Serializable {
 
 	/** Sets the Quaternion from the given matrix, optionally removing any scaling. */
 	public Quaternion setFromMatrix (boolean normalizeAxes, Matrix4 matrix) {
-		return setFromAxes(normalizeAxes,  matrix.val[Matrix4.M00], matrix.val[Matrix4.M01], matrix.val[Matrix4.M02],
-			matrix.val[Matrix4.M10], matrix.val[Matrix4.M11], matrix.val[Matrix4.M12],
-			matrix.val[Matrix4.M20], matrix.val[Matrix4.M21], matrix.val[Matrix4.M22]);
+		return setFromAxes(normalizeAxes, matrix.val[Matrix4.M00], matrix.val[Matrix4.M01], matrix.val[Matrix4.M02],
+			matrix.val[Matrix4.M10], matrix.val[Matrix4.M11], matrix.val[Matrix4.M12], matrix.val[Matrix4.M20],
+			matrix.val[Matrix4.M21], matrix.val[Matrix4.M22]);
 	}
-	
+
 	/** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
 	public Quaternion setFromMatrix (Matrix4 matrix) {
 		return setFromMatrix(false, matrix);
 	}
-	
+
 	/** Sets the Quaternion from the given matrix, optionally removing any scaling. */
 	public Quaternion setFromMatrix (boolean normalizeAxes, Matrix3 matrix) {
 		return setFromAxes(normalizeAxes, matrix.val[Matrix3.M00], matrix.val[Matrix3.M01], matrix.val[Matrix3.M02],
-			matrix.val[Matrix3.M10], matrix.val[Matrix3.M11], matrix.val[Matrix3.M12],
-			matrix.val[Matrix3.M20], matrix.val[Matrix3.M21], matrix.val[Matrix3.M22]);
+			matrix.val[Matrix3.M10], matrix.val[Matrix3.M11], matrix.val[Matrix3.M12], matrix.val[Matrix3.M20],
+			matrix.val[Matrix3.M21], matrix.val[Matrix3.M22]);
 	}
-	
-	/** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */ 
+
+	/** Sets the Quaternion from the given rotation matrix, which must not contain scaling. */
 	public Quaternion setFromMatrix (Matrix3 matrix) {
 		return setFromMatrix(false, matrix);
 	}
-	
+
 	/** <p>
 	 * Sets the Quaternion from the given x-, y- and z-axis which have to be orthonormal.
 	 * </p>
@@ -360,7 +359,7 @@ public class Quaternion implements Serializable {
 	 * @param zy z-axis y-coordinate
 	 * @param zz z-axis z-coordinate */
 	public Quaternion setFromAxes (float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz) {
-		return setFromAxes (false, xx, xy, xz, yx, yy, yz, zx, zy, zz);
+		return setFromAxes(false, xx, xy, xz, yx, yy, yz, zx, zy, zz);
 	}
 
 	/** <p>
@@ -382,7 +381,8 @@ public class Quaternion implements Serializable {
 	 * @param zx z-axis x-coordinate
 	 * @param zy z-axis y-coordinate
 	 * @param zz z-axis z-coordinate */
-	public Quaternion setFromAxes (boolean normalizeAxes, float xx, float xy, float xz, float yx, float yy, float yz, float zx, float zy, float zz) {
+	public Quaternion setFromAxes (boolean normalizeAxes, float xx, float xy, float xz, float yx, float yy, float yz, float zx,
+		float zy, float zz) {
 		if (normalizeAxes) {
 			final float lx = 1f / Vector3.len(xx, xy, xz);
 			final float ly = 1f / Vector3.len(yx, yy, yz);
@@ -434,7 +434,7 @@ public class Quaternion implements Serializable {
 
 		return this;
 	}
-	
+
 	/** Set this quaternion to the rotation between two vectors.
 	 * @param v1 The base vector, which should be normalized.
 	 * @param v2 The target vector, which should be normalized.
@@ -444,7 +444,7 @@ public class Quaternion implements Serializable {
 		final float angle = (float)Math.acos(dot);
 		return setFromAxisRad(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x, angle);
 	}
-	
+
 	/** Set this quaternion to the rotation between two vectors.
 	 * @param x1 The base vectors x value, which should be normalized.
 	 * @param y1 The base vectors y value, which should be normalized.
@@ -485,9 +485,8 @@ public class Quaternion implements Serializable {
 			scale1 = (float)(Math.sin((alpha * angle)) * invSinTheta);
 		}
 
-		if (dot < 0.f)
-			scale1 = -scale1;
-		
+		if (dot < 0.f) scale1 = -scale1;
+
 		// Calculate the x, y, z and w values for the quaternion by using a
 		// special form of linear interpolation for quaternions.
 		x = (scale0 * x) + (scale1 * end.x);
@@ -529,37 +528,32 @@ public class Quaternion implements Serializable {
 		return this;
 	}
 
-	/**
-	 * Get the angle and the axis of rotation in degrees
+	/** Get the angle and the axis of rotation in degrees
 	 * @param axis axis to get
-	 * @return the angle
-	 */
-	public float getAxisAngle(Vector3 axis) {
+	 * @return the angle */
+	public float getAxisAngle (Vector3 axis) {
 		return getAxisAngleRad(axis) * MathUtils.radiansToDegrees;
 	}
-	
-	/**
-	 * Get the angle and the axis of rotation in radians
-	 * @param axis axis to get
-	 * @return the angle
-	 */
-	public float getAxisAngleRad(Vector3 axis) {
-		//source : http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
-      if (this.w > 1)
-      	this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
-      float angle = (float) (2.0 * Math.acos(this.w));
-      double s = Math.sqrt(1 - this.w * this.w); // assuming quaternion normalised then w is less than 1, so term always positive.
-      if (s < NORMALIZATION_TOLERANCE) { // test to avoid divide by zero, s is always positive due to sqrt
-              // if s close to zero then direction of axis not important
-              axis.x = this.x; // if it is important that axis is normalised then replace with x=1; y=z=0;
-              axis.y = this.y;
-              axis.z = this.z;
-      } else {
-              axis.x = (float) (this.x / s); // normalise axis
-              axis.y = (float) (this.y / s);
-              axis.z = (float) (this.z / s);
-      }
 
-      return angle;
+	/** Get the angle and the axis of rotation in radians
+	 * @param axis axis to get
+	 * @return the angle */
+	public float getAxisAngleRad (Vector3 axis) {
+		// source : http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
+		if (this.w > 1) this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
+		float angle = (float)(2.0 * Math.acos(this.w));
+		double s = Math.sqrt(1 - this.w * this.w); // assuming quaternion normalised then w is less than 1, so term always positive.
+		if (s < NORMALIZATION_TOLERANCE) { // test to avoid divide by zero, s is always positive due to sqrt
+			// if s close to zero then direction of axis not important
+			axis.x = this.x; // if it is important that axis is normalised then replace with x=1; y=z=0;
+			axis.y = this.y;
+			axis.z = this.z;
+		} else {
+			axis.x = (float)(this.x / s); // normalise axis
+			axis.y = (float)(this.y / s);
+			axis.z = (float)(this.z / s);
+		}
+
+		return angle;
 	}
 }
