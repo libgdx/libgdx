@@ -47,15 +47,14 @@ public final class VertexAttribute {
 	public VertexAttribute (int usage, int numComponents, String alias) {
 		this(usage, numComponents, alias, 0);
 	}
-	
+
 	/** Constructs a new VertexAttribute.
 	 * 
 	 * @param usage the usage, used for the fixed function pipeline. Generic attributes are not supported in the fixed function
 	 *           pipeline.
 	 * @param numComponents the number of components of this attribute, must be between 1 and 4.
 	 * @param alias the alias used in a shader for this attribute. Can be changed after construction.
-	 * @param index unit/index of the attribute, used for boneweights and texture coordinates. 
-	 * */
+	 * @param index unit/index of the attribute, used for boneweights and texture coordinates. */
 	public VertexAttribute (int usage, int numComponents, String alias, int index) {
 		this.usage = usage;
 		this.numComponents = numComponents;
@@ -83,15 +82,15 @@ public final class VertexAttribute {
 	public static VertexAttribute ColorUnpacked () {
 		return new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE);
 	}
-	
-	public static VertexAttribute Tangent() {
+
+	public static VertexAttribute Tangent () {
 		return new VertexAttribute(Usage.Tangent, 3, ShaderProgram.TANGENT_ATTRIBUTE);
 	}
-	
-	public static VertexAttribute Binormal() {
+
+	public static VertexAttribute Binormal () {
 		return new VertexAttribute(Usage.BiNormal, 3, ShaderProgram.BINORMAL_ATTRIBUTE);
 	}
-	
+
 	public static VertexAttribute BoneWeight (int unit) {
 		return new VertexAttribute(Usage.BoneWeight, 2, "a_boneWeight" + unit, unit);
 	}
@@ -104,13 +103,14 @@ public final class VertexAttribute {
 		}
 		return equals((VertexAttribute)obj);
 	}
-	
+
 	public boolean equals (final VertexAttribute other) {
-		return other != null && usage == other.usage && numComponents == other.numComponents && alias.equals(other.alias) && unit == other.unit; 
+		return other != null && usage == other.usage && numComponents == other.numComponents && alias.equals(other.alias)
+			&& unit == other.unit;
 	}
-	
-	/** @return A unique number specifying the usage index (3 MSB) and unit (1 LSB). */ 
-	public int getKey() {
+
+	/** @return A unique number specifying the usage index (3 MSB) and unit (1 LSB). */
+	public int getKey () {
 		return (usageIndex << 8) + (unit & 0xFF);
 	}
 }
