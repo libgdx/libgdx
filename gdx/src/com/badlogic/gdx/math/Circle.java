@@ -26,37 +26,61 @@ public class Circle implements Serializable {
 
 	}
 
+	/** Constructs a new circle with the given X and Y coordinates and the given radius.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param radius The radius of the circle */
 	public Circle (float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 	}
 
+	/** Constructs a new circle using a given {@link Vector2} that contains the desired X and Y coordinates, and a given radius.
+	 * 
+	 * @param position The position {@link Vector2}.
+	 * @param radius The radius */
 	public Circle (Vector2 position, float radius) {
 		this.x = position.x;
 		this.y = position.y;
 		this.radius = radius;
 	}
 
+	/** Copy constructor
+	 * 
+	 * @param circle The circle to construct a copy of. */
 	public Circle (Circle circle) {
 		this.x = circle.x;
 		this.y = circle.y;
 		this.radius = circle.radius;
 	}
 
+	/** Sets a new location and radius for this circle.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param radius Circle radius */
 	public void set (float x, float y, float radius) {
 		this.x = x;
 		this.y = y;
 		this.radius = radius;
 	}
-    
+
+	/** Sets a new location and radius for this circle.
+	 * 
+	 * @param position Position {@link Vector2} for this circle.
+	 * @param radius Circle radius */
 	public void set (Vector2 position, float radius) {
 		this.x = position.x;
 		this.y = position.y;
 		this.radius = radius;
 	}
 
-	public void set (Circle circle) { 
+	/** Sets a new location and radius for this circle, based upon another circle.
+	 * 
+	 * @param circle The circle to copy the position and radius of. */
+	public void set (Circle circle) {
 		x = circle.x;
 		y = circle.y;
 		radius = circle.radius;
@@ -95,12 +119,23 @@ public class Circle implements Serializable {
 		this.radius = radius;
 	}
 
+	/** Checks whether or not this circle contains a given point.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * 
+	 * @return true if this circle contains the given point. */
 	public boolean contains (float x, float y) {
 		x = this.x - x;
 		y = this.y - y;
 		return x * x + y * y <= radius * radius;
 	}
 
+	/** Checks whether or not this circle contains a given point.
+	 * 
+	 * @param point The {@link Vector2} that contains the point coordinates.
+	 * 
+	 * @return true if this circle contains this point; false otherwise. */
 	public boolean contains (Vector2 point) {
 		float dx = x - point.x;
 		float dy = y - point.y;

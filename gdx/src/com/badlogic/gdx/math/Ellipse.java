@@ -34,6 +34,9 @@ public class Ellipse implements Serializable {
 
 	}
 
+	/** Copy constructor
+	 * 
+	 * @param ellipse Ellipse to construct a copy of. */
 	public Ellipse (Ellipse ellipse) {
 		this.x = ellipse.x;
 		this.y = ellipse.y;
@@ -41,6 +44,12 @@ public class Ellipse implements Serializable {
 		this.height = ellipse.height;
 	}
 
+	/** Constructs a new ellipse
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param width Width in pixels
+	 * @param height Height in pixels */
 	public Ellipse (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
@@ -48,6 +57,11 @@ public class Ellipse implements Serializable {
 		this.height = height;
 	}
 
+	/** Costructs a new ellipse
+	 * 
+	 * @param position Position vector
+	 * @param width Width in pixels
+	 * @param height Height in pixels */
 	public Ellipse (Vector2 position, float width, float height) {
 		this.x = position.x;
 		this.y = position.y;
@@ -55,6 +69,12 @@ public class Ellipse implements Serializable {
 		this.height = height;
 	}
 
+	/** Checks whether or not this ellipse contains the given point.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * 
+	 * @return true if this ellipse contains the given point; false otherwise. */
 	public boolean contains (float x, float y) {
 		x = x - this.x;
 		y = y - this.y;
@@ -62,10 +82,21 @@ public class Ellipse implements Serializable {
 		return (x * x) / (width * 0.5f * width * 0.5f) + (y * y) / (height * 0.5f * height * 0.5f) <= 1.0f;
 	}
 
+	/** Checks whether or not this ellipse contains the given point.
+	 * 
+	 * @param point Position vector
+	 * 
+	 * @return true if this ellipse contains the given point; false otherwise. */
 	public boolean contains (Vector2 point) {
 		return contains(point.x, point.y);
 	}
 
+	/** Sets a new position and size for this ellipse.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param width Width in pixels
+	 * @param height Height in pixels */
 	public void set (float x, float y, float width, float height) {
 		this.x = x;
 		this.y = y;
@@ -73,6 +104,9 @@ public class Ellipse implements Serializable {
 		this.height = height;
 	}
 
+	/** Sets a new position and size for this ellipse based upon another ellipse.
+	 * 
+	 * @param ellipse The ellipse to copy the position and size of. */
 	public void set (Ellipse ellipse) {
 		x = ellipse.x;
 		y = ellipse.y;
@@ -80,8 +114,8 @@ public class Ellipse implements Serializable {
 		height = ellipse.height;
 	}
 
-	/** Sets the x and y-coordinates of ellipse center from vector
-	 * @param position The position vector 
+	/** Sets the x and y-coordinates of ellipse center from a {@link Vector2}.
+	 * @param position The position vector
 	 * @return this ellipse for chaining */
 	public Ellipse setPosition (Vector2 position) {
 		this.x = position.x;
@@ -92,7 +126,7 @@ public class Ellipse implements Serializable {
 
 	/** Sets the x and y-coordinates of ellipse center
 	 * @param x The x-coordinate
-	 * @param y The y-coordinate 
+	 * @param y The y-coordinate
 	 * @return this ellipse for chaining */
 	public Ellipse setPosition (float x, float y) {
 		this.x = x;
@@ -103,7 +137,7 @@ public class Ellipse implements Serializable {
 
 	/** Sets the width and height of this ellipse
 	 * @param width The width
-	 * @param height The height 
+	 * @param height The height
 	 * @return this ellipse for chaining */
 	public Ellipse setSize (float width, float height) {
 		this.width = width;

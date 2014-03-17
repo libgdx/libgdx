@@ -16,39 +16,58 @@
 
 package com.badlogic.gdx.math;
 
-/**
- * A point in a 3D grid, with integer x and y coordinates
- * @author badlogic
- *
- */
+/** A point in a 3D grid, with integer x and y coordinates
+ * 
+ * @author badlogic */
 public class GridPoint3 {
 	public int x;
 	public int y;
 	public int z;
-	
-	public GridPoint3() {
+
+	/** Constructs a 3D grid point with all coordinates pointing to the origin (0, 0, 0). */
+	public GridPoint3 () {
 	}
-	
-	public GridPoint3(int x, int y, int z) {
+
+	/** Constructs a 3D grid point.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param z Z coordinate */
+	public GridPoint3 (int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	
-	public GridPoint3(GridPoint3 point) {
+
+	/** Copy constructor
+	 * 
+	 * @param point The 3D grid point to make a copy of. */
+	public GridPoint3 (GridPoint3 point) {
 		this.x = point.x;
 		this.y = point.y;
 		this.z = point.z;
 	}
-	
-	public GridPoint3 set(GridPoint3 point) {
+
+	/** Sets the coordinates of this 3D grid point to that of another.
+	 * 
+	 * @param point The 3D grid point to copy coordinates of.
+	 * 
+	 * @return this GridPoint3 for chaining. */
+	public GridPoint3 set (GridPoint3 point) {
 		this.x = point.x;
 		this.y = point.y;
 		this.z = point.z;
 		return this;
 	}
-	
-	public GridPoint3 set(int x, int y, int z) {
+
+	/** Sets the coordinates of this GridPoint3D.
+	 * 
+	 * @param x X coordinate
+	 * @param y Y coordinate
+	 * @param z Z coordinate
+	 * 
+	 * @return this GridPoint3D for chaining. */
+	public GridPoint3 set (int x, int y, int z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
