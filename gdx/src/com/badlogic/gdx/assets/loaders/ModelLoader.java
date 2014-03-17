@@ -81,11 +81,15 @@ public abstract class ModelLoader<P extends ModelLoader.ModelParameters> extends
 		synchronized(items) {
 			items.add(item);
 		}
+
+        TextureLoader.TextureParameter textureParameter = (parameters == null)
+                ? null
+                : parameters.textureParameter;
 		
 		for (final ModelMaterial modelMaterial : data.materials) {
 			if (modelMaterial.textures != null) {
 				for (final ModelTexture modelTexture : modelMaterial.textures)
-					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class, parameters.textureParameter));
+					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class, textureParameter));
 			}
 		}
 		return deps;
