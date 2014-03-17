@@ -43,12 +43,12 @@ public interface Vector<T extends Vector<T>> {
 	T clamp (float min, float max);
 
 	/** Sets this vector from the given vector
-	 * @param v The vector
+	 * @param v the vector to set from
 	 * @return This vector for chaining */
 	T set (T v);
 
 	/** Substracts the given vector from this vector.
-	 * @param v The vector
+	 * @param v vector to subtract
 	 * @return This vector for chaining */
 	T sub (T v);
 
@@ -57,7 +57,7 @@ public interface Vector<T extends Vector<T>> {
 	T nor ();
 
 	/** Adds the given vector to this vector
-	 * @param v The vector
+	 * @param v vector to add
 	 * @return This vector for chaining */
 	T add (T v);
 
@@ -91,6 +91,33 @@ public interface Vector<T extends Vector<T>> {
 	 * @param alpha The interpolation coefficient
 	 * @return This vector for chaining. */
 	T lerp (T target, float alpha);
+
+	@Deprecated
+	/** @deprecated Use {@link #scl(Vector)} instead.
+	 * Divides this vector by the given vector */
+	T div (T other);
+
+	@Deprecated
+	/** @deprecated Use {@link #scl} instead.
+	 * Divides all components of this vector by the given value
+	 * @param value The value
+	 * @return This vector for chaining */
+	T div (float value);
+
+	@Deprecated
+	/** @deprecated Use {@link #scl(float)} instead. */
+	T mul (float value);
+
+	@Deprecated
+	/** @deprecated Use {@link #scl} instead. */
+	T mul (T other);
+
+	/** Adds the values of a vector that are first scaled (multiplied) by a scalar value.
+	 * The Vector passed as argument is not modified.
+	 * @param v The vector whose values will be first scaled by the scalar, then added
+	 * @param scalar The scalar by which to scale the addition values
+	 * @return This vector for chaining */
+	T mulAdd(T v, float scalar);
 
 	/** @return Whether this vector is a unit length vector */
 	public boolean isUnit ();
@@ -146,6 +173,12 @@ public interface Vector<T extends Vector<T>> {
 	/** @return Whether this vector has opposite direction compared to the given vector.
 	 * True if the normalized dot product is < 0.*/
 	public boolean hasOppositeDirection(T vector);
+
+	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
+	 * @param vector
+	 * @param epsilon
+	 * @return whether the vectors are the same. */
+	public boolean epsilonEquals(T vector, float epsilon);
 	
 	// TODO: T crs(T v);
 }
