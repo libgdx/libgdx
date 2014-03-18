@@ -143,14 +143,13 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 
-			public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != draggingPointer) return false;
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (pointer != draggingPointer) return;
 				cancel();
-				return true;
 			}
 
-			public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
-				if (pointer != draggingPointer) return false;
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				if (pointer != draggingPointer) return;
 				if (touchScrollH) {
 					float delta = x - lastPoint.x;
 					float scrollH = handlePosition + delta;
@@ -170,7 +169,6 @@ public class ScrollPane extends WidgetGroup {
 					if (total != 0) setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / total));
 					lastPoint.set(x, y);
 				}
-				return true;
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {

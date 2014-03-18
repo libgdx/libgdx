@@ -183,6 +183,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	/** Called when the selection changes.
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
+		if (actor == null) return false;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);

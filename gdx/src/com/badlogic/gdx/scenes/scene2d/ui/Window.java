@@ -109,13 +109,12 @@ public class Window extends Table {
 				return edge != 0 || isModal;
 			}
 
-			public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				dragging = false;
-				return true;
 			}
 
-			public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
-				if (!dragging) return false;
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+				if (!dragging) return;
 				float width = getWidth(), height = getHeight();
 				float windowX = getX(), windowY = getY();
 
@@ -159,7 +158,6 @@ public class Window extends Table {
 				lastX = x;
 				lastY = y;
 				setBounds(Math.round(windowX), Math.round(windowY), Math.round(width), Math.round(height));
-				return true;
 			}
 
 			public boolean mouseMoved (InputEvent event, float x, float y) {

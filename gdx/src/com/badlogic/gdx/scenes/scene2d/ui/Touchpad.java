@@ -75,16 +75,14 @@ public class Touchpad extends Widget {
 			}
 
 			@Override
-			public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y, false);
-				return true;
 			}
 
 			@Override
-			public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				touched = false;
 				calculatePositionAndValue(x, y, true);
-				return true;
 			}
 		});
 	}

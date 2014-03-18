@@ -66,8 +66,8 @@ public class Slider extends ProgressBar {
 				return true;
 			}
 
-			public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != draggingPointer) return false;
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				if (pointer != draggingPointer) return;
 				draggingPointer = -1;
 				if (!calculatePositionAndValue(x, y)) {
 					// Fire an event on touchUp even if the value didn't change, so listeners can see when a drag ends via isDragging.
@@ -75,12 +75,10 @@ public class Slider extends ProgressBar {
 					fire(changeEvent);
 					Pools.free(changeEvent);
 				}
-				return true;
 			}
 
-			public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				calculatePositionAndValue(x, y);
-				return true;
 			}
 		});
 	}

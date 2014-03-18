@@ -82,17 +82,15 @@ public class InputListener implements EventListener {
 	}
 
 	/** Called when a mouse button or a finger touch goes up anywhere, but only if touchDown previously returned true for the mouse
-	 * button or touch. When true is returned, the event is {@link Event#handle() handled}.
+	 * button or touch. The touchUp event is always {@link Event#handle() handled}.
 	 * @see InputEvent */
-	public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
-		return false;
+	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 	}
 
 	/** Called when a mouse button or a finger touch is moved anywhere, but only if touchDown previously returned true for the mouse
-	 * button or touch. When true is returned, the event is {@link Event#handle() handled}.
+	 * button or touch. The touchDragged event is always {@link Event#handle() handled}.
 	 * @see InputEvent */
-	public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
-		return false;
+	public void touchDragged (InputEvent event, float x, float y, int pointer) {
 	}
 
 	/** Called any time the mouse is moved when a button is not down. This event only occurs on the desktop. When true is returned,

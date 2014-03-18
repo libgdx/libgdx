@@ -19,7 +19,6 @@ package com.badlogic.gdx.scenes.scene2d.utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -62,19 +61,17 @@ public class ClickListener extends InputListener {
 		return true;
 	}
 
-	public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
-		if (pointer != pressedPointer || cancelled) return false;
+	public void touchDragged (InputEvent event, float x, float y, int pointer) {
+		if (pointer != pressedPointer || cancelled) return;
 		pressed = isOver(event.getListenerActor(), x, y);
 		if (pressed && pointer == 0 && button != -1 && !Gdx.input.isButtonPressed(button)) pressed = false;
 		if (!pressed) {
 			// Once outside the tap square, don't use the tap square anymore.
 			invalidateTapSquare();
 		}
-		return false;
 	}
 
-	public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
-		boolean handled = false;
+	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (!cancelled) {
 				boolean touchUpOver = isOver(event.getListenerActor(), x, y);
@@ -86,7 +83,6 @@ public class ClickListener extends InputListener {
 					tapCount++;
 					lastTapTime = time;
 					clicked(event, x, y);
-					handled = !cancelled;
 				}
 			}
 			pressed = false;
@@ -94,7 +90,6 @@ public class ClickListener extends InputListener {
 			pressedButton = -1;
 			cancelled = false;
 		}
-		return handled;
 	}
 
 	public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -113,8 +108,6 @@ public class ClickListener extends InputListener {
 		pressed = false;
 	}
 
-	/** Called when a click occurs. If called via {@link InputListener#touchUp(InputEvent, float, float, int, int) touchUp}, the
-	 * touchUp event will be {@link Event#handle() handled}. To avoid this, call {@link #cancel()} from this method. */
 	public void clicked (InputEvent event, float x, float y) {
 	}
 

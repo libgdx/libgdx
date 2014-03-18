@@ -716,16 +716,14 @@ public class TextField extends Widget implements Disableable {
 			return true;
 		}
 
-		public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
+		public void touchDragged (InputEvent event, float x, float y, int pointer) {
 			super.touchDragged(event, x, y, pointer);
 			setCursorPosition(x, y);
-			return true;
 		}
 
-		public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
+		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 			if (selectionStart == cursor) hasSelection = false;
 			super.touchUp(event, x, y, pointer, button);
-			return true;
 		}
 
 		protected void setCursorPosition (float x, float y) {
