@@ -27,17 +27,30 @@ import com.badlogic.gdx.physics.box2d.World;
 public class GearJoint extends Joint {
 	org.jbox2d.dynamics.joints.GearJoint joint;
 
-	public GearJoint (World world, org.jbox2d.dynamics.joints.GearJoint joint) {
+	Joint joint1;
+	Joint joint2;
+
+	public GearJoint (World world, org.jbox2d.dynamics.joints.GearJoint joint, Joint joint1, Joint joint2) {
 		super(world, joint);
 		this.joint = joint;
+		this.joint1 = joint1;
+		this.joint2 = joint2;
 	}
 
-	/** Set/Get the gear ratio. */
+	public Joint getJoint1 () {
+		return joint1;
+	}
+
+	public Joint getJoint2 () {
+		return joint2;
+	}
+
+	/** Set the gear ratio. */
 	public void setRatio (float ratio) {
 		joint.setRatio(ratio);
 	}
 
-	/** Set/Get the gear ratio. */
+	/** Get the gear ratio. */
 	public float getRatio () {
 		return joint.getRatio();
 	}

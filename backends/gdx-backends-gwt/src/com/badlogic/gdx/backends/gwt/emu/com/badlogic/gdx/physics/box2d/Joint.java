@@ -79,6 +79,10 @@ public abstract class Joint {
 		return anchorB.set(tmp.x, tmp.y);
 	}
 
+	public boolean getCollideConnected () {
+		return joint.getCollideConnected();
+	}
+
 	/** Get the reaction force on body2 at the joint anchor in Newtons. */
 	private final Vector2 reactionForce = new Vector2();
 
