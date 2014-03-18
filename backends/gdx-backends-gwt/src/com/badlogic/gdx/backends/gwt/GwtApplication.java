@@ -518,9 +518,18 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		console.log( "GWT: " + message );
 	}-*/;
 	
+	/**
+	 * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}
+	 */
 	public interface LoadingListener{
+		/**
+		 * Method called before the setup
+		 */
 		public void beforeSetup();
 		
+		/**
+		 * Method called after the setup
+		 */
 		public void afterSetup();
 	}
 }
