@@ -498,6 +498,7 @@ public class Quaternion implements Serializable {
 		return this;
 	}
 
+	@Override
 	public boolean equals (final Object o) {
 		if (this == o) {
 			return true;
@@ -528,16 +529,22 @@ public class Quaternion implements Serializable {
 		return this;
 	}
 
-	/** Get the angle and the axis of rotation in degrees
-	 * @param axis axis to get
-	 * @return the angle */
+	/** Get the axis angle representation of the rotation in degrees. The supplied vector will receive the axis (x, y and z values)
+	 * of the rotation and the value returned is the angle in degrees around that axis. Note that this method will alter the supplied
+	 * vector, the existing value of the vector is ignored.
+	 *  
+	 * @param axis vector which will receive the axis 
+	 * @return the angle in degrees */
 	public float getAxisAngle (Vector3 axis) {
 		return getAxisAngleRad(axis) * MathUtils.radiansToDegrees;
 	}
 
-	/** Get the angle and the axis of rotation in radians
-	 * @param axis axis to get
-	 * @return the angle */
+	/** Get the axis angle representation of the rotation in radians. The supplied vector will receive the axis (x, y and z values)
+	 * of the rotation and the value returned is the angle in radians around that axis. Note that this method will alter the supplied
+	 * vector, the existing value of the vector is ignored.
+	 * 
+	 * @param axis vector which will receive the axis
+	 * @return the angle in radians */
 	public float getAxisAngleRad (Vector3 axis) {
 		// source : http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/
 		if (this.w > 1) this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
