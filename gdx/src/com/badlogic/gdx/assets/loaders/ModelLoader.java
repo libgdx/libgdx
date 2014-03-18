@@ -32,12 +32,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extends AsynchronousAssetLoader<Model, P> {
+public abstract class ModelLoader<P extends ModelLoader.ModelParameters> extends AsynchronousAssetLoader<Model, P> {
 	public ModelLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
 	protected Array<ObjectMap.Entry<String, ModelData>> items = new Array<ObjectMap.Entry<String, ModelData>>();
+	protected ModelParameters defaultParameters = new ModelParameters();
 
 	/** Directly load the raw model data on the calling thread. */
 	public abstract ModelData loadModelData (final FileHandle fileHandle, P parameters);
@@ -81,10 +82,14 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 			items.add(item);
 		}
 
+		TextureLoader.TextureParameter textureParameter = (parameters != null)
+				? parameters.textureParameter
+				: defaultParameters.textureParameter;
+
 		for (final ModelMaterial modelMaterial : data.materials) {
 			if (modelMaterial.textures != null) {
 				for (final ModelTexture modelTexture : modelMaterial.textures)
-					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class));
+					deps.add(new AssetDescriptor(modelTexture.fileName, Texture.class, textureParameter));
 			}
 		}
 		return deps;
@@ -118,5 +123,15 @@ public abstract class ModelLoader<P extends AssetLoaderParameters<Model>> extend
 		}
 		data = null;
 		return result;
+	}
+
+	static public class ModelParameters extends AssetLoaderParameters<Model> {
+		public TextureLoader.TextureParameter textureParameter;
+
+		public ModelParameters() {
+			textureParameter = new TextureLoader.TextureParameter();
+			textureParameter.minFilter = textureParameter.magFilter = Texture.TextureFilter.Linear;
+			textureParameter.wrapU = textureParameter.wrapV = Texture.TextureWrap.Repeat;
+		}
 	}
 }
