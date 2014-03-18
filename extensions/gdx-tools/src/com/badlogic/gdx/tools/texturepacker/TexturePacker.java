@@ -113,7 +113,7 @@ public class TexturePacker {
 
 	private void writeImages (File outputDir, Array<Page> pages, String packFileName) {
 		String imageName = packFileName;
-		int dotIndex = imageName.lastIndexOf('.');
+		int dotIndex = imageName.indexOf('.');
 		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
 
 		int fileIndex = 0;
