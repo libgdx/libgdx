@@ -19,18 +19,25 @@ package com.badlogic.gdx.utils.viewport;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 
-/** A viewport where the size is always the screen size (no scaling).
- * @author Daniel Holderbaum */
-public class ScreenViewport extends Viewport {
+/** @author Daniel Holderbaum */
+public class StretchedViewport extends Viewport {
 
-	/** Initializes this virtual viewport. */
-	public ScreenViewport () {
+	/** Initializes this virtual viewport.
+	 * @param virtualWidth The constant virtual width of this viewport.
+	 * @param virtualHeight The constant virtual height of this viewport. */
+	public StretchedViewport (float virtualWidth, float virtualHeight) {
+		this.virtualWidth = virtualWidth;
+		this.virtualHeight = virtualHeight;
 		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Initializes this virtual viewport and sets a camera to be updated whenever this viewport changes. */
-	public ScreenViewport (Camera camera) {
+	/** Initializes this virtual viewport and sets a camera to be updated whenever this viewport changes.
+	 * @param virtualWidth The constant virtual width of this viewport.
+	 * @param virtualHeight The constant virtual height of this viewport. */
+	public StretchedViewport (Camera camera, float virtualWidth, float virtualHeight) {
 		this.camera = camera;
+		this.virtualWidth = virtualWidth;
+		this.virtualHeight = virtualHeight;
 		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
@@ -40,17 +47,16 @@ public class ScreenViewport extends Viewport {
 		viewportY = 0;
 		viewportWidth = width;
 		viewportHeight = height;
-		virtualWidth = width;
-		virtualHeight = height;
 	}
 
 // @Override
 // protected void update (Stage stage) {
 // stage.setViewport(virtualWidth, virtualHeight, false);
+// // stage.getCamera().translate(-stage.getGutterWidth(), -stage.getGutterHeight(), 0);
+// // stage.getCamera().translate(-(viewportX / 2), -(viewportY / 2), 0);
 // if (stage.getRoot().getChildren().size == 1 && stage.getRoot().getChildren().get(0) instanceof Table) {
 // Table rootTable = (Table)stage.getRoot().getChildren().get(0);
-// rootTable.setBounds(viewportX, viewportY, viewportWidth, viewportHeight);
-// rootTable.invalidate();
+// rootTable.setSize(virtualWidth, virtualHeight);
 // }
 // }
 

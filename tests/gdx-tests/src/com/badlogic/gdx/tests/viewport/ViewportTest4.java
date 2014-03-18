@@ -18,11 +18,24 @@ package com.badlogic.gdx.tests.viewport;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -36,45 +49,60 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.FixedViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchingViewport;
+import com.badlogic.gdx.utils.viewport.StaticViewport;
+import com.badlogic.gdx.utils.viewport.StretchedViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-/** This test makes use of the different kind of viewports, while using a stage and a camera. */
+/** This test makes use of the different kind of viewports, while using a PerspectiveCamera and 3D. */
 public class ViewportTest4 extends GdxTest {
 
 	private float delay;
 
 	Array<Viewport> viewports = new Array<Viewport>(4);
-
 	private Viewport viewport;
-	private Stage stage;
-	private Label label;
-	private OrthographicCamera camera;
+
+	private PerspectiveCamera camera;
+	public Environment environment;
+	public DirectionalLight shadowLight;
+	public ModelBuilder modelBuilder;
+	public ModelBatch modelBatch;
+	public ModelInstance boxInstance;
+	public ModelInstance backgroundInstance;
 
 	public void create () {
-		stage = new Stage();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		Gdx.input.setInputProcessor(stage);
+		modelBatch = new ModelBatch();
+		modelBuilder = new ModelBuilder();
 
-		label = new Label("Label", skin);
-		// a background so we can recognise the black bars
-		Actor background = new DebugActor(new Color(0.2f, 0.2f, 0.2f, 1));
-		background.setSize(10000, 10000);
-		stage.addActor(background);
-		stage.addActor(label);
-		Actor actor = new DebugActor(new Color(1, 0, 0, 1));
-		actor.setSize(32, 32);
-		actor.setOrigin(16, 16);
-		actor.setRotation(45);
-		actor.setPosition(100, 100);
-		stage.addActor(actor);
+		environment = new Environment();
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
+		shadowLight = new DirectionalLight();
+		shadowLight.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
+		environment.add(shadowLight);
 
-		viewports.add(new StretchingViewport(300, 200));
-		viewports.add(new FixedViewport(300, 200));
-		viewports.add(new ScreenViewport());
-//		viewports.add(new DoubleRatioViewport(300, 200, 600, 400));
+		modelBatch = new ModelBatch();
+
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.position.set(2f, 2f, -10f);
+		camera.lookAt(0, 0, 0);
+		camera.near = 0.1f;
+		camera.far = 300f;
+		camera.update();
+
+		ModelBuilder modelBuilder = new ModelBuilder();
+		Model boxModel = modelBuilder.createBox(5f, 5f, 5f, new Material(ColorAttribute.createDiffuse(Color.GREEN)), Usage.Position
+			| Usage.Normal);
+		// we need a white background so we are able to see the black bars appearing
+		Model backgroundModel = modelBuilder.createRect(-100000, -100000, 50, -100000, 100000, 50, 100000, 100000, 50, 100000,
+			-100000, 50, 0, 0, -1, new Material(ColorAttribute.createDiffuse(Color.WHITE)), Usage.Position | Usage.Normal);
+		boxInstance = new ModelInstance(boxModel);
+		backgroundInstance = new ModelInstance(backgroundModel);
+
+		viewports.add(new StretchedViewport(camera, 300, 200));
+		viewports.add(new FixedViewport(camera, 300, 200));
+		viewports.add(new ScreenViewport(camera));
+		viewports.add(new StaticViewport(camera, 300, 200));
+// viewports.add(new DoubleRatioViewport(300, 200, 600, 400));
 		viewport = viewports.first();
-		viewport.manage(stage);
 	}
 
 	public void render () {
@@ -83,18 +111,20 @@ public class ViewportTest4 extends GdxTest {
 		if (delay <= 0) {
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 				viewport = viewports.get((viewports.indexOf(viewport, true) + 1) % viewports.size);
-				viewport.manage(stage);
+				viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				delay = 1f;
 			}
 		}
 
-		label.setText(viewport.getClass().getSimpleName());
-
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
-		Table.drawDebug(stage);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+		modelBatch.begin(camera);
+
+		modelBatch.render(backgroundInstance, environment);
+		modelBatch.render(boxInstance, environment);
+
+		modelBatch.end();
 	}
 
 	public void resize (int width, int height) {
@@ -102,6 +132,5 @@ public class ViewportTest4 extends GdxTest {
 	}
 
 	public void dispose () {
-		stage.dispose();
 	}
 }

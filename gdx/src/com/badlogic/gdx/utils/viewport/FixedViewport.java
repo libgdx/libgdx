@@ -17,9 +17,8 @@
 package com.badlogic.gdx.utils.viewport;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Scaling;
 
 /** This is used to work with a fixed virtual viewport. It implements "letterboxing" which means that it will maintain the aspect
@@ -30,9 +29,19 @@ public class FixedViewport extends Viewport {
 
 	/** Initializes this virtual viewport.
 	 * 
-	 * @param virtualWidth The constant width of this viewport.
-	 * @param virtualHeight The constant height of this viewport. */
-	public FixedViewport (int virtualWidth, int virtualHeight) {
+	 * @param virtualWidth The constant virtual width of this viewport.
+	 * @param virtualHeight The constant virtual height of this viewport. */
+	public FixedViewport (float virtualWidth, float virtualHeight) {
+		this.virtualWidth = virtualWidth;
+		this.virtualHeight = virtualHeight;
+		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
+	/** Initializes this virtual viewport and sets a camera to be updated whenever this viewport changes.
+	 * @param virtualWidth The constant virtual width of this viewport.
+	 * @param virtualHeight The constant virtual height of this viewport. */
+	public FixedViewport (Camera camera, float virtualWidth, float virtualHeight) {
+		this.camera = camera;
 		this.virtualWidth = virtualWidth;
 		this.virtualHeight = virtualHeight;
 		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -47,14 +56,14 @@ public class FixedViewport extends Viewport {
 		viewportX = (width - viewportWidth) / 2;
 		viewportY = (height - viewportHeight) / 2;
 	}
-
-	@Override
-	protected void update (Stage stage) {
-		stage.setViewport(virtualWidth, virtualHeight, true, viewportX, viewportY, viewportWidth, viewportHeight);
-		Table rootTable = getRootTable(stage);
-		if (rootTable != null) {
-			rootTable.setSize(virtualWidth, virtualHeight);
-		}
-	}
+//
+// @Override
+// protected void update (Stage stage) {
+// stage.setViewport(virtualWidth, virtualHeight, true, viewportX, viewportY, viewportWidth, viewportHeight);
+// Table rootTable = getRootTable(stage);
+// if (rootTable != null) {
+// rootTable.setSize(virtualWidth, virtualHeight);
+// }
+// }
 
 }

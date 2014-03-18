@@ -30,16 +30,17 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.FixedViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchingViewport;
+import com.badlogic.gdx.utils.viewport.StaticViewport;
+import com.badlogic.gdx.utils.viewport.StretchedViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** This test makes use of the different kind of viewports, while using a stage and a root Table for the layout. */
 public class ViewportTest1 extends GdxTest {
 
 	private float delay;
-	
+
 	Array<Viewport> viewports = new Array<Viewport>(4);
-	
+
 	private Viewport viewport;
 	private Stage stage;
 	private Table root;
@@ -50,7 +51,7 @@ public class ViewportTest1 extends GdxTest {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		Gdx.input.setInputProcessor(stage);
 		root = new Table();
-		
+
 		stage.addActor(root);
 		root.setBackground(skin.getDrawable("default-pane"));
 		root.debug().defaults().space(6);
@@ -59,13 +60,12 @@ public class ViewportTest1 extends GdxTest {
 		root.add(button);
 		root.add(new TextButton("Button 3", skin));
 
-		viewports.add(new StretchingViewport(300, 200));
-		viewports.add(new FixedViewport(300, 200));
-		viewports.add(new ScreenViewport());
-//		viewports.add(new DoubleRatioViewport(300, 200, 600, 400));
-		
+		viewports.add(new StretchedViewport(stage.getCamera(), 300, 200));
+		viewports.add(new FixedViewport(stage.getCamera(), 300, 200));
+		viewports.add(new ScreenViewport(stage.getCamera()));
+		viewports.add(new StaticViewport(stage.getCamera(), 300, 200));
+// viewports.add(new DoubleRatioViewport(300, 200, 600, 400));
 		viewport = viewports.first();
-		viewport.manage(stage);
 	}
 
 	public void render () {
@@ -74,13 +74,14 @@ public class ViewportTest1 extends GdxTest {
 		if (delay <= 0) {
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 				viewport = viewports.get((viewports.indexOf(viewport, true) + 1) % viewports.size);
-				viewport.manage(stage);
+				viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				viewport.updateStage(stage);
 				delay = 1f;
 			}
 		}
-		
+
 		button.setText(viewport.getClass().getSimpleName());
-		
+
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -89,6 +90,16 @@ public class ViewportTest1 extends GdxTest {
 
 	public void resize (int width, int height) {
 		viewport.update(width, height);
+		viewport.updateStage(stage);
+// root.setSize(viewport.virtualWidth, viewport.virtualHeight);
+// root.setBounds(viewport.viewportX, viewport.viewportY, viewport.virtualWidth, viewport.virtualHeight);
+// root.setBounds((width- viewport.virtualWidth) / 2, (height- viewport.virtualHeight) / 2, viewport.virtualWidth,
+// viewport.virtualHeight);
+// root.setBounds((width- viewport.viewportWidth) / 2, (height- viewport.viewportHeight) / 2, viewport.viewportWidth,
+// viewport.viewportHeight);
+//		root.setBounds(viewport.viewportX, viewport.viewportY, viewport.viewportWidth, viewport.viewportHeight);
+//		root.setBounds(0, 0, viewport.viewportWidth, viewport.viewportHeight);
+//		root.invalidate();
 	}
 
 	public void dispose () {

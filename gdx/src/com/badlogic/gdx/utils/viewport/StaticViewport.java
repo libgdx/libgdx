@@ -17,36 +17,23 @@
 package com.badlogic.gdx.utils.viewport;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.graphics.Camera;
 
 /** @author Daniel Holderbaum */
-public class StretchingViewport extends Viewport {
+public class StaticViewport extends Viewport {
 
-	/** Initializes this virtual viewport. */
-	public StretchingViewport (int virtualWidth, int virtualHeight) {
+	public StaticViewport (Camera camera, float virtualWidth, float virtualHeight) {
+		this.camera = camera;
 		this.virtualWidth = virtualWidth;
 		this.virtualHeight = virtualHeight;
+		this.viewportWidth = Math.round(virtualWidth);
+		this.viewportHeight = Math.round(virtualHeight);
 		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
-	public void calculateViewport (int width, int height) {
-		viewportX = 0;
-		viewportY = 0;
-		viewportWidth = width;
-		viewportHeight = height;
+	protected void calculateViewport (int width, int height) {
+		this.viewportX = (width - viewportWidth) / 2;
+		this.viewportY = (height - viewportHeight) / 2;
 	}
-
-	@Override
-	protected void update (Stage stage) {
-		stage.setViewport(virtualWidth, virtualHeight, false);
-		// stage.getCamera().translate(-stage.getGutterWidth(), -stage.getGutterHeight(), 0);
-// stage.getCamera().translate(-(viewportX / 2), -(viewportY / 2), 0);
-		if (stage.getRoot().getChildren().size == 1 && stage.getRoot().getChildren().get(0) instanceof Table) {
-			Table rootTable = (Table)stage.getRoot().getChildren().get(0);
-			rootTable.setSize(virtualWidth, virtualHeight);
-		}
-	}
-
 }

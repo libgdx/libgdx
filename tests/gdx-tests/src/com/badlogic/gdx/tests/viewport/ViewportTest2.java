@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.viewport;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
@@ -34,7 +35,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.FixedViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchingViewport;
+import com.badlogic.gdx.utils.viewport.StaticViewport;
+import com.badlogic.gdx.utils.viewport.StretchedViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** This test makes use of the different kind of viewports, while using a stage without a root Table for the layout. */
@@ -66,12 +68,12 @@ public class ViewportTest2 extends GdxTest {
 		actor.setPosition(100, 100);
 		stage.addActor(actor);
 
-		viewports.add(new StretchingViewport(300, 200));
-		viewports.add(new FixedViewport(300, 200));
-		viewports.add(new ScreenViewport());
-//		viewports.add(new DoubleRatioViewport(300, 200, 600, 400));
+		viewports.add(new StretchedViewport(stage.getCamera(), 300, 200));
+		viewports.add(new FixedViewport(stage.getCamera(), 300, 200));
+		viewports.add(new ScreenViewport(stage.getCamera()));
+		viewports.add(new StaticViewport(stage.getCamera(), 300, 200));
+// viewports.add(new DoubleRatioViewport(300, 200, 600, 400));
 		viewport = viewports.first();
-		viewport.manage(stage);
 	}
 
 	public void render () {
@@ -80,9 +82,23 @@ public class ViewportTest2 extends GdxTest {
 		if (delay <= 0) {
 			if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
 				viewport = viewports.get((viewports.indexOf(viewport, true) + 1) % viewports.size);
-				viewport.manage(stage);
+				viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+				viewport.updateStage(stage);
 				delay = 1f;
 			}
+		}
+		
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+			stage.getCamera().translate(-1, 0, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			stage.getCamera().translate(1, 0, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			stage.getCamera().translate(-0, 1, 0);
+		}
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+			stage.getCamera().translate(0, -1, 0);
 		}
 
 		label.setText(viewport.getClass().getSimpleName());
@@ -96,6 +112,7 @@ public class ViewportTest2 extends GdxTest {
 
 	public void resize (int width, int height) {
 		viewport.update(width, height);
+		viewport.updateStage(stage);
 	}
 
 	public void dispose () {
