@@ -60,7 +60,7 @@ public class Chart extends JPanel {
 
 			public void mouseClicked (MouseEvent event) {
 				if (event.getClickCount() == 2) {
-					if (overIndex <= 0) return;
+					if (overIndex <= 0 || overIndex >= points.size()) return;
 					points.remove(overIndex);
 					pointsChanged();
 					repaint();
@@ -96,7 +96,7 @@ public class Chart extends JPanel {
 		});
 		addMouseMotionListener(new MouseMotionListener() {
 			public void mouseDragged (MouseEvent event) {
-				if (movingIndex == -1) return;
+				if (movingIndex == -1 || movingIndex >= points.size()) return;
 				float nextX = movingIndex == points.size() - 1 ? maxX : points.get(movingIndex + 1).x - 0.001f;
 				if (movingIndex == 0) nextX = 0;
 				float prevX = movingIndex == 0 ? 0 : points.get(movingIndex - 1).x + 0.001f;
