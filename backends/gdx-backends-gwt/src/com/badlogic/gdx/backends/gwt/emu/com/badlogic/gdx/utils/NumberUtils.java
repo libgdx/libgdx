@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 import com.google.gwt.corp.compatibility.Numbers;
 
-public class NumberUtils {
+public final class NumberUtils {
 
 	public static int floatToIntBits (float value) {
 		return Numbers.floatToIntBits(value);
