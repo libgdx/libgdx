@@ -93,12 +93,13 @@ public class SplitPane extends WidgetGroup {
 				return false;
 			}
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				if (pointer == draggingPointer) draggingPointer = -1;
+				return true;
 			}
 
-			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				if (pointer != draggingPointer) return;
+			public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
+				if (pointer != draggingPointer) return false;
 
 				Drawable handle = style.handle;
 				if (!vertical) {
@@ -125,6 +126,7 @@ public class SplitPane extends WidgetGroup {
 					lastPoint.set(x, y);
 				}
 				invalidate();
+				return true;
 			}
 		});
 	}

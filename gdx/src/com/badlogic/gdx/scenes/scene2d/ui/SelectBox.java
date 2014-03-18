@@ -302,13 +302,14 @@ public class SelectBox<T> extends Widget implements Disableable {
 					return false;
 				}
 
-				public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
 					if (hit(x, y, true) == list) {
 						ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 						SelectBox.this.fire(changeEvent);
 						Pools.free(changeEvent);
 						hideList();
 					}
+					return true;
 				}
 			});
 		}

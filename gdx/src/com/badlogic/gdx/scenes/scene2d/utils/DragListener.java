@@ -40,8 +40,8 @@ public class DragListener extends InputListener {
 		return true;
 	}
 
-	public void touchDragged (InputEvent event, float x, float y, int pointer) {
-		if (pointer != pressedPointer) return;
+	public boolean touchDragged (InputEvent event, float x, float y, int pointer) {
+		if (pointer != pressedPointer) return false;
 		if (!dragging && (Math.abs(touchDownX - x) > tapSquareSize || Math.abs(touchDownY - y) > tapSquareSize)) {
 			dragging = true;
 			dragStart(event, x, y, pointer);
@@ -55,13 +55,15 @@ public class DragListener extends InputListener {
 			deltaX = x;
 			deltaY = y;
 		}
+		return true;
 	}
 
-	public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+	public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
 		if (pointer == pressedPointer) {
 			if (dragging) dragStop(event, x, y, pointer);
 			cancel();
 		}
+		return true;
 	}
 
 	public void dragStart (InputEvent event, float x, float y, int pointer) {

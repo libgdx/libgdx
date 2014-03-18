@@ -70,8 +70,9 @@ public class Scene2dTest extends GdxTest {
 				return true;
 			}
 
-			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+			public boolean touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("up " + event.getTarget());
+				return true;
 			}
 		});
 
