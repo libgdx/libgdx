@@ -51,6 +51,7 @@ public class DownloadTest extends GdxTest {
 
 	@Override
 	public void render () {
+		Gdx.gl.glViewport(10, 10, 100, 100);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		if(texture != null) batch.draw(texture, 0, 0);
