@@ -45,6 +45,11 @@ public class MusicTest extends GdxTest {
 	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
+	
+	@Override
+	public void resume () {
+		System.out.println(Gdx.graphics.getDeltaTime());
+	}
 
 	@Override
 	public void render () {

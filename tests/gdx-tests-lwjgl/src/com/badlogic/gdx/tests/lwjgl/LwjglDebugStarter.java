@@ -33,7 +33,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new MusicTest();		
+		GdxTest test = new DownloadTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.width = 320;
 //		config.height = 241;

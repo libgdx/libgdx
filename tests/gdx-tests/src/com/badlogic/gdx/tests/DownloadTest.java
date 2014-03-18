@@ -22,7 +22,7 @@ public class DownloadTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		HttpRequest request = new HttpRequest(HttpMethods.GET);
-		request.setUrl("http://www.badlogicgames.com/wordpress/wp-content/uploads/2012/01/badlogic-new.png");
+		request.setUrl("https://www.google.at/images/srpr/logo11w.png");
 		Gdx.net.sendHttpRequest(request, new HttpResponseListener() {
 			@Override
 			public void handleHttpResponse (HttpResponse httpResponse) {
@@ -51,7 +51,6 @@ public class DownloadTest extends GdxTest {
 
 	@Override
 	public void render () {
-		Gdx.gl.glViewport(10, 10, 100, 100);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		if(texture != null) batch.draw(texture, 0, 0);
