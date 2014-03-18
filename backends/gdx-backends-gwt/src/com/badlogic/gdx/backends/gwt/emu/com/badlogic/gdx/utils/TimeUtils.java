@@ -18,7 +18,7 @@ package com.badlogic.gdx.utils;
 
 /** Wrapper around System.nanoTime() and System.currentTimeMillis(). Use this if you want to be compatible across all platforms!
  * @author mzechner */
-public class TimeUtils {
+public final class TimeUtils {
 	/** @return The current value of the system timer, in nanoseconds. */
 
 	private static final long nanosPerMilli = 1000000;
