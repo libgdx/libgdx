@@ -56,7 +56,6 @@ import com.badlogic.gdx.utils.JsonWriter;
  * @author arielsan */
 public interface Net {
 
-
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public static interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
@@ -69,21 +68,21 @@ public interface Net {
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		String getResultAsString ();
 
-		/** Returns the data of the HTTP response as an {@link InputStream}.
-		 * <b><br>Warning:</b> Do not store a reference to this InputStream outside of {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. 
-		 * The underlying HTTP connection will be closed after that callback finishes executing. 
-		 * Reading from the InputStream after it's connection has been closed will lead to exception.
+		/** Returns the data of the HTTP response as an {@link InputStream}. <b><br>
+		 * Warning:</b> Do not store a reference to this InputStream outside of
+		 * {@link HttpResponseListener#handleHttpResponse(HttpResponse)}. The underlying HTTP connection will be closed after that
+		 * callback finishes executing. Reading from the InputStream after it's connection has been closed will lead to exception.
 		 * @return An {@link InputStream} with the {@link HttpResponse} data. */
 		InputStream getResultAsStream ();
 
 		/** Returns the {@link HttpStatus} containing the statusCode of the HTTP response. */
 		HttpStatus getStatus ();
-		
-		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
-		String getHeader(String name);
 
-		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings
-		 * that represent the corresponding header values. */
+		/** Returns the value of the header with the given name as a {@link String}, or null if the header is not set. */
+		String getHeader (String name);
+
+		/** Returns a Map of the headers. The keys are Strings that represent the header name. Each values is a List of Strings that
+		 * represent the corresponding header values. */
 		Map<String, List<String>> getHeaders ();
 	}
 
@@ -231,9 +230,9 @@ public interface Net {
 	 * {@link Net#sendHttpRequest(HttpRequest, HttpResponseListener)}. */
 	public static interface HttpResponseListener {
 
-		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready.
-		 * Passing data to the rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} 
-		 * {@link HttpResponse} contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
+		/** Called when the {@link HttpRequest} has been processed and there is a {@link HttpResponse} ready. Passing data to the
+		 * rendering thread should be done using {@link Application#postRunnable(java.lang.Runnable runnable)} {@link HttpResponse}
+		 * contains the {@link HttpStatus} and should be used to determine if the request was successful or not (see more info at
 		 * {@link HttpStatus#getStatusCode()}). For example:
 		 * 
 		 * <pre>
@@ -256,8 +255,8 @@ public interface Net {
 		 * other reason (not an HTTP error).
 		 * @param t If the HTTP request failed because an Exception, t encapsulates it to give more information. */
 		void failed (Throwable t);
-		
-		void cancelled();
+
+		void cancelled ();
 	}
 
 	/** Process the specified {@link HttpRequest} and reports the {@link HttpResponse} to the specified {@link HttpResponseListener}
@@ -266,8 +265,8 @@ public interface Net {
 	 * @param httpResponseListener The {@link HttpResponseListener} to call once the HTTP response is ready to be processed. Could
 	 *           be null, in that case no listener is called. */
 	public void sendHttpRequest (HttpRequest httpRequest, HttpResponseListener httpResponseListener);
-	
-	public void cancelHttpRequest(HttpRequest httpRequest);
+
+	public void cancelHttpRequest (HttpRequest httpRequest);
 
 	/** Protocol used by {@link Net#newServerSocket(Protocol, int, ServerSocketHints)} and
 	 * {@link Net#newClientSocket(Protocol, String, int, SocketHints)}.

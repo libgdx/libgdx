@@ -328,7 +328,7 @@ public class TextField extends Widget implements Disableable {
 			textHeight + font.getDescent() / 2);
 	}
 
-	protected void drawText(Batch batch, BitmapFont font, float x, float y) {
+	protected void drawText (Batch batch, BitmapFont font, float x, float y) {
 		font.draw(batch, displayText, x + textOffset, y, visibleTextStart, visibleTextEnd);
 	}
 

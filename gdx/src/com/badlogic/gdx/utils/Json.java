@@ -522,11 +522,10 @@ public class Json {
 
 			if (ClassReflection.isAssignableFrom(Enum.class, actualType)) {
 				if (knownType == null || !knownType.equals(actualType)) {
-					
+
 					// Ensures that enums with specific implementations (abstract logic) serialize correctly
-					if(actualType.getEnumConstants() == null)
-						actualType = actualType.getSuperclass();
-					
+					if (actualType.getEnumConstants() == null) actualType = actualType.getSuperclass();
+
 					writeObjectStart(actualType, null);
 					writer.name("value");
 					writer.value(value);
@@ -961,15 +960,14 @@ public class Json {
 				return constructor.newInstance();
 			} catch (SecurityException ignored) {
 			} catch (ReflectionException ignored) {
-				
-				if(ClassReflection.isAssignableFrom(Enum.class, type)){
 
-					if(type.getEnumConstants() == null)
-						type = type.getSuperclass();
-					
+				if (ClassReflection.isAssignableFrom(Enum.class, type)) {
+
+					if (type.getEnumConstants() == null) type = type.getSuperclass();
+
 					return type.getEnumConstants()[0];
 				}
-				
+
 				if (type.isArray())
 					throw new SerializationException("Encountered JSON object when expected array of type: " + type.getName(), ex);
 				else if (ClassReflection.isMemberClass(type) && !ClassReflection.isStaticClass(type))

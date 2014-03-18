@@ -117,16 +117,15 @@ public class Animation {
 	 * @param stateTime
 	 * @return the TextureRegion representing the frame of animation for the given state time. */
 	public TextureRegion getKeyFrame (float stateTime) {
-		int frameNumber = getKeyFrameIndex (stateTime);
+		int frameNumber = getKeyFrameIndex(stateTime);
 		return keyFrames[frameNumber];
 	}
-	
+
 	/** Returns the current frame number.
 	 * @param stateTime
 	 * @return current frame number */
 	public int getKeyFrameIndex (float stateTime) {
-		if(keyFrames.length == 1)
-			return 0;
+		if (keyFrames.length == 1) return 0;
 
 		int frameNumber = (int)(stateTime / frameDuration);
 		switch (playMode) {
@@ -138,9 +137,8 @@ public class Animation {
 			break;
 		case LOOP_PINGPONG:
 			frameNumber = frameNumber % ((keyFrames.length * 2) - 2);
-         if (frameNumber >= keyFrames.length)
-            frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
-         break;
+			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
+			break;
 		case LOOP_RANDOM:
 			frameNumber = MathUtils.random(keyFrames.length - 1);
 			break;
@@ -157,21 +155,22 @@ public class Animation {
 			frameNumber = Math.min(keyFrames.length - 1, frameNumber);
 			break;
 		}
-		
+
 		return frameNumber;
 	}
-	
-	/**Returns the keyFrames[] array where all the TextureRegions of the animation are stored.
+
+	/** Returns the keyFrames[] array where all the TextureRegions of the animation are stored.
 	 * @return keyFrames[] field */
-	 public TextureRegion[] getKeyFrames() {
-	 	return keyFrames;
-	 }
+	public TextureRegion[] getKeyFrames () {
+		return keyFrames;
+	}
 
 	/** Returns the animation play mode. Will be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP,
 	 * Animation.LOOP_REVERSED, Animation.LOOP_PINGPONG, Animation.LOOP_RANDOM */
-	public int getPlayMode() {
+	public int getPlayMode () {
 		return playMode;
 	}
+
 	/** Sets the animation play mode.
 	 * 
 	 * @param playMode can be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP, Animation.LOOP_REVERSED,

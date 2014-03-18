@@ -105,12 +105,12 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			}
 		});
 	}
-	
-	public CameraGroupStrategy(Camera camera, Comparator<Decal> sorter) {
+
+	public CameraGroupStrategy (Camera camera, Comparator<Decal> sorter) {
 		this.camera = camera;
 		this.cameraSorter = sorter;
 		createDefaultShader();
-		
+
 	}
 
 	public void setCamera (Camera camera) {
@@ -167,7 +167,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
-		shader.setUniformi("u_texture", 0);		
+		shader.setUniformi("u_texture", 0);
 	}
 
 	@Override
