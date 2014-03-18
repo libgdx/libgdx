@@ -15,23 +15,15 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Writer;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -39,204 +31,234 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.StreamUtils;
 
 /** It's a composition of particles emitters.
  * It can be updated, rendered, transformed which means the changes will be applied
  * on all the particles emitters.*/
-public class ParticleEffect implements Disposable, RenderableProvider{
-		private final Array<ParticleController> emitters;
-		private BoundingBox bounds;
-		private boolean ownsTexture;
-
-		public ParticleEffect () {
-			emitters = new Array<ParticleController>(8);
-		}
-
-		public ParticleEffect (ParticleEffect effect) {
-			emitters = new Array<ParticleController>(true, effect.emitters.size);
-			for (int i = 0, n = effect.emitters.size; i < n; i++)
-				emitters.add(effect.emitters.get(i).copy());
-		}
-
-		public void init(){
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).init();
+public class ParticleEffect implements Disposable{
+	public static class ParticleEffectData  implements Json.Serializable{
+		//Stores the assets used by each controller
+		private Array<AssetDescriptor> assets;
+		private Array<Array<Integer>>  assetsIndices;
+		private Array<Integer> currentIndices;
+		private int sharedLoadIndex, currentLoadIndex;
+		
+		public ParticleEffectData () {
+			assets = new Array<AssetDescriptor>();
+			assetsIndices = new Array<Array<Integer>>();
 		}
 		
-		public void start () {
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).start();
+		void beginSave(){
+			currentIndices = new Array<Integer>();
+		}
+		
+		private int getAssetDescriptor(String filename, Class type){
+			int i=0;
+			for(AssetDescriptor descriptor : assets){
+				if(descriptor.fileName.equals(filename) && 
+					descriptor.type == type){
+					return i;
+				}
+				++i;
+			}
+			return -1;
+		}
+		
+		public void save(AssetDescriptor descriptor){
+			int i = getAssetDescriptor(descriptor.fileName, descriptor.type);
+			if(i == -1){
+				assets.add(descriptor);
+				i = assets.size -1;
+			}
+			currentIndices.add(i);
+		}
+		
+		void beginLoad(){
+			currentIndices = assetsIndices.get(sharedLoadIndex);
+			currentLoadIndex = 0;
+		}
+		
+		public AssetDescriptor load(){
+			return assets.get(currentIndices.get(currentLoadIndex++));
+		}
+		
+		void endLoad(){
+			++sharedLoadIndex;
 		}
 
-		public void update (float delta) {
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).update(delta);
+		void endSave(){
+			assetsIndices.add(currentIndices);
+			currentIndices = null;
+		}
+
+		void clear () {
+			assets.clear();
+			assetsIndices.clear();
+			sharedLoadIndex = 0;
+			currentLoadIndex = 0;
 		}
 
 		@Override
-		public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).getRenderables(renderables, pool);
+		public void write (Json json) {
+			json.writeValue("assets", assets, Array.class, AssetDescriptor.class);
+			json.writeValue("assetsIndices", assetsIndices, Array.class, Array.class);
 		}
 
-		/** Sets the given transform matrix on each emitter.*/
-		public void setTransform (Matrix4 transform) {
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).setTransform(transform);
-		}
-		
-		/** Applies the rotation to the current transformation matrix.*/
-		public void rotate(Quaternion rotation){
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).rotate(rotation);
-		}
-		
-		/** Applies the rotation by the given angle around the given axis to the current transformation matrix of each emitter.
-		 * @param axis the rotation axis
-		 * @param angle the rotation angle in degrees*/
-		public void rotate(Vector3 axis, float angle){
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).rotate(axis, angle);
-		}
-		
-		/** Applies the translation to the current transformation matrix of each emitter.*/
-		public void translate(Vector3 translation){
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).translate(translation);
-		}
-		
-		/** Applies the scale to the current transformation matrix of each emitter.*/
-		public void scale(float scaleX, float scaleY, float scaleZ){
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).scale(scaleX, scaleY, scaleZ);
-		}
-		
-		/** Applies the scale to the current transformation matrix of each emitter.*/
-		public void scale(Vector3 scale){
-			for (int i = 0, n = emitters.size; i < n; i++)
-				emitters.get(i).scale(scale.x, scale.y, scale.z);
+		@Override
+		public void read (Json json, JsonValue jsonData) {
+			assets = json.readValue("assets", Array.class, AssetDescriptor.class, jsonData);
+			assetsIndices = json.readValue("assetsIndices", Array.class, Array.class, jsonData);
 		}
 
-		public Array<ParticleController> getControllers () {
-			return emitters;
+		public Array<? extends AssetDescriptor> getAssets () {
+			return assets;
 		}
+	}
+	
+	private ParticleEffectData data;
+	private Array<ParticleController> emitters;
+	private BoundingBox bounds;
 
-		/** Returns the emitter with the specified name, or null. */
-		public ParticleController findController (String name) {
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleController emitter = emitters.get(i);
-				if (emitter.name.equals(name)) return emitter;
-			}
-			return null;
-		}
+	public ParticleEffect () {
+		emitters = new Array<ParticleController>(8);
+	}
 
-		/*
-		public void save (File file) {
-			Writer output = null;
-			try {
-				output = new FileWriter(file);
-				int index = 0;
-				for (int i = 0, n = emitters.size; i < n; i++) {
-					ParticleController emitter = emitters.get(i);
-					if (index++ > 0) output.write("\n\n");
-					emitter.save(output);
-					output.write("- Image Path -\n");
-					output.write(emitter.getImagePath() + "\n");
-				}
-			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error saving effect: " + file, ex);
-			} finally {
-				StreamUtils.closeQuietly(output);
-			}
-		}
+	public ParticleEffect (ParticleEffect effect) {
+		emitters = new Array<ParticleController>(true, effect.emitters.size);
+		for (int i = 0, n = effect.emitters.size; i < n; i++)
+			emitters.add(effect.emitters.get(i).copy());
+	}
 
-		public void load (FileHandle effectFile, FileHandle imagesDir) {
-			loadEmitters(effectFile);
-			loadEmitterImages(imagesDir);
-		}
+	public ParticleEffect (ParticleController...emitters) {
+		this.emitters = new Array<ParticleController>(emitters);
+	}
 
-		public void load (FileHandle effectFile, TextureAtlas atlas) {
-			loadEmitters(effectFile);
-			loadEmitterImages(atlas);
-		}
+	public void init(){
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).init();
+	}
 
-		public void loadEmitters (FileHandle effectFile) {
-			InputStream input = effectFile.read();
-			emitters.clear();
-			BufferedReader reader = null;
-			try {
-				reader = new BufferedReader(new InputStreamReader(input), 512);
-				while (true) {
-					ParticleController emitter = new ParticleController(reader);
-					reader.readLine();
-					emitter.setImagePath(reader.readLine());
-					emitters.add(emitter);
-					if (reader.readLine() == null) break;
-					if (reader.readLine() == null) break;
-				}
-			} catch (IOException ex) {
-				throw new GdxRuntimeException("Error loading effect: " + effectFile, ex);
-			} finally {
-				StreamUtils.closeQuietly(reader);
-			}
-		}
+	public void start () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).start();
+	}
 
-		public void loadEmitterImages (TextureAtlas atlas) {
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleController emitter = emitters.get(i);
-				String imagePath = emitter.getImagePath();
-				if (imagePath == null) continue;
-				String imageName = new File(imagePath.replace('\\', '/')).getName();
-				int lastDotIndex = imageName.lastIndexOf('.');
-				if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
-				TextureRegion region = atlas.findRegion(imageName);
-				if (region == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
-				emitter.setRegion(region);
-			}
-		}
+	public void update (float delta) {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).update(delta);
+	}
 
-		public void loadEmitterImages (FileHandle imagesDir) {
-			ownsTexture = true;
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				ParticleController emitter = emitters.get(i);
-				String imagePath = emitter.getImagePath();
-				if (imagePath == null) continue;
-				String imageName = new File(imagePath.replace('\\', '/')).getName();
-				emitter.setRegionFromTexture(loadTexture(imagesDir.child(imageName)));
-			}
-		}
+	public void draw () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).draw();
+	}
 
-		protected Texture loadTexture (FileHandle file) {
-			return new Texture(file, false);
-		}
+	/** Sets the given transform matrix on each emitter.*/
+	public void setTransform (Matrix4 transform) {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).setTransform(transform);
+	}
 
-		public void dispose () {
-			if (!ownsTexture) return;
-			for (int i = 0, n = emitters.size; i < n; i++) 
-			{
-				ParticleController emitter = emitters.get(i);
-				emitter.getRegion().getTexture().dispose();
-				emitter.dispose();
-			}
-		}
-		*/
-		
-		public void dispose () {
-			for (int i = 0, n = emitters.size; i < n; i++) {
-				emitters.get(i).dispose();
-			}
-		}
-		
-		public BoundingBox getBoundingBox () {
-			if (bounds == null) bounds = new BoundingBox();
+	/** Applies the rotation to the current transformation matrix.*/
+	public void rotate(Quaternion rotation){
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).rotate(rotation);
+	}
 
-			BoundingBox bounds = this.bounds;
-			bounds.inf();
-			for (ParticleController emitter : this.emitters)
-				bounds.ext(emitter.getBoundingBox());
-			return bounds;
-		}
+	/** Applies the rotation by the given angle around the given axis to the current transformation matrix of each emitter.
+	 * @param axis the rotation axis
+	 * @param angle the rotation angle in degrees*/
+	public void rotate(Vector3 axis, float angle){
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).rotate(axis, angle);
+	}
 
+	/** Applies the translation to the current transformation matrix of each emitter.*/
+	public void translate(Vector3 translation){
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).translate(translation);
+	}
+
+	/** Applies the scale to the current transformation matrix of each emitter.*/
+	public void scale(float scaleX, float scaleY, float scaleZ){
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).scale(scaleX, scaleY, scaleZ);
+	}
+
+	/** Applies the scale to the current transformation matrix of each emitter.*/
+	public void scale(Vector3 scale){
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).scale(scale.x, scale.y, scale.z);
+	}
+
+	public Array<ParticleController> getControllers () {
+		return emitters;
+	}
+
+	/** Returns the emitter with the specified name, or null. */
+	public ParticleController findController (String name) {
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			ParticleController emitter = emitters.get(i);
+			if (emitter.name.equals(name)) return emitter;
+		}
+		return null;
+	}
+
+	public void dispose () {
+		for (int i = 0, n = emitters.size; i < n; i++) {
+			emitters.get(i).dispose();
+		}
+	}
+
+	public BoundingBox getBoundingBox () {
+		if (bounds == null) bounds = new BoundingBox();
+
+		BoundingBox bounds = this.bounds;
+		bounds.inf();
+		for (ParticleController emitter : this.emitters)
+			bounds.ext(emitter.getBoundingBox());
+		return bounds;
+	}
+
+	public void saveAsset(AssetManager assetManager){
+		if(data == null)
+			data = new ParticleEffectData();
+		data.clear();
+		for(ParticleController controller : emitters){
+			data.beginSave();
+			controller.saveAssets(assetManager, data);
+			data.endSave();
+		}
+	}
+	
+	public void loadAssets(AssetManager assetManager){
+		int i=0;
+		for(ParticleController controller : emitters){
+			data.beginLoad();
+			controller.loadAssets(assetManager, data);
+			data.endLoad();
+		}
+	}
+	
+	public ParticleEffectData getData(){
+		return data;
+	}
+	
+	public void setData(ParticleEffectData data){
+		this.data = data;
+	}
+	
+	public <T, K extends ParticleController<T>> void setBatch(IParticleBatch<T> batch, Class<K> type){
+		for(ParticleController controller : emitters){
+			if(type.isAssignableFrom(controller.getClass()))
+				controller.batch = batch;
+		}
+	}
+
+	public ParticleEffect copy () {
+		return new ParticleEffect(this);
+	}
 }

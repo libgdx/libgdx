@@ -1,18 +1,13 @@
 package com.badlogic.gdx.tools.particleeditor3d;
 
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
-import com.badlogic.gdx.graphics.g3d.particles.values.ParticleValue;
 
-public class RegularEmitterPanel extends EditorPanel {
+public class RegularEmitterPanel extends EditorPanel<RegularEmitter> {
 
 	CountPanel countPanel;
 	RangedNumericPanel 	delayPanel,
@@ -23,20 +18,12 @@ public class RegularEmitterPanel extends EditorPanel {
 	JCheckBox continuousCheckbox;
 	
 	public RegularEmitterPanel (ParticleEditor3D particleEditor3D, RegularEmitter emitter) {
-		super(particleEditor3D, null, "Regular Emitter", "This is a generic emitter used to generate particles regularly.", true);
+		super(particleEditor3D, "Regular Emitter", "This is a generic emitter used to generate particles regularly.");
 		initializeComponents(emitter);
-		//set(emitter);
+		setValue(null);
 	}
-
-/*
-	public void set (RegularEmitter emitter) {
-		continuousCheckbox.setSelected(emitter.isContinuous());
-	}
-*/
 	
 	private void initializeComponents(RegularEmitter emitter){
-		JPanel contentPanel = getContentPanel();
-		
 		int i=0;
 		OptionsPanel optionsPanel = new OptionsPanel();
 		optionsPanel.addOption( 0, 0, "Continuous", continuousCheckbox = new JCheckBox());

@@ -3,14 +3,13 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
-public class RectangleSpawnShapeValue extends PrimitiveSpawnShapeValue {
-	public RectangleSpawnShapeValue (RectangleSpawnShapeValue rectangleSpawnShapeValue) {
-		super(rectangleSpawnShapeValue);
+public final class RectangleSpawnShapeValue extends PrimitiveSpawnShapeValue {
+	public RectangleSpawnShapeValue (RectangleSpawnShapeValue value) {
+		super(value);
+		load(value);
 	}
 
-	public RectangleSpawnShapeValue () {
-		// TODO Auto-generated constructor stub
-	}
+	public RectangleSpawnShapeValue () {}
 
 	@Override
 	public void spawnAux (Vector3 vector, float percent) {

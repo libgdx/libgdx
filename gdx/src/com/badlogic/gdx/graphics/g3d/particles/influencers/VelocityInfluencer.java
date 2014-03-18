@@ -4,19 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
+import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValue;
+import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class VelocityInfluencer<T> extends Influencer<T> {
+public abstract class VelocityInfluencer<T extends Particle> extends Influencer<T> {
 	
 	//Billboards
 	
@@ -27,33 +28,6 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 			super(billboardVelocityInfluencer);
 		}
 		
-		@Override
-		public void init () {
-			int velSize = velocities.size;
-			for(int i=0, activeCount = controller.emitter.maxParticleCount; i < activeCount; ++i){
-				BillboardParticle particle = controller.particles[i];
-				if(particle.velocityData == null || particle.velocityData.length < velSize){
-					particle.velocityData = new VelocityData[velSize];
-				}
-				
-				int k=0;
-				for(VelocityValue value : velocities)
-					particle.velocityData[k++] = value.allocData();
-				
-				if(particle.velocity == null)
-					particle.velocity = new Vector3();
-			}
-		}
-
-		public void initParticles (int startIndex, int count) {
-			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				BillboardParticle particle = controller.particles[i];
-				for(int k=0; k < velocities.size; ++k){
-					velocities.items[k].initData(particle.velocityData[k]);
-				}
-			}
-		}
-
 		public void update(){
 			for(int i=0, activeCount = controller.emitter.activeCount; i < activeCount; ++i){
 				BillboardParticle particle = controller.particles[i];
@@ -61,9 +35,9 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 				for(int k=0; k < velocities.size; ++k)
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 				
-				if(BillboardParticle.ROTATION_ACCUMULATOR != 0){
-					float cosBeta = MathUtils.cosDeg(BillboardParticle.ROTATION_ACCUMULATOR),
-							sinBeta = MathUtils.sinDeg(BillboardParticle.ROTATION_ACCUMULATOR);
+				if(Particle.ROTATION_ACCUMULATOR != 0){
+					float cosBeta = MathUtils.cosDeg(Particle.ROTATION_ACCUMULATOR),
+							sinBeta = MathUtils.sinDeg(Particle.ROTATION_ACCUMULATOR);
 					
 					float cos = particle.cosRotation*cosBeta - particle.sinRotation*sinBeta,
 							sin = particle.sinRotation*cosBeta + particle.cosRotation*sinBeta;
@@ -71,7 +45,7 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 					particle.cosRotation = cos;
 					particle.sinRotation = sin;
 					
-					BillboardParticle.ROTATION_ACCUMULATOR = 0;
+					Particle.ROTATION_ACCUMULATOR = 0;
 				}
 				
 				particle.x += particle.velocity.x; 
@@ -98,33 +72,6 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 		}
 		
 		@Override
-		public void init () {
-			int velSize = velocities.size;
-			for(int i=0, activeCount = controller.emitter.maxParticleCount; i < activeCount; ++i){
-				ModelInstanceParticle particle = controller.particles[i];
-				if(particle.velocityData == null || particle.velocityData.length < velSize){
-					particle.velocityData = new VelocityData[velSize];
-				}
-				int k=0;
-				for(VelocityValue value : velocities)
-					particle.velocityData[k++] = value.allocData();
-				if(particle.velocity == null)
-					particle.velocity = new Vector3();
-			}
-		}
-		
-		@Override
-		public void initParticles (int startIndex, int count) {
-			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				ModelInstanceParticle particle = controller.particles[i];
-				particle.rotation.idt();
-				for(int k=0; k < velocities.size; ++k){
-					velocities.items[k].initData(particle.velocityData[k]);
-				}
-			}
-		}
-
-		@Override
 		public void update(){
 			for(int i=0, activeCount = controller.emitter.activeCount; i < activeCount; ++i){
 				ModelInstanceParticle particle = controller.particles[i];
@@ -133,9 +80,9 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 				for(int k=0; k < velocities.size; ++k)
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 				
-				if(!ModelInstanceParticle.ROTATION_ACCUMULATOR.isIdentity()){
-					particle.rotation.mulLeft(ModelInstanceParticle.ROTATION_ACCUMULATOR);
-					ModelInstanceParticle.ROTATION_ACCUMULATOR.idt();
+				if(!Particle.ROTATION_3D_ACCUMULATOR.isIdentity()){
+					particle.rotation.mulLeft(Particle.ROTATION_3D_ACCUMULATOR);
+					Particle.ROTATION_3D_ACCUMULATOR.idt();
 				}
 				
 				val[Matrix4.M03] += particle.velocity.x;
@@ -159,34 +106,7 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 		public ParticleControllerVelocityInfluencer (ParticleControllerVelocityInfluencer billboardVelocityInfluencer) {
 			super(billboardVelocityInfluencer);
 		}
-
-		@Override
-		public void init () {
-			int velSize = velocities.size;
-			for(int i=0, activeCount = controller.emitter.maxParticleCount; i < activeCount; ++i){
-				ParticleControllerParticle particle = controller.particles[i];
-				if(particle.velocityData == null || particle.velocityData.length < velSize){
-					particle.velocityData = new VelocityData[velSize];
-				}
-				int k=0;
-				for(VelocityValue value : velocities)
-					particle.velocityData[k++] = value.allocData();
-				if(particle.velocity == null)
-					particle.velocity = new Vector3();
-			}
-		}
-
-		@Override
-		public void initParticles (int startIndex, int count) {
-			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				ParticleControllerParticle particle = controller.particles[i];
-				particle.rotation.idt();
-				for(int k=0; k < velocities.size; ++k){
-					velocities.items[k].initData(particle.velocityData[k]);
-				}
-			}
-		}
-
+		
 		@Override
 		public void update(){
 			for(int i=0, activeCount = controller.emitter.activeCount; i < activeCount; ++i){
@@ -195,9 +115,9 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 				for(int k=0; k < velocities.size; ++k)
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 
-				if(!ParticleControllerParticle.ROTATION_ACCUMULATOR.isIdentity()){
-					particle.rotation.mulLeft(ParticleControllerParticle.ROTATION_ACCUMULATOR);
-					ParticleControllerParticle.ROTATION_ACCUMULATOR.idt();
+				if(!Particle.ROTATION_3D_ACCUMULATOR.isIdentity()){
+					particle.rotation.mulLeft(Particle.ROTATION_3D_ACCUMULATOR);
+					Particle.ROTATION_3D_ACCUMULATOR.idt();
 				}
 
 				particle.x += particle.velocity.x;
@@ -215,36 +135,11 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 
 	//Points
 
-	public static class PointVelocityInfluencer extends VelocityInfluencer<PointParticle>{
-		public PointVelocityInfluencer () {}
+	public static class PointSpriteVelocityInfluencer extends VelocityInfluencer<PointParticle>{
+		public PointSpriteVelocityInfluencer () {}
 
-		public PointVelocityInfluencer (PointVelocityInfluencer billboardVelocityInfluencer) {
+		public PointSpriteVelocityInfluencer (PointSpriteVelocityInfluencer billboardVelocityInfluencer) {
 			super(billboardVelocityInfluencer);
-		}
-
-		@Override
-		public void init () {
-			int velSize = velocities.size;
-			for(int i=0, activeCount = controller.emitter.maxParticleCount; i < activeCount; ++i){
-				PointParticle particle = controller.particles[i];
-				if(particle.velocityData == null || particle.velocityData.length < velSize){
-					particle.velocityData = new VelocityData[velSize];
-				}
-				int k=0;
-				for(VelocityValue value : velocities)
-					particle.velocityData[k++] = value.allocData();
-				if(particle.velocity == null)
-					particle.velocity = new Vector3();
-			}
-		}
-
-		public void initParticles (int startIndex, int count) {
-			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				PointParticle particle = controller.particles[i];
-				for(int k=0; k < velocities.size; ++k){
-					velocities.items[k].initData(particle.velocityData[k]);
-				}
-			}
 		}
 
 		public void update(){
@@ -254,9 +149,9 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 				for(int k=0; k < velocities.size; ++k)
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 				
-				if(PointParticle.ROTATION_ACCUMULATOR != 0){
-					float cosBeta = MathUtils.cosDeg(PointParticle.ROTATION_ACCUMULATOR),
-							sinBeta = MathUtils.sinDeg(PointParticle.ROTATION_ACCUMULATOR);
+				if(Particle.ROTATION_ACCUMULATOR != 0){
+					float cosBeta = MathUtils.cosDeg(Particle.ROTATION_ACCUMULATOR),
+							sinBeta = MathUtils.sinDeg(Particle.ROTATION_ACCUMULATOR);
 					
 					float cos = particle.cosRotation*cosBeta - particle.sinRotation*sinBeta,
 							sin = particle.sinRotation*cosBeta + particle.cosRotation*sinBeta;
@@ -264,7 +159,7 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 					particle.cosRotation = cos;
 					particle.sinRotation = sin;
 					
-					PointParticle.ROTATION_ACCUMULATOR = 0;
+					Particle.ROTATION_ACCUMULATOR = 0;
 				}
 				
 				particle.x += particle.velocity.x; 
@@ -275,7 +170,7 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 
 		@Override
 		public ParticleSystem<PointParticle> copy () {
-			return new PointVelocityInfluencer(this);
+			return new PointSpriteVelocityInfluencer(this);
 		}
 	}
 
@@ -285,17 +180,58 @@ public abstract class VelocityInfluencer<T> extends Influencer<T> {
 
 
 	public Array<VelocityValue> velocities;
+	
+	public VelocityInfluencer(){
+		this.velocities = new Array<VelocityValue>(true, 3, VelocityValue.class);
+	}
 
 	public VelocityInfluencer(VelocityValue...velocities){
-		this.velocities = new Array<VelocityValue>(velocities);
+		this.velocities = new Array<VelocityValue>(true, velocities.length, VelocityValue.class);
+		for(VelocityValue value : velocities){
+			this.velocities.add(value.copy());
+		}
 	}
 	
-	public VelocityInfluencer(int velocities){
-		this.velocities = new Array<VelocityValue>(false, velocities, VelocityValue.class);
+	public VelocityInfluencer (VelocityInfluencer<T> billboardVelocityInfluencer) {
+		this(billboardVelocityInfluencer.velocities.toArray());
+	}
+	
+	@Override
+	public void init () {
+		Particle.ROTATION_ACCUMULATOR = 0;
+		Particle.ROTATION_3D_ACCUMULATOR.idt();
+		for(int i=0, activeCount = controller.emitter.maxParticleCount; i < activeCount; ++i){
+			Particle particle = controller.particles[i];
+			if(velocities.size >0 && (particle.velocityData == null || particle.velocityData.length < velocities.size) ){
+				particle.velocityData = new VelocityData[velocities.size];
+			}
+			
+			for(int k=0; k < velocities.size; ++k){
+				particle.velocityData[k] = velocities.items[k].allocData();
+			}
+			
+			if(particle.velocity == null)
+				particle.velocity = new Vector3();
+		}
 	}
 
-	public VelocityInfluencer (VelocityInfluencer<T> billboardVelocityInfluencer) {
-		this.velocities = new Array<VelocityValue>(billboardVelocityInfluencer.velocities);
+	public void activateParticles (int startIndex, int count) {
+		for(int i=startIndex, c = startIndex +count; i < c; ++i){
+			Particle particle = controller.particles[i];
+			for(int k=0; k < velocities.size; ++k){
+				velocities.items[k].initData(particle.velocityData[k]);
+			}
+		}
 	}
 	
+	@Override
+	public void write (Json json) {
+		json.writeValue("velocities", velocities.toArray(), VelocityValue[].class);
+	}
+	
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		VelocityValue[] vels = json.readValue("velocities", VelocityValue[].class, jsonData);
+		velocities.addAll(vels);
+	}
 }

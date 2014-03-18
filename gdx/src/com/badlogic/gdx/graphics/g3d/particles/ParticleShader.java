@@ -19,47 +19,31 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.Attributes;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.CubemapAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.AmbientCubemap;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer.AlignMode;
 import com.badlogic.gdx.graphics.g3d.shaders.BaseShader;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader.Setter;
-import com.badlogic.gdx.graphics.g3d.shaders.BaseShader.Uniform;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Inputs;
-import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Setters;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
-import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleShader extends BaseShader {
 	public enum ParticleType{
 		Billboard,
 		Point
+	}
+	
+	public static enum AlignMode{
+		Screen, ViewPoint, ParticleDirection
 	}
 	
 	public static class RegionSizeAttribute extends Attribute{
@@ -218,8 +202,6 @@ public class ParticleShader extends BaseShader {
 		this(renderable, config, new ShaderProgram(prefix + vertexShader, prefix + fragmentShader));
 	}
 	
-	int u_opacity;
-	
 	public ParticleShader(final Renderable renderable, final Config config, final ShaderProgram shaderProgram) {
 		this.config = config;
 		this.program = shaderProgram;
@@ -235,14 +217,13 @@ public class ParticleShader extends BaseShader {
 		register(DefaultShader.Inputs.projViewTrans, DefaultShader.Setters.projViewTrans);
 		register(DefaultShader.Inputs.projTrans, DefaultShader.Setters.projTrans);
 		register(Inputs.screenWidth, Setters.screenWidth);
-		register(Inputs.regionSize, Setters.regionSize);
+		//register(Inputs.regionSize, Setters.regionSize);
 		register(DefaultShader.Inputs.cameraUp, Setters.cameraUp);
 		register(Inputs.cameraRight, Setters.cameraRight);
 		register(Inputs.cameraInvDirection, Setters.cameraInvDirection);
 		register(DefaultShader.Inputs.cameraPosition, Setters.cameraPosition);
 		
 		// Object uniforms
-		u_opacity = register(DefaultShader.Inputs.opacity);
 		register(DefaultShader.Inputs.diffuseTexture, DefaultShader.Setters.diffuseTexture);
 	}
 
@@ -333,10 +314,7 @@ public class ParticleShader extends BaseShader {
 			final long t = attr.type;
 			if (BlendingAttribute.is(t)) {
 				context.setBlending(true, ((BlendingAttribute)attr).sourceFunction, ((BlendingAttribute)attr).destFunction);
-				set(u_opacity, ((BlendingAttribute)attr).opacity);
 			}
-			else if ((t & IntAttribute.CullFace) == IntAttribute.CullFace)
-				cullFace = ((IntAttribute)attr).value;
 			else if ((t & DepthTestAttribute.Type) == DepthTestAttribute.Type) {
 				DepthTestAttribute dta = (DepthTestAttribute)attr;
 				depthFunc = dta.depthFunc;

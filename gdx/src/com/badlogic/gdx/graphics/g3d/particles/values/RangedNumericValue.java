@@ -1,10 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.graphics.g3d.particles.Utils;
 import com.badlogic.gdx.math.MathUtils;
 
 public class RangedNumericValue extends ParticleValue {
@@ -38,20 +33,6 @@ public class RangedNumericValue extends ParticleValue {
 
 	public void setLowMax (float lowMax) {
 		this.lowMax = lowMax;
-	}
-
-	public void save (Writer output) throws IOException {
-		super.save(output);
-		if (!active) return;
-		output.write("lowMin: " + lowMin + "\n");
-		output.write("lowMax: " + lowMax + "\n");
-	}
-
-	public void load (BufferedReader reader) throws IOException {
-		super.load(reader);
-		if (!active) return;
-		lowMin = Utils.readFloat(reader, "lowMin");
-		lowMax = Utils.readFloat(reader, "lowMax");
 	}
 
 	public void load (RangedNumericValue value) {

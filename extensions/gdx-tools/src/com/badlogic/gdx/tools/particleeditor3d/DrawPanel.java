@@ -15,27 +15,13 @@ public class DrawPanel extends EditorPanel
 				drawXZPlaneBox;
 
 	public DrawPanel (ParticleEditor3D editor, String name, String description) {
-		super(editor, null, name, description);
-
-		initializeComponents();
-
-		drawXYZCheckBox.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent event) {
-				DrawPanel.this.editor.getRenderer().setDrawXYZ(drawXYZCheckBox.isSelected());
-			}
-		});
-		drawXYZCheckBox.setSelected(editor.getRenderer().IsDrawXYZ());
-		
-		drawXZPlaneBox.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent event) {
-				DrawPanel.this.editor.getRenderer().setDrawXZPlane(drawXZPlaneBox.isSelected());
-			}
-		});
-		drawXZPlaneBox.setSelected(editor.getRenderer().IsDrawXZPlane());
+		super(editor, name, description);
+		setValue(null);
 	}
 
-	private void initializeComponents () 
-	{
+	@Override
+	protected void initializeComponents () {
+		super.initializeComponents();
 		JPanel contentPanel = getContentPanel();
 		
 		//XYZ
@@ -51,6 +37,21 @@ public class DrawPanel extends EditorPanel
 		drawXZPlaneBox = new JCheckBox();
 		contentPanel.add(drawXZPlaneBox, new GridBagConstraints(1, 2, 1, 1, 1, 0, GridBagConstraints.WEST,
 				GridBagConstraints.NONE, new Insets(6, 6, 0, 0), 0, 0));
+		
+		//Listeners
+		drawXYZCheckBox.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent event) {
+				DrawPanel.this.editor.getRenderer().setDrawXYZ(drawXYZCheckBox.isSelected());
+			}
+		});
+		drawXYZCheckBox.setSelected(editor.getRenderer().IsDrawXYZ());
+		
+		drawXZPlaneBox.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent event) {
+				DrawPanel.this.editor.getRenderer().setDrawXZPlane(drawXZPlaneBox.isSelected());
+			}
+		});
+		drawXZPlaneBox.setSelected(editor.getRenderer().IsDrawXZPlane());
 		
 	}
 }

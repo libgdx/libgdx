@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.values.RangedNumericValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public class RegularEmitter<T extends Particle> extends Emitter<T> {
+public class RegularEmitter<T extends Particle> extends Emitter<T> implements Json.Serializable {
 	public RangedNumericValue delayValue, durationValue;
 	public ScaledNumericValue 	lifeOffsetValue,
 								lifeValue, 
@@ -43,7 +45,8 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> {
 
 		durationTimer -= duration;
 		duration = durationValue.newLowValue();
-
+		percent = durationTimer / (float)duration;
+		
 		emission = (int)emissionValue.newLowValue();
 		emissionDiff = (int)emissionValue.newHighValue();
 		if (!emissionValue.isRelative()) emissionDiff -= emission;
@@ -63,7 +66,7 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> {
 		durationTimer = duration;
 	}
 	
-	public void initParticles (int startIndex, int count){
+	public void activateParticles (int startIndex, int count){
 		int 	currentTotaLife = life + (int)(lifeDiff * lifeValue.getScale(percent)),
 				currentLife = currentTotaLife;
 		int offsetTime = (int)(lifeOffset + lifeOffsetDiff * lifeOffsetValue.getScale(percent));
@@ -88,7 +91,7 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> {
 		if (delayTimer < delay) {
 			delayTimer += deltaMillis;
 		} else {
-			boolean done = false;
+			boolean isEmissionCycleRunning = true;
 			//End check
 			if (durationTimer < duration) {
 				durationTimer += deltaMillis;
@@ -98,10 +101,10 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> {
 				if (continuous) 
 					controller.start();
 				else 
-					done = true;
+					isEmissionCycleRunning = false;
 			}
 			
-			if(!done) {
+			if(isEmissionCycleRunning) {
 				//Emit particles
 				emissionDelta += deltaMillis;
 				float emissionTime = emission + emissionDiff * emissionValue.getScale(percent);
@@ -118,39 +121,39 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> {
 				if (activeCount < minParticleCount)
 					addParticles(minParticleCount - activeCount);
 			}
-			
-			//Update particles
-			int activeCount = this.activeCount;
-			Particle[] particles = controller.particles;
-			for (int i = 0; i < activeCount;) {
-				Particle particle = particles[i];
-				particle.currentLife -= deltaMillis;
-				if (particle.currentLife <= 0) {
-					//swap the particle
-					int lastIndex = activeCount-1;
-					if(i != lastIndex){
-						particles[i] = particles[lastIndex];
-						particles[lastIndex] = particle;
-					}
-					--activeCount;
-					continue;
+		}
+
+		//Update particles
+		int activeCount = this.activeCount;
+		Particle[] particles = controller.particles;
+		for (int i = 0; i < activeCount;) {
+			Particle particle = particles[i];
+			particle.currentLife -= deltaMillis;
+			if (particle.currentLife <= 0) {
+				//swap the particle
+				int lastIndex = activeCount-1;
+				if(i != lastIndex){
+					particles[i] = particles[lastIndex];
+					particles[lastIndex] = particle;
 				}
-				else {
-					particle.lifePercent = 1 - particle.currentLife / (float)particle.life;
-				}
-				++i;
+				--activeCount;
+				continue;
 			}
-			if(activeCount < this.activeCount){
-				controller.killParticles(activeCount, this.activeCount - activeCount);
-				this.activeCount = activeCount;
+			else {
+				particle.lifePercent = 1 - particle.currentLife / (float)particle.life;
 			}
+			++i;
+		}
+		if(activeCount < this.activeCount){
+			controller.killParticles(activeCount, this.activeCount - activeCount);
+			this.activeCount = activeCount;
 		}
 	}
 	
 	private void addParticles (int count) {
 		count = Math.min(count, maxParticleCount - activeCount);
 		if (count == 0) return;
-		controller.initParticles (activeCount, count);
+		controller.activateParticles (activeCount, count);
 		activeCount += count;
 	}
 	
@@ -216,6 +219,28 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> {
 	@Override
 	public ParticleSystem copy () {
 		return new RegularEmitter(this);
+	}
+
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("continous", continuous);
+		json.writeValue("emission", emissionValue);
+		json.writeValue("delay", delayValue);
+		json.writeValue("duration", durationValue);
+		json.writeValue("life", lifeValue);
+		json.writeValue("lifeOffset", lifeOffsetValue);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		continuous = json.readValue("continous", Boolean.class, jsonData);
+		emissionValue = json.readValue("emission", ScaledNumericValue.class, jsonData);
+		delayValue = json.readValue("delay", RangedNumericValue.class, jsonData);
+		durationValue = json.readValue("duration", RangedNumericValue.class, jsonData);
+		lifeValue = json.readValue("life", ScaledNumericValue.class, jsonData);
+		lifeOffsetValue = json.readValue("lifeOffset", ScaledNumericValue.class, jsonData);
 	}
 	
 }

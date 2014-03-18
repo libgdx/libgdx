@@ -2,12 +2,11 @@ package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
-import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public abstract class ScaleInfluencer<T> extends Influencer<T> {
 	
@@ -18,11 +17,11 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				BillboardParticle particle = controller.particles[i];
-				particle.scaleStart = scaleValue.newLowValue();
-				particle.scaleDiff = scaleValue.newHighValue();
+				particle.scaleStart = scaleValue.newLowValue() * controller.scale.x;
+				particle.scaleDiff = scaleValue.newHighValue() * controller.scale.y;
 				if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
 				particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(0);
 				
@@ -50,11 +49,11 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				ModelInstanceParticle particle = controller.particles[i];
-				particle.scaleStart = scaleValue.newLowValue();
-				particle.scaleDiff = scaleValue.newHighValue();
+				particle.scaleStart = scaleValue.newLowValue() * controller.scale.x;
+				particle.scaleDiff = scaleValue.newHighValue() * controller.scale.y;
 				if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
 				particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(0);
 			}
@@ -81,11 +80,11 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				ParticleControllerParticle particle = controller.particles[i];
-				particle.scaleStart = scaleValue.newLowValue();
-				particle.scaleDiff = scaleValue.newHighValue();
+				particle.scaleStart = scaleValue.newLowValue() * controller.scale.x;
+				particle.scaleDiff = scaleValue.newHighValue() * controller.scale.y;
 				if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
 				particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(0);
 			}
@@ -105,18 +104,18 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	public static class PointScaleInfluencer extends ScaleInfluencer<PointParticle> {
-		public PointScaleInfluencer () {}
-		public PointScaleInfluencer (PointScaleInfluencer billboardScaleinfluencer) {
+	public static class PointSpriteScaleInfluencer extends ScaleInfluencer<PointParticle> {
+		public PointSpriteScaleInfluencer () {}
+		public PointSpriteScaleInfluencer (PointSpriteScaleInfluencer billboardScaleinfluencer) {
 			super(billboardScaleinfluencer);
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				PointParticle particle = controller.particles[i];
-				particle.scaleStart = scaleValue.newLowValue();
-				particle.scaleDiff = scaleValue.newHighValue();
+				particle.scaleStart = scaleValue.newLowValue() * controller.scale.x;
+				particle.scaleDiff = scaleValue.newHighValue() * controller.scale.y;
 				if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
 				particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(0);
 				
@@ -133,7 +132,7 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		
 		@Override
 		public ScaleInfluencer copy () {
-			return new PointScaleInfluencer(this);
+			return new PointSpriteScaleInfluencer(this);
 		}
 	}
 	
@@ -143,6 +142,7 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 	
 	public ScaleInfluencer(){
 		scaleValue = new ScaledNumericValue();
+		scaleValue.setHigh(1);
 	}
 	
 	public ScaleInfluencer(ScaledNumericValue scaleValue){
@@ -158,4 +158,14 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		scaleValue.load(scaleInfluencer.scaleValue);
 	}
 
+	@Override
+	public void write (Json json) {
+		json.writeValue("scale", scaleValue);
+	}
+	
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		scaleValue = json.readValue("scale", ScaledNumericValue.class, jsonData);
+	}
+	
 }

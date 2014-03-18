@@ -28,24 +28,23 @@ import javax.swing.event.ChangeListener;
 import com.badlogic.gdx.graphics.g3d.particles.values.NumericValue;
 
 
-class NumericPanel extends EditorPanel<NumericValue> {
+class NumericPanel extends ParticleValuePanel<NumericValue> {
 	JSpinner valueSpinner;
-
+	
 	public NumericPanel ( ParticleEditor3D editor, NumericValue value, String name, String description) {
-		super(editor, value, name, description);
-		initializeComponents();
+		super(editor, name, description);
 		setValue(value);
-
-		valueSpinner.setValue(value.getValue());
-
-		valueSpinner.addChangeListener(new ChangeListener() {
-			public void stateChanged (ChangeEvent event) {
-				NumericPanel.this.value.setValue((Float)valueSpinner.getValue());
-			}
-		});
+	}
+	
+	@Override
+	public void setValue (NumericValue value) {
+		super.setValue(value);
+		if(value == null)return;
+		setValue(valueSpinner, value.getValue());
 	}
 
-	private void initializeComponents () {
+	protected void initializeComponents () {
+		super.initializeComponents();
 		JPanel contentPanel = getContentPanel();
 		{
 			JLabel label = new JLabel("Value:");
@@ -57,5 +56,10 @@ class NumericPanel extends EditorPanel<NumericValue> {
 			contentPanel.add(valueSpinner, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.WEST,
 				GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 		}
+		valueSpinner.addChangeListener(new ChangeListener() {
+			public void stateChanged (ChangeEvent event) {
+				NumericPanel.this.value.setValue((Float)valueSpinner.getValue());
+			}
+		});
 	}
 }

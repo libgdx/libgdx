@@ -1,13 +1,16 @@
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.ParticleEffectData;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Json;
 
-public abstract class ParticleSystem<T> implements Disposable {
+public abstract class ParticleSystem<T> implements Disposable, Json.Serializable {
 	protected static final Vector3 TMP_V1 = new Vector3(), 
 		 TMP_V2 = new Vector3(), 
 		 TMP_V3 = new Vector3(), 
@@ -21,7 +24,7 @@ public abstract class ParticleSystem<T> implements Disposable {
 	protected ParticleController<T> controller;
 	/** Called to initialize new emitted particles.
 	 * Should be called by the Emitter */
-	public void initParticles (int startIndex, int count){};
+	public void activateParticles (int startIndex, int count){};
 	/** Called to notify which particles have been killed .
 	 * Should be called by the Emitter*/
 	public void killParticles (int startIndex, int count){};
@@ -34,6 +37,8 @@ public abstract class ParticleSystem<T> implements Disposable {
 	 * Must be called after init and before update.
 	 * Must be called by the emitter on the controller. */
 	public void start(){};
+	/** It's before the simulation begin if it was already started. */
+	public void end(){};
 	/** Called when it's time to release each allocated resource*/
 	public void dispose(){}
 	public abstract ParticleSystem<T> copy();
@@ -42,5 +47,6 @@ public abstract class ParticleSystem<T> implements Disposable {
 		controller = particleController;
 	}
 	
-	
+	public void saveAssets (AssetManager manager, ParticleEffectData data) {}
+	public void loadAssets (AssetManager manager, ParticleEffectData data) {}
 }

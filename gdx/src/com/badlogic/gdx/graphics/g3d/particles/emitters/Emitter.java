@@ -1,9 +1,13 @@
 package com.badlogic.gdx.graphics.g3d.particles.emitters;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.ParticleEffectData;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class  Emitter<T> extends ParticleSystem<T> {
+public abstract class  Emitter<T> extends ParticleSystem<T> implements Json.Serializable{
 	/** The min/max quantity of particles */
 	public int minParticleCount, maxParticleCount = 4;
 	
@@ -50,4 +54,17 @@ public abstract class  Emitter<T> extends ParticleSystem<T> {
 		minParticleCount = emitter.minParticleCount;
 		maxParticleCount = emitter.maxParticleCount;
 	}
+	
+	@Override
+	public void write (Json json) {
+		json.writeValue("minParticleCount", minParticleCount);
+		json.writeValue("maxParticleCount", maxParticleCount);
+	}
+	
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		minParticleCount = json.readValue("minParticleCount", Integer.class, jsonData);
+		maxParticleCount = json.readValue("maxParticleCount", Integer.class, jsonData);
+	}
+
 }

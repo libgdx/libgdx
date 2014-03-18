@@ -3,15 +3,9 @@ package com.badlogic.gdx.tools.particleeditor3d;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
 
 public class OptionsPanel extends JPanel {
 	public void addOption(int row, int column, String name, JComponent component){

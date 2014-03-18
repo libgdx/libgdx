@@ -37,17 +37,15 @@ import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 
-class GradientPanel extends EditorPanel<GradientColorValue> {
+class GradientPanel extends ParticleValuePanel<GradientColorValue> {
 	private GradientEditor gradientEditor;
 	ColorSlider saturationSlider, lightnessSlider;
 	JPanel colorPanel;
 	private ColorSlider hueSlider;
 
-	public GradientPanel (ParticleEditor3D editor, GradientColorValue value, String name, String description, boolean hideGradientEditor) {
-		super(editor, value, name, description);
-
-		initializeComponents();
-		
+	public GradientPanel (ParticleEditor3D editor, GradientColorValue value, String name, String description, 
+																boolean hideGradientEditor) {
+		super(editor, name, description);
 		setValue(value);
 
 		if (hideGradientEditor) {
@@ -81,7 +79,8 @@ class GradientPanel extends EditorPanel<GradientColorValue> {
 		return size;
 	}
 
-	private void initializeComponents () {
+	protected void initializeComponents () {
+		super.initializeComponents();
 		JPanel contentPanel = getContentPanel();
 		{
 			gradientEditor = new GradientEditor() {

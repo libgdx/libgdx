@@ -3,7 +3,7 @@
 //In
 attribute vec3 a_position;
 attribute vec2 a_texCoord0;
-attribute vec4 a_scaleAndRotation;
+attribute vec4 a_sizeAndRotation;
 attribute vec4 a_color;
 
 //out
@@ -49,14 +49,14 @@ void main() {
 
 	//Rotate around look
 	vec3 axis = look;
-	float c = a_scaleAndRotation.z;
-    float s = a_scaleAndRotation.w;
+	float c = a_sizeAndRotation.z;
+    float s = a_sizeAndRotation.w;
     float oc = 1.0 - c;
     
     mat3 rot = mat3(oc * axis.x * axis.x + c, oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,
                 oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,
                 oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c);	
-	vec3 offset = rot*(right*a_scaleAndRotation.x + up*a_scaleAndRotation.y );
+	vec3 offset = rot*(right*a_sizeAndRotation.x + up*a_sizeAndRotation.y );
 
 	gl_Position = u_projViewTrans * vec4(a_position + offset, 1.0);
 	v_texCoords0 = a_texCoord0;
@@ -65,14 +65,14 @@ void main() {
 #else
 //Point particles
 attribute vec3 a_position;
-attribute vec3 a_scaleAndRotation;
+attribute vec3 a_sizeAndRotation;
 attribute vec4 a_color;
-attribute vec2 a_texCoord0;
+attribute vec4 a_region;
 
 //out
 varying vec4 v_color;
 varying mat2 v_rotation;
-varying vec2 v_texCoords0;
+varying vec4 v_region;
 varying vec2 v_uvRegionCenter;
 
 //Camera
@@ -85,15 +85,16 @@ uniform vec2 u_regionSize;
 
 void main(){
 
-	float halfSize = 0.5*a_scaleAndRotation.x;
+	float halfSize = 0.5*a_sizeAndRotation.x;
 	vec4 eyePos = u_viewTrans * vec4(a_position, 1); 
 	vec4 projCorner = u_projTrans * vec4(halfSize, halfSize, eyePos.z, eyePos.w);
 	gl_PointSize = u_screenWidth * projCorner.x / projCorner.w;
 	gl_Position = u_projTrans * eyePos;
-	v_rotation = mat2(a_scaleAndRotation.y, a_scaleAndRotation.z, -a_scaleAndRotation.z, a_scaleAndRotation.y);
+	v_rotation = mat2(a_sizeAndRotation.y, a_sizeAndRotation.z, -a_sizeAndRotation.z, a_sizeAndRotation.y);
 	v_color = a_color;
-	v_texCoords0 = a_texCoord0;
-	v_uvRegionCenter = a_texCoord0.xy + u_regionSize*0.5;
+	v_region.xy = a_region.xy;
+	v_region.zw = a_region.zw -a_region.xy;	
+	v_uvRegionCenter = a_region.xy +v_region.zw*0.5;
 }
 
 #endif

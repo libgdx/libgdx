@@ -3,25 +3,31 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.particles.Triangle;
-import com.badlogic.gdx.graphics.g3d.particles.WeigthMesh;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-public class MeshSpawnShapeValue extends SpawnShapeValue {
+public final class MeshSpawnShapeValue extends SpawnShapeValue {
 	protected Mesh mesh;
 	private float[] vertices;
 	private short[] indices;
 	private int positionOffset, vertexSize, vertexCount, triangleCount;
 	
-	public MeshSpawnShapeValue (MeshSpawnShapeValue meshSpawnShapeValue) {
-		super(meshSpawnShapeValue);
+	public MeshSpawnShapeValue (MeshSpawnShapeValue value) {
+		super(value);
+		load(value);
 	}
 
-	public MeshSpawnShapeValue () {
-		// TODO Auto-generated constructor stub
-	}
+	public MeshSpawnShapeValue () {}
 
+	@Override
+	public void load (ParticleValue value) {
+		super.load(value);
+		MeshSpawnShapeValue spawnShapeValue = (MeshSpawnShapeValue) value;
+		setMesh(spawnShapeValue.mesh);
+	}
+	
+	
 	public void setMesh(Mesh mesh){
 		if(mesh.getVertexAttribute(Usage.Position) == null) 
 			throw new GdxRuntimeException("Mesh vertices must have Usage.Position");

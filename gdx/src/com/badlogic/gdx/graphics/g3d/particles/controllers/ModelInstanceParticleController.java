@@ -1,18 +1,19 @@
 package com.badlogic.gdx.graphics.g3d.particles.controllers;
 
-import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.Renderer;
-import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.math.Vector3;
 
 public class ModelInstanceParticleController extends ParticleController<ModelInstanceParticle> {
-
-	public ModelInstanceParticleController (String name, Emitter<ModelInstanceParticle> emitter, Renderer<ModelInstanceParticle> renderer,
+	private static final Vector3 	TMP_V1 = new Vector3(), 
+											TMP_V2 = new Vector3();
+	
+	public ModelInstanceParticleController (String name, Emitter<ModelInstanceParticle> emitter, IParticleBatch<ModelInstanceParticle> batch,
 																											Influencer<ModelInstanceParticle>... influencers) {
-		super(name, emitter, renderer, influencers);
+		super(name, emitter, batch, influencers);
 	}
 
 	@Override
@@ -24,15 +25,32 @@ public class ModelInstanceParticleController extends ParticleController<ModelIns
 	}
 
 	@Override
+	protected void initParticles () {
+		for(ModelInstanceParticle particle : particles){
+			particle.reset();
+		}
+	}
+	
+	@Override
+	public void update (float dt) {
+		super.update(dt);
+		for (int i = 0, count = emitter.activeCount; i < count; ++i) {
+			ModelInstanceParticle particle = particles[i];
+			particle.instance.transform.set(	particle.instance.transform.getTranslation(TMP_V1), 
+				particle.rotation, 
+				TMP_V2.set(particle.scale, particle.scale, particle.scale));
+		}
+	}
+	
+	@Override
 	public ParticleController copy () {
 		Emitter emitter = (Emitter)this.emitter.copy();
-		Renderer renderer = (Renderer)this.renderer.copy();
 		Influencer[] influencers = new Influencer[this.influencers.size];
 		int i=0;
 		for(Influencer influencer : this.influencers){
 			influencers[i++] = (Influencer)influencer.copy();
 		}
-		return new ModelInstanceParticleController(new String(this.name), emitter, renderer, influencers);
+		return new ModelInstanceParticleController(new String(this.name), emitter, batch, influencers);
 	}
 
 	@Override

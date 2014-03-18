@@ -16,23 +16,20 @@
 
 package com.badlogic.gdx.tools.particleeditor3d;
 import java.awt.GridBagConstraints;
-import java.awt.Insets;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 
 class CountPanel extends EditorPanel {
 	Slider maxSlider, minSlider;
 
 	public CountPanel (final ParticleEditor3D editor, String name, String description, int min, int max) {
-		super(editor, null, name, description, true);
+		super(editor, name, description);
 
 		initializeComponents(min, max);
+		setValue(null);
 		//set(editor.getEmitter().emitter.minParticleCount, editor.getEmitter().emitter.maxParticleCount);
 	}
 	

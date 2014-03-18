@@ -3,15 +3,14 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
-public class CylinderSpawnShapeValue extends PrimitiveSpawnShapeValue{
+public final class CylinderSpawnShapeValue extends PrimitiveSpawnShapeValue{
 
 	public CylinderSpawnShapeValue (CylinderSpawnShapeValue cylinderSpawnShapeValue) {
 		super(cylinderSpawnShapeValue);
+		load(cylinderSpawnShapeValue);
 	}
 
-	public CylinderSpawnShapeValue () {
-		// TODO Auto-generated constructor stub
-	}
+	public CylinderSpawnShapeValue () {}
 
 	@Override
 	public void spawnAux (Vector3 vector, float percent) {
@@ -25,7 +24,7 @@ public class CylinderSpawnShapeValue extends PrimitiveSpawnShapeValue{
 		float ty = MathUtils.random(height) - hf;
 		
 		//Where generate the point, on edges or inside ?
-		if(edges && Math.abs(ty) != hf ){
+		if(edges ){
 			radiusX = width / 2;
 			radiusZ = depth/2;
 		}
@@ -44,9 +43,9 @@ public class CylinderSpawnShapeValue extends PrimitiveSpawnShapeValue{
 			if(isRadiusXZero) spawnTheta = MathUtils.random(1) == 0 ? -90 : 90;
 			else if(isRadiusZZero) spawnTheta = MathUtils.random(1)==0 ? 0 : 180;
 		}
+		
+		vector.set(radiusX*MathUtils.cosDeg(spawnTheta), ty, radiusZ*MathUtils.sinDeg(spawnTheta));
 
-		vector.set(Vector3.X).rotate(Vector3.Y, spawnTheta).scl(radiusX, 0, radiusZ);
-		vector.y = ty;
 	}
 
 	@Override

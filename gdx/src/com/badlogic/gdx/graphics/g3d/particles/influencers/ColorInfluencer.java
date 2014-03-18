@@ -1,13 +1,14 @@
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
 import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public abstract class ColorInfluencer<T> extends Influencer<T> {
 	public static class BillboardColorInfluencer extends ColorInfluencer<BillboardParticle>{
@@ -18,7 +19,7 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				BillboardParticle particle = controller.particles[i];
 				float[] temp = colorValue.getColor(0);
@@ -56,10 +57,11 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				ModelInstanceParticle particle = controller.particles[i];
 				particle.color = ((ColorAttribute)particle.instance.materials.get(0).get(ColorAttribute.Diffuse)).color;
+				particle.blending = ((BlendingAttribute)particle.instance.materials.get(0).get(BlendingAttribute.Type));
 				float[] temp = colorValue.getColor(0);
 				particle.color.r = temp[0];
 				particle.color.g = temp[1];
@@ -78,7 +80,8 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 				particle.color.r = temp[0];
 				particle.color.g = temp[1];
 				particle.color.b = temp[2];
-				particle.color.a = particle.alphaStart + particle.alphaDiff * alphaValue.getScale(particle.lifePercent);
+				if(particle.blending != null)
+					particle.blending.opacity = particle.alphaStart + particle.alphaDiff * alphaValue.getScale(particle.lifePercent);
 			}
 		}
 		@Override
@@ -87,15 +90,15 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	public static class PointColorInfluencer extends ColorInfluencer<PointParticle>{
-		public PointColorInfluencer(){}
+	public static class PointSpriteColorInfluencer extends ColorInfluencer<PointParticle>{
+		public PointSpriteColorInfluencer(){}
 		
-		public PointColorInfluencer(PointColorInfluencer billboardColorInfluencer){
+		public PointSpriteColorInfluencer(PointSpriteColorInfluencer billboardColorInfluencer){
 			super(billboardColorInfluencer);
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				PointParticle particle = controller.particles[i];
 				float[] temp = colorValue.getColor(0);
@@ -120,8 +123,8 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 			}
 		}
 		@Override
-		public PointColorInfluencer copy () {
-			return new  PointColorInfluencer(this);
+		public PointSpriteColorInfluencer copy () {
+			return new  PointSpriteColorInfluencer(this);
 		}
 	}
 	
@@ -132,6 +135,7 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 	public ColorInfluencer(){
 		colorValue = new GradientColorValue();
 		alphaValue = new ScaledNumericValue();
+		alphaValue.setHigh(1);
 	}
 
 	public ColorInfluencer (ColorInfluencer billboardColorInfluencer) {
@@ -142,5 +146,17 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 	public void set(ColorInfluencer colorInfluencer){
 		this.colorValue.load(colorInfluencer.colorValue);
 		this.alphaValue.load(colorInfluencer.alphaValue);
+	}
+	
+	@Override
+	public void write (Json json) {
+		json.writeValue("alpha", alphaValue);
+		json.writeValue("color", colorValue);
+	}
+	
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		alphaValue = json.readValue("alpha", ScaledNumericValue.class, jsonData);
+		colorValue = json.readValue("color", GradientColorValue.class, jsonData);
 	}
 }

@@ -27,11 +27,10 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.particles.values.RangedNumericValue;
 
 
-class RangedNumericPanel extends EditorPanel<RangedNumericValue> {
+class RangedNumericPanel extends ParticleValuePanel<RangedNumericValue> {
 	Slider minSlider, maxSlider;
 	JButton rangeButton;
 	JLabel label;
@@ -43,10 +42,36 @@ class RangedNumericPanel extends EditorPanel<RangedNumericValue> {
 	
 	public RangedNumericPanel (ParticleEditor3D editor, RangedNumericValue value, String name, String description, boolean isAlwaysActive) 
 	{
-		super(editor, value, name, description, isAlwaysActive);
-
-		initializeComponents();
+		super(editor, name, description, isAlwaysActive);
 		setValue(value);
+	}
+
+	@Override
+	protected void initializeComponents () {
+		super.initializeComponents();
+		JPanel contentPanel = getContentPanel();
+		{
+			label = new JLabel("Value:");
+			contentPanel.add(label, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 6), 0, 0));
+		}
+		{
+			minSlider = new Slider(0, -99999, 99999, 1);
+			contentPanel.add(minSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+				new Insets(0, 0, 0, 0), 0, 0));
+		}
+		{
+			maxSlider = new Slider(0, -99999, 99999, 1);
+			contentPanel.add(maxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+				new Insets(0, 6, 0, 0), 0, 0));
+		}
+		{
+			rangeButton = new JButton("<");
+			rangeButton.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+			contentPanel.add(rangeButton, new GridBagConstraints(5, 2, 1, 1, 1.0, 0, GridBagConstraints.WEST,
+				GridBagConstraints.NONE, new Insets(0, 1, 0, 0), 0, 0));
+		}
+		
 		
 		minSlider.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
@@ -70,38 +95,13 @@ class RangedNumericPanel extends EditorPanel<RangedNumericValue> {
 				RangedNumericPanel.this.value.setLowMax((Float)slider.getValue());
 			}
 		});
-
-		if (value.getLowMin() == value.getLowMax()) rangeButton.doClick(0);
-	}
-
-	private void initializeComponents () {
-		JPanel contentPanel = getContentPanel();
-		{
-			label = new JLabel("Value:");
-			contentPanel.add(label, new GridBagConstraints(2, 2, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 6), 0, 0));
-		}
-		{
-			minSlider = new Slider(0, -99999, 99999, 1);
-			contentPanel.add(minSlider, new GridBagConstraints(3, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-				new Insets(0, 0, 0, 0), 0, 0));
-		}
-		{
-			maxSlider = new Slider(0, -99999, 99999, 1);
-			contentPanel.add(maxSlider, new GridBagConstraints(4, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-				new Insets(0, 6, 0, 0), 0, 0));
-		}
-		{
-			rangeButton = new JButton("<");
-			rangeButton.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
-			contentPanel.add(rangeButton, new GridBagConstraints(5, 2, 1, 1, 1.0, 0, GridBagConstraints.WEST,
-				GridBagConstraints.NONE, new Insets(0, 1, 0, 0), 0, 0));
-		}
 	}
 
 	public void setValue (RangedNumericValue value) {
 		super.setValue(value);
+		if(value == null) return;
 		minSlider.setValue(value.getLowMin());
 		maxSlider.setValue(value.getLowMax());
+		if (value.getLowMin() == value.getLowMax()) rangeButton.doClick(0);
 	}
 }

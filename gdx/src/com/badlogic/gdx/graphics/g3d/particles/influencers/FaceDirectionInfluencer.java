@@ -1,13 +1,10 @@
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class FaceDirectionInfluencer<T> extends Influencer<T> {
 
@@ -47,6 +44,20 @@ public class FaceDirectionInfluencer<T> extends Influencer<T> {
 	@Override
 	public FaceDirectionInfluencer copy () {
 		return new FaceDirectionInfluencer();
+	}
+
+
+	@Override
+	public void write (Json json) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

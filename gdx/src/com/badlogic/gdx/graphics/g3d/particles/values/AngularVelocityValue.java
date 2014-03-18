@@ -1,26 +1,24 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.Utils;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.CommonVelocityData;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.StrengthVelocityData;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 
 public abstract class AngularVelocityValue<P> extends StrengthVelocityValue<P, CommonVelocityData>{
+	/** Polar angle, XZ plane */
 	public ScaledNumericValue thetaValue;
+	/** Azimuth, Z */
 	public ScaledNumericValue phiValue;
 
 	public AngularVelocityValue(){
 		thetaValue = new ScaledNumericValue();
 		phiValue = new ScaledNumericValue();
+	}
+	
+	public AngularVelocityValue(AngularVelocityValue value){
+		super(value);
+		thetaValue = new ScaledNumericValue();
+		phiValue = new ScaledNumericValue();
+		thetaValue.load(value.thetaValue);
+		phiValue.load(value.phiValue);
 	}
 
 	public ScaledNumericValue getTheta(){
@@ -29,24 +27,6 @@ public abstract class AngularVelocityValue<P> extends StrengthVelocityValue<P, C
 
 	public ScaledNumericValue getPhi(){
 		return phiValue;
-	}
-
-	public void save (Writer output) throws IOException {
-		super.save(output);
-		if (!active) return;
-		output.write("theta:\n");
-		thetaValue.save(output);
-		output.write("phi:\n");
-		phiValue.save(output);
-	}
-
-	public void load (BufferedReader reader) throws IOException {
-		super.load(reader);
-		if (!active) return;
-		reader.readLine();
-		thetaValue.load(reader);
-		reader.readLine();
-		phiValue.load(reader);
 	}
 
 	public void load (AngularVelocityValue value) {

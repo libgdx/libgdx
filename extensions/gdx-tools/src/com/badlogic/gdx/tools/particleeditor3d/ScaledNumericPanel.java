@@ -22,24 +22,18 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.AbstractSpinnerModel;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JSpinner.NumberEditor;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.tools.particleeditor.Chart;
 
-class ScaledNumericPanel extends EditorPanel<ScaledNumericValue> {
+class ScaledNumericPanel extends ParticleValuePanel<ScaledNumericValue> {
 	Slider lowMinSlider, lowMaxSlider;
 	Slider highMinSlider, highMaxSlider;
 	JCheckBox relativeCheckBox;
@@ -53,9 +47,9 @@ class ScaledNumericPanel extends EditorPanel<ScaledNumericValue> {
 		this(editor, value, chartTitle, name, description, true);
 	}
 	
-	public ScaledNumericPanel (ParticleEditor3D editor, ScaledNumericValue value, String chartTitle, String name, String description, boolean isAlwaysActive){
-		super(editor, value, name, description, isAlwaysActive);
-
+	public ScaledNumericPanel (ParticleEditor3D editor, ScaledNumericValue value, 
+												String chartTitle, String name, String description, boolean isAlwaysActive){
+		super(editor, name, description, isAlwaysActive);
 		initializeComponents(chartTitle);
 		setValue(value);
 	}
@@ -224,7 +218,7 @@ class ScaledNumericPanel extends EditorPanel<ScaledNumericValue> {
 	@Override
 	public void setValue(ScaledNumericValue value){
 		super.setValue(value);
-		if(value == null)return;
+		if(this.value == null)return;
 		setValue(lowMinSlider, this.value.getLowMin());
 		setValue(lowMaxSlider, this.value.getLowMax());
 		setValue(highMinSlider, this.value.getHighMin());

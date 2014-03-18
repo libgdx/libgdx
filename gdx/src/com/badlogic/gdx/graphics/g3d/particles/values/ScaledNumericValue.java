@@ -1,10 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.graphics.g3d.particles.Utils;
 import com.badlogic.gdx.math.MathUtils;
 
 public class ScaledNumericValue extends RangedNumericValue {
@@ -82,34 +77,6 @@ public class ScaledNumericValue extends RangedNumericValue {
 		float startValue = scaling[startIndex];
 		float startTime = timeline[startIndex];
 		return startValue + (scaling[endIndex] - startValue) * ((percent - startTime) / (timeline[endIndex] - startTime));
-	}
-
-	public void save (Writer output) throws IOException {
-		super.save(output);
-		if (!active) return;
-		output.write("highMin: " + highMin + "\n");
-		output.write("highMax: " + highMax + "\n");
-		output.write("relative: " + relative + "\n");
-		output.write("scalingCount: " + scaling.length + "\n");
-		for (int i = 0; i < scaling.length; i++)
-			output.write("scaling" + i + ": " + scaling[i] + "\n");
-		output.write("timelineCount: " + timeline.length + "\n");
-		for (int i = 0; i < timeline.length; i++)
-			output.write("timeline" + i + ": " + timeline[i] + "\n");
-	}
-
-	public void load (BufferedReader reader) throws IOException {
-		super.load(reader);
-		if (!active) return;
-		highMin = Utils.readFloat(reader, "highMin");
-		highMax = Utils.readFloat(reader, "highMax");
-		relative = Utils.readBoolean(reader, "relative");
-		scaling = new float[Utils.readInt(reader, "scalingCount")];
-		for (int i = 0; i < scaling.length; i++)
-			scaling[i] = Utils.readFloat(reader, "scaling" + i);
-		timeline = new float[Utils.readInt(reader, "timelineCount")];
-		for (int i = 0; i < timeline.length; i++)
-			timeline[i] = Utils.readFloat(reader, "timeline" + i);
 	}
 
 	public void load (ScaledNumericValue value) {

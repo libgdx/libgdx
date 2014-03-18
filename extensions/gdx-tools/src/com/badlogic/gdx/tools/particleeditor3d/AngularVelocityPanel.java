@@ -6,33 +6,22 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.AngularVelocityValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.ParticleValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValue;
 
-public class AngularVelocityPanel extends EditorPanel<AngularVelocityValue> {
+public class AngularVelocityPanel extends ParticleValuePanel<AngularVelocityValue> {
 	JCheckBox isGlobalCheckBox;
 	ScaledNumericPanel thetaPanel;
 	ScaledNumericPanel phiPanel;
 	ScaledNumericPanel magnitudePanel;
 
 	public AngularVelocityPanel(ParticleEditor3D editor, AngularVelocityValue aValue, String charTitle, String name, String description) {
-		super(editor, aValue, name, description, true);
+		super(editor, name, description);
 		initializeComponents(aValue, charTitle);
 		setValue(value);
-
-		isGlobalCheckBox.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed (ActionEvent e) {
-				AngularVelocityPanel.this.value.isGlobal = isGlobalCheckBox.isSelected();
-			}
-		});
 	}
 	
 	@Override
@@ -45,8 +34,7 @@ public class AngularVelocityPanel extends EditorPanel<AngularVelocityValue> {
 		phiPanel.setValue(this.value.phiValue);
 	}
 
-	private void initializeComponents(AngularVelocityValue aValue, String charTitle) 
-	{
+	private void initializeComponents(AngularVelocityValue aValue, String charTitle) {
 		JPanel contentPanel = getContentPanel();
 		{
 			JPanel panel = new JPanel();
@@ -60,18 +48,18 @@ public class AngularVelocityPanel extends EditorPanel<AngularVelocityValue> {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		{
-			contentPanel.add( magnitudePanel = new ScaledNumericPanel(editor, aValue == null ? null: aValue.strengthValue, charTitle, "Strength", "In world units per second.", false), 
+			contentPanel.add( magnitudePanel = new ScaledNumericPanel(editor, aValue == null ? null: aValue.strengthValue, charTitle, "Strength", "In world units per second.", true), 
 					new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 							new Insets(0, 0, 0, 6), 0, 0));
 		}
 		{
-			contentPanel.add(thetaPanel = new ScaledNumericPanel(editor, aValue == null ? null: aValue.thetaValue, charTitle, "Inclination angle", "Rotation around Y axis", false), 
-					new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			contentPanel.add(phiPanel = new ScaledNumericPanel(editor, aValue == null ? null: aValue.phiValue, charTitle, "Polar angle", "Rotation around Y axis on XZ plane", true), 
+					new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 							new Insets(0, 0, 0, 6), 0, 0));
 		}
 		{
-			contentPanel.add(phiPanel = new ScaledNumericPanel(editor, aValue == null ? null: aValue.phiValue, charTitle, "Elevation angle", "Rotation around the axis orthonormal to Y and the inclination axis", false), 
-					new GridBagConstraints(0, 4, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			contentPanel.add(thetaPanel = new ScaledNumericPanel(editor, aValue == null ? null: aValue.thetaValue, charTitle, "Azimuth", "Rotation angle from Z", true), 
+					new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 							new Insets(0, 0, 0, 6), 0, 0));
 		}
 		{
@@ -81,6 +69,16 @@ public class AngularVelocityPanel extends EditorPanel<AngularVelocityValue> {
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
 		
+		magnitudePanel.setIsAlwayShown(true);
+		phiPanel.setIsAlwayShown(true);
+		thetaPanel.setIsAlwayShown(true);
+		
+		isGlobalCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed (ActionEvent e) {
+				AngularVelocityPanel.this.value.isGlobal = isGlobalCheckBox.isSelected();
+			}
+		});
 	}
 	
 	public ScaledNumericPanel getThetaPanel(){

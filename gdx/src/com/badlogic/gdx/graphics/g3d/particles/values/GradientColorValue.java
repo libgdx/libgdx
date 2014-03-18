@@ -1,10 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.graphics.g3d.particles.Utils;
 
 public class GradientColorValue extends ParticleValue {
 		static private float[] temp = new float[4];
@@ -57,28 +52,6 @@ public class GradientColorValue extends ParticleValue {
 			temp[1] = g1 + (colors[endIndex + 1] - g1) * factor;
 			temp[2] = b1 + (colors[endIndex + 2] - b1) * factor;
 			return temp;
-		}
-
-		public void save (Writer output) throws IOException {
-			super.save(output);
-			if (!active) return;
-			output.write("colorsCount: " + colors.length + "\n");
-			for (int i = 0; i < colors.length; i++)
-				output.write("colors" + i + ": " + colors[i] + "\n");
-			output.write("timelineCount: " + timeline.length + "\n");
-			for (int i = 0; i < timeline.length; i++)
-				output.write("timeline" + i + ": " + timeline[i] + "\n");
-		}
-
-		public void load (BufferedReader reader) throws IOException {
-			super.load(reader);
-			if (!active) return;
-			colors = new float[Utils.readInt(reader, "colorsCount")];
-			for (int i = 0; i < colors.length; i++)
-				colors[i] = Utils.readFloat(reader, "colors" + i);
-			timeline = new float[Utils.readInt(reader, "timelineCount")];
-			for (int i = 0; i < timeline.length; i++)
-				timeline[i] = Utils.readFloat(reader, "timeline" + i);
 		}
 
 		public void load (GradientColorValue value) {

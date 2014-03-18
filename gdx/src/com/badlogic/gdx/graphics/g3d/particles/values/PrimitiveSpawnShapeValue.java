@@ -1,10 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.graphics.g3d.particles.Utils;
 import com.badlogic.gdx.math.Vector3;
 
 public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
@@ -28,6 +23,9 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 	
 	public PrimitiveSpawnShapeValue(PrimitiveSpawnShapeValue value){
 		super(value);
+		spawnWidthValue = new ScaledNumericValue();
+		spawnHeightValue = new ScaledNumericValue();
+		spawnDepthValue = new ScaledNumericValue();
 	}
 	
 	@Override
@@ -73,32 +71,6 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		spawnDepth = spawnDepthValue.newLowValue();
 		spawnDepthDiff = spawnDepthValue.newHighValue();
 		if (!spawnDepthValue.isRelative()) spawnDepthDiff -= spawnDepth;
-	}
-	
-	@Override
-	public void save (Writer output) throws IOException {
-		super.save(output);
-		if(!active) return;
-		output.write("edges: " + edges + "\n");
-		output.write("- Spawn Width - \n");
-		spawnWidthValue.save(output);
-		output.write("- Spawn Height - \n");
-		spawnHeightValue.save(output);
-		output.write("- Spawn Depth - \n");
-		spawnDepthValue.save(output);
-	}
-	
-	@Override
-	public void load (BufferedReader reader) throws IOException {
-		super.load(reader);
-		if (!active) return;
-		edges = Utils.readBoolean(reader, "edges");
-		reader.readLine();
-		spawnWidthValue.load(reader);
-		reader.readLine();
-		spawnHeightValue.load(reader);
-		reader.readLine();
-		spawnDepthValue.load(reader);
 	}
 	
 	@Override

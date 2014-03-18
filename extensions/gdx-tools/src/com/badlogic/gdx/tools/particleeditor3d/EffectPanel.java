@@ -21,6 +21,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.Writer;
 
 import javax.swing.DefaultComboBoxModel;
@@ -38,41 +39,42 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.particles.Particle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ModelInstanceParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ParticleControllerParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.controllers.PointParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.controllers.PointSpriteParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.BillboardColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.ModelInstanceColorInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.PointSpriteColorInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ParticleControllerInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer.BillboardScaleInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer.ModelInstanceScaleInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.BillboardSpawnSource;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ModelInstanceSpawnSource;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer.ParticleControllerScaleInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer.PointSpriteScaleInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.BillboardSpawnInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ModelInstanceSpawnInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ParticleControllerSpawnInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.PointSpriteSpawnInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.BillboardVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ModelInstanceVelocityInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceRenderer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer.AlignMode;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ParticleControllerVelocityInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.PointSpriteVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.PrimitiveSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.SpawnShapeValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.BillboardPolarVelocityValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.BillboardRotationVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ModelInstancePolarVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ModelInstanceRotationVelocityValue;
+import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerPolarVelocityValue;
+import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.PointPolarVelocityValue;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.StreamUtils;
 
 class EffectPanel extends JPanel {
@@ -81,7 +83,7 @@ class EffectPanel extends JPanel {
 		Billboard(BillboardParticleController.class, "Billboard"),
 		ModelInstance(ModelInstanceParticleController.class, "Model Instance"),
 		ParticleController(ParticleControllerParticleController.class, "Particle Controller"),
-		Point(PointParticleController.class, "Point");
+		Point(PointSpriteParticleController.class, "Point");
 		
 		public Class type;
 		public String desc;
@@ -109,7 +111,7 @@ class EffectPanel extends JPanel {
 		initializeComponents();
 	}
 
-	public <T extends ParticleController> T createDefaultEmitter (Class<T> type, boolean select) {
+	public <T extends ParticleController> T createDefaultEmitter (Class<T> type, boolean select, boolean add) {
 
 		T controller = null;
 		if(type == BillboardParticleController.class){
@@ -118,9 +120,18 @@ class EffectPanel extends JPanel {
 		else if(type == ModelInstanceParticleController.class){
 			controller = (T) createDefaultModelInstanceController();
 		}
+		else if(type == PointSpriteParticleController.class){
+			controller = (T) createDefaultPointController();
+		}
+		else if(type == ParticleControllerParticleController.class){
+			controller = (T) createDefaultParticleController();
+		}
 		
-		controller.init();
-		addEmitter(controller, select);
+		if(add){
+			controller.init();
+			
+			addEmitter(controller, select);
+		}
 		return controller;
 	}
 
@@ -133,9 +144,6 @@ class EffectPanel extends JPanel {
 		emitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
 		emitter.getLife().setScaling(new float[] {1, 1, 0.3f});
 		emitter.setMaxParticleCount(100);
-
-		//Renderer
-		ModelInstanceRenderer renderer = new ModelInstanceRenderer();
 		
 		//Scale
 		ModelInstanceScaleInfluencer scaleInfluencer = new ModelInstanceScaleInfluencer();
@@ -150,7 +158,7 @@ class EffectPanel extends JPanel {
 
 		//Spawn
 		PointSpawnShapeValue pointSpawnShapeValue = new PointSpawnShapeValue();
-		ModelInstanceSpawnSource spawnSource = new ModelInstanceSpawnSource(pointSpawnShapeValue);
+		ModelInstanceSpawnInfluencer spawnSource = new ModelInstanceSpawnInfluencer(pointSpawnShapeValue);
 
 		//Velocity
 		ModelInstanceVelocityInfluencer velocityInfluencer = new ModelInstanceVelocityInfluencer();
@@ -180,8 +188,8 @@ class EffectPanel extends JPanel {
 		rotationVelocityValue.strengthValue.setRelative(true);
 		velocityInfluencer.velocities.add(rotationVelocityValue);
 		
-		return new ModelInstanceParticleController("Untitled", emitter, renderer, 
-			new ModelInfluencer((Model) editor.assetManager.get(ParticleEditor3D.DEFAULT_MODEL_PARTICLE) ),
+		return new ModelInstanceParticleController("Untitled", emitter, editor.getModelInstanceParticleBatch(), 
+			new ModelInfluencer.ModelInstanceRandomInfluencer((Model) editor.assetManager.get(ParticleEditor3D.DEFAULT_MODEL_PARTICLE) ),
 			spawnSource,
 			scaleInfluencer,
 			colorInfluencer,
@@ -194,16 +202,16 @@ class EffectPanel extends JPanel {
 		RegularEmitter emitter = new RegularEmitter();
 		emitter.getDuration().setLow(3000);
 		emitter.getEmission().setHigh(250);
+		//emitter.getLife().setHigh(1000);
 		emitter.getLife().setHigh(500, 1000);
 		emitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
 		emitter.getLife().setScaling(new float[] {1, 1, 0.3f});
 		emitter.setMaxParticleCount(200);
 
-		//Renderer
-		BillboardRenderer renderer = new BillboardRenderer(AlignMode.Screen, true);
-		renderer.setAdditive(true);
-		renderer.setCamera(editor.worldCamera);
-		
+		//Spawn
+		PointSpawnShapeValue pointSpawnShapeValue = new PointSpawnShapeValue();
+		BillboardSpawnInfluencer spawnSource = new BillboardSpawnInfluencer(pointSpawnShapeValue);
+
 		//Scale
 		BillboardScaleInfluencer scaleInfluencer = new BillboardScaleInfluencer();
 		scaleInfluencer.scaleValue.setHigh(1);
@@ -214,47 +222,155 @@ class EffectPanel extends JPanel {
 		colorInfluencer.alphaValue.setHigh(1);
 		colorInfluencer.alphaValue.setTimeline(new float[] {0, 0.2f, 0.8f, 1});
 		colorInfluencer.alphaValue.setScaling(new float[] {0, 1, 0.75f, 0});
-
-		//Spawn
-		PointSpawnShapeValue pointSpawnShapeValue = new PointSpawnShapeValue();
-		BillboardSpawnSource spawnSource = new BillboardSpawnSource(pointSpawnShapeValue);
-
+		
 		//Velocity
 		BillboardVelocityInfluencer velocityInfluencer = new BillboardVelocityInfluencer();
 
 		//Directional
 		BillboardPolarVelocityValue velocityValue = new BillboardPolarVelocityValue();
-		ScaledNumericValue thetaValue = velocityValue.getTheta();
-		thetaValue.setHigh(0, 359);
-		thetaValue.setActive(true);
 		ScaledNumericValue phiValue = velocityValue.getPhi();
-		phiValue.setHigh(45, 135);
-		phiValue.setLow(90);
-		phiValue.setTimeline(new float[] {0, 0.5f, 1});
-		phiValue.setScaling(new float[] {1, 0, 0});
+		phiValue.setHigh(0, 359);
 		phiValue.setActive(true);
+		ScaledNumericValue thetaValue = velocityValue.getTheta();
+		thetaValue.setHigh(45, -45);
+		thetaValue.setLow(0);
+		thetaValue.setTimeline(new float[] {0, 0.5f, 1});
+		thetaValue.setScaling(new float[] {1, 0, 0});
+		thetaValue.setActive(true);
 		velocityValue.getStrength().setHigh(5, 10);
 		velocityValue.getStrength().setActive(true);
 		velocityValue.setActive(true);
 		velocityInfluencer.velocities.add(velocityValue);
 
-		//Rotational
-		BillboardRotationVelocityValue rotationVelocityValue = new BillboardRotationVelocityValue();
-		rotationVelocityValue.strengthValue.setLow(0, 360);
-		rotationVelocityValue.strengthValue.setHigh(180);
-		rotationVelocityValue.strengthValue.setTimeline(new float[] {0, 1});
-		rotationVelocityValue.strengthValue.setScaling(new float[] {0, 1});
-		rotationVelocityValue.strengthValue.setRelative(true);
-		velocityInfluencer.velocities.add(rotationVelocityValue);
-		
-		return new BillboardParticleController("Untitled", emitter, renderer, 
-			new RegionInfluencer((Texture) editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE) ),
+		return new BillboardParticleController("Untitled", emitter, editor.getBillboardBatch(), 
+			new RegionInfluencer.BillboardSingleRegionInfluencer((Texture) editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE) ),
+			//new BillboardRegionInfluencer.Animated(new TextureRegion((Texture)editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE))),
 			spawnSource,
 			scaleInfluencer,
 			colorInfluencer,
 			velocityInfluencer
 			);
 	}
+	
+	private PointSpriteParticleController createDefaultPointController () {
+		//Emission
+		RegularEmitter emitter = new RegularEmitter();
+		emitter.getDuration().setLow(3000);
+		emitter.getEmission().setHigh(250);
+		emitter.getLife().setHigh(500, 1000);
+		emitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
+		emitter.getLife().setScaling(new float[] {1, 1, 0.3f});
+		emitter.setMaxParticleCount(200);
+		
+		//Scale
+		PointSpriteScaleInfluencer scaleInfluencer = new PointSpriteScaleInfluencer();
+		scaleInfluencer.scaleValue.setHigh(1);
+
+		//Color
+		PointSpriteColorInfluencer colorInfluencer = new PointSpriteColorInfluencer();
+		colorInfluencer.colorValue.setColors(new float[] {1, 0.12156863f, 0.047058824f});
+		colorInfluencer.alphaValue.setHigh(1);
+		colorInfluencer.alphaValue.setTimeline(new float[] {0, 0.2f, 0.8f, 1});
+		colorInfluencer.alphaValue.setScaling(new float[] {0, 1, 0.75f, 0});
+
+		//Spawn
+		PointSpawnShapeValue pointSpawnShapeValue = new PointSpawnShapeValue();
+		PointSpriteSpawnInfluencer spawnSource = new PointSpriteSpawnInfluencer(pointSpawnShapeValue);
+
+		//Velocity
+		PointSpriteVelocityInfluencer velocityInfluencer = new PointSpriteVelocityInfluencer();
+
+		//Directional
+		PointPolarVelocityValue velocityValue = new PointPolarVelocityValue();
+		ScaledNumericValue phiValue = velocityValue.getPhi();
+		phiValue.setHigh(0, 359);
+		phiValue.setActive(true);
+		ScaledNumericValue thetaValue = velocityValue.getTheta();
+		thetaValue.setHigh(45, -45);
+		thetaValue.setLow(0);
+		thetaValue.setTimeline(new float[] {0, 0.5f, 1});
+		thetaValue.setScaling(new float[] {1, 0, 0});
+		thetaValue.setActive(true);
+		velocityValue.getStrength().setHigh(5, 10);
+		velocityValue.getStrength().setActive(true);
+		velocityValue.setActive(true);
+		velocityInfluencer.velocities.add(velocityValue);
+
+		//Rotational
+		/*
+		PointRotationVelocityValue rotationVelocityValue = new PointRotationVelocityValue();
+		rotationVelocityValue.strengthValue.setLow(0, 360);
+		rotationVelocityValue.strengthValue.setHigh(180);
+		rotationVelocityValue.strengthValue.setTimeline(new float[] {0, 1});
+		rotationVelocityValue.strengthValue.setScaling(new float[] {0, 1});
+		rotationVelocityValue.strengthValue.setRelative(true);
+		velocityInfluencer.velocities.add(rotationVelocityValue);
+		*/
+		
+		return new PointSpriteParticleController("Untitled", emitter, editor.getPointSpriteBatch(),
+			new RegionInfluencer.PointSpriteAnimatedRegionInfluencer((Texture) editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE) ),
+			spawnSource,
+			scaleInfluencer,
+			colorInfluencer,
+			velocityInfluencer
+			);
+	}
+	
+	private ParticleControllerParticleController createDefaultParticleController () {
+		//Emission
+		RegularEmitter emitter = new RegularEmitter();
+		emitter.getDuration().setLow(5000);
+		emitter.getEmission().setHigh(9);
+		emitter.getLife().setHigh(5000);
+		emitter.setMaxParticleCount(10);
+
+		//Scale
+		ParticleControllerScaleInfluencer scaleInfluencer = new ParticleControllerScaleInfluencer();
+		scaleInfluencer.scaleValue.setHigh(1);
+
+		//Spawn
+		PointSpawnShapeValue pointSpawnShapeValue = new PointSpawnShapeValue();
+		ParticleControllerSpawnInfluencer spawnSource = new ParticleControllerSpawnInfluencer(pointSpawnShapeValue);
+
+		//Velocity
+		ParticleControllerVelocityInfluencer velocityInfluencer = new ParticleControllerVelocityInfluencer();
+
+		//Directional
+		ParticleControllerPolarVelocityValue velocityValue = new ParticleControllerPolarVelocityValue();
+		ScaledNumericValue phiValue = velocityValue.getPhi();
+		phiValue.setHigh(0, 359);
+		phiValue.setActive(true);
+		ScaledNumericValue thetaValue = velocityValue.getTheta();
+		thetaValue.setHigh(45, -45);
+		thetaValue.setLow(0);
+		thetaValue.setTimeline(new float[] {0, 0.5f, 1});
+		thetaValue.setScaling(new float[] {1, 0, 0});
+		thetaValue.setActive(true);
+		velocityValue.getStrength().setHigh(5, 10);
+		velocityValue.getStrength().setActive(true);
+		velocityValue.setActive(true);
+		velocityInfluencer.velocities.add(velocityValue);
+
+		//Rotational
+		/*
+		PointRotationVelocityValue rotationVelocityValue = new PointRotationVelocityValue();
+		rotationVelocityValue.strengthValue.setLow(0, 360);
+		rotationVelocityValue.strengthValue.setHigh(180);
+		rotationVelocityValue.strengthValue.setTimeline(new float[] {0, 1});
+		rotationVelocityValue.strengthValue.setScaling(new float[] {0, 1});
+		rotationVelocityValue.strengthValue.setRelative(true);
+		velocityInfluencer.velocities.add(rotationVelocityValue);
+		*/
+		
+		return new ParticleControllerParticleController("Untitled", emitter,
+			new ParticleControllerInfluencer.ParticleControllerSingleInfluencer(
+					editor.assetManager.get(ParticleEditor3D.DEFAULT_PFX, ParticleEffect.class).getControllers().get(0)),
+			spawnSource,
+			scaleInfluencer,
+			velocityInfluencer
+			);
+	}
+	
 
 	private void addEmitter (final ParticleController emitter, boolean select) {
 		Array<ParticleController> emitters = editor.effect.getControllers();
@@ -280,66 +396,60 @@ class EffectPanel extends JPanel {
 
 	void emitterChecked (int index, boolean checked) {
 		editor.setEnabled(editor.effect.getControllers().get(index), checked);
+		//Gdx.app.log("INFERNO", "Emitter checked");
 		editor.effect.start();
 	}
 	
 	void openEffect () {
-		/*
-		FileDialog dialog = new FileDialog(editor, "Open Effect", FileDialog.LOAD);
-		if (lastDir != null) dialog.setDirectory(lastDir);
-		dialog.setVisible(true);
-		final String file = dialog.getFile();
-		final String dir = dialog.getDirectory();
-		if (dir == null || file == null || file.trim().length() == 0) return;
-		lastDir = dir;
-		ParticleEffect effect = new ParticleEffect();
-		try {
-			effect.loadEmitters(Gdx.files.absolute(new File(dir, file).getAbsolutePath()));
-			editor.effect = effect;
-			emitterTableModel.getDataVector().removeAllElements();
-			editor.particleData.clear();
-		} catch (Exception ex) {
-			System.out.println("Error loading effect: " + new File(dir, file).getAbsolutePath());
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(editor, "Error opening effect.");
-			return;
+		File file = editor.showFileLoadDialog();
+		if(file != null){
+			try {
+				editor.effect = editor.load(file.getAbsolutePath(), ParticleEffect.class, null, null);
+				editor.effect = editor.effect.copy();
+				editor.effect.setBatch(editor.getPointSpriteBatch(), PointSpriteParticleController.class);
+				editor.effect.setBatch(editor.getBillboardBatch(), BillboardParticleController.class);
+				editor.effect.setBatch(editor.getModelInstanceParticleBatch(), ModelInstanceParticleController.class);
+				
+				editor.effect.init();
+				emitterTableModel.getDataVector().removeAllElements();
+				for (ParticleController emitter : editor.effect.getControllers()) {
+					emitterTableModel.addRow(new Object[] {emitter.name, true});
+				}
+				editor.particleData.clear();
+				editIndex = 0;
+				
+				emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
+				editor.reloadRows();
+			} catch (Exception ex) {
+				System.out.println("Error loading effect: " + file.getAbsolutePath());
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(editor, "Error opening effect.");
+				return;
+			}
 		}
-		for (ParticleEmitter emitter : effect.getEmitters()) {
-			//emitter.setPosition(0,0,0);
-			emitterTableModel.addRow(new Object[] {emitter.getName(), true});
-		}
-		editIndex = 0;
-		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
-		editor.reloadRows();
-		*/
 	}
 
 	void saveEffect () {
-		/*
-		FileDialog dialog = new FileDialog(editor, "Save Effect", FileDialog.SAVE);
-		if (lastDir != null) dialog.setDirectory(lastDir);
-		dialog.setVisible(true);
-		String file = dialog.getFile();
-		String dir = dialog.getDirectory();
-		if (dir == null || file == null || file.trim().length() == 0) return;
-		lastDir = dir;
-		int index = 0;
-		for (ParticleEmitter emitter : editor.effect.getEmitters())
-			emitter.setName((String)emitterTableModel.getValueAt(index++, 0));
-
-		File outputFile = new File(dir, file);
-		Writer fileWriter = null;
-		try {
-			//fileWriter = new FileWriter(outputFile);
-			editor.effect.save(outputFile);
-		} catch (Exception ex) {
-			System.out.println("Error saving effect: " + outputFile.getAbsolutePath());
-			ex.printStackTrace();
-			JOptionPane.showMessageDialog(editor, "Error saving effect.");
-		} finally {
-			StreamUtils.closeQuietly(fileWriter);
+		File file = editor.showFileSaveDialog();
+		if(file != null){
+			int index = 0;
+			for (ParticleController emitter : editor.effect.getControllers())
+				emitter.name = ((String)emitterTableModel.getValueAt(index++, 0));
+			Writer fileWriter = null;
+			try {
+				fileWriter = new FileWriter(file);
+				Json json = new Json();
+				editor.effect.saveAsset(editor.assetManager);
+				json.toJson(editor.effect, fileWriter);
+				//System.out.println(json.prettyPrint(editor.effect));
+			} catch (Exception ex) {
+				System.out.println("Error saving effect: " + file.getAbsolutePath());
+				ex.printStackTrace();
+				JOptionPane.showMessageDialog(editor, "Error saving effect.");
+			} finally {
+				StreamUtils.closeQuietly(fileWriter);
+			}
 		}
-		*/
 	}
 
 	void deleteEmitter () {
@@ -356,14 +466,13 @@ class EffectPanel extends JPanel {
 	}
 
 	void move (int direction) {
-		if (direction < 0 && editIndex == 0) return;
 		Array<ParticleController> emitters = editor.effect.getControllers();
-		if (direction > 0 && editIndex == emitters.size - 1) return;
+		if ( (direction < 0 && editIndex == 0) || (direction > 0 && editIndex == emitters.size - 1)) return;
 		int insertIndex = editIndex + direction;
 		Object name = emitterTableModel.getValueAt(editIndex, 0);
-		emitterTableModel.removeRow(editIndex);
 		ParticleController emitter = emitters.removeIndex(editIndex);
-		emitterTableModel.insertRow(insertIndex, new Object[] {name});
+		emitterTableModel.removeRow(editIndex);
+		emitterTableModel.insertRow(insertIndex, new Object[] {name, editor.isEnabled(emitter)});
 		emitters.insert(insertIndex, emitter);
 		editIndex = insertIndex;
 		emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
@@ -388,7 +497,7 @@ class EffectPanel extends JPanel {
 				newButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
 						ControllerType item = (ControllerType)controllerTypeCombo.getSelectedItem();
-						createDefaultEmitter(item.type, true);
+						createDefaultEmitter(item.type, true, true);
 					}
 				});
 			}

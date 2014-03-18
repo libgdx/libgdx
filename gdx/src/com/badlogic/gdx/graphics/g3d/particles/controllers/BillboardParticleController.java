@@ -4,14 +4,15 @@ import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.Renderer;
-import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
 
 public class BillboardParticleController extends ParticleController<BillboardParticle> {
 
-	public BillboardParticleController (String name, Emitter<BillboardParticle> emitter, Renderer<BillboardParticle> renderer,
+	public BillboardParticleController(){}
+	
+	public BillboardParticleController (String name, Emitter<BillboardParticle> emitter, IParticleBatch<BillboardParticle> batch,
 																											Influencer<BillboardParticle>... influencers) {
-		super(name, emitter, renderer, influencers);
+		super(name, emitter, batch, influencers);
 	}
 
 	@Override
@@ -21,17 +22,23 @@ public class BillboardParticleController extends ParticleController<BillboardPar
 			particles[i] = new BillboardParticle();
 		return particles;
 	}
+	
+	@Override
+	protected void initParticles () {
+		for(BillboardParticle particle : particles){
+			particle.reset();
+		}
+	}
 
 	@Override
 	public ParticleController copy () {
 		Emitter emitter = (Emitter)this.emitter.copy();
-		Renderer renderer = (Renderer)this.renderer.copy();
 		Influencer[] influencers = new Influencer[this.influencers.size];
 		int i=0;
 		for(Influencer influencer : this.influencers){
 			influencers[i++] = (Influencer)influencer.copy();
 		}
-		return new BillboardParticleController(new String(this.name), emitter, renderer, influencers);
+		return new BillboardParticleController(new String(this.name), emitter, batch, influencers);
 	}
 
 	@Override

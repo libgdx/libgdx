@@ -1,20 +1,22 @@
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.ParticleEffectData;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.Renderer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomColorInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class ParticleController<T> implements RenderableProvider{
+public abstract class ParticleController<T> implements Json.Serializable{
 	/** Name of the controller */
 	public String name;
 	
@@ -25,8 +27,9 @@ public abstract class ParticleController<T> implements RenderableProvider{
 	public Array<Influencer<T>> influencers;
 	
 	/** Controls the graphical representation of the particles */
-	public Renderer<T> renderer;
-
+	//public Renderer<T> renderer;
+	public  IParticleBatch<T> batch;
+	
 	/** Particles components */
 	public T[] particles;
 	
@@ -39,6 +42,7 @@ public abstract class ParticleController<T> implements RenderableProvider{
 	
 	/** Transform flags */
 	public boolean isDirty, isRecomputeScale;
+	public Vector3 scale;
 	
 	protected BoundingBox boundingBox;
 	
@@ -47,14 +51,19 @@ public abstract class ParticleController<T> implements RenderableProvider{
 	 * DO NOT CHANGE MANUALLY */
 	public Vector3 velocity;
 	
-	public ParticleController(String name, Emitter<T> emitter, Renderer<T> renderer, Influencer<T>...influencers){
-		this.name = name;
-		this.emitter = emitter;
-		this.renderer = renderer;
-		this.influencers = new Array<Influencer<T>>(influencers);
+	public ParticleController(){
 		transform = new Matrix4();
 		tmpTransform = new Matrix4();
 		velocity = new Vector3();
+		scale = new Vector3(1,1,1);
+	}
+	
+	public ParticleController(String name, Emitter<T> emitter, IParticleBatch<T> batch, Influencer<T>...influencers){
+		this();
+		this.name = name;
+		this.emitter = emitter;
+		this.batch = batch;
+		this.influencers = new Array<Influencer<T>>(influencers);
 	}
 	
 
@@ -112,27 +121,30 @@ public abstract class ParticleController<T> implements RenderableProvider{
 	
 	/** Initialize the controller: all the sub systems will be initialized. */
 	public void init(){
+		bind();
 		boolean alloc = true;
 		if(particles != null) {
-			killParticles(0, emitter.activeCount);
+			end();
 			alloc = particles.length < emitter.maxParticleCount;
 		}
 		if(alloc) 
 			particles = allocParticles(emitter.maxParticleCount);
-		bind();
+		initParticles();
 		emitter.init();
 		for(Influencer influencer : influencers)
 			influencer.init();
-		renderer.init();
+		//renderer.init();
 	}
 	
+	protected void initParticles (){};
+
 	protected abstract T[] allocParticles (int maxParticleCount);
 
 	protected void bind(){
 		emitter.bind(this);
 		for(Influencer influencer : influencers)
 			influencer.bind(this);
-		renderer.bind(this);
+		//renderer.bind(this);
 	}
 	
 	/** Start the simulation. */
@@ -143,10 +155,17 @@ public abstract class ParticleController<T> implements RenderableProvider{
 		//renderer.start();
 	}
 	
-	public void initParticles (int startIndex, int count) {
-		emitter.initParticles(startIndex, count);
+	/** End the simulation. */
+	protected void end () {
+		emitter.end();
 		for(Influencer influencer : influencers)
-			influencer.initParticles(startIndex, count);
+			influencer.end();
+	}
+	
+	public void activateParticles (int startIndex, int count) {
+		emitter.activateParticles(startIndex, count);
+		for(Influencer influencer : influencers)
+			influencer.activateParticles(startIndex, count);
 	}
 	
 	public void killParticles (int startIndex, int count){
@@ -181,12 +200,7 @@ public abstract class ParticleController<T> implements RenderableProvider{
 								newTransform[Matrix4.M23] -currentTransform[Matrix4.M23]).scl(1f/dt);
 			if(isRecomputeScale){
 				//Compute x and y scale
-				renderer.particlesRefScaleX = (float)Math.sqrt(	newTransform[Matrix4.M00]*newTransform[Matrix4.M00] + 
-																				newTransform[Matrix4.M01]*newTransform[Matrix4.M01] + 
-																				newTransform[Matrix4.M02]*newTransform[Matrix4.M02]);
-				renderer.particlesRefScaleY = (float)Math.sqrt(	newTransform[Matrix4.M10]*newTransform[Matrix4.M10] + 
-																				newTransform[Matrix4.M11]*newTransform[Matrix4.M11] + 
-																				newTransform[Matrix4.M12]*newTransform[Matrix4.M12]);
+				tmpTransform.getScale(scale);
 				isRecomputeScale = false;
 			}
 			
@@ -211,23 +225,19 @@ public abstract class ParticleController<T> implements RenderableProvider{
 		}
 	}
 
-	@Override
-	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
+	public void draw () {
 		if(emitter.activeCount > 0){
-			//This is called here and not in the update method because the camera or everything else on which 
-			//the rendering could relay on are supposed to be ready and will not be modified again in this frame.
-			renderer.update();
-			renderer.getRenderables(renderables, pool);
+			batch.draw(this);
 		}
 	}
-
+	
 	public abstract ParticleController copy ();
 
 	public void dispose(){
 		emitter.dispose();
 		for(Influencer influencer : influencers)
 			influencer.dispose();
-		renderer.dispose();
+		//renderer.dispose();
 	}
 
 	public BoundingBox getBoundingBox (){
@@ -238,13 +248,61 @@ public abstract class ParticleController<T> implements RenderableProvider{
 	
 	protected abstract void calculateBoundingBox ();
 
-	public <K extends Influencer<T>> K findInfluencer (Class<K> influencerClass) {
+	private <K extends Influencer<T>> int findIndex(Class<K> type){
 		for(int i = 0; i< influencers.size; ++i){
-			Influencer influencer = influencers.items[i];
-			if(influencerClass.isAssignableFrom(influencer.getClass()))
-				return (K)influencer;
+			Influencer influencer = influencers.get(i);
+			if(type.isAssignableFrom(influencer.getClass())){
+				return i;
+			}
 		}
-		return null;
+		return -1;
+	}
+	
+	public <K extends Influencer<T>> K findInfluencer (Class<K> influencerClass) {
+		int index = findIndex(influencerClass);
+		return index >-1 ? (K)influencers.get(index) : null;
+	}
+	
+	public  <K extends Influencer<T>> void removeInfluencer (Class<K> type) {
+		int index = findIndex(type);
+		if(index > -1 )
+			influencers.removeIndex(index);
+	}
+	
+	public <K extends Influencer<T>> boolean replaceInfluencer (Class<K> type, K newInfluencer) {
+		int index = findIndex(type);
+		if(index > -1){
+			influencers.insert(index, newInfluencer);
+			influencers.removeIndex(index+1);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void write (Json json) {
+      json.writeValue("name", name);
+      json.writeValue("emitter", emitter, Emitter.class);
+      json.writeValue("influencers", influencers, Array.class, Influencer.class);
+   }
+
+	@Override
+	public void read (Json json, JsonValue jsonMap) {
+		name = json.readValue("name", String.class, jsonMap);
+		emitter = json.readValue("emitter", Emitter.class, jsonMap);
+		influencers = json.readValue("influencers", Array.class, Influencer.class, jsonMap);
+	}
+
+	public void saveAssets (AssetManager manager, ParticleEffectData data) {
+		emitter.saveAssets(manager, data);
+		for(Influencer influencer : influencers)
+			influencer.saveAssets(manager, data);
+	}
+
+	public void loadAssets (AssetManager manager, ParticleEffectData data) {
+		emitter.loadAssets(manager, data);
+		for(Influencer influencer : influencers)
+			influencer.loadAssets(manager, data);
 	}
 
 }

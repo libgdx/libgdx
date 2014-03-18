@@ -1,11 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Writer;
-
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.StrengthVelocityData;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
 
 public abstract class StrengthVelocityValue<T, D extends StrengthVelocityData> extends VelocityValue<T, D>{
 	public ScaledNumericValue strengthValue;
@@ -13,28 +8,21 @@ public abstract class StrengthVelocityValue<T, D extends StrengthVelocityData> e
 	public StrengthVelocityValue(){
 		strengthValue = new ScaledNumericValue();
 	}
+	
+	public StrengthVelocityValue(StrengthVelocityValue value){
+		super(value);
+		strengthValue = new ScaledNumericValue();
+		strengthValue.load(value.strengthValue);
+	}
 
 	public ScaledNumericValue getStrength(){
 		return strengthValue;
 	}
 
-	public void save (Writer output) throws IOException {
-		super.save(output);
-		if (!active) return;
-		output.write("strength:\n");
-		strengthValue.save(output);
-	}
-
-	public void load (BufferedReader reader) throws IOException {
-		super.load(reader);
-		if (!active) return;
-		reader.readLine();
-		strengthValue.load(reader);
-	}
-
-	public void load (StrengthVelocityValue value) {
+	@Override
+	public void load (ParticleValue value) {
 		super.load(value);
-		strengthValue.load(value.strengthValue);
+		strengthValue.load( ((StrengthVelocityValue)value).strengthValue);
 	}
 
 	public void initData (StrengthVelocityData data) {

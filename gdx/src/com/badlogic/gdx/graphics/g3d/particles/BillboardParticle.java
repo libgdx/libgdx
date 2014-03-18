@@ -1,30 +1,32 @@
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
 import com.badlogic.gdx.math.Vector3;
 
 public class BillboardParticle extends Particle{
 	public float 	x,y,z,
-						u,v, u2,v2,
+						u, v, u2, v2,
+						//Size in world units
 						halfWidth, halfHeight,
 						
 						//Color
-						r = 1, g = 1, b = 1, a = 1,
+						r, g, b, a,
 						
 						//Rotation
-						cosRotation = 1, sinRotation = 0,
+						cosRotation, sinRotation,
 						
 						//Scale
-						scale = 1,
+						scale,
 						
 						//Start and Diff
 						scaleStart, scaleDiff,
 						alphaStart, alphaDiff;
-	
-	//Velocities applied to center of mass
-	/** temporary  field used by velocity influencer to accumulate the rotation */
-	public static float ROTATION_ACCUMULATOR = 0;
-	public VelocityData[] velocityData;
-	public Vector3 velocity;
+	public void reset () {
+		x = y = z = 0;
+		u=0; v=0; u2 =1; v2 = 1;
+		halfWidth = halfHeight = 0.5f;
+		r= g= b= a= 1;
+		cosRotation =1; sinRotation =0;
+		scale =1;
+	}
 }

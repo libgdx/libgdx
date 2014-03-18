@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ModelInstanceParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ParticleControllerParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.controllers.PointParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.controllers.PointSpriteParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.FaceDirectionInfluencer;
@@ -35,23 +35,23 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomColorInfluencer
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomModelInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomParticleControllerInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomPointRegionInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomRegionInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.BillboardColorInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.PointColorInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.PointSpriteColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.FaceDirectionInfluencer.ParticleControllerFaceDirectionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomColorInfluencer.ModelInstanceRandomColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer.*;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.BillboardSpawnSource;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ModelInstanceSpawnSource;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ParticleControllerSpawnSource;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.PointSpawnSource;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.BillboardSpawnInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ModelInstanceSpawnInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.ParticleControllerSpawnInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.PointSpriteSpawnInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.BillboardVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ModelInstanceVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ParticleControllerVelocityInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.PointVelocityInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.PointSpriteVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleControllerRenderer;
@@ -183,8 +183,8 @@ public class ParticleControllerTest extends BaseG3dTest{
 	
 	@Override
 	protected void onLoaded () {
-		//Texture particleTexture = assets.get(DEFAULT_PARTICLE);
-		Texture particleTexture = assets.get(EXPLOSION_TEXTURE);
+		Texture particleTexture = assets.get(DEFAULT_PARTICLE);
+		//Texture particleTexture = assets.get(EXPLOSION_TEXTURE);
 		/*
 		Model sphere = assets.get(SPHERE_MODEL);
 		Material material = sphere.materials.get(0);
@@ -208,11 +208,11 @@ public class ParticleControllerTest extends BaseG3dTest{
 		//colorAttribute.color.set(1, 0.12156863f, 0.047058824f, 1);
 		
 		//X
-		//ParticleController controller = createBillboardController(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture);
+		ParticleController controller = createBillboardController(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture);
 		//ParticleController controller = createModelInstanceController(sphere);
 		//ParticleController controller = createModelInstanceController((Model)assets.get(CAR_MODEL));
 		//ParticleController controller = createModelInstanceController(new float[] {1, 0.12156863f, 0.047058824f}, monkey);
-		ParticleController controller = createPointController(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture);
+		//ParticleController controller = createPointController(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture);
 		//ParticleController controller = createParticleControllerController(createLineController(new float[] {1, 0.12156863f, 0.047058824f}, particleTexture));
 		//controller.translate(Vector3.tmp.set(5,5,0));
 		//controller.rotate(Vector3.X, -90);
@@ -303,7 +303,7 @@ public class ParticleControllerTest extends BaseG3dTest{
 		ParticleControllerParticleController controller = new ParticleControllerParticleController("controller",
 																	regularEmitter, renderer, 
 																	new RandomParticleControllerInfluencer(particleController),
-																	new ParticleControllerSpawnSource(spawnShape),
+																	new ParticleControllerSpawnInfluencer(spawnShape),
 																	velocityInfluencer
 																	//new ParticleControllerFaceDirectionInfluencer()
 																	//scaleInfluencer
@@ -316,11 +316,11 @@ public class ParticleControllerTest extends BaseG3dTest{
 		//Emitter
 		RegularEmitter regularEmitter = new RegularEmitter();
 		regularEmitter.getDuration().setLow(10000);
-		regularEmitter.getEmission().setHigh(900);
-		regularEmitter.getLife().setHigh(10000);
+		regularEmitter.getEmission().setHigh(9000);
+		regularEmitter.getLife().setHigh(500, 1000);
 		regularEmitter.getLife().setTimeline(new float[] {0, 0.66f, 1});
 		regularEmitter.getLife().setScaling(new float[] {1, 1, 0.3f});
-		regularEmitter.setMaxParticleCount(1000);
+		regularEmitter.setMaxParticleCount(10000);
 		
 		//Source
 		//SpawnShapeValue spawnShape = new PointSpawnShapeValue();
@@ -341,14 +341,14 @@ public class ParticleControllerTest extends BaseG3dTest{
 
 		//Influencers
 		//Color
-		PointColorInfluencer colorInfluencer = new PointColorInfluencer();
+		PointSpriteColorInfluencer colorInfluencer = new PointSpriteColorInfluencer();
 		colorInfluencer.colorValue.setColors(colors);
 		colorInfluencer.alphaValue.setHigh(1);
 		colorInfluencer.alphaValue.setTimeline(new float[] {0, 0.2f, 0.8f, 1});
 		colorInfluencer.alphaValue.setScaling(new float[] {0, 1, 0.75f, 0});
 		
 		//Velocity
-		PointVelocityInfluencer velocityInfluencer = new PointVelocityInfluencer();
+		PointSpriteVelocityInfluencer velocityInfluencer = new PointSpriteVelocityInfluencer();
 		/*
 		BillboardBrownianVelocityValue velocityValue = new BillboardBrownianVelocityValue();
 		ScaledNumericValue weight = velocityValue.getStrength();
@@ -370,7 +370,7 @@ public class ParticleControllerTest extends BaseG3dTest{
 		velocityInfluencer.velocities.add(velocityValue);
 		*/
 		
-		PointScaleInfluencer scaleInfluencer = new PointScaleInfluencer();
+		PointSpriteScaleInfluencer scaleInfluencer = new PointSpriteScaleInfluencer();
 		scaleInfluencer.scaleValue.setHigh(1);
 		//scaleInfluencer.scaleValue.setTimeline(new float[] {0, 1});
 		//scaleInfluencer.scaleValue.setScaling(new float[] {1, 0});
@@ -381,7 +381,6 @@ public class ParticleControllerTest extends BaseG3dTest{
 		rotationVelocity.strengthValue.setActive(true);
 		velocityInfluencer.velocities.add(rotationVelocity);
 
-		/*
 		PointPolarVelocityValue velocityValue2 = new PointPolarVelocityValue();
 		ScaledNumericValue thetaValue = velocityValue2.getTheta();
 		thetaValue.setHigh(0, 359);
@@ -397,15 +396,14 @@ public class ParticleControllerTest extends BaseG3dTest{
 		//velocityValue.setGlobal(true);
 		velocityValue2.setActive(true);
 		velocityInfluencer.velocities.add(velocityValue2);
-		*/
 		
 		
-		ParticleController controller = new PointParticleController("controller",
+		ParticleController controller = new PointSpriteParticleController("controller",
 																	regularEmitter, renderer,
-																	new PointSpawnSource(spawnShape), 
+																	new PointSpriteSpawnInfluencer(spawnShape), 
 																	//new PointRegionInfluencer(particleTexture),
-																	new RandomPointRegionInfluencer(particleTexture, 5, 5)
-																	//velocityInfluencer
+																	new RandomPointRegionInfluencer(particleTexture, 5, 5),
+																	velocityInfluencer
 																	//colorInfluencer
 																	//scaleInfluencer
 																	);
@@ -516,7 +514,7 @@ public class ParticleControllerTest extends BaseG3dTest{
 		ModelInstanceParticleController controller = new ModelInstanceParticleController("controller",
 																	regularEmitter, renderer, 
 																	new RandomModelInfluencer(models),
-																	new ModelInstanceSpawnSource(spawnShape), 
+																	new ModelInstanceSpawnInfluencer(spawnShape), 
 																	velocityInfluencer,
 																	//scaleInfluencer,
 																	//new FaceDirectionInfluencer(),
@@ -549,6 +547,7 @@ public class ParticleControllerTest extends BaseG3dTest{
 		spawnShape.spawnHeightValue.setHigh(10);
 		spawnShape.setEdges(true);
 		//spawnShape.setSide(SpawnSide.top);
+		//spawnShape.setSide(SpawnSide.bottom);
 		spawnShape.setActive(true);
 		
 		//Renderer
@@ -620,8 +619,8 @@ public class ParticleControllerTest extends BaseG3dTest{
 		
 		ParticleController controller = new BillboardParticleController("controller",
 																	regularEmitter, renderer, 
-																	new RandomRegionInfluencer(new TextureRegion(particleTexture)),
-																	new BillboardSpawnSource(spawnShape) 
+																	new RegionInfluencer(new TextureRegion(particleTexture)),
+																	new BillboardSpawnInfluencer(spawnShape) 
 																	//velocityInfluencer,
 																	//colorInfluencer
 																	//scaleInfluencer
@@ -674,8 +673,8 @@ public class ParticleControllerTest extends BaseG3dTest{
 		
 		BillboardParticleController controller = new BillboardParticleController("controller",
 																	regularEmitter, renderer, 
-																	new RandomRegionInfluencer(new TextureRegion(particleTexture)),
-																	new BillboardSpawnSource(spawnShape), 
+																	new RegionInfluencer(new TextureRegion(particleTexture)),
+																	new BillboardSpawnInfluencer(spawnShape), 
 																	colorInfluencer
 																	);
 		
@@ -698,10 +697,5 @@ public class ParticleControllerTest extends BaseG3dTest{
 			}
 		}
 		batch.render(instances, environment);
-	}
-
-	@Override
-	public boolean needsGL20 () {
-		return true;
 	}
 }

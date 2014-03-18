@@ -2,15 +2,14 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 
 import com.badlogic.gdx.math.Vector3;
 
-public class PointSpawnShapeValue extends PrimitiveSpawnShapeValue {
+public final class PointSpawnShapeValue extends PrimitiveSpawnShapeValue {
 
-	public PointSpawnShapeValue (PointSpawnShapeValue pointSpawnShapeValue) {
-		super(pointSpawnShapeValue);
+	public PointSpawnShapeValue (PointSpawnShapeValue value) {
+		super(value);
+		load(value);
 	}
 
-	public PointSpawnShapeValue () {
-		// TODO Auto-generated constructor stub
-	}
+	public PointSpawnShapeValue () {}
 
 	@Override
 	public void spawnAux (Vector3 vector, float percent) {

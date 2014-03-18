@@ -2,27 +2,28 @@ package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.SpawnShapeValue;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 
-	public static class BillboardSpawnSource extends SpawnShapeInfluencer<BillboardParticle> {
-			public BillboardSpawnSource () {}
-			public BillboardSpawnSource (BillboardSpawnSource source) {
+	public static class BillboardSpawnInfluencer extends SpawnShapeInfluencer<BillboardParticle> {
+			public BillboardSpawnInfluencer () {}
+			public BillboardSpawnInfluencer (BillboardSpawnInfluencer source) {
 				super(source);
 			}
 		
-			public BillboardSpawnSource (SpawnShapeValue spawnShapeValue) {
+			public BillboardSpawnInfluencer (SpawnShapeValue spawnShapeValue) {
 				super(spawnShapeValue);
 			}
 			
 			@Override
-			public void initParticles (int startIndex, int count) {
+			public void activateParticles (int startIndex, int count) {
 				for(int i=startIndex, c = startIndex +count; i < c; ++i){
 					BillboardParticle particle = controller.particles[i];
 					spawnShapeValue.spawn(TMP_V1, controller.emitter.percent);
@@ -35,22 +36,22 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 			
 			@Override
 			public ParticleSystem copy () {
-				return new BillboardSpawnSource(this);
+				return new BillboardSpawnInfluencer(this);
 			}
 	}
 	
-	public static class ModelInstanceSpawnSource extends SpawnShapeInfluencer<ModelInstanceParticle> {
-		public ModelInstanceSpawnSource () {}
-		public ModelInstanceSpawnSource (ModelInstanceSpawnSource source) {
+	public static class ModelInstanceSpawnInfluencer extends SpawnShapeInfluencer<ModelInstanceParticle> {
+		public ModelInstanceSpawnInfluencer () {}
+		public ModelInstanceSpawnInfluencer (ModelInstanceSpawnInfluencer source) {
 			super(source);
 		}
 
-		public ModelInstanceSpawnSource (SpawnShapeValue spawnShapeValue) {
+		public ModelInstanceSpawnInfluencer (SpawnShapeValue spawnShapeValue) {
 			super(spawnShapeValue);
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				ModelInstanceParticle particle = controller.particles[i];
 				spawnShapeValue.spawn(TMP_V1, controller.emitter.percent);
@@ -61,23 +62,23 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 
 		@Override
 		public ParticleSystem copy () {
-			return new ModelInstanceSpawnSource(this);
+			return new ModelInstanceSpawnInfluencer(this);
 		}
 	}
 
 	
-	public static class ParticleControllerSpawnSource extends SpawnShapeInfluencer<ParticleControllerParticle> {
-		public ParticleControllerSpawnSource () {}
-		public ParticleControllerSpawnSource (ParticleControllerSpawnSource source) {
+	public static class ParticleControllerSpawnInfluencer extends SpawnShapeInfluencer<ParticleControllerParticle> {
+		public ParticleControllerSpawnInfluencer () {}
+		public ParticleControllerSpawnInfluencer (ParticleControllerSpawnInfluencer source) {
 			super(source);
 		}
 
-		public ParticleControllerSpawnSource (SpawnShapeValue spawnShapeValue) {
+		public ParticleControllerSpawnInfluencer (SpawnShapeValue spawnShapeValue) {
 			super(spawnShapeValue);
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				ParticleControllerParticle particle = controller.particles[i];
 				spawnShapeValue.spawn(TMP_V1, controller.emitter.percent);
@@ -90,22 +91,22 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 
 		@Override
 		public ParticleSystem copy () {
-			return new ParticleControllerSpawnSource(this);
+			return new ParticleControllerSpawnInfluencer(this);
 		}
 	}
 
-	public static class PointSpawnSource extends SpawnShapeInfluencer<PointParticle> {
-		public PointSpawnSource () {}
-		public PointSpawnSource (PointSpawnSource source) {
+	public static class PointSpriteSpawnInfluencer extends SpawnShapeInfluencer<PointParticle> {
+		public PointSpriteSpawnInfluencer () {}
+		public PointSpriteSpawnInfluencer (PointSpriteSpawnInfluencer source) {
 			super(source);
 		}
 
-		public PointSpawnSource (SpawnShapeValue spawnShapeValue) {
+		public PointSpriteSpawnInfluencer (SpawnShapeValue spawnShapeValue) {
 			super(spawnShapeValue);
 		}
 
 		@Override
-		public void initParticles (int startIndex, int count) {
+		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
 				PointParticle particle = controller.particles[i];
 				spawnShapeValue.spawn(TMP_V1, controller.emitter.percent);
@@ -118,7 +119,7 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 
 		@Override
 		public ParticleSystem copy () {
-			return new PointSpawnSource(this);
+			return new PointSpriteSpawnInfluencer(this);
 		}
 	}
 
@@ -126,7 +127,9 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 
 	public SpawnShapeValue spawnShapeValue;
 	
-	public SpawnShapeInfluencer(){}
+	public SpawnShapeInfluencer(){
+		spawnShapeValue = new PointSpawnShapeValue();
+	}
 	
 	public SpawnShapeInfluencer(SpawnShapeValue spawnShapeValue){
 		this.spawnShapeValue = spawnShapeValue;
@@ -140,11 +143,14 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 	public void start () {
 		spawnShapeValue.start();
 	}
-	
-	/*
+
 	@Override
-	public void restart () {
-		spawnShapeValue.start();
+	public void write (Json json) {
+		json.writeValue("spawnShape", spawnShapeValue, SpawnShapeValue.class);
 	}
-	*/
+	
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		spawnShapeValue = json.readValue("spawnShape", SpawnShapeValue.class, jsonData);
+	}
 }

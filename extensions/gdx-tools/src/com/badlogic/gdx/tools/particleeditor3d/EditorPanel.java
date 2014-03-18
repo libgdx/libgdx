@@ -15,6 +15,8 @@
  ******************************************************************************/
 
 package com.badlogic.gdx.tools.particleeditor3d;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -26,6 +28,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,63 +36,59 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JToggleButton;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 
-import com.badlogic.gdx.graphics.g3d.particles.values.ParticleValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.RangedNumericValue;
 
-
-public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
-	private final String name;
-	private final String description;
+public abstract class EditorPanel<T> extends JPanel {
+	private String name;
+	private String description;
 	protected  T value;
 	private JPanel titlePanel;
 	JToggleButton activeButton;
-	private JPanel contentPanel;
+	JPanel contentPanel;
 	JToggleButton advancedButton;
+	JButton removeButton;
 	JPanel advancedPanel;
 	private boolean hasAdvanced;
 	JLabel nameLabel, descriptionLabel;
-	protected boolean isAlwaysActive;
+	protected boolean isAlwaysActive, isAlwaysShown = false, isRemovable;
 	protected ParticleEditor3D editor;
 	
-	public EditorPanel (ParticleEditor3D editor, T value, String name, String description, boolean alwaysActive) {
+	public EditorPanel (ParticleEditor3D editor, String name, String description, boolean alwaysActive, boolean isRemovable) {
 		this.editor = editor;
 		this.name = name;
 		this.description = description;
-
+		this.isRemovable = isRemovable;
+		this.isAlwaysActive = alwaysActive;
 		initializeComponents();
-
-		titlePanel.addMouseListener(new MouseAdapter() {
-			public void mouseClicked (MouseEvent event) {
-				if (!activeButton.isVisible()) return;
-				activeButton.setSelected(!activeButton.isSelected());
-				updateActive();
-			}
-		});
-		activeButton.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent event) {
-				updateActive();
-			}
-		});
-		advancedButton.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent event) {
-				advancedPanel.setVisible(advancedButton.isSelected());
-			}
-		});
-		
-		setValue(value, alwaysActive);
+		showContent(false);
+	}
+	
+	public EditorPanel (ParticleEditor3D editor, String name, String description) {
+		this(editor, name, description, true, false);
 	}
 
-	public EditorPanel (ParticleEditor3D editor, T value, String name, String description) {
-		this(editor, value, name, description, true);
-	}
-
-	void updateActive () {
+	protected void activate () {
+		/*
 		contentPanel.setVisible(activeButton.isSelected());
 		advancedPanel.setVisible(activeButton.isSelected() && advancedButton.isSelected());
 		advancedButton.setVisible(activeButton.isSelected() && hasAdvanced);
 		descriptionLabel.setText(activeButton.isSelected() ? description : "");
-		if (value != null) value.setActive(activeButton.isSelected());
+		*/
+	}
+	
+	public void showContent (boolean visible) {
+		contentPanel.setVisible(visible);
+		advancedPanel.setVisible(visible && advancedButton.isSelected());
+		advancedButton.setVisible(visible && hasAdvanced);
+		descriptionLabel.setText(visible ? description : "");
+	}
+	
+	public void setIsAlwayShown(boolean isAlwaysShown){
+		showContent(isAlwaysShown);
+		this.isAlwaysShown = isAlwaysShown;
+		titlePanel.setCursor(null);
 	}
 
 	public void update (ParticleEditor3D editor) {
@@ -97,7 +96,7 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 
 	public void setHasAdvanced (boolean hasAdvanced) {
 		this.hasAdvanced = hasAdvanced;
-		advancedButton.setVisible(hasAdvanced && (value.isActive() || isAlwaysActive));
+		advancedButton.setVisible(hasAdvanced);
 	}
 
 	public JPanel getContentPanel () {
@@ -121,7 +120,7 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 		titlePanel.setVisible(false);
 	}
 
-	private void initializeComponents () {
+	protected void initializeComponents () {
 		setLayout(new GridBagLayout());
 		{
 			titlePanel = new JPanel(new GridBagLayout());
@@ -150,6 +149,11 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 				titlePanel.add(activeButton, new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 6), 0, 0));
 			}
+			{
+				removeButton = new JButton("X");
+				titlePanel.add(removeButton, new GridBagConstraints(4, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER,
+					GridBagConstraints.NONE, new Insets(0, 0, 0, 6), 0, 0));
+			}
 		}
 		{
 			contentPanel = new JPanel(new GridBagLayout());
@@ -163,13 +167,46 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 				new Insets(0, 6, 6, 6), 0, 0));
 			advancedPanel.setVisible(false);
 		}
+		
+
+		titlePanel.addMouseListener(new MouseAdapter() {
+			public void mouseClicked (MouseEvent event) {
+				if(!isAlwaysShown)
+					showContent(!contentPanel.isVisible());
+			}
+		});
+		activeButton.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent event) {
+				activate();
+			}
+		});
+		advancedButton.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent event) {
+				advancedPanel.setVisible(advancedButton.isSelected());
+			}
+		});
+		
+		removeButton.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent event) {
+				removePanel();
+			}
+		});
 	}
 	
+	protected void removePanel () {
+		Container parent = this.getParent();
+		parent.remove(this);
+		parent.revalidate();
+		parent.repaint();
+	}
+
 	public void setName(String name){
+		this.name = name;
 		nameLabel.setText(name);
 	}
 	
 	public void setDescription(String desc){
+		description = desc;
 		descriptionLabel.setText(desc);
 	}
 	
@@ -193,25 +230,12 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 	}
 
 	public void setValue (T value) {
-		setValue(value, isAlwaysActive);
-	}
-	
-	public void setValue (T value, boolean alwaysActive) {
 		this.value = value;
-		if (value != null) {
-			activeButton.setSelected(value.isActive());
-			//updateActive();
-		}
-
-		isAlwaysActive = value == null ? true : alwaysActive;
-		activeButton.setVisible(!isAlwaysActive);
-		if (isAlwaysActive) {
-			contentPanel.setVisible(true);
-			titlePanel.setCursor(null);
-		}
+		activeButton.setVisible(value == null ? false : !isAlwaysActive);
+		removeButton.setVisible(isRemovable);
 	}
-	
-	protected static <T> void setValue(JSpinner spinner, T object){
+
+	protected static <K> void setValue(JSpinner spinner, K object){
 		ChangeListener[] listeners = spinner.getChangeListeners();
 		ChangeListener listener = null;
 		if(listeners != null && listeners.length >0){
@@ -233,7 +257,7 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 		if(listener != null) checkBox.addActionListener(listener);
 	}
 	
-	protected static <T> void setValue(Slider slider, float value){
+	protected static <K> void setValue(Slider slider, float value){
 		ChangeListener[] listeners = slider.spinner.getChangeListeners();
 		ChangeListener listener = null;
 		if(listeners != null && listeners.length >0){
@@ -243,5 +267,32 @@ public abstract class EditorPanel<T extends ParticleValue> extends JPanel {
 		slider.setValue(value);
 		if(listener != null) slider.spinner.addChangeListener(listener);
 	}
+	
+	public static <K> K getCurrentCard(Container container){
+		// get the current card
+		Component c[] = container.getComponents();
+		int i = 0;
+		int j = c.length;
+		while (i < j) {
+			if (c[i].isVisible()) {
+				return (K)c[i];
+			}
+			else
+				i ++;
+		}
+		return null;
+	}
+
+	protected static void setValue (DefaultTableModel tableModel, Object value, int row, int column) {
+		TableModelListener[] listeners = tableModel.getTableModelListeners();
+		TableModelListener listener = null;
+		if(listeners != null && listeners.length >0){
+			listener = listeners[0];
+			tableModel.removeTableModelListener(listener);
+		}
+		tableModel.setValueAt(value, row, column);
+		if(listener != null) tableModel.addTableModelListener(listener);
+	}
+	
 	
 }

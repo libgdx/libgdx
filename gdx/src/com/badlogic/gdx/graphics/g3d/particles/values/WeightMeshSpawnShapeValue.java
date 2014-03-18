@@ -1,19 +1,17 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.particles.WeigthMesh;
 import com.badlogic.gdx.math.Vector3;
 
-public class WeightMeshSpawnShapeValue extends SpawnShapeValue {
+public final class WeightMeshSpawnShapeValue extends SpawnShapeValue {
 	public WeigthMesh mesh;
 	
 	public WeightMeshSpawnShapeValue(WeightMeshSpawnShapeValue value){
 		super(value);
+		load(value);
 	}
 	
-	public WeightMeshSpawnShapeValue () {
-		// TODO Auto-generated constructor stub
-	}
+	public WeightMeshSpawnShapeValue () {}
 
 	@Override
 	public void spawnAux (Vector3 vector, float percent) {

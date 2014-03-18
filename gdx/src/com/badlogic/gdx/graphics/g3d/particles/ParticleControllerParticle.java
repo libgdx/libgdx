@@ -12,14 +12,14 @@ public class ParticleControllerParticle extends Particle{
 	public float x, y, z;
 	
 	//Scale
-	public float scale = 1, scaleStart, scaleDiff;
+	public float scale, scaleStart, scaleDiff;
 	
 	//Rotation
 	public Quaternion rotation = new Quaternion();
 	
-	//Velocities applied to center of mass
-	/** temporary  field used by velocity influencer to accumulate the rotation */
-	public static Quaternion ROTATION_ACCUMULATOR = new Quaternion();
-	public VelocityData[] velocityData;
-	public Vector3 velocity;
+	public void reset(){
+		x = y = z = 0;
+		scale = 1;
+		rotation.idt();
+	}
 }
