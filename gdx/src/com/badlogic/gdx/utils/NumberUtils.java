@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.utils;
 
-public class NumberUtils {
+public final class NumberUtils {
 	/** When false, the mask in {@link #intToFloatColor(int)} will not be used. This must only be used when the resulting floats
 	 * will not be used with {@link #floatToIntColor(float)}. */
 	static public boolean intToFloatColorMask = true;

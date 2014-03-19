@@ -921,7 +921,8 @@ public class BitmapFont implements Disposable {
 					Glyph glyph = getGlyph((char)first);
 					tokens.nextToken();
 					int amount = Integer.parseInt(tokens.nextToken());
-					if(glyph != null) { // it appears BMFont outputs kerning for glyph pairs not contained in the font, hence the null check						
+					if (glyph != null) { // it appears BMFont outputs kerning for glyph pairs not contained in the font, hence the null
+// check
 						glyph.setKerning(second, amount);
 					}
 				}

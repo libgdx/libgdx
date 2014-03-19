@@ -25,6 +25,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Disposable;
 
 /** Renders points, lines, rectangles, filled rectangles and boxes.</p>
  * 
@@ -79,7 +80,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner
  * @author stbachmann
  * @author Nathan Sweet */
-public class ShapeRenderer {
+public class ShapeRenderer implements Disposable {
 	/** Shape types to be used with {@link #begin(ShapeType)}.
 	 * @author mzechner, stbachmann */
 	public enum ShapeType {

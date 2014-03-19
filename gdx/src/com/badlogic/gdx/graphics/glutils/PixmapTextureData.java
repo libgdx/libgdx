@@ -39,7 +39,7 @@ public class PixmapTextureData implements TextureData {
 		this.disposePixmap = disposePixmap;
 		this.managed = managed;
 	}
-	
+
 	@Override
 	public boolean disposePixmap () {
 		return disposePixmap;

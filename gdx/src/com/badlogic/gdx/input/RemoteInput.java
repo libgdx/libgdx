@@ -49,10 +49,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * @author mzechner */
 public class RemoteInput implements Runnable, Input {
 	public interface RemoteInputListener {
-		void onConnected();
-		void onDisconnected();
+		void onConnected ();
+
+		void onDisconnected ();
 	}
-	
+
 	class KeyEvent {
 		static final int KEY_DOWN = 0;
 		static final int KEY_UP = 1;
@@ -163,15 +164,15 @@ public class RemoteInput implements Runnable, Input {
 	public RemoteInput () {
 		this(DEFAULT_PORT);
 	}
-	
-	public RemoteInput(RemoteInputListener listener) {
+
+	public RemoteInput (RemoteInputListener listener) {
 		this(DEFAULT_PORT, listener);
 	}
 
 	public RemoteInput (int port) {
 		this(port, null);
 	}
-	
+
 	public RemoteInput (int port, RemoteInputListener listener) {
 		this.listener = listener;
 		try {
@@ -195,9 +196,8 @@ public class RemoteInput implements Runnable, Input {
 		while (true) {
 			try {
 				connected = false;
-				if (listener != null)
-					listener.onDisconnected();
-				
+				if (listener != null) listener.onDisconnected();
+
 				System.out.println("listening, port " + port);
 				Socket socket = null;
 
@@ -205,8 +205,7 @@ public class RemoteInput implements Runnable, Input {
 				socket.setTcpNoDelay(true);
 				socket.setSoTimeout(3000);
 				connected = true;
-				if (listener != null)
-					listener.onConnected();
+				if (listener != null) listener.onConnected();
 
 				DataInputStream in = new DataInputStream(socket.getInputStream());
 				multiTouch = in.readBoolean();
@@ -274,8 +273,8 @@ public class RemoteInput implements Runnable, Input {
 			}
 		}
 	}
-	
-	public boolean isConnected() {
+
+	public boolean isConnected () {
 		return connected;
 	}
 
@@ -459,11 +458,11 @@ public class RemoteInput implements Runnable, Input {
 	public void setCursorPosition (int x, int y) {
 	}
 
-  @Override
-  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
-  }
+	@Override
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+	}
 
-  @Override
+	@Override
 	public void setCatchMenuKey (boolean catchMenu) {
 		// TODO Auto-generated method stub
 

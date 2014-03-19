@@ -24,6 +24,7 @@ import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.math.Polygon;
 
 public interface TiledMapRenderer extends MapRenderer {
-	public void renderObject(MapObject object);
-	public void renderTileLayer(TiledMapTileLayer layer);
+	public void renderObject (MapObject object);
+
+	public void renderTileLayer (TiledMapTileLayer layer);
 }

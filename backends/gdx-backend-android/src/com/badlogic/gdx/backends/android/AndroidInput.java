@@ -688,10 +688,26 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (realId[i] == -1) return i;
 		}
 
-		int[] tmp = new int[realId.length + 1];
-		System.arraycopy(realId, 0, tmp, 0, realId.length);
-		realId = tmp;
-		return tmp.length - 1;
+		realId = resize(realId);
+		touchX = resize(touchX);
+		touchY = resize(touchY);
+		deltaX = resize(deltaX);
+		deltaY = resize(deltaY);
+		touched = resize(touched);
+		
+		return len;
+	}
+	
+	private int[] resize(int[] orig) {
+		int[] tmp = new int[orig.length + 2];
+		System.arraycopy(orig, 0, tmp, 0, orig.length);
+		return tmp;
+	}
+	
+	private boolean[] resize(boolean[] orig) {
+		boolean[] tmp = new boolean[orig.length + 2];
+		System.arraycopy(orig, 0, tmp, 0, orig.length);
+		return tmp;
 	}
 
 	public int lookUpPointerIndex (int pointerId) {
