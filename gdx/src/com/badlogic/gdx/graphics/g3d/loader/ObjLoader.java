@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
@@ -67,7 +66,7 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	 * absolutely sure what you are doing. Consult the documentation for more information. */
 	public static boolean logWarning = false;
 
-	public static class ObjLoaderParameters extends AssetLoaderParameters<Model> {
+	public static class ObjLoaderParameters extends ModelLoader.ModelParameters {
 		public boolean flipV;
 
 		public ObjLoaderParameters () {
