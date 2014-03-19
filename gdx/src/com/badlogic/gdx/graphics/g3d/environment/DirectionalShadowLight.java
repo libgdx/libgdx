@@ -48,7 +48,7 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 		halfHeight = shadowViewportHeight * 0.5f;
 		halfDepth = shadowNear + 0.5f * (shadowFar - shadowNear);
 		textureDesc = new TextureDescriptor();
-		textureDesc.minFilter = textureDesc.minFilter = Texture.TextureFilter.Nearest;
+		textureDesc.minFilter = textureDesc.magFilter = Texture.TextureFilter.Nearest;
 		textureDesc.uWrap = textureDesc.vWrap = Texture.TextureWrap.ClampToEdge;
 	}
 
