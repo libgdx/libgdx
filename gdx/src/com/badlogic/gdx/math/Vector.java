@@ -137,5 +137,21 @@ public interface Vector<T extends Vector<T>> {
 	/** @return Whether this vector has opposite direction compared to the given vector. True if the normalized dot product is < 0. */
 	public boolean hasOppositeDirection (T vector);
 
+	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
+	 * @param other
+	 * @param epsilon
+	 * @return whether the vectors have fuzzy equality. */
+	public boolean epsilonEquals (T other, float epsilon);
+
+	/** First scale a supplied vector, then add it to this vector.
+	 * @param v addition vector
+	 * @param scalar for scaling the addition vector */
+	public T mulAdd(T v, float scalar);
+
+	/** First scale a supplied vector, then add it to this vector.
+	 * @param v addition vector
+	 * @param mulVec vector by whose values the addition vector will be scaled*/
+	public T mulAdd(T v, T mulVec);
+
 	// TODO: T crs(T v);
 }
