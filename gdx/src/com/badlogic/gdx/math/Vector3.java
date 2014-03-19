@@ -34,13 +34,16 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	public final static Vector3 tmp = new Vector3();
+	@Deprecated
+ 	public final static Vector3 tmp = new Vector3();
 	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	public final static Vector3 tmp2 = new Vector3();
+	@Deprecated
+ 	public final static Vector3 tmp2 = new Vector3();
 	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	public final static Vector3 tmp3 = new Vector3();
+	@Deprecated
+ 	public final static Vector3 tmp3 = new Vector3();
 
 	public final static Vector3 X = new Vector3(1, 0, 0);
 	public final static Vector3 Y = new Vector3(0, 1, 0);
@@ -126,7 +129,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 *             might call this as well.
 	 * 
 	 * @return a temporary copy of this vector */
-	public Vector3 tmp () {
+	@Deprecated
+ 	public Vector3 tmp () {
 		return tmp.set(this);
 	}
 
@@ -134,7 +138,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 *             might call this as well.
 	 * 
 	 * @return a temporary copy of this vector */
-	public Vector3 tmp2 () {
+	@Deprecated
+ 	public Vector3 tmp2 () {
 		return tmp2.set(this);
 	}
 
@@ -142,7 +147,8 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 *             might call this as well.
 	 * 
 	 * @return a temporary copy of this vector */
-	Vector3 tmp3 () {
+	@Deprecated
+ 	Vector3 tmp3 () {
 		return tmp3.set(this);
 	}
 
