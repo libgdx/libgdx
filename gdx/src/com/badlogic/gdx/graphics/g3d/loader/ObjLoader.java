@@ -95,7 +95,8 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	 *             Loads a Wavefront OBJ file from a given file handle.
 	 * 
 	 * @param file the FileHandle */
-	public Model loadObj (FileHandle file) {
+	@Deprecated
+ 	public Model loadObj (FileHandle file) {
 		return loadModel(file);
 	}
 
@@ -105,7 +106,8 @@ public class ObjLoader extends ModelLoader<ObjLoader.ObjLoaderParameters> {
 	 * 
 	 * @param file the FileHandle
 	 * @param flipV whether to flip the v texture coordinate (Blender, Wings3D, et al) */
-	public Model loadObj (FileHandle file, boolean flipV) {
+	@Deprecated
+ 	public Model loadObj (FileHandle file, boolean flipV) {
 		return loadModel(file, flipV);
 	}
 
