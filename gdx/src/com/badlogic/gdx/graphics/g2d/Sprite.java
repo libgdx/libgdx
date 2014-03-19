@@ -306,7 +306,7 @@ public class Sprite extends TextureRegion {
 		dirty = true;
 	}
 
-	/** Center to origin in the middle of the sprite based */
+	/** Place origin in the center of the sprite */
 	public void centerOrigin() {
 		this.originX = width / 2;
 		this.originY = height / 2;
