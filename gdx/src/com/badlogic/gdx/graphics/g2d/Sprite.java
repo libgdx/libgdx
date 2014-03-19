@@ -306,6 +306,13 @@ public class Sprite extends TextureRegion {
 		dirty = true;
 	}
 
+	/** Center to origin in the middle of the sprite based */
+	public void centerOrigin() {
+		this.originX = width / 2;
+		this.originY = height / 2;
+		dirty = true;
+	}
+
 	/** Sets the rotation of the sprite in degrees. Rotation is centered on the origin set in {@link #setOrigin(float, float)} */
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
