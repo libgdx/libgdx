@@ -509,6 +509,7 @@ public class TextureAtlas implements Disposable {
 			splits = region.splits;
 		}
 
+		@Override
 		/** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for packing. */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
@@ -558,18 +559,22 @@ public class TextureAtlas implements Disposable {
 			set(sprite);
 		}
 
+		@Override
 		public void setPosition (float x, float y) {
 			super.setPosition(x + region.offsetX, y + region.offsetY);
 		}
 
+		@Override
 		public void setX (float x) {
 			super.setX(x + region.offsetX);
 		}
 
+		@Override
 		public void setY (float y) {
 			super.setY(y + region.offsetY);
 		}
 
+		@Override
 		public void setBounds (float x, float y, float width, float height) {
 			float widthRatio = width / region.originalWidth;
 			float heightRatio = height / region.originalHeight;
@@ -580,14 +585,22 @@ public class TextureAtlas implements Disposable {
 			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio, packedHeight * heightRatio);
 		}
 
+		@Override
 		public void setSize (float width, float height) {
 			setBounds(getX(), getY(), width, height);
 		}
 
+		@Override
 		public void setOrigin (float originX, float originY) {
 			super.setOrigin(originX - region.offsetX, originY - region.offsetY);
 		}
 
+		@Override
+		public void setOriginCenter() {
+			super.setOrigin(width / 2 - region.offsetX, height / 2 - region.offsetY);
+		}
+
+		@Override
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
 			super.flip(x, y);
@@ -613,6 +626,7 @@ public class TextureAtlas implements Disposable {
 			setOrigin(oldOriginX, oldOriginY);
 		}
 
+		@Override
 		public void rotate90 (boolean clockwise) {
 			// Rotate texture.
 			super.rotate90(clockwise);
@@ -638,26 +652,32 @@ public class TextureAtlas implements Disposable {
 			setOrigin(oldOriginX, oldOriginY);
 		}
 
+		@Override
 		public float getX () {
 			return super.getX() - region.offsetX;
 		}
 
+		@Override
 		public float getY () {
 			return super.getY() - region.offsetY;
 		}
 
+		@Override
 		public float getOriginX () {
 			return super.getOriginX() + region.offsetX;
 		}
 
+		@Override
 		public float getOriginY () {
 			return super.getOriginY() + region.offsetY;
 		}
 
+		@Override
 		public float getWidth () {
 			return super.getWidth() / region.getRotatedPackedWidth() * region.originalWidth;
 		}
 
+		@Override
 		public float getHeight () {
 			return super.getHeight() / region.getRotatedPackedHeight() * region.originalHeight;
 		}
