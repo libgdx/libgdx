@@ -75,7 +75,8 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#fill}. The stage will use its own {@link Batch}. */
 	public Stage () {
-		this(new ScalingViewport(Scaling.fill, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()), null);
+		this(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()),
+			null);
 	}
 
 	/** Creates a stage with the specified viewport. The stage will use its own {@link Batch}, which will be disposed when the stage
@@ -611,8 +612,8 @@ public class Stage extends InputAdapter implements Disposable {
 	 * describes how to convert them. The transform matrix is typically obtained from {@link Batch#getTransformMatrix()} during
 	 * {@link Actor#draw(Batch, float)}.
 	 * @see Actor#localToStageCoordinates(Vector2) */
-	public Vector2 toScreenCoordinates (Vector2 stageCoords, Matrix4 transformMatrix) {
-		return viewport.toScreenCoordinates(stageCoords, transformMatrix);
+	public Vector2 toScreenCoordinates (Vector2 coords, Matrix4 transformMatrix) {
+		return viewport.toScreenCoordinates(coords, transformMatrix);
 	}
 
 	public void calculateScissors (Rectangle area, Rectangle scissor) {

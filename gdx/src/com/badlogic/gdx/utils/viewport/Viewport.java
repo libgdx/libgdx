@@ -26,8 +26,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 
-/** It has methods to help with setting the correct OpenGL viewport, as well as dealing with {@code Stage}s and {@code Camera}s
- * viewports.
+/** Manages a {@link Camera} and determines how world coordinates are mapped to and from the screen.
  * @author Daniel Holderbaum
  * @author Nathan Sweet */
 public abstract class Viewport {
@@ -58,28 +57,40 @@ public abstract class Viewport {
 		camera.update();
 	}
 
-	/** @see Camera#unproject(Vector3) */
-	public void unproject (Vector2 screenCoords) {
+	/** Transforms the specified screen coordinate to world coordinates.
+	 * @return The vector that was passed in, transformed to world coordinates.
+	 * @see Camera#unproject(Vector3) */
+	public Vector2 unproject (Vector2 screenCoords) {
 		tmp.set(screenCoords.x, screenCoords.y, 1);
 		camera.unproject(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
 		screenCoords.set(tmp.x, tmp.y);
+		return screenCoords;
 	}
 
-	/** @see Camera#project(Vector3) */
-	public void project (Vector2 worldCoords) {
+	/** Transforms the specified world coordinate to screen coordinates.
+	 * @return The vector that was passed in, transformed to screen coordinates.
+	 * @see Camera#project(Vector3) */
+	public Vector2 project (Vector2 worldCoords) {
 		tmp.set(worldCoords.x, worldCoords.y, 1);
 		camera.project(tmp, viewportX, viewportY, viewportWidth, viewportHeight);
 		worldCoords.set(tmp.x, tmp.y);
+		return worldCoords;
 	}
 
-	/** @see Camera#unproject(Vector3) */
-	public void unproject (Vector3 screenCoords) {
+	/** Transforms the specified screen coordinate to world coordinates.
+	 * @return The vector that was passed in, transformed to world coordinates.
+	 * @see Camera#unproject(Vector3) */
+	public Vector3 unproject (Vector3 screenCoords) {
 		camera.unproject(screenCoords, viewportX, viewportY, viewportWidth, viewportHeight);
+		return screenCoords;
 	}
 
-	/** @see Camera#project(Vector3) */
-	public void project (Vector3 worldCoords) {
+	/** Transforms the specified world coordinate to screen coordinates.
+	 * @return The vector that was passed in, transformed to screen coordinates.
+	 * @see Camera#project(Vector3) */
+	public Vector3 project (Vector3 worldCoords) {
 		camera.project(worldCoords, viewportX, viewportY, viewportWidth, viewportHeight);
+		return worldCoords;
 	}
 
 	/** @see Camera#getPickRay(float, float, float, float, float, float) */
@@ -110,6 +121,11 @@ public abstract class Viewport {
 
 	public void setCamera (Camera camera) {
 		this.camera = camera;
+	}
+
+	public void setWorldSize (float worldWidth, float worldHeight) {
+		this.worldWidth = worldWidth;
+		this.worldHeight = worldHeight;
 	}
 
 	public float getWorldWidth () {

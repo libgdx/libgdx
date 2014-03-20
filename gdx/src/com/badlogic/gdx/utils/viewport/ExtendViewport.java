@@ -27,6 +27,7 @@ import com.badlogic.gdx.utils.Scaling;
 public class ExtendViewport extends Viewport {
 	private float originalWorldWidth, originalWorldHeight;
 
+	/** Creates a new viewport using a new {@link OrthographicCamera}. */
 	public ExtendViewport (float worldWidth, float worldHeight) {
 		this(worldWidth, worldHeight, new OrthographicCamera());
 	}

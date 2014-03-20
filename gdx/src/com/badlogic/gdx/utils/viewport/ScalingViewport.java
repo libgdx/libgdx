@@ -39,6 +39,7 @@ import com.badlogic.gdx.utils.Scaling;
 public class ScalingViewport extends Viewport {
 	private Scaling scaling;
 
+	/** Creates a new viewport using a new {@link OrthographicCamera}. */
 	public ScalingViewport (Scaling scaling, float worldWidth, float worldHeight) {
 		this(scaling, worldWidth, worldHeight, new OrthographicCamera());
 	}

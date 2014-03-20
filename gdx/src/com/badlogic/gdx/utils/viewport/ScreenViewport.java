@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 /** A viewport where the world size is the size of the screen. The world is never scaled. 1 world unit == 1 screen pixel.
  * @author Daniel Holderbaum */
 public class ScreenViewport extends Viewport {
+	/** Creates a new viewport using a new {@link OrthographicCamera}. */
 	public ScreenViewport () {
 		this(new OrthographicCamera());
 	}
