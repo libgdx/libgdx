@@ -134,8 +134,7 @@ public class LwjglApplication implements Application {
 		}
 
 		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
-		graphics.resize = false;
+		graphics.resize = true;
 
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();
