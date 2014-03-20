@@ -86,7 +86,7 @@ public class MipMapTest extends GdxTest {
 
 	private void createUI () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		ui = new Stage();
 
 		String[] filters = new String[TextureFilter.values().length];
 		int idx = 0;

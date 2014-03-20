@@ -45,7 +45,7 @@ public class SoundTest extends GdxTest {
 		sound = Gdx.audio.newSound(Gdx.files.getFileHandle("data/shotgun.ogg", FileType.Internal));
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		ui = new Stage();
 		TextButton play = new TextButton("Play", skin);
 		TextButton stop = new TextButton("Stop", skin);
 		final Slider pitch = new Slider(0.1f, 4, 0.1f, false, skin);

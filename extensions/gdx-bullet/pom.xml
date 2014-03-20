@@ -43,7 +43,11 @@
             </goals>
             <configuration>
               <sources>                
+                <source>jni/swig-src/linearmath</source>
                 <source>jni/swig-src/collision</source>
+                <source>jni/swig-src/dynamics</source>
+                <source>jni/swig-src/softbody</source>
+                <source>jni/swig-src/extras</source>
               </sources>
             </configuration>
           </execution>
