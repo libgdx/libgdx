@@ -96,6 +96,7 @@ struct btRigidBodyConstructionInfo
 
 	///best simulation results when friction is non-zero
 	btScalar			m_friction;
+	btScalar			m_rollingFriction;
 	///best simulation results using zero restitution.
 	btScalar			m_restitution;
 
