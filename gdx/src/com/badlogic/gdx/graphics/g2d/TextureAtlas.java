@@ -596,7 +596,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		@Override
-		public void centerOrigin() {
+		public void setOriginCenter() {
 			super.setOrigin(width / 2 - region.offsetX, height / 2 - region.offsetY);
 		}
 
