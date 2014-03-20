@@ -9,6 +9,30 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_WheelJoint
+ * Method:    jniGetLocalAnchorA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetLocalAnchorA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WheelJoint
+ * Method:    jniGetLocalAnchorB
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetLocalAnchorB
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WheelJoint
+ * Method:    jniGetLocalAxisA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WheelJoint_jniGetLocalAxisA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WheelJoint
  * Method:    jniGetJointTranslation
  * Signature: (J)F
  */

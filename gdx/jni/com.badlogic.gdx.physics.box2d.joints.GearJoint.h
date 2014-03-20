@@ -9,6 +9,22 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_GearJoint
+ * Method:    jniGetJoint1
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_joints_GearJoint_jniGetJoint1
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_GearJoint
+ * Method:    jniGetJoint2
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_joints_GearJoint_jniGetJoint2
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_GearJoint
  * Method:    jniSetRatio
  * Signature: (JF)V
  */
