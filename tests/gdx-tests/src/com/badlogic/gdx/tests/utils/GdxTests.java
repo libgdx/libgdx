@@ -54,6 +54,12 @@ import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
+import com.badlogic.gdx.tests.viewport.ViewportTest1;
+import com.badlogic.gdx.tests.viewport.ViewportTest2;
+import com.badlogic.gdx.tests.viewport.ViewportTest3;
+import com.badlogic.gdx.tests.viewport.ViewportTest4;
+import com.badlogic.gdx.tests.viewport.ViewportTest4;
+import com.badlogic.gdx.tests.viewport.ViewportTest5;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
 
@@ -205,6 +211,11 @@ public class GdxTests {
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,
 		VibratorTest.class,
+		ViewportTest1.class,
+		ViewportTest2.class,
+		ViewportTest3.class,
+		ViewportTest4.class,
+		ViewportTest5.class,
 		YDownTest.class
 		// @on
 
