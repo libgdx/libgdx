@@ -26,7 +26,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 
 /** Provides utility methods to copy streams */
-public class StreamUtils {
+public final class StreamUtils {
 	public static final int DEFAULT_BUFFER_SIZE = 8192;
 	public static final byte[] EMPTY_BYTES = new byte[0];
 

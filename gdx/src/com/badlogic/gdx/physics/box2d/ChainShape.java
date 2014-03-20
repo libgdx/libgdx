@@ -67,7 +67,7 @@ public class ChainShape extends Shape {
 		for( int i = 0; i < numVertices; i++ )
 			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
 		chain->CreateLoop( verticesOut, numVertices );
-		delete verticesOut;
+		delete[] verticesOut;
 	*/
 
 	/** Create a chain with isolated end vertices.
@@ -94,7 +94,7 @@ public class ChainShape extends Shape {
 		for( int i = 0; i < numVertices; i++ )
 			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
 		chain->CreateChain( verticesOut, numVertices );
-		delete verticesOut;
+		delete[] verticesOut;
 	*/
 
 	/** Establish connectivity to a vertex that precedes the first vertex. Don't call this for loops. */

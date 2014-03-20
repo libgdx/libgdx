@@ -803,7 +803,7 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Returns the width of the scrolled viewport. */
 	public float getScrollWidth () {
-		return areaHeight;
+		return areaWidth;
 	}
 
 	/** Returns the height of the scrolled viewport. */

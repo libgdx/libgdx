@@ -30,28 +30,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import com.badlogic.gdx.tests.bullet.BasicBulletTest;
-import com.badlogic.gdx.tests.bullet.BasicShapesTest;
-import com.badlogic.gdx.tests.bullet.BulletTest;
-import com.badlogic.gdx.tests.bullet.CollisionTest;
-import com.badlogic.gdx.tests.bullet.CollisionWorldTest;
-import com.badlogic.gdx.tests.bullet.ConstraintsTest;
-import com.badlogic.gdx.tests.bullet.ContactCacheTest;
-import com.badlogic.gdx.tests.bullet.ContactCallbackTest;
-import com.badlogic.gdx.tests.bullet.ContactCallbackTest2;
-import com.badlogic.gdx.tests.bullet.ConvexHullDistanceTest;
-import com.badlogic.gdx.tests.bullet.ConvexHullTest;
-import com.badlogic.gdx.tests.bullet.FrustumCullingTest;
-import com.badlogic.gdx.tests.bullet.ImportTest;
-import com.badlogic.gdx.tests.bullet.InternalTickTest;
-import com.badlogic.gdx.tests.bullet.KinematicTest;
-import com.badlogic.gdx.tests.bullet.MeshShapeTest;
-import com.badlogic.gdx.tests.bullet.RayCastTest;
-import com.badlogic.gdx.tests.bullet.RayPickRagdollTest;
-import com.badlogic.gdx.tests.bullet.ShootTest;
-import com.badlogic.gdx.tests.bullet.SoftBodyTest;
-import com.badlogic.gdx.tests.bullet.SoftMeshTest;
-import com.badlogic.gdx.tests.bullet.VehicleTest;
+import com.badlogic.gdx.tests.bullet.*;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author xoppa */
@@ -60,7 +39,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new ConvexHullDistanceTest(), new RayCastTest(),
 		new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(),
 		new ContactCallbackTest(), new ContactCallbackTest2(), new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(),
-		new VehicleTest(), new ImportTest()};
+		new VehicleTest(), new CharacterTest(), new ImportTest()};
 
 	protected int testIndex = 0;
 

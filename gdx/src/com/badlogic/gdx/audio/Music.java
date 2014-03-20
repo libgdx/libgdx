@@ -36,7 +36,9 @@ import com.badlogic.gdx.utils.Disposable;
  * {@link ApplicationListener}.
  * </p>
  * 
- * <p><b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so</p>
+ * <p>
+ * <b>Note<b>: any values provided will not be clamped, it is the developer's responsibility to do so
+ * </p>
  * 
  * @author mzechner */
 public interface Music extends Disposable {
@@ -67,36 +69,31 @@ public interface Music extends Disposable {
 	 * 
 	 * @param volume */
 	public void setVolume (float volume);
-	
+
 	/** @return the volume of this music stream. */
 	public float getVolume ();
-	
-    /** Sets the panning and volume of this music stream.
+
+	/** Sets the panning and volume of this music stream.
 	 * @param pan panning in the range -1 (full left) to 1 (full right). 0 is center position.
 	 * @param volume the volume in the range [0,1]. */
 	public void setPan (float pan, float volume);
-	
+
 	/** Returns the playback position in milliseconds. */
 	public float getPosition ();
 
 	/** Needs to be called when the Music is no longer needed. */
 	public void dispose ();
-	
-	/** Register a callback to be invoked when the end of a music stream has been reached during playback. 
+
+	/** Register a callback to be invoked when the end of a music stream has been reached during playback.
 	 * 
 	 * @param listener the callback that will be run. */
-	public void setOnCompletionListener(OnCompletionListener listener);
-	
-   /**	
-    * Interface definition for a callback to be invoked when playback of
-    * a music stream has completed.
-    */
-   public interface OnCompletionListener {
-       /**
-        * Called when the end of a media source is reached during playback.
-        * 
-        * @param music the Music that reached the end of the file
-        */
-       public abstract void onCompletion(Music music);
-   }
+	public void setOnCompletionListener (OnCompletionListener listener);
+
+	/** Interface definition for a callback to be invoked when playback of a music stream has completed. */
+	public interface OnCompletionListener {
+		/** Called when the end of a media source is reached during playback.
+		 * 
+		 * @param music the Music that reached the end of the file */
+		public abstract void onCompletion (Music music);
+	}
 }

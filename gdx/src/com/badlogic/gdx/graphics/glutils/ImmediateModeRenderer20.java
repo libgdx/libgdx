@@ -185,7 +185,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
-             
+
 		if (hasColors) shader += "varying vec4 v_col;\n";
 		for (int i = 0; i < numTexCoords; i++) {
 			shader += "varying vec2 v_tex" + i + ";\n";

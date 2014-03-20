@@ -53,7 +53,7 @@ public class WheelJoint extends Joint {
 	*/
 
 	/** Is the joint motor enabled? */
-	private boolean isMotorEnabled () {
+	public boolean isMotorEnabled () {
 		return jniIsMotorEnabled(addr);
 	}
 

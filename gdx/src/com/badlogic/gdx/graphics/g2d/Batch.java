@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;

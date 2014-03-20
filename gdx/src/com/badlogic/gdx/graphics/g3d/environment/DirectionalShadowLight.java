@@ -39,7 +39,8 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 	protected final TextureDescriptor textureDesc;
 
 	/** @deprecated Experimental, likely to change, do not use! */
-	public DirectionalShadowLight (int shadowMapWidth, int shadowMapHeight, float shadowViewportWidth, float shadowViewportHeight, float shadowNear, float shadowFar) {
+	public DirectionalShadowLight (int shadowMapWidth, int shadowMapHeight, float shadowViewportWidth, float shadowViewportHeight,
+		float shadowNear, float shadowFar) {
 		fbo = new FrameBuffer(Format.RGBA8888, shadowMapWidth, shadowMapHeight, true);
 		cam = new OrthographicCamera(shadowViewportWidth, shadowViewportHeight);
 		cam.near = shadowNear;
@@ -47,34 +48,34 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 		halfHeight = shadowViewportHeight * 0.5f;
 		halfDepth = shadowNear + 0.5f * (shadowFar - shadowNear);
 		textureDesc = new TextureDescriptor();
-		textureDesc.minFilter = textureDesc.minFilter = Texture.TextureFilter.Nearest;
+		textureDesc.minFilter = textureDesc.magFilter = Texture.TextureFilter.Nearest;
 		textureDesc.uWrap = textureDesc.vWrap = Texture.TextureWrap.ClampToEdge;
 	}
-	
-	public void update(final Camera camera) {
+
+	public void update (final Camera camera) {
 		update(tmpV.set(camera.direction).scl(halfHeight), camera.direction);
 	}
-	
-	public void update(final Vector3 center, final Vector3 forward) {
-		//cam.position.set(10,10,10);
+
+	public void update (final Vector3 center, final Vector3 forward) {
+		// cam.position.set(10,10,10);
 		cam.position.set(direction).scl(-halfDepth).add(center);
 		cam.direction.set(direction).nor();
-		//cam.up.set(forward).nor();
+		// cam.up.set(forward).nor();
 		cam.normalizeUp();
 		cam.update();
 	}
-	
-	public void begin(final Camera camera) {
+
+	public void begin (final Camera camera) {
 		update(camera);
 		begin();
 	}
-	
-	public void begin(final Vector3 center, final Vector3 forward) {
+
+	public void begin (final Vector3 center, final Vector3 forward) {
 		update(center, forward);
 		begin();
 	}
-	
-	public void begin() {
+
+	public void begin () {
 		final int w = fbo.getWidth();
 		final int h = fbo.getHeight();
 		fbo.begin();
@@ -84,20 +85,20 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 		Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
 		Gdx.gl.glScissor(1, 1, w - 2, h - 2);
 	}
-	
-	public void end() {
+
+	public void end () {
 		Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
 		fbo.end();
 	}
-	
-	public FrameBuffer getFrameBuffer() {
+
+	public FrameBuffer getFrameBuffer () {
 		return fbo;
 	}
-	
-	public Camera getCamera() {
+
+	public Camera getCamera () {
 		return cam;
 	}
-	
+
 	@Override
 	public Matrix4 getProjViewTrans () {
 		return cam.combined;
@@ -111,8 +112,7 @@ public class DirectionalShadowLight extends DirectionalLight implements ShadowMa
 
 	@Override
 	public void dispose () {
-		if (fbo != null)
-			fbo.dispose();
+		if (fbo != null) fbo.dispose();
 		fbo = null;
 	}
 }

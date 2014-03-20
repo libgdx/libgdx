@@ -12,12 +12,12 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @author Nathan Sweet */
 abstract public class EventAction<T extends Event> extends Action {
 	final Class<? extends T> eventClass;
-	boolean result;
+	boolean result, active;
 
 	private final EventListener listener = new EventListener() {
-		public boolean handle (Event event) {			
-			if (!ClassReflection.isInstance(eventClass, event)) return false;
-			result = handle(event);
+		public boolean handle (Event event) {
+			if (!active || !ClassReflection.isInstance(eventClass, event)) return false;
+			result = EventAction.this.handle((T)event);
 			return result;
 		}
 	};
@@ -28,6 +28,7 @@ abstract public class EventAction<T extends Event> extends Action {
 
 	public void restart () {
 		result = false;
+		active = false;
 	}
 
 	public void setActor (Actor actor) {
@@ -41,6 +42,15 @@ abstract public class EventAction<T extends Event> extends Action {
 	abstract public boolean handle (T event);
 
 	public boolean act (float delta) {
+		active = true;
 		return result;
+	}
+
+	public boolean isActive () {
+		return active;
+	}
+
+	public void setActive (boolean active) {
+		this.active = active;
 	}
 }
