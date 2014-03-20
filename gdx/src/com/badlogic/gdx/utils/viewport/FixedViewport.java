@@ -18,52 +18,62 @@ package com.badlogic.gdx.utils.viewport;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
-/** This is used to work with a fixed virtual viewport. It implements "letterboxing" which means that it will maintain the aspect
- * ratio of the virtual viewport while scaling it to fit the screen.
- * 
- * @author Daniel Holderbaum */
+/** A viewport that keeps the world aspect ratio using black bars (aka letterboxing).
+ * @author Daniel Holderbaum
+ * @author Nathan Sweet */
 public class FixedViewport extends Viewport {
-
-	/** Initializes this virtual viewport.
-	 * 
-	 * @param virtualWidth The constant virtual width of this viewport.
-	 * @param virtualHeight The constant virtual height of this viewport. */
-	public FixedViewport (float virtualWidth, float virtualHeight) {
-		this.virtualWidth = virtualWidth;
-		this.virtualHeight = virtualHeight;
-		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	public FixedViewport (float worldWidth, float worldHeight) {
+		this(worldWidth, worldHeight, new OrthographicCamera());
 	}
 
-	/** Initializes this virtual viewport and sets a camera to be updated whenever this viewport changes.
-	 * @param virtualWidth The constant virtual width of this viewport.
-	 * @param virtualHeight The constant virtual height of this viewport. */
-	public FixedViewport (Camera camera, float virtualWidth, float virtualHeight) {
+	public FixedViewport (float worldWidth, float worldHeight, Camera camera) {
+		this.worldWidth = worldWidth;
+		this.worldHeight = worldHeight;
 		this.camera = camera;
-		this.virtualWidth = virtualWidth;
-		this.virtualHeight = virtualHeight;
-		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
-	public void calculateViewport (int width, int height) {
-		Vector2 scaled = Scaling.fit.apply(virtualWidth, virtualHeight, width, height);
+	public void update (int screenWidth, int screenHeight) {
+		Vector2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
 		viewportWidth = Math.round(scaled.x);
 		viewportHeight = Math.round(scaled.y);
 		// center the viewport in the middle of the screen
-		viewportX = (width - viewportWidth) / 2;
-		viewportY = (height - viewportHeight) / 2;
+		viewportX = (screenWidth - viewportWidth) / 2;
+		viewportY = (screenHeight - viewportHeight) / 2;
+		super.update(screenWidth, screenHeight);
 	}
-//
-// @Override
-// protected void update (Stage stage) {
-// stage.setViewport(virtualWidth, virtualHeight, true, viewportX, viewportY, viewportWidth, viewportHeight);
-// Table rootTable = getRootTable(stage);
-// if (rootTable != null) {
-// rootTable.setSize(virtualWidth, virtualHeight);
-// }
-// }
 
+	/** Returns the left gutter width in screen coordinates. */
+	public int getLeftGutterWidth () {
+		return viewportX;
+	}
+
+	/** Returns the right gutter x in screen coordinates. */
+	public int getRightGutterX () {
+		return viewportX + viewportWidth;
+	}
+
+	/** Returns the right gutter width in screen coordinates. */
+	public int getRightGutterWidth () {
+		return Gdx.graphics.getWidth() - (viewportX + viewportWidth);
+	}
+
+	/** Returns the bottom gutter height in screen coordinates. */
+	public int getBottomGutterHeight () {
+		return viewportY;
+	}
+
+	/** Returns the top gutter y in screen coordinates. */
+	public int getTopGutterY () {
+		return viewportY + viewportHeight;
+	}
+
+	/** Returns the top gutter height in screen coordinates. */
+	public int getTopGutterHeight () {
+		return Gdx.graphics.getHeight() - (viewportY + viewportHeight);
+	}
 }

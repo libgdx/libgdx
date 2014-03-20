@@ -19,25 +19,25 @@ package com.badlogic.gdx.utils.viewport;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-/** A viewport that is always the same size, centered on the screen.
+/** A viewport that stretches the world to the screen size, possibly distorting the aspect ratio.
  * @author Daniel Holderbaum */
-public class StaticViewport extends Viewport {
-	public StaticViewport (float worldWidth, float worldHeight) {
+public class StretchViewport extends Viewport {
+	public StretchViewport (float worldWidth, float worldHeight) {
 		this(worldWidth, worldHeight, new OrthographicCamera());
 	}
 
-	public StaticViewport (float worldWidth, float worldHeight, Camera camera) {
+	public StretchViewport (float worldWidth, float worldHeight, Camera camera) {
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
-		viewportWidth = Math.round(worldWidth);
-		viewportHeight = Math.round(worldHeight);
 		this.camera = camera;
 	}
 
 	@Override
 	public void update (int screenWidth, int screenHeight) {
-		this.viewportX = (screenWidth - viewportWidth) / 2;
-		this.viewportY = (screenHeight - viewportHeight) / 2;
+		viewportX = 0;
+		viewportY = 0;
+		viewportWidth = screenWidth;
+		viewportHeight = screenHeight;
 		super.update(screenWidth, screenHeight);
 	}
 }

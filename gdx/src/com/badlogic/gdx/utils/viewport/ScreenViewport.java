@@ -16,42 +16,28 @@
 
 package com.badlogic.gdx.utils.viewport;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
-/** A viewport where the size is always the screen size (no scaling).
+/** A viewport where the world size is the size of the screen. The world is never scaled. 1 world unit == 1 screen pixel.
  * @author Daniel Holderbaum */
 public class ScreenViewport extends Viewport {
-
-	/** Initializes this virtual viewport. */
 	public ScreenViewport () {
-		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this(new OrthographicCamera());
 	}
 
-	/** Initializes this virtual viewport and sets a camera to be updated whenever this viewport changes. */
 	public ScreenViewport (Camera camera) {
 		this.camera = camera;
-		update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
-	public void calculateViewport (int width, int height) {
+	public void update (int screenWidth, int screenHeight) {
 		viewportX = 0;
 		viewportY = 0;
-		viewportWidth = width;
-		viewportHeight = height;
-		virtualWidth = width;
-		virtualHeight = height;
+		viewportWidth = screenWidth;
+		viewportHeight = screenHeight;
+		worldWidth = screenWidth;
+		worldHeight = screenHeight;
+		super.update(screenWidth, screenHeight);
 	}
-
-// @Override
-// protected void update (Stage stage) {
-// stage.setViewport(virtualWidth, virtualHeight, false);
-// if (stage.getRoot().getChildren().size == 1 && stage.getRoot().getChildren().get(0) instanceof Table) {
-// Table rootTable = (Table)stage.getRoot().getChildren().get(0);
-// rootTable.setBounds(viewportX, viewportY, viewportWidth, viewportHeight);
-// rootTable.invalidate();
-// }
-// }
-
 }

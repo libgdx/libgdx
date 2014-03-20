@@ -37,7 +37,7 @@ public class GroupFadeTest extends GdxTest {
 	@Override
 	public void create () {
 		texture = new Texture(Gdx.files.internal("data/badlogicsmall.jpg"));
-		stage = new Stage(480, 320, true);
+		stage = new Stage();
 
 		for (int i = 0; i < 100; i++) {
 			Image img = new Image(new TextureRegion(texture));

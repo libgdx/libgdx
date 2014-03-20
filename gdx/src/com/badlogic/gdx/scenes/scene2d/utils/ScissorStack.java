@@ -136,20 +136,4 @@ public class ScissorStack {
 			return viewport;
 		}
 	}
-
-	/** Transforms a point to real window coordinates (as oposed to OpenGL ES window coordinates), where the origin is in the top
-	 * left and the the y-axis is pointing downwards
-	 * @param camera the {@link Camera}
-	 * @param transformMatrix the transformation {@link Matrix4}
-	 * @param point the point to be transformed.
-	 * @return point */
-	public static Vector2 toWindowCoordinates (Camera camera, Matrix4 transformMatrix, Vector2 point) {
-		tmp.set(point.x, point.y, 0);
-		tmp.mul(transformMatrix);
-		camera.project(tmp);
-		tmp.y = Gdx.graphics.getHeight() - tmp.y;
-		point.x = tmp.x;
-		point.y = tmp.y;
-		return point;
-	}
 }
