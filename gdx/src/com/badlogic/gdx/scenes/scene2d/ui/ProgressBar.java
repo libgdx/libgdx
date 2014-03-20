@@ -179,8 +179,8 @@ public class ProgressBar extends Widget implements Disableable {
 		return this.position;
 	}
 
-	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minumum and maximim values.
-	 * {@link #clamp(float)} can be overidden to allow values outside of the progress bar's min/max range.
+	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minimum and maximum values.
+	 * {@link #clamp(float)} can be overridden to allow values outside of the progress bar's min/max range.
 	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
 		value = clamp(Math.round(value / stepSize) * stepSize);
@@ -202,7 +202,7 @@ public class ProgressBar extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** Clamps the value to the progress bar's min/max range. This can be overidden to allow a range different from the progress bar
+	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress bar
 	 * knob's range. */
 	protected float clamp (float value) {
 		return MathUtils.clamp(value, min, max);

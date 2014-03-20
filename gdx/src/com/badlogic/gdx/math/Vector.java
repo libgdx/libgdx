@@ -23,12 +23,12 @@ public interface Vector<T extends Vector<T>> {
 	/** @return a copy of this vector */
 	T cpy ();
 
-	/** @return The euclidian length */
+	/** @return The euclidean length */
 	float len ();
 
 	/** This method is faster than {@link Vector#len()} because it avoids calculating a square root. It is useful for comparisons,
 	 * but not for getting accurate lengths, as the return value is the square of the actual length.
-	 * @return The squared euclidian length */
+	 * @return The squared euclidean length */
 	float len2 ();
 
 	/** Limits this vector's length to given value
@@ -46,7 +46,7 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T set (T v);
 
-	/** Substracts the given vector from this vector.
+	/** Subtracts the given vector from this vector.
 	 * @param v The vector
 	 * @return This vector for chaining */
 	T sub (T v);

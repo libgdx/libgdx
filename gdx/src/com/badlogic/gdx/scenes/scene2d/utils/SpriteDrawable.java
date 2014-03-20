@@ -25,7 +25,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class SpriteDrawable extends BaseDrawable implements TransformDrawable {
 	private Sprite sprite;
 
-	/** Creates an unitialized SpriteDrawable. The sprite must be set before use. */
+	/** Creates an uninitialized SpriteDrawable. The sprite must be set before use. */
 	public SpriteDrawable () {
 	}
 
