@@ -33,11 +33,10 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.FixedViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Cycles viewports while rendering with SpriteBatch. */
@@ -82,11 +81,12 @@ public class ViewportTest3 extends GdxTest {
 		int worldWidth = 300;
 		int worldHeight = 200;
 
-		viewports.add(new StretchViewport(worldWidth, worldHeight, camera));
-		viewports.add(new FitViewport(worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.stretch, worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.fill, worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.fit, worldWidth, worldHeight, camera));
 		viewports.add(new ExtendViewport(worldWidth, worldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
-		viewports.add(new FixedViewport(worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.none, worldWidth, worldHeight, camera));
 		viewport = viewports.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
@@ -110,7 +110,7 @@ public class ViewportTest3 extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		System.out.println(viewport.getClass().getSimpleName());
+		System.out.println(viewport);
 		viewport.update(width, height);
 		camera.position.set(0, 0, 100);
 		camera.lookAt(0, 0, 0);

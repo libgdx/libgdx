@@ -28,11 +28,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.FixedViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Cycles viewports while rendering with SpriteBatch, also shows how to draw in the black bars. */
@@ -62,11 +61,12 @@ public class ViewportTest2 extends GdxTest {
 		int worldWidth = 300;
 		int worldHeight = 200;
 
-		viewports.add(new StretchViewport(worldWidth, worldHeight, camera));
-		viewports.add(new FitViewport(worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.stretch, worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.fill, worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.fit, worldWidth, worldHeight, camera));
 		viewports.add(new ExtendViewport(worldWidth, worldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
-		viewports.add(new FixedViewport(worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.none, worldWidth, worldHeight, camera));
 		viewport = viewports.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
@@ -93,27 +93,27 @@ public class ViewportTest2 extends GdxTest {
 		batch.setColor(1, 0, 0, 1);
 		batch.draw(texture, 150, 100, 16, 16, 32, 32, 1, 1, 45, 0, 0, 16, 16, false, false);
 
-		font.draw(batch, viewport.getClass().getSimpleName(), 150, 100);
+		font.draw(batch, viewport.toString(), 150, 100);
 		batch.end();
 
-		if (viewport instanceof FitViewport) {
+		if (viewport instanceof ScalingViewport) {
 			// This shows how to set the viewport to the whole screen and draw within the black bars.
-			FitViewport fixed = (FitViewport)viewport;
+			ScalingViewport scalingViewport = (ScalingViewport)viewport;
 			int screenWidth = Gdx.graphics.getWidth();
 			int screenHeight = Gdx.graphics.getHeight();
 			Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);
 			batch.getProjectionMatrix().idt().setToOrtho2D(0, 0, screenWidth, screenHeight);
 			batch.getTransformMatrix().idt();
 			batch.begin();
-			float leftGutterWidth = fixed.getLeftGutterWidth();
+			float leftGutterWidth = scalingViewport.getLeftGutterWidth();
 			if (leftGutterWidth > 0) {
 				batch.draw(texture, 0, 0, leftGutterWidth, screenHeight);
-				batch.draw(texture, fixed.getRightGutterX(), 0, fixed.getRightGutterWidth(), screenHeight);
+				batch.draw(texture, scalingViewport.getRightGutterX(), 0, scalingViewport.getRightGutterWidth(), screenHeight);
 			}
-			float bottomGutterHeight = fixed.getBottomGutterHeight();
+			float bottomGutterHeight = scalingViewport.getBottomGutterHeight();
 			if (bottomGutterHeight > 0) {
 				batch.draw(texture, 0, 0, screenWidth, bottomGutterHeight);
-				batch.draw(texture, 0, fixed.getTopGutterY(), screenWidth, fixed.getTopGutterHeight());
+				batch.draw(texture, 0, scalingViewport.getTopGutterY(), screenWidth, scalingViewport.getTopGutterHeight());
 			}
 			batch.end();
 			viewport.update(screenWidth, screenHeight); // Restore viewport.
@@ -121,7 +121,7 @@ public class ViewportTest2 extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		System.out.println(viewport.getClass().getSimpleName());
+		System.out.println(viewport);
 		viewport.update(width, height);
 	}
 
