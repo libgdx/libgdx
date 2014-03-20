@@ -34,9 +34,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FixedViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StaticViewport;
+import com.badlogic.gdx.utils.viewport.FixedViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -83,10 +83,10 @@ public class ViewportTest3 extends GdxTest {
 		int worldHeight = 200;
 
 		viewports.add(new StretchViewport(worldWidth, worldHeight, camera));
-		viewports.add(new FixedViewport(worldWidth, worldHeight, camera));
+		viewports.add(new FitViewport(worldWidth, worldHeight, camera));
 		viewports.add(new ExtendViewport(worldWidth, worldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
-		viewports.add(new StaticViewport(worldWidth, worldHeight, camera));
+		viewports.add(new FixedViewport(worldWidth, worldHeight, camera));
 		viewport = viewports.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {

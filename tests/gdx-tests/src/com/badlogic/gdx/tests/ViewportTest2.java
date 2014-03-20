@@ -29,9 +29,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FixedViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StaticViewport;
+import com.badlogic.gdx.utils.viewport.FixedViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -63,10 +63,10 @@ public class ViewportTest2 extends GdxTest {
 		int worldHeight = 200;
 
 		viewports.add(new StretchViewport(worldWidth, worldHeight, camera));
-		viewports.add(new FixedViewport(worldWidth, worldHeight, camera));
+		viewports.add(new FitViewport(worldWidth, worldHeight, camera));
 		viewports.add(new ExtendViewport(worldWidth, worldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
-		viewports.add(new StaticViewport(worldWidth, worldHeight, camera));
+		viewports.add(new FixedViewport(worldWidth, worldHeight, camera));
 		viewport = viewports.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
@@ -96,9 +96,9 @@ public class ViewportTest2 extends GdxTest {
 		font.draw(batch, viewport.getClass().getSimpleName(), 150, 100);
 		batch.end();
 
-		if (viewport instanceof FixedViewport) {
+		if (viewport instanceof FitViewport) {
 			// This shows how to set the viewport to the whole screen and draw within the black bars.
-			FixedViewport fixed = (FixedViewport)viewport;
+			FitViewport fixed = (FitViewport)viewport;
 			int screenWidth = Gdx.graphics.getWidth();
 			int screenHeight = Gdx.graphics.getHeight();
 			Gdx.gl.glViewport(0, 0, screenWidth, screenHeight);

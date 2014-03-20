@@ -37,7 +37,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.StringBuilder;
-import com.badlogic.gdx.utils.viewport.FixedViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public abstract class BaseG3dHudTest extends BaseG3dTest {
 	public final static int PREF_HUDWIDTH = 640;
@@ -69,7 +69,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	}
 
 	protected void createHUD () {
-		hud = new Stage(new FixedViewport(PREF_HUDWIDTH, PREF_HUDHEIGHT));
+		hud = new Stage(new FitViewport(PREF_HUDWIDTH, PREF_HUDHEIGHT));
 		hudWidth = hud.getWidth();
 		hudHeight = hud.getHeight();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));

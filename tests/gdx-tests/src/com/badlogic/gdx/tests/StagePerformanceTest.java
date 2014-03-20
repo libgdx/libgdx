@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.FixedViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class StagePerformanceTest extends GdxTest {
 
@@ -47,7 +47,7 @@ public class StagePerformanceTest extends GdxTest {
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		stage = new Stage(new FixedViewport(24, 12));
+		stage = new Stage(new FitViewport(24, 12));
 		regions = new TextureRegion[8 * 8];
 		sprites = new Sprite[24 * 12];
 

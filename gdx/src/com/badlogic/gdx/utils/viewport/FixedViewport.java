@@ -16,15 +16,11 @@
 
 package com.badlogic.gdx.utils.viewport;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Scaling;
 
-/** A viewport that keeps the world aspect ratio using black bars (aka letterboxing).
- * @author Daniel Holderbaum
- * @author Nathan Sweet */
+/** A viewport that is always the same size, centered on the screen.
+ * @author Daniel Holderbaum */
 public class FixedViewport extends Viewport {
 	public FixedViewport (float worldWidth, float worldHeight) {
 		this(worldWidth, worldHeight, new OrthographicCamera());
@@ -33,47 +29,15 @@ public class FixedViewport extends Viewport {
 	public FixedViewport (float worldWidth, float worldHeight, Camera camera) {
 		this.worldWidth = worldWidth;
 		this.worldHeight = worldHeight;
+		viewportWidth = Math.round(worldWidth);
+		viewportHeight = Math.round(worldHeight);
 		this.camera = camera;
 	}
 
 	@Override
 	public void update (int screenWidth, int screenHeight) {
-		Vector2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
-		viewportWidth = Math.round(scaled.x);
-		viewportHeight = Math.round(scaled.y);
-		// center the viewport in the middle of the screen
-		viewportX = (screenWidth - viewportWidth) / 2;
-		viewportY = (screenHeight - viewportHeight) / 2;
+		this.viewportX = (screenWidth - viewportWidth) / 2;
+		this.viewportY = (screenHeight - viewportHeight) / 2;
 		super.update(screenWidth, screenHeight);
-	}
-
-	/** Returns the left gutter width in screen coordinates. */
-	public int getLeftGutterWidth () {
-		return viewportX;
-	}
-
-	/** Returns the right gutter x in screen coordinates. */
-	public int getRightGutterX () {
-		return viewportX + viewportWidth;
-	}
-
-	/** Returns the right gutter width in screen coordinates. */
-	public int getRightGutterWidth () {
-		return Gdx.graphics.getWidth() - (viewportX + viewportWidth);
-	}
-
-	/** Returns the bottom gutter height in screen coordinates. */
-	public int getBottomGutterHeight () {
-		return viewportY;
-	}
-
-	/** Returns the top gutter y in screen coordinates. */
-	public int getTopGutterY () {
-		return viewportY + viewportHeight;
-	}
-
-	/** Returns the top gutter height in screen coordinates. */
-	public int getTopGutterHeight () {
-		return Gdx.graphics.getHeight() - (viewportY + viewportHeight);
 	}
 }
