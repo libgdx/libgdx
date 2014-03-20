@@ -97,7 +97,7 @@ public class GroupTest extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	public boolean needsGL20 () {

@@ -195,7 +195,7 @@ public class GwtTestWrapper extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		ui.getViewport().update(width, height);
+		ui.getViewport().update(width, height, true);
 		container.setSize(width, height);
 		if (test != null) {
 			test.resize(width, height);

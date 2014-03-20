@@ -75,6 +75,6 @@ public class LabelScaleTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 }

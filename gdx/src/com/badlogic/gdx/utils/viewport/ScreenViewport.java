@@ -32,13 +32,13 @@ public class ScreenViewport extends Viewport {
 	}
 
 	@Override
-	public void update (int screenWidth, int screenHeight) {
+	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
 		viewportX = 0;
 		viewportY = 0;
 		viewportWidth = screenWidth;
 		viewportHeight = screenHeight;
 		worldWidth = screenWidth;
 		worldHeight = screenHeight;
-		super.update(screenWidth, screenHeight);
+		super.update(screenWidth, screenHeight, centerCamera);
 	}
 }

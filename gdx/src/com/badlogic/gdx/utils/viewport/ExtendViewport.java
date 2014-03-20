@@ -39,7 +39,7 @@ public class ExtendViewport extends Viewport {
 	}
 
 	@Override
-	public void update (int screenWidth, int screenHeight) {
+	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
 		viewportX = 0;
 		viewportY = 0;
 		viewportWidth = screenWidth;
@@ -58,6 +58,6 @@ public class ExtendViewport extends Viewport {
 			worldHeight += (screenHeight - viewportHeight) * toWorldSpace;
 			viewportHeight = screenHeight;
 		}
-		super.update(screenWidth, screenHeight);
+		super.update(screenWidth, screenHeight, centerCamera);
 	}
 }

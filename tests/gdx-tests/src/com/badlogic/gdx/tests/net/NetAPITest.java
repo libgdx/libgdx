@@ -245,7 +245,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.getViewport().update(width, height);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

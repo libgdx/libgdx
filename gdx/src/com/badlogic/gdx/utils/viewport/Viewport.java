@@ -44,16 +44,22 @@ public abstract class Viewport {
 
 	private final Vector3 tmp = new Vector3();
 
+	/** Updates the viewport's camera without changing the camera position.
+	 * @see #update(int, int, boolean) */
+	public final void update (int screenWidth, int screenHeight) {
+		update(screenWidth, screenHeight, false);
+	}
+
 	/** Updates the viewport's camera. Typically called from {@code ApplicationListener#resize(int, int)} or
 	 * {@code Screen#resize(int, int)}.
 	 * <p>
-	 * The default implementation calls {@link GL20#glViewport(int, int, int, int)} and configures the camera viewport size and
-	 * position. */
-	public void update (int screenWidth, int screenHeight) {
+	 * The default implementation calls {@link GL20#glViewport(int, int, int, int)} and configures the camera viewport size.
+	 * @param centerCamera If true, the camera position is set to the center of the world. */
+	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
 		Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
 		camera.viewportWidth = worldWidth;
 		camera.viewportHeight = worldHeight;
-		camera.position.set(worldWidth / 2, worldHeight / 2, 0);
+		if (centerCamera) camera.position.set(worldWidth / 2, worldHeight / 2, 0);
 		camera.update();
 	}
 

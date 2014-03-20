@@ -116,7 +116,7 @@ public class ViewportTest2 extends GdxTest {
 				batch.draw(texture, 0, scalingViewport.getTopGutterY(), screenWidth, scalingViewport.getTopGutterHeight());
 			}
 			batch.end();
-			viewport.update(screenWidth, screenHeight); // Restore viewport.
+			viewport.update(screenWidth, screenHeight, true); // Restore viewport.
 		}
 	}
 

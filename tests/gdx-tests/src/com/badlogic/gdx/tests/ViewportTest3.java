@@ -67,6 +67,8 @@ public class ViewportTest3 extends GdxTest {
 		camera.fieldOfView = 67;
 		camera.near = 0.1f;
 		camera.far = 300f;
+		camera.position.set(0, 0, 100);
+		camera.lookAt(0, 0, 0);
 
 		ModelBuilder modelBuilder = new ModelBuilder();
 
@@ -112,8 +114,5 @@ public class ViewportTest3 extends GdxTest {
 	public void resize (int width, int height) {
 		System.out.println(viewport);
 		viewport.update(width, height);
-		camera.position.set(0, 0, 100);
-		camera.lookAt(0, 0, 0);
-		camera.update();
 	}
 }
