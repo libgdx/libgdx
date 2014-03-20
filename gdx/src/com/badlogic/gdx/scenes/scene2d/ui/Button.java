@@ -108,11 +108,9 @@ public class Button extends Table implements Disableable {
 		if (this.isChecked == isChecked) return;
 		if (buttonGroup != null && !buttonGroup.canCheck(this, isChecked)) return;
 		this.isChecked = isChecked;
-		if (!isDisabled) {
-			ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-			if (fire(changeEvent)) this.isChecked = !isChecked;
-			Pools.free(changeEvent);
-		}
+		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
+		if (fire(changeEvent)) this.isChecked = !isChecked;
+		Pools.free(changeEvent);
 	}
 
 	/** Toggles the checked state. This method changes the checked state, which fires a {@link ChangeEvent}, so can be used to
