@@ -251,20 +251,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Texture.invalidateAllTextures(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
-		// jw: to prevent creating too many string buffers in live wallpapers
-		if (isLiveWallpaper) {
-			if (AndroidLiveWallpaperService.DEBUG) {
-				Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
-				Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
-				Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
-				Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
-			}
-		} else {
-			Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
-			Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
-			Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
-			Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
-		}
+		Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
 
 		Display display = ((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		this.width = display.getWidth();
@@ -289,22 +279,12 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		int samples = Math.max(getAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0),
 			getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
 		boolean coverageSample = getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
-		if (this.isLiveWallpaper) {
-			if (!hasLogged) {
-				Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
-				Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
-				Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
-				Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
-				Gdx.app.log("AndroidGraphics", "coverage sampling: (" + coverageSample + ")");
-				hasLogged = true;
-			}
-		} else {
-			Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
-			Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
-			Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
-			Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
-			Gdx.app.log("AndroidGraphics", "coverage sampling: (" + coverageSample + ")");
-		}
+		
+		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
+		Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
+		Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
+		Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
+		Gdx.app.log("AndroidGraphics", "coverage sampling: (" + coverageSample + ")");
 
 		bufferFormat = new BufferFormat(r, g, b, a, d, s, samples, coverageSample);
 	}
@@ -498,19 +478,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 
-		if (this.isLiveWallpaper) {
-			if (AndroidLiveWallpaperService.DEBUG) {
-				// jw: to prevent creating too many string buffers in live wallpapers
-				Gdx.app.debug("AndroidGraphics", Mesh.getManagedStatus());
-				Gdx.app.debug("AndroidGraphics", Texture.getManagedStatus());
-				Gdx.app.debug("AndroidGraphics", ShaderProgram.getManagedStatus());
-				Gdx.app.debug("AndroidGraphics", FrameBuffer.getManagedStatus());
-			}
-		} else {
-			Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
-			Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
-			Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
-			Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
+		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
 		}
 	}
 
