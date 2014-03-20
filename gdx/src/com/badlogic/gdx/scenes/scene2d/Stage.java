@@ -175,6 +175,18 @@ public class Stage extends InputAdapter implements Disposable {
 		camera.viewportHeight = this.height;
 	}
 
+	public void setViewport (float stageWidth, float stageHeight, int viewportX, int viewportY, int viewportWidth,
+		int viewportHeight) {
+		this.width = stageWidth;
+		this.height = stageHeight;
+		this.viewportX = viewportX;
+		this.viewportY = viewportY;
+		this.viewportWidth = viewportWidth;
+		this.viewportHeight = viewportHeight;
+		this.gutterWidth = (viewportWidth - stageWidth) / 2;
+		this.gutterHeight = (viewportHeight - stageHeight) / 2;
+	}
+
 	public void draw () {
 		camera.update();
 		if (!root.isVisible()) return;

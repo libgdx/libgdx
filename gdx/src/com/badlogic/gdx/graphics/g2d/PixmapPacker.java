@@ -114,6 +114,10 @@ public class PixmapPacker implements Disposable {
 		public Pixmap getPixmap () {
 			return image;
 		}
+		
+		public OrderedMap<String, Rectangle> getRects () {
+			return rects;
+		}
 	}
 
 	final int pageWidth;

@@ -16,14 +16,12 @@
 
 package com.badlogic.gdx.graphics.g3d.loader;
 
-import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelAnimation;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
@@ -44,7 +42,7 @@ import com.badlogic.gdx.utils.BaseJsonReader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.JsonValue;
 
-public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
+public class G3dModelLoader extends ModelLoader<ModelLoader.ModelParameters> {
 	public static final short VERSION_HI = 0;
 	public static final short VERSION_LO = 1;
 	protected final BaseJsonReader reader;
@@ -59,7 +57,7 @@ public class G3dModelLoader extends ModelLoader<AssetLoaderParameters<Model>> {
 	}
 
 	@Override
-	public ModelData loadModelData (FileHandle fileHandle, AssetLoaderParameters<Model> parameters) {
+	public ModelData loadModelData (FileHandle fileHandle, ModelLoader.ModelParameters parameters) {
 		return parseModel(fileHandle);
 	}
 

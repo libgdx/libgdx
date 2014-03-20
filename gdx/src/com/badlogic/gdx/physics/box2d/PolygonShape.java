@@ -75,7 +75,7 @@ public class PolygonShape extends Shape {
 			verticesOut[i] = b2Vec2(verts[(i<<1) + offset], verts[(i<<1) + offset + 1]);
 		}
 		poly->Set(verticesOut, numVertices);
-		delete verticesOut;
+		delete[] verticesOut;
 	 */
 	
 	/** Build vertices to represent an axis-aligned box.
