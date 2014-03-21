@@ -41,9 +41,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Cycles viewports while rendering a stage with a root Table for the layout. */
 public class ViewportTest1 extends GdxTest {
-	Array<Viewport> viewports = new Array();
+	Array<Viewport> viewports;
+	Array<String> names;
 	Stage stage;
-	private Label label;
+	Label label;
 
 	public void create () {
 		stage = new Stage();
@@ -61,26 +62,18 @@ public class ViewportTest1 extends GdxTest {
 		root.add(label).colspan(2);
 		stage.addActor(root);
 
-		int minWorldWidth = 300;
-		int minWorldHeight = 225;
-		int maxWorldWidth = 300;
-		int maxWorldHeight = 168;
+		viewports = getViewports(stage.getCamera());
+		names = getViewportNames();
 
-		Camera camera = stage.getCamera();
-		viewports.add(new StretchViewport(minWorldWidth, minWorldHeight, camera));
-		viewports.add(new FillViewport(minWorldWidth, minWorldHeight, camera));
-		viewports.add(new FitViewport(minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScreenViewport(camera));
-		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
 		stage.setViewport(viewports.first());
+		label.setText(names.first());
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.SPACE) {
-					Viewport viewport = viewports.get((viewports.indexOf(stage.getViewport(), true) + 1) % viewports.size);
+					int index = (viewports.indexOf(stage.getViewport(), true) + 1) % viewports.size;
+					label.setText(names.get(index));
+					Viewport viewport = viewports.get(index);
 					stage.setViewport(viewport);
 					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
@@ -90,7 +83,6 @@ public class ViewportTest1 extends GdxTest {
 	}
 
 	public void render () {
-		label.setText(stage.getViewport().getClass().getSimpleName());
 		stage.act();
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -104,5 +96,36 @@ public class ViewportTest1 extends GdxTest {
 
 	public void dispose () {
 		stage.dispose();
+	}
+
+	static public Array<String> getViewportNames () {
+		Array<String> names = new Array();
+		names.add("StretchViewport");
+		names.add("FillViewport");
+		names.add("FitViewport");
+		names.add("ExtendViewport");
+		names.add("MinMaxViewport: snap=false");
+		names.add("MinMaxViewport: snap=true");
+		names.add("ScreenViewport");
+		names.add("ScalingViewport: none");
+		return names;
+	}
+
+	static public Array<Viewport> getViewports (Camera camera) {
+		int minWorldWidth = 300;
+		int minWorldHeight = 225;
+		int maxWorldWidth = 300;
+		int maxWorldHeight = 168;
+
+		Array<Viewport> viewports = new Array();
+		viewports.add(new StretchViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new FillViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new FitViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
+		viewports.add(new ScreenViewport(camera));
+		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
+		return viewports;
 	}
 }

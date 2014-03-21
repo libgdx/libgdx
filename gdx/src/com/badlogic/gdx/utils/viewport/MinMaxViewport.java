@@ -32,7 +32,8 @@ public class MinMaxViewport extends ScalingViewport {
 		maxAspectRatio = maxWorldWidth / maxWorldHeight;
 
 		if (minAspectRatio > maxAspectRatio) {
-			throw new IllegalArgumentException("Minimum aspect ratio has to be smaller than Maximum aspect ratio");
+			throw new IllegalArgumentException("Minimum aspect ratio has to be smaller than maximum aspect ratio: " + minAspectRatio
+				+ " < " + maxAspectRatio);
 		}
 	}
 
