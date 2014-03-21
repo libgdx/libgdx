@@ -5,23 +5,18 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Scaling;
 
 /** A viewport that defines minimum and maximum dimensions.
- * 
- * When the snap flag is enabled, it will pick the closest dimensions to the screen aspect ratio and use {@link Scaling#fit}. This
- * will result in black bars (letterboxing) if the screen doesn't exactly match any of the two supported ratios.
- * 
- * When the snap flag is disabled and the screen aspect ratio falls within the supported range, it will keep it and scale the
- * image. Otherwise, it will pick the closest supported aspect ratio and use {@link Scaling#fit}, which will result in black bars
+ * <p>
+ * When snap is enabled, it will pick the closest dimensions to the screen aspect ratio and use {@link Scaling#fit}. This will
+ * result in black bars (letterboxing) if the screen doesn't exactly match any of the two supported ratios.
+ * <p>
+ * When snap is disabled and the screen aspect ratio falls within the supported range, it will keep it and scale the image.
+ * Otherwise, it will pick the closest supported aspect ratio and use {@link Scaling#fit}, which will result in black bars
  * (letterboxing).
- * 
  * @author David Saltares */
 public class MinMaxViewport extends ScalingViewport {
-
-	private final float minWorldWidth;
-	private final float minWorldHeight;
-	private final float maxWorldWidth;
-	private final float maxWorldHeight;
-	private final float minAspectRatio;
-	private final float maxAspectRatio;
+	private final float minWorldWidth, minWorldHeight;
+	private final float maxWorldWidth, maxWorldHeight;
+	private final float minAspectRatio, maxAspectRatio;
 	private final boolean snap;
 
 	public MinMaxViewport (float minWorldWidth, float minWorldHeight, float maxWorldWidth, float maxWorldHeight, boolean snap,
@@ -32,11 +27,11 @@ public class MinMaxViewport extends ScalingViewport {
 		this.minWorldHeight = minWorldHeight;
 		this.maxWorldWidth = maxWorldWidth;
 		this.maxWorldHeight = maxWorldHeight;
-		this.minAspectRatio = minWorldWidth / minWorldHeight;
-		this.maxAspectRatio = maxWorldWidth / maxWorldHeight;
 		this.snap = snap;
+		minAspectRatio = minWorldWidth / minWorldHeight;
+		maxAspectRatio = maxWorldWidth / maxWorldHeight;
 
-		if (this.minAspectRatio > this.maxAspectRatio) {
+		if (minAspectRatio > maxAspectRatio) {
 			throw new IllegalArgumentException("Minimum aspect ratio has to be smaller than Maximum aspect ratio");
 		}
 	}
@@ -47,29 +42,22 @@ public class MinMaxViewport extends ScalingViewport {
 
 		if (snap) {
 			if (Math.abs(screenAspectRatio - minAspectRatio) < Math.abs(screenAspectRatio - maxAspectRatio)) {
-				this.setWorldSize(minWorldWidth, minWorldHeight);
+				setWorldSize(minWorldWidth, minWorldHeight);
 			} else {
-				this.setWorldSize(maxWorldWidth, maxWorldHeight);
+				setWorldSize(maxWorldWidth, maxWorldHeight);
 			}
 		} else {
 			if (screenAspectRatio < minAspectRatio) {
 				setWorldSize(minWorldWidth, minWorldHeight);
 			} else if (screenAspectRatio > maxAspectRatio) {
 				setWorldSize(maxWorldWidth, maxWorldHeight);
+			} else if (Math.abs(screenAspectRatio - minAspectRatio) < Math.abs(screenAspectRatio - maxAspectRatio)) {
+				setWorldSize(minWorldWidth, minWorldWidth / screenAspectRatio);
 			} else {
-				if (Math.abs(screenAspectRatio - minAspectRatio) < Math.abs(screenAspectRatio - maxAspectRatio)) {
-					setWorldSize(minWorldWidth, minWorldWidth / screenAspectRatio);
-				} else {
-					setWorldSize(maxWorldWidth, maxWorldWidth / screenAspectRatio);
-				}
+				setWorldSize(maxWorldWidth, maxWorldWidth / screenAspectRatio);
 			}
 		}
 
 		super.update(screenWidth, screenHeight, centerCamera);
-	}
-
-	@Override
-	public String toString () {
-		return getClass().getSimpleName() + (snap ? " (snapped)" : " (non snapped)");
 	}
 }
