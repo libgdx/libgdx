@@ -22,7 +22,9 @@ import java.util.Arrays;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.os.Debug;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.Application;
@@ -44,14 +46,14 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
  * 
  * @author mzechner */
-public class AndroidLiveWallpaper implements Application {
+public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}
 
 	protected AndroidLiveWallpaperService service;
 
-	protected AndroidGraphicsLiveWallpaper graphics;
+	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
@@ -62,13 +64,14 @@ public class AndroidLiveWallpaper implements Application {
 	protected final Array<Runnable> executedRunnables = new Array<Runnable>();
 	protected final Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
 	protected int logLevel = LOG_INFO;
+        protected Handler handler;
 
 	public AndroidLiveWallpaper (AndroidLiveWallpaperService service) {
 		this.service = service;
 	}
 
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 
 		// factory in use, but note: AndroidInputFactory causes exceptions when obfuscated: java.lang.RuntimeException: Couldn't
@@ -77,6 +80,7 @@ public class AndroidLiveWallpaper implements Application {
 		// input = new AndroidInput(this, this.getService(), null, config);
 
 		audio = new AndroidAudio(this.getService(), config);
+                this.handler = new Handler();
 
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
@@ -111,7 +115,6 @@ public class AndroidLiveWallpaper implements Application {
 		// graphics.pause();
 		// if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG,
 // " > AndroidLiveWallpaper - onPause() application paused!");
-		audio.pause();
 
 		input.unregisterSensorListeners();
 
@@ -128,7 +131,8 @@ public class AndroidLiveWallpaper implements Application {
 			else
 				throw new RuntimeException("unimplemented");
 		}
-
+                
+                audio.pause();
 		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() done!");
 	}
 
@@ -355,5 +359,55 @@ public class AndroidLiveWallpaper implements Application {
 	@Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
+	}
+
+        @Override
+	public Context getContext () {
+		return this.getService().getApplicationContext();
+	}
+
+	@Override
+	public Array<Runnable> getRunnables () {
+		return this.runnables;
+	}
+
+	@Override
+	public Array<Runnable> getExecutedRunnables () {
+		return this.executedRunnables;
+	}
+
+	@Override
+	public void runOnUiThread (Runnable runnable) {
+		this.handler.post(runnable);
+	}
+
+	@Override
+	public void startActivity (Intent intent) {
+		
+	}
+
+	@Override
+	public Array<LifecycleListener> getLifecycleListeners () {
+		return this.lifecycleListeners;
+	}
+
+	@Override
+	public boolean isFragment () {
+		return false;
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		return null;
+	}
+
+	@Override
+	public void useImmersiveMode (boolean b) {
+		
+	}
+
+	@Override
+	public Handler getHandler () {
+		return this.handler;
 	}
 }

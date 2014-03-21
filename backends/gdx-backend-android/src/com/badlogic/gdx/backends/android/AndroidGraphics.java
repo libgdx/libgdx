@@ -22,6 +22,7 @@ import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -48,8 +49,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
-/** An implementation of {@link Graphics} for Android.
- * 
+/** The implementation of {@link Graphics} for Android.
+ *
  * @author mzechner */
 public final class AndroidGraphics implements Graphics, Renderer {
 	final View view;
@@ -84,6 +85,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
 	private boolean isContinuous = true;
 
+	private boolean isLiveWallpaper = false;
+
 	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
@@ -92,6 +95,9 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		view.setFocusable(true);
 		view.setFocusableInTouchMode(true);
 		this.app = application;
+		if (application instanceof AndroidLiveWallpaper) {
+			this.isLiveWallpaper = true;
+		}
 	}
 
 	private void setPreserveContext (View view) {
@@ -116,7 +122,26 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+		GLSurfaceView20 view = null;
+		if (isLiveWallpaper) {
+			view = new GLSurfaceView20(application.getContext(), resolutionStrategy) {
+				// Author: jw <Jaroslaw Wisniewski <j.wisniewski@appsisle.com>>
+				// -> specific for live wallpapers
+				@Override
+				public SurfaceHolder getHolder () {
+					synchronized (((AndroidLiveWallpaper)app).service.sync) {
+						return ((AndroidLiveWallpaper)app).service.getSurfaceHolder();
+					}
+				}
+
+				public void onDestroy () {
+					onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
+				}
+				// <- specific for live wallpapers
+			};
+		} else {
+			view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+		}
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
@@ -226,7 +251,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Texture.invalidateAllTextures(app);
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
-
 		Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
@@ -241,6 +265,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		gl.glViewport(0, 0, this.width, this.height);
 	}
 
+	boolean hasLogged = false;
+
 	private void logConfig (EGLConfig config) {
 		EGL10 egl = (EGL10)EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
@@ -253,7 +279,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		int samples = Math.max(getAttrib(egl, display, config, EGL10.EGL_SAMPLES, 0),
 			getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
 		boolean coverageSample = getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
-
+		
 		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
 		Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
 		Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
@@ -456,6 +482,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
+		}
 	}
 
 	public View getView () {
