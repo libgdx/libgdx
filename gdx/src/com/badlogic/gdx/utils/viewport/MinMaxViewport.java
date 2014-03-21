@@ -47,20 +47,28 @@ public class MinMaxViewport extends ScalingViewport {
 
 		if (snap) {
 			if (Math.abs(screenAspectRatio - minAspectRatio) < Math.abs(screenAspectRatio - maxAspectRatio)) {
+				setScaling(Scaling.fit);
 				this.setWorldSize(minWorldWidth, minWorldHeight);
 			} else {
 				this.setWorldSize(maxWorldWidth, maxWorldHeight);
 			}
 		} else {
 			if (screenAspectRatio < minAspectRatio) {
+				setScaling(Scaling.fit);
 				setWorldSize(minWorldWidth, minWorldHeight);
 			} else if (screenAspectRatio > maxAspectRatio) {
+				setScaling(Scaling.fit);
 				setWorldSize(maxWorldWidth, maxWorldHeight);
 			} else {
-				if (Math.abs(screenAspectRatio - minAspectRatio) < Math.abs(screenAspectRatio - maxAspectRatio)) {
+				if (screenWidth > maxWorldWidth || screenHeight > maxWorldHeight) {
+					setScaling(Scaling.fit);
+					setWorldSize(maxWorldWidth, maxWorldWidth / screenAspectRatio);
+				} else if (screenWidth < minWorldWidth || screenHeight < minWorldHeight) {
+					setScaling(Scaling.fit);
 					setWorldSize(minWorldWidth, minWorldWidth / screenAspectRatio);
 				} else {
-					setWorldSize(maxWorldWidth, maxWorldWidth / screenAspectRatio);
+					setScaling(Scaling.fill);
+					setWorldSize(screenWidth, screenHeight);
 				}
 			}
 		}
