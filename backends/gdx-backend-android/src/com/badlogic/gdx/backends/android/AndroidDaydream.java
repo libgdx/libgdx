@@ -19,6 +19,9 @@ package com.badlogic.gdx.backends.android;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import javax.microedition.khronos.opengles.GL10;
+import javax.microedition.khronos.opengles.GL11;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -28,7 +31,6 @@ import android.service.dreams.DreamService;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -52,12 +54,12 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * the GLSurfaceView.
  * 
  * @author mzechner */
-public class AndroidDaydream extends DreamService implements AndroidApplicationBase {
+public class AndroidDaydream extends DreamService implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
 
-	protected AndroidGraphics graphics;
+	protected AndroidGraphicsDaydream graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
 	protected AndroidFiles files;
@@ -85,7 +87,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
@@ -157,7 +159,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	 *           etc.).
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
+		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
 		audio = new AndroidAudio(this, config);
@@ -200,7 +202,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 		}
-                audio.resume();
+
 		super.onDreamingStopped();
 	}
 
@@ -378,50 +380,5 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
-	}
-
-        @Override
-	public Context getContext () {
-		return this.getApplicationContext();
-	}
-
-	@Override
-	public Array<Runnable> getRunnables () {
-		return this.runnables;
-	}
-
-	@Override
-	public Array<Runnable> getExecutedRunnables () {
-		return this.executedRunnables;
-	}
-
-	@Override
-	public void runOnUiThread (Runnable runnable) {
-		this.handler.post(runnable);
-	}
-
-	@Override
-	public Array<LifecycleListener> getLifecycleListeners () {
-		return this.lifecycleListeners;
-	}
-
-	@Override
-	public boolean isFragment () {
-		return false;
-	}
-
-	@Override
-	public Window getApplicationWindow () {
-		return this.getWindow();
-	}
-
-	@Override
-	public void useImmersiveMode (boolean b) {
-
-	}
-
-	@Override
-	public Handler getHandler () {
-		return this.handler;
 	}
 }

@@ -1,18 +1,18 @@
-/*******************************************************************************
- * Copyright 2011 See AUTHORS file.
+/*
+ * Copyright 2010 Mario Zechner (contact@badlogicgames.com), Nathan Sweet (admin@esotericsoftware.com)
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Modified by Elijah Cornell
+ * 2013.01 Modified by Jaroslaw Wisniewski <j.wisniewski@appsisle.com>
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- ******************************************************************************/
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS"
+ * BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
 
 package com.badlogic.gdx.backends.android;
 
@@ -20,14 +20,14 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLU;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
@@ -38,7 +38,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
-import com.badlogic.gdx.utils.Array;
 
 import java.lang.reflect.Method;
 
@@ -51,22 +50,28 @@ import javax.microedition.khronos.opengles.GL10;
 /** An implementation of {@link Graphics} for Android.
  * 
  * @author mzechner */
-public final class AndroidGraphics implements Graphics, Renderer {
+public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
+
+	// jw: changed
+	// final GLBaseSurfaceViewLW view;
 	final View view;
+
 	int width;
 	int height;
-	AndroidApplicationBase app;
-	GL20 gl20;
-	GL30 gl30;
-	EGLContext eglContext;
-	String extensions;
+	AndroidLiveWallpaper app;
 
-	private long lastFrameTime = System.nanoTime();
-	private float deltaTime = 0;
-	private long frameStart = System.nanoTime();
-	private int frames = 0;
-	private int fps;
-	private WindowedMean mean = new WindowedMean(5);
+	protected GL20 gl20;
+	protected GL30 gl30;
+	protected GLU glu;
+	protected EGLContext eglContext;
+	protected String extensions;
+
+	protected long lastFrameTime = System.nanoTime();
+	protected float deltaTime = 0;
+	protected long frameStart = System.nanoTime();
+	protected int frames = 0;
+	protected int fps;
+	protected WindowedMean mean = new WindowedMean(5);
 
 	volatile boolean created = false;
 	volatile boolean running = false;
@@ -74,29 +79,30 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	volatile boolean resume = false;
 	volatile boolean destroy = false;
 
-	private float ppiX = 0;
-	private float ppiY = 0;
-	private float ppcX = 0;
-	private float ppcY = 0;
-	private float density = 1;
+	protected float ppiX = 0;
+	protected float ppiY = 0;
+	protected float ppcX = 0;
+	protected float ppcY = 0;
+	protected float density = 1;
 
 	private final AndroidApplicationConfiguration config;
 	private BufferFormat bufferFormat = new BufferFormat(5, 6, 5, 0, 16, 0, 0, false);
-	private boolean isContinuous = true;
+	protected boolean isContinuous = true;
 
-	public AndroidGraphics (AndroidApplicationBase application, AndroidApplicationConfiguration config,
+	public AndroidGraphicsLiveWallpaper (AndroidLiveWallpaper app, AndroidApplicationConfiguration config,
 		ResolutionStrategy resolutionStrategy) {
 		this.config = config;
-		view = createGLSurfaceView(application, resolutionStrategy);
+		this.app = app;
+		view = createGLSurfaceView(app.service, resolutionStrategy);
 		setPreserveContext(view);
-		view.setFocusable(true);
-		view.setFocusableInTouchMode(true);
-		this.app = application;
 	}
 
-	private void setPreserveContext (View view) {
+	// jw: it will be called only after current GLSurfaceViewLW family of methods
+	// will be replaced by subclass of original GLSurfaceView, i'm working on it:)
+	// <- ok it is in use now
+	private void setPreserveContext (Object view) {
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion >= 11 && view instanceof GLSurfaceView20) {
+		if (sdkVersion >= 11 && view instanceof GLSurfaceView) {
 			try {
 				Method method = null;
 				for (Method m : view.getClass().getMethods()) {
@@ -106,17 +112,48 @@ public final class AndroidGraphics implements Graphics, Renderer {
 					}
 				}
 				if (method != null) {
-					method.invoke((GLSurfaceView20)view, true);
+					method.invoke((GLSurfaceView)view, true);
 				}
 			} catch (Exception e) {
 			}
 		}
 	}
 
-	private View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
+	// jw: I replaced GL..SurfaceViewLW classes with them original counterparts, if it will work
+	// on known devices, on opengl 1.0 and 2.0, and all possible SDK versions.. You can remove
+	// GL..SurfaceViewLW family of classes completely (there is no use for them).
+
+	// -> specific for live wallpapers
+	// jw: synchronized access to current wallpaper surface holder
+	SurfaceHolder getSurfaceHolder () {
+		synchronized (app.service.sync) {
+			return app.service.getSurfaceHolder();
+		}
+	}
+
+	// <- specific for live wallpapers
+
+	// Grabbed from original AndroidGraphics class, with modifications:
+	// + overrided getHolder in created GLSurfaceView instances
+	// + Activity changed to Context (as it should be in AndroidGraphics I think;p)
+	private View createGLSurfaceView (Context context, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
+
 		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+
+		GLSurfaceView20 view = new GLSurfaceView20(context, resolutionStrategy) {
+			// -> specific for live wallpapers
+			@Override
+			public SurfaceHolder getHolder () {
+				return getSurfaceHolder();
+			}
+
+			public void onDestroy () {
+				onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
+			}
+			// <- specific for live wallpapers
+		};
+
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
@@ -125,13 +162,18 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		return view;
 	}
 
+	// jw: changed, method replaced with implementation from original AndroidGraphics
 	private EGLConfigChooser getEglConfigChooser () {
 		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
 
 	private void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+
+		// jw: changed
+		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+		// final Display display = ((WindowManager)app.getService().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		// display.getMetrics(metrics);
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -140,7 +182,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		density = metrics.density;
 	}
 
-	private boolean checkGL20 () {
+	protected boolean checkGL20 () {
 		EGL10 egl = (EGL10)EGLContext.getEGL();
 		EGLDisplay display = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
 
@@ -192,11 +234,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
-
-		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
-		Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl.glGetString(GL10.GL_VENDOR));
-		Gdx.app.log("AndroidGraphics", "OGL version: " + gl.glGetString(GL10.GL_VERSION));
-		Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl.glGetString(GL10.GL_EXTENSIONS));
 	}
 
 	@Override
@@ -205,19 +242,21 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		this.height = height;
 		updatePpi();
 		gl.glViewport(0, 0, this.width, this.height);
+
+		// jw: moved from onSurfaceCreated (as in AndroidGraphics class)
 		if (created == false) {
-			app.getApplicationListener().create();
+			app.listener.create();
 			created = true;
 			synchronized (this) {
 				running = true;
 			}
 		}
-		app.getApplicationListener().resize(width, height);
+		app.listener.resize(width, height);
 	}
 
 	@Override
 	public void onSurfaceCreated (javax.microedition.khronos.opengles.GL10 gl, EGLConfig config) {
-		eglContext = ((EGL10)EGLContext.getEGL()).eglGetCurrentContext();
+		eglContext = ((EGL10)EGLContext.getEGL()).eglGetCurrentContext(); // jw: added
 		setupGL(gl);
 		logConfig(config);
 		updatePpi();
@@ -227,18 +266,25 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		ShaderProgram.invalidateAllShaderPrograms(app);
 		FrameBuffer.invalidateAllFrameBuffers(app);
 
-		Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
-		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
-		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
-		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
+		if (AndroidLiveWallpaperService.DEBUG) { // to prevent creating too many string buffers in live wallpapers
+			Gdx.app.debug("AndroidGraphics", Mesh.getManagedStatus());
+			Gdx.app.debug("AndroidGraphics", Texture.getManagedStatus());
+			Gdx.app.debug("AndroidGraphics", ShaderProgram.getManagedStatus());
+			Gdx.app.debug("AndroidGraphics", FrameBuffer.getManagedStatus());
+		}
 
-		Display display = ((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
 		this.height = display.getHeight();
 		mean = new WindowedMean(5);
 		this.lastFrameTime = System.nanoTime();
 
 		gl.glViewport(0, 0, this.width, this.height);
+
+		// jw: moved to onSurfaceChanged (as in AndroidGraphics class)
+		/*
+		 * if (created == false) { app.getListener().create(); created = true; synchronized (this) { running = true; } }
+		 */
 	}
 
 	private void logConfig (EGLConfig config) {
@@ -254,14 +300,29 @@ public final class AndroidGraphics implements Graphics, Renderer {
 			getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0));
 		boolean coverageSample = getAttrib(egl, display, config, GdxEglConfigChooser.EGL_COVERAGE_SAMPLES_NV, 0) != 0;
 
-		Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
-		Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
-		Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
-		Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
-		Gdx.app.log("AndroidGraphics", "coverage sampling: (" + coverageSample + ")");
+		// print configuration just one time (on some devices gl context is recreated every time when device is locked / unlocked -
+// every time when screen turns on and off)
+		if (!configLogged) {
+
+			if (gl20 != null) {
+				Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl20.glGetString(GL10.GL_RENDERER));
+				Gdx.app.log("AndroidGraphics", "OGL vendor: " + gl20.glGetString(GL10.GL_VENDOR));
+				Gdx.app.log("AndroidGraphics", "OGL version: " + gl20.glGetString(GL10.GL_VERSION));
+				Gdx.app.log("AndroidGraphics", "OGL extensions: " + gl20.glGetString(GL10.GL_EXTENSIONS));
+				configLogged = true;
+			}
+
+			Gdx.app.log("AndroidGraphics", "framebuffer: (" + r + ", " + g + ", " + b + ", " + a + ")");
+			Gdx.app.log("AndroidGraphics", "depthbuffer: (" + d + ")");
+			Gdx.app.log("AndroidGraphics", "stencilbuffer: (" + s + ")");
+			Gdx.app.log("AndroidGraphics", "samples: (" + samples + ")");
+			Gdx.app.log("AndroidGraphics", "coverage sampling: (" + coverageSample + ")");
+		}
 
 		bufferFormat = new BufferFormat(r, g, b, a, d, s, samples, coverageSample);
 	}
+
+	boolean configLogged = false;
 
 	int[] value = new int[1];
 
@@ -278,28 +339,28 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		synchronized (synch) {
 			running = true;
 			resume = true;
+
+			// by jw: added synchronization, there was nothing before
+			while (resume) {
+				try {
+					synch.wait();
+				} catch (InterruptedException ignored) {
+					Gdx.app.log("AndroidGraphics", "waiting for resume synchronization failed!");
+				}
+			}
 		}
 	}
 
+	// jw: never called on lvp, why? see description in AndroidLiveWallpaper.onPause
 	void pause () {
 		synchronized (synch) {
 			if (!running) return;
 			running = false;
 			pause = true;
+
 			while (pause) {
 				try {
-					// TODO: fix deadlock race condition with quick resume/pause.
-					// Temporary workaround:
-					// Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
-					// deadlock and killing process. This can easily be triggered by openning the
-					// Recent Apps list and then double-tapping the Recent Apps button with
-					// ~500ms between taps.
-					synch.wait(4000);
-					if (pause) {
-						Gdx.app.error("AndroidGraphics", "waiting for pause synchronization took too "
-							+ "long; assuming deadlock and killing");
-						android.os.Process.killProcess(android.os.Process.myPid());
-					}
+					synch.wait();
 				} catch (InterruptedException ignored) {
 					Gdx.app.log("AndroidGraphics", "waiting for pause synchronization failed!");
 				}
@@ -307,6 +368,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
+	// jw: never called on lvp
 	void destroy () {
 		synchronized (synch) {
 			running = false;
@@ -327,11 +389,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		long time = System.nanoTime();
 		deltaTime = (time - lastFrameTime) / 1000000000.0f;
 		lastFrameTime = time;
+
+		// jw: after pause deltaTime can have somewhat huge value and it destabilize mean, so I propose to just cut it of
 		if (!resume) {
 			mean.addValue(deltaTime);
 		} else {
 			deltaTime = 0;
 		}
+		// mean.addValue(deltaTime);
 
 		boolean lrunning = false;
 		boolean lpause = false;
@@ -346,6 +411,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 			if (resume) {
 				resume = false;
+				// by jw: originally was not synchronized
+				synch.notifyAll();
 			}
 
 			if (pause) {
@@ -360,58 +427,51 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			if (app.isFragment()) {
-				((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
-			}
-			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.resume();
-				}
-			}
-			app.getApplicationListener().resume();
+			// ((AndroidAudio)app.getAudio()).resume(); // jw: moved to AndroidLiveWallpaper.onResume
+			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
 
-		if (lrunning) {
-			synchronized (app.getRunnables()) {
-				app.getExecutedRunnables().clear();
-				app.getExecutedRunnables().addAll(app.getRunnables());
-				app.getRunnables().clear();
-			}
+		// HACK: added null check to handle set wallpaper from preview null
+		// error in renderer
+		// jw: this hack is not working always, renderer ends with error for some devices - because of uninitialized gl context
+		// jw: now it shouldn't be necessary - after wallpaper backend refactoring:)
+		if (lrunning && (Gdx.graphics.getGL20() != null)) {
 
-			for (int i = 0; i < app.getExecutedRunnables().size; i++) {
-				try {
-					app.getExecutedRunnables().get(i).run();
-				} catch (Throwable t) {
-					t.printStackTrace();
+			// jw: changed
+			synchronized (app.runnables) {
+				app.executedRunnables.clear();
+				app.executedRunnables.addAll(app.runnables);
+				app.runnables.clear();
+
+				for (int i = 0; i < app.executedRunnables.size; i++) {
+					try {
+						app.executedRunnables.get(i).run();
+					} catch (Throwable t) {
+						t.printStackTrace();
+					}
 				}
 			}
-			((AndroidInput)app.getInput()).processEvents();
-			app.getApplicationListener().render();
+			/*
+			 * synchronized (app.runnables) { for (int i = 0; i < app.runnables.size; i++) { app.runnables.get(i).run(); }
+			 * app.runnables.clear(); }
+			 */
+
+			app.input.processEvents();
+			app.listener.render();
 		}
 
+		// jw: never called on lvp, why? see description in AndroidLiveWallpaper.onPause
 		if (lpause) {
-			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.pause();
-				}
-			}
-			app.getApplicationListener().pause();
-			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).pause();
+			app.listener.pause();
+			// ((AndroidAudio)app.getAudio()).pause(); jw: moved to AndroidLiveWallpaper.onPause
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
+		// jw: never called on lwp, why? see description in AndroidLiveWallpaper.onPause
 		if (ldestroy) {
-			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.dispose();
-				}
-			}
-			((AndroidApplicationBase)app).getApplicationListener().dispose();
-			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).dispose();
+			app.listener.dispose();
+			// ((AndroidAudio)app.getAudio()).dispose(); jw: moved to AndroidLiveWallpaper.onDestroy
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
@@ -452,12 +512,16 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		ShaderProgram.clearAllShaderPrograms(app);
 		FrameBuffer.clearAllFrameBuffers(app);
 
-		Gdx.app.log("AndroidGraphics", Mesh.getManagedStatus());
-		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
-		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
-		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
+		if (AndroidLiveWallpaperService.DEBUG) { // to prevent creating too many string buffers in live wallpapers
+			Gdx.app.debug("AndroidGraphics", Mesh.getManagedStatus());
+			Gdx.app.debug("AndroidGraphics", Texture.getManagedStatus());
+			Gdx.app.debug("AndroidGraphics", ShaderProgram.getManagedStatus());
+			Gdx.app.debug("AndroidGraphics", FrameBuffer.getManagedStatus());
+		}
 	}
 
+	// jw: changed this
+	// public GLBaseSurfaceViewLW getView () {
 	public View getView () {
 		return view;
 	}
@@ -521,7 +585,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
 	}
 
@@ -545,7 +609,12 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		if (view != null) {
 			this.isContinuous = isContinuous;
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
-			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
+			// jw: changed
+			// view.setRenderMode(renderMode);
+			if (view instanceof GLSurfaceView)
+				((GLSurfaceView)view).setRenderMode(renderMode);
+			else
+				throw new RuntimeException("unimplemented");
 			mean.clear();
 		}
 	}
@@ -557,7 +626,12 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void requestRendering () {
 		if (view != null) {
-			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
+			// jw: changed
+			// view.requestRender();
+			if (view instanceof GLSurfaceView)
+				((GLSurfaceView)view).requestRender();
+			else
+				throw new RuntimeException("unimplemented");
 		}
 	}
 
