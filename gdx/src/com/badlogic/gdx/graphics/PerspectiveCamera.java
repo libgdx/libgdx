@@ -29,7 +29,7 @@ public class PerspectiveCamera extends Camera {
 	public PerspectiveCamera () {
 	}
 
-	/** Constructs a new {@link PerspectiveCamera} with the given field of view and viewport size. The apsect ratio is derrived from
+	/** Constructs a new {@link PerspectiveCamera} with the given field of view and viewport size. The aspect ratio is derived from
 	 * the viewport size.
 	 * 
 	 * @param fieldOfView the field of view in degrees

@@ -30,7 +30,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -74,8 +73,8 @@ public class ViewportTest1 extends GdxTest {
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
 		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new DoubleRatioViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
 		stage.setViewport(viewports.first());
 
 		Gdx.input.setInputProcessor(new InputMultiplexer(new InputAdapter() {

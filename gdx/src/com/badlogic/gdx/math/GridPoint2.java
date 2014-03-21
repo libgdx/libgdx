@@ -27,7 +27,7 @@ public class GridPoint2 {
 	public GridPoint2 () {
 	}
 
-	/** Costructs a new 2D grid point.
+	/** Constructs a new 2D grid point.
 	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate */

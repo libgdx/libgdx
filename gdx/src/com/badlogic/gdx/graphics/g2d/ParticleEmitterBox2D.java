@@ -42,7 +42,7 @@ public class ParticleEmitterBox2D extends ParticleEmitter {
 	/** If velocities squared is shorter than this it could lead 0 length rayCast that cause c++ assertion at box2d */
 	private final static float EPSILON = 0.001f;
 
-	/** default visibility to prevent synthetic accesor creation */
+	/** default visibility to prevent synthetic accessor creation */
 	final RayCastCallback rayCallBack = new RayCastCallback() {
 		public float reportRayFixture (Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			ParticleEmitterBox2D.this.particleCollided = true;

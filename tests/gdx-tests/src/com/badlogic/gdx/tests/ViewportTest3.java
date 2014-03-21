@@ -34,7 +34,6 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
-import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.MinMaxViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
@@ -93,8 +92,8 @@ public class ViewportTest3 extends GdxTest {
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
 		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new DoubleRatioViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
 		viewport = viewports.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
