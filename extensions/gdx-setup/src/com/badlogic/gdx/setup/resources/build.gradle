@@ -105,7 +105,7 @@ project(":ios") {
 
     ext {
         mainClassName = "%PACKAGE%.IOSLauncher"
-        roboVMVersion = "0.0.9"
+        roboVMVersion = "0.0.10"
     }
 
     task wrapper(type: Wrapper) {

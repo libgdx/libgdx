@@ -87,7 +87,7 @@ public class SuperKoalio extends GdxTest {
 		stand = new Animation(0, regions[0]);
 		jump = new Animation(0, regions[1]);
 		walk = new Animation(0.15f, regions[2], regions[3], regions[4]);
-		walk.setPlayMode(Animation.LOOP_PINGPONG);
+		walk.setPlayMode(Animation.PlayMode.LOOP_PINGPONG);
 
 		// figure out the width and height of the koala for collision
 		// detection and rendering by converting a koala frames pixel

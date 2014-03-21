@@ -31,6 +31,7 @@
 - Added OpenGL ES 3 support
 - Updated Android backend, demos, tests to 4.4
 - Added Viewport, changed Stage to have a Viewport instead of a Camera (API change).
+- Changed play mode constants of Animation class to enumeration, see http://www.badlogicgames.com/wordpress/?p=3330
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop
