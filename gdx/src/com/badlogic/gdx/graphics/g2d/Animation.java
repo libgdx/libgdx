@@ -26,18 +26,22 @@ import com.badlogic.gdx.utils.Array;
  * 
  * @author mzechner */
 public class Animation {
-	public static final int NORMAL = 0;
-	public static final int REVERSED = 1;
-	public static final int LOOP = 2;
-	public static final int LOOP_REVERSED = 3;
-	public static final int LOOP_PINGPONG = 4;
-	public static final int LOOP_RANDOM = 5;
+
+	/** Defines possible playback modes for an {@link Animation}. */
+	public enum PlayMode {
+		NORMAL,
+		REVERSED,
+		LOOP,
+		LOOP_REVERSED,
+		LOOP_PINGPONG,
+		LOOP_RANDOM,
+	}
 
 	final TextureRegion[] keyFrames;
 	public final float frameDuration;
 	public final float animationDuration;
 
-	private int playMode = NORMAL;
+	private PlayMode playMode = PlayMode.NORMAL;
 
 	/** Constructor, storing the frame duration and key frames.
 	 * 
@@ -51,15 +55,15 @@ public class Animation {
 			this.keyFrames[i] = keyFrames.get(i);
 		}
 
-		this.playMode = NORMAL;
+		this.playMode = PlayMode.NORMAL;
 	}
 
 	/** Constructor, storing the frame duration, key frames and play type.
 	 * 
 	 * @param frameDuration the time between frames in seconds.
 	 * @param keyFrames the {@link TextureRegion}s representing the frames.
-	 * @param playType the type of animation play (NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM) */
-	public Animation (float frameDuration, Array<? extends TextureRegion> keyFrames, int playType) {
+	 * @param playMode the animation playback mode. */
+	public Animation (float frameDuration, Array<? extends TextureRegion> keyFrames, PlayMode playMode) {
 
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.size * frameDuration;
@@ -68,7 +72,7 @@ public class Animation {
 			this.keyFrames[i] = keyFrames.get(i);
 		}
 
-		this.playMode = playType;
+		this.playMode = playMode;
 	}
 
 	/** Constructor, storing the frame duration and key frames.
@@ -79,7 +83,7 @@ public class Animation {
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.length * frameDuration;
 		this.keyFrames = keyFrames;
-		this.playMode = NORMAL;
+		this.playMode = PlayMode.NORMAL;
 	}
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
@@ -92,17 +96,17 @@ public class Animation {
 	public TextureRegion getKeyFrame (float stateTime, boolean looping) {
 		// we set the play mode by overriding the previous mode based on looping
 		// parameter value
-		int oldPlayMode = playMode;
-		if (looping && (playMode == NORMAL || playMode == REVERSED)) {
-			if (playMode == NORMAL)
-				playMode = LOOP;
+		PlayMode oldPlayMode = playMode;
+		if (looping && (playMode == PlayMode.NORMAL || playMode == PlayMode.REVERSED)) {
+			if (playMode == PlayMode.NORMAL)
+				playMode = PlayMode.LOOP;
 			else
-				playMode = LOOP_REVERSED;
-		} else if (!looping && !(playMode == NORMAL || playMode == REVERSED)) {
-			if (playMode == LOOP_REVERSED)
-				playMode = REVERSED;
+				playMode = PlayMode.LOOP_REVERSED;
+		} else if (!looping && !(playMode == PlayMode.NORMAL || playMode == PlayMode.REVERSED)) {
+			if (playMode == PlayMode.LOOP_REVERSED)
+				playMode = PlayMode.REVERSED;
 			else
-				playMode = LOOP;
+				playMode = PlayMode.LOOP;
 		}
 
 		TextureRegion frame = getKeyFrame(stateTime);
@@ -112,7 +116,7 @@ public class Animation {
 
 	/** Returns a {@link TextureRegion} based on the so called state time. This is the amount of seconds an object has spent in the
 	 * state this Animation instance represents, e.g. running, jumping and so on using the mode specified by
-	 * {@link #setPlayMode(int)} method.
+	 * {@link #setPlayMode(PlayMode)} method.
 	 * 
 	 * @param stateTime
 	 * @return the TextureRegion representing the frame of animation for the given state time. */
@@ -149,11 +153,6 @@ public class Animation {
 			frameNumber = frameNumber % keyFrames.length;
 			frameNumber = keyFrames.length - frameNumber - 1;
 			break;
-
-		default:
-			// play normal otherwise
-			frameNumber = Math.min(keyFrames.length - 1, frameNumber);
-			break;
 		}
 
 		return frameNumber;
@@ -165,21 +164,19 @@ public class Animation {
 		return keyFrames;
 	}
 
-	/** Returns the animation play mode. Will be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP,
-	 * Animation.LOOP_REVERSED, Animation.LOOP_PINGPONG, Animation.LOOP_RANDOM */
-	public int getPlayMode () {
+	/** Returns the animation play mode. */
+	public PlayMode getPlayMode () {
 		return playMode;
 	}
 
 	/** Sets the animation play mode.
 	 * 
-	 * @param playMode can be one of the following: Animation.NORMAL, Animation.REVERSED, Animation.LOOP, Animation.LOOP_REVERSED,
-	 *           Animation.LOOP_PINGPONG, Animation.LOOP_RANDOM */
-	public void setPlayMode (int playMode) {
+	 * @param playMode The animation {@link PlayMode} to use. */
+	public void setPlayMode (PlayMode playMode) {
 		this.playMode = playMode;
 	}
 
-	/** Whether the animation would be finished if played without looping (PlayMode Animation#NORMAL), given the state time.
+	/** Whether the animation would be finished if played without looping (PlayMode#NORMAL), given the state time.
 	 * @param stateTime
 	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
