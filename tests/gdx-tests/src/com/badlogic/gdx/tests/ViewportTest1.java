@@ -103,7 +103,8 @@ public class ViewportTest1 extends GdxTest {
 		names.add("StretchViewport");
 		names.add("FillViewport");
 		names.add("FitViewport");
-		names.add("ExtendViewport");
+		names.add("ExtendViewport: no max");
+		names.add("ExtendViewport: max");
 		names.add("MinMaxViewport: snap=false");
 		names.add("MinMaxViewport: snap=true");
 		names.add("ScreenViewport");
@@ -112,16 +113,17 @@ public class ViewportTest1 extends GdxTest {
 	}
 
 	static public Array<Viewport> getViewports (Camera camera) {
-		int minWorldWidth = 300;
-		int minWorldHeight = 225;
-		int maxWorldWidth = 300;
-		int maxWorldHeight = 168;
+		int minWorldWidth = 640;
+		int minWorldHeight = 480;
+		int maxWorldWidth = 800;
+		int maxWorldHeight = 480;
 
 		Array<Viewport> viewports = new Array();
 		viewports.add(new StretchViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new FillViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new FitViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
 		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
 		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
 		viewports.add(new ScreenViewport(camera));

@@ -69,34 +69,4 @@ public class ScalingViewport extends Viewport {
 	public void setScaling (Scaling scaling) {
 		this.scaling = scaling;
 	}
-
-	/** Returns the left gutter width in screen coordinates. */
-	public int getLeftGutterWidth () {
-		return viewportX;
-	}
-
-	/** Returns the right gutter x in screen coordinates. */
-	public int getRightGutterX () {
-		return viewportX + viewportWidth;
-	}
-
-	/** Returns the right gutter width in screen coordinates. */
-	public int getRightGutterWidth () {
-		return Gdx.graphics.getWidth() - (viewportX + viewportWidth);
-	}
-
-	/** Returns the bottom gutter height in screen coordinates. */
-	public int getBottomGutterHeight () {
-		return viewportY;
-	}
-
-	/** Returns the top gutter y in screen coordinates. */
-	public int getTopGutterY () {
-		return viewportY + viewportHeight;
-	}
-
-	/** Returns the top gutter height in screen coordinates. */
-	public int getTopGutterHeight () {
-		return Gdx.graphics.getHeight() - (viewportY + viewportHeight);
-	}
 }
