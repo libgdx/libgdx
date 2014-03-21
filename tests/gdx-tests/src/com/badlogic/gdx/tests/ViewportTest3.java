@@ -118,7 +118,7 @@ public class ViewportTest3 extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		System.out.println(viewport);
+		System.out.println(viewport.getClass().getSimpleName());
 		viewport.update(width, height);
 	}
 }

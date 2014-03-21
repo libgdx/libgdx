@@ -99,9 +99,4 @@ public class ScalingViewport extends Viewport {
 	public int getTopGutterHeight () {
 		return Gdx.graphics.getHeight() - (viewportY + viewportHeight);
 	}
-
-	@Override
-	public String toString () {
-		return getClass().getSimpleName() + ": " + scaling;
-	}
 }

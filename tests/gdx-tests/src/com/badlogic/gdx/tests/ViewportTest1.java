@@ -32,9 +32,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.MinMaxViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Cycles viewports while rendering a stage with a root Table for the layout. */
@@ -65,9 +68,9 @@ public class ViewportTest1 extends GdxTest {
 		int maxWorldHeight = 168;
 
 		Camera camera = stage.getCamera();
-		viewports.add(new ScalingViewport(Scaling.stretch, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fill, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fit, minWorldWidth, minWorldHeight, camera));
+		viewports.add(new StretchViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new FillViewport(minWorldWidth, minWorldHeight, camera));
+		viewports.add(new FitViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
 		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
@@ -88,7 +91,7 @@ public class ViewportTest1 extends GdxTest {
 	}
 
 	public void render () {
-		label.setText(stage.getViewport().toString());
+		label.setText(stage.getViewport().getClass().getSimpleName());
 		stage.act();
 
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

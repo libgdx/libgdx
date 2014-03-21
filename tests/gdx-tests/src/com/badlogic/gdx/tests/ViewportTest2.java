@@ -99,7 +99,7 @@ public class ViewportTest2 extends GdxTest {
 		batch.setColor(1, 0, 0, 1);
 		batch.draw(texture, 150, 100, 16, 16, 32, 32, 1, 1, 45, 0, 0, 16, 16, false, false);
 
-		font.draw(batch, viewport.toString(), 150, 100);
+		font.draw(batch, viewport.getClass().getSimpleName(), 150, 100);
 		batch.end();
 
 		if (viewport instanceof ScalingViewport) {
@@ -127,7 +127,7 @@ public class ViewportTest2 extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		System.out.println(viewport);
+		System.out.println(viewport.getClass().getSimpleName());
 		viewport.update(width, height);
 	}
 
