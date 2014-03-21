@@ -24,7 +24,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class TextureRegionDrawable extends BaseDrawable implements TransformDrawable {
 	private TextureRegion region;
 
-	/** Creates an unitialized TextureRegionDrawable. The texture region must be set before use. */
+	/** Creates an uninitialized TextureRegionDrawable. The texture region must be set before use. */
 	public TextureRegionDrawable () {
 	}
 

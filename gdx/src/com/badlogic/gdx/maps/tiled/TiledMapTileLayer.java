@@ -29,7 +29,7 @@ public class TiledMapTileLayer extends MapLayer {
 
 	private Cell[][] cells;
 
-	/** @return layer's witdth in tiles */
+	/** @return layer's width in tiles */
 	public int getWidth () {
 		return width;
 	}

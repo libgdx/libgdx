@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.OrderedMap;
  * PixmapPacker packer = new PixmapPacker(512, 512, Format.RGB565, 2, true);
  * packer.pack(&quot;First Pixmap&quot;, pixmap1);
  * packer.pack(&quot;Second Pixmap&quot;, pixmap2);
- * TextureAtlas altas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
+ * TextureAtlas atlas = packer.generateTextureAtlas(TextureFilter.Nearest, TextureFilter.Nearest);
  * </pre>
  * 
  * Note that you should not dispose the packer in this usage pattern. Instead, dispose the TextureAtlas if no longer needed.
