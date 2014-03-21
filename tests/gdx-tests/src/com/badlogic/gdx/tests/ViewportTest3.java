@@ -42,8 +42,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Cycles viewports while rendering with SpriteBatch. */
 public class ViewportTest3 extends GdxTest {
-	Array<Viewport> viewports = new Array();
+	Array<Viewport> viewports;
 	Viewport viewport;
+	Array<String> names;
+	String name;
 
 	private PerspectiveCamera camera;
 	public Environment environment;
@@ -71,35 +73,25 @@ public class ViewportTest3 extends GdxTest {
 		camera.position.set(0, 0, 100);
 		camera.lookAt(0, 0, 0);
 
+		viewports = ViewportTest1.getViewports(camera);
+		viewport = viewports.first();
+
+		names = ViewportTest1.getViewportNames();
+		name = names.first();
+
 		ModelBuilder modelBuilder = new ModelBuilder();
-
-		// we need a white background so we are able to see the black bars appearing
-
 		Model boxModel = modelBuilder.createBox(50f, 50f, 50f, new Material(ColorAttribute.createDiffuse(Color.GREEN)),
 			Usage.Position | Usage.Normal);
 		boxInstance = new ModelInstance(boxModel);
 		boxInstance.transform.rotate(1, 0, 0, 30);
 		boxInstance.transform.rotate(0, 1, 0, 30);
 
-		int minWorldWidth = 300;
-		int minWorldHeight = 225;
-		int maxWorldWidth = 300;
-		int maxWorldHeight = 168;
-
-		viewports.add(new ScalingViewport(Scaling.stretch, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fill, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fit, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScreenViewport(camera));
-		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
-		viewport = viewports.first();
-
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.SPACE) {
-					viewport = viewports.get((viewports.indexOf(viewport, true) + 1) % viewports.size);
+					int index = (viewports.indexOf(viewport, true) + 1) % viewports.size;
+					name = names.get(index);
+					viewport = viewports.get(index);
 					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
 				return false;
@@ -117,7 +109,7 @@ public class ViewportTest3 extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		System.out.println(viewport);
+		System.out.println(name);
 		viewport.update(width, height);
 	}
 }

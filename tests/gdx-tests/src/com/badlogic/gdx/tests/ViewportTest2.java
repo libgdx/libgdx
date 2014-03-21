@@ -37,8 +37,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** Cycles viewports while rendering with SpriteBatch, also shows how to draw in the black bars. */
 public class ViewportTest2 extends GdxTest {
-	Array<Viewport> viewports = new Array();
+	Array<Viewport> viewports;
 	Viewport viewport;
+	Array<String> names;
+	String name;
+
 	private SpriteBatch batch;
 	private Texture texture;
 	private BitmapFont font;
@@ -59,25 +62,18 @@ public class ViewportTest2 extends GdxTest {
 		camera.position.set(100, 100, 0);
 		camera.update();
 
-		int minWorldWidth = 300;
-		int minWorldHeight = 225;
-		int maxWorldWidth = 300;
-		int maxWorldHeight = 168;
-
-		viewports.add(new ScalingViewport(Scaling.stretch, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fill, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fit, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
-		viewports.add(new ScreenViewport(camera));
-		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, true, camera));
-		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, false, camera));
+		viewports = ViewportTest1.getViewports(camera);
 		viewport = viewports.first();
+
+		names = ViewportTest1.getViewportNames();
+		name = names.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			public boolean keyDown (int keycode) {
 				if (keycode == Input.Keys.SPACE) {
-					viewport = viewports.get((viewports.indexOf(viewport, true) + 1) % viewports.size);
+					int index = (viewports.indexOf(viewport, true) + 1) % viewports.size;
+					name = names.get(index);
+					viewport = viewports.get(index);
 					resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 				}
 				return false;
@@ -98,7 +94,7 @@ public class ViewportTest2 extends GdxTest {
 		batch.setColor(1, 0, 0, 1);
 		batch.draw(texture, 150, 100, 16, 16, 32, 32, 1, 1, 45, 0, 0, 16, 16, false, false);
 
-		font.draw(batch, viewport.toString(), 150, 100);
+		font.draw(batch, viewport.getClass().getSimpleName(), 150, 100);
 		batch.end();
 
 		if (viewport instanceof ScalingViewport) {
@@ -126,7 +122,7 @@ public class ViewportTest2 extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		System.out.println(viewport);
+		System.out.println(name);
 		viewport.update(width, height);
 	}
 

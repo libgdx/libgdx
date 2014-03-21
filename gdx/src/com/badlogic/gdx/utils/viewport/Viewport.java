@@ -165,8 +165,4 @@ public abstract class Viewport {
 	public int getViewportHeight () {
 		return viewportHeight;
 	}
-
-	public String toString () {
-		return getClass().getSimpleName();
-	}
 }
