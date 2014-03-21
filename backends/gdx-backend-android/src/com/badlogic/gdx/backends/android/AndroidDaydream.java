@@ -52,7 +52,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * the GLSurfaceView.
  * 
  * @author mzechner */
-public class AndroidDaydream extends DreamService implements implements AndroidApplicationBase {
+public class AndroidDaydream extends DreamService implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}

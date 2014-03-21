@@ -482,7 +482,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log("AndroidGraphics", Texture.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
-		}
 	}
 
 	public View getView () {
