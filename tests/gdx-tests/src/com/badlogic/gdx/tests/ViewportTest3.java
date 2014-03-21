@@ -34,7 +34,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
+import com.badlogic.gdx.utils.viewport.DoubleRatioViewport;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.MinMaxViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -80,15 +82,19 @@ public class ViewportTest3 extends GdxTest {
 		boxInstance.transform.rotate(1, 0, 0, 30);
 		boxInstance.transform.rotate(0, 1, 0, 30);
 
-		int worldWidth = 300;
-		int worldHeight = 200;
+		int minWorldWidth = 300;
+		int minWorldHeight = 225;
+		int maxWorldWidth = 300;
+		int maxWorldHeight = 168;
 
-		viewports.add(new ScalingViewport(Scaling.stretch, worldWidth, worldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fill, worldWidth, worldHeight, camera));
-		viewports.add(new ScalingViewport(Scaling.fit, worldWidth, worldHeight, camera));
-		viewports.add(new ExtendViewport(worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.stretch, minWorldWidth, minWorldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.fill, minWorldWidth, minWorldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.fit, minWorldWidth, minWorldHeight, camera));
+		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
-		viewports.add(new ScalingViewport(Scaling.none, worldWidth, worldHeight, camera));
+		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
+		viewports.add(new DoubleRatioViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
+		viewports.add(new MinMaxViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
 		viewport = viewports.first();
 
 		Gdx.input.setInputProcessor(new InputAdapter() {
