@@ -78,7 +78,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean disableX, disableY;
 	private boolean clamp = true;
 	private boolean scrollbarsOnTop;
-	private boolean useRealSizeKnobs = false;
+	private boolean variableSizeKnobs = true;
 	int draggingPointer = -1;
 
 	/** @param widget May be null. */
@@ -468,13 +468,13 @@ public class ScrollPane extends WidgetGroup {
 					boundsY = height - bgTopHeight - hScrollHeight;
 				}
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
-				if(useRealSizeKnobs)
-					hKnobBounds.width = hScrollKnob.getMinWidth();
-				else
+				if (variableSizeKnobs)
 					hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
-				
+				else
+					hKnobBounds.width = hScrollKnob.getMinWidth();
+
 				hKnobBounds.height = hScrollKnob.getMinHeight();
-				
+
 				hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
 				hKnobBounds.y = hScrollBounds.y;
 			} else {
@@ -500,11 +500,11 @@ public class ScrollPane extends WidgetGroup {
 				}
 				vScrollBounds.set(boundsX, boundsY, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
-				if(useRealSizeKnobs)
-					vKnobBounds.height = vScrollKnob.getMinHeight();
-				else
+				if (variableSizeKnobs)
 					vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widgetHeight));
-				
+				else
+					vKnobBounds.height = vScrollKnob.getMinHeight();
+
 				if (vScrollOnRight) {
 					vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
 				} else {
@@ -941,20 +941,18 @@ public class ScrollPane extends WidgetGroup {
 		invalidate();
 	}
 
-	/** Check if ScrollPane is using real sized knobs
+	/** Check if ScrollPane is using computed knob sizes
 	 * 
-	 * @return whenever ScrollPane uses real sized knobs
-	 */
-	public boolean isUseRealSizeKnobs () {
-		return useRealSizeKnobs;
+	 * @return true if ScrollPane is using computed knob sizes, false if ScrollPane is using knob's physical dimensions */
+	public boolean getVariableSizeKnobs () {
+		return variableSizeKnobs;
 	}
 
-	/** When true, ScrollPane will use real sized knobs
+	/** When true, ScrollPane will use computed knob sizes, otherwise knob will be sized to it's physical dimensions
 	 * 
-	 * @param useRealSizeKnobs set to true if you want to use real sizes
-	 */
-	public void setUseRealSizeKnobs (boolean useRealSizeKnobs) {
-		this.useRealSizeKnobs = useRealSizeKnobs;
+	 * @param variableSizeKnobs set to true if you want to use computed knob sizes */
+	public void setVariableSizeKnobs (boolean variableSizeKnobs) {
+		this.variableSizeKnobs = variableSizeKnobs;
 	}
 
 	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled when flick scrolling begins. This causes
