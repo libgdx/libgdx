@@ -80,7 +80,7 @@ public class GdxSetup {
 
 		//ios robovm
 		project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-		project.files.add(new ProjectFile("ios/build.gradle", false));
+		project.files.add(new ProjectFile("ios/build.gradle", true));
 		project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 		project.files.add(new ProjectFile("ios/robovm.properties"));
 		project.files.add(new ProjectFile("ios/robovm.xml", false));
