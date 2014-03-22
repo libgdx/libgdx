@@ -39,6 +39,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** An implementation of the {@link Application} interface to be used with an AndroidLiveWallpaperService. Not directly
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
@@ -68,6 +69,9 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		if (this.getVersion() < 8) {
+			throw new GdxRuntimeException("LibGDX requires Android 2.2 or later.");
+		}
 		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 

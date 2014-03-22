@@ -27,6 +27,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -144,6 +145,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	 *           etc.).
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		if (this.getVersion() < 8) {
+			throw new GdxRuntimeException("LibGDX requires Android 2.2 or later.");
+		}
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
