@@ -351,54 +351,22 @@ public final class Intersector {
 
 	/** Intersects a {@link Ray} and a sphere, returning the intersection point in intersection.
 	 * 
-	 * @param ray The ray
+	 * @param ray The ray, the direction component must be normalized before calling this method
 	 * @param center The center of the sphere
 	 * @param radius The radius of the sphere
-	 * @param intersection The intersection point (optional)
+	 * @param intersection The intersection point (optional, can be null)
 	 * @return Whether an intersection is present. */
 	public static boolean intersectRaySphere (Ray ray, Vector3 center, float radius, Vector3 intersection) {
-		dir.set(ray.direction).nor();
-		start.set(ray.origin);
-		float b = 2 * dir.dot(start.tmp().sub(center));
-		float c = start.dst2(center) - radius * radius;
-		float disc = b * b - 4 * c;
-		if (disc < 0) return false;
-
-		// compute q as described above
-		float distSqrt = (float)Math.sqrt(disc);
-		float q;
-		if (b < 0)
-			q = (-b - distSqrt) / 2.0f;
-		else
-			q = (-b + distSqrt) / 2.0f;
-
-		// compute t0 and t1
-		float t0 = q / 1;
-		float t1 = c / q;
-
-		// make sure t0 is smaller than t1
-		if (t0 > t1) {
-			// if t0 is bigger than t1 swap them around
-			float temp = t0;
-			t0 = t1;
-			t1 = temp;
-		}
-
-		// if t1 is less than zero, the object is in the ray's negative
-		// direction
-		// and consequently the ray misses the sphere
-		if (t1 < 0) return false;
-
-		// if t0 is less than zero, the intersection point is at t1
-		if (t0 < 0) {
-			if (intersection != null) intersection.set(start).add(dir.tmp().scl(t1));
-			return true;
-		}
-		// else the intersection point is at t0
-		else {
-			if (intersection != null) intersection.set(start).add(dir.tmp().scl(t0));
-			return true;
-		}
+		final float len = ray.direction.dot(center.x-ray.origin.x, center.y-ray.origin.y, center.z-ray.origin.z);
+		if (len < 0.f) // behind the ray
+			return false;
+		final float dst2 = center.dst2(ray.origin.x+ray.direction.x*len, ray.origin.y+ray.direction.y*len, ray.origin.z+ray.direction.z*len);
+		final float r2 = radius * radius;
+		if (dst2 > r2)
+			return false;
+		if (intersection != null)
+			intersection.set(ray.direction).scl(len - (float)Math.sqrt(r2 - dst2)).add(ray.origin);
+		return true;
 	}
 
 	/** Intersects a {@link Ray} and a {@link BoundingBox}, returning the intersection point in intersection.
