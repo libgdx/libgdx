@@ -111,4 +111,5 @@ tasks.ideaModule.doFirst {
 
 eclipse.project {
     name = appName + "-ios"
+    natures 'org.robovm.eclipse.RoboVMNature'
 }
