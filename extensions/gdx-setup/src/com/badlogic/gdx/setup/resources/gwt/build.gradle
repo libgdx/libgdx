@@ -1,6 +1,22 @@
 apply plugin: "java"
 apply plugin: "application"
 
+gwt {
+    gwtVersion='2.5.0' // Should match the gwt version used for building the gwt backend
+    maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
+    minHeapSize="1G"
+
+    src = files(file("src/")) // Needs to be in front of "modules" below.
+    modules '%PACKAGE%.GdxDefinition'
+
+    compiler {
+        strict = true;
+        enableClosureCompiler = true;
+        disableClassMetadata = true;
+        disableCastChecking = true;
+    }
+}
+
 sourceCompatibility = 1.6
 mainClassName = "%PACKAGE%.client.GwtLauncher"
 sourceSets.main.java.srcDirs = [ "src/" ]

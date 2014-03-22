@@ -65,6 +65,7 @@ project(":android") {
     dependencies {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"        
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
     }
@@ -80,23 +81,7 @@ project(":gwt") {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-    }
-
-    gwt {
-        gwtVersion='2.5.0' // Should match the gwt version used for building the gwt backend
-        maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
-        minHeapSize="1G"
-
-        src = files(file("src/")) // Needs to be in front of "modules" below.
-        modules '%PACKAGE%.GdxDefinition'
-
-        compiler {
-            strict = true;
-            enableClosureCompiler = true;
-            disableClassMetadata = true;
-            disableCastChecking = true;
-        }
-    }
+    }    
 }
 
 project(":ios") {
@@ -108,10 +93,6 @@ project(":ios") {
         roboVMVersion = "0.0.10"
     }
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = '1.9'
-    }
-
     configurations { natives }
 
     dependencies {
@@ -119,7 +100,6 @@ project(":ios") {
         compile "org.robovm:robovm-cocoatouch:${roboVMVersion}"
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
     }
 }
