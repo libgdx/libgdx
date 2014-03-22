@@ -21,21 +21,20 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
-/** A viewport that keeps the world aspect ratio without black bars by extending the world in one direction. The world is first
- * scaled to fit within the viewport, then the shorter dimension is lengthened to fill the viewport. A maximum size can be
- * specified to limit how much the world is extended and black bars (letterboxing) are used for any remaining space.
+/** A viewport that keeps the world aspect ratio by extending the world in one direction. The world is first scaled to fit within
+ * the viewport, then the shorter dimension is lengthened to fill the viewport. A maximum size can be specified to limit how much
+ * the world is extended and black bars (letterboxing) are used for any remaining space.
  * @author Nathan Sweet */
 public class ExtendViewport extends Viewport {
 	private final float minWorldWidth, minWorldHeight;
 	private final float maxWorldWidth, maxWorldHeight;
 
-	/** Creates a new viewport using a new {@link OrthographicCamera} with no maximum world size. The world will be extended in one
-	 * direction to fill the screen. */
+	/** Creates a new viewport using a new {@link OrthographicCamera} with no maximum world size. */
 	public ExtendViewport (float minWorldWidth, float minWorldHeight) {
-		this(minWorldWidth, minWorldHeight, new OrthographicCamera());
+		this(minWorldWidth, minWorldHeight, 0, 0, new OrthographicCamera());
 	}
 
-	/** Creates a new viewport with no maximum world size. The world will be extended in one direction to fill the screen. */
+	/** Creates a new viewport with no maximum world size. */
 	public ExtendViewport (float minWorldWidth, float minWorldHeight, Camera camera) {
 		this(minWorldWidth, minWorldHeight, 0, 0, camera);
 	}
@@ -46,8 +45,7 @@ public class ExtendViewport extends Viewport {
 		this(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, new OrthographicCamera());
 	}
 
-	/** Creates a new viewport with a maximum world size. The world will be extended in one direction up to the maximum size to fill
-	 * the screen. Black bars (letterboxing) will be used to fill the screen beyond the maximum size.
+	/** Creates a new viewport with a maximum world size.
 	 * @param maxWorldWidth User 0 for no maximum width.
 	 * @param maxWorldHeight User 0 for no maximum height. */
 	public ExtendViewport (float minWorldWidth, float minWorldHeight, float maxWorldWidth, float maxWorldHeight, Camera camera) {
