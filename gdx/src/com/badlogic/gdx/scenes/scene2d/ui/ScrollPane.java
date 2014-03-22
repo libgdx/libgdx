@@ -941,16 +941,12 @@ public class ScrollPane extends WidgetGroup {
 		invalidate();
 	}
 
-	/** Check if ScrollPane is using computed knob sizes
-	 * 
-	 * @return true if ScrollPane is using computed knob sizes, false if ScrollPane is using knob's physical dimensions */
 	public boolean getVariableSizeKnobs () {
 		return variableSizeKnobs;
 	}
 
-	/** When true, ScrollPane will use computed knob sizes, otherwise knob will be sized to it's physical dimensions
-	 * 
-	 * @param variableSizeKnobs set to true if you want to use computed knob sizes */
+	/** If true, the scroll knobs are sized based on {@link #getMaxX()} or {@link #getMaxY()}. If false, the scroll knobs are sized
+	 * based on {@link Drawable#getMinWidth()} or {@link Drawable#getMinHeight()}. Default is true. */
 	public void setVariableSizeKnobs (boolean variableSizeKnobs) {
 		this.variableSizeKnobs = variableSizeKnobs;
 	}
