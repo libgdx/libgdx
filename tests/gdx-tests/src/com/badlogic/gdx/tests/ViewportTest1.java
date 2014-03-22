@@ -104,8 +104,6 @@ public class ViewportTest1 extends GdxTest {
 		names.add("FitViewport");
 		names.add("ExtendViewport: no max");
 		names.add("ExtendViewport: max");
-		names.add("MinMaxViewport: snap=false");
-		names.add("MinMaxViewport: snap=true");
 		names.add("ScreenViewport");
 		names.add("ScalingViewport: none");
 		return names;
