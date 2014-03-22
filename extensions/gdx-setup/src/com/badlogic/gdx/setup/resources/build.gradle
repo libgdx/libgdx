@@ -32,9 +32,9 @@ allprojects {
     // ext.texturePacker = ['images', 'android/assets/data', 'gamegdx']
     
     repositories {
+        mavenLocal();
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        mavenLocal();
     }
 }
 
