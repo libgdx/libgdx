@@ -23,15 +23,11 @@ task draftRun(type: JettyRunWar) {
     dependsOn draftWar
     dependsOn.remove('war')
     webApp=draftWar.archivePath
-}
-
-gwtSuperDev {
+    daemon=true
     gwt.modules = gwt.devModules;
 }
 
-draftWar {
-   from "war"
-}
+// FUCKING HELL WORK! gwt.gwtSuperDev.dependsOn draftRun
 
 sourceCompatibility = 1.6
 mainClassName = "%PACKAGE%.client.GwtLauncher"
