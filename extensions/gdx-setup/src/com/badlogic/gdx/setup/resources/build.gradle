@@ -42,7 +42,6 @@ project(":core") {
 
 project(":desktop") {
     apply plugin: "java"
-    apply plugin: "application"
     
     dependencies {
         compile project(":core")
