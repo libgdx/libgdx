@@ -33,6 +33,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.FixedScaleViewport;
 import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -106,6 +107,7 @@ public class ViewportTest1 extends GdxTest {
 		names.add("ExtendViewport: max");
 		names.add("ScreenViewport");
 		names.add("ScalingViewport: none");
+		names.add("FixedScaleViewport: x2");
 		return names;
 	}
 
@@ -114,6 +116,7 @@ public class ViewportTest1 extends GdxTest {
 		int minWorldHeight = 480;
 		int maxWorldWidth = 800;
 		int maxWorldHeight = 480;
+		float fixedScale = 2;
 
 		Array<Viewport> viewports = new Array();
 		viewports.add(new StretchViewport(minWorldWidth, minWorldHeight, camera));
@@ -123,6 +126,7 @@ public class ViewportTest1 extends GdxTest {
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
 		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
+		viewports.add(new FixedScaleViewport(fixedScale, camera));
 		return viewports;
 	}
 }
