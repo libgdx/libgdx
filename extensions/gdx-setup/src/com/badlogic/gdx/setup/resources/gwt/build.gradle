@@ -9,7 +9,6 @@ gwt {
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
     modules '%PACKAGE%.GdxDefinition'
-    devModules '%PACKAGE%.GdxDefinitionSuperdev'
 
     compiler {
         strict = true;
@@ -24,7 +23,11 @@ task draftRun(type: JettyRunWar) {
     dependsOn.remove('war')
     webApp=draftWar.archivePath
     daemon=true
-    gwt.modules = gwt.devModules;
+}
+
+task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
+    dependsOn draftRun
+    gwt.modules = '%PACKAGE%.GdxDefinitionSuperdev'
 }
 
 // FUCKING HELL WORK! gwt.gwtSuperDev.dependsOn draftRun
