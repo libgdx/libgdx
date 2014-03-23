@@ -26,8 +26,15 @@ import com.badlogic.gdx.utils.IntIntMap;
 /** Takes a {@link Camera} instance and controls it via w,a,s,d and mouse panning.
  * @author badlogic */
 public class FirstPersonCameraController extends InputAdapter {
+	private static final int LEFT_FLAG = 1;
+	private static final int RIGHT_FLAG = 2;
+	private static final int FORWARD_FLAG = 4;
+	private static final int BACKWARD_FLAG = 8;
+	private static final int UP_FLAG = 16;
+	private static final int DOWN_FLAG = 32;
+	
 	private final Camera camera;
-	private final IntIntMap keys = new IntIntMap();
+	private int keyFlags = 0;
 	private int STRAFE_LEFT = Keys.A;
 	private int STRAFE_RIGHT = Keys.D;
 	private int FORWARD = Keys.W;
@@ -45,15 +52,57 @@ public class FirstPersonCameraController extends InputAdapter {
 
 	@Override
 	public boolean keyDown (int keycode) {
-		keys.put(keycode, keycode);
-		return true;
+		int flag = getFlag(keycode);
+		if (flag != 0) {
+			keyFlags |= flag;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
 	public boolean keyUp (int keycode) {
-		keys.remove(keycode, 0);
-		return true;
+		int flag = getFlag(keycode);
+		if (flag != 0) {
+			keyFlags &= ~getFlag(keycode);
+			return true;
+		}
+		return false;
 	}
+	/**
+	 * Gets the flag for key 
+	 * @param key target key flag
+	 * @return returns the flag or 0 if not found.      
+	 */
+	private int getFlag (int key) {
+		if (key == UP) {
+			return UP_FLAG;
+		}
+		if (key == DOWN) {
+			return DOWN_FLAG;
+		}
+		if (key == BACKWARD) {
+			return BACKWARD_FLAG;	
+		}
+		if (key == FORWARD) {
+			return FORWARD_FLAG;
+		}
+		if (key == STRAFE_LEFT) {
+			return LEFT_FLAG;
+		}
+		if (key == STRAFE_RIGHT) {
+			return RIGHT_FLAG;	
+		}
+		return 0;
+	}
+	
+	/** Checks if a key flag has been set.
+	 * @param flag the flag to check for
+	 */
+	private boolean hasFlag (int flag) {
+		return (keyFlags & flag) != 0;
+	}
+	
 
 	/** Sets the velocity in units per second for moving forward, backward and strafing left/right.
 	 * @param velocity the velocity in units per second */
@@ -83,27 +132,27 @@ public class FirstPersonCameraController extends InputAdapter {
 	}
 
 	public void update (float deltaTime) {
-		if (keys.containsKey(FORWARD)) {
+		if (hasFlag(FORWARD_FLAG)) {
 			tmp.set(camera.direction).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(BACKWARD)) {
+		if (hasFlag(BACKWARD_FLAG)) {
 			tmp.set(camera.direction).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(STRAFE_LEFT)) {
+		if (hasFlag(LEFT_FLAG)) {
 			tmp.set(camera.direction).crs(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(STRAFE_RIGHT)) {
+		if (hasFlag(RIGHT_FLAG)) {
 			tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(UP)) {
+		if (hasFlag(UP_FLAG)) {
 			tmp.set(camera.up).nor().scl(deltaTime * velocity);
 			camera.position.add(tmp);
 		}
-		if (keys.containsKey(DOWN)) {
+		if (hasFlag(DOWN_FLAG)) {
 			tmp.set(camera.up).nor().scl(-deltaTime * velocity);
 			camera.position.add(tmp);
 		}
