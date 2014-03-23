@@ -1,16 +1,19 @@
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = [file("../android/assets").getAbsolutePath()]
 
 sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
+ext {
+	mainClassName = "%PACKAGE%.IOSLauncher"
+}
+
 // Extracts native libs (*.a) from the native-ios.jar and places them
-// under build/libs/natives/ios/.
+// under build/libs/ios/.
 task copyNatives << {
-  file("build/libs/natives/ios/").mkdirs();
+  file("build/libs/ios/").mkdirs();
   configurations.natives.files.each { jar ->
     def outputDir = null
-    if (jar.name.endsWith("natives-ios.jar")) outputDir = file("build/libs/natives/ios")
+    if (jar.name.endsWith("natives-ios.jar")) outputDir = file("build/libs/ios")
     if (outputDir != null) {
       copy {
         from zipTree(jar)
@@ -19,55 +22,6 @@ task copyNatives << {
       }
     }
   }
-}
-
-// Builds a minimal robovm.xml file suitable for this project.
-task buildRoboVMXML << {
-  // List of frameworks to include. Should probably be moved to a
-  // project parameter or similar.
-  def frameworks = ['UIKit', 'OpenGLES', 'QuartzCore', 'CoreGraphics', 'OpenAL',
-                    'AudioToolbox', 'AVFoundation']
-
-  // Hack, only supports one asset dir for now
-  def assetdir = file("../android/assets")
-
-  // Find all native (*.a) libraries beneath libs
-  def libtree = fileTree(dir: 'build/libs', include: '**/*.a')
-  def libs = []
-  libtree.each { File file ->
-    libs.add(file)
-  }
-
-  // Build minimal robovm.xml file.
-  def writer = new StringWriter()
-  def builder = new groovy.xml.MarkupBuilder(writer)
-  builder.config() {
-    "${'libs'}" {
-      libs.each { name ->
-        lib name
-      }
-    }
-    "${'frameworks'}" {
-      frameworks.each { name ->
-        framework name
-      }
-    }
-    resources {
-      resource {
-        directory assetdir
-        includes {
-          include '**'
-        }
-        skipPngCrush true
-      }
-    }
-  }
-  getLogger().debug(writer.toString())
-
-  // Write robovm.xml file in project root.
-  File f = file('robovm.xml')
-  f.write(writer.toString())
-
 }
 
 // Updates a robovm.xml file.
@@ -85,7 +39,7 @@ task updateRoboVMXML << {
   config.libs.each {libs ->
       libs.children().clear()
       libtree.each { File file ->
-          libs.appendNode('lib', file.getAbsolutePath())
+          libs.appendNode('lib', 'build/libs/ios/' + file.getName())
       }
   }
   
@@ -95,20 +49,17 @@ task updateRoboVMXML << {
   printer.print(config)
 }
 
-// Setup build dependencies so the robovm.xml gets put in
-// place before robovm does its thing.
-buildRoboVMXML.dependsOn copyNatives
 updateRoboVMXML.dependsOn copyNatives
-launchIPhoneSimulator.dependsOn updateRoboVMXML
-launchIPadSimulator.dependsOn updateRoboVMXML
-launchIOSDevice.dependsOn updateRoboVMXML
-createIPA.dependsOn updateRoboVMXML
+build.dependsOn updateRoboVMXML
+tasks.eclipse.dependsOn updateRoboVMXML
 
-// idea doesn't like relative paths outside of content root...
-tasks.ideaModule.doFirst {
-    sourceSets.main.resources.srcDirs = []
-}
+launchIPhoneSimulator.dependsOn build
+launchIPadSimulator.dependsOn build
+launchIOSDevice.dependsOn build
+createIPA.dependsOn build
+
 
 eclipse.project {
     name = appName + "-ios"
+    natures 'org.robovm.eclipse.RoboVMNature'
 }

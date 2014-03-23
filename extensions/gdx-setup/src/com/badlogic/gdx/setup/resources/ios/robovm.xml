@@ -17,7 +17,8 @@
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
   </forceLinkClasses>
-  <libs/>
+  <libs>      
+  </libs>
   <frameworks>
     <framework>UIKit</framework>
     <framework>OpenGLES</framework>

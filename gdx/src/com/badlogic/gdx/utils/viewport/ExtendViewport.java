@@ -21,43 +21,71 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Scaling;
 
-/** A viewport that keeps the world aspect ratio without black bars by extending the world in one direction. The world is first
- * scaled to fit within the viewport, then the shorter dimension is lengthened to fill the viewport.
+/** A viewport that keeps the world aspect ratio by extending the world in one direction. The world is first scaled to fit within
+ * the viewport, then the shorter dimension is lengthened to fill the viewport. A maximum size can be specified to limit how much
+ * the world is extended and black bars (letterboxing) are used for any remaining space.
  * @author Nathan Sweet */
 public class ExtendViewport extends Viewport {
-	private float originalWorldWidth, originalWorldHeight;
+	private final float minWorldWidth, minWorldHeight;
+	private final float maxWorldWidth, maxWorldHeight;
 
-	/** Creates a new viewport using a new {@link OrthographicCamera}. */
-	public ExtendViewport (float worldWidth, float worldHeight) {
-		this(worldWidth, worldHeight, new OrthographicCamera());
+	/** Creates a new viewport using a new {@link OrthographicCamera} with no maximum world size. */
+	public ExtendViewport (float minWorldWidth, float minWorldHeight) {
+		this(minWorldWidth, minWorldHeight, 0, 0, new OrthographicCamera());
 	}
 
-	public ExtendViewport (float worldWidth, float worldHeight, Camera camera) {
-		originalWorldWidth = worldWidth;
-		originalWorldHeight = worldHeight;
+	/** Creates a new viewport with no maximum world size. */
+	public ExtendViewport (float minWorldWidth, float minWorldHeight, Camera camera) {
+		this(minWorldWidth, minWorldHeight, 0, 0, camera);
+	}
+
+	/** Creates a new viewport using a new {@link OrthographicCamera} and a maximum world size.
+	 * @see ExtendViewport#ExtendViewport(float, float, float, float, Camera) */
+	public ExtendViewport (float minWorldWidth, float minWorldHeight, float maxWorldWidth, float maxWorldHeight) {
+		this(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, new OrthographicCamera());
+	}
+
+	/** Creates a new viewport with a maximum world size.
+	 * @param maxWorldWidth User 0 for no maximum width.
+	 * @param maxWorldHeight User 0 for no maximum height. */
+	public ExtendViewport (float minWorldWidth, float minWorldHeight, float maxWorldWidth, float maxWorldHeight, Camera camera) {
+		this.minWorldWidth = minWorldWidth;
+		this.minWorldHeight = minWorldHeight;
+		this.maxWorldWidth = maxWorldWidth;
+		this.maxWorldHeight = maxWorldHeight;
 		this.camera = camera;
 	}
 
 	@Override
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
-		viewportX = 0;
-		viewportY = 0;
-		viewportWidth = screenWidth;
-		viewportHeight = screenHeight;
-		worldWidth = originalWorldWidth;
-		worldHeight = originalWorldHeight;
+		// Fit min size to the screen.
+		worldWidth = minWorldWidth;
+		worldHeight = minWorldHeight;
 		Vector2 scaled = Scaling.fit.apply(worldWidth, worldHeight, screenWidth, screenHeight);
+
+		// Extend in the short direction.
 		viewportWidth = Math.round(scaled.x);
 		viewportHeight = Math.round(scaled.y);
 		if (viewportWidth < screenWidth) {
+			float toViewportSpace = viewportHeight / worldHeight;
 			float toWorldSpace = worldHeight / viewportHeight;
-			worldWidth += (screenWidth - viewportWidth) * toWorldSpace;
-			viewportWidth = screenWidth;
+			float lengthen = (screenWidth - viewportWidth) * toWorldSpace;
+			if (maxWorldWidth > 0) lengthen = Math.min(lengthen, maxWorldWidth - minWorldWidth);
+			worldWidth += lengthen;
+			viewportWidth += Math.round(lengthen * toViewportSpace);
 		} else if (viewportHeight < screenHeight) {
+			float toViewportSpace = viewportWidth / worldWidth;
 			float toWorldSpace = worldWidth / viewportWidth;
-			worldHeight += (screenHeight - viewportHeight) * toWorldSpace;
-			viewportHeight = screenHeight;
+			float lengthen = (screenHeight - viewportHeight) * toWorldSpace;
+			if (maxWorldHeight > 0) lengthen = Math.min(lengthen, maxWorldHeight - minWorldHeight);
+			worldHeight += lengthen;
+			viewportHeight += Math.round(lengthen * toViewportSpace);
 		}
+
+		// Center.
+		viewportX = (screenWidth - viewportWidth) / 2;
+		viewportY = (screenHeight - viewportHeight) / 2;
+
 		super.update(screenWidth, screenHeight, centerCamera);
 	}
 }

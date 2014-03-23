@@ -165,4 +165,34 @@ public abstract class Viewport {
 	public int getViewportHeight () {
 		return viewportHeight;
 	}
+
+	/** Returns the left gutter (black bar) width in screen coordinates. */
+	public int getLeftGutterWidth () {
+		return viewportX;
+	}
+
+	/** Returns the right gutter (black bar) x in screen coordinates. */
+	public int getRightGutterX () {
+		return viewportX + viewportWidth;
+	}
+
+	/** Returns the right gutter (black bar) width in screen coordinates. */
+	public int getRightGutterWidth () {
+		return Gdx.graphics.getWidth() - (viewportX + viewportWidth);
+	}
+
+	/** Returns the bottom gutter (black bar) height in screen coordinates. */
+	public int getBottomGutterHeight () {
+		return viewportY;
+	}
+
+	/** Returns the top gutter (black bar) y in screen coordinates. */
+	public int getTopGutterY () {
+		return viewportY + viewportHeight;
+	}
+
+	/** Returns the top gutter (black bar) height in screen coordinates. */
+	public int getTopGutterHeight () {
+		return Gdx.graphics.getHeight() - (viewportY + viewportHeight);
+	}
 }

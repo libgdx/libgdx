@@ -9,13 +9,15 @@
                             outline: none;
                      }
               </style>
+              <script src="soundmanager2-setup.js"></script>  
+  			  <script src="soundmanager2-jsmin.js"></script> 
        </head>
        
        <body>
               <h1>Test page for Libgdx with GWT</h1>
               Project loading shortly:<br>
-              <div align="center" id="embed-%PACKAGE%.GdxDefinition"></div>
-              <script type="text/javascript" src="%PACKAGE%.GdxDefinition/%PACKAGE%.GdxDefinition.nocache.js"></script>
+              <div align="center" id="embed-%APP_NAME%"></div>
+              <script type="text/javascript" src="%APP_NAME%/%APP_NAME%.nocache.js"></script>
        </body>
        
        <script>
@@ -30,7 +32,7 @@
                 evt.stopPropagation();
                 evt.target.style.cursor = '';
               }
-              document.getElementById('embed-%PACKAGE%.GdxDefinition').addEventListener('mousedown', handleMouseDown, false);
-              document.getElementById('embed-%PACKAGE%.GdxDefinition').addEventListener('mouseup', handleMouseUp, false);
+              document.getElementById('embed-%APP_NAME%').addEventListener('mousedown', handleMouseDown, false);
+              document.getElementById('embed-%APP_NAME%').addEventListener('mouseup', handleMouseUp, false);
        </script>
 </html>

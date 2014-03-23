@@ -39,6 +39,7 @@ public class GdxSetup {
 		String packageDir = packageName.replace('.', '/');
 
 		// root dir/gradle files
+		project.files.add(new ProjectFile("gitignore", ".gitignore", false));
 		project.files.add(new ProjectFile("build.gradle", true));
 		project.files.add(new ProjectFile("settings.gradle"));
 		project.files.add(new ProjectFile("gradlew", false));
@@ -66,7 +67,7 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
 		project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
 		project.files.add(new ProjectFile("android/AndroidManifest.xml"));
-		project.files.add(new ProjectFile("android/build.gradle"));
+		project.files.add(new ProjectFile("android/build.gradle", true));
 		project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 		project.files.add(new ProjectFile("android/proguard-project.txt", false));
 		project.files.add(new ProjectFile("android/project.properties", false));
@@ -75,12 +76,15 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gwt/build.gradle"));
 		project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
 		project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
-		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/" + "index.html", true));
+		project.files.add(new ProjectFile("gwt/GdxDefinitionSuperdev", "gwt/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
+		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/index.html", true));
+		project.files.add(new ProjectFile("gwt/war/soundmanager2-jsmin.js", "gwt/webapp/soundmanager2-jsmin.js", false));
+		project.files.add(new ProjectFile("gwt/war/soundmanager2-setup.js", "gwt/webapp/soundmanager2-setup.js", false));
 		project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));
 
 		//ios robovm
 		project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-		project.files.add(new ProjectFile("ios/build.gradle", false));
+		project.files.add(new ProjectFile("ios/build.gradle", true));
 		project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 		project.files.add(new ProjectFile("ios/robovm.properties"));
 		project.files.add(new ProjectFile("ios/robovm.xml", false));
@@ -204,10 +208,10 @@ public class GdxSetup {
 	public static void main (String[] args) {
 		Map<String, String> params = parseArgs(args);
 		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass")) {
+			new GdxSetupUI();
 			printHelp();
-			System.exit(-1);
+		} else {		
+			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
 		}
-		
-		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
 	}
 }

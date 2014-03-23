@@ -6,7 +6,9 @@
 		<exclude name="**/AudioRecorderTest.java"/> <!-- audio missing -->
 		<exclude name="**/BobTest.java"/> <!-- GL ES 1.0 -->
 		<exclude name="**/BufferUtilsTest.java"/> <!-- native -->
+		<exclude name="**/ContactListenerTest.java"/> <!-- String.format, Reflection -->
 		<exclude name="**/CullTest.java"/> <!-- GL ES 1.0 -->
+		<exclude name="**/DownloadTest.java"/> <!-- Incompatible Pixmap ctor -->
 		<exclude name="**/ETC1Test.java"/> <!-- native -->
 		<exclude name="**/FFTTest.java"/> <!-- native -->
 		<exclude name="**/FramebufferToTextureTest.java"/> <!-- ScreenUtils missing -->
