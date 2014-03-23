@@ -75,6 +75,7 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gwt/build.gradle"));
 		project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
 		project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
+		project.files.add(new ProjectFile("gwt/GdxDefinitionSuperdev", "gwt/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
 		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/index.html", true));
 		project.files.add(new ProjectFile("gwt/war/index-superdev", "gwt/webapp/index-superdev.html", true));
 		project.files.add(new ProjectFile("gwt/war/soundmanager2-jsmin.js", "gwt/webapp/soundmanager2-jsmin.js", false));
