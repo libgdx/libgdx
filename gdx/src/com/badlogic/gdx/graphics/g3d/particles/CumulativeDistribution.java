@@ -14,73 +14,64 @@ public class CumulativeDistribution <T>{
 			this.interval = interval;
 		}
 	}
-	private Array<CumulativeValue> mValues;
+	private Array<CumulativeValue> values;
 	
-	public CumulativeDistribution(Class<T> classOfT)
-	{
-		mValues = new Array<CumulativeValue>(false, 10, CumulativeValue.class);
+	public CumulativeDistribution(){
+		values = new Array<CumulativeValue>(false, 10, CumulativeValue.class);
 	}
 	
-	public void add(T obj, float aIntervalSize)
-	{
-		mValues.add(new CumulativeValue(obj, 0, aIntervalSize));
+	public void add(T obj, float intervalSize){
+		values.add(new CumulativeValue(obj, 0, intervalSize));
 	}
 	
-	public void add(T obj)
-	{
-		mValues.add(new CumulativeValue(obj, 0, 0));
+	public void add(T obj){
+		values.add(new CumulativeValue(obj, 0, 0));
 	}
-	
-	public void generate()
-	{	
+
+	/** Generate the cumulative distribution */
+	public void generate(){	
 		float sum = 0;
-		for(int i=0; i < mValues.size; ++i)
-		{
-			sum += mValues.items[i].interval;
-			mValues.items[i].frequency = sum;
+		for(int i=0; i < values.size; ++i){
+			sum += values.items[i].interval;
+			values.items[i].frequency = sum;
 		}
 	}
 	
-	/** Generate the cumulative distribution which will be normalized.
-	 * This means that each interval will get a frequency in [0,1] */
-	public void generateNormalized()
-	{	
+	/** Generate the cumulative distribution in [0,1] where each interval will get a frequency */
+	public void generateNormalized(){	
 		float sum = 0;
-		for(int i=0; i < mValues.size; ++i)
-		{
-			sum += mValues.items[i].interval;
+		for(int i=0; i < values.size; ++i){
+			sum += values.items[i].interval;
 		}
 		float intervalSum = 0;
-		for(int i=0; i < mValues.size; ++i)
-		{
-			intervalSum += mValues.items[i].interval/sum;
-			mValues.items[i].frequency = intervalSum;
-		}
-		
+		for(int i=0; i < values.size; ++i){
+			intervalSum += values.items[i].interval/sum;
+			values.items[i].frequency = intervalSum;
+		}		
 	}
 	
-	public void normalize()
-	{
-		float freq = 1f/mValues.size;
-		for(int i=0; i < mValues.size; ++i)
-		{
+	/** Generate the cumulative distribution in [0,1] where each value will have the same interval size */
+	public void generateUniform(){
+		float freq = 1f/values.size;
+		for(int i=0; i < values.size; ++i){
 			//reset the interval to the normalized frequency
-			mValues.items[i].interval = freq;
-			mValues.items[i].frequency=(i+1)*freq;
+			values.items[i].interval = freq;
+			values.items[i].frequency=(i+1)*freq;
 		}
 	}
 	
-	public T value(float aProbability)
-	{
+
+	/** @param probability is the value used to search the right interval inside the distribution 
+	 * @return the value whose interval contains the probability */
+	public T value(float probability){
 		CumulativeValue value = null;
-		int imax = mValues.size-1, imin = 0, imid;
-		while (imin <= imax)
-		{
+		int imax = values.size-1, imin = 0, imid;
+		while (imin <= imax){
 			imid = imin + ((imax - imin) / 2);
-			value = mValues.items[imid];
-			if(aProbability < value.frequency)
+			value = values.items[imid];
+			if(probability < value.frequency)
 				imax = imid -1;
-			else if(aProbability > value.frequency)
+			else if(probability > value.frequency)
 				imin = imid +1;
 			else break;
 		}
@@ -88,40 +79,38 @@ public class CumulativeDistribution <T>{
 		return value.value;
 	}
 	
-	public T value()
-	{
+	 /** @return a random value whose probability lies in [0,1] */
+	public T value(){
 		return value(MathUtils.random());
 	}
 
 	public int size(){
-		return mValues.size;
+		return values.size;
 	}
 	
-	public float getInterval(int aIndex)
-	{
-		return mValues.items[aIndex].interval;
+	public float getInterval(int index){
+		return values.items[index].interval;
 	}
 	
-	public T getValue(int aIndex)
-	{
-		return mValues.items[aIndex].value;
+	public T getValue(int index){
+		return values.items[index].value;
 	}
 	
-	public void setInterval(T obj, float aIntervalSize)
-	{
-		for(CumulativeValue value : mValues)
+	/** Set the interval size on the passed in object.
+	 *  The object has to be inside the distribution. */
+	public void setInterval(T obj, float intervalSize){
+		for(CumulativeValue value : values)
 			if(value.value == obj){
-				value.interval = aIntervalSize;
-				break;
+				value.interval = intervalSize;
+				return;
 			}
 	}
 	
-	public void setInterval(int aIndex, float aIntervalSize)
-	{
-		mValues.items[aIndex].interval = aIntervalSize;
+	public void setInterval(int index, float intervalSize){
+		values.items[index].interval = intervalSize;
 	}
 	
 	public void clear(){
-		mValues.clear();
+		values.clear();
 	}
 }

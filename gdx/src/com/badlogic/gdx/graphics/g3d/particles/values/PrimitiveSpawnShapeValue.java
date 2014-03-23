@@ -1,6 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 	protected static final Vector3 TMP_V1 = new Vector3();
@@ -52,14 +54,18 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		return spawnHeightValue;
 	}
 	
-	public ScaledNumericValue getSpawnDepth () 
-	{
+	public ScaledNumericValue getSpawnDepth () 	{
 		return spawnDepthValue;
+	}
+	
+	public void setDimensions(float width, float height, float depth){
+		spawnWidthValue.setHigh(width);
+		spawnHeightValue.setHigh(height);
+		spawnDepthValue.setHigh(depth);
 	}
 	
 	@Override
 	public void start () {
-		super.start();
 		spawnWidth = spawnWidthValue.newLowValue();
 		spawnWidthDiff = spawnWidthValue.newHighValue();
 		if (!spawnWidthValue.isRelative()) spawnWidthDiff -= spawnWidth;
@@ -82,4 +88,23 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		spawnHeightValue.load(shape.spawnHeightValue);
 		spawnDepthValue.load(shape.spawnDepthValue);
 	}
+	
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("spawnWidthValue", spawnWidthValue);
+		json.writeValue("spawnHeightValue", spawnHeightValue);
+		json.writeValue("spawnDepthValue", spawnDepthValue);
+		json.writeValue("edges", edges);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		spawnWidthValue = json.readValue("spawnWidthValue", ScaledNumericValue.class, jsonData);
+		spawnHeightValue = json.readValue("spawnHeightValue", ScaledNumericValue.class, jsonData);
+		spawnDepthValue = json.readValue("spawnDepthValue", ScaledNumericValue.class, jsonData);
+		edges = json.readValue("edges", Boolean.class, jsonData);
+	}
+	
 }

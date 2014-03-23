@@ -1,8 +1,12 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class SpawnShapeValue extends ParticleValue {
+public abstract class SpawnShapeValue extends ParticleValue implements  ResourceData.Configurable, Json.Serializable{
 	
 	public RangedNumericValue xOffsetValue, yOffsetValue, zOffsetValue;
 	
@@ -25,7 +29,8 @@ public abstract class SpawnShapeValue extends ParticleValue {
 		if (zOffsetValue.active) vector.z += zOffsetValue.newLowValue();
 		return vector;
 	}
-	
+
+	public void init (){}
 	public void start(){}
 	
 	@Override
@@ -38,4 +43,27 @@ public abstract class SpawnShapeValue extends ParticleValue {
 	}
 	
 	public abstract SpawnShapeValue copy ();
+	
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("xOffsetValue", xOffsetValue);
+		json.writeValue("yOffsetValue", yOffsetValue);
+		json.writeValue("zOffsetValue", zOffsetValue);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		xOffsetValue = json.readValue("xOffsetValue", RangedNumericValue.class, jsonData);
+		yOffsetValue = json.readValue("yOffsetValue", RangedNumericValue.class, jsonData);
+		zOffsetValue = json.readValue("zOffsetValue", RangedNumericValue.class, jsonData);
+	}
+	
+	@Override
+	public void save (AssetManager manager, ResourceData data) {}
+	@Override
+	public void load (AssetManager manager, ResourceData data) {}
+
+	
 }

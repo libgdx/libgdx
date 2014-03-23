@@ -69,14 +69,7 @@ public abstract class EditorPanel<T> extends JPanel {
 		this(editor, name, description, true, false);
 	}
 
-	protected void activate () {
-		/*
-		contentPanel.setVisible(activeButton.isSelected());
-		advancedPanel.setVisible(activeButton.isSelected() && advancedButton.isSelected());
-		advancedButton.setVisible(activeButton.isSelected() && hasAdvanced);
-		descriptionLabel.setText(activeButton.isSelected() ? description : "");
-		*/
-	}
+	protected void activate () {}
 	
 	public void showContent (boolean visible) {
 		contentPanel.setVisible(visible);
@@ -223,10 +216,12 @@ public abstract class EditorPanel<T> extends JPanel {
 		addContent(row, column, component, true, anchor, fill);
 	}
 	
+	protected void addContent(int row, int column, JComponent component, boolean addBorders, int anchor, int fill, float wx, float wy){
+		addContent(contentPanel, row, column, component, addBorders, anchor, fill, wx, wy);
+	}
+	
 	protected void addContent(int row, int column, JComponent component, boolean addBorders, int anchor, int fill){
-		if(addBorders) component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
-		contentPanel.add(component, new GridBagConstraints(column, row, 1, 1, 1, 1, anchor, fill,
-			new Insets(0, 0, 0, 0), 0, 0));
+		addContent(row, column, component, addBorders, anchor, fill, 1, 1);
 	}
 
 	public void setValue (T value) {
@@ -234,7 +229,13 @@ public abstract class EditorPanel<T> extends JPanel {
 		activeButton.setVisible(value == null ? false : !isAlwaysActive);
 		removeButton.setVisible(isRemovable);
 	}
-
+	
+	public static void addContent( JPanel panel, int row, int column, JComponent component, boolean addBorders, int anchor, int fill, float wx, float wy){
+		if(addBorders) component.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
+		panel.add(component, new GridBagConstraints(column, row, 1, 1, wx, wy, anchor, fill,
+			new Insets(0, 0, 0, 0), 0, 0));
+	}
+	
 	protected static <K> void setValue(JSpinner spinner, K object){
 		ChangeListener[] listeners = spinner.getChangeListeners();
 		ChangeListener listener = null;
@@ -266,21 +267,6 @@ public abstract class EditorPanel<T> extends JPanel {
 		}
 		slider.setValue(value);
 		if(listener != null) slider.spinner.addChangeListener(listener);
-	}
-	
-	public static <K> K getCurrentCard(Container container){
-		// get the current card
-		Component c[] = container.getComponents();
-		int i = 0;
-		int j = c.length;
-		while (i < j) {
-			if (c[i].isVisible()) {
-				return (K)c[i];
-			}
-			else
-				i ++;
-		}
-		return null;
 	}
 
 	protected static void setValue (DefaultTableModel tableModel, Object value, int row, int column) {

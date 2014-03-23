@@ -44,6 +44,7 @@ import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ModelInstan
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ModelInstanceWeightVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerBrownianVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerCentripetalVelocityValue;
+import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerFaceVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerPolarVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerRotationVelocityValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.ParticleControllerTangetialVelocityValue;
@@ -105,6 +106,26 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 			velocities.add(new VelocityWrapper((VelocityValue)influencer.velocities.items[i], true));
 			velocityTableModel.addRow(new Object[] {"Velocity "+i, true});
 		}
+		
+		DefaultComboBoxModel model = (DefaultComboBoxModel) velocityBox.getModel();
+		model.removeAllElements();
+		for(Object velocityObject : getAvailableVelocities(influencer)){
+			model.addElement(velocityObject);
+		}
+	}
+
+	private Object[] getAvailableVelocities (VelocityInfluencer influencer) {
+		if(influencer instanceof BillboardVelocityInfluencer || 
+			influencer instanceof PointSpriteVelocityInfluencer){
+			return new String[]{	VEL_TYPE_ROTATIONAL, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL,
+				VEL_TYPE_POLAR, VEL_TYPE_WEIGHT, VEL_TYPE_BROWNIAN};
+		}
+		else if(	influencer instanceof ParticleControllerVelocityInfluencer || 
+			influencer instanceof ModelInstanceVelocityInfluencer){
+			return new String[]{	VEL_TYPE_ROTATIONAL, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL,
+				VEL_TYPE_POLAR, VEL_TYPE_WEIGHT, VEL_TYPE_BROWNIAN, VEL_TYPE_FACE};
+		}
+		return null;
 	}
 
 	protected void initializeComponents () {
@@ -116,8 +137,7 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 			velocitiesPanel.add(sideButtons, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 			{
-				sideButtons.add(velocityBox = new JComboBox(new DefaultComboBoxModel(new String[]{	VEL_TYPE_ROTATIONAL, VEL_TYPE_CENTRIPETAL, VEL_TYPE_TANGENTIAL,
-																																VEL_TYPE_POLAR, VEL_TYPE_WEIGHT, VEL_TYPE_BROWNIAN, VEL_TYPE_FACE})), 
+				sideButtons.add(velocityBox = new JComboBox(new DefaultComboBoxModel()), 
 					new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
 			}
@@ -186,6 +206,7 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 		strengthVelocityPanel.setIsAlwayShown(true);
 		angularVelocityPanel.setIsAlwayShown(true);
 		emptyPanel.setIsAlwayShown(true);
+		emptyPanel.setValue(null);
 		
 		//Assemble
 		int i=0;
@@ -290,9 +311,10 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 			angularVelocityPanel.setDescription("A rotational velocity (axis and magnitude), in degree/sec .");
 			panel = angularVelocityPanel;
 		}
-		else if(velocityValue instanceof ModelInstanceFaceVelocityValue ){ 
+		else if(	velocityValue instanceof ModelInstanceFaceVelocityValue  ||
+					velocityValue instanceof ParticleControllerFaceVelocityValue){ 
 			emptyPanel.setName("Face Velocity");
-			emptyPanel.setDescription("Rotates the model to face its current velocity.");
+			emptyPanel.setDescription("Rotates the model to face its current velocity (Do not add any other rotation velocities when using this and ensure this is the last velocity in the list).");
 			panel = emptyPanel;
 		}
 
@@ -333,6 +355,7 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 			else if(selectedItem == VEL_TYPE_POLAR) velocityValue = new ParticleControllerPolarVelocityValue();
 			else if(selectedItem == VEL_TYPE_WEIGHT) velocityValue = new ParticleControllerWeightVelocityValue();
 			else if(selectedItem == VEL_TYPE_BROWNIAN) velocityValue = new ParticleControllerBrownianVelocityValue();
+			else if(selectedItem == VEL_TYPE_FACE) velocityValue = new ParticleControllerFaceVelocityValue();
 		}
 		
 		return velocityValue;
@@ -373,6 +396,8 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 		
 		//Select new velocity
 		velocityTable.getSelectionModel().setSelectionInterval(index, index);
+		revalidate();
+		repaint();
 	}
 	
 }

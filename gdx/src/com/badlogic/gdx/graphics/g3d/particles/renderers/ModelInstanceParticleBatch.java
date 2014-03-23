@@ -1,14 +1,12 @@
 package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
-import java.util.Comparator;
-
-import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
 public class ModelInstanceParticleBatch implements IParticleBatch<ModelInstanceParticle> {
@@ -38,4 +36,10 @@ public class ModelInstanceParticleBatch implements IParticleBatch<ModelInstanceP
 	public <K extends ParticleController<ModelInstanceParticle>> void draw (K controller) {
 		controllers.add(controller);
 	}
+
+	@Override
+	public void save (AssetManager manager, ResourceData assetDependencyData) {}
+
+	@Override
+	public void load (AssetManager manager, ResourceData assetDependencyData) {}
 }

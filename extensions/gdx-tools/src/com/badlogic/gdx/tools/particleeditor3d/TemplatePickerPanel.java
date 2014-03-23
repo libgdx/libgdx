@@ -1,6 +1,8 @@
 package com.badlogic.gdx.tools.particleeditor3d;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -21,6 +23,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
@@ -37,6 +40,8 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 	}
 
 	Array<T> loadedTemplates; //Loaded models
+	Array<T> excludedTemplates;
+	Class<T> type;
 	JTable templatesTable;
 	DefaultTableModel templatesTableModel;
 	boolean 	isOneModelSelectedRequired = true, 
@@ -55,10 +60,13 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 	public TemplatePickerPanel (ParticleEditor3D editor, Array<T> value, Listener listener, Class<T> type, 
 									LoaderButton<T> loaderButton, boolean isOneModelSelectedRequired, boolean isMultipleSelectionAllowed) {
 		super(editor, "", "");
-		initializeComponents(type, loaderButton);
+		this.type = type;
 		this.listener = listener;
 		this.isOneModelSelectedRequired = isOneModelSelectedRequired;
 		this.isMultipleSelectionAllowed = isMultipleSelectionAllowed;
+		loadedTemplates = new Array<T>();
+		excludedTemplates = new Array<T>();
+		initializeComponents(type, loaderButton);
 		setValue(value);
 	}
 	
@@ -68,7 +76,6 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 		if(value == null) return;
 		if(!isMultipleSelectionAllowed && value.size >1)
 			throw new RuntimeException("Multiple selection must be enabled to ensure consistency between picked and available models.");
-		//Gdx.app.log("Log", "selected values length = "+value.size+", loaded values length = "+loadedTemplates.size);
 		for(int i=0; i < value.size;++i ){
 			T model  = value.get(i);
 			int index = loadedTemplates.indexOf(model, true);
@@ -87,47 +94,65 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 		this.isMultipleSelectionAllowed = isMultipleSelectionAllowed;
 	}
 	
+	public void setExcludedTemplates(Array<T> excludedTemplates){
+		this.excludedTemplates.clear();
+		this.excludedTemplates.addAll(excludedTemplates);
+	}
+	
 	public void setLoadedTemplates(Array<T> templates){
 		loadedTemplates.clear();
 		loadedTemplates.addAll(templates);
+		loadedTemplates.removeAll(excludedTemplates, true);
 		templatesTableModel.getDataVector().removeAllElements();
 		int i=0;
 		for(T template : templates){
-			templatesTableModel.addRow(new Object[] {"template "+i, false});
+			templatesTableModel.addRow(new Object[] {getTemplateName(template, i), false});
 			i++;
 		}
 		lastSelected = -1;
 		setValue(value);
 	}
 	
+	protected String getTemplateName(T template, int index){
+		String name = editor.assetManager.getAssetFileName(template);
+		return name == null ? "template "+index:name; 
+	}
+	
+
+	public void reloadTemplates () {
+		setLoadedTemplates(editor.assetManager.get(type,  new Array<T>()));
+	}
+	
 	protected void initializeComponents (Class<T> type, LoaderButton<T> loaderButton) {
 		int i=0;
 		if(loaderButton != null){
 			loaderButton.setListener(this);
-			contentPanel.add(loaderButton, new GridBagConstraints(0, i++, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,
+			contentPanel.add(loaderButton, new GridBagConstraints(0, i++, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,
 				0, 0, 6), 0, 0));
 		}
 		
 		JScrollPane scroll = new JScrollPane();
-		contentPanel.add(scroll, new GridBagConstraints(0, i, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,
+		contentPanel.add(scroll, new GridBagConstraints(0, i, 1, 1, 1, 0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0,
 			0, 0, 6), 0, 0));
 		{
 			templatesTable = new JTable() {
 				public Class getColumnClass (int column) {
 					return column == 1 ? Boolean.class : super.getColumnClass(column);
 				}
+				@Override
+				public Dimension getPreferredScrollableViewportSize () {
+					Dimension dim = super.getPreferredScrollableViewportSize();
+					// here we return the pref height
+					dim.height = getPreferredSize().height;
+					return dim;
+				}
 			};
 			templatesTable.getTableHeader().setReorderingAllowed(false);
 			templatesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			scroll.setViewportView(templatesTable);
-			templatesTableModel = new DefaultTableModel(new String[0][0], new String[] {"Model", ""});
+			templatesTableModel = new DefaultTableModel(new String[0][0], new String[] {"Template", "Selected"});
 			templatesTable.setModel(templatesTableModel);
-			
-			loadedTemplates = new Array<T>();
-			editor.assetManager.get(type, loadedTemplates);
-			for(T model : loadedTemplates){
-				templatesTableModel.addRow(new Object[] {editor.assetManager.getAssetFileName(model), false});
-			}
+			reloadTemplates();
 			
 			templatesTableModel.addTableModelListener(new TableModelListener() {
 				public void tableChanged (TableModelEvent event) {
@@ -146,6 +171,7 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 	}
 
 	protected void templateChecked (int index, Boolean isChecked) {
+		T template = loadedTemplates.get(index);
 		if(isChecked){
 			if(!isMultipleSelectionAllowed){
 				if(lastSelected >-1){
@@ -153,22 +179,27 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 					EditorPanel.setValue(templatesTableModel, false, lastSelected, 1);
 				}
 			}
-			value.add(loadedTemplates.get(index));
+			value.add(template);
 			lastSelected = index;
 		}
 		else {
-			value.removeValue(loadedTemplates.get(index), true);
+			value.removeValue(template, true);
 		}
-		listener.onTemplateChecked(loadedTemplates.get(index), isChecked);
+		listener.onTemplateChecked(template, isChecked);
 	}
 
 	@Override
 	public void onResourceLoaded (T model) {
-		loadedTemplates.add(model);
-		templatesTableModel.addRow(new Object[] {editor.assetManager.getAssetFileName(model), false});
+		reloadTemplates();
 		if(lastSelected == -1 && isOneModelSelectedRequired){
 			templateChecked(loadedTemplates.size-1, true);
 		}
+		else {
+			setValue(value);
+		}
+
+		revalidate();
+		repaint();
 	}
 
 }

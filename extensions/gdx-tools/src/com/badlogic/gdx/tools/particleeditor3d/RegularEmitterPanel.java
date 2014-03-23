@@ -1,9 +1,13 @@
 package com.badlogic.gdx.tools.particleeditor3d;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 
@@ -24,9 +28,7 @@ public class RegularEmitterPanel extends EditorPanel<RegularEmitter> {
 	}
 	
 	private void initializeComponents(RegularEmitter emitter){
-		int i=0;
-		OptionsPanel optionsPanel = new OptionsPanel();
-		optionsPanel.addOption( 0, 0, "Continuous", continuousCheckbox = new JCheckBox());
+		continuousCheckbox = new JCheckBox("Continuous");
 		continuousCheckbox.setSelected(emitter.isContinuous());
 		continuousCheckbox.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
@@ -34,8 +36,10 @@ public class RegularEmitterPanel extends EditorPanel<RegularEmitter> {
 				emitter.setContinuous(continuousCheckbox.isSelected());
 			}
 		});
+		continuousCheckbox.setHorizontalTextPosition(SwingConstants.LEFT);
 		
-		addContent(i++, 0, optionsPanel);
+		int i =0;
+		addContent(i++, 0, continuousCheckbox, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		addContent(i++, 0, countPanel = new CountPanel(editor, "Count", "Min number of particles at all times, max number of particles allowed.", emitter.minParticleCount, emitter.maxParticleCount));
 		addContent(i++, 0, delayPanel = new RangedNumericPanel(editor, emitter.getDelay(), "Delay", "Time from beginning of effect to emission start, in milliseconds.", false));
 		addContent(i++, 0, durationPanel = new RangedNumericPanel(editor, emitter.getDuration(), "Duration", "Time particles will be emitted, in milliseconds."));

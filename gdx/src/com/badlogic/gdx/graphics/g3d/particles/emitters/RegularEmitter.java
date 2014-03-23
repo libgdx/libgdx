@@ -1,8 +1,6 @@
 package com.badlogic.gdx.graphics.g3d.particles.emitters;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.values.RangedNumericValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;

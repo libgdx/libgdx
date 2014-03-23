@@ -1,5 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+
 
 public class GradientColorValue extends ParticleValue {
 		static private float[] temp = new float[4];
@@ -53,7 +56,21 @@ public class GradientColorValue extends ParticleValue {
 			temp[2] = b1 + (colors[endIndex + 2] - b1) * factor;
 			return temp;
 		}
+		
+		@Override
+		public void write (Json json) {
+			super.write(json);
+			json.writeValue("colors", colors);
+			json.writeValue("timeline", timeline);
+		}
 
+		@Override
+		public void read (Json json, JsonValue jsonData) {
+			super.read(json, jsonData);
+			colors = json.readValue("colors", float[].class, jsonData);
+			timeline = json.readValue("timeline", float[].class, jsonData);
+		}
+		
 		public void load (GradientColorValue value) {
 			super.load(value);
 			colors = new float[value.colors.length];

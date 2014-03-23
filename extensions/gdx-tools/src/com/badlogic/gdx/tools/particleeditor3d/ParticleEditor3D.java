@@ -28,18 +28,23 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.HashMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneLayout;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.CompoundBorder;
@@ -47,6 +52,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -63,6 +69,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -76,7 +83,9 @@ import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader.ParticleEffectSaveParameter;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ModelInstanceParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ParticleControllerParticleController;
@@ -86,8 +95,6 @@ import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.ModelInstanceColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.PointSpriteColorInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.FaceDirectionInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.FaceDirectionInfluencer.ParticleControllerFaceDirectionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer.ModelInstanceRandomInfluencer;
@@ -119,7 +126,6 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer.
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.BillboardVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.BillboardColorInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.FaceDirectionInfluencer.ModelInstanceFaceDirectionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ModelInstanceVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ParticleControllerVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.PointSpriteVelocityInfluencer;
@@ -131,13 +137,32 @@ import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.NumericValue;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.StreamUtils;
+
+import de.matthiasmann.twlthemeeditor.gui.NewClasspathDialog;
 
 public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 	public static final String 	DEFAULT_FONT = "default.fnt",
 											DEFAULT_BILLBOARD_PARTICLE = "pre_particle.png",
 											DEFAULT_MODEL_PARTICLE = "monkey.g3db",
-											DEFAULT_PFX = "default.pfx";
+											DEFAULT_PFX = "default.pfx",
+											DEFAULT_SKIN = "uiskin.json";
+	
+	public static final int EVT_ASSET_RELOADED = 0;
+	
 	
 	private static class InfluencerWrapper<T>{
 		String string;
@@ -182,7 +207,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		new InfluencerWrapper("Random Model Influencer", ModelInstanceRandomInfluencer.class),
 		new InfluencerWrapper("Scale Influencer", ModelInstanceScaleInfluencer.class),
 		new InfluencerWrapper("Spawn Influencer", ModelInstanceSpawnInfluencer.class),
-		new InfluencerWrapper("Face Direction Influencer", ModelInstanceFaceDirectionInfluencer.class),
 		new InfluencerWrapper("Velocity Influencer", ModelInstanceVelocityInfluencer.class)
 	};
 	
@@ -191,26 +215,20 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		new InfluencerWrapper("Random Particle Controller Influencer", ParticleControllerRandomInfluencer.class),
 		new InfluencerWrapper("Scale Influencer", ParticleControllerScaleInfluencer.class),
 		new InfluencerWrapper("Spawn Influencer", ParticleControllerSpawnInfluencer.class),
-		new InfluencerWrapper("Face Direction Influencer", ParticleControllerFaceDirectionInfluencer.class),
 		new InfluencerWrapper("Velocity Influencer", ParticleControllerVelocityInfluencer.class)
 	};
 	
 	
 	LwjglCanvas lwjglCanvas;
-	JPanel rowsPanel;
-	JPanel editRowsPanel;
+	JPanel controllerPropertiesPanel;
+	JPanel editorPropertiesPanel;
 	EffectPanel effectPanel;
 	private JSplitPane splitPane;
-	public PerspectiveCamera worldCamera;
-	OrthographicCamera textCamera;
 	NumericValue fovValue;
 	NumericValue deltaMultiplier;
 	GradientColorValue backgroundColor;
 	AppRenderer renderer;
 	AssetManager assetManager;
-	TextureAtlas currentAtlas;
-	Texture texture;
-	boolean isUsingAtlas = false;
 	JComboBox influencerBox;
 	
 	ParticleEffect effect;
@@ -243,17 +261,25 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 	void reloadRows () {
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
-				editRowsPanel.removeAll();
-				influencerBox.removeAllItems();
-				rowsPanel.removeAll();
-				addEditorRow(new NumericPanel(ParticleEditor3D.this, fovValue, "Field of View", ""));
-				addEditorRow(new NumericPanel(ParticleEditor3D.this, deltaMultiplier, "Delta multiplier", ""));
-				addEditorRow(new GradientPanel(ParticleEditor3D.this,backgroundColor, "Background color", "", true));
-				addEditorRow(new DrawPanel(ParticleEditor3D.this, "Draw", ""));
-				addEditorRow(new TextureLoaderPanel(ParticleEditor3D.this, "Texture", ""));
-				editRowsPanel.repaint();
 				
-
+				//Ensure no listener is left watching for events
+				EventManager.get().clear();
+				
+				//Clear
+				editorPropertiesPanel.removeAll();
+				influencerBox.removeAllItems();
+				controllerPropertiesPanel.removeAll();
+				
+				//Editor props
+				addRow(editorPropertiesPanel, new NumericPanel(ParticleEditor3D.this, fovValue, "Field of View", ""));
+				addRow(editorPropertiesPanel, new NumericPanel(ParticleEditor3D.this, deltaMultiplier, "Delta multiplier", ""));
+				addRow(editorPropertiesPanel, new GradientPanel(ParticleEditor3D.this,backgroundColor, "Background color", "", true));
+				addRow(editorPropertiesPanel, new DrawPanel(ParticleEditor3D.this, "Draw", ""));
+				addRow(editorPropertiesPanel, new TextureLoaderPanel(ParticleEditor3D.this, "Texture", ""));
+				addRow(editorPropertiesPanel, new BillboardBatchPanel(ParticleEditor3D.this, renderer.billboardBatch), 1, 1);
+				editorPropertiesPanel.repaint();
+				
+				//Controller props
 				ParticleController controller = getEmitter();
 				if(controller != null){
 					//Reload available influencers
@@ -276,21 +302,18 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 					}
 
 					JPanel panel = null;
-					panel = getPanel(controller.batch);
-					if(panel != null) 
-						addRow(panel);
-					addRow(getPanel(controller.emitter));
+					addRow(controllerPropertiesPanel, getPanel(controller.emitter));
 					for(int i=0, c = controller.influencers.size; i < c; ++i){
 						Influencer influencer = (Influencer)controller.influencers.get(i);
 						panel = getPanel(influencer);
 						if(panel != null)
-							addRow(panel);
+							addRow(controllerPropertiesPanel, panel, 1, i == c-1 ? 1 : 0);
 					}
-					for (Component component : rowsPanel.getComponents())
+					for (Component component : controllerPropertiesPanel.getComponents())
 						if (component instanceof EditorPanel) 
 							((EditorPanel)component).update(ParticleEditor3D.this);
 				}
-				rowsPanel.repaint();
+				controllerPropertiesPanel.repaint();
 			}
 		});
 	}
@@ -318,10 +341,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		}
 		else if(influencer instanceof VelocityInfluencer){
 			return  new VelocityInfluencerPanel(this, (VelocityInfluencer)influencer);
-		}
-		if(influencer instanceof FaceDirectionInfluencer){
-			return new InfluencerPanel<FaceDirectionInfluencer>(this, (FaceDirectionInfluencer) influencer, 
-				"Face Direction Influencer", "Let the particle face its traveling direction, (local Z axis will match velocity direction)") {};
 		}
 		else if(influencer instanceof ModelInfluencer){
 			boolean single = influencer instanceof ModelInfluencer.ModelInstanceSingleInfluencer;
@@ -376,21 +395,17 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 	}
 
 	void addRow(JPanel panel, JPanel row) {
-		row.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, java.awt.Color.black));
-		panel.add(row, new GridBagConstraints(0, -1, 1, 1, 1, 0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-			new Insets(0, 0, 0, 0), 0, 0));
+		addRow(panel, row, 1, 0);
 	}
 	
-	void addEditorRow (JPanel row) {
-		addRow(editRowsPanel, row);
-	}
-
-	void addRow (JPanel row) {
-		addRow(rowsPanel, row);
+	void addRow(JPanel panel, JPanel row, float wx, float wy) {
+		row.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, java.awt.Color.black));
+		panel.add(row, new GridBagConstraints(0, -1, 1, 1, wx, wy, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+			new Insets(0, 0, 0, 0), 0, 0));
 	}
 
 	public void setVisible (String name, boolean visible) {
-		for (Component component : rowsPanel.getComponents())
+		for (Component component : controllerPropertiesPanel.getComponents())
 			if (component instanceof EditorPanel && ((EditorPanel)component).getName().equals(name)) component.setVisible(visible);
 	}
 
@@ -439,8 +454,8 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 						GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 					scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 					{
-						editRowsPanel = new JPanel(new GridBagLayout());
-						scroll.setViewportView(editRowsPanel);
+						editorPropertiesPanel = new JPanel(new GridBagLayout());
+						scroll.setViewportView(editorPropertiesPanel);
 						scroll.getVerticalScrollBar().setUnitIncrement(70);
 					}
 				}
@@ -500,14 +515,14 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 						GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 					scroll.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 					{
-						rowsPanel = new JPanel(new GridBagLayout());
-						scroll.setViewportView(rowsPanel);
+						controllerPropertiesPanel = new JPanel(new GridBagLayout());
+						scroll.setViewportView(controllerPropertiesPanel);
 						scroll.getVerticalScrollBar().setUnitIncrement(70);
 					}
 				}
 			}
 			
-			rightSplit.setDividerLocation(200);
+			rightSplit.setDividerLocation(250);
 
 		}
 		{
@@ -566,7 +581,15 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 				replaced = controller.replaceInfluencer(ModelInfluencer.class, newInfluencer);
 			}
 			else if(ParticleControllerInfluencer.class.isAssignableFrom(type)){		
-				 replaced = controller.replaceInfluencer(ParticleControllerInfluencer.class, newInfluencer);
+				ParticleControllerInfluencer newModelInfluencer = (ParticleControllerInfluencer) newInfluencer;
+				ParticleControllerInfluencer currentInfluencer = (ParticleControllerInfluencer)controller.findInfluencer(ParticleControllerInfluencer.class);
+				if(currentInfluencer != null){
+					if(currentInfluencer instanceof ParticleControllerInfluencer.ParticleControllerSingleInfluencer)
+						newModelInfluencer.templates.add(currentInfluencer.templates.first());
+					else 
+						newModelInfluencer.templates.addAll(currentInfluencer.templates);
+				}
+				replaced = controller.replaceInfluencer(ParticleControllerInfluencer.class, newInfluencer);
 			}
 			
 			if(!replaced)
@@ -605,27 +628,34 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		return !hasSameInfluencer;
 	}
 
-	class AppRenderer implements ApplicationListener, InputProcessor {
+	class AppRenderer extends InputAdapter implements ApplicationListener {
+		//Stats
 		private float maxActiveTimer;
 		private int maxActive, lastMaxActive;
 		private int activeCount;
-		private BitmapFont font;
-		private SpriteBatch spriteBatch;
-		private ModelBatch modelBatch;
-		PointSpriteBatch pointSpriteBatch;
-		BillboardBatch billboardBatch;
-		ModelInstanceParticleBatch modelInstanceParticleBatch;
+		boolean isUpdate = true;
+		
+		//Controls
 		private CameraInputController cameraInputController;
+		
+		//UI
+		private Stage ui;
+		TextButton playPauseButton;
+		private Label fpsLabel, countLabel, maxLabel;
+		
+		//Render
+		public PerspectiveCamera worldCamera;
 		private boolean isDrawXYZ, isDrawXZPlane;
 		private Array<Model> models;
 		private ModelInstance xyzInstance, xzPlaneInstance;
 		private Environment environment;
-
+		private ModelBatch modelBatch;
+		PointSpriteBatch pointSpriteBatch;
+		BillboardBatch billboardBatch;
+		ModelInstanceParticleBatch modelInstanceParticleBatch;
+		
 		public void create () {
-			if (spriteBatch != null) return;
-
-			spriteBatch = new SpriteBatch();
-			spriteBatch.enableBlending();
+			if (ui != null) return;
 			modelBatch = new ModelBatch();
 			environment = new Environment();
 			environment.add(new DirectionalLight().set(Color.WHITE, 0,0,-1));
@@ -635,8 +665,7 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			worldCamera.lookAt(0,0,0);
 			worldCamera.near = 0.1f;
 			worldCamera.far = 300f;
-			worldCamera.update();	
-			textCamera = new OrthographicCamera();
+			worldCamera.update();
 
 			cameraInputController = new CameraInputController(worldCamera);
 
@@ -662,19 +691,39 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 
 			setDrawXYZ(true);
 			setDrawXZPlane(true);
-			Gdx.input.setInputProcessor(new InputMultiplexer(cameraInputController));
 
 
 			//Load default resources
-			BitmapFontParameter fontParams = new BitmapFontLoader.BitmapFontParameter();
-			fontParams.flip = true;
-			assetManager.load(DEFAULT_FONT,  BitmapFont.class, fontParams);
 			assetManager.load(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
 			assetManager.load(DEFAULT_MODEL_PARTICLE, Model.class);
+			assetManager.load(DEFAULT_SKIN, Skin.class);
 			assetManager.finishLoading();
-			font = assetManager.get(DEFAULT_FONT);
 			assetManager.get(DEFAULT_MODEL_PARTICLE, Model.class).materials.get(0).set(new BlendingAttribute(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA, 1));
-
+			
+			//Ui
+			Skin skin = assetManager.get(DEFAULT_SKIN, Skin.class);
+			ui = new Stage();
+			fpsLabel = new Label("", skin);
+			countLabel = new Label("", skin);
+			maxLabel = new Label("", skin);
+			playPauseButton = new TextButton("Pause", skin);
+			playPauseButton.addListener(new ClickListener(){
+				@Override
+				public void clicked (InputEvent event, float x, float y) {
+					isUpdate = !isUpdate;
+					playPauseButton.setText(isUpdate ? "Pause" : "Play");
+				}
+			});
+			Table table = new Table(skin);
+			table.setFillParent(true);
+			table.pad(5);
+			table.add(fpsLabel).expandX().left().row();
+			table.add(countLabel).expandX().left().row();
+			table.add(maxLabel).expandX().left().row();
+			table.add(playPauseButton).expand().bottom().left().row();
+			ui.addActor(table);
+			
+			//Batches
 			PointSpriteBatch.init();
 			pointSpriteBatch = new PointSpriteBatch();
 			pointSpriteBatch.setCamera(worldCamera);
@@ -687,46 +736,68 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			effectPanel.createDefaultEmitter(BillboardParticleController.class, true, true);
 			assetManager.set(ParticleEffect.class, DEFAULT_PFX, 
 					new ParticleEffect( effectPanel.createDefaultEmitter(BillboardParticleController.class, false, false)));
-			
 		}
 
 
 		@Override
 		public void resize (int width, int height) {
+			Gdx.input.setInputProcessor(new InputMultiplexer(ui, this, cameraInputController));
 			Gdx.gl.glViewport(0, 0, width, height);
 
 			worldCamera.viewportWidth = width;
 			worldCamera.viewportHeight = height;
 			worldCamera.update();
-
-			textCamera.setToOrtho(true, width, height);
-			textCamera.update();
+			ui.setViewport(width, height);
 		}
 
 		public void render () {
-			cameraInputController.update();
-
 			float delta = Math.max(0, Gdx.graphics.getDeltaTime() * deltaMultiplier.getValue());
+			update(delta);
+			renderWorld();
+		}
 
+		private void update (float dt) {
+			worldCamera.fieldOfView = fovValue.getValue();
+			worldCamera.update();
+			cameraInputController.update();
+			if(isUpdate){
+				activeCount = 0;
+				for (ParticleController controller : effect.getControllers()) 
+				{
+					if (isEnabled(controller)) {	
+						controller.update(dt);
+						activeCount += controller.emitter.activeCount;
+					}
+				}
+				//Update ui
+				maxActive = Math.max(maxActive, activeCount);
+				maxActiveTimer += dt;
+				if (maxActiveTimer > 3) {
+					maxActiveTimer = 0;
+					lastMaxActive = maxActive;
+					maxActive = 0;
+				}
+				countLabel.setText("Count: " + activeCount);
+				maxLabel.setText("Max: " + lastMaxActive);
+			}
+			fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+			ui.act(dt);
+		}
+
+		
+		private void renderWorld () {
 			float[] colors = backgroundColor.getColors();
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 			Gdx.gl.glClearColor(colors[0], colors[1], colors[2], 0);
-
-			worldCamera.fieldOfView = fovValue.getValue();
-			worldCamera.update();
-
 			modelBatch.begin(worldCamera);
 			if(isDrawXYZ) modelBatch.render(xyzInstance);
 			if(isDrawXZPlane) modelBatch.render(xzPlaneInstance);
-
-			activeCount = 0;
 			pointSpriteBatch.begin();
 			billboardBatch.begin();
 			modelInstanceParticleBatch.begin();
 			for (ParticleController controller : effect.getControllers()) 
 			{
-				if (isEnabled(controller)) {	
-					controller.update(delta);
+				if (isEnabled(controller)) {
 					controller.draw();
 					activeCount += controller.emitter.activeCount;
 				}
@@ -734,83 +805,54 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			modelInstanceParticleBatch.end();
 			billboardBatch.end();
 			pointSpriteBatch.end();
-
-			modelBatch.render(pointSpriteBatch);
-			modelBatch.render(billboardBatch);
-			modelBatch.render(modelInstanceParticleBatch);
 			
-			maxActive = Math.max(maxActive, activeCount);
-			maxActiveTimer += delta;
-			if (maxActiveTimer > 3) {
-				maxActiveTimer = 0;
-				lastMaxActive = maxActive;
-				maxActive = 0;
-			}
-
+			//Draw
+			modelBatch.render(pointSpriteBatch, environment);
+			modelBatch.render(billboardBatch, environment);
+			modelBatch.render(modelInstanceParticleBatch, environment);
 			modelBatch.end();
+			ui.draw();
+		}
 
-			spriteBatch.begin();
-			spriteBatch.setProjectionMatrix(textCamera.combined);
-
-			font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, 15);
-			font.draw(spriteBatch, "Count: " + activeCount, 5, 35);
-			font.draw(spriteBatch, "Max: " + lastMaxActive, 5, 55);
-			//font.draw(spriteBatch, (int)(getEmitter().getPercentComplete() * 100) + "%", 5, 75);
-
-			spriteBatch.end();
+		@Override
+		public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+			//gainFocus();
+			return false;
 		}
 		
-		public boolean keyDown (int keycode) {
-			return false;
-		}
-
-		public boolean keyUp (int keycode) {
-			return false;
-		}
-
-		public boolean keyTyped (char character) {
-			return false;
-		}
-
-		public boolean touchDown (int x, int y, int pointer, int newParam) {
-			return false;
-		}
-
 		public boolean touchUp (int x, int y, int pointer, int button) {
-			ParticleEditor3D.this.dispatchEvent(new WindowEvent(ParticleEditor3D.this, WindowEvent.WINDOW_LOST_FOCUS));
-			ParticleEditor3D.this.dispatchEvent(new WindowEvent(ParticleEditor3D.this, WindowEvent.WINDOW_GAINED_FOCUS));
-			ParticleEditor3D.this.requestFocusInWindow();
+			//lostFocus();
 			return false;
 		}
-
-		public boolean touchDragged (int x, int y, int pointer) {
-			return false;
-		}
-
-		@Override
-		public void dispose () 
-		{
-			//for(Model model : mModels) model.dispose();
-		}
-
-		@Override
-		public void pause () {
-		}
-
-		@Override
-		public void resume () {
-		}
-
-		@Override
-		public boolean mouseMoved (int x, int y) {
-			return false;
-		}
-
+		
 		@Override
 		public boolean scrolled (int amount) {
+			//gainFocus();
 			return false;
 		}
+		
+		public void gainFocus () {
+			lwjglCanvas.getCanvas().requestFocus();
+			dispatchEvent(new WindowEvent(ParticleEditor3D.this, WindowEvent.WINDOW_LOST_FOCUS));
+			//dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_GAINED_FOCUS));
+			//lwjglCanvas.requestFocusInWindow();
+		}
 
+		public void lostFocus () {
+			//dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_LOST_FOCUS));
+			dispatchEvent(new WindowEvent(ParticleEditor3D.this, WindowEvent.WINDOW_GAINED_FOCUS));
+			ParticleEditor3D.this.requestFocusInWindow();
+		}
+
+		@Override
+		public void dispose () {}
+
+		@Override
+		public void pause () {}
+
+		@Override
+		public void resume () {}
+		
 		public void setDrawXYZ(boolean isDraw) 
 		{
 			isDrawXYZ = isDraw;
@@ -833,8 +875,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 	}
 
 	static class ParticleData {
-		public ImageIcon icon;
-		public String imagePath;
 		public boolean enabled = true;
 	}
 
@@ -857,19 +897,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 
 	public AppRenderer getRenderer() {
 		return renderer;
-	}
-
-	public <T> T load (String resource, Class<T> type, AssetLoader loader, AssetLoaderParameters<T> params) {	
-		AssetLoader<T, AssetLoaderParameters<T>> currentLoader = assetManager.getLoader(type);
-		if(loader != null)
-			assetManager.setLoader(type, loader); 
-		assetManager.load(resource, type, params);
-		assetManager.finishLoading();
-		String resolvedPath = new String(resource).replaceAll("\\\\", "/");;
-		T res = assetManager.get(resolvedPath);
-		if(currentLoader != null)
-			assetManager.setLoader(type, currentLoader);
-		return res;
 	}
 
 	String lastDir;
@@ -910,27 +937,35 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		return renderer.modelInstanceParticleBatch;
 	}
 	
-	public TextureAtlas getAtlas(){
-		return currentAtlas;
-	}
-
 	public void setAtlas(TextureAtlas atlas){
-		currentAtlas = atlas;
+		//currentAtlas = atlas;
 		setTexture(atlas.getTextures().first());
 	}
 	
 	public void setTexture(Texture texture){
-		this.texture = texture;
 		renderer.billboardBatch.setTexture(texture);
 		renderer.pointSpriteBatch.setTexture(texture);
 	}
 	
 	public Texture getTexture(){
-		return texture;
+		return renderer.billboardBatch.getTexture();
 	}
 
+	public TextureAtlas getAtlas(Texture texture){
+		Array<TextureAtlas> atlases = assetManager.get(TextureAtlas.class, new Array<TextureAtlas>());
+		for(TextureAtlas atlas : atlases){
+			if(atlas.getTextures().contains(texture))
+				return atlas;
+		}
+		return null;
+	}
+	
+	public TextureAtlas getAtlas(){
+		return getAtlas(renderer.billboardBatch.getTexture());
+	}
+	
 	public boolean isUsingDefaultTexture () {
-		return texture == assetManager.get(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
+		return renderer.billboardBatch.getTexture() == assetManager.get(DEFAULT_BILLBOARD_PARTICLE, Texture.class);
 	}
 
 	public Array<ParticleEffect> getParticleEffects (Array<ParticleController> controllers, Array<ParticleEffect> out) {
@@ -958,18 +993,64 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		return out;
 	}
 
-	/** Remove all duplicates. uses == to compare items.*/
-	private <T> void removeDuplicates (Array<T> out) {
-		for(int i=0; i < out.size; ++i){
-			T it = out.get(i);
-			for(int j=i+1; j < out.size;){
-				if(out.get(j) == it){
-					out.removeIndex(j);
-					continue;
-				}
-				++j;
-			}
+	public void saveEffect (File file) {
+		Writer fileWriter = null;
+		try {
+			ParticleEffectLoader loader = (ParticleEffectLoader)assetManager.getLoader(ParticleEffect.class);
+			loader.save(effect, new ParticleEffectSaveParameter(file, assetManager, getPointSpriteBatch(), getBillboardBatch(), getModelInstanceParticleBatch()));
+		} catch (Exception ex) {
+			System.out.println("Error saving effect: " + file.getAbsolutePath());
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error saving effect.");
+		} finally {
+			StreamUtils.closeQuietly(fileWriter);
 		}
+	}
+
+	public ParticleEffect openEffect (File file, boolean replaceCurrentWorkspace) {
+		try {
+			ParticleEffect loadedEffect = load(file.getAbsolutePath(), ParticleEffect.class, null, 
+				new ParticleEffectLoader.ParticleEffectLoadParameter(getPointSpriteBatch(), getBillboardBatch(), getModelInstanceParticleBatch()));
+			loadedEffect = loadedEffect.copy();
+			loadedEffect.init();
+			if(replaceCurrentWorkspace){
+				effect = loadedEffect;
+				particleData.clear();
+			}
+			reloadRows();
+			return loadedEffect;
+		} catch (Exception ex) {
+			System.out.println("Error loading effect: " + file.getAbsolutePath());
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Error opening effect.");
+		}
+		return null;
+	}
+	
+	public <T> T load (String resource, Class<T> type, AssetLoader loader, AssetLoaderParameters<T> params) {	
+		String resolvedPath = new String(resource).replaceAll("\\\\", "/");
+		boolean exist = assetManager.isLoaded(resolvedPath, type);
+		T oldAsset = null;
+		if(exist){
+			oldAsset = assetManager.get(resolvedPath, type);
+			for(int i=assetManager.getReferenceCount(resolvedPath); i > 0; --i)
+				assetManager.unload(resolvedPath);
+		}
+		
+		AssetLoader<T, AssetLoaderParameters<T>> currentLoader = assetManager.getLoader(type);
+		if(loader != null)
+			assetManager.setLoader(type, loader); 
+
+		assetManager.load(resource, type, params);
+		assetManager.finishLoading();
+		T res = assetManager.get(resolvedPath);
+		if(currentLoader != null)
+			assetManager.setLoader(type, currentLoader);
+		
+		if(exist)
+			EventManager.get().fire(EVT_ASSET_RELOADED, new Object[]{oldAsset, res});
+		
+		return res;
 	}
 
 }

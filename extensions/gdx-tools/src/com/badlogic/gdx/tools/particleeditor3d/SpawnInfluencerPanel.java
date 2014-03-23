@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.tools.particleeditor3d;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -24,21 +26,22 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.particles.WeigthMesh;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnShapeInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.values.CylinderSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.EllipseSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.MeshSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PrimitiveSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PrimitiveSpawnShapeValue.SpawnSide;
 import com.badlogic.gdx.graphics.g3d.particles.values.RectangleSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.SpawnShapeValue;
+import com.badlogic.gdx.graphics.g3d.particles.values.UnweightedMeshSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.WeightMeshSpawnShapeValue;
 import com.badlogic.gdx.tools.particleeditor3d.TemplatePickerPanel.Listener;
 import com.badlogic.gdx.utils.Array;
@@ -49,8 +52,11 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		SPAWN_SHAPE_RECTANGLE = "Rectangle",
 		SPAWN_SHAPE_CYLINDER = "Cylinder",
 		SPAWN_SHAPE_ELLIPSE = "Ellipse",
-		SPAWN_SHAPE_MESH = "Mesh",
-		SPAWN_SHAPE_WEIGHT_MESH = "Weight Mesh";
+		SPAWN_SHAPE_MESH = "Unweighted Mesh",
+		SPAWN_SHAPE_WEIGHT_MESH = "Weighted Mesh";
+	private static String[] spawnShapes = new String[]{	SPAWN_SHAPE_POINT, SPAWN_SHAPE_LINE, SPAWN_SHAPE_RECTANGLE,
+		SPAWN_SHAPE_ELLIPSE, SPAWN_SHAPE_CYLINDER, 
+		SPAWN_SHAPE_MESH, SPAWN_SHAPE_WEIGHT_MESH};
 	JComboBox shapeCombo;
 	JCheckBox edgesCheckbox;
 	JLabel edgesLabel;
@@ -64,7 +70,7 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 	RectangleSpawnShapeValue rectangleSpawnShapeValue;
 	EllipseSpawnShapeValue ellipseSpawnShapeValue;
 	CylinderSpawnShapeValue cylinderSpawnShapeValue;
-	MeshSpawnShapeValue meshSpawnShapeValue;
+	UnweightedMeshSpawnShapeValue meshSpawnShapeValue;
 	WeightMeshSpawnShapeValue weightMeshSpawnShapeValue;
 
 	public SpawnInfluencerPanel (final ParticleEditor3D editor, SpawnShapeInfluencer influencer) {
@@ -86,7 +92,7 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 			local = ellipseSpawnShapeValue;
 		else if(spawnShapeValue instanceof CylinderSpawnShapeValue)
 			local = cylinderSpawnShapeValue;
-		if(spawnShapeValue instanceof MeshSpawnShapeValue)
+		if(spawnShapeValue instanceof UnweightedMeshSpawnShapeValue)
 			local = meshSpawnShapeValue;
 		else if(spawnShapeValue instanceof WeightMeshSpawnShapeValue)
 			local = weightMeshSpawnShapeValue;
@@ -145,7 +151,7 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		if(spawnShapeValue instanceof WeightMeshSpawnShapeValue){
 			return SPAWN_SHAPE_WEIGHT_MESH;
 		}
-		if(spawnShapeValue instanceof MeshSpawnShapeValue){
+		if(spawnShapeValue instanceof UnweightedMeshSpawnShapeValue){
 			return SPAWN_SHAPE_MESH;
 		}
 		
@@ -168,6 +174,9 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		sideCombo.setVisible(visible);
 		sideLabel.setVisible(visible);
 	}
+	
+	
+	
 
 	protected void initializeComponents () {
 		super.initializeComponents();
@@ -177,8 +186,15 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		rectangleSpawnShapeValue = new RectangleSpawnShapeValue();
 		ellipseSpawnShapeValue = new EllipseSpawnShapeValue();
 		cylinderSpawnShapeValue = new CylinderSpawnShapeValue();
-		meshSpawnShapeValue = new MeshSpawnShapeValue();
+		meshSpawnShapeValue = new UnweightedMeshSpawnShapeValue();
 		weightMeshSpawnShapeValue = new WeightMeshSpawnShapeValue();
+		
+		lineSpawnShapeValue.setDimensions(6, 6, 6);
+		rectangleSpawnShapeValue.setDimensions(6, 6, 6);
+		ellipseSpawnShapeValue.setDimensions(6, 6, 6);
+		cylinderSpawnShapeValue.setDimensions(6, 6, 6);
+		
+		
 		
 		pointSpawnShapeValue.setActive(true);
 		lineSpawnShapeValue.setActive(true);
@@ -193,16 +209,19 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		models.add(defaultModel);
 		
 		int i=0;
-		OptionsPanel panel = new OptionsPanel();
-		panel.addOption(i++, 0, "Shape:", shapeCombo = new JComboBox(new DefaultComboBoxModel(new String[]{	SPAWN_SHAPE_POINT, SPAWN_SHAPE_LINE, SPAWN_SHAPE_RECTANGLE,
-																															SPAWN_SHAPE_ELLIPSE, SPAWN_SHAPE_CYLINDER, SPAWN_SHAPE_MESH, SPAWN_SHAPE_WEIGHT_MESH})), 
-																															GridBagConstraints.WEST, GridBagConstraints.NONE);
-		panel.addOption(i++, 0, edgesLabel = new JLabel("Edges:"), edgesCheckbox = new JCheckBox());
-		panel.addOption(i++, 0, sideLabel = new JLabel("Side:"), sideCombo = new JComboBox(new DefaultComboBoxModel(SpawnSide.values())));
+		JPanel panel = new JPanel(new GridBagLayout());
+		EditorPanel.addContent(panel, i, 0, new JLabel("Shape"), false, GridBagConstraints.WEST, GridBagConstraints.NONE, 0,0);
+		EditorPanel.addContent(panel, i++,1, shapeCombo = new JComboBox(new DefaultComboBoxModel(spawnShapes)), false, GridBagConstraints.WEST, GridBagConstraints.NONE, 1,0);
+		EditorPanel.addContent(panel, i, 0, edgesLabel = new JLabel("Edges"), false, GridBagConstraints.WEST, GridBagConstraints.NONE, 0,0);	
+		EditorPanel.addContent(panel, i++, 1, edgesCheckbox = new JCheckBox(), false, GridBagConstraints.WEST, GridBagConstraints.NONE, 0,0);		
+		EditorPanel.addContent(panel, i, 0, sideLabel = new JLabel("Side"), false, GridBagConstraints.WEST, GridBagConstraints.NONE, 0,0);		
+		EditorPanel.addContent(panel, i++, 1, sideCombo = new JComboBox(new DefaultComboBoxModel(SpawnSide.values())), false, GridBagConstraints.WEST, GridBagConstraints.NONE, 1, 0);				
+		edgesCheckbox.setHorizontalTextPosition(SwingConstants.LEFT);
+
 		i=0;
-		addContent(i++, 0, panel, GridBagConstraints.WEST, GridBagConstraints.BOTH);
+		addContent(i++, 0, panel, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
 		addContent(i++, 0, meshPanel = new TemplatePickerPanel<Model>(editor, models, this, Model.class, new LoaderButton.ModelLoaderButton(editor), true, false)
-		, false, GridBagConstraints.WEST, GridBagConstraints.NONE);
+																																			, false, GridBagConstraints.WEST, GridBagConstraints.NONE);
 		addContent(i++, 0, xPanel = new RangedNumericPanel(editor, pointSpawnShapeValue.xOffsetValue, "X Offset", "Amount to offset a particle's starting X location, in world units.", false));
 		addContent(i++, 0, yPanel = new RangedNumericPanel(editor, pointSpawnShapeValue.yOffsetValue, "Y Offset", "Amount to offset a particle's starting Y location, in world units.", false));
 		addContent(i++, 0, zPanel = new RangedNumericPanel(editor, pointSpawnShapeValue.zOffsetValue, "Z Offset", "Amount to offset a particle's starting Z location, in world units.", false));
@@ -237,6 +256,8 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 				else if(shape == SPAWN_SHAPE_WEIGHT_MESH){
 					setMeshSpawnShape(weightMeshSpawnShapeValue);
 				}
+				editor.getEmitter().init();
+				editor.effect.start();
 			}
 		});
 
@@ -264,9 +285,9 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 	public void onTemplateChecked (Model model, boolean isChecked) {
 		//Update the shapes
 		SpawnShapeValue shapeValue = null;
-		weightMeshSpawnShapeValue.mesh = new WeigthMesh(model.meshes.get(0));
-		weightMeshSpawnShapeValue.mesh.calculateWeights();
-		meshSpawnShapeValue.setMesh(model.meshes.get(0));
+		Mesh mesh = model.meshes.get(0);
+		weightMeshSpawnShapeValue.setMesh(mesh, model);
+		meshSpawnShapeValue.setMesh(mesh, model);
 		if(shapeCombo.getSelectedItem() == SPAWN_SHAPE_WEIGHT_MESH){
 			SpawnShapeInfluencer influencer = (SpawnShapeInfluencer)editor.getEmitter().findInfluencer(SpawnShapeInfluencer.class);
 			influencer.spawnShapeValue = weightMeshSpawnShapeValue;
@@ -275,6 +296,8 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 			SpawnShapeInfluencer influencer = (SpawnShapeInfluencer)editor.getEmitter().findInfluencer(SpawnShapeInfluencer.class);
 			influencer.spawnShapeValue = meshSpawnShapeValue;
 		}
+		editor.getEmitter().init();
+		editor.effect.start();
 	}
 
 }

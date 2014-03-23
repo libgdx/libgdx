@@ -2,16 +2,13 @@ package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
 import java.util.Comparator;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
@@ -22,18 +19,18 @@ import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.Config;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.ParticleType;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.RegionSizeAttribute;
-import com.badlogic.gdx.graphics.g3d.particles.controllers.PointSpriteParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.DistanceParticleSorter;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.BillboardDistanceParticleSorter;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Sort;
 
 public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 	protected static final Vector3 TMP_V1 = new Vector3(), 
@@ -88,8 +85,17 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 		@Override
 		public Renderable newObject () {
 			return allocRenderable();
+		}	
+	}
+	
+	private static class Config{
+		public Config(){}
+		public Config (boolean useGPU, AlignMode mode) {
+			this.useGPU = useGPU;
+			this.mode = mode;
 		}
-		
+		boolean useGPU;
+		AlignMode mode;
 	}
 	
 	private RenderablePool renderablePool;
@@ -101,11 +107,11 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 	protected boolean useGPU;
 	protected AlignMode mode;
 	protected Texture texture;
-	//Shader shader;
+	Shader shader;
 	
 	
 	public BillboardBatch(AlignMode mode, boolean useGPU, int capacity){
-		super(BillboardParticle.class, COMPARATOR_FAR_DISTANCE);
+		super(BillboardParticle.class, new BillboardDistanceParticleSorter());
 		this.mode = mode;
 		this.useGPU = useGPU;
 		renderables = new Array<Renderable>();
@@ -113,18 +119,13 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 		setVertexData();
 		ensureCapacity(capacity);
 	}
-	
+
 	public BillboardBatch () {
 		this(AlignMode.Screen, false, 100);
 	}
 	
 	public BillboardBatch (int capacity) {
 		this(AlignMode.Screen, false, capacity);
-	}
-
-	private Shader getShader (Renderable renderable) {
-		return useGPU 	? 	new ParticleShader(renderable, new ParticleShader.Config(mode)) :
-								new DefaultShader(renderable);
 	}
 
 	@Override
@@ -141,8 +142,7 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 			new DepthTestAttribute(GL20.GL_LEQUAL, false),
 			TextureAttribute.createDiffuse(texture));
 		renderable.mesh = new Mesh(false, MAX_VERTICES_PER_MESH, MAX_PARTICLES_PER_MESH*6, currentAttributes);
-		renderable.shader = getShader(renderable);
-		renderable.shader.init();
+		renderable.shader = shader;
 		return renderable;
 	}
 	
@@ -162,6 +162,19 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 		}
 	}
 	
+	private Shader getShader (Renderable renderable) {
+		Shader shader = useGPU 	? 	new ParticleShader(renderable, new ParticleShader.Config(mode)) :
+								new DefaultShader(renderable);
+		shader.init();
+		return shader;
+	}
+	
+	private void allocShader () {
+		Renderable newRenderable = allocRenderable();
+		shader = newRenderable.shader = getShader(newRenderable);
+		renderablePool.free(newRenderable);	
+	}
+	
 	private void clearRenderablesPool(){
 		renderablePool.freeAll(renderables);
 		for(int i=0, free = renderablePool.getFree(); i < free; ++i){
@@ -171,7 +184,6 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 		renderables.clear();
 	}
 	
-
 	/** Sets vertex attributes and size */
 	public void setVertexData(){
 		if(useGPU){
@@ -190,15 +202,22 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 		}
 	}
 	
+	/** Allocates all the require rendering resources like Renderables,Shaders,Meshes
+	 *  according to the current batch configuration.*/
+	private void initRenderData () {
+		setVertexData();
+		clearRenderablesPool();
+		allocShader();
+		allocRenderables(bufferedParticles.length);
+	}
+	
 	/** Sets the current align mode.
-	 *  It will reallocate internal data, use when necessary. */
+	 *  It will reallocate internal data, use only when necessary. */
 	public void setAlignMode(AlignMode mode){
 		if(mode != this.mode){
 			this.mode = mode;
 			if(useGPU){
-				setVertexData();
-				clearRenderablesPool();
-				allocRenderables(bufferedParticles.length);
+				initRenderData();
 			}
 		}
 	}
@@ -208,30 +227,26 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 	}
 	
 	/** Sets the current align mode.
-	*  It will reallocate internal data, use when necessary. */
+	*  It will reallocate internal data, use only when necessary. */
 	public void setUseGpu(boolean useGPU){
 		if(this.useGPU != useGPU){
 			this.useGPU = useGPU;
-			setVertexData();
-			clearRenderablesPool();
-			allocRenderables(bufferedParticles.length);
+			initRenderData();
 		}
 	}
-	
+
 	public boolean isUseGPU(){
 		return useGPU;
 	}
 	
 	public void setTexture(Texture texture){
+		renderablePool.freeAll(renderables);
 		renderables.clear();
 		for(int i=0, free = renderablePool.getFree(); i < free; ++i){
 			Renderable renderable = renderablePool.obtain();
 			TextureAttribute attribute = (TextureAttribute) renderable.material.get(TextureAttribute.Diffuse);
 			attribute.textureDescription.texture = texture;
-			renderables.add(renderable);
 		}
-		renderablePool.freeAll(renderables);
-		renderables.clear();
 		this.texture = texture;
 	}
 	
@@ -311,15 +326,6 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 		renderables.clear();
 	}
 	
-	protected void updateSortWeight (BillboardParticle[] particles, int count) {
-		float[] val = camera.view.val;
-		TMP_V1.set(val[Matrix4.M20], val[Matrix4.M21], val[Matrix4.M22]);
-		for(int i=0; i <count; ++i){
-			BillboardParticle particle = particles[i];
-			particle.cameraDistance = TMP_V1.dot(particle.x, particle.y, particle.z);
-		}
-	}
-	
 	protected void flush(){
 		int p=0;
 		int leftVertexCount = bufferedParticlesCount*4;
@@ -337,10 +343,10 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 							sy = particle.halfHeight * particle.scale;
 
 					//bottom left, bottom right, top right, top left
-					putVertex(vertices, vertexFcount, particle, -sx, -sy, particle.u, particle.v2); vertexFcount+= GPU_VERTEX_SIZE;
-					putVertex(vertices, vertexFcount, particle, sx, -sy, particle.u2, particle.v2); vertexFcount+= GPU_VERTEX_SIZE;
-					putVertex(vertices, vertexFcount, particle, sx, sy, particle.u2, particle.v); vertexFcount+= GPU_VERTEX_SIZE;			
-					putVertex(vertices, vertexFcount, particle, -sx, sy, particle.u, particle.v); vertexFcount+= GPU_VERTEX_SIZE;
+					putVertex(vertices, vertexFcount, particle, -sx, -sy, particle.u, particle.v2); vertexFcount+= currentVertexSize;
+					putVertex(vertices, vertexFcount, particle, sx, -sy, particle.u2, particle.v2); vertexFcount+= currentVertexSize;
+					putVertex(vertices, vertexFcount, particle, sx, sy, particle.u2, particle.v); vertexFcount+= currentVertexSize;			
+					putVertex(vertices, vertexFcount, particle, -sx, sy, particle.u, particle.v); vertexFcount+= currentVertexSize;
 
 					indices[indicesCount] = (short)v;
 					indices[indicesCount+1] = (short)(v+1);
@@ -369,10 +375,10 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 							sy = particle.scale * particle.halfHeight;
 						//bottom left, bottom right, top right, top left
 						TMP_V1.set(particle.velocity).nor();
-						putVertex(vertices, vertexFcount, particle, -sx, -sy, particle.u, particle.v2, TMP_V1); vertexFcount+= GPU_EXT_VERTEX_SIZE;
-						putVertex(vertices, vertexFcount, particle, sx, -sy,  particle.u2, particle.v2, TMP_V1); vertexFcount+= GPU_EXT_VERTEX_SIZE;
-						putVertex(vertices, vertexFcount, particle, sx, sy, particle.u2, particle.v, TMP_V1); vertexFcount+= GPU_EXT_VERTEX_SIZE;			
-						putVertex(vertices, vertexFcount, particle, -sx, sy, particle.u, particle.v, TMP_V1); vertexFcount+= GPU_EXT_VERTEX_SIZE;
+						putVertex(vertices, vertexFcount, particle, -sx, -sy, particle.u, particle.v2, TMP_V1); vertexFcount+= currentVertexSize;
+						putVertex(vertices, vertexFcount, particle, sx, -sy,  particle.u2, particle.v2, TMP_V1); vertexFcount+= currentVertexSize;
+						putVertex(vertices, vertexFcount, particle, sx, sy, particle.u2, particle.v, TMP_V1); vertexFcount+= currentVertexSize;			
+						putVertex(vertices, vertexFcount, particle, -sx, sy, particle.u, particle.v, TMP_V1); vertexFcount+= currentVertexSize;
 
 						indices[indicesCount] = (short)v;
 						indices[indicesCount+1] = (short)(v+1);
@@ -409,16 +415,16 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 
 						if(particle.cosRotation != 1){
 							TMP_M3.setToRotation(look, particle.cosRotation, particle.sinRotation);
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).sub(TMP_V2).mul(TMP_M3), particle,  particle.u, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).sub(TMP_V2).mul(TMP_M3), particle,  particle.u2, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).add(TMP_V2).mul(TMP_M3), particle,  particle.u2, particle.v); vertexFcount+= CPU_VERTEX_SIZE;			
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).add(TMP_V2).mul(TMP_M3), particle,  particle.u, particle.v); vertexFcount+= CPU_VERTEX_SIZE;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).sub(TMP_V2).mul(TMP_M3), particle,  particle.u, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).sub(TMP_V2).mul(TMP_M3), particle,  particle.u2, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).add(TMP_V2).mul(TMP_M3), particle,  particle.u2, particle.v); vertexFcount+= currentVertexSize;			
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).add(TMP_V2).mul(TMP_M3), particle,  particle.u, particle.v); vertexFcount+= currentVertexSize;
 						}
 						else {
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).sub(TMP_V2), particle,  particle.u, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).sub(TMP_V2), particle,  particle.u2, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).add(TMP_V2), particle,  particle.u2, particle.v); vertexFcount+= CPU_VERTEX_SIZE;			
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).add(TMP_V2), particle,  particle.u, particle.v); vertexFcount+= CPU_VERTEX_SIZE;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).sub(TMP_V2), particle,  particle.u, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).sub(TMP_V2), particle,  particle.u2, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(TMP_V1).add(TMP_V2), particle,  particle.u2, particle.v); vertexFcount+= currentVertexSize;			
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(TMP_V1).add(TMP_V2), particle,  particle.u, particle.v); vertexFcount+= currentVertexSize;
 						}
 
 						indices[indicesCount] = (short)v;
@@ -453,16 +459,16 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 
 						if(particle.cosRotation != 1){
 							TMP_M3.setToRotation(look, particle.cosRotation, particle.sinRotation);
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).sub(up).mul(TMP_M3), particle,  particle.u, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).sub(up).mul(TMP_M3), particle,  particle.u2, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).add(up).mul(TMP_M3), particle,  particle.u2, particle.v); vertexFcount+= CPU_VERTEX_SIZE;			
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).add(up).mul(TMP_M3), particle,  particle.u, particle.v); vertexFcount+= CPU_VERTEX_SIZE;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).sub(up).mul(TMP_M3), particle,  particle.u, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).sub(up).mul(TMP_M3), particle,  particle.u2, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).add(up).mul(TMP_M3), particle,  particle.u2, particle.v); vertexFcount+= currentVertexSize;			
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).add(up).mul(TMP_M3), particle,  particle.u, particle.v); vertexFcount+= currentVertexSize;
 						}
 						else {
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).sub(up), particle,  particle.u, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).sub(up), particle,  particle.u2, particle.v2); vertexFcount+= CPU_VERTEX_SIZE;
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).add(up), particle,  particle.u2, particle.v); vertexFcount+= CPU_VERTEX_SIZE;			
-							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).add(up), particle,  particle.u, particle.v); vertexFcount+= CPU_VERTEX_SIZE;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).sub(up), particle,  particle.u, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).sub(up), particle,  particle.u2, particle.v2); vertexFcount+= currentVertexSize;
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).add(right).add(up), particle,  particle.u2, particle.v); vertexFcount+= currentVertexSize;			
+							putVertex(vertices, vertexFcount, TMP_V6.set(0,0,0).sub(right).add(up), particle,  particle.u, particle.v); vertexFcount+= currentVertexSize;
 						}
 
 						indices[indicesCount] = (short)v;
@@ -536,6 +542,21 @@ public class BillboardBatch extends ParticleBatch<BillboardParticle> {
 			}
 		}
 	}
-	
+
+	@Override
+	public void save (AssetManager manager, ResourceData resources) {
+		SaveData data = resources.createSaveData("billboardBatch");
+		data.save("cfg", new Config(useGPU, mode));
+		data.saveAsset(manager.getAssetFileName(texture), Texture.class);
+	}
+
+	@Override
+	public void load (AssetManager manager, ResourceData resources) {
+		SaveData data = resources.getSaveData("billboardBatch");
+		setTexture((Texture)manager.get(data.loadAsset()));
+		Config cfg = (Config)data.load("cfg");
+		setUseGpu(cfg.useGPU);
+		setAlignMode(cfg.mode);
+	}
 
 }

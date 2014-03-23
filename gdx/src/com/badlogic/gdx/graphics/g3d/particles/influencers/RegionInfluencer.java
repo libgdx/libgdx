@@ -2,10 +2,8 @@ package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.particles.AspectTextureRegion;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -206,6 +204,37 @@ public class RegionInfluencer<T> extends Influencer<T> {
 	
 	
 	
+	public static class AspectTextureRegion{
+		public float u, v, u2, v2;
+		public float halfInvAspectRatio;
+		
+		public AspectTextureRegion(){}
+		
+		public AspectTextureRegion( AspectTextureRegion aspectTextureRegion){
+			set(aspectTextureRegion);
+		}
+		
+		public AspectTextureRegion(TextureRegion region){
+			set(region);
+		}
+		
+		public void set(TextureRegion region){
+			this.u = region.getU();
+			this.v = region.getV();
+			this.u2 = region.getU2();
+			this.v2 = region.getV2();
+			this.halfInvAspectRatio = 0.5f*((float)region.getRegionHeight()/region.getRegionWidth());
+		}
+		
+		public void set(AspectTextureRegion aspectTextureRegion){
+			u = aspectTextureRegion.u;
+			v = aspectTextureRegion.v;
+			u2 = aspectTextureRegion.u2;
+			v2 = aspectTextureRegion.v2;
+			halfInvAspectRatio = aspectTextureRegion.halfInvAspectRatio;
+		}
+	}
+	
 	
 	
 	public Array<AspectTextureRegion> regions;
@@ -234,7 +263,7 @@ public class RegionInfluencer<T> extends Influencer<T> {
 	}
 	
 	public RegionInfluencer(RegionInfluencer regionInfluencer){
-		this();
+		this(regionInfluencer.regions.size);
 		regions.ensureCapacity(regionInfluencer.regions.size);
 		for(int i=0; i < regionInfluencer.regions.size; ++i){
 			regions.add(new AspectTextureRegion((AspectTextureRegion)regionInfluencer.regions.get(i)));
@@ -259,12 +288,11 @@ public class RegionInfluencer<T> extends Influencer<T> {
 
 	@Override
 	public void write (Json json) {
-		json.writeValue("regions", regions.toArray(), AspectTextureRegion[].class);
+		json.writeValue("regions", regions, Array.class, AspectTextureRegion.class);
 	}
 
 	@Override
 	public void read (Json json, JsonValue jsonData) {
-		AspectTextureRegion[] regs = json.readValue("regions", AspectTextureRegion[].class, jsonData);
-		regions.addAll(regs);
+		regions = json.readValue("regions", Array.class, AspectTextureRegion.class, jsonData);
 	}
 }

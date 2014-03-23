@@ -20,6 +20,7 @@ public abstract class InfluencerPanel<T extends Influencer> extends EditorPanel<
 		editor.getEmitter().influencers.removeValue(value, true);
 		editor.getEmitter().init();
 		editor.getEmitter().start();
+		editor.reloadRows();
 	}
 
 }

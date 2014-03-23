@@ -1,10 +1,12 @@
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.SpawnShapeValue;
 import com.badlogic.gdx.utils.Json;
@@ -83,9 +85,7 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 				ParticleControllerParticle particle = controller.particles[i];
 				spawnShapeValue.spawn(TMP_V1, controller.emitter.percent);
 				TMP_V1.mul(controller.transform);
-				particle.x = TMP_V1.x;
-				particle.y = TMP_V1.y;
-				particle.z = TMP_V1.z;
+				particle.controller.setTranslation(TMP_V1);
 			}
 		}
 
@@ -140,6 +140,11 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 	}
 	
 	@Override
+	public void init () {
+		spawnShapeValue.init();
+	}
+	
+	@Override
 	public void start () {
 		spawnShapeValue.start();
 	}
@@ -152,5 +157,15 @@ public abstract class SpawnShapeInfluencer<T> extends Influencer<T> {
 	@Override
 	public void read (Json json, JsonValue jsonData) {
 		spawnShapeValue = json.readValue("spawnShape", SpawnShapeValue.class, jsonData);
+	}
+	
+	@Override
+	public void save (AssetManager manager, ResourceData data) {
+		spawnShapeValue.save(manager, data);
+	}
+	
+	@Override
+	public void load (AssetManager manager, ResourceData data) {
+		spawnShapeValue.load(manager, data);
 	}
 }

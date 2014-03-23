@@ -1,5 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+
 
 public class NumericValue extends ParticleValue {
 	private float value;
@@ -16,4 +19,17 @@ public class NumericValue extends ParticleValue {
 		super.load(value);
 		this.value = value.value;
 	}
+	
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("value", value);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		value = json.readValue("value", float.class, jsonData);
+	}
+	
 }

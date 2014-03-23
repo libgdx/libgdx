@@ -9,7 +9,7 @@ public final class VelocityDatas {
 		float strengthStart, strengthDiff;
 	}
 	
-	public static class CommonVelocityData extends StrengthVelocityData{
+	public static class AngularVelocityData extends StrengthVelocityData{
 		public float 	thetaStart, thetaDiff,
 							phistart, phiDiff;
 	}

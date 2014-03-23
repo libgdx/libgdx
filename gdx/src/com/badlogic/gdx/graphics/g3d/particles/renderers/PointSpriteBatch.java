@@ -1,10 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
-import java.util.Comparator;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,23 +11,24 @@ import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.Config;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.PointSpriteDistanceParticleSorter;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.ParticleType;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.RegionSizeAttribute;
-import com.badlogic.gdx.graphics.g3d.particles.controllers.PointSpriteParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.DistanceParticleSorter;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
+import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.Sort;
 
 public class PointSpriteBatch extends ParticleBatch<PointParticle> {
 	protected static final Vector3 TMP_V1 = new Vector3();
@@ -53,7 +52,7 @@ public class PointSpriteBatch extends ParticleBatch<PointParticle> {
 	}
 	
 	public PointSpriteBatch (int capacity) {
-		super(PointParticle.class, COMPARATOR_FAR_DISTANCE);
+		super(PointParticle.class, new PointSpriteDistanceParticleSorter());
 		allocRenderable();
 		ensureCapacity(capacity);
 		renderable.shader = new ParticleShader(renderable, new ParticleShader.Config(ParticleType.Point));
@@ -119,16 +118,6 @@ public class PointSpriteBatch extends ParticleBatch<PointParticle> {
 		vertices[offset + CPU_REGION_OFFSET+3] = particle.v2;
 	}
 	
-	@Override
-	protected void updateSortWeight (PointParticle[] particles, int count) {
-		float[] val = camera.view.val;
-		TMP_V1.set(val[Matrix4.M20], val[Matrix4.M21], val[Matrix4.M22]);
-		for(int i=0; i <count; ++i){
-			PointParticle particle = particles[i];
-			particle.cameraDistance = TMP_V1.dot(particle.x, particle.y, particle.z);
-		}
-	}
-	
 	protected void flush(){
 		short vo = 0; // the current vertex
 		int fo = 0; // the current offset in the vertex array
@@ -146,5 +135,18 @@ public class PointSpriteBatch extends ParticleBatch<PointParticle> {
 		if(bufferedParticlesCount > 0)
 			renderables.add(pool.obtain().set(renderable));
 	}
+
+	@Override
+	public void save (AssetManager manager, ResourceData resources) {
+		SaveData data = resources.createSaveData("pointSpriteBatch");
+		data.saveAsset(manager.getAssetFileName(getTexture()), Texture.class);
+	}
+
+	@Override
+	public void load (AssetManager manager, ResourceData resources) {
+		SaveData data = resources.getSaveData("pointSpriteBatch");
+		setTexture((Texture)manager.get(data.loadAsset()));
+	}
+	
 
 }

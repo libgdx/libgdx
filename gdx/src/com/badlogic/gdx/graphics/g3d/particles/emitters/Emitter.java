@@ -1,8 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.emitters;
 
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.ParticleEffectData;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
@@ -26,6 +23,11 @@ public abstract class  Emitter<T> extends ParticleSystem<T> implements Json.Seri
 
 	@Override
 	public void init () {
+		activeCount = 0;
+	}
+	
+	@Override
+	public void end () {
 		activeCount = 0;
 	}
 	

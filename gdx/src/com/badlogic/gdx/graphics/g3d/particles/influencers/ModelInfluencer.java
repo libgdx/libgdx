@@ -4,19 +4,15 @@ import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.particles.AspectTextureRegion;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.ParticleEffectData;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.Pool;
 
-public abstract class ModelInfluencer<T> extends Influencer<T> {
+public abstract class ModelInfluencer extends Influencer<ModelInstanceParticle> {
 
-	public static class ModelInstanceSingleInfluencer extends ModelInfluencer<ModelInstanceParticle>{
+	public static class ModelInstanceSingleInfluencer extends ModelInfluencer{
 
 		public ModelInstanceSingleInfluencer(){
 			super();
@@ -44,7 +40,7 @@ public abstract class ModelInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	public static class ModelInstanceRandomInfluencer extends ModelInfluencer<ModelInstanceParticle>{
+	public static class ModelInstanceRandomInfluencer extends ModelInfluencer{
 		private class ModelInstancePool extends Pool<ModelInstance>{
 			public ModelInstancePool () {}
 
@@ -71,10 +67,14 @@ public abstract class ModelInfluencer<T> extends Influencer<T> {
 		}
 		
 		@Override
+		public void init () {
+			pool.clear();
+		}
+		
+		@Override
 		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				ModelInstanceParticle particle = controller.particles[i];
-				particle.instance = pool.obtain();
+				controller.particles[i].instance = pool.obtain();
 			}
 		}
 		@Override
@@ -83,14 +83,6 @@ public abstract class ModelInfluencer<T> extends Influencer<T> {
 				ModelInstanceParticle particle = controller.particles[i];
 				pool.free(particle.instance);
 				particle.instance = null;
-			}
-		}
-		
-		@Override
-		public void end () {
-			pool.clear();
-			for(int i=0; i < controller.emitter.activeCount; ++i){
-				controller.particles[i].instance = null;
 			}
 		}
 		
@@ -104,42 +96,33 @@ public abstract class ModelInfluencer<T> extends Influencer<T> {
 	public Array<Model> models;
 	
 	public ModelInfluencer(){
-		this.models = new Array<Model>();
+		this.models = new Array<Model>(true, 1, Model.class);
 	}
 	
 	public ModelInfluencer(Model...models){
 		this.models = new Array<Model>(models);
 	}
 	
-	public ModelInfluencer (ModelInfluencer<T> influencer) {
-		this(influencer.models.items);
+	public ModelInfluencer (ModelInfluencer influencer) {
+		this((Model[])influencer.models.toArray(Model.class));
 	}
 
 	@Override
-	public void write (Json json) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void read (Json json, JsonValue jsonData) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	/*
-	@Override
-	public void write (Json json) {
-		AspectTextureRegion[] regionsCopy = new AspectTextureRegion[models.size];
-		System.arraycopy(models.items, 0, regionsCopy, 0, models.size);
-		json.writeValue("models", regionsCopy);
+	public void save (AssetManager manager, ResourceData resources) {
+		SaveData data = resources.createSaveData();
+		for(Model model : models)
+			data.saveAsset(manager.getAssetFileName(model), Model.class);
 	}
 	
 	@Override
-	public void read (Json json, JsonValue jsonData) {
-		models.items = json.readValue("models", AspectTextureRegion[].class, jsonData);
-		models.size = models.items.length;
+	public void load (AssetManager manager, ResourceData resources) {
+		SaveData data = resources.getSaveData();
+		AssetDescriptor descriptor;
+		while((descriptor = data.loadAsset()) != null){
+			Model model = (Model)manager.get(descriptor);
+			if(model == null)
+				throw new RuntimeException("Model is null");
+			models.add(model);
+		}
 	}
-	*/
-	
 }

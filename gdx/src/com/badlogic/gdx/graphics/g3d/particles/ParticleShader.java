@@ -45,35 +45,7 @@ public class ParticleShader extends BaseShader {
 	public static enum AlignMode{
 		Screen, ViewPoint, ParticleDirection
 	}
-	
-	public static class RegionSizeAttribute extends Attribute{
-		public final static String RegionSizeAlias = "regionSize";
-		public final static long RegionSize = register(RegionSizeAlias);
-		
-		public float regionSizeX, regionSizeY;
-		
-		public RegionSizeAttribute() {
-			super(RegionSize);
-		}
 
-		public RegionSizeAttribute(final RegionSizeAttribute copyFrom) {
-			this();
-			regionSizeX = copyFrom.regionSizeX;
-			regionSizeY = copyFrom.regionSizeY;
-		}
-		
-		@Override
-		public Attribute copy () {
-			return new RegionSizeAttribute(this);
-		}
-
-		@Override
-		protected boolean equals (Attribute other) {
-			RegionSizeAttribute attribute = (RegionSizeAttribute)other;
-			return attribute.regionSizeX == regionSizeX && attribute.regionSizeY == regionSizeY ;
-		}
-	}
-	
 	public static class Config {
 		/** The uber vertex shader to use, null to use the default vertex shader. */
 		public String vertexShader = null;
@@ -167,13 +139,6 @@ public class ParticleShader extends BaseShader {
 				shader.set(inputID, temp.set(shader.camera.view).mul(renderable.worldTransform));
 			}
 		};
-		public final static Setter regionSize = new Setter() {
-			@Override public boolean isGlobal (BaseShader shader, int inputID) { return false; }
-			@Override public void set (BaseShader shader, int inputID, Renderable renderable, Attributes combinedAttributes) {
-				RegionSizeAttribute attribute = (RegionSizeAttribute)combinedAttributes.get(RegionSizeAttribute.RegionSize);
-				shader.set(inputID, attribute.regionSizeX, attribute.regionSizeY );
-			}
-		};
 	}
 	
 	/** The renderable used to create this shader, invalid after the call to init */
@@ -217,7 +182,6 @@ public class ParticleShader extends BaseShader {
 		register(DefaultShader.Inputs.projViewTrans, DefaultShader.Setters.projViewTrans);
 		register(DefaultShader.Inputs.projTrans, DefaultShader.Setters.projTrans);
 		register(Inputs.screenWidth, Setters.screenWidth);
-		//register(Inputs.regionSize, Setters.regionSize);
 		register(DefaultShader.Inputs.cameraUp, Setters.cameraUp);
 		register(Inputs.cameraRight, Setters.cameraRight);
 		register(Inputs.cameraInvDirection, Setters.cameraInvDirection);

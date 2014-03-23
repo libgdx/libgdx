@@ -1,6 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class ScaledNumericValue extends RangedNumericValue {
 	private float[] scaling = {1};
@@ -89,4 +91,26 @@ public class ScaledNumericValue extends RangedNumericValue {
 		System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
 		relative = value.relative;
 	}
+	
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("highMin", highMin);
+		json.writeValue("highMax", highMax);
+		json.writeValue("relative", relative);
+		json.writeValue("scaling", scaling);
+		json.writeValue("timeline", timeline);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		highMin = json.readValue("highMin", float.class, jsonData);
+		highMax = json.readValue("highMax", float.class, jsonData);
+		relative = json.readValue("relative", boolean.class, jsonData);
+		scaling = json.readValue("scaling", float[].class, jsonData);
+		timeline = json.readValue("timeline", float[].class, jsonData);
+	}
+	
+	
 }

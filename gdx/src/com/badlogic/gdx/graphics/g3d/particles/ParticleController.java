@@ -1,12 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect.ParticleEffectData;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.RandomColorInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -16,7 +12,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class ParticleController<T> implements Json.Serializable{
+/** Base class of all the particle controllers.
+ * Encapsulate the generic structure of a controller and methods to update the particles simulation.*/
+public abstract class ParticleController<T> implements Json.Serializable, ResourceData.Configurable{
 	/** Name of the controller */
 	public String name;
 	
@@ -27,7 +25,6 @@ public abstract class ParticleController<T> implements Json.Serializable{
 	public Array<Influencer<T>> influencers;
 	
 	/** Controls the graphical representation of the particles */
-	//public Renderer<T> renderer;
 	public  IParticleBatch<T> batch;
 	
 	/** Particles components */
@@ -38,10 +35,9 @@ public abstract class ParticleController<T> implements Json.Serializable{
 	
 	/** Current transform of the controller
 	 *	 DO NOT CHANGE MANUALLY */
-	public Matrix4 transform, tmpTransform;
+	public Matrix4 transform;
 	
 	/** Transform flags */
-	public boolean isDirty, isRecomputeScale;
 	public Vector3 scale;
 	
 	protected BoundingBox boundingBox;
@@ -53,7 +49,6 @@ public abstract class ParticleController<T> implements Json.Serializable{
 	
 	public ParticleController(){
 		transform = new Matrix4();
-		tmpTransform = new Matrix4();
 		velocity = new Vector3();
 		scale = new Vector3(1,1,1);
 	}
@@ -70,36 +65,35 @@ public abstract class ParticleController<T> implements Json.Serializable{
 	/** Sets the current transformation to the given one.
 	 * @param transform the new transform matrix */
 	public void setTransform (Matrix4 transform) {
-		tmpTransform.set(transform);
-		isRecomputeScale = true;
-		isDirty = true;
+		this.transform.set(transform);
+		transform.getScale(scale);
 	}
 
 	/** Postmultiplies the current transformation with a rotation matrix represented by the given quaternion.*/
 	public void rotate(Quaternion rotation){
-		tmpTransform.rotate(rotation);
-		isDirty = true;
+		this.transform.rotate(rotation);
 	}
 	
 	/** Postmultiplies the current transformation with a rotation matrix by the given angle around the given axis.
 	 * @param axis the rotation axis
 	 * @param angle the rotation angle in degrees*/
 	public void rotate(Vector3 axis, float angle){
-		tmpTransform.rotate(axis, angle);
-		isDirty = true;
+		this.transform.rotate(axis, angle);
 	}
 	
 	/** Postmultiplies the current transformation with a translation matrix represented by the given translation.*/
 	public void translate(Vector3 translation){
-		tmpTransform.translate(translation);
-		isDirty = true;
+		this.transform.translate(translation);
+	}
+	
+	public void setTranslation (Vector3 translation) {
+		this.transform.setTranslation(translation);
 	}
 	
 	/** Postmultiplies the current transformation with a scale matrix represented by the given scale on x,y,z.*/
 	public void scale(float scaleX, float scaleY, float scaleZ){
-		tmpTransform.scale(scaleX, scaleY, scaleZ);
-		isRecomputeScale = true;
-		isDirty = true;
+		this.transform.scale(scaleX, scaleY, scaleZ);
+		this.transform.getScale(scale);
 	}
 	
 	/** Postmultiplies the current transformation with a scale matrix represented by the given scale vector.*/
@@ -109,17 +103,18 @@ public abstract class ParticleController<T> implements Json.Serializable{
 	
 	/** Postmultiplies the current transformation with the given matrix.*/
 	public void mul(Matrix4 transform){
-		this.tmpTransform.mul(transform);
-		isDirty = true;
+		this.transform.mul(transform);
+		this.transform.getScale(scale);
 	}
 	
 	/** Set the given matrix to the current transformation matrix.*/
 	public void getTransform(Matrix4 transform){
-		transform.set(this.tmpTransform);
+		transform.set(this.transform);
 	}
 	
 	
-	/** Initialize the controller: all the sub systems will be initialized. */
+	/** Initialize the controller.
+	 *  All the sub systems will be initialized and binded to the controller. */
 	public void init(){
 		bind();
 		boolean alloc = true;
@@ -133,18 +128,18 @@ public abstract class ParticleController<T> implements Json.Serializable{
 		emitter.init();
 		for(Influencer influencer : influencers)
 			influencer.init();
-		//renderer.init();
 	}
 	
 	protected void initParticles (){};
 
 	protected abstract T[] allocParticles (int maxParticleCount);
 
+	/** Bind the sub systems to the controller
+	 *  Called once during the init phase.*/
 	protected void bind(){
 		emitter.bind(this);
 		for(Influencer influencer : influencers)
 			influencer.bind(this);
-		//renderer.bind(this);
 	}
 	
 	/** Start the simulation. */
@@ -152,22 +147,33 @@ public abstract class ParticleController<T> implements Json.Serializable{
 		emitter.start();
 		for(Influencer influencer : influencers)
 			influencer.start();
-		//renderer.start();
+	}
+	
+	/** Reset the simulation. */
+	public void reset(){
+		end();
+		start();
 	}
 	
 	/** End the simulation. */
-	protected void end () {
+	public void end () {
 		emitter.end();
 		for(Influencer influencer : influencers)
 			influencer.end();
 	}
 	
+	/** Generally called by the Emitter. 
+	 * This method will notify all the sub systems that a given amount 
+	 * of particles have been activated. */
 	public void activateParticles (int startIndex, int count) {
 		emitter.activateParticles(startIndex, count);
 		for(Influencer influencer : influencers)
 			influencer.activateParticles(startIndex, count);
 	}
 	
+	/** Generally called by the Emitter. 
+	 * This method will notify all the sub systems that a given amount 
+	 * of particles have been killed. */
 	public void killParticles (int startIndex, int count){
 		emitter.killParticles(startIndex, count);
 		for(Influencer influencer : influencers)
@@ -178,51 +184,23 @@ public abstract class ParticleController<T> implements Json.Serializable{
 	public void update(float dt){
 		deltaTime = dt;
 		
-		//Update transform first
-		if(isDirty){
-			/*
-			if(isAttached){
-				TMP_M3_1.set(transform).transpose().mul(TMP_M3_2.set(tmpTransform));
-				transform.getTranslation(TMP_V2);
-				tmpTransform.getTranslation(TMP_V3);
-				for (int i = 0; i < activeCount; ++i){
-					Particle particle = particles[i];
-					TMP_V1.set(particle.x, particle.y, particle.z).sub(TMP_V2);
-					mul(TMP_M3_1, TMP_V1);
-					particle.x = TMP_V1.x + TMP_V3.x; particle.y = TMP_V1.y + TMP_V3.y; particle.z = TMP_V1.z + TMP_V3.z;
-				}
+		/*
+		if(isAttached){
+			TMP_M3_1.set(transform).transpose().mul(TMP_M3_2.set(tmpTransform));
+			transform.getTranslation(TMP_V2);
+			tmpTransform.getTranslation(TMP_V3);
+			for (int i = 0; i < activeCount; ++i){
+				Particle particle = particles[i];
+				TMP_V1.set(particle.x, particle.y, particle.z).sub(TMP_V2);
+				mul(TMP_M3_1, TMP_V1);
+				particle.x = TMP_V1.x + TMP_V3.x; particle.y = TMP_V1.y + TMP_V3.y; particle.z = TMP_V1.z + TMP_V3.z;
 			}
-			*/
-			float[] 	currentTransform = transform.val,
-						newTransform = tmpTransform.val;
-			velocity.set(	newTransform[Matrix4.M03] -currentTransform[Matrix4.M03], 
-								newTransform[Matrix4.M13] -currentTransform[Matrix4.M13], 
-								newTransform[Matrix4.M23] -currentTransform[Matrix4.M23]).scl(1f/dt);
-			if(isRecomputeScale){
-				//Compute x and y scale
-				tmpTransform.getScale(scale);
-				isRecomputeScale = false;
-			}
-			
-			//Swap
-			Matrix4 temp = this.transform;
-			this.transform = tmpTransform;
-			tmpTransform = temp;
-			
-			//Reset
-			tmpTransform.idt();
-			isDirty = false;
-			emitter.update();
-			for(Influencer influencer : influencers)
-				influencer.update();
-
-			velocity.set(0, 0, 0);
 		}
-		else {
-			emitter.update();
-			for(Influencer influencer : influencers)
-				influencer.update();
-		}
+		*/
+		transform.translate(velocity.x*dt, velocity.y*dt, velocity.z*dt);
+		emitter.update();
+		for(Influencer influencer : influencers)
+			influencer.update();
 	}
 
 	public void draw () {
@@ -293,16 +271,28 @@ public abstract class ParticleController<T> implements Json.Serializable{
 		influencers = json.readValue("influencers", Array.class, Influencer.class, jsonMap);
 	}
 
-	public void saveAssets (AssetManager manager, ParticleEffectData data) {
-		emitter.saveAssets(manager, data);
+	@Override
+	public void save (AssetManager manager, ResourceData data) {
+		emitter.save(manager, data);
 		for(Influencer influencer : influencers)
-			influencer.saveAssets(manager, data);
+			influencer.save(manager, data);
 	}
 
-	public void loadAssets (AssetManager manager, ParticleEffectData data) {
-		emitter.loadAssets(manager, data);
+	@Override
+	public void load (AssetManager manager, ResourceData data) {
+		emitter.load(manager, data);
 		for(Influencer influencer : influencers)
-			influencer.loadAssets(manager, data);
+			influencer.load(manager, data);
+	}
+
+	public abstract boolean isCompatible(IParticleBatch batch);
+	
+	public boolean setBatch (IParticleBatch batch) {
+		if(isCompatible(batch)){
+			this.batch = batch;
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.badlogic.gdx.tools.particleeditor3d;
 
-import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -38,13 +37,13 @@ public class TextureAtlasPanel extends JPanel {
 		add(forwardButton = new JButton(">"), new GridBagConstraints(2, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL,
 			new Insets(0, 0, 0, 0), 0, 0));
 		
-		regionsPanel.setLayout(new CardLayout());
+		regionsPanel.setLayout(new CustomCardLayout());
 		
 		backwardButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed (ActionEvent arg0) {
 				if(atlas == null) return;
-				CardLayout layout = (CardLayout)regionsPanel.getLayout();
+				CustomCardLayout layout = (CustomCardLayout)regionsPanel.getLayout();
 				layout.previous(regionsPanel);
 			}
 		});
@@ -53,7 +52,7 @@ public class TextureAtlasPanel extends JPanel {
 			@Override
 			public void actionPerformed (ActionEvent arg0) {
 				if(atlas == null) return;
-				CardLayout layout = (CardLayout)regionsPanel.getLayout();
+				CustomCardLayout layout = (CustomCardLayout)regionsPanel.getLayout();
 				layout.next(regionsPanel);
 			}
 		});	
@@ -63,8 +62,8 @@ public class TextureAtlasPanel extends JPanel {
 		if(atlas == this.atlas) return;
 		regionsPanel.removeAll();
 		 Array<AtlasRegion> atlasRegions = atlas.getRegions();
-		CardLayout layout = (CardLayout)regionsPanel.getLayout();
-		ArrayList<TextureRegion> regions = new ArrayList<TextureRegion>();
+		 CustomCardLayout layout = (CustomCardLayout)regionsPanel.getLayout();
+		Array<TextureRegion> regions = new Array<TextureRegion>();
 		for(Texture texture : atlas.getTextures()){
 			FileTextureData file = (FileTextureData)texture.getTextureData();
 			regionsPanel.add(new TexturePanel( texture, getRegions(texture, atlasRegions, regions)));
@@ -73,7 +72,7 @@ public class TextureAtlasPanel extends JPanel {
 		this.atlas = atlas;
 	}
 	
-	protected ArrayList<TextureRegion> getRegions (Texture texture, Array<AtlasRegion> atlasRegions, ArrayList<TextureRegion> out) {
+	protected Array<TextureRegion> getRegions (Texture texture, Array<AtlasRegion> atlasRegions, Array<TextureRegion> out) {
 		out.clear();
 		for(TextureRegion region : atlasRegions){
 			if(region.getTexture() == texture)
@@ -82,14 +81,15 @@ public class TextureAtlasPanel extends JPanel {
 		return out;
 	}
 
-	public ArrayList<TextureRegion> getSelectedRegions () {
-		CardLayout layout = (CardLayout)regionsPanel.getLayout();
+	public Array<TextureRegion> getSelectedRegions () {
+		CustomCardLayout layout = (CustomCardLayout)regionsPanel.getLayout();
 		TexturePanel panel = getCurrentRegionPanel();
 		return panel.selectedRegions;
 	}
 	
 	public TexturePanel getCurrentRegionPanel(){
-		return EditorPanel.getCurrentCard(regionsPanel);
+		CustomCardLayout layout = (CustomCardLayout)regionsPanel.getLayout();
+		return layout.getCurrentCard(regionsPanel);
 	}
 
 	public void clearSelection () {

@@ -2,6 +2,8 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public final class EllipseSpawnShapeValue extends PrimitiveSpawnShapeValue {
 	SpawnSide side = SpawnSide.both;
@@ -81,4 +83,17 @@ public final class EllipseSpawnShapeValue extends PrimitiveSpawnShapeValue {
 		return new EllipseSpawnShapeValue(this);
 	}
 
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("side", side);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		side = json.readValue("side", SpawnSide.class, jsonData);
+	}
+	
+	
 }

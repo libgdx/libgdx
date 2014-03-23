@@ -14,6 +14,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
+import com.badlogic.gdx.assets.loaders.TextureAtlasLoader.TextureAtlasParameter;
 import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -29,8 +31,6 @@ public class TextureLoaderPanel extends EditorPanel
 	@Override
 	protected void initializeComponents () {
 		super.initializeComponents();
-		JPanel contentPanel = getContentPanel();
-		
 		JButton atlasButton = new JButton("Open Atlas");
 		JButton textureButton = new JButton("Open Texture");
 		final JCheckBox genMipMaps = new JCheckBox("Generate MipMaps");
@@ -54,10 +54,9 @@ public class TextureLoaderPanel extends EditorPanel
 			public void actionPerformed (ActionEvent e) {
 				File file = editor.showFileLoadDialog();
 				if(file != null){
-					TextureAtlas atlas = editor.load(file.getAbsolutePath(), TextureAtlas.class, null, null);
+					TextureAtlas atlas = editor.load(file.getAbsolutePath(), TextureAtlas.class, null,  null);
 					if(atlas != null){
 						editor.setAtlas(atlas);
-						editor.isUsingAtlas = true;
 					}
 				}
 			}
@@ -75,27 +74,24 @@ public class TextureLoaderPanel extends EditorPanel
 					Texture texture = editor.load(file.getAbsolutePath(), Texture.class, null, params);
 					if(texture != null){
 						editor.setTexture(texture);
-						editor.isUsingAtlas = false;
 					}
 				}
 			}
 		});
 		
-		contentPanel.setLayout(new GridBagLayout());
-
 		contentPanel.add(new JLabel("Min. Filter"), new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
-		contentPanel.add(minFilterBox, new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+		contentPanel.add(minFilterBox, new GridBagConstraints(1, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
 		contentPanel.add(new JLabel("Mag. Filter"), new GridBagConstraints(0, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
-		contentPanel.add(magFilterBox, new GridBagConstraints(1, 1, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+		contentPanel.add(magFilterBox, new GridBagConstraints(1, 1, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
 		contentPanel.add(genMipMaps, new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
 		contentPanel.add(atlasButton, new GridBagConstraints(0, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
-		contentPanel.add(textureButton, new GridBagConstraints(1, 3, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+		contentPanel.add(textureButton, new GridBagConstraints(1, 3, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 			new Insets(6, 0, 0, 0), 0, 0));
 		
 	}

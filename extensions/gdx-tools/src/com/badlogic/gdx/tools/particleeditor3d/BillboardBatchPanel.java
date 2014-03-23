@@ -1,11 +1,14 @@
 package com.badlogic.gdx.tools.particleeditor3d;
 
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -15,7 +18,9 @@ import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.BillboardDistanceParticleSorter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
 
@@ -38,76 +43,43 @@ public class BillboardBatchPanel extends EditorPanel<BillboardBatch> {
 		}
 	}
 	
-	private static class TexturePanel extends ImagePickerPanel<BillboardBatch> {
-
-		public TexturePanel (ParticleEditor3D editor, BillboardBatch batch) {
-			super(editor, "Texture", "The texture which contains all the particles");
-			//set(regionInfluencer);
-			setValue(batch);
-			setIsAlwayShown(true);
-		}
-
-		@Override
-		protected void setDefaultImage () {
-			ParticleController<BillboardParticle> emitter = editor.getEmitter();
-			RegionInfluencer influencer = emitter.findInfluencer(RegionInfluencer.class);
-			String currentTexturePath = editor.assetManager.getAssetFileName(value.getTexture());
-			if(currentTexturePath != ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE){
-				setTexture(value, influencer, (Texture)editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE), currentTexturePath);
-			}
+	private enum SortWrapper{
+		Far( new BillboardDistanceParticleSorter(), "Far First"),
+		Near( new BillboardDistanceParticleSorter(ParticleSorter.DistanceParticleSorter.COMPARATOR_NEAR_DISTANCE), "Near First"),
+		Younger( new ParticleSorter<BillboardParticle>(ParticleSorter.COMPARATOR_YOUNGER), "Younger First"),
+		Older( new BillboardDistanceParticleSorter(), "Older First");
+		
+		public String desc;
+		public ParticleSorter sorter;
+		SortWrapper(ParticleSorter sorter, String desc){
+			this.sorter = sorter;
+			this.desc = desc;
 		}
 		
-
 		@Override
-		protected void onImageFileSelected (String absolutePath) {
-			ParticleController<BillboardParticle> emitter = editor.getEmitter();
-			RegionInfluencer influencer = emitter.findInfluencer(RegionInfluencer.class);
-			
-			final String currentTexturePath = editor.assetManager.getAssetFileName(value.getTexture());
-			if(currentTexturePath != absolutePath){
-				setTexture(value, influencer, editor.load(absolutePath, Texture.class, new TextureLoader(new AbsoluteFileHandleResolver()), null), currentTexturePath);
-			}
-		}
-		
-		protected void setTexture (BillboardBatch batch, RegionInfluencer influencer, Texture resource, String currentTexturePath) {
-			if(resource != null){
-				editor.setTexture(resource);
-				influencer.init();
-				editor.assetManager.setReferenceCount(currentTexturePath, editor.assetManager.getReferenceCount(currentTexturePath)-1);
-			}
+		public String toString () {
+			return desc;
 		}
 	}
 	
-	
-	JComboBox alignCombo;
+
+	JComboBox alignCombo,sortCombo;
 	JCheckBox useGPUBox;
 
 	public BillboardBatchPanel (ParticleEditor3D particleEditor3D, BillboardBatch renderer) {
 		super(particleEditor3D, "Billboard Batch", "Renderer used to draw billboards particles.");
 		initializeComponents(renderer);
 		setValue(renderer);
-		//set(renderer);
 	}
 
-	/*
-	public void set(BillboardRenderer renderer){
-		alignCombo.setSelectedItem(renderer.getAlignMode());
-		useGPUBox.setSelected(renderer.isUseGPU());
-		additiveBox.setSelected(renderer.isAdditive());
-	}
-	*/
-	
 	private void initializeComponents (BillboardBatch renderer) {
-		JPanel contentPanel = getContentPanel();
-		
 		//Align
 		alignCombo = new JComboBox();
 		alignCombo.setModel(new DefaultComboBoxModel(AlignModeWrapper.values()));
-		alignCombo.setSelectedItem(renderer.getAlignMode());
+		alignCombo.setSelectedItem(getAlignModeWrapper(renderer.getAlignMode()));
 		alignCombo.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent event) {
 				AlignModeWrapper align = (AlignModeWrapper)alignCombo.getSelectedItem();
-				ParticleController controller = editor.getEmitter();
 				editor.getBillboardBatch().setAlignMode(align.mode);
 			}
 		});
@@ -117,18 +89,51 @@ public class BillboardBatchPanel extends EditorPanel<BillboardBatch> {
 		useGPUBox.setSelected(renderer.isUseGPU());
 		useGPUBox.addChangeListener(new ChangeListener() {
 			public void stateChanged (ChangeEvent event) {
-				ParticleController controller = editor.getEmitter();
 				editor.getBillboardBatch().setUseGpu(useGPUBox.isSelected());
 			}
 		});
 		
-		int i =0;
-		OptionsPanel optionsPanel = new OptionsPanel();
-		optionsPanel.addOption(i++, 0, "Align", alignCombo);
-		optionsPanel.addOption(i++, 0, "Use GPU", useGPUBox);
+		//Sort
+		sortCombo = new JComboBox();
+		sortCombo.setModel(new DefaultComboBoxModel(SortWrapper.values()));
+		sortCombo.setSelectedItem(getSortWrapper(renderer.getSorter()));
+		sortCombo.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent event) {
+				SortWrapper sorterWrapper = (SortWrapper)sortCombo.getSelectedItem();
+				editor.getBillboardBatch().setSorter(sorterWrapper.sorter);
+			}
+		});
 		
-		i=0;
-		addContent(i++, 0, optionsPanel, false);
+		int i =0;
+		contentPanel.add(new JLabel("Align"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(alignCombo, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(new JLabel("Use GPU"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(useGPUBox, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(new JLabel("Sort"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(sortCombo, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+	}
+
+	private Object getSortWrapper (ParticleSorter<BillboardParticle> sorter) {
+		Class type = sorter.getClass();
+		for(SortWrapper wrapper : SortWrapper.values()){
+			if(wrapper.sorter.getClass().isAssignableFrom(type))
+				return wrapper;
+		}
+		return null;
+	}
+
+	private Object getAlignModeWrapper (AlignMode alignMode) {
+		for(AlignModeWrapper wrapper : AlignModeWrapper.values()){
+			if(wrapper.mode == alignMode)
+				return wrapper;
+		}
+		return null;
 	}
 
 }

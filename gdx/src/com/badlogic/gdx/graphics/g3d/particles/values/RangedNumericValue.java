@@ -1,6 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class RangedNumericValue extends ParticleValue {
 	private float lowMin, lowMax;
@@ -40,4 +42,19 @@ public class RangedNumericValue extends ParticleValue {
 		lowMax = value.lowMax;
 		lowMin = value.lowMin;
 	}
+	
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("lowMin", lowMin);
+		json.writeValue("lowMax", lowMax);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		lowMin = json.readValue("lowMin", float.class, jsonData);
+		lowMax = json.readValue("lowMax", float.class, jsonData);
+	}
+	
 }

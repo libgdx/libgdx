@@ -10,9 +10,11 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.tools.particleeditor3d.RegionPickerPanel.Listener;
+import com.badlogic.gdx.utils.Array;
 
 public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> implements Listener {
 	JDialog regionSelectDialog;
@@ -34,9 +36,8 @@ public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> imp
 		scrollPane.setViewportView(regionPickerPanel);
 		regionSelectDialog.setContentPane(scrollPane);
 		regionSelectDialog.setDefaultCloseOperation( JDialog.HIDE_ON_CLOSE);
-		
-		int i=0;
-		addContent(i++, 0, pickButton = new JButton("Pick Regions"), true, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL);
+
+		addContent(0, 0, pickButton = new JButton("Pick Regions"), false, GridBagConstraints.WEST, GridBagConstraints.NONE);
 
 		pickButton.addActionListener(new ActionListener() {
 			@Override
@@ -46,26 +47,28 @@ public class RegionInfluencerPanel extends InfluencerPanel<RegionInfluencer> imp
 					return;
 				}
 				
-				if(editor.isUsingAtlas){
-					regionPickerPanel.setAtlas(editor.getAtlas());
-					regionSelectDialog.pack();
-					regionSelectDialog.setVisible(true);
-				}
-				else {
+				TextureAtlas atlas = editor.getAtlas();
+				if(atlas != null)
+					regionPickerPanel.setAtlas(atlas);
+				else 
 					regionPickerPanel.setTexture(editor.getTexture());
-					regionSelectDialog.pack();
-					regionSelectDialog.setVisible(true);
-				}
+				
+				regionPickerPanel.revalidate();
+				regionPickerPanel.repaint();
+				regionSelectDialog.revalidate();
+				regionSelectDialog.repaint();
+				regionSelectDialog.pack();
+				regionSelectDialog.setVisible(true);
 			}
 		});
 	}
 
 	@Override
-	public void onRegionsSelected (ArrayList<TextureRegion> regions) {
+	public void onRegionsSelected (Array<TextureRegion> regions) {
 		regionSelectDialog.setVisible(false);
-		if(regions.size() == 0) return;
+		if(regions.size == 0) return;
 		value.clear();
-		value.add(regions.toArray(new TextureRegion[regions.size()]));
+		value.add((TextureRegion[])regions.toArray(TextureRegion.class));
 		editor.setTexture(regions.get(0).getTexture());
 		editor.getEmitter().init();
 		editor.effect.start();

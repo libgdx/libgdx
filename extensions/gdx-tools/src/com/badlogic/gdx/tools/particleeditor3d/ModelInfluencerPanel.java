@@ -28,13 +28,15 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
 import com.badlogic.gdx.tools.particleeditor3d.TemplatePickerPanel.Listener;
 import com.badlogic.gdx.utils.Array;
 
-public class ModelInfluencerPanel extends InfluencerPanel<ModelInfluencer> implements Listener<Model> {
+public class ModelInfluencerPanel extends InfluencerPanel<ModelInfluencer> implements Listener<Model>, 
+																	com.badlogic.gdx.tools.particleeditor3d.EventManager.Listener {
 
 	TemplatePickerPanel<Model> pickerPanel;
 	
 	public ModelInfluencerPanel (ParticleEditor3D editor, ModelInfluencer influencer, boolean single, String name, String desc) {
 		super(editor, influencer, name, desc, true, false);
 		pickerPanel.setMultipleSelectionAllowed(!single);
+		EventManager.get().attach(ParticleEditor3D.EVT_ASSET_RELOADED, this);
 	}
 	
 	@Override
@@ -56,6 +58,22 @@ public class ModelInfluencerPanel extends InfluencerPanel<ModelInfluencer> imple
 	public void onTemplateChecked (Model model, boolean isChecked) {
 		editor.getEmitter().init();
 		editor.effect.start();
+	}
+
+	@Override
+	public void handle (int aEventType, Object aEventData) {
+		if(aEventType == ParticleEditor3D.EVT_ASSET_RELOADED){
+			Object[] data = (Object[])aEventData;
+			if(data[0] instanceof Model){
+				if(value.models.removeValue((Model)data[0], true)){
+					value.models.add((Model)data[1]);
+					pickerPanel.reloadTemplates();
+					pickerPanel.setValue(value.models);
+					editor.getEmitter().init();
+					editor.effect.start();
+				}
+			}
+		}
 	}
 
 }

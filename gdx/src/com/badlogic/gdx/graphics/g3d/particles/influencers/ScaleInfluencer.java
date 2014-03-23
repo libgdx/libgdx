@@ -24,7 +24,6 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 				particle.scaleDiff = scaleValue.newHighValue() * controller.scale.y;
 				if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
 				particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(0);
-				
 			}
 		}
 

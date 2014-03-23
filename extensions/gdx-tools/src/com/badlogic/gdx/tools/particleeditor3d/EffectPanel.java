@@ -188,7 +188,7 @@ class EffectPanel extends JPanel {
 		rotationVelocityValue.strengthValue.setRelative(true);
 		velocityInfluencer.velocities.add(rotationVelocityValue);
 		
-		return new ModelInstanceParticleController("Untitled", emitter, editor.getModelInstanceParticleBatch(), 
+		return new ModelInstanceParticleController("Default ModelInstance", emitter, editor.getModelInstanceParticleBatch(), 
 			new ModelInfluencer.ModelInstanceRandomInfluencer((Model) editor.assetManager.get(ParticleEditor3D.DEFAULT_MODEL_PARTICLE) ),
 			spawnSource,
 			scaleInfluencer,
@@ -242,7 +242,7 @@ class EffectPanel extends JPanel {
 		velocityValue.setActive(true);
 		velocityInfluencer.velocities.add(velocityValue);
 
-		return new BillboardParticleController("Untitled", emitter, editor.getBillboardBatch(), 
+		return new BillboardParticleController("Default Billboard", emitter, editor.getBillboardBatch(), 
 			new RegionInfluencer.BillboardSingleRegionInfluencer((Texture) editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE) ),
 			//new BillboardRegionInfluencer.Animated(new TextureRegion((Texture)editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE))),
 			spawnSource,
@@ -307,7 +307,7 @@ class EffectPanel extends JPanel {
 		velocityInfluencer.velocities.add(rotationVelocityValue);
 		*/
 		
-		return new PointSpriteParticleController("Untitled", emitter, editor.getPointSpriteBatch(),
+		return new PointSpriteParticleController("Default PointSprite", emitter, editor.getPointSpriteBatch(),
 			new RegionInfluencer.PointSpriteAnimatedRegionInfluencer((Texture) editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE) ),
 			spawnSource,
 			scaleInfluencer,
@@ -362,7 +362,7 @@ class EffectPanel extends JPanel {
 		velocityInfluencer.velocities.add(rotationVelocityValue);
 		*/
 		
-		return new ParticleControllerParticleController("Untitled", emitter,
+		return new ParticleControllerParticleController("Default ParticleController", emitter,
 			new ParticleControllerInfluencer.ParticleControllerSingleInfluencer(
 					editor.assetManager.get(ParticleEditor3D.DEFAULT_PFX, ParticleEffect.class).getControllers().get(0)),
 			spawnSource,
@@ -396,35 +396,32 @@ class EffectPanel extends JPanel {
 
 	void emitterChecked (int index, boolean checked) {
 		editor.setEnabled(editor.effect.getControllers().get(index), checked);
-		//Gdx.app.log("INFERNO", "Emitter checked");
 		editor.effect.start();
 	}
 	
 	void openEffect () {
 		File file = editor.showFileLoadDialog();
 		if(file != null){
-			try {
-				editor.effect = editor.load(file.getAbsolutePath(), ParticleEffect.class, null, null);
-				editor.effect = editor.effect.copy();
-				editor.effect.setBatch(editor.getPointSpriteBatch(), PointSpriteParticleController.class);
-				editor.effect.setBatch(editor.getBillboardBatch(), BillboardParticleController.class);
-				editor.effect.setBatch(editor.getModelInstanceParticleBatch(), ModelInstanceParticleController.class);
-				
-				editor.effect.init();
+			if(editor.openEffect(file, true) != null){
 				emitterTableModel.getDataVector().removeAllElements();
 				for (ParticleController emitter : editor.effect.getControllers()) {
 					emitterTableModel.addRow(new Object[] {emitter.name, true});
 				}
-				editor.particleData.clear();
 				editIndex = 0;
-				
 				emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
-				editor.reloadRows();
-			} catch (Exception ex) {
-				System.out.println("Error loading effect: " + file.getAbsolutePath());
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(editor, "Error opening effect.");
-				return;
+			}
+		}
+	}
+	
+	protected void importEffect () {
+		File file = editor.showFileLoadDialog();
+		if(file != null){
+			ParticleEffect effect;
+			if( (effect = editor.openEffect(file, false)) != null){
+				for(ParticleController controller : effect.getControllers())
+					addEmitter(controller, false);
+				editIndex = 0;
+				emitterTable.getSelectionModel().setSelectionInterval(editIndex, editIndex);
 			}
 		}
 	}
@@ -435,20 +432,7 @@ class EffectPanel extends JPanel {
 			int index = 0;
 			for (ParticleController emitter : editor.effect.getControllers())
 				emitter.name = ((String)emitterTableModel.getValueAt(index++, 0));
-			Writer fileWriter = null;
-			try {
-				fileWriter = new FileWriter(file);
-				Json json = new Json();
-				editor.effect.saveAsset(editor.assetManager);
-				json.toJson(editor.effect, fileWriter);
-				//System.out.println(json.prettyPrint(editor.effect));
-			} catch (Exception ex) {
-				System.out.println("Error saving effect: " + file.getAbsolutePath());
-				ex.printStackTrace();
-				JOptionPane.showMessageDialog(editor, "Error saving effect.");
-			} finally {
-				StreamUtils.closeQuietly(fileWriter);
-			}
+			editor.saveEffect(file);
 		}
 	}
 
@@ -463,6 +447,16 @@ class EffectPanel extends JPanel {
 
 		//Reload data check
 		emitterTable.getSelectionModel().setSelectionInterval(newIndex, newIndex);
+	}
+	
+
+	protected void cloneEmitter () {
+		int row = emitterTable.getSelectedRow();
+		if (row == -1) return;
+		ParticleController controller = editor.effect.getControllers().get(row).copy();
+		controller.init();
+		controller.name +=" Clone";
+		addEmitter(controller, true);
 	}
 
 	void move (int direction) {
@@ -512,6 +506,16 @@ class EffectPanel extends JPanel {
 				});
 			}
 			{
+				JButton cloneButton = new JButton("Clone");
+				sideButtons.add(cloneButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				cloneButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						cloneEmitter();
+					}
+				});
+			}
+			{
 				sideButtons.add(new JSeparator(JSeparator.HORIZONTAL), new GridBagConstraints(0, -1, 1, 1, 0, 0,
 					GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
 			}
@@ -536,22 +540,12 @@ class EffectPanel extends JPanel {
 				});
 			}
 			{
-				JButton upButton = new JButton("Up");
-				sideButtons.add(upButton, new GridBagConstraints(0, -1, 1, 1, 0, 1, GridBagConstraints.SOUTH,
+				JButton importButton = new JButton("Import");
+				sideButtons.add(importButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
 					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
-				upButton.addActionListener(new ActionListener() {
+				importButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
-						move(-1);
-					}
-				});
-			}
-			{
-				JButton downButton = new JButton("Down");
-				sideButtons.add(downButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
-					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-				downButton.addActionListener(new ActionListener() {
-					public void actionPerformed (ActionEvent event) {
-						move(1);
+						importEffect();
 					}
 				});
 			}
@@ -586,4 +580,5 @@ class EffectPanel extends JPanel {
 			}
 		}
 	}
+
 }

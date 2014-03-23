@@ -1,21 +1,56 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
+import com.badlogic.gdx.assets.AssetDescriptor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.particles.Triangle;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
+import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public final class MeshSpawnShapeValue extends SpawnShapeValue {
+public abstract class MeshSpawnShapeValue extends SpawnShapeValue {
+	protected static class Triangle{
+		float x1, y1, z1,
+				x2, y2, z2,
+				x3, y3, z3;
+		public Triangle(	float x1, float y1, float z1, 
+								float x2, float y2, float z2, 
+								float x3, float y3, float z3){
+			this.x1 = x1; this.y1 = y1; this.z1 = z1;
+			this.x2 = x2; this.y2 = y2; this.z2 = z2;
+			this.x3 = x3; this.y3 = y3; this.z3 = z3;
+		}
+		
+		public static Vector3 pick(float x1, float y1, float z1, 
+			float x2, float y2, float z2, 
+			float x3, float y3, float z3, Vector3 vector){
+			float a = MathUtils.random(), b = MathUtils.random();
+			return vector.set( 	x1 + a*(x2 - x1) + b*(x3 - x1),
+										y1 + a*(y2 - y1) + b*(y3 - y1),
+										z1 + a*(z2 - z1) + b*(z3 - z1));
+		}
+		
+		public Vector3 pick(Vector3 vector){
+			float a = MathUtils.random(), b = MathUtils.random();
+			return vector.set( 	x1 + a*(x2 - x1) + b*(x3 - x1),
+										y1 + a*(y2 - y1) + b*(y3 - y1),
+										z1 + a*(z2 - z1) + b*(z3 - z1));
+		}
+	}
+	
 	protected Mesh mesh;
-	private float[] vertices;
-	private short[] indices;
-	private int positionOffset, vertexSize, vertexCount, triangleCount;
+	/** the model this mesh belongs to.
+	 * It can be null, but this means the mesh 
+	 * will not be able to be serialized correctly.*/
+	protected Model model;
 	
 	public MeshSpawnShapeValue (MeshSpawnShapeValue value) {
 		super(value);
-		load(value);
 	}
 
 	public MeshSpawnShapeValue () {}
@@ -24,57 +59,37 @@ public final class MeshSpawnShapeValue extends SpawnShapeValue {
 	public void load (ParticleValue value) {
 		super.load(value);
 		MeshSpawnShapeValue spawnShapeValue = (MeshSpawnShapeValue) value;
-		setMesh(spawnShapeValue.mesh);
+		setMesh(spawnShapeValue.mesh, spawnShapeValue.model);
 	}
 	
-	
-	public void setMesh(Mesh mesh){
+	public void setMesh(Mesh mesh, Model model){
 		if(mesh.getVertexAttribute(Usage.Position) == null) 
 			throw new GdxRuntimeException("Mesh vertices must have Usage.Position");
+		this.model =  model;
 		this.mesh = mesh;
-		vertexSize = mesh.getVertexSize()/4;
-		positionOffset = mesh.getVertexAttribute(Usage.Position).offset/4;
-		int indicesCount = mesh.getNumIndices();
-		if(indicesCount >0){
-			indices = new short[indicesCount];
-			mesh.getIndices(indices);
-			triangleCount = indices.length/3;
-		}
-		else indices = null;
-		vertexCount = mesh.getNumVertices();
-		vertices = new float[ vertexCount* vertexSize];
-		mesh.getVertices(vertices);
 	}
 	
-	@Override
-	public void spawnAux (Vector3 vector, float percent) {
-		if(indices == null){
-			//Triangles 
-			int triangleIndex = MathUtils.random(vertexCount -3)*vertexSize;
-			int 	p1Offset = triangleIndex+positionOffset, 
-					p2Offset = p1Offset + vertexSize, 
-					p3Offset = p2Offset + vertexSize;
-			float x1 = vertices[p1Offset], y1 = vertices[p1Offset+1], z1 = vertices[p1Offset+2],
-					x2 = vertices[p2Offset], y2 = vertices[p2Offset+1], z2 = vertices[p2Offset+2],
-					x3 = vertices[p3Offset], y3 = vertices[p3Offset+1], z3 = vertices[p3Offset+2];
-			Triangle.pick(x1, y1, z1, x2, y2, z2, x3, y3, z3, vector);
-		}
-		else {
-			//Indices
-			int triangleIndex = MathUtils.random(triangleCount-1)*3;
-			int p1Offset = indices[triangleIndex]*vertexSize + positionOffset,
-				 p2Offset = indices[triangleIndex+1]*vertexSize + positionOffset,
-				 p3Offset = indices[triangleIndex+2]*vertexSize + positionOffset;
-			float x1 = vertices[p1Offset], y1 = vertices[p1Offset+1], z1 = vertices[p1Offset+2],
-				x2 = vertices[p2Offset], y2 = vertices[p2Offset+1], z2 = vertices[p2Offset+2],
-				x3 = vertices[p3Offset], y3 = vertices[p3Offset+1], z3 = vertices[p3Offset+2];
-			Triangle.pick(x1, y1, z1, x2, y2, z2, x3, y3, z3, vector);
-		}
+	public void setMesh(Mesh mesh){
+		this.setMesh(mesh, null);
 	}
 
 	@Override
-	public SpawnShapeValue copy () {
-		return new MeshSpawnShapeValue(this);
+	public void save (AssetManager manager, ResourceData data) {
+		if(model != null){
+			SaveData saveData = data.createSaveData();
+			saveData.saveAsset(manager.getAssetFileName(model), Model.class);
+			saveData.save("index", model.meshes.indexOf(mesh, true));
+		}
+	}
+	
+	@Override
+	public void load (AssetManager manager, ResourceData data) {
+		SaveData saveData = data.getSaveData();
+		AssetDescriptor descriptor = saveData.loadAsset();
+		if(descriptor!=null){
+			Model model = manager.get(descriptor);
+			setMesh(model.meshes.get((Integer)saveData.load("index")), model);
+		}
 	}
 
 }

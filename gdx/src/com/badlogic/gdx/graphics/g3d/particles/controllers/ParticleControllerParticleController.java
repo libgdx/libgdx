@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -11,9 +13,7 @@ public class ParticleControllerParticleController extends ParticleController<Par
 	protected static final Vector3 TMP_V1 = new Vector3(), TMP_V2 = new Vector3();
 	protected static final Matrix4 TMP_M4 = new Matrix4();
 	
-	public ParticleControllerParticleController(){
-		super();
-	}
+	public ParticleControllerParticleController(){}
 	
 	public ParticleControllerParticleController (String name, Emitter<ParticleControllerParticle> emitter, 
 																				 Influencer<ParticleControllerParticle>... influencers) {
@@ -34,13 +34,13 @@ public class ParticleControllerParticleController extends ParticleController<Par
 			particle.reset();
 		}
 	}
-	
+
 	@Override
 	public void update (float dt) {
 		super.update(dt);
 		for(int i=0; i< emitter.activeCount; ++i){
 			ParticleControllerParticle particle = particles[i];
-			particle.controller.setTransform( 	TMP_M4.set(	TMP_V1.set(particle.x, particle.y, particle.z), 
+			particle.controller.setTransform( TMP_M4.set( particle.controller.transform.getTranslation(TMP_V1), 
 				particle.rotation, 
 				TMP_V2.set(particle.scale, particle.scale, particle.scale)) );
 			particles[i].controller.update(deltaTime);
@@ -72,5 +72,10 @@ public class ParticleControllerParticleController extends ParticleController<Par
 			ParticleControllerParticle particle = particles[i];
 			boundingBox.ext(particle.controller.getBoundingBox());
 		}
+	}
+	
+	@Override
+	public boolean isCompatible (IParticleBatch batch) {
+		return false;
 	}
 }

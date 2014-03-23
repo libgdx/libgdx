@@ -1,6 +1,5 @@
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
@@ -9,7 +8,6 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValue;
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -36,6 +34,7 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 				
 				if(Particle.ROTATION_ACCUMULATOR != 0){
+					Particle.ROTATION_ACCUMULATOR*= controller.deltaTime;
 					float cosBeta = MathUtils.cosDeg(Particle.ROTATION_ACCUMULATOR),
 							sinBeta = MathUtils.sinDeg(Particle.ROTATION_ACCUMULATOR);
 					
@@ -48,9 +47,9 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 					Particle.ROTATION_ACCUMULATOR = 0;
 				}
 				
-				particle.x += particle.velocity.x; 
-				particle.y += particle.velocity.y; 
-				particle.z += particle.velocity.z;
+				particle.x += particle.velocity.x* controller.deltaTime; 
+				particle.y += particle.velocity.y* controller.deltaTime; 
+				particle.z += particle.velocity.z* controller.deltaTime;
 			}
 		}
 
@@ -81,13 +80,16 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 				
 				if(!Particle.ROTATION_3D_ACCUMULATOR.isIdentity()){
+					float angle = Particle.ROTATION_3D_ACCUMULATOR.getAngle()*controller.deltaTime;
+					Particle.ROTATION_3D_ACCUMULATOR.getAxisAngle(TMP_V1);
+					Particle.ROTATION_3D_ACCUMULATOR.setFromAxis(TMP_V1, angle);
 					particle.rotation.mulLeft(Particle.ROTATION_3D_ACCUMULATOR);
 					Particle.ROTATION_3D_ACCUMULATOR.idt();
 				}
 				
-				val[Matrix4.M03] += particle.velocity.x;
-				val[Matrix4.M13] += particle.velocity.y;
-				val[Matrix4.M23] += particle.velocity.z;
+				val[Matrix4.M03] += particle.velocity.x*controller.deltaTime;
+				val[Matrix4.M13] += particle.velocity.y*controller.deltaTime;
+				val[Matrix4.M23] += particle.velocity.z*controller.deltaTime;
 			}
 		}
 		
@@ -116,13 +118,14 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 
 				if(!Particle.ROTATION_3D_ACCUMULATOR.isIdentity()){
+					float angle = Particle.ROTATION_3D_ACCUMULATOR.getAngle()*controller.deltaTime;
+					Particle.ROTATION_3D_ACCUMULATOR.getAxisAngle(TMP_V1);
+					Particle.ROTATION_3D_ACCUMULATOR.setFromAxis(TMP_V1, angle);
 					particle.rotation.mulLeft(Particle.ROTATION_3D_ACCUMULATOR);
 					Particle.ROTATION_3D_ACCUMULATOR.idt();
 				}
 
-				particle.x += particle.velocity.x;
-				particle.y += particle.velocity.y;
-				particle.z += particle.velocity.z;
+				particle.controller.velocity.set(particle.velocity);
 			}
 		}
 
@@ -150,6 +153,7 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
 				
 				if(Particle.ROTATION_ACCUMULATOR != 0){
+					Particle.ROTATION_ACCUMULATOR*=controller.deltaTime;
 					float cosBeta = MathUtils.cosDeg(Particle.ROTATION_ACCUMULATOR),
 							sinBeta = MathUtils.sinDeg(Particle.ROTATION_ACCUMULATOR);
 					
@@ -162,9 +166,9 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 					Particle.ROTATION_ACCUMULATOR = 0;
 				}
 				
-				particle.x += particle.velocity.x; 
-				particle.y += particle.velocity.y; 
-				particle.z += particle.velocity.z;
+				particle.x += particle.velocity.x*controller.deltaTime; 
+				particle.y += particle.velocity.y*controller.deltaTime; 
+				particle.z += particle.velocity.z*controller.deltaTime;
 			}
 		}
 
@@ -193,7 +197,7 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 	}
 	
 	public VelocityInfluencer (VelocityInfluencer<T> billboardVelocityInfluencer) {
-		this(billboardVelocityInfluencer.velocities.toArray());
+		this((VelocityValue[])billboardVelocityInfluencer.velocities.toArray(VelocityValue.class));
 	}
 	
 	@Override
@@ -226,12 +230,11 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 	
 	@Override
 	public void write (Json json) {
-		json.writeValue("velocities", velocities.toArray(), VelocityValue[].class);
+		json.writeValue("velocities", velocities, Array.class, VelocityValue.class);
 	}
 	
 	@Override
 	public void read (Json json, JsonValue jsonData) {
-		VelocityValue[] vels = json.readValue("velocities", VelocityValue[].class, jsonData);
-		velocities.addAll(vels);
+		velocities = json.readValue("velocities", Array.class, VelocityValue.class, jsonData);
 	}
 }

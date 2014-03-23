@@ -1,8 +1,10 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.CommonVelocityData;
+import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.AngularVelocityData;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class AngularVelocityValue<P> extends StrengthVelocityValue<P, CommonVelocityData>{
+public abstract class AngularVelocityValue<P> extends StrengthVelocityValue<P, AngularVelocityData>{
 	/** Polar angle, XZ plane */
 	public ScaledNumericValue thetaValue;
 	/** Azimuth, Z */
@@ -37,12 +39,12 @@ public abstract class AngularVelocityValue<P> extends StrengthVelocityValue<P, C
 
 
 	@Override
-	public CommonVelocityData allocData () {
-		return new CommonVelocityData();
+	public AngularVelocityData allocData () {
+		return new AngularVelocityData();
 	}
 
 	@Override
-	public void initData (CommonVelocityData data) {
+	public void initData (AngularVelocityData data) {
 		super.initData(data);
 		data.strengthStart = strengthValue.newLowValue();
 		data.strengthDiff = strengthValue.newHighValue();
@@ -62,5 +64,20 @@ public abstract class AngularVelocityValue<P> extends StrengthVelocityValue<P, C
 			data.phiDiff -= data.phistart;
 	}
 
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("thetaValue", thetaValue);
+		json.writeValue("phiValue", phiValue);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		thetaValue = json.readValue("thetaValue", ScaledNumericValue.class, jsonData);
+		phiValue = json.readValue("phiValue", ScaledNumericValue.class, jsonData);
+	}
+	
+	
 }
 

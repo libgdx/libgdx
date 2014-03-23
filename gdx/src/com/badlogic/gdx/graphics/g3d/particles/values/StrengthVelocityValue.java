@@ -1,6 +1,8 @@
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.StrengthVelocityData;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 
 public abstract class StrengthVelocityValue<T, D extends StrengthVelocityData> extends VelocityValue<T, D>{
 	public ScaledNumericValue strengthValue;
@@ -36,4 +38,17 @@ public abstract class StrengthVelocityValue<T, D extends StrengthVelocityData> e
 	public D allocData () {
 		return (D) new StrengthVelocityData();
 	}
+	
+	@Override
+	public void write (Json json) {
+		super.write(json);
+		json.writeValue("strengthValue", strengthValue);
+	}
+
+	@Override
+	public void read (Json json, JsonValue jsonData) {
+		super.read(json, jsonData);
+		strengthValue = json.readValue("strengthValue", ScaledNumericValue.class, jsonData);
+	}
+	
 }

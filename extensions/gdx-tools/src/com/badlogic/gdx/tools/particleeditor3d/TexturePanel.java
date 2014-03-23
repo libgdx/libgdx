@@ -2,41 +2,44 @@ package com.badlogic.gdx.tools.particleeditor3d;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
+import com.badlogic.gdx.utils.Array;
 
 public class TexturePanel extends ImagePanel {
-	private Color selectedColor = Color.GREEN, unselectedColor = Color.BLUE;
-	ArrayList<TextureRegion> selectedRegions;
-	ArrayList<TextureRegion> unselectedRegions;
+	private Color 	selectedColor = Color.GREEN, 
+						unselectedColor = Color.BLUE,
+						indexBackgroundColor = Color.BLACK,
+						indexColor = Color.WHITE;
+	Array<TextureRegion> selectedRegions;
+	Array<TextureRegion> unselectedRegions;
 	Texture texture;
 	
 	public TexturePanel(){
-		selectedRegions = new ArrayList<TextureRegion>();
-		unselectedRegions = new ArrayList<TextureRegion>();
+		selectedRegions = new Array<TextureRegion>();
+		unselectedRegions = new Array<TextureRegion>();
 		
 		addMouseListener(new MouseAdapter() {
 			public void mouseClicked (MouseEvent event) {
 				float x = event.getX(), y = event.getY();
 				for(TextureRegion region : unselectedRegions){
 					if(isInsideRegion(region, x, y)){
-						unselectedRegions.remove(region);
-						selectedRegions.add(region);
-						repaint();
+						select(region);
 						return;
 					}
 				}
 				
 				for(TextureRegion region : selectedRegions){
 					if(isInsideRegion(region, x, y)){
-						selectedRegions.remove(region);
-						unselectedRegions.add(region);
-						repaint();
+						unselect(region);
 						return;
 					}
 				}
@@ -50,7 +53,7 @@ public class TexturePanel extends ImagePanel {
 					ry <= y && y <= ry +region.getRegionHeight();
 	}
 
-	public TexturePanel(Texture texture, ArrayList<TextureRegion> regions){
+	public TexturePanel(Texture texture, Array<TextureRegion> regions){
 		this();
 		setTexture(texture);
 		setRegions(regions);
@@ -78,38 +81,61 @@ public class TexturePanel extends ImagePanel {
 		repaint();
 	}
 	
-	public void setRegions(ArrayList<TextureRegion> regions){
+	public void setRegions(Array<TextureRegion> regions){
 		unselectedRegions.clear();
 		selectedRegions.clear();
 		unselectedRegions.addAll(regions);
 	}
 	
-	public void select(TextureRegion region){
-		if(unselectedRegions.contains(region)){
-			unselectedRegions.remove(region);
-			selectedRegions.add(region);
+	private void swap(TextureRegion region, Array<TextureRegion> src, Array<TextureRegion> dst)
+	{
+		int index = src.indexOf(region, true);
+		if(index > -1){
+			src.removeIndex(index);
+			dst.add(region);
+			//Gdx.app.log("Log", "Region at "+region.getRegionX()+", "+region.getRegionY());
+			repaint();
 		}
 	}
 	
-	public void unselect(TextureRegion region){
-		if(selectedRegions.contains(region)){
-			selectedRegions.remove(region);
-			unselectedRegions.add(region);
-		}
+	public void select(TextureRegion region){
+		swap(region, unselectedRegions, selectedRegions);
 	}
+	
+	public void unselect(TextureRegion region){
+		swap(region, selectedRegions, unselectedRegions);
+	}
+	
+	public void selectAll () {
+		selectedRegions.addAll(unselectedRegions);
+		unselectedRegions.clear();
+		repaint();
+	}
+
 	
 	@Override
 	protected void paintComponent (Graphics g) {
 		super.paintComponent(g);
-		draw(g, selectedRegions, selectedColor);
-		draw(g, unselectedRegions, unselectedColor);
+		draw(g, unselectedRegions, unselectedColor, false);
+		draw(g, selectedRegions, selectedColor, true);
 	}
 
-	private void draw (Graphics g, ArrayList<TextureRegion> regions, Color color) {
+	private void draw (Graphics g, Array<TextureRegion> regions, Color color, boolean drawIndex) {
+		int i=0;
 		for(TextureRegion region : regions){
+			int x = region.getRegionX(), y = region.getRegionY(),
+				h = region.getRegionHeight();
+			if(drawIndex){
+				String indexString = ""+i;
+				Rectangle bounds = g.getFontMetrics().getStringBounds(indexString, g).getBounds();
+				g.setColor(indexBackgroundColor);
+				g.fillRect(x, y+h-bounds.height, bounds.width, bounds.height);
+				g.setColor(indexColor);
+				g.drawString(indexString, x, y+h);
+				++i;
+			}
 			g.setColor(color);
-			g.drawRect(region.getRegionX(), region.getRegionY(), region.getRegionWidth(), region.getRegionHeight());
+			g.drawRect(x, y, region.getRegionWidth(), h);
 		}
 	}
-
 }

@@ -4,12 +4,16 @@ import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceParticleBatch;
 import com.badlogic.gdx.math.Vector3;
 
 public class ModelInstanceParticleController extends ParticleController<ModelInstanceParticle> {
 	private static final Vector3 	TMP_V1 = new Vector3(), 
 											TMP_V2 = new Vector3();
+	
+	public ModelInstanceParticleController (){}
 	
 	public ModelInstanceParticleController (String name, Emitter<ModelInstanceParticle> emitter, IParticleBatch<ModelInstanceParticle> batch,
 																											Influencer<ModelInstanceParticle>... influencers) {
@@ -60,5 +64,10 @@ public class ModelInstanceParticleController extends ParticleController<ModelIns
 			ModelInstanceParticle particle = particles[i];
 			particle.instance.extendBoundingBox(boundingBox);
 		}
+	}
+	
+	@Override
+	public boolean isCompatible (IParticleBatch batch) {
+		return batch.getClass().isAssignableFrom(ModelInstanceParticleBatch.class);
 	}
 }

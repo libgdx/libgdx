@@ -12,5 +12,4 @@ public class Particle {
 	public float cameraDistance;
 	public VelocityData[] velocityData;
 	public Vector3 velocity;
-	
 }

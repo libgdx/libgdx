@@ -16,7 +16,9 @@
 
 package com.badlogic.gdx.tools.particleeditor3d;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
 
+import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -65,11 +67,14 @@ class CountPanel extends EditorPanel {
 			}
 		});
 		
-		int i=0;
-		OptionsPanel optionsPanel = new OptionsPanel();
-		optionsPanel.addOption(i++, 0, "Min", minSlider);
-		optionsPanel.addOption(i++, 0, "Max", maxSlider);
-		addContent(0, 0, optionsPanel, false, GridBagConstraints.WEST, GridBagConstraints.NONE);
-		
+		int i =0;
+		contentPanel.add(new JLabel("Min"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(minSlider, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(new JLabel("Max"), new GridBagConstraints(0, i, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
+		contentPanel.add(maxSlider, new GridBagConstraints(1, i++, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+			new Insets(6, 0, 0, 0), 0, 0));
 	}
 }

@@ -37,7 +37,7 @@ public abstract class LoaderButton<T> extends JButton{
 			if(file != null){
 				try{
 					String resource = file.getAbsolutePath();
-					listener.onResourceLoaded(editor.load(resource, ParticleEffect.class, new ParticleEffectLoader(new AbsoluteFileHandleResolver()), null));
+					listener.onResourceLoaded(editor.openEffect(file, false));
 				} catch (Exception ex) {
 					System.out.println("Error loading effect: " + file.getAbsolutePath());
 					ex.printStackTrace();

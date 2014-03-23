@@ -70,16 +70,4 @@ public abstract class RandomColorInfluencer<T> extends Influencer<T>{
 			return new PointSpriteRandomColorInfluencer();
 		}
 	}
-	
-	@Override
-	public void write (Json json) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void read (Json json, JsonValue jsonData) {
-		// TODO Auto-generated method stub
-		
-	}
 }

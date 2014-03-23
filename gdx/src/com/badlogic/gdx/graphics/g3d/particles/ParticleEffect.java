@@ -15,14 +15,7 @@
  ******************************************************************************/
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-
-import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -30,95 +23,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.StreamUtils;
 
 /** It's a composition of particles emitters.
  * It can be updated, rendered, transformed which means the changes will be applied
  * on all the particles emitters.*/
-public class ParticleEffect implements Disposable{
-	public static class ParticleEffectData  implements Json.Serializable{
-		//Stores the assets used by each controller
-		private Array<AssetDescriptor> assets;
-		private Array<Array<Integer>>  assetsIndices;
-		private Array<Integer> currentIndices;
-		private int sharedLoadIndex, currentLoadIndex;
-		
-		public ParticleEffectData () {
-			assets = new Array<AssetDescriptor>();
-			assetsIndices = new Array<Array<Integer>>();
-		}
-		
-		void beginSave(){
-			currentIndices = new Array<Integer>();
-		}
-		
-		private int getAssetDescriptor(String filename, Class type){
-			int i=0;
-			for(AssetDescriptor descriptor : assets){
-				if(descriptor.fileName.equals(filename) && 
-					descriptor.type == type){
-					return i;
-				}
-				++i;
-			}
-			return -1;
-		}
-		
-		public void save(AssetDescriptor descriptor){
-			int i = getAssetDescriptor(descriptor.fileName, descriptor.type);
-			if(i == -1){
-				assets.add(descriptor);
-				i = assets.size -1;
-			}
-			currentIndices.add(i);
-		}
-		
-		void beginLoad(){
-			currentIndices = assetsIndices.get(sharedLoadIndex);
-			currentLoadIndex = 0;
-		}
-		
-		public AssetDescriptor load(){
-			return assets.get(currentIndices.get(currentLoadIndex++));
-		}
-		
-		void endLoad(){
-			++sharedLoadIndex;
-		}
-
-		void endSave(){
-			assetsIndices.add(currentIndices);
-			currentIndices = null;
-		}
-
-		void clear () {
-			assets.clear();
-			assetsIndices.clear();
-			sharedLoadIndex = 0;
-			currentLoadIndex = 0;
-		}
-
-		@Override
-		public void write (Json json) {
-			json.writeValue("assets", assets, Array.class, AssetDescriptor.class);
-			json.writeValue("assetsIndices", assetsIndices, Array.class, Array.class);
-		}
-
-		@Override
-		public void read (Json json, JsonValue jsonData) {
-			assets = json.readValue("assets", Array.class, AssetDescriptor.class, jsonData);
-			assetsIndices = json.readValue("assetsIndices", Array.class, Array.class, jsonData);
-		}
-
-		public Array<? extends AssetDescriptor> getAssets () {
-			return assets;
-		}
-	}
-	
-	private ParticleEffectData data;
+public class ParticleEffect implements Disposable, ResourceData.Configurable{
 	private Array<ParticleController> emitters;
 	private BoundingBox bounds;
 
@@ -144,6 +53,14 @@ public class ParticleEffect implements Disposable{
 	public void start () {
 		for (int i = 0, n = emitters.size; i < n; i++)
 			emitters.get(i).start();
+	}
+	public void end () {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).end();
+	}
+	public void reset() {
+		for (int i = 0, n = emitters.size; i < n; i++)
+			emitters.get(i).reset();
 	}
 
 	public void update (float delta) {
@@ -223,38 +140,31 @@ public class ParticleEffect implements Disposable{
 		return bounds;
 	}
 
-	public void saveAsset(AssetManager assetManager){
-		if(data == null)
-			data = new ParticleEffectData();
-		data.clear();
+	public void save (AssetManager assetManager, ResourceData data){
 		for(ParticleController controller : emitters){
-			data.beginSave();
-			controller.saveAssets(assetManager, data);
-			data.endSave();
+			controller.save(assetManager, data);
 		}
 	}
 	
-	public void loadAssets(AssetManager assetManager){
+	public void load (AssetManager assetManager, ResourceData data){
 		int i=0;
 		for(ParticleController controller : emitters){
-			data.beginLoad();
-			controller.loadAssets(assetManager, data);
-			data.endLoad();
+			controller.load(assetManager, data);
 		}
 	}
-	
-	public ParticleEffectData getData(){
-		return data;
-	}
-	
-	public void setData(ParticleEffectData data){
-		this.data = data;
-	}
-	
+
 	public <T, K extends ParticleController<T>> void setBatch(IParticleBatch<T> batch, Class<K> type){
 		for(ParticleController controller : emitters){
 			if(type.isAssignableFrom(controller.getClass()))
 				controller.batch = batch;
+		}
+	}
+	
+	public void setBatch(IParticleBatch... batches){
+		for(ParticleController controller : emitters){
+			for(IParticleBatch batch : batches)
+				if(controller.setBatch(batch))
+					break;
 		}
 	}
 

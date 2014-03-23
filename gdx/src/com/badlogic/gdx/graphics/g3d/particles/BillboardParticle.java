@@ -1,7 +1,7 @@
 package com.badlogic.gdx.graphics.g3d.particles;
 
-import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
 import com.badlogic.gdx.math.Vector3;
+
 
 public class BillboardParticle extends Particle{
 	public float 	x,y,z,
