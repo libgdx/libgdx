@@ -30,11 +30,15 @@ import com.badlogic.gdx.utils.TimeUtils;
  * touch downs are ignored.
  * @author Nathan Sweet */
 public class ClickListener extends InputListener {
+	/** Time in seconds {@link #isVisualPressed()} reports true after a press resulting in a click is released. */
+	static public float visualPressedDuration = 0.1f;
+
 	private float tapSquareSize = 14, touchDownX = -1, touchDownY = -1;
 	private int pressedPointer = -1;
 	private int pressedButton = -1;
 	private int button;
 	private boolean pressed, over, cancelled;
+	private float visualPressedTime;
 	private long tapCountInterval = (long)(0.4f * 1000000000l);
 	private int tapCount;
 	private long lastTapTime;
@@ -57,7 +61,7 @@ public class ClickListener extends InputListener {
 		pressedButton = button;
 		touchDownX = x;
 		touchDownY = y;
-		over = false;
+		visualPressedTime = 0;
 		return true;
 	}
 
@@ -86,6 +90,7 @@ public class ClickListener extends InputListener {
 				}
 			}
 			pressed = false;
+			visualPressedTime = System.nanoTime() + visualPressedDuration * 1000000000;
 			pressedPointer = -1;
 			pressedButton = -1;
 			cancelled = false;
@@ -104,7 +109,6 @@ public class ClickListener extends InputListener {
 	public void cancel () {
 		if (pressedPointer == -1) return;
 		cancelled = true;
-		over = false;
 		pressed = false;
 	}
 
@@ -137,6 +141,16 @@ public class ClickListener extends InputListener {
 	/** Returns true if a touch is over the actor or within the tap square. */
 	public boolean isPressed () {
 		return pressed;
+	}
+
+	/** Returns true if a touch is over the actor or within the tap square or has been very recently. This allows the UI to show a
+	 * press and release that was so fast it occurred within a single frame. */
+	public boolean isVisualPressed () {
+		if (pressed) return true;
+		if (visualPressedTime <= 0) return false;
+		if (visualPressedTime > System.nanoTime()) return true;
+		visualPressedTime = 0;
+		return false;
 	}
 
 	/** Returns true if the mouse or touch is over the actor or pressed and within the tap square. */

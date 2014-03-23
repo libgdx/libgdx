@@ -124,7 +124,7 @@ public class Button extends Table implements Disableable {
 	}
 
 	public boolean isPressed () {
-		return clickListener.isPressed();
+		return clickListener.isVisualPressed();
 	}
 
 	public boolean isOver () {
