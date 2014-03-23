@@ -49,7 +49,8 @@ public class AndroidLiveWallpaper implements Application {
 	static {
 		GdxNativesLoader.load();
 	}
-
+	
+	public static final int MINIMUM_SDK = 8;
 	protected AndroidLiveWallpaperService service;
 
 	protected AndroidGraphicsLiveWallpaper graphics;
@@ -69,8 +70,8 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		if (this.getVersion() < 8) {
-			throw new GdxRuntimeException("LibGDX requires Android 2.2 or later.");
+		if (this.getVersion() < MINIMUM_SDK) {
+			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
 		}
 		graphics = new AndroidGraphicsLiveWallpaper(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
