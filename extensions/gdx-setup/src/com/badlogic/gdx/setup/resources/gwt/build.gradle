@@ -1,5 +1,4 @@
 apply plugin: "java"
-apply plugin: "application"
 apply plugin: "jetty"
 
 gwt {
@@ -31,22 +30,31 @@ task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
     gwt.modules = gwt.devModules
 }
 
+task dist(dependsOn: compileGwt) {
+    file("build/dist").mkdirs()
+    copy {
+        from "build/gwt/out"
+        into "build/dist"
+    }
+    copy {
+        from "webapp"
+        into "build/dist"
+    }
+    copy {
+        from "war"
+        into "build/dist"
+    }
+}
+
 draftWar {
    from "war"
 }
 
 sourceCompatibility = 1.6
-mainClassName = "%PACKAGE%.client.GwtLauncher"
 sourceSets.main.java.srcDirs = [ "src/" ]
-
-// Helps gwt find the proper .gwt.xml files.
 sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
 
 
 eclipse.project {
     name = appName + "-gwt"
-}
-
-run {
-    ignoreExitValue = true
 }
