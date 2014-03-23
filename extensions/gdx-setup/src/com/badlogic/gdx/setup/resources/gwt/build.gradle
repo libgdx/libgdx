@@ -23,6 +23,10 @@ task draftRun(type: JettyRunWar) {
     webApp=draftWar.archivePath
 }
 
+war {
+    from 'war'
+}
+
 sourceCompatibility = 1.6
 mainClassName = "%PACKAGE%.client.GwtLauncher"
 sourceSets.main.java.srcDirs = [ "src/" ]
