@@ -1,8 +1,9 @@
 apply plugin: "java"
 apply plugin: "application"
+apply plugin: "jetty"
 
 gwt {
-    gwtVersion='2.5.0' // Should match the gwt version used for building the gwt backend
+    gwtVersion='2.6.0' // Should match the gwt version used for building the gwt backend
     maxHeapSize="1G" // Default 256m is not enough for gwt compiler. GWT is HUNGRY
     minHeapSize="1G"
 
@@ -15,6 +16,11 @@ gwt {
         disableClassMetadata = true;
         disableCastChecking = true;
     }
+}
+
+task draftRun(type: JettyRunWar) {
+    dependsOn draftWar
+    webApp=draftWar.archivePath
 }
 
 sourceCompatibility = 1.6
