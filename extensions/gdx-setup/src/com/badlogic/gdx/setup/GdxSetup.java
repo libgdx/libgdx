@@ -77,7 +77,6 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
 		project.files.add(new ProjectFile("gwt/GdxDefinitionSuperdev", "gwt/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
 		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/index.html", true));
-		project.files.add(new ProjectFile("gwt/war/index-superdev", "gwt/webapp/index-superdev.html", true));
 		project.files.add(new ProjectFile("gwt/war/soundmanager2-jsmin.js", "gwt/webapp/soundmanager2-jsmin.js", false));
 		project.files.add(new ProjectFile("gwt/war/soundmanager2-setup.js", "gwt/webapp/soundmanager2-setup.js", false));
 		project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));

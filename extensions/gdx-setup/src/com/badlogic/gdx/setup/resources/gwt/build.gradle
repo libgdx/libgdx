@@ -8,7 +8,8 @@ gwt {
     minHeapSize="1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules '%PACKAGE%.GdxDefinitionSuperdev'
+    modules '%PACKAGE%.GdxDefinition'
+    devModules '%PACKAGE%.GdxDefinitionSuperdev'
 
     compiler {
         strict = true;
@@ -20,11 +21,16 @@ gwt {
 
 task draftRun(type: JettyRunWar) {
     dependsOn draftWar
+    dependsOn.remove('war')
     webApp=draftWar.archivePath
 }
 
-war {
-    from 'war'
+gwtSuperDev {
+    gwt.modules = gwt.devModules;
+}
+
+draftWar {
+   from "war"
 }
 
 sourceCompatibility = 1.6
