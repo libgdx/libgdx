@@ -8,7 +8,7 @@ gwt {
     minHeapSize="1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules '%PACKAGE%.GdxDefinition'
+    modules '%PACKAGE%.GdxDefinitionSuperdev'
 
     compiler {
         strict = true;
