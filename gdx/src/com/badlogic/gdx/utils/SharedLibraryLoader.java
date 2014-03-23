@@ -53,6 +53,12 @@ public class SharedLibraryLoader {
 			isMac = false;
 			is64Bit = false;
 		}
+		
+		//Blackberry devices should be treated as Android devices
+		if (System.getProperty("os.name").contains("qnx")) {
+			isAndroid = true;
+		}
+	
 		if (!isAndroid && !isWindows && !isLinux && !isMac) {
 			isIos = true;
 			is64Bit = false;
