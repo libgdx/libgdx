@@ -16,8 +16,8 @@
        <body>
               <h1>Test page for Libgdx with GWT</h1>
               Project loading shortly:<br>
-              <div align="center" id="embed-%PACKAGE%.GdxDefinition"></div>
-              <script type="text/javascript" src="%PACKAGE%.GdxDefinition/%PACKAGE%.GdxDefinition.nocache.js"></script>
+              <div align="center" id="embed-%PACKAGE%.GdxDefinitionSuperdev"></div>
+              <script type="text/javascript" src="%PACKAGE%.GdxDefinition/%PACKAGE%.GdxDefinitionSuperdev.nocache.js"></script>
        </body>
        
        <script>
