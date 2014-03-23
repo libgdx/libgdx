@@ -27,7 +27,7 @@ task draftRun(type: JettyRunWar) {
 
 task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
     dependsOn draftRun
-    gwt.modules = '%PACKAGE%.GdxDefinitionSuperdev'
+    gwt.modules ['%PACKAGE%.GdxDefinitionSuperdev']
 }
 
 // FUCKING HELL WORK! gwt.gwtSuperDev.dependsOn draftRun
