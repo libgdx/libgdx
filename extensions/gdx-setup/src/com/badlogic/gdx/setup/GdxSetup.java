@@ -39,6 +39,7 @@ public class GdxSetup {
 		String packageDir = packageName.replace('.', '/');
 
 		// root dir/gradle files
+		project.files.add(new ProjectFile("gitignore", ".gitignore", false));
 		project.files.add(new ProjectFile("build.gradle", true));
 		project.files.add(new ProjectFile("settings.gradle"));
 		project.files.add(new ProjectFile("gradlew", false));
@@ -207,10 +208,10 @@ public class GdxSetup {
 	public static void main (String[] args) {
 		Map<String, String> params = parseArgs(args);
 		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass")) {
+			new GdxSetupUI();
 			printHelp();
-			System.exit(-1);
+		} else {		
+			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
 		}
-		
-		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
 	}
 }
