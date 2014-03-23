@@ -4,12 +4,6 @@ apply plugin: "application"
 sourceCompatibility = 1.6
 mainClassName = "%PACKAGE%.desktop.DesktopLauncher"
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.resources.srcDirs = [file("../android/assets").getAbsolutePath()]
-
-// idea doesn't like relative paths outside of content root...
-tasks.ideaModule.doFirst {
-	sourceSets.main.resources.srcDirs = [] 
-}
 
 eclipse.project {
     name = appName + "-desktop"
