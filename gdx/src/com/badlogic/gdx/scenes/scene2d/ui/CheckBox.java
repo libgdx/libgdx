@@ -29,7 +29,7 @@ public class CheckBox extends TextButton {
 	private Image image;
 	private CheckBoxStyle style;
 	/** Used for updating padding */
-	private Cell<Image> imageCell;
+	private Cell<Image> imageCell = null;
 
 	public CheckBox (String text, Skin skin) {
 		this(text, skin.get(CheckBoxStyle.class));
@@ -54,7 +54,8 @@ public class CheckBox extends TextButton {
 		if (!(style instanceof CheckBoxStyle)) throw new IllegalArgumentException("style must be a CheckBoxStyle.");
 		super.setStyle(style);
 		this.style = (CheckBoxStyle)style;
-		imageCell.padRight(this.style.padBetween);
+		if (imageCell != null)
+			imageCell.padRight(this.style.padBetween);
 	}
 
 	/** Returns the checkbox's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
