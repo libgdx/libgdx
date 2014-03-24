@@ -471,6 +471,8 @@ public class DefaultShader extends BaseShader {
     protected final int u_spotLights0constantAttenuation = register(new Uniform("u_spotLights[0].constantAttenuation"));
     protected final int u_spotLights0linearAttenuation = register(new Uniform("u_spotLights[0].linearAttenuation"));
     protected final int u_spotLights0quadraticAttenuation = register(new Uniform("u_spotLights[0].quadraticAttenuation"));
+    protected final int u_spotLights0cutOff = register(new Uniform("u_spotLights[0].cutOff"));
+    protected final int u_spotLights0exponent = register(new Uniform("u_spotLights[0].exponent"));
     protected final int u_spotLights1color = register(new Uniform("u_spotLights[1].color"));
 
 	protected final int u_fogColor = register(new Uniform("u_fogColor"));
@@ -494,6 +496,8 @@ public class DefaultShader extends BaseShader {
     protected int spotLightsConstantAttenuationOffset;
     protected int spotLightsLinearAttenuationOffset;
     protected int spotLightsQuadraticAttenuationOffset;
+    protected int spotLightscutOffOffset;
+    protected int spotLightexponentOffset;
     protected int spotLightsSize;
 
 	protected final boolean lighting;
@@ -615,6 +619,8 @@ public class DefaultShader extends BaseShader {
         spotLightsConstantAttenuationOffset = loc(u_spotLights0constantAttenuation) - spotLightsLoc;
         spotLightsLinearAttenuationOffset = loc(u_spotLights0linearAttenuation) - spotLightsLoc;
         spotLightsQuadraticAttenuationOffset = loc(u_spotLights0quadraticAttenuation) - spotLightsLoc;
+        spotLightscutOffOffset = loc(u_spotLights0cutOff) - spotLightsLoc;
+        spotLightexponentOffset = loc(u_spotLights0exponent) - spotLightsLoc;
         spotLightsSize = loc(u_spotLights1color) - spotLightsLoc;
         if (spotLightsSize < 0) spotLightsSize = 0;
 
@@ -722,6 +728,8 @@ public class DefaultShader extends BaseShader {
 			dirLight.set(0, 0, 0, 0, -1, 0);
 		for (final PointLight pointLight : pointLights)
 			pointLight.set(0, 0, 0, 0, 0, 0, 0);
+        for (final SpotLight spotLight : spotLights)
+            spotLight.set(0, 0, 0, 0, 0, 0, 0);
 		lightsSet = false;
 
 		if (has(u_time)) set(u_time, time += Gdx.graphics.getDeltaTime());
@@ -840,6 +848,8 @@ public class DefaultShader extends BaseShader {
                 program.setUniformf(idx + spotLightsConstantAttenuationOffset, spotLights[i].constantAttenuation);
                 program.setUniformf(idx + spotLightsLinearAttenuationOffset, spotLights[i].linearAttenuation);
                 program.setUniformf(idx + spotLightsQuadraticAttenuationOffset, spotLights[i].quadraticAttenuation);
+                program.setUniformf(idx + spotLightscutOffOffset, spotLights[i].cutOff);
+                program.setUniformf(idx + spotLightexponentOffset, spotLights[i].exponent);
                 if (spotLightsSize <= 0) break;
             }
         }

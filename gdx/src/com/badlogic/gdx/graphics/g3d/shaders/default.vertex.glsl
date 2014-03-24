@@ -168,6 +168,8 @@ struct SpotLight
 	float constantAttenuation;
 	float linearAttenuation;
 	float quadraticAttenuation;
+	float cutOff;
+	float exponent;
 };
 uniform SpotLight u_spotLights[numSpotLights];
 #endif // numSpotLights
