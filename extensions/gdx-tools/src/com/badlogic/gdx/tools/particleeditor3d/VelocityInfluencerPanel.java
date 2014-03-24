@@ -57,6 +57,7 @@ import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.PointTanget
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValues.PointWeightVelocityValue;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer> {
 	
 	private static final String 	VEL_TYPE_ROTATIONAL = "Rotational",
@@ -173,7 +174,6 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 			@Override
 			public Dimension getPreferredScrollableViewportSize () {
 				Dimension dim = super.getPreferredScrollableViewportSize();
-				// here we return the pref height
 				dim.height = getPreferredSize().height;
 				return dim;
 			}
@@ -235,9 +235,6 @@ public class VelocityInfluencerPanel extends InfluencerPanel<VelocityInfluencer>
 		int index = velocityTable.getSelectedRow();
 		if(index == -1) return;
 		
-		//Gdx.app.log("INFERNO", "Selected velocity at "+index);
-		
-		//VelocityInfluencer influencer = (VelocityInfluencer)editor.getEmitter().findInfluencer(VelocityInfluencer.class);		
 		VelocityValue velocityValue = velocities.get(index).velocityValue;
 		ParticleValuePanel velocityPanel = getVelocityPanel(velocityValue);
 		

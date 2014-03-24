@@ -16,15 +16,15 @@ public class CumulativeDistribution <T>{
 		}
 	}
 	private Array<CumulativeValue> values;
-	
+
 	public CumulativeDistribution(){
 		values = new Array<CumulativeValue>(false, 10, CumulativeValue.class);
 	}
-	
+
 	public void add(T obj, float intervalSize){
 		values.add(new CumulativeValue(obj, 0, intervalSize));
 	}
-	
+
 	public void add(T obj){
 		values.add(new CumulativeValue(obj, 0, 0));
 	}
@@ -37,7 +37,7 @@ public class CumulativeDistribution <T>{
 			values.items[i].frequency = sum;
 		}
 	}
-	
+
 	/** Generate the cumulative distribution in [0,1] where each interval will get a frequency */
 	public void generateNormalized(){	
 		float sum = 0;
@@ -50,7 +50,7 @@ public class CumulativeDistribution <T>{
 			values.items[i].frequency = intervalSum;
 		}		
 	}
-	
+
 	/** Generate the cumulative distribution in [0,1] where each value will have the same interval size */
 	public void generateUniform(){
 		float freq = 1f/values.size;
@@ -60,7 +60,7 @@ public class CumulativeDistribution <T>{
 			values.items[i].frequency=(i+1)*freq;
 		}
 	}
-	
+
 
 	/** @param probability is the value used to search the right interval inside the distribution 
 	 * @return the value whose interval contains the probability */
@@ -76,11 +76,11 @@ public class CumulativeDistribution <T>{
 				imin = imid +1;
 			else break;
 		}
-		
+
 		return value.value;
 	}
-	
-	 /** @return a random value whose probability lies in [0,1] */
+
+	/** @return a random value whose probability lies in [0,1] */
 	public T value(){
 		return value(MathUtils.random());
 	}
@@ -88,15 +88,15 @@ public class CumulativeDistribution <T>{
 	public int size(){
 		return values.size;
 	}
-	
+
 	public float getInterval(int index){
 		return values.items[index].interval;
 	}
-	
+
 	public T getValue(int index){
 		return values.items[index].value;
 	}
-	
+
 	/** Set the interval size on the passed in object.
 	 *  The object has to be inside the distribution. */
 	public void setInterval(T obj, float intervalSize){
@@ -106,11 +106,11 @@ public class CumulativeDistribution <T>{
 				return;
 			}
 	}
-	
+
 	public void setInterval(int index, float intervalSize){
 		values.items[index].interval = intervalSize;
 	}
-	
+
 	public void clear(){
 		values.clear();
 	}

@@ -28,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
 import com.badlogic.gdx.tools.particleeditor3d.TemplatePickerPanel.Listener;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class ModelInfluencerPanel extends InfluencerPanel<ModelInfluencer> implements Listener<Model>, 
 																	com.badlogic.gdx.tools.particleeditor3d.EventManager.Listener {
 

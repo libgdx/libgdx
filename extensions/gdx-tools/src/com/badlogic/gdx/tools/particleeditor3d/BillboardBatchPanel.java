@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.BillboardDistanceP
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
 
+/** @author Inferno */
 public class BillboardBatchPanel extends EditorPanel<BillboardBatch> {
 	private enum AlignModeWrapper{
 		Screen( AlignMode.Screen, "Screen"),

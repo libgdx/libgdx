@@ -46,6 +46,7 @@ import com.badlogic.gdx.graphics.g3d.particles.values.WeightMeshSpawnShapeValue;
 import com.badlogic.gdx.tools.particleeditor3d.TemplatePickerPanel.Listener;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> implements Listener<Model> {
 	private static final String SPAWN_SHAPE_POINT = "Point",
 		SPAWN_SHAPE_LINE = "Line",
@@ -76,7 +77,7 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 	public SpawnInfluencerPanel (final ParticleEditor3D editor, SpawnShapeInfluencer influencer) {
 		super(editor, influencer, "Spawn Influencer", "Define where the particles are spawned.", true, false);
 		setValue(influencer);
-		setCurrentSpawnData(influencer.spawnShapeValue); //Copy the spawn shape data to the local editing version
+		setCurrentSpawnData(influencer.spawnShapeValue);
 		shapeCombo.setSelectedItem(spawnShapeToString(influencer.spawnShapeValue));
 	}
 
@@ -174,9 +175,6 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		sideCombo.setVisible(visible);
 		sideLabel.setVisible(visible);
 	}
-	
-	
-	
 
 	protected void initializeComponents () {
 		super.initializeComponents();
@@ -193,9 +191,7 @@ class SpawnInfluencerPanel extends InfluencerPanel<SpawnShapeInfluencer> impleme
 		rectangleSpawnShapeValue.setDimensions(6, 6, 6);
 		ellipseSpawnShapeValue.setDimensions(6, 6, 6);
 		cylinderSpawnShapeValue.setDimensions(6, 6, 6);
-		
-		
-		
+
 		pointSpawnShapeValue.setActive(true);
 		lineSpawnShapeValue.setActive(true);
 		rectangleSpawnShapeValue.setActive(true);

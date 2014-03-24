@@ -35,7 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-
+/** @author Inferno */
 public class PreAlpha extends JFrame {
 	BufferedImage image;
 	ImagePanel imagePanel;
@@ -51,7 +51,6 @@ public class PreAlpha extends JFrame {
 
 		initializeComponents();
 		pack();
-		//setSize(200, 100);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);

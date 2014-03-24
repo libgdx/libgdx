@@ -27,7 +27,7 @@ import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.NumericValue;
 
-
+/** @author Inferno */
 class NumericPanel extends ParticleValuePanel<NumericValue> {
 	JSpinner valueSpinner;
 	

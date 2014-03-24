@@ -29,7 +29,7 @@ import javax.swing.JPanel;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.tools.particleeditor.Chart;
 
-
+/** @author Inferno */
 class PercentagePanel extends ParticleValuePanel<ScaledNumericValue> {
 	JButton expandButton;
 	Chart chart;

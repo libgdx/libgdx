@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class TexturePanel extends ImagePanel {
 	private Color 	selectedColor = Color.GREEN, 
 						unselectedColor = Color.BLUE,
@@ -93,7 +94,6 @@ public class TexturePanel extends ImagePanel {
 		if(index > -1){
 			src.removeIndex(index);
 			dst.add(region);
-			//Gdx.app.log("Log", "Region at "+region.getRegionX()+", "+region.getRegionY());
 			repaint();
 		}
 	}

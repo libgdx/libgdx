@@ -24,6 +24,7 @@ import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 
+/** @author Inferno */
 class CountPanel extends EditorPanel {
 	Slider maxSlider, minSlider;
 
@@ -32,16 +33,8 @@ class CountPanel extends EditorPanel {
 
 		initializeComponents(min, max);
 		setValue(null);
-		//set(editor.getEmitter().emitter.minParticleCount, editor.getEmitter().emitter.maxParticleCount);
 	}
 	
-	/*
-	public void set(int min, int max){
-		minSlider.setValue(min);
-		maxSlider.setValue(max);
-	}
-	*/
-
 	private void initializeComponents (int min, int max) {
 		//Min
 		minSlider = new Slider(0, 0, 99999, 1);

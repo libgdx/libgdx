@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class RegionPickerPanel extends JPanel{
 
 	private enum GenerationMode {
@@ -35,7 +36,6 @@ public class RegionPickerPanel extends JPanel{
 			return string;
 		}
 	}
-	
 	
 	public interface Listener{
 		void onRegionsSelected(Array<TextureRegion> regions);
@@ -122,7 +122,6 @@ public class RegionPickerPanel extends JPanel{
 				JPanel panel = ((CustomCardLayout)content.getLayout()).getCurrentCard(content);
 				TexturePanel currentTexturePanel = panel == atlasPanel ? atlasPanel.getCurrentRegionPanel() : texturePanel;
 				currentTexturePanel.selectAll();
-				//listener.onRegionsSelected(currentTexturePanel.selectedRegions);
 			}
 		});
 		
@@ -134,7 +133,6 @@ public class RegionPickerPanel extends JPanel{
 				currentTexturePanel.selectedRegions.reverse();
 				currentTexturePanel.revalidate();
 				currentTexturePanel.repaint();
-				//currentTexturePanel.selectedRegions.
 			}
 		});
 		

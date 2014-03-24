@@ -2,8 +2,7 @@ package com.badlogic.gdx.tools.particleeditor3d;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.ParticleValue;
 
-
-
+/** @author Inferno */
 public class ParticleValuePanel<T extends ParticleValue> extends EditorPanel<T> {
 
 	public ParticleValuePanel (ParticleEditor3D editor, String name, String description) {

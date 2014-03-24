@@ -154,11 +154,13 @@ import com.badlogic.gdx.utils.StreamUtils;
 
 import de.matthiasmann.twlthemeeditor.gui.NewClasspathDialog;
 
+/** @author Inferno */
 public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 	public static final String 	DEFAULT_FONT = "default.fnt",
 											DEFAULT_BILLBOARD_PARTICLE = "pre_particle.png",
 											DEFAULT_MODEL_PARTICLE = "monkey.g3db",
 											DEFAULT_PFX = "default.pfx",
+											DEFAULT_TEMPLATE_PFX = "defaultTemplate.pfx",
 											DEFAULT_SKIN = "uiskin.json";
 	
 	public static final int EVT_ASSET_RELOADED = 0;
@@ -417,7 +419,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		ParticleData data = particleData.get(emitter);
 		if (data == null) particleData.put(emitter, data = new ParticleData());
 		data.enabled = enabled;
-		//emitter.start();
 	}
 
 	public boolean isEnabled (ParticleController emitter) {
@@ -462,7 +463,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			}
 
 			{	
-				
 				JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 				rightSplitPane.setUI(new BasicSplitPaneUI() {
 					public void paint (Graphics g, JComponent jc) {
@@ -508,7 +508,7 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 				propertiesPanel = new JPanel(new GridBagLayout());
 				rightSplitPane.add(propertiesPanel, JSplitPane.BOTTOM);
 				propertiesPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(3, 0, 6, 6), BorderFactory
-					.createTitledBorder("Emitter Properties")));
+					.createTitledBorder("Particle Controller Components")));
 				{
 					JScrollPane scroll = new JScrollPane();
 					propertiesPanel.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
@@ -543,7 +543,7 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 				JPanel emittersPanel = new JPanel(new BorderLayout());
 				leftSplit.add(emittersPanel, JSplitPane.BOTTOM);
 				emittersPanel.setBorder(new CompoundBorder(BorderFactory.createEmptyBorder(0, 6, 6, 0), BorderFactory
-					.createTitledBorder("Effect Emitters")));
+					.createTitledBorder("Particle Controllers")));
 				{
 					effectPanel = new EffectPanel(this);
 					emittersPanel.add(effectPanel);
@@ -598,11 +598,7 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			controller.init();
 			effect.start();
 			reloadRows();
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
+		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 	}
@@ -628,7 +624,7 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		return !hasSameInfluencer;
 	}
 
-	class AppRenderer extends InputAdapter implements ApplicationListener {
+	class AppRenderer implements ApplicationListener {
 		//Stats
 		private float maxActiveTimer;
 		private int maxActive, lastMaxActive;
@@ -678,7 +674,8 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			deltaMultiplier.setActive(true);
 
 			backgroundColor = new GradientColorValue();
-			backgroundColor.setColors(new float[] { 0f, 0f, 0f});
+			Color color = Color.valueOf("878787");
+			backgroundColor.setColors(new float[] { color.r, color.g, color.b});
 
 			models = new Array<Model>();
 			ModelBuilder builder = new ModelBuilder();
@@ -736,12 +733,14 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			effectPanel.createDefaultEmitter(BillboardParticleController.class, true, true);
 			assetManager.set(ParticleEffect.class, DEFAULT_PFX, 
 					new ParticleEffect( effectPanel.createDefaultEmitter(BillboardParticleController.class, false, false)));
+			assetManager.set(ParticleEffect.class, DEFAULT_TEMPLATE_PFX, 
+				new ParticleEffect( effectPanel.createDefaultTemplateController()));
 		}
 
 
 		@Override
 		public void resize (int width, int height) {
-			Gdx.input.setInputProcessor(new InputMultiplexer(ui, this, cameraInputController));
+			Gdx.input.setInputProcessor(new InputMultiplexer(ui, cameraInputController));
 			Gdx.gl.glViewport(0, 0, width, height);
 
 			worldCamera.viewportWidth = width;
@@ -812,36 +811,6 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			modelBatch.render(modelInstanceParticleBatch, environment);
 			modelBatch.end();
 			ui.draw();
-		}
-
-		@Override
-		public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-			//gainFocus();
-			return false;
-		}
-		
-		public boolean touchUp (int x, int y, int pointer, int button) {
-			//lostFocus();
-			return false;
-		}
-		
-		@Override
-		public boolean scrolled (int amount) {
-			//gainFocus();
-			return false;
-		}
-		
-		public void gainFocus () {
-			lwjglCanvas.getCanvas().requestFocus();
-			dispatchEvent(new WindowEvent(ParticleEditor3D.this, WindowEvent.WINDOW_LOST_FOCUS));
-			//dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_GAINED_FOCUS));
-			//lwjglCanvas.requestFocusInWindow();
-		}
-
-		public void lostFocus () {
-			//dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_LOST_FOCUS));
-			dispatchEvent(new WindowEvent(ParticleEditor3D.this, WindowEvent.WINDOW_GAINED_FOCUS));
-			ParticleEditor3D.this.requestFocusInWindow();
 		}
 
 		@Override

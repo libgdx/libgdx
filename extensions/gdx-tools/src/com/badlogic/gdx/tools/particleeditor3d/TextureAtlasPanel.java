@@ -18,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class TextureAtlasPanel extends JPanel {
 	JPanel regionsPanel;
 	TextureAtlas atlas;

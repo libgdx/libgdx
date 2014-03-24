@@ -34,9 +34,10 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.ParticleControllerInf
 import com.badlogic.gdx.tools.particleeditor3d.TemplatePickerPanel.Listener;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class ParticleControllerInfluencerPanel extends InfluencerPanel<ParticleControllerInfluencer> implements TemplatePickerPanel.Listener<ParticleController>, 
 																																									LoaderButton.Listener<ParticleEffect>, 
-																																					com.badlogic.gdx.tools.particleeditor3d.EventManager.Listener{
+																																									com.badlogic.gdx.tools.particleeditor3d.EventManager.Listener{
 	TemplatePickerPanel<ParticleController> controllerPicker;
 	
 	public ParticleControllerInfluencerPanel (ParticleEditor3D editor, ParticleControllerInfluencer influencer, boolean single, String name, String desc) {
@@ -113,7 +114,6 @@ public class ParticleControllerInfluencerPanel extends InfluencerPanel<ParticleC
 						value.templates.addAll( ((ParticleEffect)editor.assetManager.get(ParticleEditor3D.DEFAULT_BILLBOARD_PARTICLE)).getControllers());
 					}
 					
-					//controllerPicker.setExcludedTemplates(editor.getEmitter())
 					controllerPicker.reloadTemplates();
 					controllerPicker.setValue(value.templates);
 					editor.getEmitter().init();

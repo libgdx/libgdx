@@ -24,7 +24,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeListener;
 
-// BOZO - Slider is a placeholder that uses a spinner until the slider (in NewSlider) is complete.
+/** @author Inferno */
 public class Slider extends JPanel {
 	public JSpinner spinner;
 

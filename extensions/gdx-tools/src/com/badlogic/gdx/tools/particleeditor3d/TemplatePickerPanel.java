@@ -33,13 +33,14 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.ModelInfluencer;
 import com.badlogic.gdx.tools.particleeditor3d.LoaderButton.Listener;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Listener<T> {
 
 	public interface Listener<T> {
 		void onTemplateChecked(T template, boolean isChecked);
 	}
 
-	Array<T> loadedTemplates; //Loaded models
+	Array<T> loadedTemplates;
 	Array<T> excludedTemplates;
 	Class<T> type;
 	JTable templatesTable;
@@ -142,7 +143,6 @@ public class TemplatePickerPanel<T> extends EditorPanel<Array<T>> implements Lis
 				@Override
 				public Dimension getPreferredScrollableViewportSize () {
 					Dimension dim = super.getPreferredScrollableViewportSize();
-					// here we return the pref height
 					dim.height = getPreferredSize().height;
 					return dim;
 				}

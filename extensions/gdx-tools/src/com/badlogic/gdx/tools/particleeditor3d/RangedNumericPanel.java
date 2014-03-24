@@ -29,7 +29,7 @@ import javax.swing.event.ChangeListener;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.RangedNumericValue;
 
-
+/** @author Inferno */
 class RangedNumericPanel extends ParticleValuePanel<RangedNumericValue> {
 	Slider minSlider, maxSlider;
 	JButton rangeButton;

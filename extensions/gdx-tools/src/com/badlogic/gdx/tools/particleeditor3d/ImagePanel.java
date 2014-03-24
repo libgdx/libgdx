@@ -9,6 +9,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+/** @author Inferno */
 public class ImagePanel extends JPanel{
 	private BufferedImage image;
 
@@ -25,7 +26,6 @@ public class ImagePanel extends JPanel{
 			e.printStackTrace();
 		} 
 	}
-	
 
 	@Override
 	protected void paintComponent(Graphics g) {

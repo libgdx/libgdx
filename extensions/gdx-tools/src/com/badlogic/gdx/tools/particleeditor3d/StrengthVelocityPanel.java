@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.StrengthVelocityValue;
 
+/** @author Inferno */
 public class StrengthVelocityPanel extends ParticleValuePanel<StrengthVelocityValue> {
 
 	JCheckBox isGlobalCheckBox;
@@ -22,7 +23,7 @@ public class StrengthVelocityPanel extends ParticleValuePanel<StrengthVelocityVa
 		initializeComponents(charTitle);
 		setValue(value);
 	}
-	
+
 	@Override
 	public void setValue (StrengthVelocityValue value) {
 		super.setValue(value);
@@ -47,8 +48,8 @@ public class StrengthVelocityPanel extends ParticleValuePanel<StrengthVelocityVa
 		}
 		{
 			contentPanel.add( magnitudePanel = new ScaledNumericPanel(editor, null, charTitle, "Strength", "In world units per second.", true), 
-					new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-							new Insets(0, 0, 0, 6), 0, 0));
+				new GridBagConstraints(0, 2, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+					new Insets(0, 0, 0, 6), 0, 0));
 		}
 		{
 			JPanel spacer = new JPanel();
@@ -56,16 +57,15 @@ public class StrengthVelocityPanel extends ParticleValuePanel<StrengthVelocityVa
 			contentPanel.add(spacer, new GridBagConstraints(6, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
 				new Insets(0, 0, 0, 0), 0, 0));
 		}
-		
+
 		magnitudePanel.setIsAlwayShown(true);
-		
+
 		isGlobalCheckBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed (ActionEvent e) {
 				StrengthVelocityPanel.this.value.isGlobal = isGlobalCheckBox.isSelected();
 			}
-		});
-		
+		});	
 	}
 
 }

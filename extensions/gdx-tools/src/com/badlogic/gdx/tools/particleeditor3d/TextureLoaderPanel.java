@@ -21,8 +21,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class TextureLoaderPanel extends EditorPanel 
-{
+/** @author Inferno */
+public class TextureLoaderPanel extends EditorPanel {
 	public TextureLoaderPanel (ParticleEditor3D editor, String name, String description) {
 		super(editor, name, description);
 		setValue(null);

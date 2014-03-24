@@ -2,6 +2,7 @@ package com.badlogic.gdx.tools.particleeditor3d;
 
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 
+/** @author Inferno */
 public class ColorInfluencerPanel extends InfluencerPanel<ColorInfluencer> {
 	
 	GradientPanel tintPanel;

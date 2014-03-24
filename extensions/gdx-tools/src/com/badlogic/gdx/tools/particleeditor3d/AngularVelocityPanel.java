@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 import com.badlogic.gdx.graphics.g3d.particles.values.AngularVelocityValue;
 
+/** @author Inferno */
 public class AngularVelocityPanel extends ParticleValuePanel<AngularVelocityValue> {
 	JCheckBox isGlobalCheckBox;
 	ScaledNumericPanel thetaPanel;

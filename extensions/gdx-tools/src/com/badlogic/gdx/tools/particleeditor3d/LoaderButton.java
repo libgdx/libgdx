@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.UBJsonReader;
 
+/** @author Inferno */
 public abstract class LoaderButton<T> extends JButton{
 
 	public static class ParticleEffectLoaderButton extends LoaderButton<ParticleEffect>{
@@ -83,7 +84,6 @@ public abstract class LoaderButton<T> extends JButton{
 			}
 		}
 	}
-	
 	
 	public interface Listener<T>{
 		void onResourceLoaded (T resource);
