@@ -31,21 +31,21 @@ task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
 }
 
 task dist(dependsOn: compileGwt) {
-	doLast {
-		file("build/dist").mkdirs()
-		copy {
-			from "build/gwt/out"
-			into "build/dist"
-		}
-		copy {
-			from "webapp"
-			into "build/dist"
-		}
-		copy {
-			from "war"
-			into "build/dist"
-		}
-	}
+    doLast {
+        file("build/dist").mkdirs()
+        copy {
+            from "build/gwt/out"
+            into "build/dist"
+        }
+        copy {
+            from "webapp"
+            into "build/dist"
+            }
+        copy {
+            from "war"
+            into "build/dist"
+        }
+    }
 }
 
 draftWar {
