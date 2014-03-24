@@ -31,7 +31,7 @@ public class TextButtonTest extends GdxTest {
 
 	@Override
 	public void create () {
-		stage = new Stage(0, 0, false, new SpriteBatch());
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		for (int i = 0; i < 1; i++) {
@@ -57,7 +57,7 @@ public class TextButtonTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

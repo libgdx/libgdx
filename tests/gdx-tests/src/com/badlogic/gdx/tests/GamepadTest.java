@@ -140,7 +140,7 @@ public class GamepadTest extends GdxTest {
 	private void setupUi () {
 		// setup a tiny ui with a console and a clear button.
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		stage = new Stage();
 		ui = new Table();
 		ui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		console = new List(skin);
@@ -164,7 +164,7 @@ public class GamepadTest extends GdxTest {
 	public void resize (int width, int height) {
 		ui.setSize(width, height);
 		ui.invalidate();
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

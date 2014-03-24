@@ -53,7 +53,7 @@ public class RenderContext {
 		textureBinder.begin();
 	}
 
-	/** Resest all changed OpenGL states to their defaults. */
+	/** Resets all changed OpenGL states to their defaults. */
 	public final void end () {
 		if (depthFunc != 0) Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		if (!depthMask) Gdx.gl.glDepthMask(true);

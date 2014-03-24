@@ -86,7 +86,7 @@ public class Polyline {
 		return worldVertices;
 	}
 
-	/** Returns the euclidian length of the polyline without scaling */
+	/** Returns the euclidean length of the polyline without scaling */
 	public float getLength () {
 		if (!calculateLength) return length;
 		calculateLength = false;
@@ -101,7 +101,7 @@ public class Polyline {
 		return length;
 	}
 
-	/** Returns the euclidian length of the polyline */
+	/** Returns the euclidean length of the polyline */
 	public float getScaledLength () {
 		if (!calculateScaledLength) return scaledLength;
 		calculateScaledLength = false;

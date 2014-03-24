@@ -606,7 +606,7 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a translation and scaling matrix by first overwritting it with an identity and then setting the
+	/** Sets this matrix to a translation and scaling matrix by first overwriting it with an identity and then setting the
 	 * translation vector in the 4th column and the scaling vector in the diagonal.
 	 * 
 	 * @param translation The translation vector
@@ -623,7 +623,7 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a translation and scaling matrix by first overwritting it with an identity and then setting the
+	/** Sets this matrix to a translation and scaling matrix by first overwriting it with an identity and then setting the
 	 * translation vector in the 4th column and the scaling vector in the diagonal.
 	 * 
 	 * @param translationX The x-component of the translation vector
@@ -725,7 +725,7 @@ public class Matrix4 implements Serializable {
 
 	/** Sets this matrix to a rotation matrix from the given euler angles.
 	 * @param yaw the yaw in degrees
-	 * @param pitch the pitch in degress
+	 * @param pitch the pitch in degrees
 	 * @param roll the roll in degrees
 	 * @return This matrix */
 	public Matrix4 setFromEulerAngles (float yaw, float pitch, float roll) {

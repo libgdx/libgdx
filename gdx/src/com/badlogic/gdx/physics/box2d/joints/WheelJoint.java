@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.physics.box2d.joints;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -28,9 +29,51 @@ public class WheelJoint extends Joint {
 #include <Box2D/Box2D.h> 
 	 */
 	
+
+	private final float[] tmp = new float[2];
+	private final Vector2 localAnchorA = new Vector2();
+	private final Vector2 localAnchorB = new Vector2();
+	private final Vector2 localAxisA = new Vector2();
+
 	public WheelJoint (World world, long addr) {
 		super(world, addr);
 	}
+
+	public Vector2 getLocalAnchorA () {
+		jniGetLocalAnchorA(addr, tmp);
+		localAnchorA.set(tmp[0], tmp[1]);
+		return localAnchorA;
+	}
+
+	private native void jniGetLocalAnchorA (long addr, float[] anchor); /*
+		b2WheelJoint* joint = (b2WheelJoint*)addr;
+		anchor[0] = joint->GetLocalAnchorA().x;
+		anchor[1] = joint->GetLocalAnchorA().y;
+	*/
+
+	public Vector2 getLocalAnchorB () {
+		jniGetLocalAnchorA(addr, tmp);
+		localAnchorB.set(tmp[0], tmp[1]);
+		return localAnchorB;
+	}
+
+	private native void jniGetLocalAnchorB (long addr, float[] anchor); /*
+		b2WheelJoint* joint = (b2WheelJoint*)addr;
+		anchor[0] = joint->GetLocalAnchorB().x;
+		anchor[1] = joint->GetLocalAnchorB().y;
+	*/
+
+	public Vector2 getLocalAxisA(){
+		jniGetLocalAnchorA(addr, tmp);
+		localAxisA.set(tmp[0], tmp[1]);
+		return localAxisA;
+	}
+
+	private native void jniGetLocalAxisA (long addr, float[] anchor); /*
+		b2WheelJoint* joint = (b2WheelJoint*)addr;
+		anchor[0] = joint->GetLocalAxisA().x;
+		anchor[1] = joint->GetLocalAxisA().y;
+	*/
 
 	/** Get the current joint translation, usually in meters. */
 	public float getJointTranslation () {
@@ -158,4 +201,5 @@ public class WheelJoint extends Joint {
 		b2WheelJoint* joint = (b2WheelJoint*)addr;
 		return joint->GetSpringDampingRatio();
 	*/
+
 }

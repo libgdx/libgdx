@@ -36,12 +36,12 @@ public final class WindowedMean {
 		values = new float[window_size];
 	}
 
-	/** @return whether the value returned will be meaningfull */
+	/** @return whether the value returned will be meaningful */
 	public boolean hasEnoughData () {
 		return added_values >= values.length;
 	}
 
-	/** clears this WindowedMean. The class will only return meaningfull values after enough data has been added again. */
+	/** clears this WindowedMean. The class will only return meaningful values after enough data has been added again. */
 	public void clear () {
 		added_values = 0;
 		last_value = 0;

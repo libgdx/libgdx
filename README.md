@@ -1,18 +1,20 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
-*We just migrated our Wiki to Github, so it's a little bit rough, we'll fix things up in the next days*
-
 Libgdx is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
 
 #### Getting Started
-Head over to http://libgdx.badlogicgames.com/documentation.html to find the latest getting started guide,
-download links and so on. You can find more information on libgdx on our official site 
-at http://libgdx.badlogicgames.com/
+  * [Setup your development environment (Eclipse, Intellij IDEA)](https://github.com/libgdx/libgdx/wiki/Setting-up-your-Development-Environment-%28Eclipse%2C-Intellij-IDEA%29)
+  * [Create a libgdx project](https://github.com/libgdx/libgdx/wiki/Project-Setup-Gradle)
+    * Import, Run, Debug and Package your project
+      * [Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse)
+      * [Intellij IDEA](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA)
+      * [Commandline](https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline)
+  * [Read the Wiki](https://github.com/libgdx/libgdx/wiki)
 
 ### Downloads
-You can get the latest release or nightly version of libgdx from the [offical download site](http://libgdx.badlogicgames.com/download.html). We actually
+As we switched to Gradle, there's no need to download libgdx itself anymore. For those of you who still prefer the old way of doing things, you can get libgdx from the [offical download site](http://libgdx.badlogicgames.com/download.html). We actually
 recommend using the nightlies to be up to date with latest bug fixes and feature additions.
 
 #### Documentation

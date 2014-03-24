@@ -40,7 +40,7 @@ public class AddListenerAction extends Action {
 		return targetActor;
 	}
 
-	/** Sets the actor to add a listneer to. If null (the default), the {@link #getActor() actor} will be used. */
+	/** Sets the actor to add a listener to. If null (the default), the {@link #getActor() actor} will be used. */
 	public void setTargetActor (Actor actor) {
 		this.targetActor = actor;
 	}

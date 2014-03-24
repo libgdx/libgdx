@@ -30,11 +30,38 @@ public class GearJoint extends Joint {
 #include <Box2D/Box2D.h> 
 	 */
 	
-	public GearJoint (World world, long addr) {
+	private Joint joint1;
+	private Joint joint2;
+
+	public GearJoint (World world, long addr, Joint joint1, Joint joint2) {
 		super(world, addr);
+		this.joint1 = joint1;
+		this.joint2 = joint2;
 	}
 
-	/** Set/Get the gear ratio. */
+	/** Get first joint. */
+	public Joint getJoint1 () {
+		return joint1;
+	}
+
+	private native long jniGetJoint1 (long addr); /*
+		b2GearJoint* joint =  (b2GearJoint*)addr;
+		b2Joint* joint1 = joint->GetJoint1();
+		return (jlong)joint1;
+	*/
+
+	/** Get first joint. */
+	public Joint getJoint2 () {
+		return joint2;
+	}
+
+	private native long jniGetJoint2 (long addr); /*
+		b2GearJoint* joint =  (b2GearJoint*)addr;
+		b2Joint* joint2 = joint->GetJoint2();
+		return (jlong)joint2;
+	*/
+
+	/** Set the gear ratio. */
 	public void setRatio (float ratio) {
 		jniSetRatio(addr, ratio);
 	}
@@ -44,7 +71,7 @@ public class GearJoint extends Joint {
 		joint->SetRatio( ratio );
 	*/
 
-	/** Set/Get the gear ratio. */
+	/** Get the gear ratio. */
 	public float getRatio () {
 		return jniGetRatio(addr);
 	}
@@ -53,4 +80,5 @@ public class GearJoint extends Joint {
 		b2GearJoint* joint =  (b2GearJoint*)addr;
 		return joint->GetRatio();
 	*/
+
 }

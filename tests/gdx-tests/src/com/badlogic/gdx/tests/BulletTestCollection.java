@@ -77,7 +77,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		Gdx.input.setInputProcessor(new InputMultiplexer(cameraController, this, new GestureDetector(this)));
 
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
-		hud = new Stage(480, 320, true);
+		hud = new Stage();
 		hud.addActor(fpsLabel = new Label(" ", new Label.LabelStyle(font, Color.WHITE)));
 		fpsLabel.setPosition(0, 0);
 		hud.addActor(titleLabel = new Label(tests[testIndex].getClass().getSimpleName(), new Label.LabelStyle(font, Color.WHITE)));

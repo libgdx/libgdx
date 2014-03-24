@@ -69,7 +69,8 @@ public class UITest extends GdxTest {
 		imageFlipped.flip(true, true);
 		TextureRegion image2 = new TextureRegion(texture2);
 		// stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, new PolygonSpriteBatch());
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		stage = new Stage();
+		// stage.setViewport(new ExtendViewport(800, 480));
 		Gdx.input.setInputProcessor(stage);
 
 		// Group.debug = true;
@@ -185,7 +186,7 @@ public class UITest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

@@ -47,6 +47,7 @@ public class Ray implements Serializable {
 	 *             startpoint + distance * direction.
 	 * @param distance The distance from the end point to the start point.
 	 * @return The end point */
+	@Deprecated
 	public Vector3 getEndPoint (float distance) {
 		return getEndPoint(new Vector3(), distance);
 	}

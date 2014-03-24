@@ -74,7 +74,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont();
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		{
@@ -245,7 +245,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

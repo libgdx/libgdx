@@ -37,7 +37,7 @@ public class ImageTest extends GdxTest {
 	public void create () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		ui = new Stage();
 		Gdx.input.setInputProcessor(ui);
 
 		root = new Table();
@@ -67,7 +67,7 @@ public class ImageTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		ui.setViewport(width, height, false);
+		ui.getViewport().update(width, height, true);
 		root.setSize(width, height);
 	}
 }

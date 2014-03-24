@@ -78,6 +78,7 @@ public class ScrollPane extends WidgetGroup {
 	private boolean disableX, disableY;
 	private boolean clamp = true;
 	private boolean scrollbarsOnTop;
+	private boolean variableSizeKnobs = true;
 	int draggingPointer = -1;
 
 	/** @param widget May be null. */
@@ -467,8 +468,13 @@ public class ScrollPane extends WidgetGroup {
 					boundsY = height - bgTopHeight - hScrollHeight;
 				}
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
-				hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
+				if (variableSizeKnobs)
+					hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
+				else
+					hKnobBounds.width = hScrollKnob.getMinWidth();
+
 				hKnobBounds.height = hScrollKnob.getMinHeight();
+
 				hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
 				hKnobBounds.y = hScrollBounds.y;
 			} else {
@@ -494,7 +500,11 @@ public class ScrollPane extends WidgetGroup {
 				}
 				vScrollBounds.set(boundsX, boundsY, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
-				vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widgetHeight));
+				if (variableSizeKnobs)
+					vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widgetHeight));
+				else
+					vKnobBounds.height = vScrollKnob.getMinHeight();
+
 				if (vScrollOnRight) {
 					vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
 				} else {
@@ -803,7 +813,7 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Returns the width of the scrolled viewport. */
 	public float getScrollWidth () {
-		return areaHeight;
+		return areaWidth;
 	}
 
 	/** Returns the height of the scrolled viewport. */
@@ -929,6 +939,16 @@ public class ScrollPane extends WidgetGroup {
 	public void setScrollbarsOnTop (boolean scrollbarsOnTop) {
 		this.scrollbarsOnTop = scrollbarsOnTop;
 		invalidate();
+	}
+
+	public boolean getVariableSizeKnobs () {
+		return variableSizeKnobs;
+	}
+
+	/** If true, the scroll knobs are sized based on {@link #getMaxX()} or {@link #getMaxY()}. If false, the scroll knobs are sized
+	 * based on {@link Drawable#getMinWidth()} or {@link Drawable#getMinHeight()}. Default is true. */
+	public void setVariableSizeKnobs (boolean variableSizeKnobs) {
+		this.variableSizeKnobs = variableSizeKnobs;
 	}
 
 	/** When true (default), the {@link Stage#cancelTouchFocus()} touch focus} is cancelled when flick scrolling begins. This causes

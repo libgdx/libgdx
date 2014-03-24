@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.Pool;
  * Can produce invisible artifacts when transparent decals overlap each other.
  * </p>
  * <p>
- * Needs to be explicitely disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
+ * Needs to be explicitly disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
  * </p>
  * <p>
  * States (* = any, EV = entry value - same as value before flush):<br/>

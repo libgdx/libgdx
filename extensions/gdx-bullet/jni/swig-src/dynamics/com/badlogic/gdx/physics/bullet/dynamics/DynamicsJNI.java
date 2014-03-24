@@ -34,6 +34,8 @@ public class DynamicsJNI {
   public final static native float btRigidBodyConstructionInfo_angularDamping_get(long jarg1, btRigidBodyConstructionInfo jarg1_);
   public final static native void btRigidBodyConstructionInfo_friction_set(long jarg1, btRigidBodyConstructionInfo jarg1_, float jarg2);
   public final static native float btRigidBodyConstructionInfo_friction_get(long jarg1, btRigidBodyConstructionInfo jarg1_);
+  public final static native void btRigidBodyConstructionInfo_rollingFriction_set(long jarg1, btRigidBodyConstructionInfo jarg1_, float jarg2);
+  public final static native float btRigidBodyConstructionInfo_rollingFriction_get(long jarg1, btRigidBodyConstructionInfo jarg1_);
   public final static native void btRigidBodyConstructionInfo_restitution_set(long jarg1, btRigidBodyConstructionInfo jarg1_, float jarg2);
   public final static native float btRigidBodyConstructionInfo_restitution_get(long jarg1, btRigidBodyConstructionInfo jarg1_);
   public final static native void btRigidBodyConstructionInfo_linearSleepingThreshold_set(long jarg1, btRigidBodyConstructionInfo jarg1_, float jarg2);

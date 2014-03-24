@@ -102,7 +102,7 @@ public class UISimpleTest extends GdxTest {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

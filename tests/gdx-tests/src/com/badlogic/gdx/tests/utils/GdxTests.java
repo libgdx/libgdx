@@ -28,14 +28,6 @@
 
 package com.badlogic.gdx.tests.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
@@ -57,6 +49,14 @@ import com.badlogic.gdx.tests.net.NetAPITest;
 import com.badlogic.gdx.tests.superkoalio.SuperKoalio;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StreamUtils;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /** List of GdxTest classes. To be used by the test launchers. If you write your own test, add it in here!
  * 
@@ -125,9 +125,6 @@ public class GdxTests {
 		KinematicBodyTest.class,
 		LabelScaleTest.class,
 		LabelTest.class,
-		LetterBoxTest1.class,
-		LetterBoxTest2.class,
-		LetterBoxTest3.class,
 		LifeCycleTest.class,
 		LightsTest.class,
 		MaterialTest.class,
@@ -207,6 +204,9 @@ public class GdxTests {
 		Vector2dTest.class,
 		VertexBufferObjectShaderTest.class,
 		VibratorTest.class,
+		ViewportTest1.class,
+		ViewportTest2.class,
+		ViewportTest3.class,
 		YDownTest.class
 		// @on
 

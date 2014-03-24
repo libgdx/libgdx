@@ -24,7 +24,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateL
 		for( int i = 0; i < numVertices; i++ )
 			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
 		chain->CreateLoop( verticesOut, numVertices );
-		delete verticesOut;
+		delete[] verticesOut;
 	
 	env->ReleasePrimitiveArrayCritical(obj_verts, verts, 0);
 
@@ -41,7 +41,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_ChainShape_jniCreateC
 		for( int i = 0; i < numVertices; i++ )
 			verticesOut[i] = b2Vec2(verts[i<<1], verts[(i<<1)+1]);
 		chain->CreateChain( verticesOut, numVertices );
-		delete verticesOut;
+		delete[] verticesOut;
 	
 	env->ReleasePrimitiveArrayCritical(obj_verts, verts, 0);
 

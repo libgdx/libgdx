@@ -63,8 +63,8 @@ public interface Shader extends Disposable {
 	 * {@link #render(Renderable)} method will succeed. This is expected to be a fast, non-blocking method. Note that this method
 	 * will only return true if it is intended to be used. Even when it returns false the Shader might still be capable of
 	 * rendering, but it's not preferred to do so.
-	 * @oaram instance The renderable to check against this shader.
-	 * @return true if this shader is intended to render the {@Renderable}, false otherwise. */
+	 * @param instance The renderable to check against this shader.
+	 * @return true if this shader is intended to render the {@link Renderable}, false otherwise. */
 	boolean canRender (Renderable instance);
 
 	/** Initializes the context for exclusive rendering by this shader. Use the {@link #render(Renderable)} method to render a

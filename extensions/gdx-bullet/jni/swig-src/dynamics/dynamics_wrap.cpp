@@ -1803,6 +1803,34 @@ SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_Dynamics
 }
 
 
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBodyConstructionInfo_1rollingFriction_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
+  btRigidBodyConstructionInfo *arg1 = (btRigidBodyConstructionInfo *) 0 ;
+  btScalar arg2 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBodyConstructionInfo **)&jarg1; 
+  arg2 = (btScalar)jarg2; 
+  if (arg1) (arg1)->m_rollingFriction = arg2;
+}
+
+
+SWIGEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBodyConstructionInfo_1rollingFriction_1get(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jfloat jresult = 0 ;
+  btRigidBodyConstructionInfo *arg1 = (btRigidBodyConstructionInfo *) 0 ;
+  btScalar result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btRigidBodyConstructionInfo **)&jarg1; 
+  result = (btScalar) ((arg1)->m_rollingFriction);
+  jresult = (jfloat)result; 
+  return jresult;
+}
+
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_dynamics_DynamicsJNI_btRigidBodyConstructionInfo_1restitution_1set(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jfloat jarg2) {
   btRigidBodyConstructionInfo *arg1 = (btRigidBodyConstructionInfo *) 0 ;
   btScalar arg2 ;

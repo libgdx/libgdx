@@ -73,8 +73,8 @@ public class YDownTest extends GdxTest {
 		// a stage which uses our y-down camera and a simple actor (see MyActor below),
 		// which uses the flipped region. The key here is to
 		// set our y-down camera on the stage, the rest is just for demo purposes.
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		stage.setCamera(camera);
+		stage = new Stage();
+		stage.getViewport().setCamera(camera);
 		image = new MyActor(region);
 		image.setPosition(100, 100);
 		stage.addActor(image);

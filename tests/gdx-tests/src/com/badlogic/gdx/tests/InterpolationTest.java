@@ -186,11 +186,10 @@ public class InterpolationTest extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height);
+		stage.getViewport().update(width, height, true);
 		table.invalidateHierarchy();
 
-		stage.getCamera().update();
-		renderer.setProjectionMatrix(stage.getCamera().combined);
+		renderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
 	}
 
 	public void dispose () {

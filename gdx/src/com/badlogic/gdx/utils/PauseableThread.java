@@ -25,7 +25,7 @@ public class PauseableThread extends Thread {
 	boolean paused = false;
 	boolean exit = false;
 
-	/** Constructs a new thread setting the runnable which will be called repeatadly in a loop.
+	/** Constructs a new thread setting the runnable which will be called repeatedly in a loop.
 	 * 
 	 * @param runnable the runnable. */
 	public PauseableThread (Runnable runnable) {

@@ -192,6 +192,14 @@ public class btRigidBodyConstructionInfo extends BulletBase {
     return DynamicsJNI.btRigidBodyConstructionInfo_friction_get(swigCPtr, this);
   }
 
+  public void setRollingFriction(float value) {
+    DynamicsJNI.btRigidBodyConstructionInfo_rollingFriction_set(swigCPtr, this, value);
+  }
+
+  public float getRollingFriction() {
+    return DynamicsJNI.btRigidBodyConstructionInfo_rollingFriction_get(swigCPtr, this);
+  }
+
   public void setRestitution(float value) {
     DynamicsJNI.btRigidBodyConstructionInfo_restitution_set(swigCPtr, this, value);
   }

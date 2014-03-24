@@ -146,6 +146,7 @@ public class JsonValue implements Iterable<JsonValue> {
 	}
 
 	/** @deprecated Use the size property instead. Returns this number of children in the array or object. */
+	@Deprecated
 	public int size () {
 		return size;
 	}
@@ -304,26 +305,6 @@ public class JsonValue implements Iterable<JsonValue> {
 		String[] array = new String[size];
 		int i = 0;
 		for (JsonValue value = child; value != null; value = value.next, i++) {
-			String v;
-			switch (value.type) {
-			case stringValue:
-				v = value.stringValue;
-				break;
-			case doubleValue:
-				v = Double.toString(value.doubleValue);
-				break;
-			case longValue:
-				v = Long.toString(value.longValue);
-				break;
-			case booleanValue:
-				v = value.longValue != 0 ? "true" : "false";
-				break;
-			case nullValue:
-				v = null;
-				break;
-			default:
-				throw new IllegalStateException("Value cannot be converted to string: " + type);
-			}
 			array[i] = value.asString();
 		}
 		return array;
