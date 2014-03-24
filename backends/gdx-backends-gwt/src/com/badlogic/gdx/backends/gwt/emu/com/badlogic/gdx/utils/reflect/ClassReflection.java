@@ -34,7 +34,7 @@ public final class ClassReflection {
 
 	/** Returns the simple name of the underlying class as supplied in the source code. */
 	static public String getSimpleName (Class c) {
-		return c.getName();
+		return c.getSimpleName();
 	}
 
 	/** Determines if the supplied Object is assignment-compatible with the object represented by supplied Class. */
