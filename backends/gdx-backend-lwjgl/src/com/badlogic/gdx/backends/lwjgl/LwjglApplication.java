@@ -73,7 +73,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
-		LwjglNativesLoader.load();
+		LwjglNativesLoader.load();		
 
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
