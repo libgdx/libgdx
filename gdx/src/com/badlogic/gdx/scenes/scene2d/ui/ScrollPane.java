@@ -417,22 +417,10 @@ public class ScrollPane extends WidgetGroup {
 				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
 				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
 			} else {
-				// Offset widget area y for horizontal scrollbar.
-				if (scrollX) {
-					if (hScrollOnBottom) {
-						widgetAreaBounds.y += scrollbarHeight;
-					} else {
-						widgetAreaBounds.y = 0;
-					}
-				}
-				// Offset widget area x for vertical scrollbar.
-				if (scrollY) {
-					if (vScrollOnRight) {
-						widgetAreaBounds.x = 0;
-					} else {
-						widgetAreaBounds.x += scrollbarWidth;
-					}
-				}
+				// Offset widget area y for horizontal scrollbar at bottom.
+				if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
+				// Offset widget area x for vertical scrollbar at left.
+				if (scrollY && !vScrollOnRight) widgetAreaBounds.x += scrollbarWidth;
 			}
 		}
 
