@@ -42,8 +42,8 @@ public class CheckBox extends TextButton {
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
-		Cell<Image> cell = add(image = new Image(style.checkboxOff));
-		cell.padRight(style.padBetween);
+		imageCell = add(image = new Image(style.checkboxOff));
+		imageCell.padRight(style.padBetween);
 		Label label = getLabel();
 		add(label);
 		label.setAlignment(Align.left);
