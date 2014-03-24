@@ -69,11 +69,11 @@ public class GdxSetupUI extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please enter a destination directory.");
 			return;
 		}
-        final String sdkLocation = ui.form.sdkLocationText.getText().trim();
-        if (sdkLocation.length() == 0) {
-            JOptionPane.showMessageDialog(this, "Please enter in your android sdk path");
-            return;
-        }
+		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
+		if (sdkLocation.length() == 0) {
+			JOptionPane.showMessageDialog(this, "Please enter in your android sdk path");
+			return;
+		}
 
 		new Thread("DoShit") {
 			public void run () {
@@ -144,10 +144,9 @@ public class GdxSetupUI extends JFrame {
 		JLabel destinationLabel = new JLabel("Destination:");
 		JTextField destinationText = new JTextField(new File("test").getAbsolutePath());
 		JButton destinationButton = new JButton("Browse");
-
-        JLabel sdkLocationLabel = new JLabel("Android SDK");
-        JTextField sdkLocationText = new JTextField("C:\\Path\\To\\Your\\Sdk");
-        JButton sdkLocationButton = new JButton("Browse");
+		JLabel sdkLocationLabel = new JLabel("Android SDK");
+		JTextField sdkLocationText = new JTextField("C:\\Path\\To\\Your\\Sdk");
+		JButton sdkLocationButton = new JButton("Browse");
 
 		{
 			uiLayout();
@@ -170,9 +169,9 @@ public class GdxSetupUI extends JFrame {
 			add(destinationText, new GridBagConstraints(1, 3, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 			add(destinationButton, new GridBagConstraints(2, 3, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
 
-            add(sdkLocationLabel, new GridBagConstraints(0, 4, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
-            add(sdkLocationText, new GridBagConstraints(1, 4, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-            add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
+			add(sdkLocationLabel, new GridBagConstraints(0, 4, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
+			add(sdkLocationText, new GridBagConstraints(1, 4, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+			add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
         }
 
 		private void uiEvents () {
@@ -198,21 +197,21 @@ public class GdxSetupUI extends JFrame {
 					
 				}
 			});
-            sdkLocationButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JFileChooser chooser = new JFileChooser();
-                    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                    chooser.setDialogTitle("Chose destination");
-                    int result = chooser.showOpenDialog(null);
-                    if(result == JFileChooser.APPROVE_OPTION) {
-                        File dir = chooser.getSelectedFile();
-                        if(dir == null) return;
-                        if(dir.getAbsolutePath().trim().length() == 0) return;
-                        sdkLocationText.setText(dir.getAbsolutePath());
-                    }
-                }
-            });
+			sdkLocationButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JFileChooser chooser = new JFileChooser();
+					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					chooser.setDialogTitle("Chose destination");
+					int result = chooser.showOpenDialog(null);
+					if(result == JFileChooser.APPROVE_OPTION) {
+						File dir = chooser.getSelectedFile();
+						if(dir == null) return;
+						if(dir.getAbsolutePath().trim().length() == 0) return;
+						sdkLocationText.setText(dir.getAbsolutePath());
+					}
+				}
+			});
 		}
 	}
 

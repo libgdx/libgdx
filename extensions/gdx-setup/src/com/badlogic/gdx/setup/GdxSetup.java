@@ -64,11 +64,11 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("android/res/values/styles.xml", false));
 		project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
 		project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
-		project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
-		project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
+        project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
+        project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
 		project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
 		project.files.add(new ProjectFile("android/AndroidManifest.xml"));
-		project.files.add(new ProjectFile("android/build.gradle", true));
+	    project.files.add(new ProjectFile("android/build.gradle", true));
 		project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 		project.files.add(new ProjectFile("android/proguard-project.txt", false));
 		project.files.add(new ProjectFile("android/project.properties", false));
@@ -94,7 +94,7 @@ public class GdxSetup {
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
 		values.put("%MAIN_CLASS%", mainClass);
-        values.put("%ANDROID_SDK%", sdkLocation);
+		values.put("%ANDROID_SDK%", sdkLocation);
 		
 		copyAndReplace(outputDir, project, values);
 		
