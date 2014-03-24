@@ -3,11 +3,11 @@ package com.badlogic.gdx.graphics.g3d.particles.controllers;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceParticleBatch;
 import com.badlogic.gdx.math.Vector3;
 
 /** A {@link ParticleController} which will handle {@link ModelInstanceParticle} particles. */

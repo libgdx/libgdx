@@ -3,11 +3,11 @@ package com.badlogic.gdx.graphics.g3d.particles.controllers;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteBatch;
 
 /** A {@link ParticleController} which will handle {@link PointSpriteParticle} particles. */
 /** @author Inferno */
@@ -57,6 +57,6 @@ public class PointSpriteParticleController extends ParticleController<PointSprit
 	
 	@Override
 	public boolean isCompatible (ParticleBatch batch) {
-		return batch.getClass().isAssignableFrom(PointSpriteBatch.class);
+		return batch.getClass().isAssignableFrom(PointSpriteParticleBatch.class);
 	}
 }

@@ -21,11 +21,11 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.BillboardDistanceParticleSorter;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
 
 /** @author Inferno */
-public class BillboardBatchPanel extends EditorPanel<BillboardBatch> {
+public class BillboardBatchPanel extends EditorPanel<BillboardParticleBatch> {
 	private enum AlignModeWrapper{
 		Screen( AlignMode.Screen, "Screen"),
 		ViewPoint(AlignMode.ViewPoint, "View Point"),
@@ -67,13 +67,13 @@ public class BillboardBatchPanel extends EditorPanel<BillboardBatch> {
 	JComboBox alignCombo,sortCombo;
 	JCheckBox useGPUBox;
 
-	public BillboardBatchPanel (ParticleEditor3D particleEditor3D, BillboardBatch renderer) {
+	public BillboardBatchPanel (ParticleEditor3D particleEditor3D, BillboardParticleBatch renderer) {
 		super(particleEditor3D, "Billboard Batch", "Renderer used to draw billboards particles.");
 		initializeComponents(renderer);
 		setValue(renderer);
 	}
 
-	private void initializeComponents (BillboardBatch renderer) {
+	private void initializeComponents (BillboardParticleBatch renderer) {
 		//Align
 		alignCombo = new JComboBox();
 		alignCombo.setModel(new DefaultComboBoxModel(AlignModeWrapper.values()));

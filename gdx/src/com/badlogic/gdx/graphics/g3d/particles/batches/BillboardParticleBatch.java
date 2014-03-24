@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.particles.renderers;
+package com.badlogic.gdx.graphics.g3d.particles.batches;
 
 import java.util.Comparator;
 
@@ -32,7 +32,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
 /** @author Inferno */
-public class BillboardBatch extends BufferedParticleBatch<BillboardParticle> {
+public class BillboardParticleBatch extends BufferedParticleBatch<BillboardParticle> {
 	protected static final Vector3 TMP_V1 = new Vector3(), 
 		 TMP_V2 = new Vector3(), 
 		 TMP_V3 = new Vector3(), 
@@ -110,7 +110,7 @@ public class BillboardBatch extends BufferedParticleBatch<BillboardParticle> {
 	Shader shader;
 	
 	
-	public BillboardBatch(AlignMode mode, boolean useGPU, int capacity){
+	public BillboardParticleBatch(AlignMode mode, boolean useGPU, int capacity){
 		super(BillboardParticle.class, new BillboardDistanceParticleSorter());
 		this.mode = mode;
 		this.useGPU = useGPU;
@@ -120,11 +120,11 @@ public class BillboardBatch extends BufferedParticleBatch<BillboardParticle> {
 		ensureCapacity(capacity);
 	}
 
-	public BillboardBatch () {
+	public BillboardParticleBatch () {
 		this(AlignMode.Screen, false, 100);
 	}
 	
-	public BillboardBatch (int capacity) {
+	public BillboardParticleBatch (int capacity) {
 		this(AlignMode.Screen, false, capacity);
 	}
 

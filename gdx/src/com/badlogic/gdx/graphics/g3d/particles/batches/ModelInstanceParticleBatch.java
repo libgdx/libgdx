@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.particles.renderers;
+package com.badlogic.gdx.graphics.g3d.particles.batches;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.Renderable;

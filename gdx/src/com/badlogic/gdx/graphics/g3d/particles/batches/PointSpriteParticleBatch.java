@@ -1,4 +1,4 @@
-package com.badlogic.gdx.graphics.g3d.particles.renderers;
+package com.badlogic.gdx.graphics.g3d.particles.batches;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
 /** @author Inferno */
-public class PointSpriteBatch extends BufferedParticleBatch<PointSpriteParticle> {
+public class PointSpriteParticleBatch extends BufferedParticleBatch<PointSpriteParticle> {
 	protected static final Vector3 TMP_V1 = new Vector3();
 	protected static final int sizeAndRotationUsage = 1 << 9;
 	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(
@@ -47,11 +47,11 @@ public class PointSpriteBatch extends BufferedParticleBatch<PointSpriteParticle>
 	private float[] vertices;
 	Renderable renderable;
 	
-	public PointSpriteBatch () {
+	public PointSpriteParticleBatch () {
 		this(1000);
 	}
 	
-	public PointSpriteBatch (int capacity) {
+	public PointSpriteParticleBatch (int capacity) {
 		super(PointSpriteParticle.class, new PointSpriteDistanceParticleSorter());
 		allocRenderable();
 		ensureCapacity(capacity);

@@ -86,6 +86,10 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader.ParticleEffectSaveParameter;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.ModelInstanceParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ModelInstanceParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ParticleControllerParticleController;
@@ -129,10 +133,6 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer.Billb
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ModelInstanceVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ParticleControllerVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.PointSpriteVelocityInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceParticleBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.NumericValue;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
@@ -383,11 +383,11 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 	}
 
 	protected JPanel getPanel (ParticleBatch renderer) {
-		if(renderer instanceof PointSpriteBatch){
+		if(renderer instanceof PointSpriteParticleBatch){
 			return new EmptyPanel(this, "Point Sprite Batch", "It renders particles as point sprites.");
 		}
-		if(renderer instanceof BillboardBatch){
-			return new BillboardBatchPanel(this, (BillboardBatch) renderer);
+		if(renderer instanceof BillboardParticleBatch){
+			return new BillboardBatchPanel(this, (BillboardParticleBatch) renderer);
 		}
 		else if(renderer instanceof ModelInstanceParticleBatch){
 			return new EmptyPanel(this, "Model Instance Batch", "It renders particles as model instances.");
@@ -646,8 +646,8 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		private ModelInstance xyzInstance, xzPlaneInstance;
 		private Environment environment;
 		private ModelBatch modelBatch;
-		PointSpriteBatch pointSpriteBatch;
-		BillboardBatch billboardBatch;
+		PointSpriteParticleBatch pointSpriteBatch;
+		BillboardParticleBatch billboardBatch;
 		ModelInstanceParticleBatch modelInstanceParticleBatch;
 		
 		public void create () {
@@ -721,11 +721,11 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 			ui.addActor(table);
 			
 			//Batches
-			PointSpriteBatch.init();
-			pointSpriteBatch = new PointSpriteBatch();
+			PointSpriteParticleBatch.init();
+			pointSpriteBatch = new PointSpriteParticleBatch();
 			pointSpriteBatch.setCamera(worldCamera);
 			
-			billboardBatch = new BillboardBatch();
+			billboardBatch = new BillboardParticleBatch();
 			billboardBatch.setCamera(worldCamera);
 			modelInstanceParticleBatch = new ModelInstanceParticleBatch();
 			
@@ -894,11 +894,11 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		throwable.printStackTrace();
 	}
 
-	public PointSpriteBatch getPointSpriteBatch () {
+	public PointSpriteParticleBatch getPointSpriteBatch () {
 		return renderer.pointSpriteBatch;
 	}
 
-	public BillboardBatch getBillboardBatch () {
+	public BillboardParticleBatch getBillboardBatch () {
 		return renderer.billboardBatch;
 	}
 

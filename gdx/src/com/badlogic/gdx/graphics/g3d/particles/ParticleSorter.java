@@ -3,7 +3,7 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.BufferedParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BufferedParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
