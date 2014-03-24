@@ -3,6 +3,8 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+/** Encapsulate the formulas to spawn a particle on a cylinder shape. */
+/** @author Inferno */
 public final class CylinderSpawnShapeValue extends PrimitiveSpawnShapeValue{
 
 	public CylinderSpawnShapeValue (CylinderSpawnShapeValue cylinderSpawnShapeValue) {
@@ -45,7 +47,6 @@ public final class CylinderSpawnShapeValue extends PrimitiveSpawnShapeValue{
 		}
 		
 		vector.set(radiusX*MathUtils.cosDeg(spawnTheta), ty, radiusZ*MathUtils.sinDeg(spawnTheta));
-
 	}
 
 	@Override

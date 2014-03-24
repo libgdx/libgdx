@@ -1,33 +1,36 @@
 package com.badlogic.gdx.graphics.g3d.particles.controllers;
 
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteBatch;
 
-public class PointSpriteParticleController extends ParticleController<PointParticle> {
+/** A {@link ParticleController} which will handle {@link PointSpriteParticle} particles. */
+/** @author Inferno */
+public class PointSpriteParticleController extends ParticleController<PointSpriteParticle> {
 
 	public PointSpriteParticleController(){}
 	
-	public PointSpriteParticleController (String name, Emitter<PointParticle> emitter, IParticleBatch<PointParticle> batch,
-																											Influencer<PointParticle>... influencers) {
+	public PointSpriteParticleController (String name, Emitter<PointSpriteParticle> emitter, ParticleBatch<PointSpriteParticle> batch,
+																											Influencer<PointSpriteParticle>... influencers) {
 		super(name, emitter, batch, influencers);
 	}
 
 	@Override
-	public PointParticle[] allocParticles (int count) {
-		PointParticle[] particles = new PointParticle[count];
+	public PointSpriteParticle[] allocParticles (int count) {
+		PointSpriteParticle[] particles = new PointSpriteParticle[count];
 		for(int i=0; i <count; ++i)
-			particles[i] = new PointParticle();
+			particles[i] = new PointSpriteParticle();
 		return particles;
 	}
 	
 	@Override
 	protected void initParticles () {
-		for(PointParticle particle : particles){
+		for(PointSpriteParticle particle : particles){
 			particle.reset();
 		}
 	}
@@ -47,13 +50,13 @@ public class PointSpriteParticleController extends ParticleController<PointParti
 	protected void calculateBoundingBox () {
 		boundingBox.clr();
 		for(int i=0; i < emitter.activeCount; ++i){
-			PointParticle particle = particles[i];
+			PointSpriteParticle particle = particles[i];
 			boundingBox.ext(particle.x, particle.y, particle.z);
 		}
 	}
 	
 	@Override
-	public boolean isCompatible (IParticleBatch batch) {
+	public boolean isCompatible (ParticleBatch batch) {
 		return batch.getClass().isAssignableFrom(PointSpriteBatch.class);
 	}
 }

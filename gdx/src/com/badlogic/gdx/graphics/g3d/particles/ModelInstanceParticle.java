@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
+/** @author Inferno */
 public class ModelInstanceParticle extends Particle {
 	public ModelInstance instance;
 	//Color

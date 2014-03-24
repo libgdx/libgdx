@@ -130,7 +130,7 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.Mo
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.ParticleControllerVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer.PointSpriteVelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.PointSpriteBatch;
 import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
@@ -380,7 +380,7 @@ public class ParticleEditor3D extends JFrame implements AssetErrorListener {
 		return null;
 	}
 
-	protected JPanel getPanel (IParticleBatch renderer) {
+	protected JPanel getPanel (ParticleBatch renderer) {
 		if(renderer instanceof PointSpriteBatch){
 			return new EmptyPanel(this, "Point Sprite Batch", "It renders particles as point sprites.");
 		}

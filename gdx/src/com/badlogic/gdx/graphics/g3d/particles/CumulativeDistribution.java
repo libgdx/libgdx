@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
+/** @author Inferno */
 public class CumulativeDistribution <T>{
 	public class CumulativeValue{
 		public T value;

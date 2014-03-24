@@ -3,7 +3,8 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-
+/** Defines a variation of red, green and blue on a given time line.*/
+/** @author Inferno */
 public class GradientColorValue extends ParticleValue {
 		static private float[] temp = new float[4];
 

@@ -1,12 +1,14 @@
 package com.badlogic.gdx.graphics.g3d.particles.emitters;
 
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
 import com.badlogic.gdx.graphics.g3d.particles.values.RangedNumericValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's a generic use {@link Emitter} which fits most of the particles simulation scenarios. */
+/** @author Inferno */
 public class RegularEmitter<T extends Particle> extends Emitter<T> implements Json.Serializable {
 	public RangedNumericValue delayValue, durationValue;
 	public ScaledNumericValue 	lifeOffsetValue,
@@ -215,7 +217,7 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> implements Js
 	}
 
 	@Override
-	public ParticleSystem copy () {
+	public ParticleControllerComponent copy () {
 		return new RegularEmitter(this);
 	}
 
@@ -233,7 +235,7 @@ public class RegularEmitter<T extends Particle> extends Emitter<T> implements Js
 	@Override
 	public void read (Json json, JsonValue jsonData) {
 		super.read(json, jsonData);
-		continuous = json.readValue("continous", Boolean.class, jsonData);
+		continuous = json.readValue("continous", boolean.class, jsonData);
 		emissionValue = json.readValue("emission", ScaledNumericValue.class, jsonData);
 		delayValue = json.readValue("delay", RangedNumericValue.class, jsonData);
 		durationValue = json.readValue("duration", RangedNumericValue.class, jsonData);

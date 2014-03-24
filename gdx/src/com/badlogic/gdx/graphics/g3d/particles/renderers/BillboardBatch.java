@@ -16,7 +16,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
@@ -32,7 +31,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-public class BillboardBatch extends ParticleBatch<BillboardParticle> {
+/** @author Inferno */
+public class BillboardBatch extends BufferedParticleBatch<BillboardParticle> {
 	protected static final Vector3 TMP_V1 = new Vector3(), 
 		 TMP_V2 = new Vector3(), 
 		 TMP_V3 = new Vector3(), 

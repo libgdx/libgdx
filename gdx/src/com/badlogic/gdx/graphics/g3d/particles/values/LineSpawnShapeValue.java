@@ -3,6 +3,8 @@ package com.badlogic.gdx.graphics.g3d.particles.values;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+/** Encapsulate the formulas to spawn a particle on a line shape. */
+/** @author Inferno */
 public final class LineSpawnShapeValue extends PrimitiveSpawnShapeValue {
 
 	public LineSpawnShapeValue (LineSpawnShapeValue value) {

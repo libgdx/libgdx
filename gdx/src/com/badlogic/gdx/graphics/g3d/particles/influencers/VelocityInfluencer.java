@@ -1,11 +1,12 @@
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityValue;
 import com.badlogic.gdx.math.MathUtils;
@@ -15,6 +16,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's an {@link Influencer} which controls how the particles move in the space.*/
+/** @author Inferno */
 public abstract class VelocityInfluencer<T extends Particle> extends Influencer<T> {
 	
 	//Billboards
@@ -54,12 +57,10 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 		}
 
 		@Override
-		public ParticleSystem<BillboardParticle> copy () {
+		public ParticleControllerComponent<BillboardParticle> copy () {
 			return new BillboardVelocityInfluencer(this);
 		}
 	}
-	
-	
 	
 	//Model Instances
 	
@@ -94,7 +95,7 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 		}
 		
 		@Override
-		public ParticleSystem<ModelInstanceParticle> copy () {
+		public ParticleControllerComponent<ModelInstanceParticle> copy () {
 			return new ModelInstanceVelocityInfluencer(this);
 		}
 	}
@@ -130,15 +131,14 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 		}
 
 		@Override
-		public ParticleSystem<ParticleControllerParticle> copy () {
+		public ParticleControllerComponent<ParticleControllerParticle> copy () {
 			return new ParticleControllerVelocityInfluencer(this);
 		}
 	}
 
-
 	//Points
 
-	public static class PointSpriteVelocityInfluencer extends VelocityInfluencer<PointParticle>{
+	public static class PointSpriteVelocityInfluencer extends VelocityInfluencer<PointSpriteParticle>{
 		public PointSpriteVelocityInfluencer () {}
 
 		public PointSpriteVelocityInfluencer (PointSpriteVelocityInfluencer billboardVelocityInfluencer) {
@@ -147,7 +147,7 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 
 		public void update(){
 			for(int i=0, activeCount = controller.emitter.activeCount; i < activeCount; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				particle.velocity.set(0, 0, 0);
 				for(int k=0; k < velocities.size; ++k)
 					velocities.items[k].addVelocity(controller, particle, particle.velocityData[k]);
@@ -173,15 +173,10 @@ public abstract class VelocityInfluencer<T extends Particle> extends Influencer<
 		}
 
 		@Override
-		public ParticleSystem<PointParticle> copy () {
+		public ParticleControllerComponent<PointSpriteParticle> copy () {
 			return new PointSpriteVelocityInfluencer(this);
 		}
 	}
-
-
-
-
-
 
 	public Array<VelocityValue> velocities;
 	

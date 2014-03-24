@@ -1,13 +1,15 @@
-package com.badlogic.gdx.graphics.g3d.particles;
+package com.badlogic.gdx.graphics.g3d.particles.renderers;
 
 import java.lang.reflect.Array;
 import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter;
 import com.badlogic.gdx.utils.Sort;
 
-public abstract class ParticleBatch<T> implements IParticleBatch<T>{
+/** @author Inferno */
+public abstract class BufferedParticleBatch<T> implements ParticleBatch<T>{
 	protected T[] bufferedParticles;
 	protected com.badlogic.gdx.utils.Array<ParticleController<T>> controllers;
 	protected ParticleSorter<T> sorter;
@@ -15,7 +17,7 @@ public abstract class ParticleBatch<T> implements IParticleBatch<T>{
 	protected int bufferedParticlesCount;
 	protected Camera camera;
 	
-	protected ParticleBatch(Class<T> type, ParticleSorter<T> sorter){
+	protected BufferedParticleBatch(Class<T> type, ParticleSorter<T> sorter){
 		this.type = type;
 		this.sorter = sorter;
 		controllers = new com.badlogic.gdx.utils.Array<ParticleController<T>>(false, 10, ParticleController.class);
@@ -74,6 +76,7 @@ public abstract class ParticleBatch<T> implements IParticleBatch<T>{
 		sorter.setCamera(camera);
 	}
 	
+	/** Sends the data to the gpu */
 	protected abstract void flush();
 
 }

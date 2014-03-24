@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.StrengthVelo
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's a class which represents the magnitude of a velocity in the space.
+ * It should be the base class of all the {@link VelocityValue} values that use the strength of
+ * the velocity somehow (Note: not all the values are interested in direction and/or magnitude of a velocity).*/
+/** @author Inferno */
 public abstract class StrengthVelocityValue<T, D extends StrengthVelocityData> extends VelocityValue<T, D>{
 	public ScaledNumericValue strengthValue;
 

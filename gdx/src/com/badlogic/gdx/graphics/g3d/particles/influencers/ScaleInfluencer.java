@@ -1,13 +1,16 @@
 package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's an {@link Influencer} which controls the scale of the particles.*/
+/** @author Inferno */
 public abstract class ScaleInfluencer<T> extends Influencer<T> {
 	
 	public static class BillboardScaleInfluencer extends ScaleInfluencer<BillboardParticle> {
@@ -103,7 +106,7 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	public static class PointSpriteScaleInfluencer extends ScaleInfluencer<PointParticle> {
+	public static class PointSpriteScaleInfluencer extends ScaleInfluencer<PointSpriteParticle> {
 		public PointSpriteScaleInfluencer () {}
 		public PointSpriteScaleInfluencer (PointSpriteScaleInfluencer billboardScaleinfluencer) {
 			super(billboardScaleinfluencer);
@@ -112,7 +115,7 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		@Override
 		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				particle.scaleStart = scaleValue.newLowValue() * controller.scale.x;
 				particle.scaleDiff = scaleValue.newHighValue() * controller.scale.y;
 				if (!scaleValue.isRelative()) particle.scaleDiff -= particle.scaleStart;
@@ -124,7 +127,7 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 		@Override
 		public void update () {
 			for(int i=0, c = controller.emitter.activeCount; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				particle.scale = particle.scaleStart + particle.scaleDiff * scaleValue.getScale(particle.lifePercent);
 			}
 		}
@@ -134,8 +137,6 @@ public abstract class ScaleInfluencer<T> extends Influencer<T> {
 			return new PointSpriteScaleInfluencer(this);
 		}
 	}
-	
-	
 
 	public ScaledNumericValue scaleValue;
 	

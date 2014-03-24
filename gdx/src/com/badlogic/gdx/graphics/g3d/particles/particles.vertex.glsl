@@ -77,7 +77,6 @@ varying vec2 v_uvRegionCenter;
 
 //Camera
 uniform mat4 u_projTrans;
-//uniform mat4 u_worldViewTrans;
 //should be modelView but particles are already in world coordinates
 uniform mat4 u_viewTrans;
 uniform float u_screenWidth;

@@ -1,21 +1,24 @@
 package com.badlogic.gdx.graphics.g3d.particles.controllers;
 
+import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.ModelInstanceParticleBatch;
 import com.badlogic.gdx.math.Vector3;
 
+/** A {@link ParticleController} which will handle {@link ModelInstanceParticle} particles. */
+/** @author Inferno */
 public class ModelInstanceParticleController extends ParticleController<ModelInstanceParticle> {
 	private static final Vector3 	TMP_V1 = new Vector3(), 
 											TMP_V2 = new Vector3();
 	
 	public ModelInstanceParticleController (){}
 	
-	public ModelInstanceParticleController (String name, Emitter<ModelInstanceParticle> emitter, IParticleBatch<ModelInstanceParticle> batch,
+	public ModelInstanceParticleController (String name, Emitter<ModelInstanceParticle> emitter, ParticleBatch<ModelInstanceParticle> batch,
 																											Influencer<ModelInstanceParticle>... influencers) {
 		super(name, emitter, batch, influencers);
 	}
@@ -67,7 +70,7 @@ public class ModelInstanceParticleController extends ParticleController<ModelIns
 	}
 	
 	@Override
-	public boolean isCompatible (IParticleBatch batch) {
+	public boolean isCompatible (ParticleBatch batch) {
 		return batch.getClass().isAssignableFrom(ModelInstanceParticleBatch.class);
 	}
 }

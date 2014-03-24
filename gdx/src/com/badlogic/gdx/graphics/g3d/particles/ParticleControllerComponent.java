@@ -9,7 +9,11 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-public abstract class ParticleSystem<T> implements Disposable, Json.Serializable, ResourceData.Configurable {
+/** It's the base class of every {@link ParticleController} component.
+ * A component duty is to participate in one or some events during the simulation.
+ * (i.e it can handle the particles emission or modify particle properties, etc.)*/
+/** @author Inferno */
+public abstract class ParticleControllerComponent<T> implements Disposable, Json.Serializable, ResourceData.Configurable {
 	protected static final Vector3 TMP_V1 = new Vector3(), 
 		 TMP_V2 = new Vector3(), 
 		 TMP_V3 = new Vector3(), 
@@ -21,26 +25,16 @@ public abstract class ParticleSystem<T> implements Disposable, Json.Serializable
 	protected static final Matrix3 TMP_M3 = new Matrix3();
 	protected static final Matrix4 TMP_M4 = new Matrix4();
 	protected ParticleController<T> controller;
-	/** Called to initialize new emitted particles.
-	 * Should be called by the Emitter */
+	/** Called to initialize new emitted particles. */
 	public void activateParticles (int startIndex, int count){};
-	/** Called to notify which particles have been killed .
-	 * Should be called by the Emitter*/
+	/** Called to notify which particles have been killed. */
 	public void killParticles (int startIndex, int count){};
-	/** Updates the simulation */
 	public void update (){};
-	/** Called to allocate each resource needed 
-	 * Must be called before any other method. */
 	public void init (){};
-	/** Called to begin the simulation.
-	 * Must be called after init and before update. */
 	public void start(){};
-	/** Ends the simulation.
-	 *  It's called before the simulation begins, if it was already started. */
 	public void end(){};
-	/** Called when it's time to release each allocated resource*/
 	public void dispose(){}
-	public abstract ParticleSystem<T> copy();
+	public abstract ParticleControllerComponent<T> copy();
 	
 	public void bind (ParticleController particleController) {
 		controller = particleController;

@@ -3,6 +3,7 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import com.badlogic.gdx.math.Vector3;
 
 
+/** @author Inferno */
 public class BillboardParticle extends Particle{
 	public float 	x,y,z,
 						u, v, u2, v2,

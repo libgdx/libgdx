@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.Particle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.VelocityInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.AngularVelocityData;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.StrengthVelocityData;
 import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
+/** Defines the {@link VelocityValue} values acting on each type of {@link Particle} particles.*/
+/** @author Inferno */
 public final class VelocityValues {
 	
 	//Billboards
@@ -474,7 +477,7 @@ public final class VelocityValues {
 	
 	
 	//Points
-	public static class PointRotationVelocityValue extends StrengthVelocityValue<PointParticle, StrengthVelocityData>{
+	public static class PointRotationVelocityValue extends StrengthVelocityValue<PointSpriteParticle, StrengthVelocityData>{
 		public PointRotationVelocityValue () {
 			super();
 		}
@@ -486,12 +489,12 @@ public final class VelocityValues {
 			return new PointRotationVelocityValue(this);
 		}
 		@Override
-		public void addVelocity (ParticleController<PointParticle> controller, PointParticle particle, StrengthVelocityData data) {
-			PointParticle.ROTATION_ACCUMULATOR += (data.strengthStart + data.strengthDiff * strengthValue.getScale(particle.lifePercent));
+		public void addVelocity (ParticleController<PointSpriteParticle> controller, PointSpriteParticle particle, StrengthVelocityData data) {
+			PointSpriteParticle.ROTATION_ACCUMULATOR += (data.strengthStart + data.strengthDiff * strengthValue.getScale(particle.lifePercent));
 		}
 	}
 	
-	public static class PointCentripetalVelocityValue extends StrengthVelocityValue<PointParticle, StrengthVelocityData>{
+	public static class PointCentripetalVelocityValue extends StrengthVelocityValue<PointSpriteParticle, StrengthVelocityData>{
 		public PointCentripetalVelocityValue () {
 			super();
 		}
@@ -502,7 +505,7 @@ public final class VelocityValues {
 		public PointCentripetalVelocityValue copy () {
 			return new PointCentripetalVelocityValue(this);
 		}
-		public void addVelocity (ParticleController<PointParticle> controller, PointParticle particle, StrengthVelocityData velocityData){
+		public void addVelocity (ParticleController<PointSpriteParticle> controller, PointSpriteParticle particle, StrengthVelocityData velocityData){
 			float strength = velocityData.strengthStart + velocityData.strengthDiff * strengthValue.getScale(particle.lifePercent);
 			TMP_V3.set(particle.x, particle.y, particle.z);
 			if(!isGlobal){
@@ -513,7 +516,7 @@ public final class VelocityValues {
 		}
 	}
 	
-	public static class PointTangetialVelocityValue extends AngularVelocityValue<PointParticle>{
+	public static class PointTangetialVelocityValue extends AngularVelocityValue<PointSpriteParticle>{
 		public PointTangetialVelocityValue () {
 			super();
 		}
@@ -524,7 +527,7 @@ public final class VelocityValues {
 		public PointTangetialVelocityValue copy () {
 			return new PointTangetialVelocityValue(this);
 		}
-		public void addVelocity (ParticleController<PointParticle> controller, PointParticle particle, AngularVelocityData velocityData){
+		public void addVelocity (ParticleController<PointSpriteParticle> controller, PointSpriteParticle particle, AngularVelocityData velocityData){
 			float strength = velocityData.strengthStart + velocityData.strengthDiff * strengthValue.getScale(particle.lifePercent),
 					phi = velocityData.phistart + velocityData.phiDiff * phiValue.getScale(particle.lifePercent),  
 					theta = velocityData.thetaStart + velocityData.thetaDiff * thetaValue.getScale(particle.lifePercent);
@@ -537,7 +540,7 @@ public final class VelocityValues {
 		}
 	}
 	
-	public static class PointPolarVelocityValue extends AngularVelocityValue<PointParticle>{
+	public static class PointPolarVelocityValue extends AngularVelocityValue<PointSpriteParticle>{
 		public PointPolarVelocityValue () {
 			super();
 		}
@@ -548,7 +551,7 @@ public final class VelocityValues {
 		public PointPolarVelocityValue copy () {
 			return new PointPolarVelocityValue(this);
 		}
-		public void addVelocity (ParticleController<PointParticle> controller, PointParticle particle, AngularVelocityData velocityData){
+		public void addVelocity (ParticleController<PointSpriteParticle> controller, PointSpriteParticle particle, AngularVelocityData velocityData){
 			float strength = velocityData.strengthStart + velocityData.strengthDiff * strengthValue.getScale(particle.lifePercent),
 					phi = velocityData.phistart + velocityData.phiDiff * phiValue.getScale(particle.lifePercent),  
 					theta = velocityData.thetaStart + velocityData.thetaDiff * thetaValue.getScale(particle.lifePercent);
@@ -560,7 +563,7 @@ public final class VelocityValues {
 		}
 	}
 	
-	public static class PointWeightVelocityValue extends StrengthVelocityValue<PointParticle, StrengthVelocityData>{
+	public static class PointWeightVelocityValue extends StrengthVelocityValue<PointSpriteParticle, StrengthVelocityData>{
 		public PointWeightVelocityValue () {
 			super();
 		}
@@ -571,14 +574,14 @@ public final class VelocityValues {
 		public PointWeightVelocityValue copy () {
 			return new PointWeightVelocityValue(this);
 		}
-		public void addVelocity (ParticleController<PointParticle> controller, PointParticle particle, StrengthVelocityData velocityData){
+		public void addVelocity (ParticleController<PointSpriteParticle> controller, PointSpriteParticle particle, StrengthVelocityData velocityData){
 			float strength = velocityData.strengthStart + velocityData.strengthDiff * strengthValue.getScale(particle.lifePercent);
 			TMP_V3.set(controller.velocity);
 			particle.velocity.add(TMP_V3.scl(strength));
 		}
 	}
 	
-	public static class PointBrownianVelocityValue extends StrengthVelocityValue<PointParticle, StrengthVelocityData>{
+	public static class PointBrownianVelocityValue extends StrengthVelocityValue<PointSpriteParticle, StrengthVelocityData>{
 		public PointBrownianVelocityValue () {
 			super();
 		}
@@ -589,7 +592,7 @@ public final class VelocityValues {
 		public PointBrownianVelocityValue copy () {
 			return new PointBrownianVelocityValue(this);
 		}
-		public void addVelocity (ParticleController<PointParticle> controller, PointParticle particle, StrengthVelocityData velocityData){
+		public void addVelocity (ParticleController<PointSpriteParticle> controller, PointSpriteParticle particle, StrengthVelocityData velocityData){
 			float strength = velocityData.strengthStart + velocityData.strengthDiff * strengthValue.getScale(particle.lifePercent);
 			TMP_V3.set(MathUtils.random(-1, 1f), MathUtils.random(-1, 1f), MathUtils.random(-1, 1f)).nor();
 			particle.velocity.add(TMP_V3.scl(strength));

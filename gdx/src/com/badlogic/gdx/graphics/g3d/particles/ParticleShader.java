@@ -36,6 +36,11 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
+/** This is a custom shader to render the particles.
+ * Usually is not required, because the {@link DefaultShader} will be used instead.
+ * When dealing with {@link BillboardParticle} with gpu mode on or {@link PointSpriteParticle} batches,
+ * this shader will be used. */
+/** @author Inferno */
 public class ParticleShader extends BaseShader {
 	public enum ParticleType{
 		Billboard,

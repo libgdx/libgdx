@@ -3,7 +3,7 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.JsonValue;
 
 /** Base class of all the particle controllers.
  * Encapsulate the generic structure of a controller and methods to update the particles simulation.*/
+/** @author Inferno */
 public abstract class ParticleController<T> implements Json.Serializable, ResourceData.Configurable{
 	/** Name of the controller */
 	public String name;
@@ -25,7 +26,7 @@ public abstract class ParticleController<T> implements Json.Serializable, Resour
 	public Array<Influencer<T>> influencers;
 	
 	/** Controls the graphical representation of the particles */
-	public  IParticleBatch<T> batch;
+	public  ParticleBatch<T> batch;
 	
 	/** Particles components */
 	public T[] particles;
@@ -53,7 +54,7 @@ public abstract class ParticleController<T> implements Json.Serializable, Resour
 		scale = new Vector3(1,1,1);
 	}
 	
-	public ParticleController(String name, Emitter<T> emitter, IParticleBatch<T> batch, Influencer<T>...influencers){
+	public ParticleController(String name, Emitter<T> emitter, ParticleBatch<T> batch, Influencer<T>...influencers){
 		this();
 		this.name = name;
 		this.emitter = emitter;
@@ -114,7 +115,8 @@ public abstract class ParticleController<T> implements Json.Serializable, Resour
 	
 	
 	/** Initialize the controller.
-	 *  All the sub systems will be initialized and binded to the controller. */
+	 *  All the sub systems will be initialized and binded to the controller. 
+	 *  Must be called before any other method. */
 	public void init(){
 		bind();
 		boolean alloc = true;
@@ -215,7 +217,6 @@ public abstract class ParticleController<T> implements Json.Serializable, Resour
 		emitter.dispose();
 		for(Influencer influencer : influencers)
 			influencer.dispose();
-		//renderer.dispose();
 	}
 
 	public BoundingBox getBoundingBox (){
@@ -285,9 +286,12 @@ public abstract class ParticleController<T> implements Json.Serializable, Resour
 			influencer.load(manager, data);
 	}
 
-	public abstract boolean isCompatible(IParticleBatch batch);
+	/**@return if this controller can be rendered by the given batch */
+	public abstract boolean isCompatible(ParticleBatch batch);
 	
-	public boolean setBatch (IParticleBatch batch) {
+	/**Sets the batch used to render the particle.
+	 * It will implicitly check if the batch is compatible with this controller.*/
+	public boolean setBatch (ParticleBatch batch) {
 		if(isCompatible(batch)){
 			this.batch = batch;
 			return true;

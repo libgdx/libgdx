@@ -8,6 +8,18 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 
+
+/** This class handles the assets and configurations required by a given resource when de/serialized. 
+ * It's handy when a given object or one of its members requires some assets to be loaded to work properly after
+ * being deserialized. To save the assets, the object should implement the {@link Configurable} interface and obtain
+ * a {@link SaveData} object to store every required asset or information which will be used during the loading phase.
+ * The passed in {@link AssetManager} is generally used to find the asset file name for a given resource of a given type.
+ * The class can also store global configurations, this is useful when dealing with objects which should be allocated once
+ * (i.e singleton).
+ * The deserialization process must happen in the same order of serialization, because the per object {@link SaveData} blocks are stored
+ * as an {@link Array} within the {@link ResourceData}, while the global {@link SaveData} instances can be accessed in any order because
+ * require a unique {@link String} and are stored in an {@link ObjectMap}.*/
+/** @author Inferno */
 public class ResourceData<T> implements Json.Serializable{
 	
 	public static interface Configurable{

@@ -4,6 +4,9 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** The base class of all the {@link SpawnShapeValue} values which spawn the
+ * particles on a geometric primitive. */
+/** @author Inferno */
 public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 	protected static final Vector3 TMP_V1 = new Vector3();
 	static public enum SpawnSide {
@@ -104,7 +107,7 @@ public abstract class PrimitiveSpawnShapeValue extends SpawnShapeValue {
 		spawnWidthValue = json.readValue("spawnWidthValue", ScaledNumericValue.class, jsonData);
 		spawnHeightValue = json.readValue("spawnHeightValue", ScaledNumericValue.class, jsonData);
 		spawnDepthValue = json.readValue("spawnDepthValue", ScaledNumericValue.class, jsonData);
-		edges = json.readValue("edges", Boolean.class, jsonData);
+		edges = json.readValue("edges", boolean.class, jsonData);
 	}
 	
 }

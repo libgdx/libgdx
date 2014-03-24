@@ -9,7 +9,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
-public class ModelInstanceParticleBatch implements IParticleBatch<ModelInstanceParticle> {
+/** @author Inferno */
+public class ModelInstanceParticleBatch implements ParticleBatch<ModelInstanceParticle> {
 	Array<ParticleController<ModelInstanceParticle>> controllers;
 	public ModelInstanceParticleBatch () {
 		controllers = new Array<ParticleController<ModelInstanceParticle>>(false, 5);

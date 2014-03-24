@@ -4,12 +4,14 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.graphics.g3d.particles.values.GradientColorValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's an {@link Influencer} which controls particles color and transparency. */
+/** @author Inferno */
 public abstract class ColorInfluencer<T> extends Influencer<T> {
 	public static class BillboardColorInfluencer extends ColorInfluencer<BillboardParticle>{
 		public BillboardColorInfluencer(){}
@@ -90,7 +92,7 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	public static class PointSpriteColorInfluencer extends ColorInfluencer<PointParticle>{
+	public static class PointSpriteColorInfluencer extends ColorInfluencer<PointSpriteParticle>{
 		public PointSpriteColorInfluencer(){}
 		
 		public PointSpriteColorInfluencer(PointSpriteColorInfluencer billboardColorInfluencer){
@@ -100,7 +102,7 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 		@Override
 		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				float[] temp = colorValue.getColor(0);
 				particle.r = temp[0];
 				particle.g = temp[1];
@@ -114,7 +116,7 @@ public abstract class ColorInfluencer<T> extends Influencer<T> {
 		@Override
 		public void update () {
 			for(int i=0, c = controller.emitter.activeCount; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				float[] temp = colorValue.getColor(particle.lifePercent);
 				particle.r = temp[0];
 				particle.g = temp[1];

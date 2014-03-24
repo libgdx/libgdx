@@ -2,6 +2,9 @@ package com.badlogic.gdx.graphics.g3d.particles.influencers;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
@@ -12,8 +15,12 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
 import com.badlogic.gdx.utils.Pool;
 
+/** It's an {@link Influencer} which controls which {@link ParticleController} will be assigned
+ * to the particles. This influencer works on {@link ParticleControllerParticle} only. */
+/** @author Inferno */
 public abstract class ParticleControllerInfluencer extends Influencer<ParticleControllerParticle> {
 
+	/** Assigns the first controller of {@link ParticleControllerInfluencer#templates} to the particles.*/
 	public static class ParticleControllerSingleInfluencer extends ParticleControllerInfluencer{
 
 		public ParticleControllerSingleInfluencer (ParticleController... templates) {
@@ -59,7 +66,7 @@ public abstract class ParticleControllerInfluencer extends Influencer<ParticleCo
 	}
 	
 	
-	
+	/** Assigns a random controller of {@link ParticleControllerInfluencer#templates} to the particles.*/
 	public static class ParticleControllerRandomInfluencer extends ParticleControllerInfluencer{
 		private class ParticleControllerPool extends Pool<ParticleController>{
 			public ParticleControllerPool () {}
@@ -143,9 +150,6 @@ public abstract class ParticleControllerInfluencer extends Influencer<ParticleCo
 			return new ParticleControllerRandomInfluencer(this);
 		}
 	}
-	
-	
-	
 	
 	public Array<ParticleController> templates;
 	

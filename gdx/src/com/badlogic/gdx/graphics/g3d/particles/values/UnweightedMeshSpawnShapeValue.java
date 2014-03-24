@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+/** Encapsulate the formulas to spawn a particle on a mesh shape. */
+/** @author Inferno */
 public final class UnweightedMeshSpawnShapeValue extends MeshSpawnShapeValue {
 	private float[] vertices;
 	private short[] indices;

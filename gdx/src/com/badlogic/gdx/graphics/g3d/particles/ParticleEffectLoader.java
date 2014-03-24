@@ -11,12 +11,20 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData.AssetData;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
+/**This class can save and load a {@link ParticleEffect}.
+ * It should be added as {@link AsynchronousAssetLoader} to the {@link AssetManager} so it will be able to load the effects.
+ * It's important to note that the two classes {@link ParticleEffectLoadParameter} and {@link ParticleEffectSaveParameter} should
+ * be passed in whenever possible, because when present the batches settings will be loaded automatically.
+ * When the load and save parameters are absent, once the effect will be created, one will have to set the required batches
+ * manually otherwise the {@link ParticleController} contained inside the effect will not be able to render themselves. */
+/** @author Inferno */
 public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect, ParticleEffectLoader.ParticleEffectLoadParameter> {
 	protected Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>> items = new Array<ObjectMap.Entry<String, ResourceData<ParticleEffect>>>(); 
 	
@@ -40,7 +48,6 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 			assets = data.getAssets();
 		}
 		
-		//Handle the Loading of ParticleEffect as resources
 		Array<AssetDescriptor> descriptors = new Array<AssetDescriptor>();
 		for(AssetData assetData : assets){
 			if(assetData.type == ParticleEffect.class){
@@ -60,9 +67,9 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 		//effect assets
 		effect.save(parameter.manager, data);
 		
-		//Batch cfgs
+		//Batches configurations
 		if(parameter.batches != null){
-			for(IParticleBatch batch : parameter.batches){
+			for(ParticleBatch batch : parameter.batches){
 				batch.save(parameter.manager, data);
 			}
 		}
@@ -91,7 +98,7 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 		effectData.resource.load(manager, effectData);
 		if(parameter != null){
 			if(parameter.batches != null){
-				for(IParticleBatch batch : parameter.batches){
+				for(ParticleBatch batch : parameter.batches){
 					batch.load(manager, effectData);
 				}
 			}
@@ -109,21 +116,21 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 	}
 	
 	public static class ParticleEffectLoadParameter extends AssetLoaderParameters<ParticleEffect> {
-		Array<IParticleBatch> batches;
-		public ParticleEffectLoadParameter(IParticleBatch...batches){
-			this.batches = new Array<IParticleBatch>(batches);
+		Array<ParticleBatch> batches;
+		public ParticleEffectLoadParameter(ParticleBatch...batches){
+			this.batches = new Array<ParticleBatch>(batches);
 		}
 	}
 	
 	public static class ParticleEffectSaveParameter extends AssetLoaderParameters<ParticleEffect> {
-		/**optional params, but should be present to correctly load the settings*/
-		Array<IParticleBatch> batches;
+		/**Optional parameters, but should be present to correctly load the settings*/
+		Array<ParticleBatch> batches;
 		
-		/** required params */
+		/** Required parameters */
 		File file;
 		AssetManager manager;
-		public ParticleEffectSaveParameter(File file, AssetManager manager, IParticleBatch... batches){
-			this.batches = new Array<IParticleBatch>(batches);
+		public ParticleEffectSaveParameter(File file, AssetManager manager, ParticleBatch... batches){
+			this.batches = new Array<ParticleBatch>(batches);
 			this.file = file;
 			this.manager = manager;
 		}

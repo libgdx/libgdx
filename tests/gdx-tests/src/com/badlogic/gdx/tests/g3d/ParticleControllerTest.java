@@ -22,7 +22,7 @@ import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerParticle;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ModelInstanceParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.controllers.ParticleControllerParticleController;

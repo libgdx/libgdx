@@ -3,12 +3,15 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import java.util.Comparator;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.BufferedParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Sort;
 
+/** This class is used by {@link ParticleBatch} to sort the particles before render them.*/
+/** @author Inferno */
 public class ParticleSorter<T> {
 	static final Vector3 TMP_V1 = new Vector3();
 	
@@ -82,18 +85,18 @@ public class ParticleSorter<T> {
 		}
 	}
 	
-	public static class PointSpriteDistanceParticleSorter extends DistanceParticleSorter<PointParticle>{
+	public static class PointSpriteDistanceParticleSorter extends DistanceParticleSorter<PointSpriteParticle>{
 		public PointSpriteDistanceParticleSorter(){}
 		
 		public PointSpriteDistanceParticleSorter(Comparator comparator){
 			super(comparator);
 		}
 		@Override
-		protected void calculateDistances (PointParticle[] particles, int count) {
+		protected void calculateDistances (PointSpriteParticle[] particles, int count) {
 			float[] val = camera.view.val;
 			TMP_V1.set(val[Matrix4.M20], val[Matrix4.M21], val[Matrix4.M22]);
 			for(int i=0; i <count; ++i){
-				PointParticle particle = particles[i];
+				PointSpriteParticle particle = particles[i];
 				particles[i].cameraDistance = TMP_V1.dot(particle.x, particle.y, particle.z);
 			}
 		}

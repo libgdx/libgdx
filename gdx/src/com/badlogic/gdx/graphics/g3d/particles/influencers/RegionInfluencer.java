@@ -3,14 +3,21 @@ package com.badlogic.gdx.graphics.g3d.particles.influencers;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.Particle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
+import com.badlogic.gdx.graphics.g3d.particles.controllers.BillboardParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.controllers.PointSpriteParticleController;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's an {@link Influencer} which assigns a region of a {@link Texture} to the particles.
+ * It works on {@link BillboardParticleController} and {@link PointSpriteParticleController} only. */
+/** @author Inferno */
 public class RegionInfluencer<T> extends Influencer<T> {
 	
-	public static class PointSpriteSingleRegionInfluencer extends RegionInfluencer<PointParticle>{
+	/** Assigns the first region of {@link RegionInfluencer#regions} to the particles.*/
+	public static class PointSpriteSingleRegionInfluencer extends RegionInfluencer<PointSpriteParticle>{
 		
 		public PointSpriteSingleRegionInfluencer(){}
 
@@ -30,7 +37,7 @@ public class RegionInfluencer<T> extends Influencer<T> {
 		public void init () {
 			AspectTextureRegion region = regions.items[0];
 			for(int i=0, c = controller.emitter.maxParticleCount; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				particle.u = region.u; particle.v = region.v;
 				particle.u2 = region.u2; particle.v2 = region.v2;
 			}
@@ -42,7 +49,8 @@ public class RegionInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	public static class PointSpriteRandomRegionInfluencer extends RegionInfluencer<PointParticle>{
+	/** Assigns a random region of {@link RegionInfluencer#regions} to the particles.*/
+	public static class PointSpriteRandomRegionInfluencer extends RegionInfluencer<PointSpriteParticle>{
 		public PointSpriteRandomRegionInfluencer(){}
 
 		public PointSpriteRandomRegionInfluencer (PointSpriteRandomRegionInfluencer regionInfluencer) {
@@ -60,7 +68,7 @@ public class RegionInfluencer<T> extends Influencer<T> {
 		@Override
 		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				AspectTextureRegion region = regions.random();
 				particle.u = region.u; particle.v = region.v;
 				particle.u2 = region.u2; particle.v2 = region.v2;
@@ -72,8 +80,10 @@ public class RegionInfluencer<T> extends Influencer<T> {
 			return new PointSpriteRandomRegionInfluencer(this);
 		}
 	}
-	
-	public static class PointSpriteAnimatedRegionInfluencer extends RegionInfluencer<PointParticle>{
+
+	/** Assigns a region to the particles using the {@link Particle#lifePercent}
+	 * to calculate the current index in the {@link RegionInfluencer#regions} array.*/
+	public static class PointSpriteAnimatedRegionInfluencer extends RegionInfluencer<PointSpriteParticle>{
 		public PointSpriteAnimatedRegionInfluencer(){}
 		public PointSpriteAnimatedRegionInfluencer (PointSpriteAnimatedRegionInfluencer regionInfluencer) {
 			super(regionInfluencer);
@@ -90,7 +100,7 @@ public class RegionInfluencer<T> extends Influencer<T> {
 		@Override
 		public void update () {
 			for(int i=0, c = controller.emitter.activeCount; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				AspectTextureRegion region = regions.get( (int)(particle.lifePercent*(regions.size-1)));
 				particle.u = region.u; particle.v = region.v;
 				particle.u2 = region.u2; particle.v2 = region.v2;
@@ -103,40 +113,9 @@ public class RegionInfluencer<T> extends Influencer<T> {
 		}
 	}
 	
-	
 	//Billboards
 	
-	public static class BillboardRandomRegionInfluencer extends RegionInfluencer<BillboardParticle>{
-		public BillboardRandomRegionInfluencer(){}
-		public BillboardRandomRegionInfluencer (BillboardRandomRegionInfluencer regionInfluencer) {
-			super(regionInfluencer);
-		}
-		public BillboardRandomRegionInfluencer (TextureRegion textureRegion) {
-			super(textureRegion);
-		}
-		
-		public BillboardRandomRegionInfluencer (Texture texture) {
-			super(texture);
-		}
-
-		@Override
-		public void activateParticles (int startIndex, int count) {
-			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				BillboardParticle particle = controller.particles[i];
-				AspectTextureRegion region = regions.random();
-				particle.u = region.u; particle.v = region.v;
-				particle.u2 = region.u2; particle.v2 = region.v2;
-				particle.halfWidth = 0.5f;
-				particle.halfHeight = region.halfInvAspectRatio;
-			}
-		}
-		
-		@Override
-		public BillboardRandomRegionInfluencer copy () {
-			return new BillboardRandomRegionInfluencer(this);
-		}
-	}
-	
+	/** Assigns the first region of {@link RegionInfluencer#regions} to the particles.*/
 	public static class BillboardSingleRegionInfluencer extends RegionInfluencer<BillboardParticle>{
 		public BillboardSingleRegionInfluencer(){}
 
@@ -169,7 +148,41 @@ public class RegionInfluencer<T> extends Influencer<T> {
 			return new BillboardSingleRegionInfluencer(this);
 		}
 	}
+
+	/** Assigns a random region of {@link RegionInfluencer#regions} to the particles.*/
+	public static class BillboardRandomRegionInfluencer extends RegionInfluencer<BillboardParticle>{
+		public BillboardRandomRegionInfluencer(){}
+		public BillboardRandomRegionInfluencer (BillboardRandomRegionInfluencer regionInfluencer) {
+			super(regionInfluencer);
+		}
+		public BillboardRandomRegionInfluencer (TextureRegion textureRegion) {
+			super(textureRegion);
+		}
+		
+		public BillboardRandomRegionInfluencer (Texture texture) {
+			super(texture);
+		}
+
+		@Override
+		public void activateParticles (int startIndex, int count) {
+			for(int i=startIndex, c = startIndex +count; i < c; ++i){
+				BillboardParticle particle = controller.particles[i];
+				AspectTextureRegion region = regions.random();
+				particle.u = region.u; particle.v = region.v;
+				particle.u2 = region.u2; particle.v2 = region.v2;
+				particle.halfWidth = 0.5f;
+				particle.halfHeight = region.halfInvAspectRatio;
+			}
+		}
+		
+		@Override
+		public BillboardRandomRegionInfluencer copy () {
+			return new BillboardRandomRegionInfluencer(this);
+		}
+	}
 	
+	/** Assigns a region to the particles using the {@link Particle#lifePercent}
+	 * to calculate the current index in the {@link RegionInfluencer#regions} array.*/
 	public static class BillboardAnimatedRegionInfluencer extends RegionInfluencer<BillboardParticle>{
 		public BillboardAnimatedRegionInfluencer(){}
 		public BillboardAnimatedRegionInfluencer (BillboardAnimatedRegionInfluencer regionInfluencer) {
@@ -203,7 +216,8 @@ public class RegionInfluencer<T> extends Influencer<T> {
 	}
 	
 	
-	
+	/** It's a class used internally by the {@link RegionInfluencer} to represent a texture region.
+	 * It contains the uv coordinates of the region and the region inverse aspect ratio.*/
 	public static class AspectTextureRegion{
 		public float u, v, u2, v2;
 		public float halfInvAspectRatio;
@@ -234,8 +248,6 @@ public class RegionInfluencer<T> extends Influencer<T> {
 			halfInvAspectRatio = aspectTextureRegion.halfInvAspectRatio;
 		}
 	}
-	
-	
 	
 	public Array<AspectTextureRegion> regions;
 	

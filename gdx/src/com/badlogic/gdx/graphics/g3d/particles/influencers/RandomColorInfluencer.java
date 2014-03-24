@@ -4,12 +4,14 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
 import com.badlogic.gdx.graphics.g3d.particles.ModelInstanceParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleControllerComponent;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
+/** It's an {@link Influencer} which assigns a random color when a particle is activated. */
+/** @author Inferno */
 public abstract class RandomColorInfluencer<T> extends Influencer<T>{
 
 	public static class BillboardRandomColorInfluencer extends RandomColorInfluencer<BillboardParticle>{
@@ -25,7 +27,7 @@ public abstract class RandomColorInfluencer<T> extends Influencer<T>{
 		}
 
 		@Override
-		public ParticleSystem<BillboardParticle> copy () {
+		public ParticleControllerComponent<BillboardParticle> copy () {
 			return new BillboardRandomColorInfluencer();
 		}
 	}
@@ -48,16 +50,16 @@ public abstract class RandomColorInfluencer<T> extends Influencer<T>{
 		}
 
 		@Override
-		public ParticleSystem<ModelInstanceParticle> copy () {
+		public ParticleControllerComponent<ModelInstanceParticle> copy () {
 			return new ModelInstanceRandomColorInfluencer();
 		}
 	}
 	
-	public static class PointSpriteRandomColorInfluencer extends RandomColorInfluencer<PointParticle>{
+	public static class PointSpriteRandomColorInfluencer extends RandomColorInfluencer<PointSpriteParticle>{
 		@Override
 		public void activateParticles (int startIndex, int count) {
 			for(int i=startIndex, c = startIndex +count; i < c; ++i){
-				PointParticle particle = controller.particles[i];
+				PointSpriteParticle particle = controller.particles[i];
 				particle.r = MathUtils.random();
 				particle.g = MathUtils.random();
 				particle.b = MathUtils.random();
@@ -66,7 +68,7 @@ public abstract class RandomColorInfluencer<T> extends Influencer<T>{
 		}
 
 		@Override
-		public ParticleSystem<PointParticle> copy () {
+		public ParticleControllerComponent<PointSpriteParticle> copy () {
 			return new PointSpriteRandomColorInfluencer();
 		}
 	}

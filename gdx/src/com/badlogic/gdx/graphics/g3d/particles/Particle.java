@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g3d.particles.values.VelocityDatas.VelocityData
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
+/** @author Inferno */
 public class Particle {
 	public static float ROTATION_ACCUMULATOR = 0;
 	public static Quaternion ROTATION_3D_ACCUMULATOR = new Quaternion();

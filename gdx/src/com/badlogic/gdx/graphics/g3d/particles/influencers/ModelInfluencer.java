@@ -10,8 +10,13 @@ import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
+/** It's an {@link Influencer} which controls which {@link Model} will be assigned
+ * to the particles as {@link ModelInstance}. 
+ * This influencer works on {@link ModelInstanceParticle} only. */
+/** @author Inferno */
 public abstract class ModelInfluencer extends Influencer<ModelInstanceParticle> {
 
+	/** Assigns the first model of {@link ModelInfluencer#models} to the particles.*/
 	public static class ModelInstanceSingleInfluencer extends ModelInfluencer{
 
 		public ModelInstanceSingleInfluencer(){
@@ -40,6 +45,7 @@ public abstract class ModelInfluencer extends Influencer<ModelInstanceParticle> 
 		}
 	}
 	
+	/** Assigns a random model of {@link ModelInfluencer#models} to the particles.*/
 	public static class ModelInstanceRandomInfluencer extends ModelInfluencer{
 		private class ModelInstancePool extends Pool<ModelInstance>{
 			public ModelInstancePool () {}
@@ -91,8 +97,7 @@ public abstract class ModelInfluencer extends Influencer<ModelInstanceParticle> 
 			return new ModelInstanceRandomInfluencer(this);
 		}
 	}
-	
-	
+
 	public Array<Model> models;
 	
 	public ModelInfluencer(){

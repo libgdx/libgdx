@@ -5,13 +5,15 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.Influencer;
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardBatch;
-import com.badlogic.gdx.graphics.g3d.particles.renderers.IParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.renderers.ParticleBatch;
 
+/** A {@link ParticleController} which will handle {@link BillboardParticle} particles. */
+/** @author Inferno */
 public class BillboardParticleController extends ParticleController<BillboardParticle> {
 
 	public BillboardParticleController(){}
 	
-	public BillboardParticleController (String name, Emitter<BillboardParticle> emitter, IParticleBatch<BillboardParticle> batch,
+	public BillboardParticleController (String name, Emitter<BillboardParticle> emitter, ParticleBatch<BillboardParticle> batch,
 																											Influencer<BillboardParticle>... influencers) {
 		super(name, emitter, batch, influencers);
 	}
@@ -52,7 +54,7 @@ public class BillboardParticleController extends ParticleController<BillboardPar
 	}
 
 	@Override
-	public boolean isCompatible (IParticleBatch batch) {
+	public boolean isCompatible (ParticleBatch batch) {
 		return batch.getClass().isAssignableFrom(BillboardBatch.class);
 	}
 }

@@ -15,14 +15,13 @@ import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.DepthTestAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.BillboardParticle;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.PointSpriteDistanceParticleSorter;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.ParticleType;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSorter.DistanceParticleSorter;
 import com.badlogic.gdx.graphics.g3d.particles.ResourceData.SaveData;
-import com.badlogic.gdx.graphics.g3d.particles.PointParticle;
+import com.badlogic.gdx.graphics.g3d.particles.PointSpriteParticle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -30,7 +29,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
 
-public class PointSpriteBatch extends ParticleBatch<PointParticle> {
+/** @author Inferno */
+public class PointSpriteBatch extends BufferedParticleBatch<PointSpriteParticle> {
 	protected static final Vector3 TMP_V1 = new Vector3();
 	protected static final int sizeAndRotationUsage = 1 << 9;
 	protected static final VertexAttributes CPU_ATTRIBUTES = new VertexAttributes(
@@ -52,7 +52,7 @@ public class PointSpriteBatch extends ParticleBatch<PointParticle> {
 	}
 	
 	public PointSpriteBatch (int capacity) {
-		super(PointParticle.class, new PointSpriteDistanceParticleSorter());
+		super(PointSpriteParticle.class, new PointSpriteDistanceParticleSorter());
 		allocRenderable();
 		ensureCapacity(capacity);
 		renderable.shader = new ParticleShader(renderable, new ParticleShader.Config(ParticleType.Point));
@@ -94,7 +94,7 @@ public class PointSpriteBatch extends ParticleBatch<PointParticle> {
 	}
 
 
-	private static void putVertex(float[] vertices, int offset, PointParticle particle) {
+	private static void putVertex(float[] vertices, int offset, PointSpriteParticle particle) {
 		//Position
 		vertices[offset + CPU_POSITION_OFFSET] = particle.x;
 		vertices[offset + CPU_POSITION_OFFSET+1] = particle.y;
