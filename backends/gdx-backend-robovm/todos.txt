@@ -12,7 +12,6 @@ General
 	
 - IOSGraphics
 	- need to store current device orientation for Input#getOrienation and consorts
-	- Add support for GL10/GL11	
 	- implement non-continuous rendering
 	
 - IOSInput
