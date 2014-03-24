@@ -17,6 +17,12 @@ public class SpotLight extends PointLight {
     public float linearAttenuation = 0;
     public float quadraticAttenuation = 0;
 
+    /** cutoff angle */
+    public float cutOff = 180;
+
+    /** cutoff factor, from center to cone outside*/
+    public float exponent = 1;
+
 
     public SpotLight set(final SpotLight copyFrom) {
         return set(copyFrom.color, copyFrom.position, copyFrom.intensity, copyFrom.direction, copyFrom.constantAttenuation, copyFrom.linearAttenuation, copyFrom.quadraticAttenuation);
