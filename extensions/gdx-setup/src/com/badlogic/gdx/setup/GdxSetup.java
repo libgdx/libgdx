@@ -33,7 +33,7 @@ import java.util.Map;
  *
  */
 public class GdxSetup {
-	public void build (String outputDir, String appName, String packageName, String mainClass) {
+	public void build (String outputDir, String appName, String packageName, String mainClass, String sdkLocation) {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
@@ -46,7 +46,8 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gradlew.bat", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.jar", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.properties", false));
-		
+		project.files.add(new ProjectFile("local.properties", true));
+
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
@@ -93,6 +94,7 @@ public class GdxSetup {
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
 		values.put("%MAIN_CLASS%", mainClass);
+        values.put("%ANDROID_SDK%", sdkLocation);
 		
 		copyAndReplace(outputDir, project, values);
 		
@@ -183,11 +185,12 @@ public class GdxSetup {
 	}
 	
 	private static void printHelp() {
-		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass>");
+		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation>");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
+		System.out.println("sdkLocation ... the location of your android SDK");
 	}
 	
 	private static Map<String, String> parseArgs(String[] args) {
@@ -207,11 +210,11 @@ public class GdxSetup {
 	
 	public static void main (String[] args) {
 		Map<String, String> params = parseArgs(args);
-		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass")) {
+		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass") || !params.containsKey("sdkLocation")) {
 			new GdxSetupUI();
 			printHelp();
-		} else {		
-			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
+		} else {
+			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("sdkLocation"));
 		}
 	}
 }
