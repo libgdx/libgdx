@@ -343,6 +343,9 @@ void main() {
                 float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
                 vec3 value = u_spotLights[i].color * (NdotL / (u_spotLights[i].constantAttenuation + u_spotLights[i].linearAttenuation * sqrt(dist2) + u_spotLights[i].quadraticAttenuation * dist2));
                 v_lightDiffuse += value;
+
+                //TODO : Add the cutOff and exponent
+
                 #ifdef specularFlag
                     float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
                     v_lightSpecular += value * pow(halfDotView, u_shininess);
