@@ -21,12 +21,15 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.esotericsoftware.tablelayout.Cell;
 
 /** A checkbox is a button that contains an image indicating the checked or unchecked state and a label.
  * @author Nathan Sweet */
 public class CheckBox extends TextButton {
 	private Image image;
 	private CheckBoxStyle style;
+	/** Used for updating padding */
+	private Cell<Image> imageCell = null;
 
 	public CheckBox (String text, Skin skin) {
 		this(text, skin.get(CheckBoxStyle.class));
@@ -39,7 +42,8 @@ public class CheckBox extends TextButton {
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
-		add(image = new Image(style.checkboxOff));
+		imageCell = add(image = new Image(style.checkboxOff));
+		imageCell.padRight(style.padBetween);
 		Label label = getLabel();
 		add(label);
 		label.setAlignment(Align.left);
@@ -50,6 +54,8 @@ public class CheckBox extends TextButton {
 		if (!(style instanceof CheckBoxStyle)) throw new IllegalArgumentException("style must be a CheckBoxStyle.");
 		super.setStyle(style);
 		this.style = (CheckBoxStyle)style;
+		if (imageCell != null)
+			imageCell.padRight(this.style.padBetween);
 	}
 
 	/** Returns the checkbox's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
@@ -88,6 +94,8 @@ public class CheckBox extends TextButton {
 		public Drawable checkboxOn, checkboxOff;
 		/** Optional. */
 		public Drawable checkboxOver, checkboxOnDisabled, checkboxOffDisabled;
+		/** Optional. Padding between image and text */
+		public float padBetween = 0;
 
 		public CheckBoxStyle () {
 		}
@@ -107,6 +115,7 @@ public class CheckBox extends TextButton {
 			this.checkboxOnDisabled = style.checkboxOnDisabled;
 			this.font = style.font;
 			this.fontColor = new Color(style.fontColor);
+			this.padBetween = style.padBetween;
 		}
 	}
 }
