@@ -91,9 +91,24 @@ public class Renderable {
 	 * combine multiple bones into a single transformation matrix, which is used to transform the vertex to model space. In other
 	 * words: the bone transformation is applied prior to the {@link #worldTransform}. */
 	public Matrix4 bones[];
-	/** The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null. It is not guaranteed that
-	 * the shader will be used, the used {@link ShaderProvider} is responsible for actually choosing the correct shader to use. **/
+	/** The {@link Shader} to be used to render this Renderable using a {@link ModelBatch}, may be null.
+	 * It is not guaranteed that the shader will be used, the used {@link ShaderProvider} is responsible
+	 * for actually choosing the correct shader to use. **/
 	public Shader shader;
 	/** User definable value, may be null. */
 	public Object userData;
+	
+	public Renderable set(Renderable renderable) {
+		worldTransform.set(renderable.worldTransform);
+		material = renderable.material;
+		mesh = renderable.mesh;
+		meshPartOffset = renderable.meshPartOffset;
+		meshPartSize = renderable.meshPartSize;
+		primitiveType = renderable.primitiveType;
+		bones = renderable.bones;
+		environment = renderable.environment;
+		shader = renderable.shader;
+		userData = renderable.userData;
+		return this;
+	}
 }

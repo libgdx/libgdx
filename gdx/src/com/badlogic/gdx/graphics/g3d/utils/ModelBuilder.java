@@ -16,10 +16,12 @@
 
 package com.badlogic.gdx.graphics.g3d.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
@@ -415,4 +417,107 @@ public class ModelBuilder {
 		mesh.setIndices(indices);
 		return createFromMesh(mesh, 0, indices.length, primitiveType, material);
 	}
+	
+   /** Convenience method to create a model with three orthonormal vectors shapes.
+    * The resources the Material might contain are not managed, 
+    * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+    * @param axisLength Length of each axis. */
+	public Model createXYZCoordinates(float axisLength)
+	{
+		float capHeight = 0.1f * axisLength, capWidth = capHeight /2;
+		axisLength-=capHeight;
+
+		String axisId, axisCapId;
+		begin();
+		float dirX, dirY, dirZ,
+		rotAxisX, rotAxisY, rotAxisZ,
+		sclDirX, sclDirY, sclDirZ;
+		Material material = new Material();
+		Color color;
+		MeshPartBuilder partBuilder;
+		for(int i=0; i< 3; ++i)
+		{
+
+			if(i ==0)
+			{
+				//X
+				dirX = 1; dirY = dirZ = 0;
+				rotAxisX = rotAxisY = 0; rotAxisZ = -1;
+				color = Color.RED;
+				axisId = "axisX";
+				axisCapId = "axisCapX";
+			}
+			else if(i == 1)
+			{
+				//Y
+				dirX = 0; dirY = 1; dirZ = 0;
+				rotAxisX = rotAxisY = rotAxisZ = 0;
+				color = Color.GREEN;
+				axisId = "axisY";
+				axisCapId = "axisCapY";
+			}
+			else
+			{
+				//Z
+				dirX = dirY = 0; dirZ = 1;
+				rotAxisX = 1; rotAxisY = 0; rotAxisZ = 0;
+				color = Color.BLUE;
+				axisId = "axisZ";
+				axisCapId = "axisCapZ";
+			}
+
+			sclDirX = dirX*axisLength; sclDirY = dirY*axisLength; sclDirZ = dirZ*axisLength;
+
+			node();
+			partBuilder = part(axisId, GL20.GL_LINES, Usage.Position|Usage.Color, material);
+			partBuilder.setColor(color);
+			partBuilder.line(0,0,0, sclDirX, sclDirY, sclDirZ);
+			
+			Node coneNode = node();
+			partBuilder = part(axisCapId, GL20.GL_TRIANGLES, Usage.Position|Usage.Color, material);
+			partBuilder.setColor(color);
+			partBuilder.cone(capWidth, capHeight, capWidth, 5);
+			coneNode.rotation.setFromAxis(rotAxisX, rotAxisY, rotAxisZ, 90);
+			coneNode.translation.set(sclDirX, sclDirY, sclDirZ);
+		}
+		return end();
+	}
+
+   /** Convenience method to create a model which represents a grid of lines on the XZ plane.
+    * The resources the Material might contain are not managed, 
+    * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+    * @param xDivisions row count along x axis. 
+    * @param zDivisions row count along z axis. 
+    * @param xSize Length of a single row on x.
+    * @param zSize Length of a single row on z.
+    * @param color Color of the lines. */
+	public Model createLineGrid(int xDivisions, int zDivisions, float xSize, float zSize, Color color) 
+	{
+		Material material = new Material();
+		begin();
+		MeshPartBuilder partBuilder = part("lines", GL20.GL_LINES, Usage.Position | Usage.Color, material);
+		partBuilder.setColor(color);
+		float xlength = xDivisions*xSize, zlength = zDivisions*zSize,
+			hxlength = xlength/2, hzlength = zlength /2;
+		float x1 = -hxlength, y1 = 0, z1 = hzlength,
+			x2 = -hxlength, y2 = 0, z2 = -hzlength;
+		for(int i=0; i<= xDivisions; ++i)
+		{
+			partBuilder.line(x1, y1, z1, x2, y2, z2);
+			x1 += xSize;
+			x2 += xSize;
+		}
+
+		x1=-hxlength; y1 =0; z1=-hzlength;
+		x2=hxlength; y2=0; z2=-hzlength;
+		for(int j=0; j<= zDivisions; ++j)
+		{
+			partBuilder.line(x1, y1, z1, x2, y2, z2);
+			z1 += zSize;
+			z2 += zSize;
+		}
+
+		return end();
+	}
+	
 }
