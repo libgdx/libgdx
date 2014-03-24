@@ -334,4 +334,4 @@ public class ProgressBar extends Widget implements Disableable {
 			this.knob = style.knob;
 		}
 	}
-} 
+}
