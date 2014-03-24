@@ -107,7 +107,7 @@ public class ViewportTest1 extends GdxTest {
 		names.add("ExtendViewport: max");
 		names.add("ScreenViewport");
 		names.add("ScalingViewport: none");
-		names.add("FixedScaleViewport: x2");
+		names.add("FixedScaleViewport: 0.5");
 		return names;
 	}
 
@@ -116,7 +116,7 @@ public class ViewportTest1 extends GdxTest {
 		int minWorldHeight = 480;
 		int maxWorldWidth = 800;
 		int maxWorldHeight = 480;
-		float fixedScale = 2;
+		float fixedScale = 0.5f;
 
 		Array<Viewport> viewports = new Array();
 		viewports.add(new StretchViewport(minWorldWidth, minWorldHeight, camera));
