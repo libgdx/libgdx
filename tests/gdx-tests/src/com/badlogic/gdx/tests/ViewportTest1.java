@@ -104,7 +104,8 @@ public class ViewportTest1 extends GdxTest {
 		names.add("FitViewport");
 		names.add("ExtendViewport: no max");
 		names.add("ExtendViewport: max");
-		names.add("ScreenViewport");
+		names.add("ScreenViewport: 1:1");
+		names.add("ScreenViewport: 0.75:1");
 		names.add("ScalingViewport: none");
 		return names;
 	}
@@ -122,6 +123,11 @@ public class ViewportTest1 extends GdxTest {
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, camera));
 		viewports.add(new ExtendViewport(minWorldWidth, minWorldHeight, maxWorldWidth, maxWorldHeight, camera));
 		viewports.add(new ScreenViewport(camera));
+
+		ScreenViewport screenViewport = new ScreenViewport(camera);
+		screenViewport.setUnitsPerPixel(0.75f);
+		viewports.add(screenViewport);
+
 		viewports.add(new ScalingViewport(Scaling.none, minWorldWidth, minWorldHeight, camera));
 		return viewports;
 	}
