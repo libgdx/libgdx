@@ -159,6 +159,19 @@ struct PointLight
 uniform PointLight u_pointLights[numPointLights];
 #endif // numPointLights
 
+#if defined(numSpotLights) && (numSpotLights > 0)
+struct SpotLight
+{
+	vec3 color;
+	vec3 position;
+	vec3 direction;
+	float constantAttenuation;
+	float linearAttenuation;
+	float quadraticAttenuation;
+};
+uniform SpotLight u_spotLights[numSpotLights];
+#endif // numSpotLights
+
 #if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
 #define ambientFlag
 #endif //ambientFlag
@@ -319,5 +332,21 @@ void main() {
 				#endif // specularFlag
 			}
 		#endif // numPointLights
+
+		#if defined(numSpotLights) && (numSpotLights > 0) && defined(normalFlag)
+            for (int i = 0; i < numSpotLights; i++) {
+                vec3 lightDir = u_spotLights[i].position - pos.xyz;
+                float dist2 = dot(lightDir, lightDir);
+                lightDir *= inversesqrt(dist2);
+                float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+                vec3 value = u_spotLights[i].color * (NdotL / (u_spotLights[i].constantAttenuation + u_spotLights[i].linearAttenuation * sqrt(dist2) + u_spotLights[i].quadraticAttenuation * dist2));
+                v_lightDiffuse += value;
+                #ifdef specularFlag
+                    float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+                    v_lightSpecular += value * pow(halfDotView, u_shininess);
+                #endif // specularFlag
+            }
+        #endif // numPointLights
+
 	#endif // lightingFlag
 }

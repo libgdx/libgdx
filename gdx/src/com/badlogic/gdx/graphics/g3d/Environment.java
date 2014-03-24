@@ -18,10 +18,7 @@ package com.badlogic.gdx.graphics.g3d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.environment.PointLight;
-import com.badlogic.gdx.graphics.g3d.environment.ShadowMap;
+import com.badlogic.gdx.graphics.g3d.environment.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -30,6 +27,7 @@ public class Environment extends Attributes {
 	public ShadowMap shadowMap;
 	public final Array<DirectionalLight> directionalLights = new Array<DirectionalLight>();
 	public final Array<PointLight> pointLights = new Array<PointLight>();
+    public final Array<SpotLight> spotLights = new Array<SpotLight>();
 
 	public Environment () {
 	}
@@ -49,8 +47,10 @@ public class Environment extends Attributes {
 	public Environment add (BaseLight light) {
 		if (light instanceof DirectionalLight)
 			directionalLights.add((DirectionalLight)light);
-		else if (light instanceof PointLight)
-			pointLights.add((PointLight)light);
+        else if (light instanceof SpotLight)
+            spotLights.add((SpotLight)light);
+        else if (light instanceof PointLight)
+            pointLights.add((PointLight)light);
 		else
 			throw new GdxRuntimeException("Unknown light type");
 		return this;
@@ -61,5 +61,6 @@ public class Environment extends Attributes {
 		super.clear();
 		directionalLights.clear();
 		pointLights.clear();
+        spotLights.clear();
 	}
 }
