@@ -22,6 +22,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -164,13 +165,24 @@ public class GdxSetupUI extends JFrame {
 		private void uiEvents () {
 			destinationButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					System.setProperty("apple.awt.fileDialogForDirectories", "true");
-					FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
-					dialog.setVisible(true);					
-					String name = dialog.getFile();
-					String dir = dialog.getDirectory();
-					if (name == null || dir == null) return;
-					destinationText.setText(new File(dir, name).getAbsolutePath());
+//					System.setProperty("apple.awt.fileDialogForDirectories", "true");
+//					FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
+//					dialog.setVisible(true);					
+//					String name = dialog.getFile();
+//					String dir = dialog.getDirectory();
+//					if (name == null || dir == null) return;
+					
+					JFileChooser chooser = new JFileChooser();
+					chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					chooser.setDialogTitle("Chose destination");				
+					int result = chooser.showOpenDialog(null);
+					if(result == JFileChooser.APPROVE_OPTION) {
+						File dir = chooser.getSelectedFile();
+						if(dir == null) return;
+						if(dir.getAbsolutePath().trim().length() == 0) return;
+						destinationText.setText(dir.getAbsolutePath());
+					}
+					
 				}
 			});
 		}
