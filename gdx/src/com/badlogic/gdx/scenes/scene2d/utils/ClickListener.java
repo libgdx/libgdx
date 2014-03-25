@@ -90,7 +90,7 @@ public class ClickListener extends InputListener {
 				}
 			}
 			pressed = false;
-			visualPressedTime = System.nanoTime() + visualPressedDuration * 1000000000;
+			visualPressedTime = TimeUtils.nanoTime() + visualPressedDuration * 1000000000;
 			pressedPointer = -1;
 			pressedButton = -1;
 			cancelled = false;
@@ -148,7 +148,7 @@ public class ClickListener extends InputListener {
 	public boolean isVisualPressed () {
 		if (pressed) return true;
 		if (visualPressedTime <= 0) return false;
-		if (visualPressedTime > System.nanoTime()) return true;
+		if (visualPressedTime > TimeUtils.nanoTime()) return true;
 		visualPressedTime = 0;
 		return false;
 	}
