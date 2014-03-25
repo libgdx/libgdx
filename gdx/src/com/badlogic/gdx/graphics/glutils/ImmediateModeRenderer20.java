@@ -98,6 +98,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		this.primitiveType = primitiveType;
 	}
 
+	public void color (Color color) {
+		vertices[vertexIdx + colorOffset] = color.toFloatBits();
+	}
+
 	public void color (float r, float g, float b, float a) {
 		vertices[vertexIdx + colorOffset] = Color.toFloatBits(r, g, b, a);
 	}
