@@ -233,6 +233,14 @@ public class MeshBuilder implements MeshPartBuilder {
 	};
 
 	private final static Array<Vector3> vectorArray = new Array<Vector3>();
+	private final static Pool<Matrix4> matrices4Pool = new Pool<Matrix4>() {
+		@Override
+		protected Matrix4 newObject () {
+			return new Matrix4();
+		}
+	};
+
+	private final static Array<Matrix4> matrices4Array = new Array<Matrix4>();
 
 	private Vector3 tmp (float x, float y, float z) {
 		final Vector3 result = vectorPool.obtain().set(x, y, z);
@@ -243,10 +251,22 @@ public class MeshBuilder implements MeshPartBuilder {
 	private Vector3 tmp (Vector3 copyFrom) {
 		return tmp(copyFrom.x, copyFrom.y, copyFrom.z);
 	}
+	
+	private Matrix4 tmp () {
+		final Matrix4 result = matrices4Pool.obtain().idt();
+		matrices4Array.add(result);
+		return result;
+	}
+	
+	private Matrix4 tmp(Matrix4 copyFrom){
+		return tmp().set(copyFrom);
+	}
 
 	private void cleanup () {
 		vectorPool.freeAll(vectorArray);
 		vectorArray.clear();
+		matrices4Pool.freeAll(matrices4Array);
+		matrices4Array.clear();
 	}
 
 	@Override
@@ -1043,19 +1063,23 @@ public class MeshBuilder implements MeshPartBuilder {
 		forward.crs(up).nor();
 		Vector3 left = tmp(forward).crs(up).nor();		
 		Vector3 direction = tmp(end).sub(begin).nor();
+
+		//Matrices
+		Matrix4 userTransform = getVertexTransform(tmp());
+		Matrix4 transform = tmp().set(left, up, forward, tmp(direction).scl(stemLength/2));
+		Matrix4 temp = tmp();
 		
 		//Stem
-		matTmp1.set(left, up, forward, tmp(direction).scl(stemLength/2));
-		setVertexTransform(matTmp1);
+		setVertexTransform(temp.set(transform).mul(userTransform));
 		cylinder(stemDiameter, stemLength, stemDiameter, divisions);
 		
 		//Cap
-		matTmp1.setTranslation(tmp(direction).scl(stemLength));
-		setVertexTransform(matTmp1);
+		transform.setTranslation(tmp(direction).scl(stemLength));
+		setVertexTransform(temp.set(transform).mul(userTransform));
 		cone(coneDiameter, coneHeight, coneDiameter, divisions);
 
+		setVertexTransform(userTransform);
 		cleanup();
-		setVertexTransformationEnabled(false);
 	}
 
 	@Override
