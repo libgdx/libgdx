@@ -12,3 +12,5 @@ libs/
 .settings/
 .ipr
 .iml
+
+/local.properties
