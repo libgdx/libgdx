@@ -112,6 +112,7 @@ public class MeshBuilder implements MeshPartBuilder {
 		if ((usage & Usage.Position) == Usage.Position)
 			attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 		if ((usage & Usage.Color) == Usage.Color) attrs.add(new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
+		if ((usage & Usage.ColorPacked) == Usage.ColorPacked) attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.Normal) == Usage.Normal)
 			attrs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		if ((usage & Usage.TextureCoordinates) == Usage.TextureCoordinates)
@@ -1023,6 +1024,38 @@ public class MeshBuilder implements MeshPartBuilder {
 		cylinder(d, height - d, d, divisions, 0, 360, false);
 		sphere(matTmp1.setToTranslation(0, .5f * (height - d), 0), d, d, d, divisions, divisions, 0, 360, 0, 90);
 		sphere(matTmp1.setToTranslation(0, -.5f * (height - d), 0), d, d, d, divisions, divisions, 0, 360, 90, 180);
+	}
+
+	@Override
+	public void arrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions) {
+		Vector3 	begin = tmp(x1, y1, z1),
+			end = tmp(x2, y2, z2);
+		float length = begin.dst(end),
+			coneHeight = length*capLength,
+			coneDiameter = 2*(float)(coneHeight*Math.sqrt(1f/3)),
+			stemLength = length - coneHeight,
+			stemDiameter = coneDiameter * stemThickness;
+
+		Vector3 	up = tmp(end).sub(begin).nor();
+		Vector3 forward = tmp(up).crs(Vector3.Z);
+		if(forward.isZero()) 
+			forward.set(Vector3.X);
+		forward.crs(up).nor();
+		Vector3 left = tmp(forward).crs(up).nor();		
+		Vector3 direction = tmp(end).sub(begin).nor();
+		
+		//Stem
+		matTmp1.set(left, up, forward, tmp(direction).scl(stemLength/2));
+		setVertexTransform(matTmp1);
+		cylinder(stemDiameter, stemLength, stemDiameter, divisions);
+		
+		//Cap
+		matTmp1.setTranslation(tmp(direction).scl(stemLength));
+		setVertexTransform(matTmp1);
+		cone(coneDiameter, coneHeight, coneDiameter, divisions);
+
+		cleanup();
+		setVertexTransformationEnabled(false);
 	}
 
 	@Override
