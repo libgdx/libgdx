@@ -37,6 +37,7 @@ public class GdxSetup {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
+		String sdkPath = sdkLocation.replace('\\', '/');
 
 		// root dir/gradle files
 		project.files.add(new ProjectFile("gitignore", ".gitignore", false));
@@ -94,7 +95,7 @@ public class GdxSetup {
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
 		values.put("%MAIN_CLASS%", mainClass);
-		values.put("%ANDROID_SDK%", sdkLocation);
+		values.put("%ANDROID_SDK%", sdkPath);
 		
 		copyAndReplace(outputDir, project, values);
 		
