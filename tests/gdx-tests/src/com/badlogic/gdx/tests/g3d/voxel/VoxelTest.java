@@ -52,14 +52,14 @@ public class VoxelTest extends GdxTest {
 		camera.far = 1000;
 		controller = new FirstPersonCameraController(camera);
 		Gdx.input.setInputProcessor(controller);
-		
+
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
 		lights.add(new DirectionalLight().set(1, 1, 1, 0, -1, 0));
-		
+
 		Texture texture = new Texture(Gdx.files.internal("data/g3d/tiles.png"));
 		TextureRegion[][] tiles = TextureRegion.split(texture, 32, 32);
-		
+
 		MathUtils.random.setSeed(0);
 		voxelWorld = new VoxelWorld(tiles[0], 20, 4, 20);
 		PerlinNoiseGenerator.generateVoxels(voxelWorld, 0, 63, 10);
@@ -77,12 +77,13 @@ public class VoxelTest extends GdxTest {
 		modelBatch.render(voxelWorld, lights);
 		modelBatch.end();
 		controller.update();
-		
+
 		spriteBatch.begin();
-		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks + "/" + voxelWorld.numChunks, 0, 20);
+		font.draw(spriteBatch, "fps: " + Gdx.graphics.getFramesPerSecond() + ", #visible chunks: " + voxelWorld.renderedChunks
+			+ "/" + voxelWorld.numChunks, 0, 20);
 		spriteBatch.end();
 	}
-	
+
 	@Override
 	public void resize (int width, int height) {
 		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);

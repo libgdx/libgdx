@@ -18,6 +18,7 @@ package com.badlogic.gdx.backends.lwjgl;
 
 import static com.badlogic.gdx.utils.SharedLibraryLoader.*;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -55,7 +56,9 @@ public final class LwjglNativesLoader {
 				if (!LwjglApplicationConfiguration.disableAudio)
 					loader.extractFile(is64Bit ? "OpenAL64.dll" : "OpenAL32.dll", nativesDir.getName());
 			} else if (isMac) {
-				nativesDir = loader.extractFile("liblwjgl.jnilib", null).getParentFile();
+				File extractedFile = loader.extractFile("liblwjgl.jnilib", null);
+				nativesDir = extractedFile.getParentFile();
+				new FileHandle(extractedFile).copyTo(new FileHandle(new File(nativesDir, "liblwjgl.dylib")));
 				if (!LwjglApplicationConfiguration.disableAudio) loader.extractFile("openal.dylib", nativesDir.getName());
 			} else if (isLinux) {
 				nativesDir = loader.extractFile(is64Bit ? "liblwjgl64.so" : "liblwjgl.so", null).getParentFile();

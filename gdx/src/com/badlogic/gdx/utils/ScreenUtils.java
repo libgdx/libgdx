@@ -30,7 +30,7 @@ import com.badlogic.gdx.math.MathUtils;
  * entire screen content or a portion thereof.
  * 
  * @author espitz */
-public class ScreenUtils {
+public final class ScreenUtils {
 
 	/** Returns the default framebuffer contents as a {@link TextureRegion} with a width and height equal to the current screen
 	 * size. The base {@link Texture} always has {@link MathUtils#nextPowerOfTwo} dimensions and RGBA8888 {@link Format}. It can be

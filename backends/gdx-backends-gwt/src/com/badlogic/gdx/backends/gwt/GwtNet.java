@@ -45,8 +45,8 @@ import com.google.gwt.user.client.Window;
 
 public class GwtNet implements Net {
 
-	private ObjectMap<HttpRequest, Request> requests;
-	private ObjectMap<HttpRequest, HttpResponseListener> listeners;
+	ObjectMap<HttpRequest, Request> requests;
+	ObjectMap<HttpRequest, HttpResponseListener> listeners;
 
 	private final class HttpClientResponse implements HttpResponse {
 
@@ -106,7 +106,7 @@ public class GwtNet implements Net {
 	}
 
 	@Override
-	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
+	public void sendHttpRequest (final HttpRequest httpRequest, final HttpResponseListener httpResultListener) {
 		if (httpRequest.getUrl() == null) {
 			httpResultListener.failed(new GdxRuntimeException("can't process a HTTP request without URL set"));
 			return;
@@ -115,8 +115,17 @@ public class GwtNet implements Net {
 		final boolean is_get = (httpRequest.getMethod() == HttpMethods.GET);
 		final String value = httpRequest.getContent();
 
-		final RequestBuilder builder = is_get ? new RequestBuilder(RequestBuilder.GET, httpRequest.getUrl() + "?" + value)
-			: new RequestBuilder(RequestBuilder.POST, httpRequest.getUrl());
+		RequestBuilder builder;
+		
+		String url = httpRequest.getUrl();
+		if (is_get) {
+			if (value != null) {
+				url += "?" + value;
+			}
+			builder = new RequestBuilder(RequestBuilder.GET, url);
+		} else {
+			builder = new RequestBuilder(RequestBuilder.POST, url);
+		}
 
 		Map<String, String> content = httpRequest.getHeaders();
 		Set<String> keySet = content.keySet();
@@ -130,28 +139,19 @@ public class GwtNet implements Net {
 			Request request = builder.sendRequest(is_get ? null : value, new RequestCallback() {
 
 				@Override
-				public void onResponseReceived (Request request, Response response) {
-					HttpRequest httpRequest = requests.findKey(requests, true);
-
-					if (httpRequest != null) {
+				public void onResponseReceived (Request request, Response response) {					
 						httpResultListener.handleHttpResponse(new HttpClientResponse(response));
 						requests.remove(httpRequest);
 						listeners.remove(httpRequest);
-					}
 				}
 
 				@Override
 				public void onError (Request request, Throwable exception) {
-					HttpRequest httpRequest = requests.findKey(requests, true);
-
-					if (httpRequest != null) {
 						httpResultListener.failed(exception);
 						requests.remove(httpRequest);
 						listeners.remove(httpRequest);
-					}
 				}
 			});
-
 			requests.put(httpRequest, request);
 			listeners.put(httpRequest, httpResultListener);
 

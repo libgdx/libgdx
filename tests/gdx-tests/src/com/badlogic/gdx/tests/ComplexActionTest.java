@@ -40,7 +40,7 @@ public class ComplexActionTest extends GdxTest {
 
 	@Override
 	public void create () {
-		stage = new Stage(480, 320, true);
+		stage = new Stage();
 
 		Action complexAction = forever(sequence(parallel(rotateBy(180, 2), scaleTo(1.4f, 1.4f, 2), alpha(0.7f, 2)),
 			parallel(rotateBy(180, 2), scaleTo(1.0f, 1.0f, 2), alpha(1.0f, 2))));

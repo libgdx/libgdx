@@ -40,6 +40,15 @@ public class ChainShape extends Shape {
 		return Type.Chain;
 	}
 
+	public void createLoop (float[] vertices) {
+		Vec2[] v = new Vec2[vertices.length / 2];
+		for (int i = 0; i < vertices.length; i += 2) {
+			v[i] = new Vec2(vertices[i], vertices[i + 1]);
+		}
+		shape.createLoop(v, v.length);
+		isLooped = true;
+	}
+	
 	/** Create a loop. This automatically adjusts connectivity.
 	 * @param vertices an array of vertices, these are copied */
 	public void createLoop (Vector2[] vertices) {
@@ -51,6 +60,15 @@ public class ChainShape extends Shape {
 		isLooped = true;
 	}
 
+	public void createChain (float[] vertices) {
+		Vec2[] v = new Vec2[vertices.length / 2];
+		for (int i = 0; i < vertices.length; i += 2) {
+			v[i] = new Vec2(vertices[i], vertices[i + 1]);
+		}
+		shape.createChain(v, v.length);
+		isLooped = false;
+	}
+	
 	/** Create a chain with isolated end vertices.
 	 * @param vertices an array of vertices, these are copied */
 	public void createChain (Vector2[] vertices) {

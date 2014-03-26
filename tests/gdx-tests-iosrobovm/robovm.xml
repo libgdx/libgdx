@@ -5,7 +5,7 @@
   <arch>thumbv7</arch>
   <target>ios</target>
   <iosInfoPList>Info.plist.xml</iosInfoPList>
-   <resources>
+  <resources>
     <resource>
       <directory>../gdx-tests-android/assets</directory>
       <includes>
@@ -17,6 +17,15 @@
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
     <pattern>com.badlogic.gdx.physics.bullet.**</pattern>
+    <pattern>org.apache.harmony.xnet.provider.jsse.OpenSSLProvider</pattern>
+    <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
+    <pattern>com.android.org.bouncycastle.jce.provider.BouncyCastleProvider</pattern>
+    <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
+    <pattern>org.apache.harmony.xnet.provider.jsse.JSSEProvider</pattern>
+    <pattern>com.android.org.bouncycastle.jce.provider.JDKKeyStore</pattern>
+    <pattern>org.apache.harmony.security.provider.cert.X509CertFactoryImpl</pattern>
+    <pattern>com.android.org.bouncycastle.jce.provider.PKIXCertPathValidatorSpi</pattern>
+    <pattern>org.apache.harmony.xnet.provider.jsse.OpenSSLMessageDigestJDK$MD5</pattern>
   </forceLinkClasses>
   <libs>
     <lib>../../gdx/libs/ios32/libgdx.a</lib>

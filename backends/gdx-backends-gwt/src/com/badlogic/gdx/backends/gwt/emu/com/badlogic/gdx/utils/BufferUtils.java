@@ -33,7 +33,7 @@ import com.google.gwt.core.client.GWT;
 /** Class with static helper methods to increase the speed of array/direct buffer and direct buffer/direct buffer transfers
  * 
  * @author mzechner */
-public class BufferUtils {
+public final class BufferUtils {
 	/** Copies numFloats floats from src starting at offset to dst. Dst is assumed to be a direct {@link Buffer}. The method will
 	 * crash if that is not the case. The position and limit of the buffer are ignored, the copy is placed at position 0 in the
 	 * buffer. After the copying process the position of the buffer is set to 0 and its limit is set to numFloats * 4 if it is a

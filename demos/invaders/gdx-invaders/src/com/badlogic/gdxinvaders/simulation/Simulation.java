@@ -55,10 +55,10 @@ public class Simulation implements Disposable {
 	public Model blockModel;
 	public Model shotModel;
 	public Model explosionModel;
-	
+
 	private ArrayList<Shot> removedShots = new ArrayList<Shot>();
 	private ArrayList<Explosion> removedExplosions = new ArrayList<Explosion>();
-	
+
 	private final Vector3 tmpV1 = new Vector3();
 	private final Vector3 tmpV2 = new Vector3();
 
@@ -72,23 +72,23 @@ public class Simulation implements Disposable {
 		invaderModel = objLoader.loadModel(Gdx.files.internal("data/invader.obj"));
 		blockModel = objLoader.loadModel(Gdx.files.internal("data/block.obj"));
 		shotModel = objLoader.loadModel(Gdx.files.internal("data/shot.obj"));
-		
+
 		final Texture shipTexture = new Texture(Gdx.files.internal("data/ship.png"), Format.RGB565, true);
 		shipTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		final Texture invaderTexture = new Texture(Gdx.files.internal("data/invader.png"), Format.RGB565, true);
 		invaderTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 		shipModel.materials.get(0).set(TextureAttribute.createDiffuse(shipTexture));
 		invaderModel.materials.get(0).set(TextureAttribute.createDiffuse(invaderTexture));
-		
+
 		((ColorAttribute)blockModel.materials.get(0).get(ColorAttribute.Diffuse)).color.set(0, 0, 1, 0.5f);
 		blockModel.materials.get(0).set(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
-		
+
 		shotModel.materials.get(0).set(ColorAttribute.createDiffuse(1, 1, 0, 1f));
-		
+
 		final Texture explosionTexture = new Texture(Gdx.files.internal("data/explode.png"), Format.RGBA4444, true);
 		explosionTexture.setFilter(TextureFilter.MipMap, TextureFilter.Linear);
 
-		final Mesh explosionMesh = new Mesh(true, 4 * 16, 6 * 16, new VertexAttribute(Usage.Position, 3, "a_position"), 
+		final Mesh explosionMesh = new Mesh(true, 4 * 16, 6 * 16, new VertexAttribute(Usage.Position, 3, "a_position"),
 			new VertexAttribute(Usage.TextureCoordinates, 2, "a_texCoord0"));
 
 		float[] vertices = new float[4 * 16 * (3 + 2)];
@@ -120,24 +120,23 @@ public class Simulation implements Disposable {
 				vertices[idx++] = 0;
 				vertices[idx++] = 0.25f + column * 0.25f;
 				vertices[idx++] = 0.25f + row * 0.25f;
-				
-				final int t = (4*row+column)*4;
+
+				final int t = (4 * row + column) * 4;
 				indices[index++] = (short)(t);
-				indices[index++] = (short)(t+1);
-				indices[index++] = (short)(t+2);
+				indices[index++] = (short)(t + 1);
+				indices[index++] = (short)(t + 2);
 				indices[index++] = (short)(t);
-				indices[index++] = (short)(t+2);
-				indices[index++] = (short)(t+3);
+				indices[index++] = (short)(t + 2);
+				indices[index++] = (short)(t + 3);
 			}
 		}
 
 		explosionMesh.setVertices(vertices);
 		explosionMesh.setIndices(indices);
-		
-		explosionModel = ModelBuilder.createFromMesh(explosionMesh, GL20.GL_TRIANGLES, 
-			new Material(new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA), 
-				TextureAttribute.createDiffuse(explosionTexture)));
-		
+
+		explosionModel = ModelBuilder.createFromMesh(explosionMesh, GL20.GL_TRIANGLES, new Material(new BlendingAttribute(
+			GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA), TextureAttribute.createDiffuse(explosionTexture)));
+
 		ship = new Ship(shipModel);
 		ship.transform.rotate(0, 1, 0, 180);
 
@@ -311,7 +310,7 @@ public class Simulation implements Disposable {
 
 		ship.transform.trn(-delta * Ship.SHIP_VELOCITY * scale, 0, 0);
 		ship.transform.getTranslation(tmpV1);
-		if (tmpV1.x < PLAYFIELD_MIN_X) ship.transform.trn(PLAYFIELD_MIN_X - tmpV1.x, 0,0);
+		if (tmpV1.x < PLAYFIELD_MIN_X) ship.transform.trn(PLAYFIELD_MIN_X - tmpV1.x, 0, 0);
 	}
 
 	public void moveShipRight (float delta, float scale) {
@@ -319,7 +318,7 @@ public class Simulation implements Disposable {
 
 		ship.transform.trn(+delta * Ship.SHIP_VELOCITY * scale, 0, 0);
 		ship.transform.getTranslation(tmpV1);
-		if (tmpV1.x > PLAYFIELD_MAX_X) ship.transform.trn(tmpV1.x - PLAYFIELD_MAX_X, 0,0);
+		if (tmpV1.x > PLAYFIELD_MAX_X) ship.transform.trn(tmpV1.x - PLAYFIELD_MAX_X, 0, 0);
 	}
 
 	public void shot () {

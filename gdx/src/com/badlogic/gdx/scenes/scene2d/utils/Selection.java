@@ -35,6 +35,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	/** Selects or deselects the specified item based on how the selection is configured, whether ctrl is currently pressed, etc.
 	 * This is typically invoked by user interaction. */
 	public void choose (T item) {
+		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (isDisabled) return;
 		snapshot();
 		if ((toggle || (!required && selected.size == 1) || isCtrlPressed()) && selected.contains(item)) {
@@ -91,6 +92,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 
 	/** Sets the selection to only the specified item. */
 	public void set (T item) {
+		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (selected.size == 1 && selected.first() == item) return;
 		snapshot();
 		selected.clear();
@@ -108,6 +110,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		selected.clear();
 		for (int i = 0, n = items.size; i < n; i++) {
 			T item = items.get(i);
+			if (item == null) throw new IllegalArgumentException("item cannot be null.");
 			if (selected.add(item)) added = true;
 		}
 		if (added && programmaticChangeEvents && fireChangeEvent())
@@ -119,6 +122,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 
 	/** Adds the item to the selection. */
 	public void add (T item) {
+		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (!selected.add(item)) return;
 		if (programmaticChangeEvents && fireChangeEvent())
 			selected.remove(item);
@@ -131,6 +135,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		snapshot();
 		for (int i = 0, n = items.size; i < n; i++) {
 			T item = items.get(i);
+			if (item == null) throw new IllegalArgumentException("item cannot be null.");
 			if (selected.add(item)) added = true;
 		}
 		if (added && programmaticChangeEvents && fireChangeEvent())
@@ -141,6 +146,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	public void remove (T item) {
+		if (item == null) throw new IllegalArgumentException("item cannot be null.");
 		if (!selected.remove(item)) return;
 		if (programmaticChangeEvents && fireChangeEvent())
 			selected.add(item);
@@ -153,6 +159,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		snapshot();
 		for (int i = 0, n = items.size; i < n; i++) {
 			T item = items.get(i);
+			if (item == null) throw new IllegalArgumentException("item cannot be null.");
 			if (selected.remove(item)) removed = true;
 		}
 		if (removed && programmaticChangeEvents && fireChangeEvent())
@@ -176,6 +183,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	/** Called when the selection changes.
 	 * @return true if the change should be undone. */
 	public boolean fireChangeEvent () {
+		if (actor == null) return false;
 		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
 		try {
 			return actor.fire(changeEvent);
@@ -185,6 +193,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	}
 
 	public boolean contains (T item) {
+		if (item == null) return false;
 		return selected.contains(item);
 	}
 
@@ -240,6 +249,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 	/** If false, only {@link #choose(Object)} will fire a change event. Default is true. */
 	public void setProgrammaticChangeEvents (boolean programmaticChangeEvents) {
 		this.programmaticChangeEvents = programmaticChangeEvents;
+	}
+
+	public String toString () {
+		return selected.toString();
 	}
 
 	/** Returns true if ctrl is currently pressed, except on Mac OS X where it returns true if command is currently pressed. */

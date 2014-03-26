@@ -133,7 +133,7 @@ public class ArrayMap<K, V> {
 
 	/** Returns the key for the specified value. Note this does a comparison of each value in reverse order until the specified
 	 * value is found.
-	 * @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
+	 * @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public K getKey (V value, boolean identity) {
 		Object[] values = this.values;
 		int i = size - 1;
@@ -205,7 +205,7 @@ public class ArrayMap<K, V> {
 		return false;
 	}
 
-	/** @param identity If true, == comparison will be used. If false, .equals() comaparison will be used. */
+	/** @param identity If true, == comparison will be used. If false, .equals() comparison will be used. */
 	public boolean containsValue (V value, boolean identity) {
 		V[] values = this.values;
 		int i = size - 1;
@@ -338,8 +338,8 @@ public class ArrayMap<K, V> {
 		resize(size);
 	}
 
-	/** Increases the size of the backing arrays to acommodate the specified number of additional entries. Useful before adding many
-	 * entries to avoid multiple backing array resizes. */
+	/** Increases the size of the backing arrays to accommodate the specified number of additional entries. Useful before adding
+	 * many entries to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
 		if (sizeNeeded >= keys.length) resize(Math.max(8, sizeNeeded));
@@ -542,6 +542,11 @@ public class ArrayMap<K, V> {
 		public Array<V> toArray () {
 			return new Array(true, map.values, index, map.size - index);
 		}
+
+		public Array<V> toArray (Array array) {
+			array.addAll(map.values, index, map.size - index);
+			return array;
+		}
 	}
 
 	static public class Keys<K> implements Iterable<K>, Iterator<K> {
@@ -579,6 +584,11 @@ public class ArrayMap<K, V> {
 
 		public Array<K> toArray () {
 			return new Array(true, map.keys, index, map.size - index);
+		}
+
+		public Array<K> toArray (Array array) {
+			array.addAll(map.keys, index, map.size - index);
+			return array;
 		}
 	}
 }

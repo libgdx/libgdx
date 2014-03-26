@@ -8,11 +8,9 @@ General
 	
 - IOSApplicationConfiguration
 	- add compass
-	- add useGL2, requires implementation of GL10/GL11 for ios, and fixes in IOSGraphics
 	
 - IOSGraphics
 	- need to store current device orientation for Input#getOrienation and consorts
-	- Add support for GL10/GL11	
 	- implement non-continuous rendering
 	
 - IOSInput

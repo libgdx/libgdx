@@ -23,8 +23,8 @@ public class Ship extends ModelInstance {
 	public int lives = 3;
 	public boolean isExploding = false;
 	public float explodeTime = 0;
-	
-	public Ship(Model model) {
+
+	public Ship (Model model) {
 		super(model);
 	}
 

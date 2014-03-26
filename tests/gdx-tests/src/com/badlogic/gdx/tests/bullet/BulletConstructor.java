@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests.bullet;
 
 import com.badlogic.gdx.graphics.Mesh;
@@ -25,67 +26,54 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBodyConstructionInfo;
 
-/** @author xoppa
- *  Holds the information necessary to create a bullet btRigidBody. This class should outlive the btRigidBody (entity) itself.
- */
+/** @author xoppa Holds the information necessary to create a bullet btRigidBody. This class should outlive the btRigidBody (entity)
+ *         itself. */
 public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	public btRigidBodyConstructionInfo bodyInfo = null;
 	public btCollisionShape shape = null;
-		
-	/**
-	 * Specify null for the shape to use only the renderable part of this entity and not the physics part. 
-	 */
+
+	/** Specify null for the shape to use only the renderable part of this entity and not the physics part. */
 	public BulletConstructor (final Model model, final float mass, final btCollisionShape shape) {
 		create(model, mass, shape);
 	}
-	
-	/**
-	 * Specify null for the shape to use only the renderable part of this entity and not the physics part. 
-	 */
+
+	/** Specify null for the shape to use only the renderable part of this entity and not the physics part. */
 	public BulletConstructor (final Model model, final btCollisionShape shape) {
 		this(model, -1f, shape);
 	}
 
-	/**
-	 * Creates a btBoxShape with the specified dimensions.
-	 */
+	/** Creates a btBoxShape with the specified dimensions. */
 	public BulletConstructor (final Model model, final float mass, final float width, final float height, final float depth) {
 		create(model, mass, width, height, depth);
 	}
-	
-	/**
-	 * Creates a btBoxShape with the specified dimensions and NO rigidbody.
-	 */
+
+	/** Creates a btBoxShape with the specified dimensions and NO rigidbody. */
 	public BulletConstructor (final Model model, final float width, final float height, final float depth) {
 		this(model, -1f, width, height, depth);
 	}
-	
-	/**
-	 * Creates a btBoxShape with the same dimensions as the shape.
-	 */
+
+	/** Creates a btBoxShape with the same dimensions as the shape. */
 	public BulletConstructor (final Model model, final float mass) {
-		final BoundingBox boundingBox = new BoundingBox(); 
+		final BoundingBox boundingBox = new BoundingBox();
 		model.calculateBoundingBox(boundingBox);
 		final Vector3 dimensions = boundingBox.getDimensions();
 		create(model, mass, dimensions.x, dimensions.y, dimensions.z);
 	}
-	
-	/**
-	 * Creates a btBoxShape with the same dimensions as the shape and NO rigidbody.
-	 */
+
+	/** Creates a btBoxShape with the same dimensions as the shape and NO rigidbody. */
 	public BulletConstructor (final Model model) {
 		this(model, -1f);
 	}
-	
-	private void create (final Model model, final float mass, final float width, final float height, final float depth) {			
+
+	private void create (final Model model, final float mass, final float width, final float height, final float depth) {
 		// Create a simple boxshape
 		create(model, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
 	}
-	
-	private void create(final Model model, final float mass, final btCollisionShape shape) {
+
+	private void create (final Model model, final float mass, final btCollisionShape shape) {
 		this.model = model;
 		this.shape = shape;
-		
+
 		if (shape != null && mass >= 0) {
 			// Calculate the local inertia, bodies with no mass are static
 			Vector3 localInertia;
@@ -95,7 +83,7 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 				shape.calculateLocalInertia(mass, Vector3.tmp);
 				localInertia = Vector3.tmp;
 			}
-			
+
 			// For now just pass null as the motionstate, we'll add that to the body in the entity itself
 			bodyInfo = new btRigidBodyConstructionInfo(mass, null, shape, localInertia);
 		}
@@ -120,7 +108,7 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 		} else
 			return new BulletEntity(model, bodyInfo, x, y, z);
 	}
-	
+
 	@Override
 	public BulletEntity construct (final Matrix4 transform) {
 		if (bodyInfo == null && shape != null) {
@@ -128,6 +116,6 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 			obj.setCollisionShape(shape);
 			return new BulletEntity(model, obj, transform);
 		} else
-		return new BulletEntity(model, bodyInfo, transform);
+			return new BulletEntity(model, bodyInfo, transform);
 	}
 }

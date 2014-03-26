@@ -24,15 +24,15 @@ import com.badlogic.gdx.utils.NumberUtils;
  * <p>
  * Thanks to Riven on JavaGaming.org for the basis of sin/cos/atan2/floor/ceil.
  * @author Nathan Sweet */
-public class MathUtils {
+public final class MathUtils {
 	static public final float nanoToSec = 1 / 1000000000f;
 
 	// ---
-	static public final float FLOAT_ROUNDING_ERROR = 0.000001f; //32 bits
+	static public final float FLOAT_ROUNDING_ERROR = 0.000001f; // 32 bits
 	static public final float PI = 3.1415927f;
 	static public final float PI2 = PI * 2;
 
-    static public final float E = 2.7182818f;
+	static public final float E = 2.7182818f;
 
 	static private final int SIN_BITS = 14; // 16KB. Adjust for accuracy.
 	static private final int SIN_MASK = ~(-1 << SIN_BITS);
@@ -49,7 +49,7 @@ public class MathUtils {
 	/** multiply by this to convert from degrees to radians */
 	static public final float degreesToRadians = PI / 180;
 	static public final float degRad = degreesToRadians;
-	
+
 	static private class Sin {
 		static final float[] table = new float[SIN_COUNT];
 		static {
@@ -60,7 +60,7 @@ public class MathUtils {
 		}
 	}
 
-		/** Returns the sine in radians from a lookup table. */
+	/** Returns the sine in radians from a lookup table. */
 	static public final float sin (float radians) {
 		return Sin.table[(int)(radians * radToIndex) & SIN_MASK];
 	}
@@ -251,15 +251,30 @@ public class MathUtils {
 	static public int roundPositive (float x) {
 		return (int)(x + 0.5f);
 	}
-	
+
 	/** Returns true if the value is zero (using the default tolerance as upper bound) */
-	static public boolean isZero(float value){
+	static public boolean isZero (float value) {
 		return Math.abs(value) <= FLOAT_ROUNDING_ERROR;
 	}
-	
+
 	/** Returns true if the value is zero.
 	 * @param tolerance represent an upper bound below which the value is considered zero. */
-	static public boolean isZero(float value, float tolerance){
+	static public boolean isZero (float value, float tolerance) {
 		return Math.abs(value) <= tolerance;
+	}
+
+	/** Returns true if a is nearly equal to b. The function uses the default floating error tolerance.
+	 * @param a the first value.
+	 * @param b the second value. */
+	static public boolean isEqual (float a, float b) {
+		return Math.abs(a - b) <= FLOAT_ROUNDING_ERROR;
+	}
+
+	/** Returns true if a is nearly equal to b.
+	 * @param a the first value.
+	 * @param b the second value.
+	 * @param tolerance represent an upper bound below which the value is considered zero. */
+	static public boolean isEqual (float a, float b, float tolerance) {
+		return Math.abs(a - b) <= tolerance;
 	}
 }

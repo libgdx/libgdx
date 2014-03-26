@@ -26,20 +26,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class MusicTest extends GdxTest {
-
-	static final int NUM_STREAMS = 1;
-	Music[] music = new Music[NUM_STREAMS];
+	Music music;
 	TextureRegion buttons;
 	SpriteBatch batch;
 	BitmapFont font;
 
 	@Override
 	public void create () {
-		for (int i = 0; i < music.length; i++) {
-			music[i] = Gdx.audio.newMusic(Gdx.files.internal("data/cloudconnected.ogg"));
-			music[i].setLooping(true);
-			music[i].setLooping(false);
-		}
+		music = Gdx.audio.newMusic(Gdx.files.internal("data/8.12.mp3"));
+		music.play();
 
 		buttons = new TextureRegion(new Texture(Gdx.files.internal("data/playback.png")));
 		batch = new SpriteBatch();
@@ -50,28 +45,29 @@ public class MusicTest extends GdxTest {
 	public void resize (int width, int height) {
 		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
 	}
+	
+	@Override
+	public void resume () {
+		System.out.println(Gdx.graphics.getDeltaTime());
+	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(buttons, 0, 0);
-// font.draw(batch, "\"Three of a perfect pair: " + music[0].getPosition(), 10, Gdx.graphics.getHeight() - 20);
 		batch.end();
 
 		if (Gdx.input.justTouched()) {
 			if (Gdx.input.getY() > Gdx.graphics.getHeight() - 64) {
 				if (Gdx.input.getX() < 64) {
-					for (int i = 0; i < music.length; i++)
-						music[i].play();
+					music.play();
 				}
 				if (Gdx.input.getX() > 64 && Gdx.input.getX() < 128) {
-					for (int i = 0; i < music.length; i++)
-						music[i].stop();
+					music.stop();
 				}
 				if (Gdx.input.getX() > 128 && Gdx.input.getX() < 192) {
-					for (int i = 0; i < music.length; i++)
-						music[i].pause();
+					music.pause();
 				}
 			}
 		}
@@ -81,7 +77,6 @@ public class MusicTest extends GdxTest {
 	public void dispose () {
 		batch.dispose();
 		buttons.getTexture().dispose();
-		for (Music m : music)
-			m.dispose();
+		music.dispose();
 	}
 }

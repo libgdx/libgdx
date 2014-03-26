@@ -28,24 +28,23 @@ public class DefaultRenderableSorter implements RenderableSorter, Comparator<Ren
 	private Camera camera;
 	private final Vector3 tmpV1 = new Vector3();
 	private final Vector3 tmpV2 = new Vector3();
-	
+
 	@Override
 	public void sort (final Camera camera, final Array<Renderable> renderables) {
 		this.camera = camera;
 		renderables.sort(this);
 	}
-	
+
 	@Override
 	public int compare (final Renderable o1, final Renderable o2) {
-		final boolean b1 = o1.material.has(BlendingAttribute.Type) ? 
-			((BlendingAttribute)o1.material.get(BlendingAttribute.Type)).blended : false;
-		final boolean b2 = o2.material.has(BlendingAttribute.Type) ?
-			((BlendingAttribute)o2.material.get(BlendingAttribute.Type)).blended : false;
-		if (b1 != b2) 
-			return b1 ? 1 : -1;
+		final boolean b1 = o1.material.has(BlendingAttribute.Type) ? ((BlendingAttribute)o1.material.get(BlendingAttribute.Type)).blended
+			: false;
+		final boolean b2 = o2.material.has(BlendingAttribute.Type) ? ((BlendingAttribute)o2.material.get(BlendingAttribute.Type)).blended
+			: false;
+		if (b1 != b2) return b1 ? 1 : -1;
 		// FIXME implement better sorting algorithm
-		// final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) == (o2.lights == null) && 
-			// o1.material.equals(o2.material);
+		// final boolean same = o1.shader == o2.shader && o1.mesh == o2.mesh && (o1.lights == null) == (o2.lights == null) &&
+		// o1.material.equals(o2.material);
 		o1.worldTransform.getTranslation(tmpV1);
 		o2.worldTransform.getTranslation(tmpV2);
 		final float dst = camera.position.dst2(tmpV1) - camera.position.dst2(tmpV2);

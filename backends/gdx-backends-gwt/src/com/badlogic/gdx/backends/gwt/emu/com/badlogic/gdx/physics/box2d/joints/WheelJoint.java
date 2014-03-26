@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.physics.box2d.joints;
 
+import org.jbox2d.common.Vec2;
+
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -25,9 +28,31 @@ import com.badlogic.gdx.physics.box2d.World;
 public class WheelJoint extends Joint {
 	org.jbox2d.dynamics.joints.WheelJoint joint;
 
+	Vector2 localAnchorA = new Vector2();
+	Vector2 localAnchorB = new Vector2();
+	Vector2 localAxisA = new Vector2();
+
 	public WheelJoint (World world, org.jbox2d.dynamics.joints.WheelJoint joint) {
 		super(world, joint);
 		this.joint = joint;
+	}
+
+	public Vector2 getLocalAnchorA () {
+		Vec2 localAnchor = joint.getLocalAnchorA();
+		localAnchorA.set(localAnchor.x, localAnchor.y);
+		return localAnchorA;
+	}
+
+	public Vector2 getLocalAnchorB () {
+		Vec2 localAnchor = joint.getLocalAnchorB();
+		localAnchorB.set(localAnchor.x, localAnchor.y);
+		return localAnchorB;
+	}
+
+	public Vector2 getLocalAxisA () {
+		Vec2 localAxis = joint.getLocalAxisA();
+		localAxisA.set(localAxis.x, localAxis.y);
+		return localAxisA;
 	}
 
 	/** Get the current joint translation, usually in meters. */
@@ -41,7 +66,7 @@ public class WheelJoint extends Joint {
 	}
 
 	/** Is the joint motor enabled? */
-	private boolean isMotorEnabled () {
+	public boolean isMotorEnabled () {
 		return joint.isMotorEnabled();
 	}
 

@@ -45,8 +45,8 @@ public class SharedLibraryLoader {
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
 
 	static {
-		String vm = System.getProperty("java.vm.name");
-		if (vm != null && vm.contains("Dalvik")) {
+		String vm = System.getProperty("java.runtime.name");
+		if (vm != null && vm.contains("Android Runtime")) {
 			isAndroid = true;
 			isWindows = false;
 			isLinux = false;

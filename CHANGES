@@ -18,7 +18,7 @@
 - PolygonSpriteBatch implements Batch.
 - New scene2d actions: EventAction, CountdownEventAction.
 - Adds cancelHttpRequest() method to Net interface
-- Update GWT/HTML5 Backend to GWT 2.6.0
+- Updated GWT/HTML5 Backend to GWT 2.6.0
 - Minimal Android version is 2.2, see http://www.badlogicgames.com/wordpress/?p=3297
 - Updated to LWJGL 2.9.1
 - Can now embed your libgdx app as a fragment, more info on the wiki
@@ -27,6 +27,11 @@
 - scene2d.ui, added Container which is similar to a Table with one cell, but more lightweight
 - Added texture filters and mip map generation to BitMapFontLoader and FreeTypeFontGenerator
 - scene2d.ui, VerticalGroup and HorizontalGroup got pad, fill and an API similar to Table/Container
+- Removed OpenGL ES 1.0, 1.1 support; see http://www.badlogicgames.com/wordpress/?p=3311
+- Added OpenGL ES 3 support
+- Updated Android backend, demos, tests to 4.4
+- Added Viewport, changed Stage to have a Viewport instead of a Camera (API change).
+- Changed play mode constants of Animation class to enumeration, see http://www.badlogicgames.com/wordpress/?p=3330
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop

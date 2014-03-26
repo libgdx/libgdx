@@ -20,10 +20,9 @@ import java.util.Map;
 
 /** <p>
  * A Preference instance is a hash map holding different values. It is stored alongside your application (SharedPreferences on
- * Android, LocalStorage on GWT, on the desktop a Java Preferences file in a ".prefs" directory will be created, 
- * and on iOS an NSMutableDictonary will be written to the given file). CAUTION: On the desktop platform, all libgdx
- * applications share the same ".prefs" directory.  To avoid collisions use specific names like "com.myname.game1.settings"
- * instead of "settings"
+ * Android, LocalStorage on GWT, on the desktop a Java Preferences file in a ".prefs" directory will be created, and on iOS an
+ * NSMutableDictionary will be written to the given file). CAUTION: On the desktop platform, all libgdx applications share the same
+ * ".prefs" directory. To avoid collisions use specific names like "com.myname.game1.settings" instead of "settings"
  * </p>
  * 
  * <p>
@@ -31,9 +30,8 @@ import java.util.Map;
  * </p>
  * 
  * <p>
- * Use {@link Application#getPreferences(String)} to look up a specific preferences instance.  Note that 
- * on several backends the preferences name will be used as the filename, so make sure the name is valid
- * for a filename.
+ * Use {@link Application#getPreferences(String)} to look up a specific preferences instance. Note that on several backends the
+ * preferences name will be used as the filename, so make sure the name is valid for a filename.
  * </p>
  * 
  * @author mzechner */

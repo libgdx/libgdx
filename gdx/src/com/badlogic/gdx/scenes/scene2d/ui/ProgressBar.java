@@ -125,40 +125,60 @@ public class ProgressBar extends Widget implements Disableable {
 			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
 
 			float positionHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
+			float knobHeightHalf = 0;
 			if (min != max) {
-				position = (value - min) / (max - min) * (positionHeight - knobHeight);
+				if (knob == null) {
+					knobHeightHalf = knobBefore.getMinHeight() * 0.5f;
+					position = (value - min) / (max - min) * (positionHeight - knobHeightHalf);
+					position = Math.min(positionHeight - knobHeightHalf, position);
+				}
+				else {
+					knobHeightHalf = knobHeight * 0.5f;
+					position = (value - min) / (max - min) * (positionHeight - knobHeight);
+					position = Math.min(positionHeight - knobHeight, position) + bg.getBottomHeight();
+				}
 				position = Math.max(0, position);
-				position = Math.min(positionHeight - knobHeight, position) + bg.getBottomHeight();
 			}
 
-			float knobHeightHalf = knobHeight * 0.5f;
 			if (knobBefore != null) {
-				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y, knobBefore.getMinWidth(),
-					(int)(position + knobHeightHalf));
+				float offset = 0;
+				if (bg != null) offset = bg.getTopHeight();
+				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y + offset, knobBefore.getMinWidth(),
+						(int)(position + knobHeightHalf));
 			}
 			if (knobAfter != null) {
 				knobAfter.draw(batch, x + (int)((width - knobAfter.getMinWidth()) * 0.5f), y + (int)(position + knobHeightHalf),
-					knobAfter.getMinWidth(), height - (int)(position + knobHeightHalf));
+						knobAfter.getMinWidth(), height - (int)(position + knobHeightHalf));
 			}
 			if (knob != null) knob.draw(batch, x + (int)((width - knobWidth) * 0.5f), (int)(y + position), knobWidth, knobHeight);
 		} else {
 			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
 
 			float positionWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
+			float knobWidthHalf = 0;
 			if (min != max) {
-				position = (value - min) / (max - min) * (positionWidth - knobWidth);
+				if (knob == null) {
+					knobWidthHalf = knobBefore.getMinWidth() * 0.5f;
+					position = (value - min) / (max - min) * (positionWidth - knobWidthHalf);
+					position = Math.min(positionWidth - knobWidthHalf, position);
+				}
+				else {
+					knobWidthHalf = knobWidth * 0.5f;
+					position = (value - min) / (max - min) * (positionWidth - knobWidth);
+					position = Math.min(positionWidth - knobWidth, position) + bg.getLeftWidth();
+				}
 				position = Math.max(0, position);
-				position = Math.min(positionWidth - knobWidth, position) + bg.getLeftWidth();
 			}
 
-			float knobWidthHalf = knobWidth * 0.5f;
 			if (knobBefore != null) {
-				knobBefore.draw(batch, x, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(position + knobWidthHalf),
-					knobBefore.getMinHeight());
+				float offset = 0;
+				if (bg != null) offset = bg.getLeftWidth();
+				knobBefore.draw(batch, x + offset, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(position + knobWidthHalf),
+						knobBefore.getMinHeight());
 			}
 			if (knobAfter != null) {
 				knobAfter.draw(batch, x + (int)(position + knobWidthHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
-					width - (int)(position + knobWidthHalf), knobAfter.getMinHeight());
+						width - (int)(position + knobWidthHalf), knobAfter.getMinHeight());
 			}
 			if (knob != null) knob.draw(batch, (int)(x + position), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
 		}
@@ -179,8 +199,8 @@ public class ProgressBar extends Widget implements Disableable {
 		return this.position;
 	}
 
-	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minumum and maximim values.
-	 * {@link #clamp(float)} can be overidden to allow values outside of the progress bar's min/max range.
+	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minimum and maximum values.
+	 * {@link #clamp(float)} can be overridden to allow values outside of the progress bar's min/max range.
 	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
 		value = clamp(Math.round(value / stepSize) * stepSize);
@@ -202,7 +222,7 @@ public class ProgressBar extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** Clamps the value to the progress bar's min/max range. This can be overidden to allow a range different from the progress bar
+	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress bar
 	 * knob's range. */
 	protected float clamp (float value) {
 		return MathUtils.clamp(value, min, max);

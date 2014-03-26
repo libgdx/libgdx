@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.assets.loaders;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
@@ -46,17 +47,16 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 			return deps;
 		}
 		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
-		for (int i=0; i<data.getImagePaths().length; i++) {
+		for (int i = 0; i < data.getImagePaths().length; i++) {
 			TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
-			
+
 			if (parameter != null) {
 				textureParams.genMipMaps = parameter.genMipMaps;
 				textureParams.minFilter = parameter.minFilter;
 				textureParams.magFilter = parameter.magFilter;
 			}
-			
-			AssetDescriptor descriptor = new AssetDescriptor(data.getImagePath(i), Texture.class, textureParams);
-			
+
+			AssetDescriptor descriptor = new AssetDescriptor(resolve(data.getImagePath(i)), Texture.class, textureParams);
 			deps.add(descriptor);
 		}
 		return deps;
@@ -69,7 +69,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
 		TextureRegion[] regs = new TextureRegion[data.getImagePaths().length];
-		for (int i=0; i<regs.length; i++) {
+		for (int i = 0; i < regs.length; i++) {
 			regs[i] = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));
 		}
 		return new BitmapFont(data, regs, true);

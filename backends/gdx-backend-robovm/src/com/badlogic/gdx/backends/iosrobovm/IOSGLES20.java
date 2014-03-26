@@ -21,10 +21,8 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 
-
-public class IOSGLES20 implements GL20, GLCommon
+public class IOSGLES20 implements GL20
 {	
 	public IOSGLES20() {
 		init();

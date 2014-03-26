@@ -50,8 +50,8 @@ import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
- * the Activity#onCreate(Bundle) method call the {@link #initialize(ApplicationListener, boolean)} method specifying the
- * configuration for the GLSurfaceView.
+ * the Activity#onCreate(Bundle) method call the {@link #initialize(ApplicationListener)} method specifying the configuration for
+ * the GLSurfaceView.
  * 
  * @author mzechner */
 public class AndroidDaydream extends DreamService implements Application {
@@ -73,25 +73,16 @@ public class AndroidDaydream extends DreamService implements Application {
 	protected int logLevel = LOG_INFO;
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
-	 * render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0 context
-	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
-	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
-	 * method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * 
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param useGL2IfAvailable whether to use OpenGL ES 2.0 if its available. */
+	 * render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
+	 * @param listener the {@link ApplicationListener} implementing the program logic */
 	public void initialize (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(listener, config);
 	}
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
-	 * render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0 context
-	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
-	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
-	 * method. You can configure other aspects of the application with the rest of the fields in the
+	 * render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
 	 * {@link AndroidApplicationConfiguration} instance.
-	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
@@ -148,13 +139,9 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
-	 * render via OpenGL and so on. If useGL20IfAvailable is set the AndroidApplication will try to create an OpenGL ES 2.0 context
-	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
-	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
-	 * method. Uses a default {@link AndroidApplicationConfiguration}.
-	 * <p/>
+	 * render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
+	 * <p>
 	 * Note: you have to add the returned view to your layout!
-	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener) {
@@ -163,14 +150,10 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
-	 * render via OpenGL and so on. If config.useGL20 is set the AndroidApplication will try to create an OpenGL ES 2.0 context
-	 * which can then be used via {@link Graphics#getGL20()}. The {@link GL10} and {@link GL11} interfaces should not be used when
-	 * OpenGL ES 2.0 is enabled. To query whether enabling OpenGL ES 2.0 was successful use the {@link Graphics#isGL20Available()}
-	 * method. You can configure other aspects of the application with the rest of the fields in the
+	 * render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
 	 * {@link AndroidApplicationConfiguration} instance.
-	 * <p/>
+	 * <p>
 	 * Note: you have to add the returned view to your layout!
-	 * 
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.).

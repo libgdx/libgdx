@@ -490,7 +490,7 @@ public class UBJsonWriter implements Closeable {
 	public UBJsonWriter pop () throws IOException {
 		return pop(false);
 	}
-	
+
 	protected UBJsonWriter pop (boolean silent) throws IOException {
 		if (named) throw new IllegalStateException("Expected an object, array, or value since a name was set.");
 		if (silent)

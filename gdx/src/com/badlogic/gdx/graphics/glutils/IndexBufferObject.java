@@ -85,9 +85,9 @@ public class IndexBufferObject implements IndexData {
 		usage = GL20.GL_STATIC_DRAW;
 	}
 
-	private int createBufferObject () {		
+	private int createBufferObject () {
 		Gdx.gl20.glGenBuffers(1, tmpHandle);
-		return tmpHandle.get(0);		
+		return tmpHandle.get(0);
 	}
 
 	/** @return the number of indices currently stored in this buffer */
@@ -140,7 +140,7 @@ public class IndexBufferObject implements IndexData {
 	/** Binds this IndexBufferObject for rendering with glDrawElements. */
 	public void bind () {
 		if (bufferHandle == 0) throw new GdxRuntimeException("No buffer allocated!");
-			
+
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
 			byteBuffer.limit(buffer.limit() * 2);
@@ -151,7 +151,7 @@ public class IndexBufferObject implements IndexData {
 	}
 
 	/** Unbinds this IndexBufferObject. */
-	public void unbind () {		
+	public void unbind () {
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		isBound = false;
 	}
@@ -170,7 +170,7 @@ public class IndexBufferObject implements IndexData {
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		Gdx.gl20.glDeleteBuffers(1, tmpHandle);
 		bufferHandle = 0;
-		
+
 		BufferUtils.disposeUnsafeByteBuffer(byteBuffer);
 	}
 }

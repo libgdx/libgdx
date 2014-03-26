@@ -40,30 +40,30 @@ public class GamepadTest extends GdxTest {
 	Stage stage;
 	ScrollPane scrollPane;
 	List<String> console;
-	
+
 	@Override
 	public void create () {
 		setupUi();
-		
+
 		// print the currently connected controllers to the console
 		print("Controllers: " + Controllers.getControllers().size);
 		int i = 0;
-		for(Controller controller: Controllers.getControllers()) {
+		for (Controller controller : Controllers.getControllers()) {
 			print("#" + i++ + ": " + controller.getName());
 		}
-		if(Controllers.getControllers().size == 0) print("No controllers attached");
-		
+		if (Controllers.getControllers().size == 0) print("No controllers attached");
+
 		// setup the listener that prints events to the console
 		Controllers.addListener(new ControllerListener() {
-			public int indexOf(Controller controller) {
+			public int indexOf (Controller controller) {
 				return Controllers.getControllers().indexOf(controller, true);
 			}
-			
+
 			@Override
 			public void connected (Controller controller) {
 				print("connected " + controller.getName());
 				int i = 0;
-				for(Controller c: Controllers.getControllers()) {
+				for (Controller c : Controllers.getControllers()) {
 					print("#" + i++ + ": " + c.getName());
 				}
 			}
@@ -72,10 +72,10 @@ public class GamepadTest extends GdxTest {
 			public void disconnected (Controller controller) {
 				print("disconnected " + controller.getName());
 				int i = 0;
-				for(Controller c: Controllers.getControllers()) {
+				for (Controller c : Controllers.getControllers()) {
 					print("#" + i++ + ": " + c.getName());
 				}
-				if(Controllers.getControllers().size == 0) print("No controllers attached");
+				if (Controllers.getControllers().size == 0) print("No controllers attached");
 			}
 
 			@Override
@@ -121,26 +121,26 @@ public class GamepadTest extends GdxTest {
 			}
 		});
 	}
-	
-	void print(String message) {
+
+	void print (String message) {
 		String[] lines = console.getItems().toArray();
 		String[] newLines = new String[lines.length + 1];
 		System.arraycopy(lines, 0, newLines, 0, lines.length);
-		newLines[newLines.length-1] = message;
+		newLines[newLines.length - 1] = message;
 		console.setItems(newLines);
 		scrollPane.invalidate();
 		scrollPane.validate();
 		scrollPane.setScrollPercentY(1.0f);
 	}
-	
-	void clear() {
+
+	void clear () {
 		console.setItems(new String[0]);
 	}
 
-	private void setupUi() {
+	private void setupUi () {
 		// setup a tiny ui with a console and a clear button.
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		stage = new Stage();
 		ui = new Table();
 		ui.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		console = new List(skin);
@@ -159,12 +159,12 @@ public class GamepadTest extends GdxTest {
 		});
 		Gdx.input.setInputProcessor(stage);
 	}
-	
+
 	@Override
 	public void resize (int width, int height) {
 		ui.setSize(width, height);
 		ui.invalidate();
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override

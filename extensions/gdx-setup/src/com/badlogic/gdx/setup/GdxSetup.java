@@ -33,19 +33,22 @@ import java.util.Map;
  *
  */
 public class GdxSetup {
-	public void build (String outputDir, String appName, String packageName, String mainClass) {
+	public void build (String outputDir, String appName, String packageName, String mainClass, String sdkLocation) {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
+		String sdkPath = sdkLocation.replace('\\', '/');
 
 		// root dir/gradle files
+		project.files.add(new ProjectFile("gitignore", ".gitignore", false));
 		project.files.add(new ProjectFile("build.gradle", true));
 		project.files.add(new ProjectFile("settings.gradle"));
 		project.files.add(new ProjectFile("gradlew", false));
 		project.files.add(new ProjectFile("gradlew.bat", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.jar", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.properties", false));
-		
+		project.files.add(new ProjectFile("local.properties", true));
+
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
@@ -66,7 +69,7 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
 		project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
 		project.files.add(new ProjectFile("android/AndroidManifest.xml"));
-		project.files.add(new ProjectFile("android/build.gradle"));
+		project.files.add(new ProjectFile("android/build.gradle", true));
 		project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 		project.files.add(new ProjectFile("android/proguard-project.txt", false));
 		project.files.add(new ProjectFile("android/project.properties", false));
@@ -75,12 +78,15 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gwt/build.gradle"));
 		project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
 		project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
-		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/" + "index.html", true));
+		project.files.add(new ProjectFile("gwt/GdxDefinitionSuperdev", "gwt/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
+		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/index.html", true));
+		project.files.add(new ProjectFile("gwt/war/soundmanager2-jsmin.js", "gwt/webapp/soundmanager2-jsmin.js", false));
+		project.files.add(new ProjectFile("gwt/war/soundmanager2-setup.js", "gwt/webapp/soundmanager2-setup.js", false));
 		project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));
 
 		//ios robovm
 		project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-		project.files.add(new ProjectFile("ios/build.gradle", false));
+		project.files.add(new ProjectFile("ios/build.gradle", true));
 		project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 		project.files.add(new ProjectFile("ios/robovm.properties"));
 		project.files.add(new ProjectFile("ios/robovm.xml", false));
@@ -89,6 +95,7 @@ public class GdxSetup {
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
 		values.put("%MAIN_CLASS%", mainClass);
+		values.put("%ANDROID_SDK%", sdkPath);
 		
 		copyAndReplace(outputDir, project, values);
 		
@@ -179,11 +186,12 @@ public class GdxSetup {
 	}
 	
 	private static void printHelp() {
-		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass>");
+		System.out.println("Usage: GdxSetup --dir <dir-name> --name <app-name> --package <package> --mainClass <mainClass> --sdkLocation <SDKLocation>");
 		System.out.println("dir ... the directory to write the project files to");
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
+		System.out.println("sdkLocation ... the location of your android SDK");
 	}
 	
 	private static Map<String, String> parseArgs(String[] args) {
@@ -203,11 +211,11 @@ public class GdxSetup {
 	
 	public static void main (String[] args) {
 		Map<String, String> params = parseArgs(args);
-		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass")) {
+		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass") || !params.containsKey("sdkLocation")) {
+			new GdxSetupUI();
 			printHelp();
-			System.exit(-1);
+		} else {
+			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("sdkLocation"));
 		}
-		
-		new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"));
 	}
 }

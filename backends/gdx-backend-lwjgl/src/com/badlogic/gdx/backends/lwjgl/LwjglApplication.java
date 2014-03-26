@@ -73,7 +73,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
-		LwjglNativesLoader.load();
+		LwjglNativesLoader.load();		
 
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
@@ -86,7 +86,7 @@ public class LwjglApplication implements Application {
 		net = new LwjglNet();
 		this.listener = listener;
 		this.preferencesdir = config.preferencesDirectory;
-		
+
 		Gdx.app = this;
 		Gdx.graphics = graphics;
 		Gdx.audio = audio;
@@ -134,8 +134,7 @@ public class LwjglApplication implements Application {
 		}
 
 		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
-		graphics.resize = false;
+		graphics.resize = true;
 
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();
@@ -375,7 +374,7 @@ public class LwjglApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 

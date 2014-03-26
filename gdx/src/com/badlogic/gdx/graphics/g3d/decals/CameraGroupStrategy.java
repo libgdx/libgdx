@@ -36,7 +36,7 @@ import com.badlogic.gdx.utils.Pool;
  * Can produce invisible artifacts when transparent decals overlap each other.
  * </p>
  * <p>
- * Needs to be explicitely disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
+ * Needs to be explicitly disposed as it might allocate a ShaderProgram when GLSL 2.0 is used.
  * </p>
  * <p>
  * States (* = any, EV = entry value - same as value before flush):<br/>
@@ -105,12 +105,12 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 			}
 		});
 	}
-	
-	public CameraGroupStrategy(Camera camera, Comparator<Decal> sorter) {
+
+	public CameraGroupStrategy (Camera camera, Comparator<Decal> sorter) {
 		this.camera = camera;
 		this.cameraSorter = sorter;
 		createDefaultShader();
-		
+
 	}
 
 	public void setCamera (Camera camera) {
@@ -167,7 +167,7 @@ public class CameraGroupStrategy implements GroupStrategy, Disposable {
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		shader.begin();
 		shader.setUniformMatrix("u_projectionViewMatrix", camera.combined);
-		shader.setUniformi("u_texture", 0);		
+		shader.setUniformi("u_texture", 0);
 	}
 
 	@Override

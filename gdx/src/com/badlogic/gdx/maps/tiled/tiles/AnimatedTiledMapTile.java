@@ -22,6 +22,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
+/** @brief Represents a changing {@link TiledMapTile}. */
 public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private static long lastTiledMapRenderTime = 0;
@@ -78,10 +79,13 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		lastTiledMapRenderTime = TimeUtils.millis() - initialTimeOffset;
 	}
 
+	/** Creates an animated tile with the given animation interval and frame tiles.
+	 * 
+	 * @param interval The interval between each individual frame tile.
+	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
 	public AnimatedTiledMapTile (float interval, Array<StaticTiledMapTile> frameTiles) {
 		this.frameTiles = frameTiles;
 		this.animationInterval = interval;
 		this.frameCount = frameTiles.size;
 	}
-
 }

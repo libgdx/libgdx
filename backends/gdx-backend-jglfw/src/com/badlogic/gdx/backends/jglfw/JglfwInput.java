@@ -265,11 +265,11 @@ public class JglfwInput implements Input {
 		glfwSetCursorPos(app.graphics.window, x, y);
 	}
 
-  @Override
-  public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
-  }
+	@Override
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+	}
 
-  public void getTextInput (final TextInputListener listener, final String title, final String text) {
+	public void getTextInput (final TextInputListener listener, final String title, final String text) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run () {
 				final String output = JOptionPane.showInputDialog(null, title, text);

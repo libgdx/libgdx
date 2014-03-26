@@ -1,0 +1,16 @@
+.class
+.jar
+.war
+build/
+war/
+bin/
+gen/
+libs/
+.gradle/
+.classpath
+.project
+.settings/
+.ipr
+.iml
+
+/local.properties

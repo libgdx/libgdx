@@ -72,9 +72,10 @@ public class GLSurfaceView20 extends GLSurfaceView {
 			public boolean deleteSurroundingText (int beforeLength, int afterLength) {
 				int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
 				if (sdkVersion >= 16) {
-					/* In Jelly Bean, they don't send key events for delete.
-					 *  Instead, they send beforeLength = 1, afterLength = 0.
-					 *  So, we'll just simulate what it used to do. */
+					/*
+					 * In Jelly Bean, they don't send key events for delete. Instead, they send beforeLength = 1, afterLength = 0. So,
+					 * we'll just simulate what it used to do.
+					 */
 					if (beforeLength == 1 && afterLength == 0) {
 						sendDownUpKeyEventForBackwardCompatibility(KeyEvent.KEYCODE_DEL);
 						return true;
@@ -82,6 +83,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 				}
 				return super.deleteSurroundingText(beforeLength, afterLength);
 			}
+
 			private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
 				final long eventTime = SystemClock.uptimeMillis();
 				super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,
@@ -92,7 +94,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		};
 		return connection;
 	}
-	
+
 	private void init (boolean translucent, int depth, int stencil) {
 
 		/*

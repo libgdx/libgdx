@@ -40,7 +40,7 @@ public class RemoveListenerAction extends Action {
 		return targetActor;
 	}
 
-	/** Sets the actor to remove a listner from. If null (the default), the {@link #getActor() actor} will be used. */
+	/** Sets the actor to remove a listener from. If null (the default), the {@link #getActor() actor} will be used. */
 	public void setTargetActor (Actor actor) {
 		this.targetActor = actor;
 	}

@@ -47,7 +47,7 @@ public class VehicleTest extends BaseBulletTest {
 	public btVehicleTuning tuning;
 	BulletEntity chassis;
 	BulletEntity wheels[] = new BulletEntity[4];
-	
+
 	boolean downPressed;
 	boolean upPressed;
 	boolean leftPressed;
@@ -58,7 +58,7 @@ public class VehicleTest extends BaseBulletTest {
 	public void create () {
 		super.create();
 		instructions = "Tap to shoot\nArrow keys to drive\nR to reset\nLong press to toggle debug mode\nSwipe for next test";
-		
+
 		final Model chassisModel = objLoader.loadModel(Gdx.files.internal("data/car.obj"));
 		disposables.add(chassisModel);
 		chassisModel.materials.get(0).clear();
@@ -66,12 +66,15 @@ public class VehicleTest extends BaseBulletTest {
 		final Model wheelModel = objLoader.loadModel(Gdx.files.internal("data/wheel.obj"));
 		disposables.add(wheelModel);
 		wheelModel.materials.get(0).clear();
-		wheelModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.BLACK), 
-			ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(128));
+		wheelModel.materials.get(0).set(ColorAttribute.createDiffuse(Color.BLACK), ColorAttribute.createSpecular(Color.WHITE),
+			FloatAttribute.createShininess(128));
 		Texture checkboard = new Texture(Gdx.files.internal("data/g3d/checkboard.png"));
-		final Model largeGroundModel = modelBuilder.createBox(1000f, 2f, 1000f, 
-			new Material(TextureAttribute.createDiffuse(checkboard), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(16f)),
-			Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		final Model largeGroundModel = modelBuilder.createBox(
+			1000f,
+			2f,
+			1000f,
+			new Material(TextureAttribute.createDiffuse(checkboard), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+				.createShininess(16f)), Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		largeGroundModel.manageDisposable(checkboard);
 		disposables.add(largeGroundModel);
 		world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
@@ -97,37 +100,40 @@ public class VehicleTest extends BaseBulletTest {
 		vehicle = new btRaycastVehicle(tuning, (btRigidBody)chassis.body, raycaster);
 		chassis.body.setActivationState(Collision.DISABLE_DEACTIVATION);
 		((btDynamicsWorld)world.collisionWorld).addVehicle(vehicle);
-		
+
 		vehicle.setCoordinateSystem(0, 1, 2);
 
 		btWheelInfo wheelInfo;
 		Vector3 point = new Vector3();
-		Vector3 direction = new Vector3(0,-1,0);
-		Vector3 axis = new Vector3(-1,0,0);
-		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(0.9f,-0.8f,0.7f), direction, axis, wheelHalfExtents.z*0.3f, wheelHalfExtents.z, tuning, true);
-		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(-0.9f,-0.8f,0.7f), direction, axis, wheelHalfExtents.z*0.3f, wheelHalfExtents.z, tuning, true);
-		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(0.9f,-0.8f,-0.5f), direction, axis, wheelHalfExtents.z*0.3f, wheelHalfExtents.z, tuning, false);
-		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(-0.9f,-0.8f,-0.5f), direction, axis, wheelHalfExtents.z*0.3f, wheelHalfExtents.z, tuning, false);
+		Vector3 direction = new Vector3(0, -1, 0);
+		Vector3 axis = new Vector3(-1, 0, 0);
+		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(0.9f, -0.8f, 0.7f), direction, axis,
+			wheelHalfExtents.z * 0.3f, wheelHalfExtents.z, tuning, true);
+		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(-0.9f, -0.8f, 0.7f), direction, axis,
+			wheelHalfExtents.z * 0.3f, wheelHalfExtents.z, tuning, true);
+		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(0.9f, -0.8f, -0.5f), direction, axis,
+			wheelHalfExtents.z * 0.3f, wheelHalfExtents.z, tuning, false);
+		wheelInfo = vehicle.addWheel(point.set(chassisHalfExtents).scl(-0.9f, -0.8f, -0.5f), direction, axis,
+			wheelHalfExtents.z * 0.3f, wheelHalfExtents.z, tuning, false);
 	}
-	
+
 	float maxForce = 100f;
 	float currentForce = 0f;
 	float acceleration = 50f; // force/second
 	float maxAngle = 60f;
 	float currentAngle = 0f;
 	float steerSpeed = 45f; // angle/second
+
 	@Override
 	public void update () {
-		final float delta = Gdx.graphics.getDeltaTime(); 
-		float angle = currentAngle; 
+		final float delta = Gdx.graphics.getDeltaTime();
+		float angle = currentAngle;
 		if (rightPressed) {
-			if (angle > 0f)
-				angle = 0f;
+			if (angle > 0f) angle = 0f;
 			angle = MathUtils.clamp(angle - steerSpeed * delta, -maxAngle, 0f);
 		} else if (leftPressed) {
-			if (angle < 0f)
-				angle = 0f;
-			angle = MathUtils.clamp(angle + steerSpeed * delta, 0f, maxAngle);			
+			if (angle < 0f) angle = 0f;
+			angle = MathUtils.clamp(angle + steerSpeed * delta, 0f, maxAngle);
 		} else
 			angle = 0f;
 		if (angle != currentAngle) {
@@ -135,15 +141,13 @@ public class VehicleTest extends BaseBulletTest {
 			vehicle.setSteeringValue(angle * MathUtils.degreesToRadians, 0);
 			vehicle.setSteeringValue(angle * MathUtils.degreesToRadians, 1);
 		}
-		
+
 		float force = currentForce;
 		if (upPressed) {
-			if (force < 0f)
-				force = 0f;
+			if (force < 0f) force = 0f;
 			force = MathUtils.clamp(force + acceleration * delta, 0f, maxForce);
 		} else if (downPressed) {
-			if (force > 0f)
-				force = 0f;
+			if (force > 0f) force = 0f;
 			force = MathUtils.clamp(force - acceleration * delta, -maxForce, 0f);
 		} else
 			force = 0f;
@@ -152,29 +156,29 @@ public class VehicleTest extends BaseBulletTest {
 			vehicle.applyEngineForce(force, 0);
 			vehicle.applyEngineForce(force, 1);
 		}
-		
+
 		super.update();
-		
+
 		for (int i = 0; i < wheels.length; i++) {
 			vehicle.updateWheelTransform(i, true);
 			vehicle.getWheelInfo(i).getWorldTransform().getOpenGLMatrix(wheels[i].transform.val);
 		}
-		
+
 		chassis.transform.getTranslation(camera.position);
-		tmpV.set(camera.position).sub(5,0,5).y = 0f;
+		tmpV.set(camera.position).sub(5, 0, 5).y = 0f;
 		camera.position.add(tmpV.nor().scl(-6f)).y = 4.f;
 		chassis.transform.getTranslation(tmpV);
 		camera.lookAt(tmpV);
 		camera.up.set(Vector3.Y);
 		camera.update();
 	}
-	
+
 	@Override
 	public boolean tap (float x, float y, int count, int button) {
 		shoot(x, y);
 		return true;
 	}
-	
+
 	@Override
 	public void dispose () {
 		super.dispose();
@@ -185,25 +189,41 @@ public class VehicleTest extends BaseBulletTest {
 		tuning.dispose();
 		tuning = null;
 	}
-	
+
 	@Override
 	public boolean keyDown (int keycode) {
 		switch (keycode) {
-		case Keys.DOWN: downPressed = true; break;
-		case Keys.UP: upPressed = true; break;
-		case Keys.LEFT: leftPressed = true; break;
-		case Keys.RIGHT: rightPressed = true; break;
+		case Keys.DOWN:
+			downPressed = true;
+			break;
+		case Keys.UP:
+			upPressed = true;
+			break;
+		case Keys.LEFT:
+			leftPressed = true;
+			break;
+		case Keys.RIGHT:
+			rightPressed = true;
+			break;
 		}
 		return super.keyDown(keycode);
 	}
-	
+
 	@Override
 	public boolean keyUp (int keycode) {
 		switch (keycode) {
-		case Keys.DOWN: downPressed = false; break;
-		case Keys.UP: upPressed = false; break;
-		case Keys.LEFT: leftPressed = false; break;
-		case Keys.RIGHT: rightPressed = false; break;
+		case Keys.DOWN:
+			downPressed = false;
+			break;
+		case Keys.UP:
+			upPressed = false;
+			break;
+		case Keys.LEFT:
+			leftPressed = false;
+			break;
+		case Keys.RIGHT:
+			rightPressed = false;
+			break;
 		case Keys.R:
 			chassis.body.setWorldTransform(chassis.transform.setToTranslation(0, 5, 0));
 			chassis.body.setInterpolationWorldTransform(chassis.transform);

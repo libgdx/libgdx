@@ -343,7 +343,7 @@ b2ContactFilter defaultFilter;
 		Joint joint = null;
 		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, jointAddr);
 		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, jointAddr);
-		if (def.type == JointType.GearJoint) joint = new GearJoint(this, jointAddr);
+		if (def.type == JointType.GearJoint) joint = new GearJoint(this, jointAddr, ((GearJointDef) def).joint1, ((GearJointDef) def).joint2);
 		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, jointAddr);
 		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, jointAddr);
 		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, jointAddr);

@@ -864,7 +864,7 @@ public class SpriteCache implements Disposable {
 	public void end () {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
-		
+
 		shader.end();
 		GL20 gl = Gdx.gl20;
 		gl.glDepthMask(true);
@@ -918,7 +918,7 @@ public class SpriteCache implements Disposable {
 			else
 				mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
 			offset += count;
-		}		
+		}
 	}
 
 	/** Releases all resources held by this SpriteCache. */

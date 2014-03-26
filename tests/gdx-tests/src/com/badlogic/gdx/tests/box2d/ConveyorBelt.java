@@ -36,12 +36,12 @@ public class ConveyorBelt extends Box2DTest implements ContactListener {
 	@Override
 	protected void createWorld (World world) {
 		world.setContactListener(this);
-		
+
 		// Ground
 		{
 			BodyDef bodyDef = new BodyDef();
 			groundBody = world.createBody(bodyDef);
-			
+
 			EdgeShape shape = new EdgeShape();
 			shape.set(new Vector2(-20.0f, 0.0f), new Vector2(20.0f, 0.0f));
 			groundBody.createFixture(shape, 0.0f);
@@ -86,7 +86,7 @@ public class ConveyorBelt extends Box2DTest implements ContactListener {
 
 	@Override
 	public void beginContact (Contact contact) {
-		
+
 	}
 
 	@Override

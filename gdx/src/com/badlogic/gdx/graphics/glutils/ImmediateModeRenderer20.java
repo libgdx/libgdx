@@ -98,6 +98,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		this.primitiveType = primitiveType;
 	}
 
+	public void color (Color color) {
+		vertices[vertexIdx + colorOffset] = color.toFloatBits();
+	}
+
 	public void color (float r, float g, float b, float a) {
 		vertices[vertexIdx + colorOffset] = Color.toFloatBits(r, g, b, a);
 	}
@@ -185,7 +189,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 
 	static private String createFragmentShader (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		String shader = "#ifdef GL_ES\n" + "precision mediump float;\n" + "#endif\n";
-             
+
 		if (hasColors) shader += "varying vec4 v_col;\n";
 		for (int i = 0; i < numTexCoords; i++) {
 			shader += "varying vec2 v_tex" + i + ";\n";

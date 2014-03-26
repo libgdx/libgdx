@@ -133,14 +133,14 @@ public class Table extends WidgetGroup {
 		return layout.getMinHeight();
 	}
 
-	/** Sets the background drawable from the skin and adjusts the table's padding to match the backgruond. This may only be called
+	/** Sets the background drawable from the skin and adjusts the table's padding to match the background. This may only be called
 	 * if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used.
 	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (String drawableName) {
 		setBackground(skin.getDrawable(drawableName), true);
 	}
 
-	/** Sets the background drawable and adjusts the table's padding to match the backgruond.
+	/** Sets the background drawable and adjusts the table's padding to match the background.
 	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (Drawable background) {
 		setBackground(background, true);

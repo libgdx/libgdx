@@ -14,7 +14,6 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;

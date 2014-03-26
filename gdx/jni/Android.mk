@@ -57,7 +57,6 @@ LOCAL_SRC_FILES := android/AndroidGL20.cpp\
 	Box2D/Dynamics/Joints/b2WheelJoint.cpp\
 	Box2D/Rope/b2Rope.cpp\
 	com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.cpp\
-	com.badlogic.gdx.graphics.g3d.loaders.md5.MD5Jni.cpp\
 	com.badlogic.gdx.graphics.glutils.ETC1.cpp\
 	com.badlogic.gdx.math.Matrix4.cpp\
 	com.badlogic.gdx.physics.box2d.Body.cpp\

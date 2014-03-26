@@ -146,9 +146,9 @@ public class IndexBufferObjectSubData implements IndexData {
 
 		Gdx.gl20.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, bufferHandle);
 		if (isDirty) {
-				byteBuffer.limit(buffer.limit() * 2);
-				Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
-				isDirty = false;
+			byteBuffer.limit(buffer.limit() * 2);
+			Gdx.gl20.glBufferSubData(GL20.GL_ELEMENT_ARRAY_BUFFER, 0, byteBuffer.limit(), byteBuffer);
+			isDirty = false;
 		}
 		isBound = true;
 	}
@@ -173,6 +173,6 @@ public class IndexBufferObjectSubData implements IndexData {
 		GL20 gl = Gdx.gl20;
 		gl.glBindBuffer(GL20.GL_ELEMENT_ARRAY_BUFFER, 0);
 		gl.glDeleteBuffers(1, tmpHandle);
-		bufferHandle = 0;		
+		bufferHandle = 0;
 	}
 }

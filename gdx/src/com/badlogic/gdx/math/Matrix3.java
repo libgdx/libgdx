@@ -20,8 +20,9 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> matrix; useful for 2D transforms.
- *
+/** A 3x3 <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> matrix; useful for 2D
+ * transforms.
+ * 
  * @author mzechner */
 public class Matrix3 implements Serializable {
 	private static final long serialVersionUID = 7907569533774959788L;
@@ -45,13 +46,13 @@ public class Matrix3 implements Serializable {
 		set(matrix);
 	}
 
-    /** Constructs a matrix from the given float array. The array must have at least 9 elements; the first 9 will be copied.
-     * @param values The float array to copy. Remember that this matrix is in
-     * <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
-     * (The float array is not modified.) */
-    public Matrix3 (float[] values) {
-        this.set(values);
-    }
+	/** Constructs a matrix from the given float array. The array must have at least 9 elements; the first 9 will be copied.
+	 * @param values The float array to copy. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
+	 *           not modified.) */
+	public Matrix3 (float[] values) {
+		this.set(values);
+	}
 
 	/** Sets this matrix to the identity matrix
 	 * @return This matrix for the purpose of chaining operations. */
@@ -69,7 +70,7 @@ public class Matrix3 implements Serializable {
 	}
 
 	/** Postmultiplies this matrix with the provided matrix and stores the result in this matrix. For example:
-	 *
+	 * 
 	 * <pre>
 	 * A.mul(B) results in A := AB
 	 * </pre>
@@ -127,6 +128,24 @@ public class Matrix3 implements Serializable {
 		this.val[M12] = 0;
 		this.val[M22] = 1;
 
+		return this;
+	}
+
+	public Matrix3 setToRotation (Vector3 axis, float degrees) {
+		return setToRotation(axis, MathUtils.cosDeg(degrees), MathUtils.sinDeg(degrees));
+	}
+
+	public Matrix3 setToRotation (Vector3 axis, float cos, float sin) {
+		float oc = 1.0f - cos;
+		val[M00] = oc * axis.x * axis.x + cos;
+		val[M10] = oc * axis.x * axis.y - axis.z * sin;
+		val[M20] = oc * axis.z * axis.x + axis.y * sin;
+		val[M01] = oc * axis.x * axis.y + axis.z * sin;
+		val[M11] = oc * axis.y * axis.y + cos;
+		val[M21] = oc * axis.y * axis.z - axis.x * sin;
+		val[M02] = oc * axis.z * axis.x - axis.y * sin;
+		val[M12] = oc * axis.y * axis.z + axis.x * sin;
+		val[M22] = oc * axis.z * axis.z + cos;
 		return this;
 	}
 
@@ -189,7 +208,7 @@ public class Matrix3 implements Serializable {
 
 	public String toString () {
 		return "[" + val[0] + "|" + val[3] + "|" + val[6] + "]\n" + "[" + val[1] + "|" + val[4] + "|" + val[7] + "]\n" + "["
-				+ val[2] + "|" + val[5] + "|" + val[8] + "]";
+			+ val[2] + "|" + val[5] + "|" + val[8] + "]";
 	}
 
 	/** @return The determinant of this matrix */
@@ -254,16 +273,16 @@ public class Matrix3 implements Serializable {
 		return this;
 	}
 
-    /** Sets the matrix to the given matrix as a float array. The float array must have at least 9 elements; the first 9 will be
-     * copied.
-     *
-     * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-     *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
-     * @return This matrix for the purpose of chaining methods together. */
-    public Matrix3 set (float[] values) {
-        System.arraycopy(values, 0, val, 0, val.length);
-        return this;
-    }
+	/** Sets the matrix to the given matrix as a float array. The float array must have at least 9 elements; the first 9 will be
+	 * copied.
+	 * 
+	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 * @return This matrix for the purpose of chaining methods together. */
+	public Matrix3 set (float[] values) {
+		System.arraycopy(values, 0, val, 0, val.length);
+		return this;
+	}
 
 	/** Adds a translational component to the matrix in the 3rd column. The other columns are untouched.
 	 * @param vector The translation vector.
@@ -408,27 +427,27 @@ public class Matrix3 implements Serializable {
 	public float[] getValues () {
 		return val;
 	}
-	
+
 	public Vector2 getTranslation (Vector2 position) {
 		position.x = val[M02];
 		position.y = val[M12];
 		return position;
 	}
-	
+
 	public Vector2 getScale (Vector2 scale) {
-		scale.x = (float)Math.sqrt(val[M00]*val[M00] + val[M01]*val[M01]);
-		scale.y = (float)Math.sqrt(val[M10]*val[M10] + val[M11]*val[M11]);
+		scale.x = (float)Math.sqrt(val[M00] * val[M00] + val[M01] * val[M01]);
+		scale.y = (float)Math.sqrt(val[M10] * val[M10] + val[M11] * val[M11]);
 		return scale;
 	}
-	
+
 	public float getRotation () {
 		return MathUtils.radiansToDegrees * (float)Math.atan2(val[M10], val[M00]);
 	}
-	
+
 	public float getRotationRad () {
 		return (float)Math.atan2(val[M10], val[M00]);
 	}
-	
+
 	/** Scale the matrix in the both the x and y components by the scalar value.
 	 * @param scale The single value that will be used to scale both the x and y components.
 	 * @return This matrix for the purpose of chaining methods together. */

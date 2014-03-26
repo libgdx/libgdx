@@ -90,17 +90,8 @@ public class TexturePacker {
 	public void pack (File outputDir, String packFileName) {
 		outputDir.mkdirs();
 
-		if (packFileName.indexOf('.') == -1 || packFileName.endsWith(".png") || packFileName.endsWith(".jpg"))
-			packFileName += ".atlas";
-
-		for (float scale : settings.scale) {
-			String scaledPackFileName = packFileName;
-			if (scale != 1 || settings.scale.length != 1) {
-				scaledPackFileName = (scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale)) + "/"
-					+ scaledPackFileName;
-			}
-
-			imageProcessor.setScale(scale);
+		for (int i = 0, n = settings.scale.length; i < n; i++) {
+			imageProcessor.setScale(settings.scale[i]);
 			for (InputImage inputImage : inputImages) {
 				if (inputImage.file != null)
 					imageProcessor.addImage(inputImage.file);
@@ -109,6 +100,7 @@ public class TexturePacker {
 			}
 
 			Array<Page> pages = packer.pack(imageProcessor.getImages());
+			String scaledPackFileName = settings.scaledPackFileName(packFileName, i);
 			writeImages(outputDir, pages, scaledPackFileName);
 			try {
 				writePackFile(outputDir, pages, scaledPackFileName);
@@ -121,7 +113,7 @@ public class TexturePacker {
 
 	private void writeImages (File outputDir, Array<Page> pages, String packFileName) {
 		String imageName = packFileName;
-		int dotIndex = imageName.lastIndexOf('.');
+		int dotIndex = imageName.indexOf('.');
 		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
 
 		int fileIndex = 0;
@@ -537,6 +529,7 @@ public class TexturePacker {
 		public boolean limitMemory = true;
 		public boolean grid;
 		public float[] scale = {1};
+		public String[] scaleSuffix = {""};
 
 		public Settings () {
 		}
@@ -574,6 +567,33 @@ public class TexturePacker {
 			bleed = settings.bleed;
 			limitMemory = settings.limitMemory;
 			scale = settings.scale;
+			scaleSuffix = settings.scaleSuffix;
+		}
+
+		String scaledPackFileName (String packFileName, int scaleIndex) {
+			String extension = "";
+			int dotIndex = packFileName.lastIndexOf('.');
+			if (dotIndex != -1) {
+				extension = packFileName.substring(dotIndex);
+				packFileName = packFileName.substring(0, dotIndex);
+			}
+
+			// Use suffix if not empty string.
+			if (scaleSuffix[scaleIndex].length() > 0)
+				packFileName += scaleSuffix[scaleIndex];
+			else {
+				// Otherwise if scale != 1 or multiple scales, use subdirectory.
+				float scaleValue = scale[scaleIndex];
+				if (scaleValue != 1 || scale.length != 1) {
+					packFileName = (scaleValue == (int)scaleValue ? Integer.toString((int)scaleValue) : Float.toString(scaleValue))
+						+ "/" + packFileName;
+				}
+			}
+
+			packFileName += extension;
+			if (packFileName.indexOf('.') == -1 || packFileName.endsWith(".png") || packFileName.endsWith(".jpg"))
+				packFileName += ".atlas";
+			return packFileName;
 		}
 	}
 

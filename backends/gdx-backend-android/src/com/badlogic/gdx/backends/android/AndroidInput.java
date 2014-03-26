@@ -88,10 +88,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			return new TouchEvent();
 		}
 	};
-	
+
 	public static final int NUM_TOUCHES = 40;
 
-	ArrayList<OnKeyListener> keyListeners = new ArrayList();	
+	ArrayList<OnKeyListener> keyListeners = new ArrayList();
 	ArrayList<KeyEvent> keyEvents = new ArrayList();
 	ArrayList<TouchEvent> touchEvents = new ArrayList();
 	int[] touchX = new int[NUM_TOUCHES];
@@ -138,7 +138,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (view instanceof View) {
 			View v = (View)view;
 			v.setOnKeyListener(this);
-			v.setOnTouchListener(this);			
+			v.setOnTouchListener(this);
 			v.setFocusable(true);
 			v.setFocusableInTouchMode(true);
 			v.requestFocus();
@@ -153,7 +153,6 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		this.app = activity;
 		this.context = context;
 		this.sleepTime = config.touchSleepTime;
-		int sdkVersion = android.os.Build.VERSION.SDK_INT;
 		touchHandler = new AndroidMultiTouchHandler();
 		hasMultitouch = touchHandler.supportsMultitouch(context);
 
@@ -449,24 +448,23 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public boolean onKey (View v, int keyCode, android.view.KeyEvent e) {
 		for (int i = 0, n = keyListeners.size(); i < n; i++)
-			if(keyListeners.get(i).onKey(v, keyCode, e)) return true;
+			if (keyListeners.get(i).onKey(v, keyCode, e)) return true;
 
 		synchronized (this) {
 			KeyEvent event = null;
-			
-			if(e.getKeyCode() == android.view.KeyEvent.KEYCODE_UNKNOWN &&
-				e.getAction() == android.view.KeyEvent.ACTION_MULTIPLE) {
-					String chars = e.getCharacters();
-					for(int i = 0; i < chars.length(); i++) {
-						event = usedKeyEvents.obtain();
-						event.keyCode = 0;
-						event.keyChar = chars.charAt(i);
-						event.type = KeyEvent.KEY_TYPED;
-						keyEvents.add(event);
-					}
-					return false;
+
+			if (e.getKeyCode() == android.view.KeyEvent.KEYCODE_UNKNOWN && e.getAction() == android.view.KeyEvent.ACTION_MULTIPLE) {
+				String chars = e.getCharacters();
+				for (int i = 0; i < chars.length(); i++) {
+					event = usedKeyEvents.obtain();
+					event.keyCode = 0;
+					event.keyChar = chars.charAt(i);
+					event.type = KeyEvent.KEY_TYPED;
+					keyEvents.add(event);
+				}
+				return false;
 			}
-			
+
 			char character = (char)e.getUnicodeChar();
 			// Android doesn't report a unicode char for back space. hrm...
 			if (keyCode == 67) character = '\b';
@@ -689,10 +687,26 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (realId[i] == -1) return i;
 		}
 
-		int[] tmp = new int[realId.length + 1];
-		System.arraycopy(realId, 0, tmp, 0, realId.length);
-		realId = tmp;
-		return tmp.length - 1;
+		realId = resize(realId);
+		touchX = resize(touchX);
+		touchY = resize(touchY);
+		deltaX = resize(deltaX);
+		deltaY = resize(deltaY);
+		touched = resize(touched);
+		
+		return len;
+	}
+	
+	private int[] resize(int[] orig) {
+		int[] tmp = new int[orig.length + 2];
+		System.arraycopy(orig, 0, tmp, 0, orig.length);
+		return tmp;
+	}
+	
+	private boolean[] resize(boolean[] orig) {
+		boolean[] tmp = new boolean[orig.length + 2];
+		System.arraycopy(orig, 0, tmp, 0, orig.length);
+		return tmp;
 	}
 
 	public int lookUpPointerIndex (int pointerId) {
@@ -771,11 +785,11 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public void setCursorPosition (int x, int y) {
 	}
 
-  @Override
-  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
-  }
+	@Override
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+	}
 
-  @Override
+	@Override
 	public long getCurrentEventTime () {
 		return currentEventTimeStamp;
 	}
@@ -783,7 +797,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	public void addKeyListener (OnKeyListener listener) {
 		keyListeners.add(listener);
 	}
-	
+
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single
 	 * SensorEventListener, we add one of these for each Sensor. Could use an anonymous class, but I don't see any harm in
 	 * explicitly defining it here. Correct me if I am wrong. */

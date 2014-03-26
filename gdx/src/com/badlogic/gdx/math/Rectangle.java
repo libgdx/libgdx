@@ -64,7 +64,7 @@ public class Rectangle implements Serializable {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		
+
 		return this;
 	}
 
@@ -78,7 +78,7 @@ public class Rectangle implements Serializable {
 	 * @return this rectangle for chaining */
 	public Rectangle setX (float x) {
 		this.x = x;
-		
+
 		return this;
 	}
 
@@ -88,11 +88,11 @@ public class Rectangle implements Serializable {
 	}
 
 	/** Sets the y-coordinate of the bottom left corner
-	 * @param y The y-coordinate 
+	 * @param y The y-coordinate
 	 * @return this rectangle for chaining */
 	public Rectangle setY (float y) {
 		this.y = y;
-		
+
 		return this;
 	}
 
@@ -102,11 +102,11 @@ public class Rectangle implements Serializable {
 	}
 
 	/** Sets the width of this rectangle
-	 * @param width The width 
+	 * @param width The width
 	 * @return this rectangle for chaining */
 	public Rectangle setWidth (float width) {
 		this.width = width;
-		
+
 		return this;
 	}
 
@@ -116,11 +116,11 @@ public class Rectangle implements Serializable {
 	}
 
 	/** Sets the height of this rectangle
-	 * @param height The height 
+	 * @param height The height
 	 * @return this rectangle for chaining */
 	public Rectangle setHeight (float height) {
 		this.height = height;
-		
+
 		return this;
 	}
 
@@ -136,39 +136,39 @@ public class Rectangle implements Serializable {
 	public Rectangle setPosition (Vector2 position) {
 		this.x = position.x;
 		this.y = position.y;
-		
+
 		return this;
 	}
 
 	/** Sets the x and y-coordinates of the bottom left corner
 	 * @param x The x-coordinate
-	 * @param y The y-coordinate 
+	 * @param y The y-coordinate
 	 * @return this rectangle for chaining */
 	public Rectangle setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
-		
+
 		return this;
 	}
 
 	/** Sets the width and height of this rectangle
 	 * @param width The width
-	 * @param height The height 
+	 * @param height The height
 	 * @return this rectangle for chaining */
 	public Rectangle setSize (float width, float height) {
 		this.width = width;
 		this.height = height;
-		
+
 		return this;
 	}
 
 	/** Sets the squared size of this rectangle
-	 * @param sizeXY The size 
+	 * @param sizeXY The size
 	 * @return this rectangle for chaining */
 	public Rectangle setSize (float sizeXY) {
 		this.width = sizeXY;
 		this.height = sizeXY;
-		
+
 		return this;
 	}
 
@@ -218,7 +218,7 @@ public class Rectangle implements Serializable {
 		this.y = rect.y;
 		this.width = rect.width;
 		this.height = rect.height;
-		
+
 		return this;
 	}
 
@@ -235,19 +235,18 @@ public class Rectangle implements Serializable {
 		float maxY = Math.max(y + height, rect.y + rect.height);
 		y = minY;
 		height = maxY - minY;
-		
+
 		return this;
 	}
-	
+
 	/** Calculates the aspect ratio ( width / height ) of this rectangle
-	 * @return the aspect ratio of this rectangle.
-	 * Returns Float.NaN if height is 0 to avoid ArithmeticException */
+	 * @return the aspect ratio of this rectangle. Returns Float.NaN if height is 0 to avoid ArithmeticException */
 	public float getAspectRatio () {
 		return (height == 0) ? Float.NaN : width / height;
 	}
-	
+
 	/** Calculates the center of the rectangle. Results are located in the given Vector2
-	 * @param vector the Vector2 to use 
+	 * @param vector the Vector2 to use
 	 * @return the given vector with results stored inside */
 	public Vector2 getCenter (Vector2 vector) {
 		vector.x = x + width / 2;
@@ -272,9 +271,8 @@ public class Rectangle implements Serializable {
 		return this;
 	}
 
-	/** Fits this rectangle around another rectangle while maintaining aspect ratio
-	 * This scales and centers the rectangle to the other rectangle
-	 * (e.g. Having a camera translate and scale to show a given area)
+	/** Fits this rectangle around another rectangle while maintaining aspect ratio This scales and centers the rectangle to the
+	 * other rectangle (e.g. Having a camera translate and scale to show a given area)
 	 * @param rect the other rectangle to fit this rectangle around
 	 * @return this rectangle for chaining */
 	public Rectangle fitOutside (Rectangle rect) {
@@ -292,9 +290,8 @@ public class Rectangle implements Serializable {
 		return this;
 	}
 
-	/** Fits this rectangle into another rectangle while maintaining aspect ratio.
-	 * This scales and centers the rectangle to the other rectangle
-	 * (e.g. Scaling a texture within a arbitrary cell without squeezing)
+	/** Fits this rectangle into another rectangle while maintaining aspect ratio. This scales and centers the rectangle to the
+	 * other rectangle (e.g. Scaling a texture within a arbitrary cell without squeezing)
 	 * @param rect the other rectangle to fit this rectangle inside
 	 * @return this rectangle for chaining */
 	public Rectangle fitInside (Rectangle rect) {

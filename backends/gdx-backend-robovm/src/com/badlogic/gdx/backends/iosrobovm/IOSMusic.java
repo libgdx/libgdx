@@ -29,7 +29,7 @@ import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
  */
 public class IOSMusic implements Music {
 	private final OALAudioTrack track;
-	private OnCompletionListener onCompletionListener;
+	OnCompletionListener onCompletionListener;
 
 	public IOSMusic(OALAudioTrack track) {
 		this.track = track;
@@ -72,7 +72,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public boolean isPlaying () {
-		return track.isPlaying();
+		return track.isPlaying() && !track.isPaused();
 	}
 
 	@Override

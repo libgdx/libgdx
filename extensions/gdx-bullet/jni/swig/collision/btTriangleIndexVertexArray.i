@@ -106,7 +106,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 	 * The specified mesh must be indexed and triangulated and must outlive this btIndexedMesh.
 	 * The buffers for the vertices and indices are shared amonst both. */
 	public void set(final MeshPart meshPart) {
-		if (meshPart.primitiveType != com.badlogic.gdx.graphics.GL10.GL_TRIANGLES)
+		if (meshPart.primitiveType != com.badlogic.gdx.graphics.GL20.GL_TRIANGLES)
 			throw new com.badlogic.gdx.utils.GdxRuntimeException("Mesh must be indexed and triangulated");
 		set(meshPart.mesh, meshPart.indexOffset, meshPart.numVertices);
 		this.meshPart = meshPart;

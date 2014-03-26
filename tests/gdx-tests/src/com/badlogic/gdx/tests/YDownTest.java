@@ -54,10 +54,10 @@ public class YDownTest extends GdxTest {
 		// a texture region, note the flipping on y again
 		region = new TextureRegion(new Texture("data/badlogic.jpg"));
 		region.flip(false, true);
-		
+
 		// a texture atlas, note the boolean
 		atlas = new TextureAtlas(Gdx.files.internal("data/pack"), true);
-		
+
 		// a sprite, created from a region in the atlas
 		sprite = atlas.createSprite("badlogicsmall");
 		sprite.setPosition(0, 0);
@@ -73,8 +73,8 @@ public class YDownTest extends GdxTest {
 		// a stage which uses our y-down camera and a simple actor (see MyActor below),
 		// which uses the flipped region. The key here is to
 		// set our y-down camera on the stage, the rest is just for demo purposes.
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-		stage.setCamera(camera);
+		stage = new Stage();
+		stage.getViewport().setCamera(camera);
 		image = new MyActor(region);
 		image.setPosition(100, 100);
 		stage.addActor(image);

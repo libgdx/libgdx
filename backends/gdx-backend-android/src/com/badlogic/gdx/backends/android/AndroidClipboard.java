@@ -25,51 +25,46 @@ import android.content.ClipData;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class AndroidClipboard implements Clipboard {
-	 Context context;
+	Context context;
 
-	 protected AndroidClipboard (Context context) {
-		  this.context = context;
-	 }
+	protected AndroidClipboard (Context context) {
+		this.context = context;
+	}
 
-	 @Override
-	 public String getContents () {
-		  if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-				android.text.ClipboardManager clipboard =
-					(ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
-				if (clipboard.getText() == null)
-					 return null;
-				return clipboard.getText().toString();
-		  } else {
-				android.content.ClipboardManager clipboard =
-					(android.content.ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
-				ClipData clip = clipboard.getPrimaryClip();
-				if (clip == null)
-					 return null;
-				CharSequence text = clip.getItemAt(0).getText();
-				if (text == null)
-					 return null;
-				return text.toString();
-		  }
-	 }
+	@Override
+	public String getContents () {
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+			android.text.ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+			if (clipboard.getText() == null) return null;
+			return clipboard.getText().toString();
+		} else {
+			android.content.ClipboardManager clipboard = (android.content.ClipboardManager)context
+				.getSystemService(Context.CLIPBOARD_SERVICE);
+			ClipData clip = clipboard.getPrimaryClip();
+			if (clip == null) return null;
+			CharSequence text = clip.getItemAt(0).getText();
+			if (text == null) return null;
+			return text.toString();
+		}
+	}
 
-	 @Override
-	 public void setContents (final String contents) {
-		  try {
-				((Activity)context).runOnUiThread(new Runnable() {
-					 public void run () {
-						  if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
-								android.text.ClipboardManager clipboard =
-									(ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
-								clipboard.setText(contents);
-						  } else {
-								android.content.ClipboardManager clipboard =
-									(android.content.ClipboardManager)context.getSystemService(context.CLIPBOARD_SERVICE);
-								ClipData data = ClipData.newPlainText(contents, contents);
-								clipboard.setPrimaryClip(data);
-						  }
-					 }
-				});
-		  } catch (final Exception ex) {
-		  }
-	 }
+	@Override
+	public void setContents (final String contents) {
+		try {
+			((Activity)context).runOnUiThread(new Runnable() {
+				public void run () {
+					if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+						android.text.ClipboardManager clipboard = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+						clipboard.setText(contents);
+					} else {
+						android.content.ClipboardManager clipboard = (android.content.ClipboardManager)context
+							.getSystemService(Context.CLIPBOARD_SERVICE);
+						ClipData data = ClipData.newPlainText(contents, contents);
+						clipboard.setPrimaryClip(data);
+					}
+				}
+			});
+		} catch (final Exception ex) {
+		}
+	}
 }

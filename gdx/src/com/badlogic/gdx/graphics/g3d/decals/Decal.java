@@ -74,7 +74,7 @@ public class Decal {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-	
+
 	/** Sets the color used to tint this decal. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		float color = tint.toFloatBits();
@@ -83,7 +83,7 @@ public class Decal {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-	
+
 	/** @see #setColor(Color) */
 	public void setColor (float color) {
 		vertices[C1] = color;
@@ -91,27 +91,27 @@ public class Decal {
 		vertices[C3] = color;
 		vertices[C4] = color;
 	}
-	
+
 	/** Sets the rotation on the local X axis to the specified angle
 	 * 
 	 * @param angle Angle in degrees to set rotation to */
-	public void setRotationX(float angle){
+	public void setRotationX (float angle) {
 		rotation.set(X_AXIS, angle);
 		updated = false;
 	}
-	
+
 	/** Sets the rotation on the local Y axis to the specified angle
 	 * 
 	 * @param angle Angle in degrees to set rotation to */
-	public void setRotationY(float angle){
+	public void setRotationY (float angle) {
 		rotation.set(Y_AXIS, angle);
 		updated = false;
 	}
-	
+
 	/** Sets the rotation on the local Z axis to the specified angle
 	 * 
 	 * @param angle Angle in degrees to set rotation to */
-	public void setRotationZ(float angle){
+	public void setRotationZ (float angle) {
 		rotation.set(Z_AXIS, angle);
 		updated = false;
 	}

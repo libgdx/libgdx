@@ -60,19 +60,18 @@ public class JglfwApplication implements Application {
 	private int foregroundFPS, backgroundFPS, hiddenFPS;
 
 	public JglfwApplication (ApplicationListener listener) {
-		this(listener, listener.getClass().getSimpleName(), 640, 480, false);
+		this(listener, listener.getClass().getSimpleName(), 640, 480);
 	}
 
-	public JglfwApplication (ApplicationListener listener, String title, int width, int height, boolean useGL2) {
-		this(listener, createConfig(title, width, height, useGL2));
+	public JglfwApplication (ApplicationListener listener, String title, int width, int height) {
+		this(listener, createConfig(title, width, height));
 	}
 
-	static private JglfwApplicationConfiguration createConfig (String title, int width, int height, boolean useGL2) {
+	static private JglfwApplicationConfiguration createConfig (String title, int width, int height) {
 		JglfwApplicationConfiguration config = new JglfwApplicationConfiguration();
 		config.title = title;
 		config.width = width;
 		config.height = height;
-		config.useGL20 = useGL2;
 		return config;
 	}
 

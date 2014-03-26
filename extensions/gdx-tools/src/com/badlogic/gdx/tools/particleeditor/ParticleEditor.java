@@ -314,8 +314,6 @@ public class ParticleEditor extends JFrame {
 		public void create () {
 			if (spriteBatch != null) return;
 
-			Texture.setEnforcePotImages(false);
-
 			spriteBatch = new SpriteBatch();
 
 			worldCamera = new OrthographicCamera();

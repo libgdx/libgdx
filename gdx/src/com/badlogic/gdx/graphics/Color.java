@@ -132,7 +132,8 @@ public class Color {
 		return clamp();
 	}
 
-	/** @return this Color for chaining */
+	/** Clamps this Color's components to a valid range [0 - 1]
+	 * @return this Color for chaining */
 	public Color clamp () {
 		if (r < 0)
 			r = 0;
@@ -152,7 +153,14 @@ public class Color {
 		return this;
 	}
 
-	/** @return this Color for chaining */
+	/** Sets this Color's component values.
+	 * 
+	 * @param r Red component
+	 * @param g Green component
+	 * @param b Blue component
+	 * @param a Alpha component
+	 * 
+	 * @return this Color for chaining */
 	public Color set (float r, float g, float b, float a) {
 		this.r = r;
 		this.g = g;
@@ -161,14 +169,23 @@ public class Color {
 		return clamp();
 	}
 
-	/** @return this Color for chaining
+	/** Sets this color's component values through an integer representation.
+	 * 
+	 * @return this Color for chaining
 	 * @see #rgba8888ToColor(Color, int) */
 	public Color set (int rgba) {
 		rgba8888ToColor(this, rgba);
 		return this;
 	}
 
-	/** @return this Color for chaining */
+	/** Adds the given color component values to this Color's values.
+	 * 
+	 * @param r Red component
+	 * @param g Green component
+	 * @param b Blue component
+	 * @param a Alpha component
+	 * 
+	 * @return this Color for chaining */
 	public Color add (float r, float g, float b, float a) {
 		this.r += r;
 		this.g += g;
@@ -177,7 +194,14 @@ public class Color {
 		return clamp();
 	}
 
-	/** @return this Color for chaining */
+	/** Subtracts the given values from this Color's component values.
+	 * 
+	 * @param r Red component
+	 * @param g Green component
+	 * @param b Blue component
+	 * @param a Alpha component
+	 * 
+	 * @return this Color for chaining */
 	public Color sub (float r, float g, float b, float a) {
 		this.r -= r;
 		this.g -= g;
@@ -186,7 +210,14 @@ public class Color {
 		return clamp();
 	}
 
-	/** @return this Color for chaining */
+	/** Multiplies this Color's color components by the given ones.
+	 * 
+	 * @param r Red component
+	 * @param g Green component
+	 * @param b Blue component
+	 * @param a Alpha component
+	 * 
+	 * @return this Color for chaining */
 	public Color mul (float r, float g, float b, float a) {
 		this.r *= r;
 		this.g *= g;

@@ -23,6 +23,7 @@ import java.io.InputStream;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -155,7 +156,11 @@ public class AndroidFileHandle extends FileHandle {
 			} catch (IOException ignored) {
 			} finally {
 				if (fileDescriptor != null) {
-					try { fileDescriptor.close(); } catch(IOException e) { };
+					try {
+						fileDescriptor.close();
+					} catch (IOException e) {
+					}
+					;
 				}
 			}
 		}
@@ -165,4 +170,10 @@ public class AndroidFileHandle extends FileHandle {
 	public long lastModified () {
 		return super.lastModified();
 	}
+
+	public File file () {
+		if (type == FileType.Local) return new File(Gdx.files.getLocalStoragePath(), file.getPath());
+		return super.file();
+	}
+
 }

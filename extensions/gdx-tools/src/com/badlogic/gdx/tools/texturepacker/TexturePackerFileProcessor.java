@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import java.io.File;
 import java.io.FileReader;
@@ -116,12 +117,6 @@ public class TexturePackerFileProcessor extends FileProcessor {
 			};
 			deleteProcessor.setRecursive(false);
 
-			String prefix = packFileName;
-			int dotIndex = prefix.lastIndexOf('.');
-			if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
-			deleteProcessor.addInputRegex("(?i)" + Pattern.quote(prefix) + "\\d*\\.(png|jpg)");
-			deleteProcessor.addInputRegex("(?i)" + Pattern.quote(prefix) + "\\.(atlas)");
-
 			// Load root settings to get scale.
 			File settingsFile = new File(root, "pack.json");
 			Settings rootSettings = defaultSettings;
@@ -129,14 +124,27 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				rootSettings = new Settings(rootSettings);
 				merge(rootSettings, settingsFile);
 			}
-			if (rootSettings.scale.length == 1)
-				deleteProcessor.process(outputRoot, null);
-			else {
-				for (float scale : rootSettings.scale) {
-					String subdir = scale == (int)scale ? Integer.toString((int)scale) : Float.toString(scale);
-					deleteProcessor.process(outputRoot + "/" + subdir, null);
-				}
+
+			ObjectSet<String> dirs = new ObjectSet();
+			for (int i = 0, n = rootSettings.scale.length; i < n; i++) {
+				String scaledPackFileName = rootSettings.scaledPackFileName(packFileName, i);
+
+				String prefix = scaledPackFileName;
+				int dotIndex = prefix.lastIndexOf('.');
+				if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
+				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg)");
+				deleteProcessor.addInputRegex("(?i)" + prefix + "\\.atlas");
+
+				System.out.println();
+				String dir = new File(scaledPackFileName).getParent();
+				if (dir == null)
+					dirs.add("");
+				else if (new File(dir).exists()) //
+					dirs.add(dir);
 			}
+
+			for (String dir : dirs)
+				deleteProcessor.process(outputRoot + "/" + dir, null);
 		}
 		return super.process(files, outputRoot);
 	}

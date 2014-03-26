@@ -16,14 +16,6 @@
 
 package com.badlogic.gdx.backends.android;
 
-import java.lang.reflect.Method;
-
-import javax.microedition.khronos.egl.EGL10;
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.egl.EGLContext;
-import javax.microedition.khronos.egl.EGLDisplay;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
@@ -41,13 +33,20 @@ import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.WindowedMean;
 import com.badlogic.gdx.utils.Array;
+
+import java.lang.reflect.Method;
+
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.opengles.GL10;
 
 /** An implementation of {@link Graphics} for Android.
  * 
@@ -57,7 +56,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	int width;
 	int height;
 	AndroidApplicationBase app;
-	GLCommon gl;
 	GL20 gl20;
 	GL30 gl30;
 	EGLContext eglContext;
@@ -117,14 +115,14 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
-		if(!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
+		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
 		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
 		if (configChooser != null)
 			view.setEGLConfigChooser(configChooser);
 		else
 			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
 		view.setRenderer(this);
-		return view;		
+		return view;
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
@@ -191,9 +189,8 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		if (gl20 != null) return;
 
 		gl20 = new AndroidGL20();
-		this.gl = gl20;
 
-		Gdx.gl = this.gl;
+		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
 
 		Gdx.app.log("AndroidGraphics", "OGL renderer: " + gl.glGetString(GL10.GL_RENDERER));
@@ -463,12 +460,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	public View getView () {
 		return view;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public GLCommon getGLCommon () {
-		return gl;
 	}
 
 	@Override

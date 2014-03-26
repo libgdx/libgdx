@@ -62,7 +62,7 @@ public class FrameBuffer implements Disposable {
 	private static int defaultFramebufferHandle;
 	/** true if we have polled for the default handle already. */
 	private static boolean defaultFramebufferHandleInitialized = false;
-	
+
 	/** the framebuffer handle **/
 	private int framebufferHandle;
 
@@ -83,8 +83,8 @@ public class FrameBuffer implements Disposable {
 
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 * 
-	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only
-	 * RGB565, RGBA4444 and RGB5_A1 are color-renderable
+	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
+	 *           color-renderable
 	 * @param width the width of the framebuffer in pixels
 	 * @param height the height of the framebuffer in pixels
 	 * @param hasDepth whether to attach a depth buffer
@@ -98,11 +98,9 @@ public class FrameBuffer implements Disposable {
 
 		addManagedFrameBuffer(Gdx.app, this);
 	}
-	
-	/**
-	 * Override this method in a derived class to set up the backing texture as you like.
-	 */
-	protected void setupTexture() {
+
+	/** Override this method in a derived class to set up the backing texture as you like. */
+	protected void setupTexture () {
 		colorTexture = new Texture(width, height, format);
 		colorTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		colorTexture.setWrap(TextureWrap.ClampToEdge, TextureWrap.ClampToEdge);
@@ -114,16 +112,15 @@ public class FrameBuffer implements Disposable {
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
 			defaultFramebufferHandleInitialized = true;
-		   if (Gdx.app.getType() == ApplicationType.iOS) {
-		     IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
-		     gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
-		     defaultFramebufferHandle = intbuf.get(0);
-		   }
-		   else {
-		     defaultFramebufferHandle = 0;
-		   }
+			if (Gdx.app.getType() == ApplicationType.iOS) {
+				IntBuffer intbuf = ByteBuffer.allocateDirect(16 * Integer.SIZE / 8).order(ByteOrder.nativeOrder()).asIntBuffer();
+				gl.glGetIntegerv(GL20.GL_FRAMEBUFFER_BINDING, intbuf);
+				defaultFramebufferHandle = intbuf.get(0);
+			} else {
+				defaultFramebufferHandle = 0;
+			}
 		}
-		
+
 		setupTexture();
 
 		IntBuffer handle = BufferUtils.newIntBuffer(1);
@@ -208,18 +205,18 @@ public class FrameBuffer implements Disposable {
 	public void bind () {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 	}
-	
+
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public static void unbind () {
 		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
-	
+
 	/** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
 	public void begin () {
 		bind();
 		setFrameBufferViewport();
 	}
-	
+
 	/** Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}. */
 	protected void setFrameBufferViewport () {
 		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
@@ -230,19 +227,18 @@ public class FrameBuffer implements Disposable {
 		unbind();
 		setDefaultFrameBufferViewport();
 	}
-	
+
 	/** Sets viewport to the dimensions of default framebuffer (window). Called by {@link #end()}. */
 	protected void setDefaultFrameBufferViewport () {
 		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
-	
+
 	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
 	 * 
 	 * @param x the x-axis position of the viewport in pixels
 	 * @param y the y-asis position of the viewport in pixels
 	 * @param width the width of the viewport in pixels
-	 * @param height the height of the viewport in pixels
-	 * */
+	 * @param height the height of the viewport in pixels */
 	public void end (int x, int y, int width, int height) {
 		unbind();
 		Gdx.graphics.getGL20().glViewport(x, y, width, height);
@@ -295,7 +291,7 @@ public class FrameBuffer implements Disposable {
 		builder.append("}");
 		return builder;
 	}
-	
+
 	public static String getManagedStatus () {
 		return getManagedStatus(new StringBuilder()).toString();
 	}

@@ -45,7 +45,6 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GL30;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.utils.Array;
 
 // FIXME add GL 1.x support by ripping Android's classes
@@ -319,12 +318,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			if (!paused) return;
 			resume();
 		}
-	}
-
-
-	@Override
-	public GLCommon getGLCommon () {
-		return gl20;
 	}
 
 	@Override

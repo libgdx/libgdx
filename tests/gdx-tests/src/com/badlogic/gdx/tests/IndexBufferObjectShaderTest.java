@@ -33,7 +33,6 @@ public class IndexBufferObjectShaderTest extends GdxTest {
 	VertexBufferObject vbo;
 	IndexBufferObject ibo;
 
-
 	@Override
 	public void dispose () {
 		texture.dispose();

@@ -26,10 +26,10 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** Holds the geometry, color, and texture information for drawing 2D sprites using {@link Batch}. A Sprite has a position and a
  * size given as width and height. The position is relative to the origin of the coordinate system specified via
- * {@link Batch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in
- * the bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed (that
- * is, the origin is not modified by rotation and scaling). The origin is given relative to the bottom left corner of the Sprite,
- * its position.
+ * {@link Batch#begin()} and the respective matrices. A Sprite is always rectangular and its position (x, y) are located in the
+ * bottom left corner of that rectangle. A Sprite also has an origin around which rotations and scaling are performed (that is,
+ * the origin is not modified by rotation and scaling). The origin is given relative to the bottom left corner of the Sprite, its
+ * position.
  * @author mzechner
  * @author Nathan Sweet */
 public class Sprite extends TextureRegion {
@@ -263,7 +263,7 @@ public class Sprite extends TextureRegion {
 	}
 
 	/** Sets the alpha portion of the color used to tint this sprite. */
-	public void setAlpha(float a) {
+	public void setAlpha (float a) {
 		int intBits = NumberUtils.floatToIntColor(vertices[C1]);
 		int alphaBits = (int)(255 * a) << 24;
 
@@ -303,6 +303,13 @@ public class Sprite extends TextureRegion {
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
+		dirty = true;
+	}
+
+	/** Place origin in the center of the sprite */
+	public void setOriginCenter() {
+		this.originX = width / 2;
+		this.originY = height / 2;
 		dirty = true;
 	}
 
@@ -493,13 +500,10 @@ public class Sprite extends TextureRegion {
 	}
 
 	public void draw (Batch batch, float alphaModulation) {
-		Color color = getColor();
-		float oldAlpha = color.a;
-		color.a *= alphaModulation;
-		setColor(color);
+		float oldAlpha = getColor().a;
+		setAlpha(oldAlpha * alphaModulation);
 		draw(batch);
-		color.a = oldAlpha;
-		setColor(color);
+		setAlpha(oldAlpha);
 	}
 
 	public float getX () {
@@ -597,9 +601,8 @@ public class Sprite extends TextureRegion {
 
 	/** Set the sprite's flip state regardless of current condition
 	 * @param x the desired horizontal flip state
-	 * @param y the desired vertical flip state
-	 * */
-	public void setFlip(boolean x, boolean y) {
+	 * @param y the desired vertical flip state */
+	public void setFlip (boolean x, boolean y) {
 		boolean performX = false;
 		boolean performY = false;
 		if (isFlipX() != x) {
@@ -613,8 +616,7 @@ public class Sprite extends TextureRegion {
 
 	/** boolean parameters x,y are not setting a state, but performing a flip
 	 * @param x perform horizontal flip
-	 * @param y perform vertical flip
-	 * */
+	 * @param y perform vertical flip */
 	public void flip (boolean x, boolean y) {
 		super.flip(x, y);
 		float[] vertices = Sprite.this.vertices;

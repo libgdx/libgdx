@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
@@ -38,14 +39,14 @@ public class TouchpadTest extends GdxTest {
 	}
 
 	public void render () {
-		//System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
+		// System.out.println(touchpad.getKnobPercentX() + " " + touchpad.getKnobPercentY());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, true);
+		stage.getViewport().update(width, height, true);
 	}
 
 	public void dispose () {

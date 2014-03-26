@@ -45,14 +45,15 @@ public class ModelLoaderTest extends GdxTest {
 		assets.load("data/g3d/cube.g3dj", Model.class);
 		spriteBatch = new SpriteBatch();
 		modelBatch = new ModelBatch();
-//		assets.getLogger().setLevel(Logger.DEBUG);
+// assets.getLogger().setLevel(Logger.DEBUG);
 	}
 
-	private void doneLoading() {
+	private void doneLoading () {
 		instance = new ModelInstance(assets.get("data/g3d/cube.g3dj", Model.class));
 	}
-	
+
 	float counter;
+
 	@Override
 	public void render () {
 		if ((instance != null) && ((counter += Gdx.graphics.getDeltaTime()) >= 1f)) {
@@ -62,16 +63,16 @@ public class ModelLoaderTest extends GdxTest {
 			assets.load("data/g3d/cube.g3dj", Model.class);
 			assets.finishLoading();
 		}
-		
+
 		Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-		
-		if(assets.update()) {
+
+		if (assets.update()) {
 			doneLoading();
 		}
-		
-		if(instance != null) {
+
+		if (instance != null) {
 			modelBatch.begin(camera);
 			modelBatch.render(instance);
 			modelBatch.end();

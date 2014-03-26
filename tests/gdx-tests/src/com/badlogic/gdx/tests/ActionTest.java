@@ -36,7 +36,7 @@ public class ActionTest extends GdxTest implements Runnable {
 
 	@Override
 	public void create () {
-		stage = new Stage(480, 320, true);
+		stage = new Stage();
 		texture = new Texture(Gdx.files.internal("data/badlogic.jpg"), false);
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		final Image img = new Image(new TextureRegion(texture));
@@ -44,14 +44,14 @@ public class ActionTest extends GdxTest implements Runnable {
 		img.setOrigin(50, 50);
 		img.setPosition(100, 100);
 
-		img.addAction(forever(sequence( delay(1.0f),new Action() {
-         public boolean act(float delta) {
-            System.out.println(1);
-            img.clearActions();
-            return true;
-         } 
-      } )));
-		
+		img.addAction(forever(sequence(delay(1.0f), new Action() {
+			public boolean act (float delta) {
+				System.out.println(1);
+				img.clearActions();
+				return true;
+			}
+		})));
+
 		// img.action(Forever.$(Sequence.$(ScaleTo.$(1.1f,
 		// 1.1f,0.3f),ScaleTo.$(1f, 1f, 0.3f))));
 		// img.action(Forever.$(Parallel.$(RotateTo.$(1, 1))));

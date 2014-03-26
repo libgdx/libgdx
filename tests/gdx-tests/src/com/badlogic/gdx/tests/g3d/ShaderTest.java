@@ -41,9 +41,9 @@ public class ShaderTest extends GdxTest {
 	public static class TestAttribute extends Attribute {
 		public final static String Alias = "Test";
 		public final static long ID = register(Alias);
-		
+
 		public float value;
-		
+
 		protected TestAttribute (final float value) {
 			super(ID);
 			this.value = value;
@@ -59,42 +59,31 @@ public class ShaderTest extends GdxTest {
 			return ((TestAttribute)other).value == value;
 		}
 	}
-	
+
 	public static class TestShader extends BaseShader {
-		public final static String vertexShader = 
-			"attribute vec3 a_position;\n"+
-			"uniform mat4 u_projTrans;\n"+
-			"uniform mat4 u_worldTrans;\n"+
-			"uniform float u_test;\n"+
-			"varying float v_test;\n"+
-			"void main() {\n"+
-			"	v_test = u_test;\n"+
-			"	gl_Position = u_projTrans * u_worldTrans * vec4(a_position, 1.0);\n"+
-			"}\n";
-		public final static String fragmentShader = 
-			"varying float v_test;\n" +
-			"void main() {\n" +
-			"	gl_FragColor.rgb = vec3(v_test);\n" +
-			"}\n";
-		
-		protected final int u_projTrans	= register(new Uniform("u_projTrans"));
-		protected final int u_worldTrans	= register(new Uniform("u_worldTrans"));
-		protected final int u_test			= register(new Uniform("u_test"));
-		
+		public final static String vertexShader = "attribute vec3 a_position;\n" + "uniform mat4 u_projTrans;\n"
+			+ "uniform mat4 u_worldTrans;\n" + "uniform float u_test;\n" + "varying float v_test;\n" + "void main() {\n"
+			+ "	v_test = u_test;\n" + "	gl_Position = u_projTrans * u_worldTrans * vec4(a_position, 1.0);\n" + "}\n";
+		public final static String fragmentShader = "varying float v_test;\n" + "void main() {\n"
+			+ "	gl_FragColor.rgb = vec3(v_test);\n" + "}\n";
+
+		protected final int u_projTrans = register(new Uniform("u_projTrans"));
+		protected final int u_worldTrans = register(new Uniform("u_worldTrans"));
+		protected final int u_test = register(new Uniform("u_test"));
+
 		protected final ShaderProgram program;
-		
+
 		public TestShader () {
 			super();
 			program = new ShaderProgram(vertexShader, fragmentShader);
-			if (!program.isCompiled())
-				throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
+			if (!program.isCompiled()) throw new GdxRuntimeException("Couldn't compile shader " + program.getLog());
 		}
-		
+
 		@Override
 		public void init () {
 			super.init(program, null);
 		}
-		
+
 		@Override
 		public int compareTo (Shader other) {
 			return 0;
@@ -123,21 +112,21 @@ public class ShaderTest extends GdxTest {
 		public void end () {
 			program.end();
 		}
-		
+
 		@Override
 		public void dispose () {
 			super.dispose();
 			program.dispose();
 		}
 	}
-	
+
 	public PerspectiveCamera cam;
 	public CameraInputController camController;
 	public ModelBatch modelBatch;
 	public Model model;
 	public ModelInstance instance;
 	public TestAttribute testAttribute;
-	
+
 	@Override
 	public void create () {
 		modelBatch = new ModelBatch(new BaseShaderProvider() {
@@ -149,14 +138,14 @@ public class ShaderTest extends GdxTest {
 
 		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 10f, 10f);
-		cam.lookAt(0,0,0);
+		cam.lookAt(0, 0, 0);
 		cam.near = 0.1f;
 		cam.far = 300f;
 		cam.update();
 
 		camController = new CameraInputController(cam);
 		Gdx.input.setInputProcessor(camController);
-		
+
 		Material material = new Material(new TestAttribute(1f));
 		ModelBuilder builder = new ModelBuilder();
 		model = builder.createCone(5, 5, 5, 20, material, Usage.Position);
@@ -165,13 +154,14 @@ public class ShaderTest extends GdxTest {
 	}
 
 	private float counter;
+
 	@Override
 	public void render () {
 		counter = (counter + Gdx.graphics.getDeltaTime()) % 2.f;
-		testAttribute.value = Math.abs(1f - counter); 
-			
+		testAttribute.value = Math.abs(1f - counter);
+
 		camController.update();
-		
+
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -179,13 +169,13 @@ public class ShaderTest extends GdxTest {
 		modelBatch.render(instance);
 		modelBatch.end();
 	}
-	
+
 	@Override
 	public void dispose () {
 		modelBatch.dispose();
 		model.dispose();
 	}
-	
+
 	public boolean needsGL20 () {
 		return true;
 	}

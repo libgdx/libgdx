@@ -30,22 +30,23 @@ public class Environment extends Attributes {
 	public ShadowMap shadowMap;
 	public final Array<DirectionalLight> directionalLights = new Array<DirectionalLight>();
 	public final Array<PointLight> pointLights = new Array<PointLight>();
-	
-	public Environment() {}
-	
-	public Environment add(final BaseLight... lights) {
-		for (final BaseLight light : lights)
-			add(light);
-		return this;
+
+	public Environment () {
 	}
-	
-	public Environment add(final Array<BaseLight> lights) {
+
+	public Environment add (final BaseLight... lights) {
 		for (final BaseLight light : lights)
 			add(light);
 		return this;
 	}
 
-	public Environment add(BaseLight light) {
+	public Environment add (final Array<BaseLight> lights) {
+		for (final BaseLight light : lights)
+			add(light);
+		return this;
+	}
+
+	public Environment add (BaseLight light) {
 		if (light instanceof DirectionalLight)
 			directionalLights.add((DirectionalLight)light);
 		else if (light instanceof PointLight)
@@ -54,7 +55,7 @@ public class Environment extends Attributes {
 			throw new GdxRuntimeException("Unknown light type");
 		return this;
 	}
-	
+
 	@Override
 	public void clear () {
 		super.clear();

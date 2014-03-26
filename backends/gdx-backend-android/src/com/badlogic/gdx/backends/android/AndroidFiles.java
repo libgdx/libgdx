@@ -67,7 +67,6 @@ public class AndroidFiles implements Files {
 
 	@Override
 	public FileHandle local (String path) {
-		path = localpath + path;
 		return new AndroidFileHandle(null, path, FileType.Local);
 	}
 

@@ -32,11 +32,11 @@ public class Explosion extends ModelInstance {
 	public void update (float delta) {
 		aliveTime += delta;
 	}
-	
+
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
 		super.getRenderables(renderables, pool);
-		Renderable r = renderables.get(renderables.size-1);
+		Renderable r = renderables.get(renderables.size - 1);
 		r.meshPartOffset = 6 * (int)(15 * aliveTime / EXPLOSION_LIVE_TIME);
 		r.meshPartSize = 6;
 	}

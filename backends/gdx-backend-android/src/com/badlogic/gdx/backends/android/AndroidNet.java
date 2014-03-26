@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.backends.android;
 
 import android.content.Intent;
@@ -47,7 +48,7 @@ public class AndroidNet implements Net {
 	public void sendHttpRequest (HttpRequest httpRequest, final HttpResponseListener httpResponseListener) {
 		netJavaImpl.sendHttpRequest(httpRequest, httpResponseListener);
 	}
-	
+
 	@Override
 	public void cancelHttpRequest (HttpRequest httpRequest) {
 		netJavaImpl.cancelHttpRequest(httpRequest);
@@ -65,7 +66,7 @@ public class AndroidNet implements Net {
 
 	@Override
 	public void openURI (String URI) {
-		if(app == null) {
+		if (app == null) {
 			Gdx.app.log("AndroidNet", "Can't open browser activity from livewallpaper");
 			return;
 		}

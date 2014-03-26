@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
+import com.esotericsoftware.tablelayout.Cell;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -26,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
  * @author Nathan Sweet */
 public class CheckBox extends TextButton {
 	private Image image;
+	private Cell imageCell;
 	private CheckBoxStyle style;
 
 	public CheckBox (String text, Skin skin) {
@@ -39,7 +42,7 @@ public class CheckBox extends TextButton {
 	public CheckBox (String text, CheckBoxStyle style) {
 		super(text, style);
 		clearChildren();
-		add(image = new Image(style.checkboxOff));
+		imageCell = add(image = new Image(style.checkboxOff));
 		Label label = getLabel();
 		add(label);
 		label.setAlignment(Align.left);
@@ -80,6 +83,10 @@ public class CheckBox extends TextButton {
 
 	public Image getImage () {
 		return image;
+	}
+
+	public Cell getImageCell () {
+		return imageCell;
 	}
 
 	/** The style for a select box, see {@link CheckBox}.

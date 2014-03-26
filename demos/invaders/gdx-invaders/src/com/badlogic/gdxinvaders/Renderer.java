@@ -16,7 +16,6 @@ package com.badlogic.gdxinvaders;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -63,14 +62,14 @@ public class Renderer {
 	Environment lights;
 
 	ModelBatch modelBatch;
-	
+
 	final Vector3 tmpV = new Vector3();
 
 	public Renderer () {
 		try {
 			lights = new Environment();
 			lights.add(new DirectionalLight().set(Color.WHITE, new Vector3(-1, -0.5f, 0).nor()));
-			
+
 			spriteBatch = new SpriteBatch();
 			modelBatch = new ModelBatch();
 
@@ -88,22 +87,21 @@ public class Renderer {
 	public void render (Simulation simulation, float delta) {
 		// We explicitly require GL10, otherwise we could've used the GLCommon
 		// interface via Gdx.gl
-		GLCommon gl = Gdx.gl;
+		GL20 gl = Gdx.gl;
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		renderBackground();
 		gl.glEnable(GL20.GL_DEPTH_TEST);
 		gl.glEnable(GL20.GL_CULL_FACE);
 		setProjectionAndCamera(simulation.ship);
-		
+
 		modelBatch.begin(camera);
 		modelBatch.render(simulation.explosions);
-		if (!simulation.ship.isExploding)
-			modelBatch.render(simulation.ship, lights);
+		if (!simulation.ship.isExploding) modelBatch.render(simulation.ship, lights);
 		modelBatch.render(simulation.invaders, lights);
 		modelBatch.render(simulation.blocks);
 		modelBatch.render(simulation.shots);
 		modelBatch.end();
-		
+
 		gl.glDisable(GL20.GL_CULL_FACE);
 		gl.glDisable(GL20.GL_DEPTH_TEST);
 

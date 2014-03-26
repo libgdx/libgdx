@@ -47,10 +47,10 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 
 	/** the size of a single vertex in bytes **/
 	public final int vertexSize;
-	
+
 	/** cache of the value calculated by {@link #getMask()} **/
 	private long mask = -1;
-	
+
 	private ReadonlyIterable<VertexAttribute> iterable;
 
 	/** Constructor, sets the vertex attributes in a specific order */
@@ -96,33 +96,6 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 		return count;
 	}
 
-	private void checkGLES1Validity () {
-		boolean pos = false;
-		boolean cols = false;
-		boolean nors = false;
-
-		for (int i = 0; i < attributes.length; i++) {
-			VertexAttribute attribute = attributes[i];
-			if (attribute.usage == Usage.Position) {
-				if (pos) throw new IllegalArgumentException("two position attributes were specified");
-				pos = true;
-			}
-
-			if (attribute.usage == Usage.Normal) {
-				if (nors) throw new IllegalArgumentException("two normal attributes were specified");
-			}
-
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked) {
-				if (attribute.numComponents != 4) throw new IllegalArgumentException("color attribute must have 4 components");
-
-				if (cols) throw new IllegalArgumentException("two color attributes were specified");
-				cols = true;
-			}
-		}
-
-		if (pos == false) throw new IllegalArgumentException("no position attribute was specified");
-	}
-
 	/** @return the number of attributes */
 	public int size () {
 		return attributes.length;
@@ -164,28 +137,26 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 		return true;
 	}
 
-	/**
-	 * Calculates a mask based on the contained {@link VertexAttribute} instances. The mask
-	 * is a bit-wise or of each attributes {@link VertexAttribute#usage}.
-	 * @return the mask
-	 */
+	/** Calculates a mask based on the contained {@link VertexAttribute} instances. The mask is a bit-wise or of each attributes
+	 * {@link VertexAttribute#usage}.
+	 * @return the mask */
 	public long getMask () {
-		if(mask == -1) {
+		if (mask == -1) {
 			long result = 0;
-			for(int i = 0; i < attributes.length; i++) {
+			for (int i = 0; i < attributes.length; i++) {
 				result |= attributes[i].usage;
 			}
 			mask = result;
 		}
 		return mask;
 	}
-	
+
 	@Override
 	public Iterator<VertexAttribute> iterator () {
 		if (iterable == null) iterable = new ReadonlyIterable<VertexAttribute>(attributes);
 		return iterable.iterator();
 	}
-	
+
 	static private class ReadonlyIterator<T> implements Iterator<T>, Iterable<T> {
 		private final T[] array;
 		int index;
@@ -222,7 +193,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 			return this;
 		}
 	}
-	
+
 	static private class ReadonlyIterable<T> implements Iterable<T> {
 		private final T[] array;
 		private ReadonlyIterator iterator1, iterator2;
@@ -230,7 +201,7 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 		public ReadonlyIterable (T[] array) {
 			this.array = array;
 		}
-		
+
 		@Override
 		public Iterator<T> iterator () {
 			if (iterator1 == null) {

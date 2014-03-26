@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
+
 package com.badlogic.gdx.controllers.desktop.ois;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -72,7 +73,7 @@ public class OisTest {
 			}
 		};
 
-		//new LwjglApplication(app);
-//		 new LwjglFrame(app, "Controllers", 200, 200, false);
+		// new LwjglApplication(app);
+// new LwjglFrame(app, "Controllers", 200, 200, false);
 	}
 }

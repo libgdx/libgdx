@@ -52,48 +52,42 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	/** Desktop only: Set this to an absolute path to load the shader files from an alternative location. */
 	final static String hotLoadFolder = null;
 	/** Desktop only: Set this to an absolute path to save the generated shader files. */
-	final static String tempFolder = "D:\\temp\\shaders"; 
-	
-	protected  String shaders[] = new String[] {
-		"<default>", "depth", "gouraud", "phong", "normal", "fur", "cubemap", "reflect", "test"
-	};
-	
-	protected String environments[] = new String[] {
-		"<none>", "debug", "environment_01", "environment_02" 
-	};
-	
-	protected String materials[] = new String[] {
-		"diffuse_green", "badlogic_normal", "brick01", "brick02", "brick03", "chesterfield", 
-		"cloth01", "cloth02", "elephant01", "elephant02", "fur01", "grass01", "metal01", "metal02",
-		"mirror01", "mirror02", "moon01", "plastic01", "stone01", "stone02", "wood01", "wood02"
-	};
-	
+	final static String tempFolder = "D:\\temp\\shaders";
+
+	protected String shaders[] = new String[] {"<default>", "depth", "gouraud", "phong", "normal", "fur", "cubemap", "reflect",
+		"test"};
+
+	protected String environments[] = new String[] {"<none>", "debug", "environment_01", "environment_02"};
+
+	protected String materials[] = new String[] {"diffuse_green", "badlogic_normal", "brick01", "brick02", "brick03",
+		"chesterfield", "cloth01", "cloth02", "elephant01", "elephant02", "fur01", "grass01", "metal01", "metal02", "mirror01",
+		"mirror02", "moon01", "plastic01", "stone01", "stone02", "wood01", "wood02"};
+
 	public static class TestShaderProvider extends DefaultShaderProvider {
 		public boolean error = false;
 		public String name = "default";
-		
-		public void clear() {
+
+		public void clear () {
 			for (final Shader shader : shaders)
 				shader.dispose();
 			shaders.clear();
 		}
-		
-		public boolean revert() {
-			if (config.vertexShader == null || config.fragmentShader == null)
-				return false;
+
+		public boolean revert () {
+			if (config.vertexShader == null || config.fragmentShader == null) return false;
 			config.vertexShader = null;
 			config.fragmentShader = null;
 			clear();
 			return true;
 		}
-		
+
 		@Override
 		public Shader getShader (Renderable renderable) {
 			try {
 				return super.getShader(renderable);
-			} catch(Throwable e) {
+			} catch (Throwable e) {
 				if (tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop)
-					Gdx.files.absolute(tempFolder).child(name+".log.txt").writeString(e.getMessage(), false);
+					Gdx.files.absolute(tempFolder).child(name + ".log.txt").writeString(e.getMessage(), false);
 				if (!revert()) {
 					Gdx.app.error("ShaderCollectionTest", e.getMessage());
 					throw new GdxRuntimeException("Error creating shader, cannot revert to default shader", e);
@@ -103,21 +97,22 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 				return super.getShader(renderable);
 			}
 		}
-		
+
 		@Override
 		protected Shader createShader (Renderable renderable) {
-			if (config.vertexShader != null && config.fragmentShader != null && tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop) {
+			if (config.vertexShader != null && config.fragmentShader != null && tempFolder != null
+				&& Gdx.app.getType() == ApplicationType.Desktop) {
 				String prefix = DefaultShader.createPrefix(renderable, config);
-				Gdx.files.absolute(tempFolder).child(name+".vertex.glsl").writeString(prefix + config.vertexShader, false);
-				Gdx.files.absolute(tempFolder).child(name+".fragment.glsl").writeString(prefix + config.fragmentShader, false);
+				Gdx.files.absolute(tempFolder).child(name + ".vertex.glsl").writeString(prefix + config.vertexShader, false);
+				Gdx.files.absolute(tempFolder).child(name + ".fragment.glsl").writeString(prefix + config.fragmentShader, false);
 			}
 			BaseShader result = new MultiPassShader(renderable, config);
 			if (tempFolder != null && Gdx.app.getType() == ApplicationType.Desktop)
-				Gdx.files.absolute(tempFolder).child(name+".log.txt").writeString(result.program.getLog(), false);
+				Gdx.files.absolute(tempFolder).child(name + ".log.txt").writeString(result.program.getLog(), false);
 			return result;
 		}
 	}
-	
+
 	protected Environment lights;
 	protected TestShaderProvider shaderProvider;
 	protected FileHandle shaderRoot;
@@ -134,38 +129,34 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		super.create();
 		lights = new Environment();
 		lights.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.1f, 0.1f, 1.f));
-		lights.add(
-			new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f)
-		);
-		
+		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1.0f, -0.8f));
+
 		shaderProvider = new TestShaderProvider();
 		shaderBatch = new ModelBatch(shaderProvider);
-		
-		cam.position.set(1,1,1);
-		cam.lookAt(0,0,0);
+
+		cam.position.set(1, 1, 1);
+		cam.lookAt(0, 0, 0);
 		cam.update();
 		showAxes = true;
-		
+
 		onModelClicked("g3d/shapes/teapot.g3dj");
-		
-		shaderRoot = (hotLoadFolder != null && Gdx.app.getType() == ApplicationType.Desktop) ? 
-			Gdx.files.absolute(hotLoadFolder) : Gdx.files.internal("data/g3d/shaders");
+
+		shaderRoot = (hotLoadFolder != null && Gdx.app.getType() == ApplicationType.Desktop) ? Gdx.files.absolute(hotLoadFolder)
+			: Gdx.files.internal("data/g3d/shaders");
 	}
-	
+
 	@Override
 	public void dispose () {
 		shaderBatch.dispose();
 		shaderBatch = null;
 		shaderProvider = null;
-		if (cubemap != null)
-			cubemap.dispose();
+		if (cubemap != null) cubemap.dispose();
 		cubemap = null;
 		super.dispose();
 	}
-	
-	public void setEnvironment(String name) {
-		if (name == null)
-			return;
+
+	public void setEnvironment (String name) {
+		if (name == null) return;
 		if (cubemap != null) {
 			cubemap.dispose();
 			cubemap = null;
@@ -175,36 +166,31 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 				lights.remove(CubemapAttribute.EnvironmentMap);
 				shaderProvider.clear();
 			}
-		}
-		else {
+		} else {
 			FileHandle root = Gdx.files.internal("data/g3d/environment");
-			cubemap = new Cubemap(root.child(name+"_PX.png"), null,//root.child(name+"_NX.png"),
-				root.child(name+"_PY.png"), root.child(name+"_NY.png"),
-				root.child(name+"_PZ.png"), root.child(name+"_NZ.png"), 
-				false); // FIXME mipmapping on desktop
-			cubemap.load(CubemapSide.NegativeX, root.child(name+"_NX.png"));
-			if (!lights.has(CubemapAttribute.EnvironmentMap))
-				shaderProvider.clear();
+			cubemap = new Cubemap(root.child(name + "_PX.png"), null,// root.child(name+"_NX.png"),
+				root.child(name + "_PY.png"), root.child(name + "_NY.png"), root.child(name + "_PZ.png"),
+				root.child(name + "_NZ.png"), false); // FIXME mipmapping on desktop
+			cubemap.load(CubemapSide.NegativeX, root.child(name + "_NX.png"));
+			if (!lights.has(CubemapAttribute.EnvironmentMap)) shaderProvider.clear();
 			lights.set(new CubemapAttribute(CubemapAttribute.EnvironmentMap, cubemap));
 		}
 	}
-	
-	public void setMaterial(String name) {
-		if (name == null)
-			return;
+
+	public void setMaterial (String name) {
+		if (name == null) return;
 		if (currentlyLoading != null) {
 			Gdx.app.error("ModelTest", "Wait for the current model/material to be loaded.");
 			return;
 		}
-		
-		currentlyLoading = "data/g3d/materials/"+name+".g3dj";
+
+		currentlyLoading = "data/g3d/materials/" + name + ".g3dj";
 		loadingMaterial = true;
-		if (!name.equals(currentMaterial))
-			assets.load(currentlyLoading, Model.class);
+		if (!name.equals(currentMaterial)) assets.load(currentlyLoading, Model.class);
 		loading = true;
 	}
-	
-	public void setShader(String name) {
+
+	public void setShader (String name) {
 		shaderProvider.error = false;
 		if (name.equals("<default>")) {
 			shaderProvider.config.vertexShader = null;
@@ -212,8 +198,8 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			shaderProvider.name = "default";
 		} else {
 			ShaderLoader loader = new ShaderLoader(shaderRoot);
-			shaderProvider.config.vertexShader = loader.load(name+".glsl:VS");
-			shaderProvider.config.fragmentShader = loader.load(name+".glsl:FS");
+			shaderProvider.config.vertexShader = loader.load(name + ".glsl:VS");
+			shaderProvider.config.fragmentShader = loader.load(name + ".glsl:FS");
 			shaderProvider.name = name;
 		}
 		shaderProvider.clear();
@@ -222,10 +208,13 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 	private final Vector3 tmpV = new Vector3();
 	private final Quaternion tmpQ = new Quaternion();
 	private final BoundingBox bounds = new BoundingBox();
+
 	@Override
-	protected void render (ModelBatch batch, Array<ModelInstance> instances) {}
-	
-	final Vector3 dirLightRotAxis = new Vector3(-1,-1,-1).nor();
+	protected void render (ModelBatch batch, Array<ModelInstance> instances) {
+	}
+
+	final Vector3 dirLightRotAxis = new Vector3(-1, -1, -1).nor();
+
 	@Override
 	public void render (Array<ModelInstance> instances) {
 		lights.directionalLights.get(0).direction.rotate(dirLightRotAxis, Gdx.graphics.getDeltaTime() * 45f);
@@ -237,7 +226,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		shaderBatch.render(instances, lights);
 		shaderBatch.end();
 	}
-	
+
 	@Override
 	protected void getStatus (StringBuilder stringBuilder) {
 		super.getStatus(stringBuilder);
@@ -253,33 +242,30 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			}
 		}
 	}
-	
+
 	protected String currentlyLoading;
+
 	@Override
-	protected void onModelClicked(final String name) {
-		if (name == null)
-			return;
+	protected void onModelClicked (final String name) {
+		if (name == null) return;
 		if (currentlyLoading != null) {
 			Gdx.app.error("ModelTest", "Wait for the current model/material to be loaded.");
 			return;
 		}
-		
-		currentlyLoading = "data/"+name; 
+
+		currentlyLoading = "data/" + name;
 		loadingMaterial = false;
-		if (!name.equals(currentModel))
-			assets.load(currentlyLoading, Model.class);
+		if (!name.equals(currentModel)) assets.load(currentlyLoading, Model.class);
 		loading = true;
 	}
-	
+
 	@Override
-	protected void onLoaded() {
-		if (currentlyLoading == null || currentlyLoading.isEmpty())
-			return;
-		
+	protected void onLoaded () {
+		if (currentlyLoading == null || currentlyLoading.isEmpty()) return;
+
 		if (loadingMaterial) {
 			loadingMaterial = false;
-			if (currentMaterial != null && !currentMaterial.equals(currentlyLoading))
-					assets.unload(currentMaterial);
+			if (currentMaterial != null && !currentMaterial.equals(currentlyLoading)) assets.unload(currentMaterial);
 			currentMaterial = currentlyLoading;
 			currentlyLoading = null;
 			ModelInstance instance = instances.get(0);
@@ -288,21 +274,19 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 				instance.materials.get(0).set(assets.get(currentMaterial, Model.class).materials.get(0));
 			}
 		} else {
-			if (currentModel != null && !currentModel.equals(currentlyLoading))
-				assets.unload(currentModel);
-			currentModel = currentlyLoading; 
+			if (currentModel != null && !currentModel.equals(currentlyLoading)) assets.unload(currentModel);
+			currentModel = currentlyLoading;
 			currentlyLoading = null;
-			
+
 			instances.clear();
 			animationControllers.clear();
 			final ModelInstance instance = new ModelInstance(assets.get(currentModel, Model.class), transform);
 			instances.add(instance);
-			if (instance.animations.size > 0)
-				animationControllers.put(instance, new AnimationController(instance));
-			
+			if (instance.animations.size > 0) animationControllers.put(instance, new AnimationController(instance));
+
 			instance.calculateBoundingBox(bounds);
-			cam.position.set(1,1,1).nor().scl(bounds.getDimensions().len() * 0.75f).add(bounds.getCenter());
-			cam.up.set(0,1,0);
+			cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions().len() * 0.75f).add(bounds.getCenter());
+			cam.up.set(0, 1, 0);
 			cam.lookAt(inputController.target.set(bounds.getCenter()));
 			cam.far = Math.max(100f, bounds.getDimensions().len() * 2.0f);
 			cam.update();
@@ -326,7 +310,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			}
 		});
 		shadersWindow = addListWindow("Shaders", shadersList, -1, -1);
-		
+
 		final List<String> materialsList = new List(skin);
 		materialsList.setItems(materials);
 		materialsList.addListener(new ClickListener() {
@@ -339,7 +323,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			}
 		});
 		materialsWindow = addListWindow("Materials", materialsList, modelsWindow.getWidth(), -1);
-		
+
 		final List<String> environmentsList = new List(skin);
 		environmentsList.setItems(environments);
 		environmentsList.addListener(new ClickListener() {
@@ -353,8 +337,8 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 		});
 		environmentsWindow = addListWindow("Environments", environmentsList, materialsWindow.getRight(), -1);
 	}
-	
-	protected void switchAnimation() {
+
+	protected void switchAnimation () {
 		for (ObjectMap.Entry<ModelInstance, AnimationController> e : animationControllers.entries()) {
 			int animIndex = 0;
 			if (e.value.current != null) {
@@ -370,11 +354,10 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			e.value.animate(e.key.animations.get(animIndex).id, -1, 1f, null, 0.2f);
 		}
 	}
-	
+
 	@Override
 	public boolean keyUp (int keycode) {
-		if (keycode == Keys.SPACE || keycode == Keys.MENU)
-			switchAnimation();
+		if (keycode == Keys.SPACE || keycode == Keys.MENU) switchAnimation();
 		return super.keyUp(keycode);
 	}
 }

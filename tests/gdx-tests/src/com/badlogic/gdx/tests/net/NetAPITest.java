@@ -74,7 +74,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont();
-		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		{
@@ -122,12 +122,12 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 					statusLabel.setText("Downloading data from " + httpRequest.getUrl());
 				}
 			};
-			
+
 			ClickListener cancelListener = new ClickListener() {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
-					Gdx.net.cancelHttpRequest(httpRequest);					
+					Gdx.net.cancelHttpRequest(httpRequest);
 					statusLabel.setText("Cancelling request " + httpRequest.getUrl());
 				}
 			};
@@ -136,7 +136,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			btnCancel.setPosition(Gdx.graphics.getWidth() * 0.5f - btnCancel.getWidth() * 1.5f, 60f);
 			btnCancel.addListener(cancelListener);
 			stage.addActor(btnCancel);
-			
+
 			btnDownloadImage = new TextButton("GET Image", skin);
 			btnDownloadImage.setPosition(btnCancel.getX() + btnCancel.getWidth() + 10, 60f);
 			btnDownloadImage.addListener(clickListener);
@@ -183,10 +183,8 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 			final byte[] rawImageBytes = httpResponse.getResult();
 			Gdx.app.postRunnable(new Runnable() {
 				public void run () {
-					Texture.setEnforcePotImages(false);
 					Pixmap pixmap = new Pixmap(rawImageBytes, 0, rawImageBytes.length);
 					texture = new Texture(pixmap);
-					Texture.setEnforcePotImages(true);
 				}
 			});
 		} else {
@@ -247,7 +245,7 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 
 	@Override
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 
 	@Override
