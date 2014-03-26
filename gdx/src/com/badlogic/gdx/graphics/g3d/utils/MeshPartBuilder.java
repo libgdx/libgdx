@@ -252,6 +252,18 @@ public interface MeshPartBuilder {
 
 	/** Add a capsule */
 	public void capsule (float radius, float height, int divisions);
+	
+	/** Add an arrow 
+	 * @param x1 source x
+	 * @param y1 source y
+	 * @param z1 source z
+	 * @param x2 destination x
+	 * @param y2 destination y
+	 * @param z2 destination z
+	 * @param capLength is the height of the cap in percentage, must be in (0,1) 
+	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
+	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
+	public void arrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions);
 
 	/** Get the current vertex transformation matrix. */
 	public Matrix4 getVertexTransform (Matrix4 out);
