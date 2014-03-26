@@ -322,6 +322,10 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
+    void destroySync() {
+        dispose();
+    }
+
 	@Override
 	public void onDrawFrame (javax.microedition.khronos.opengles.GL10 gl) {
 		long time = System.nanoTime();
@@ -404,14 +408,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (ldestroy) {
-			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
-			synchronized (listeners) {
-				for (LifecycleListener listener : listeners) {
-					listener.dispose();
-				}
-			}
-			((AndroidApplicationBase)app).getApplicationListener().dispose();
-			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).dispose();
+			dispose();
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
@@ -422,6 +419,18 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 		frames++;
 	}
+
+    private void dispose() {
+        Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
+        synchronized (listeners) {
+            for (LifecycleListener listener : listeners) {
+                listener.dispose();
+            }
+        }
+        ((AndroidApplicationBase)app).getApplicationListener().dispose();
+        ((AndroidAudio)((AndroidApplicationBase)app).getAudio()).dispose();
+        Gdx.app.log("AndroidGraphics", "destroyed");
+    }
 
 	/** {@inheritDoc} */
 	@Override

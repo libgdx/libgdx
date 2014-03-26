@@ -179,6 +179,28 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		return graphics.getView();
 	}
 
+    @Override
+    public void onResume () {
+        Gdx.app = this;
+        Gdx.input = this.getInput();
+        Gdx.audio = this.getAudio();
+        Gdx.files = this.getFiles();
+        Gdx.graphics = this.getGraphics();
+        Gdx.net = this.getNet();
+
+        ((AndroidInput)getInput()).registerSensorListeners();
+
+        if (graphics != null && graphics.view != null) {
+            if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+        }
+
+        if (!firstResume) {
+            graphics.resume();
+        } else
+            firstResume = false;
+        super.onResume();
+    }
+
 	@Override
 	public void onPause () {
 		boolean isContinuous = graphics.isContinuousRendering();
@@ -199,40 +221,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 		}
-
 		super.onPause();
 	}
 
-	@Override
-	public void onResume () {
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
-		Gdx.net = this.getNet();
+    @Override
+    public void onDestroyView() {
+        graphics.clearManagedCaches();
+        graphics.destroySync();
+        super.onDestroyView();
+    }
 
-		((AndroidInput)getInput()).registerSensorListeners();
-
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
-		}
-
-		if (!firstResume) {
-			graphics.resume();
-		} else
-			firstResume = false;
-		super.onResume();
-	}
-
-	@Override
-	public void onDestroyView () {
-		super.onDestroyView();
-		graphics.clearManagedCaches();
-		graphics.destroy();
-	}
-
-	@Override
+    @Override
 	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
