@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -24,11 +24,11 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -99,6 +99,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 	}
 
+	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < 19) return;
@@ -168,7 +169,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		useImmersiveMode(config.useImmersiveMode);
 		if (config.useImmersiveMode && getVersion() >= 19) {
 			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Class<?> vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
 				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
@@ -197,6 +198,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		graphics.setContinuousRendering(isContinuous);
 
 		if (graphics != null && graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
 		}
 
@@ -215,6 +217,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		((AndroidInput)getInput()).registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
 		}
 
