@@ -56,7 +56,7 @@ public class SpotLight extends PointLight {
                          final Vector3 direction, final float constantAttenuation, final float linearAttenuation,
                          final float quadraticAttenuation) {
         super.set(r, g, b, position, intensity);
-        if (direction != null) this.direction = direction;
+        if (direction != null) this.direction = direction.nor();
         set(constantAttenuation, linearAttenuation, quadraticAttenuation);
         return this;
     }

@@ -344,7 +344,11 @@ void main() {
                 vec3 value = u_spotLights[i].color * (NdotL / (u_spotLights[i].constantAttenuation + u_spotLights[i].linearAttenuation * sqrt(dist2) + u_spotLights[i].quadraticAttenuation * dist2));
                 v_lightDiffuse += value;
 
-                //TODO : Add the cutOff and exponent
+                float spotFactor = max(dot(u_spotLights[i].direction, -lightDir), 0.0);
+                if(spotFactor > cos(u_spotLights[i].cutOff)) {
+                    //is inside the cone
+                    v_lightDiffuse += spotFactor * u_spotLights[i].exponent;
+                }
 
                 #ifdef specularFlag
                     float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
