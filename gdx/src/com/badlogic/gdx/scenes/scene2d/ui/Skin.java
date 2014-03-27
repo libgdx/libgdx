@@ -55,6 +55,7 @@ import com.badlogic.gdx.utils.reflect.ReflectionException;
 public class Skin implements Disposable {
 	ObjectMap<Class, ObjectMap<String, Object>> resources = new ObjectMap();
 	TextureAtlas atlas;
+	private boolean removeSkinComments = false;
 
 	/** Creates an empty skin. */
 	public Skin () {
@@ -87,13 +88,27 @@ public class Skin implements Disposable {
 		this.atlas = atlas;
 		addRegions(atlas);
 	}
+	
+	/** Removes JSON comments from the skin file when loading */
+	public void removeCommentsWhenLoading(boolean removeComments) {
+		removeSkinComments = removeComments;
+	}
 
 	/** Adds all resources in the specified skin JSON file. */
 	public void load (FileHandle skinFile) {
-		try {
-			getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
-		} catch (SerializationException ex) {
-			throw new SerializationException("Error reading file: " + skinFile, ex);
+		if (removeSkinComments) {
+			String jsonStringWithComments = skinFile.readString();
+			try {
+				getJsonLoader(skinFile).fromJson(Skin.class, removeComments(jsonStringWithComments));
+			} catch (SerializationException ex) {
+				throw new SerializationException("Error reading file: " + skinFile, ex);
+			}
+		} else {
+			try {
+				getJsonLoader(skinFile).fromJson(Skin.class, skinFile);
+			} catch (SerializationException ex) {
+				throw new SerializationException("Error reading file: " + skinFile, ex);
+			}
 		}
 	}
 
@@ -505,6 +520,58 @@ public class Skin implements Disposable {
 			if (method.getName().equals(name)) return method;
 		}
 		return null;
+	}
+	
+	/** Removes comments from json string */
+	static private String removeComments(String json) {
+		String noComments = "";
+		
+		int index = 1;
+		int appendFrom = 0;
+		boolean singleLineComment = false;
+		boolean multiLineComment = false;
+		char previousChar = '\0';
+		while (index < json.length()) {
+			
+			if (!singleLineComment && !multiLineComment) {
+				// Check for single line comment
+				if (json.charAt(index) == '/' && json.charAt(index - 1) == '/')
+					singleLineComment = true;
+				else if (json.charAt(index) == '*' && json.charAt(index - 1) == '/')
+					multiLineComment = true;
+				
+				// Append last no comment 
+				if (singleLineComment || multiLineComment)
+					noComments += json.substring(appendFrom, index-1);
+			} else {
+				// Check where comment ends
+				if (singleLineComment) {
+					if (json.charAt(index) == '\n')
+						singleLineComment = false;
+					else if (index + 1 < json.length() && json.charAt(index) == '\r' && json.charAt(index + 1) != '\n')
+						singleLineComment = false;
+				}
+				else if (multiLineComment) {
+					if (json.charAt(index) == '/' && json.charAt(index - 1) == '*')
+						multiLineComment = false;
+				}
+				
+				if (!singleLineComment && !multiLineComment)
+					appendFrom = index + 1;
+			}
+			
+			
+			index++;
+		}
+		
+		// Append last bit
+		if (!singleLineComment && !multiLineComment)
+			noComments += json.substring(appendFrom);
+		else
+			throw new SerializationException("JSON comment not closed");
+		
+		
+		return noComments;
 	}
 
 	/** @author Nathan Sweet */

@@ -36,8 +36,22 @@ import com.badlogic.gdx.utils.ObjectMap.Entry;
  * generated through FreeTypeFontGenerator.
  * @author Nathan Sweet */
 public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinParameter> {
+	/** If true removes comments from the skin before loading them */
+	private boolean skinHasComments = false;
+	
 	public SkinLoader (FileHandleResolver resolver) {
 		super(resolver);
+	}
+	
+	/**
+	 * Creates a skin loader with the ability to remove skin comment
+	 * @param resolver 
+	 * @param skinHasComments set to true to remove skin comments from the JSON file
+	 * before parsing it
+	 */
+	public SkinLoader(FileHandleResolver resolver, boolean skinHasComments) {
+		super(resolver);
+		this.skinHasComments = skinHasComments;
 	}
 
 	@Override
@@ -71,7 +85,10 @@ public class SkinLoader extends AsynchronousAssetLoader<Skin, SkinLoader.SkinPar
 				skin.add(entry.key, entry.value);
 			}
 		}
+		
+		skin.removeCommentsWhenLoading(skinHasComments);
 		skin.load(file);
+		
 		return skin;
 	}
 
