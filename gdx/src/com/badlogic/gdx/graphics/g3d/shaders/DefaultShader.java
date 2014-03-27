@@ -40,6 +40,7 @@ import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.environment.SpotLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -848,7 +849,7 @@ public class DefaultShader extends BaseShader {
                 program.setUniformf(idx + spotLightsConstantAttenuationOffset, spotLights[i].constantAttenuation);
                 program.setUniformf(idx + spotLightsLinearAttenuationOffset, spotLights[i].linearAttenuation);
                 program.setUniformf(idx + spotLightsQuadraticAttenuationOffset, spotLights[i].quadraticAttenuation);
-                program.setUniformf(idx + spotLightscutOffOffset, spotLights[i].cutOff);
+                program.setUniformf(idx + spotLightscutOffOffset, spotLights[i].cutOff * MathUtils.degreesToRadians);
                 program.setUniformf(idx + spotLightexponentOffset, spotLights[i].exponent);
                 if (spotLightsSize <= 0) break;
             }
