@@ -5,11 +5,12 @@ OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
 
 #### Getting Started
-  * [Setup your development environment (Eclipse, Intellij IDEA)](https://github.com/libgdx/libgdx/wiki/Setting-up-your-Development-Environment-%28Eclipse%2C-Intellij-IDEA%29)
+  * [Setup your development environment (Eclipse, Intellij IDEA, NetBeans)](https://github.com/libgdx/libgdx/wiki/Setting-up-your-Development-Environment-%28Eclipse%2C-Intellij-IDEA%2C-NetBeans%29)
   * [Create a libgdx project](https://github.com/libgdx/libgdx/wiki/Project-Setup-Gradle)
     * Import, Run, Debug and Package your project
       * [Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse)
       * [Intellij IDEA](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA)
+      * [NetBeans](https://github.com/libgdx/libgdx/wiki/Gradle-and-NetBeans)
       * [Commandline](https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline)
   * [Read the Wiki](https://github.com/libgdx/libgdx/wiki)
 

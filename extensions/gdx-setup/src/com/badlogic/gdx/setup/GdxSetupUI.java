@@ -1,4 +1,3 @@
-
 package com.badlogic.gdx.setup;
 
 import static java.awt.GridBagConstraints.BOTH;
@@ -82,6 +81,7 @@ public class GdxSetupUI extends JFrame {
 				log("Done!");
 				log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
 				log("To import to Intellij IDEA: File -> Import -> build.gradle");
+				log("To import to NetBeans: File -> Open Project...");
 			}
 		}.start();
 	}
