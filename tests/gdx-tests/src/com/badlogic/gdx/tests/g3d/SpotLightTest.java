@@ -28,8 +28,10 @@ public class SpotLightTest extends ModelTest{
 		super.create();
 		environment.clear();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.0f, 0.0f, 0.0f, 1.0f));
-		environment.add(spotLight = new SpotLight().set(0.2f, 0.8f, 0.2f, new Vector3(), 1, new Vector3(), 1,0.5f,0.2f));
+		environment.add(spotLight = new SpotLight().set(0.2f, 0.8f, 0.2f, new Vector3(), 1, new Vector3(), 1,0.0f,0.0f, 25,1));
 
+		onModelClicked("cube.obj");
+		
 		ModelBuilder mb = new ModelBuilder();
 		lightModel = mb.createSphere(1, 1, 1, 10, 10, new Material(ColorAttribute.createDiffuse(1, 1, 1, 1)), Usage.Position);
 		lightModel.nodes.get(0).parts.get(0).setRenderable(pLight = new Renderable());
@@ -58,7 +60,7 @@ public class SpotLightTest extends ModelTest{
 		spotLight.position.add(transformedCenter.set(center).mul(transform));
 		spotLight.direction.set(spotLight.position.cpy().scl(-1).nor());
 
-		pLight.worldTransform.setTranslation(spotLight.position);
+		pLight.worldTransform.setTranslation(spotLight.position);		
 		batch.render(pLight);
 
 		super.render(batch, instances);
