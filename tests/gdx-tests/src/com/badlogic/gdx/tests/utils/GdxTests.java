@@ -42,6 +42,7 @@ import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
 import com.badlogic.gdx.tests.g3d.SkeletonTest;
+import com.badlogic.gdx.tests.g3d.SpotLightTest;
 import com.badlogic.gdx.tests.gles2.HelloTriangle;
 import com.badlogic.gdx.tests.gles2.SimpleVertexShader;
 import com.badlogic.gdx.tests.net.NetAPITest;
@@ -178,6 +179,7 @@ public class GdxTests {
 		SpriteBatchTest.class,
 		SpriteCacheOffsetTest.class,
 		SpriteCacheTest.class,
+		SpotLightTest.class,
 		StagePerformanceTest.class,
 		StageTest.class,
 		SuperKoalio.class,
