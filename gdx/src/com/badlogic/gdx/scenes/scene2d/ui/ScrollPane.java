@@ -588,6 +588,13 @@ public class ScrollPane extends WidgetGroup {
 		resetTransform(batch);
 	}
 
+	//generate flick gesture
+	public void flick(float flingTime, float velocityX, float velocityY){
+		this.flingTimer = flingTime;
+		this.velocityX = velocityX;
+		this.velocityY = velocityY;
+	}
+	
 	public float getPrefWidth () {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
