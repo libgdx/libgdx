@@ -31,7 +31,7 @@ import com.badlogic.gdx.utils.JsonValue.ValueType;
  * The default behavior is to parse the JSON into a DOM containing {@link JsonValue} objects. Extend this class and override
  * methods to perform event driven parsing. When this is done, the parse methods will return null.
  * @author Nathan Sweet */
-public class JsonReader {
+public class JsonReader implements BaseJsonReader {
 	public JsonValue parse (String json) {
 		char[] data = json.toCharArray();
 		return parse(data, 0, data.length);
@@ -55,24 +55,23 @@ public class JsonReader {
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
 		} finally {
-			try {
-				reader.close();
-			} catch (IOException ignored) {
-			}
+			StreamUtils.closeQuietly(reader);
 		}
 	}
 
 	public JsonValue parse (InputStream input) {
 		try {
-			return parse(new InputStreamReader(input, "ISO-8859-1"));
+			return parse(new InputStreamReader(input, "UTF-8"));
 		} catch (IOException ex) {
 			throw new SerializationException(ex);
+		} finally {
+			StreamUtils.closeQuietly(input);
 		}
 	}
 
 	public JsonValue parse (FileHandle file) {
 		try {
-			return parse(file.read());
+			return parse(file.reader("UTF-8"));
 		} catch (Exception ex) {
 			throw new SerializationException("Error parsing file: " + file, ex);
 		}
@@ -182,12 +181,24 @@ public class JsonReader {
 				pop();
 				fret;
 			}
+			action comment {
+				if (debug) System.out.println("comment /" + data[p]);
+				if (data[p++] == '/') {
+					while (data[p] != '\n')
+						p++;
+				} else {
+					while (data[p] != '*' || data[p + 1] != '/')
+						p++;
+					p++;
+				}
+			}
 
+			ws = space | (('//' | '/*') @comment);
 			doubleChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
 			longChars = '-'? [0-9]+;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
-			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | space)*;
-			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | space)*;
+			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | ws)*;
+			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | ws)*;
 			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | doubleChars >buffer %name;
 
 			startObject = '{' @startObject;
@@ -199,13 +210,13 @@ public class JsonReader {
 			booleanValue = 'true' %trueValue | 'false' %falseValue;
 			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
 
-			nameValue = name space* ':' space* value;
+			nameValue = name ws* ':' ws* value;
 
-			object := space* (nameValue space*)? (',' space* nameValue space*)** ','? space* '}' @endObject;
+			object := ws* (nameValue ws*)? (',' ws* nameValue ws*)** ','? ws* '}' @endObject;
 
-			array := space* (value space*)? (',' space* value space*)** ','? space* ']' @endArray;
+			array := ws* (value ws*)? (',' ws* value ws*)** ','? ws* ']' @endArray;
 
-			main := space* value space*;
+			main := ws* value ws*;
 
 			write init;
 			write exec;
@@ -213,6 +224,11 @@ public class JsonReader {
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
 		}
+
+		JsonValue root = this.root;
+		this.root = null;
+		current = null;
+		lastChild.clear();
 
 		if (p < pe) {
 			int lineNumber = 1;
@@ -230,14 +246,13 @@ public class JsonReader {
 		} else if (parseRuntimeEx != null) {
 			throw new SerializationException("Error parsing JSON: " + new String(data), parseRuntimeEx);
 		}
-		JsonValue root = this.root;
-		this.root = null;
 		return root;
 	}
 
 	%% write data;
 
 	private final Array<JsonValue> elements = new Array(8);
+	private final Array<JsonValue> lastChild = new Array(8);
 	private JsonValue root, current;
 
 	private void addChild (String name, JsonValue child) {
@@ -245,9 +260,17 @@ public class JsonReader {
 		if (current == null) {
 			current = child;
 			root = child;
-		} else if (current.isArray() || current.isObject())
-			current.addChild(child);
-		else
+		} else if (current.isArray() || current.isObject()) {
+			if (current.size == 0)
+				current.child = child;
+			else {
+				JsonValue last = lastChild.pop();
+				last.next = child;
+				child.prev = last;
+			}
+			lastChild.add(child);
+			current.size++;
+		} else
 			root = current;
 	}
 
@@ -267,6 +290,7 @@ public class JsonReader {
 
 	protected void pop () {
 		root = elements.pop();
+		if (current.size > 0) lastChild.pop();
 		current = elements.size > 0 ? elements.peek() : null;
 	}
 

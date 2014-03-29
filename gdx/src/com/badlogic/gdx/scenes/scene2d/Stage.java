@@ -77,6 +77,7 @@ public class Stage extends InputAdapter implements Disposable {
 	public Stage () {
 		this(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()),
 			null);
+		getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
 
 	/** Creates a stage with the specified viewport. The stage will use its own {@link Batch}, which will be disposed when the stage
@@ -605,6 +606,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		viewport.project(stageCoords);
+		stageCoords.y = viewport.getViewportHeight() - stageCoords.y;
 		return stageCoords;
 	}
 
