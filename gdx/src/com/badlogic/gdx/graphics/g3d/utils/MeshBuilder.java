@@ -290,6 +290,11 @@ public class MeshBuilder implements MeshPartBuilder {
 		vMax = v2;
 	}
 
+	@Override
+	public void setUVRange (TextureRegion region) {
+		setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
+	}
+
 	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
 	 * adding many vertices to avoid multiple backing array resizes.
 	 * @param numVertices The number of vertices you are about to add */
