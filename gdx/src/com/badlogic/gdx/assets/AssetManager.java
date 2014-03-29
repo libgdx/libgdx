@@ -129,7 +129,7 @@ public class AssetManager implements Disposable {
 	
 	/** @param type the asset type
 	 * @return all the assets matching the specified type */
-	public synchronized <T> Array<T> get (Class<T> type, Array<T> out) {
+	public synchronized <T> Array<T> getAll (Class<T> type, Array<T> out) {
 		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
 		if (assetsByType != null){
 			for(ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries()){
@@ -138,28 +138,6 @@ public class AssetManager implements Disposable {
 		}
 		return out;
 	}
-	
-	/** Add the specified asset to the manager, replacing any previous asset with the same name 
-	 * @param type the asset type
-	 * @param fileName the asset name
-	 * @param asset the asset*/
-	public synchronized <T> void set (Class<T> type, String fileName, T asset) {
-		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
-		if (assetsByType == null){
-			assetsByType = new ObjectMap<String, RefCountedContainer>();
-			assets.put(type, assetsByType);
-		}
-		
-		RefCountedContainer container = assetsByType.get(fileName);
-		if(container == null){
-			container = new RefCountedContainer(asset);
-			assetsByType.put(fileName, container);
-		}
-		else 
-			container.setObject(asset);
-		container.setRefCount(0);
-	}
-	
 
 	/** @param assetDescriptor the asset descriptor
 	 * @return the asset */
