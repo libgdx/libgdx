@@ -1,16 +1,36 @@
-.class
-.jar
-.war
-build/
-war/
-bin/
-gen/
-libs/
-.gradle/
-.classpath
-.project
-.settings/
-.ipr
-.iml
+## Java
 
-/local.properties
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+## Android Studio and Intellij
+
+.idea/
+*.ipr
+*.iws
+*.iml
+out/
+com_crashlytics_export_strings.xml
+
+## Eclipse
+
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.externalToolBuilders/
+*.launch
+
+## Gradle
+
+.gradle
+build/
