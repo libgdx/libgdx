@@ -33,9 +33,4 @@ eclipse {
         name = appName + "-desktop"
         linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
     }
-    
-    // link assets folder of Android project
-    classpath {
-
-    }
 }
