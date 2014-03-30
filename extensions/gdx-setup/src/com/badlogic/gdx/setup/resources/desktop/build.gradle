@@ -30,4 +30,12 @@ dist.dependsOn classes
 
 eclipse.project {
     name = appName + "-desktop"
+    
+    classpath {
+        file {
+            withXml {
+                def node = it.asNode();
+            }
+        }
+    }
 }
