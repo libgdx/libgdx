@@ -69,18 +69,20 @@ public class GdxSetupUI extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please enter a destination directory.");
 			return;
 		}
-		
+
 		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
 		if (sdkLocation.length() == 0) {
 			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
 			return;
 		}
-		if(!GdxSetup.isSdkLocationValid(sdkLocation)) {
-			JOptionPane.showMessageDialog(this, "Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
+		if (!GdxSetup.isSdkLocationValid(sdkLocation)) {
+			JOptionPane
+				.showMessageDialog(this,
+					"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
 			return;
 		}
 
-		new Thread("DoShit") {
+		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
 				new GdxSetup().build(destination, name, pack, clazz, sdkLocation);
@@ -180,15 +182,15 @@ public class GdxSetupUI extends JFrame {
 			add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
 		}
 
-		private File getDirectory() {
-			if(System.getProperty("os.name").contains("Mac")) {
-				 System.setProperty("apple.awt.fileDialogForDirectories", "true");
-				 FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
-				 dialog.setVisible(true);
-				 String name = dialog.getFile();
-				 String dir = dialog.getDirectory();
-				 if (name == null || dir == null) return null;
-				 return new File(dialog.getDirectory(), dialog.getFile());
+		File getDirectory () {
+			if (System.getProperty("os.name").contains("Mac")) {
+				System.setProperty("apple.awt.fileDialogForDirectories", "true");
+				FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
+				dialog.setVisible(true);
+				String name = dialog.getFile();
+				String dir = dialog.getDirectory();
+				if (name == null || dir == null) return null;
+				return new File(dialog.getDirectory(), dialog.getFile());
 			} else {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -204,12 +206,12 @@ public class GdxSetupUI extends JFrame {
 				}
 			}
 		}
-		
+
 		private void uiEvents () {
 			destinationButton.addActionListener(new ActionListener() {
-				public void actionPerformed (ActionEvent e) {					
+				public void actionPerformed (ActionEvent e) {
 					File path = getDirectory();
-					if(path != null) {
+					if (path != null) {
 						destinationText.setText(path.getAbsolutePath());
 					}
 				}
@@ -218,7 +220,7 @@ public class GdxSetupUI extends JFrame {
 				@Override
 				public void actionPerformed (ActionEvent e) {
 					File path = getDirectory();
-					if(path != null) {
+					if (path != null) {
 						sdkLocationText.setText(path.getAbsolutePath());
 					}
 				}
