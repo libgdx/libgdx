@@ -1,7 +1,3 @@
-/*
- *	Interface module for a class with inner structs or classes.
- */
- 
 %module btCollisionObject
 
 %typemap(javainterfaces) btCollisionObject %{
