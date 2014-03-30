@@ -33,11 +33,18 @@ import java.util.Map;
  *
  */
 public class GdxSetup {
+	public static boolean isSdkLocationValid (String sdkLocation) {
+		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
+	}
+	
 	public void build (String outputDir, String appName, String packageName, String mainClass, String sdkLocation) {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
 		String sdkPath = sdkLocation.replace('\\', '/');
+		if(!isSdkLocationValid(sdkLocation)) {
+			System.out.println("Android SDK location '" + sdkLocation + "' doesn't contain an SDK");
+		}
 
 		// root dir/gradle files
 		project.files.add(new ProjectFile("gitignore", ".gitignore", false));

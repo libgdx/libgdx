@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -39,6 +40,9 @@ public interface MeshPartBuilder {
 
 	/** Set range of texture coordinates used (default is 0,0,1,1). */
 	public void setUVRange (float u1, float v1, float u2, float v2);
+
+	/** Set range of texture coordinates from the specified TextureRegion. */
+	public void setUVRange (TextureRegion r);
 
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
 	public short vertex (final float... values);
@@ -252,18 +256,19 @@ public interface MeshPartBuilder {
 
 	/** Add a capsule */
 	public void capsule (float radius, float height, int divisions);
-	
-	/** Add an arrow 
+
+	/** Add an arrow
 	 * @param x1 source x
 	 * @param y1 source y
 	 * @param z1 source z
 	 * @param x2 destination x
 	 * @param y2 destination y
 	 * @param z2 destination z
-	 * @param capLength is the height of the cap in percentage, must be in (0,1) 
+	 * @param capLength is the height of the cap in percentage, must be in (0,1)
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
 	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
-	public void arrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions);
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions);
 
 	/** Get the current vertex transformation matrix. */
 	public Matrix4 getVertexTransform (Matrix4 out);

@@ -54,13 +54,14 @@ public class Box2DDebugRenderer {
 	private boolean drawAABBs;
 	private boolean drawInactiveBodies;
 	private boolean drawVelocities;
+	private boolean drawContacts;
 
 	public Box2DDebugRenderer () {
-		this(true, true, false, true, false);
+		this(true, true, false, true, false, true);
 	}
 
 	public Box2DDebugRenderer (boolean drawBodies, boolean drawJoints, boolean drawAABBs, boolean drawInactiveBodies,
-		boolean drawVelocities) {
+		boolean drawVelocities, boolean drawContacts) {
 		// next we setup the immediate mode renderer
 		renderer = new ShapeRenderer();
 
@@ -79,6 +80,7 @@ public class Box2DDebugRenderer {
 		this.drawAABBs = drawAABBs;
 		this.drawInactiveBodies = drawInactiveBodies;
 		this.drawVelocities = drawVelocities;
+		this.drawContacts = drawContacts;
 	}
 
 	/** This assumes that the projection matrix has already been set. */
@@ -115,11 +117,12 @@ public class Box2DDebugRenderer {
 			}
 		}
 		renderer.end();
-
-		renderer.begin(ShapeType.Point);
-		for (Contact contact : world.getContactList())
-			drawContact(contact);
-		renderer.end();
+		if (drawContacts) {
+			renderer.begin(ShapeType.Point);
+			for (Contact contact : world.getContactList())
+				drawContact(contact);
+			renderer.end();
+		}
 	}
 
 	protected void renderBody (Body body) {
