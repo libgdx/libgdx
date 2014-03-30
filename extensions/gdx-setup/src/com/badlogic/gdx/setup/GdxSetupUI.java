@@ -75,7 +75,7 @@ public class GdxSetupUI extends JFrame {
 			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
 			return;
 		}
-		if(!isSdkLocationValid(sdkLocation)) {
+		if(!GdxSetup.isSdkLocationValid(sdkLocation)) {
 			JOptionPane.showMessageDialog(this, "Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
 			return;
 		}
@@ -90,10 +90,6 @@ public class GdxSetupUI extends JFrame {
 				log("To import to NetBeans: File -> Open Project...");
 			}
 		}.start();
-	}
-
-	private boolean isSdkLocationValid (String sdkLocation) {
-		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
 	}
 
 	void log (final String text) {
