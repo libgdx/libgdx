@@ -192,13 +192,32 @@ public class JsonReader implements BaseJsonReader {
 					p++;
 				}
 			}
+			action unquotedChars {
+				// Skips characters that are valid for an unquoted name or value.
+				outer:
+				while (true) {
+					switch (data[p]) {
+					case ':':
+					case '}':
+					case ']':
+					case ',':
+					case ' ':
+					case '\r':
+					case '\n':
+					case '\t':
+						break outer;
+					}
+					p++;
+				}
+				p--;
+			}
 
 			ws = space | (('//' | '/*') @comment);
 			doubleChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
 			longChars = '-'? [0-9]+;
 			quotedChars = (^["\\] | ('\\' ["\\/bfnrtu] >needsUnescape))*;
-			unquotedNameChars = [a-zA-Z0-9_$] ^([:}\],] | ws)*;
-			unquotedValueChars = [a-zA-Z_$] ^([:}\],] | ws)*;
+			unquotedNameChars = [a-zA-Z0-9_$] >unquotedChars;
+			unquotedValueChars = [a-zA-Z_$]  >unquotedChars;
 			name = ('"' quotedChars >buffer %name '"') | unquotedNameChars >buffer %name | doubleChars >buffer %name;
 
 			startObject = '{' @startObject;
