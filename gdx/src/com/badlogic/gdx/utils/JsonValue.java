@@ -305,7 +305,27 @@ public class JsonValue implements Iterable<JsonValue> {
 		String[] array = new String[size];
 		int i = 0;
 		for (JsonValue value = child; value != null; value = value.next, i++) {
-			array[i] = value.asString();
+			String v;
+			switch (type) {
+			case stringValue:
+				v = stringValue;
+				break;
+			case doubleValue:
+				v = Double.toString(doubleValue);
+				break;
+			case longValue:
+				v = Long.toString(longValue);
+				break;
+			case booleanValue:
+				v = longValue != 0 ? "true" : "false";
+				break;
+			case nullValue:
+				v = null;
+				break;
+			default:
+				throw new IllegalStateException("Value cannot be converted to string: " + value.type);
+			}
+			array[i] = v;
 		}
 		return array;
 	}
