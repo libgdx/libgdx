@@ -349,10 +349,10 @@ public class AssetManager implements Disposable {
 	 * of a single task that happens in the GL thread takes a long time.
 	 * @return true if all loading is finished. */
 	public boolean update (int millis) {
-		long endTime = System.currentTimeMillis() + millis;
+		long endTime = TimeUtils.millis() + millis;
 		while (true) {
 			boolean done = update();
-			if (done || System.currentTimeMillis() > endTime) return done;
+			if (done || TimeUtils.millis() > endTime) return done;
 			ThreadUtils.yield();
 		}
 	}
