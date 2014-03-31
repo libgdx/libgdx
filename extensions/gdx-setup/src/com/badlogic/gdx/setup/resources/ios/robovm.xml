@@ -16,6 +16,15 @@
   </resources>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
+    <pattern>org.apache.harmony.xnet.provider.jsse.OpenSSLProvider</pattern>
+    <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
+    <pattern>com.android.org.bouncycastle.jce.provider.BouncyCastleProvider</pattern>
+    <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
+    <pattern>org.apache.harmony.xnet.provider.jsse.JSSEProvider</pattern>
+    <pattern>com.android.org.bouncycastle.jce.provider.JDKKeyStore</pattern>
+    <pattern>org.apache.harmony.security.provider.cert.X509CertFactoryImpl</pattern>
+    <pattern>com.android.org.bouncycastle.jce.provider.PKIXCertPathValidatorSpi</pattern>
+    <pattern>org.apache.harmony.xnet.provider.jsse.OpenSSLMessageDigestJDK$MD5</pattern>
   </forceLinkClasses>
   <libs>      
   </libs>

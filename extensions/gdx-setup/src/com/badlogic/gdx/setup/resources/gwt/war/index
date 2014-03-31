@@ -16,8 +16,8 @@
        <body>
               <h1>Test page for Libgdx with GWT</h1>
               Project loading shortly:<br>
-              <div align="center" id="embed-%APP_NAME%"></div>
-              <script type="text/javascript" src="%APP_NAME%/%APP_NAME%.nocache.js"></script>
+              <div align="center" id="embed-html"></div>
+              <script type="text/javascript" src="html/html.nocache.js"></script>
        </body>
        
        <script>
@@ -32,7 +32,7 @@
                 evt.stopPropagation();
                 evt.target.style.cursor = '';
               }
-              document.getElementById('embed-%APP_NAME%').addEventListener('mousedown', handleMouseDown, false);
-              document.getElementById('embed-%APP_NAME%').addEventListener('mouseup', handleMouseUp, false);
+              document.getElementById('embed-html').addEventListener('mousedown', handleMouseDown, false);
+              document.getElementById('embed-html').addEventListener('mouseup', handleMouseUp, false);
        </script>
 </html>

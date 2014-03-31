@@ -22,6 +22,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -38,7 +39,7 @@ public class GdxSetupUI extends JFrame {
 		setTitle("LibGDX Project Generator");
 		setLayout(new BorderLayout());
 		add(ui, BorderLayout.CENTER);
-		setSize(620, 480);
+		setSize(620, 620);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -58,24 +59,37 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		final String clazz = ui.form.gameClassText.getText().trim();
-		if (pack.length() == 0) {
+		if (clazz.length() == 0) {
 			JOptionPane.showMessageDialog(this, "Please enter a game class name.");
 			return;
 		}
 
 		final String destination = ui.form.destinationText.getText().trim();
-		if (pack.length() == 0) {
+		if (destination.length() == 0) {
 			JOptionPane.showMessageDialog(this, "Please enter a destination directory.");
 			return;
 		}
 
-		new Thread("DoShit") {
+		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
+		if (sdkLocation.length() == 0) {
+			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
+			return;
+		}
+		if (!GdxSetup.isSdkLocationValid(sdkLocation)) {
+			JOptionPane
+				.showMessageDialog(this,
+					"Your Android SDK path doesn't contain an SDK! Please install the Android SDK, including all platforms and build tools!");
+			return;
+		}
+
+		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(destination, name, pack, clazz);
+				new GdxSetup().build(destination, name, pack, clazz, sdkLocation);
 				log("Done!");
 				log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
 				log("To import to Intellij IDEA: File -> Import -> build.gradle");
+				log("To import to NetBeans: File -> Open Project...");
 			}
 		}.start();
 	}
@@ -104,7 +118,7 @@ public class GdxSetupUI extends JFrame {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			textArea.setEditable(false);
 			uiLayout();
 			uiEvents();
@@ -138,6 +152,9 @@ public class GdxSetupUI extends JFrame {
 		JLabel destinationLabel = new JLabel("Destination:");
 		JTextField destinationText = new JTextField(new File("test").getAbsolutePath());
 		JButton destinationButton = new JButton("Browse");
+		JLabel sdkLocationLabel = new JLabel("Android SDK");
+		JTextField sdkLocationText = new JTextField("C:\\Path\\To\\Your\\Sdk");
+		JButton sdkLocationButton = new JButton("Browse");
 
 		{
 			uiLayout();
@@ -145,7 +162,7 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		private void uiLayout () {
-			setLayout(new GridBagLayout());										
+			setLayout(new GridBagLayout());
 
 			add(nameLabel, new GridBagConstraints(0, 0, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 6, 6), 0, 0));
 			add(nameText, new GridBagConstraints(1, 0, 2, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
@@ -159,18 +176,53 @@ public class GdxSetupUI extends JFrame {
 			add(destinationLabel, new GridBagConstraints(0, 3, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
 			add(destinationText, new GridBagConstraints(1, 3, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 			add(destinationButton, new GridBagConstraints(2, 3, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
+
+			add(sdkLocationLabel, new GridBagConstraints(0, 4, 1, 1, 0, 0, EAST, NONE, new Insets(0, 0, 0, 6), 0, 0));
+			add(sdkLocationText, new GridBagConstraints(1, 4, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+			add(sdkLocationButton, new GridBagConstraints(2, 4, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 6, 0, 0), 0, 0));
+		}
+
+		File getDirectory () {
+			if (System.getProperty("os.name").contains("Mac")) {
+				System.setProperty("apple.awt.fileDialogForDirectories", "true");
+				FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
+				dialog.setVisible(true);
+				String name = dialog.getFile();
+				String dir = dialog.getDirectory();
+				if (name == null || dir == null) return null;
+				return new File(dialog.getDirectory(), dialog.getFile());
+			} else {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.setDialogTitle("Chose destination");
+				int result = chooser.showOpenDialog(null);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					File dir = chooser.getSelectedFile();
+					if (dir == null) return null;
+					if (dir.getAbsolutePath().trim().length() == 0) return null;
+					return dir;
+				} else {
+					return null;
+				}
+			}
 		}
 
 		private void uiEvents () {
 			destinationButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
-					System.setProperty("apple.awt.fileDialogForDirectories", "true");
-					FileDialog dialog = new FileDialog(GdxSetupUI.this, "Choose destination", FileDialog.LOAD);
-					dialog.setVisible(true);					
-					String name = dialog.getFile();
-					String dir = dialog.getDirectory();
-					if (name == null || dir == null) return;
-					destinationText.setText(new File(dir, name).getAbsolutePath());
+					File path = getDirectory();
+					if (path != null) {
+						destinationText.setText(path.getAbsolutePath());
+					}
+				}
+			});
+			sdkLocationButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed (ActionEvent e) {
+					File path = getDirectory();
+					if (path != null) {
+						sdkLocationText.setText(path.getAbsolutePath());
+					}
 				}
 			});
 		}

@@ -251,6 +251,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		this.programmaticChangeEvents = programmaticChangeEvents;
 	}
 
+	public String toString () {
+		return selected.toString();
+	}
+
 	/** Returns true if ctrl is currently pressed, except on Mac OS X where it returns true if command is currently pressed. */
 	static public boolean isCtrlPressed () {
 		if (isMac)

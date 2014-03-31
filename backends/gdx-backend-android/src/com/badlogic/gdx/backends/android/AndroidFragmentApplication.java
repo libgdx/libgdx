@@ -27,6 +27,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -48,6 +49,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		GdxNativesLoader.load();
 	}
 
+	public static final int MINIMUM_SDK = 8;
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -144,6 +146,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	 *           etc.).
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		if (this.getVersion() < MINIMUM_SDK) {
+			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+		}
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);

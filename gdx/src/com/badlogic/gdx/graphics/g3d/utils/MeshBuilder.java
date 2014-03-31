@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
@@ -112,6 +113,8 @@ public class MeshBuilder implements MeshPartBuilder {
 		if ((usage & Usage.Position) == Usage.Position)
 			attrs.add(new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE));
 		if ((usage & Usage.Color) == Usage.Color) attrs.add(new VertexAttribute(Usage.Color, 4, ShaderProgram.COLOR_ATTRIBUTE));
+		if ((usage & Usage.ColorPacked) == Usage.ColorPacked)
+			attrs.add(new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
 		if ((usage & Usage.Normal) == Usage.Normal)
 			attrs.add(new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE));
 		if ((usage & Usage.TextureCoordinates) == Usage.TextureCoordinates)
@@ -232,6 +235,14 @@ public class MeshBuilder implements MeshPartBuilder {
 	};
 
 	private final static Array<Vector3> vectorArray = new Array<Vector3>();
+	private final static Pool<Matrix4> matrices4Pool = new Pool<Matrix4>() {
+		@Override
+		protected Matrix4 newObject () {
+			return new Matrix4();
+		}
+	};
+
+	private final static Array<Matrix4> matrices4Array = new Array<Matrix4>();
 
 	private Vector3 tmp (float x, float y, float z) {
 		final Vector3 result = vectorPool.obtain().set(x, y, z);
@@ -243,9 +254,21 @@ public class MeshBuilder implements MeshPartBuilder {
 		return tmp(copyFrom.x, copyFrom.y, copyFrom.z);
 	}
 
+	private Matrix4 tmp () {
+		final Matrix4 result = matrices4Pool.obtain().idt();
+		matrices4Array.add(result);
+		return result;
+	}
+
+	private Matrix4 tmp (Matrix4 copyFrom) {
+		return tmp().set(copyFrom);
+	}
+
 	private void cleanup () {
 		vectorPool.freeAll(vectorArray);
 		vectorArray.clear();
+		matrices4Pool.freeAll(matrices4Array);
+		matrices4Array.clear();
 	}
 
 	@Override
@@ -265,6 +288,11 @@ public class MeshBuilder implements MeshPartBuilder {
 		vMin = v1;
 		uMax = u2;
 		vMax = v2;
+	}
+
+	@Override
+	public void setUVRange (TextureRegion region) {
+		setUVRange(region.getU(), region.getV(), region.getU2(), region.getV2());
 	}
 
 	/** Increases the size of the backing vertices array to accommodate the specified number of additional vertices. Useful before
@@ -1023,6 +1051,41 @@ public class MeshBuilder implements MeshPartBuilder {
 		cylinder(d, height - d, d, divisions, 0, 360, false);
 		sphere(matTmp1.setToTranslation(0, .5f * (height - d), 0), d, d, d, divisions, divisions, 0, 360, 0, 90);
 		sphere(matTmp1.setToTranslation(0, -.5f * (height - d), 0), d, d, d, divisions, divisions, 0, 360, 90, 180);
+	}
+
+	@Override
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions) {
+		Vector3 begin = tmp(x1, y1, z1), end = tmp(x2, y2, z2);
+		float length = begin.dst(end);
+		float coneHeight = length * capLength;
+		float coneDiameter = 2 * (float)(coneHeight * Math.sqrt(1f / 3));
+		float stemLength = length - coneHeight;
+		float stemDiameter = coneDiameter * stemThickness;
+
+		Vector3 up = tmp(end).sub(begin).nor();
+		Vector3 forward = tmp(up).crs(Vector3.Z);
+		if (forward.isZero()) forward.set(Vector3.X);
+		forward.crs(up).nor();
+		Vector3 left = tmp(forward).crs(up).nor();
+		Vector3 direction = tmp(end).sub(begin).nor();
+
+		// Matrices
+		Matrix4 userTransform = getVertexTransform(tmp());
+		Matrix4 transform = tmp().set(left, up, forward, tmp(direction).scl(stemLength / 2));
+		Matrix4 temp = tmp();
+
+		// Stem
+		setVertexTransform(temp.set(transform).mul(userTransform));
+		cylinder(stemDiameter, stemLength, stemDiameter, divisions);
+
+		// Cap
+		transform.setTranslation(tmp(direction).scl(stemLength));
+		setVertexTransform(temp.set(transform).mul(userTransform));
+		cone(coneDiameter, coneHeight, coneDiameter, divisions);
+
+		setVertexTransform(userTransform);
+		cleanup();
 	}
 
 	@Override

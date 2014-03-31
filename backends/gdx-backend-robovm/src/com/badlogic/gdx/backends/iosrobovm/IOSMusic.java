@@ -72,7 +72,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public boolean isPlaying () {
-		return track.isPlaying();
+		return track.isPlaying() && !track.isPaused();
 	}
 
 	@Override
