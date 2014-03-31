@@ -344,6 +344,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			setWidth(SelectBox.this.getWidth());
 			setHeight(height);
 
+			validate();
 			scrollToCenter(0, list.getHeight() - getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);
 			updateVisualScroll();
 
