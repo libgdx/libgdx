@@ -14,8 +14,8 @@ public class SuperJumperIOS extends IOSApplication.Delegate {
 	}
 
 	public static void main(String[] argv) {
-		try (NSAutoreleasePool pool = new NSAutoreleasePool()) {
-			UIApplication.main(argv, null, SuperJumperIOS.class);
-		}
+		NSAutoreleasePool pool = new NSAutoreleasePool();
+		UIApplication.main(argv, null, SuperJumperIOS.class);
+		pool.close();
 	}
 }
