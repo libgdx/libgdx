@@ -47,6 +47,8 @@ public class TextArea extends TextField {
 	/** Variable to maintain the x offset of the cursor when moving up and down. If it's set to -1, the offset is reset **/
 	float moveOffset;
 
+	private float prefRows;
+
 	public TextArea (String text, Skin skin) {
 		super(text, skin);
 	}
@@ -90,6 +92,25 @@ public class TextArea extends TextField {
 			}
 		} else {
 			return 0;
+		}
+	}
+
+	/** Sets the preferred number of rows (lines) for this text area. Used to calculate preferred height */
+	public void setPrefRows (float prefRows) {
+		this.prefRows = prefRows;
+	}
+
+	@Override
+	public float getPrefHeight () {
+		if (prefRows <= 0) {
+			return super.getPrefHeight();
+		} else {
+			float prefHeight = textHeight * prefRows;
+			if (style.background != null) {
+				prefHeight = Math.max(prefHeight + style.background.getBottomHeight() + style.background.getTopHeight(),
+					style.background.getMinHeight());
+			}
+			return prefHeight;
 		}
 	}
 
