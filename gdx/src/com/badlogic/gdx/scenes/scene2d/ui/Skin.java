@@ -121,6 +121,13 @@ public class Skin implements Disposable {
 		typeResources.put(name, resource);
 	}
 
+	public void remove (String name, Class type) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
+		ObjectMap<String, Object> typeResources = resources.get(type);
+		typeResources.remove(name);
+	}
+
+
 	public <T> T get (Class<T> type) {
 		return get("default", type);
 	}
