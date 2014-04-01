@@ -18,7 +18,9 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import org.robovm.cocoatouch.coregraphics.CGPoint;
+import org.robovm.cocoatouch.coregraphics.CGRect;
 import org.robovm.cocoatouch.foundation.NSArray;
+import org.robovm.cocoatouch.foundation.NSRange;
 import org.robovm.cocoatouch.foundation.NSSet;
 import org.robovm.cocoatouch.uikit.UIAcceleration;
 import org.robovm.cocoatouch.uikit.UIAccelerometer;
@@ -29,7 +31,13 @@ import org.robovm.cocoatouch.uikit.UIAlertViewStyle;
 import org.robovm.cocoatouch.uikit.UIApplication;
 import org.robovm.cocoatouch.uikit.UIEvent;
 import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
+import org.robovm.cocoatouch.uikit.UIKeyboardType;
+import org.robovm.cocoatouch.uikit.UIReturnKeyType;
+import org.robovm.cocoatouch.uikit.UITextAutocapitalizationType;
+import org.robovm.cocoatouch.uikit.UITextAutocorrectionType;
 import org.robovm.cocoatouch.uikit.UITextField;
+import org.robovm.cocoatouch.uikit.UITextFieldDelegate;
+import org.robovm.cocoatouch.uikit.UITextSpellCheckingType;
 import org.robovm.cocoatouch.uikit.UITouch;
 import org.robovm.cocoatouch.uikit.UITouchPhase;
 import org.robovm.cocoatouch.uikit.UIView;
@@ -222,6 +230,79 @@ public class IOSInput implements Input {
 		uiAlertView.show();
 	}
 
+	// hack for software keyboard support
+	// uses a hidden textfield to capture input
+	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+
+	private class HiddenTextField extends UITextField {
+		public HiddenTextField(CGRect frame) {
+			super(frame);
+
+			setKeyboardType(UIKeyboardType.Default);
+			setReturnKeyType(UIReturnKeyType.Done);
+			setAutocapitalizationType(UITextAutocapitalizationType.None);
+			setAutocorrectionType(UITextAutocorrectionType.No);
+			setSpellCheckingType(UITextSpellCheckingType.No);
+			setHidden(true);
+		}
+
+		@Override
+		public void deleteBackward() {
+			app.input.inputProcessor.keyTyped((char)8);
+			super.deleteBackward();
+		}
+	}
+
+	private UITextField textfield = null;
+	private UITextFieldDelegate textDelegate = new UITextFieldDelegate.Adapter() {
+		@Override
+		public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string) {
+			//"cheating" to detect backspace without overriding method
+			if (range.length() > 0 && string.isEmpty()) {
+				app.input.inputProcessor.keyTyped((char) 8);
+				return false;
+			}
+
+			char[] chars = new char[string.length()];
+			string.getChars(0, string.length(), chars, 0);
+			for (int i = 0; i < chars.length; i++) {
+				app.input.inputProcessor.keyTyped(chars[i]);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean shouldReturn(UITextField textField) {
+			textField.resignFirstResponder();
+			return false;
+		}
+	};
+
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible) {
+		if (textfield == null) {
+			//Making simple textField
+			textfield = new UITextField(new CGRect(10, 10, 100, 50));
+			//Setting parameters
+			textfield.setKeyboardType(UIKeyboardType.Default);
+			textfield.setReturnKeyType(UIReturnKeyType.Done);
+			textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
+			textfield.setAutocorrectionType(UITextAutocorrectionType.No);
+			textfield.setSpellCheckingType(UITextSpellCheckingType.No);
+			textfield.setHidden(true);
+			//Text field needs to have at least one symbol - so we can use backspace
+			textfield.setText("x");
+			app.getUIViewController().getView().addSubview(textfield);
+		}
+		if (visible) {
+			textfield.becomeFirstResponder();
+			textfield.setDelegate(textDelegate);
+		} else {
+			textfield.resignFirstResponder();
+		}
+	}
+
 	// Issue 773 indicates this may solve a premature GC issue
 	UIAlertViewDelegate delegate;
 	
@@ -271,10 +352,6 @@ public class IOSInput implements Input {
 	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, null, placeholder);
 		uiAlertView.show();
-	}
-
-	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
 	}
 
 	@Override
