@@ -457,6 +457,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				String chars = e.getCharacters();
 				for (int i = 0; i < chars.length(); i++) {
 					event = usedKeyEvents.obtain();
+					event.timeStamp = System.nanoTime();
 					event.keyCode = 0;
 					event.keyChar = chars.charAt(i);
 					event.type = KeyEvent.KEY_TYPED;
@@ -472,6 +473,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			switch (e.getAction()) {
 			case android.view.KeyEvent.ACTION_DOWN:
 				event = usedKeyEvents.obtain();
+				event.timeStamp = System.nanoTime();
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_DOWN;
@@ -486,7 +488,9 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				keys.put(event.keyCode, null);
 				break;
 			case android.view.KeyEvent.ACTION_UP:
+				long timeStamp = System.nanoTime();
 				event = usedKeyEvents.obtain();
+				event.timeStamp = timeStamp;
 				event.keyChar = 0;
 				event.keyCode = e.getKeyCode();
 				event.type = KeyEvent.KEY_UP;
@@ -498,6 +502,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				keyEvents.add(event);
 
 				event = usedKeyEvents.obtain();
+				event.timeStamp = timeStamp;
 				event.keyChar = character;
 				event.keyCode = 0;
 				event.type = KeyEvent.KEY_TYPED;
