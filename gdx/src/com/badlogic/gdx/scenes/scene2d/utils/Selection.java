@@ -210,6 +210,10 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.iterator().toArray();
 	}
 
+	public Array<T> toArray (Array<T> array) {
+		return selected.iterator().toArray(array);
+	}
+
 	/** If true, prevents {@link #choose(Object)} from changing the selection. Default is false. */
 	public void setDisabled (boolean isDisabled) {
 		this.isDisabled = isDisabled;
