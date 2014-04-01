@@ -100,10 +100,15 @@ public class TexturePacker {
 			}
 
 			Array<Page> pages = packer.pack(imageProcessor.getImages());
+
 			String scaledPackFileName = settings.scaledPackFileName(packFileName, i);
-			writeImages(outputDir, pages, scaledPackFileName);
+			File packFile = new File(outputDir, scaledPackFileName);
+			File packDir = packFile.getParentFile();
+			packDir.mkdirs();
+
+			writeImages(packFile, pages);
 			try {
-				writePackFile(outputDir, pages, scaledPackFileName);
+				writePackFile(packFile, pages);
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing pack file.", ex);
 			}
@@ -111,8 +116,9 @@ public class TexturePacker {
 		}
 	}
 
-	private void writeImages (File outputDir, Array<Page> pages, String packFileName) {
-		String imageName = packFileName;
+	private void writeImages (File packFile, Array<Page> pages) {
+		File packDir = packFile.getParentFile();
+		String imageName = packFile.getName();
 		int dotIndex = imageName.indexOf('.');
 		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
 
@@ -142,7 +148,7 @@ public class TexturePacker {
 
 			File outputFile;
 			while (true) {
-				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
+				outputFile = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
 			new FileHandle(outputFile).parent().mkdirs();
@@ -270,9 +276,7 @@ public class TexturePacker {
 		}
 	}
 
-	private void writePackFile (File outputDir, Array<Page> pages, String packFileName) throws IOException {
-		File packFile = new File(outputDir, packFileName);
-
+	private void writePackFile (File packFile, Array<Page> pages) throws IOException {
 		if (packFile.exists()) {
 			// Make sure there aren't duplicate names.
 			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);

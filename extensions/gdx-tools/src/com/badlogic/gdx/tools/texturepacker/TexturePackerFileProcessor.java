@@ -110,13 +110,6 @@ public class TexturePackerFileProcessor extends FileProcessor {
 	public ArrayList<Entry> process (File[] files, File outputRoot) throws Exception {
 		// Delete pack file and images.
 		if (outputRoot.exists()) {
-			FileProcessor deleteProcessor = new FileProcessor() {
-				protected void processFile (Entry inputFile) throws Exception {
-					inputFile.inputFile.delete();
-				}
-			};
-			deleteProcessor.setRecursive(false);
-
 			// Load root settings to get scale.
 			File settingsFile = new File(root, "pack.json");
 			Settings rootSettings = defaultSettings;
@@ -125,26 +118,29 @@ public class TexturePackerFileProcessor extends FileProcessor {
 				merge(rootSettings, settingsFile);
 			}
 
-			ObjectSet<String> dirs = new ObjectSet();
 			for (int i = 0, n = rootSettings.scale.length; i < n; i++) {
-				String scaledPackFileName = rootSettings.scaledPackFileName(packFileName, i);
+				FileProcessor deleteProcessor = new FileProcessor() {
+					protected void processFile (Entry inputFile) throws Exception {
+						inputFile.inputFile.delete();
+					}
+				};
+				deleteProcessor.setRecursive(false);
 
-				String prefix = scaledPackFileName;
+				String scaledPackFileName = rootSettings.scaledPackFileName(packFileName, i);
+				File packFile = new File(scaledPackFileName);
+
+				String prefix = packFile.getName();
 				int dotIndex = prefix.lastIndexOf('.');
 				if (dotIndex != -1) prefix = prefix.substring(0, dotIndex);
 				deleteProcessor.addInputRegex("(?i)" + prefix + "\\d*\\.(png|jpg)");
 				deleteProcessor.addInputRegex("(?i)" + prefix + "\\.atlas");
 
-				System.out.println();
-				String dir = new File(scaledPackFileName).getParent();
+				String dir = packFile.getParent();
 				if (dir == null)
-					dirs.add("");
-				else if (new File(dir).exists()) //
-					dirs.add(dir);
+					deleteProcessor.process(outputRoot, null);
+				else if (new File(outputRoot + "/" + dir).exists()) //
+					deleteProcessor.process(outputRoot + "/" + dir, null);
 			}
-
-			for (String dir : dirs)
-				deleteProcessor.process(outputRoot + "/" + dir, null);
 		}
 		return super.process(files, outputRoot);
 	}
