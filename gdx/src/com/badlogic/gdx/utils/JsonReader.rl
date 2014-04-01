@@ -84,7 +84,6 @@ public class JsonReader implements BaseJsonReader {
 		int s = 0;
 		Array<String> names = new Array(8);
 		boolean needsUnescape = false;
-		boolean discardBuffer = false; // When unquotedString and true/false/null both match, this discards unquotedString.
 		RuntimeException parseRuntimeEx = null;
 
 		boolean debug = false;
@@ -105,7 +104,6 @@ public class JsonReader implements BaseJsonReader {
 			action buffer {
 				s = p;
 				needsUnescape = false;
-				discardBuffer = false;
 			}
 			action needsUnescape {
 				needsUnescape = true;
@@ -118,14 +116,12 @@ public class JsonReader implements BaseJsonReader {
 				names.add(name);
 			}
 			action string {
-				if (!discardBuffer) {
-					String value = new String(data, s, p - s);
-					s = p;
-					if (needsUnescape) value = unescape(value);
-					String name = names.size > 0 ? names.pop() : null;
-					if (debug) System.out.println("string: " + name + "=" + value);
-					string(name, value);
-				}
+				String value = new String(data, s, p - s);
+				s = p;
+				if (needsUnescape) value = unescape(value);
+				String name = names.size > 0 ? names.pop() : null;
+				if (debug) System.out.println("string: " + name + "=" + value);
+				string(name, value);
 			}
 			action double {
 				String value = new String(data, s, p - s);
@@ -140,24 +136,6 @@ public class JsonReader implements BaseJsonReader {
 				String name = names.size > 0 ? names.pop() : null;
 				if (debug) System.out.println("long: " + name + "=" + Long.parseLong(value));
 				number(name, Long.parseLong(value));
-			}
-			action trueValue {
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("boolean: " + name + "=true");
-				bool(name, true);
-				discardBuffer = true;
-			}
-			action falseValue {
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("boolean: " + name + "=false");
-				bool(name, false);
-				discardBuffer = true;
-			}
-			action null {
-				String name = names.size > 0 ? names.pop() : null;
-				if (debug) System.out.println("null: " + name);
-				string(name, null);
-				discardBuffer = true;
 			}
 			action startObject {
 				String name = names.size > 0 ? names.pop() : null;
@@ -211,6 +189,25 @@ public class JsonReader implements BaseJsonReader {
 				}
 				p--;
 			}
+			action unquotedString {
+				String value = new String(data, s, p - s);
+				s = p;
+				String name = names.size > 0 ? names.pop() : null;
+				if (value.equals("null")) {
+					if (debug) System.out.println("null: " + name);
+					string(name, null);
+				} else if (value.equals("true")) {
+					if (debug) System.out.println("boolean: " + name + "=true");
+					bool(name, true);
+				} else if (value.equals("false")) {
+					if (debug) System.out.println("boolean: " + name + "=false");
+					bool(name, false);
+				} else {
+					if (needsUnescape) value = unescape(value);
+					if (debug) System.out.println("unquotedString: " + name + "=" + value);
+					string(name, value);
+				}
+			}
 
 			ws = space | (('//' | '/*') @comment);
 			doubleChars = '-'? [0-9]+ '.' [0-9]+? ([eE] [+\-]? [0-9]+)?;
@@ -223,11 +220,9 @@ public class JsonReader implements BaseJsonReader {
 			startObject = '{' @startObject;
 			startArray = '[' @startArray;
 			string = '"' quotedChars >buffer %string '"';
-			unquotedString = unquotedValueChars >buffer %string;
+			unquotedString = unquotedValueChars >buffer %unquotedString;
 			number = longChars >buffer %long | doubleChars >buffer %double $-1;
-			nullValue = 'null' %null;
-			booleanValue = 'true' %trueValue | 'false' %falseValue;
-			value = startObject | startArray | number | string | nullValue | booleanValue | unquotedString $-1;
+			value = startObject | startArray | number | string | unquotedString $-1;
 
 			nameValue = name ws* ':' ws* value;
 
