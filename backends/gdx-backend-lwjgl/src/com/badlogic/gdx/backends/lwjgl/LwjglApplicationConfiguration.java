@@ -30,7 +30,7 @@ import com.badlogic.gdx.utils.Array;
 public class LwjglApplicationConfiguration {
 	/** If true, OpenAL will not be used. This means {@link Application#getAudio()} returns null and the gdx-openal.jar and OpenAL
 	 * natives are not needed. */
-	static public final boolean disableAudio = true;
+	static public boolean disableAudio;
 
 	/** whether to attempt use OpenGL ES 3.0. **/
 	public boolean useGL30 = false;

@@ -1,9 +1,19 @@
 [1.0.0]
+- Fixed an issue where key event timestamp is not set by the android backend.
+- scene2d.ui, added to TextArea the preferred number of rows used to calculate the preferred height.
+- scene2d.actions, fixed infinite recursion for event listener's handle(event).
+- Various Quaternion changes.
+- scene2d.ui, fixed a drawing issue with knobBefore when there's no knob (typical progress bar).
+- Various MeshBuilder fixes and additions.
+- Math package: added cumulative distribution.
+- Fixed Music isPlaying() on iOS when is paused.
+- Added support for C-style comments to JsonReader (mainly used for json skin files).
 - Support for resource removal from Skin objects.
 - Added fling gesture to generate fling in scrollpane.
 - Vector classes now have mulAdd method for adding pre-multiplied values
 - Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
 - Vector2 now has isUnit and isZero methods (copied from Vector3)
+- Removed deprecated methods from Vector classes.
 - Added new headless backend for server applications
 - Support 'scaledSize' as a json skin data value for BitmapFont
 - Added setAlpha(float a) method to Sprite class
@@ -33,7 +43,7 @@
 - Removed OpenGL ES 1.0, 1.1 support; see http://www.badlogicgames.com/wordpress/?p=3311
 - Added OpenGL ES 3 support
 - Updated Android backend, demos, tests to 4.4
-- Added Viewport, changed Stage to have a Viewport instead of a Camera (API change).
+- Added Viewport, changed Stage to have a Viewport instead of a Camera (API change, see http://www.badlogicgames.com/wordpress/?p=3322 ).
 - Changed play mode constants of Animation class to enumeration, see http://www.badlogicgames.com/wordpress/?p=3330
 
 [0.9.9]
