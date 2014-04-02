@@ -1,4 +1,5 @@
 [1.0.0]
+- Support for resource removal from Skin objects.
 - Added fling gesture to generate fling in scrollpane.
 - Vector classes now have mulAdd method for adding pre-multiplied values
 - Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
