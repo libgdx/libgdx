@@ -17,6 +17,8 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import org.robovm.apple.coregraphics.CGPoint;
+import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSRange;
 import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.uikit.UIAcceleration;
 import org.robovm.apple.uikit.UIAccelerometer;
@@ -29,7 +31,14 @@ import org.robovm.apple.uikit.UIAlertViewStyle;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIKeyboardType;
+import org.robovm.apple.uikit.UIReturnKeyType;
+import org.robovm.apple.uikit.UITextAutocapitalizationType;
+import org.robovm.apple.uikit.UITextAutocorrectionType;
 import org.robovm.apple.uikit.UITextField;
+import org.robovm.apple.uikit.UITextFieldDelegate;
+import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
+import org.robovm.apple.uikit.UITextSpellCheckingType;
 import org.robovm.apple.uikit.UITouch;
 import org.robovm.apple.uikit.UITouchPhase;
 import org.robovm.objc.ObjCClass;
@@ -100,8 +109,8 @@ public class IOSInput implements Input {
 					float z = (float)values.getZ() * 10;
 
 					UIInterfaceOrientation orientation = app.graphics.viewController != null 
-																		? app.graphics.viewController.getInterfaceOrientation() 
-																		: UIApplication.getSharedApplication().getStatusBarOrientation();
+						? app.graphics.viewController.getInterfaceOrientation()
+						: UIApplication.getSharedApplication().getStatusBarOrientation();
 										
 					acceleration[0] = -x;
 					acceleration[1] = -y;
@@ -246,7 +255,7 @@ public class IOSInput implements Input {
 	}
 
 	private UITextField textfield = null;
-	private UITextFieldDelegate textDelegate = new UITextFieldDelegate.Adapter() {
+	private UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
 		public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string) {
 			//"cheating" to detect backspace without overriding method
@@ -344,10 +353,6 @@ public class IOSInput implements Input {
 	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, null, placeholder);
 		uiAlertView.show();
-	}
-
-	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
 	}
 
 	@Override
