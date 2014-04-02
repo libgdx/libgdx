@@ -16,8 +16,8 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.foundation.NSURL;
-import org.robovm.cocoatouch.uikit.UIApplication;
+import org.robovm.apple.foundation.NSURL;
+import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.NetJavaImpl;

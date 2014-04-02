@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
-import org.robovm.cocoatouch.foundation.NSObject;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.objc.ObjCClass;
 import org.robovm.objc.ObjCObject;
 import org.robovm.objc.ObjCRuntime;

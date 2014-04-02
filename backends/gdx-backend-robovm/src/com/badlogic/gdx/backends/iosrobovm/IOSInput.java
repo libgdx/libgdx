@@ -16,27 +16,36 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import com.badlogic.gdx.graphics.Pixmap;
-import org.robovm.cocoatouch.coregraphics.CGPoint;
-import org.robovm.cocoatouch.foundation.NSArray;
-import org.robovm.cocoatouch.foundation.NSSet;
-import org.robovm.cocoatouch.uikit.UIAcceleration;
-import org.robovm.cocoatouch.uikit.UIAccelerometer;
-import org.robovm.cocoatouch.uikit.UIAccelerometerDelegate;
-import org.robovm.cocoatouch.uikit.UIAlertView;
-import org.robovm.cocoatouch.uikit.UIAlertViewDelegate;
-import org.robovm.cocoatouch.uikit.UIAlertViewStyle;
-import org.robovm.cocoatouch.uikit.UIApplication;
-import org.robovm.cocoatouch.uikit.UIEvent;
-import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
-import org.robovm.cocoatouch.uikit.UITextField;
-import org.robovm.cocoatouch.uikit.UITouch;
-import org.robovm.cocoatouch.uikit.UITouchPhase;
-import org.robovm.cocoatouch.uikit.UIView;
+import org.robovm.apple.coregraphics.CGPoint;
+import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSRange;
+import org.robovm.apple.foundation.NSSet;
+import org.robovm.apple.uikit.UIAcceleration;
+import org.robovm.apple.uikit.UIAccelerometer;
+import org.robovm.apple.uikit.UIAccelerometerDelegate;
+import org.robovm.apple.uikit.UIAccelerometerDelegateAdapter;
+import org.robovm.apple.uikit.UIAlertView;
+import org.robovm.apple.uikit.UIAlertViewDelegate;
+import org.robovm.apple.uikit.UIAlertViewDelegateAdapter;
+import org.robovm.apple.uikit.UIAlertViewStyle;
+import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIEvent;
+import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIKeyboardType;
+import org.robovm.apple.uikit.UIReturnKeyType;
+import org.robovm.apple.uikit.UITextAutocapitalizationType;
+import org.robovm.apple.uikit.UITextAutocorrectionType;
+import org.robovm.apple.uikit.UITextField;
+import org.robovm.apple.uikit.UITextFieldDelegate;
+import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
+import org.robovm.apple.uikit.UITextSpellCheckingType;
+import org.robovm.apple.uikit.UITouch;
+import org.robovm.apple.uikit.UITouchPhase;
 import org.robovm.objc.ObjCClass;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Pool;
@@ -91,7 +100,7 @@ public class IOSInput implements Input {
 
 	private void setupAccelerometer() {
 		if(config.useAccelerometer) {
-			accelerometerDelegate = new UIAccelerometerDelegate.Adapter() {
+			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
 
 				@Override
 				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
@@ -100,8 +109,8 @@ public class IOSInput implements Input {
 					float z = (float)values.getZ() * 10;
 
 					UIInterfaceOrientation orientation = app.graphics.viewController != null 
-																		? app.graphics.viewController.getInterfaceOrientation() 
-																		: UIApplication.getSharedApplication().getStatusBarOrientation();
+						? app.graphics.viewController.getInterfaceOrientation()
+						: UIApplication.getSharedApplication().getStatusBarOrientation();
 										
 					acceleration[0] = -x;
 					acceleration[1] = -y;
@@ -222,6 +231,79 @@ public class IOSInput implements Input {
 		uiAlertView.show();
 	}
 
+	// hack for software keyboard support
+	// uses a hidden textfield to capture input
+	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
+
+	private class HiddenTextField extends UITextField {
+		public HiddenTextField(CGRect frame) {
+			super(frame);
+
+			setKeyboardType(UIKeyboardType.Default);
+			setReturnKeyType(UIReturnKeyType.Done);
+			setAutocapitalizationType(UITextAutocapitalizationType.None);
+			setAutocorrectionType(UITextAutocorrectionType.No);
+			setSpellCheckingType(UITextSpellCheckingType.No);
+			setHidden(true);
+		}
+
+		@Override
+		public void deleteBackward() {
+			app.input.inputProcessor.keyTyped((char)8);
+			super.deleteBackward();
+		}
+	}
+
+	private UITextField textfield = null;
+	private UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
+		@Override
+		public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string) {
+			//"cheating" to detect backspace without overriding method
+			if (range.length() > 0 && string.isEmpty()) {
+				app.input.inputProcessor.keyTyped((char) 8);
+				return false;
+			}
+
+			char[] chars = new char[string.length()];
+			string.getChars(0, string.length(), chars, 0);
+			for (int i = 0; i < chars.length; i++) {
+				app.input.inputProcessor.keyTyped(chars[i]);
+			}
+			return false;
+		}
+
+		@Override
+		public boolean shouldReturn(UITextField textField) {
+			textField.resignFirstResponder();
+			return false;
+		}
+	};
+
+
+	@Override
+	public void setOnscreenKeyboardVisible(boolean visible) {
+		if (textfield == null) {
+			//Making simple textField
+			textfield = new UITextField(new CGRect(10, 10, 100, 50));
+			//Setting parameters
+			textfield.setKeyboardType(UIKeyboardType.Default);
+			textfield.setReturnKeyType(UIReturnKeyType.Done);
+			textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
+			textfield.setAutocorrectionType(UITextAutocorrectionType.No);
+			textfield.setSpellCheckingType(UITextSpellCheckingType.No);
+			textfield.setHidden(true);
+			//Text field needs to have at least one symbol - so we can use backspace
+			textfield.setText("x");
+			app.getUIViewController().getView().addSubview(textfield);
+		}
+		if (visible) {
+			textfield.becomeFirstResponder();
+			textfield.setDelegate(textDelegate);
+		} else {
+			textfield.resignFirstResponder();
+		}
+	}
+
 	// Issue 773 indicates this may solve a premature GC issue
 	UIAlertViewDelegate delegate;
 	
@@ -231,9 +313,9 @@ public class IOSInput implements Input {
 	 * @param text Text for text field
 	 * @return UiAlertView */
 	private UIAlertView buildUIAlertView (final TextInputListener listener, String title, String text, String placeholder) {
-		delegate = new UIAlertViewDelegate.Adapter() {
+		delegate = new UIAlertViewDelegateAdapter() {
 			@Override
-			public void clicked (UIAlertView view, int clicked) {
+			public void clicked (UIAlertView view, long clicked) {
 				if (clicked == 0) {
 					// user clicked "Cancel" button
 					listener.canceled();
@@ -271,10 +353,6 @@ public class IOSInput implements Input {
 	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, null, placeholder);
 		uiAlertView.show();
-	}
-
-	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
 	}
 
 	@Override
@@ -362,15 +440,15 @@ public class IOSInput implements Input {
   public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
   }
 
-  public void touchDown(NSSet touches, UIEvent event) {
+  public void touchDown(NSSet<UITouch> touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
-	public void touchUp(NSSet touches, UIEvent event) {
+	public void touchUp(NSSet<UITouch> touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
-	public void touchMoved(NSSet touches, UIEvent event) {
+	public void touchMoved(NSSet<UITouch> touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 	
@@ -415,8 +493,8 @@ public class IOSInput implements Input {
 		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
 	}
 
-	private void toTouchEvents(NSSet touches, UIEvent uiEvent) {
-		for (UITouch touch : (NSSet<UITouch>) touches) {
+	private void toTouchEvents (NSSet<UITouch> touches, UIEvent uiEvent) {
+		for (UITouch touch : touches) {
 			CGPoint loc = touch.getLocation(touch.getView());
 			synchronized(touchEvents) {
 				TouchEvent event = touchEventPool.obtain();
