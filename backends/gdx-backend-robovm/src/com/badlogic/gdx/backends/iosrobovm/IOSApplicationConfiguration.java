@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.glkit.GLKViewDrawableColorFormat;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableDepthFormat;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableMultisample;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableStencilFormat;
+import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
+import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
+import org.robovm.apple.glkit.GLKViewDrawableMultisample;
+import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
 
 public class IOSApplicationConfiguration {
 	// FIXME add compass, framebuffer bit depth, stencil, just like on Android if possible
@@ -34,7 +34,7 @@ public class IOSApplicationConfiguration {
 	public GLKViewDrawableColorFormat colorFormat = GLKViewDrawableColorFormat.RGB565;
 	
 	/** the depth buffer format, Format16 is default **/
-	public GLKViewDrawableDepthFormat depthFormat = GLKViewDrawableDepthFormat.Format16;
+	public GLKViewDrawableDepthFormat depthFormat = GLKViewDrawableDepthFormat._16;
 	
 	/** the stencil buffer format, None is default **/
 	public GLKViewDrawableStencilFormat stencilFormat = GLKViewDrawableStencilFormat.None;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 See AUTHORS file.
+ * Copyright 2014 See AUTHORS file.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,29 +17,12 @@
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.objc.ObjCRuntime;
-import org.robovm.objc.annotation.Method;
-import org.robovm.objc.annotation.NativeClass;
-import org.robovm.objc.annotation.Property;
-import org.robovm.rt.bro.annotation.Library;
+import org.robovm.objc.annotation.NotImplemented;
 
 /**
  * @author Niklas Therning
  */
-@Library(Library.INTERNAL)
-@NativeClass
-public class ALSource extends NSObject {
-
-	static {
-		ObjCRuntime.bind(ALSource.class);
-	}
-
-    @Method(selector = "stop")
-    public native void stop();
-	
-    @Property(selector = "paused")
-    public native boolean isPaused();
-    
-    @Property(selector = "setPaused:")
-    public native void setPaused(boolean paused);
+public class AVAudioPlayerDelegateAdapter extends NSObject implements AVAudioPlayerDelegate {
+	@NotImplemented("audioPlayerDidFinishPlaying:successfully:") 
+	public void didFinishPlaying(NSObject player, boolean success) { throw new UnsupportedOperationException(); }
 }
