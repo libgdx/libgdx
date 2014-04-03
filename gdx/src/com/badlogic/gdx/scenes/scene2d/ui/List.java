@@ -39,8 +39,6 @@ import com.badlogic.gdx.utils.ObjectSet;
  * @author mzechner
  * @author Nathan Sweet */
 public class List<T> extends Widget implements Cullable {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	private ListStyle style;
 	private final Array<T> items = new Array();
 	private Rectangle cullingArea;
