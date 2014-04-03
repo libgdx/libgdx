@@ -188,6 +188,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		}
 	}
 
+	/** May return null. */
 	protected FileHandle loadAtlas (Element root, FileHandle tmxFile) throws IOException {
 		Element e = root.getChildByName("properties");
 
@@ -208,6 +209,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					return getRelativeFileHandle(tmxFile, value);
 				}
 			}
+		} else {
+			FileHandle atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
+			return atlasFile.exists() ? atlasFile : null;
 		}
 
 		return null;
@@ -314,24 +318,33 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
-					imageSource = element.getChildByName("image").getAttribute("source");
-					imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
-					imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
+					Element imageElement = element.getChildByName("image");
+					imageSource = imageElement.getAttribute("source");
+					imageWidth = imageElement.getIntAttribute("width", 0);
+					imageHeight = imageElement.getIntAttribute("height", 0);
 				} catch (IOException e) {
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
-				imageSource = element.getChildByName("image").getAttribute("source");
-				imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
-				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
+				Element imageElement = element.getChildByName("image");
+				if (imageElement != null) {
+					imageSource = imageElement.getAttribute("source");
+					imageWidth = imageElement.getIntAttribute("width", 0);
+					imageHeight = imageElement.getIntAttribute("height", 0);
+				}
 			}
 
-			if (!map.getProperties().containsKey("atlas")) {
+			String atlasFilePath = map.getProperties().get("atlas", String.class);
+			if (atlasFilePath == null) {
+				FileHandle atlasFile = tmxFile.sibling(tmxFile.nameWithoutExtension() + ".atlas");
+				if (atlasFile.exists()) atlasFilePath = atlasFile.path();
+			}
+			if (atlasFilePath == null) {
 				throw new GdxRuntimeException("The map is missing the 'atlas' property");
 			}
 
 			// get the TextureAtlas for this tileset
-			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, map.getProperties().get("atlas", String.class));
+			FileHandle atlasHandle = getRelativeFileHandle(tmxFile, atlasFilePath);
 			atlasHandle = resolve(atlasHandle.path());
 			TextureAtlas atlas = resolver.getAtlas(atlasHandle.path());
 			String regionsName = atlasHandle.nameWithoutExtension();
@@ -354,8 +367,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			props.put("margin", margin);
 			props.put("spacing", spacing);
 
-			Array<AtlasRegion> regions = atlas.findRegions(regionsName);
-			for (AtlasRegion region : regions) {
+			for (AtlasRegion region : atlas.findRegions(regionsName)) {
 				// handle unused tile ids
 				if (region != null) {
 					StaticTiledMapTile tile = new StaticTiledMapTile(region);
@@ -370,11 +382,23 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				}
 			}
 
-			Array<Element> tileElements = element.getChildrenByName("tile");
-
-			for (Element tileElement : tileElements) {
-				int localtid = tileElement.getIntAttribute("id", 0);
-				TiledMapTile tile = tileset.getTile(firstgid + localtid);
+			for (Element tileElement : element.getChildrenByName("tile")) {
+				int tileid = firstgid + tileElement.getIntAttribute("id", 0);
+				TiledMapTile tile = tileset.getTile(tileid);
+				if (tile == null) {
+					Element imageElement = tileElement.getChildByName("image");
+					if (imageElement != null) {
+						// Is a tilemap with individual images.
+						String regionName = imageElement.getAttribute("source");
+						regionName = regionName.substring(0, regionName.lastIndexOf('.'));
+						AtlasRegion region = atlas.findRegion(regionName);
+						if (region == null) throw new GdxRuntimeException("Tileset region not found: " + regionName);
+						tile = new StaticTiledMapTile(region);
+						if (!yUp) region.flip(false, true);
+						tile.setId(tileid);
+						tileset.putTile(tileid, tile);
+					}
+				}
 				if (tile != null) {
 					String terrain = tileElement.getAttribute("terrain", null);
 					if (terrain != null) {
