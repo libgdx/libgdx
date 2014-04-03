@@ -206,7 +206,6 @@ public class ScrollPane extends WidgetGroup {
 		});
 
 		flickScrollListener = new ActorGestureListener() {
-
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				resetFade();
 				amountX -= deltaX;
@@ -243,7 +242,6 @@ public class ScrollPane extends WidgetGroup {
 		addListener(flickScrollListener);
 
 		addListener(new InputListener() {
-
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				resetFade();
 				if (scrollY) {
@@ -796,28 +794,24 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
-
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
-
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
-
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
-
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
