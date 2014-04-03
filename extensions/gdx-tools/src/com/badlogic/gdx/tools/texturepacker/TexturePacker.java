@@ -194,10 +194,10 @@ public class TexturePacker {
 						// Copy corner pixels to fill corners of the padding.
 						for (int i = 1; i <= amountX; i++) {
 							for (int j = 1; j <= amountY; j++) {
-								canvas.setRGB(rectX - i, rectY - j, image.getRGB(0, 0));
-								canvas.setRGB(rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
-								canvas.setRGB(rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
-								canvas.setRGB(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
+								plot(canvas, rectX - i, rectY - j, image.getRGB(0, 0));
+								plot(canvas, rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
+								plot(canvas, rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
+								plot(canvas, rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
 							}
 						}
 						// Copy edge pixels into padding.
@@ -268,11 +268,11 @@ public class TexturePacker {
 		if (rotated) {
 			for (int i = 0; i < w; i++)
 				for (int j = 0; j < h; j++)
-					dst.setRGB(dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
+					plot(dst, dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
 		} else {
 			for (int i = 0; i < w; i++)
 				for (int j = 0; j < h; j++)
-					dst.setRGB(dx + i, dy + j, src.getRGB(x + i, y + j));
+					plot(dst, dx + i, dy + j, src.getRGB(x + i, y + j));
 		}
 	}
 
