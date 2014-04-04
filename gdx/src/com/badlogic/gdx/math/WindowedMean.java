@@ -50,7 +50,7 @@ public final class WindowedMean {
 		dirty = true;
 	}
 
-	/** adds a new sample to this mean. in case the window is full the oldest value will be replaced by this new value.
+	/** adds a new sample to this mean. In case the window is full the oldest value will be replaced by this new value.
 	 * 
 	 * @param value The value to add */
 	public void addValue (float value) {
@@ -60,7 +60,7 @@ public final class WindowedMean {
 		dirty = true;
 	}
 
-	/** returns the mean of the samples added to this instance. only returns meaningfull results when at least window_size samples
+	/** returns the mean of the samples added to this instance. Only returns meaningful results when at least window_size samples
 	 * as specified in the constructor have been added.
 	 * @return the mean */
 	public float getMean () {
