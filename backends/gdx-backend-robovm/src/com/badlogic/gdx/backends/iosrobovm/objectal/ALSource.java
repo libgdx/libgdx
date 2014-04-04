@@ -34,12 +34,12 @@ public class ALSource extends NSObject {
 		ObjCRuntime.bind(ALSource.class);
 	}
 
-    @Method(selector = "stop")
-    public native void stop();
-	
-    @Property(selector = "paused")
-    public native boolean isPaused();
-    
-    @Property(selector = "setPaused:")
-    public native void setPaused(boolean paused);
+	@Method(selector = "stop")
+	public native void stop ();
+
+	@Property(selector = "paused")
+	public native boolean isPaused ();
+
+	@Property(selector = "setPaused:")
+	public native void setPaused (boolean paused);
 }
