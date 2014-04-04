@@ -22,7 +22,8 @@ import org.robovm.apple.uikit.UIApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 
-public class IOSRobovmTests extends IOSApplication.Delegate {	
+public class IOSRobovmTests extends IOSApplication.Delegate {
+	
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
