@@ -16,15 +16,15 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.robovm.cocoatouch.foundation.NSBundle;
-import org.robovm.cocoatouch.foundation.NSMutableDictionary;
-import org.robovm.cocoatouch.foundation.NSNumber;
-import org.robovm.cocoatouch.foundation.NSObject;
-import org.robovm.cocoatouch.foundation.NSString;
+import org.robovm.apple.foundation.NSMutableDictionary;
+import org.robovm.apple.foundation.NSNumber;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSString;
 import org.robovm.objc.ObjCClass;
 
 import com.badlogic.gdx.Gdx;
@@ -188,7 +188,7 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public void flush () {
-		boolean fileWritten = nsDictionary.writeToFile(filePath, false);
+		boolean fileWritten = nsDictionary.write(new File(filePath), false);
 		if (fileWritten)
 			Gdx.app.debug("IOSPreferences", "NSDictionary file written");
 		else

@@ -16,11 +16,11 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.foundation.NSObject;
+import org.robovm.apple.foundation.NSObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.backends.iosrobovm.objectal.AVAudioPlayerDelegate;
+import com.badlogic.gdx.backends.iosrobovm.objectal.AVAudioPlayerDelegateAdapter;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
 
 /** 
@@ -33,7 +33,7 @@ public class IOSMusic implements Music {
 
 	public IOSMusic(OALAudioTrack track) {
 		this.track = track;
-		this.track.setDelegate(new AVAudioPlayerDelegate.Adapter() {
+		this.track.setDelegate(new AVAudioPlayerDelegateAdapter() {
 			@Override
 			public void didFinishPlaying(NSObject player, boolean success) {
 				final OnCompletionListener listener = onCompletionListener;

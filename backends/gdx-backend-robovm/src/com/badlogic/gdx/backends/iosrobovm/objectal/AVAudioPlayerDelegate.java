@@ -16,26 +16,15 @@
 
 package com.badlogic.gdx.backends.iosrobovm.objectal;
 
-import org.robovm.cocoatouch.foundation.NSObject;
-import org.robovm.cocoatouch.foundation.NSObjectProtocol;
-import org.robovm.objc.Selector;
-import org.robovm.objc.annotation.BindSelector;
-import org.robovm.objc.annotation.NotImplemented;
-import org.robovm.rt.bro.annotation.Callback;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSObjectProtocol;
+import org.robovm.objc.annotation.Method;
 
 /**
  * @author Niklas Therning
  */
 public interface AVAudioPlayerDelegate extends NSObjectProtocol {
 
-	void didFinishPlaying(NSObject player, boolean success);
-	
-    public static class Adapter extends NSObject implements AVAudioPlayerDelegate {
-        @NotImplemented("audioPlayerDidFinishPlaying:successfully:") public void didFinishPlaying(NSObject player, boolean success) { throw new UnsupportedOperationException(); }
-    }
-	
-	static class Callbacks {
-        @Callback @BindSelector("audioPlayerDidFinishPlaying:successfully:") public static void didFinishPlaying(AVAudioPlayerDelegate __self__, Selector __cmd__, NSObject player, boolean success) { __self__.didFinishPlaying(player, success); }
-	}
-	
+	@Method(selector = "audioPlayerDidFinishPlaying:successfully:")
+	void didFinishPlaying (NSObject player, boolean success);
 }
