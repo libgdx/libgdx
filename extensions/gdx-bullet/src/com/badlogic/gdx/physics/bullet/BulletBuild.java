@@ -16,6 +16,9 @@
 
 package com.badlogic.gdx.physics.bullet;
 
+import java.io.File;
+
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
 import com.badlogic.gdx.jnigen.BuildExecutor;
@@ -64,11 +67,6 @@ public class BulletBuild {
 		win64.cExcludes = win64.cppExcludes = excludes;
 		win64.headerDirs = headers;
 		win64.cppFlags += cppFlags;
-		// special pre and post compile tasks to patch the source and revert the
-		// changes
-		//win64.preCompileTask = "<copy todir=\"src\" verbose=\"true\" overwrite=\"true\">" + "<fileset dir=\"../patched\"/>"
-			//+ "</copy>";
-		//win64.postCompileTask = "<exec executable=\"svn\" dir=\".\">" + "<arg line=\"revert -R src\"/>" + "</exec>";
 
 		BuildTarget lin32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		lin32.cExcludes = lin32.cppExcludes = excludes;
@@ -87,8 +85,8 @@ public class BulletBuild {
 
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cExcludes = android.cppExcludes = excludes;
-		android.headerDirs = headers;
-		android.cppFlags += cppFlags;
+		android.headerDirs = headers;	
+		android.cppFlags += cppFlags + " -fexceptions";
 		
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.cExcludes = ios.cppExcludes = excludes;
@@ -96,6 +94,7 @@ public class BulletBuild {
 		ios.cppFlags += cppFlags;
 
 		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, android, ios);
+		new FileHandle(new File("jni/Application.mk")).writeString("\nAPP_STL := stlport_static\n", true);
 
 		// build natives
 		// BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
