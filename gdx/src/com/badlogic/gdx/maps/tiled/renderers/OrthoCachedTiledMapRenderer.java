@@ -22,6 +22,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteCache;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -232,16 +233,19 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 				final int rotations = cell.getRotation();
 
 				final TextureRegion region = tile.getTextureRegion();
+				final Texture texture = region.getTexture();
 
 				final float x1 = col * layerTileWidth;
 				final float y1 = row * layerTileHeight;
 				final float x2 = x1 + region.getRegionWidth() * unitScale;
 				final float y2 = y1 + region.getRegionHeight() * unitScale;
 
-				final float u1 = region.getU();
-				final float v1 = region.getV2();
-				final float u2 = region.getU2();
-				final float v2 = region.getV();
+				final float adjustX = 0.5f / texture.getWidth();
+				final float adjustY = 0.5f / texture.getHeight();
+				final float u1 = region.getU() + adjustX;
+				final float v1 = region.getV2() - adjustY;
+				final float u2 = region.getU2() - adjustX;
+				final float v2 = region.getV() + adjustY;
 
 				vertices[X1] = x1;
 				vertices[Y1] = y1;
@@ -330,7 +334,7 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 					}
 					}
 				}
-				spriteCache.add(region.getTexture(), vertices, 0, 20);
+				spriteCache.add(texture, vertices, 0, 20);
 			}
 		}
 	}
