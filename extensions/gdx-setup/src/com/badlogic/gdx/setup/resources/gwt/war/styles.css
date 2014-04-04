@@ -1,0 +1,28 @@
+canvas {
+    cursor: default;
+    outline: none;
+}
+
+.superdev {
+    display: block;
+    width: 150px;
+    height: 25px;
+    background: #4E9CAF;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-style: solid;
+    border-color: rgb(0,0,0);
+    border-width: 1px;
+}
+
+.superdev:hover {
+    background: #2E6CAF;
+}
+
+.superdev:active {
+    background: #1E4CAF;
+}
