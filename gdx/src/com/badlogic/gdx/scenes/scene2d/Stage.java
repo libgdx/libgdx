@@ -77,7 +77,6 @@ public class Stage extends InputAdapter implements Disposable {
 	public Stage () {
 		this(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()),
 			null);
-		getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
 
 	/** Creates a stage with the specified viewport. The stage will use its own {@link Batch}, which will be disposed when the stage
@@ -97,6 +96,8 @@ public class Stage extends InputAdapter implements Disposable {
 
 		root = new Group();
 		root.setStage(this);
+
+		viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 	}
 
 	public void draw () {
