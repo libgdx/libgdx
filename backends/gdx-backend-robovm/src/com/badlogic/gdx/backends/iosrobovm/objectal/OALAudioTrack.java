@@ -55,7 +55,7 @@ public class OALAudioTrack extends NSObject {
 	@Property
 	public native void setPaused (boolean paused);
 
-	@Property(selector = "isPlaying")
+	@Property
 	public native boolean isPlaying ();
 
 	@Property
