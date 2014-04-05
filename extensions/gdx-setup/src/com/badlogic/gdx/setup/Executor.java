@@ -27,8 +27,6 @@ public class Executor {
 	}
 	
 	/** Execute the Ant script file with the given parameters.
-	 * @param buildFile
-	 * @param params
 	 * @return whether the Ant succeeded */
 	public static boolean execute (File workingDir, String windowsFile, String unixFile, String parameters, CharCallback callback) {
 		String exec = workingDir.getAbsolutePath() + "/" + (System.getProperty("os.name").contains("Windows") ? windowsFile : unixFile);
