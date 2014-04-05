@@ -129,6 +129,16 @@ public class SnapshotArray<T> extends Array<T> {
 		return super.removeIndex(index);
 	}
 
+	public void removeRange (int start, int end) {
+		modified();
+		super.removeRange(start, end);
+	}
+
+	public boolean removeAll (Array<? extends T> array, boolean identity) {
+		modified();
+		return super.removeAll(array, identity);
+	}
+
 	public T pop () {
 		modified();
 		return super.pop();
