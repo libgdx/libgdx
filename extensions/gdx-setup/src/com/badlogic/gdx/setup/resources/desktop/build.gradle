@@ -29,6 +29,11 @@ dist.dependsOn classes
 
 
 eclipse {
+	classpath.file.withXml {
+		def node = it.asNode();
+		print node.name
+		new Node(node, "classpathentry", [ kind: 'src', path: 'assets' ]);
+	}
     project {
         name = appName + "-desktop"
         linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
