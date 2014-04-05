@@ -46,9 +46,9 @@ public class Executor {
 				public void run () {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()), 1);
 					try {
-						char c = 0;
-						while ((c = (char)reader.read()) != -1) {
-							callback.character(c);						
+						int c = 0;
+						while ((c = reader.read()) != -1 && process.isAlive()) {
+							callback.character((char)c);						
 						}
 					} catch (IOException e) {
 //						e.printStackTrace();
