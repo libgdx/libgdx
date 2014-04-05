@@ -30,6 +30,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
+import com.badlogic.gdx.setup.Executor.CharCallback;
 
 @SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
@@ -42,7 +45,7 @@ public class GdxSetupUI extends JFrame {
 		setSize(620, 620);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
 
 	void generate () {
@@ -82,18 +85,39 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 
+		ui.generateButton.setEnabled(false);
 		new Thread() {
 			public void run () {
 				log("Generating app in " + destination);
-				new GdxSetup().build(destination, name, pack, clazz, sdkLocation);
+				new GdxSetup().build(destination, name, pack, clazz, sdkLocation, new CharCallback() {
+					@Override
+					public void character (char c) {
+						log(c);
+					}
+				});
 				log("Done!");
 				log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
 				log("To import to Intellij IDEA: File -> Import -> build.gradle");
 				log("To import to NetBeans: File -> Open Project...");
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run () {
+						ui.generateButton.setEnabled(true);						
+					}				
+				});
 			}
 		}.start();
 	}
 
+	void log(final char c) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run () {
+				ui.textArea.append("" + c);
+				ui.textArea.setCaretPosition(ui.textArea.getDocument().getLength());
+			}
+		});
+	}
+	
 	void log (final String text) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run () {
@@ -120,6 +144,7 @@ public class GdxSetupUI extends JFrame {
 			}
 
 			textArea.setEditable(false);
+			textArea.setLineWrap(true);
 			uiLayout();
 			uiEvents();
 		}

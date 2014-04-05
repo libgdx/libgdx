@@ -27,6 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.setup.Executor.CharCallback;
+
 /**
  * Command line tool to generate libgdx projects
  * @author badlogic
@@ -37,7 +39,7 @@ public class GdxSetup {
 		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
 	}
 	
-	public void build (String outputDir, String appName, String packageName, String mainClass, String sdkLocation) {
+	public void build (String outputDir, String appName, String packageName, String mainClass, String sdkLocation, CharCallback callback) {
 		Project project = new Project();
 		
 		String packageDir = packageName.replace('.', '/');
@@ -109,6 +111,8 @@ public class GdxSetup {
 		
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
+		
+		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean", callback);
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
@@ -223,7 +227,12 @@ public class GdxSetup {
 			new GdxSetupUI();
 			printHelp();
 		} else {
-			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("sdkLocation"));
+			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("sdkLocation"), new CharCallback() {			
+				@Override
+				public void character (char c) {
+					System.out.print(c);
+				}
+			});
 		}
 	}
 }
