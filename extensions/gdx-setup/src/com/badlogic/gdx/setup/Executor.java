@@ -47,7 +47,7 @@ public class Executor {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()), 1);
 					try {
 						int c = 0;
-						while ((c = reader.read()) != -1 && process.isAlive()) {
+						while ((c = reader.read()) != -1) {
 							callback.character((char)c);						
 						}
 					} catch (IOException e) {
