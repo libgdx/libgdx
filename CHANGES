@@ -1,4 +1,5 @@
 [1.0.0]
+- implemented software keyboard support in RoboVM iOS backend
 - Fixed an issue where key event timestamp is not set by the android backend.
 - scene2d.ui, added to TextArea the preferred number of rows used to calculate the preferred height.
 - scene2d.actions, fixed infinite recursion for event listener's handle(event).

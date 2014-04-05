@@ -15,9 +15,9 @@ General
 	
 - IOSInput
 	- getAzimuth(), getPitch(), getRoll(), getRotationMatrix() need to be implemented and output the same as android
-	- see if we can programmatically show the keyboard and receive key events, if so map to gdx keycodes
+	- map keyboard events to gdx keycodes
 	- getPlaceholderTextInput() needs to be implemented		
-	- add compass support, fix up isPeripheralAvailable(), including onscreen keyboard stuff
+	- add compass support, fix up isPeripheralAvailable()
 
 - IOSAudio
 	- newAudioDevice(), new AudioRecorder() not implemented

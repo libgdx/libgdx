@@ -114,7 +114,6 @@ public class PreviewPanel extends javax.swing.JPanel {
 			DefaultMutableTreeNode desktopPrjNode = nodes.get("#DIR#prj-desktop");
 			DefaultMutableTreeNode androidPrjNode = nodes.get("#DIR#prj-android");
 			DefaultMutableTreeNode htmlPrjNode = nodes.get("#DIR#prj-html");
-			DefaultMutableTreeNode iosPrjNode = nodes.get("#DIR#prj-ios");
 			DefaultMutableTreeNode robovmPrjNode = nodes.get("#DIR#prj-robovm");
 
 			rootNode.removeAllChildren();
@@ -123,7 +122,6 @@ public class PreviewPanel extends javax.swing.JPanel {
 			if (Ctx.cfgSetup.isAndroidIncluded) rootNode.add(androidPrjNode);
 			if (Ctx.cfgSetup.isHtmlIncluded) rootNode.add(htmlPrjNode);
          if (Ctx.cfgSetup.isIosIncluded) {
-         	rootNode.add(iosPrjNode);
          	rootNode.add(robovmPrjNode);
          }
 
@@ -228,7 +226,6 @@ public class PreviewPanel extends javax.swing.JPanel {
 			DefaultMutableTreeNode desktopLibsNode = nodes.get("#DIR#prj-desktop/libs");
 			DefaultMutableTreeNode androidLibsNode = nodes.get("#DIR#prj-android/libs");
 			DefaultMutableTreeNode htmlLibsNode = nodes.get("#DIR#prj-html/war/WEB-INF/lib");
-         DefaultMutableTreeNode iosLibsNode = nodes.get("#DIR#prj-ios/libs");
          DefaultMutableTreeNode robovmLibsNode = nodes.get("#DIR#prj-robovm/libs");
 			DefaultMutableTreeNode dataNode = nodes.get("#DIR#prj-android/assets");
 
@@ -236,7 +233,6 @@ public class PreviewPanel extends javax.swing.JPanel {
 			desktopLibsNode.removeAllChildren();
 			androidLibsNode.removeAllChildren();
 			htmlLibsNode.removeAllChildren();
-			iosLibsNode.removeAllChildren();
 			robovmLibsNode.removeAllChildren();
 			dataNode.removeAllChildren();
 
