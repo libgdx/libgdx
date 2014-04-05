@@ -86,7 +86,7 @@ public class SoftMeshTest extends BaseBulletTest {
 			normalOffset, meshPart.mesh.getIndicesBuffer(), meshPart.indexOffset, meshPart.numVertices, indexMap, 0);
 		// Set mass of the first vertex to zero so its unmovable, comment out this line to make it a fully dynamic body.
 		softBody.setMass(0, 0);
-		com.badlogic.gdx.physics.bullet.softbody.Material pm = softBody.appendMaterial();
+		com.badlogic.gdx.physics.bullet.softbody.btSoftBody.Material pm = softBody.appendMaterial();
 		pm.setKLST(0.2f);
 		pm.setFlags(0);
 		softBody.generateBendingConstraints(2, pm);

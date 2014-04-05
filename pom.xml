@@ -45,7 +45,7 @@
     <android.version>4.4</android.version>
     <gwt.version>2.6.0</gwt.version>
     <lwjgl.version>2.9.1</lwjgl.version>
-    <robovm.version>0.0.10</robovm.version>
+    <robovm.version>0.0.11</robovm.version>
   </properties>
 
   <modules>

@@ -18,17 +18,19 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import java.io.File;
 
-import org.robovm.cocoatouch.coregraphics.CGSize;
-import org.robovm.cocoatouch.foundation.NSDictionary;
-import org.robovm.cocoatouch.foundation.NSMutableDictionary;
-import org.robovm.cocoatouch.uikit.UIApplication;
-import org.robovm.cocoatouch.uikit.UIApplicationDelegate;
-import org.robovm.cocoatouch.uikit.UIDevice;
-import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
-import org.robovm.cocoatouch.uikit.UIScreen;
-import org.robovm.cocoatouch.uikit.UIUserInterfaceIdiom;
-import org.robovm.cocoatouch.uikit.UIViewController;
-import org.robovm.cocoatouch.uikit.UIWindow;
+import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.NSDictionary;
+import org.robovm.apple.foundation.NSMutableDictionary;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSString;
+import org.robovm.apple.uikit.UIApplication;
+import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIScreen;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
+import org.robovm.apple.uikit.UIViewController;
+import org.robovm.apple.uikit.UIWindow;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
@@ -46,13 +48,13 @@ import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication implements Application {
 	
-	public static abstract class Delegate extends UIApplicationDelegate.Adapter {
+	public static abstract class Delegate extends UIApplicationDelegateAdapter {
 		private IOSApplication app;
 		
 		protected abstract IOSApplication createApplication();
 
 		@Override
-		public boolean didFinishLaunching (UIApplication application, NSDictionary launchOptions) {
+		public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
@@ -97,7 +99,7 @@ public class IOSApplication implements Application {
 		this.config = config;
 	}
 	
-	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary options) {
+	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> options) {
 		Gdx.app = this;
 		this.uiApp = uiApp;
 
@@ -335,22 +337,24 @@ public class IOSApplication implements Application {
 	@Override
 	public Preferences getPreferences (String name) {
 		File libraryPath = new File(System.getenv("HOME"), "Library");
-		String finalPath = new File(libraryPath, name + ".plist").getAbsolutePath();
+		File finalPath = new File(libraryPath, name + ".plist");
 		
 		Gdx.app.debug("IOSApplication", "Loading NSDictionary from file " + finalPath);
-		NSMutableDictionary nsDictionary = NSMutableDictionary.fromFile(finalPath);
+		@SuppressWarnings("unchecked")
+		NSMutableDictionary<NSString, NSObject> nsDictionary = 
+			(NSMutableDictionary<NSString, NSObject>) NSMutableDictionary.read(finalPath);
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {
 			Gdx.app.debug("IOSApplication", "NSDictionary not found, creating a new one");
-			nsDictionary = new NSMutableDictionary();
-			boolean fileWritten = nsDictionary.writeToFile(finalPath, false);
+			nsDictionary = new NSMutableDictionary<NSString, NSObject>();
+			boolean fileWritten = nsDictionary.write(finalPath, false);
 			if (fileWritten)
 				Gdx.app.debug("IOSApplication", "NSDictionary file written");
 			else 
 				Gdx.app.debug("IOSApplication", "Failed to write NSDictionary to file " + finalPath);
 		}
-		return new IOSPreferences(nsDictionary, finalPath);
+		return new IOSPreferences(nsDictionary, finalPath.getAbsolutePath());
 	}
 
 	@Override

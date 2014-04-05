@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.3'
         classpath 'com.android.tools.build:gradle:0.9+'
-        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.5'
+        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.6'
     }
 }
 
@@ -22,7 +22,7 @@ allprojects {
     ext {
         appName = "%APP_NAME%"
         gdxVersion = "1.0-SNAPSHOT"
-        roboVMVersion = "0.0.10"
+        roboVMVersion = "0.0.11"
     }
     
     repositories {

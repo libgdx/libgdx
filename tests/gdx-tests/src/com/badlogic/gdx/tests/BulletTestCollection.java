@@ -87,6 +87,11 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		instructLabel.setAlignment(Align.top | Align.left);
 		instructLabel.setText(tests[testIndex].instructions);
 	}
+	
+	@Override
+	public void resize (int width, int height) {
+		hud.getViewport().update(width, height, true);
+	}
 
 	@Override
 	public void dispose () {

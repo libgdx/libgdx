@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.foundation.NSBundle;
+import org.robovm.apple.foundation.NSBundle;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.files.FileHandle;

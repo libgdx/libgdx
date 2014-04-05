@@ -16,26 +16,27 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.coregraphics.CGPoint;
-import org.robovm.cocoatouch.coregraphics.CGRect;
-import org.robovm.cocoatouch.coregraphics.CGSize;
-import org.robovm.cocoatouch.foundation.NSObject;
-import org.robovm.cocoatouch.foundation.NSSet;
-import org.robovm.cocoatouch.glkit.GLKView;
-import org.robovm.cocoatouch.glkit.GLKViewController;
-import org.robovm.cocoatouch.glkit.GLKViewControllerDelegate;
-import org.robovm.cocoatouch.glkit.GLKViewDelegate;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableColorFormat;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableDepthFormat;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableMultisample;
-import org.robovm.cocoatouch.glkit.GLKViewDrawableStencilFormat;
-import org.robovm.cocoatouch.opengles.EAGLContext;
-import org.robovm.cocoatouch.opengles.EAGLRenderingAPI;
-import org.robovm.cocoatouch.uikit.UIDevice;
-import org.robovm.cocoatouch.uikit.UIEvent;
-import org.robovm.cocoatouch.uikit.UIInterfaceOrientation;
-import org.robovm.cocoatouch.uikit.UIScreen;
-import org.robovm.cocoatouch.uikit.UIUserInterfaceIdiom;
+import org.robovm.apple.coregraphics.CGPoint;
+import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.NSObject;
+import org.robovm.apple.foundation.NSSet;
+import org.robovm.apple.glkit.GLKView;
+import org.robovm.apple.glkit.GLKViewController;
+import org.robovm.apple.glkit.GLKViewControllerDelegate;
+import org.robovm.apple.glkit.GLKViewDelegate;
+import org.robovm.apple.glkit.GLKViewDrawableColorFormat;
+import org.robovm.apple.glkit.GLKViewDrawableDepthFormat;
+import org.robovm.apple.glkit.GLKViewDrawableMultisample;
+import org.robovm.apple.glkit.GLKViewDrawableStencilFormat;
+import org.robovm.apple.opengles.EAGLContext;
+import org.robovm.apple.opengles.EAGLRenderingAPI;
+import org.robovm.apple.uikit.UIDevice;
+import org.robovm.apple.uikit.UIEvent;
+import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIScreen;
+import org.robovm.apple.uikit.UITouch;
+import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
 import org.robovm.rt.bro.annotation.Callback;
@@ -142,25 +143,25 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
 			@Override
-			public void touchesBegan (NSSet touches, UIEvent event) {
+			public void touchesBegan (NSSet<UITouch> touches, UIEvent event) {
 				super.touchesBegan(touches, event);
 				IOSGraphics.this.input.touchDown(touches, event);
 			}
 
 			@Override
-			public void touchesCancelled (NSSet touches, UIEvent event) {
+			public void touchesCancelled (NSSet<UITouch> touches, UIEvent event) {
 				super.touchesCancelled(touches, event);
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
 			@Override
-			public void touchesEnded (NSSet touches, UIEvent event) {
+			public void touchesEnded (NSSet<UITouch> touches, UIEvent event) {
 				super.touchesEnded(touches, event);
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
 			@Override
-			public void touchesMoved (NSSet touches, UIEvent event) {
+			public void touchesMoved (NSSet<UITouch> touches, UIEvent event) {
 				super.touchesMoved(touches, event);
 				IOSGraphics.this.input.touchMoved(touches, event);
 			}
@@ -197,17 +198,17 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		} else {
 			r = g = b = a = 8;
 		}
-		if (config.depthFormat == GLKViewDrawableDepthFormat.Format16) {
+		if (config.depthFormat == GLKViewDrawableDepthFormat._16) {
 			depth = 16;
-		} else if (config.depthFormat == GLKViewDrawableDepthFormat.Format24) {
+		} else if (config.depthFormat == GLKViewDrawableDepthFormat._24) {
 			depth = 24;
 		} else {
 			depth = 0;
 		}
-		if (config.stencilFormat == GLKViewDrawableStencilFormat.Format8) {
+		if (config.stencilFormat == GLKViewDrawableStencilFormat._8) {
 			stencil = 8;
 		}
-		if (config.multisample == GLKViewDrawableMultisample.Sample4X) {
+		if (config.multisample == GLKViewDrawableMultisample._4X) {
 			samples = 4;
 		}
 		bufferFormat = new BufferFormat(r, g, b, a, depth, stencil, samples, false);
@@ -218,9 +219,9 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 		// if ((UIScreen.getMainScreen().respondsToSelector(new
 		// Selector("scale")))) {
-		float scale = UIScreen.getMainScreen().getScale();
+		double scale = UIScreen.getMainScreen().getScale();
 		app.debug(tag, "Calculating density, UIScreen.mainScreen.scale: " + scale);
-		if (scale == 2f) density = 2f;
+		if (scale == 2) density = 2f;
 
 		int ppi;
 		if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {

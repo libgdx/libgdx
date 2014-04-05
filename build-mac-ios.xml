@@ -9,6 +9,9 @@
 	</target>
 	
     <target name="backend-robovm" depends="core">
+        <ant antfile="fetch.xml" dir=".">
+			<target name="fetch-robovm"/>
+		</ant>
         <exec dir="backends/gdx-backend-robovm" executable="/bin/bash">
             <arg value="build-objectal.sh"/>
         </exec>
