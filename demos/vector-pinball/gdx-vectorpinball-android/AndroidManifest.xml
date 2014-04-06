@@ -16,5 +16,6 @@
 
     </application>
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
+	<uses-feature android:glEsVersion="0x00020000" android:required="true" />
 
 </manifest> 
