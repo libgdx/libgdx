@@ -24,6 +24,7 @@
 			<fileset dir="../libs/linux32" includes="gdx-image64.dll"/>
 			<fileset dir="../libs/linux64" includes="libgdx-image.so"/>
 			<fileset dir="../libs/macosx32" includes="libgdx-image64.so"/>
+			<fileset dir="../libs/macosx64" includes="libgdx-image.dylib"/>
 
 		</jar>
 	</target>

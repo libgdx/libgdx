@@ -62,13 +62,18 @@ public class ImageBuild {
 		mac.cExcludes = mac.cppExcludes = excludes;
 		mac.headerDirs = headers;
 		mac.cFlags += " -DHAVE_CONFIG_H";
+		
+		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		mac64.cExcludes = mac.cppExcludes = excludes;
+		mac64.headerDirs = headers;
+		mac64.cFlags += " -DHAVE_CONFIG_H";
 
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cExcludes = android.cppExcludes = excludes;
 		android.headerDirs = headers;
 		android.cFlags += " -DHAVE_CONFIG_H";
 
-		new AntScriptGenerator().generate(new BuildConfig("gdx-image"), win32home, android, win32, win64, lin32, lin64, mac);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-image"), win32home, android, win32, win64, lin32, lin64, mac, mac64);
 
 		// build natives
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");

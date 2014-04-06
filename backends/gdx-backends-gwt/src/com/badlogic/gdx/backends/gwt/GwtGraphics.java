@@ -54,6 +54,7 @@ public class GwtGraphics implements Graphics {
 		attributes.setStencil(config.stencil);
 		attributes.setAlpha(false);
 		attributes.setPremultipliedAlpha(false);
+		attributes.setPreserveDrawingBuffer(config.preserveDrawingBuffer);
 
 		context = WebGLRenderingContext.getContext(canvas, attributes);
 		context.viewport(0, 0, config.width, config.height);

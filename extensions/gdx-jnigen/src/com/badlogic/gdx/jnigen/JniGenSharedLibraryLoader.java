@@ -191,9 +191,11 @@ public class JniGenSharedLibraryLoader {
 		}
 		if (isMac) {
 			if (libraryFinder != null)
-				loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, nativesZip));
-			else
+				loaded = loadLibrary(libraryFinder.getSharedLibraryNameMac(sharedLibName, is64Bit, nativesZip));
+			else if(!is64Bit)
 				loaded = loadLibrary("lib" + sharedLibName + ".dylib");
+			else
+				loaded = loadLibrary("lib" + sharedLibName + "64.dylib");
 		}
 		if (isAndroid) {
 			if (libraryFinder != null)

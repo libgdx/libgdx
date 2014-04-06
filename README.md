@@ -46,6 +46,11 @@ To contribute, you need to work with libgdx' sources directly, something normal 
 have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Working-from-source)
 article will give you directions.
 
+You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](http://patreon.com/libgdx)!
+
+<a href="http://patreon.com/libgdx" target="_blank"><img src="http://img.youtube.com/vi/QmtN8k7x5hw/0.jpg" 
+alt="Patreon" width="480" height="360" border="10" /></a>
+
 #### License
 Libgdx is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you
 can use it free of charge, without strings attached in commercial and non-commercial projects. We love to

@@ -24,6 +24,7 @@
 			<fileset dir="../libs/linux32" includes="libgdx-audio.so"/>
 			<fileset dir="../libs/linux64" includes="libgdx-audio64.so"/>
 			<fileset dir="../libs/macosx32" includes="libgdx-audio.dylib"/>
+			<fileset dir="../libs/macosx64" includes="libgdx-audio64.dylib"/>
 
 		</jar>
 	</target>

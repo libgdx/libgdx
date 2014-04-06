@@ -164,7 +164,7 @@ public class AntScriptGenerator {
 		}
 		if (os == TargetOs.MacOsX) {
 			libPrefix = "lib";
-			libSuffix = ".dylib";
+			libSuffix = (is64Bit ? "64" : "") + ".dylib";
 		}
 		if (os == TargetOs.IOS) {
 			libPrefix = "lib";

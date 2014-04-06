@@ -82,6 +82,11 @@ public class BulletBuild {
 		mac.cExcludes = mac.cppExcludes = excludes;
 		mac.headerDirs = headers;
 		mac.cppFlags += cppFlags;
+		
+		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		mac64.cExcludes = mac.cppExcludes = excludes;
+		mac64.headerDirs = headers;
+		mac64.cppFlags += cppFlags;
 
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cExcludes = android.cppExcludes = excludes;
@@ -93,7 +98,7 @@ public class BulletBuild {
 		ios.headerDirs = headers;
 		ios.cppFlags += cppFlags;
 
-		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, android, ios);
+		new AntScriptGenerator().generate(new BuildConfig("gdx-bullet"), win32home, win32, win64, lin32, lin64, mac, mac64, android, ios);
 		new FileHandle(new File("jni/Application.mk")).writeString("\nAPP_STL := stlport_static\n", true);
 
 		// build natives
