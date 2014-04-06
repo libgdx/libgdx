@@ -5,6 +5,10 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
+        <ant antfile="build-macosx64.xml" dir="gdx/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
 		<ant antfile="build-ios32.xml" dir="gdx/jni"/>
 	</target>
 	
@@ -22,11 +26,19 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-freetype/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
 		<ant antfile="build-ios32.xml" dir="extensions/gdx-freetype/jni"/>
 	</target>
 	
 	<target name="bullet" depends="core">
 		<ant antfile="build-macosx32.xml" dir="extensions/gdx-bullet/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-bullet/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
@@ -38,6 +50,10 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-controllers/gdx-controllers-desktop/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
 	</target>
 	
 	<target name="audio" depends="core">
@@ -45,10 +61,18 @@
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-audio/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
 	</target>
 	
 	<target name="image" depends="core">
 		<ant antfile="build-macosx32.xml" dir="extensions/gdx-image/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-image/jni">
 			<target name="clean"/>
 			<target name="postcompile"/>
 		</ant>
