@@ -98,6 +98,15 @@ public class AudioBuild {
 		mac.cppIncludes = cppIncludes;
 		mac.cppExcludes = cppExcludes;
 		mac.preCompileTask = precompileTask;
+		
+		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		mac64.cFlags += cFlags;
+		mac64.cppFlags += cppFlags;
+		mac64.headerDirs = headerDirs;
+		mac64.cIncludes = cIncludes;
+		mac64.cppIncludes = cppIncludes;
+		mac64.cppExcludes = cppExcludes;
+		mac64.preCompileTask = precompileTask;
 
 		BuildTarget android = BuildTarget.newDefaultTarget(TargetOs.Android, false);
 		android.cFlags += " -DFIXED_POINT -D_ARM_ASSEM_ -D__ANDROID__ -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME -DASMALIGN_BYTE";
@@ -108,7 +117,7 @@ public class AudioBuild {
 		android.cppExcludes = cppExcludes;
 		android.preCompileTask = precompileTask;
 
-		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, android);
+		new AntScriptGenerator().generate(buildConfig, win32home, win32, win64, lin32, lin64, mac, mac64, android);
 		// we don't support x86 for the audio extension on Android. Dirty hack that disables x86 build...
 		String androidMakeFile = new FileHandle("jni/Application.mk").readString();
 		new FileHandle("jni/Application.mk").writeString(androidMakeFile.replaceAll("x86", ""), false);

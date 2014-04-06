@@ -20,6 +20,7 @@
 	<target name="pack-natives">
 		<jar destfile="../libs/gdx-natives.jar">
 			<fileset dir="../libs/macosx32" includes="libgdx.dylib"/>
+			<fileset dir="../libs/macosx64" includes="libgdx64.dylib"/>
 			<fileset dir="../libs/windows32" includes="gdx.dll"/>
 			<fileset dir="../libs/windows64" includes="gdx64.dll"/>
 			<fileset dir="../libs/linux32" includes="libgdx.so"/>
