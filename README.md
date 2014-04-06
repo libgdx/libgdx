@@ -50,7 +50,6 @@ You can also contribute financially to our infrastructure (build server, web ser
 
 <a href="http://patreon.com/libgdx" target="_blank"><img src="http://img.youtube.com/vi/QmtN8k7x5hw/0.jpg" 
 alt="Patreon" width="480" height="360" border="10" /></a>
-QmtN8k7x5hw
 
 #### License
 Libgdx is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you
