@@ -101,6 +101,7 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 
 	public void draw () {
+		viewport.update();
 		Camera camera = viewport.getCamera();
 		camera.update();
 		if (!root.isVisible()) return;

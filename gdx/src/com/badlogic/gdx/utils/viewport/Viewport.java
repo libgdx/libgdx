@@ -44,6 +44,14 @@ public abstract class Viewport {
 
 	private final Vector3 tmp = new Vector3();
 
+	/** Updates the viewport using the last computed values without changing the camera position. */
+	public final void update () {
+		Gdx.gl.glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
+		camera.viewportWidth = worldWidth;
+		camera.viewportHeight = worldHeight;
+		camera.update();
+	}
+
 	/** Updates the viewport's camera without changing the camera position.
 	 * @see #update(int, int, boolean) */
 	public final void update (int screenWidth, int screenHeight) {
