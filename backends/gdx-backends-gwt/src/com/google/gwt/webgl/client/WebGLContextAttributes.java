@@ -81,4 +81,8 @@ public class WebGLContextAttributes extends JavaScriptObject {
 	public final native void clearPremultipliedAlpha () /*-{
 																			delete this.premultipliedAlpha;
 																			}-*/;
+	
+	public final native void setPreserveDrawingBuffer (boolean preserveDrawingBuffer) /*-{
+																			this.preserveDrawingBuffer = preserveDrawingBuffer;
+																			}-*/;
 }
