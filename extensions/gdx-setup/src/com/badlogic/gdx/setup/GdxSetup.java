@@ -228,7 +228,7 @@ public class GdxSetup {
 			printHelp();
 		} else {
 			String sdkLocation = "";
-			if (System.getenv("ANDROID_HOME") != null) {
+			if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
 				sdkLocation = System.getenv("ANDROID_HOME");
 			} else {
 				sdkLocation = params.get("sdkLocation");
