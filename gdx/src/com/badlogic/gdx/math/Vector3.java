@@ -34,16 +34,13 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 
 	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	@Deprecated
- 	public final static Vector3 tmp = new Vector3();
+	@Deprecated public final static Vector3 tmp = new Vector3();
 	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	@Deprecated
- 	public final static Vector3 tmp2 = new Vector3();
+	@Deprecated public final static Vector3 tmp2 = new Vector3();
 	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
 	 * @see #tmp() **/
-	@Deprecated
- 	public final static Vector3 tmp3 = new Vector3();
+	@Deprecated public final static Vector3 tmp3 = new Vector3();
 
 	public final static Vector3 X = new Vector3(1, 0, 0);
 	public final static Vector3 Y = new Vector3(0, 1, 0);
@@ -130,7 +127,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * 
 	 * @return a temporary copy of this vector */
 	@Deprecated
- 	public Vector3 tmp () {
+	public Vector3 tmp () {
 		return tmp.set(this);
 	}
 
@@ -139,7 +136,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * 
 	 * @return a temporary copy of this vector */
 	@Deprecated
- 	public Vector3 tmp2 () {
+	public Vector3 tmp2 () {
 		return tmp2.set(this);
 	}
 
@@ -148,7 +145,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	 * 
 	 * @return a temporary copy of this vector */
 	@Deprecated
- 	Vector3 tmp3 () {
+	Vector3 tmp3 () {
 		return tmp3.set(this);
 	}
 
@@ -217,7 +214,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
-	public Vector3 mulAdd(Vector3 vec, float scalar) {
+	public Vector3 mulAdd (Vector3 vec, float scalar) {
 		this.x += vec.x * scalar;
 		this.y += vec.y * scalar;
 		this.z += vec.z * scalar;
@@ -225,7 +222,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
-	public Vector3 mulAdd(Vector3 vec, Vector3 mulVec) {
+	public Vector3 mulAdd (Vector3 vec, Vector3 mulVec) {
 		this.x += vec.x * mulVec.x;
 		this.y += vec.y * mulVec.y;
 		this.z += vec.z * mulVec.z;
@@ -371,6 +368,16 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 			* l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M23]);
 	}
 
+	/** Multiplies the vector by the transpose of the given matrix, assuming the fourth (w) component of the vector is 1.
+	 * @param matrix The matrix
+	 * @return This vector for chaining */
+	public Vector3 traMul (final Matrix4 matrix) {
+		final float l_mat[] = matrix.val;
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20] + l_mat[Matrix4.M30], x
+			* l_mat[Matrix4.M01] + y * l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21] + l_mat[Matrix4.M31], x * l_mat[Matrix4.M02] + y
+			* l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22] + l_mat[Matrix4.M32]);
+	}
+
 	/** Left-multiplies the vector by the given matrix.
 	 * @param matrix The matrix
 	 * @return This vector for chaining */
@@ -378,6 +385,15 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float l_mat[] = matrix.val;
 		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M01] + z * l_mat[Matrix3.M02], x * l_mat[Matrix3.M10] + y
 			* l_mat[Matrix3.M11] + z * l_mat[Matrix3.M12], x * l_mat[Matrix3.M20] + y * l_mat[Matrix3.M21] + z * l_mat[Matrix3.M22]);
+	}
+
+	/** Multiplies the vector by the transpose of the given matrix.
+	 * @param matrix The matrix
+	 * @return This vector for chaining */
+	public Vector3 traMul (Matrix3 matrix) {
+		final float l_mat[] = matrix.val;
+		return set(x * l_mat[Matrix3.M00] + y * l_mat[Matrix3.M10] + z * l_mat[Matrix3.M20], x * l_mat[Matrix3.M01] + y
+			* l_mat[Matrix3.M11] + z * l_mat[Matrix3.M21], x * l_mat[Matrix3.M02] + y * l_mat[Matrix3.M12] + z * l_mat[Matrix3.M22]);
 	}
 
 	/** Multiplies the vector by the given {@link Quaternion}.
@@ -407,6 +423,30 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		final float l_mat[] = matrix.val;
 		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M01] + z * l_mat[Matrix4.M02], x * l_mat[Matrix4.M10] + y
 			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M12], x * l_mat[Matrix4.M20] + y * l_mat[Matrix4.M21] + z * l_mat[Matrix4.M22]);
+	}
+
+	/** Multiplies this vector by the transpose of the first three columns of the matrix. Note: only works for translation and
+	 * rotation, does not work for scaling. For those, use {@link #rot(Matrix4)} with {@link Matrix4#inv()}.
+	 * @param matrix The transformation matrix
+	 * @return The vector for chaining */
+	public Vector3 unrotate (final Matrix4 matrix) {
+		final float l_mat[] = matrix.val;
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20], x * l_mat[Matrix4.M01] + y
+			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21], x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
+	}
+
+	/** Translates this vector in the direction opposite to the translation of the matrix and the multiplies this vector by the
+	 * transpose of the first three columns of the matrix. Note: only works for translation and rotation, does not work for
+	 * scaling. For those, use {@link #mul(Matrix4)} with {@link Matrix4#inv()}.
+	 * @param matrix The transformation matrix
+	 * @return The vector for chaining */
+	public Vector3 untransform (final Matrix4 matrix) {
+		final float l_mat[] = matrix.val;
+		x -= l_mat[Matrix4.M03];
+		y -= l_mat[Matrix4.M03];
+		z -= l_mat[Matrix4.M03];
+		return this.set(x * l_mat[Matrix4.M00] + y * l_mat[Matrix4.M10] + z * l_mat[Matrix4.M20], x * l_mat[Matrix4.M01] + y
+			* l_mat[Matrix4.M11] + z * l_mat[Matrix4.M21], x * l_mat[Matrix4.M02] + y * l_mat[Matrix4.M12] + z * l_mat[Matrix4.M22]);
 	}
 
 	/** Rotates this vector by the given angle in degrees around the given axis.
