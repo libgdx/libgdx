@@ -249,8 +249,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void onDestroyView () {
 		super.onDestroyView();
-		graphics.clearManagedCaches();
-		graphics.destroy();
+		// davebaol:
+		// Added postRunnable to prevent deadlock.
+		// Also some devices like the Asus Transformer TF101 don't like when you dispose gdx resources
+		// (e.g. textures) from inside the Android UI thread and as a result the UI gets corrupted.
+		postRunnable(new Runnable() {
+			@Override
+			public void run () {
+				graphics.clearManagedCaches();
+				graphics.destroy();
+			}
+		});
 	}
 
 	@Override
