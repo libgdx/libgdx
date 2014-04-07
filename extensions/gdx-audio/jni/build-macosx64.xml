@@ -1,12 +1,12 @@
-<project name="gdx-MacOsX-32" basedir="." default="postcompile">
+<project name="gdx-audio-MacOsX-64" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
-	<property name="buildDir" value="../target/native/macosx32" />
+	<property name="buildDir" value="target/macosx64" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs/macosx32" />
+	<property name="libsDir" value="../libs/macosx64" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="libgdx.dylib"/>
+	<property name="libName" value="libgdx-audio64.dylib"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="mac"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
@@ -16,30 +16,59 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DFIXED_POINT -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
-		<include name="**/*.c"/>
+		<include name="kissfft/*.c"/>
+		<include name="vorbis/*.c"/>
+		<include name="libmpg123/equalizer.c"/>
+		<include name="libmpg123/index.c"/>
+		<include name="libmpg123/layer2.c"/>
+		<include name="libmpg123/synth.c"/>
+		<include name="libmpg123/dct64.c"/>
+		<include name="libmpg123/format.c"/>
+		<include name="libmpg123/layer3.c"/>
+		<include name="libmpg123/ntom.c"/>
+		<include name="libmpg123/parse.c"/>
+		<include name="libmpg123/readers.c"/>
+		<include name="libmpg123/frame.c"/>
+		<include name="libmpg123/layer1.c"/>
+		<include name="libmpg123/libmpg123.c"/>
+		<include name="libmpg123/optimize.c"/>
+		<include name="libmpg123/synth_arm.S"/>
+		<include name="libmpg123/tabinit.c"/>
+		<include name="libmpg123/id3.c"/>
+		<include name="libmpg123/stringbuf.c"/>
+		<include name="libmpg123/icy.c"/>
+		<include name="libmpg123/icy2utf8.c"/>
+		<include name="libmpg123/compat.c"/>
+		<include name="libmpg123/synth_8bit.c"/>
+		<include name="libmpg123/synth_real.c"/>
+		<include name="libmpg123/synth_s32.c"/>
 
 		
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -DFIXED_POINT -DMPG123_NO_CONFIGURE -DOPT_GENERIC -DHAVE_STRERROR -DMPG123_NO_LARGENAME"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
-				<include name="**/*.cpp"/>
+				<include name="**/*AudioTools.cpp"/>
+		<include name="**/*KissFFT.cpp"/>
+		<include name="**/*VorbisDecoder.cpp"/>
+		<include name="**/*SoundTouch.cpp"/>
+		<include name="**/*Mpg123Decoder.cpp"/>
+		<include name="soundtouch/source/SoundTouch/*.cpp"/>
 
-				<exclude name="android/**"/>
-		<exclude name="iosgl/**"/>
+				<exclude name="**/cpu_detect_x86_win.cpp"/>
 
 	</fileset>
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="linker-opts" value="-shared -arch i386 -mmacosx-version-min=10.5"/>
+	<property name="linker-opts" value="-shared -arch x86_64 -mmacosx-version-min=10.5"/>
 	<property name="libraries" value=""/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
@@ -68,7 +97,7 @@
 		<condition property="has-compiler">
 			<equals arg1="${compiler-found}" arg2="true"/>
 		</condition>
-		
+		<copy failonerror="true" tofile="soundtouch/include/STTypes.h" verbose="true" overwrite="true" file="STTypes.h.patched"/>
 	</target>
 	
 	<target name="create-build-dir" depends="precompile" if="has-compiler">
@@ -93,7 +122,11 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-			
+						<arg value="-Ikissfft"/>
+			<arg value="-Ivorbis"/>
+			<arg value="-Isoundtouch/include"/>
+			<arg value="-Isoundtouch/source/SoundTouch/"/>
+
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -108,7 +141,11 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-			
+						<arg value="-Ikissfft"/>
+			<arg value="-Ivorbis"/>
+			<arg value="-Isoundtouch/include"/>
+			<arg value="-Isoundtouch/source/SoundTouch/"/>
+
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>

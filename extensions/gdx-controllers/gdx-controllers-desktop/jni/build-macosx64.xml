@@ -1,12 +1,12 @@
-<project name="gdx-MacOsX-32" basedir="." default="postcompile">
+<project name="gdx-controllers-desktop-MacOsX-64" basedir="." default="postcompile">
 	<!-- include the environment -->
 	<property environment="env"/>	
 	<!-- output directory for temporary object files -->
-	<property name="buildDir" value="../target/native/macosx32" />
+	<property name="buildDir" value="target/macosx64" />
 	<!-- output directory for the shared library -->
-	<property name="libsDir" value="../libs/macosx32" />
+	<property name="libsDir" value="../libs/macosx64" />
 	<!-- the name of the shared library -->
-	<property name="libName" value="libgdx.dylib"/>
+	<property name="libName" value="libgdx-controllers-desktop64.dylib"/>
 	<!-- the jni header jniPlatform to use -->
 	<property name="jniPlatform" value="mac"/>
 	<!-- the compilerPrefix for the C & C++ compilers -->
@@ -16,7 +16,7 @@
 	
 	<!-- define gcc compiler, options and files to compile -->
 	<property name="gcc" value="${compilerPrefix}gcc${compilerSuffix}"/>	
-	<property name="gcc-opts" value="-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="gcc-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
 	<fileset id="gcc-files" dir="./">
 		<exclude name="target/"/>		
 				<include name="memcpy_wrap.c"/>
@@ -27,20 +27,22 @@
 	
 	<!-- define g++ compiler, options and files to compile -->
 	<property name="g++" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="g++-opts" value="-c -Wall -O2 -arch i386 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5"/>
+	<property name="g++-opts" value="-c -Wall -O2 -arch x86_64 -DFIXED_POINT -fmessage-length=0 -fPIC -mmacosx-version-min=10.5 -x objective-c++"/>
 	<fileset id="g++-files" dir="./">
 		<exclude name="target/"/>
-				<include name="**/*.cpp"/>
+				<include name="*.cpp"/>
+		<include name="ois-v1-4svn/src/*.cpp"/>
+		<include name="ois-v1-4svn/src/mac/*.mm"/>
+		<include name="ois-v1-4svn/src/mac/MacHIDManager.cpp"/>
+		<include name="ois-v1-4svn/src/mac/MacJoyStick.cpp"/>
 
-				<exclude name="android/**"/>
-		<exclude name="iosgl/**"/>
-
+		
 	</fileset>
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="linker-opts" value="-shared -arch i386 -mmacosx-version-min=10.5"/>
-	<property name="libraries" value=""/>
+	<property name="linker-opts" value="-shared -arch x86_64 -mmacosx-version-min=10.5"/>
+	<property name="libraries" value="-framework CoreServices -framework Carbon -framework IOKit -framework Cocoa"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
@@ -93,7 +95,9 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-			
+						<arg value="-Iois-v1-4svn/includes"/>
+			<arg value="-Idinput/"/>
+
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>
@@ -108,7 +112,9 @@
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
 			<arg value="-I."/>
-			
+						<arg value="-Iois-v1-4svn/includes"/>
+			<arg value="-Idinput/"/>
+
 			<srcfile/>
 			<arg value="-o"/>
 			<targetfile/>

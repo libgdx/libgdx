@@ -17,7 +17,7 @@ import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
-
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
@@ -29,7 +29,7 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 
-/** A simple GLSurfaceView sub-class that demonstrate how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
+/** A simple GLSurfaceView sub-class that demonstrates how to perform OpenGL ES 2.0 rendering into a GL Surface. Note the following
  * important details:
  * <p/>
  * - The class must use a custom context factory to enable 2.0 rendering. See ContextFactory class definition below.
@@ -70,7 +70,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 		BaseInputConnection connection = new BaseInputConnection(this, false) {
 			@Override
 			public boolean deleteSurroundingText (int beforeLength, int afterLength) {
-				int sdkVersion = Integer.parseInt(android.os.Build.VERSION.SDK);
+				int sdkVersion = android.os.Build.VERSION.SDK_INT;
 				if (sdkVersion >= 16) {
 					/*
 					 * In Jelly Bean, they don't send key events for delete. Instead, they send beforeLength = 1, afterLength = 0. So,
@@ -84,6 +84,7 @@ public class GLSurfaceView20 extends GLSurfaceView {
 				return super.deleteSurroundingText(beforeLength, afterLength);
 			}
 
+			@TargetApi(16)
 			private void sendDownUpKeyEventForBackwardCompatibility (final int code) {
 				final long eventTime = SystemClock.uptimeMillis();
 				super.sendKeyEvent(new KeyEvent(eventTime, eventTime, KeyEvent.ACTION_DOWN, code, 0, 0,

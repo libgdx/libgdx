@@ -21,10 +21,11 @@ public interface SharedLibraryFinder {
 	String getSharedLibraryNameLinux (String sharedLibName, boolean is64Bit, ZipFile nativesJar);
 
 	/** @param sharedLibName The name of the shared lib that is asked to be loaded.
+	 * @param is64Bit 
 	 * @param nativesJar A ZipFile object, which gives the ability to walk through the containing files, and allows for pattern
 	 *           matching. May be null if no zipfile is used.
 	 * @return The name of the shared file, or null if none available */
-	String getSharedLibraryNameMac (String sharedLibName, ZipFile nativesJar);
+	String getSharedLibraryNameMac (String sharedLibName, boolean is64Bit, ZipFile nativesJar);
 
 	/** @param sharedLibName The name of the shared lib that is asked to be loaded.
 	 * @param nativesJar A ZipFile object, which gives the ability to walk through the containing files, and allows for pattern

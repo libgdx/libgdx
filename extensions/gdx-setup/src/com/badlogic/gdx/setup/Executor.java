@@ -27,8 +27,6 @@ public class Executor {
 	}
 	
 	/** Execute the Ant script file with the given parameters.
-	 * @param buildFile
-	 * @param params
 	 * @return whether the Ant succeeded */
 	public static boolean execute (File workingDir, String windowsFile, String unixFile, String parameters, CharCallback callback) {
 		String exec = workingDir.getAbsolutePath() + "/" + (System.getProperty("os.name").contains("Windows") ? windowsFile : unixFile);
@@ -47,7 +45,7 @@ public class Executor {
 					BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()), 1);
 					try {
 						int c = 0;
-						while ((c = reader.read()) != -1 && process.isAlive()) {
+						while ((c = reader.read()) != -1) {
 							callback.character((char)c);						
 						}
 					} catch (IOException e) {

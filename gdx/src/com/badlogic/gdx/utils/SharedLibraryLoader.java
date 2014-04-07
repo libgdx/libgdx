@@ -39,7 +39,7 @@ public class SharedLibraryLoader {
 	static public boolean isIos = false;
 	static public boolean isAndroid = false;
 	static public boolean isARM = System.getProperty("os.arch").startsWith("arm");
-	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64");
+	static public boolean is64Bit = System.getProperty("os.arch").equals("amd64") || System.getProperty("os.arch").equals("x86_64");
 
 	// JDK 8 only.
 	static public String abi = (System.getProperty("sun.arch.abi") != null ? System.getProperty("sun.arch.abi") : "");
@@ -93,7 +93,7 @@ public class SharedLibraryLoader {
 	public String mapLibraryName (String libraryName) {
 		if (isWindows) return libraryName + (is64Bit ? "64.dll" : ".dll");
 		if (isLinux) return "lib" + libraryName + (isARM ? "arm" + abi : "") + (is64Bit ? "64.so" : ".so");
-		if (isMac) return "lib" + libraryName + ".dylib";
+		if (isMac) return "lib" + libraryName + (is64Bit ? "64.dylib" : ".dylib");
 		return libraryName;
 	}
 

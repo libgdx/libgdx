@@ -29,6 +29,8 @@ import android.view.View;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL20;
@@ -102,7 +104,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	// <- ok it is in use now
 	private void setPreserveContext (Object view) {
 		int sdkVersion = android.os.Build.VERSION.SDK_INT;
-		if (sdkVersion >= 11 && view instanceof GLSurfaceView) {
+		if ((sdkVersion >= 11 && view instanceof GLSurfaceView) || view instanceof GLSurfaceViewAPI18) {
 			try {
 				Method method = null;
 				for (Method m : view.getClass().getMethods()) {
@@ -112,7 +114,7 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 					}
 				}
 				if (method != null) {
-					method.invoke((GLSurfaceView)view, true);
+					method.invoke(view, true);
 				}
 			} catch (Exception e) {
 			}
@@ -134,32 +136,61 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	// <- specific for live wallpapers
 
 	// Grabbed from original AndroidGraphics class, with modifications:
-	// + overrided getHolder in created GLSurfaceView instances
+	// + overrided getHolder in created GLSurfaceView and GLSurfaceViewAPI18 instances
 	// + Activity changed to Context (as it should be in AndroidGraphics I think;p)
 	private View createGLSurfaceView (Context context, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 
 		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
 
-		GLSurfaceView20 view = new GLSurfaceView20(context, resolutionStrategy) {
-			// -> specific for live wallpapers
-			@Override
-			public SurfaceHolder getHolder () {
-				return getSurfaceHolder();
-			}
+		int sdkVersion = android.os.Build.VERSION.SDK_INT;
+		if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
+			GLSurfaceView20API18 view = new GLSurfaceView20API18(context, resolutionStrategy) {
+				// -> specific for live wallpapers
+				@Override
+				public SurfaceHolder getHolder () {
+					return getSurfaceHolder();
+				}
 
-			public void onDestroy () {
-				onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
-			}
-			// <- specific for live wallpapers
-		};
-
-		if (configChooser != null)
-			view.setEGLConfigChooser(configChooser);
-		else
-			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-		view.setRenderer(this);
-		return view;
+				// Warning suppressed because the method is invoked via reflection
+				// by AndroidLiveWallpaper.onDestroy() 
+				@SuppressWarnings("unused")
+				public void onDestroy () {
+					onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
+				}
+				// <- specific for live wallpapers
+			};
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		}
+		else {
+			GLSurfaceView20 view = new GLSurfaceView20(context, resolutionStrategy) {
+				// -> specific for live wallpapers
+				@Override
+				public SurfaceHolder getHolder () {
+					return getSurfaceHolder();
+				}
+	
+				// Warning suppressed because the method is invoked via reflection
+				// by AndroidLiveWallpaper.onDestroy() 
+				@SuppressWarnings("unused")
+				public void onDestroy () {
+					onDetachedFromWindow(); // calls GLSurfaceView.mGLThread.requestExitAndWait();
+				}
+				// <- specific for live wallpapers
+			};
+	
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		}
 	}
 
 	// jw: changed, method replaced with implementation from original AndroidGraphics
@@ -216,10 +247,6 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	@Override
 	public int getWidth () {
 		return width;
-	}
-
-	private static boolean isPowerOfTwo (int value) {
-		return ((value != 0) && (value & (value - 1)) == 0);
 	}
 
 	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
@@ -608,11 +635,16 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 	public void setContinuousRendering (boolean isContinuous) {
 		if (view != null) {
 			this.isContinuous = isContinuous;
-			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 			// jw: changed
 			// view.setRenderMode(renderMode);
-			if (view instanceof GLSurfaceView)
+			if (view instanceof GLSurfaceViewAPI18) {
+				int renderMode = isContinuous ? GLSurfaceViewAPI18.RENDERMODE_CONTINUOUSLY : GLSurfaceViewAPI18.RENDERMODE_WHEN_DIRTY;
+				((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
+			}
+			else if (view instanceof GLSurfaceView) {
+				int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 				((GLSurfaceView)view).setRenderMode(renderMode);
+			}
 			else
 				throw new RuntimeException("unimplemented");
 			mean.clear();
@@ -628,7 +660,9 @@ public final class AndroidGraphicsLiveWallpaper implements Graphics, Renderer {
 		if (view != null) {
 			// jw: changed
 			// view.requestRender();
-			if (view instanceof GLSurfaceView)
+			if (view instanceof GLSurfaceViewAPI18)
+				((GLSurfaceViewAPI18)view).requestRender();
+			else if (view instanceof GLSurfaceView)
 				((GLSurfaceView)view).requestRender();
 			else
 				throw new RuntimeException("unimplemented");

@@ -55,10 +55,12 @@ public class GdxBuild {
 		android.cppExcludes = new String[] {"iosgl/**"};
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.cppExcludes = excludeCpp;
+		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
+		mac64.cppExcludes = excludeCpp;
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.cppExcludes = new String[] {"android/**"};
 		ios.headerDirs = new String[] {"iosgl"};
-		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, win32home, win32,
+		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, mac64, win32home, win32,
 			win64, lin32, lin64, android, ios);
 
 		// build natives

@@ -54,7 +54,8 @@ public final class WindowedMean {
 	 * 
 	 * @param value The value to add */
 	public void addValue (float value) {
-		added_values++;
+		if (added_values < values.length)
+			added_values++;
 		values[last_value++] = value;
 		if (last_value > values.length - 1) last_value = 0;
 		dirty = true;
