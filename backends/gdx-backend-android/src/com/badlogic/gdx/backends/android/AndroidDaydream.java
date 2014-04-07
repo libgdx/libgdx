@@ -88,6 +88,35 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.). */
 	public void initialize (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		init(listener, config, false);
+	}
+
+	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
+	 * render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
+	 * <p>
+	 * Note: you have to add the returned view to your layout!
+	 * @param listener the {@link ApplicationListener} implementing the program logic
+	 * @return the GLSurfaceView of the application */
+	public View initializeForView (ApplicationListener listener) {
+		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		return initializeForView(listener, config);
+	}
+
+	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
+	 * render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
+	 * {@link AndroidApplicationConfiguration} instance.
+	 * <p>
+	 * Note: you have to add the returned view to your layout!
+	 * @param listener the {@link ApplicationListener} implementing the program logic
+	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
+	 *           etc.).
+	 * @return the GLSurfaceView of the application */
+	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		init(listener, config, true);
+		return graphics.getView();
+	}
+
+	private void init (ApplicationListener listener, AndroidApplicationConfiguration config, boolean isForView) {
 		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
@@ -105,9 +134,11 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		setFullscreen(true);
+		if (!isForView) {
+			setFullscreen(true);
+			setContentView(graphics.getView(), createLayoutParams());
+		}
 
-		setContentView(graphics.getView(), createLayoutParams());
 		createWakeLock(config.useWakelock);
 		hideStatusBar(config);
 	}
@@ -137,49 +168,6 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't hide status bar", e);
 		}
-	}
-
-	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
-	 * render via OpenGL and so on. Uses a default {@link AndroidApplicationConfiguration}.
-	 * <p>
-	 * Note: you have to add the returned view to your layout!
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener) {
-		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-		return initializeForView(listener, config);
-	}
-
-	/** This method has to be called in the Activity#onCreate(Bundle) method. It sets up all the things necessary to get input,
-	 * render via OpenGL and so on. You can configure other aspects of the application with the rest of the fields in the
-	 * {@link AndroidApplicationConfiguration} instance.
-	 * <p>
-	 * Note: you have to add the returned view to your layout!
-	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
-	 *           etc.).
-	 * @return the GLSurfaceView of the application */
-	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
-		graphics = new AndroidGraphicsDaydream(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
-			: config.resolutionStrategy);
-		input = AndroidInputFactory.newAndroidInput(this, this, graphics.view, config);
-		audio = new AndroidAudio(this, config);
-		this.getFilesDir(); // workaround for Android bug #10515463
-		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet(null);
-		this.listener = listener;
-		this.handler = new Handler();
-
-		Gdx.app = this;
-		Gdx.input = this.getInput();
-		Gdx.audio = this.getAudio();
-		Gdx.files = this.getFiles();
-		Gdx.graphics = this.getGraphics();
-		Gdx.net = this.getNet();
-
-		createWakeLock(config.useWakelock);
-		hideStatusBar(config);
-		return graphics.getView();
 	}
 
 	@Override
