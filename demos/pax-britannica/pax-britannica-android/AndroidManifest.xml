@@ -4,6 +4,8 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
+	<uses-feature android:glEsVersion="0x00020000" android:required="true" />
+	
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
