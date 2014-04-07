@@ -33,7 +33,8 @@ import com.badlogic.gdx.utils.Array;
 /** Interface that abstracts the Android application class usages, so that libGDX can be used with a fragment (or with any other
  * client code)
  * 
- * @author Bartol Karuza (me@bartolkaruza.com) */
+ * @author Bartol Karuza (me@bartolkaruza.com)
+ * @author davebaol */
 public interface AndroidApplicationBase extends Application {
 
 	static final int MINIMUM_SDK = 8;
