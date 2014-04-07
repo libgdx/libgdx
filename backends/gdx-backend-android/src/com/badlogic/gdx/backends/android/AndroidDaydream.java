@@ -127,6 +127,26 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		this.listener = listener;
 		this.handler = new Handler();
 
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				audio.resume();
+			}
+			
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+			
+			@Override
+			public void dispose () {
+				audio.dispose();
+				audio = null;
+			}
+		});
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -409,10 +429,5 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	@Override
 	public void useImmersiveMode (boolean b) {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public boolean isFragment () {
-		return false;
 	}
 }

@@ -74,10 +74,6 @@ public interface AndroidApplicationBase extends Application {
 	 * @return the array of {@link LifecycleListener}'s */
 	Array<LifecycleListener> getLifecycleListeners ();
 
-	/** Returns if this application is a fragment
-	 * @return true if the application is a fragment, otherwise false */
-	boolean isFragment ();
-
 	/** Returns the Window associated with the application
 	 * @return The {@link Window} associated with the application */
 	Window getApplicationWindow ();

@@ -370,9 +370,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		}
 
 		if (lresume) {
-			if (app.isFragment()) {
-				((AndroidAudio)((AndroidApplicationBase)app).getAudio()).resume();
-			}
 			Array<LifecycleListener> listeners = ((AndroidApplicationBase)app).getLifecycleListeners();
 			synchronized (listeners) {
 				for (LifecycleListener listener : listeners) {
@@ -409,7 +406,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				}
 			}
 			app.getApplicationListener().pause();
-			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
@@ -421,7 +417,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 				}
 			}
 			((AndroidApplicationBase)app).getApplicationListener().dispose();
-			((AndroidAudio)((AndroidApplicationBase)app).getAudio()).dispose();
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 

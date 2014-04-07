@@ -158,6 +158,25 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		this.listener = listener;
 		this.handler = new Handler();
 
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				audio.resume();
+			}
+			
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+			
+			@Override
+			public void dispose () {
+				audio.dispose();
+			}
+		});
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -406,11 +425,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
-	}
-
-	@Override
-	public boolean isFragment () {
-		return true;
 	}
 
 	@Override

@@ -93,6 +93,9 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 		this.listener = listener;
 
+		// Unlike activity, fragment and daydream applications there's no need for a specialized audio listener.
+		// See description in onPause method.
+
 		Gdx.app = this;
 		Gdx.input = input;
 		Gdx.audio = audio;
@@ -418,8 +421,4 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public boolean isFragment () {
-		return false;
-	}
 }

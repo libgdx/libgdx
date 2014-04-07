@@ -138,6 +138,25 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		this.useImmersiveMode = config.useImmersiveMode;
 		this.hideStatusBar = config.hideStatusBar;
 
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				// No need to resume audio here
+			}
+			
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+			
+			@Override
+			public void dispose () {
+				audio.dispose();
+			}
+		});
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -464,11 +483,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	@Override
 	public Array<LifecycleListener> getLifecycleListeners () {
 		return lifecycleListeners;
-	}
-
-	@Override
-	public boolean isFragment () {
-		return false;
 	}
 
 	@Override

@@ -371,7 +371,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 					listener.resume();
 				}
 			}
-			((AndroidDaydream)app).audio.resume();
 			app.listener.resume();
 			Gdx.app.log("AndroidGraphics", "resumed");
 		}
@@ -402,7 +401,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 				}
 			}
 			app.listener.pause();
-			((AndroidDaydream)app).audio.pause();
 			Gdx.app.log("AndroidGraphics", "paused");
 		}
 
@@ -414,8 +412,6 @@ public final class AndroidGraphicsDaydream implements Graphics, Renderer {
 				}
 			}
 			app.listener.dispose();
-			((AndroidDaydream)app).audio.dispose();
-			((AndroidDaydream)app).audio = null;
 			Gdx.app.log("AndroidGraphics", "destroyed");
 		}
 
