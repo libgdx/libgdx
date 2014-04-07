@@ -20,10 +20,13 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import android.content.Context;
+import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Debug;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.Application;
@@ -47,12 +50,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
  * 
  * @author mzechner */
-public class AndroidLiveWallpaper implements Application {
+public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}
 	
-	public static final int MINIMUM_SDK = 8;
 	protected AndroidLiveWallpaperService service;
 
 	protected AndroidGraphicsLiveWallpaper graphics;
@@ -222,6 +224,7 @@ public class AndroidLiveWallpaper implements Application {
 		}
 	}
 
+	@Override
 	public WindowManager getWindowManager () {
 		return service.getWindowManager();
 	}
@@ -230,7 +233,13 @@ public class AndroidLiveWallpaper implements Application {
 		return service;
 	}
 
+	@Deprecated
 	public ApplicationListener getListener () {
+		return listener;
+	}
+
+	@Override
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
 
@@ -257,7 +266,7 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -365,7 +374,52 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	@Override
-	public ApplicationListener getApplicationListener () {
-		return listener;
+	public Context getContext () {
+		return service;
+	}
+
+	@Override
+	public Array<Runnable> getRunnables () {
+		return runnables;
+	}
+
+	@Override
+	public Array<Runnable> getExecutedRunnables () {
+		return executedRunnables;
+	}
+
+	@Override
+	public Array<LifecycleListener> getLifecycleListeners () {
+		return lifecycleListeners;
+	}
+
+	@Override
+	public void startActivity (Intent intent) {
+		service.startActivity(intent);
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Handler getHandler () {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void runOnUiThread (Runnable runnable) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void useImmersiveMode (boolean b) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isFragment () {
+		return false;
 	}
 }

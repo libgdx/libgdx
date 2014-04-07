@@ -58,7 +58,6 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		GdxNativesLoader.load();
 	}
 
-	public static final int MINIMUM_SDK = 8;
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -300,7 +299,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		getInput().registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
@@ -346,7 +345,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 

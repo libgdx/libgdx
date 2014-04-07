@@ -145,7 +145,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 
 	private void updatePpi () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
 		ppiX = metrics.xdpi;
 		ppiY = metrics.ydpi;
@@ -242,7 +242,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		Gdx.app.log("AndroidGraphics", ShaderProgram.getManagedStatus());
 		Gdx.app.log("AndroidGraphics", FrameBuffer.getManagedStatus());
 
-		Display display = ((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		Display display = app.getWindowManager().getDefaultDisplay();
 		this.width = display.getWidth();
 		this.height = display.getHeight();
 		mean = new WindowedMean(5);
@@ -531,7 +531,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public DisplayMode getDesktopDisplayMode () {
 		DisplayMetrics metrics = new DisplayMetrics();
-		((WindowManager)app.getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
+		app.getWindowManager().getDefaultDisplay().getMetrics(metrics);
 		return new AndroidDisplayMode(metrics.widthPixels, metrics.heightPixels, 0, 0);
 	}
 

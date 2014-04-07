@@ -31,6 +31,7 @@ import android.service.dreams.DreamService;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -54,7 +55,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
  * the GLSurfaceView.
  * 
  * @author mzechner */
-public class AndroidDaydream extends DreamService implements Application {
+public class AndroidDaydream extends DreamService implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}
@@ -215,7 +216,7 @@ public class AndroidDaydream extends DreamService implements Application {
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		getInput().registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
@@ -254,7 +255,7 @@ public class AndroidDaydream extends DreamService implements Application {
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -380,5 +381,50 @@ public class AndroidDaydream extends DreamService implements Application {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
+	}
+
+	@Override
+	public Context getContext () {
+		return this;
+	}
+
+	@Override
+	public Array<Runnable> getRunnables () {
+		return runnables;
+	}
+
+	@Override
+	public Array<Runnable> getExecutedRunnables () {
+		return executedRunnables;
+	}
+
+	@Override
+	public Array<LifecycleListener> getLifecycleListeners () {
+		return lifecycleListeners;
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		return this.getWindow();
+	}
+
+	@Override
+	public Handler getHandler () {
+		return this.handler;
+	}
+
+	@Override
+	public void runOnUiThread (Runnable runnable) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void useImmersiveMode (boolean b) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isFragment () {
+		return false;
 	}
 }

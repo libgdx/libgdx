@@ -49,7 +49,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		GdxNativesLoader.load();
 	}
 
-	public static final int MINIMUM_SDK = 8;
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -214,7 +213,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		getInput().registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
@@ -256,7 +255,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -422,5 +421,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public WindowManager getWindowManager () {
+		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
 	}
 }
