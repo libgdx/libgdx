@@ -347,8 +347,9 @@ void main() {
                 if(spotFactor > cos(u_spotLights[i].cutOff)) {
                     //is inside the cone
                     value *= spotFactor * u_spotLights[i].exponent;
+                    
+                	v_lightDiffuse += value;
                 }
-                v_lightDiffuse += value;
 
                 #ifdef specularFlag
                     float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
