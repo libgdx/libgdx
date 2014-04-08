@@ -56,28 +56,6 @@
 		</ant>
 	</target>
 	
-	<target name="audio" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-audio/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
-        <ant antfile="build-macosx64.xml" dir="extensions/gdx-audio/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
-	</target>
-	
-	<target name="image" depends="core">
-		<ant antfile="build-macosx32.xml" dir="extensions/gdx-image/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
-        <ant antfile="build-macosx64.xml" dir="extensions/gdx-image/jni">
-			<target name="clean"/>
-			<target name="postcompile"/>
-		</ant>
-	</target>
-	
-	<target name="all" depends="core,backend-robovm,freetype,bullet,audio,image,controllers">	
+	<target name="all" depends="core,backend-robovm,freetype,bullet,controllers">	
 	</target>
 </project>

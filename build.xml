@@ -231,32 +231,6 @@
 		</ant>
 	</target>
 
-	<!-- gdx image -->
-	<target name="gdx-image" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-image">
-			<property name="distDir" value="${distDir}/extensions/gdx-image"/>
-			<property name="jar" value="gdx-image"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<!-- gdx audio -->
-	<target name="gdx-audio" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-audio">
-			<property name="distDir" value="${distDir}/extensions/gdx-audio"/>
-			<property name="jar" value="gdx-audio"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
 	<!-- gdx freetype -->
 	<target name="gdx-freetype" depends="gdx-core">
 		<path id="classpath">
@@ -335,7 +309,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
+depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->
