@@ -75,7 +75,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 (Quaternion quaternion) {
 		this.set(quaternion);
 	}
-	
+
 	/** Construct a matrix from the given translation, rotation and scale.
 	 * @param position The translation
 	 * @param rotation The rotation, must be normalized
@@ -125,7 +125,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 set (Quaternion quaternion) {
 		return set(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
 	}
-	
+
 	/** Sets the matrix to a rotation matrix representing the quaternion.
 	 * 
 	 * @param x The X component of the quaternion that is to be used to set this matrix.
@@ -133,7 +133,7 @@ public class Matrix4 implements Serializable {
 	 * @param z The Z component of the quaternion that is to be used to set this matrix.
 	 * @param w The W component of the quaternion that is to be used to set this matrix.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 set(float x, float y, float z, float w) {
+	public Matrix4 set (float x, float y, float z, float w) {
 		float l_xx = x * x;
 		float l_xy = x * y;
 		float l_xz = x * z;
@@ -162,7 +162,7 @@ public class Matrix4 implements Serializable {
 		val[M33] = 1;
 		return this;
 	}
-	
+
 	/** Set this matrix to the specified translation and rotation.
 	 * @param position The translation
 	 * @param orientation The rotation, must be normalized
@@ -170,7 +170,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 set (Vector3 position, Quaternion orientation) {
 		return set(position.x, position.y, position.z, orientation.x, orientation.y, orientation.z, orientation.w);
 	}
-	
+
 	/** Sets the matrix to a rotation matrix representing the translation and quaternion.
 	 * 
 	 * @param translationX The X component of the translation that is to be used to set this matrix.
@@ -181,27 +181,28 @@ public class Matrix4 implements Serializable {
 	 * @param quaternionZ The Z component of the quaternion that is to be used to set this matrix.
 	 * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY, float quaternionZ, float quaternionW) {
-		final float xs = quaternionX * 2f,	ys = quaternionY * 2f,	zs = quaternionZ * 2f;
-		final float wx = quaternionW * xs,	wy = quaternionW * ys, 	wz = quaternionW * zs;
-		final float xx = quaternionX * xs,	xy = quaternionX * ys, 	xz = quaternionX * zs;
-		final float yy = quaternionY * ys,	yz = quaternionY * zs,	zz = quaternionZ * zs;
+	public Matrix4 set (float translationX, float translationY, float translationZ, float quaternionX, float quaternionY,
+		float quaternionZ, float quaternionW) {
+		final float xs = quaternionX * 2f, ys = quaternionY * 2f, zs = quaternionZ * 2f;
+		final float wx = quaternionW * xs, wy = quaternionW * ys, wz = quaternionW * zs;
+		final float xx = quaternionX * xs, xy = quaternionX * ys, xz = quaternionX * zs;
+		final float yy = quaternionY * ys, yz = quaternionY * zs, zz = quaternionZ * zs;
 
 		val[M00] = (1.0f - (yy + zz));
 		val[M01] = (xy - wz);
 		val[M02] = (xz + wy);
 		val[M03] = translationX;
-		
+
 		val[M10] = (xy + wz);
 		val[M11] = (1.0f - (xx + zz));
 		val[M12] = (yz - wx);
 		val[M13] = translationY;
-		
+
 		val[M20] = (xz - wy);
 		val[M21] = (yz + wx);
 		val[M22] = (1.0f - (xx + yy));
 		val[M23] = translationZ;
-		
+
 		val[M30] = 0.f;
 		val[M31] = 0.f;
 		val[M32] = 0.f;
@@ -235,41 +236,40 @@ public class Matrix4 implements Serializable {
 		val[M33] = 1;
 		return this;
 	}
-	
+
 	/** Set this matrix to the specified translation, rotation and scale.
 	 * @param position The translation
 	 * @param orientation The rotation, must be normalized
 	 * @param scale The scale
 	 * @return This matrix for chaining */
 	public Matrix4 set (Vector3 position, Quaternion orientation, Vector3 scale) {
-		final float xs = orientation.x * 2f,	ys = orientation.y * 2f, 	zs = orientation.z * 2f;
-		final float wx = orientation.w * xs,	wy = orientation.w * ys, 	wz = orientation.w * zs;
-		final float xx = orientation.x * xs,	xy = orientation.x * ys, 	xz = orientation.x * zs;
-		final float yy = orientation.y * ys,	yz = orientation.y * zs,	zz = orientation.z * zs;
-	
+		final float xs = orientation.x * 2f, ys = orientation.y * 2f, zs = orientation.z * 2f;
+		final float wx = orientation.w * xs, wy = orientation.w * ys, wz = orientation.w * zs;
+		final float xx = orientation.x * xs, xy = orientation.x * ys, xz = orientation.x * zs;
+		final float yy = orientation.y * ys, yz = orientation.y * zs, zz = orientation.z * zs;
+
 		val[M00] = scale.x * (1.0f - (yy + zz));
 		val[M01] = scale.x * (xy - wz);
 		val[M02] = scale.x * (xz + wy);
 		val[M03] = position.x;
-		
+
 		val[M10] = scale.y * (xy + wz);
 		val[M11] = scale.y * (1.0f - (xx + zz));
 		val[M12] = scale.y * (yz - wx);
 		val[M13] = position.y;
-		
+
 		val[M20] = scale.z * (xz - wy);
 		val[M21] = scale.z * (yz + wx);
 		val[M22] = scale.z * (1.0f - (xx + yy));
 		val[M23] = position.z;
-		
+
 		val[M30] = 0.0f;
 		val[M31] = 0.0f;
 		val[M32] = 0.0f;
 		val[M33] = 1.0f;
-		
+
 		return this;
 	}
-
 
 	/** @return a copy of this matrix */
 	public Matrix4 cpy () {
@@ -474,7 +474,7 @@ public class Matrix4 implements Serializable {
 			+ val[M10] * val[M21] * val[M02] * val[M33] + val[M20] * val[M01] * val[M12] * val[M33] - val[M00] * val[M21] * val[M12]
 			* val[M33] - val[M10] * val[M01] * val[M22] * val[M33] + val[M00] * val[M11] * val[M22] * val[M33];
 	}
-	
+
 	/** @return The determinant of the 3x3 upper left matrix */
 	public float det3x3 () {
 		return val[M00] * val[M11] * val[M22] + val[M01] * val[M12] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
@@ -592,7 +592,7 @@ public class Matrix4 implements Serializable {
 		val[M23] = vector.z;
 		return this;
 	}
-	
+
 	/** Sets the 4th column to the translation vector.
 	 * 
 	 * @param x The X coordinate of the translation vector
@@ -700,7 +700,7 @@ public class Matrix4 implements Serializable {
 		}
 		return set(quat.setFromAxisRad(axis, radians));
 	}
-	
+
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
 	 * @param axisX The x-component of the axis
@@ -715,7 +715,7 @@ public class Matrix4 implements Serializable {
 		}
 		return set(quat.setFromAxisRad(axisX, axisY, axisZ, radians));
 	}
-	
+
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
 	 * @param axisX The x-component of the axis
@@ -738,7 +738,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 setToRotation (final Vector3 v1, final Vector3 v2) {
 		return set(quat.setFromCross(v1, v2));
 	}
-	
+
 	/** Set the matrix to a rotation matrix between two vectors.
 	 * @param x1 The base vectors x value
 	 * @param y1 The base vectors y value
@@ -750,7 +750,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 setToRotation (final float x1, final float y1, final float z1, final float x2, final float y2, final float z2) {
 		return set(quat.setFromCross(x1, y1, z1, x2, y2, z2));
 	}
-	
+
 	/** Sets this matrix to a rotation matrix from the given euler angles.
 	 * @param yaw the yaw in degrees
 	 * @param pitch the pitch in degress
@@ -854,12 +854,12 @@ public class Matrix4 implements Serializable {
 
 	/** Linearly interpolates between this matrix and the given matrix mixing by alpha
 	 * @param matrix the matrix
-	 * @param alpha the alpha value in the range [0,1] 
+	 * @param alpha the alpha value in the range [0,1]
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 lerp (Matrix4 matrix, float alpha) {
 		for (int i = 0; i < 16; i++)
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
-		
+
 		return this;
 	}
 
@@ -913,12 +913,10 @@ public class Matrix4 implements Serializable {
 		return position;
 	}
 
-	/**
-	 * Gets the rotation of this matrix.
+	/** Gets the rotation of this matrix.
 	 * @param rotation The {@link Quaternion} to receive the rotation
 	 * @param normalizeAxes True to normalize the axes, necessary when the matrix might also include scaling.
-	 * @return The provided {@link Quaternion} for chaining.
-	 */
+	 * @return The provided {@link Quaternion} for chaining. */
 	public Quaternion getRotation (Quaternion rotation, boolean normalizeAxes) {
 		return rotation.setFromMatrix(normalizeAxes, this);
 	}
@@ -926,23 +924,42 @@ public class Matrix4 implements Serializable {
 	public Quaternion getRotation (Quaternion rotation) {
 		return rotation.setFromMatrix(this);
 	}
-	
-	public Vector3 getScale (Vector3 scale) {		
-		// Deal with the 0 rotation case first
-		if(MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02]) &&
-			MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12]) &&
-			MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])){
-			scale.x = val[Matrix4.M00];
-			scale.y = val[Matrix4.M11];
-			scale.z = val[Matrix4.M22];
-		}
-		else {
-			// We have to do the full calculation. 
-			scale.x = (float)Math.sqrt(val[Matrix4.M00]*val[Matrix4.M00] + val[Matrix4.M01]*val[Matrix4.M01] + val[Matrix4.M02]*val[Matrix4.M02]);
-			scale.y = (float)Math.sqrt(val[Matrix4.M10]*val[Matrix4.M10] + val[Matrix4.M11]*val[Matrix4.M11] + val[Matrix4.M12]*val[Matrix4.M12]);
-			scale.z = (float)Math.sqrt(val[Matrix4.M20]*val[Matrix4.M20] + val[Matrix4.M21]*val[Matrix4.M21] + val[Matrix4.M22]*val[Matrix4.M22]);	
-		}
-		return scale;
+
+	/** @return the squared scale factor on the X axis */
+	public float getScaleXSquared () {
+		return val[Matrix4.M00] * val[Matrix4.M00] + val[Matrix4.M01] * val[Matrix4.M01] + val[Matrix4.M02] * val[Matrix4.M02];
+	}
+
+	/** @return the squared scale factor on the Y axis */
+	public float getScaleYSquared () {
+		return val[Matrix4.M10] * val[Matrix4.M10] + val[Matrix4.M11] * val[Matrix4.M11] + val[Matrix4.M12] * val[Matrix4.M12];
+	}
+
+	/** @return the squared scale factor on the Z axis */
+	public float getScaleZSquared () {
+		return val[Matrix4.M20] * val[Matrix4.M20] + val[Matrix4.M21] * val[Matrix4.M21] + val[Matrix4.M22] * val[Matrix4.M22];
+	}
+
+	/** @return the scale factor on the X axis (non-negative) */
+	public float getScaleX () {
+		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? val[Matrix4.M00] : (float)Math
+			.sqrt(getScaleXSquared());
+	}
+
+	/** @return the scale factor on the Y axis (non-negative) */
+	public float getScaleY () {
+		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? val[Matrix4.M11] : (float)Math
+			.sqrt(getScaleYSquared());
+	}
+
+	/** @return the scale factor on the X axis (non-negative) */
+	public float getScaleZ () {
+		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? val[Matrix4.M22] : (float)Math
+			.sqrt(getScaleZSquared());
+	}
+
+	public Vector3 getScale (Vector3 scale) {
+		return scale.set(getScaleX(), getScaleY(), getScaleZ());
 	}
 
 	/** removes the translational part and transposes the matrix. */
@@ -1022,7 +1039,7 @@ public class Matrix4 implements Serializable {
 			* val[M12] * val[M31] + val[M01] * val[M10] * val[M32] - val[M00] * val[M11] * val[M32];
 		tmp[M33] = val[M01] * val[M12] * val[M20] - val[M02] * val[M11] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] + val[M00] * val[M11] * val[M22];
-	
+
 		float inv_det = 1.0f / l_det;
 		val[M00] = tmp[M00] * inv_det;
 		val[M01] = tmp[M01] * inv_det;
@@ -1227,7 +1244,7 @@ public class Matrix4 implements Serializable {
 		quat.set(axis, angle);
 		return rotate(quat);
 	}
-	
+
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale.
 	 * 
@@ -1252,7 +1269,7 @@ public class Matrix4 implements Serializable {
 		quat.setFromAxis(axisX, axisY, axisZ, degrees);
 		return rotate(quat);
 	}
-	
+
 	/** Postmultiplies this matrix with a (counter-clockwise) rotation matrix. Postmultiplication is also used by OpenGL ES' 1.x
 	 * glTranslate/glRotate/glScale
 	 * @param axisX The x-axis component of the vector to rotate around.
@@ -1276,11 +1293,11 @@ public class Matrix4 implements Serializable {
 		mul(val, tmp);
 		return this;
 	}
-	
+
 	/** Postmultiplies this matrix by the rotation between two vectors.
 	 * @param v1 The base vector
 	 * @param v2 The target vector
-	 * @return This matrix for the purpose of chaining methods together */	
+	 * @return This matrix for the purpose of chaining methods together */
 	public Matrix4 rotate (final Vector3 v1, final Vector3 v2) {
 		return rotate(quat.setFromCross(v1, v2));
 	}
@@ -1324,40 +1341,40 @@ public class Matrix4 implements Serializable {
 	 * @param quaternionW The W component of the quaternion that is to be used to set this matrix.
 	 * @param scaleX The X component of the scaling that is to be used to set this matrix.
 	 * @param scaleY The Y component of the scaling that is to be used to set this matrix.
-	 * @param scaleZ The Z component of the scaling that is to be used to set this matrix. 
+	 * @param scaleZ The Z component of the scaling that is to be used to set this matrix.
 	 * @return This matrix for the purpose of chaining methods together. */
-	public Matrix4 set(float translationX, float translationY, float translationZ, float quaternionX, float quaternionY, float quaternionZ, float quaternionW, float scaleX, float scaleY, float scaleZ) {
-		final float xs = quaternionX * 2f,	ys = quaternionY * 2f,	zs = quaternionZ * 2f;
-		final float wx = quaternionW * xs,	wy = quaternionW * ys, 	wz = quaternionW * zs;
-		final float xx = quaternionX * xs,	xy = quaternionX * ys, 	xz = quaternionX * zs;
-		final float yy = quaternionY * ys,	yz = quaternionY * zs,	zz = quaternionZ * zs;
+	public Matrix4 set (float translationX, float translationY, float translationZ, float quaternionX, float quaternionY,
+		float quaternionZ, float quaternionW, float scaleX, float scaleY, float scaleZ) {
+		final float xs = quaternionX * 2f, ys = quaternionY * 2f, zs = quaternionZ * 2f;
+		final float wx = quaternionW * xs, wy = quaternionW * ys, wz = quaternionW * zs;
+		final float xx = quaternionX * xs, xy = quaternionX * ys, xz = quaternionX * zs;
+		final float yy = quaternionY * ys, yz = quaternionY * zs, zz = quaternionZ * zs;
 
 		val[M00] = scaleX * (1.0f - (yy + zz));
 		val[M01] = scaleY * (xy - wz);
 		val[M02] = scaleZ * (xz + wy);
 		val[M03] = translationX;
-		
+
 		val[M10] = scaleX * (xy + wz);
 		val[M11] = scaleY * (1.0f - (xx + zz));
 		val[M12] = scaleZ * (yz - wx);
 		val[M13] = translationY;
-		
+
 		val[M20] = scaleX * (xz - wy);
 		val[M21] = scaleY * (yz + wx);
 		val[M22] = scaleZ * (1.0f - (xx + yy));
 		val[M23] = translationZ;
-		
+
 		val[M30] = 0.f;
 		val[M31] = 0.f;
 		val[M32] = 0.f;
 		val[M33] = 1.0f;
 		return this;
 	}
-	
-	/** Copies the 4x3 upper-left sub-matrix into float array.
-	 * The destination array is supposed to be a column major matrix.
+
+	/** Copies the 4x3 upper-left sub-matrix into float array. The destination array is supposed to be a column major matrix.
 	 * @param dst the destination matrix */
-	public void extract4x3Matrix(float[] dst) {
+	public void extract4x3Matrix (float[] dst) {
 		dst[0] = val[M00];
 		dst[1] = val[M10];
 		dst[2] = val[M20];

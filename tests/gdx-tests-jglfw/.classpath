@@ -7,7 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-bullet"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-freetype"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-tests"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/gdx-controllers-desktop"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>

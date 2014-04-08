@@ -163,20 +163,6 @@
 		</ant>
 	</target>
 
-	<!-- gdx tiled preprocessor -->
-	<target name="gdx-tiled-preprocessor" depends="gdx-core,gdx-backend-lwjgl,gdx-tools">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-lwjgl.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-tools/gdx-tools.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-tiled-preprocessor">
-			<property name="distDir" value="${distDir}/extensions/gdx-tiled-preprocessor"/>
-			<property name="jar" value="gdx-tiled-preprocessor"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
 	<!-- gdx controllers -->
 	<target name="gdx-controllers" depends="gdx-core">
 		<path id="classpath">
@@ -227,32 +213,6 @@
 		<ant antfile="../../../build-template.xml" dir="extensions/gdx-controllers/gdx-controllers-gwt">
 			<property name="distDir" value="${distDir}/extensions/gdx-controllers"/>
 			<property name="jar" value="gdx-controllers-gwt"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<!-- gdx image -->
-	<target name="gdx-image" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-image">
-			<property name="distDir" value="${distDir}/extensions/gdx-image"/>
-			<property name="jar" value="gdx-image"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
-	<!-- gdx audio -->
-	<target name="gdx-audio" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="extensions/gdx-audio">
-			<property name="distDir" value="${distDir}/extensions/gdx-audio"/>
-			<property name="jar" value="gdx-audio"/>
 			<reference refid="classpath"/>
 		</ant>
 	</target>
@@ -335,7 +295,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-image,gdx-audio,gdx-freetype,gdx-bullet,gdx-tiled-preprocessor"/>
+depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

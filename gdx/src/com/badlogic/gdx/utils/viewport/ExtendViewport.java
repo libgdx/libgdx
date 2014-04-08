@@ -26,8 +26,8 @@ import com.badlogic.gdx.utils.Scaling;
  * the world is extended and black bars (letterboxing) are used for any remaining space.
  * @author Nathan Sweet */
 public class ExtendViewport extends Viewport {
-	private final float minWorldWidth, minWorldHeight;
-	private final float maxWorldWidth, maxWorldHeight;
+	private float minWorldWidth, minWorldHeight;
+	private float maxWorldWidth, maxWorldHeight;
 
 	/** Creates a new viewport using a new {@link OrthographicCamera} with no maximum world size. */
 	public ExtendViewport (float minWorldWidth, float minWorldHeight) {
@@ -87,5 +87,37 @@ public class ExtendViewport extends Viewport {
 		viewportY = (screenHeight - viewportHeight) / 2;
 
 		super.update(screenWidth, screenHeight, centerCamera);
+	}
+
+	public float getMinWorldWidth () {
+		return minWorldWidth;
+	}
+
+	public void setMinWorldWidth (float minWorldWidth) {
+		this.minWorldWidth = minWorldWidth;
+	}
+
+	public float getMinWorldHeight () {
+		return minWorldHeight;
+	}
+
+	public void setMinWorldHeight (float minWorldHeight) {
+		this.minWorldHeight = minWorldHeight;
+	}
+
+	public float getMaxWorldWidth () {
+		return maxWorldWidth;
+	}
+
+	public void setMaxWorldWidth (float maxWorldWidth) {
+		this.maxWorldWidth = maxWorldWidth;
+	}
+
+	public float getMaxWorldHeight () {
+		return maxWorldHeight;
+	}
+
+	public void setMaxWorldHeight (float maxWorldHeight) {
+		this.maxWorldHeight = maxWorldHeight;
 	}
 }

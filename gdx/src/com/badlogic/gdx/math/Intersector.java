@@ -464,50 +464,53 @@ public final class Intersector {
 		}
 		return hit;
 	}
-
+	
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
 	 * 
 	 * @param ray The ray
 	 * @param box The bounding box
 	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
-		float a, b;
-		float min, max;
-		float divX = 1 / ray.direction.x;
-		float divY = 1 / ray.direction.y;
-		float divZ = 1 / ray.direction.z;
+		return intersectRayBoundsFast(ray, box.getCenter(), box.getDimensions());
+	}
 
-		a = (box.min.x - ray.origin.x) * divX;
-		b = (box.max.x - ray.origin.x) * divX;
-		if (a < b) {
-			min = a;
-			max = b;
-		} else {
-			min = b;
-			max = a;
+	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
+	 * 
+	 * @param ray The ray
+	 * @param center The center of the bounding box
+	 * @param dimensions The dimensions (width, height and depth) of the bounding box
+	 * @return Whether the ray and the bounding box intersect. */
+	static public boolean intersectRayBoundsFast (Ray ray, Vector3 center, Vector3 dimensions) {
+		final float divX = ray.direction.x == 0f ? 0f : 1 / ray.direction.x;
+		final float divY = ray.direction.y == 0f ? 0f : 1 / ray.direction.y;
+		final float divZ = ray.direction.z == 0f ? 0f : 1 / ray.direction.z;
+		
+		float minx = ((center.x - dimensions.x * .5f) - ray.origin.x) * divX;
+		float maxx = ((center.x + dimensions.x * .5f) - ray.origin.x) * divX;
+		if (minx > maxx) {
+			final float t = minx;
+			minx = maxx;
+			maxx = t;
 		}
-
-		a = (box.min.y - ray.origin.y) * divY;
-		b = (box.max.y - ray.origin.y) * divY;
-		if (a > b) {
-			float t = a;
-			a = b;
-			b = t;
+		
+		float miny = ((center.y - dimensions.y * .5f) - ray.origin.y) * divY;
+		float maxy = ((center.y + dimensions.y * .5f) - ray.origin.y) * divY;
+		if (miny > maxy) {
+			final float t = miny;
+			miny = maxy;
+			maxy = t;
 		}
-
-		if (a > min) min = a;
-		if (b < max) max = b;
-
-		a = (box.min.z - ray.origin.z) * divZ;
-		b = (box.max.z - ray.origin.z) * divZ;
-		if (a > b) {
-			float t = a;
-			a = b;
-			b = t;
+		
+		float minz = ((center.z - dimensions.z * .5f) - ray.origin.z) * divZ;
+		float maxz = ((center.z + dimensions.z * .5f) - ray.origin.z) * divZ;
+		if (minz > maxz) {
+			final float t = minz;
+			minz = maxz;
+			maxz = t;
 		}
-
-		if (a > min) min = a;
-		if (b < max) max = b;
+		
+		float min = Math.max(Math.max(minx, miny), minz);
+		float max = Math.min(Math.min(maxx, maxy), maxz);
 
 		return max >= 0 && max >= min;
 	}
