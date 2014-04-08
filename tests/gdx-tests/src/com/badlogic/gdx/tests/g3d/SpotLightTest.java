@@ -34,13 +34,12 @@ public class SpotLightTest extends ModelTest{
 	public void create () {
 		super.create();
 		environment.clear();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.0f, 0.0f, 0.0f, 1.0f));
-		environment.add(spotLight = new SpotLight().set(0.2f, 0.8f, 0.2f, new Vector3(), 1, new Vector3(), 1,0.0f,0.0f, 10,1));
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.0f, 0.0f, 1.0f));
+		environment.add(spotLight = new SpotLight().set(0.2f, 0.8f, 0.2f, new Vector3(), 1, new Vector3(), 1,0.0f,0.0f, 20,3f));
 
 		
 		//Make my own texture plane with a lot of vertices
-		
-		
+				
 		ModelBuilder mb = new ModelBuilder();
 
 		mb.begin();
