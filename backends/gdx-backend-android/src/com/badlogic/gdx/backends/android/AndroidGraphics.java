@@ -29,6 +29,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20API18;
+import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.backends.android.surfaceview.GdxEglConfigChooser;
 import com.badlogic.gdx.backends.android.surfaceview.ResolutionStrategy;
 import com.badlogic.gdx.graphics.GL20;
@@ -116,13 +118,25 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	private View createGLSurfaceView (AndroidApplicationBase application, final ResolutionStrategy resolutionStrategy) {
 		EGLConfigChooser configChooser = getEglConfigChooser();
 		if (!checkGL20()) throw new RuntimeException("Libgdx requires OpenGL ES 2.0");
-		GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
-		if (configChooser != null)
-			view.setEGLConfigChooser(configChooser);
-		else
-			view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
-		view.setRenderer(this);
-		return view;
+		int sdkVersion = android.os.Build.VERSION.SDK_INT;
+		if (sdkVersion <= 10 && config.useGLSurfaceView20API18) {
+			GLSurfaceView20API18 view = new GLSurfaceView20API18(application.getContext(), resolutionStrategy);
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		}
+		else {
+			GLSurfaceView20 view = new GLSurfaceView20(application.getContext(), resolutionStrategy);
+			if (configChooser != null)
+				view.setEGLConfigChooser(configChooser);
+			else
+				view.setEGLConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil);
+			view.setRenderer(this);
+			return view;
+		}
 	}
 
 	private EGLConfigChooser getEglConfigChooser () {
@@ -174,10 +188,6 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public int getWidth () {
 		return width;
-	}
-
-	private static boolean isPowerOfTwo (int value) {
-		return ((value != 0) && (value & (value - 1)) == 0);
 	}
 
 	/** This instantiates the GL10, GL11 and GL20 instances. Includes the check for certain devices that pretend to support GL11 but
@@ -291,7 +301,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 					// TODO: fix deadlock race condition with quick resume/pause.
 					// Temporary workaround:
 					// Android ANR time is 5 seconds, so wait up to 4 seconds before assuming
-					// deadlock and killing process. This can easily be triggered by openning the
+					// deadlock and killing process. This can easily be triggered by opening the
 					// Recent Apps list and then double-tapping the Recent Apps button with
 					// ~500ms between taps.
 					synch.wait(4000);
@@ -545,6 +555,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 		if (view != null) {
 			this.isContinuous = isContinuous;
 			int renderMode = isContinuous ? GLSurfaceView.RENDERMODE_CONTINUOUSLY : GLSurfaceView.RENDERMODE_WHEN_DIRTY;
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).setRenderMode(renderMode);
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).setRenderMode(renderMode);
 			mean.clear();
 		}
@@ -557,6 +568,7 @@ public final class AndroidGraphics implements Graphics, Renderer {
 	@Override
 	public void requestRendering () {
 		if (view != null) {
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).requestRender();
 			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).requestRender();
 		}
 	}

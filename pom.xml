@@ -57,11 +57,13 @@
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>
     <module>backends/gdx-backends-gwt</module>
+    <module>backends/gdx-backend-headless</module>
     <module>extensions/gdx-tools</module>
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>
     <module>extensions/gdx-bullet</module>
     <module>extensions/gdx-bullet/jni/maven</module>
+    <module>extensions/gdx-controllers</module>
   </modules>
 
   <build>
@@ -75,10 +77,6 @@
           <target>1.6</target>
           <fork>true</fork>
           <showWarnings>true</showWarnings>
-<!--
-          <showDeprecation>true</showDeprecation>
-          <compilerArgument>-Xlint" "-Xlint:-serial" "-Xlint:-path</compilerArgument>
--->
         </configuration>
       </plugin>
       <plugin>

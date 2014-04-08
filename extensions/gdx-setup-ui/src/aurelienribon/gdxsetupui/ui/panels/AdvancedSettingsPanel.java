@@ -71,7 +71,8 @@ public class AdvancedSettingsPanel extends javax.swing.JPanel {
 		Ctx.cfgUpdate.suffixCommon = coreSuffixField.getText();
 		Ctx.cfgUpdate.suffixDesktop = desktopSuffixField.getText();
 		Ctx.cfgUpdate.suffixAndroid = androidSuffixField.getText();
-      Ctx.cfgUpdate.suffixRobovm = iosSuffixField.getText();
+		Ctx.cfgUpdate.suffixHtml = htmlSuffixField.getText();
+      		Ctx.cfgUpdate.suffixRobovm = iosSuffixField.getText();
 		Ctx.fireCfgSetupChanged();
 	}
 

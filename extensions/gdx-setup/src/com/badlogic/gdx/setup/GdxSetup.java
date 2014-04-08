@@ -203,7 +203,7 @@ public class GdxSetup {
 		System.out.println("name ... the name of the application");
 		System.out.println("package ... the Java package name of the application");
 		System.out.println("mainClass ... the name of your main ApplicationListener");
-		System.out.println("sdkLocation ... the location of your android SDK");
+		System.out.println("sdkLocation ... the location of your android SDK. Uses ANDROID_HOME if not specified");
 	}
 	
 	private static Map<String, String> parseArgs(String[] args) {
@@ -223,11 +223,17 @@ public class GdxSetup {
 	
 	public static void main (String[] args) {
 		Map<String, String> params = parseArgs(args);
-		if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass") || !params.containsKey("sdkLocation")) {
+                if(!params.containsKey("dir") || !params.containsKey("name") || !params.containsKey("package") || !params.containsKey("mainClass") || ((!params.containsKey("sdkLocation") && System.getenv("ANDROID_HOME") == null))) {
 			new GdxSetupUI();
 			printHelp();
 		} else {
-			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), params.get("sdkLocation"), new CharCallback() {			
+			String sdkLocation = "";
+			if (System.getenv("ANDROID_HOME") != null && !params.containsKey("sdkLocation")) {
+				sdkLocation = System.getenv("ANDROID_HOME");
+			} else {
+				sdkLocation = params.get("sdkLocation");
+			}
+			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), sdkLocation, new CharCallback() {
 				@Override
 				public void character (char c) {
 					System.out.print(c);
