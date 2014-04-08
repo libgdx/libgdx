@@ -36,8 +36,6 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 		super.onCreate(savedInstanceState);
 		GdxTests.tests.add(MatrixTest.class);
 		
-		System.out.println(System.getProperty("java.runtime.name"));
-		
 		LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.HORIZONTAL);
 		
@@ -46,23 +44,15 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 		list.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		layout.addView(list);
 		
-		if (isScreenLarge()) {
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-			} else {
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			}
-			
-			
-			list.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
-			
-			view = new FrameLayout(this);
-			view.setId(2);
-			view.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 2));
-			layout.addView(view);
-		}
-		
+		list.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1));
+
+		view = new FrameLayout(this);
+		view.setId(2);
+		view.setLayoutParams(new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 2));
+		layout.addView(view);
+
 		setContentView(layout);
+
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction().add(1, new TestListFragment()).commit();
 		}
@@ -79,13 +69,6 @@ public class FragmentTestStarter extends FragmentActivity implements AndroidFrag
 	@Override
 	public void exit () {
 	}
-	
-   public boolean isScreenLarge() {
-      final int screenSize = getResources().getConfiguration().screenLayout
-              & Configuration.SCREENLAYOUT_SIZE_MASK;
-      return screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE
-              || screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE;
-  }
    
 	public static class TestListFragment extends ListFragment {
 		
