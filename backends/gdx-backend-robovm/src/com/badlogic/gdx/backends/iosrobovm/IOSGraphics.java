@@ -280,6 +280,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
 		
 		if (!created) {
+			gl20.glViewport(0, 0, width, height);
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
