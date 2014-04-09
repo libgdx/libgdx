@@ -21,6 +21,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.BulletTestCollection;
 import com.badlogic.gdx.tests.DownloadTest;
 import com.badlogic.gdx.tests.MusicTest;
+import com.badlogic.gdx.tests.MyGdxGame;
 import com.badlogic.gdx.tests.Scene2dTest;
 import com.badlogic.gdx.tests.box2d.ContactListenerTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -38,6 +39,6 @@ public class LwjglDebugStarter {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.width = 320;
 //		config.height = 241;
-		new LwjglApplication(test, config);
+		new LwjglApplication(new MyGdxGame(), config);
 	}
 }

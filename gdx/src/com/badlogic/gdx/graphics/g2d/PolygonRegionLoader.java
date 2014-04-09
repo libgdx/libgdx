@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.assets.loaders;
+package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,11 +23,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.PolygonRegionLoader.PolygonRegionParameters;
+import com.badlogic.gdx.assets.loaders.FileHandleResolver;
+import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.PolygonRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.PolygonRegionLoader.PolygonRegionParameters;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -54,6 +55,10 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 	private PolygonRegionParameters defaultParameters = new PolygonRegionParameters();
 
 	private EarClippingTriangulator triangulator = new EarClippingTriangulator();
+	
+	public PolygonRegionLoader() {
+		this(new InternalFileHandleResolver());
+	}
 	
 	public PolygonRegionLoader (FileHandleResolver resolver) {
 		super(resolver);
