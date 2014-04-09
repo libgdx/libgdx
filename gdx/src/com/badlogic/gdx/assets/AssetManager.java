@@ -17,19 +17,15 @@
 package com.badlogic.gdx.assets;
 
 import java.util.Stack;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
+import com.badlogic.gdx.assets.loaders.PolygonRegionLoader;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.assets.loaders.SoundLoader;
 import com.badlogic.gdx.assets.loaders.TextureAtlasLoader;
@@ -41,6 +37,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
@@ -94,6 +91,7 @@ public class AssetManager implements Disposable {
 		setLoader(Texture.class, new TextureLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
 		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
+		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
