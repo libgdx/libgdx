@@ -6,7 +6,7 @@
 hs_err_pid*
 
 ## GWT
-
+war/
 war/gwt_bree/
 gwt-unitCache/
 .apt_generated/
