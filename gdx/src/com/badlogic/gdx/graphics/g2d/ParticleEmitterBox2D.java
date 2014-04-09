@@ -118,8 +118,8 @@ public class ParticleEmitterBox2D extends ParticleEmitter {
 				angle = 2f * normalAngle - angle - 180f;
 				angleCos = MathUtils.cosDeg(angle);
 				angleSin = MathUtils.sinDeg(angle);
-				velocityX = velocity * angleCos;
-				velocityY = velocity * angleSin;
+				velocityX *= angleCos;
+				velocityY *= angleSin;
 			}
 
 			super.translate(velocityX, velocityY);
