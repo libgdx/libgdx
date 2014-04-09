@@ -331,7 +331,7 @@ public class Hiero4 extends JFrame {
 							}
 
 							@Override
-							public void consumeCompressedData (int target) {
+							public void consumeCustomData (int target) {
 							}
 
 							@Override
