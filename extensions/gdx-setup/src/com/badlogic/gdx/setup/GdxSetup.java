@@ -62,7 +62,7 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
 		//core but html required
-		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
+		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
 		
 		// desktop project
 		project.files.add(new ProjectFile("desktop/build.gradle"));
