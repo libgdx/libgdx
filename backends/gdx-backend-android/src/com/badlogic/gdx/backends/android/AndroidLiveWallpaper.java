@@ -20,10 +20,12 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import android.content.Context;
-import android.opengl.GLSurfaceView;
+import android.content.Intent;
 import android.os.Debug;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.badlogic.gdx.Application;
@@ -37,7 +39,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -47,12 +48,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * constructable, instead the {@link AndroidLiveWallpaperService} will create this class internally.
  * 
  * @author mzechner */
-public class AndroidLiveWallpaper implements Application {
+public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}
 	
-	public static final int MINIMUM_SDK = 8;
 	protected AndroidLiveWallpaperService service;
 
 	protected AndroidGraphicsLiveWallpaper graphics;
@@ -90,6 +90,9 @@ public class AndroidLiveWallpaper implements Application {
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
 
 		this.listener = listener;
+
+		// Unlike activity, fragment and daydream applications there's no need for a specialized audio listener.
+		// See description in onPause method.
 
 		Gdx.app = this;
 		Gdx.input = input;
@@ -129,13 +132,8 @@ public class AndroidLiveWallpaper implements Application {
 		// erase touched state. this also sucks donkeyballs...
 		Arrays.fill(touched, false);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onPause();
-			else if (graphics.view instanceof GLSurfaceView)
-				((GLSurfaceView)graphics.view).onPause();
-			else
-				throw new RuntimeException("unimplemented");
+		if (graphics != null) {
+			graphics.onPauseGLSurfaceView();
 		}
 
 		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() done!");
@@ -154,13 +152,8 @@ public class AndroidLiveWallpaper implements Application {
 		// GLSurfaceView is guaranteed to work with this condition on, but GLSurfaceViewCupcake requires it off,
 		// so I disabled it.
 		// if (!firstResume) // mentioned condition
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onResume();
-			else if (graphics.view instanceof GLSurfaceView)
-				((GLSurfaceView)graphics.view).onResume();
-			else
-				throw new RuntimeException("unimplemented");
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {
@@ -183,37 +176,9 @@ public class AndroidLiveWallpaper implements Application {
 			// not necessary - already called in AndroidLiveWallpaperService.onDeepPauseApplication
 			// app.graphics.clearManagedCaches();
 
-			// kill the GLThread managed by GLSurfaceView (only for GLSurfaceView because GLSurffaceViewCupcake stops thread in
-// onPause events - which is not as easy and safe for GLSurfaceView)
-			if (graphics.view != null &&
-					(graphics.view instanceof GLSurfaceView || graphics.view instanceof GLSurfaceViewAPI18)) {
-				View glSurfaceView = graphics.view;
-				try {
-					Method method = null;
-					for (Method m : glSurfaceView.getClass().getMethods()) {
-						if (m.getName().equals("onDestroy")) // implemented in AndroidGraphicsLiveWallpaper, redirects to
-// onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
-						{
-							method = m;
-							break;
-						}
-					}
+			// kill the GLThread managed by GLSurfaceView
+			graphics.onDestroyGLSurfaceView();
 
-					if (method != null) {
-						method.invoke(glSurfaceView);
-						if (AndroidLiveWallpaperService.DEBUG)
-							Log.d(AndroidLiveWallpaperService.TAG,
-								" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
-					} else
-						throw new Exception("method not found!");
-				} catch (Throwable t) {
-					// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service wouldn't be able to
-// shutdown completely
-					Log.e(AndroidLiveWallpaperService.TAG,
-						"failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
-					t.printStackTrace();
-				}
-			}
 		}
 
 		if (audio != null) {
@@ -222,6 +187,7 @@ public class AndroidLiveWallpaper implements Application {
 		}
 	}
 
+	@Override
 	public WindowManager getWindowManager () {
 		return service.getWindowManager();
 	}
@@ -230,7 +196,13 @@ public class AndroidLiveWallpaper implements Application {
 		return service;
 	}
 
+	@Deprecated
 	public ApplicationListener getListener () {
+		return listener;
+	}
+
+	@Override
+	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
 
@@ -257,7 +229,7 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -365,7 +337,48 @@ public class AndroidLiveWallpaper implements Application {
 	}
 
 	@Override
-	public ApplicationListener getApplicationListener () {
-		return listener;
+	public Context getContext () {
+		return service;
 	}
+
+	@Override
+	public Array<Runnable> getRunnables () {
+		return runnables;
+	}
+
+	@Override
+	public Array<Runnable> getExecutedRunnables () {
+		return executedRunnables;
+	}
+
+	@Override
+	public Array<LifecycleListener> getLifecycleListeners () {
+		return lifecycleListeners;
+	}
+
+	@Override
+	public void startActivity (Intent intent) {
+		service.startActivity(intent);
+	}
+
+	@Override
+	public Window getApplicationWindow () {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Handler getHandler () {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void runOnUiThread (Runnable runnable) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void useImmersiveMode (boolean b) {
+		throw new UnsupportedOperationException();
+	}
+
 }

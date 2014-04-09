@@ -591,16 +591,32 @@ public class Quaternion implements Serializable {
 	}
 
 	@Override
-	public boolean equals (final Object o) {
-		if (this == o) {
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(w);
+		result = prime * result + Float.floatToIntBits(x);
+		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + Float.floatToIntBits(z);
+		return result;
+	}
+
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if (!(o instanceof Quaternion)) {
+		if (obj == null) {
 			return false;
 		}
-		final Quaternion comp = (Quaternion)o;
-		return this.x == comp.x && this.y == comp.y && this.z == comp.z && this.w == comp.w;
-
+		if (!(obj instanceof Quaternion)) {
+			return false;
+		}
+		Quaternion other = (Quaternion)obj;
+		return (Float.floatToIntBits(w) == Float.floatToIntBits(other.w))
+			&& (Float.floatToIntBits(x) == Float.floatToIntBits(other.x))
+			&& (Float.floatToIntBits(y) == Float.floatToIntBits(other.y))
+			&& (Float.floatToIntBits(z) == Float.floatToIntBits(other.z));
 	}
 
 	/** Get the dot product between the two quaternions (commutative).
