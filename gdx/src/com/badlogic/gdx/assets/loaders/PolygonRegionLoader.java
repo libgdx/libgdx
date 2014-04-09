@@ -28,7 +28,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** loads {@link PolygonRegion PolygonRegions} using a {@link com.badlogic.gdx.graphics.g2d.PolygonRegionLoader}
  * @author dermetfan */
@@ -48,9 +51,10 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 
 	}
 
-	private com.badlogic.gdx.graphics.g2d.PolygonRegionLoader loader = new com.badlogic.gdx.graphics.g2d.PolygonRegionLoader();
 	private PolygonRegionParameters defaultParameters = new PolygonRegionParameters();
 
+	private EarClippingTriangulator triangulator = new EarClippingTriangulator();
+	
 	public PolygonRegionLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
@@ -58,7 +62,7 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 	@Override
 	public PolygonRegion load (AssetManager manager, String fileName, FileHandle file, PolygonRegionParameters parameter) {
 		Texture texture = manager.get(manager.getDependencies(fileName).first());
-		return loader.load(new TextureRegion(texture), file);
+		return load(new TextureRegion(texture), file);
 	}
 
 	/** If the PSH file contains a line starting with {@link PolygonRegionParameters#texturePrefix params.texturePrefix}, an
@@ -95,4 +99,37 @@ public class PolygonRegionLoader extends SynchronousAssetLoader<PolygonRegion, P
 		return null;
 	}
 
+	/** Loads a PolygonRegion from a PSH (Polygon SHape) file. The PSH file format defines the polygon vertices before
+	 * triangulation:
+	 * <p>
+	 * s 200.0, 100.0, ...
+	 * <p>
+	 * Lines not prefixed with "s" are ignored. PSH files can be created with external tools, eg: <br>
+	 * https://code.google.com/p/libgdx-polygoneditor/ <br>
+	 * http://www.codeandweb.com/physicseditor/
+	 * @param file file handle to the shape definition file */
+	public PolygonRegion load (TextureRegion textureRegion, FileHandle file) {
+		BufferedReader reader = file.reader(256);
+		try {
+			while (true) {
+				String line = reader.readLine();
+				if (line == null) break;
+				if (line.startsWith("s")) {
+					// Read shape.
+					String[] polygonStrings = line.substring(1).trim().split(",");
+					float[] vertices = new float[polygonStrings.length];
+					for (int i = 0, n = vertices.length; i < n; i++)
+						vertices[i] = Float.parseFloat(polygonStrings[i]);
+					// It would probably be better if PSH stored the vertices and triangles, then we don't have to triangulate here.
+					return new PolygonRegion(textureRegion, vertices, triangulator.computeTriangles(vertices).toArray());
+				}
+			}
+		} catch (IOException ex) {
+			throw new GdxRuntimeException("Error reading polygon shape file: " + file, ex);
+		} finally {
+			StreamUtils.closeQuietly(reader);
+		}
+		throw new GdxRuntimeException("Polygon shape not found: " + file);
+	}
+	
 }
