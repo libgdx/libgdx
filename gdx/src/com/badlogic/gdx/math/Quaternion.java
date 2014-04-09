@@ -18,6 +18,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /** A simple quaternion class.
  * @see <a href="http://en.wikipedia.org/wiki/Quaternion">http://en.wikipedia.org/wiki/Quaternion</a>
  * @author badlogicgames@gmail.com
@@ -594,10 +596,10 @@ public class Quaternion implements Serializable {
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(w);
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
-		result = prime * result + Float.floatToIntBits(z);
+		result = prime * result + NumberUtils.floatToRawIntBits(w);
+		result = prime * result + NumberUtils.floatToRawIntBits(x);
+		result = prime * result + NumberUtils.floatToRawIntBits(y);
+		result = prime * result + NumberUtils.floatToRawIntBits(z);
 		return result;
 	}
 
@@ -613,10 +615,10 @@ public class Quaternion implements Serializable {
 			return false;
 		}
 		Quaternion other = (Quaternion)obj;
-		return (Float.floatToIntBits(w) == Float.floatToIntBits(other.w))
-			&& (Float.floatToIntBits(x) == Float.floatToIntBits(other.x))
-			&& (Float.floatToIntBits(y) == Float.floatToIntBits(other.y))
-			&& (Float.floatToIntBits(z) == Float.floatToIntBits(other.z));
+		return (NumberUtils.floatToRawIntBits(w) == NumberUtils.floatToRawIntBits(other.w))
+			&& (NumberUtils.floatToRawIntBits(x) == NumberUtils.floatToRawIntBits(other.x))
+			&& (NumberUtils.floatToRawIntBits(y) == NumberUtils.floatToRawIntBits(other.y))
+			&& (NumberUtils.floatToRawIntBits(z) == NumberUtils.floatToRawIntBits(other.z));
 	}
 
 	/** Get the dot product between the two quaternions (commutative).
