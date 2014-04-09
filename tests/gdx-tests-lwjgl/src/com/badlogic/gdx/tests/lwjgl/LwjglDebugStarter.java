@@ -39,6 +39,8 @@ public class LwjglDebugStarter {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.width = 320;
 //		config.height = 241;
+		config.width = 960;
+		config.height = 600;
 		new LwjglApplication(new MyGdxGame(), config);
 	}
 }
