@@ -17,16 +17,11 @@
 package com.badlogic.gdx.assets;
 
 import java.util.Stack;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.BitmapFontLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.assets.loaders.MusicLoader;
 import com.badlogic.gdx.assets.loaders.ParticleEffectLoader;
 import com.badlogic.gdx.assets.loaders.PixmapLoader;
@@ -375,10 +370,10 @@ public class AssetManager implements Disposable {
 	 * of a single task that happens in the GL thread takes a long time.
 	 * @return true if all loading is finished. */
 	public boolean update (int millis) {
-		long endTime = System.currentTimeMillis() + millis;
+		long endTime = TimeUtils.millis() + millis;
 		while (true) {
 			boolean done = update();
-			if (done || System.currentTimeMillis() > endTime) return done;
+			if (done || TimeUtils.millis() > endTime) return done;
 			ThreadUtils.yield();
 		}
 	}
