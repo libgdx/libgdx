@@ -75,6 +75,7 @@ public class Animation3DTest extends BaseG3dHudTest {
 		builder.begin();
 		MeshPartBuilder part = builder.part("floor", GL20.GL_TRIANGLES, Usage.Position | Usage.TextureCoordinates | Usage.Normal,
 			new Material());
+		((MeshBuilder)part).ensureRectangles(1600);
 		for (float x = -200f; x < 200f; x += 10f) {
 			for (float z = -200f; z < 200f; z += 10f) {
 				part.rect(x, 0, z + 10f, x + 10f, 0, z + 10f, x + 10f, 0, z, x, 0, z, 0, 1, 0);
