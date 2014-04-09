@@ -209,9 +209,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		graphics.destroy();
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onPause();
-		}
+		graphics.onPauseGLSurfaceView();
 
 		super.onDreamingStopped();
 	}
@@ -227,8 +225,8 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 		getInput().registerSensorListeners();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onResume();
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {

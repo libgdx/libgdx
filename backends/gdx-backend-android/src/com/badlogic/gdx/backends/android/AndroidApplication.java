@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -42,7 +41,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -277,10 +275,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
-			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onPause();
-		}
+		graphics.onPauseGLSurfaceView();
 
 		super.onPause();
 	}
@@ -296,9 +291,8 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		getInput().registerSensorListeners();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
-			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onResume();
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {

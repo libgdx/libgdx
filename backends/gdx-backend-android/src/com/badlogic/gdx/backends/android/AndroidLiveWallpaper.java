@@ -21,7 +21,6 @@ import java.util.Arrays;
 
 import android.content.Context;
 import android.content.Intent;
-import android.opengl.GLSurfaceView;
 import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
@@ -40,7 +39,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -134,13 +132,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// erase touched state. this also sucks donkeyballs...
 		Arrays.fill(touched, false);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onPause();
-			else if (graphics.view instanceof GLSurfaceView)
-				((GLSurfaceView)graphics.view).onPause();
-			else
-				throw new RuntimeException("unimplemented");
+		if (graphics != null) {
+			graphics.onPauseGLSurfaceView();
 		}
 
 		if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() done!");
@@ -159,13 +152,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// GLSurfaceView is guaranteed to work with this condition on, but GLSurfaceViewCupcake requires it off,
 		// so I disabled it.
 		// if (!firstResume) // mentioned condition
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18)
-				((GLSurfaceViewAPI18)graphics.view).onResume();
-			else if (graphics.view instanceof GLSurfaceView)
-				((GLSurfaceView)graphics.view).onResume();
-			else
-				throw new RuntimeException("unimplemented");
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {
@@ -188,37 +176,9 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 			// not necessary - already called in AndroidLiveWallpaperService.onDeepPauseApplication
 			// app.graphics.clearManagedCaches();
 
-			// kill the GLThread managed by GLSurfaceView (only for GLSurfaceView because GLSurffaceViewCupcake stops thread in
-// onPause events - which is not as easy and safe for GLSurfaceView)
-			if (graphics.view != null &&
-					(graphics.view instanceof GLSurfaceView || graphics.view instanceof GLSurfaceViewAPI18)) {
-				View glSurfaceView = graphics.view;
-				try {
-					Method method = null;
-					for (Method m : glSurfaceView.getClass().getMethods()) {
-						if (m.getName().equals("onDestroy")) // implemented in AndroidGraphicsLiveWallpaper, redirects to
-// onDetachedFromWindow - which stops GLThread by calling mGLThread.requestExitAndWait()
-						{
-							method = m;
-							break;
-						}
-					}
+			// kill the GLThread managed by GLSurfaceView
+			graphics.onDestroyGLSurfaceView();
 
-					if (method != null) {
-						method.invoke(glSurfaceView);
-						if (AndroidLiveWallpaperService.DEBUG)
-							Log.d(AndroidLiveWallpaperService.TAG,
-								" > AndroidLiveWallpaper - onDestroy() stopped GLThread managed by GLSurfaceView");
-					} else
-						throw new Exception("method not found!");
-				} catch (Throwable t) {
-					// error while scheduling exit of GLThread, GLThread will remain live and wallpaper service wouldn't be able to
-// shutdown completely
-					Log.e(AndroidLiveWallpaperService.TAG,
-						"failed to destroy GLSurfaceView's thread! GLSurfaceView.onDetachedFromWindow impl changed since API lvl 16!");
-					t.printStackTrace();
-				}
-			}
 		}
 
 		if (audio != null) {

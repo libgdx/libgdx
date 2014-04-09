@@ -142,6 +142,20 @@ public class AndroidGraphics implements Graphics, Renderer {
 		}
 	}
 
+	public void onPauseGLSurfaceView () {
+		if (view != null) {
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onPause();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onPause();
+		}
+	}
+
+	public void onResumeGLSurfaceView () {
+		if (view != null) {
+			if (view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)view).onResume();
+			if (view instanceof GLSurfaceView) ((GLSurfaceView)view).onResume();
+		}
+	}
+
 	protected EGLConfigChooser getEglConfigChooser () {
 		return new GdxEglConfigChooser(config.r, config.g, config.b, config.a, config.depth, config.stencil, config.numSamples);
 	}
