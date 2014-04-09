@@ -61,7 +61,7 @@ public class GdxSetup {
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
-		//core but gwt required
+		//core but html required
 		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
 		
 		// desktop project
@@ -83,16 +83,16 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("android/proguard-project.txt", false));
 		project.files.add(new ProjectFile("android/project.properties", false));
 
-		//gwt project
-		project.files.add(new ProjectFile("gwt/build.gradle"));
-		project.files.add(new ProjectFile("gwt/src/GwtLauncher", "gwt/src/" + packageDir + "/client/GwtLauncher.java", true));
-		project.files.add(new ProjectFile("gwt/GdxDefinition", "gwt/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
-		project.files.add(new ProjectFile("gwt/GdxDefinitionSuperdev", "gwt/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
-		project.files.add(new ProjectFile("gwt/war/index", "gwt/webapp/index.html", true));
-		project.files.add(new ProjectFile("gwt/war/styles.css", "gwt/webapp/styles.css", false));
-		project.files.add(new ProjectFile("gwt/war/soundmanager2-jsmin.js", "gwt/webapp/soundmanager2-jsmin.js", false));
-		project.files.add(new ProjectFile("gwt/war/soundmanager2-setup.js", "gwt/webapp/soundmanager2-setup.js", false));
-		project.files.add(new ProjectFile("gwt/war/WEB-INF/web.xml", "gwt/webapp/WEB-INF/web.xml", true));
+		//html project
+		project.files.add(new ProjectFile("html/build.gradle"));
+		project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
+		project.files.add(new ProjectFile("html/GdxDefinition", "html/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
+		project.files.add(new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
+		project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
+		project.files.add(new ProjectFile("html/war/styles.css", "html/webapp/styles.css", false));
+		project.files.add(new ProjectFile("html/war/soundmanager2-jsmin.js", "html/webapp/soundmanager2-jsmin.js", false));
+		project.files.add(new ProjectFile("html/war/soundmanager2-setup.js", "html/webapp/soundmanager2-setup.js", false));
+		project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
 
 		//ios robovm
 		project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));

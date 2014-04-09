@@ -64,7 +64,7 @@ project(":android") {
     }
 }
 
-project(":gwt") {
+project(":html") {
     apply plugin: "gwt"
     apply plugin: "war"
     webAppDirName = 'webapp'
