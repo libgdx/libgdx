@@ -25,6 +25,7 @@ import javax.microedition.khronos.opengles.GL11;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.opengl.GLSurfaceView;
 import android.os.Debug;
 import android.os.Handler;
 import android.service.dreams.DreamService;
@@ -52,7 +53,7 @@ import com.badlogic.gdx.utils.GdxNativesLoader;
 
 /** An implementation of the {@link Application} interface for Android. Create an {@link Activity} that derives from this class. In
  * the Activity#onCreate(Bundle) method call the {@link #initialize(ApplicationListener)} method specifying the configuration for
- * the GLSurfaceView.
+ * the {@link GLSurfaceView}.
  * 
  * @author mzechner */
 public class AndroidDaydream extends DreamService implements AndroidApplicationBase {
@@ -96,7 +97,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	 * <p>
 	 * Note: you have to add the returned view to your layout!
 	 * @param listener the {@link ApplicationListener} implementing the program logic
-	 * @return the GLSurfaceView of the application */
+	 * @return the {@link GLSurfaceView} of the application */
 	public View initializeForView (ApplicationListener listener) {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		return initializeForView(listener, config);
@@ -110,7 +111,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 	 * @param listener the {@link ApplicationListener} implementing the program logic
 	 * @param config the {@link AndroidApplicationConfiguration}, defining various settings of the application (use accelerometer,
 	 *           etc.).
-	 * @return the GLSurfaceView of the application */
+	 * @return the {@link GLSurfaceView} of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
 		init(listener, config, true);
 		return graphics.getView();
@@ -208,8 +209,8 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		graphics.destroy();
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
+		if (graphics.view != null) {
+			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onPause();
 		}
 
 		super.onDreamingStopped();
@@ -227,7 +228,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		getInput().registerSensorListeners();
 
 		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onResume();
 		}
 
 		if (!firstResume) {

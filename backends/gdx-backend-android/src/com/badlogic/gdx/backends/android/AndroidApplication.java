@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -29,6 +30,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
@@ -45,6 +47,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -274,9 +277,9 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
+		if (graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
+			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onPause();
 		}
 
 		super.onPause();
@@ -295,7 +298,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 
 		if (graphics != null && graphics.view != null) {
 			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+			if (graphics.view instanceof GLSurfaceView) ((GLSurfaceView)graphics.view).onResume();
 		}
 
 		if (!firstResume) {
