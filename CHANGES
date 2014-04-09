@@ -48,6 +48,7 @@
 - Changed play mode constants of Animation class to enumeration, see http://www.badlogicgames.com/wordpress/?p=3330
 - Updated to RoboVM 0.0.11 and RoboVM Gradle plugin 0.0.6, see http://www.badlogicgames.com/wordpress/?p=3351
 - Updated to Swig 3.0 for Bullet, disabled SIMD on Mac OS X as alignements are broken in Bullet, see https://github.com/libgdx/libgdx/pull/1595
+- TextureData can only be Custom or Pixmap; compressed image files are considered custom
 
 [0.9.9]
 - added setCursorImage method to Input interface to support custom mouse cursors on the desktop

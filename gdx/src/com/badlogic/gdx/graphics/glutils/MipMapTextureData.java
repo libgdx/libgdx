@@ -10,14 +10,11 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  *  All the mipmap levels must be defined and cannot be null. */
 public class MipMapTextureData implements TextureData{
 	TextureData[] mips;
-	Format format;
 	
-	public MipMapTextureData(Format format, int mipMapCount){
-		mips = new TextureData[mipMapCount];
-	}
-	
-	public void add(TextureData data, int level){
-		mips[level] = data;
+	/** @param mipMapData must be != null and its length must be >= 1 */
+	public MipMapTextureData(TextureData... mipMapData){
+		mips = new TextureData[mipMapData.length];
+		System.arraycopy(mipMapData, 0, mips, 0, mipMapData.length);
 	}
 	
 	@Override
@@ -52,17 +49,17 @@ public class MipMapTextureData implements TextureData{
 
 	@Override
 	public int getWidth () {
-		return 0;
+		return mips[0].getWidth();
 	}
 
 	@Override
 	public int getHeight () {
-		return 0;
+		return mips[0].getHeight();
 	}
 
 	@Override
 	public Format getFormat () {
-		return format;
+		return mips[0].getFormat();
 	}
 
 	@Override
