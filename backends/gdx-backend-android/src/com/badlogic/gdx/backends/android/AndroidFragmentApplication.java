@@ -24,7 +24,6 @@ import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceViewAPI18;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
@@ -49,7 +48,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		GdxNativesLoader.load();
 	}
 
-	public static final int MINIMUM_SDK = 8;
 	protected AndroidGraphics graphics;
 	protected AndroidInput input;
 	protected AndroidAudio audio;
@@ -159,6 +157,25 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		this.listener = listener;
 		this.handler = new Handler();
 
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				audio.resume();
+			}
+			
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+			
+			@Override
+			public void dispose () {
+				audio.dispose();
+			}
+		});
+
 		Gdx.app = this;
 		Gdx.input = this.getInput();
 		Gdx.audio = this.getAudio();
@@ -197,10 +214,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onPause();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
-		}
+		graphics.onPauseGLSurfaceView();
 
 		super.onPause();
 	}
@@ -214,11 +228,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		getInput().registerSensorListeners();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof GLSurfaceViewAPI18) ((GLSurfaceViewAPI18)graphics.view).onResume();
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {
@@ -231,8 +244,17 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public void onDestroyView () {
 		super.onDestroyView();
-		graphics.clearManagedCaches();
-		graphics.destroy();
+		// davebaol:
+		// Added postRunnable to prevent deadlock.
+		// Also some devices like the Asus Transformer TF101 don't like when you dispose gdx resources
+		// (e.g. textures) from inside the Android UI thread and as a result the UI gets corrupted.
+		postRunnable(new Runnable() {
+			@Override
+			public void run () {
+				graphics.clearManagedCaches();
+				graphics.destroy();
+			}
+		});
 	}
 
 	@Override
@@ -256,7 +278,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -410,11 +432,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public boolean isFragment () {
-		return true;
-	}
-
-	@Override
 	public Window getApplicationWindow () {
 		return this.getActivity().getWindow();
 	}
@@ -422,5 +439,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public WindowManager getWindowManager () {
+		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
 	}
 }
