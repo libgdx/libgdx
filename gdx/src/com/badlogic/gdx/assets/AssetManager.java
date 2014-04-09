@@ -89,12 +89,12 @@ public class AssetManager implements Disposable {
 		setLoader(Sound.class, new SoundLoader(resolver));
 		setLoader(TextureAtlas.class, new TextureAtlasLoader(resolver));
 		setLoader(Texture.class, new TextureLoader(resolver));
+		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
 		setLoader(Skin.class, new SkinLoader(resolver));
 		setLoader(ParticleEffect.class, new ParticleEffectLoader(resolver));
 		setLoader(Model.class, ".g3dj", new G3dModelLoader(new JsonReader(), resolver));
 		setLoader(Model.class, ".g3db", new G3dModelLoader(new UBJsonReader(), resolver));
 		setLoader(Model.class, ".obj", new ObjLoader(resolver));
-		setLoader(PolygonRegion.class, new PolygonRegionLoader(resolver));
 		executor = new AsyncExecutor(1);
 	}
 
@@ -123,6 +123,15 @@ public class AssetManager implements Disposable {
 		T asset = assetContainer.getObject(type);
 		if (asset == null) throw new GdxRuntimeException("Asset not loaded: " + fileName);
 		return asset;
+	}
+
+	/** @param type the asset type
+	 * @return all the assets matching the specified type */
+	public synchronized <T> Array<T> getAll (Class<T> type, Array<T> out) {
+		ObjectMap<String, RefCountedContainer> assetsByType = assets.get(type);
+		if (assetsByType != null) for (ObjectMap.Entry<String, RefCountedContainer> asset : assetsByType.entries())
+			out.add(asset.value.getObject(type));
+		return out;
 	}
 
 	/** @param assetDescriptor the asset descriptor
