@@ -126,7 +126,7 @@ public class DragAndDrop {
 					target.actor.stageToLocalCoordinates(tmpVector.set(stageX, stageY));
 					target.drop(source, payload, tmpVector.x, tmpVector.y, pointer);
 				}
-				source.dragStop(event, x, y, pointer, isValidTarget ? target : null);
+				source.dragStop(event, payload, x, y, pointer, isValidTarget ? target : null);
 				if (target != null) target.reset(source, payload);
 				payload = null;
 				target = null;
@@ -211,7 +211,7 @@ public class DragAndDrop {
 		abstract public Payload dragStart (InputEvent event, float x, float y, int pointer);
 
 		/** @param target null if not dropped on a valid target. */
-		public void dragStop (InputEvent event, float x, float y, int pointer, Target target) {
+		public void dragStop (InputEvent event, Payload payload, float x, float y, int pointer, Target target) {
 		}
 
 		public Actor getActor () {
