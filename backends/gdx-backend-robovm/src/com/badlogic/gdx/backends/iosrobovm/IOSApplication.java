@@ -163,6 +163,14 @@ public class IOSApplication implements Application {
 		return graphics.viewController;
 	}
 
+	/**
+	 * Return the UI Window of IOSApplication
+	 * @return the window
+	 */
+	public UIWindow getUIWindow() {
+		return uiWindow;
+	}
+
 	/** Returns our real display dimension based on screen orientation.
 	 * 
 	 * @param viewController The view controller.
