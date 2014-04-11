@@ -17,8 +17,8 @@ gwt-unitCache/
 www-test/
 .gwt-tmp/
 
-## Android Studio and Intellij
-
+## Android Studio and Intellij and Android in general
+gen/
 .idea/
 *.ipr
 *.iws
