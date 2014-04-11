@@ -212,6 +212,13 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		// erase touched state. this also sucks donkeyballs...
 		Arrays.fill(touched, false);
 
+		// davebaol & mobidevelop:
+		// This fragment is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || getActivity().isFinishing()) {
+			graphics.clearManagedCaches();
+			graphics.destroy();
+		}
+
 		graphics.setContinuousRendering(isContinuous);
 
 		graphics.onPauseGLSurfaceView();
@@ -239,22 +246,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		} else
 			firstResume = false;
 		super.onResume();
-	}
-
-	@Override
-	public void onDestroyView () {
-		super.onDestroyView();
-		// davebaol:
-		// Added postRunnable to prevent deadlock.
-		// Also some devices like the Asus Transformer TF101 don't like when you dispose gdx resources
-		// (e.g. textures) from inside the Android UI thread and as a result the UI gets corrupted.
-		postRunnable(new Runnable() {
-			@Override
-			public void run () {
-				graphics.clearManagedCaches();
-				graphics.destroy();
-			}
-		});
 	}
 
 	@Override
