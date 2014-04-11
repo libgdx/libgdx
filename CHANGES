@@ -1,4 +1,5 @@
 [1.0.0]
+- Added Payload as a new parameter to Source.dragStop, see https://github.com/libgdx/libgdx/pull/1666
 - You can now load PolygonRegions via AssetLoader,  see https://github.com/libgdx/libgdx/pull/1602
 - implemented software keyboard support in RoboVM iOS backend
 - Fixed an issue where key event timestamp is not set by the android backend.
