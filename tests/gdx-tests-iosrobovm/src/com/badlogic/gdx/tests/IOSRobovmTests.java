@@ -27,7 +27,8 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 	@Override
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-		return new IOSApplication(new MultitouchTest(), config);
+		config.useAccelerometer = false;
+		return new IOSApplication(new GcTest(), config);
 	}
 
 	public static void main(String[] argv) {

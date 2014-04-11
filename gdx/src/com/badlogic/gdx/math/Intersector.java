@@ -470,8 +470,51 @@ public final class Intersector {
 	 * @param ray The ray
 	 * @param box The bounding box
 	 * @return Whether the ray and the bounding box intersect. */
+	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.
+	 * 
+	 * @param ray The ray
+	 * @param box The bounding box
+	 * @return Whether the ray and the bounding box intersect. */
 	static public boolean intersectRayBoundsFast (Ray ray, BoundingBox box) {
-		return intersectRayBoundsFast(ray, box.getCenter(), box.getDimensions());
+		float a, b;
+		float min, max;
+		float divX = 1 / ray.direction.x;
+		float divY = 1 / ray.direction.y;
+		float divZ = 1 / ray.direction.z;
+
+		a = (box.min.x - ray.origin.x) * divX;
+		b = (box.max.x - ray.origin.x) * divX;
+		if (a < b) {
+			min = a;
+			max = b;
+		} else {
+			min = b;
+			max = a;
+		}
+
+		a = (box.min.y - ray.origin.y) * divY;
+		b = (box.max.y - ray.origin.y) * divY;
+		if (a > b) {
+			float t = a;
+			a = b;
+			b = t;
+		}
+
+		if (a > min) min = a;
+		if (b < max) max = b;
+
+		a = (box.min.z - ray.origin.z) * divZ;
+		b = (box.max.z - ray.origin.z) * divZ;
+		if (a > b) {
+			float t = a;
+			a = b;
+			b = t;
+		}
+
+		if (a > min) min = a;
+		if (b < max) max = b;
+
+		return max >= 0 && max >= min;
 	}
 
 	/** Quick check whether the given {@link Ray} and {@link BoundingBox} intersect.

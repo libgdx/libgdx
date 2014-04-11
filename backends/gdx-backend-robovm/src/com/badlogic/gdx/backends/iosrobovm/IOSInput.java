@@ -494,47 +494,47 @@ public class IOSInput implements Input {
 	}
 
 	private void toTouchEvents (NSSet<UITouch> touches, UIEvent uiEvent) {
-		for (UITouch touch : touches) {
-			CGPoint loc = touch.getLocation(touch.getView());
-			synchronized(touchEvents) {
-				TouchEvent event = touchEventPool.obtain();
-				event.x = (int)(loc.x() * app.displayScaleFactor);
-				event.y = (int)(loc.y() * app.displayScaleFactor);
-				event.phase = touch.getPhase();
-				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
-				touchEvents.add(event);
-				
-				if(touch.getPhase() == UITouchPhase.Began) {					
-					event.pointer = getFreePointer();
-					touchDown[event.pointer] = (int) touch.getHandle();
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
-					deltaX[event.pointer] = 0;
-					deltaY[event.pointer] = 0; 
-					numTouched++;
-				}
-				
-				if(touch.getPhase() == UITouchPhase.Moved ||
-					touch.getPhase() == UITouchPhase.Stationary) {
-					event.pointer = findPointer(touch);
-					deltaX[event.pointer] = event.x - touchX[event.pointer];
-					deltaY[event.pointer] = event.y - touchY[event.pointer]; 
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
-				}
-				
-				if(touch.getPhase() == UITouchPhase.Cancelled ||
-					touch.getPhase() == UITouchPhase.Ended) {					
-					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0; 
-					touchX[event.pointer] = event.x;
-					touchY[event.pointer] = event.y;
-					deltaX[event.pointer] = 0;
-					deltaY[event.pointer] = 0;
-					numTouched--;
-				}
-			}
-		}
+//		for (UITouch touch : touches) {
+//			CGPoint loc = touch.getLocation(touch.getView());
+//			synchronized(touchEvents) {
+//				TouchEvent event = touchEventPool.obtain();
+//				event.x = (int)(loc.x() * app.displayScaleFactor);
+//				event.y = (int)(loc.y() * app.displayScaleFactor);
+//				event.phase = touch.getPhase();
+//				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
+//				touchEvents.add(event);
+//				
+//				if(touch.getPhase() == UITouchPhase.Began) {					
+//					event.pointer = getFreePointer();
+//					touchDown[event.pointer] = (int) touch.getHandle();
+//					touchX[event.pointer] = event.x;
+//					touchY[event.pointer] = event.y;
+//					deltaX[event.pointer] = 0;
+//					deltaY[event.pointer] = 0; 
+//					numTouched++;
+//				}
+//				
+//				if(touch.getPhase() == UITouchPhase.Moved ||
+//					touch.getPhase() == UITouchPhase.Stationary) {
+//					event.pointer = findPointer(touch);
+//					deltaX[event.pointer] = event.x - touchX[event.pointer];
+//					deltaY[event.pointer] = event.y - touchY[event.pointer]; 
+//					touchX[event.pointer] = event.x;
+//					touchY[event.pointer] = event.y;
+//				}
+//				
+//				if(touch.getPhase() == UITouchPhase.Cancelled ||
+//					touch.getPhase() == UITouchPhase.Ended) {					
+//					event.pointer = findPointer(touch);
+//					touchDown[event.pointer] = 0; 
+//					touchX[event.pointer] = event.x;
+//					touchY[event.pointer] = event.y;
+//					deltaX[event.pointer] = 0;
+//					deltaY[event.pointer] = 0;
+//					numTouched--;
+//				}
+//			}
+//		}
 	}
 	
 	static class TouchEvent {

@@ -144,26 +144,26 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
 			@Override
 			public void touchesBegan (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesBegan(touches, event);
-				IOSGraphics.this.input.touchDown(touches, event);
+//				super.touchesBegan(touches, event);
+//				IOSGraphics.this.input.touchDown(touches, event);
 			}
 
 			@Override
 			public void touchesCancelled (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesCancelled(touches, event);
-				IOSGraphics.this.input.touchUp(touches, event);
+//				super.touchesCancelled(touches, event);
+//				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
 			@Override
 			public void touchesEnded (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesEnded(touches, event);
-				IOSGraphics.this.input.touchUp(touches, event);
+//				super.touchesEnded(touches, event);
+//				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
 			@Override
 			public void touchesMoved (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesMoved(touches, event);
-				IOSGraphics.this.input.touchMoved(touches, event);
+//				super.touchesMoved(touches, event);
+//				IOSGraphics.this.input.touchMoved(touches, event);
 			}
 
 			@Override
