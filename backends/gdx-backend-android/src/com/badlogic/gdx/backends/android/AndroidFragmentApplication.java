@@ -212,7 +212,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		// erase touched state. this also sucks donkeyballs...
 		Arrays.fill(touched, false);
 
-		// davebaol & modidevelop:
+		// davebaol & mobidevelop:
 		// This fragment is currently being removed from its activity or the activity is in the process of finishing
 		if (isRemoving() || getActivity().isFinishing()) {
 			graphics.clearManagedCaches();
