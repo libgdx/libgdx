@@ -33,8 +33,6 @@ public class InputTest extends GdxTest implements InputProcessor {
 
 	@Override
 	public void render () {
-		System.out.println("test");
-		
 		if (Gdx.input.justTouched()) {
 			Gdx.app.log("Input Test", "just touched, button: " + (Gdx.input.isButtonPressed(Buttons.LEFT) ? "left " : "")
 				+ (Gdx.input.isButtonPressed(Buttons.MIDDLE) ? "middle " : "")
