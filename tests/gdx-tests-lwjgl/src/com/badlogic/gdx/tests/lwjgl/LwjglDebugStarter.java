@@ -19,8 +19,6 @@ package com.badlogic.gdx.tests.lwjgl;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tests.BulletTestCollection;
-import com.badlogic.gdx.tests.GcTest;
-import com.badlogic.gdx.tests.MultitouchTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -32,7 +30,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new GcTest();		
+		GdxTest test = new BulletTestCollection();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 //		config.width = 320;
 //		config.height = 241;
