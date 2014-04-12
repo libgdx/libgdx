@@ -16,18 +16,13 @@
 
 package com.badlogic.gdx.files;
 
-import com.badlogic.gdx.Files;
-import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.StreamUtils;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,6 +31,12 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.StreamUtils;
 
 /** Represents a file or directory on the filesystem, classpath, Android SD card, or Android assets directory. FileHandles are
  * created via a {@link Files} instance.
@@ -396,6 +397,21 @@ public class FileHandle {
 		return handles;
 	}
 
+	/** Returns the paths to the children of this directory. Returns an empty list if this file handle represents a file and not a
+	 * directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath will return a zero length
+	 * array.
+	 * @param filter the {@link FilenameFilter} to filter files
+	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FilenameFilter filter) {
+		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
+		File[] relativePaths = file.listFiles(filter);
+		if(relativePaths == null) return new FileHandle[0];
+		FileHandle[] handles = new FileHandle[relativePaths.length];
+		for(int i = 0, n = relativePaths.length; i < n; i++)
+			handles[i] = child(relativePaths[i].getPath());
+		return handles;
+	}
+	
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
 	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
 	 * will return a zero length array.
