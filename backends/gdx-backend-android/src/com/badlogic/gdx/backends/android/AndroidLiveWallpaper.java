@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Debug;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -88,7 +89,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// added initialization of android local storage: /data/data/<app package>/files/
 		this.getService().getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getService().getAssets(), this.getService().getFilesDir().getAbsolutePath());
-
+		net = new AndroidNet(this);
 		this.listener = listener;
 
 		// Unlike activity, fragment and daydream applications there's no need for a specialized audio listener.
@@ -99,6 +100,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.graphics = graphics;
+		Gdx.net = net;
 	}
 
 	public void onPause () {
@@ -373,7 +375,15 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	@Override
 	public void runOnUiThread (Runnable runnable) {
-		throw new UnsupportedOperationException();
+		if (Looper.myLooper() != Looper.getMainLooper()) {
+			// The current thread is not the UI thread.
+			// Let's post the runnable to the event queue of the UI thread.
+			new Handler(Looper.getMainLooper()).post(runnable);
+		} else {
+			// The current thread is the UI thread already.
+			// Let's execute the runnable immediately.
+			runnable.run();
+		}
 	}
 
 	@Override

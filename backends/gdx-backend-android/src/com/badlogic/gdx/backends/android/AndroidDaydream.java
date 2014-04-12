@@ -28,6 +28,7 @@ import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Debug;
 import android.os.Handler;
+import android.os.Looper;
 import android.service.dreams.DreamService;
 import android.util.Log;
 import android.view.Gravity;
@@ -124,7 +125,7 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 		audio = new AndroidAudio(this, config);
 		this.getFilesDir(); // workaround for Android bug #10515463
 		files = new AndroidFiles(this.getAssets(), this.getFilesDir().getAbsolutePath());
-		net = new AndroidNet(null);
+		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
 
@@ -422,7 +423,15 @@ public class AndroidDaydream extends DreamService implements AndroidApplicationB
 
 	@Override
 	public void runOnUiThread (Runnable runnable) {
-		throw new UnsupportedOperationException();
+		if (Looper.myLooper() != Looper.getMainLooper()) {
+			// The current thread is not the UI thread.
+			// Let's post the runnable to the event queue of the UI thread.
+			new Handler(Looper.getMainLooper()).post(runnable);
+		} else {
+			// The current thread is the UI thread already.
+			// Let's execute the runnable immediately.
+			runnable.run();
+		}
 	}
 
 	@Override
