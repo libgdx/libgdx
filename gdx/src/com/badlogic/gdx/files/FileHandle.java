@@ -404,7 +404,7 @@ public class FileHandle {
 	 * @throws GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list (FilenameFilter filter) {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot list a classpath directory: " + file);
-		File[] relativePaths = file.listFiles(filter);
+		File[] relativePaths = file().listFiles(filter);
 		if(relativePaths == null) return new FileHandle[0];
 		FileHandle[] handles = new FileHandle[relativePaths.length];
 		for(int i = 0, n = relativePaths.length; i < n; i++)
