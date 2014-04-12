@@ -274,8 +274,13 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 
 	@Override
 	public void draw (GLKView view, CGRect rect) {
+		makeCurrent();
+		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
+		// stores the last known viewport and we reset it here...
+		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
+		
 		if (!created) {
-			app.graphics.makeCurrent();
+			gl20.glViewport(0, 0, width, height);
 			app.listener.create();
 			app.listener.resize(width, height);
 			created = true;
@@ -295,7 +300,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			frames = 0;
 		}
 
-		makeCurrent();
 		input.processEvents();
 		app.listener.render();
 	}

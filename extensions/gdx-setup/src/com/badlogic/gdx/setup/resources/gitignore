@@ -6,7 +6,7 @@
 hs_err_pid*
 
 ## GWT
-
+war/
 war/gwt_bree/
 gwt-unitCache/
 .apt_generated/
@@ -17,8 +17,11 @@ gwt-unitCache/
 www-test/
 .gwt-tmp/
 
-## Android Studio and Intellij
-
+## Android Studio and Intellij and Android in general
+libs/armeabi/
+libs/armeabi-v7a/
+libs/x86/
+gen/
 .idea/
 *.ipr
 *.iws
@@ -27,7 +30,8 @@ out/
 com_crashlytics_export_strings.xml
 
 ## Eclipse
-
+.classpath
+.project
 .metadata
 bin/
 tmp/

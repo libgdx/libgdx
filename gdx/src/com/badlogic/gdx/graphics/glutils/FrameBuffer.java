@@ -162,7 +162,6 @@ public class FrameBuffer implements Disposable {
 				gl.glDeleteRenderbuffers(1, handle);
 			}
 
-			colorTexture.dispose();
 			handle.clear();
 			handle.put(framebufferHandle);
 			handle.flip();

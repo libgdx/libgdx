@@ -27,14 +27,6 @@ task dist(type: Jar) {
 
 dist.dependsOn classes
 
-
-eclipse {
-    project {
-        name = appName + "-desktop"
-        linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/android/assets'
-    }
-}
-
 eclipse {
     project {
         name = appName + "-desktop"

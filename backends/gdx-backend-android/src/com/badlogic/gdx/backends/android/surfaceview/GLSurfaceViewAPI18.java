@@ -171,6 +171,7 @@ import android.view.SurfaceView;
  * </pre>
  *
  */
+@SuppressWarnings("synthetic-access")
 public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Callback {
     private final static String TAG = "GLSurfaceViewAPI18";
     private final static boolean LOG_ATTACH_DETACH = false;
@@ -766,7 +767,7 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
      * An interface for customizing the eglCreateContext and eglDestroyContext calls.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLContextFactory(EGLContextFactory)}
+     * {@link GLSurfaceViewAPI18#setEGLContextFactory(EGLContextFactory)}
      */
     public interface EGLContextFactory {
         EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig);
@@ -800,7 +801,7 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
      * An interface for customizing the eglCreateWindowSurface and eglDestroySurface calls.
      * <p>
      * This interface must be implemented by clients wishing to call
-     * {@link GLSurfaceView#setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)}
+     * {@link GLSurfaceViewAPI18#setEGLWindowSurfaceFactory(EGLWindowSurfaceFactory)}
      */
     public interface EGLWindowSurfaceFactory {
         /**
@@ -1001,7 +1002,6 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
 
         /**
          * Initialize EGL for a given configuration spec.
-         * @param configSpec
          */
         public void start() {
             if (LOG_EGL) {
@@ -1118,7 +1118,6 @@ public class GLSurfaceViewAPI18 extends SurfaceView implements SurfaceHolder.Cal
 
         /**
          * Create a GL object for the current EGL context.
-         * @return
          */
         GL createGL() {
 

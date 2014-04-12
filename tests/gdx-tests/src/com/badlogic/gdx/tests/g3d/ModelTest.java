@@ -89,7 +89,7 @@ public class ModelTest extends BaseG3dHudTest {
 
 	@Override
 	protected void onLoaded () {
-		if (currentlyLoading == null || currentlyLoading.isEmpty()) return;
+		if (currentlyLoading == null || currentlyLoading.length() == 0) return;
 
 		instances.clear();
 		animationControllers.clear();

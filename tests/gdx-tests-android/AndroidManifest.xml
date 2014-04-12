@@ -22,7 +22,8 @@
 		
 		<activity android:name=".FragmentTestStarter"
 				  android:label="@string/app_name_fragments"
-				  android:configChanges="keyboard|keyboardHidden|orientation">
+				  android:configChanges="keyboard|keyboardHidden|orientation"
+				  android:screenOrientation="landscape">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
