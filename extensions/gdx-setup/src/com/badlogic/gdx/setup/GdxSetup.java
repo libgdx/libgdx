@@ -27,6 +27,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
+import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 import com.badlogic.gdx.setup.Executor.CharCallback;
 
 /**
@@ -39,19 +41,35 @@ public class GdxSetup {
 		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
 	}
 	
-	public void build (String outputDir, String appName, String packageName, String mainClass, String sdkLocation, CharCallback callback) {
+	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass, String sdkLocation, CharCallback callback) {
 		Project project = new Project();
-		
+
+		boolean ui = builder != null;
+
 		String packageDir = packageName.replace('.', '/');
 		String sdkPath = sdkLocation.replace('\\', '/');
+
+		String assetPath;
+		if (ui) {
+			assetPath = builder.modules.contains(ProjectType.ANDROID) ? "android/assets" : "core/assets";
+		} else {
+			assetPath = "android/assets";
+		}
+
 		if(!isSdkLocationValid(sdkLocation)) {
 			System.out.println("Android SDK location '" + sdkLocation + "' doesn't contain an SDK");
 		}
 
 		// root dir/gradle files
 		project.files.add(new ProjectFile("gitignore", ".gitignore", false));
-		project.files.add(new ProjectFile("build.gradle", true));
-		project.files.add(new ProjectFile("settings.gradle"));
+		// Use our temp build and settings files if we are from the ui
+		if (ui) {
+			project.files.add(new ProjectFile("temp/build.gradle", "build.gradle", true, "/"));
+			project.files.add(new ProjectFile("temp/settings.gradle", "settings.gradle", false, "/"));
+		} else {
+			project.files.add(new ProjectFile("build.gradle", true));
+			project.files.add(new ProjectFile("settings.gradle", false));
+		}
 		project.files.add(new ProjectFile("gradlew", false));
 		project.files.add(new ProjectFile("gradlew.bat", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.jar", false));
@@ -62,51 +80,62 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
 		//core but html required
-		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
+		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
 		
 		// desktop project
-		project.files.add(new ProjectFile("desktop/build.gradle"));
-		project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+		if (!ui || builder.modules.contains(ProjectType.DESKTOP)) {
+			project.files.add(new ProjectFile("desktop/build.gradle"));
+			project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
+		}
 
 		// android project
-		project.files.add(new ProjectFile("android/assets/badlogic.jpg", false));
-		project.files.add(new ProjectFile("android/res/values/strings.xml"));
-		project.files.add(new ProjectFile("android/res/values/styles.xml", false));
-		project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
-		project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
-		project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
-		project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
-		project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
-		project.files.add(new ProjectFile("android/AndroidManifest.xml"));
-		project.files.add(new ProjectFile("android/build.gradle", true));
-		project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
-		project.files.add(new ProjectFile("android/proguard-project.txt", false));
-		project.files.add(new ProjectFile("android/project.properties", false));
+		if (!ui || builder.modules.contains(ProjectType.ANDROID)) {
+			project.files.add(new ProjectFile("android/assets/badlogic.jpg", false));
+			project.files.add(new ProjectFile("android/res/values/strings.xml"));
+			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
+			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/res/drawable-mdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/res/drawable-xhdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/res/drawable-xxhdpi/ic_launcher.png", false));
+			project.files.add(new ProjectFile("android/src/AndroidLauncher", "android/src/" + packageDir + "/android/AndroidLauncher.java", true));
+			project.files.add(new ProjectFile("android/AndroidManifest.xml"));
+			project.files.add(new ProjectFile("android/build.gradle", true));
+			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
+			project.files.add(new ProjectFile("android/proguard-project.txt", false));
+			project.files.add(new ProjectFile("android/project.properties", false));
+		}
 
 		//html project
-		project.files.add(new ProjectFile("html/build.gradle"));
-		project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
-		project.files.add(new ProjectFile("html/GdxDefinition", "html/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
-		project.files.add(new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
-		project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
-		project.files.add(new ProjectFile("html/war/styles.css", "html/webapp/styles.css", false));
-		project.files.add(new ProjectFile("html/war/soundmanager2-jsmin.js", "html/webapp/soundmanager2-jsmin.js", false));
-		project.files.add(new ProjectFile("html/war/soundmanager2-setup.js", "html/webapp/soundmanager2-setup.js", false));
-		project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
+		if (!ui || builder.modules.contains(ProjectType.HTML)) {
+			project.files.add(new ProjectFile("html/build.gradle"));
+			project.files.add(new ProjectFile("html/src/HtmlLauncher", "html/src/" + packageDir + "/client/HtmlLauncher.java", true));
+			project.files.add(new ProjectFile("html/GdxDefinition", "html/src/" + packageDir + "/GdxDefinition.gwt.xml", true));
+			project.files.add(new ProjectFile("html/GdxDefinitionSuperdev", "html/src/" + packageDir + "/GdxDefinitionSuperdev.gwt.xml", true));
+			project.files.add(new ProjectFile("html/war/index", "html/webapp/index.html", true));
+			project.files.add(new ProjectFile("html/war/styles.css", "html/webapp/styles.css", false));
+			project.files.add(new ProjectFile("html/war/soundmanager2-jsmin.js", "html/webapp/soundmanager2-jsmin.js", false));
+			project.files.add(new ProjectFile("html/war/soundmanager2-setup.js", "html/webapp/soundmanager2-setup.js", false));
+			project.files.add(new ProjectFile("html/war/WEB-INF/web.xml", "html/webapp/WEB-INF/web.xml", true));
+		}
 
 		//ios robovm
-		project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
-		project.files.add(new ProjectFile("ios/build.gradle", true));
-		project.files.add(new ProjectFile("ios/Info.plist.xml", false));
-		project.files.add(new ProjectFile("ios/robovm.properties"));
-		project.files.add(new ProjectFile("ios/robovm.xml", false));
+		if (!ui || builder.modules.contains(ProjectType.IOS)) {
+			project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
+			project.files.add(new ProjectFile("ios/build.gradle", true));
+			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
+			project.files.add(new ProjectFile("ios/robovm.properties"));
+			project.files.add(new ProjectFile("ios/robovm.xml", true));
+		}
 
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
-		values.put("%PACKAGE_DIR%", packageDir);
 		values.put("%MAIN_CLASS%", mainClass);
 		values.put("%ANDROID_SDK%", sdkPath);
+		values.put("%ASSET_PATH%", assetPath);
+		if (!ui || builder.modules.contains(ProjectType.HTML)) {
+			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances));
+		}
 		
 		copyAndReplace(outputDir, project, values);
 		
@@ -127,12 +156,13 @@ public class GdxSetup {
 		}
 	}
 	
-	private byte[] readResource(String resource) {
+	private byte[] readResource(String resource, String path) {
 		InputStream in = null;
 		try {
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			byte[] buffer = new byte[1024*10];
-			in = GdxSetup.class.getResourceAsStream("/com/badlogic/gdx/setup/resources/" + resource);
+			in = GdxSetup.class.getResourceAsStream(path + resource);
+			//in = GdxSetup.class.getResourceAsStream("/com/badlogic/gdx/setup/resources/" + resource);
 			if(in == null) throw new RuntimeException("Couldn't read resource '" + resource + "'");
 			int read = 0;
 			while((read = in.read(buffer)) > 0) {
@@ -146,9 +176,9 @@ public class GdxSetup {
 		}
 	}
 	
-	private String readResourceAsString(String resource) {
+	private String readResourceAsString(String resource, String path) {
 		try {
-			return new String(readResource(resource), "UTF-8");
+			return new String(readResource(resource, path), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -182,11 +212,11 @@ public class GdxSetup {
 		}
 		
 		if(file.isTemplate) {
-			String txt = readResourceAsString(file.resourceName);
+			String txt = readResourceAsString(file.resourceName, file.resourceLoc);
 			txt = replace(txt, values);
 			writeFile(outFile, txt);
 		} else {
-			writeFile(outFile, readResource(file.resourceName));
+			writeFile(outFile, readResource(file.resourceName, file.resourceLoc));
 		}
 	}
 
@@ -221,6 +251,16 @@ public class GdxSetup {
 		}
 		return params;
 	}
+
+	private String parseGwtInherits(HashMap<ProjectDependency, String[]> gwtInheritances) {
+		String parsed = "";
+		for (String[] array : gwtInheritances.values()) {
+			for (String inherit : array) {
+				parsed += "\t<inherits name='" + inherit + "' />\n";
+			}
+		}
+		return parsed;
+	}
 	
 	public static void main (String[] args) {
 		Map<String, String> params = parseArgs(args);
@@ -234,7 +274,7 @@ public class GdxSetup {
 			} else {
 				sdkLocation = params.get("sdkLocation");
 			}
-			new GdxSetup().build(params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), sdkLocation, new CharCallback() {
+			new GdxSetup().build(null, params.get("dir"), params.get("name"), params.get("package"), params.get("mainClass"), sdkLocation, new CharCallback() {
 				@Override
 				public void character (char c) {
 					System.out.print(c);

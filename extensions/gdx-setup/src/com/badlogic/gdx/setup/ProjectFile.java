@@ -29,8 +29,10 @@ public class ProjectFile {
 	public String resourceName;
 	/** the name of the output file, including directories, relative to the project dir **/
 	public String outputName;
-	/** whehter to replace values in this file **/
+	/** whether to replace values in this file **/
 	public boolean isTemplate;
+	/** If the resource is from resource directory, or working dir **/
+	public String resourceLoc = "/com/badlogic/gdx/setup/resources/";
 	
 	public ProjectFile(String name) {
 		this.resourceName = name;
@@ -49,4 +51,12 @@ public class ProjectFile {
 		this.outputName = outputName;
 		this.isTemplate = isTemplate;		
 	}
+
+	public ProjectFile(String resourceName, String outputName, boolean isTemplate, String resourceLoc) {
+		this.resourceName = resourceName;
+		this.outputName = outputName;
+		this.isTemplate = isTemplate;
+		this.resourceLoc = resourceLoc;
+	}
+
 }
