@@ -127,8 +127,10 @@ public class NetAPITest extends GdxTest implements HttpResponseListener {
 				@Override
 				public void clicked (InputEvent event, float x, float y) {
 					super.clicked(event, x, y);
-					Gdx.net.cancelHttpRequest(httpRequest);
-					statusLabel.setText("Cancelling request " + httpRequest.getUrl());
+					if (httpRequest != null) {
+						Gdx.net.cancelHttpRequest(httpRequest);
+						statusLabel.setText("Cancelling request " + httpRequest.getUrl());
+					}
 				}
 			};
 
