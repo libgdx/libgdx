@@ -32,10 +32,6 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	/** the z-component of this vector **/
 	public float z;
 
-	@Deprecated private final static Vector3 tmp = new Vector3();
-	@Deprecated private final static Vector3 tmp2 = new Vector3();
-	@Deprecated private final static Vector3 tmp3 = new Vector3();
-
 	public final static Vector3 X = new Vector3(1, 0, 0);
 	public final static Vector3 Y = new Vector3(0, 1, 0);
 	public final static Vector3 Z = new Vector3(0, 0, 1);
