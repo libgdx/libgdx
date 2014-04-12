@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -39,8 +40,8 @@ public class AndroidNet implements Net {
 	final AndroidApplicationBase app;
 	NetJavaImpl netJavaImpl;
 
-	public AndroidNet (AndroidApplicationBase activity) {
-		app = activity;
+	public AndroidNet (AndroidApplicationBase app) {
+		this.app = app;
 		netJavaImpl = new NetJavaImpl();
 	}
 
@@ -66,15 +67,15 @@ public class AndroidNet implements Net {
 
 	@Override
 	public void openURI (String URI) {
-		if (app == null) {
-			Gdx.app.log("AndroidNet", "Can't open browser activity from livewallpaper");
-			return;
-		}
 		final Uri uri = Uri.parse(URI);
 		app.runOnUiThread(new Runnable() {
 			@Override
 			public void run () {
-				app.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				// LiveWallpaper and Daydream applications need this flag
+				if (!(app.getContext() instanceof Activity))
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				app.startActivity(intent);
 			}
 		});
 	}
