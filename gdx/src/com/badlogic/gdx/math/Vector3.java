@@ -479,23 +479,33 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
-	public boolean isCollinear (Vector3 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) - 1, epsilon);
+	public boolean isOnLine (Vector3 other, float epsilon) {
+		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= epsilon;
+	}
+	
+	@Override
+	public boolean isOnLine (Vector3 other) {
+		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= MathUtils.FLOAT_ROUNDING_ERROR;
+	}
+	
+	@Override
+	public boolean isCollinear (Vector3 other, float epsilon) {
+		return isOnLine(other, epsilon) && hasSameDirection(other);
 	}
 
 	@Override
-	public boolean isCollinear (Vector3 vector) {
-		return MathUtils.isZero(dot(vector) - 1);
+	public boolean isCollinear (Vector3 other) {
+		return isOnLine(other) && hasSameDirection(other);
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector3 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) + 1, epsilon);
+	public boolean isCollinearOpposite (Vector3 other, float epsilon) {
+		return isOnLine(other, epsilon) && hasOppositeDirection(other);
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector3 vector) {
-		return MathUtils.isZero(dot(vector) + 1);
+	public boolean isCollinearOpposite (Vector3 other) {
+		return isOnLine(other) && hasOppositeDirection(other);
 	}
 
 	@Override
