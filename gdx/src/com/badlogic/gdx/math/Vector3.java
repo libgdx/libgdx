@@ -32,15 +32,9 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	/** the z-component of this vector **/
 	public float z;
 
-	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	@Deprecated public final static Vector3 tmp = new Vector3();
-	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	@Deprecated public final static Vector3 tmp2 = new Vector3();
-	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	@Deprecated public final static Vector3 tmp3 = new Vector3();
+	@Deprecated private final static Vector3 tmp = new Vector3();
+	@Deprecated private final static Vector3 tmp2 = new Vector3();
+	@Deprecated private final static Vector3 tmp3 = new Vector3();
 
 	public final static Vector3 X = new Vector3(1, 0, 0);
 	public final static Vector3 Y = new Vector3(0, 1, 0);
@@ -120,33 +114,6 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	@Override
 	public Vector3 cpy () {
 		return new Vector3(this);
-	}
-
-	/** @deprecated NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods
-	 *             might call this as well.
-	 * 
-	 * @return a temporary copy of this vector */
-	@Deprecated
-	public Vector3 tmp () {
-		return tmp.set(this);
-	}
-
-	/** @deprecated NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods
-	 *             might call this as well.
-	 * 
-	 * @return a temporary copy of this vector */
-	@Deprecated
-	public Vector3 tmp2 () {
-		return tmp2.set(this);
-	}
-
-	/** @deprecated NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods
-	 *             might call this as well.
-	 * 
-	 * @return a temporary copy of this vector */
-	@Deprecated
-	Vector3 tmp3 () {
-		return tmp3.set(this);
 	}
 
 	@Override
