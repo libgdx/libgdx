@@ -59,7 +59,7 @@ public class ETC1TextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData (int target) {
+	public void consumeCustomData (int target) {
 		// TODO Auto-generated method stub
 		
 	}

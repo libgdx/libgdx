@@ -207,8 +207,12 @@ public abstract class GLTexture implements Disposable {
 		Gdx.gl.glGenTextures(1, buffer);
 		return buffer.get(0);
 	}
-
+	
 	protected static void uploadImageData (int target, TextureData data) {
+		uploadImageData(target, data, 0);
+	}
+	
+	public static void uploadImageData (int target, TextureData data, int miplevel) {
 		if (data == null) {
 			// FIXME: remove texture on target?
 			return;
@@ -217,8 +221,8 @@ public abstract class GLTexture implements Disposable {
 		if (!data.isPrepared()) data.prepare();
 
 		final TextureDataType type = data.getType();
-		if (type == TextureDataType.Compressed || type == TextureDataType.Float) {
-			data.consumeCompressedData(target);
+		if (type == TextureDataType.Custom) {
+			data.consumeCustomData(target);
 			return;
 		}
 
@@ -241,7 +245,7 @@ public abstract class GLTexture implements Disposable {
 		if (data.useMipMaps()) {
 			MipMapGenerator.generateMipMap(target, pixmap, pixmap.getWidth(), pixmap.getHeight());
 		} else {
-			Gdx.gl.glTexImage2D(target, 0, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
+			Gdx.gl.glTexImage2D(target, miplevel, pixmap.getGLInternalFormat(), pixmap.getWidth(), pixmap.getHeight(), 0,
 				pixmap.getGLFormat(), pixmap.getGLType(), pixmap.getPixels());
 		}
 		if (disposePixmap) pixmap.dispose();

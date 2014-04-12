@@ -42,7 +42,7 @@ public class FloatTextureData implements TextureData {
 
 	@Override
 	public TextureDataType getType () {
-		return TextureDataType.Float;
+		return TextureDataType.Custom;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class FloatTextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData (int target) {
+	public void consumeCustomData (int target) {
 		if (!Gdx.graphics.supportsExtension("texture_float"))
 			throw new GdxRuntimeException("Extension OES_TEXTURE_FLOAT not supported!");
 
