@@ -73,6 +73,8 @@ public class BaseBulletTest extends BulletTest {
 	public ModelBatch modelBatch;
 	public Array<Disposable> disposables = new Array<Disposable>();
 	private int debugMode = DebugDrawModes.DBG_NoDebug;
+	
+	protected final static Vector3 tmpV1 = new Vector3(), tmpV2 = new Vector3();
 
 	public BulletWorld createWorld () {
 		return new BulletWorld();

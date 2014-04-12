@@ -88,7 +88,7 @@ public class RayCastTest extends BaseBulletTest {
 			if (!obj.isStaticOrKinematicObject()) {
 				final btRigidBody body = (btRigidBody)(obj);
 				body.activate();
-				body.applyCentralImpulse(Vector3.tmp2.set(ray.direction).scl(20f));
+				body.applyCentralImpulse(tmpV2.set(ray.direction).scl(20f));
 			}
 		}
 		return true;

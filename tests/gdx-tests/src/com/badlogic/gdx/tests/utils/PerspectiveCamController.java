@@ -25,8 +25,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class PerspectiveCamController extends InputAdapter {
+	private final static Vector3 tmpV = new Vector3();
+	
 	public PerspectiveCamera cam;
-
+	
 	enum TransformMode {
 		Rotate, Translate, Zoom, None
 	}
@@ -74,7 +76,7 @@ public class PerspectiveCamController extends InputAdapter {
 		if (mode == TransformMode.Rotate) {
 			point.set(cam.position).sub(lookAt);
 
-			if (point.tmp().nor().dot(yAxis) < 0.9999f) {
+			if (tmpV.set(point).nor().dot(yAxis) < 0.9999f) {
 				xAxis.set(cam.direction).crs(yAxis).nor();
 				rotMatrix.setToRotation(xAxis, delta.y / 5);
 				point.mul(rotMatrix);
