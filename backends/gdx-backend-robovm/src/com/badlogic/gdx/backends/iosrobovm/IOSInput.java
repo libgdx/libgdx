@@ -258,18 +258,30 @@ public class IOSInput implements Input {
 	private UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
 		public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string) {
-			//"cheating" to detect backspace without overriding method
-			if (range.length() > 0 && string.isEmpty()) {
+			for (int i = 0; i < range.length(); i++) {
 				app.input.inputProcessor.keyTyped((char) 8);
+			}
+
+			if (string.isEmpty()) {
 				return false;
 			}
 
 			char[] chars = new char[string.length()];
 			string.getChars(0, string.length(), chars, 0);
+
 			for (int i = 0; i < chars.length; i++) {
 				app.input.inputProcessor.keyTyped(chars[i]);
 			}
-			return false;
+
+			return true;
+		}
+
+		@Override
+		public boolean shouldEndEditing(UITextField textField) {
+			//Text field needs to have at least one symbol - so we can use backspace
+			textField.setText("x");
+
+			return true;
 		}
 
 		@Override
