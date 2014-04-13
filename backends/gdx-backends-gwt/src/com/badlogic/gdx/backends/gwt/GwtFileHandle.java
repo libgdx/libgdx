@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.gwt;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -291,6 +292,14 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
 	public FileHandle[] list () {
 		return preloader.list(file);
+	}
+
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FileFilter filter) {
+		throw new GdxRuntimeException("Not implemented");
 	}
 
 	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
