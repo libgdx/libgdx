@@ -18,5 +18,5 @@
     <module>gdx-controllers-desktop/jni/maven</module>
     <module>gdx-controllers-android</module>
     <module>gdx-controllers-gwt</module>
-</modules>
+  </modules>
 </project>
