@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.gwt;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,7 +40,8 @@ public class GwtFileHandle extends FileHandle {
 	private final FileType type;
 
 	protected GwtFileHandle (Preloader preloader, String fileName, FileType type) {
-		if (type != FileType.Internal && type != FileType.Classpath) throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
+		if (type != FileType.Internal && type != FileType.Classpath)
+			throw new GdxRuntimeException("FileType '" + type + "' Not supported in GWT backend");
 		this.preloader = preloader;
 		this.file = fileName.replace('\\', '/');
 		this.type = type;
@@ -291,6 +293,14 @@ public class GwtFileHandle extends FileHandle {
 		return preloader.list(file);
 	}
 
+	/** Returns the paths to the children of this directory that satisfy the specified filter. Returns an empty list if this file
+	 * handle represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the
+	 * classpath will return a zero length array.
+	 * @throw GdxRuntimeException if this file is an {@link FileType#Classpath} file. */
+	public FileHandle[] list (FilenameFilter filter) {
+		throw new GdxRuntimeException("Not implemented");
+	}
+
 	/** Returns the paths to the children of this directory with the specified suffix. Returns an empty list if this file handle
 	 * represents a file and not a directory. On the desktop, an {@link FileType#Internal} handle to a directory on the classpath
 	 * will return a zero length array.
@@ -310,7 +320,8 @@ public class GwtFileHandle extends FileHandle {
 	 * @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} and the child
 	 *        doesn't exist. */
 	public FileHandle child (String name) {
-		return new GwtFileHandle(preloader, (file.isEmpty() ? "" : (file + (file.endsWith("/") ? "" : "/"))) + name, FileType.Internal);
+		return new GwtFileHandle(preloader, (file.isEmpty() ? "" : (file + (file.endsWith("/") ? "" : "/"))) + name,
+			FileType.Internal);
 	}
 
 	public FileHandle parent () {
