@@ -280,9 +280,9 @@ public class ScrollPane extends WidgetGroup {
 			clamp();
 
 			// Stop fling if hit overscroll distance.
-			if (amountX == -overscrollDistance) velocityX = 0;
+			if (MathUtils.isEqual(amountX, -overscrollDistance)) velocityX = 0;
 			if (amountX >= maxX + overscrollDistance) velocityX = 0;
-			if (amountY == -overscrollDistance) velocityY = 0;
+			if (MathUtils.isEqual(amountY, -overscrollDistance)) velocityY = 0;
 			if (amountY >= maxY + overscrollDistance) velocityY = 0;
 
 			flingTimer -= delta;
@@ -293,21 +293,21 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
-			if (visualAmountX != amountX) {
+			if (!MathUtils.isEqual(visualAmountX, amountX)) {
 				if (visualAmountX < amountX)
 					visualScrollX(Math.min(amountX, visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta)));
 				else
 					visualScrollX(Math.max(amountX, visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta)));
 			}
-			if (visualAmountY != amountY) {
+			if (!MathUtils.isEqual(visualAmountY, amountY)) {
 				if (visualAmountY < amountY)
 					visualScrollY(Math.min(amountY, visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta)));
 				else
 					visualScrollY(Math.max(amountY, visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta)));
 			}
 		} else {
-			if (visualAmountX != amountX) visualScrollX(amountX);
-			if (visualAmountY != amountY) visualScrollY(amountY);
+			if (!MathUtils.isEqual(visualAmountX, amountX)) visualScrollX(amountX);
+			if (!MathUtils.isEqual(visualAmountY, amountY)) visualScrollY(amountY);
 		}
 
 		if (!panning) {
