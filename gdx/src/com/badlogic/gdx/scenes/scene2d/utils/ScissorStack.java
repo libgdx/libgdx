@@ -38,6 +38,8 @@ public class ScissorStack {
 	 * overlap between the top of stack rectangle and the provided rectangle is pushed onto the stack. This will invoke
 	 * {@link GL20#glScissor(int, int, int, int)} with the final top of stack rectangle. In case no scissor is yet on the stack
 	 * this will also enable {@link GL20#GL_SCISSOR_TEST} automatically.
+	 * <p>
+	 * Any drawing should be flushed before pushing scissors.
 	 * @return true if the scissors were pushed. false if the scissor area was zero, in this case the scissors were not pushed and
 	 *         no drawing should occur. */
 	public static boolean pushScissors (Rectangle scissor) {
@@ -68,7 +70,9 @@ public class ScissorStack {
 	}
 
 	/** Pops the current scissor rectangle from the stack and sets the new scissor area to the new top of stack rectangle. In case
-	 * no more rectangles are on the stack, {@link GL20#GL_SCISSOR_TEST} is disabled. */
+	 * no more rectangles are on the stack, {@link GL20#GL_SCISSOR_TEST} is disabled.
+	 * <p>
+	 * Any drawing should be flushed before popping scissors. */
 	public static Rectangle popScissors () {
 		Rectangle old = scissors.pop();
 		if (scissors.size == 0)
