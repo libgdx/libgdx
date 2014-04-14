@@ -21,6 +21,6 @@ import com.badlogic.gdx.tests.AnimationTest;
 
 public class LwjglAppletTest extends LwjglApplet {
 	public LwjglAppletTest () {
-		super(new AnimationTest(), false);
+		super(new AnimationTest());
 	}
 }

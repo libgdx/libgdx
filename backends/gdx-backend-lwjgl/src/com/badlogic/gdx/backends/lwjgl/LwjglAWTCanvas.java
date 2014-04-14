@@ -65,11 +65,11 @@ public class LwjglAWTCanvas implements Application {
 	int logLevel = LOG_INFO;
 	private Cursor cursor;
 
-	public LwjglAWTCanvas (ApplicationListener listener, boolean useGL2) {
-		this(listener, useGL2, null);
+	public LwjglAWTCanvas (ApplicationListener listener) {
+		this(listener, null);
 	}
 
-	public LwjglAWTCanvas (ApplicationListener listener, boolean useGL2, LwjglAWTCanvas sharedContextCanvas) {
+	public LwjglAWTCanvas (ApplicationListener listener, LwjglAWTCanvas sharedContextCanvas) {
 		LwjglNativesLoader.load();
 
 		AWTGLCanvas sharedDrawable = sharedContextCanvas != null ? sharedContextCanvas.canvas : null;

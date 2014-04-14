@@ -64,7 +64,7 @@ public class LwjglApplet extends Applet {
 		canvas.requestFocus();
 	}
 
-	public LwjglApplet (final ApplicationListener listener, final boolean useGL2) {
+	public LwjglApplet (final ApplicationListener listener) {
 		LwjglNativesLoader.load = false;
 		canvas = new Canvas() {
 			public final void addNotify () {
