@@ -435,6 +435,9 @@ public class AssetManager implements Disposable {
 			RefCountedContainer assetRef = assets.get(type).get(assetDesc.fileName);
 			assetRef.incRefCount();
 			incrementRefCountedDependencies(assetDesc.fileName);
+            if (assetDesc.params != null && assetDesc.params.loadedCallback != null) {
+                assetDesc.params.loadedCallback.finishedLoading(this, assetDesc.fileName, assetDesc.type);
+            }
 			loaded++;
 		} else {
 			// else add a new task for the asset.

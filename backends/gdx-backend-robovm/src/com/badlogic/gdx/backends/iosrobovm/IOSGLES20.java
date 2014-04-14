@@ -320,10 +320,10 @@ public class IOSGLES20 implements GL20
 	public native void glVertexAttribPointer ( int indx, int size, int type, boolean normalized, int stride, int ptr );
 
 	public void glViewport(int x, int y, int width, int height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+		IOSGLES20.x = x;
+		IOSGLES20.y = y;
+		IOSGLES20.width = width;
+		IOSGLES20.height = height;
 		glViewportJni(x, y, width, height);
 	}
 	
