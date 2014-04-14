@@ -66,7 +66,8 @@ public class JsonValue implements Iterable<JsonValue> {
 		set(value);
 	}
 
-	/** Returns the child at the specified index.
+	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
+	 * {@link JsonValue} for how to iterate efficiently.
 	 * @return May be null. */
 	public JsonValue get (int index) {
 		JsonValue current = child;
@@ -91,7 +92,8 @@ public class JsonValue implements Iterable<JsonValue> {
 		return get(name) != null;
 	}
 
-	/** Returns the child at the specified index.
+	/** Returns the child at the specified index. This requires walking the linked list to the specified entry, see
+	 * {@link JsonValue} for how to iterate efficiently.
 	 * @throws IllegalArgumentException if the child was not found. */
 	public JsonValue require (int index) {
 		JsonValue current = child;
@@ -113,7 +115,8 @@ public class JsonValue implements Iterable<JsonValue> {
 		return current;
 	}
 
-	/** Removes the child with the specified name.
+	/** Removes the child with the specified index. This requires walking the linked list to the specified entry, see
+	 * {@link JsonValue} for how to iterate efficiently.
 	 * @return May be null. */
 	public JsonValue remove (int index) {
 		JsonValue child = get(index);
@@ -306,18 +309,18 @@ public class JsonValue implements Iterable<JsonValue> {
 		int i = 0;
 		for (JsonValue value = child; value != null; value = value.next, i++) {
 			String v;
-			switch (type) {
+			switch (value.type) {
 			case stringValue:
-				v = stringValue;
+				v = value.stringValue;
 				break;
 			case doubleValue:
-				v = Double.toString(doubleValue);
+				v = Double.toString(value.doubleValue);
 				break;
 			case longValue:
-				v = Long.toString(longValue);
+				v = Long.toString(value.longValue);
 				break;
 			case booleanValue:
-				v = longValue != 0 ? "true" : "false";
+				v = value.longValue != 0 ? "true" : "false";
 				break;
 			case nullValue:
 				v = null;
