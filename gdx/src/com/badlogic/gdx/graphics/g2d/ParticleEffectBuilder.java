@@ -24,6 +24,11 @@ public class ParticleEffectBuilder {
 	private ParticleEffect effect;
 	private Array<ParticleEmitterBuilder> emitter;
 
+	public ParticleEffectBuilder () {
+		this.effect = new ParticleEffect();
+		emitter = new Array<ParticleEmitterBuilder>();
+	}
+
 	public ParticleEffectBuilder (ParticleEffect effect) {
 		this.effect = effect;
 		emitter = new Array<ParticleEmitterBuilder>();
@@ -37,7 +42,7 @@ public class ParticleEffectBuilder {
 		}
 	}
 
-	/** Set the ParticleEffect to work with.
+	/** Set the ParticleEffect to work with. To use one instance of a builder
 	 * @param effect the effect
 	 * @return the old ParticleEffect */
 	public ParticleEffect setParticleEffect (ParticleEffect effect) {
@@ -48,7 +53,7 @@ public class ParticleEffectBuilder {
 	}
 
 	/** @return the current ParticleEffect */
-	public ParticleEffect getParticleEffect () {
+	public ParticleEffect create () {
 		return this.effect;
 	}
 
@@ -56,7 +61,7 @@ public class ParticleEffectBuilder {
 	 * @return an {@link ParticleEmitterBuilder} containing the new emitter */
 	public ParticleEmitterBuilder addEmitter () {
 		ParticleEmitterBuilder e = new ParticleEmitterBuilder(new ParticleEmitter());
-		this.effect.getEmitters().add(e.getEmitter());
+		this.effect.getEmitters().add(e.create());
 		return e;
 	}
 
@@ -66,7 +71,7 @@ public class ParticleEffectBuilder {
 		final Array<ParticleEmitterBuilder> temp = new Array<ParticleEmitterBuilder>();
 		for (int j = 0; j < i; j++) {
 			ParticleEmitterBuilder e = new ParticleEmitterBuilder(new ParticleEmitter());
-			this.effect.getEmitters().add(e.getEmitter());
+			this.effect.getEmitters().add(e.create());
 			temp.add(e);
 		}
 		return temp;
@@ -95,14 +100,14 @@ public class ParticleEffectBuilder {
 	 * @param i the emitter number
 	 * @return the ParticleEmitter i */
 	public ParticleEmitter getEmitter (int i) {
-		return this.emitter.get(i).getEmitter();
+		return this.emitter.get(i).create();
 	}
 
 	/** @return all Emitter */
 	public Array<ParticleEmitter> getEmitter () {
 		final Array<ParticleEmitter> temp = new Array<ParticleEmitter>();
 		for (int i = 0; i < emitter.size; i++) {
-			temp.add(emitter.get(i).getEmitter());
+			temp.add(emitter.get(i).create());
 		}
 		return temp;
 	}
