@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.backends.openal;
+package com.badlogic.gdx.backends.lwjgl.audio;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

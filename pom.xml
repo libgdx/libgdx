@@ -52,7 +52,6 @@
     <module>extensions/gdx-jnigen</module>
     <module>gdx</module>
     <module>gdx/jni/maven</module>
-    <module>backends/gdx-openal</module>
     <module>backends/gdx-backend-android</module>
     <module>backends/gdx-backend-robovm</module>
     <module>backends/gdx-backend-lwjgl</module>

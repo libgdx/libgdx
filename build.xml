@@ -59,17 +59,6 @@
 		</ant>
 	</target>
 
-	<!-- gdx openal, for all desktop backends -->
-	<target name="gdx-openal" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-		</path>
-		<ant antfile="../../build-template.xml" dir="backends/gdx-openal">
-			<property name="jar" value="gdx-openal"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-
     <!-- gdx headless backend -->
     <target name="gdx-backend-headless" depends="gdx-core">
         <path id="classpath">
@@ -84,16 +73,13 @@
 
 
 	<!-- gdx lwjgl backend -->
-	<target name="gdx-backend-lwjgl" depends="gdx-core,gdx-openal">
+	<target name="gdx-backend-lwjgl" depends="gdx-core">
 		<path id="classpath">
 			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-openal.jar"/>
 		</path>
-		<zipfileset id="jarfiles" src="${distDir}/gdx-openal.jar"/>
 		<ant antfile="../../build-template.xml" dir="backends/gdx-backend-lwjgl">
 			<property name="jar" value="gdx-backend-lwjgl"/>
 			<reference refid="classpath"/>
-			<reference refid="jarfiles"/>
 		</ant>
 	</target>
 
@@ -295,7 +281,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-openal,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup-ui,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->
