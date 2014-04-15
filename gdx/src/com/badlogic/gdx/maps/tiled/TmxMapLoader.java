@@ -259,7 +259,6 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				String imageSource = tileset.getChildByName("image").getAttribute("source");
 				image = getRelativeFileHandle(tmxFile, imageSource);
 			}
-			System.out.println(image.path());
 			images.add(image);
 		}
 		return images;
@@ -280,7 +279,6 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				String imageSource = tileset.getChildByName("image").getAttribute("source");
 				image = getRelativeFileHandle(tmxFile, imageSource);
 			}
-			System.out.println(image.path());
 			images.add(image);
 		}
 		return images;
