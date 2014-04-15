@@ -39,7 +39,7 @@ public class InternalTickTest extends BaseBulletTest {
 				btRigidBody body = (btRigidBody)(objs.at(i));
 				if (body == null || body.isStaticOrKinematicObject()) continue;
 				body.applyGravity();
-				body.applyCentralForce(Vector3.tmp.set(0f, 8.0f + (float)(6.0 * Math.random()), 0f));
+				body.applyCentralForce(tmpV1.set(0f, 8.0f + (float)(6.0 * Math.random()), 0f));
 				idx++;
 			}
 		}
