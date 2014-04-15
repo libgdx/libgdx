@@ -25,7 +25,7 @@ package com.badlogic.gdx.setup;
  *
  */
 public class ProjectFile {
-	/** the name of the template resource, relative to com.badlogic.gdx.setup.resources **/
+	/** the name of the template resource, relative to resourceLoc **/
 	public String resourceName;
 	/** the name of the output file, including directories, relative to the project dir **/
 	public String outputName;

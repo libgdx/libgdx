@@ -16,14 +16,7 @@
 
 package com.badlogic.gdx.setup;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,8 +57,8 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gitignore", ".gitignore", false));
 		// Use our temp build and settings files if we are from the ui
 		if (ui) {
-			project.files.add(new ProjectFile("temp/build.gradle", "build.gradle", true, "/"));
-			project.files.add(new ProjectFile("temp/settings.gradle", "settings.gradle", false, "/"));
+			project.files.add(new TemporaryProjectFile(builder.settingsFile, "settings.gradle", false));
+			project.files.add(new TemporaryProjectFile(builder.buildFile, "build.gradle", true));
 		} else {
 			project.files.add(new ProjectFile("build.gradle", true));
 			project.files.add(new ProjectFile("settings.gradle", false));
@@ -88,9 +81,11 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("desktop/src/DesktopLauncher", "desktop/src/" + packageDir + "/desktop/DesktopLauncher.java", true));
 		}
 
+		//Assets
+		project.files.add(new ProjectFile("android/assets/badlogic.jpg", assetPath + "/badlogic.jpg", false));
+
 		// android project
 		if (!ui || builder.modules.contains(ProjectType.ANDROID)) {
-			project.files.add(new ProjectFile("android/assets/badlogic.jpg", false));
 			project.files.add(new ProjectFile("android/res/values/strings.xml"));
 			project.files.add(new ProjectFile("android/res/values/styles.xml", false));
 			project.files.add(new ProjectFile("android/res/drawable-hdpi/ic_launcher.png", false));
@@ -138,6 +133,8 @@ public class GdxSetup {
 		}
 		
 		copyAndReplace(outputDir, project, values);
+
+		builder.cleanUp();
 		
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
@@ -162,7 +159,6 @@ public class GdxSetup {
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			byte[] buffer = new byte[1024*10];
 			in = GdxSetup.class.getResourceAsStream(path + resource);
-			//in = GdxSetup.class.getResourceAsStream("/com/badlogic/gdx/setup/resources/" + resource);
 			if(in == null) throw new RuntimeException("Couldn't read resource '" + resource + "'");
 			int read = 0;
 			while((read = in.read(buffer)) > 0) {
@@ -175,10 +171,39 @@ public class GdxSetup {
 			if(in != null) try { in.close(); } catch(IOException e) {}
 		}
 	}
+
+	private byte[] readResource(File file) {
+		InputStream in = null;
+		try {
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024*10];
+			in = new FileInputStream(file);
+			if (in == null) throw new RuntimeException("Couldn't read resource '" + file.getAbsoluteFile() + "'");
+			int read = 0;
+			while ((read = in.read(buffer)) > 0) {
+				bytes.write(buffer, 0, read);
+			}
+			return bytes.toByteArray();
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException("Couldn't read resource '" + file.getAbsoluteFile() + "'", e);
+		} catch (IOException e) {
+			throw new RuntimeException("Couldn't read resource '" + file.getAbsoluteFile() + "'", e);
+		} finally {
+			if(in != null) try { in.close(); } catch(IOException e) {}
+		}
+	}
 	
 	private String readResourceAsString(String resource, String path) {
 		try {
 			return new String(readResource(resource, path), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private String readResourceAsString(File file) {
+		try {
+			return new String(readResource(file), "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
@@ -210,13 +235,24 @@ public class GdxSetup {
 		if(!outFile.getParentFile().exists() && !outFile.getParentFile().mkdirs()) {
 			throw new RuntimeException("Couldn't create dir '" + outFile.getAbsolutePath() + "'");
 		}
+
+		boolean isTemp = file instanceof TemporaryProjectFile ? true : false;
 		
 		if(file.isTemplate) {
-			String txt = readResourceAsString(file.resourceName, file.resourceLoc);
+			String txt;
+			if (isTemp) {
+				txt = readResourceAsString(((TemporaryProjectFile) file).file);
+			} else {
+				txt = readResourceAsString(file.resourceName, file.resourceLoc);
+			}
 			txt = replace(txt, values);
 			writeFile(outFile, txt);
 		} else {
-			writeFile(outFile, readResource(file.resourceName, file.resourceLoc));
+			if (isTemp) {
+				writeFile(outFile, readResource(((TemporaryProjectFile) file).file));
+			} else {
+				writeFile(outFile, readResource(file.resourceName, file.resourceLoc));
+			}
 		}
 	}
 

@@ -32,7 +32,7 @@ public class DependencyBank {
 			gdxDependencies.put(projectDep, dependency);
 		}
 		gwtInheritances.put(ProjectDependency.GDX, new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"});
-		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers", "com.badlogic.gdx.controllers-gwt"});
+		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers-gwt"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {

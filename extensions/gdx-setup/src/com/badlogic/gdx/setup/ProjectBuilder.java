@@ -15,6 +15,8 @@ public class ProjectBuilder {
 	DependencyBank bank;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
+	File settingsFile;
+	File buildFile;
 
 	public ProjectBuilder(DependencyBank bank) {
 		this.bank = bank;
@@ -34,8 +36,16 @@ public class ProjectBuilder {
 	}
 
 	public boolean build() throws IOException {
-		File settingsFile = new File("src/temp/settings.gradle");
-		File buildFile = new File("src/temp/build.gradle");
+		settingsFile = File.createTempFile("libgdx-setup-settings", ".gradle");
+		buildFile = File.createTempFile("libgdx-setup-build", ".gradle");
+		if (!settingsFile.exists()) {
+			settingsFile.createNewFile();
+		}
+		if (!buildFile.exists()) {
+			buildFile.createNewFile();
+		}
+		settingsFile.setWritable(true);
+		buildFile.setWritable(true);
 		try {
 			FileWriter settingsWriter = new FileWriter(settingsFile.getAbsoluteFile());
 			BufferedWriter settingsBw = new BufferedWriter(settingsWriter);
@@ -72,6 +82,11 @@ public class ProjectBuilder {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public void cleanUp() {
+		settingsFile.deleteOnExit();
+		buildFile.deleteOnExit();
 	}
 
 }
