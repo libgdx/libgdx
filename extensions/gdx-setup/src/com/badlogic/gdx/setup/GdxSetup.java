@@ -18,6 +18,7 @@ package com.badlogic.gdx.setup;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
@@ -73,8 +74,8 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("core/build.gradle"));
 		project.files.add(new ProjectFile("core/src/MainClass", "core/src/" + packageDir + "/" + mainClass + ".java", true));
 		//core but html required
-		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + packageDir + "/" + mainClass + ".gwt.xml", true));
-		
+		project.files.add(new ProjectFile("core/CoreGdxDefinition", "core/src/" + mainClass + ".gwt.xml", true));
+
 		// desktop project
 		if (!ui || builder.modules.contains(ProjectType.DESKTOP)) {
 			project.files.add(new ProjectFile("desktop/build.gradle"));
@@ -125,11 +126,12 @@ public class GdxSetup {
 		Map<String, String> values = new HashMap<String, String>();
 		values.put("%APP_NAME%", appName);
 		values.put("%PACKAGE%", packageName);
+		values.put("%PACKAGE_DIR%", packageDir);
 		values.put("%MAIN_CLASS%", mainClass);
 		values.put("%ANDROID_SDK%", sdkPath);
 		values.put("%ASSET_PATH%", assetPath);
 		if (!ui || builder.modules.contains(ProjectType.HTML)) {
-			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances));
+			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances, builder));
 		}
 		
 		copyAndReplace(outputDir, project, values);
@@ -288,14 +290,25 @@ public class GdxSetup {
 		return params;
 	}
 
-	private String parseGwtInherits(HashMap<ProjectDependency, String[]> gwtInheritances) {
+	private String parseGwtInherits(HashMap<ProjectDependency, String[]> gwtInheritances, ProjectBuilder builder) {
 		String parsed = "";
-		for (String[] array : gwtInheritances.values()) {
-			for (String inherit : array) {
-				parsed += "\t<inherits name='" + inherit + "' />\n";
+		for (ProjectDependency dep : gwtInheritances.keySet()) {
+			if (containsDependency(builder.dependencies, dep)) {
+				for (String inherit : gwtInheritances.get(dep)) {
+					parsed += "\t<inherits name='" + inherit + "' />\n";
+				}
 			}
 		}
 		return parsed;
+	}
+
+	private boolean containsDependency(List<Dependency> dependencyList, ProjectDependency projectDependency) {
+	 	for (Dependency dep : dependencyList) {
+			if (dep.getName().equals(projectDependency.name())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static void main (String[] args) {

@@ -45,8 +45,8 @@ public class BuildScriptHelper {
 		write(wr, "version = '1.0'");
 		write(wr, "ext {");
 		write(wr, "appName = '%APP_NAME%'");
-		write(wr, "gdxVersion = '1.0-SNAPSHOT'");
-		write(wr, "roboVMVersion = '0.0.10'");
+		write(wr, "gdxVersion = '" + DependencyBank.libgdxVersion + "'");
+		write(wr, "roboVMVersion = '" + DependencyBank.roboVMVersion + "'");
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");

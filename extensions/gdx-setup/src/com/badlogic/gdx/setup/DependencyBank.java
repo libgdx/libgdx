@@ -2,24 +2,27 @@ package com.badlogic.gdx.setup;
 
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class DependencyBank {
 
-	//Libgdx Version and package
-	String libgdxVersion = "1.0-SNAPSHOT";
+	//Versions
+	static String libgdxVersion = "1.0-SNAPSHOT";
+	static String roboVMVersion = "0.0.11";
+
 	static String packageString = "com.badlogicgames.gdx";
 
 	//Repositories
-	public static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";
-	public static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
+	static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";
+	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 
 	//Project plugins
-	public static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.3";
-	public static String androidPluginImport = "com.android.tools.build:gradle:0.9+";
-	public static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.5";
+	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.3";
+	static String androidPluginImport = "com.android.tools.build:gradle:0.9";
+	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.5";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
-	public HashMap<ProjectDependency, String[]> gwtInheritances = new HashMap<ProjectDependency, String[]>();
+	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
 
 	public DependencyBank() {
 		for (ProjectDependency projectDep : ProjectDependency.values()) {
@@ -32,7 +35,7 @@ public class DependencyBank {
 			gdxDependencies.put(projectDep, dependency);
 		}
 		gwtInheritances.put(ProjectDependency.GDX, new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"});
-		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers-gwt"});
+		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers.controllers-gwt"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -156,14 +159,6 @@ public class DependencyBank {
 		public String[] getPlugins() {
 			return plugins;
 		}
-	}
-
-	public void setVersion(String versionString) {
-		this.libgdxVersion = versionString;
-	}
-
-	public String getVersion() {
-		return libgdxVersion;
 	}
 
 }
