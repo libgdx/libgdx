@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
@@ -107,6 +108,8 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer)layer);
+				} else if (layer instanceof TiledMapImageLayer) {
+					renderImageLayer((TiledMapImageLayer)layer);
 				} else {
 					for (MapObject object : layer.getObjects()) {
 						renderObject(object);
@@ -125,7 +128,11 @@ public abstract class BatchTiledMapRenderer implements TiledMapRenderer, Disposa
 			if (layer.isVisible()) {
 				if (layer instanceof TiledMapTileLayer) {
 					renderTileLayer((TiledMapTileLayer)layer);
-				} else {
+				} 
+				else if (layer instanceof TiledMapImageLayer) {
+					renderImageLayer((TiledMapImageLayer)layer);
+				}
+				else {
 					for (MapObject object : layer.getObjects()) {
 						renderObject(object);
 					}

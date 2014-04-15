@@ -121,6 +121,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
 				textures.put(textureFile.path(), texture);
 			}
+			for (FileHandle textureFile : loadImages(root, tmxFile)) {
+				Texture texture = new Texture(textureFile, parameters.generateMipMaps);
+				texture.setFilter(parameters.textureMinFilter, parameters.textureMagFilter);
+				textures.put(textureFile.path(), texture);
+			}
 			DirectImageResolver imageResolver = new DirectImageResolver(textures);
 			TiledMap map = loadTilemap(root, tmxFile, imageResolver);
 			map.setOwnedResources(textures.values().toArray());
@@ -172,6 +177,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			}
 			for (FileHandle image : loadTilesets(root, tmxFile)) {
 				dependencies.add(new AssetDescriptor(image, Texture.class, texParams));
+			}
+			for (FileHandle image : loadImages(root, tmxFile)) {
+				dependencies.add(new AssetDescriptor(image, Texture.class, texParams));	
 			}
 			return dependencies;
 		} catch (IOException e) {
@@ -226,6 +234,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				loadTileLayer(map, element);
 			} else if (name.equals("objectgroup")) {
 				loadObjectGroup(map, element);
+			} else if (name.equals("imagelayer")) {
+				loadImageLayer(map, element, tmxFile, imageResolver);
 			}
 		}
 		return map;
@@ -249,6 +259,28 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				String imageSource = tileset.getChildByName("image").getAttribute("source");
 				image = getRelativeFileHandle(tmxFile, imageSource);
 			}
+			System.out.println(image.path());
+			images.add(image);
+		}
+		return images;
+	}
+	
+	protected Array<FileHandle> loadImages (Element root, FileHandle tmxFile) throws IOException
+	{
+		Array<FileHandle> images = new Array<FileHandle>();
+		for (Element tileset : root.getChildrenByName("imagelayer")) {
+			String source = tileset.getAttribute("source", null);
+			FileHandle image = null;
+			if (source != null) {
+				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+				tileset = xml.parse(tsx);
+				String imageSource = tileset.getChildByName("image").getAttribute("source");
+				image = getRelativeFileHandle(tsx, imageSource);
+			} else {
+				String imageSource = tileset.getChildByName("image").getAttribute("source");
+				image = getRelativeFileHandle(tmxFile, imageSource);
+			}
+			System.out.println(image.path());
 			images.add(image);
 		}
 		return images;
@@ -432,6 +464,42 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			for (Element objectElement : element.getChildrenByName("object")) {
 				loadObject(layer, objectElement);
 			}
+
+			map.getLayers().add(layer);
+		}
+	}
+	
+
+	private void loadImageLayer(TiledMap map, Element element, FileHandle tmxFile, ImageResolver imageResolver)
+	{
+		if (element.getName().equals("imagelayer")) {
+			String name = element.getAttribute("name", null);
+			boolean visible = element.getIntAttribute("visible", 1) == 1;
+			float opacity = element.getFloatAttribute("opacity", 1.0f);
+			
+			FileHandle image = null;
+			String source = element.getAttribute("source", null);
+			String imageSource = null;
+			if (source != null) {
+				FileHandle tsx = getRelativeFileHandle(tmxFile, source);
+				try {
+					element = xml.parse(tsx);
+					imageSource = element.getChildByName("image").getAttribute("source");
+					image = getRelativeFileHandle(tsx, imageSource);
+				} catch (IOException e) {
+					throw new GdxRuntimeException("Error parsing external tileset.");
+				}
+			} else {
+				imageSource = element.getChildByName("image").getAttribute("source");
+				image = getRelativeFileHandle(tmxFile, imageSource);
+			}
+
+			TextureRegion texture = imageResolver.getImage(image.path());
+			
+			TiledMapImageLayer layer = new TiledMapImageLayer(0, 0, texture);
+			layer.setVisible(visible);
+			layer.setOpacity(opacity);
+			layer.setName(name);
 
 			map.getLayers().add(layer);
 		}
