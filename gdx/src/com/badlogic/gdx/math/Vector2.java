@@ -145,6 +145,10 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return x * v.x + y * v.y;
 	}
 
+	public float dot (float ox, float oy) {
+		return x * ox + y * oy;
+	}
+
 	@Override
 	public Vector2 scl (float scalar) {
 		x *= scalar;
@@ -402,23 +406,33 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
-	public boolean isCollinear (Vector2 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) - 1, epsilon);
+	public boolean isOnLine (Vector2 other) {
+		return MathUtils.isZero(x * other.y - y * other.x);
 	}
 
 	@Override
-	public boolean isCollinear (Vector2 vector) {
-		return MathUtils.isZero(dot(vector) - 1);
+	public boolean isOnLine (Vector2 other, float epsilon) {
+		return MathUtils.isZero(x * other.y - y * other.x, epsilon);
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector2 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) + 1, epsilon);
+	public boolean isCollinear (Vector2 other, float epsilon) {
+		return isOnLine(other, epsilon) && dot(other) > 0f;
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector2 vector) {
-		return MathUtils.isZero(dot(vector) + 1);
+	public boolean isCollinear (Vector2 other) {
+		return isOnLine(other) && dot(other) > 0f;
+	}
+
+	@Override
+	public boolean isCollinearOpposite (Vector2 other, float epsilon) {
+		return isOnLine(other, epsilon) && dot(other) < 0f;
+	}
+
+	@Override
+	public boolean isCollinearOpposite (Vector2 other) {
+		return isOnLine(other) && dot(other) < 0f;
 	}
 
 	@Override

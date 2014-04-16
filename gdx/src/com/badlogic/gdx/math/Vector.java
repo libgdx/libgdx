@@ -91,67 +91,65 @@ public interface Vector<T extends Vector<T>> {
 	T lerp (T target, float alpha);
 
 	/** @return Whether this vector is a unit length vector */
-	public boolean isUnit ();
+	boolean isUnit ();
 
 	/** @return Whether this vector is a unit length vector within the given margin. */
-	public boolean isUnit (final float margin);
+	boolean isUnit (final float margin);
 
 	/** @return Whether this vector is a zero vector */
-	public boolean isZero ();
+	boolean isZero ();
 
 	/** @return Whether the length of this vector is smaller than the given margin */
-	public boolean isZero (final float margin);
+	boolean isZero (final float margin);
 
-	/** @return Whether this vector is collinear with the given vector. The vectors need to be normalized for this to work. True if
-	 *         the normalized dot product is 1.
-	 * @param vector the vector to check
+	/** @return true if this vector is in line with the other vector (either in the same or the opposite direction) */
+	boolean isOnLine (T other, float epsilon);
+
+	/** @return true if this vector is in line with the other vector (either in the same or the opposite direction) */
+	boolean isOnLine (T other);
+
+	/** @return true if this vector is collinear with the other vector ({@link #isOnLine(Vector, float)} &&
+	 *         {@link #hasSameDirection(Vector)}). */
+	boolean isCollinear (T other, float epsilon);
+
+	/** @return true if this vector is collinear with the other vector ({@link #isOnLine(Vector)} &&
+	 *         {@link #hasSameDirection(Vector)}). */
+	boolean isCollinear (T other);
+
+	/** @return true if this vector is opposite collinear with the other vector ({@link #isOnLine(Vector, float)} &&
+	 *         {@link #hasOppositeDirection(Vector)}). */
+	boolean isCollinearOpposite (T other, float epsilon);
+
+	/** @return true if this vector is opposite collinear with the other vector ({@link #isOnLine(Vector)} &&
+	 *         {@link #hasOppositeDirection(Vector)}). */
+	boolean isCollinearOpposite (T other);
+
+	/** @return Whether this vector is perpendicular with the other vector. True if the dot product is 0. */
+	boolean isPerpendicular (T other);
+
+	/** @return Whether this vector is perpendicular with the other vector. True if the dot product is 0.
 	 * @param epsilon a positive small number close to zero */
-	public boolean isCollinear (T vector, float epsilon);
+	boolean isPerpendicular (T other, float epsilon);
 
-	/** @return Whether this vector is collinear with the given vector. The vectors need to be normalized for this to work. True if
-	 *         the normalized dot product is 1.
-	 * @param vector the vector to check */
-	public boolean isCollinear (T vector);
+	/** @return Whether this vector has similar direction compared to the other vector. True if the normalized dot product is > 0. */
+	boolean hasSameDirection (T other);
 
-	/** @return Whether this vector is collinear with the given vector but has opposite direction. True if the normalized dot product
-	 *         is -1. The vectors need to be normalized for this to work.
-	 * @param vector the vector to check
-	 * @param epsilon a positive small number close to zero */
-	public boolean isCollinearOpposite (T vector, float epsilon);
-
-	/** @return Whether this vector is collinear with the given vector but has opposite direction. True if the normalized dot product
-	 *         is -1. The vectors need to be normalized for this to work.
-	 * @param vector the vector to check */
-	public boolean isCollinearOpposite (T vector);
-
-	/** @return Whether this vector is perpendicular with the given vector. True if the dot product is 0. */
-	public boolean isPerpendicular (T vector);
-
-	/** @return Whether this vector is perpendicular with the given vector. True if the dot product is 0.
-	 * @param epsilon a positive small number close to zero */
-	public boolean isPerpendicular (T vector, float epsilon);
-
-	/** @return Whether this vector has similar direction compared to the given vector. True if the normalized dot product is > 0. */
-	public boolean hasSameDirection (T vector);
-
-	/** @return Whether this vector has opposite direction compared to the given vector. True if the normalized dot product is < 0. */
-	public boolean hasOppositeDirection (T vector);
+	/** @return Whether this vector has opposite direction compared to the other vector. True if the normalized dot product is < 0. */
+	boolean hasOppositeDirection (T other);
 
 	/** Compares this vector with the other vector, using the supplied epsilon for fuzzy equality testing.
 	 * @param other
 	 * @param epsilon
 	 * @return whether the vectors have fuzzy equality. */
-	public boolean epsilonEquals (T other, float epsilon);
+	boolean epsilonEquals (T other, float epsilon);
 
 	/** First scale a supplied vector, then add it to this vector.
 	 * @param v addition vector
 	 * @param scalar for scaling the addition vector */
-	public T mulAdd(T v, float scalar);
+	T mulAdd (T v, float scalar);
 
 	/** First scale a supplied vector, then add it to this vector.
 	 * @param v addition vector
-	 * @param mulVec vector by whose values the addition vector will be scaled*/
-	public T mulAdd(T v, T mulVec);
-
-	// TODO: T crs(T v);
+	 * @param mulVec vector by whose values the addition vector will be scaled */
+	T mulAdd (T v, T mulVec);
 }

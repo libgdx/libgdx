@@ -9,6 +9,7 @@ gwt {
     src = files(file("src/")) // Needs to be in front of "modules" below.
     modules '%PACKAGE%.GdxDefinition'
     devModules '%PACKAGE%.GdxDefinitionSuperdev'
+    project.webAppDirName = 'webapp'
 
     compiler {
         strict = true;

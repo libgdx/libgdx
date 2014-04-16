@@ -32,16 +32,6 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	/** the z-component of this vector **/
 	public float z;
 
-	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	@Deprecated public final static Vector3 tmp = new Vector3();
-	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	@Deprecated public final static Vector3 tmp2 = new Vector3();
-	/** @deprecated Static temporary vector. Use with care! Use only when sure other code will not also use this.
-	 * @see #tmp() **/
-	@Deprecated public final static Vector3 tmp3 = new Vector3();
-
 	public final static Vector3 X = new Vector3(1, 0, 0);
 	public final static Vector3 Y = new Vector3(0, 1, 0);
 	public final static Vector3 Z = new Vector3(0, 0, 1);
@@ -120,33 +110,6 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	@Override
 	public Vector3 cpy () {
 		return new Vector3(this);
-	}
-
-	/** @deprecated NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods
-	 *             might call this as well.
-	 * 
-	 * @return a temporary copy of this vector */
-	@Deprecated
-	public Vector3 tmp () {
-		return tmp.set(this);
-	}
-
-	/** @deprecated NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods
-	 *             might call this as well.
-	 * 
-	 * @return a temporary copy of this vector */
-	@Deprecated
-	public Vector3 tmp2 () {
-		return tmp2.set(this);
-	}
-
-	/** @deprecated NEVER EVER SAVE THIS REFERENCE! Do not use this unless you are aware of the side-effects, e.g. other methods
-	 *             might call this as well.
-	 * 
-	 * @return a temporary copy of this vector */
-	@Deprecated
-	Vector3 tmp3 () {
-		return tmp3.set(this);
 	}
 
 	@Override
@@ -512,23 +475,33 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
-	public boolean isCollinear (Vector3 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) - 1, epsilon);
+	public boolean isOnLine (Vector3 other, float epsilon) {
+		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= epsilon;
+	}
+	
+	@Override
+	public boolean isOnLine (Vector3 other) {
+		return len2(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x) <= MathUtils.FLOAT_ROUNDING_ERROR;
+	}
+	
+	@Override
+	public boolean isCollinear (Vector3 other, float epsilon) {
+		return isOnLine(other, epsilon) && hasSameDirection(other);
 	}
 
 	@Override
-	public boolean isCollinear (Vector3 vector) {
-		return MathUtils.isZero(dot(vector) - 1);
+	public boolean isCollinear (Vector3 other) {
+		return isOnLine(other) && hasSameDirection(other);
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector3 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) + 1, epsilon);
+	public boolean isCollinearOpposite (Vector3 other, float epsilon) {
+		return isOnLine(other, epsilon) && hasOppositeDirection(other);
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector3 vector) {
-		return MathUtils.isZero(dot(vector) + 1);
+	public boolean isCollinearOpposite (Vector3 other) {
+		return isOnLine(other) && hasOppositeDirection(other);
 	}
 
 	@Override

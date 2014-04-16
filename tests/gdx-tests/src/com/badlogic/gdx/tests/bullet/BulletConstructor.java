@@ -31,6 +31,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 	public btRigidBodyConstructionInfo bodyInfo = null;
 	public btCollisionShape shape = null;
+	private final static Vector3 tmpV = new Vector3();
 
 	/** Specify null for the shape to use only the renderable part of this entity and not the physics part. */
 	public BulletConstructor (final Model model, final float mass, final btCollisionShape shape) {
@@ -67,7 +68,7 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 
 	private void create (final Model model, final float mass, final float width, final float height, final float depth) {
 		// Create a simple boxshape
-		create(model, mass, new btBoxShape(Vector3.tmp.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
+		create(model, mass, new btBoxShape(tmpV.set(width * 0.5f, height * 0.5f, depth * 0.5f)));
 	}
 
 	private void create (final Model model, final float mass, final btCollisionShape shape) {
@@ -80,8 +81,8 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
 			if (mass == 0)
 				localInertia = Vector3.Zero;
 			else {
-				shape.calculateLocalInertia(mass, Vector3.tmp);
-				localInertia = Vector3.tmp;
+				shape.calculateLocalInertia(mass, tmpV);
+				localInertia = tmpV;
 			}
 
 			// For now just pass null as the motionstate, we'll add that to the body in the entity itself

@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.3'
         classpath 'com.android.tools.build:gradle:0.9+'
-        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.6'
+        classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.7'
     }
 }
 
@@ -67,7 +67,6 @@ project(":android") {
 project(":html") {
     apply plugin: "gwt"
     apply plugin: "war"
-    webAppDirName = 'webapp'
 
     dependencies {
         compile project(":core")

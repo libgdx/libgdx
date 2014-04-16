@@ -20,9 +20,7 @@ import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.lwjgl.opengl.Display;
@@ -37,10 +35,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 /** An OpenGL surface on an AWT Canvas, allowing OpenGL to be embedded in a Swing application. All OpenGL calls are done on the
