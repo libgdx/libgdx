@@ -656,7 +656,7 @@ public class Mesh implements Disposable {
 	 * @return the value specified by out. */
 	public BoundingBox extendBoundingBox (final BoundingBox out, int offset, int count, final Matrix4 transform) {
 		int numIndices = getNumIndices();
-		if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices");
+		if (offset < 0 || count < 1 || offset + count > numIndices) throw new GdxRuntimeException("Not enough indices ( offset="+offset+", count="+count+", max="+numIndices+" )");
 
 		final FloatBuffer verts = vertices.getBuffer();
 		final ShortBuffer index = indices.getBuffer();
