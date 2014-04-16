@@ -7,6 +7,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/jlayer-1.0.1-libgdx.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/jorbis.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/lwjgl.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/gdx"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
