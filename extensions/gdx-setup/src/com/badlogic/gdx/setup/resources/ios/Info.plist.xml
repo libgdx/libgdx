@@ -27,7 +27,7 @@
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
     <key>UIStatusBarHidden</key>
-    <false/>
+    <true/>
     <key>UIDeviceFamily</key>
     <array>
         <integer>1</integer>
