@@ -76,6 +76,7 @@ public class BuildScriptHelper {
 			write(wr, "compile project(\":" + ProjectType.CORE.getName() + "\")");
 		}
 		for (Dependency dep : dependencyList) {
+			if (dep.getDependencies(project) == null) continue;
 			for (String moduleDependency : dep.getDependencies(project)) {
 				if (moduleDependency == null) continue;
 				if ((project.equals(ProjectType.ANDROID) || project.equals(ProjectType.IOS)) && moduleDependency.contains("native")) {

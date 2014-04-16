@@ -18,7 +18,7 @@ public class DependencyBank {
 
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.3";
-	static String androidPluginImport = "com.android.tools.build:gradle:0.9";
+	static String androidPluginImport = "com.android.tools.build:gradle:0.9+";
 	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.5";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
@@ -36,6 +36,7 @@ public class DependencyBank {
 		}
 		gwtInheritances.put(ProjectDependency.GDX, new String[]{"com.badlogic.gdx.backends.gdx_backends_gwt"});
 		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers.controllers-gwt"});
+		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -66,28 +67,35 @@ public class DependencyBank {
 			new String[]{"%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-desktop"},
 			new String[]{"%PACKAGE%:gdx-bullet:$gdxVersion", "%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-armeabi", "%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"},
 			new String[]{"%PACKAGE%:gdx-bullet:$gdxVersion", "%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-ios"},
-			new String[]{null}
+			null
 		),
 		FREETYPE(
 			new String[]{"%PACKAGE%:gdx-freetype:$gdxVersion"},
 			new String[]{"%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-desktop"},
 			new String[]{"%PACKAGE%:gdx-freetype:$gdxVersion", "%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-armeabi", "%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"},
 			new String[]{"%PACKAGE%:gdx-freetype:$gdxVersion", "%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-ios"},
-			new String[]{null}
+			null
 		),
 		TOOLS(
 			new String[]{"%PACKAGE%:gdx-tools:$gdxVersion"},
 			new String[]{"%PACKAGE%:gdx-tools:$gdxVersion"},
-			new String[]{null},
-			new String[]{null},
-			new String[]{null}
+			null,
+			null,
+			null
 		),
 		CONTROLLERS(
 			new String[]{"%PACKAGE%:gdx-controllers:$gdxVersion"},
 			new String[]{"%PACKAGE%:gdx-controllers-desktop:$gdxVersion", "%PACKAGE%:gdx-controllers-platform:$gdxVersion:natives-desktop"},
 			new String[]{"%PACKAGE%:gdx-controllers-android:$gdxVersion"},
-			new String[]{null},
+			null,
 			new String[]{"%PACKAGE%:gdx-controllers:$gdxVersion:sources", "%PACKAGE%:gdx-controllers-gwt:$gdxVersion", "%PACKAGE%:gdx-controllers-gwt:$gdxVersion:sources"}
+		),
+		BOX2DLIGHTS(
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
+			new String[]{},
+			new String[]{},
+			new String[]{},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1:sources"}
 		);
 
 		private String[] coreDependencies;

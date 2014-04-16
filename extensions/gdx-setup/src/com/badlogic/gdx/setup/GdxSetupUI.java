@@ -43,13 +43,14 @@ import static java.awt.GridBagConstraints.*;
 
 @SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
-	UI ui = new UI();
-	static Point point = new Point();
 
 	//DependencyBank dependencyBank;
 	ProjectBuilder builder;
 	List<ProjectType> modules = new ArrayList<ProjectType>();
 	List<Dependency> dependencies = new ArrayList<Dependency>();
+
+	UI ui = new UI();
+	static Point point = new Point();
 
 	public GdxSetupUI () {
 		setTitle("LibGDX Project Generator");
@@ -399,7 +400,9 @@ public class GdxSetupUI extends JFrame {
 				if (projectType.equals(ProjectType.CORE)) {
 					continue;
 				}
+				modules.add(projectType);
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
+				checkBox.setSelected(true);
 				subProjectsPanel.add(checkBox);
 				checkBox.addItemListener(new ItemListener() {
 					@Override
