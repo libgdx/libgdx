@@ -10,8 +10,6 @@ public class DependencyBank {
 	static String libgdxVersion = "1.0-SNAPSHOT";
 	static String roboVMVersion = "0.0.11";
 
-	static String packageString = "com.badlogicgames.gdx";
-
 	//Repositories
 	static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
@@ -19,7 +17,7 @@ public class DependencyBank {
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.3";
 	static String androidPluginImport = "com.android.tools.build:gradle:0.9+";
-	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.5";
+	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.7";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -56,39 +54,39 @@ public class DependencyBank {
 	 */
 	public enum ProjectDependency {
 		GDX(
-			new String[]{"%PACKAGE%:gdx:$gdxVersion"},
-			new String[]{"%PACKAGE%:gdx-backend-lwjgl:$gdxVersion", "%PACKAGE%:gdx-platform:$gdxVersion:natives-desktop"},
-			new String[]{"%PACKAGE%:gdx-backend-android:$gdxVersion", "%PACKAGE%:gdx-platform:$gdxVersion:natives-x86", "%PACKAGE%:gdx-platform:$gdxVersion:natives-armeabi", "%PACKAGE%:gdx-platform:$gdxVersion:natives-armeabi-v7a"},
-			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "%PACKAGE%:gdx-backend-robovm:$gdxVersion", "%PACKAGE%:gdx-platform:$gdxVersion:natives-ios"},
-			new String[]{"%PACKAGE%:gdx-backend-gwt:$gdxVersion", "%PACKAGE%:gdx:$gdxVersion:sources", "%PACKAGE%:gdx-backend-gwt:$gdxVersion:sources"}
+			new String[]{"com.badlogicgames.gdx:gdx:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-backend-android:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"},
+			new String[]{"org.robovm:robovm-rt:${roboVMVersion}", "org.robovm:robovm-cocoatouch:${roboVMVersion}", "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion", "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"},
+			new String[]{"com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"}
 		),
 		BULLET(
-			new String[]{"%PACKAGE%:gdx-bullet:$gdxVersion"},
-			new String[]{"%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-desktop"},
-			new String[]{"%PACKAGE%:gdx-bullet:$gdxVersion", "%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-armeabi", "%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"},
-			new String[]{"%PACKAGE%:gdx-bullet:$gdxVersion", "%PACKAGE%:gdx-bullet-platform:$gdxVersion:natives-ios"},
+			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-armeabi-v7a"},
+			new String[]{"com.badlogicgames.gdx:gdx-bullet:$gdxVersion", "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"},
 			null
 		),
 		FREETYPE(
-			new String[]{"%PACKAGE%:gdx-freetype:$gdxVersion"},
-			new String[]{"%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-desktop"},
-			new String[]{"%PACKAGE%:gdx-freetype:$gdxVersion", "%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-armeabi", "%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"},
-			new String[]{"%PACKAGE%:gdx-freetype:$gdxVersion", "%PACKAGE%:gdx-freetype-platform:$gdxVersion:natives-ios"},
+			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-armeabi-v7a"},
+			new String[]{"com.badlogicgames.gdx:gdx-freetype:$gdxVersion", "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"},
 			null
 		),
 		TOOLS(
-			new String[]{"%PACKAGE%:gdx-tools:$gdxVersion"},
-			new String[]{"%PACKAGE%:gdx-tools:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
 			null,
 			null,
 			null
 		),
 		CONTROLLERS(
-			new String[]{"%PACKAGE%:gdx-controllers:$gdxVersion"},
-			new String[]{"%PACKAGE%:gdx-controllers-desktop:$gdxVersion", "%PACKAGE%:gdx-controllers-platform:$gdxVersion:natives-desktop"},
-			new String[]{"%PACKAGE%:gdx-controllers-android:$gdxVersion"},
-			null,
-			new String[]{"%PACKAGE%:gdx-controllers:$gdxVersion:sources", "%PACKAGE%:gdx-controllers-gwt:$gdxVersion", "%PACKAGE%:gdx-controllers-gwt:$gdxVersion:sources"}
+			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
+			new String[]{"com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
+			new String[] { }, // works on iOS but never reports any controllers :)
+			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"}
 		),
 		BOX2DLIGHTS(
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
@@ -105,11 +103,11 @@ public class DependencyBank {
 		private String[] gwtDependencies;
 
 		ProjectDependency(String[] coreDeps, String[] desktopDeps, String[] androidDeps, String[] iosDeps, String[] gwtDeps) {
-			this.coreDependencies = regex(coreDeps);
-			this.desktopDependencies = regex(desktopDeps);
-			this.androidDependencies = regex(androidDeps);
-			this.iosDependencies = regex(iosDeps);
-			this.gwtDependencies = regex(gwtDeps);
+			this.coreDependencies = coreDeps;
+			this.desktopDependencies = desktopDeps;
+			this.androidDependencies = androidDeps;
+			this.iosDependencies = iosDeps;
+			this.gwtDependencies = gwtDeps;
 		}
 
 		public String[] getDependencies(ProjectType type) {
@@ -127,21 +125,6 @@ public class DependencyBank {
 			}
 			return null;
 		}
-
-		private String[] regex(String[] in) {
-			String[] out;
-			if (in != null) {
-				out = new String[in.length];
-				for (int i = 0; i < in.length; i++) {
-					if (in[i] != null) {
-						out[i] = in[i].replace("%PACKAGE%", packageString);
-					}
-				}
-				return out;
-			}
-			return null;
-		}
-
 	}
 
 

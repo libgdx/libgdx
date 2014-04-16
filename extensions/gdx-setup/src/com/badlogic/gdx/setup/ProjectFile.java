@@ -51,5 +51,4 @@ public class ProjectFile {
 		this.outputName = outputName;
 		this.isTemplate = isTemplate;		
 	}
-
 }
