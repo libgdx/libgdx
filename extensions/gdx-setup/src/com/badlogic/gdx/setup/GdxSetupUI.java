@@ -348,12 +348,12 @@ public class GdxSetupUI extends JFrame {
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
-		JPanel extensionsPanel = new JPanel(new GridLayout());
+		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
 
 		{
-			uiStyle();
 			uiLayout();
 			uiEvents();
+			uiStyle();
 		}
 
 		private void uiStyle() {
@@ -369,8 +369,10 @@ public class GdxSetupUI extends JFrame {
 			subProjectsPanel.setOpaque(true);
 			subProjectsPanel.setBackground(new Color(46, 46, 46));
 
-			extensionsPanel.setOpaque(true);
-			extensionsPanel.setBackground(new Color(46, 46, 46));
+			for (JPanel extensionPanel : extensionsPanels) {
+				extensionPanel.setOpaque(true);
+				extensionPanel.setBackground(new Color(46, 46, 46));
+			}
 		}
 
 		private void uiLayout () {
@@ -422,29 +424,46 @@ public class GdxSetupUI extends JFrame {
 			add(projectsLabel, new GridBagConstraints(0, 5, 1, 1, 0, 0, WEST, WEST, new Insets(20, 0, 0, 0), 0, 0));
 			add(subProjectsPanel, new GridBagConstraints(0, 6, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
-			for (final ProjectDependency projDep : ProjectDependency.values()) {
-				if (projDep.equals(ProjectDependency.GDX)) {
-					continue;
-				}
-				SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
-				extensionsPanel.add(depCheckBox);
-				depCheckBox.addItemListener(new ItemListener() {
-					@Override
-					public void itemStateChanged(ItemEvent e) {
-						SetupCheckBox box = (SetupCheckBox) e.getSource();
-						if (box.isSelected()) {
-							dependencies.add(builder.bank.getDependency(projDep));
-						} else {
-							if (dependencies.contains(builder.bank.getDependency(projDep))) {
-								dependencies.remove(builder.bank.getDependency(projDep));
-							}
+			int depCounter = 0;
+			int buffer = 0;
+			for (int row = 0; row <= (ProjectDependency.values().length / 5); row++) {
+				JPanel extensionPanel = new JPanel(new GridLayout());
+				if (buffer != 0) buffer = 0;
+				for (int i = 0; i < 5 + buffer; i++) {
+					depCounter++;
+					if (depCounter > ProjectDependency.values().length) break;
+					if (ProjectDependency.values()[(row * 5) + i] != null) {
+						final ProjectDependency projDep = ProjectDependency.values()[(row * 5) + i];
+						if (projDep.equals(ProjectDependency.GDX)) {
+							buffer++;
+							continue;
 						}
+						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
+						extensionPanel.add(depCheckBox);
+						depCheckBox.addItemListener(new ItemListener() {
+							@Override
+							public void itemStateChanged(ItemEvent e) {
+								SetupCheckBox box = (SetupCheckBox) e.getSource();
+								if (box.isSelected()) {
+									dependencies.add(builder.bank.getDependency(projDep));
+								} else {
+									if (dependencies.contains(builder.bank.getDependency(projDep))) {
+										dependencies.remove(builder.bank.getDependency(projDep));
+									}
+								}
+							}
+						});
 					}
-				});
+				}
+				extensionsPanels.add(extensionPanel);
 			}
 
 			add(extensionsLabel, new GridBagConstraints(0, 7, 1, 1, 0, 0, WEST, WEST, new Insets(20, 0, 0, 0), 0, 0));
-			add(extensionsPanel, new GridBagConstraints(0, 8, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+			int rowCounter = 8;
+			for (JPanel extensionsPanel : extensionsPanels) {
+				add(extensionsPanel, new GridBagConstraints(0, rowCounter, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(5, 0, 0, 0), 0, 0));
+				rowCounter++;
+			}
 		}
 
 		File getDirectory () {
