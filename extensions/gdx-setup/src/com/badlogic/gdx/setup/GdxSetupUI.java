@@ -78,6 +78,7 @@ public class GdxSetupUI extends JFrame {
 		builder = new ProjectBuilder(new DependencyBank());
 		modules.add(ProjectType.CORE);
 		dependencies.add(builder.bank.getDependency(ProjectDependency.GDX));
+		dependencies.add(builder.bank.getDependency(ProjectDependency.BOX2D));
 	}
 
 	void generate () {
@@ -425,20 +426,20 @@ public class GdxSetupUI extends JFrame {
 			add(subProjectsPanel, new GridBagConstraints(0, 6, 3, 1, 0, 0, CENTER, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
 			int depCounter = 0;
-			int buffer = 0;
+
 			for (int row = 0; row <= (ProjectDependency.values().length / 5); row++) {
 				JPanel extensionPanel = new JPanel(new GridLayout());
-				if (buffer != 0) buffer = 0;
-				for (int i = 0; i < 5 + buffer; i++) {
-					depCounter++;
-					if (depCounter > ProjectDependency.values().length) break;
-					if (ProjectDependency.values()[(row * 5) + i] != null) {
-						final ProjectDependency projDep = ProjectDependency.values()[(row * 5) + i];
+				while (depCounter < ProjectDependency.values().length) {
+					if (ProjectDependency.values()[depCounter] != null) {
+						final ProjectDependency projDep = ProjectDependency.values()[depCounter];
 						if (projDep.equals(ProjectDependency.GDX)) {
-							buffer++;
+							depCounter++;
 							continue;
 						}
 						SetupCheckBox depCheckBox = new SetupCheckBox(projDep.name().substring(0, 1) + projDep.name().substring(1, projDep.name().length()).toLowerCase());
+						if (projDep.equals(ProjectDependency.BOX2D)) {
+							depCheckBox.setSelected(true);
+						}
 						extensionPanel.add(depCheckBox);
 						depCheckBox.addItemListener(new ItemListener() {
 							@Override
@@ -453,8 +454,14 @@ public class GdxSetupUI extends JFrame {
 								}
 							}
 						});
+						if (depCounter % 5 == 0) {
+							depCounter++;
+							break;
+						}
+						depCounter++;
 					}
 				}
+
 				extensionsPanels.add(extensionPanel);
 			}
 
