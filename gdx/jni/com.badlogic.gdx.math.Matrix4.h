@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 #undef com_badlogic_gdx_math_Matrix4_serialVersionUID
-#define com_badlogic_gdx_math_Matrix4_serialVersionUID -2717655254359579617LL
+#define com_badlogic_gdx_math_Matrix4_serialVersionUID -2717655254359579617i64
 #undef com_badlogic_gdx_math_Matrix4_M00
 #define com_badlogic_gdx_math_Matrix4_M00 0L
 #undef com_badlogic_gdx_math_Matrix4_M01
