@@ -43,7 +43,7 @@ public class Version {
 		}
 		catch (Throwable t) {
 			// Should never happen
-			throw new GdxRuntimeException("Invalid version "+VERSION);
+			throw new GdxRuntimeException("Invalid version "+VERSION, t);
 		}
 	}
 
