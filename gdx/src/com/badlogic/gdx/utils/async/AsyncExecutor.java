@@ -49,6 +49,9 @@ public class AsyncExecutor implements Disposable {
 	 * be queued.
 	 * @param task the task to execute asynchronously */
 	public <T> AsyncResult<T> submit (final AsyncTask<T> task) {
+		if (executor.isShutdown()) {
+			throw new GdxRuntimeException("Cannot run tasks on an executor that has been shutdown (disposed)");
+		}
 		return new AsyncResult(executor.submit(new Callable<T>() {
 			@Override
 			public T call () throws Exception {
@@ -56,6 +59,7 @@ public class AsyncExecutor implements Disposable {
 			}
 		}));
 	}
+
 
 	/** Waits for running {@link AsyncTask} instances to finish, then destroys any resources like threads. Can not be used after
 	 * this method is called. */
