@@ -45,6 +45,17 @@
         <!-- robovm snapshot jars for robovm backend -->
         <antcall target="fetch-robovm"/>
 		
+		<!-- box2d natives -->
+		<mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
+		<get src="${domain}/extensions/gdx-box2d/gdx-box2d-natives.jar" dest="extensions/gdx-box2d/gdx-box2d/libs"/>
+		<get src="${domain}/extensions/gdx-box2d/armeabi/libgdx-box2d.so" dest="tmp/armeabi"/>
+        <get src="${domain}/extensions/gdx-box2d/armeabi/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/armeabi"/>
+		<get src="${domain}/extensions/gdx-box2d/armeabi-v7a/libgdx-box2d.so" dest="tmp/armeabi-v7a"/>
+		<get src="${domain}/extensions/gdx-box2d/armeabi-v7a/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/armeabi-v7a"/>
+        <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="tmp/x86"/>
+        <get src="${domain}/extensions/gdx-box2d/x86/libgdx-box2d.so" dest="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
+        <get src="${domain}/extensions/gdx-box2d/ios/libgdx-box2d.a" dest="extensions/gdx-box2d/gdx-box2d/libs/ios32"/>
+		
 		<!-- bullet natives -->
 		<mkdir dir="extensions/gdx-bullet/libs/ios32"/>
 		<get src="${domain}/extensions/gdx-bullet/gdx-bullet-natives.jar" dest="extensions/gdx-bullet/libs"/>
