@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** The version of libgdx
  * 
@@ -36,17 +35,16 @@ public class Version {
 	public static final int REVISION;
 
 	static {
-		Matcher m = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)").matcher(VERSION);
-		if (m.matches()) {
-			MAJOR = Integer.valueOf(m.group(1));
-			MINOR = Integer.valueOf(m.group(2));
-			REVISION = Integer.valueOf(m.group(3));
+		try {
+			String[] v = VERSION.split("\\.");
+			MAJOR = v.length < 1 ? 0 : Integer.valueOf(v[0]);
+			MINOR = v.length < 2 ? 0 : Integer.valueOf(v[1]);
+			REVISION = v.length < 3 ? 0 : Integer.valueOf(v[2]);
 		}
-		else {
+		catch (Throwable t) {
 			// Should never happen
-			MAJOR = 0;
-			MINOR = 0;
-			REVISION = 0;
+			throw new GdxRuntimeException("Invalid version "+VERSION);
 		}
 	}
+
 }
