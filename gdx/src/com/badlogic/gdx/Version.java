@@ -16,10 +16,37 @@
 
 package com.badlogic.gdx;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /** The version of libgdx
  * 
  * @author mzechner */
 public class Version {
-	/** the current version of libgdx in the major.minor.minorer format **/
+	/** the current version of libgdx as a String in the major.minor.revision format **/
 	public static final String VERSION = "1.0.0";
+
+	/** the current major version of libgdx **/
+	public static final int MAJOR;
+
+	/** the current minor version of libgdx **/
+	public static final int MINOR;
+
+	/** the current revision version of libgdx **/
+	public static final int REVISION;
+
+	static {
+		Matcher m = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)").matcher(VERSION);
+		if (m.matches()) {
+			MAJOR = Integer.valueOf(m.group(1));
+			MINOR = Integer.valueOf(m.group(2));
+			REVISION = Integer.valueOf(m.group(3));
+		}
+		else {
+			// Should never happen
+			MAJOR = 0;
+			MINOR = 0;
+			REVISION = 0;
+		}
+	}
 }
