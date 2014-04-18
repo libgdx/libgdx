@@ -99,7 +99,7 @@ public class DependencyBank {
 		BOX2DLIGHTS(
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
 			new String[]{},
-			new String[]{},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1:sources"}
 		);
