@@ -47,4 +47,28 @@ public class Version {
 		}
 	}
 
+	public static boolean isHigher (int major, int minor, int revision) {
+		return isHigherEqual(major, minor, revision+1);
+	}
+
+	public static boolean isHigherEqual (int major, int minor, int revision) {
+		if (MAJOR != major)
+			return MAJOR > major;
+		if (MINOR != minor)
+			return MINOR > minor;
+		return REVISION >= revision;
+	}
+
+	public static boolean isLower (int major, int minor, int revision) {
+		return isLowerEqual(major, minor, revision-1);
+	}
+
+	public static boolean isLowerEqual (int major, int minor, int revision) {
+		if (MAJOR != major)
+			return MAJOR < major;
+		if (MINOR != minor)
+			return MINOR < minor;
+		return REVISION <= revision;
+	}
+
 }
