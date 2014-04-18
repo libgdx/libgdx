@@ -77,10 +77,10 @@ public class DependencyBank {
 		),
 		TOOLS(
 			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
-			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
-			null,
-			null,
-			null
+			new String[]{},
+			new String[]{"exclude:gdx-tools"},
+			new String[]{"exclude:gdx-tools"},
+			new String[]{"exclude:gdx-tools"}
 		),
 		CONTROLLERS(
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
