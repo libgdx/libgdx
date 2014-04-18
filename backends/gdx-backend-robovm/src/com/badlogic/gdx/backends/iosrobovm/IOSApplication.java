@@ -181,8 +181,20 @@ public class IOSApplication implements Application {
 		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
 
 		// determine orientation and resulting width + height
-		UIInterfaceOrientation orientation = viewController != null 
-			? viewController.getInterfaceOrientation() : uiApp.getStatusBarOrientation();
+		UIInterfaceOrientation orientation;
+		if (viewController != null) {
+			orientation = viewController.getInterfaceOrientation();
+		} else if (config.orientationLandscape == config.orientationPortrait) {
+			/*
+			 * if the app has orientation in any side then we can only check
+			 * status bar orientation
+			 */
+			orientation = uiApp.getStatusBarOrientation();
+		} else if (config.orientationLandscape) {// is landscape true and portrait false 
+			orientation = UIInterfaceOrientation.LandscapeRight;
+		} else {// is portrait true and landscape false
+			orientation = UIInterfaceOrientation.Portrait;
+		}
 		int width;
 		int height;
 		switch (orientation) {
