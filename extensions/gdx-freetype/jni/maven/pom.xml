@@ -41,6 +41,16 @@
                         </configuration>
                     </execution>
                     
+                    <execution>
+                        <id>x86-gdx</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>wget</goal></goals>
+                        <configuration>
+                            <cacheDirectory>${project.build.directory}/download-cache/x86</cacheDirectory>
+                            <url>${base.url}/x86/libgdx-freetype.so</url>
+                            <outputDirectory>${project.build.directory}/x86</outputDirectory>
+                        </configuration>
+                    </execution>
 
                     <execution>
                         <id>armeabi-gdx</id>
@@ -102,6 +112,20 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-local-x86</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-local-armeabi</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -152,7 +176,8 @@
                 <version>2.4</version>
                 <configuration>
                     <descriptors>
-                        <descriptor>desktop.xml</descriptor>                        
+                        <descriptor>desktop.xml</descriptor>
+                        <descriptor>x86.xml</descriptor>                        
                         <descriptor>armeabi.xml</descriptor>
                         <descriptor>armeabi-v7a.xml</descriptor>
                         <descriptor>ios.xml</descriptor>
