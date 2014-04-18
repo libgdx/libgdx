@@ -183,7 +183,7 @@ public class IOSApplication implements Application {
 		// determine orientation and resulting width + height
 		UIInterfaceOrientation orientation;
 		if (viewController != null) {
-			viewController.getInterfaceOrientation();
+			orientation = viewController.getInterfaceOrientation();
 		} else if (config.orientationLandscape == config.orientationPortrait) {
 			/*
 			 * if the app has orientation in any side then we can only check
