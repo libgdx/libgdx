@@ -84,14 +84,14 @@ public class DependencyBank {
 		CONTROLLERS(
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
-			new String[]{"com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
+			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
 			new String[] { }, // works on iOS but never reports any controllers :)
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"}
 		),
 		BOX2DLIGHTS(
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
 			new String[]{},
-			new String[]{},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1:sources"}
 		);
