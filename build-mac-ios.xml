@@ -32,6 +32,18 @@
 		</ant>
 		<ant antfile="build-ios32.xml" dir="extensions/gdx-freetype/jni"/>
 	</target>
+    
+    <target name="box2d" depends="core">
+		<ant antfile="build-macosx32.xml" dir="extensions/gdx-box2d/gdx-box2d/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
+        <ant antfile="build-macosx64.xml" dir="extensions/gdx-box2d/gdx-box2d/jni">
+			<target name="clean"/>
+			<target name="postcompile"/>
+		</ant>
+		<ant antfile="build-ios32.xml" dir="extensions/gdx-box2d/gdx-box2d/jni"/>
+	</target>
 	
 	<target name="bullet" depends="core">
 		<ant antfile="build-macosx32.xml" dir="extensions/gdx-bullet/jni">
@@ -56,6 +68,6 @@
 		</ant>
 	</target>
 	
-	<target name="all" depends="core,backend-robovm,freetype,bullet,controllers">	
+	<target name="all" depends="core,backend-robovm,freetype,box2d,bullet,controllers">	
 	</target>
 </project>

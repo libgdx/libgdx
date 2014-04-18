@@ -123,6 +123,20 @@
                             <overwrite>true</overwrite>
                         </configuration>
                     </execution>
+                     <execution>
+                        <id>copy-local-x86</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource><directory>${basedir}/../../libs/x86</directory></resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/x86</outputDirectory>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-local-armeabi</id>
                         <phase>prepare-package</phase>
