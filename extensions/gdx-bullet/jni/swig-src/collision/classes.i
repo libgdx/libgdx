@@ -7,6 +7,7 @@ SPECIFY_CLASS(ClosestRayResultCallback, com.badlogic.gdx.physics.bullet.collisio
 SPECIFY_CLASS(Collision, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(CollisionConstants, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(CollisionJNI, com.badlogic.gdx.physics.bullet.collision)
+SPECIFY_CLASS(CollisionObjectWrapper, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(ContactCache, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(ContactCallbackEvent, com.badlogic.gdx.physics.bullet.collision)
 SPECIFY_CLASS(ContactListener, com.badlogic.gdx.physics.bullet.collision)
