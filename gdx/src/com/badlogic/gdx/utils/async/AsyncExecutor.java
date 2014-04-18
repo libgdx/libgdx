@@ -60,7 +60,6 @@ public class AsyncExecutor implements Disposable {
 		}));
 	}
 
-
 	/** Waits for running {@link AsyncTask} instances to finish, then destroys any resources like threads. Can not be used after
 	 * this method is called. */
 	@Override
