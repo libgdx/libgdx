@@ -588,7 +588,7 @@ public class TexturePacker {
 			else {
 				// Otherwise if scale != 1 or multiple scales, use subdirectory.
 				float scaleValue = scale[scaleIndex];
-				if (scaleValue != 1 || scale.length != 1) {
+				if (scale.length != 1) {
 					packFileName = (scaleValue == (int)scaleValue ? Integer.toString((int)scaleValue) : Float.toString(scaleValue))
 						+ "/" + packFileName;
 				}
