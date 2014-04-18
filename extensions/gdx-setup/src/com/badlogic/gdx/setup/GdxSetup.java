@@ -102,6 +102,15 @@ public class GdxSetup {
 		// ios robovm
 		if (builder.modules.contains(ProjectType.IOS)) {
 			project.files.add(new ProjectFile("ios/src/IOSLauncher", "ios/src/" + packageDir + "/IOSLauncher.java", true));
+			project.files.add(new ProjectFile("ios/data/Default.png", false));
+			project.files.add(new ProjectFile("ios/data/Default@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Default@2x~ipad.png", false));
+			project.files.add(new ProjectFile("ios/data/Default-568h@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Default~ipad.png", false));
+			project.files.add(new ProjectFile("ios/data/Icon.png", false));
+			project.files.add(new ProjectFile("ios/data/Icon@2x.png", false));
+			project.files.add(new ProjectFile("ios/data/Icon-72.png", false));
+			project.files.add(new ProjectFile("ios/data/Icon-72@2x.png", false));
 			project.files.add(new ProjectFile("ios/build.gradle", true));
 			project.files.add(new ProjectFile("ios/Info.plist.xml", false));
 			project.files.add(new ProjectFile("ios/robovm.properties"));

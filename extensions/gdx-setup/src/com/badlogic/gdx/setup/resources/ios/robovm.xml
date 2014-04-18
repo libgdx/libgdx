@@ -13,6 +13,9 @@
       </includes>
       <skipPngCrush>true</skipPngCrush>
     </resource>
+    <resource>
+      <directory>data</directory>
+    </resource>
   </resources>
   <forceLinkClasses>
     <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
