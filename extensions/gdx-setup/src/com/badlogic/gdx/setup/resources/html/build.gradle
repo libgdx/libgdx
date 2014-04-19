@@ -58,5 +58,5 @@ sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJa
 
 
 eclipse.project {
-    name = appName + "-gwt"
+    name = appName + "-html"
 }
