@@ -29,7 +29,10 @@
         <mkdir dir="extensions/gdx-freetype/libs/armeabi"/>
         <mkdir dir="extensions/gdx-freetype/libs/armeabi-v7a"/>
         <mkdir dir="extensions/gdx-freetype/libs/x86"/>
-		
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/armeabi"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/armeabi-v7a"/>
+        <mkdir dir="extensions/gdx-box2d/gdx-box2d/libs/x86"/>
+
 		<!-- core -->
 		<mkdir dir="gdx/libs/ios32"/>
 		<get src="${domain}/gdx-natives.jar" dest="gdx/libs"/>
