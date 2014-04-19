@@ -299,6 +299,7 @@
 			<fileset dir="backends" includes="gdx-backends-gwt/src/com/badlogic/gdx/backends/gwt/GwtApplicationConfiguration.java"/>
             <fileset dir="backends" includes="gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplication.java"/>
 			<fileset dir="backends" includes="gdx-backend-robovm/src/com/badlogic/gdx/backends/iosrobovm/IOSApplicationConfiguration.java"/>
+			<fileset dir="extensions" includes="gdx-box2d/gdx-box2d/src/com/badlogic/gdx/physics/box2d/**"/>
 		</javadoc>
 	</target>
 
