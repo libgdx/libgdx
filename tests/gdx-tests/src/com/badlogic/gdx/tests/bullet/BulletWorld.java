@@ -139,10 +139,9 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 		if (collisionConfiguration != null) collisionConfiguration.dispose();
 	}
 
-	public void setDebugMode (final int mode, final Matrix4 projMatrix) {
+	public void setDebugMode (final int mode) {
 		if (mode == btIDebugDraw.DebugDrawModes.DBG_NoDebug && debugDrawer == null) return;
 		if (debugDrawer == null) collisionWorld.setDebugDrawer(debugDrawer = new DebugDrawer());
-		debugDrawer.shapeRenderer.setProjectionMatrix(projMatrix);
 		debugDrawer.setDebugMode(mode);
 	}
 

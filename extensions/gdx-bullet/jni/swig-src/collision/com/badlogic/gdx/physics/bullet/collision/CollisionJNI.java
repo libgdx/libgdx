@@ -2393,6 +2393,14 @@ public class CollisionJNI {
   public final static native String btMultiSphereShapeData_padding_get(long jarg1, btMultiSphereShapeData jarg1_);
   public final static native long new_btMultiSphereShapeData();
   public final static native void delete_btMultiSphereShapeData(long jarg1);
+  public final static native long new_CustomCollisionDispatcher(long jarg1, btCollisionConfiguration jarg1_);
+  public final static native boolean CustomCollisionDispatcher_needsCollision(long jarg1, CustomCollisionDispatcher jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_);
+  public final static native boolean CustomCollisionDispatcher_needsCollisionSwigExplicitCustomCollisionDispatcher(long jarg1, CustomCollisionDispatcher jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_);
+  public final static native boolean CustomCollisionDispatcher_needsResponse(long jarg1, CustomCollisionDispatcher jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_);
+  public final static native boolean CustomCollisionDispatcher_needsResponseSwigExplicitCustomCollisionDispatcher(long jarg1, CustomCollisionDispatcher jarg1_, long jarg2, btCollisionObject jarg2_, long jarg3, btCollisionObject jarg3_);
+  public final static native void delete_CustomCollisionDispatcher(long jarg1);
+  public final static native void CustomCollisionDispatcher_director_connect(CustomCollisionDispatcher obj, long cptr, boolean mem_own, boolean weak_global);
+  public final static native void CustomCollisionDispatcher_change_ownership(CustomCollisionDispatcher obj, long cptr, boolean take_or_release);
   public final static native long new_ContactListener(boolean jarg1);
   public final static native void delete_ContactListener(long jarg1);
   public final static native void ContactListener_enable(long jarg1, ContactListener jarg1_);
@@ -2569,6 +2577,7 @@ public class CollisionJNI {
   public final static native long btGjkEpaPenetrationDepthSolver_SWIGUpcast(long jarg1);
   public final static native long btPointCollector_SWIGUpcast(long jarg1);
   public final static native long btMultiSphereShape_SWIGUpcast(long jarg1);
+  public final static native long CustomCollisionDispatcher_SWIGUpcast(long jarg1);
 
   public static boolean SwigDirector_btBroadphaseAabbCallback_process(btBroadphaseAabbCallback self, long proxy) {
     return self.process((proxy == 0) ? null : new btBroadphaseProxy(proxy, false));
@@ -2659,6 +2668,12 @@ public class CollisionJNI {
   }
   public static float SwigDirector_btTriangleConvexcastCallback_reportHit(btTriangleConvexcastCallback self, Vector3 hitNormalLocal, Vector3 hitPointLocal, float hitFraction, int partId, int triangleIndex) {
     return self.reportHit(hitNormalLocal, hitPointLocal, hitFraction, partId, triangleIndex);
+  }
+  public static boolean SwigDirector_CustomCollisionDispatcher_needsCollision(CustomCollisionDispatcher self, long body0, long body1) {
+    return self.needsCollision(btCollisionObject.getInstance(body0, false), btCollisionObject.getInstance(body1, false));
+  }
+  public static boolean SwigDirector_CustomCollisionDispatcher_needsResponse(CustomCollisionDispatcher self, long body0, long body1) {
+    return self.needsResponse(btCollisionObject.getInstance(body0, false), btCollisionObject.getInstance(body1, false));
   }
   public static boolean SwigDirector_ContactListener_onContactAdded__SWIG_0(ContactListener self, btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
     return self.onContactAdded(cp, colObj0Wrap, partId0, index0, colObj1Wrap, partId1, index1);
