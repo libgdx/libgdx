@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.0-SNAPSHOT";
+	static String libgdxVersion = "1.0.0";
 	static String roboVMVersion = "0.0.11";
 
 	//Repositories
@@ -97,11 +97,11 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"}
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.1:sources"}
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"}
 		);
 
 		private String[] coreDependencies;
