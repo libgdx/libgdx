@@ -474,15 +474,6 @@ public class IntSet {
 		return set;
 	}
 
-	static public class Entry<V> {
-		public int key;
-		public V value;
-
-		public String toString () {
-			return key + "=" + value;
-		}
-	}
-
 	static public class IntSetIterator {
 		static final int INDEX_ILLEGAL = -2;
 		static final int INDEX_ZERO = -1;

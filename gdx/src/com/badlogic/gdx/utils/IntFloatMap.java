@@ -17,9 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.IdentityMap.Entries;
-import com.badlogic.gdx.utils.IdentityMap.Keys;
-import com.badlogic.gdx.utils.IdentityMap.Values;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -32,7 +29,7 @@ import java.util.NoSuchElementException;
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
  * next higher POT size.
  * @author Nathan Sweet */
-public class IntFloatMap {
+public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
@@ -569,6 +566,10 @@ public class IntFloatMap {
 		return buffer.toString();
 	}
 
+	public Iterator<Entry> iterator () {
+		return entries();
+	}
+
 	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
 	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
 	public Entries entries () {
@@ -626,7 +627,7 @@ public class IntFloatMap {
 		return keys2;
 	}
 
-	static public class Entry<K> {
+	static public class Entry {
 		public int key;
 		public float value;
 
@@ -635,7 +636,7 @@ public class IntFloatMap {
 		}
 	}
 
-	static private class MapIterator<K> {
+	static private class MapIterator {
 		static final int INDEX_ILLEGAL = -2;
 		static final int INDEX_ZERO = -1;
 
@@ -721,7 +722,7 @@ public class IntFloatMap {
 		}
 	}
 
-	static public class Values extends MapIterator<Object> {
+	static public class Values extends MapIterator {
 		public Values (IntFloatMap map) {
 			super(map);
 		}

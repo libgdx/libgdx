@@ -17,6 +17,7 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -28,7 +29,7 @@ import java.util.NoSuchElementException;
  * depending on hash collisions. Load factors greater than 0.91 greatly increase the chances the map will have to rehash to the
  * next higher POT size.
  * @author Nathan Sweet */
-public class ObjectMap<K, V> {
+public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	private static final int PRIME1 = 0xbe1f14b1;
 	private static final int PRIME2 = 0xb4b82e39;
 	private static final int PRIME3 = 0xced1c241;
@@ -517,10 +518,18 @@ public class ObjectMap<K, V> {
 		return (h ^ h >>> hashShift) & mask;
 	}
 
+	public String toString (String separator) {
+		return toString(separator, false);
+	}
+
 	public String toString () {
-		if (size == 0) return "{}";
+		return toString(", ", true);
+	}
+
+	private String toString (String separator, boolean braces) {
+		if (size == 0) return braces ? "{}" : "";
 		StringBuilder buffer = new StringBuilder(32);
-		buffer.append('{');
+		if (braces) buffer.append('{');
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		int i = keyTable.length;
@@ -535,13 +544,17 @@ public class ObjectMap<K, V> {
 		while (i-- > 0) {
 			K key = keyTable[i];
 			if (key == null) continue;
-			buffer.append(", ");
+			buffer.append(separator);
 			buffer.append(key);
 			buffer.append('=');
 			buffer.append(valueTable[i]);
 		}
-		buffer.append('}');
+		if (braces) buffer.append('}');
 		return buffer.toString();
+	}
+
+	public Iterator<Entry<K, V>> iterator () {
+		return entries();
 	}
 
 	/** Returns an iterator for the entries in the map. Remove is supported. Note that the same iterator instance is returned each
