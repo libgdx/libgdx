@@ -46,7 +46,7 @@ import com.badlogic.gdx.utils.Disposable;
 /** @author xoppa */
 public class BaseBulletTest extends BulletTest {
 	// Set this to the path of the lib to use it on desktop instead of default lib.
-	private final static String customDesktopLib = null;//"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
+	private final static String customDesktopLib = null; //"D:\\Data\\code\\android\\libs\\libgdx\\extensions\\gdx-bullet\\jni\\vs\\gdxBullet\\x64\\Debug\\gdxBullet.dll";
 
 	private static boolean initialized = false;
 	
@@ -174,7 +174,7 @@ public class BaseBulletTest extends BulletTest {
 		renderWorld();
 
 		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-		if (debugMode != DebugDrawModes.DBG_NoDebug) world.setDebugMode(debugMode, camera.combined);
+		if (debugMode != DebugDrawModes.DBG_NoDebug) world.setDebugMode(debugMode);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		performance.setLength(0);
@@ -226,7 +226,7 @@ public class BaseBulletTest extends BulletTest {
 	}
 
 	public void setDebugMode (final int mode) {
-		world.setDebugMode(debugMode = mode, camera.combined);
+		world.setDebugMode(debugMode = mode);
 	}
 
 	public void toggleDebugMode () {
