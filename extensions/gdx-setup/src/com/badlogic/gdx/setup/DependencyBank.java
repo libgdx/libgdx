@@ -76,7 +76,7 @@ public class DependencyBank {
 			null
 		),
 		TOOLS(
-			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
+			null,
 			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
 			null,
 			null,
