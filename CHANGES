@@ -1,3 +1,5 @@
+[1.0.1]
+
 [1.0.0]
 - Vector implementations no longer use squared value for margin comparisons, see: isZero(float margin), isUnit(float margin).
 - Vector2 now has isUnit and isZero methods (copied from Vector3)
