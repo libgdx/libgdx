@@ -52,7 +52,6 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gradlew.bat", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.jar", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.properties", false));
-		project.files.add(new ProjectFile("local.properties", true));
 
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
@@ -83,6 +82,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 			project.files.add(new ProjectFile("android/proguard-project.txt", false));
 			project.files.add(new ProjectFile("android/project.properties", false));
+			project.files.add(new ProjectFile("local.properties", true));
 		}
 
 		// html project
