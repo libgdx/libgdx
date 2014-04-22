@@ -348,6 +348,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = (y * invAlpha) + (target.y * alpha);
 		return this;
 	}
+	
+	@Override
+	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolator) {
+		return lerp(target, interpolator.apply(0f, 1f, alpha));
+	}
 
 	@Override
 	public int hashCode () {
