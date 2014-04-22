@@ -33,6 +33,14 @@ public class GdxSetup {
 		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
 	}
 
+	public static boolean isEmptyDirectory (String destination) {
+		if (new File(destination).exists()) {
+			return new File(destination).list().length == 0;
+		} else {
+			return true;
+		}
+	}
+
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
 		String sdkLocation, CharCallback callback) {
 		Project project = new Project();
@@ -52,7 +60,6 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gradlew.bat", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.jar", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.properties", false));
-		project.files.add(new ProjectFile("local.properties", true));
 
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
@@ -83,6 +90,7 @@ public class GdxSetup {
 			project.files.add(new ProjectFile("android/ic_launcher-web.png", false));
 			project.files.add(new ProjectFile("android/proguard-project.txt", false));
 			project.files.add(new ProjectFile("android/project.properties", false));
+			project.files.add(new ProjectFile("local.properties", true));
 		}
 
 		// html project
