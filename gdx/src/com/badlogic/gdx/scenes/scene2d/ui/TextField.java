@@ -513,6 +513,7 @@ public class TextField extends Widget implements Disableable {
 
 	public void setText (String str) {
 		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+		if (str.equals(text)) return;
 
 		clearSelection();
 		text = "";
