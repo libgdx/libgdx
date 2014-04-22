@@ -1,3 +1,5 @@
+[1.0.1]
+
 [1.0.0]
 - Box2D is no longer in the core, it has been moved to an extension. See http://www.badlogicgames.com/wordpress/?p=3404
 - Merged gdx-openal project into gdx-backend-lwjgl

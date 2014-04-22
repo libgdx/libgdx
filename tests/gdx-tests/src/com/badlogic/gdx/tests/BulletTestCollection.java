@@ -38,8 +38,8 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 	protected final BulletTest[] tests = {new BasicBulletTest(), new ShootTest(), new BasicShapesTest(), new KinematicTest(),
 		new ConstraintsTest(), new MeshShapeTest(), new ConvexHullTest(), new ConvexHullDistanceTest(), new RayCastTest(),
 		new RayPickRagdollTest(), new InternalTickTest(), new CollisionWorldTest(), new CollisionTest(), new FrustumCullingTest(),
-		new ContactCallbackTest(), new ContactCallbackTest2(), new ContactCacheTest(), new SoftBodyTest(), new SoftMeshTest(),
-		new VehicleTest(), new CharacterTest(), new ImportTest()};
+		new CollisionDispatcherTest(), new ContactCallbackTest(), new ContactCallbackTest2(), new ContactCacheTest(),
+		new SoftBodyTest(), new SoftMeshTest(), new VehicleTest(), new CharacterTest(), new ImportTest()};
 
 	protected int testIndex = 0;
 
@@ -87,7 +87,7 @@ public class BulletTestCollection extends GdxTest implements InputProcessor, Ges
 		instructLabel.setAlignment(Align.top | Align.left);
 		instructLabel.setText(tests[testIndex].instructions);
 	}
-	
+
 	@Override
 	public void resize (int width, int height) {
 		hud.getViewport().update(width, height, true);

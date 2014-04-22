@@ -598,7 +598,7 @@ namespace Swig {
 namespace Swig {
   namespace {
     jclass jclass_CollisionJNI = NULL;
-    jmethodID director_methids[65];
+    jmethodID director_methids[67];
   }
 }
 
@@ -1990,6 +1990,9 @@ SWIGINTERN void btManifoldPoint_setUserValue(btManifoldPoint *self,int value){
 			  delete[] array;
 	  }
 	};
+
+
+#include <gdx/collision/CustomCollisionDispatcher.h>
 
 
 #include <gdx/collision/ContactListener.h>
@@ -3980,6 +3983,147 @@ void SwigDirector_btTriangleConvexcastCallback::swig_connect_director(JNIEnv *je
 }
 
 
+SwigDirector_CustomCollisionDispatcher::SwigDirector_CustomCollisionDispatcher(JNIEnv *jenv, btCollisionConfiguration *collisionConfiguration) : CustomCollisionDispatcher(collisionConfiguration), Swig::Director(jenv) {
+}
+
+SwigDirector_CustomCollisionDispatcher::~SwigDirector_CustomCollisionDispatcher() {
+  swig_disconnect_director_self("swigDirectorDisconnect");
+}
+
+
+btPersistentManifold *SwigDirector_CustomCollisionDispatcher::getNewManifold(btCollisionObject const *b0, btCollisionObject const *b1) {
+  return btCollisionDispatcher::getNewManifold(b0,b1);
+}
+
+void SwigDirector_CustomCollisionDispatcher::releaseManifold(btPersistentManifold *manifold) {
+  btCollisionDispatcher::releaseManifold(manifold);
+}
+
+void SwigDirector_CustomCollisionDispatcher::clearManifold(btPersistentManifold *manifold) {
+  btCollisionDispatcher::clearManifold(manifold);
+}
+
+bool SwigDirector_CustomCollisionDispatcher::needsCollision(btCollisionObject const *body0, btCollisionObject const *body1) {
+  bool c_result = SwigValueInit< bool >() ;
+  jboolean jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong jbody0 = 0 ;
+  jlong jbody1 = 0 ;
+  
+  if (!swig_override[0]) {
+    return CustomCollisionDispatcher::needsCollision(body0,body1);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((btCollisionObject **)&jbody0) = (btCollisionObject *) body0; 
+    *((btCollisionObject **)&jbody1) = (btCollisionObject *) body1; 
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[30], swigjobj, jbody0, jbody1);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+    c_result = jresult ? true : false; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in CustomCollisionDispatcher::needsCollision ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+bool SwigDirector_CustomCollisionDispatcher::needsResponse(btCollisionObject const *body0, btCollisionObject const *body1) {
+  bool c_result = SwigValueInit< bool >() ;
+  jboolean jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong jbody0 = 0 ;
+  jlong jbody1 = 0 ;
+  
+  if (!swig_override[1]) {
+    return CustomCollisionDispatcher::needsResponse(body0,body1);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((btCollisionObject **)&jbody0) = (btCollisionObject *) body0; 
+    *((btCollisionObject **)&jbody1) = (btCollisionObject *) body1; 
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[31], swigjobj, jbody0, jbody1);
+    jthrowable swigerror = jenv->ExceptionOccurred();
+    if (swigerror) {
+      jenv->ExceptionClear();
+      throw Swig::DirectorException(jenv, swigerror);
+    }
+    
+    c_result = jresult ? true : false; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object in CustomCollisionDispatcher::needsResponse ");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+void SwigDirector_CustomCollisionDispatcher::dispatchAllCollisionPairs(btOverlappingPairCache *pairCache, btDispatcherInfo const &dispatchInfo, btDispatcher *dispatcher) {
+  btCollisionDispatcher::dispatchAllCollisionPairs(pairCache,dispatchInfo,dispatcher);
+}
+
+int SwigDirector_CustomCollisionDispatcher::getNumManifolds() const {
+  return btCollisionDispatcher::getNumManifolds();
+}
+
+btPersistentManifold **SwigDirector_CustomCollisionDispatcher::getInternalManifoldPointer() {
+  return btCollisionDispatcher::getInternalManifoldPointer();
+}
+
+void *SwigDirector_CustomCollisionDispatcher::allocateCollisionAlgorithm(int size) {
+  return btCollisionDispatcher::allocateCollisionAlgorithm(size);
+}
+
+void SwigDirector_CustomCollisionDispatcher::freeCollisionAlgorithm(void *ptr) {
+  btCollisionDispatcher::freeCollisionAlgorithm(ptr);
+}
+
+void SwigDirector_CustomCollisionDispatcher::swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global) {
+  static struct {
+    const char *mname;
+    const char *mdesc;
+    jmethodID base_methid;
+  } methods[] = {
+    {
+      "needsCollision", "(Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObject;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObject;)Z", NULL 
+    },
+    {
+      "needsResponse", "(Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObject;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObject;)Z", NULL 
+    }
+  };
+  
+  static jclass baseclass = 0 ;
+  
+  if (swig_set_self(jenv, jself, swig_mem_own, weak_global)) {
+    if (!baseclass) {
+      baseclass = jenv->FindClass("com/badlogic/gdx/physics/bullet/collision/CustomCollisionDispatcher");
+      if (!baseclass) return;
+      baseclass = (jclass) jenv->NewGlobalRef(baseclass);
+    }
+    bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
+    for (int i = 0; i < 2; ++i) {
+      if (!methods[i].base_methid) {
+        methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
+        if (!methods[i].base_methid) return;
+      }
+      swig_override[i] = false;
+      if (derived) {
+        jmethodID methid = jenv->GetMethodID(jcls, methods[i].mname, methods[i].mdesc);
+        swig_override[i] = (methid != methods[i].base_methid);
+        jenv->ExceptionClear();
+      }
+    }
+  }
+}
+
+
 SwigDirector_ContactListener::SwigDirector_ContactListener(JNIEnv *jenv, bool dummy) : ContactListener(dummy), Swig::Director(jenv) {
 }
 
@@ -4021,7 +4165,7 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
     gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj1Wrap(jenv, jccolObj1Wrap, jcolObj1Wrap);
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[30], swigjobj, jcp, jcolObj0Wrap, jpartId0, jindex0, jcolObj1Wrap, jpartId1, jindex1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[32], swigjobj, jcp, jcolObj0Wrap, jpartId0, jindex0, jcolObj1Wrap, jpartId1, jindex1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4065,7 +4209,7 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[31], swigjobj, jcp, jcolObj0, jpartId0, jindex0, jcolObj1, jpartId1, jindex1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[33], swigjobj, jcp, jcolObj0, jpartId0, jindex0, jcolObj1, jpartId1, jindex1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4109,7 +4253,7 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, int userV
     juserValue1 = (jint) userValue1;
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[32], swigjobj, jcp, juserValue0, jpartId0, jindex0, juserValue1, jpartId1, jindex1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[34], swigjobj, jcp, juserValue0, jpartId0, jindex0, juserValue1, jpartId1, jindex1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4161,7 +4305,7 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[33], swigjobj, jcp, jcolObj0Wrap, jpartId0, jindex0, jmatch0, jcolObj1Wrap, jpartId1, jindex1, jmatch1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[35], swigjobj, jcp, jcolObj0Wrap, jpartId0, jindex0, jmatch0, jcolObj1Wrap, jpartId1, jindex1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4209,7 +4353,7 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, btCollisi
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[34], swigjobj, jcp, jcolObj0, jpartId0, jindex0, jmatch0, jcolObj1, jpartId1, jindex1, jmatch1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[36], swigjobj, jcp, jcolObj0, jpartId0, jindex0, jmatch0, jcolObj1, jpartId1, jindex1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4257,7 +4401,7 @@ bool SwigDirector_ContactListener::onContactAdded(btManifoldPoint &cp, int userV
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[35], swigjobj, jcp, juserValue0, jpartId0, jindex0, jmatch0, juserValue1, jpartId1, jindex1, jmatch1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[37], swigjobj, jcp, juserValue0, jpartId0, jindex0, jmatch0, juserValue1, jpartId1, jindex1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4301,7 +4445,7 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObjectWrapper const
     gdxAutoFreebtCollisionObjectWrapper autoRelease_jcolObj1Wrap(jenv, jccolObj1Wrap, jcolObj1Wrap);
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[36], swigjobj, jcolObj0Wrap, jpartId0, jindex0, jcolObj1Wrap, jpartId1, jindex1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[38], swigjobj, jcolObj0Wrap, jpartId0, jindex0, jcolObj1Wrap, jpartId1, jindex1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4341,7 +4485,7 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObject const *colOb
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[37], swigjobj, jcolObj0, jpartId0, jindex0, jcolObj1, jpartId1, jindex1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[39], swigjobj, jcolObj0, jpartId0, jindex0, jcolObj1, jpartId1, jindex1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4381,7 +4525,7 @@ bool SwigDirector_ContactListener::onContactAdded(int userValue0, int partId0, i
     juserValue1 = (jint) userValue1;
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[38], swigjobj, juserValue0, jpartId0, jindex0, juserValue1, jpartId1, jindex1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[40], swigjobj, juserValue0, jpartId0, jindex0, juserValue1, jpartId1, jindex1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4429,7 +4573,7 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObjectWrapper const
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[39], swigjobj, jcolObj0Wrap, jpartId0, jindex0, jmatch0, jcolObj1Wrap, jpartId1, jindex1, jmatch1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[41], swigjobj, jcolObj0Wrap, jpartId0, jindex0, jmatch0, jcolObj1Wrap, jpartId1, jindex1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4473,7 +4617,7 @@ bool SwigDirector_ContactListener::onContactAdded(btCollisionObject const *colOb
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[40], swigjobj, jcolObj0, jpartId0, jindex0, jmatch0, jcolObj1, jpartId1, jindex1, jmatch1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[42], swigjobj, jcolObj0, jpartId0, jindex0, jmatch0, jcolObj1, jpartId1, jindex1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4517,7 +4661,7 @@ bool SwigDirector_ContactListener::onContactAdded(int userValue0, int partId0, i
     jpartId1 = (jint) partId1;
     jindex1 = (jint) index1;
     jmatch1 = (jboolean) match1;
-    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[41], swigjobj, juserValue0, jpartId0, jindex0, jmatch0, juserValue1, jpartId1, jindex1, jmatch1);
+    jresult = (jboolean) jenv->CallStaticBooleanMethod(Swig::jclass_CollisionJNI, Swig::director_methids[43], swigjobj, juserValue0, jpartId0, jindex0, jmatch0, juserValue1, jpartId1, jindex1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4551,7 +4695,7 @@ void SwigDirector_ContactListener::onContactProcessed(btManifoldPoint &cp, btCol
     gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[42], swigjobj, jcp, jcolObj0, jcolObj1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[44], swigjobj, jcp, jcolObj0, jcolObj1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4583,7 +4727,7 @@ void SwigDirector_ContactListener::onContactProcessed(btManifoldPoint &cp, int u
     gdxAutoFreebtManifoldPoint autoRelease_jcp(jenv, jccp, jcp);
     juserValue0 = (jint) userValue0;
     juserValue1 = (jint) userValue1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[43], swigjobj, jcp, juserValue0, juserValue1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[45], swigjobj, jcp, juserValue0, juserValue1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4619,7 +4763,7 @@ void SwigDirector_ContactListener::onContactProcessed(btManifoldPoint &cp, btCol
     jmatch0 = (jboolean) match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jmatch1 = (jboolean) match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[44], swigjobj, jcp, jcolObj0, jmatch0, jcolObj1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[46], swigjobj, jcp, jcolObj0, jmatch0, jcolObj1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4655,7 +4799,7 @@ void SwigDirector_ContactListener::onContactProcessed(btManifoldPoint &cp, int u
     jmatch0 = (jboolean) match0;
     juserValue1 = (jint) userValue1;
     jmatch1 = (jboolean) match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[45], swigjobj, jcp, juserValue0, jmatch0, juserValue1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[47], swigjobj, jcp, juserValue0, jmatch0, juserValue1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4683,7 +4827,7 @@ void SwigDirector_ContactListener::onContactProcessed(btCollisionObject const *c
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[46], swigjobj, jcolObj0, jcolObj1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[48], swigjobj, jcolObj0, jcolObj1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4711,7 +4855,7 @@ void SwigDirector_ContactListener::onContactProcessed(int userValue0, int userVa
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     juserValue0 = (jint) userValue0;
     juserValue1 = (jint) userValue1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[47], swigjobj, juserValue0, juserValue1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[49], swigjobj, juserValue0, juserValue1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4743,7 +4887,7 @@ void SwigDirector_ContactListener::onContactProcessed(btCollisionObject const *c
     jmatch0 = (jboolean) match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jmatch1 = (jboolean) match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[48], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[50], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4775,7 +4919,7 @@ void SwigDirector_ContactListener::onContactProcessed(int userValue0, bool match
     jmatch0 = (jboolean) match0;
     juserValue1 = (jint) userValue1;
     jmatch1 = (jboolean) match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[49], swigjobj, juserValue0, jmatch0, juserValue1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[51], swigjobj, juserValue0, jmatch0, juserValue1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4801,7 +4945,7 @@ void SwigDirector_ContactListener::onContactDestroyed(int manifoldPointUserValue
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     jmanifoldPointUserValue = (jint) manifoldPointUserValue;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[50], swigjobj, jmanifoldPointUserValue);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[52], swigjobj, jmanifoldPointUserValue);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4827,7 +4971,7 @@ void SwigDirector_ContactListener::onContactStarted(btPersistentManifold *manifo
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((btPersistentManifold **)&jmanifold) = (btPersistentManifold *) manifold; 
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[51], swigjobj, jmanifold);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[53], swigjobj, jmanifold);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4855,7 +4999,7 @@ void SwigDirector_ContactListener::onContactStarted(btCollisionObject const *col
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[52], swigjobj, jcolObj0, jcolObj1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[54], swigjobj, jcolObj0, jcolObj1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4883,7 +5027,7 @@ void SwigDirector_ContactListener::onContactStarted(int const &userValue0, int c
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     juserValue0 = (jint)userValue0;
     juserValue1 = (jint)userValue1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[53], swigjobj, juserValue0, juserValue1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[55], swigjobj, juserValue0, juserValue1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4913,7 +5057,7 @@ void SwigDirector_ContactListener::onContactStarted(btPersistentManifold *manifo
     *((btPersistentManifold **)&jmanifold) = (btPersistentManifold *) manifold; 
     jmatch0 = (jboolean)match0;
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[54], swigjobj, jmanifold, jmatch0, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[56], swigjobj, jmanifold, jmatch0, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4945,7 +5089,7 @@ void SwigDirector_ContactListener::onContactStarted(btCollisionObject const *col
     jmatch0 = (jboolean)match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[55], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[57], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -4977,7 +5121,7 @@ void SwigDirector_ContactListener::onContactStarted(int const &userValue0, bool 
     jmatch0 = (jboolean)match0;
     juserValue1 = (jint)userValue1;
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[56], swigjobj, juserValue0, jmatch0, juserValue1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[58], swigjobj, juserValue0, jmatch0, juserValue1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5003,7 +5147,7 @@ void SwigDirector_ContactListener::onContactEnded(btPersistentManifold *manifold
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((btPersistentManifold **)&jmanifold) = (btPersistentManifold *) manifold; 
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[57], swigjobj, jmanifold);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[59], swigjobj, jmanifold);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5031,7 +5175,7 @@ void SwigDirector_ContactListener::onContactEnded(btCollisionObject const *colOb
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((btCollisionObject **)&jcolObj0) = (btCollisionObject *) colObj0; 
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[58], swigjobj, jcolObj0, jcolObj1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[60], swigjobj, jcolObj0, jcolObj1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5059,7 +5203,7 @@ void SwigDirector_ContactListener::onContactEnded(int const &userValue0, int con
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     juserValue0 = (jint)userValue0;
     juserValue1 = (jint)userValue1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[59], swigjobj, juserValue0, juserValue1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[61], swigjobj, juserValue0, juserValue1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5089,7 +5233,7 @@ void SwigDirector_ContactListener::onContactEnded(btPersistentManifold *manifold
     *((btPersistentManifold **)&jmanifold) = (btPersistentManifold *) manifold; 
     jmatch0 = (jboolean)match0;
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[60], swigjobj, jmanifold, jmatch0, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[62], swigjobj, jmanifold, jmatch0, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5121,7 +5265,7 @@ void SwigDirector_ContactListener::onContactEnded(btCollisionObject const *colOb
     jmatch0 = (jboolean)match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[61], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[63], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5153,7 +5297,7 @@ void SwigDirector_ContactListener::onContactEnded(int const &userValue0, bool co
     jmatch0 = (jboolean)match0;
     juserValue1 = (jint)userValue1;
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[62], swigjobj, juserValue0, jmatch0, juserValue1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[64], swigjobj, juserValue0, jmatch0, juserValue1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5323,7 +5467,7 @@ void SwigDirector_ContactCache::onContactStarted(btPersistentManifold *manifold,
     *((btPersistentManifold **)&jmanifold) = (btPersistentManifold *) manifold; 
     jmatch0 = (jboolean)match0;
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[63], swigjobj, jmanifold, jmatch0, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[65], swigjobj, jmanifold, jmatch0, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -5355,7 +5499,7 @@ void SwigDirector_ContactCache::onContactEnded(btCollisionObject const *colObj0,
     jmatch0 = (jboolean)match0;
     *((btCollisionObject **)&jcolObj1) = (btCollisionObject *) colObj1; 
     jmatch1 = (jboolean)match1;
-    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[64], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
+    jenv->CallStaticVoidMethod(Swig::jclass_CollisionJNI, Swig::director_methids[66], swigjobj, jcolObj0, jmatch0, jcolObj1, jmatch1);
     jthrowable swigerror = jenv->ExceptionOccurred();
     if (swigerror) {
       jenv->ExceptionClear();
@@ -43423,6 +43567,135 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
 }
 
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1CustomCollisionDispatcher(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  btCollisionConfiguration *arg1 = (btCollisionConfiguration *) 0 ;
+  CustomCollisionDispatcher *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(btCollisionConfiguration **)&jarg1; 
+  result = (CustomCollisionDispatcher *)new SwigDirector_CustomCollisionDispatcher(jenv,arg1);
+  *(CustomCollisionDispatcher **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1needsCollision(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jboolean jresult = 0 ;
+  CustomCollisionDispatcher *arg1 = (CustomCollisionDispatcher *) 0 ;
+  btCollisionObject *arg2 = (btCollisionObject *) 0 ;
+  btCollisionObject *arg3 = (btCollisionObject *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(CustomCollisionDispatcher **)&jarg1; 
+  arg2 = *(btCollisionObject **)&jarg2; 
+  arg3 = *(btCollisionObject **)&jarg3; 
+  result = (bool)(arg1)->needsCollision((btCollisionObject const *)arg2,(btCollisionObject const *)arg3);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1needsCollisionSwigExplicitCustomCollisionDispatcher(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jboolean jresult = 0 ;
+  CustomCollisionDispatcher *arg1 = (CustomCollisionDispatcher *) 0 ;
+  btCollisionObject *arg2 = (btCollisionObject *) 0 ;
+  btCollisionObject *arg3 = (btCollisionObject *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(CustomCollisionDispatcher **)&jarg1; 
+  arg2 = *(btCollisionObject **)&jarg2; 
+  arg3 = *(btCollisionObject **)&jarg3; 
+  result = (bool)(arg1)->CustomCollisionDispatcher::needsCollision((btCollisionObject const *)arg2,(btCollisionObject const *)arg3);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1needsResponse(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jboolean jresult = 0 ;
+  CustomCollisionDispatcher *arg1 = (CustomCollisionDispatcher *) 0 ;
+  btCollisionObject *arg2 = (btCollisionObject *) 0 ;
+  btCollisionObject *arg3 = (btCollisionObject *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(CustomCollisionDispatcher **)&jarg1; 
+  arg2 = *(btCollisionObject **)&jarg2; 
+  arg3 = *(btCollisionObject **)&jarg3; 
+  result = (bool)(arg1)->needsResponse((btCollisionObject const *)arg2,(btCollisionObject const *)arg3);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1needsResponseSwigExplicitCustomCollisionDispatcher(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_, jlong jarg3, jobject jarg3_) {
+  jboolean jresult = 0 ;
+  CustomCollisionDispatcher *arg1 = (CustomCollisionDispatcher *) 0 ;
+  btCollisionObject *arg2 = (btCollisionObject *) 0 ;
+  btCollisionObject *arg3 = (btCollisionObject *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  (void)jarg3_;
+  arg1 = *(CustomCollisionDispatcher **)&jarg1; 
+  arg2 = *(btCollisionObject **)&jarg2; 
+  arg3 = *(btCollisionObject **)&jarg3; 
+  result = (bool)(arg1)->CustomCollisionDispatcher::needsResponse((btCollisionObject const *)arg2,(btCollisionObject const *)arg3);
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_delete_1CustomCollisionDispatcher(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  CustomCollisionDispatcher *arg1 = (CustomCollisionDispatcher *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(CustomCollisionDispatcher **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1director_1connect(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jswig_mem_own, jboolean jweak_global) {
+  CustomCollisionDispatcher *obj = *((CustomCollisionDispatcher **)&objarg);
+  (void)jcls;
+  SwigDirector_CustomCollisionDispatcher *director = (SwigDirector_CustomCollisionDispatcher *)(obj);
+  if (director) {
+    director->swig_connect_director(jenv, jself, jenv->GetObjectClass(jself), (jswig_mem_own == JNI_TRUE), (jweak_global == JNI_TRUE));
+  }
+}
+
+
+SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1change_1ownership(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jtake_or_release) {
+  CustomCollisionDispatcher *obj = *((CustomCollisionDispatcher **)&objarg);
+  SwigDirector_CustomCollisionDispatcher *director = (SwigDirector_CustomCollisionDispatcher *)(obj);
+  (void)jcls;
+  if (director) {
+    director->swig_java_change_ownership(jenv, jself, jtake_or_release ? true : false);
+  }
+}
+
+
 SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_new_1ContactListener(JNIEnv *jenv, jclass jcls, jboolean jarg1) {
   jlong jresult = 0 ;
   bool arg1 ;
@@ -45636,13 +45909,21 @@ SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collisio
     return baseptr;
 }
 
+SWIGEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_CustomCollisionDispatcher_1SWIGUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(btCollisionDispatcher **)&baseptr = *(CustomCollisionDispatcher **)&jarg1;
+    return baseptr;
+}
+
 SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_CollisionJNI_swig_1module_1init(JNIEnv *jenv, jclass jcls) {
   int i;
   
   static struct {
     const char *method;
     const char *signature;
-  } methods[65] = {
+  } methods[67] = {
     {
       "SwigDirector_btBroadphaseAabbCallback_process", "(Lcom/badlogic/gdx/physics/bullet/collision/btBroadphaseAabbCallback;J)Z" 
     },
@@ -45732,6 +46013,12 @@ SWIGEXPORT void JNICALL Java_com_badlogic_gdx_physics_bullet_collision_Collision
     },
     {
       "SwigDirector_btTriangleConvexcastCallback_reportHit", "(Lcom/badlogic/gdx/physics/bullet/collision/btTriangleConvexcastCallback;Lcom/badlogic/gdx/math/Vector3;Lcom/badlogic/gdx/math/Vector3;FII)F" 
+    },
+    {
+      "SwigDirector_CustomCollisionDispatcher_needsCollision", "(Lcom/badlogic/gdx/physics/bullet/collision/CustomCollisionDispatcher;JJ)Z" 
+    },
+    {
+      "SwigDirector_CustomCollisionDispatcher_needsResponse", "(Lcom/badlogic/gdx/physics/bullet/collision/CustomCollisionDispatcher;JJ)Z" 
     },
     {
       "SwigDirector_ContactListener_onContactAdded__SWIG_0", "(Lcom/badlogic/gdx/physics/bullet/collision/ContactListener;Lcom/badlogic/gdx/physics/bullet/collision/btManifoldPoint;Lcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;IILcom/badlogic/gdx/physics/bullet/collision/btCollisionObjectWrapper;II)Z" 

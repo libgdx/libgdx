@@ -293,6 +293,30 @@ protected:
     bool swig_override[2];
 };
 
+class SwigDirector_CustomCollisionDispatcher : public CustomCollisionDispatcher, public Swig::Director {
+
+public:
+    void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
+    SwigDirector_CustomCollisionDispatcher(JNIEnv *jenv, btCollisionConfiguration *collisionConfiguration);
+    virtual ~SwigDirector_CustomCollisionDispatcher();
+    virtual btPersistentManifold *getNewManifold(btCollisionObject const *b0, btCollisionObject const *b1);
+    virtual void releaseManifold(btPersistentManifold *manifold);
+    virtual void clearManifold(btPersistentManifold *manifold);
+    virtual bool needsCollision(btCollisionObject const *body0, btCollisionObject const *body1);
+    virtual bool needsResponse(btCollisionObject const *body0, btCollisionObject const *body1);
+    virtual void dispatchAllCollisionPairs(btOverlappingPairCache *pairCache, btDispatcherInfo const &dispatchInfo, btDispatcher *dispatcher);
+    virtual int getNumManifolds() const;
+    virtual btPersistentManifold **getInternalManifoldPointer();
+    virtual void *allocateCollisionAlgorithm(int size);
+    virtual void freeCollisionAlgorithm(void *ptr);
+public:
+    bool swig_overrides(int n) {
+      return (n < 2 ? swig_override[n] : false);
+    }
+protected:
+    bool swig_override[2];
+};
+
 class SwigDirector_ContactListener : public ContactListener, public Swig::Director {
 
 public:

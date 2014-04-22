@@ -14,9 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.bullet;
+package com.badlogic.gdx.physics.bullet;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
@@ -27,12 +28,12 @@ import com.badlogic.gdx.physics.bullet.linearmath.btVector3;
 /** @author xoppa */
 public class DebugDrawer extends btIDebugDraw {
 	public int debugMode = 0;
-	public ShapeRenderer lineRenderer = new ShapeRenderer();
+	public ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	@Override
 	public void drawLine (btVector3 from, btVector3 to, btVector3 color) {
-		lineRenderer.setColor(color.getX(), color.getY(), color.getZ(), 1f);
-		lineRenderer.line(from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ());
+		shapeRenderer.setColor(color.getX(), color.getY(), color.getZ(), 1f);
+		shapeRenderer.line(from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ());
 	}
 
 	@Override
@@ -57,11 +58,12 @@ public class DebugDrawer extends btIDebugDraw {
 		return debugMode;
 	}
 
-	public void begin () {
-		lineRenderer.begin(ShapeType.Line);
+	public void begin (Camera cam) {
+		shapeRenderer.setProjectionMatrix(cam.combined);
+		shapeRenderer.begin(ShapeType.Line);
 	}
 
 	public void end () {
-		lineRenderer.end();
+		shapeRenderer.end();
 	}
 }

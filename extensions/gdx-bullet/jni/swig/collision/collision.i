@@ -533,6 +533,8 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 
 %include "./btMultiSphereShape.i"
 
+%include "./CustomCollisionDispatcher.i"
+
 %include "./ContactListener.i"
 
 %include "./ContactCache.i"
