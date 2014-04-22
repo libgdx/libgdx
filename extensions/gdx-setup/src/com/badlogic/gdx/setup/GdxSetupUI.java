@@ -15,18 +15,58 @@
  ******************************************************************************/
 package com.badlogic.gdx.setup;
 
-import java.awt.*;
-import java.awt.event.*;
+import static java.awt.GridBagConstraints.*;
+
+import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
+import com.badlogic.gdx.setup.DependencyBank.ProjectType;
+import com.badlogic.gdx.setup.Executor.CharCallback;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Desktop;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -37,12 +77,6 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
-
-import com.badlogic.gdx.setup.DependencyBank.ProjectDependency;
-import com.badlogic.gdx.setup.DependencyBank.ProjectType;
-import com.badlogic.gdx.setup.Executor.CharCallback;
-
-import static java.awt.GridBagConstraints.*;
 
 @SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
@@ -365,7 +399,7 @@ public class GdxSetupUI extends JFrame {
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel versionLabel = new JLabel("LibGDX Version");
-		JComboBox<String> versionButton = new JComboBox<String>(new String[] {"Release 1.0.0", "Nightlies"});
+		JComboBox versionButton = new JComboBox(new String[] {"Release 1.0.0", "Nightlies"});
 		JLabel nightlyWarning = new JLabel("Nightlies are development builds, be aware!");
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
@@ -454,7 +488,7 @@ public class GdxSetupUI extends JFrame {
 			versionButton.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged (ItemEvent e) {
-					JComboBox<String> list = (JComboBox<String>)e.getSource();
+					JComboBox list = (JComboBox)e.getSource();
 					if (list.getSelectedItem().equals("Nightlies")) {
 						nightlyWarning.setVisible(true);
 					} else {
