@@ -423,6 +423,7 @@ public class IntMap<V> implements Iterable<IntMap.Entry<V>> {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		int[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;) {

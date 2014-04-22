@@ -422,6 +422,7 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		long[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;) {

@@ -385,6 +385,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		K[] keyTable = this.keyTable;
 		V[] valueTable = this.valueTable;
 		for (int i = capacity + stashSize; i-- > 0;) {
