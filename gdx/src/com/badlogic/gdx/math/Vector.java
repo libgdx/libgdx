@@ -90,6 +90,8 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T lerp (T target, float alpha);
 
+	T interpolate(T target, float alpha, Interpolation interpolator);
+	
 	/** @return Whether this vector is a unit length vector */
 	boolean isUnit ();
 

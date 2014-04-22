@@ -530,7 +530,11 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		add(target.x * alpha, target.y * alpha, target.z * alpha);
 		return this;
 	}
-
+	@Override
+	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
+		return lerp(target, interpolator.apply(0f, 1f, alpha));
+	}
+	
 	/** Spherically interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is
 	 * stored in this vector.
 	 * 
