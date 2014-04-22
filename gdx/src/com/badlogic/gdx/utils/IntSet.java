@@ -345,6 +345,7 @@ public class IntSet {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		int[] keyTable = this.keyTable;
 		for (int i = capacity + stashSize; i-- > 0;)
 			keyTable[i] = EMPTY;
