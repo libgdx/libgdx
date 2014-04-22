@@ -488,11 +488,11 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			float scaleX = convertObjectToTileSpace ? 1.0f / mapTileWidth : 1.0f;
 			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
-			float x = element.getIntAttribute("x", 0) * scaleX;
-			float y = (yUp ? mapHeightInPixels - element.getIntAttribute("y", 0) : element.getIntAttribute("y", 0)) * scaleY;
+			float x = element.getFloatAttribute("x", 0) * scaleX;
+			float y = (yUp ? mapHeightInPixels - element.getFloatAttribute("y", 0) : element.getFloatAttribute("y", 0)) * scaleY;
 
-			float width = element.getIntAttribute("width", 0) * scaleX;
-			float height = element.getIntAttribute("height", 0) * scaleY;
+			float width = element.getFloatAttribute("width", 0) * scaleX;
+			float height = element.getFloatAttribute("height", 0) * scaleY;
 
 			if (element.getChildCount() > 0) {
 				Element child = null;
@@ -501,8 +501,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = Integer.parseInt(point[0]) * scaleX;
-						vertices[i * 2 + 1] = Integer.parseInt(point[1]) * scaleY;
+						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
+						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY;
 						if (yUp) {
 							vertices[i * 2 + 1] *= -1;
 						}
@@ -515,8 +515,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					float[] vertices = new float[points.length * 2];
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
-						vertices[i * 2] = Integer.parseInt(point[0]) * scaleX;
-						vertices[i * 2 + 1] = Integer.parseInt(point[1]) * scaleY;
+						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
+						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY;
 						if (yUp) {
 							vertices[i * 2 + 1] *= -1;
 						}
