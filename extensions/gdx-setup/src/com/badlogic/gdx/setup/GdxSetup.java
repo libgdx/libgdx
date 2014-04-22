@@ -33,6 +33,14 @@ public class GdxSetup {
 		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
 	}
 
+	public static boolean isEmptyDirectory (String destination) {
+		if (new File(destination).exists()) {
+			return new File(destination).list().length == 0;
+		} else {
+			return true;
+		}
+	}
+
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
 		String sdkLocation, CharCallback callback) {
 		Project project = new Project();

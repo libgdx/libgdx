@@ -121,6 +121,13 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 
+		if (!GdxSetup.isEmptyDirectory(destination)) {
+			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.YES_NO_OPTION);
+			if (value == 1) {
+				return;
+			}
+		}
+
 		String selectedVersion = (String)ui.form.versionButton.getSelectedItem();
 		if (selectedVersion.equals("Nightlies")) {
 			DependencyBank.libgdxVersion = DependencyBank.libgdxNightlyVersion;
@@ -405,7 +412,7 @@ public class GdxSetupUI extends JFrame {
 
 			nightlyWarning.setForeground(new Color(200, 20, 20));
 			nightlyWarning.setVisible(false);
-            projectsLabel.setForeground(new Color(200, 20, 20));
+			projectsLabel.setForeground(new Color(200, 20, 20));
 			extensionsLabel.setForeground(new Color(200, 20, 20));
 
 			subProjectsPanel.setOpaque(true);

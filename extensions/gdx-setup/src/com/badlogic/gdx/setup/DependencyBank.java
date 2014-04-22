@@ -99,11 +99,11 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"}
 		),	
 		BOX2DLIGHTS(
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2-SNAPSHOT"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2-SNAPSHOT"},
 			new String[]{},
-			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"}
+			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2-SNAPSHOT:sources"}
 		);
 
 		private String[] coreDependencies;
