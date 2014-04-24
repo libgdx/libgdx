@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Array;
 /** @author Xoppa */
 public class BSpline<T extends Vector<T>> implements Path<T> {
 	private final static float d6 = 1f / 6f;
-
+	
 	/** Calculates the cubic b-spline value for the given position (t).
 	 * @param out The Vector to set to the result.
 	 * @param t The position (0<=t<=1) on the spline
@@ -287,5 +287,22 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	public float locate (T v) {
 		// TODO Add a precise method
 		return approximate(v);
+	}
+	
+	
+	/** @author florianbaethge (evident) */
+	@Override
+	public float approxLength (int samples) {
+		
+		T tmp = controlPoints[0].cpy();
+		T tmp2 = controlPoints[0].cpy();
+		
+		float tempLength = 0;
+	   for(int i = 0; i < samples; ++i) {
+	       tmp.set(tmp2);
+	       valueAt(tmp2, ((float)i)/((float)samples-1));
+	       if(i>0) tempLength += tmp2.dst(tmp);
+	   }
+	   return tempLength;
 	}
 }

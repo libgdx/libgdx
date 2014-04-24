@@ -207,4 +207,20 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	public float locate (T v) {
 		return approximate(v);
 	}
+
+	/** @author florianbaethge (evident) */
+	@Override
+	public float approxLength (int samples) {
+		
+		T tmp = controlPoints[0].cpy();
+		T tmp2 = controlPoints[0].cpy();
+		
+		float tempLength = 0;
+	   for(int i = 0; i < samples; ++i) {
+	       tmp.set(tmp2);
+	       valueAt(tmp2, ((float)i)/((float)samples-1));
+	       if(i>0) tempLength += tmp2.dst(tmp);
+	   }
+	   return tempLength;
+	}
 }
