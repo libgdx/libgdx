@@ -172,6 +172,8 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	public boolean continuous;
 	public int spanCount;
 	private T tmp;
+	private T tmp2;
+	private T tmp3;
 
 	public BSpline () {
 	}
@@ -182,6 +184,8 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 
 	public BSpline set (final T[] controlPoints, final int degree, final boolean continuous) {
 		if (tmp == null) tmp = controlPoints[0].cpy();
+		if (tmp2 == null) tmp2 = controlPoints[0].cpy();
+		if (tmp3 == null) tmp3 = controlPoints[0].cpy();
 		this.controlPoints = controlPoints;
 		this.degree = degree;
 		this.continuous = continuous;
@@ -294,14 +298,11 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 	@Override
 	public float approxLength (int samples) {
 		
-		T tmp = controlPoints[0].cpy();
-		T tmp2 = controlPoints[0].cpy();
-		
 		float tempLength = 0;
 	   for(int i = 0; i < samples; ++i) {
-	       tmp.set(tmp2);
-	       valueAt(tmp2, ((float)i)/((float)samples-1));
-	       if(i>0) tempLength += tmp2.dst(tmp);
+	       tmp2.set(tmp3);
+	       valueAt(tmp3, ((float)i)/((float)samples-1));
+	       if(i>0) tempLength += tmp2.dst(tmp3);
 	   }
 	   return tempLength;
 	}

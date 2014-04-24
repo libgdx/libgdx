@@ -101,6 +101,8 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	public int spanCount;
 	private T tmp;
 	private T tmp2;
+	private T tmp3;
+	private T tmp4;
 
 	public CatmullRomSpline () {
 	}
@@ -112,6 +114,8 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	public CatmullRomSpline set (final T[] controlPoints, final boolean continuous) {
 		if (tmp == null) tmp = controlPoints[0].cpy();
 		if (tmp2 == null) tmp2 = controlPoints[0].cpy();
+		if (tmp3 == null) tmp3 = controlPoints[0].cpy();
+		if (tmp4 == null) tmp4 = controlPoints[0].cpy();
 		this.controlPoints = controlPoints;
 		this.continuous = continuous;
 		this.spanCount = continuous ? controlPoints.length : controlPoints.length - 3;
@@ -211,15 +215,12 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	/** @author florianbaethge (evident) */
 	@Override
 	public float approxLength (int samples) {
-		
-		T tmp = controlPoints[0].cpy();
-		T tmp2 = controlPoints[0].cpy();
-		
+
 		float tempLength = 0;
 	   for(int i = 0; i < samples; ++i) {
-	       tmp.set(tmp2);
-	       valueAt(tmp2, ((float)i)/((float)samples-1));
-	       if(i>0) tempLength += tmp2.dst(tmp);
+	       tmp3.set(tmp4);
+	       valueAt(tmp4, ((float)i)/((float)samples-1));
+	       if(i>0) tempLength += tmp3.dst(tmp4);
 	   }
 	   return tempLength;
 	}

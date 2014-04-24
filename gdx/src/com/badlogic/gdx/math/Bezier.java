@@ -116,6 +116,8 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 
 	public Array<T> points = new Array<T>();
 	private T tmp;
+	private T tmp2;
+	private T tmp3;
 
 	public Bezier () {
 	}
@@ -140,6 +142,8 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		if (length < 2 || length > 4)
 			throw new GdxRuntimeException("Only first, second and third degree Bezier curves are supported.");
 		if (tmp == null) tmp = points[0].cpy();
+		if (tmp2 == null) tmp2 = points[0].cpy();
+		if (tmp3 == null) tmp3 = points[0].cpy();
 		this.points.clear();
 		this.points.addAll(points, offset, length);
 		return this;
@@ -199,14 +203,11 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	@Override
 	public float approxLength (int samples) {
 		
-		T tmp = points.first().cpy();
-		T tmp2 = points.first().cpy();
-		
 		float tempLength = 0;
 	   for(int i = 0; i < samples; ++i) {
-	       tmp.set(tmp2);
-	       valueAt(tmp2, ((float)i)/((float)samples-1));
-	       if(i>0) tempLength += tmp2.dst(tmp);
+	       tmp2.set(tmp3);
+	       valueAt(tmp3, ((float)i)/((float)samples-1));
+	       if(i>0) tempLength += tmp2.dst(tmp3);
 	   }
 	   return tempLength;
 	}
