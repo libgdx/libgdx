@@ -158,18 +158,17 @@ public class JsonWriter extends Writer {
 		json,
 		/** Like JSON, but names are only quoted if necessary. */
 		javascript,
-		/** Like JSON, but names and values are only quoted if necessary. */
+		/** Like JSON, but names and values are only quoted if they contain these characters: {}[],"\r\n\t or space  */
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
-		static private Pattern minimalValuePattern = Pattern.compile("[a-zA-Z_$][^:}\\], ]*");
-		static private Pattern minimalNamePattern = Pattern.compile("[a-zA-Z0-9_$][^:}\\], ]*");
+		static private Pattern minimalPattern = Pattern.compile("[^{}\\[\\],\"\\r\\n\\t ]*");
 
 		public String quoteValue (Object value) {
 			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
 			String string = String.valueOf(value).replace("\\", "\\\\");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
-				&& minimalValuePattern.matcher(string).matches()) return string;
+				&& minimalPattern.matcher(string).matches()) return string;
 			return '"' + string.replace("\"", "\\\"") + '"';
 		}
 
@@ -177,14 +176,11 @@ public class JsonWriter extends Writer {
 			value = value.replace("\\", "\\\\");
 			switch (this) {
 			case minimal:
-				if (minimalNamePattern.matcher(value).matches()) return value;
-				return '"' + value.replace("\"", "\\\"") + '"';
+				if (minimalPattern.matcher(value).matches()) return value;
 			case javascript:
 				if (javascriptPattern.matcher(value).matches()) return value;
-				return '"' + value.replace("\"", "\\\"") + '"';
-			default:
-				return '"' + value.replace("\"", "\\\"") + '"';
 			}
+			return '"' + value.replace("\"", "\\\"") + '"';
 		}
 	}
 }
