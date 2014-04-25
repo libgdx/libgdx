@@ -158,7 +158,7 @@ public class JsonWriter extends Writer {
 		json,
 		/** Like JSON, but names are only quoted if necessary. */
 		javascript,
-		/** Like JSON, but names and values are only quoted if they contain these characters: {}[],"\r\n\t or space  */
+		/** Like JSON, but names and values are only quoted if they contain these characters: {}[],"\r\n\t or space */
 		minimal;
 
 		static private Pattern javascriptPattern = Pattern.compile("[a-zA-Z_$][a-zA-Z_$0-9]*");
@@ -166,14 +166,15 @@ public class JsonWriter extends Writer {
 
 		public String quoteValue (Object value) {
 			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
-			String string = String.valueOf(value).replace("\\", "\\\\");
+			String string = String.valueOf(value).replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n")
+				.replace("\t", "\\t");
 			if (this == OutputType.minimal && !string.equals("true") && !string.equals("false") && !string.equals("null")
 				&& minimalPattern.matcher(string).matches()) return string;
 			return '"' + string.replace("\"", "\\\"") + '"';
 		}
 
 		public String quoteName (String value) {
-			value = value.replace("\\", "\\\\");
+			value = value.replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n").replace("\t", "\\t");
 			switch (this) {
 			case minimal:
 				if (minimalPattern.matcher(value).matches()) return value;
