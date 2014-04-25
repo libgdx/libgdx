@@ -41,6 +41,29 @@ public class GdxSetup {
 		}
 	}
 
+	public static boolean isSdkUpToDate (String sdkLocation) {
+		boolean hasTools = false;
+		boolean hasApi = false;
+		File buildTools = new File(sdkLocation, "build-tools");
+		if (!buildTools.exists()) {
+			return false;
+		}
+		for (File toolsVersion : buildTools.listFiles()) {
+			if (toolsVersion.getName().equals(DependencyBank.buildToolsVersion)) {
+				hasTools = true;
+				break;
+			}
+		}
+		File apis = new File(sdkLocation, "platforms");
+		for (File api : apis.listFiles()) {
+			if (api.getName().equals("android-" + DependencyBank.androidAPILevel)) {
+				hasApi = true;
+				break;
+			}
+		}
+		return hasTools && hasApi;
+	}
+
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
 		String sdkLocation, CharCallback callback) {
 		Project project = new Project();
@@ -132,6 +155,8 @@ public class GdxSetup {
 		values.put("%MAIN_CLASS%", mainClass);
 		values.put("%ANDROID_SDK%", sdkPath);
 		values.put("%ASSET_PATH%", assetPath);
+		values.put("%BUILD_TOOLS_VERSION%", DependencyBank.buildToolsVersion);
+		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
 		if (builder.modules.contains(ProjectType.HTML)) {
 			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances, builder));
 		}

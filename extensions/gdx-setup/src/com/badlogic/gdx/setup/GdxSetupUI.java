@@ -155,6 +155,10 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 
+		if (!GdxSetup.isSdkUpToDate(sdkLocation) && modules.contains(ProjectType.ANDROID)) {
+			JOptionPane.showMessageDialog(this, "Please update your Android SDK, you need: \nAndroid API " + DependencyBank.androidAPILevel + "\nAndroid Build Tools " + DependencyBank.buildToolsVersion);
+		}
+
 		if (!GdxSetup.isEmptyDirectory(destination)) {
 			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.YES_NO_OPTION);
 			if (value == 1) {
@@ -488,7 +492,7 @@ public class GdxSetupUI extends JFrame {
 			versionButton.addItemListener(new ItemListener() {
 				@Override
 				public void itemStateChanged (ItemEvent e) {
-					JComboBox list = (JComboBox)e.getSource();
+					JComboBox list = (JComboBox) e.getSource();
 					if (list.getSelectedItem().equals("Nightlies")) {
 						nightlyWarning.setVisible(true);
 					} else {
