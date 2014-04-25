@@ -682,9 +682,9 @@ public final class Intersector {
 					if (ua >= 0 && ua <= 1) {
 						 return true;
 					}
-					x3 = x4;
-					y3 = y4;
 			  }
+			  x3 = x4;
+			  y3 = y4;
 		 }
 		 return false;
 	}
@@ -726,9 +726,9 @@ public final class Intersector {
 								return true;
 						  }
 					 }
-					 x3 = x4;
-					 y3 = y4;
 				}
+				x3 = x4;
+				y3 = y4;
 		  }
 		  return false;
 	 }
