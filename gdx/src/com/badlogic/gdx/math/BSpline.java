@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Array;
 /** @author Xoppa */
 public class BSpline<T extends Vector<T>> implements Path<T> {
 	private final static float d6 = 1f / 6f;
-	
+
 	/** Calculates the cubic b-spline value for the given position (t).
 	 * @param out The Vector to set to the result.
 	 * @param t The position (0<=t<=1) on the spline
@@ -34,7 +34,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return cubic(out, i, u, points, continuous, tmp);
 	}
 
@@ -50,7 +50,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return cubic(out, i, u, points, continuous, tmp);
 	}
 
@@ -109,7 +109,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final int n = continuous ? points.length : points.length - degree;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return calculate(out, i, u, points, degree, continuous, tmp);
 	}
 
@@ -126,7 +126,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final int n = continuous ? points.length : points.length - degree;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return derivative(out, i, u, points, degree, continuous, tmp);
 	}
 
@@ -207,7 +207,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final int n = spanCount;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return valueAt(out, i, u);
 	}
 
@@ -221,7 +221,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		final int n = spanCount;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return derivativeAt(out, i, u);
 	}
 
@@ -284,7 +284,7 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		float L3 = P3.dst(P1);
 		float s = (L2 * L2 + L1 * L1 - L3 * L3) / (2 * L1);
 		float u = MathUtils.clamp((L1 - s) / L1, 0f, 1f);
-		return ((float)n + u) / spanCount;
+		return (n + u) / spanCount;
 	}
 
 	@Override
@@ -292,18 +292,15 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 		// TODO Add a precise method
 		return approximate(v);
 	}
-	
-	
-	/** @author florianbaethge (evident) */
+
 	@Override
 	public float approxLength (int samples) {
-		
 		float tempLength = 0;
-	   for(int i = 0; i < samples; ++i) {
-	       tmp2.set(tmp3);
-	       valueAt(tmp3, ((float)i)/((float)samples-1));
-	       if(i>0) tempLength += tmp2.dst(tmp3);
-	   }
-	   return tempLength;
+		for (int i = 0; i < samples; ++i) {
+			tmp2.set(tmp3);
+			valueAt(tmp3, (i) / ((float)samples - 1));
+			if (i > 0) tempLength += tmp2.dst(tmp3);
+		}
+		return tempLength;
 	}
 }

@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.utils.Array;
-
 /** @author Xoppa */
 public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 	/** Calculates the catmullrom value for the given position (t).
@@ -33,7 +30,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return calculate(out, i, u, points, continuous, tmp);
 	}
 
@@ -69,7 +66,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		final int n = continuous ? points.length : points.length - 3;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return derivative(out, i, u, points, continuous, tmp);
 	}
 
@@ -125,7 +122,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		final int n = spanCount;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return valueAt(out, i, u);
 	}
 
@@ -134,11 +131,12 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		return calculate(out, continuous ? span : (span + 1), u, controlPoints, continuous, tmp);
 	}
 
+	@Override
 	public T derivativeAt (T out, float t) {
 		final int n = spanCount;
 		float u = t * n;
 		int i = (t >= 1f) ? (n - 1) : (int)u;
-		u -= (float)i;
+		u -= i;
 		return derivativeAt(out, i, u);
 	}
 
@@ -202,7 +200,7 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		float L1 = (float)Math.sqrt(L1Sqr);
 		float s = (L2Sqr + L1Sqr - L3Sqr) / (2f * L1);
 		float u = MathUtils.clamp((L1 - s) / L1, 0f, 1f);
-		return ((float)n + u) / spanCount;
+		return (n + u) / spanCount;
 	}
 
 	@Override
@@ -210,14 +208,12 @@ public class CatmullRomSpline<T extends Vector<T>> implements Path<T> {
 		return approximate(v);
 	}
 
-	/** @author florianbaethge (evident) */
 	@Override
 	public float approxLength (int samples) {
-
 		float tempLength = 0;
 	   for(int i = 0; i < samples; ++i) {
 	       tmp2.set(tmp3);
-	       valueAt(tmp3, ((float)i)/((float)samples-1));
+	       valueAt(tmp3, (i)/((float)samples-1));
 	       if(i>0) tempLength += tmp2.dst(tmp3);
 	   }
 	   return tempLength;

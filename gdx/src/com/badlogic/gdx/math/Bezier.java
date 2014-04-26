@@ -198,17 +198,15 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		// TODO implement a precise method
 		return approximate(v);
 	}
-	
-	/** @author florianbaethge (evident) */
+
 	@Override
 	public float approxLength (int samples) {
-		
 		float tempLength = 0;
-	   for(int i = 0; i < samples; ++i) {
-	       tmp2.set(tmp3);
-	       valueAt(tmp3, ((float)i)/((float)samples-1));
-	       if(i>0) tempLength += tmp2.dst(tmp3);
-	   }
-	   return tempLength;
+		for (int i = 0; i < samples; ++i) {
+			tmp2.set(tmp3);
+			valueAt(tmp3, (i) / ((float)samples - 1));
+			if (i > 0) tempLength += tmp2.dst(tmp3);
+		}
+		return tempLength;
 	}
 }
