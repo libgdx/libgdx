@@ -28,12 +28,14 @@
 
 package com.badlogic.gdx.tests.utils;
 
+import com.badlogic.gdx.graphics.g3d.utils.CameraMovementController;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
+import com.badlogic.gdx.tests.g3d.CameraMovementControllerTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
@@ -86,6 +88,7 @@ public class GdxTests {
 		Bresenham2Test.class,
 		BufferUtilsTest.class,
 		BulletTestCollection.class,
+		CameraMovementControllerTest.class,
 		ContainerTest.class,
 		CullTest.class,
 		DelaunayTriangulatorTest.class,
