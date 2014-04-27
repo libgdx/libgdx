@@ -16,47 +16,53 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.ImageOutputStream;
 
-/** @author Nathan Sweet */
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+
+/** @author Nathan Sweet, Michael Bazos */
 public class TextureUnpacker {
-	/** @param output Directory where the images will be written. */
-	static public void process (TextureAtlas atlas, String output) {
+	/** @param output Directory where the images will be written.
+	 * @throws IOException */
+	static public void process (TextureAtlasData atlasData, String output) throws IOException {
+		for (Region region : atlasData.getRegions()) {
+			BufferedImage src = ImageIO.read(region.page.textureFile.read());
+			BufferedImage subimage = null;
+
+			System.out.println(String.format("processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
+				region.left, region.top, region.width, region.height, region.rotate));
+
+			if (region.rotate) {
+				BufferedImage unRotatedImage = src.getSubimage(region.left, region.top, region.height, region.width);
+				double rotationRequired = Math.toRadians(90.0);
+				double locationX = unRotatedImage.getWidth() / 2;
+				double locationY = unRotatedImage.getHeight() / 2;
+				AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+				AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+				subimage = op.filter(unRotatedImage, subimage);
+
+			} else {
+				subimage = src.getSubimage(region.left, region.top, region.width, region.height);
+			}
+
+			ImageIO.write(subimage, "PNG", new FileOutputStream(output + File.separator + region.name + ".png"));
+		}
 
 	}
 
 	static public void main (String[] args) throws Exception {
-		String input = null, output = null, packFileName = "pack.atlas";
+		String input = null, output = null;
 
 		switch (args.length) {
-		case 3:
-			packFileName = args[2];
 		case 2:
 			output = args[1];
 		case 1:
@@ -67,11 +73,19 @@ public class TextureUnpacker {
 			System.exit(0);
 		}
 
+		FileHandle inputFileHandle = new FileHandle(input);
+		File inputFile = inputFileHandle.file();
+
 		if (output == null) {
-			File inputFile = new File(input);
-			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
+			File outputFile = new File(inputFile.getParentFile(), "output");
+			if (!outputFile.exists()) {
+				outputFile.mkdir();
+			}
+			output = outputFile.getAbsolutePath();
 		}
 
-		// process(input, output, packFileName);
+		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
+
+		process(atlasData, output);
 	}
 }
