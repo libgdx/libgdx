@@ -1,25 +1,17 @@
-package net.codepoke.util.videoplayer.build;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
-
-import net.codepoke.util.videoplayer.FfMpeg;
+package com.badlogic.gdx.video.build;
 
 import com.badlogic.gdx.jnigen.AntScriptGenerator;
 import com.badlogic.gdx.jnigen.BuildConfig;
-import com.badlogic.gdx.jnigen.BuildExecutor;
 import com.badlogic.gdx.jnigen.BuildTarget;
 import com.badlogic.gdx.jnigen.BuildTarget.TargetOs;
 import com.badlogic.gdx.jnigen.NativeCodeGenerator;
+import com.badlogic.gdx.video.FfMpeg;
 
+/**
+ * This class is used to create the buildscripts, and generate the jni files.
+ *
+ * @author Rob Bogie <rob.bogie@codepoke.net>
+ */
 public class FfMpegWrapperBuild {
 
 	public static void main(String[] args) throws Exception {
@@ -51,7 +43,7 @@ public class FfMpegWrapperBuild {
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
 		mac.libraries = "-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread";
 		mac.excludeFromMasterBuildFile = true;
-		
+
 		BuildTarget mac64 = BuildTarget.newDefaultTarget(TargetOs.MacOsX, true);
 		mac64.libraries = "-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread";
 		mac64.excludeFromMasterBuildFile = true;

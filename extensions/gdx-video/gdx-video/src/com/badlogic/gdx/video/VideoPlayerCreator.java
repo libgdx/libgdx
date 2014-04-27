@@ -1,4 +1,4 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Mesh;
  * This class is used to provide a way of creating a VideoPlayer, without knowing the platform the program is running
  * on. This has to be extended for each supported platform.
  *
- * @author Rob Bogie <bogie.rob@gmail.com>
+ * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
 public abstract class VideoPlayerCreator {

@@ -1,4 +1,4 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,7 +15,7 @@ import com.badlogic.gdx.jnigen.SharedLibraryFinder;
  * This class manages the loading of the native libraries that wrap FFMpeg. It allows changing the path from which it
  * loads the libraries, and defaults to loading the file from jar containing the class.
  *
- * @author Rob Bogie <bogie.rob@gmail.com>
+ * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
 public class FfMpeg {
@@ -47,10 +47,10 @@ public class FfMpeg {
 
 		if (libraryPath == null || libraryPath.equals("")) {
 			libraryPath = System.getProperty("java.io.tmpdir") + "/" + NATIVE_LIBRARY_NAME + "-java-natives/" + NATIVE_LIBRARY_NAME
-					+ "-natives.jar";
+							+ "-natives.jar";
 			File outputFile = new File(libraryPath);
 			outputFile.getParentFile()
-			.mkdirs();
+						.mkdirs();
 
 			InputStream input = FfMpeg.class.getResourceAsStream("/" + NATIVE_LIBRARY_NAME + "-natives.jar");
 			if (input == null) {
@@ -83,7 +83,7 @@ public class FfMpeg {
 					String filename = entry.getName();
 
 					if (filename.equals(sharedLibName + (is64Bit ? "64.dll" : ".dll"))
-							|| filename.matches("windows" + (is64Bit ? "64" : "32") + "\\/" + sharedLibName + "[-]?\\d+\\.dll*")) {
+						|| filename.matches("windows" + (is64Bit ? "64" : "32") + "\\/" + sharedLibName + "[-]?\\d+\\.dll*")) {
 						return filename;
 					}
 				}
@@ -99,7 +99,7 @@ public class FfMpeg {
 					String filename = entry.getName();
 
 					if (filename.equals("lib" + sharedLibName + (is64Bit ? "64.so" : ".so"))
-							|| filename.matches("linux" + (is64Bit ? "64" : "32") + "\\/lib" + sharedLibName + "\\.so[.\\d]*")) {
+						|| filename.matches("linux" + (is64Bit ? "64" : "32") + "\\/lib" + sharedLibName + "\\.so[.\\d]*")) {
 						return filename;
 					}
 				}
@@ -120,7 +120,7 @@ public class FfMpeg {
 		try {
 
 			if (System.getProperty("os.name")
-					.startsWith("Windows")) {
+						.startsWith("Windows")) {
 				libLoader.load("libwinpthread");
 			}
 			libLoader.load("avutil");

@@ -1,12 +1,10 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
-import net.codepoke.util.videoplayer.VideoDecoder.VideoDecoderBuffers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -19,15 +17,16 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.video.VideoDecoder.VideoDecoderBuffers;
 
 /**
  * Desktop implementation of the VideoPlayer
  *
- * @author Rob Bogie <bogie.rob@gmail.com>
+ * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
 public class VideoPlayerDesktop
-implements VideoPlayer {
+		implements VideoPlayer {
 
 	//@formatter:off
 	private static final String vertexShader =
@@ -92,6 +91,7 @@ implements VideoPlayer {
 		customMesh = true;
 	}
 
+	@Override
 	public boolean play(FileHandle file) throws FileNotFoundException {
 		if (file == null) {
 			return false;
@@ -142,6 +142,7 @@ implements VideoPlayer {
 		return true;
 	}
 
+	@Override
 	public void resize(Camera cam, float x, float y, float width, float height) {
 		if (!customMesh) {
 			if (cam != null) {
@@ -180,6 +181,7 @@ implements VideoPlayer {
 		return 0;
 	}
 
+	@Override
 	public boolean render() {
 		if (decoder != null && !paused) {
 			if (startTime == 0) {
@@ -228,6 +230,7 @@ implements VideoPlayer {
 		return true;
 	}
 
+	@Override
 	public boolean isBuffered() {
 		if (decoder != null) {
 			return decoder.isBuffered();
@@ -235,6 +238,7 @@ implements VideoPlayer {
 		return false;
 	}
 
+	@Override
 	public void stop() {
 		if (audio != null) {
 			audio.dispose();
@@ -265,6 +269,7 @@ implements VideoPlayer {
 		showAlreadyDecodedFrame = false;
 	}
 
+	@Override
 	public void pause() {
 		if (!paused) {
 			paused = true;
@@ -273,6 +278,7 @@ implements VideoPlayer {
 		}
 	}
 
+	@Override
 	public void resume() {
 		if (paused) {
 			paused = false;

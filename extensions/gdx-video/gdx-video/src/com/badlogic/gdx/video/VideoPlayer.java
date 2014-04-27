@@ -1,4 +1,4 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import java.io.FileNotFoundException;
 
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Camera;
 /**
  * The VideoPlayer will play a video.
  *
- * @author Rob Bogie <bogie.rob@gmail.com>
+ * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
 public interface VideoPlayer {

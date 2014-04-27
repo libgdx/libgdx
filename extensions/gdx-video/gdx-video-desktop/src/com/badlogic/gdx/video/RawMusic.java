@@ -1,4 +1,4 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import java.nio.ByteBuffer;
 
@@ -8,12 +8,12 @@ import com.badlogic.gdx.backends.lwjgl.audio.OpenALMusic;
 
 /**
  * The RawMusic class extends OpenAlMusic, and retrieves it's audio from a VideoDecoder instance.
- * 
- * @author Rob Bogie <bogie.rob@gmail.com>
- * 
+ *
+ * @author Rob Bogie <rob.bogie@codepoke.net>
+ *
  */
 class RawMusic
-		extends OpenALMusic {
+extends OpenALMusic {
 	VideoDecoder decoder;
 	ByteBuffer backBuffer;
 

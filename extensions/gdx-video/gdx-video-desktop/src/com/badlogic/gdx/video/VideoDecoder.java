@@ -1,9 +1,15 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import java.nio.ByteBuffer;
 
 import com.badlogic.gdx.utils.Disposable;
 
+/**
+ * This class is a java wrapper used on the background, which communicates through jni to the actual video decoder.
+ * 
+ * @author Rob Bogie <rob.bogie@codepoke.net>
+ *
+ */
 public class VideoDecoder
 		implements AutoCloseable, Disposable {
 	/**
@@ -86,6 +92,7 @@ public class VideoDecoder
 	/**
 	 * This will close the VideoDecoder, and with it cleanup everything.
 	 */
+	@Override
 	public void close() {
 		disposeNative();
 		nativePointer = 0;
@@ -94,6 +101,7 @@ public class VideoDecoder
 	/**
 	 * Calls close
 	 */
+	@Override
 	public void dispose() {
 		close();
 	}
@@ -102,16 +110,16 @@ public class VideoDecoder
 	 * Native functions
 	 * @formatter:off
 	 */
-	
+
 	/*JNI
 	 	#include "VideoDecoder.h"
 	 	#include "Utilities.h"
-	 	
+
 	 	#include <stdexcept>
-	 	
+
 	 	JavaVM* jvm = NULL;
 	 	JavaVMAttachArgs args;
-	 	
+
 	 	struct FfMpegCustomFileReaderData {
             jobject objectToCall;
             jmethodID methodToCall;
@@ -132,13 +140,13 @@ public class VideoDecoder
 		    } else if (getEnvStat == JNI_EVERSION) {
 		        logError("Unsupported version\n");
 		    }
-		
+
 		jint integer = env->CallIntMethod(customData->objectToCall, customData->methodToCall, env->NewDirectByteBuffer(buffer, bufferSize));
-		
+
 		    if (env->ExceptionCheck()) {
 		        env->ExceptionDescribe();
 		    }
-		
+
 		    jvm->DetachCurrentThread();
             logDebug("Size %d on %p\n", bufferSize, buffer);
             return integer;
@@ -152,25 +160,25 @@ public class VideoDecoder
 //            customData->objectToCall = NULL;
 //            customData->methodToCall = NULL;
         }
-		
+
 	 */
-	
+
 	/**
 	 * Creates an instance on the native side.
 	 * @return A raw pointer to the native instance
 	 */
 	private native long init();/*
-	
+
 		if(jvm == NULL) {
             env->GetJavaVM(&jvm);
         }
-	
+
 		args.version = JNI_VERSION_1_6;
 		args.name = "FFMpegInternalThread";
-		
+
 		VideoDecoder* pointer = new VideoDecoder();
 		return (jlong)pointer;
-	*/
+	 */
 
 	/**
 	 * This will load a file for playback
@@ -207,9 +215,9 @@ public class VideoDecoder
                 audioBuffer = env->NewDirectByteBuffer(bufferInfo.audioBuffer, bufferInfo.audioBufferSize);
             }
 
-            jclass cls = env->FindClass("net/codepoke/util/videoplayer/VideoDecoder$VideoDecoderBuffers");
+            jclass cls = env->FindClass("com/badlogic/gdx/video/VideoDecoder$VideoDecoderBuffers");
             if(cls == NULL) {
-                logError("[wrapped_Java_net_codepoke_util_videoplayer_VideoDecoder_loadFile] Could not find VideoDecoderBuffers class");
+                logError("[wrapped_Java_com_badlogic_gdx_videoVideoDecoder_loadFile] Could not find VideoDecoderBuffers class");
                 return NULL;
             }
             jmethodID constructor = env->GetMethodID(cls, "<init>", "(Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;IIII)V");
@@ -229,8 +237,8 @@ public class VideoDecoder
 			env->ThrowNew(clazz, e.what());
 		}
 		return 0;
-	*/
-	
+	 */
+
 	/**
 	 * This will return a ByteBuffer pointing to the next videoframe. This bytebuffer contains a single frame in RGB888.
 	 * @return A ByteBuffer pointing to the next frame.
@@ -238,29 +246,29 @@ public class VideoDecoder
 	public native ByteBuffer nextVideoFrame();/*
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		u_int8_t* buffer = pointer->nextVideoFrame();
-		
+
 		return (buffer == NULL) ? NULL : env->NewDirectByteBuffer(buffer, pointer->getVideoFrameSize());
-	*/
-	
+	 */
+
 	/**
-	 * This will fill the ByteBuffer for the audio (The one gotten from VideoDecoderBuffers object retrieved from loadFile) 
+	 * This will fill the ByteBuffer for the audio (The one gotten from VideoDecoderBuffers object retrieved from loadFile)
 	 * with new audio.
 	 */
 	public native void updateAudioBuffer();/*
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		pointer->updateAudioBuffer();
-	*/
-	
+	 */
+
 	/**
-	 * This gets the timestamp of the current displaying frame (The one that you got last by calling nextVideoFrame). The 
+	 * This gets the timestamp of the current displaying frame (The one that you got last by calling nextVideoFrame). The
 	 * timestamp is in seconds, and can be total nonsense if you never called nextVideoFrame. It is being corrected when the audio couldn't keep up.
 	 * @return The timestamp in seconds.
 	 */
 	public native double getCurrentFrameTimestamp();/*
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		return pointer->getCurrentFrameTimestamp();
-	*/
-	
+	 */
+
 	/**
 	 * Disposes the native object.
 	 */
@@ -271,7 +279,7 @@ public class VideoDecoder
             delete data;
         }
 		delete pointer;
-	*/
+	 */
 
 	/**
 	 * @return Whether the buffer is completely filled.
@@ -279,5 +287,5 @@ public class VideoDecoder
 	public native boolean isBuffered();/*
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		return pointer->isBuffered();
-	*/
+	 */
 }

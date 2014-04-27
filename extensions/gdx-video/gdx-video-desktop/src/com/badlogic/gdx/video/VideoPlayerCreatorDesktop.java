@@ -1,4 +1,4 @@
-package net.codepoke.util.videoplayer;
+package com.badlogic.gdx.video;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.Mesh;
 /**
  * Desktop implementation of the VideoPlayerCreator
  *
- * @author Rob Bogie <bogie.rob@gmail.com>
+ * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
 public class VideoPlayerCreatorDesktop
-		extends VideoPlayerCreator {
+extends VideoPlayerCreator {
 
 	@Override
 	public VideoPlayer create() {
