@@ -188,21 +188,36 @@ public class JsonReader implements BaseJsonReader {
 				s = p;
 				needsUnescape = false;
 				stringIsUnquoted = true;
-				outer:
-				while (true) {
-					switch (data[p]) {
-					case ':':
-					case '}':
-					case ']':
-					case ',':
-					case ' ':
-					case '\r':
-					case '\n':
-					case '\t':
-						break outer;
+				if (stringIsName) {
+					outer:
+					while (true) {
+						switch (data[p]) {
+						case ':':
+						case ' ':
+						case '\r':
+						case '\n':
+						case '\t':
+							break outer;
+						}
+						// if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
+						p++;
 					}
-					// if (debug) System.out.println("unquotedChar: '" + data[p] + "'");
-					p++;
+				} else {
+					outer:
+					while (true) {
+						switch (data[p]) {
+						case '}':
+						case ']':
+						case ',':
+						case ' ':
+						case '\r':
+						case '\n':
+						case '\t':
+							break outer;
+						}
+						// if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
+						p++;
+					}
 				}
 				p--;
 			}
@@ -215,6 +230,7 @@ public class JsonReader implements BaseJsonReader {
 					switch (data[p]) {
 					case '\\':
 						needsUnescape = true;
+						p++;
 						break;
 					case '"':
 						break outer;
@@ -226,7 +242,7 @@ public class JsonReader implements BaseJsonReader {
 			}
 
 			ws = [ \r\n\t] | (('//' | '/*') @comment);
-			string = '"' @quotedChars %string '"' | ^[{}\[\],"\r\n\t ] >unquotedChars %string;
+			string = '"' @quotedChars %string '"' | ^[{}\[\],:"\r\n\t ] >unquotedChars %string;
 			value = '{' @startObject | '[' @startArray | string;
 			nameValue = string >name ws* ':' ws* value;
 			object := ws* nameValue? ws* (',' ws* nameValue ws*)** ','? ws* '}' @endObject;
