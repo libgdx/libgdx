@@ -37,7 +37,6 @@ public class FirstPersonCameraController extends InputAdapter {
 	private float velocity = 5;
 	private float degreesPerPixel = 0.5f;
 	private final Vector3 tmp = new Vector3();
-	private final Vector3 tmp2 = new Vector3();
 
 	public FirstPersonCameraController (Camera camera) {
 		this.camera = camera;
