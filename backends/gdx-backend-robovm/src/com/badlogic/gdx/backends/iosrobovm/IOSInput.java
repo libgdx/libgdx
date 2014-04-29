@@ -18,8 +18,9 @@ package com.badlogic.gdx.backends.iosrobovm;
 
 import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
+import org.robovm.apple.foundation.NSExtensions;
+import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSRange;
-import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.uikit.UIAcceleration;
 import org.robovm.apple.uikit.UIAccelerometer;
 import org.robovm.apple.uikit.UIAccelerometerDelegate;
@@ -42,6 +43,11 @@ import org.robovm.apple.uikit.UITextSpellCheckingType;
 import org.robovm.apple.uikit.UITouch;
 import org.robovm.apple.uikit.UITouchPhase;
 import org.robovm.objc.ObjCClass;
+import org.robovm.objc.annotation.Method;
+import org.robovm.rt.VM;
+import org.robovm.rt.bro.NativeObject;
+import org.robovm.rt.bro.annotation.MachineSizedUInt;
+import org.robovm.rt.bro.annotation.Pointer;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -58,6 +64,31 @@ public class IOSInput implements Input {
 		ObjCClass.getByType(UITouch.class);
 	}
 	
+	private static class NSObjectWrapper<T extends NSObject> {
+		private static final long HANDLE_OFFSET;
+		static {
+			try {
+				HANDLE_OFFSET = VM.getInstanceFieldOffset(VM.getFieldAddress(NativeObject.class.getDeclaredField("handle")));
+			} catch (Throwable t) {
+				throw new Error(t);
+			}
+		}
+
+		private final T instance;
+
+		public NSObjectWrapper (Class<T> cls) {
+			instance = VM.allocateObject(cls);
+		}
+
+		public T wrap (long handle) {
+			VM.setLong(VM.getObjectAddress(instance) + HANDLE_OFFSET, handle);
+			return instance;
+		}
+	}
+
+	private static final NSObjectWrapper<UITouch> UI_TOUCH_WRAPPER = new NSObjectWrapper<UITouch>(UITouch.class);
+	private static final NSObjectWrapper<UIAcceleration> UI_ACCELERATION_WRAPPER = new NSObjectWrapper<UIAcceleration>(UIAcceleration.class);
+
 	IOSApplication app;
 	IOSApplicationConfiguration config;
 	int[] deltaX = new int[MAX_TOUCHES];
@@ -102,16 +133,13 @@ public class IOSInput implements Input {
 		if(config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
 
-				@Override
-				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
+				@Method(selector = "accelerometer:didAccelerate:")
+				public void didAccelerate (UIAccelerometer accelerometer, @Pointer long valuesPtr) {
+					UIAcceleration values = UI_ACCELERATION_WRAPPER.wrap(valuesPtr);
 					float x = (float)values.getX() * 10;
 					float y = (float)values.getY() * 10;
 					float z = (float)values.getZ() * 10;
 
-					UIInterfaceOrientation orientation = app.graphics.viewController != null 
-																		? app.graphics.viewController.getInterfaceOrientation() 
-																		: UIApplication.getSharedApplication().getStatusBarOrientation();
-										
 					acceleration[0] = -x;
 					acceleration[1] = -y;
 					acceleration[2] = -z;
@@ -452,15 +480,15 @@ public class IOSInput implements Input {
   public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
   }
 
-  public void touchDown(NSSet<UITouch> touches, UIEvent event) {
+	public void touchDown (long touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
-	public void touchUp(NSSet<UITouch> touches, UIEvent event) {
+	public void touchUp (long touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
-	public void touchMoved(NSSet<UITouch> touches, UIEvent event) {
+	public void touchMoved (long touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 	
@@ -505,18 +533,36 @@ public class IOSInput implements Input {
 		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
 	}
 
-	private void toTouchEvents (NSSet<UITouch> touches, UIEvent uiEvent) {
-		for (UITouch touch : touches) {
+	private static class NSSetExtensions extends NSExtensions {
+		@Method(selector = "allObjects")
+		public static native @Pointer long allObjects (@Pointer long thiz);
+	}
+
+	private static class NSArrayExtensions extends NSExtensions {
+		@Method(selector = "objectAtIndex:")
+		public static native @Pointer long objectAtIndex$ (@Pointer long thiz, @MachineSizedUInt long index);
+
+		@Method(selector = "count")
+		public static native @MachineSizedUInt long count (@Pointer long thiz);
+	}
+
+	private void toTouchEvents (long touches, UIEvent uiEvent) {
+		long array = NSSetExtensions.allObjects(touches);
+		int length = (int) NSArrayExtensions.count(array);
+		for (int i = 0; i < length; i++) {
+			long touchHandle = NSArrayExtensions.objectAtIndex$(array, i);
+			UITouch touch = UI_TOUCH_WRAPPER.wrap(touchHandle);
 			CGPoint loc = touch.getLocation(touch.getView());
 			synchronized(touchEvents) {
+				UITouchPhase phase = touch.getPhase();
 				TouchEvent event = touchEventPool.obtain();
 				event.x = (int)(loc.x() * app.displayScaleFactor);
 				event.y = (int)(loc.y() * app.displayScaleFactor);
-				event.phase = touch.getPhase();
+				event.phase = phase;
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
 				
-				if(touch.getPhase() == UITouchPhase.Began) {					
+				if(phase == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
 					touchDown[event.pointer] = (int) touch.getHandle();
 					touchX[event.pointer] = event.x;
@@ -526,8 +572,8 @@ public class IOSInput implements Input {
 					numTouched++;
 				}
 				
-				if(touch.getPhase() == UITouchPhase.Moved ||
-					touch.getPhase() == UITouchPhase.Stationary) {
+				if(phase == UITouchPhase.Moved ||
+					phase == UITouchPhase.Stationary) {
 					event.pointer = findPointer(touch);
 					deltaX[event.pointer] = event.x - touchX[event.pointer];
 					deltaY[event.pointer] = event.y - touchY[event.pointer]; 
@@ -535,8 +581,8 @@ public class IOSInput implements Input {
 					touchY[event.pointer] = event.y;
 				}
 				
-				if(touch.getPhase() == UITouchPhase.Cancelled ||
-					touch.getPhase() == UITouchPhase.Ended) {					
+				if(phase == UITouchPhase.Cancelled ||
+					phase == UITouchPhase.Ended) {
 					event.pointer = findPointer(touch);
 					touchDown[event.pointer] = 0; 
 					touchX[event.pointer] = event.x;

@@ -20,7 +20,6 @@ import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -35,11 +34,12 @@ import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIScreen;
-import org.robovm.apple.uikit.UITouch;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
+import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
+import org.robovm.rt.bro.annotation.Pointer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -141,27 +141,23 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
 
 		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
-			@Override
-			public void touchesBegan (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesBegan(touches, event);
+			@Method(selector = "touchesBegan:withEvent:")
+			public void touchesBegan (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchDown(touches, event);
 			}
 
-			@Override
-			public void touchesCancelled (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesCancelled(touches, event);
+			@Method(selector = "touchesCancelled:withEvent:")
+			public void touchesCancelled (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
-			@Override
-			public void touchesEnded (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesEnded(touches, event);
+			@Method(selector = "touchesEnded:withEvent:")
+			public void touchesEnded (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
-			@Override
-			public void touchesMoved (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesMoved(touches, event);
+			@Method(selector = "touchesMoved:withEvent:")
+			public void touchesMoved (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchMoved(touches, event);
 			}
 
