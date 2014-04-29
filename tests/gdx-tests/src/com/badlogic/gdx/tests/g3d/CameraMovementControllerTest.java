@@ -196,7 +196,7 @@ public class CameraMovementControllerTest extends GdxTest implements Application
 		spriteBatch.begin();
 		font.draw(spriteBatch, "1 - Overview | 2 - Cam1 | 3 - Cam2", 10, 60);
 		font.draw(spriteBatch, "y/x - Cam1 Position pause/resume | c/v - Cam1 LookAt pause/resume", 10, 40);
-		font.draw(spriteBatch, "f/g - Cam1 Position pause/resume | h/j - Cam1 LookAt pause/resume", 10, 20);
+		font.draw(spriteBatch, "f/g - Cam2 Position pause/resume | h/j - Cam2 LookAt pause/resume", 10, 20);
 		spriteBatch.end();
 
 	}
