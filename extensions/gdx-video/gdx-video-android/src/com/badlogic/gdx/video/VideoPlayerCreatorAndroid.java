@@ -2,11 +2,15 @@ package com.badlogic.gdx.video;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.video.VideoPlayer;
-import com.badlogic.gdx.video.VideoPlayerCreator;
 
+/**
+ * Android implementation of the VideoPlayerCreator class.
+ *
+ * @author Rob Bogie <rob.bogie@codepoke.net>
+ *
+ */
 public class VideoPlayerCreatorAndroid
-extends VideoPlayerCreator {
+		extends VideoPlayerCreator {
 
 	@Override
 	public VideoPlayer create() {

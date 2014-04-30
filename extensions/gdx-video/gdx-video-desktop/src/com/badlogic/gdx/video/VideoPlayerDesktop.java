@@ -230,6 +230,12 @@ public class VideoPlayerDesktop
 		return true;
 	}
 
+	/**
+	 * Will return whether the buffer is filled. At the time of writing, the buffer used can store 10 frames of video.
+	 * You can find the value in jni/VideoDecoder.h
+	 *
+	 * @return whether buffer is filled.
+	 */
 	@Override
 	public boolean isBuffered() {
 		if (decoder != null) {
@@ -290,5 +296,9 @@ public class VideoPlayerDesktop
 	@Override
 	public void dispose() {
 		stop();
+
+		if (!customMesh && mesh != null) {
+			mesh.dispose();
+		}
 	}
 }

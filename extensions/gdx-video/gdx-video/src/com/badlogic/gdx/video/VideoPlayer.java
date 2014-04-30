@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.utils.Disposable;
 
 /**
- * The VideoPlayer will play a video.
+ * The VideoPlayer will play a video on any given mesh, using textures. It can be reused, but can only play one video at
+ * the time.
  *
  * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
-public interface VideoPlayer extends Disposable {
+public interface VideoPlayer
+		extends Disposable {
 	/**
 	 * This function will prepare the VideoPlayer to play the given file. If a video is already played, it will be
 	 * stopped, and the new video will be loaded.
@@ -33,7 +35,7 @@ public interface VideoPlayer extends Disposable {
 
 	/**
 	 * Whether the buffer containing the video is completely filled.
-	 * The size of the buffer is platform specific, and cannot necessarily be depended upon. 
+	 * The size of the buffer is platform specific, and cannot necessarily be depended upon.
 	 * Review the documentation per platform for specifics.
 	 *
 	 * @return buffer completely filled or not.
@@ -71,10 +73,11 @@ public interface VideoPlayer extends Disposable {
 	 * This will stop playing the file, and implicitely clears all buffers and invalidate resources used.
 	 */
 	void stop();
-	
+
 	/**
-	 * Disposes the VideoPlayer and ensures all buffers and resources are invalidated and disposed. 
+	 * Disposes the VideoPlayer and ensures all buffers and resources are invalidated and disposed.
 	 */
+	@Override
 	void dispose();
-	
+
 }

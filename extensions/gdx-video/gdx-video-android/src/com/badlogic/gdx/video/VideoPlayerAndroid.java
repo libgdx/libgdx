@@ -25,10 +25,15 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.video.VideoPlayer;
 
+/**
+ * Android implementation of the VideoPlayer class.
+ *
+ * @author Rob Bogie <rob.bogie@codepoke.net>
+ *
+ */
 public class VideoPlayerAndroid
-		implements VideoPlayer, OnFrameAvailableListener {
+implements VideoPlayer, OnFrameAvailableListener {
 
 	private static final String ATTRIBUTE_TEXCOORDINATE = ShaderProgram.TEXCOORD_ATTRIBUTE + "0";
 	private static final String VARYING_TEXCOORDINATE = "varTexCoordinate";
@@ -184,6 +189,11 @@ public class VideoPlayerAndroid
 		return !done;
 	}
 
+	/**
+	 * For android, this will return whether the prepareAsync method of the android MediaPlayer is done with preparing.
+	 *
+	 * @return whether the buffer is filled.
+	 */
 	@Override
 	public boolean isBuffered() {
 		return prepared;
@@ -191,7 +201,9 @@ public class VideoPlayerAndroid
 
 	@Override
 	public void stop() {
-		GLES20.glDeleteTextures(1, textures, 0);
+		if (player != null && player.isPlaying()) {
+			player.stop();
+		}
 	}
 
 	private void setupRenderTexture() {
@@ -230,6 +242,18 @@ public class VideoPlayerAndroid
 	@Override
 	public void dispose() {
 		stop();
+
+		videoTexture.detachFromGLContext();
+
+		GLES20.glDeleteTextures(1, textures, 0);
+
+		if (shader != null) {
+			shader.dispose();
+		}
+
+		if (!customMesh && mesh != null) {
+			mesh.dispose();
+		}
 	}
 
 }
