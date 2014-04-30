@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * The VideoPlayer will play a video.
@@ -11,7 +12,7 @@ import com.badlogic.gdx.graphics.Camera;
  * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
-public interface VideoPlayer {
+public interface VideoPlayer extends Disposable {
 	/**
 	 * This function will prepare the VideoPlayer to play the given file. If a video is already played, it will be
 	 * stopped, and the new video will be loaded.
@@ -24,6 +25,7 @@ public interface VideoPlayer {
 
 	/**
 	 * This function needs to be called every frame, so that the player can update all the buffers.
+	 * Normal usecase is to start rendering after {@link isBuffered()} returns true.
 	 *
 	 * @return It returns true if a new frame is being displayed, false if none available (file is finished playing).
 	 */
@@ -31,6 +33,8 @@ public interface VideoPlayer {
 
 	/**
 	 * Whether the buffer containing the video is completely filled.
+	 * The size of the buffer is platform specific, and cannot necessarily be depended upon. 
+	 * Review the documentation per platform for specifics.
 	 *
 	 * @return buffer completely filled or not.
 	 */
@@ -64,7 +68,13 @@ public interface VideoPlayer {
 	void resume();
 
 	/**
-	 * This will stop playing the file, and will clear all buffers. Use this before deleting the reference
+	 * This will stop playing the file, and implicitely clears all buffers and invalidate resources used.
 	 */
 	void stop();
+	
+	/**
+	 * Disposes the VideoPlayer and ensures all buffers and resources are invalidated and disposed. 
+	 */
+	void dispose();
+	
 }

@@ -227,4 +227,9 @@ public class VideoPlayerAndroid
 		}
 	}
 
+	@Override
+	public void dispose() {
+		stop();
+	}
+
 }

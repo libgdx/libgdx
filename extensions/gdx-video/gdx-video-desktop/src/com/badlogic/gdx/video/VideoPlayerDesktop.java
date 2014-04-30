@@ -286,4 +286,9 @@ public class VideoPlayerDesktop
 			startTime = System.currentTimeMillis() - timeBeforePause;
 		}
 	}
+
+	@Override
+	public void dispose() {
+		stop();
+	}
 }
