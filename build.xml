@@ -282,6 +282,20 @@
 		</ant>
 	</target>
 
+	<target name="gdx-video-android" depends="gdx-core,gdx-backend-android,gdx-video">
+		<path id="classpath">
+			<pathelement location="${distDir}/gdx.jar"/>
+			<pathelement location="${distDir}/gdx-backend-android.jar"/>
+			<pathelement location="${distDir}/extensions/gdx-video/gdx-video.jar"/>
+			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
+		</path>
+		<ant antfile="../../../build-template.xml" dir="extensions/gdx-video/gdx-video-android">
+			<property name="distDir" value="${distDir}/extensions/gdx-video"/>
+			<property name="jar" value="gdx-video-android"/>
+			<reference refid="classpath"/>
+		</ant>
+	</target>
+
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
