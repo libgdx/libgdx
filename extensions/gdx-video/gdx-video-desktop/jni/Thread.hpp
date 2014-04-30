@@ -2,6 +2,11 @@
 
 #include <pthread.h>
 
+/**
+ * @brief A c++ wrapper around the pthread thread.
+ * 
+ * @author Rob Bogie <rob.bogie@codepoke.net>
+ */
 class Thread {
 public:
 	Thread();
@@ -10,7 +15,7 @@ public:
 	bool start();
 	bool join();
 	bool detach();
-	pthread_t self();
+	pthread_t getId();
 
 	bool isRunning();
 

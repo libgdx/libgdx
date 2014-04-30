@@ -54,7 +54,7 @@ bool Thread::isRunning() {
     return running;
 }
 
-pthread_t Thread::self() {
+pthread_t Thread::getId() {
     return threadId;
 }
 

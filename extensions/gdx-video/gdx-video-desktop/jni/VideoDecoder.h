@@ -37,7 +37,7 @@ struct VideoBufferInfo {
 };
 
 /**
- *  The FillFileByfferFunc function will give a pointer to some data you gave to it, a buffer, and an integer representing
+ *  The FillFileBufferFunc function will give a pointer to some data you gave to it, a buffer, and an integer representing
  *  the buffer's size. The function needs to return the amount of data that is filled into the buffer.
  */
 typedef int (*FillFileBufferFunc)(void*, uint8_t*, int);
@@ -45,6 +45,8 @@ typedef void (*CleanupFunc)(void*);
 
 /**
  * @brief The VideoPlayer class is the base class which will handle everything needed to play a videofile.
+ * 
+ * @author Rob Bogie <rob.bogie@codepoke.net>
  */
 class VideoDecoder : private Thread{
 public:
