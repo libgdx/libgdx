@@ -25,21 +25,12 @@ import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSNumber;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
-import org.robovm.objc.ObjCClass;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
 public class IOSPreferences implements Preferences {
 
-	static {
-		// FIXME: Work around for a bug in RoboVM (https://github.com/robovm/robovm/issues/155).
-		//        These calls make sure NSNumber and NSString have been registered properly with the
-		//        RoboVM Objective-C bridge. Without them the get-methods below may throw ClassCastException.
-		ObjCClass.getByType(NSNumber.class);
-		ObjCClass.getByType(NSString.class);
-	}
-	
 	NSMutableDictionary<NSString, NSObject> nsDictionary;
 	String filePath;
 
@@ -159,12 +150,12 @@ public class IOSPreferences implements Preferences {
 
 	@Override
 	public Map<String, ?> get () {
-		 Map<String, Object> map = new HashMap<String, Object>();
-		 for (NSString key : nsDictionary.keySet()) {
-			 NSObject value = nsDictionary.get(key);
-			 map.put(key.toString(), value.toString());
-		 }
-		 return map;
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (NSString key : nsDictionary.keySet()) {
+			NSObject value = nsDictionary.get(key);
+			map.put(key.toString(), value.toString());
+		}
+		return map;
 	}
 
 	@Override

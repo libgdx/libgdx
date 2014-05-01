@@ -186,8 +186,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		this.app = app;
 		this.input = input;
 
-		// FIXME fix this if we add rgba/depth/stencil flags to
-		// IOSApplicationConfiguration
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
 		if (config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
 			r = 5;
@@ -259,7 +257,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void pause () {
 		if (paused) return;
 		paused = true;
-		
+
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
 			for (LifecycleListener listener : listeners) {
@@ -277,7 +275,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
-		
+
 		if (!created) {
 			gl20.glViewport(0, 0, width, height);
 			app.listener.create();
