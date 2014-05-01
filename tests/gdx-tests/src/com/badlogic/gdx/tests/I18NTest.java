@@ -16,41 +16,66 @@
 
 package com.badlogic.gdx.tests;
 
+import java.util.Date;
 import java.util.Locale;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.i18n.ResourceBundle;
+import com.badlogic.gdx.i18n.I18NBundle;
+import com.badlogic.gdx.i18n.MessageBundle;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
-/** Performs some tests with {@link ResourceBundle} and prints the results on the screen.
+/** Performs some tests with {@link I18NBundle} and prints the results on the screen.
+ * 
  * @author davebaol */
 public class I18NTest extends GdxTest {
+
 	String message = "";
 	BitmapFont font;
 	SpriteBatch batch;
+	I18NBundle rb_root;
+	I18NBundle rb_default;
+	I18NBundle rb_en;
+	I18NBundle rb_it;
+	I18NBundle rb_unsupported;
+	Date now = new Date();
 
 	@Override
 	public void create () {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
+		Class bundleClass = MessageBundle.class;
 
 		try {
+			FileHandle bfh = Gdx.files.internal("data/i18n/message1");
+			rb_root = I18NBundle.createBundle(bundleClass, bfh, Locale.ROOT);
+			rb_default = I18NBundle.createBundle(bundleClass, bfh);
+			rb_en = I18NBundle.createBundle(bundleClass, bfh, new Locale("en", "US"));
+			rb_it = I18NBundle.createBundle(bundleClass, bfh, new Locale("it", "IT"));
+			rb_unsupported = I18NBundle.createBundle(bundleClass, bfh, new Locale("unsupported"));
+
 			println("Default locale: " + Locale.getDefault());
-			println("\n");
-			println(getMessage("message1", Locale.ROOT));
-			println(getMessage("message2", Locale.ROOT));
-			println(getMessage("message1"));
-			println(getMessage("message2"));
-			println(getMessage("message1", new Locale("en", "US")));
-			println(getMessage("message2", new Locale("en", "US")));
-			println(getMessage("message1", new Locale("it", "IT")));
-			println(getMessage("message2", new Locale("it", "IT")));
+
+			println("\n\n---- Parent chain test ----");
+			println(getMessage("root", rb_root));
+			println(getMessage("default", rb_default));
+			println(getMessage("en", rb_en));
+			println(getMessage("it", rb_it));
+			println(getMessage("unsupported", rb_unsupported));
+
+			println("\n\n---- Parametric message test ----");
+			println(getParametricMessage("root", rb_root));
+			println(getParametricMessage("default", rb_default));
+			println(getParametricMessage("en", rb_en));
+			println(getParametricMessage("it", rb_it));
+			println(getParametricMessage("unsupported", rb_unsupported));
+
+			Gdx.app.log("", message);
+
 		} catch (Throwable t) {
 			message = "FAILED: " + t.getMessage() + "\n";
 			message += t.getClass();
@@ -58,17 +83,13 @@ public class I18NTest extends GdxTest {
 		}
 	}
 
-	private String getMessage (String baseName) {
-		ResourceBundle rb = ResourceBundle.getBundle("data/i18n/" + baseName);
-		return "Bundle: " + baseName + ", locale: default, msg: \"" + rb.getString("msg") + "\", rootMsg: \""
-			+ rb.getString("rootMsg") + "\"";
+	private String getMessage (String header, I18NBundle rb) {
+		return header + " -> locale: " + rb.getLocale() + ", msg: \"" + rb.format("msg") + "\", rootMsg: \"" + rb.format("rootMsg")
+			+ "\"";
 	}
 
-	private String getMessage (String baseName, Locale locale) {
-		ResourceBundle rb = ResourceBundle.getBundle("data/i18n/" + baseName, locale);
-		String localeStr = Locale.ROOT.equals(locale) ? "root" : locale.toString();
-		return "Bundle: " + baseName + ", locale: " + localeStr + ", msg: \"" + rb.getString("msg") + "\", rootMsg: \""
-			+ rb.getString("rootMsg") + "\"";
+	private String getParametricMessage (String header, I18NBundle rb) {
+		return header + " -> " + rb.format("msgWithArgs", "LibGDX", MathUtils.PI, now);
 	}
 
 	private void println (String line) {
@@ -87,8 +108,5 @@ public class I18NTest extends GdxTest {
 	public void dispose () {
 		batch.dispose();
 		font.dispose();
-
-		// This is not mandatory. It's here for demonstration purposes only.
-		ResourceBundle.clearCache();
 	}
 }
