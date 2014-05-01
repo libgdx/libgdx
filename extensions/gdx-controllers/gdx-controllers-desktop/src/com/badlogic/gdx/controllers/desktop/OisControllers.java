@@ -41,7 +41,7 @@ import javax.swing.SwingUtilities;
 public class OisControllers {
 	final DesktopControllerManager manager;
 	long hwnd = getWindowHandle();
-	Ois ois = new Ois(getWindowHandle());
+	Ois ois = new Ois(hwnd);
 	OisController[] controllers;
 
 	public OisControllers (final DesktopControllerManager manager) {
