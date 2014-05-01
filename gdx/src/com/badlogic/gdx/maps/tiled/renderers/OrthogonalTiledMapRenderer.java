@@ -42,6 +42,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
@@ -210,5 +211,11 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 			}
 			y += layerTileHeight;
 		}
+	}
+
+	@Override
+	public void renderImageLayer(TiledMapImageLayer layer)
+	{
+		spriteBatch.draw(layer.getImage(), layer.getX(), layer.getY(), layer.getWidth() * unitScale, layer.getHeight() * unitScale);		
 	}
 }
