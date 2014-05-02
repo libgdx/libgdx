@@ -18,8 +18,14 @@ package com.badlogic.gdx.graphics.g2d;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.*;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Comparator;
+
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -27,160 +33,97 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectSet;
-import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.StreamUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
-
-/** Loads images from texture atlases created by TexturePacker.<br>
- * <br>
+/** A newer implementation of a texture atlas loader, designed primarily to load from json files. Also capable of loading legacy
+ * atlas files created by TexturePacker. <br>
  * A TextureAtlas must be disposed to free up the resources consumed by the backing textures.
+ * @author Nicholas Hydock
  * @author Nathan Sweet */
 public class TextureAtlas implements Disposable {
-	static final String[] tuple = new String[4];
 
-	private final ObjectSet<Texture> textures = new ObjectSet(4);
-	private final Array<AtlasRegion> regions = new Array();
+	/** Container class of the loaded texture atlas data */
+	public static class TextureAtlasData implements Json.Serializable {
 
-	public static class TextureAtlasData {
-		public static class Page {
-			public final FileHandle textureFile;
-			public Texture texture;
-			public final boolean useMipMaps;
-			public final Format format;
-			public final TextureFilter minFilter;
-			public final TextureFilter magFilter;
-			public final TextureWrap uWrap;
-			public final TextureWrap vWrap;
+		protected FileHandle imgDir;
+		protected Array<Page> pages;
+		protected Array<Region> regions;
 
-			public Page (FileHandle handle, boolean useMipMaps, Format format, TextureFilter minFilter, TextureFilter magFilter,
-				TextureWrap uWrap, TextureWrap vWrap) {
-				this.textureFile = handle;
-				this.useMipMaps = useMipMaps;
-				this.format = format;
-				this.minFilter = minFilter;
-				this.magFilter = magFilter;
-				this.uWrap = uWrap;
-				this.vWrap = vWrap;
-			}
+		// file loader/parser of json data
+		private static Json loader = new Json();
+
+		public TextureAtlasData () {
+			pages = new Array<Page>();
+			regions = new Array<Region>();
 		}
 
-		public static class Region {
-			public Page page;
-			public int index;
-			public String name;
-			public float offsetX;
-			public float offsetY;
-			public int originalWidth;
-			public int originalHeight;
-			public boolean rotate;
-			public int left;
-			public int top;
-			public int width;
-			public int height;
-			public boolean flip;
-			public int[] splits;
-			public int[] pads;
-		}
-
-		final Array<Page> pages = new Array();
-		final Array<Region> regions = new Array();
-
-		public TextureAtlasData (FileHandle packFile, FileHandle imagesDir, boolean flip) {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
+		/** Generates TextureAtlasData from a file
+		 * @param file
+		 * @param imgDir
+		 * @param flip */
+		public static TextureAtlasData load (FileHandle file, FileHandle imgDir, boolean flip) {
+			TextureAtlasData d;
 			try {
-				Page pageImage = null;
-				while (true) {
-					String line = reader.readLine();
-					if (line == null) break;
-					if (line.trim().length() == 0)
-						pageImage = null;
-					else if (pageImage == null) {
-						FileHandle file = imagesDir.child(line);
-
-						Format format = Format.valueOf(readValue(reader));
-
-						readTuple(reader);
-						TextureFilter min = TextureFilter.valueOf(tuple[0]);
-						TextureFilter max = TextureFilter.valueOf(tuple[1]);
-
-						String direction = readValue(reader);
-						TextureWrap repeatX = ClampToEdge;
-						TextureWrap repeatY = ClampToEdge;
-						if (direction.equals("x"))
-							repeatX = Repeat;
-						else if (direction.equals("y"))
-							repeatY = Repeat;
-						else if (direction.equals("xy")) {
-							repeatX = Repeat;
-							repeatY = Repeat;
-						}
-
-						pageImage = new Page(file, min.isMipMap(), format, min, max, repeatX, repeatY);
-						pages.add(pageImage);
-					} else {
-						boolean rotate = Boolean.valueOf(readValue(reader));
-
-						readTuple(reader);
-						int left = Integer.parseInt(tuple[0]);
-						int top = Integer.parseInt(tuple[1]);
-
-						readTuple(reader);
-						int width = Integer.parseInt(tuple[0]);
-						int height = Integer.parseInt(tuple[1]);
-
-						Region region = new Region();
-						region.page = pageImage;
-						region.left = left;
-						region.top = top;
-						region.width = width;
-						region.height = height;
-						region.name = line;
-						region.rotate = rotate;
-
-						if (readTuple(reader) == 4) { // split is optional
-							region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
-								Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
-
-							if (readTuple(reader) == 4) { // pad is optional, but only present with splits
-								region.pads = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
-									Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
-
-								readTuple(reader);
-							}
-						}
-
-						region.originalWidth = Integer.parseInt(tuple[0]);
-						region.originalHeight = Integer.parseInt(tuple[1]);
-
-						readTuple(reader);
-						region.offsetX = Integer.parseInt(tuple[0]);
-						region.offsetY = Integer.parseInt(tuple[1]);
-
-						region.index = Integer.parseInt(readValue(reader));
-
-						if (flip) region.flip = true;
-
-						regions.add(region);
-					}
-				}
-			} catch (Exception ex) {
-				throw new GdxRuntimeException("Error reading pack file: " + packFile, ex);
-			} finally {
-				StreamUtils.closeQuietly(reader);
+				d = loader.fromJson(TextureAtlasData.class, file);
+			}
+			// if the file isn't a json, we fallback to old loading techniques
+			catch (com.badlogic.gdx.utils.SerializationException e) {
+				d = TextureAtlasData.LegacyParser.load(file, flip);
 			}
 
-			new Sort().sort((Object[])regions.items, (Comparator)indexComparator, 0, regions.size);
+			if (d != null) {
+				d.imgDir = imgDir;
+			}
+
+			return d;
+		}
+		
+		/** Force loads all the texture assets used by this atlas
+		 * @param imgDir
+		 * @return the input atlas with all resources loaded
+		 */
+		public static TextureAtlasData loadAssets(TextureAtlasData d, FileHandle imgDir)
+		{
+			for (Page p : d.pages) {
+				FileHandle texFile = d.imgDir.child(p.texturePath);
+				p.setTexture(texFile);
+			}
+			return d;			
+		}
+
+		@Override
+		public void write (Json json) {
+			for (Page p : pages) {
+				json.writeValue(p.texturePath, p);
+			}
+		}
+
+		@Override
+		public void read (Json json, JsonValue jsonData) {
+			pages = new Array<Page>();
+			regions = new Array<Region>();
+
+			for (int i = 0; i < jsonData.size; i++) {
+				JsonValue pageData = jsonData.get(i);
+				Page page = new Page();
+				page.read(json, pageData);
+				regions.addAll(page.regions);
+				pages.add(page);
+			}
+		}
+
+		public void addPage (TextureAtlasData.Page page) {
+			regions.addAll(page.regions);
+			pages.add(page);
 		}
 
 		public Array<Page> getPages () {
@@ -190,10 +133,464 @@ public class TextureAtlas implements Disposable {
 		public Array<Region> getRegions () {
 			return regions;
 		}
+
+		/** Parser utility used for reading in legacy atlas files */
+		private static class LegacyParser {
+			private static final String[] tuple = new String[4];
+
+			protected static TextureAtlasData load (FileHandle packFile, boolean flip) {
+				TextureAtlasData data = new TextureAtlasData();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(packFile.read()), 64);
+				try {
+					Page page = null;
+					while (true) {
+						String line = reader.readLine();
+						if (line == null) break;
+						if (line.trim().length() == 0)
+							page = null;
+						else if (page == null) {
+							page = new Page();
+
+							page.texturePath = line;
+							page.format = Format.valueOf(readValue(reader));
+
+							readTuple(reader);
+							page.minFilter = TextureFilter.valueOf(tuple[0]);
+							page.magFilter = TextureFilter.valueOf(tuple[1]);
+
+							String direction = readValue(reader);
+							if (direction.equals("x"))
+								page.uWrap = Repeat;
+							else if (direction.equals("y"))
+								page.vWrap = Repeat;
+							else if (direction.equals("xy")) {
+								page.uWrap = Repeat;
+								page.vWrap = Repeat;
+							} else {
+								page.uWrap = ClampToEdge;
+								page.vWrap = ClampToEdge;
+							}
+
+							page.useMipMaps = page.minFilter.isMipMap();
+							data.pages.add(page);
+						} else {
+							Region region = new Region();
+
+							region.name = line;
+							region.rotate = Boolean.valueOf(readValue(reader));
+
+							readTuple(reader);
+							// left
+							region.left = Integer.parseInt(tuple[0]);
+							// top
+							region.top = Integer.parseInt(tuple[1]);
+
+							readTuple(reader);
+							// width
+							region.width = Integer.parseInt(tuple[0]);
+							// height
+							region.height = Integer.parseInt(tuple[1]);
+
+							if (readTuple(reader) == 4) { // split is optional
+								region.splits = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
+									Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+
+								if (readTuple(reader) == 4) { // pad is optional, but only present with splits
+									region.pads = new int[] {Integer.parseInt(tuple[0]), Integer.parseInt(tuple[1]),
+										Integer.parseInt(tuple[2]), Integer.parseInt(tuple[3])};
+
+									readTuple(reader);
+								}
+							}
+
+							// original width
+							region.originalWidth = Integer.parseInt(tuple[0]);
+							// original height
+							region.originalHeight = Integer.parseInt(tuple[1]);
+
+							readTuple(reader);
+							// x offset
+							region.offsetX = Integer.parseInt(tuple[0]);
+							// y offset
+							region.offsetY = Integer.parseInt(tuple[1]);
+
+							region.index = Integer.parseInt(readValue(reader));
+
+							if (flip) region.flip = true;
+
+							page.regions.add(region);
+							region.page = page;
+
+							data.regions.add(region);
+						}
+					}
+				} catch (Exception ex) {
+					throw new GdxRuntimeException("Error reading pack file: " + packFile, ex);
+				} finally {
+					StreamUtils.closeQuietly(reader);
+				}
+				return data;
+			}
+
+			/** Returns the number of tuple values read (2 or 4). */
+			private static int readTuple (BufferedReader reader) throws IOException {
+				String line = reader.readLine();
+				int colon = line.indexOf(':');
+				if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
+				int i = 0, lastMatch = colon + 1;
+				for (i = 0; i < 3; i++) {
+					int comma = line.indexOf(',', lastMatch);
+					if (comma == -1) {
+						if (i == 0) throw new GdxRuntimeException("Invalid line: " + line);
+						break;
+					}
+					tuple[i] = line.substring(lastMatch, comma).trim();
+					lastMatch = comma + 1;
+				}
+				tuple[i] = line.substring(lastMatch).trim();
+				return i + 1;
+			}
+
+			/** Reads a standard value from a line. Scans the current line and advances the parser
+			 * @return String - read in value
+			 * @throws IOException */
+			private static String readValue (BufferedReader reader) throws IOException {
+				String line = reader.readLine();
+				int colon = line.indexOf(':');
+				if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
+				return line.substring(colon + 1).trim();
+			}
+		}
+
+		public static class Page implements Json.Serializable {
+
+			protected Texture texture;
+			protected String texturePath;
+			protected FileHandle textureFile;
+			protected boolean useMipMaps;
+			protected Format format;
+			protected TextureFilter minFilter;
+			protected TextureFilter magFilter;
+			protected TextureWrap uWrap;
+			protected TextureWrap vWrap;
+			protected Array<TextureAtlasData.Region> regions;
+
+			public Page () {
+				regions = new Array<TextureAtlasData.Region>();
+			}
+
+			/** Create a page by strictly knowing all of its values. */
+			public Page (String textureFile, boolean useMipMaps, Format format, TextureFilter minFilter, TextureFilter magFilter,
+				TextureWrap uWrap, TextureWrap vWrap, Array<Region> regions) {
+				this.texturePath = textureFile;
+				this.useMipMaps = useMipMaps;
+				this.format = format;
+				this.minFilter = minFilter;
+				this.magFilter = magFilter;
+				this.uWrap = uWrap;
+				this.vWrap = vWrap;
+				this.regions = regions;
+			}
+
+			public void addRegion (TextureAtlasData.Region r) {
+				this.regions.add(r);
+				r.page = this;
+			}
+
+			/** Assign a texture associated with this page and all regions attached to this page.
+			 * @param texFile */
+			public void setTexture (FileHandle texFile) {
+				this.textureFile = texFile;
+				this.texture = new Texture(texFile);
+				this.texture.setFilter(minFilter, magFilter);
+				this.texture.setWrap(uWrap, vWrap);
+				for (TextureAtlasData.Region r : regions) {
+					r.setTexture(texture);
+				}
+			}
+
+			/** Generates a TextureParameter set for the page. Used for asset loaders */
+			public TextureParameter getTextureParams () {
+				TextureParameter params = new TextureParameter();
+				params.format = format;
+				params.genMipMaps = useMipMaps;
+				params.minFilter = minFilter;
+				params.magFilter = magFilter;
+				return params;
+			}
+			
+			public Texture getTexture() {
+				return texture;
+			}
+			
+			public FileHandle getTextureFile() {
+				return textureFile;
+			}
+
+			@Override
+			public void write (Json json) {
+				json.writeValue("useMipMaps", this.useMipMaps);
+				json.writeValue("format", this.format.name());
+
+				json.writeObjectStart("filter");
+				json.writeValue("min", this.minFilter.name());
+				json.writeValue("mag", this.magFilter.name());
+				json.writeObjectEnd();
+
+				json.writeObjectStart("repeat");
+				json.writeValue("x", this.uWrap.name());
+				json.writeValue("y", this.vWrap.name());
+				json.writeObjectEnd();
+
+				json.writeValue("regions", regions);
+			}
+
+			@Override
+			public void read (Json json, JsonValue jsonData) {
+				this.texturePath = jsonData.name;
+
+				this.useMipMaps = jsonData.getBoolean("useMipMaps", false);
+				this.format = Format.valueOf(jsonData.getString("format", Format.RGBA8888.name()));
+
+				// read in filters
+				{
+					JsonValue tmp = jsonData.get("filter");
+					this.minFilter = TextureFilter.valueOf(tmp.getString("min", TextureFilter.Nearest.name()));
+					this.magFilter = TextureFilter.valueOf(tmp.getString("mag", TextureFilter.Nearest.name()));
+				}
+
+				// read in wrapping
+				{
+					JsonValue tmp = jsonData.get("repeat");
+					this.uWrap = TextureWrap.valueOf(tmp.getString("x", TextureWrap.ClampToEdge.name()));
+					this.vWrap = TextureWrap.valueOf(tmp.getString("y", TextureWrap.ClampToEdge.name()));
+				}
+
+				// parse out the regions from the page
+				JsonValue regionList = jsonData.get("regions");
+				this.regions = new Array<TextureAtlasData.Region>();
+				for (int n = 0; n < regionList.size; n++) {
+					JsonValue regionData = regionList.get(n);
+					TextureAtlasData.Region region = json.fromJson(TextureAtlasData.Region.class, regionData.toString());
+					this.addRegion(region);
+				}
+			}
+
+			public String getFileName () {
+				if (this.textureFile != null) {
+					return this.textureFile.parent().path() + "/" + this.texturePath;
+				}
+				else {
+					return this.texturePath;	
+				}
+			}
+		}
+
+		/** Defines an area of a page which is recognized as a drawable bit of data
+		 * @author nhydock */
+		public static class Region implements Json.Serializable {
+			protected Page page;
+			protected int index;
+			protected String name;
+
+			protected int offsetX, offsetY;
+			protected int originalWidth, originalHeight;
+			protected int packedWidth, packedHeight;
+			protected int left, top, width, height;
+			protected int[] splits;
+			protected int[] pads;
+			protected boolean flip;
+			protected boolean rotate;
+
+			protected TextureRegion texRegion;
+
+			public Region (String name, int index, int x, int y, int width, int height, int offsetX, int offsetY, int oWidth,
+				int oHeight, int[] splits, int[] pads, boolean flip, boolean rotate) {
+				this.name = name;
+				this.index = index;
+				this.offsetX = offsetX;
+				this.offsetY = offsetY;
+				this.originalWidth = width;
+				this.originalHeight = height;
+				this.packedWidth = oWidth;
+				this.packedHeight = oHeight;
+				this.left = x;
+				this.top = y;
+				this.width = width;
+				this.height = height;
+				this.splits = splits;
+				this.pads = pads;
+				this.flip = flip;
+				this.rotate = rotate;
+			}
+
+			/** Clones a region
+			 * @param r */
+			protected Region (Region r) {
+				this();
+				this.offsetX = r.offsetX;
+				this.offsetY = r.offsetY;
+				this.originalWidth = r.originalWidth;
+				this.originalHeight = r.originalHeight;
+
+				this.left = r.left;
+				this.top = r.top;
+				this.width = r.width;
+				this.height = r.height;
+				
+				if (r.splits != null) {
+					this.splits = new int[r.splits.length];
+					for (int i = 0; i < r.splits.length; i++)
+						this.splits[i] = r.splits[i];
+
+					if (r.pads != null) {
+						this.pads = new int[r.pads.length];
+						for (int i = 0; i < r.pads.length; i++)
+							this.pads[i] = r.pads[i];
+
+					}
+				}
+
+				this.flip = r.flip;
+				this.rotate = r.rotate;
+				this.index = r.index;
+				this.name = "" + r.name;
+				this.page = r.page;
+
+				this.packedWidth = r.packedWidth;
+				this.packedHeight = r.packedHeight;
+
+				this.texRegion = new TextureRegion(r.texRegion);
+			}
+
+			protected Region () {
+				flip = false;
+				rotate = false;
+			}
+
+			protected void setTexture (Texture t) {
+				texRegion = new TextureRegion(page.texture, left, top, width, height);
+			}
+
+			public String getName () {
+				return name;
+			}
+			
+			public Page getPage() {
+				return page;
+			}
+
+			@Override
+			public void write (Json json) {
+				json.writeValue("name", this.name);
+				json.writeValue("index", this.index);
+
+				// write the offset
+				json.writeValue("offsetX", this.offsetX);
+				json.writeValue("offsetY", this.offsetY);
+
+				// write the region box
+				json.writeObjectStart("box");
+				json.writeValue("left", this.left);
+				json.writeValue("top", this.top);
+				json.writeValue("width", this.width);
+				json.writeValue("height", this.height);
+				json.writeObjectEnd();
+				
+				json.writeValue("flip", this.flip);
+				json.writeValue("rotate", this.rotate);
+
+				// write split
+				if (this.splits != null) {
+					json.writeValue("split", this.splits);
+					if (this.pads != null) {
+						json.writeValue("padding", this.pads);
+					}
+				}
+
+				// write original size
+				json.writeObjectStart("original");
+				json.writeValue("width", this.originalWidth);
+				json.writeValue("height", this.originalHeight);
+				json.writeObjectEnd();
+			}
+
+			@Override
+			public void read (Json json, JsonValue jsonData) {
+				this.name = jsonData.getString("name");
+
+				// set index/related name
+				this.index = jsonData.getInt("index", 0);
+
+				// read in offset
+				this.offsetX = jsonData.getInt("offsetX");
+				this.offsetY = jsonData.getInt("offsetY");
+			
+				// read region cropping area
+				{
+					JsonValue tmp = jsonData.get("box");
+					this.left = tmp.getInt("left");
+					this.top = tmp.getInt("top");
+					this.width = tmp.getInt("width");
+					this.height = tmp.getInt("height");
+				}
+
+				flip = jsonData.getBoolean("flip", false);
+				rotate = jsonData.getBoolean("rotate", false);
+
+				// read split and padding
+				if (jsonData.has("split")) {
+					{
+						JsonValue tmp = jsonData.get("split");
+						this.splits = tmp.asIntArray();
+					}
+					// read padding only if split exists
+					if (jsonData.has("padding")) {
+						JsonValue tmp = jsonData.get("padding");
+						this.pads = tmp.asIntArray();
+					}
+				}
+
+				// read original size
+				{
+					JsonValue tmp = jsonData.get("original");
+					this.originalWidth = this.packedWidth = tmp.getInt("width");
+					this.originalHeight = this.packedHeight = tmp.getInt("height");
+				}
+			}
+
+			public int getWidth () {
+				return this.width;
+			}
+			
+			public int getHeight() {
+				return this.height;
+			}
+			
+			public int getLeft() {
+				return this.left;
+			}
+			
+			public int getTop() {
+				return this.top;
+			}
+
+			public boolean getRotate () {
+				return this.rotate;
+			}
+			
+			public int getIndex() {
+				return this.index;
+			}
+		}
 	}
 
-	/** Creates an empty atlas to which regions can be added. */
+	private ObjectSet<Texture> textures;
+	private TextureAtlasData src;
+	private Array<AtlasRegion> regions;
+
 	public TextureAtlas () {
+		this(new TextureAtlasData());
 	}
 
 	/** Loads the specified pack file using {@link FileType#Internal}, using the parent directory of the pack file to find the page
@@ -204,22 +601,7 @@ public class TextureAtlas implements Disposable {
 
 	/** Loads the specified pack file, using the parent directory of the pack file to find the page images. */
 	public TextureAtlas (FileHandle packFile) {
-		this(packFile, packFile.parent());
-	}
-
-	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner.
-	 * @see #TextureAtlas(FileHandle) */
-	public TextureAtlas (FileHandle packFile, boolean flip) {
-		this(packFile, packFile.parent(), flip);
-	}
-
-	public TextureAtlas (FileHandle packFile, FileHandle imagesDir) {
-		this(packFile, imagesDir, false);
-	}
-
-	/** @param flip If true, all regions loaded will be flipped for use with a perspective where 0,0 is the upper left corner. */
-	public TextureAtlas (FileHandle packFile, FileHandle imagesDir, boolean flip) {
-		this(new TextureAtlasData(packFile, imagesDir, flip));
+		this(packFile, packFile.parent(), false);
 	}
 
 	/** @param data May be null. */
@@ -227,58 +609,30 @@ public class TextureAtlas implements Disposable {
 		if (data != null) load(data);
 	}
 
-	private void load (TextureAtlasData data) {
-		ObjectMap<Page, Texture> pageToTexture = new ObjectMap<Page, Texture>();
-		for (Page page : data.pages) {
-			Texture texture = null;
-			if (page.texture == null) {
-				texture = new Texture(page.textureFile, page.format, page.useMipMaps);
-				texture.setFilter(page.minFilter, page.magFilter);
-				texture.setWrap(page.uWrap, page.vWrap);
-			} else {
-				texture = page.texture;
-				texture.setFilter(page.minFilter, page.magFilter);
-				texture.setWrap(page.uWrap, page.vWrap);
+	/** Creates a new texture atlas when given a file handle */
+	public TextureAtlas (FileHandle file, FileHandle imgDir, boolean flip) {
+		TextureAtlasData d = TextureAtlasData.load(file, imgDir, flip);
+
+		if (d != null) {
+			TextureAtlasData.loadAssets(d, imgDir);
+			load(d);
+		}
+	}
+
+	/** Load all the data
+	 * @param data */
+	public void load (TextureAtlasData data) {
+		this.src = data;
+		this.textures = new ObjectSet<Texture>();
+		this.regions = new Array<AtlasRegion>();
+
+		for (TextureAtlasData.Page p : data.pages) {
+			this.textures.add(p.texture);
+			for (TextureAtlasData.Region r : p.regions) {
+				this.regions.add(new AtlasRegion(r));
 			}
-			textures.add(texture);
-			pageToTexture.put(page, texture);
 		}
 
-		for (Region region : data.regions) {
-			int width = region.width;
-			int height = region.height;
-			AtlasRegion atlasRegion = new AtlasRegion(pageToTexture.get(region.page), region.left, region.top,
-				region.rotate ? height : width, region.rotate ? width : height);
-			atlasRegion.index = region.index;
-			atlasRegion.name = region.name;
-			atlasRegion.offsetX = region.offsetX;
-			atlasRegion.offsetY = region.offsetY;
-			atlasRegion.originalHeight = region.originalHeight;
-			atlasRegion.originalWidth = region.originalWidth;
-			atlasRegion.rotate = region.rotate;
-			atlasRegion.splits = region.splits;
-			atlasRegion.pads = region.pads;
-			if (region.flip) atlasRegion.flip(false, true);
-			regions.add(atlasRegion);
-		}
-	}
-
-	/** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
-	public AtlasRegion addRegion (String name, Texture texture, int x, int y, int width, int height) {
-		textures.add(texture);
-		AtlasRegion region = new AtlasRegion(texture, x, y, width, height);
-		region.name = name;
-		region.originalWidth = width;
-		region.originalHeight = height;
-		region.index = -1;
-		regions.add(region);
-		return region;
-	}
-
-	/** Adds a region to the atlas. The texture for the specified region will be disposed when the atlas is disposed. */
-	public AtlasRegion addRegion (String name, TextureRegion textureRegion) {
-		return addRegion(name, textureRegion.texture, textureRegion.getRegionX(), textureRegion.getRegionY(),
-			textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
 	}
 
 	/** Returns all regions in the atlas. */
@@ -402,6 +756,24 @@ public class TextureAtlas implements Disposable {
 		return textures;
 	}
 
+	/** Adds a region to the atlas. The specified texture will be disposed when the atlas is disposed. */
+	public AtlasRegion addRegion (String name, Texture texture, int x, int y, int width, int height) {
+		textures.add(texture);
+		AtlasRegion region = new AtlasRegion(texture, x, y, width, height);
+		region.name = name;
+		region.originalWidth = width;
+		region.originalHeight = height;
+		region.index = -1;
+		regions.add(region);
+		return region;
+	}
+
+	/** Adds a region to the atlas. The texture for the specified region will be disposed when the atlas is disposed. */
+	public AtlasRegion addRegion (String name, TextureRegion textureRegion) {
+		return addRegion(name, textureRegion.texture, textureRegion.getRegionX(), textureRegion.getRegionY(),
+			textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+	}
+
 	/** Releases all resources associated with this TextureAtlas instance. This releases all the textures backing all TextureRegions
 	 * and Sprites, which should no longer be used after calling dispose. */
 	public void dispose () {
@@ -419,32 +791,6 @@ public class TextureAtlas implements Disposable {
 			return i1 - i2;
 		}
 	};
-
-	static String readValue (BufferedReader reader) throws IOException {
-		String line = reader.readLine();
-		int colon = line.indexOf(':');
-		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
-		return line.substring(colon + 1).trim();
-	}
-
-	/** Returns the number of tuple values read (2 or 4). */
-	static int readTuple (BufferedReader reader) throws IOException {
-		String line = reader.readLine();
-		int colon = line.indexOf(':');
-		if (colon == -1) throw new GdxRuntimeException("Invalid line: " + line);
-		int i = 0, lastMatch = colon + 1;
-		for (i = 0; i < 3; i++) {
-			int comma = line.indexOf(',', lastMatch);
-			if (comma == -1) {
-				if (i == 0) throw new GdxRuntimeException("Invalid line: " + line);
-				break;
-			}
-			tuple[i] = line.substring(lastMatch, comma).trim();
-			lastMatch = comma + 1;
-		}
-		tuple[i] = line.substring(lastMatch).trim();
-		return i + 1;
-	}
 
 	/** Describes the region of a packed image and provides information about the original image before it was packed. */
 	static public class AtlasRegion extends TextureRegion {
@@ -509,7 +855,20 @@ public class TextureAtlas implements Disposable {
 			splits = region.splits;
 		}
 
-		@Override
+		public AtlasRegion (TextureAtlasData.Region region) {
+			setRegion(region.texRegion);
+			index = region.index;
+			name = region.name;
+			offsetX = region.offsetX;
+			offsetY = region.offsetY;
+			packedWidth = region.packedWidth;
+			packedHeight = region.packedHeight;
+			originalWidth = region.originalWidth;
+			originalHeight = region.originalHeight;
+			rotate = region.rotate;
+			splits = region.splits;
+		}
+
 		/** Flips the region, adjusting the offset so the image appears to be flip as if no whitespace has been removed for packing. */
 		public void flip (boolean x, boolean y) {
 			super.flip(x, y);
@@ -559,22 +918,18 @@ public class TextureAtlas implements Disposable {
 			set(sprite);
 		}
 
-		@Override
 		public void setPosition (float x, float y) {
 			super.setPosition(x + region.offsetX, y + region.offsetY);
 		}
 
-		@Override
 		public void setX (float x) {
 			super.setX(x + region.offsetX);
 		}
 
-		@Override
 		public void setY (float y) {
 			super.setY(y + region.offsetY);
 		}
 
-		@Override
 		public void setBounds (float x, float y, float width, float height) {
 			float widthRatio = width / region.originalWidth;
 			float heightRatio = height / region.originalHeight;
@@ -585,22 +940,14 @@ public class TextureAtlas implements Disposable {
 			super.setBounds(x + region.offsetX, y + region.offsetY, packedWidth * widthRatio, packedHeight * heightRatio);
 		}
 
-		@Override
 		public void setSize (float width, float height) {
 			setBounds(getX(), getY(), width, height);
 		}
 
-		@Override
 		public void setOrigin (float originX, float originY) {
 			super.setOrigin(originX - region.offsetX, originY - region.offsetY);
 		}
 
-		@Override
-		public void setOriginCenter() {
-			super.setOrigin(width / 2 - region.offsetX, height / 2 - region.offsetY);
-		}
-
-		@Override
 		public void flip (boolean x, boolean y) {
 			// Flip texture.
 			super.flip(x, y);
@@ -626,7 +973,6 @@ public class TextureAtlas implements Disposable {
 			setOrigin(oldOriginX, oldOriginY);
 		}
 
-		@Override
 		public void rotate90 (boolean clockwise) {
 			// Rotate texture.
 			super.rotate90(clockwise);
@@ -652,32 +998,26 @@ public class TextureAtlas implements Disposable {
 			setOrigin(oldOriginX, oldOriginY);
 		}
 
-		@Override
 		public float getX () {
 			return super.getX() - region.offsetX;
 		}
 
-		@Override
 		public float getY () {
 			return super.getY() - region.offsetY;
 		}
 
-		@Override
 		public float getOriginX () {
 			return super.getOriginX() + region.offsetX;
 		}
 
-		@Override
 		public float getOriginY () {
 			return super.getOriginY() + region.offsetY;
 		}
 
-		@Override
 		public float getWidth () {
 			return super.getWidth() / region.getRotatedPackedWidth() * region.originalWidth;
 		}
 
-		@Override
 		public float getHeight () {
 			return super.getHeight() / region.getRotatedPackedHeight() * region.originalHeight;
 		}

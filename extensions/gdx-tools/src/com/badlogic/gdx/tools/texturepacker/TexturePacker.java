@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.Json;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -145,6 +146,14 @@ public class TexturePacker {
 			}
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
+
+			if (settings.square) {
+				if (width > height) {
+					height = width;
+				} else {
+					width = height;
+				}
+			}
 
 			File outputFile;
 			while (true) {
@@ -277,14 +286,15 @@ public class TexturePacker {
 	}
 
 	private void writePackFile (File packFile, Array<Page> pages) throws IOException {
+		TextureAtlasData textureAtlasData;
 		if (packFile.exists()) {
 			// Make sure there aren't duplicate names.
-			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
+			textureAtlasData = TextureAtlasData.load(new FileHandle(packFile), new FileHandle(packFile), false);
 			for (Page page : pages) {
 				for (Rect rect : page.outputRects) {
 					String rectName = Rect.getAtlasName(rect.name, settings.flattenPaths);
-					for (Region region : textureAtlasData.getRegions()) {
-						if (region.name.equals(rectName)) {
+					for (TextureAtlasData.Region region : textureAtlasData.getRegions()) {
+						if (region.getName().equals(rectName)) {
 							throw new GdxRuntimeException("A region with the name \"" + rectName + "\" has already been packed: "
 								+ rect.name);
 						}
@@ -292,51 +302,42 @@ public class TexturePacker {
 				}
 			}
 		}
-
-		FileWriter writer = new FileWriter(packFile, true);
+		else
+		{
+			textureAtlasData = new TextureAtlasData();
+		}
+		
 		for (Page page : pages) {
-			writer.write("\n" + page.imageName + "\n");
-			writer.write("format: " + settings.format + "\n");
-			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
-			writer.write("repeat: " + getRepeatValue() + "\n");
-
+			TextureAtlasData.Page p = new TextureAtlasData.Page(page.imageName, false, settings.format, settings.filterMin, settings.filterMag,
+				settings.wrapX, settings.wrapY, new Array<TextureAtlasData.Region>());
+			
 			for (Rect rect : page.outputRects) {
-				writeRect(writer, page, rect, rect.name);
-				for (Alias alias : rect.aliases) {
-					Rect aliasRect = new Rect();
-					aliasRect.set(rect);
-					alias.apply(aliasRect);
-					writeRect(writer, page, aliasRect, alias.name);
-				}
+				TextureAtlasData.Region r = new TextureAtlasData.Region(
+					Rect.getAtlasName(rect.name, settings.flattenPaths),
+					rect.index, 
+					page.x + rect.x, 
+					page.y + page.height - rect.height - rect.y,
+					rect.regionWidth,
+					rect.regionHeight,
+					rect.offsetX,
+					rect.originalHeight - rect.regionHeight - rect.offsetY,
+					rect.originalWidth,
+					rect.originalHeight,
+					rect.splits,
+					rect.pads,
+					false,
+					false
+				);
+				p.addRegion(r);
 			}
+			textureAtlasData.addPage(p);
 		}
+		
+		FileWriter writer = new FileWriter(packFile, true);
+		Json json = new Json();
+		String output = json.prettyPrint(textureAtlasData);
+		writer.write(output);
 		writer.close();
-	}
-
-	private void writeRect (FileWriter writer, Page page, Rect rect, String name) throws IOException {
-		writer.write(Rect.getAtlasName(name, settings.flattenPaths) + "\n");
-		writer.write("  rotate: " + rect.rotated + "\n");
-		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
-
-		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
-		if (rect.splits != null) {
-			writer.write("  split: " //
-				+ rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
-		}
-		if (rect.pads != null) {
-			if (rect.splits == null) writer.write("  split: 0, 0, 0, 0\n");
-			writer.write("  pad: " + rect.pads[0] + ", " + rect.pads[1] + ", " + rect.pads[2] + ", " + rect.pads[3] + "\n");
-		}
-		writer.write("  orig: " + rect.originalWidth + ", " + rect.originalHeight + "\n");
-		writer.write("  offset: " + rect.offsetX + ", " + (rect.originalHeight - rect.regionHeight - rect.offsetY) + "\n");
-		writer.write("  index: " + rect.index + "\n");
-	}
-
-	private String getRepeatValue () {
-		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.Repeat) return "xy";
-		if (settings.wrapX == TextureWrap.Repeat && settings.wrapY == TextureWrap.ClampToEdge) return "x";
-		if (settings.wrapX == TextureWrap.ClampToEdge && settings.wrapY == TextureWrap.Repeat) return "y";
-		return "none";
 	}
 
 	private int getBufferedImageType (Format format) {
@@ -588,7 +589,7 @@ public class TexturePacker {
 			else {
 				// Otherwise if scale != 1 or multiple scales, use subdirectory.
 				float scaleValue = scale[scaleIndex];
-				if (scale.length != 1) {
+				if (scaleValue != 1 || scale.length != 1) {
 					packFileName = (scaleValue == (int)scaleValue ? Integer.toString((int)scaleValue) : Float.toString(scaleValue))
 						+ "/" + packFileName;
 				}

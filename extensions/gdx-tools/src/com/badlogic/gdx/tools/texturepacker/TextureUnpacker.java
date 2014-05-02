@@ -35,14 +35,14 @@ public class TextureUnpacker {
 	 * @throws IOException */
 	static public void process (TextureAtlasData atlasData, String output) throws IOException {
 		for (Region region : atlasData.getRegions()) {
-			BufferedImage src = ImageIO.read(region.page.textureFile.read());
+			BufferedImage src = ImageIO.read(region.getPage().getTextureFile().read());
 			BufferedImage subimage = null;
 
-			System.out.println(String.format("processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
-				region.left, region.top, region.width, region.height, region.rotate));
+			String outfmt = "processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]";
+			System.out.printf(String.format(outfmt, region.getName(), region.getLeft(), region.getTop(), region.getWidth(), region.getHeight(), region.getRotate()));
 
-			if (region.rotate) {
-				BufferedImage unRotatedImage = src.getSubimage(region.left, region.top, region.height, region.width);
+			if (region.getRotate()) {
+				BufferedImage unRotatedImage = src.getSubimage(region.getLeft(), region.getTop(), region.getHeight(), region.getWidth());
 				double rotationRequired = Math.toRadians(90.0);
 				double locationX = unRotatedImage.getWidth() / 2;
 				double locationY = unRotatedImage.getHeight() / 2;
@@ -51,10 +51,10 @@ public class TextureUnpacker {
 				subimage = op.filter(unRotatedImage, subimage);
 
 			} else {
-				subimage = src.getSubimage(region.left, region.top, region.width, region.height);
+				subimage = src.getSubimage(region.getLeft(), region.getTop(), region.getWidth(), region.getHeight());
 			}
 
-			ImageIO.write(subimage, "PNG", new FileOutputStream(output + File.separator + region.name + ".png"));
+			ImageIO.write(subimage, "PNG", new FileOutputStream(output + File.separator + region.getName() + ".png"));
 		}
 
 	}
@@ -84,7 +84,7 @@ public class TextureUnpacker {
 			output = outputFile.getAbsolutePath();
 		}
 
-		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
+		TextureAtlasData atlasData = TextureAtlasData.load(inputFileHandle, inputFileHandle.parent(), false);
 
 		process(atlasData, output);
 	}
