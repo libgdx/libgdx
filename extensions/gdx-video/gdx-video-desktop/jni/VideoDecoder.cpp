@@ -267,9 +267,9 @@ void VideoDecoder::loadContainer(VideoBufferInfo* bufferInfo) {
 u_int8_t* VideoDecoder::nextVideoFrame() {
     videoBufferMutex.lock();
 
-    while(videoNumFrameBuffered < 1 && !videoOutputEnded) {
-        logDebug("[VideoPlayer::nextVideoFrame] Waiting for frame\n");
-        videoBufferConditional.wait();
+    if(videoNumFrameBuffered < 1 && !videoOutputEnded) {
+        logDebug("[VideoPlayer::nextVideoFrame] no new frame available yet!\n");
+        return rgbFrames[videoCurrentBufferIndex]->data[0];
     }
 
     if(!videoOutputEnded) {
