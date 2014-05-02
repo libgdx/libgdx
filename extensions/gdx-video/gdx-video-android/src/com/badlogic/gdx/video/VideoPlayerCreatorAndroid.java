@@ -2,6 +2,7 @@ package com.badlogic.gdx.video;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Android implementation of the VideoPlayerCreator class.
@@ -10,7 +11,7 @@ import com.badlogic.gdx.graphics.Mesh;
  *
  */
 public class VideoPlayerCreatorAndroid
-		extends VideoPlayerCreator {
+extends VideoPlayerCreator {
 
 	@Override
 	public VideoPlayer create() {
@@ -18,8 +19,8 @@ public class VideoPlayerCreatorAndroid
 	}
 
 	@Override
-	public VideoPlayer create(Camera cam, float x, float y, float width, float height) {
-		return new VideoPlayerAndroid(cam, x, y, width, height);
+	public VideoPlayer create(Viewport viewport) {
+		return new VideoPlayerAndroid(viewport);
 	}
 
 	@Override

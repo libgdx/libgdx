@@ -22,9 +22,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Android implementation of the VideoPlayer class.
@@ -33,7 +34,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
  *
  */
 public class VideoPlayerAndroid
-implements VideoPlayer, OnFrameAvailableListener {
+		implements VideoPlayer, OnFrameAvailableListener {
 
 	private static final String ATTRIBUTE_TEXCOORDINATE = ShaderProgram.TEXCOORD_ATTRIBUTE + "0";
 	private static final String VARYING_TEXCOORDINATE = "varTexCoordinate";
@@ -70,31 +71,31 @@ implements VideoPlayer, OnFrameAvailableListener {
 	private boolean frameAvailable = false;
 	private boolean done = false;
 
+	private Viewport viewport;
 	private Camera cam;
 	private Mesh mesh;
 
 	private boolean customMesh = false;
 
+	VideoSizeListener sizeListener;
+	CompletionListener completionListener;
+
 	public VideoPlayerAndroid() {
-		this(null, -Gdx.graphics.getWidth() / 2, -Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		this(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 	}
 
-	public VideoPlayerAndroid(Camera cam, float x, float y, float width, float height) {
-
+	public VideoPlayerAndroid(Viewport viewport) {
 		shader = new ShaderProgram(vertexShaderCode, fragmentShaderCode);
 		setupRenderTexture();
 
-		if (cam == null) {
-			cam = new OrthographicCamera(width, height);
-		}
-		this.cam = cam;
-
+		this.viewport = viewport;
+		cam = viewport.getCamera();
 		mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.TexCoords(0));
 		//@formatter:off
-		mesh.setVertices(new float[] {x, y, 0, 0, 1,
-		                              x+width, y, 0, 1, 1,
-		                              x+width, y+height, 0, 1, 0,
-		                              x, y+height, 0, 0, 0});
+		mesh.setVertices(new float[] {0, 0, 0, 0, 1,
+		                              0, 0, 0, 1, 1,
+		                              0, 0, 0, 1, 0,
+		                              0, 0, 0, 0, 0});
 		//@formatter:on
 		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 	}
@@ -118,6 +119,19 @@ implements VideoPlayer, OnFrameAvailableListener {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 				prepared = true;
+
+				float x = -mp.getVideoWidth() / 2;
+				float y = -mp.getVideoHeight() / 2;
+				float width = mp.getVideoWidth();
+				float height = mp.getVideoHeight();
+
+				//@formatter:off
+				mesh.setVertices(new float[] {x, y, 0, 0, 1,
+				                              x+width, y, 0, 1, 1,
+				                              x+width, y+height, 0, 1, 0,
+				                              x, y+height, 0, 0, 0});
+				//@formatter:on
+				sizeListener.onVideoSize(width, height);
 				mp.start();
 			}
 		});
@@ -134,6 +148,7 @@ implements VideoPlayer, OnFrameAvailableListener {
 			@Override
 			public void onCompletion(MediaPlayer mp) {
 				done = true;
+				completionListener.onCompletionListener(file);
 			}
 		});
 
@@ -151,17 +166,10 @@ implements VideoPlayer, OnFrameAvailableListener {
 	}
 
 	@Override
-	public void resize(Camera cam, float x, float y, float width, float height) {
+	public void resize(float width, float height) {
 		if (!customMesh) {
-			if (cam != null) {
-				this.cam = cam;
-			}
-			//@formatter:off
-			mesh.setVertices(new float[] {x, y, 0, 0, 1,
-			                              x+width, y, 0, 1, 1,
-			                              x+width, y+height, 0, 1, 0,
-			                              x, y+height, 0, 0, 0});
-			//@formatter:on
+
+			viewport.setWorldSize(width, height);
 		}
 	}
 
@@ -254,6 +262,37 @@ implements VideoPlayer, OnFrameAvailableListener {
 		if (!customMesh && mesh != null) {
 			mesh.dispose();
 		}
+	}
+
+	@Override
+	public void setOnVideoSizeListener(VideoSizeListener listener) {
+		sizeListener = listener;
+	}
+
+	@Override
+	public void setOnCompletionListener(CompletionListener listener) {
+		completionListener = listener;
+	}
+
+	@Override
+	public int getVideoWidth() {
+		if (!prepared) {
+			throw new IllegalStateException("Can't get width when video is not yet buffered!");
+		}
+		return player.getVideoWidth();
+	}
+
+	@Override
+	public int getVideoHeight() {
+		if (!prepared) {
+			throw new IllegalStateException("Can't get height when video is not yet buffered!");
+		}
+		return player.getVideoHeight();
+	}
+
+	@Override
+	public boolean isPlaying() {
+		return player.isPlaying();
 	}
 
 }

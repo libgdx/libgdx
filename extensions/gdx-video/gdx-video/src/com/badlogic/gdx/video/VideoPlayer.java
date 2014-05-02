@@ -13,9 +13,9 @@ import com.badlogic.gdx.utils.Disposable;
  *
  */
 public interface VideoPlayer
-		extends Disposable {
+extends Disposable {
 	public interface VideoSizeListener {
-		public void onVideoSize(int width, int height);
+		public void onVideoSize(float width, float height);
 	}
 
 	public interface CompletionListener {
@@ -112,7 +112,7 @@ public interface VideoPlayer
 
 	/**
 	 * Whether the video is playing or not.
-	 * 
+	 *
 	 * @return whether the video is still playing
 	 */
 	boolean isPlaying();
