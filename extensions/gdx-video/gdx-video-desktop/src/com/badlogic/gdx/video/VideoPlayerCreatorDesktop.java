@@ -2,6 +2,7 @@ package com.badlogic.gdx.video;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * Desktop implementation of the VideoPlayerCreator
@@ -10,7 +11,7 @@ import com.badlogic.gdx.graphics.Mesh;
  *
  */
 public class VideoPlayerCreatorDesktop
-extends VideoPlayerCreator {
+		extends VideoPlayerCreator {
 
 	@Override
 	public VideoPlayer create() {
@@ -18,8 +19,8 @@ extends VideoPlayerCreator {
 	}
 
 	@Override
-	public VideoPlayer create(Camera cam, float x, float y, float width, float height) {
-		return new VideoPlayerDesktop(cam, x, y, width, height);
+	public VideoPlayer create(Viewport viewport) {
+		return new VideoPlayerDesktop(viewport);
 	}
 
 	@Override

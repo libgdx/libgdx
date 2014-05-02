@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Disposable;
  *
  */
 public interface VideoPlayer
-extends Disposable {
+		extends Disposable {
 	public interface VideoSizeListener {
 		public void onVideoSize(float width, float height);
 	}
@@ -50,15 +50,15 @@ extends Disposable {
 	boolean isBuffered();
 
 	/**
-	 * Resize the videoplayer. This function will NOT work when working with custom meshes. It will set the world
-	 * width and height of the (interal) viewport.
+	 * Resize the videoplayer. This function will NOT work when working with custom meshes. It will set width and height
+	 * of the (interal) viewport.
 	 *
 	 * @param width
 	 *            The width of the screen
 	 * @param height
 	 *            The height of the screen
 	 */
-	void resize(float width, float height);
+	void resize(int width, int height);
 
 	/**
 	 * This pauses the video, and should be called when the app is paused, to prevent the video from playing while being
@@ -95,16 +95,22 @@ extends Disposable {
 	void setOnCompletionListener(CompletionListener listener);
 
 	/**
-	 * This will return the width of the currently playing video. This function cannot be called when {@link
-	 * isBuffered()} returns false.
+	 * This will return the width of the currently playing video.
+	 *
+	 * This function cannot be called until the {@link VideoSizeListener} has been called for the currently playing
+	 * video. If this callback has not been set, a good alternative is to wait until the {@link isBuffered} function
+	 * returns true, which guarantees the availability of the videoSize.
 	 *
 	 * @return the width of the video
 	 */
 	int getVideoWidth();
 
 	/**
-	 * This will return the height of the currently playing video. This function cannot be called when {@link
-	 * isBuffered()} returns false.
+	 * This will return the height of the currently playing video.
+	 *
+	 * This function cannot be called until the {@link VideoSizeListener} has been called for the currently playing
+	 * video. If this callback has not been set, a good alternative is to wait until the {@link isBuffered} function
+	 * returns true, which guarantees the availability of the videoSize.
 	 *
 	 * @return the height of the video
 	 */

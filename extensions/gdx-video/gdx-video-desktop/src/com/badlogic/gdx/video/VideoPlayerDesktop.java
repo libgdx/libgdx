@@ -11,12 +11,13 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.video.VideoDecoder.VideoDecoderBuffers;
 
 /**
@@ -26,7 +27,7 @@ import com.badlogic.gdx.video.VideoDecoder.VideoDecoderBuffers;
  *
  */
 public class VideoPlayerDesktop
-		implements VideoPlayer {
+implements VideoPlayer {
 
 	//@formatter:off
 	private static final String vertexShader =
@@ -48,8 +49,9 @@ public class VideoPlayerDesktop
 					"}";
 
 	//@formatter:on
+
+	Viewport viewport;
 	Camera cam;
-	float x, y, width, height;
 
 	VideoDecoder decoder;
 	Pixmap image;
@@ -69,20 +71,24 @@ public class VideoPlayerDesktop
 	Mesh mesh;
 	boolean customMesh = false;
 
+	int currentVideoWidth, currentVideoHeight;
+	VideoSizeListener sizeListener;
+	CompletionListener completionListener;
+	FileHandle currentFile;
+
+	boolean playing = false;
+
 	public VideoPlayerDesktop() {
-		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		x = -Gdx.graphics.getWidth() / 2;
-		y = -Gdx.graphics.getHeight() / 2;
-		width = Gdx.graphics.getWidth();
-		height = Gdx.graphics.getHeight();
+		this(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 	}
 
-	public VideoPlayerDesktop(Camera cam, float x, float y, float width, float height) {
-		this.cam = cam;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
+	public VideoPlayerDesktop(Viewport viewport) {
+		this.viewport = viewport;
+
+		mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.TexCoords(0));
+		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
+
+		cam = viewport.getCamera();
 	}
 
 	public VideoPlayerDesktop(Camera cam, Mesh mesh) {
@@ -100,6 +106,8 @@ public class VideoPlayerDesktop
 			throw new FileNotFoundException("Could not find file: " + file.path());
 		}
 
+		currentFile = file;
+
 		if (!FfMpeg.isLoaded()) {
 			FfMpeg.loadLibraries();
 		}
@@ -108,15 +116,6 @@ public class VideoPlayerDesktop
 			// Do all the cleanup
 			stop();
 		}
-
-		mesh = new Mesh(true, 4, 6, VertexAttribute.Position(), VertexAttribute.TexCoords(0));
-		//@formatter:off
-		mesh.setVertices(new float[] {x, y, 0, 0, 1,
-		                              x+width, y, 0, 1, 1,
-		                              x+width, y + height, 0, 1, 0,
-		                              x, y + height, 0, 0, 0});
-		//@formatter:on
-		mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 
 		inputStream = new FileInputStream(file.file());
 		fileChannel = inputStream.getChannel();
@@ -137,29 +136,33 @@ public class VideoPlayerDesktop
 			return false;
 		}
 
+		if (sizeListener != null) {
+			sizeListener.onVideoSize(currentVideoWidth, currentVideoHeight);
+		}
+
 		image = new Pixmap(buffers.getVideoWidth(), buffers.getVideoHeight(), Format.RGB888);
 
+		float x = -buffers.getVideoWidth() / 2;
+		float y = -buffers.getVideoHeight() / 2;
+		float width = buffers.getVideoWidth();
+		float height = buffers.getVideoHeight();
+
+		//@formatter:off
+		mesh.setVertices(new float[] {x, y, 0, 0, 1,
+		                              x+width, y, 0, 1, 1,
+		                              x+width, y + height, 0, 1, 0,
+		                              x, y + height, 0, 0, 0});
+		//@formatter:on
+
+		viewport.setWorldSize(width, height);
+		playing = true;
 		return true;
 	}
 
 	@Override
-	public void resize(Camera cam, float x, float y, float width, float height) {
+	public void resize(int width, int height) {
 		if (!customMesh) {
-			if (cam != null) {
-				this.cam = cam;
-			}
-
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-
-			//@formatter:off
-			mesh.setVertices(new float[] {x, y, 0, 0, 1,
-			                              x+width, y, 0, 1, 1,
-			                              x+width, y + height, 0, 1, 0,
-			                              x, y + height, 0, 0, 0});
-			//@formatter:on
+			viewport.update(width, height);
 		}
 	}
 
@@ -206,6 +209,10 @@ public class VideoPlayerDesktop
 					}
 					texture = new Texture(image);
 				} else {
+					if (completionListener != null) {
+						completionListener.onCompletionListener(currentFile);
+					}
+					playing = false;
 					return false;
 				}
 			}
@@ -246,6 +253,8 @@ public class VideoPlayerDesktop
 
 	@Override
 	public void stop() {
+		playing = false;
+
 		if (audio != null) {
 			audio.dispose();
 			audio = null;
@@ -300,5 +309,30 @@ public class VideoPlayerDesktop
 		if (!customMesh && mesh != null) {
 			mesh.dispose();
 		}
+	}
+
+	@Override
+	public void setOnVideoSizeListener(VideoSizeListener listener) {
+		sizeListener = listener;
+	}
+
+	@Override
+	public void setOnCompletionListener(CompletionListener listener) {
+		completionListener = listener;
+	}
+
+	@Override
+	public int getVideoWidth() {
+		return currentVideoWidth;
+	}
+
+	@Override
+	public int getVideoHeight() {
+		return currentVideoHeight;
+	}
+
+	@Override
+	public boolean isPlaying() {
+		return playing;
 	}
 }

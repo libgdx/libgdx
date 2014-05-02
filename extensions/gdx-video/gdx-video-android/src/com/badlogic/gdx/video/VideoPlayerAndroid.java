@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  */
 public class VideoPlayerAndroid
-		implements VideoPlayer, OnFrameAvailableListener {
+implements VideoPlayer, OnFrameAvailableListener {
 
 	private static final String ATTRIBUTE_TEXCOORDINATE = ShaderProgram.TEXCOORD_ATTRIBUTE + "0";
 	private static final String VARYING_TEXCOORDINATE = "varTexCoordinate";
@@ -131,7 +131,9 @@ public class VideoPlayerAndroid
 				                              x+width, y+height, 0, 1, 0,
 				                              x, y+height, 0, 0, 0});
 				//@formatter:on
-				sizeListener.onVideoSize(width, height);
+				if (sizeListener != null) {
+					sizeListener.onVideoSize(width, height);
+				}
 				mp.start();
 			}
 		});
@@ -148,7 +150,9 @@ public class VideoPlayerAndroid
 			@Override
 			public void onCompletion(MediaPlayer mp) {
 				done = true;
-				completionListener.onCompletionListener(file);
+				if (completionListener != null) {
+					completionListener.onCompletionListener(file);
+				}
 			}
 		});
 
@@ -166,10 +170,10 @@ public class VideoPlayerAndroid
 	}
 
 	@Override
-	public void resize(float width, float height) {
+	public void resize(int width, int height) {
 		if (!customMesh) {
 
-			viewport.setWorldSize(width, height);
+			viewport.update(width, height);
 		}
 	}
 
@@ -212,6 +216,8 @@ public class VideoPlayerAndroid
 		if (player != null && player.isPlaying()) {
 			player.stop();
 		}
+		prepared = false;
+		done = true;
 	}
 
 	private void setupRenderTexture() {
