@@ -218,6 +218,11 @@
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
 
+	<!--i18n -->
+		<include name="i18n/ConstantBundle.java"/>
+		<include name="i18n/I18NBundle.java"/>
+		<include name="i18n/SimpleMessageBundle.java"/>
+		
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
@@ -369,6 +374,7 @@
 		<include name="utils/Pool.java"/>
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>
+		<include name="utils/PropertyMap.java"/>
 		<include name="utils/Predicate.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>

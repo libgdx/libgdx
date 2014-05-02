@@ -112,6 +112,7 @@ public class GdxTests {
 		GroupTest.class,
 		HelloTriangle.class,
 		HexagonalTiledMapTest.class,
+		I18NSimpleMessageTest.class,
 		I18NTest.class,
 		ImageScaleTest.class,
 		ImageTest.class,

@@ -31,6 +31,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.PropertyMap;
 import com.badlogic.gdx.utils.StreamUtils;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** A {@code I18NBundle} provides {@code Locale}-specific resources loaded from property files. A bundle contains a number of named
  * resources, whose names and values are {@code Strings}. A bundle may have a parent bundle, and when a resource is not found in a
@@ -167,13 +168,14 @@ public abstract class I18NBundle {
 
 			// Check the loaded bundle (if any)
 			if (bundle != null) {
-				boolean isBaseBundle = bundle.locale.equals(Locale.ROOT);
+				Locale bundleLocale = bundle.getLocale(); // WTH?  GWT can't access bundle.locale directly
+				boolean isBaseBundle = bundleLocale.equals(Locale.ROOT);
 
-				if (!isBaseBundle || bundle.locale.equals(locale)) {
+				if (!isBaseBundle || bundleLocale.equals(locale)) {
 					// Found the bundle for the requested locale
 					break;
 				}
-				if (candidateLocales.size() == 1 && bundle.locale.equals(candidateLocales.get(0))) {
+				if (candidateLocales.size() == 1 && bundleLocale.equals(candidateLocales.get(0))) {
 					// Found the bundle for the only candidate locale
 					break;
 				}
@@ -318,7 +320,7 @@ public abstract class I18NBundle {
 				InputStream stream = null;
 				try {
 					// Instantiate the bundle
-					bundle = clazz.newInstance();
+					bundle = ClassReflection.newInstance(clazz);
 
 					// Load bundle properties from the stream with the specified encoding
 					stream = fileHandle.read();
@@ -337,7 +339,14 @@ public abstract class I18NBundle {
 		return bundle;
 	}
 
-	private void load (Reader reader) throws IOException {
+	/** Load the underlying {@link PropertyMap} from the specified reader.
+	 * 
+	 * @param reader the reader
+	 * @throws IOException if an error occurred when reading from the input stream.
+	 */
+	// NOTE:
+	// This method can't be private otherwise GWT can't access it from loadBundle() 
+	protected void load (Reader reader) throws IOException {
 		properties = new PropertyMap();
 		properties.load(reader);
 	}
@@ -415,7 +424,7 @@ public abstract class I18NBundle {
 		return result;
 	}
 
-	/** Gets the string with the specified key from the this bundle or one of its parent after replacing the given arguments if they
+	/** Gets the string with the specified key from this bundle or one of its parent after replacing the given arguments if they
 	 * occur.
 	 * <p>
 	 * Depending on the actual implementation of the bundle argument replacement may be sensitive to the bundle's locale.

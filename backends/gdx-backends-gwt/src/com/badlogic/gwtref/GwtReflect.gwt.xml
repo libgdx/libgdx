@@ -11,6 +11,10 @@
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.math" />
 	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.i18n.ConstantBundle" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.i18n.SimpleMessageBundle" />
+	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.TextureRegion" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g2d.BitmapFont" />
