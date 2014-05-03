@@ -158,12 +158,34 @@ public class FreeTypeFontGenerator implements Disposable {
 
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
 	 * http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight */
-	public int scaleForPixelHeight (int size) {
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+	public int scaleForPixelHeight (int height) {
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, height)) throw new GdxRuntimeException("Couldn't set size for font");
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int ascent = FreeType.toInt(fontMetrics.getAscender());
 		int descent = FreeType.toInt(fontMetrics.getDescender());
-		return size * size / (ascent - descent);
+		return height * height / (ascent - descent);
+	}
+	
+	/** Uses max advance, ascender and descender of font to calculate real height that makes any n glyphs to fit in given pixel width. 
+	 * @param width the max width to fit (in pixels)
+	 * @param numChars max number of characters that to fill width */
+	public int scaleForPixelWidth(int width, int numChars) {
+		SizeMetrics fontMetrics = face.getSize().getMetrics();
+		int advance = FreeType.toInt(fontMetrics.getMaxAdvance());
+		int ascent = FreeType.toInt(fontMetrics.getAscender());
+		int descent = FreeType.toInt(fontMetrics.getDescender());
+		int unscaledHeight = ascent - descent;
+		int height = unscaledHeight * width / (advance * numChars);
+		if (!bitmapped && !FreeType.setPixelSizes(face, 0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		return height;
+	}
+	
+	/** Uses max advance, ascender and descender of font to calculate real height that makes any n glyphs to fit in given pixel width and height. 
+	 * @param width the max width to fit (in pixels)
+	 * @param height the max height to fit (in pixels)
+	 * @param numChars max number of characters that to fill width */
+	public int scaleToFitSquare(int width, int height, int numChars) {
+		return Math.min(scaleForPixelHeight(height), scaleForPixelWidth(width, numChars));
 	}
 
 	public class GlyphAndBitmap {

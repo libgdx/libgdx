@@ -1,4 +1,10 @@
 [1.0.1]
+- FileHandle#list is now supported in GWT!
+- FileHandle#list now supports FileFilters
+- Controllers now reinitialize on the desktop when switching between windowed/fullscreen
+- added a Texture unpacker that will extract all images from a texture atlas, see https://github.com/libgdx/libgdx/pull/1774
+- updates to gdx-setup 
+- CustomCollisionDispatcher in bullet, see https://github.com/libgdx/libgdx/commit/916fc85cecf433c3461b458e00f8afc516ad21e3
 
 [1.0.0]
 - Box2D is no longer in the core, it has been moved to an extension. See http://www.badlogicgames.com/wordpress/?p=3404

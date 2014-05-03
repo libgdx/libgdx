@@ -17,9 +17,14 @@
 package com.badlogic.gdx.backends.gwt.preloader;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.gwt.GwtFileHandle;
 import com.badlogic.gdx.backends.gwt.preloader.AssetDownloader.AssetLoaderListener;
 import com.badlogic.gdx.backends.gwt.preloader.AssetFilter.AssetType;
 import com.badlogic.gdx.files.FileHandle;
@@ -39,6 +44,7 @@ public class Preloader {
 		
 	}
 
+	public ObjectMap<String, Void> directories = new ObjectMap<String, Void>();
 	public ObjectMap<String, ImageElement> images = new ObjectMap<String, ImageElement>();
 	public ObjectMap<String, Void> audio = new ObjectMap<String, Void>();
 	public ObjectMap<String, String> texts = new ObjectMap<String, String>();
@@ -178,6 +184,7 @@ public class Preloader {
 								audio.put(asset.url, null);
 								break;
 							case Directory:
+								directories.put(asset.url, null);
 								break;
 							}
 							asset.succeed = true;
@@ -211,8 +218,7 @@ public class Preloader {
 	}
 
 	public boolean contains (String url) {
-		// FIXME should also check if directory exists
-		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url) || audio.containsKey(url);
+		return texts.containsKey(url) || images.containsKey(url) || binaries.containsKey(url) || audio.containsKey(url) || directories.containsKey(url);
 	}
 
 	public boolean isText (String url) {
@@ -231,12 +237,60 @@ public class Preloader {
 		return audio.containsKey(url);
 	}
 
-	public FileHandle[] list (String url) {
-		throw new GdxRuntimeException("Not implemented"); // FIXME
+	public boolean isDirectory (String url) {
+		return directories.containsKey(url);
 	}
 
-	public boolean isDirectory (String url) {
-		throw new GdxRuntimeException("Not implemented"); // FIXME
+	private boolean isChild(String path, String url) {
+		return path.startsWith(url) && (path.indexOf('/', url.length() + 1) < 0);
+	}
+
+	public FileHandle[] list (String url) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url)) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
+	}
+
+	public FileHandle[] list (String url, FileFilter filter) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url) && filter.accept(new File(path))) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
+	}
+
+	public FileHandle[] list (String url, FilenameFilter filter) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url) && filter.accept(new File(url), path.substring(url.length() + 1))) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
+	}
+
+	public FileHandle[] list (String url, String suffix) {
+		Array<FileHandle> files = new Array<FileHandle>();
+		for (String path : texts.keys()) {
+			if (isChild(path, url) && path.endsWith(suffix)) {
+				files.add(new GwtFileHandle(this, path, FileType.Internal));
+			}
+		}
+		FileHandle[] list = new FileHandle[files.size];
+		System.arraycopy(files.items, 0, list, 0, list.length);
+		return list;
 	}
 
 	public long length (String url) {
@@ -258,4 +312,5 @@ public class Preloader {
 		}
 		return 0;
 	}
+
 }
