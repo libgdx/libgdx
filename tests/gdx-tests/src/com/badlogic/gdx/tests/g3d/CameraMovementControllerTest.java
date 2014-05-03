@@ -123,14 +123,14 @@ public class CameraMovementControllerTest extends GdxTest implements Application
 		CameraPath path4 = new CameraPath(path2Keys, true);
 
 		movementController = new CameraMovementController(pathCam);
-		movementController.positionPath = path1;
-		movementController.lookAtPath = path3;
-		movementController.up.set(Vector3.Y);
+		movementController.setPositionPath(path1);
+		movementController.setLookAtPath(path3);
+		movementController.setUpVector(Vector3.Y);
 
 		movementController2 = new CameraMovementController(pathCam2);
-		movementController2.positionPath = path2;
-		movementController2.lookAtPath = path4;
-		movementController2.up.set(Vector3.Y);
+		movementController2.setPositionPath(path2);
+		movementController2.setLookAtPath(path4);
+		movementController2.setUpVector(Vector3.Y);
 
 		assets = new AssetManager();
 		assets.load("data/g3d/invaders.g3dj", Model.class);
@@ -166,10 +166,10 @@ public class CameraMovementControllerTest extends GdxTest implements Application
 
 		loading = false;
 
-		movementController.positionPath.start(20.0f, -1, false);
-		movementController.lookAtPath.start(20.0f, -1, false);
-		movementController2.positionPath.start(20.0f, -1, true);
-		movementController2.lookAtPath.start(20.0f, -1, true);
+		movementController.getPositionPath().start(20.0f, -1, false);
+		movementController.getLookAtPath().start(20.0f, -1, false);
+		movementController2.getPositionPath().start(20.0f, -1, true);
+		movementController2.getLookAtPath().start(20.0f, -1, true);
 	}
 
 	@Override
@@ -224,42 +224,42 @@ public class CameraMovementControllerTest extends GdxTest implements Application
 		}
 
 		if (keycode == Keys.Y) {
-			movementController.positionPath.pause();
+			movementController.getPositionPath().pause();
 			return true;
 		}
 
 		if (keycode == Keys.X) {
-			movementController.positionPath.resume();
+			movementController.getPositionPath().resume();
 			return true;
 		}
 
 		if (keycode == Keys.C) {
-			movementController.lookAtPath.pause();
+			movementController.getLookAtPath().pause();
 			return true;
 		}
 
 		if (keycode == Keys.V) {
-			movementController.lookAtPath.resume();
+			movementController.getLookAtPath().resume();
 			return true;
 		}
 
 		if (keycode == Keys.F) {
-			movementController2.positionPath.pause();
+			movementController2.getPositionPath().pause();
 			return true;
 		}
 
 		if (keycode == Keys.G) {
-			movementController2.positionPath.resume();
+			movementController2.getPositionPath().resume();
 			return true;
 		}
 
 		if (keycode == Keys.H) {
-			movementController2.lookAtPath.pause();
+			movementController2.getLookAtPath().pause();
 			return true;
 		}
 
 		if (keycode == Keys.J) {
-			movementController2.lookAtPath.resume();
+			movementController2.getLookAtPath().resume();
 			return true;
 		}
 

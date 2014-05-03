@@ -46,11 +46,11 @@ public class CameraMovementController {
 	private ShapeRenderer debugRenderer;
 
 	/** paths for position and lookat */
-	public CameraPath positionPath;
-	public CameraPath lookAtPath;
+	private CameraPath positionPath;
+	private CameraPath lookAtPath;
 	
 	/** up-vector that is used to reset the upwards direction of the camera during flight*/
-	public final Vector3 up = new Vector3().set(Vector3.Y);
+	private final Vector3 up = new Vector3().set(Vector3.Y);
 
 	/** tmp variables needed for debugrenderer */
 	private final Vector3 debugTmp1 = new Vector3();
@@ -63,6 +63,30 @@ public class CameraMovementController {
 		debugRenderer = new ShapeRenderer();
 	}
 
+	public void setPositionPath(CameraPath path) {
+		this.positionPath = path;
+	}
+	
+	public CameraPath getPositionPath() {
+		return this.positionPath;
+	}
+	
+	public void setLookAtPath(CameraPath path) {
+		this.lookAtPath = path;
+	}
+	
+	public CameraPath getLookAtPath() {
+		return this.lookAtPath;
+	}
+	
+	public void setUpVector(Vector3 up) {
+		this.up.set(up);
+	}
+	
+	public Vector3 getUpVector() {
+		return this.up;
+	}
+	
 	/**
 	 * Advances the controller given the delta time. If one of the {@link CameraPath}s is running,
 	 * this will advance the camera along the path and update the position or lookAt position
