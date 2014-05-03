@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /** @brief Represents a changing {@link TiledMapTile}. */
@@ -66,6 +67,28 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
+	public float getOffsetX () {
+		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
+		return frameTiles.get((int)currentFrame).getOffsetX();
+	}
+
+	@Override
+	public void setOffsetX (float offsetX) {
+		throw new GdxRuntimeException("Cannot set offset of AnimatedTiledMapTile.");
+	}
+
+	@Override
+	public float getOffsetY () {
+		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
+		return frameTiles.get((int)currentFrame).getOffsetY();
+	}
+
+	@Override
+	public void setOffsetY (float offsetY) {
+		throw new GdxRuntimeException("Cannot set offset of AnimatedTiledMapTile.");
+	}
+
+	@Override
 	public MapProperties getProperties () {
 		if (properties == null) {
 			properties = new MapProperties();
@@ -88,4 +111,5 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.animationInterval = interval;
 		this.frameCount = frameTiles.size;
 	}
+
 }
