@@ -28,6 +28,17 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** High-level Movement controller for managing and playing camera movement paths
+ * 
+ * A CameraMovementController can hold a {@link CameraPath} instance for the position
+ * as well as one for transitioning the lookAt position.
+ * 
+ *  When implementing, the {@link #update(float)} method needs to be called to advance the
+ *  camera animations.
+ *  
+ *  Optionally, the {@link #debugDraw(Camera)} method can be used to render the paths
+ *  from the view of the given camera. This allows using different cameras to evaluate
+ *  the paths of the camera from a different point of view.
+ *  
  * @author florianbaethge (evident) */
 public class CameraMovementController {
 	private Camera camera;
@@ -37,6 +48,8 @@ public class CameraMovementController {
 	/** paths for position and lookat */
 	public CameraPath positionPath;
 	public CameraPath lookAtPath;
+	
+	/** up-vector that is used to reset the upwards direction of the camera during flight*/
 	public final Vector3 up = new Vector3().set(Vector3.Y);
 
 	/** tmp variables needed for debugrenderer */
@@ -50,6 +63,11 @@ public class CameraMovementController {
 		debugRenderer = new ShapeRenderer();
 	}
 
+	/**
+	 * Advances the controller given the delta time. If one of the {@link CameraPath}s is running,
+	 * this will advance the camera along the path and update the position or lookAt position
+	 * @param delta The delta time since rendering the last frame
+	 */
 	public void update (float delta) {
 		if (positionPath != null) {
 			positionPath.update(delta);
@@ -65,6 +83,12 @@ public class CameraMovementController {
 		camera.update();
 	}
 
+	/**
+	 * Renders the paths for the Camera and the lookAt position from the view
+	 * of the passed debugCamera. This allows to evaluate the camera paths from
+	 * a different point of view.
+	 * @param debugCamera - the camera used to render the debug view
+	 */
 	public void debugDraw (Camera debugCamera) {
 
 		debugRenderer.setProjectionMatrix(debugCamera.combined);

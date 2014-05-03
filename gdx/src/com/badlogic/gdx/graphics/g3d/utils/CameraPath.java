@@ -59,6 +59,11 @@ public class CameraPath {
 		approxLength = spline.approxLength(500);
 	}
 
+	/**
+	 * Advances the parameters of the path and updates the current position on the
+	 * path when the CameraPath is currently running
+	 * @param delta the delta time since rendering the last frame
+	 */
 	public void update (float delta) {
 		if (running) {
 			timePassed += delta;
@@ -83,11 +88,20 @@ public class CameraPath {
 		}
 	}
 
+	/**
+	 * @return the current position on the path
+	 */
 	public Vector3 getValue () {
 		spline.valueAt(tmp2, t);
 		return tmp2;
 	}
 
+	/**
+	 * Starts the path and sets its state to running
+	 * @param duration The time in seconds, the camera animation should take
+	 * @param loopings The amount of loopings this path should transform. Setting it to a negative value (-1) will result in infinite motion
+	 * @param constSpeed if set to true, the camera will move along this path with a constant speed rather than the speed given by its parametrization. Might result in a more smooth animation in some cases
+	 */
 	public void start (float duration, int loopings, boolean constSpeed) {
 		this.duration = duration;
 		this.loopingsRemaining = loopings;
@@ -100,16 +114,25 @@ public class CameraPath {
 		this.running = true;
 	}
 
+	/**
+	 * stops the path and resets the position to the starting position
+	 */
 	public void stop () {
 		this.running = false;
 		this.timePassed = 0;
 		this.t = 0;
 	}
 
+	/**
+	 * pauses the camera path, but leaves it at its current state
+	 */
 	public void pause () {
 		this.running = false;
 	}
 
+	/**
+	 * resumes a paused camera path
+	 */
 	public void resume () {
 		this.running = true;
 	}
