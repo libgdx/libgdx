@@ -77,11 +77,17 @@ public abstract class OpenALMusic implements Music {
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
+			int filled = 0; // check if there's anything to play actually, see #1770
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				if (!fill(bufferID)) break;
+				filled++;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
+			if(filled == 0) {
+				if(onCompletionListener != null) onCompletionListener.onCompletion(this);
+			}
+			
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
 				return;
