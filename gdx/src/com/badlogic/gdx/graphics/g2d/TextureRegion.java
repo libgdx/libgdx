@@ -235,7 +235,7 @@ public class TextureRegion {
 		}
 	}
 
-	/** Helper function to create tiles out of this TextureRegion starting from the top left corner going to the left and ending at
+	/** Helper function to create tiles out of this TextureRegion starting from the top left corner going to the right and ending at
 	 * the bottom right corner. Only complete tiles will be returned so if the region's width or height are not a multiple of the
 	 * tile width and height not all of the region will be used. This will not work on texture regions returned form a TextureAtlas
 	 * that either have whitespace removed or where flipped before the region is split.
@@ -264,7 +264,7 @@ public class TextureRegion {
 		return tiles;
 	}
 
-	/** Helper function to create tiles out of the given {@link Texture} starting from the top left corner going to the left and
+	/** Helper function to create tiles out of the given {@link Texture} starting from the top left corner going to the right and
 	 * ending at the bottom right corner. Only complete tiles will be returned so if the texture's width or height are not a
 	 * multiple of the tile width and height not all of the texture will be used.
 	 * 
