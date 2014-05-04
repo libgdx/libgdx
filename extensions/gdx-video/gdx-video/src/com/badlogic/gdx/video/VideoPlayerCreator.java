@@ -1,7 +1,5 @@
 package com.badlogic.gdx.video;
 
-import java.lang.reflect.InvocationTargetException;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -30,7 +28,6 @@ public class VideoPlayerCreator {
 		initialize();
 		if (videoPlayerClass == null)
 			return new VideoPlayerStub();
-
 		try {
 			return videoPlayerClass.newInstance();
 		} catch (InstantiationException e) {
@@ -57,16 +54,10 @@ public class VideoPlayerCreator {
 
 		try {
 			return videoPlayerClass.getConstructor(Viewport.class)
-									.newInstance(viewport);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+					.newInstance(viewport);
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -91,16 +82,10 @@ public class VideoPlayerCreator {
 
 		try {
 			return videoPlayerClass.getConstructor(Camera.class, Mesh.class)
-									.newInstance(cam, mesh);
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+					.newInstance(cam, mesh);
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -124,6 +109,8 @@ public class VideoPlayerCreator {
 			}
 		} else if (type == ApplicationType.Desktop) {
 			className = "com.badlogic.gdx.video.VideoPlayerDesktop";
+		} else {
+			Gdx.app.log("Gdx-Video", "Platform is not supported by the Gdx Video Extension");
 		}
 
 		try {
