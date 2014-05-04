@@ -1,4 +1,5 @@
 [1.0.1]
+- Tiled maps now support drawing offsets for tiles
 - FileHandle#list is now supported in GWT!
 - FileHandle#list now supports FileFilters
 - Controllers now reinitialize on the desktop when switching between windowed/fullscreen
