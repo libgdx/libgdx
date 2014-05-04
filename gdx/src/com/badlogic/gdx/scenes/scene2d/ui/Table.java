@@ -210,38 +210,38 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell add (String text) {
+	public Cell<Label> add (String text) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell add (String text, String labelStyleName) {
+	public Cell<Label> add (String text, String labelStyleName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, skin.get(labelStyleName, LabelStyle.class)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell add (String text, String fontName, Color color) {
+	public Cell<Label> add (String text, String fontName, Color color) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), color)));
 	}
 
 	/** Adds a new cell with a label. This may only be called if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used. */
-	public Cell add (String text, String fontName, String colorName) {
+	public Cell<Label> add (String text, String fontName, String colorName) {
 		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		return add(new Label(text, new LabelStyle(skin.getFont(fontName), skin.getColor(colorName))));
 	}
 
 	/** Adds a cell without a widget. */
-	public Cell add () {
+	public Cell<Actor> add () {
 		return layout.add(null);
 	}
 
 	/** Adds a new cell to the table with the specified actor.
 	 * @param actor May be null to add a cell without an actor. */
-	public Cell add (Actor actor) {
-		return layout.add(actor);
+	public <T extends Actor> Cell<T> add (T actor) {
+		return (Cell<T>)layout.add(actor);
 	}
 
 	public void add (Actor... actors) {
@@ -258,7 +258,7 @@ public class Table extends WidgetGroup {
 
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
 	 * @param actors May be null to add a stack without any actors. */
-	public Cell stack (Actor... actors) {
+	public Cell<Stack> stack (Actor... actors) {
 		Stack stack = new Stack();
 		if (actors != null) {
 			for (int i = 0, n = actors.length; i < n; i++)
@@ -295,8 +295,8 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Returns the cell for the specified widget in this table, or null. */
-	public Cell getCell (Actor actor) {
-		return layout.getCell(actor);
+	public <T extends Actor> Cell<T> getCell (T actor) {
+		return (Cell<T>)layout.getCell(actor);
 	}
 
 	/** Returns the cells for this table. */
