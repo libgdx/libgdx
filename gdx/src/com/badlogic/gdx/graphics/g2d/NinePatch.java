@@ -57,6 +57,8 @@ public class NinePatch {
 	private int idx;
 	private final Color color = new Color(Color.WHITE);
 	private int padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
+	private float scaleX = 1f;
+	private float scaleY = 1f;
 
 	/** Create a ninepatch by cutting up the given texture into nine patches. The subsequent parameters define the 4 lines that will
 	 * cut the texture region into 9 pieces.
@@ -348,18 +350,43 @@ public class NinePatch {
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
 		final float topRowY = y + height - topHeight;
+		
+		final float centerColumnX2 = x + (leftWidth * scaleX);
+		final float rightColumnX2 = x + width - (rightWidth * scaleX);
+		final float middleRowY2 = y + (bottomHeight * scaleY);
+		final float topRowY2 = y + height - (topHeight * scaleY);
+		
 		final float c = tmpDrawColor.set(color).mul(batch.getColor()).toFloatBits();
 
-		if (bottomLeft != -1) set(bottomLeft, x, y, centerColumnX - x, middleRowY - y, c);
-		if (bottomCenter != -1) set(bottomCenter, centerColumnX, y, rightColumnX - centerColumnX, middleRowY - y, c);
-		if (bottomRight != -1) set(bottomRight, rightColumnX, y, x + width - rightColumnX, middleRowY - y, c);
-		if (middleLeft != -1) set(middleLeft, x, middleRowY, centerColumnX - x, topRowY - middleRowY, c);
+		if (bottomLeft != -1)
+			set(bottomLeft, x, y, (centerColumnX - x) * scaleX,
+					(middleRowY - y) * scaleY, c);
+		if (bottomCenter != -1)
+			set(bottomCenter, centerColumnX2, y,
+					rightColumnX2 - centerColumnX2, (middleRowY - y) * scaleY,
+					c);
+		if (bottomRight != -1)
+			set(bottomRight, rightColumnX2, y, (x + width - rightColumnX)
+					* scaleX, (middleRowY - y) * scaleY, c);
+		if (middleLeft != -1)
+			set(middleLeft, x, middleRowY2, (centerColumnX - x) * scaleX,
+					topRowY2 - middleRowY2, c);
 		if (middleCenter != -1)
-			set(middleCenter, centerColumnX, middleRowY, rightColumnX - centerColumnX, topRowY - middleRowY, c);
-		if (middleRight != -1) set(middleRight, rightColumnX, middleRowY, x + width - rightColumnX, topRowY - middleRowY, c);
-		if (topLeft != -1) set(topLeft, x, topRowY, centerColumnX - x, y + height - topRowY, c);
-		if (topCenter != -1) set(topCenter, centerColumnX, topRowY, rightColumnX - centerColumnX, y + height - topRowY, c);
-		if (topRight != -1) set(topRight, rightColumnX, topRowY, x + width - rightColumnX, y + height - topRowY, c);
+			set(middleCenter, centerColumnX2, middleRowY2, rightColumnX2
+					- centerColumnX2, topRowY2 - middleRowY2, c);
+		if (middleRight != -1)
+			set(middleRight, rightColumnX2, middleRowY2,
+					(x + width - rightColumnX) * scaleX,
+					topRowY2 - middleRowY2, c);
+		if (topLeft != -1)
+			set(topLeft, x, topRowY2, (centerColumnX - x) * scaleX,
+					(y + height - topRowY) * scaleY, c);
+		if (topCenter != -1)
+			set(topCenter, centerColumnX2, topRowY2, rightColumnX2
+					- centerColumnX2, (y + height - topRowY) * scaleY, c);
+		if (topRight != -1)
+			set(topRight, rightColumnX2, topRowY2, (x + width - rightColumnX)
+					* scaleX, (y + height - topRowY) * scaleY, c);
 
 		batch.draw(texture, vertices, 0, idx);
 	}
@@ -495,5 +522,18 @@ public class NinePatch {
 
 	public Texture getTexture () {
 		return texture;
+	}
+	
+	public void setScale(float xScale, float yScale) {
+		scaleX = xScale;
+		scaleY = yScale;
+	}
+
+	public void setScaleX(float xScale) {
+		scaleX = xScale;
+	}
+
+	public void setScaleY(float yScale) {
+		scaleY = yScale;
 	}
 }
