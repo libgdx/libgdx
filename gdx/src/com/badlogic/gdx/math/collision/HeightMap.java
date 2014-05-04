@@ -164,15 +164,12 @@ public class HeightMap {
 	public float getHeight(float xf, float zf) {
 		int x = worldCoordToIndex(xf);
 		int z = worldCoordToIndex(zf);
-		//System.out.println("getting height for: "+x+", "+z);
 		if (x < 0) x = 0;
 		if (z < 0) z = 0;
 		if (z >= heights.length) {
-			//System.out.println("WARN getHeight z index out of bounds: " + z);
 			z = heights.length - 1;
 		}
 		if (x >= heights[z].length) {
-			//System.out.println("WARN getHeight x index out of bounds: " + x);
 			x = heights[z].length - 1;
 		}
 		return heights[z][x] * heightScale;
@@ -206,17 +203,6 @@ public class HeightMap {
 
 		float y = (1f - zFrac) * ((1-xFrac) * a.y + xFrac * d.y)
 				+ zFrac * ((1-xFrac) * b.y + xFrac * c.y);
-
-/*		if (Main.frame % 60 == 0) {
-			StringBuilder msg = new StringBuilder();
-			msg.append(String.format("a: %s\n", Tools.fmt(a)));
-			msg.append(String.format("b: %s\n", Tools.fmt(b)));
-			msg.append(String.format("c: %s\n", Tools.fmt(c)));
-			msg.append(String.format("d: %s\n", Tools.fmt(d)));
-			msg.append(String.format("fractions - x: %.2f, z: %.2f\n", xFrac, zFrac));
-			msg.append(String.format("result Y: %.2f", y));
-			System.out.println(msg.toString());
-		}*/
 
 		return y;
 	}
