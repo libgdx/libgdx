@@ -56,6 +56,7 @@ public class TextureAtlas implements Disposable {
 		public static class Page {
 			public final FileHandle textureFile;
 			public Texture texture;
+			public final float width, height;
 			public final boolean useMipMaps;
 			public final Format format;
 			public final TextureFilter minFilter;
@@ -63,8 +64,10 @@ public class TextureAtlas implements Disposable {
 			public final TextureWrap uWrap;
 			public final TextureWrap vWrap;
 
-			public Page (FileHandle handle, boolean useMipMaps, Format format, TextureFilter minFilter, TextureFilter magFilter,
-				TextureWrap uWrap, TextureWrap vWrap) {
+			public Page (FileHandle handle, float width, float height, boolean useMipMaps, Format format, TextureFilter minFilter,
+				TextureFilter magFilter, TextureWrap uWrap, TextureWrap vWrap) {
+				this.width = width;
+				this.height = height;
 				this.textureFile = handle;
 				this.useMipMaps = useMipMaps;
 				this.format = format;
@@ -108,7 +111,13 @@ public class TextureAtlas implements Disposable {
 					else if (pageImage == null) {
 						FileHandle file = imagesDir.child(line);
 
-						Format format = Format.valueOf(readValue(reader));
+						float width = 0, height = 0;
+						if (readTuple(reader) == 2) { // size is only optional for an atlas packed with an old TexturePacker.
+							width = Integer.parseInt(tuple[0]);
+							height = Integer.parseInt(tuple[1]);
+							readTuple(reader);
+						}
+						Format format = Format.valueOf(tuple[0]);
 
 						readTuple(reader);
 						TextureFilter min = TextureFilter.valueOf(tuple[0]);
@@ -126,7 +135,7 @@ public class TextureAtlas implements Disposable {
 							repeatY = Repeat;
 						}
 
-						pageImage = new Page(file, min.isMipMap(), format, min, max, repeatX, repeatY);
+						pageImage = new Page(file, width, height, min.isMipMap(), format, min, max, repeatX, repeatY);
 						pages.add(pageImage);
 					} else {
 						boolean rotate = Boolean.valueOf(readValue(reader));
@@ -427,7 +436,7 @@ public class TextureAtlas implements Disposable {
 		return line.substring(colon + 1).trim();
 	}
 
-	/** Returns the number of tuple values read (2 or 4). */
+	/** Returns the number of tuple values read (1, 2 or 4). */
 	static int readTuple (BufferedReader reader) throws IOException {
 		String line = reader.readLine();
 		int colon = line.indexOf(':');
@@ -435,10 +444,7 @@ public class TextureAtlas implements Disposable {
 		int i = 0, lastMatch = colon + 1;
 		for (i = 0; i < 3; i++) {
 			int comma = line.indexOf(',', lastMatch);
-			if (comma == -1) {
-				if (i == 0) throw new GdxRuntimeException("Invalid line: " + line);
-				break;
-			}
+			if (comma == -1) break;
 			tuple[i] = line.substring(lastMatch, comma).trim();
 			lastMatch = comma + 1;
 		}
@@ -596,7 +602,7 @@ public class TextureAtlas implements Disposable {
 		}
 
 		@Override
-		public void setOriginCenter() {
+		public void setOriginCenter () {
 			super.setOrigin(width / 2 - region.offsetX, height / 2 - region.offsetY);
 		}
 
