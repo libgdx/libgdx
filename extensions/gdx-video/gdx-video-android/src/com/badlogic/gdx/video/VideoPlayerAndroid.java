@@ -16,6 +16,7 @@ import android.opengl.GLES20;
 import android.util.Log;
 import android.view.Surface;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.files.FileHandle;
@@ -34,7 +35,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  */
 public class VideoPlayerAndroid
-implements VideoPlayer, OnFrameAvailableListener {
+		implements VideoPlayer, OnFrameAvailableListener {
 
 	private static final String ATTRIBUTE_TEXCOORDINATE = ShaderProgram.TEXCOORD_ATTRIBUTE + "0";
 	private static final String VARYING_TEXCOORDINATE = "varTexCoordinate";
@@ -157,9 +158,15 @@ implements VideoPlayer, OnFrameAvailableListener {
 		});
 
 		try {
-			AssetManager assets = ((AndroidApplication) Gdx.app).getAssets();
-			AssetFileDescriptor descriptor = assets.openFd(file.name());
-			player.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+			if (file.type() == FileType.Classpath || (file.type() == FileType.Internal && !file.file()
+					.exists())) {
+				AssetManager assets = ((AndroidApplication) Gdx.app).getAssets();
+				AssetFileDescriptor descriptor = assets.openFd(file.name());
+				player.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+			} else {
+				player.setDataSource(file.file()
+											.getAbsolutePath());
+			}
 			player.setSurface(new Surface(videoTexture));
 			player.prepareAsync();
 		} catch (IOException e) {
