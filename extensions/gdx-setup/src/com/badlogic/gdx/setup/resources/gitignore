@@ -7,21 +7,21 @@ hs_err_pid*
 
 ## GWT
 war/
-war/gwt_bree/
-gwt-unitCache/
+html/war/gwt_bree/
+html/gwt-unitCache/
 .apt_generated/
-war/WEB-INF/deploy/
-war/WEB-INF/classes/
+html/war/WEB-INF/deploy/
+html/war/WEB-INF/classes/
 .gwt/
 gwt-unitCache/
 www-test/
 .gwt-tmp/
 
 ## Android Studio and Intellij and Android in general
-libs/armeabi/
-libs/armeabi-v7a/
-libs/x86/
-gen/
+android/libs/armeabi/
+android/libs/armeabi-v7a/
+android/libs/x86/
+android/gen/
 .idea/
 *.ipr
 *.iws
@@ -33,7 +33,7 @@ com_crashlytics_export_strings.xml
 .classpath
 .project
 .metadata
-bin/
+**/bin/
 tmp/
 *.tmp
 *.bak
@@ -46,7 +46,7 @@ local.properties
 *.launch
 
 ## NetBeans
-nbproject/private/
+**/nbproject/private/
 build/
 nbbuild/
 dist/

@@ -41,7 +41,6 @@ import org.robovm.apple.uikit.UITextFieldDelegateAdapter;
 import org.robovm.apple.uikit.UITextSpellCheckingType;
 import org.robovm.apple.uikit.UITouch;
 import org.robovm.apple.uikit.UITouchPhase;
-import org.robovm.objc.ObjCClass;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -53,11 +52,6 @@ import com.badlogic.gdx.utils.Pool;
 public class IOSInput implements Input {
 	static final int MAX_TOUCHES = 20;
 
-	static {
-		// HACK: Make sure UITouch has been registered
-		ObjCClass.getByType(UITouch.class);
-	}
-	
 	IOSApplication app;
 	IOSApplicationConfiguration config;
 	int[] deltaX = new int[MAX_TOUCHES];
@@ -70,7 +64,7 @@ public class IOSInput implements Input {
 	boolean justTouched = false;
 	Pool<TouchEvent> touchEventPool = new Pool<TouchEvent>() {
 		@Override
-		protected TouchEvent newObject() {
+		protected TouchEvent newObject () {
 			return new TouchEvent();
 		}
 	};
@@ -81,37 +75,36 @@ public class IOSInput implements Input {
 	// We need to hold on to the reference to this delegate or else its
 	// ObjC peer will get released when the Java peer is GCed.
 	UIAccelerometerDelegate accelerometerDelegate;
-	
-	public IOSInput(IOSApplication app) {
+
+	public IOSInput (IOSApplication app) {
 		this.app = app;
 		this.config = app.config;
 	}
-	
-	void setupPeripherals() {
+
+	void setupPeripherals () {
 		setupAccelerometer();
 		setupCompass();
 	}
 
 	private void setupCompass () {
-		if(config.useCompass) {
+		if (config.useCompass) {
 			// FIXME implement compass
 		}
 	}
 
-	private void setupAccelerometer() {
-		if(config.useAccelerometer) {
+	private void setupAccelerometer () {
+		if (config.useAccelerometer) {
 			accelerometerDelegate = new UIAccelerometerDelegateAdapter() {
 
 				@Override
-				public void didAccelerate(UIAccelerometer accelerometer, UIAcceleration values) {
+				public void didAccelerate (UIAccelerometer accelerometer, UIAcceleration values) {
 					float x = (float)values.getX() * 10;
 					float y = (float)values.getY() * 10;
 					float z = (float)values.getZ() * 10;
 
-					UIInterfaceOrientation orientation = app.graphics.viewController != null 
-																		? app.graphics.viewController.getInterfaceOrientation() 
-																		: UIApplication.getSharedApplication().getStatusBarOrientation();
-										
+					UIInterfaceOrientation orientation = app.graphics.viewController != null ? app.graphics.viewController
+						.getInterfaceOrientation() : UIApplication.getSharedApplication().getStatusBarOrientation();
+
 					acceleration[0] = -x;
 					acceleration[1] = -y;
 					acceleration[2] = -z;
@@ -123,110 +116,110 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public float getAccelerometerX() {
+	public float getAccelerometerX () {
 		return acceleration[0];
 	}
 
 	@Override
-	public float getAccelerometerY() {
+	public float getAccelerometerY () {
 		return acceleration[1];
 	}
 
 	@Override
-	public float getAccelerometerZ() {
+	public float getAccelerometerZ () {
 		return acceleration[2];
 	}
 
 	@Override
-	public float getAzimuth() {
+	public float getAzimuth () {
 		// FIXME implement this
 		return 0;
 	}
 
 	@Override
-	public float getPitch() {
+	public float getPitch () {
 		// FIXME implement this
 		return 0;
 	}
 
 	@Override
-	public float getRoll() {
+	public float getRoll () {
 		// FIXME implement this
 		return 0;
 	}
 
 	@Override
-	public void getRotationMatrix(float[] matrix) {
+	public void getRotationMatrix (float[] matrix) {
 		// FIXME implement this
 	}
 
 	@Override
-	public int getX() {
+	public int getX () {
 		return touchX[0];
 	}
 
 	@Override
-	public int getX(int pointer) {
+	public int getX (int pointer) {
 		return touchX[pointer];
 	}
 
 	@Override
-	public int getDeltaX() {
+	public int getDeltaX () {
 		return deltaX[0];
 	}
 
 	@Override
-	public int getDeltaX(int pointer) {
+	public int getDeltaX (int pointer) {
 		return deltaX[pointer];
 	}
 
 	@Override
-	public int getY() {
+	public int getY () {
 		return touchY[0];
 	}
 
 	@Override
-	public int getY(int pointer) {
+	public int getY (int pointer) {
 		return touchY[pointer];
 	}
 
 	@Override
-	public int getDeltaY() {
+	public int getDeltaY () {
 		return deltaY[0];
 	}
 
 	@Override
-	public int getDeltaY(int pointer) {
+	public int getDeltaY (int pointer) {
 		return deltaY[pointer];
 	}
 
 	@Override
-	public boolean isTouched() {
+	public boolean isTouched () {
 		return touchDown[0] != 0;
 	}
 
 	@Override
-	public boolean justTouched() {
+	public boolean justTouched () {
 		return justTouched;
 	}
 
 	@Override
-	public boolean isTouched(int pointer) {
+	public boolean isTouched (int pointer) {
 		return touchDown[pointer] != 0;
 	}
 
 	@Override
-	public boolean isButtonPressed(int button) {
+	public boolean isButtonPressed (int button) {
 		return button == Buttons.LEFT && numTouched > 0;
 	}
 
 	@Override
-	public boolean isKeyPressed(int key) {
+	public boolean isKeyPressed (int key) {
 		return false;
 	}
 
 	@Override
-	public void getTextInput(TextInputListener listener, String title, String text) {
+	public void getTextInput (TextInputListener listener, String title, String text) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, text, null);
 		uiAlertView.show();
 	}
@@ -236,7 +229,7 @@ public class IOSInput implements Input {
 	// see: http://www.badlogicgames.com/forum/viewtopic.php?f=17&t=11788
 
 	private class HiddenTextField extends UITextField {
-		public HiddenTextField(CGRect frame) {
+		public HiddenTextField (CGRect frame) {
 			super(frame);
 
 			setKeyboardType(UIKeyboardType.Default);
@@ -248,18 +241,18 @@ public class IOSInput implements Input {
 		}
 
 		@Override
-		public void deleteBackward() {
+		public void deleteBackward () {
 			app.input.inputProcessor.keyTyped((char)8);
 			super.deleteBackward();
 		}
 	}
 
 	private UITextField textfield = null;
-	private UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
+	private final UITextFieldDelegate textDelegate = new UITextFieldDelegateAdapter() {
 		@Override
-		public boolean shouldChangeCharacters(UITextField textField, NSRange range, String string) {
+		public boolean shouldChangeCharacters (UITextField textField, NSRange range, String string) {
 			for (int i = 0; i < range.length(); i++) {
-				app.input.inputProcessor.keyTyped((char) 8);
+				app.input.inputProcessor.keyTyped((char)8);
 			}
 
 			if (string.isEmpty()) {
@@ -277,34 +270,33 @@ public class IOSInput implements Input {
 		}
 
 		@Override
-		public boolean shouldEndEditing(UITextField textField) {
-			//Text field needs to have at least one symbol - so we can use backspace
+		public boolean shouldEndEditing (UITextField textField) {
+			// Text field needs to have at least one symbol - so we can use backspace
 			textField.setText("x");
 
 			return true;
 		}
 
 		@Override
-		public boolean shouldReturn(UITextField textField) {
+		public boolean shouldReturn (UITextField textField) {
 			textField.resignFirstResponder();
 			return false;
 		}
 	};
 
-
 	@Override
-	public void setOnscreenKeyboardVisible(boolean visible) {
+	public void setOnscreenKeyboardVisible (boolean visible) {
 		if (textfield == null) {
-			//Making simple textField
+			// Making simple textField
 			textfield = new UITextField(new CGRect(10, 10, 100, 50));
-			//Setting parameters
+			// Setting parameters
 			textfield.setKeyboardType(UIKeyboardType.Default);
 			textfield.setReturnKeyType(UIReturnKeyType.Done);
 			textfield.setAutocapitalizationType(UITextAutocapitalizationType.None);
 			textfield.setAutocorrectionType(UITextAutocorrectionType.No);
 			textfield.setSpellCheckingType(UITextSpellCheckingType.No);
 			textfield.setHidden(true);
-			//Text field needs to have at least one symbol - so we can use backspace
+			// Text field needs to have at least one symbol - so we can use backspace
 			textfield.setText("x");
 			app.getUIViewController().getView().addSubview(textfield);
 		}
@@ -318,7 +310,7 @@ public class IOSInput implements Input {
 
 	// Issue 773 indicates this may solve a premature GC issue
 	UIAlertViewDelegate delegate;
-	
+
 	/** Builds an {@link UIAlertView} with an added {@link UITextField} for inputting text.
 	 * @param listener Text input listener
 	 * @param title Dialog title
@@ -362,126 +354,123 @@ public class IOSInput implements Input {
 	}
 
 	@Override
-	public void getPlaceholderTextInput(TextInputListener listener, String title, String placeholder) {
+	public void getPlaceholderTextInput (TextInputListener listener, String title, String placeholder) {
 		final UIAlertView uiAlertView = buildUIAlertView(listener, title, null, placeholder);
 		uiAlertView.show();
 	}
 
 	@Override
-	public void vibrate(int milliseconds) {
+	public void vibrate (int milliseconds) {
 		// FIXME implement this
 	}
 
 	@Override
-	public void vibrate(long[] pattern, int repeat) {
+	public void vibrate (long[] pattern, int repeat) {
 		// FIXME implement this
 	}
 
 	@Override
-	public void cancelVibrate() {
+	public void cancelVibrate () {
 		// FIXME implement this
 	}
 
 	@Override
-	public long getCurrentEventTime() {
+	public long getCurrentEventTime () {
 		return currentEvent.timestamp;
 	}
 
 	@Override
-	public void setCatchBackKey(boolean catchBack) {
+	public void setCatchBackKey (boolean catchBack) {
 	}
 
 	@Override
-	public void setCatchMenuKey(boolean catchMenu) {
+	public void setCatchMenuKey (boolean catchMenu) {
 	}
 
 	@Override
-	public void setInputProcessor(InputProcessor processor) {
+	public void setInputProcessor (InputProcessor processor) {
 		this.inputProcessor = processor;
 	}
 
 	@Override
-	public InputProcessor getInputProcessor() {
+	public InputProcessor getInputProcessor () {
 		return inputProcessor;
 	}
 
 	@Override
-	public boolean isPeripheralAvailable(Peripheral peripheral) {
-		if(peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
-		if(peripheral == Peripheral.MultitouchScreen) return true;
-		// FIXME implement this (not sure if possible)
-//		if(peripheral == Peripheral.OnscreenKeyboard) return true;
+	public boolean isPeripheralAvailable (Peripheral peripheral) {
+		if (peripheral == Peripheral.Accelerometer && config.useAccelerometer) return true;
+		if (peripheral == Peripheral.MultitouchScreen) return true;
+		if (peripheral == Peripheral.OnscreenKeyboard) return true;
 		// FIXME implement this
-//		if(peripheral == Peripheral.Compass) return true;
-		
+// if(peripheral == Peripheral.Compass) return true;
+
 		return false;
 	}
 
 	@Override
-	public int getRotation() {
-		UIInterfaceOrientation orientation = app.graphics.viewController != null 
-					? app.graphics.viewController.getInterfaceOrientation() 
-					: UIApplication.getSharedApplication().getStatusBarOrientation();
+	public int getRotation () {
+		UIInterfaceOrientation orientation = app.graphics.viewController != null ? app.graphics.viewController
+			.getInterfaceOrientation() : UIApplication.getSharedApplication().getStatusBarOrientation();
 		// we measure orientation counter clockwise, just like on Android
-		if(orientation == UIInterfaceOrientation.Portrait) return 0;
-		if(orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
-		if(orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
-		if(orientation == UIInterfaceOrientation.LandscapeRight) return 90;
+		if (orientation == UIInterfaceOrientation.Portrait) return 0;
+		if (orientation == UIInterfaceOrientation.LandscapeLeft) return 270;
+		if (orientation == UIInterfaceOrientation.PortraitUpsideDown) return 180;
+		if (orientation == UIInterfaceOrientation.LandscapeRight) return 90;
 		return 0;
 	}
 
 	@Override
-	public Orientation getNativeOrientation() {
+	public Orientation getNativeOrientation () {
 		return Orientation.Portrait;
 	}
 
 	@Override
-	public void setCursorCatched(boolean catched) {
+	public void setCursorCatched (boolean catched) {
 	}
 
 	@Override
-	public boolean isCursorCatched() {
+	public boolean isCursorCatched () {
 		return false;
 	}
 
 	@Override
-	public void setCursorPosition(int x, int y) {
+	public void setCursorPosition (int x, int y) {
 	}
 
-  @Override
-  public void setCursorImage(Pixmap pixmap, int xHotspot, int yHotspot) {
-  }
+	@Override
+	public void setCursorImage (Pixmap pixmap, int xHotspot, int yHotspot) {
+	}
 
-  public void touchDown(NSSet<UITouch> touches, UIEvent event) {
+	public void touchDown (NSSet<UITouch> touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
-	public void touchUp(NSSet<UITouch> touches, UIEvent event) {
+	public void touchUp (NSSet<UITouch> touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
 
-	public void touchMoved(NSSet<UITouch> touches, UIEvent event) {
+	public void touchMoved (NSSet<UITouch> touches, UIEvent event) {
 		toTouchEvents(touches, event);
 	}
-	
-	void processEvents() {
-		synchronized(touchEvents) {
+
+	void processEvents () {
+		synchronized (touchEvents) {
 			justTouched = false;
-			for(TouchEvent event: touchEvents) {
+			for (TouchEvent event : touchEvents) {
 				currentEvent = event;
-				switch(event.phase) {
+				switch (event.phase) {
 				case Began:
-					if(inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
-					if(numTouched == 1)
-						justTouched = true;
+					if (inputProcessor != null) inputProcessor.touchDown(event.x, event.y, event.pointer, Buttons.LEFT);
+					if (numTouched == 1) justTouched = true;
 					break;
 				case Cancelled:
 				case Ended:
-					if(inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
+					if (inputProcessor != null) inputProcessor.touchUp(event.x, event.y, event.pointer, Buttons.LEFT);
 					break;
 				case Moved:
 				case Stationary:
-					if(inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
+					if (inputProcessor != null) inputProcessor.touchDragged(event.x, event.y, event.pointer);
 					break;
 				}
 			}
@@ -489,18 +478,18 @@ public class IOSInput implements Input {
 			touchEvents.clear();
 		}
 	}
-	
-	private int getFreePointer() {
-		for(int i = 0; i < touchDown.length; i++) {
-			if(touchDown[i] == 0) return i;
+
+	private int getFreePointer () {
+		for (int i = 0; i < touchDown.length; i++) {
+			if (touchDown[i] == 0) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find free pointer id!");
 	}
-	
-	private int findPointer(UITouch touch) {
+
+	private int findPointer (UITouch touch) {
 		long ptr = touch.getHandle();
-		for(int i = 0; i < touchDown.length; i++) {
-			if(touchDown[i] == ptr) return i;
+		for (int i = 0; i < touchDown.length; i++) {
+			if (touchDown[i] == ptr) return i;
 		}
 		throw new GdxRuntimeException("Couldn't find pointer id for touch event!");
 	}
@@ -508,37 +497,35 @@ public class IOSInput implements Input {
 	private void toTouchEvents (NSSet<UITouch> touches, UIEvent uiEvent) {
 		for (UITouch touch : touches) {
 			CGPoint loc = touch.getLocation(touch.getView());
-			synchronized(touchEvents) {
+			synchronized (touchEvents) {
 				TouchEvent event = touchEventPool.obtain();
 				event.x = (int)(loc.x() * app.displayScaleFactor);
 				event.y = (int)(loc.y() * app.displayScaleFactor);
 				event.phase = touch.getPhase();
 				event.timestamp = (long)(touch.getTimestamp() * 1000000000);
 				touchEvents.add(event);
-				
-				if(touch.getPhase() == UITouchPhase.Began) {					
+
+				if (touch.getPhase() == UITouchPhase.Began) {
 					event.pointer = getFreePointer();
-					touchDown[event.pointer] = (int) touch.getHandle();
+					touchDown[event.pointer] = (int)touch.getHandle();
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
-					deltaY[event.pointer] = 0; 
+					deltaY[event.pointer] = 0;
 					numTouched++;
 				}
-				
-				if(touch.getPhase() == UITouchPhase.Moved ||
-					touch.getPhase() == UITouchPhase.Stationary) {
+
+				if (touch.getPhase() == UITouchPhase.Moved || touch.getPhase() == UITouchPhase.Stationary) {
 					event.pointer = findPointer(touch);
 					deltaX[event.pointer] = event.x - touchX[event.pointer];
-					deltaY[event.pointer] = event.y - touchY[event.pointer]; 
+					deltaY[event.pointer] = event.y - touchY[event.pointer];
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 				}
-				
-				if(touch.getPhase() == UITouchPhase.Cancelled ||
-					touch.getPhase() == UITouchPhase.Ended) {					
+
+				if (touch.getPhase() == UITouchPhase.Cancelled || touch.getPhase() == UITouchPhase.Ended) {
 					event.pointer = findPointer(touch);
-					touchDown[event.pointer] = 0; 
+					touchDown[event.pointer] = 0;
 					touchX[event.pointer] = event.x;
 					touchY[event.pointer] = event.y;
 					deltaX[event.pointer] = 0;
@@ -548,7 +535,7 @@ public class IOSInput implements Input {
 			}
 		}
 	}
-	
+
 	static class TouchEvent {
 		UITouchPhase phase;
 		long timestamp;

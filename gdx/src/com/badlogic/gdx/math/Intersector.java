@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Plane.PlaneSide;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -669,26 +668,25 @@ public final class Intersector {
 	 * @param polygon The polygon
 	 * @return Whether polygon and line intersects */
 	public static boolean intersectLinePolygon (Vector2 p1, Vector2 p2, Polygon polygon) {
-		float[] vertices = polygon.getTransformedVertices();
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-		float width12 = x1 - x2, height12 = y1 - y2;
-		float det1 = x1 * y2 - y1 * x2;
-		int n = vertices.length;
-		float x3 = vertices[n - 2], y3 = vertices[n - 1];
-		for (int i = 0; i < n; i += 2) {
-			float x4 = vertices[i], y4 = vertices[i + 1];
-			float det2 = x3 * y4 - y3 * x4;
-			float width34 = x3 - x4, height34 = y3 - y4;
-			float det3 = width12 * height34 - height12 * width34;
-			float x = (det1 * width34 - width12 * det2) / det3;
-			if ((x >= x3 && x <= x4) || (x >= x4 && x <= x3)) {
-				float y = (det1 * height34 - height12 * det2) / det3;
-				if ((y >= y3 && y <= y4) || (y >= y4 && y <= y3)) return true;
-			}
-			x3 = x4;
-			y3 = y4;
-		}
-		return false;
+		 float[] vertices = polygon.getTransformedVertices();
+		 float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+		 int n = vertices.length;
+		 float x3 = vertices[n - 2], y3 = vertices[n - 1];
+		 for (int i = 0; i < n; i += 2) {
+			  float x4 = vertices[i], y4 = vertices[i + 1];
+			  float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+			  if (d != 0) {
+					float yd = y1 - y3;
+					float xd = x1 - x3;
+					float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
+					if (ua >= 0 && ua <= 1) {
+						 return true;
+					}
+			  }
+			  x3 = x4;
+			  y3 = y4;
+		 }
+		 return false;
 	}
 
 	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
@@ -706,32 +704,34 @@ public final class Intersector {
 		return false;
 	}
 
-	/** Check whether the given line segment and {@link Polygon} intersect.
-	 * @param p1 The first point of the segment
-	 * @param p2 The second point of the segment
-	 * @return Whether polygon and line intersects */
-	public static boolean intersectSegmentPolygon (Vector2 p1, Vector2 p2, Polygon polygon) {
-		float[] vertices = polygon.getTransformedVertices();
-		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-		float width12 = x1 - x2, height12 = y1 - y2;
-		float det1 = x1 * y2 - y1 * x2;
-		int n = vertices.length;
-		float x3 = vertices[n - 2], y3 = vertices[n - 1];
-		for (int i = 0; i < n; i += 2) {
-			float x4 = vertices[i], y4 = vertices[i + 1];
-			float det2 = x3 * y4 - y3 * x4;
-			float width34 = x3 - x4, height34 = y3 - y4;
-			float det3 = width12 * height34 - height12 * width34;
-			float x = (det1 * width34 - width12 * det2) / det3;
-			if (((x >= x3 && x <= x4) || (x >= x4 && x <= x3)) && ((x >= x1 && x <= x2) || (x >= x2 && x <= x1))) {
-				float y = (det1 * height34 - height12 * det2) / det3;
-				if (((y >= y3 && y <= y4) || (y >= y4 && y <= y3)) && ((y >= y1 && y <= y2) || (y >= y2 && y <= y1))) return true;
-			}
-			x3 = x4;
-			y3 = y4;
-		}
-		return false;
-	}
+	 /** Check whether the given line segment and {@link Polygon} intersect.
+	  * @param p1 The first point of the segment
+	  * @param p2 The second point of the segment
+	  * @return Whether polygon and segment intersect */
+	 public static boolean intersectSegmentPolygon (Vector2 p1, Vector2 p2, Polygon polygon) {
+		  float[] vertices = polygon.getTransformedVertices();
+		  float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+		  int n = vertices.length;
+		  float x3 = vertices[n - 2], y3 = vertices[n - 1];
+		  for (int i = 0; i < n; i += 2) {
+				float x4 = vertices[i], y4 = vertices[i + 1];
+				float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+				if (d != 0) {
+					 float yd = y1 - y3;
+					 float xd = x1 - x3;
+					 float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
+					 if (ua >= 0 && ua <= 1) {
+						  float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
+						  if (ub >= 0 && ub <= 1) {
+								return true;
+						  }
+					 }
+				}
+				x3 = x4;
+				y3 = y4;
+		  }
+		  return false;
+	 }
 
 	/** Intersects the two line segments and returns the intersection point in intersection.
 	 * 

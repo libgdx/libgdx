@@ -11,6 +11,8 @@ public class DependencyBank {
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.0.1-SNAPSHOT";
 	static String roboVMVersion = "0.0.11";
+	static String buildToolsVersion = "19.0.3";
+	static String androidAPILevel = "19";
 
 	//Repositories
 	static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";

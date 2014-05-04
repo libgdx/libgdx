@@ -296,6 +296,7 @@ public class TexturePacker {
 		FileWriter writer = new FileWriter(packFile, true);
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
+			writer.write("size: " + page.width + "," + page.height + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");

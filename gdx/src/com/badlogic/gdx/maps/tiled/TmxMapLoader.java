@@ -289,6 +289,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			int margin = element.getIntAttribute("margin", 0);
 			String source = element.getAttribute("source", null);
 
+			int offsetX = 0;
+			int offsetY = 0;
+
 			String imageSource = "";
 			int imageWidth = 0, imageHeight = 0;
 
@@ -302,6 +305,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
+					Element offset = element.getChildByName("tileoffset");
+					if (offset != null) {
+						offsetX = offset.getIntAttribute("x", 0);
+						offsetY = offset.getIntAttribute("y", 0);
+					}
 					imageSource = element.getChildByName("image").getAttribute("source");
 					imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
 					imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
@@ -310,6 +318,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
+				Element offset = element.getChildByName("tileoffset");
+				if (offset != null) {
+					offsetX = offset.getIntAttribute("x", 0);
+					offsetY = offset.getIntAttribute("y", 0);
+				}
 				imageSource = element.getChildByName("image").getAttribute("source");
 				imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
 				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
@@ -343,6 +356,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					}
 					TiledMapTile tile = new StaticTiledMapTile(tileRegion);
 					tile.setId(id);
+					tile.setOffsetX(offsetX);
+					tile.setOffsetY(yUp ? -offsetY : offsetY);
 					tileset.putTile(id++, tile);
 				}
 			}
