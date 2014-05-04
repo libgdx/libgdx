@@ -235,8 +235,8 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 				final TextureRegion region = tile.getTextureRegion();
 				final Texture texture = region.getTexture();
 
-				final float x1 = col * layerTileWidth;
-				final float y1 = row * layerTileHeight;
+				final float x1 = col * layerTileWidth + tile.getOffsetX() * unitScale;
+				final float y1 = row * layerTileHeight + tile.getOffsetY() * unitScale;
 				final float x2 = x1 + region.getRegionWidth() * unitScale;
 				final float y2 = y1 + region.getRegionHeight() * unitScale;
 

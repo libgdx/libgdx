@@ -131,8 +131,8 @@ public class IsometricTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x;
-					float y1 = y;
+					float x1 = x + tile.getOffsetX() * unitScale;
+					float y1 = y + tile.getOffsetY() * unitScale;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
 

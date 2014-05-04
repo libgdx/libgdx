@@ -305,6 +305,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			int margin = element.getIntAttribute("margin", 0);
 			String source = element.getAttribute("source", null);
 
+			int offsetX = 0;
+			int offsetY = 0;
+
 			String imageSource = "";
 			int imageWidth = 0, imageHeight = 0;
 
@@ -318,6 +321,11 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
+					Element offset = element.getChildByName("tileoffset");
+					if (offset != null) {
+						offsetX = offset.getIntAttribute("x", 0);
+						offsetY = offset.getIntAttribute("y", 0);
+					}
 					Element imageElement = element.getChildByName("image");
 					imageSource = imageElement.getAttribute("source");
 					imageWidth = imageElement.getIntAttribute("width", 0);
@@ -326,6 +334,11 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
+				Element offset = element.getChildByName("tileoffset");
+				if (offset != null) {
+					offsetX = offset.getIntAttribute("x", 0);
+					offsetY = offset.getIntAttribute("y", 0);
+				}
 				Element imageElement = element.getChildByName("image");
 				if (imageElement != null) {
 					imageSource = imageElement.getAttribute("source");
@@ -378,6 +391,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 
 					int tileid = firstgid + region.index;
 					tile.setId(tileid);
+					tile.setOffsetX(offsetX);
+					tile.setOffsetY(yUp ? -offsetY : offsetY);
 					tileset.putTile(tileid, tile);
 				}
 			}
@@ -396,6 +411,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 						tile = new StaticTiledMapTile(region);
 						if (!yUp) region.flip(false, true);
 						tile.setId(tileid);
+						tile.setOffsetX(offsetX);
+						tile.setOffsetY(yUp ? -offsetY : offsetY);
 						tileset.putTile(tileid, tile);
 					}
 				}

@@ -41,6 +41,8 @@ public class SoundLoader extends AsynchronousAssetLoader<Sound, SoundLoader.Soun
 
 	@Override
 	public Sound loadSync (AssetManager manager, String fileName, FileHandle file, SoundParameter parameter) {
+		Sound sound = this.sound;
+		this.sound = null;
 		return sound;
 	}
 

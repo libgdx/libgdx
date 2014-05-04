@@ -31,7 +31,10 @@ public interface TextureProvider {
 	public static class FileTextureProvider implements TextureProvider {
 		@Override
 		public Texture load (String fileName) {
-			return new Texture(Gdx.files.internal(fileName));
+			Texture result = new Texture(Gdx.files.internal(fileName));
+			result.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+			result.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+			return result;
 		}
 	}
 
