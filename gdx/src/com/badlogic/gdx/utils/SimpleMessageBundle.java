@@ -14,25 +14,26 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.i18n;
+package com.badlogic.gdx.utils;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.StringBuilder;
 
 /** A {@code SimpleMessageBundle} is a bundle of string containing arguments. The replaced arguments are not localized.
  * 
  * @author davebaol */
 public class SimpleMessageBundle extends I18NBundle {
 
-	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code>, the default locale and the default
-	 * encoding "ISO-8859-1".
+	StringBuilder buffer = new StringBuilder();
+
+	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code>, the default locale and the
+	 * default encoding "ISO-8859-1".
 	 * 
 	 * <p>
-	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle) I18NBundle.createBundle(SimpleMessageBundle.class,
-	 * baseFileHandle)}
+	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle)
+	 * I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle)}
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @exception NullPointerException if <code>baseFileHandle</code> is <code>null</code>
@@ -42,12 +43,12 @@ public class SimpleMessageBundle extends I18NBundle {
 		return I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle);
 	}
 
-	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code> and <code>locale</code>. Also, the default encoding
-	 * "ISO-8859-1" is used.
+	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code> and <code>locale</code>. Also, the
+	 * default encoding "ISO-8859-1" is used.
 	 * 
 	 * <p>
-	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle, Locale) I18NBundle.createBundle(SimpleMessageBundle.class,
-	 * baseFileHandle, locale)}
+	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle, Locale)
+	 * I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle, locale)}
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param locale the locale for which a bundle is desired
@@ -58,11 +59,12 @@ public class SimpleMessageBundle extends I18NBundle {
 		return I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle, locale);
 	}
 
-	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code> and <code>encoding</code>; the default locale is used.
+	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code> and <code>encoding</code>; the
+	 * default locale is used.
 	 * 
 	 * <p>
-	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle, String) I18NBundle.createBundle(SimpleMessageBundle.class,
-	 * baseFileHandle, encoding)}
+	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle, String)
+	 * I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle, encoding)}
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param encoding the charter encoding
@@ -73,11 +75,12 @@ public class SimpleMessageBundle extends I18NBundle {
 		return I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle, encoding);
 	}
 
-	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code>, <code>locale</code> and <code>encoding</code>.
+	/** Creates a new {@code SimpleMessageBundle} using the specified <code>baseFileHandle</code>, <code>locale</code> and
+	 * <code>encoding</code>.
 	 * 
 	 * <p>
-	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle, Locale, String) I18NBundle.createBundle(SimpleMessageBundle.class,
-	 * baseFileHandle, locale, encoding)}
+	 * This method is a shortcut for {@link I18NBundle#createBundle(Class, FileHandle, Locale, String)
+	 * I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle, locale, encoding)}
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param locale the locale for which a bundle is desired
@@ -90,17 +93,20 @@ public class SimpleMessageBundle extends I18NBundle {
 		return I18NBundle.createBundle(SimpleMessageBundle.class, baseFileHandle, locale, encoding);
 	}
 
-	/**
-	 * Formats the given {@code pattern} replacing any placeholder with the corresponding object from {@code args} converted to a string with {@code String.toString()}.
+	/** Formats the given {@code pattern} replacing any placeholder with the corresponding object from {@code args} converted to a
+	 * string with {@code String.toString()}.
 	 * <p>
+	 * If nothing has been replaced this implementation returns the pattern itself.
+	 * 
 	 * @param pattern the pattern
 	 * @param args the arguments
 	 * @return the formatted pattern
-	 * @exception IllegalArgumentException if the pattern is invalid
-	 */
+	 * @exception IllegalArgumentException if the pattern is invalid */
 	@Override
 	protected String formatPattern (String pattern, Object[] args) {
-		StringBuilder buffer = new StringBuilder();
+		buffer.setLength(0);
+		boolean hasPlaceholders = false;
+		boolean hasQuotes = false;
 		int placeholder = -1;
 		boolean inQuote = false;
 		int patternLength = pattern.length();
@@ -108,6 +114,7 @@ public class SimpleMessageBundle extends I18NBundle {
 			char ch = pattern.charAt(i);
 			if (placeholder < 0) { // processing constant part
 				if (ch == '\'') {
+					hasQuotes = true;
 					if (i + 1 < patternLength && pattern.charAt(i + 1) == '\'') {
 						buffer.append(ch); // handle doubles
 						++i;
@@ -115,6 +122,7 @@ public class SimpleMessageBundle extends I18NBundle {
 						inQuote = !inQuote;
 					}
 				} else if (ch == '{' && !inQuote) {
+					hasPlaceholders = true;
 					placeholder = 0;
 				} else {
 					buffer.append(ch);
@@ -137,6 +145,6 @@ public class SimpleMessageBundle extends I18NBundle {
 		}
 		if (placeholder >= 0) throw new IllegalArgumentException("Unmatched braces in the pattern.");
 
-		return buffer.toString();
+		return hasPlaceholders || hasQuotes ? buffer.toString() : pattern;
 	}
 }

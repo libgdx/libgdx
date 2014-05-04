@@ -25,9 +25,6 @@ import java.io.Serializable;
 //import libcore.icu.ICU;
 
 
-import com.badlogic.gdx.Gdx;
-import com.google.gwt.i18n.client.LocaleInfo;
-
 /**
  * {@code Locale} represents a language/country/variant combination. Locales are used to
  * alter the presentation of information such as numbers or dates to suit the conventions

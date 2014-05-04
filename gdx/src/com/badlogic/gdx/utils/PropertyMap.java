@@ -26,7 +26,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Date;
-import java.util.Map;
 
 /** A {@code PropertyMap} is an {@code ObjectMap<String,String>} whose key/value pairs can be loaded from and stored to a stream
  * with the same line-oriented syntax supported by {@code java.util.Properties}.
@@ -39,18 +38,15 @@ import java.util.Map;
  * </ul> */
 public class PropertyMap extends ObjectMap<String, String> {
 
-	private static final long serialVersionUID = 1L;
-
 	private static final int NONE = 0, SLASH = 1, UNICODE = 2, CONTINUE = 3, KEY_DONE = 4, IGNORE = 5;
 
 	public PropertyMap () {
 	}
 
-	/** Reads a property list (key/value pairs) from the input byte stream in a format compatible with
-	 * <code>java.util.Properties</code>. The input stream is in a simple line-oriented is assumed to use the ISO 8859-1 character
-	 * encoding; that is each byte is one Latin1 character. Characters not in Latin1, and certain special characters, are
-	 * represented in keys and elements using <a
-	 * href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.3">Unicode escapes</a>.
+	/** Reads a property list (key/value pairs) from the input byte stream in a simple line-oriented format compatible with
+	 * <code>java.util.Properties</code>. The input stream is assumed to use the ISO 8859-1 character encoding; that is each byte
+	 * is one Latin1 character. Characters not in Latin1, and certain special characters, are represented in keys and elements
+	 * using <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.3">Unicode escapes</a>.
 	 * <p>
 	 * The specified stream remains open after this method returns.
 	 * 
@@ -64,7 +60,7 @@ public class PropertyMap extends ObjectMap<String, String> {
 		loadImpl(new InputStreamReader(inStream, "ISO-8859-1"));
 	}
 
-	/** Reads a property list (key/value pairs) from the input character stream a format compatible with
+	/** Reads a property list (key/value pairs) from the input character stream in a simple line-oriented format compatible with
 	 * <code>java.util.Properties</code>.
 	 * <p>
 	 * The specified stream remains open after this method returns.
@@ -79,6 +75,7 @@ public class PropertyMap extends ObjectMap<String, String> {
 		loadImpl(reader);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void loadImpl (Reader in) throws IOException {
 		int mode = NONE, unicode = 0, count = 0;
 		char nextChar, buf[] = new char[40];
@@ -238,9 +235,9 @@ public class PropertyMap extends ObjectMap<String, String> {
 		}
 	}
 
-	/** Writes this property list (key/value pairs) in this <code>PropertyMap</code> to the output character stream in a format
-	 * compatible with <code>java.util.Properties</code>. The specified {@code OutputStream} is written using ISO-8859-1 character
-	 * encoding.
+	/** Writes this property list (key/value pairs) in this <code>PropertyMap</code> to the output character stream in a simple
+	 * line-oriented format compatible with <code>java.util.Properties</code>. The specified {@code OutputStream} is written using
+	 * ISO-8859-1 character encoding.
 	 * 
 	 * @param out the {@code OutputStream}
 	 * @param comment an optional comment to be written, or null.
@@ -252,8 +249,8 @@ public class PropertyMap extends ObjectMap<String, String> {
 
 	private static final String LINE_SEPARATOR = "\n"; // System.lineSeparator() is not supported by GWT
 
-	/** Writes this property list (key/value pairs) in this <code>PropertyMap</code> to the output character stream in a format
-	 * compatible with <code>java.util.Properties</code>.
+	/** Writes this property list (key/value pairs) in this <code>PropertyMap</code> to the output character stream in a simple
+	 * line-oriented format compatible with <code>java.util.Properties</code>.
 	 * 
 	 * @param writer an output character stream writer.
 	 * @param comment an optional comment to be written, or null.

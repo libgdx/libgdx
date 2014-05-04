@@ -24,15 +24,15 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.i18n.I18NBundle;
-import com.badlogic.gdx.i18n.MessageBundle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.MessageBundle;
 
 /** Performs some tests with {@link I18NBundle} and prints the results on the screen.
  * 
  * @author davebaol */
-public class I18NTest extends GdxTest {
+public class I18NMessageTest extends GdxTest {
 
 	String message = "";
 	BitmapFont font;
@@ -79,7 +79,7 @@ public class I18NTest extends GdxTest {
 		} catch (Throwable t) {
 			message = "FAILED: " + t.getMessage() + "\n";
 			message += t.getClass();
-			Gdx.app.error(I18NTest.class.getSimpleName(), "Error", t);
+			Gdx.app.error(I18NMessageTest.class.getSimpleName(), "Error", t);
 		}
 	}
 

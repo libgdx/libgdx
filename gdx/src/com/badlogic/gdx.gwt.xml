@@ -217,11 +217,6 @@
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
-
-	<!--i18n -->
-		<include name="i18n/ConstantBundle.java"/>
-		<include name="i18n/I18NBundle.java"/>
-		<include name="i18n/SimpleMessageBundle.java"/>
 		
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
@@ -348,6 +343,7 @@
 		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
+		<include name="utils/I18NBundle.java"/>
 		<include name="utils/IdentityMap.java"/>
 		<include name="utils/IntArray.java"/>
 		<include name="utils/IntFloatMap.java"/>
@@ -385,6 +381,7 @@
 		<exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/ShortArray.java"/>
 		<include name="utils/SnapshotArray.java"/>
+		<include name="utils/SimpleMessageBundle.java"/>
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>
 		<include name="utils/StreamUtils.java"/>

@@ -14,14 +14,13 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.i18n;
+package com.badlogic.gdx.utils;
 
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.StringBuilder;
 
 /** A {@code MessageBundle} is a bundle of strings containing typed arguments. The replaced arguments are properly localized
  * according to the bundle's locale.
@@ -29,6 +28,7 @@ import com.badlogic.gdx.utils.StringBuilder;
  * {@code MessageBundle}s are not supported by the GWT backend.
  * 
  * @see MessageFormat
+ * 
  * @author davebaol */
 public class MessageBundle extends I18NBundle {
 

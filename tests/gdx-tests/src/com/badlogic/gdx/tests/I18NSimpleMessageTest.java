@@ -24,11 +24,11 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.i18n.I18NBundle;
-import com.badlogic.gdx.i18n.MessageBundle;
-import com.badlogic.gdx.i18n.SimpleMessageBundle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.MessageBundle;
+import com.badlogic.gdx.utils.SimpleMessageBundle;
 
 /** Performs some tests with {@link I18NBundle} and prints the results on the screen.
  * 
