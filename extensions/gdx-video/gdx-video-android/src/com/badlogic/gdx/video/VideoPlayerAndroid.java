@@ -200,6 +200,7 @@ public class VideoPlayerAndroid
 		}
 
 		// Draw texture
+		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, textures[0]);
 		shader.begin();
 		shader.setUniformMatrix(UNIFORM_CAMERATRANSFORM, cam.combined);
 		mesh.render(shader, GL20.GL_TRIANGLES);
