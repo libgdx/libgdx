@@ -258,6 +258,7 @@
 		<include name="maps/tiled/renderers/HexagonalTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricStaggeredTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/OrthoCachedTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
 
 	<!-- maps/tiles/tiles -->
