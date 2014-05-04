@@ -1,7 +1,13 @@
 package com.badlogic.gdx.video;
 
+import java.lang.reflect.InvocationTargetException;
+
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
@@ -11,8 +17,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * @author Rob Bogie <rob.bogie@codepoke.net>
  *
  */
-public abstract class VideoPlayerCreator {
-	public static VideoPlayerCreator creator;
+public class VideoPlayerCreator {
+	private static Class<? extends VideoPlayer> videoPlayerClass;
 
 	/**
 	 * Creates a VideoPlayer with default rendering parameters. It will use a FitViewport which uses the video size as
@@ -20,7 +26,20 @@ public abstract class VideoPlayerCreator {
 	 *
 	 * @return A new instance of VideoPlayer
 	 */
-	public abstract VideoPlayer create();
+	public static VideoPlayer createVideoPlayer() {
+		initialize();
+		if (videoPlayerClass == null)
+			return new VideoPlayerStub();
+
+		try {
+			return videoPlayerClass.newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 * Creates a VideoPlayer with the given viewport. The video's dimensions will be used to set the world size on this
@@ -31,7 +50,29 @@ public abstract class VideoPlayerCreator {
 	 *            The viewport to use
 	 * @return A new instance of VideoPlayer
 	 */
-	public abstract VideoPlayer create(Viewport viewport);
+	public static VideoPlayer createVideoPlayer(Viewport viewport) {
+		initialize();
+		if (videoPlayerClass == null)
+			return new VideoPlayerStub();
+
+		try {
+			return videoPlayerClass.getConstructor(Viewport.class)
+									.newInstance(viewport);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	/**
 	 * Creates a VideoPlayer with a custom Camera and mesh. When using this, the resize method of VideoPlayer will not
@@ -43,5 +84,52 @@ public abstract class VideoPlayerCreator {
 	 *            A mesh used to draw the texture on.
 	 * @return A new instance of VideoPlayer
 	 */
-	public abstract VideoPlayer create(Camera cam, Mesh mesh);
+	public static VideoPlayer createVideoPlayer(Camera cam, Mesh mesh) {
+		initialize();
+		if (videoPlayerClass == null)
+			return new VideoPlayerStub();
+
+		try {
+			return videoPlayerClass.getConstructor(Camera.class, Mesh.class)
+									.newInstance(cam, mesh);
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void initialize() {
+		if (videoPlayerClass != null)
+			return;
+
+		String className = null;
+		ApplicationType type = Gdx.app.getType();
+
+		if (type == ApplicationType.Android) {
+			if (Gdx.app.getVersion() >= 12) {
+				className = "com.badlogic.gdx.video.VideoPlayerAndroid";
+			} else {
+				Gdx.app.log("Gdx-Video", "VideoPlayer can't be used on android < API level 12");
+			}
+		} else if (type == ApplicationType.Desktop) {
+			className = "com.badlogic.gdx.video.VideoPlayerDesktop";
+		}
+
+		try {
+			videoPlayerClass = ClassReflection.forName(className);
+		} catch (ReflectionException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -35,7 +35,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  *
  */
 public class VideoPlayerAndroid
-		implements VideoPlayer, OnFrameAvailableListener {
+implements VideoPlayer, OnFrameAvailableListener {
 
 	private static final String ATTRIBUTE_TEXCOORDINATE = ShaderProgram.TEXCOORD_ATTRIBUTE + "0";
 	private static final String VARYING_TEXCOORDINATE = "varTexCoordinate";
@@ -119,8 +119,6 @@ public class VideoPlayerAndroid
 		player.setOnPreparedListener(new OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
-				prepared = true;
-
 				float x = -mp.getVideoWidth() / 2;
 				float y = -mp.getVideoHeight() / 2;
 				float width = mp.getVideoWidth();
@@ -132,6 +130,8 @@ public class VideoPlayerAndroid
 				                              x+width, y+height, 0, 1, 0,
 				                              x, y+height, 0, 0, 0});
 				//@formatter:on
+
+				prepared = true;
 				if (sizeListener != null) {
 					sizeListener.onVideoSize(width, height);
 				}
@@ -159,13 +159,13 @@ public class VideoPlayerAndroid
 
 		try {
 			if (file.type() == FileType.Classpath || (file.type() == FileType.Internal && !file.file()
-					.exists())) {
+																								.exists())) {
 				AssetManager assets = ((AndroidApplication) Gdx.app).getAssets();
 				AssetFileDescriptor descriptor = assets.openFd(file.name());
 				player.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
 			} else {
 				player.setDataSource(file.file()
-											.getAbsolutePath());
+				                     .getAbsolutePath());
 			}
 			player.setSurface(new Surface(videoTexture));
 			player.prepareAsync();
