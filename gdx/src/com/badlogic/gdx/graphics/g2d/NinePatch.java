@@ -493,6 +493,18 @@ public class NinePatch {
 		this.padBottom = bottom;
 	}
 
+	/** Multiplies the top/left/bottom/right sizes and padding by the specified amount. */
+	public void scale (float scaleX, float scaleY) {
+		leftWidth *= scaleX;
+		rightWidth *= scaleX;
+		topHeight *= scaleY;
+		bottomHeight *= scaleY;
+		padLeft *= scaleX;
+		padRight *= scaleX;
+		padTop *= scaleY;
+		padBottom *= scaleY;
+	}
+
 	public Texture getTexture () {
 		return texture;
 	}
