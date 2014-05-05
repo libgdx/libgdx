@@ -219,7 +219,7 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 		canCacheMoreS = row1 > 0;
 
 		float[] vertices = this.vertices;
-		for (int row = row1; row < row2; row++) {
+		for (int row = row2; row >= row1; row--) {
 			for (int col = col1; col < col2; col++) {
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
 				if (cell == null) continue;

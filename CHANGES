@@ -1,4 +1,5 @@
 [1.0.1]
+- Tiled maps are now always y-up
 - Tiled maps now support drawing offsets for tiles
 - FileHandle#list is now supported in GWT!
 - FileHandle#list now supports FileFilters

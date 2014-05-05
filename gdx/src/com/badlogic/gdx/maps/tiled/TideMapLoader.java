@@ -167,8 +167,6 @@ public class TideMapLoader extends SynchronousAssetLoader<TiledMap, TideMapLoade
 			FileHandle image = getRelativeFileHandle(tideFile, imageSource);
 			TextureRegion texture = imageResolver.getImage(image.path());
 
-			// TODO: Actually load the tilesheet
-			// Need to make global ids as Tide doesn't have global ids.
 			TiledMapTileSets tilesets = map.getTileSets();
 			int firstgid = 1;
 			for (TiledMapTileSet tileset : tilesets) {
