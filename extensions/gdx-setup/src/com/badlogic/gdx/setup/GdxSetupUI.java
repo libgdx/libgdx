@@ -166,7 +166,7 @@ public class GdxSetupUI extends JFrame {
 			}
 		}
 
-		String selectedVersion = (String)ui.form.versionButton.getSelectedItem();
+		String selectedVersion = (String) ui.form.versionButton.getSelectedItem();
 		if (selectedVersion.equals("Nightlies")) {
 			DependencyBank.libgdxVersion = DependencyBank.libgdxNightlyVersion;
 		} else {
@@ -403,7 +403,7 @@ public class GdxSetupUI extends JFrame {
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel versionLabel = new JLabel("LibGDX Version");
-		JComboBox versionButton = new JComboBox(new String[] {"Release 1.0.0", "Nightlies"});
+		JComboBox versionButton = new JComboBox(new String[] {"Release 1.0.1", "Release 1.0.0", "Nightlies"});
 		JLabel nightlyWarning = new JLabel("Nightlies are development builds, be aware!");
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
