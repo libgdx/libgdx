@@ -15,6 +15,7 @@
 #define STBI_HEADER_FILE_ONLY
 #define STBI_NO_FAILURE_STRINGS
 #include "stb_image.c"
+#include "jpgd_c.h"
 
 static uint32_t gdx2d_blend = GDX2D_BLEND_NONE;
 static uint32_t gdx2d_scale = GDX2D_SCALE_NEAREST;
@@ -224,7 +225,10 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len, uint32_t req
 	// TODO fix this! Add conversion to requested format
 	if(req_format > GDX2D_FORMAT_RGBA8888) 
 		req_format = GDX2D_FORMAT_RGBA8888;
+
 	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, req_format);
+	if (pixels == NULL && stbi_unsupported_format() == 1)
+		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3); // FIXME Currently only rgb format works
 	if(pixels == NULL)
 		return NULL;
 
@@ -281,7 +285,9 @@ void gdx2d_set_scale (uint32_t scale) {
 }
 
 const char *gdx2d_get_failure_reason(void) {
-  return stbi_failure_reason();
+	if (stbi_failure_reason())
+		return stbi_failure_reason();
+    return jpgd_failure_reason();
 }
 
 static inline void clear_alpha(const gdx2d_pixmap* pixmap, uint32_t col) {
