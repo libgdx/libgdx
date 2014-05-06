@@ -188,11 +188,12 @@ public class Touchpad extends Widget {
 		return touched;
 	}
 
-	public boolean getResetOnTouchUp() {
+	public boolean getResetOnTouchUp () {
 		return resetOnTouchUp;
 	}
 
-	public void setResetOnTouchUp(boolean reset) {
+	/** @param reset Whether to reset the knob to the center on touch up. */
+	public void setResetOnTouchUp (boolean reset) {
 		this.resetOnTouchUp = reset;
 	}
 
