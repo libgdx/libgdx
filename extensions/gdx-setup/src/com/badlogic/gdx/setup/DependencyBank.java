@@ -19,8 +19,8 @@ public class DependencyBank {
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.3";
-	static String androidPluginImport = "com.android.tools.build:gradle:0.9+";
+	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.4";
+	static String androidPluginImport = "com.android.tools.build:gradle:0.10+";
 	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.7";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
@@ -80,17 +80,17 @@ public class DependencyBank {
 			null
 		),
 		TOOLS(
-			null,
+			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
-			null,
-			null,
-			null
+			new String[]{},
+			new String[]{},
+			new String[]{}
 		),
 		CONTROLLERS(
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
-			new String[] { }, // works on iOS but never reports any controllers :)
+			new String[] {}, // works on iOS but never reports any controllers :)
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"}
 		),
 		BOX2D(
