@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 
@@ -62,14 +61,12 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * abbreviation: BaseName_us__POSIX or BaseName__DE_PREEURO. But it's not allowed to circumvent both language and country:
  * BaseName___VARIANT is illegal.
  * 
- * @see PropertyMap
+ * @see PropertiesUtils
  * 
  * @author davebaol */
 public abstract class I18NBundle {
 
-	private static final String LOG_TAG = I18NBundle.class.getSimpleName();
-
-	private static final String DEFAULT_ENCODING = "ISO-8859-1";
+	private static final String DEFAULT_ENCODING = "UTF-8";
 
 	/** The parent of this {@code I18NBundle} that is used if this bundle doesn't include the requested resource. */
 	protected I18NBundle parent;
@@ -78,10 +75,10 @@ public abstract class I18NBundle {
 	private Locale locale;
 
 	/** The properties for this bundle. */
-	private PropertyMap properties;
+	private ObjectMap<String, String> properties;
 
 	/** Creates a new bundle using the specified <code>class</code> and <code>baseFileHandle</code>, the default locale and the
-	 * default encoding "ISO-8859-1".
+	 * default encoding "UTF-8".
 	 * 
 	 * @param clazz the class of the bundle to be returned
 	 * @param baseFileHandle the file handle to the base of the bundle
@@ -93,7 +90,7 @@ public abstract class I18NBundle {
 	}
 
 	/** Creates a new bundle using the specified <code>class</code>, <code>baseFileHandle</code> and <code>locale</code>; the
-	 * default encoding "ISO-8859-1" is used.
+	 * default encoding "UTF-8" is used.
 	 * 
 	 * @param clazz the class of the bundle to be returned
 	 * @param baseFileHandle the file handle to the base of the bundle
@@ -132,23 +129,7 @@ public abstract class I18NBundle {
 		return createBundleImpl(clazz, baseFileHandle, locale, encoding);
 	}
 
-	// TODO Remove this method. It just logs the parent chain after calling the actual implementation.
 	private static <T extends I18NBundle> T createBundleImpl (Class<T> clazz, FileHandle baseFileHandle, Locale locale,
-		String encoding) {
-		T rb = createBundleImpl2(clazz, baseFileHandle, locale, encoding);
-		// Log the requested locale and the parent chain
-		StringBuffer sb = new StringBuffer("Requested locale = ");
-		sb.append(locale.equals(Locale.ROOT) ? "root" : locale.toString()).append(", bundle chain = [ ");
-		for (I18NBundle p = rb; p != null; p = p.parent) {
-			String loc = p.locale.equals(Locale.ROOT) ? "root" : p.locale.toString();
-			sb.append(loc).append(" ");
-		}
-		sb.append("]");
-		Gdx.app.log(LOG_TAG, sb.toString());
-		return rb;
-	}
-
-	private static <T extends I18NBundle> T createBundleImpl2 (Class<T> clazz, FileHandle baseFileHandle, Locale locale,
 		String encoding) {
 		if (baseFileHandle == null || locale == null || encoding == null) throw new NullPointerException();
 
@@ -164,7 +145,7 @@ public abstract class I18NBundle {
 
 			// Check the loaded bundle (if any)
 			if (bundle != null) {
-				Locale bundleLocale = bundle.getLocale(); // WTH?  GWT can't access bundle.locale directly
+				Locale bundleLocale = bundle.getLocale(); // WTH? GWT can't access bundle.locale directly
 				boolean isBaseBundle = bundleLocale.equals(Locale.ROOT);
 
 				if (!isBaseBundle || bundleLocale.equals(locale)) {
@@ -299,7 +280,6 @@ public abstract class I18NBundle {
 		T bundle = loadBundle(clazz, baseFileHandle, encoding, targetLocale);
 		if (bundle != null) {
 			bundle.parent = parent;
-// bundle.locale = targetLocale;
 			return bundle;
 		}
 
@@ -310,23 +290,21 @@ public abstract class I18NBundle {
 	private static final <T extends I18NBundle> T loadBundle (Class<T> clazz, FileHandle baseFileHandle, String encoding,
 		Locale targetLocale) {
 		T bundle = null;
+		InputStream stream = null;
 		try {
 			FileHandle fileHandle = toFileHandle(baseFileHandle, targetLocale);
 			if (fileHandle.exists()) {
-				InputStream stream = null;
-				try {
-					// Instantiate the bundle
-					bundle = ClassReflection.newInstance(clazz);
+				// Instantiate the bundle
+				bundle = ClassReflection.newInstance(clazz);
 
-					// Load bundle properties from the stream with the specified encoding
-					stream = fileHandle.read();
-					bundle.load(new InputStreamReader(stream, encoding));
-				} finally {
-					StreamUtils.closeQuietly(stream);
-				}
+				// Load bundle properties from the stream with the specified encoding
+				stream = fileHandle.read();
+				bundle.load(new InputStreamReader(stream, encoding));
 			}
-		} catch (Exception exception) {
-			throw new GdxRuntimeException(exception);
+		} catch (Throwable t) {
+			throw new GdxRuntimeException(t);
+		} finally {
+			StreamUtils.closeQuietly(stream);
 		}
 		if (bundle != null) {
 			bundle.setLocale(targetLocale);
@@ -335,16 +313,15 @@ public abstract class I18NBundle {
 		return bundle;
 	}
 
-	/** Load the underlying {@link PropertyMap} from the specified reader.
+	/** Load the properties from the specified reader.
 	 * 
 	 * @param reader the reader
-	 * @throws IOException if an error occurred when reading from the input stream.
-	 */
+	 * @throws IOException if an error occurred when reading from the input stream. */
 	// NOTE:
-	// This method can't be private otherwise GWT can't access it from loadBundle() 
+	// This method can't be private otherwise GWT can't access it from loadBundle()
 	protected void load (Reader reader) throws IOException {
-		properties = new PropertyMap();
-		properties.load(reader);
+		properties = new ObjectMap<String, String>();
+		PropertiesUtils.load(properties, reader);
 	}
 
 	/** Converts the given <code>baseFileHandle</code> and <code>locale</code> to the corresponding file handle.

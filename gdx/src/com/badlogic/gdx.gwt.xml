@@ -370,8 +370,8 @@
 		<include name="utils/Pool.java"/>
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>
-		<include name="utils/PropertyMap.java"/>
 		<include name="utils/Predicate.java"/>
+		<include name="utils/PropertiesUtils.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>
