@@ -22,7 +22,8 @@
 				<include name="memcpy_wrap.c"/>
 		<include name="**/*.c"/>
 
-		
+				<exclude name="ffmpeg/**/*"/>
+
 	</fileset>
 	
 	<!-- define g++ compiler, options and files to compile -->
@@ -32,13 +33,14 @@
 		<exclude name="target/"/>
 				<include name="**/*.cpp"/>
 
-		
+				<exclude name="ffmpeg/**/*"/>
+
 	</fileset>
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="linker-opts" value="-shared -m32"/>
-	<property name="libraries" value="-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread"/>
+	<property name="libraries" value="-Lffmpeg/libs/linux32/lib/ -lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">

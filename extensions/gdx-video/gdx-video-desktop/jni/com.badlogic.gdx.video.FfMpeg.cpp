@@ -1,4 +1,4 @@
-#include <net.codepoke.util.videoplayer.FfMpeg.h>
+#include <com.badlogic.gdx.video.FfMpeg.h>
 
 //@line:165
 
@@ -11,7 +11,7 @@
 		#include <libswscale/swscale.h>
 		}
 		#include "Utilities.h"
-	 JNIEXPORT void JNICALL Java_net_codepoke_util_videoplayer_FfMpeg_register(JNIEnv* env, jclass clazz) {
+	 JNIEXPORT void JNICALL Java_com_badlogic_gdx_video_FfMpeg_register(JNIEnv* env, jclass clazz) {
 
 
 //@line:177
@@ -22,7 +22,7 @@
 
 }
 
-JNIEXPORT void JNICALL Java_net_codepoke_util_videoplayer_FfMpeg_setDebugLoggingNative(JNIEnv* env, jclass clazz, jboolean debugLogging) {
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_video_FfMpeg_setDebugLoggingNative(JNIEnv* env, jclass clazz, jboolean debugLogging) {
 
 
 //@line:186

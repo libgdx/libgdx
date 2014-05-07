@@ -1,15 +1,15 @@
-#include <net.codepoke.util.videoplayer.VideoDecoder.h>
+#include <com.badlogic.gdx.video.VideoDecoder.h>
 
-//@line:106
+//@line:114
 
 	 	#include "VideoDecoder.h"
 	 	#include "Utilities.h"
-	 	
+
 	 	#include <stdexcept>
-	 	
+
 	 	JavaVM* jvm = NULL;
 	 	JavaVMAttachArgs args;
-	 	
+
 	 	struct FfMpegCustomFileReaderData {
             jobject objectToCall;
             jmethodID methodToCall;
@@ -30,13 +30,13 @@
 		    } else if (getEnvStat == JNI_EVERSION) {
 		        logError("Unsupported version\n");
 		    }
-		
+
 		jint integer = env->CallIntMethod(customData->objectToCall, customData->methodToCall, env->NewDirectByteBuffer(buffer, bufferSize));
-		
+
 		    if (env->ExceptionCheck()) {
 		        env->ExceptionDescribe();
 		    }
-		
+
 		    jvm->DetachCurrentThread();
             logDebug("Size %d on %p\n", bufferSize, buffer);
             return integer;
@@ -50,30 +50,30 @@
 //            customData->objectToCall = NULL;
 //            customData->methodToCall = NULL;
         }
-		
-	 JNIEXPORT jlong JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_init(JNIEnv* env, jobject object) {
+
+	 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_video_VideoDecoder_init(JNIEnv* env, jobject object) {
 
 
-//@line:162
+//@line:170
 
-	
+
 		if(jvm == NULL) {
             env->GetJavaVM(&jvm);
         }
-	
+
 		args.version = JNI_VERSION_1_6;
 		args.name = "FFMpegInternalThread";
-		
+
 		VideoDecoder* pointer = new VideoDecoder();
 		return (jlong)pointer;
-	
+	 
 
 }
 
-static inline jobject wrapped_Java_net_codepoke_util_videoplayer_VideoDecoder_loadStream
+static inline jobject wrapped_Java_com_badlogic_gdx_video_VideoDecoder_loadStream
 (JNIEnv* env, jobject object, jobject decodingObject, jstring obj_methodName, char* methodName) {
 
-//@line:184
+//@line:192
 
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		try {
@@ -100,9 +100,9 @@ static inline jobject wrapped_Java_net_codepoke_util_videoplayer_VideoDecoder_lo
                 audioBuffer = env->NewDirectByteBuffer(bufferInfo.audioBuffer, bufferInfo.audioBufferSize);
             }
 
-            jclass cls = env->FindClass("net/codepoke/util/videoplayer/VideoDecoder$VideoDecoderBuffers");
+            jclass cls = env->FindClass("com/badlogic/gdx/video/VideoDecoder$VideoDecoderBuffers");
             if(cls == NULL) {
-                logError("[wrapped_Java_net_codepoke_util_videoplayer_VideoDecoder_loadFile] Could not find VideoDecoderBuffers class");
+                logError("[wrapped_Java_com_badlogic_gdx_videoVideoDecoder_loadFile] Could not find VideoDecoderBuffers class");
                 return NULL;
             }
             jmethodID constructor = env->GetMethodID(cls, "<init>", "(Ljava/nio/ByteBuffer;Ljava/nio/ByteBuffer;IIII)V");
@@ -122,58 +122,58 @@ static inline jobject wrapped_Java_net_codepoke_util_videoplayer_VideoDecoder_lo
 			env->ThrowNew(clazz, e.what());
 		}
 		return 0;
-	
+	 
 }
 
-JNIEXPORT jobject JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_loadStream(JNIEnv* env, jobject object, jobject decodingObject, jstring obj_methodName) {
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_video_VideoDecoder_loadStream(JNIEnv* env, jobject object, jobject decodingObject, jstring obj_methodName) {
 	char* methodName = (char*)env->GetStringUTFChars(obj_methodName, 0);
 
-	jobject JNI_returnValue = wrapped_Java_net_codepoke_util_videoplayer_VideoDecoder_loadStream(env, object, decodingObject, obj_methodName, methodName);
+	jobject JNI_returnValue = wrapped_Java_com_badlogic_gdx_video_VideoDecoder_loadStream(env, object, decodingObject, obj_methodName, methodName);
 
 	env->ReleaseStringUTFChars(obj_methodName, methodName);
 
 	return JNI_returnValue;
 }
 
-JNIEXPORT jobject JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_nextVideoFrame(JNIEnv* env, jobject object) {
+JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_video_VideoDecoder_nextVideoFrame(JNIEnv* env, jobject object) {
 
 
-//@line:238
+//@line:246
 
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		u_int8_t* buffer = pointer->nextVideoFrame();
-		
+
 		return (buffer == NULL) ? NULL : env->NewDirectByteBuffer(buffer, pointer->getVideoFrameSize());
-	
+	 
 
 }
 
-JNIEXPORT void JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_updateAudioBuffer(JNIEnv* env, jobject object) {
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_video_VideoDecoder_updateAudioBuffer(JNIEnv* env, jobject object) {
 
 
-//@line:249
+//@line:257
 
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		pointer->updateAudioBuffer();
-	
+	 
 
 }
 
-JNIEXPORT jdouble JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_getCurrentFrameTimestamp(JNIEnv* env, jobject object) {
-
-
-//@line:259
-
-		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
-		return pointer->getCurrentFrameTimestamp();
-	
-
-}
-
-JNIEXPORT void JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_disposeNative(JNIEnv* env, jobject object) {
+JNIEXPORT jdouble JNICALL Java_com_badlogic_gdx_video_VideoDecoder_getCurrentFrameTimestamp(JNIEnv* env, jobject object) {
 
 
 //@line:267
+
+		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
+		return pointer->getCurrentFrameTimestamp();
+	 
+
+}
+
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_video_VideoDecoder_disposeNative(JNIEnv* env, jobject object) {
+
+
+//@line:275
 
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		FfMpegCustomFileReaderData* data = (FfMpegCustomFileReaderData*)pointer->getCustomFileBufferFuncData();
@@ -181,18 +181,18 @@ JNIEXPORT void JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_disposeNa
             delete data;
         }
 		delete pointer;
-	
+	 
 
 }
 
-JNIEXPORT jboolean JNICALL Java_net_codepoke_util_videoplayer_VideoDecoder_isBuffered(JNIEnv* env, jobject object) {
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_video_VideoDecoder_isBuffered(JNIEnv* env, jobject object) {
 
 
-//@line:279
+//@line:287
 
 		VideoDecoder* pointer = getClassPointer<VideoDecoder>(env, object);
 		return pointer->isBuffered();
-	
+	 
 
 }
 
