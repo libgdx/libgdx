@@ -107,7 +107,13 @@ public class JniGenSharedLibraryLoader {
 	}
 
 	private String extractLibrary (String sharedLibName) {
-		String srcCrc = crc(JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName));
+		String srcCrc = null;
+		if (libraryFinder != null) {
+			srcCrc = libraryFinder.getSharedLibraryExtractFolder(sharedLibName, nativesZip);
+		}
+		if (srcCrc == null) {
+			srcCrc = crc(JniGenSharedLibraryLoader.class.getResourceAsStream("/" + sharedLibName));
+		}
 		File nativesDir = new File(System.getProperty("java.io.tmpdir") + "/jnigen/" + srcCrc);
 		File nativeFile = new File(nativesDir, sharedLibName);
 
