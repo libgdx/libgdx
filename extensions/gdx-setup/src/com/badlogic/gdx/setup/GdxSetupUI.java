@@ -144,7 +144,7 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
-		if (sdkLocation.length() == 0) {
+		if (sdkLocation.length() == 0 && modules.contains(ProjectType.ANDROID)) {
 			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
 			return;
 		}
