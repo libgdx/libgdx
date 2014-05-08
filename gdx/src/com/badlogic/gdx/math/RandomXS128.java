@@ -16,9 +16,11 @@ public class RandomXS128 extends Random{
 		s[1] = seed1;
 	}
 	
-	/** It will use {@link System#nanoTime()} as seeds*/
+	/** It will allocate a {@link Random} to generate the two long seeds*/
 	public RandomXS128(){
-		this(System.nanoTime(), System.nanoTime());
+		Random random = new Random();
+		s[0] = random.nextLong(); 
+		s[1] = random.nextLong();
 	}
 	
 	@Override
