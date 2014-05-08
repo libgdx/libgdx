@@ -114,7 +114,7 @@ public class GwtTestWrapper extends GdxTest {
 		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.app.log("GdxTestGwt", "Setting up for " + tests.length + " tests.");
 
-		ui = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		ui = new Stage();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 		container = new Table();
@@ -195,7 +195,7 @@ public class GwtTestWrapper extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		ui.setViewport(width, height, false);
+		ui.getViewport().update(width, height, true);
 		container.setSize(width, height);
 		if (test != null) {
 			test.resize(width, height);

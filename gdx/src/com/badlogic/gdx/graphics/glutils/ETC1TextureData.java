@@ -49,7 +49,7 @@ public class ETC1TextureData implements TextureData {
 
 	@Override
 	public TextureDataType getType () {
-		return TextureDataType.Compressed;
+		return TextureDataType.Custom;
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class ETC1TextureData implements TextureData {
 	}
 
 	@Override
-	public void consumeCompressedData (int target) {
+	public void consumeCustomData (int target) {
 		if (!isPrepared) throw new GdxRuntimeException("Call prepare() before calling consumeCompressedData()");
 
 		if (!Gdx.graphics.supportsExtension("GL_OES_compressed_ETC1_RGB8_texture")) {

@@ -243,12 +243,8 @@ public interface Input {
 		/** @return a human readable representation of the keycode. The returned value can be used in
 		 *         {@link Input.Keys#valueOf(String)} */
 		public static String toString (int keycode) {
-			if (keycode < 0) {
-				throw new IllegalArgumentException("keycode cannot be negative, keycode: " + keycode);
-			}
-			if (keycode > 255) {
-				throw new IllegalArgumentException("keycode cannot be greater than 255, keycode: " + keycode);
-			}
+			if (keycode < 0) throw new IllegalArgumentException("keycode cannot be negative, keycode: " + keycode);
+			if (keycode > 255) throw new IllegalArgumentException("keycode cannot be greater than 255, keycode: " + keycode);
 			switch (keycode) {
 			// META* variables should not be used with this method.
 			case UNKNOWN:
@@ -543,9 +539,7 @@ public interface Input {
 		/** @param keyname the keyname returned by the {@link Keys#toString(int)} method
 		 * @return the int keycode */
 		public static int valueOf (String keyname) {
-			if (keyNames == null) {
-				initializeKeyNames();
-			}
+			if (keyNames == null) initializeKeyNames();
 			return keyNames.get(keyname, -1);
 		}
 
@@ -554,9 +548,7 @@ public interface Input {
 			keyNames = new ObjectIntMap<String>();
 			for (int i = 0; i < 256; i++) {
 				String name = toString(i);
-				if (name != null) {
-					keyNames.put(name, i);
-				}
+				if (name != null) keyNames.put(name, i);
 			}
 		}
 	}
@@ -576,7 +568,8 @@ public interface Input {
 	/** @return The value of the accelerometer on its y-axis. ranges between [-10,10]. */
 	public float getAccelerometerZ ();
 
-	/** @return the last touch x coordinate for the first pointer in screen coordinates. The screen origin is the top left corner. */
+	/** @return The x coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
+	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getX ();
 
 	/** Returns the x coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id
@@ -594,7 +587,8 @@ public interface Input {
 	/** @return the different between the current pointer location and the last pointer location on the x-axis. */
 	public int getDeltaX (int pointer);
 
-	/** @return the last touch y coordinate for the first pointer in screen coordinates. The screen origin is the top left corner. */
+	/** @return The y coordinate of the last touch on touch screen devices and the current mouse position on desktop for the first
+	 *         pointer in screen coordinates. The screen origin is the top left corner. */
 	public int getY ();
 
 	/** Returns the y coordinate in screen coordinates of the given pointer. Pointers are indexed from 0 to n. The pointer id

@@ -87,6 +87,12 @@ public class SpriteCache implements Disposable {
 
 	private ShaderProgram customShader = null;
 
+	/** Number of render calls since the last {@link #begin()}. **/
+	public int renderCalls = 0;
+
+	/** Number of rendering calls, ever. Will not be reset unless set manually. **/
+	public int totalRenderCalls = 0;
+
 	/** Creates a cache that uses indexed geometry and can contain up to 1000 images. */
 	public SpriteCache () {
 		this(1000, false);
@@ -840,6 +846,7 @@ public class SpriteCache implements Disposable {
 	/** Prepares the OpenGL state for SpriteCache rendering. */
 	public void begin () {
 		if (drawing) throw new IllegalStateException("end must be called before begin.");
+		renderCalls = 0;
 		combinedMatrix.set(projectionMatrix).mul(transformMatrix);
 
 		Gdx.gl20.glDepthMask(false);
@@ -883,7 +890,8 @@ public class SpriteCache implements Disposable {
 		int offset = cache.offset / (verticesPerImage * VERTEX_SIZE) * 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
-		for (int i = 0, n = cache.textureCount; i < n; i++) {
+		int textureCount = cache.textureCount;
+		for (int i = 0; i < textureCount; i++) {
 			int count = counts[i];
 			textures[i].bind();
 			if (customShader != null)
@@ -892,6 +900,8 @@ public class SpriteCache implements Disposable {
 				mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
 			offset += count;
 		}
+		renderCalls += textureCount;
+		totalRenderCalls += textureCount;
 	}
 
 	/** Draws a subset of images defined for the specified cache ID.
@@ -905,11 +915,12 @@ public class SpriteCache implements Disposable {
 		length *= 6;
 		Texture[] textures = cache.textures;
 		int[] counts = cache.counts;
-		for (int i = 0, n = cache.textureCount; i < n; i++) {
+		int textureCount = cache.textureCount;
+		for (int i = 0; i < textureCount; i++) {
 			textures[i].bind();
 			int count = counts[i];
 			if (count > length) {
-				i = n;
+				i = textureCount;
 				count = length;
 			} else
 				length -= count;
@@ -919,6 +930,8 @@ public class SpriteCache implements Disposable {
 				mesh.render(shader, GL20.GL_TRIANGLES, offset, count);
 			offset += count;
 		}
+		renderCalls += cache.textureCount;
+		totalRenderCalls += textureCount;
 	}
 
 	/** Releases all resources held by this SpriteCache. */

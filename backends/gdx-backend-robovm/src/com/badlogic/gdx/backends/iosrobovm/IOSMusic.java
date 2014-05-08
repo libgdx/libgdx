@@ -16,26 +16,23 @@
 
 package com.badlogic.gdx.backends.iosrobovm;
 
-import org.robovm.cocoatouch.foundation.NSObject;
+import org.robovm.apple.foundation.NSObject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.backends.iosrobovm.objectal.AVAudioPlayerDelegate;
+import com.badlogic.gdx.backends.iosrobovm.objectal.AVAudioPlayerDelegateAdapter;
 import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioTrack;
 
-/** 
- * 
- * @author Niklas Therning
- */
+/** @author Niklas Therning */
 public class IOSMusic implements Music {
 	private final OALAudioTrack track;
 	OnCompletionListener onCompletionListener;
 
-	public IOSMusic(OALAudioTrack track) {
+	public IOSMusic (OALAudioTrack track) {
 		this.track = track;
-		this.track.setDelegate(new AVAudioPlayerDelegate.Adapter() {
+		this.track.setDelegate(new AVAudioPlayerDelegateAdapter() {
 			@Override
-			public void didFinishPlaying(NSObject player, boolean success) {
+			public void didFinishPlaying (NSObject player, boolean success) {
 				final OnCompletionListener listener = onCompletionListener;
 				if (listener != null) {
 					Gdx.app.postRunnable(new Runnable() {
@@ -48,7 +45,7 @@ public class IOSMusic implements Music {
 			}
 		});
 	}
-	
+
 	@Override
 	public void play () {
 		if (track.isPaused()) {
@@ -72,7 +69,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public boolean isPlaying () {
-		return track.isPlaying();
+		return track.isPlaying() && !track.isPaused();
 	}
 
 	@Override
@@ -96,7 +93,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public float getPosition () {
-		return (float) (track.getCurrentTime() * 1000.0);
+		return (float)(track.getCurrentTime() * 1000.0);
 	}
 
 	@Override
@@ -105,12 +102,12 @@ public class IOSMusic implements Music {
 	}
 
 	@Override
-	public float getVolume() {
+	public float getVolume () {
 		return track.getVolume();
 	}
 
 	@Override
-	public void setPan(float pan, float volume) {
+	public void setPan (float pan, float volume) {
 		track.setPan(pan);
 		track.setVolume(volume);
 	}

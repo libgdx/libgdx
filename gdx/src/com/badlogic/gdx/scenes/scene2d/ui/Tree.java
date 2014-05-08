@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -28,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.Selection;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
 
 /** A tree widget where each node has an icon, actor, and child nodes.
@@ -37,8 +36,6 @@ import com.badlogic.gdx.utils.Array;
  * {@link ChangeEvent} is fired when the selected node changes.
  * @author Nathan Sweet */
 public class Tree extends WidgetGroup {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	TreeStyle style;
 	final Array<Node> rootNodes = new Array();
 	final Selection<Node> selection;
@@ -71,12 +68,11 @@ public class Tree extends WidgetGroup {
 				Node node = getNodeAt(y);
 				if (node == null) return;
 				if (node != getNodeAt(getTouchDownY())) return;
-				if (selection.getMultiple() && selection.hasItems()
-					&& (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT))) {
+				if (selection.getMultiple() && selection.hasItems() && UIUtils.shift()) {
 					// Select range (shift).
 					float low = selection.getLastSelected().actor.getY();
 					float high = node.actor.getY();
-					if (!Selection.isCtrlPressed()) selection.clear();
+					if (!UIUtils.ctrl()) selection.clear();
 					if (low > high)
 						selectNodes(rootNodes, high, low);
 					else
@@ -84,7 +80,7 @@ public class Tree extends WidgetGroup {
 					selection.fireChangeEvent();
 					return;
 				}
-				if (node.children.size > 0 && (!selection.getMultiple() || !Selection.isCtrlPressed())) {
+				if (node.children.size > 0 && (!selection.getMultiple() || !UIUtils.ctrl())) {
 					// Toggle expanded.
 					float rowX = node.actor.getX();
 					if (node.icon != null) rowX -= iconSpacingRight + node.icon.getMinWidth();

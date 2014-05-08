@@ -41,9 +41,9 @@ public class SwingLwjglTest extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		Container container = getContentPane();
-		canvas1 = new LwjglAWTCanvas(new MusicTest(), false);
-		LwjglAWTCanvas canvas2 = new LwjglAWTCanvas(new UITest(), false, canvas1);
-		LwjglAWTCanvas canvas3 = new LwjglAWTCanvas(new WindowCreator(), false, canvas1);
+		canvas1 = new LwjglAWTCanvas(new MusicTest());
+		LwjglAWTCanvas canvas2 = new LwjglAWTCanvas(new UITest(), canvas1);
+		LwjglAWTCanvas canvas3 = new LwjglAWTCanvas(new WindowCreator(), canvas1);
 
 		canvas1.getCanvas().setSize(200, 480);
 		canvas2.getCanvas().setSize(200, 480);
@@ -82,7 +82,7 @@ public class SwingLwjglTest extends JFrame {
 
 		private void createWindow () {
 			JFrame window = new JFrame();
-			LwjglAWTCanvas canvas = new LwjglAWTCanvas(new AnimationTest(), false, canvas1);
+			LwjglAWTCanvas canvas = new LwjglAWTCanvas(new AnimationTest(), canvas1);
 			window.getContentPane().add(canvas.getCanvas(), BorderLayout.CENTER);
 			window.pack();
 			window.setVisible(true);

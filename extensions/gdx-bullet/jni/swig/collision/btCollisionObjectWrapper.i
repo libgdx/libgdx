@@ -38,11 +38,34 @@ CREATE_POOLED_OBJECT(btCollisionObjectWrapper, com/badlogic/gdx/physics/bullet/c
 	}
 %}
 
+%javamethodmodifiers CollisionObjectWrapper::getWrapper "private";
+
+%typemap(javacode) CollisionObjectWrapper %{
+	public btCollisionObjectWrapper wrapper;
+	
+	@Override
+	protected void construct() {
+		super.construct();
+		wrapper = btCollisionObjectWrapper.obtain(getWrapper().getCPointer(), false);
+	}
+
+	@Override
+	public void dispose() {
+		if (wrapper != null) {
+			btCollisionObjectWrapper.free(wrapper);
+			wrapper = null;
+		}
+		super.dispose();
+	}
+%}
+
 %{
 #include <BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h>
+#include <gdx/collision/CollisionObjectWrapper.h>
 %}
 
 %ignore btCollisionObjectWrapper::getWorldTransform;
 %ignore btCollisionObjectWrapper::getCollisionObject;
 
 %include "BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+%include "gdx/collision/CollisionObjectWrapper.h"

@@ -129,7 +129,7 @@ public class PolygonSpriteBatch implements Batch {
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Sets up the PolygonSpriteBatch for drawing. This will disable depth buffer writting. It enables blending and texturing. If
+	/** Sets up the PolygonSpriteBatch for drawing. This will disable depth buffer writing. It enables blending and texturing. If
 	 * you have more texture units enabled than the first one you have to disable them before calling this. Uses a screen
 	 * coordinate system by default where everything is given in pixels. You can specify your own projection and modelview matrices
 	 * via {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */

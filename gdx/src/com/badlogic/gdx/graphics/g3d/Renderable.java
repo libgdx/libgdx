@@ -47,7 +47,7 @@ import com.badlogic.gdx.utils.Pool;
  * 
  * A ModelInstance returns all Renderables via its {@link ModelInstance#getRenderables(Array, Pool)} method. In which case the
  * value of {@link ModelInstance#userData} will be set to the {@link #userData} member. The {@link #userData} member can be used
- * to pass additional data to the shader. However, in most scenerario's it is advised to use the {@link #material} or
+ * to pass additional data to the shader. However, in most scenario's it is advised to use the {@link #material} or
  * {@link #environment} member with custom {@link Attribute}s to pass data to the shader.</p>
  * 
  * In some cases, (for example for non-hierarchical basic game objects requiring only a single draw call) it is possible to extend

@@ -40,10 +40,11 @@ import javax.swing.SwingUtilities;
 /** @author Nathan Sweet */
 public class OisControllers {
 	final DesktopControllerManager manager;
-	final Ois ois = new Ois(getWindowHandle());
-	final OisController[] controllers;
+	long hwnd = getWindowHandle();
+	Ois ois = new Ois(hwnd);
+	OisController[] controllers;
 
-	public OisControllers (DesktopControllerManager manager) {
+	public OisControllers (final DesktopControllerManager manager) {
 		this.manager = manager;
 		ArrayList<OisJoystick> joysticks = ois.getJoysticks();
 		controllers = new OisController[joysticks.size()];
@@ -55,6 +56,20 @@ public class OisControllers {
 
 		new Runnable() {
 			public void run () {
+				long newWindowHandle = getWindowHandle();
+				if(hwnd != newWindowHandle){
+					hwnd = newWindowHandle;
+					ois = new Ois(newWindowHandle);
+					
+					ArrayList<OisJoystick> joysticks = ois.getJoysticks();
+					controllers = new OisController[joysticks.size()];
+					manager.controllers.clear();
+					for (int i = 0, n = joysticks.size(); i < n; i++) {
+						OisJoystick joystick = joysticks.get(i);
+						controllers[i] = new OisController(joystick);
+						manager.controllers.add(controllers[i]);
+					}
+				}
 				ois.update();
 				Gdx.app.postRunnable(this);
 			}

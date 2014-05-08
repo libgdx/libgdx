@@ -421,9 +421,9 @@ public class DefaultShader extends BaseShader {
 	protected static long implementedFlags = BlendingAttribute.Type | TextureAttribute.Diffuse | ColorAttribute.Diffuse
 		| ColorAttribute.Specular | FloatAttribute.Shininess;
 
-	/** @Deprecated Replaced by {@link Config#defaultCullFace} Set to 0 to disable culling */
+	/** @deprecated Replaced by {@link Config#defaultCullFace} Set to 0 to disable culling */
 	@Deprecated public static int defaultCullFace = GL20.GL_BACK;
-	/** @Deprecated Replaced by {@link Config#defaultDepthFunc} Set to 0 to disable depth test */
+	/** @deprecated Replaced by {@link Config#defaultDepthFunc} Set to 0 to disable depth test */
 	@Deprecated public static int defaultDepthFunc = GL20.GL_LEQUAL;
 
 	// Global uniforms

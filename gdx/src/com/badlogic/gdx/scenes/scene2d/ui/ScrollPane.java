@@ -417,22 +417,10 @@ public class ScrollPane extends WidgetGroup {
 				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
 				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
 			} else {
-				// Offset widget area y for horizontal scrollbar.
-				if (scrollX) {
-					if (hScrollOnBottom) {
-						widgetAreaBounds.y += scrollbarHeight;
-					} else {
-						widgetAreaBounds.y = 0;
-					}
-				}
-				// Offset widget area x for vertical scrollbar.
-				if (scrollY) {
-					if (vScrollOnRight) {
-						widgetAreaBounds.x = 0;
-					} else {
-						widgetAreaBounds.x += scrollbarWidth;
-					}
-				}
+				// Offset widget area y for horizontal scrollbar at bottom.
+				if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
+				// Offset widget area x for vertical scrollbar at left.
+				if (scrollY && !vScrollOnRight) widgetAreaBounds.x += scrollbarWidth;
 			}
 		}
 
@@ -600,6 +588,17 @@ public class ScrollPane extends WidgetGroup {
 		resetTransform(batch);
 	}
 
+	/** Generate fling gesture.
+	 * 
+	 * @param flingTime Time in seconds for which you want to fling last.
+	 * @param velocityX Velocity for horizontal direction.
+	 * @param velocityY Velocity for vertical direction. */
+	public void fling (float flingTime, float velocityX, float velocityY) {
+		this.flingTimer = flingTime;
+		this.velocityX = velocityX;
+		this.velocityY = velocityY;
+	}
+	
 	public float getPrefWidth () {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
@@ -941,16 +940,12 @@ public class ScrollPane extends WidgetGroup {
 		invalidate();
 	}
 
-	/** Check if ScrollPane is using computed knob sizes
-	 * 
-	 * @return true if ScrollPane is using computed knob sizes, false if ScrollPane is using knob's physical dimensions */
 	public boolean getVariableSizeKnobs () {
 		return variableSizeKnobs;
 	}
 
-	/** When true, ScrollPane will use computed knob sizes, otherwise knob will be sized to it's physical dimensions
-	 * 
-	 * @param variableSizeKnobs set to true if you want to use computed knob sizes */
+	/** If true, the scroll knobs are sized based on {@link #getMaxX()} or {@link #getMaxY()}. If false, the scroll knobs are sized
+	 * based on {@link Drawable#getMinWidth()} or {@link Drawable#getMinHeight()}. Default is true. */
 	public void setVariableSizeKnobs (boolean variableSizeKnobs) {
 		this.variableSizeKnobs = variableSizeKnobs;
 	}

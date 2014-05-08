@@ -36,6 +36,6 @@ public interface ServerSocket extends Disposable {
 	 * @param hints additional {@link SocketHints} applied to the accepted {@link Socket}. Input null to use the default setting
 	 *           provided by the system.
 	 * @return the accepted {@link Socket}
-	 * @throws GdxRuntimeException in case an error ocurred */
+	 * @throws GdxRuntimeException in case an error occurred */
 	public Socket accept (SocketHints hints);
 }

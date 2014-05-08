@@ -70,11 +70,8 @@ public class Plane implements Serializable {
 	 * @param point2
 	 * @param point3 */
 	public void set (Vector3 point1, Vector3 point2, Vector3 point3) {
-		Vector3 l = point1.tmp().sub(point2);
-		Vector3 r = point2.tmp2().sub(point3);
-		Vector3 nor = l.crs(r).nor();
-		normal.set(nor);
-		d = -point1.dot(nor);
+		normal.set(point1).sub(point2).crs(point2.x-point3.x, point2.y-point3.y, point2.z-point3.z).nor();
+		d = -point1.dot(normal);
 	}
 
 	/** Sets the plane normal and distance

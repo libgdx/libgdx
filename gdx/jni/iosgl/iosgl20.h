@@ -1164,7 +1164,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glVert
  * Method:    glViewport
  * Signature: (IIII)V
  */
-JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glViewport
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_backends_iosrobovm_IOSGLES20_glViewportJni
   (JNIEnv *, jobject, jint, jint, jint, jint);
 
 #ifdef __cplusplus

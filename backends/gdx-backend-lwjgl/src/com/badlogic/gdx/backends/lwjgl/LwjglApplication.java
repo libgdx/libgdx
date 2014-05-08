@@ -30,7 +30,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
-import com.badlogic.gdx.backends.openal.OpenALAudio;
+import com.badlogic.gdx.backends.lwjgl.audio.OpenALAudio;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -73,7 +73,7 @@ public class LwjglApplication implements Application {
 	}
 
 	public LwjglApplication (ApplicationListener listener, LwjglApplicationConfiguration config, LwjglGraphics graphics) {
-		LwjglNativesLoader.load();
+		LwjglNativesLoader.load();		
 
 		if (config.title == null) config.title = listener.getClass().getSimpleName();
 
@@ -134,8 +134,7 @@ public class LwjglApplication implements Application {
 		}
 
 		listener.create();
-		listener.resize(graphics.getWidth(), graphics.getHeight());
-		graphics.resize = false;
+		graphics.resize = true;
 
 		int lastWidth = graphics.getWidth();
 		int lastHeight = graphics.getHeight();

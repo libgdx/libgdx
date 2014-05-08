@@ -2,20 +2,8 @@ apply plugin: "java"
 
 sourceCompatibility = 1.6
 
-dependencies {
-    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-}
-
 sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project {
     name = appName + "-core"
-}
-
-import com.badlogic.gdx.tools.texturepacker.TexturePacker
-task texturePacker << {
-  if (project.ext.has('texturePacker')) {
-    logger.info "Calling TexturePacker: "+texturePacker
-    TexturePacker.process(texturePacker[0], texturePacker[1], texturePacker[2])
-  }
 }

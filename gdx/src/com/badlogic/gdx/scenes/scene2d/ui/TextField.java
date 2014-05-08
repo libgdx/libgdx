@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Disableable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.FloatArray;
@@ -56,8 +57,6 @@ import com.badlogic.gdx.utils.Timer.Task;
  * @author mzechner
  * @author Nathan Sweet */
 public class TextField extends Widget implements Disableable {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	static private final char BACKSPACE = 8;
 	static protected final char ENTER_DESKTOP = '\r';
 	static protected final char ENTER_ANDROID = '\n';
@@ -514,6 +513,7 @@ public class TextField extends Widget implements Disableable {
 
 	public void setText (String str) {
 		if (str == null) throw new IllegalArgumentException("text cannot be null.");
+		if (str.equals(text)) return;
 
 		clearSelection();
 		text = "";
@@ -750,11 +750,7 @@ public class TextField extends Widget implements Disableable {
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
 			boolean repeat = false;
-			boolean ctrl;
-			if (isMac)
-				ctrl = Gdx.input.isKeyPressed(Keys.SYM);
-			else
-				ctrl = Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT);
+			boolean ctrl = UIUtils.ctrl();
 			boolean jump = ctrl && !passwordMode;
 
 			if (ctrl) {
@@ -776,7 +772,7 @@ public class TextField extends Widget implements Disableable {
 				}
 			}
 
-			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)) {
+			if (UIUtils.shift()) {
 				if (keycode == Keys.INSERT) paste();
 				if (keycode == Keys.FORWARD_DEL && hasSelection) {
 					copy();
@@ -862,7 +858,7 @@ public class TextField extends Widget implements Disableable {
 			if (stage == null || stage.getKeyboardFocus() != TextField.this) return false;
 
 			if ((character == TAB || character == ENTER_ANDROID) && focusTraversal) {
-				next(Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) || Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT));
+				next(UIUtils.shift());
 			} else {
 				boolean delete = character == DELETE;
 				boolean backspace = character == BACKSPACE;

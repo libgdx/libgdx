@@ -1,16 +1,23 @@
 ![logo](http://libgdx.badlogicgames.com/img/logo.png)
 
+[![Build Status](http://144.76.220.132:8080/buildStatus/icon?job=libgdx)](http://144.76.220.132:8080/job/libgdx/)
+
 Libgdx is a cross-platform Java game development framework based on 
 OpenGL (ES) that works on Windows, Linux, Mac OS X, Android, your
 WebGL enabled browser and iOS.
 
 #### Getting Started
-Head over to http://libgdx.badlogicgames.com/documentation.html to find the latest getting started guide,
-download links and so on. You can find more information on libgdx on our official site 
-at http://libgdx.badlogicgames.com/
+  * [Setup your development environment (Eclipse, Intellij IDEA, NetBeans)](https://github.com/libgdx/libgdx/wiki/Setting-up-your-Development-Environment-%28Eclipse%2C-Intellij-IDEA%2C-NetBeans%29)
+  * [Create a libgdx project](https://github.com/libgdx/libgdx/wiki/Project-Setup-Gradle)
+    * Import, Run, Debug and Package your project
+      * [Eclipse](https://github.com/libgdx/libgdx/wiki/Gradle-and-Eclipse)
+      * [Intellij IDEA](https://github.com/libgdx/libgdx/wiki/Gradle-and-Intellij-IDEA)
+      * [NetBeans](https://github.com/libgdx/libgdx/wiki/Gradle-and-NetBeans)
+      * [Commandline](https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline)
+  * [Read the Wiki](https://github.com/libgdx/libgdx/wiki)
 
 ### Downloads
-You can get the latest release or nightly version of libgdx from the [offical download site](http://libgdx.badlogicgames.com/download.html). We actually
+As we switched to Gradle, there's no need to download libgdx itself anymore. For those of you who still prefer the old way of doing things, you can get libgdx from the [offical download site](http://libgdx.badlogicgames.com/download.html). We actually
 recommend using the nightlies to be up to date with latest bug fixes and feature additions.
 
 #### Documentation
@@ -40,6 +47,11 @@ article describes the process of helping libgdx to become even better.
 To contribute, you need to work with libgdx' sources directly, something normal users do not
 have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Working-from-source)
 article will give you directions.
+
+You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](http://patreon.com/libgdx)!
+
+<a href="http://patreon.com/libgdx" target="_blank"><img src="http://img.youtube.com/vi/QmtN8k7x5hw/0.jpg" 
+alt="Patreon" width="480" height="360" border="10" /></a>
 
 #### License
 Libgdx is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you

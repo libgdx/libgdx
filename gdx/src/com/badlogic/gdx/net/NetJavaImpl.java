@@ -208,33 +208,42 @@ public class NetJavaImpl {
 					} catch (final Exception e) {
 						connection.disconnect();
 						lock.lock();
-						httpResponseListener.failed(e);
-						connections.remove(httpRequest);
-						listeners.remove(httpRequest);
-						lock.unlock();
+						try {   
+							httpResponseListener.failed(e);
+						} finally {	
+							connections.remove(httpRequest);
+							listeners.remove(httpRequest);
+							lock.unlock();
+						}
 					}
 				}
 			});
 
 		} catch (Exception e) {
 			lock.lock();
-			httpResponseListener.failed(e);
-			connections.remove(httpRequest);
-			listeners.remove(httpRequest);
-			lock.unlock();
+			try {
+				httpResponseListener.failed(e);
+			} finally {
+				connections.remove(httpRequest);
+				listeners.remove(httpRequest);
+				lock.unlock();
+			}
 			return;
 		}
 	}
 
-	public void cancelHttpRequest (HttpRequest httpRequest) {
-		lock.lock();
-		HttpResponseListener httpResponseListener = listeners.get(httpRequest);
-
-		if (httpResponseListener != null) {
-			httpResponseListener.cancelled();
-			connections.remove(httpRequest);
-			listeners.remove(httpRequest);
+	public void cancelHttpRequest (HttpRequest httpRequest) {				
+		try {
+			lock.lock();
+			HttpResponseListener httpResponseListener = listeners.get(httpRequest);
+	
+			if (httpResponseListener != null) {
+				httpResponseListener.cancelled();
+				connections.remove(httpRequest);
+				listeners.remove(httpRequest);
+			}
+		} finally {
+			lock.unlock();
 		}
-		lock.unlock();
 	}
 }

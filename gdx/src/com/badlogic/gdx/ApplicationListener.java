@@ -43,7 +43,7 @@ public interface ApplicationListener {
 	public void render ();
 
 	/** Called when the {@link Application} is paused. An Application is paused before it is destroyed, when a user pressed the Home
-	 * button on Android or an incoming call happend. On the desktop this will only be called immediately before {@link #dispose()}
+	 * button on Android or an incoming call happened. On the desktop this will only be called immediately before {@link #dispose()}
 	 * is called. */
 	public void pause ();
 

@@ -39,8 +39,6 @@ import com.badlogic.gdx.utils.ObjectSet;
  * @author mzechner
  * @author Nathan Sweet */
 public class List<T> extends Widget implements Cullable {
-	static boolean isMac = System.getProperty("os.name").contains("Mac");
-
 	private ListStyle style;
 	private final Array<T> items = new Array();
 	private Rectangle cullingArea;
@@ -188,7 +186,11 @@ public class List<T> extends Widget implements Cullable {
 	public void setSelectedIndex (int index) {
 		if (index < -1 || index >= items.size)
 			throw new IllegalArgumentException("index must be >= -1 and < " + items.size + ": " + index);
-		selection.set(items.get(index));
+		if (index == -1) {
+			selection.clear();
+		} else {
+			selection.set(items.get(index));
+		}
 	}
 
 	public void setItems (T... newItems) {

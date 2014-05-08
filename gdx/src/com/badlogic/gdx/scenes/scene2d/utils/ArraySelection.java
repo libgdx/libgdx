@@ -28,7 +28,7 @@ public class ArraySelection<T> extends Selection<T> {
 				high = temp;
 			}
 			snapshot();
-			if (!isCtrlPressed()) selected.clear();
+			if (!UIUtils.ctrl()) selected.clear();
 			for (; low <= high; low++)
 				selected.add(items.get(low));
 			if (fireChangeEvent()) revert();

@@ -96,33 +96,6 @@ public final class VertexAttributes implements Iterable<VertexAttribute> {
 		return count;
 	}
 
-	private void checkGLES1Validity () {
-		boolean pos = false;
-		boolean cols = false;
-		boolean nors = false;
-
-		for (int i = 0; i < attributes.length; i++) {
-			VertexAttribute attribute = attributes[i];
-			if (attribute.usage == Usage.Position) {
-				if (pos) throw new IllegalArgumentException("two position attributes were specified");
-				pos = true;
-			}
-
-			if (attribute.usage == Usage.Normal) {
-				if (nors) throw new IllegalArgumentException("two normal attributes were specified");
-			}
-
-			if (attribute.usage == Usage.Color || attribute.usage == Usage.ColorPacked) {
-				if (attribute.numComponents != 4) throw new IllegalArgumentException("color attribute must have 4 components");
-
-				if (cols) throw new IllegalArgumentException("two color attributes were specified");
-				cols = true;
-			}
-		}
-
-		if (pos == false) throw new IllegalArgumentException("no position attribute was specified");
-	}
-
 	/** @return the number of attributes */
 	public int size () {
 		return attributes.length;

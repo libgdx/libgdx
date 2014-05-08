@@ -137,7 +137,6 @@ public class Slider extends ProgressBar {
 	 * @author mzechner
 	 * @author Nathan Sweet */
 	static public class SliderStyle extends ProgressBarStyle {
-
 		public SliderStyle () {
 		}
 

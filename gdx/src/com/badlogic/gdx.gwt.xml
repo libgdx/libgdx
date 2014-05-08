@@ -258,6 +258,7 @@
 		<include name="maps/tiled/renderers/HexagonalTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricStaggeredTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/OrthoCachedTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
 
 	<!-- maps/tiles/tiles -->
@@ -318,7 +319,7 @@
 	<!-- physics/box2d/joints -->
 	<!-- Box2d is fully emulated in GWT backend -->
 		
-	<!-- scened/scene2d -->
+	<!-- scenes/scene2d -->
 		<include name="scenes/scene2d/**/*.java"/>
 
 	<!-- utils -->
@@ -425,8 +426,11 @@
 		<include name="utils/reflect/Field.java"/> <!-- Emulated -->
 		<include name="utils/reflect/Method.java"/>	 <!-- Emulated -->
 		<include name="utils/reflect/ReflectionException.java"/>
+
+	<!-- utils/viewport -->
+		<include name="utils/viewport/**/*.java"/>
 	</source>
-	
+
 	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />

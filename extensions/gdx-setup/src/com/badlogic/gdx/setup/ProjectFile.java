@@ -25,12 +25,14 @@ package com.badlogic.gdx.setup;
  *
  */
 public class ProjectFile {
-	/** the name of the template resource, relative to com.badlogic.gdx.setup.resources **/
+	/** the name of the template resource, relative to resourceLoc **/
 	public String resourceName;
 	/** the name of the output file, including directories, relative to the project dir **/
 	public String outputName;
-	/** whehter to replace values in this file **/
+	/** whether to replace values in this file **/
 	public boolean isTemplate;
+	/** If the resource is from resource directory, or working dir **/
+	public String resourceLoc = "/com/badlogic/gdx/setup/resources/";
 	
 	public ProjectFile(String name) {
 		this.resourceName = name;

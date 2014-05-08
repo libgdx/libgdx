@@ -5,9 +5,7 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-backend-android"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-tests"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-audio"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-freetype"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-image"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-bullet"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/gdx-controllers-android"/>

@@ -77,7 +77,7 @@ public class PooledLinkedList<T> {
 		return payload;
 	}
 
-	/** Removs the current list item based on the iterator position. */
+	/** Removes the current list item based on the iterator position. */
 	public void remove () {
 		if (curr == null) return;
 

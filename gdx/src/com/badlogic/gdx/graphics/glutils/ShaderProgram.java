@@ -69,7 +69,7 @@ import com.badlogic.gdx.utils.Array;
 public class ShaderProgram implements Disposable {
 	/** default name for position attributes **/
 	public static final String POSITION_ATTRIBUTE = "a_position";
-	/** default name for normal attribtues **/
+	/** default name for normal attributes **/
 	public static final String NORMAL_ATTRIBUTE = "a_normal";
 	/** default name for color attributes **/
 	public static final String COLOR_ATTRIBUTE = "a_color";
@@ -89,7 +89,7 @@ public class ShaderProgram implements Disposable {
 	/** the log **/
 	private String log = "";
 
-	/** whether this program compiled succesfully **/
+	/** whether this program compiled successfully **/
 	private boolean isCompiled;
 
 	/** uniform lookup **/
@@ -145,7 +145,7 @@ public class ShaderProgram implements Disposable {
 	/** reference count **/
 	private int refCount = 0;
 
-	/** Construcs a new ShaderProgram and immediately compiles it.
+	/** Constructs a new ShaderProgram and immediately compiles it.
 	 * 
 	 * @param vertexShader the vertex shader
 	 * @param fragmentShader the fragment shader */
@@ -541,7 +541,7 @@ public class ShaderProgram implements Disposable {
 	 * 
 	 * @param name the name of the uniform
 	 * @param matrix the matrix
-	 * @param transpose whether the matrix shouls be transposed */
+	 * @param transpose whether the matrix should be transposed */
 	public void setUniformMatrix (String name, Matrix4 matrix, boolean transpose) {
 		GL20 gl = Gdx.graphics.getGL20();
 		checkManaged();

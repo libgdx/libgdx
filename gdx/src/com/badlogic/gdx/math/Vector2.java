@@ -57,9 +57,17 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return new Vector2(this);
 	}
 
+	public static float len (float x, float y) {
+		return (float)Math.sqrt(x * x + y * y);
+	}
+
 	@Override
 	public float len () {
 		return (float)Math.sqrt(x * x + y * y);
+	}
+
+	public static float len2 (float x, float y) {
+		return x * x + y * y;
 	}
 
 	@Override
@@ -128,9 +136,17 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
+	public static float dot (float x1, float y1, float x2, float y2) {
+		return x1 * x2 + y1 * y2;
+	}
+
 	@Override
 	public float dot (Vector2 v) {
 		return x * v.x + y * v.y;
+	}
+
+	public float dot (float ox, float oy) {
+		return x * ox + y * oy;
 	}
 
 	@Override
@@ -156,17 +172,23 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
-	public Vector2 mulAdd(Vector2 vec, float scalar) {
+	public Vector2 mulAdd (Vector2 vec, float scalar) {
 		this.x += vec.x * scalar;
 		this.y += vec.y * scalar;
 		return this;
 	}
 
 	@Override
-	public Vector2 mulAdd(Vector2 vec, Vector2 mulVec) {
+	public Vector2 mulAdd (Vector2 vec, Vector2 mulVec) {
 		this.x += vec.x * mulVec.x;
 		this.y += vec.y * mulVec.y;
 		return this;
+	}
+
+	public static float dst (float x1, float y1, float x2, float y2) {
+		final float x_d = x2 - x1;
+		final float y_d = y2 - y1;
+		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
 	}
 
 	@Override
@@ -183,6 +205,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		final float x_d = x - this.x;
 		final float y_d = y - this.y;
 		return (float)Math.sqrt(x_d * x_d + y_d * y_d);
+	}
+
+	public static float dst2 (float x1, float y1, float x2, float y2) {
+		final float x_d = x2 - x1;
+		final float y_d = y2 - y1;
+		return x_d * x_d + y_d * y_d;
 	}
 
 	@Override
@@ -320,6 +348,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = (y * invAlpha) + (target.y * alpha);
 		return this;
 	}
+	
+	@Override
+	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolator) {
+		return lerp(target, interpolator.apply(0f, 1f, alpha));
+	}
 
 	@Override
 	public int hashCode () {
@@ -378,23 +411,33 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	}
 
 	@Override
-	public boolean isCollinear (Vector2 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) - 1, epsilon);
+	public boolean isOnLine (Vector2 other) {
+		return MathUtils.isZero(x * other.y - y * other.x);
 	}
 
 	@Override
-	public boolean isCollinear (Vector2 vector) {
-		return MathUtils.isZero(dot(vector) - 1);
+	public boolean isOnLine (Vector2 other, float epsilon) {
+		return MathUtils.isZero(x * other.y - y * other.x, epsilon);
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector2 vector, float epsilon) {
-		return MathUtils.isZero(dot(vector) + 1, epsilon);
+	public boolean isCollinear (Vector2 other, float epsilon) {
+		return isOnLine(other, epsilon) && dot(other) > 0f;
 	}
 
 	@Override
-	public boolean isCollinearOpposite (Vector2 vector) {
-		return MathUtils.isZero(dot(vector) + 1);
+	public boolean isCollinear (Vector2 other) {
+		return isOnLine(other) && dot(other) > 0f;
+	}
+
+	@Override
+	public boolean isCollinearOpposite (Vector2 other, float epsilon) {
+		return isOnLine(other, epsilon) && dot(other) < 0f;
+	}
+
+	@Override
+	public boolean isCollinearOpposite (Vector2 other) {
+		return isOnLine(other) && dot(other) < 0f;
 	}
 
 	@Override

@@ -101,6 +101,14 @@ public class DelayedRemovalArray<T> extends Array<T> {
 		return super.removeIndex(index);
 	}
 
+	public void removeRange (int start, int end) {
+		if (iterating) {
+			for (int i = end; i >= start; i--)
+				remove(i);
+		} else
+			super.removeRange(start, end);
+	}
+
 	public void set (int index, T value) {
 		if (iterating) throw new IllegalStateException("Invalid between begin/end.");
 		super.set(index, value);

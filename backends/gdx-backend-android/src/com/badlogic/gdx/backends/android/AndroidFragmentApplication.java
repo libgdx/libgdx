@@ -1,6 +1,7 @@
 
 package com.badlogic.gdx.backends.android;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -97,6 +97,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		}
 	}
 
+	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
 		if (!use || getVersion() < 19) return;
@@ -144,6 +145,9 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	 *           etc.).
 	 * @return the GLSurfaceView of the application */
 	public View initializeForView (ApplicationListener listener, AndroidApplicationConfiguration config) {
+		if (this.getVersion() < MINIMUM_SDK) {
+			throw new GdxRuntimeException("LibGDX requires Android API Level " + MINIMUM_SDK + " or later.");
+		}
 		graphics = new AndroidGraphics(this, config, config.resolutionStrategy == null ? new FillResolutionStrategy()
 			: config.resolutionStrategy);
 		input = AndroidInputFactory.newAndroidInput(this, getActivity(), graphics.view, config);
@@ -152,6 +156,25 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		net = new AndroidNet(this);
 		this.listener = listener;
 		this.handler = new Handler();
+
+		// Add a specialized audio lifecycle listener
+		addLifecycleListener(new LifecycleListener() {
+
+			@Override
+			public void resume () {
+				audio.resume();
+			}
+			
+			@Override
+			public void pause () {
+				audio.pause();
+			}
+			
+			@Override
+			public void dispose () {
+				audio.dispose();
+			}
+		});
 
 		Gdx.app = this;
 		Gdx.input = this.getInput();
@@ -163,7 +186,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		useImmersiveMode(config.useImmersiveMode);
 		if (config.useImmersiveMode && getVersion() >= 19) {
 			try {
-				Class vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
+				Class<?> vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();
 				Method method = vlistener.getDeclaredMethod("createListener", AndroidApplicationBase.class);
 				method.invoke(o, this);
@@ -189,11 +212,16 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		// erase touched state. this also sucks donkeyballs...
 		Arrays.fill(touched, false);
 
+		// davebaol & mobidevelop:
+		// This fragment is currently being removed from its activity or the activity is in the process of finishing
+		if (isRemoving() || getActivity().isFinishing()) {
+			graphics.clearManagedCaches();
+			graphics.destroy();
+		}
+
 		graphics.setContinuousRendering(isContinuous);
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onPause();
-		}
+		graphics.onPauseGLSurfaceView();
 
 		super.onPause();
 	}
@@ -207,10 +235,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		((AndroidInput)getInput()).registerSensorListeners();
+		getInput().registerSensorListeners();
 
-		if (graphics != null && graphics.view != null) {
-			if (graphics.view instanceof android.opengl.GLSurfaceView) ((android.opengl.GLSurfaceView)graphics.view).onResume();
+		if (graphics != null) {
+			graphics.onResumeGLSurfaceView();
 		}
 
 		if (!firstResume) {
@@ -218,13 +246,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		} else
 			firstResume = false;
 		super.onResume();
-	}
-
-	@Override
-	public void onDestroyView () {
-		super.onDestroyView();
-		graphics.clearManagedCaches();
-		graphics.destroy();
 	}
 
 	@Override
@@ -248,7 +269,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public Input getInput () {
+	public AndroidInput getInput () {
 		return input;
 	}
 
@@ -402,11 +423,6 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	}
 
 	@Override
-	public boolean isFragment () {
-		return true;
-	}
-
-	@Override
 	public Window getApplicationWindow () {
 		return this.getActivity().getWindow();
 	}
@@ -414,5 +430,10 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@Override
 	public Handler getHandler () {
 		return this.handler;
+	}
+
+	@Override
+	public WindowManager getWindowManager () {
+		return (WindowManager)getContext().getSystemService(Context.WINDOW_SERVICE);
 	}
 }

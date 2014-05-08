@@ -2,17 +2,19 @@
 
 %{
 #include <BulletDynamics/Dynamics/btRigidBody.h>
-typedef btRigidBody::btRigidBodyConstructionInfo btRigidBodyConstructionInfo;
 %}
 
-%rename(i_motionState) btRigidBodyConstructionInfo::m_motionState;
-%javamethodmodifiers btRigidBodyConstructionInfo::m_motionState "private";
-%rename(i_collisionShape) btRigidBodyConstructionInfo::m_collisionShape;
-%javamethodmodifiers btRigidBodyConstructionInfo::m_collisionShape "private";
+%rename(i_motionState) btRigidBody::btRigidBodyConstructionInfo::m_motionState;
+%javamethodmodifiers btRigidBody::btRigidBodyConstructionInfo::m_motionState "private";
+%rename(i_collisionShape) btRigidBody::btRigidBodyConstructionInfo::m_collisionShape;
+%javamethodmodifiers btRigidBody::btRigidBodyConstructionInfo::m_collisionShape "private";
 
-%javamethodmodifiers btRigidBodyConstructionInfo::btRigidBodyConstructionInfo "private";
+%javamethodmodifiers btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo "private";
 
-%typemap(javacode) btRigidBodyConstructionInfo %{
+%ignore btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo(btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape);
+%ignore btRigidBody::btRigidBodyConstructionInfo::btRigidBodyConstructionInfo(btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia);
+
+%typemap(javacode) btRigidBody::btRigidBodyConstructionInfo %{
 	protected btMotionState motionState;
 	
 	public void setMotionState(btMotionState motionState) {
@@ -79,47 +81,11 @@ typedef btRigidBody::btRigidBodyConstructionInfo btRigidBodyConstructionInfo;
 	}
 %}
 
-// Nested struct or class copied from Bullet header
-struct btRigidBodyConstructionInfo
-{
-	btScalar			m_mass;
-
-	///When a motionState is provided, the rigid body will initialize its world transform from the motion state
-	///In this case, m_startWorldTransform is ignored.
-	btMotionState*		m_motionState;
-	btTransform	m_startWorldTransform;
-
-	btCollisionShape*	m_collisionShape;
-	btVector3			m_localInertia;
-	btScalar			m_linearDamping;
-	btScalar			m_angularDamping;
-
-	///best simulation results when friction is non-zero
-	btScalar			m_friction;
-	///best simulation results using zero restitution.
-	btScalar			m_restitution;
-
-	btScalar			m_linearSleepingThreshold;
-	btScalar			m_angularSleepingThreshold;
-
-	//Additional damping can help avoiding lowpass jitter motion, help stability for ragdolls etc.
-	//Such damping is undesirable, so once the overall simulation quality of the rigid body dynamics system has improved, this should become obsolete
-	bool				m_additionalDamping;
-	btScalar			m_additionalDampingFactor;
-	btScalar			m_additionalLinearDampingThresholdSqr;
-	btScalar			m_additionalAngularDampingThresholdSqr;
-	btScalar			m_additionalAngularDampingFactor;
-private:
-	btRigidBodyConstructionInfo();
-};
-
-%extend btRigidBodyConstructionInfo {
+%extend btRigidBody::btRigidBodyConstructionInfo {
 	btRigidBodyConstructionInfo(bool dummy, btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia=btVector3(0,0,0)) {
-		return new btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia); 
+		return new btRigidBody::btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia); 
 	}
 };
-
-%nestedworkaround btRigidBody::btRigidBodyConstructionInfo;
 
 %ignore btRigidBody::upcast(const btCollisionObject*);
 %ignore btRigidBody::upcast(btCollisionObject*);
@@ -135,7 +101,7 @@ private:
 %ignore btRigidBody::getCollisionShape;
 
 %extend btRigidBody {
-	btRigidBody(bool dummy, const btRigidBodyConstructionInfo& constructionInfo) {
+	btRigidBody(bool dummy, const btRigidBody::btRigidBodyConstructionInfo& constructionInfo) {
 		return new btRigidBody(constructionInfo); 
 	}
 	btRigidBody(bool dummy, btScalar mass, btMotionState* motionState, btCollisionShape* collisionShape, const btVector3& localInertia=btVector3(0,0,0)) {

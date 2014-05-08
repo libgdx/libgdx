@@ -67,7 +67,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 
-		stage = new Stage(480, 320, true);
+		stage = new Stage();
 
 		float loc = (NUM_SPRITES * (32 + SPACING) - SPACING) / 2;
 		for (int i = 0; i < NUM_GROUPS; i++) {
@@ -82,17 +82,17 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		uiTexture = new Texture(Gdx.files.internal("data/ui.png"));
 		uiTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		ui = new Stage(480, 320, false);
+		ui = new Stage();
 
 		Image blend = new Image(new TextureRegion(uiTexture, 0, 0, 64, 32));
 		blend.setAlign(Align.center);
 		blend.setScaling(Scaling.none);
 		blend.addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (stage.getSpriteBatch().isBlendingEnabled())
-					stage.getSpriteBatch().disableBlending();
+				if (stage.getBatch().isBlendingEnabled())
+					stage.getBatch().disableBlending();
 				else
-					stage.getSpriteBatch().enableBlending();
+					stage.getBatch().enableBlending();
 				return true;
 			}
 		});

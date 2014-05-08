@@ -168,7 +168,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 			}
 		} else {
 			FileHandle root = Gdx.files.internal("data/g3d/environment");
-			cubemap = new Cubemap(root.child(name + "_PX.png"), null,// root.child(name+"_NX.png"),
+			cubemap = new Cubemap(root.child(name + "_PX.png"), root.child(name+"_NX.png"),
 				root.child(name + "_PY.png"), root.child(name + "_NY.png"), root.child(name + "_PZ.png"),
 				root.child(name + "_NZ.png"), false); // FIXME mipmapping on desktop
 			cubemap.load(CubemapSide.NegativeX, root.child(name + "_NX.png"));
@@ -261,7 +261,7 @@ public class ShaderCollectionTest extends BaseG3dHudTest {
 
 	@Override
 	protected void onLoaded () {
-		if (currentlyLoading == null || currentlyLoading.isEmpty()) return;
+		if (currentlyLoading == null || currentlyLoading.length() == 0) return;
 
 		if (loadingMaterial) {
 			loadingMaterial = false;

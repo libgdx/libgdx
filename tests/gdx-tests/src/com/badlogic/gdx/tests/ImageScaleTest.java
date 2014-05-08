@@ -29,7 +29,7 @@ public class ImageScaleTest extends GdxTest {
 	Texture texture;
 
 	public void create () {
-		stage = new Stage(0, 0, false);
+		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 
 		texture = new Texture("data/group-debug.png");
@@ -60,6 +60,6 @@ public class ImageScaleTest extends GdxTest {
 	}
 
 	public void resize (int width, int height) {
-		stage.setViewport(width, height, false);
+		stage.getViewport().update(width, height, true);
 	}
 }

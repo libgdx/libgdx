@@ -321,6 +321,20 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
+	/** Premultiplies this matrix with the given matrix, storing the result in this matrix. For example:
+	 * 
+	 * <pre>
+	 * A.mulLeft(B) results in A := BA.
+	 * </pre>
+	 * 
+	 * @param matrix The other matrix to multiply by.
+	 * @return This matrix for the purpose of chaining operations together. */
+	public Matrix4 mulLeft (Matrix4 matrix) {
+		tmpMat.set(matrix);
+		mul(tmpMat.val, this.val);
+		return set(tmpMat);
+	}
+
 	/** Transposes the matrix.
 	 * 
 	 * @return This matrix for the purpose of chaining methods together. */
@@ -606,7 +620,7 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a translation and scaling matrix by first overwritting it with an identity and then setting the
+	/** Sets this matrix to a translation and scaling matrix by first overwriting it with an identity and then setting the
 	 * translation vector in the 4th column and the scaling vector in the diagonal.
 	 * 
 	 * @param translation The translation vector
@@ -623,7 +637,7 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
-	/** Sets this matrix to a translation and scaling matrix by first overwritting it with an identity and then setting the
+	/** Sets this matrix to a translation and scaling matrix by first overwriting it with an identity and then setting the
 	 * translation vector in the 4th column and the scaling vector in the diagonal.
 	 * 
 	 * @param translationX The x-component of the translation vector
@@ -725,7 +739,7 @@ public class Matrix4 implements Serializable {
 
 	/** Sets this matrix to a rotation matrix from the given euler angles.
 	 * @param yaw the yaw in degrees
-	 * @param pitch the pitch in degress
+	 * @param pitch the pitch in degrees
 	 * @param roll the roll in degrees
 	 * @return This matrix */
 	public Matrix4 setFromEulerAngles (float yaw, float pitch, float roll) {
@@ -800,7 +814,7 @@ public class Matrix4 implements Serializable {
 	public Matrix4 setToLookAt (Vector3 position, Vector3 target, Vector3 up) {
 		tmpVec.set(target).sub(position);
 		setToLookAt(tmpVec, up);
-		this.mul(tmpMat.setToTranslation(position.tmp().scl(-1)));
+		this.mul(tmpMat.setToTranslation(-position.x, -position.y, -position.z));
 
 		return this;
 	}
@@ -899,23 +913,41 @@ public class Matrix4 implements Serializable {
 		return rotation.setFromMatrix(this);
 	}
 
+	/** @return the squared scale factor on the X axis */
+	public float getScaleXSquared () {
+		return val[Matrix4.M00] * val[Matrix4.M00] + val[Matrix4.M01] * val[Matrix4.M01] + val[Matrix4.M02] * val[Matrix4.M02];
+	}
+
+	/** @return the squared scale factor on the Y axis */
+	public float getScaleYSquared () {
+		return val[Matrix4.M10] * val[Matrix4.M10] + val[Matrix4.M11] * val[Matrix4.M11] + val[Matrix4.M12] * val[Matrix4.M12];
+	}
+
+	/** @return the squared scale factor on the Z axis */
+	public float getScaleZSquared () {
+		return val[Matrix4.M20] * val[Matrix4.M20] + val[Matrix4.M21] * val[Matrix4.M21] + val[Matrix4.M22] * val[Matrix4.M22];
+	}
+
+	/** @return the scale factor on the X axis (non-negative) */
+	public float getScaleX () {
+		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? val[Matrix4.M00] : (float)Math
+			.sqrt(getScaleXSquared());
+	}
+
+	/** @return the scale factor on the Y axis (non-negative) */
+	public float getScaleY () {
+		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? val[Matrix4.M11] : (float)Math
+			.sqrt(getScaleYSquared());
+	}
+
+	/** @return the scale factor on the X axis (non-negative) */
+	public float getScaleZ () {
+		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? val[Matrix4.M22] : (float)Math
+			.sqrt(getScaleZSquared());
+	}
+
 	public Vector3 getScale (Vector3 scale) {
-		// Deal with the 0 rotation case first
-		if (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02]) && MathUtils.isZero(val[Matrix4.M10])
-			&& MathUtils.isZero(val[Matrix4.M12]) && MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) {
-			scale.x = val[Matrix4.M00];
-			scale.y = val[Matrix4.M11];
-			scale.z = val[Matrix4.M22];
-		} else {
-			// We have to do the full calculation.
-			scale.x = (float)Math.sqrt(val[Matrix4.M00] * val[Matrix4.M00] + val[Matrix4.M01] * val[Matrix4.M01] + val[Matrix4.M02]
-				* val[Matrix4.M02]);
-			scale.y = (float)Math.sqrt(val[Matrix4.M10] * val[Matrix4.M10] + val[Matrix4.M11] * val[Matrix4.M11] + val[Matrix4.M12]
-				* val[Matrix4.M12]);
-			scale.z = (float)Math.sqrt(val[Matrix4.M20] * val[Matrix4.M20] + val[Matrix4.M21] * val[Matrix4.M21] + val[Matrix4.M22]
-				* val[Matrix4.M22]);
-		}
-		return scale;
+		return scale.set(getScaleX(), getScaleY(), getScaleZ());
 	}
 
 	/** removes the translational part and transposes the matrix. */

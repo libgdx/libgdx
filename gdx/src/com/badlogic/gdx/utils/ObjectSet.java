@@ -326,6 +326,7 @@ public class ObjectSet<T> implements Iterable<T> {
 	}
 
 	public void clear () {
+		if (size == 0) return;
 		T[] keyTable = this.keyTable;
 		for (int i = capacity + stashSize; i-- > 0;)
 			keyTable[i] = null;
@@ -360,7 +361,7 @@ public class ObjectSet<T> implements Iterable<T> {
 		throw new IllegalStateException("IntSet is empty.");
 	}
 
-	/** Increases the size of the backing array to acommodate the specified number of additional items. Useful before adding many
+	/** Increases the size of the backing array to accommodate the specified number of additional items. Useful before adding many
 	 * items to avoid multiple backing array resizes. */
 	public void ensureCapacity (int additionalCapacity) {
 		int sizeNeeded = size + additionalCapacity;
@@ -509,6 +510,13 @@ public class ObjectSet<T> implements Iterable<T> {
 
 		public Iterator<K> iterator () {
 			return this;
+		}
+
+		/** Adds the remaining keys to the array. */
+		public Array<K> toArray (Array<K> array) {
+			while (hasNext)
+				array.add(next());
+			return array;
 		}
 
 		/** Returns a new array containing the remaining keys. */

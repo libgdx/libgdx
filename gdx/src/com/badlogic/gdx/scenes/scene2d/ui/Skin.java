@@ -97,7 +97,7 @@ public class Skin implements Disposable {
 		}
 	}
 
-	/** Adds all named txeture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
+	/** Adds all named texture regions from the atlas. The atlas will not be automatically disposed when the skin is disposed. */
 	public void addRegions (TextureAtlas atlas) {
 		Array<AtlasRegion> regions = atlas.getRegions();
 		for (int i = 0, n = regions.size; i < n; i++) {
@@ -120,6 +120,13 @@ public class Skin implements Disposable {
 		}
 		typeResources.put(name, resource);
 	}
+
+	public void remove (String name, Class type) {
+		if (name == null) throw new IllegalArgumentException("name cannot be null.");
+		ObjectMap<String, Object> typeResources = resources.get(type);
+		typeResources.remove(name);
+	}
+
 
 	public <T> T get (Class<T> type) {
 		return get("default", type);

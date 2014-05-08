@@ -23,8 +23,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 /** @author xoppa */
@@ -88,7 +88,7 @@ public class RayCastTest extends BaseBulletTest {
 			if (!obj.isStaticOrKinematicObject()) {
 				final btRigidBody body = (btRigidBody)(obj);
 				body.activate();
-				body.applyCentralImpulse(Vector3.tmp2.set(ray.direction).scl(20f));
+				body.applyCentralImpulse(tmpV2.set(ray.direction).scl(20f));
 			}
 		}
 		return true;

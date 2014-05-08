@@ -100,10 +100,15 @@ public class TexturePacker {
 			}
 
 			Array<Page> pages = packer.pack(imageProcessor.getImages());
+
 			String scaledPackFileName = settings.scaledPackFileName(packFileName, i);
-			writeImages(outputDir, pages, scaledPackFileName);
+			File packFile = new File(outputDir, scaledPackFileName);
+			File packDir = packFile.getParentFile();
+			packDir.mkdirs();
+
+			writeImages(packFile, pages);
 			try {
-				writePackFile(outputDir, pages, scaledPackFileName);
+				writePackFile(packFile, pages);
 			} catch (IOException ex) {
 				throw new RuntimeException("Error writing pack file.", ex);
 			}
@@ -111,8 +116,9 @@ public class TexturePacker {
 		}
 	}
 
-	private void writeImages (File outputDir, Array<Page> pages, String packFileName) {
-		String imageName = packFileName;
+	private void writeImages (File packFile, Array<Page> pages) {
+		File packDir = packFile.getParentFile();
+		String imageName = packFile.getName();
 		int dotIndex = imageName.indexOf('.');
 		if (dotIndex != -1) imageName = imageName.substring(0, dotIndex);
 
@@ -142,7 +148,7 @@ public class TexturePacker {
 
 			File outputFile;
 			while (true) {
-				outputFile = new File(outputDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
+				outputFile = new File(packDir, imageName + (fileIndex++ == 0 ? "" : fileIndex) + "." + settings.outputFormat);
 				if (!outputFile.exists()) break;
 			}
 			new FileHandle(outputFile).parent().mkdirs();
@@ -188,10 +194,10 @@ public class TexturePacker {
 						// Copy corner pixels to fill corners of the padding.
 						for (int i = 1; i <= amountX; i++) {
 							for (int j = 1; j <= amountY; j++) {
-								canvas.setRGB(rectX - i, rectY - j, image.getRGB(0, 0));
-								canvas.setRGB(rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
-								canvas.setRGB(rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
-								canvas.setRGB(rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
+								plot(canvas, rectX - i, rectY - j, image.getRGB(0, 0));
+								plot(canvas, rectX - i, rectY + ih - 1 + j, image.getRGB(0, ih - 1));
+								plot(canvas, rectX + iw - 1 + i, rectY - j, image.getRGB(iw - 1, 0));
+								plot(canvas, rectX + iw - 1 + i, rectY + ih - 1 + j, image.getRGB(iw - 1, ih - 1));
 							}
 						}
 						// Copy edge pixels into padding.
@@ -262,17 +268,15 @@ public class TexturePacker {
 		if (rotated) {
 			for (int i = 0; i < w; i++)
 				for (int j = 0; j < h; j++)
-					dst.setRGB(dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
+					plot(dst, dx + j, dy + w - i - 1, src.getRGB(x + i, y + j));
 		} else {
 			for (int i = 0; i < w; i++)
 				for (int j = 0; j < h; j++)
-					dst.setRGB(dx + i, dy + j, src.getRGB(x + i, y + j));
+					plot(dst, dx + i, dy + j, src.getRGB(x + i, y + j));
 		}
 	}
 
-	private void writePackFile (File outputDir, Array<Page> pages, String packFileName) throws IOException {
-		File packFile = new File(outputDir, packFileName);
-
+	private void writePackFile (File packFile, Array<Page> pages) throws IOException {
 		if (packFile.exists()) {
 			// Make sure there aren't duplicate names.
 			TextureAtlasData textureAtlasData = new TextureAtlasData(new FileHandle(packFile), new FileHandle(packFile), false);
@@ -292,6 +296,7 @@ public class TexturePacker {
 		FileWriter writer = new FileWriter(packFile, true);
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
+			writer.write("size: " + page.width + "," + page.height + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");
@@ -584,7 +589,7 @@ public class TexturePacker {
 			else {
 				// Otherwise if scale != 1 or multiple scales, use subdirectory.
 				float scaleValue = scale[scaleIndex];
-				if (scaleValue != 1 || scale.length != 1) {
+				if (scale.length != 1) {
 					packFileName = (scaleValue == (int)scaleValue ? Integer.toString((int)scaleValue) : Float.toString(scaleValue))
 						+ "/" + packFileName;
 				}
