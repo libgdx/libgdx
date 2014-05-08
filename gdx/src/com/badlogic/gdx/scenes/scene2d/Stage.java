@@ -731,4 +731,14 @@ public class Stage extends InputAdapter implements Disposable {
 			listener = null;
 		}
 	}
+	
+	public Batch getBatch()
+	{
+		return batch;
+	}
+	
+	public void setBatch(SpriteBatch batch)
+	{
+		this.batch = batch;
+	}
 }
