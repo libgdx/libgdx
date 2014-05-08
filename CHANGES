@@ -1,4 +1,9 @@
+[1.0.2]
+
 [1.0.1]
+- updated to RoboVM 0.12 (and so should you!)
+- fixed GC issues on iOS with regards to touch (thanks Niklas!), see https://github.com/libgdx/libgdx/pull/1758
+- updated gwt gradle plugin to 0.4, android build tools to 0.10, gradle version to 1.11
 - Tiled maps are now always y-up
 - Tiled maps now support drawing offsets for tiles
 - FileHandle#list is now supported in GWT!

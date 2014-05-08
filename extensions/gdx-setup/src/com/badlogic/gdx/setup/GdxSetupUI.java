@@ -144,7 +144,7 @@ public class GdxSetupUI extends JFrame {
 		}
 
 		final String sdkLocation = ui.form.sdkLocationText.getText().trim();
-		if (sdkLocation.length() == 0) {
+		if (sdkLocation.length() == 0 && modules.contains(ProjectType.ANDROID)) {
 			JOptionPane.showMessageDialog(this, "Please enter your Android SDK's path");
 			return;
 		}
@@ -169,10 +169,7 @@ public class GdxSetupUI extends JFrame {
 		String selectedVersion = (String)ui.form.versionButton.getSelectedItem();
 		if (selectedVersion.equals("Nightlies")) {
 			DependencyBank.libgdxVersion = DependencyBank.libgdxNightlyVersion;
-		} else {
-			DependencyBank.libgdxVersion = selectedVersion.split("Release ")[1];
 		}
-
 		List<String> incompatList = builder.buildProject(modules, dependencies);
 		if (incompatList.size() == 0) {
 			try {
@@ -403,7 +400,7 @@ public class GdxSetupUI extends JFrame {
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel versionLabel = new JLabel("LibGDX Version");
-		JComboBox versionButton = new JComboBox(new String[] {"Release 1.0.0", "Nightlies"});
+		JComboBox versionButton = new JComboBox(new String[] {"Release " + DependencyBank.libgdxVersion, "Nightlies"});
 		JLabel nightlyWarning = new JLabel("Nightlies are development builds, be aware!");
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");

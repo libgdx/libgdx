@@ -30,7 +30,7 @@ task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
     gwt.modules = gwt.devModules
 }
 
-task dist(dependsOn: compileGwt) {
+task dist(dependsOn: [clean, compileGwt]) {
     doLast {
         file("build/dist").mkdirs()
         copy {
