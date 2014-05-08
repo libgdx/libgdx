@@ -48,6 +48,8 @@ public class I18NSimpleMessageTest extends GdxTest {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
 
+		I18NBundle.setSimpleFormatter(true);
+
 		try {
 			FileHandle bfh = Gdx.files.internal("data/i18n/message2");
 			rb_root = I18NBundle.createBundle(bfh, Locale.ROOT);

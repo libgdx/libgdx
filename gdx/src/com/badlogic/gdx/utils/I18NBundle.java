@@ -67,6 +67,8 @@ public class I18NBundle {
 
 	private static final String DEFAULT_ENCODING = "UTF-8";
 
+	private static boolean simpleFormatter = false;
+
 	/** The parent of this {@code I18NBundle} that is used if this bundle doesn't include the requested resource. */
 	private I18NBundle parent;
 
@@ -78,6 +80,18 @@ public class I18NBundle {
 
 	/** The formatter used for argument replacement. */
 	private TextFormatter formatter;
+
+	/** Returns the flag indicating whether to use the simplified message pattern syntax (default is false). This flag is always assumed to
+	 * be true on GWT backend. */
+	public static boolean getSimpleFormatter () {
+		return simpleFormatter;
+	}
+
+	/** Sets the flag indicating whether to use the simplified message pattern. The flag must be set before calling the factory methods {@code createBundle}. Notice that this method has no effect on the GWT backend where
+	 * it's always assumed to be true. */
+	public static void setSimpleFormatter (boolean enabled) {
+		simpleFormatter = enabled;
+	}
 
 	/** Creates a new bundle using the specified <code>baseFileHandle</code>, the default locale and the default encoding "UTF-8".
 	 * 
@@ -372,7 +386,7 @@ public class I18NBundle {
 	 * @param locale */
 	private void setLocale (Locale locale) {
 		this.locale = locale;
-		this.formatter = new TextFormatter(locale);
+		this.formatter = new TextFormatter(locale, !simpleFormatter);
 	}
 
 	/** Gets a string for the given key from this bundle or one of its parents.
