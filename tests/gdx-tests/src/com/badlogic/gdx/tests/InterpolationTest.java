@@ -144,10 +144,10 @@ public class InterpolationTest extends GdxTest {
 		String text = String.valueOf(duration);
 		if (text.length() > 4) text = text.substring(0, text.lastIndexOf('.') + 3);
 		text = "duration: " + text + " s (ctrl + scroll to change)";
-		stage.getSpriteBatch().begin();
-		list.getStyle().font.draw(stage.getSpriteBatch(), text, bottomLeftX + graphSize / 2
+		stage.getBatch().begin();
+		list.getStyle().font.draw(stage.getBatch(), text, bottomLeftX + graphSize / 2
 			- list.getStyle().font.getBounds(text).width / 2, bottomLeftY + graphSize + list.getStyle().font.getLineHeight());
-		stage.getSpriteBatch().end();
+		stage.getBatch().end();
 
 		renderer.begin(ShapeType.Line);
 		renderer.rect(bottomLeftX, bottomLeftY, graphSize, graphSize); // graph bounds

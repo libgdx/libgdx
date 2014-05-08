@@ -505,7 +505,7 @@ public class Table extends WidgetGroup {
 	 * debug set, calling this method causes an expensive traversal of all actors in the stage. */
 	static public void drawDebug (Stage stage) {
 		if (!TableToolkit.drawDebug) return;
-		drawDebug(stage.getActors(), stage.getSpriteBatch());
+		drawDebug(stage.getActors(), stage.getBatch());
 	}
 
 	static private void drawDebug (Array<Actor> actors, Batch batch) {
