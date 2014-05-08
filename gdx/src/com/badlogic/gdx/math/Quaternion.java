@@ -313,7 +313,25 @@ public class Quaternion implements Serializable {
 		this.w = newW;
 		return this;
 	}
-
+	
+	/** Add the x,y,z,w components of the passed in quaternion to the ones of this quaternion */
+	public Quaternion add(Quaternion quaternion){
+		this.x += quaternion.x;
+		this.y += quaternion.y;
+		this.z += quaternion.z;
+		this.w += quaternion.w;
+		return this;
+	}
+	
+	/** Add the x,y,z,w components of the passed in quaternion to the ones of this quaternion */
+	public Quaternion add(float qx, float qy, float qz, float qw){
+		this.x += qx;
+		this.y += qy;
+		this.z += qz;
+		this.w += qw;
+		return this;
+	}
+	
 	// TODO : the matrix4 set(quaternion) doesnt set the last row+col of the matrix to 0,0,0,1 so... that's why there is this
 // method
 	/** Fills a 4x4 matrix with the rotation matrix represented by this quaternion.
