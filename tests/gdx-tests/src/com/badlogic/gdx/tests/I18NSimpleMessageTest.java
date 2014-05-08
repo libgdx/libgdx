@@ -27,8 +27,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.MessageBundle;
-import com.badlogic.gdx.utils.SimpleMessageBundle;
 
 /** Performs some tests with {@link I18NBundle} and prints the results on the screen.
  * 
@@ -49,15 +47,14 @@ public class I18NSimpleMessageTest extends GdxTest {
 	public void create () {
 		font = new BitmapFont();
 		batch = new SpriteBatch();
-		Class bundleClass = SimpleMessageBundle.class;
 
 		try {
 			FileHandle bfh = Gdx.files.internal("data/i18n/message2");
-			rb_root = I18NBundle.createBundle(bundleClass, bfh, Locale.ROOT);
-			rb_default = I18NBundle.createBundle(bundleClass, bfh);
-			rb_en = I18NBundle.createBundle(bundleClass, bfh, new Locale("en", "US"));
-			rb_it = I18NBundle.createBundle(bundleClass, bfh, new Locale("it", "IT"));
-			rb_unsupported = I18NBundle.createBundle(bundleClass, bfh, new Locale("unsupported"));
+			rb_root = I18NBundle.createBundle(bfh, Locale.ROOT);
+			rb_default = I18NBundle.createBundle(bfh);
+			rb_en = I18NBundle.createBundle(bfh, new Locale("en", "US"));
+			rb_it = I18NBundle.createBundle(bfh, new Locale("it", "IT"));
+			rb_unsupported = I18NBundle.createBundle(bfh, new Locale("unsupported"));
 
 			println("Default locale: " + Locale.getDefault());
 

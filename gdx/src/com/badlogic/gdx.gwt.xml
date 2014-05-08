@@ -381,11 +381,11 @@
 		<exclude name="utils/SharedLibraryLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/ShortArray.java"/>
 		<include name="utils/SnapshotArray.java"/>
-		<include name="utils/SimpleMessageBundle.java"/>
 		<include name="utils/Sort.java"/>
 		<include name="utils/SortedIntList.java"/>
 		<include name="utils/StreamUtils.java"/>
 		<include name="utils/StringBuilder.java"/>
+		<include name="utils/TextFormatter.java"/> <!-- Emulated: MessageFormat -->
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
 		<include name="utils/TimSort.java"/>

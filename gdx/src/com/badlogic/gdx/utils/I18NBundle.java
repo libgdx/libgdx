@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** A {@code I18NBundle} provides {@code Locale}-specific resources loaded from property files. A bundle contains a number of named
  * resources, whose names and values are {@code Strings}. A bundle may have a parent bundle, and when a resource is not found in a
@@ -64,12 +63,12 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
  * @see PropertiesUtils
  * 
  * @author davebaol */
-public abstract class I18NBundle {
+public class I18NBundle {
 
 	private static final String DEFAULT_ENCODING = "UTF-8";
 
 	/** The parent of this {@code I18NBundle} that is used if this bundle doesn't include the requested resource. */
-	protected I18NBundle parent;
+	private I18NBundle parent;
 
 	/** The locale for this bundle. */
 	private Locale locale;
@@ -77,47 +76,44 @@ public abstract class I18NBundle {
 	/** The properties for this bundle. */
 	private ObjectMap<String, String> properties;
 
-	/** Creates a new bundle using the specified <code>class</code> and <code>baseFileHandle</code>, the default locale and the
-	 * default encoding "UTF-8".
+	/** The formatter used for argument replacement. */
+	private TextFormatter formatter;
+
+	/** Creates a new bundle using the specified <code>baseFileHandle</code>, the default locale and the default encoding "UTF-8".
 	 * 
-	 * @param clazz the class of the bundle to be returned
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @exception NullPointerException if <code>baseFileHandle</code> is <code>null</code>
 	 * @exception MissingResourceException if no bundle for the specified base file handle can be found
 	 * @return a bundle for the given base file handle and the default locale */
-	public static <T extends I18NBundle> T createBundle (Class<T> clazz, FileHandle baseFileHandle) {
-		return createBundleImpl(clazz, baseFileHandle, Locale.getDefault(), DEFAULT_ENCODING);
+	public static I18NBundle createBundle (FileHandle baseFileHandle) {
+		return createBundleImpl(baseFileHandle, Locale.getDefault(), DEFAULT_ENCODING);
 	}
 
-	/** Creates a new bundle using the specified <code>class</code>, <code>baseFileHandle</code> and <code>locale</code>; the
-	 * default encoding "UTF-8" is used.
+	/** Creates a new bundle using the specified <code>baseFileHandle</code> and <code>locale</code>; the default encoding "UTF-8"
+	 * is used.
 	 * 
-	 * @param clazz the class of the bundle to be returned
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param locale the locale for which a bundle is desired
 	 * @return a bundle for the given base file handle and locale
 	 * @exception NullPointerException if <code>baseFileHandle</code> or <code>locale</code> is <code>null</code>
 	 * @exception MissingResourceException if no bundle for the specified base file handle can be found */
-	public static <T extends I18NBundle> T createBundle (Class<T> clazz, FileHandle baseFileHandle, Locale locale) {
-		return createBundleImpl(clazz, baseFileHandle, locale, DEFAULT_ENCODING);
+	public static I18NBundle createBundle (FileHandle baseFileHandle, Locale locale) {
+		return createBundleImpl(baseFileHandle, locale, DEFAULT_ENCODING);
 	}
 
-	/** Creates a new bundle using the specified <code>class</code>, <code>baseFileHandle</code> and <code>encoding</code>; the
-	 * default locale is used.
+	/** Creates a new bundle using the specified <code>baseFileHandle</code> and <code>encoding</code>; the default locale is used.
 	 * 
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param encoding the charter encoding
 	 * @return a bundle for the given base file handle and locale
 	 * @exception NullPointerException if <code>baseFileHandle</code> or <code>encoding</code> is <code>null</code>
 	 * @exception MissingResourceException if no bundle for the specified base file handle can be found */
-	public static <T extends I18NBundle> T createBundle (Class<T> clazz, FileHandle baseFileHandle, String encoding) {
-		return createBundleImpl(clazz, baseFileHandle, Locale.getDefault(), encoding);
+	public static I18NBundle createBundle (FileHandle baseFileHandle, String encoding) {
+		return createBundleImpl(baseFileHandle, Locale.getDefault(), encoding);
 	}
 
-	/** Creates a new bundle using the specified <code>class</code>, <code>baseFileHandle</code>, <code>locale</code> and
-	 * <code>encoding</code>.
+	/** Creates a new bundle using the specified <code>baseFileHandle</code>, <code>locale</code> and <code>encoding</code>.
 	 * 
-	 * @param clazz the class of the bundle to be returned
 	 * @param baseFileHandle the file handle to the base of the bundle
 	 * @param locale the locale for which a bundle is desired
 	 * @param encoding the charter encoding
@@ -125,23 +121,22 @@ public abstract class I18NBundle {
 	 * @exception NullPointerException if <code>baseFileHandle</code>, <code>locale</code> or <code>encoding</code> is
 	 *               <code>null</code>
 	 * @exception MissingResourceException if no bundle for the specified base file handle can be found */
-	public static <T extends I18NBundle> T createBundle (Class<T> clazz, FileHandle baseFileHandle, Locale locale, String encoding) {
-		return createBundleImpl(clazz, baseFileHandle, locale, encoding);
+	public static I18NBundle createBundle (FileHandle baseFileHandle, Locale locale, String encoding) {
+		return createBundleImpl(baseFileHandle, locale, encoding);
 	}
 
-	private static <T extends I18NBundle> T createBundleImpl (Class<T> clazz, FileHandle baseFileHandle, Locale locale,
-		String encoding) {
+	private static I18NBundle createBundleImpl (FileHandle baseFileHandle, Locale locale, String encoding) {
 		if (baseFileHandle == null || locale == null || encoding == null) throw new NullPointerException();
 
-		T bundle = null;
-		T baseBundle = null;
+		I18NBundle bundle = null;
+		I18NBundle baseBundle = null;
 		Locale targetLocale = locale;
 		do {
 			// Create the candidate locales
 			List<Locale> candidateLocales = getCandidateLocales(targetLocale);
 
 			// Load the bundle and its parents recursively
-			bundle = loadBundleChain(clazz, baseFileHandle, encoding, candidateLocales, 0, baseBundle);
+			bundle = loadBundleChain(baseFileHandle, encoding, candidateLocales, 0, baseBundle);
 
 			// Check the loaded bundle (if any)
 			if (bundle != null) {
@@ -265,19 +260,19 @@ public abstract class I18NBundle {
 		return locale.equals(defaultLocale) ? null : defaultLocale;
 	}
 
-	private static final <T extends I18NBundle> T loadBundleChain (Class<T> clazz, FileHandle baseFileHandle, String encoding,
-		List<Locale> candidateLocales, int candidateIndex, T baseBundle) {
+	private static I18NBundle loadBundleChain (FileHandle baseFileHandle, String encoding, List<Locale> candidateLocales,
+		int candidateIndex, I18NBundle baseBundle) {
 		Locale targetLocale = candidateLocales.get(candidateIndex);
-		T parent = null;
+		I18NBundle parent = null;
 		if (candidateIndex != candidateLocales.size() - 1) {
 			// Load recursively the parent having the next candidate locale
-			parent = loadBundleChain(clazz, baseFileHandle, encoding, candidateLocales, candidateIndex + 1, baseBundle);
+			parent = loadBundleChain(baseFileHandle, encoding, candidateLocales, candidateIndex + 1, baseBundle);
 		} else if (baseBundle != null && targetLocale.equals(Locale.ROOT)) {
 			return baseBundle;
 		}
 
 		// Load the bundle
-		T bundle = loadBundle(clazz, baseFileHandle, encoding, targetLocale);
+		I18NBundle bundle = loadBundle(baseFileHandle, encoding, targetLocale);
 		if (bundle != null) {
 			bundle.parent = parent;
 			return bundle;
@@ -287,15 +282,14 @@ public abstract class I18NBundle {
 	}
 
 	// Tries to load the bundle for the given locale.
-	private static final <T extends I18NBundle> T loadBundle (Class<T> clazz, FileHandle baseFileHandle, String encoding,
-		Locale targetLocale) {
-		T bundle = null;
+	private static I18NBundle loadBundle (FileHandle baseFileHandle, String encoding, Locale targetLocale) {
+		I18NBundle bundle = null;
 		InputStream stream = null;
 		try {
 			FileHandle fileHandle = toFileHandle(baseFileHandle, targetLocale);
 			if (fileHandle.exists()) {
 				// Instantiate the bundle
-				bundle = ClassReflection.newInstance(clazz);
+				bundle = new I18NBundle();
 
 				// Load bundle properties from the stream with the specified encoding
 				stream = fileHandle.read();
@@ -373,13 +367,12 @@ public abstract class I18NBundle {
 		return locale;
 	}
 
-	/** Sets the bundle locale. This method is protected because a bundle can't change locale during its life. However, this method
-	 * is called by the <code>createBundle</code> factory method after bundle creation so giving subclasses that override it the
-	 * opportunity to set themselves based on the locale.
+	/** Sets the bundle locale. This method is private because a bundle can't change the locale during its life.
 	 * 
 	 * @param locale */
-	protected void setLocale (Locale locale) {
+	private void setLocale (Locale locale) {
 		this.locale = locale;
+		this.formatter = new TextFormatter(locale);
 	}
 
 	/** Gets a string for the given key from this bundle or one of its parents.
@@ -399,8 +392,6 @@ public abstract class I18NBundle {
 
 	/** Gets the string with the specified key from this bundle or one of its parent after replacing the given arguments if they
 	 * occur.
-	 * <p>
-	 * Depending on the actual implementation of the bundle argument replacement may be sensitive to the bundle's locale.
 	 * 
 	 * @param key the key for the desired string
 	 * @param args the arguments to be replaced in the string associated to the given key.
@@ -408,9 +399,7 @@ public abstract class I18NBundle {
 	 * @exception MissingResourceException if no string for the given key can be found
 	 * @return the string for the given key formatted with the given arguments */
 	public String format (String key, Object... args) {
-		return formatPattern(get(key), args);
+		return formatter.format(get(key), args);
 	}
-
-	protected abstract String formatPattern (String pattern, Object[] args);
 
 }
