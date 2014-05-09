@@ -27,7 +27,8 @@ public class TextFormatter {
 
 	private StringBuilder buffer = new StringBuilder();
 
-	public TextFormatter (Locale locale) {
+	public TextFormatter (Locale locale, boolean useMessageFormat) {
+		// both arguments are meaningless for GWT
 	}
 
 	/** Formats the given {@code pattern} replacing any placeholder of the form {0}, {1}, {2} and so on with the corresponding
