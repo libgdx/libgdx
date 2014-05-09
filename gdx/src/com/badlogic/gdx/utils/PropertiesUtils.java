@@ -40,51 +40,25 @@ public final class PropertiesUtils {
 	private PropertiesUtils () {
 	}
 
-	/** Adds to the specified {@code ObjectMap} the key/value pairs read from the input byte stream in a simple line-oriented format
-	 * compatible with <code>java.util.Properties</code>. The input stream is assumed to use the ISO 8859-1 character encoding;
-	 * that is each byte is one Latin1 character. Characters not in Latin1, and certain special characters, are represented in keys
-	 * and elements using <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#3.3">Unicode escapes</a>.
+	/** Adds to the specified {@code ObjectMap} the key/value pairs loaded from the {@code Reader} in a simple line-oriented format
+	 * compatible with <code>java.util.Properties</code>.
 	 * <p>
-	 * The specified stream remains open after this method returns.
+	 * The input stream remains open after this method returns.
 	 * 
 	 * @param properties the map to be filled.
-	 * @param inStream the input stream.
-	 * @exception IOException if an error occurred when reading from the input stream.
-	 * @throws IllegalArgumentException if the input stream contains a malformed Unicode escape sequence. */
-	public static void load (ObjectMap<String, String> properties, InputStream inStream) throws IOException {
-		if (inStream == null) {
-			throw new NullPointerException("InputStream cannot be null");
-		}
-		loadImpl(properties, new InputStreamReader(inStream, "ISO-8859-1"));
-	}
-
-	/** Adds to the specified {@code ObjectMap} the key/value pairs read from the input character stream in a simple line-oriented
-	 * format compatible with <code>java.util.Properties</code>.
-	 * <p>
-	 * The specified stream remains open after this method returns.
-	 * 
-	 * @param properties the map to be filled.
-	 * @param reader the input character stream.
+	 * @param reader the input character stream reader.
 	 * @throws IOException if an error occurred when reading from the input stream.
 	 * @throws IllegalArgumentException if a malformed Unicode escape appears in the input. */
-	public static void load (ObjectMap<String, String> properties, Reader reader) throws IOException {
-		if (reader == null) {
-			throw new NullPointerException("InputStream cannot be null");
-		}
-		loadImpl(properties, reader);
-	}
-
 	@SuppressWarnings("deprecation")
-	private static void loadImpl (ObjectMap<String, String> properties, Reader in) throws IOException {
-		if (properties == null) {
-			throw new NullPointerException("ObjectMap cannot be null");
-		}
+	public static void load (ObjectMap<String, String> properties, Reader reader) throws IOException {
+		if (properties == null) throw new NullPointerException("ObjectMap cannot be null");
+		if (reader == null) throw new NullPointerException("Reader cannot be null");
 		int mode = NONE, unicode = 0, count = 0;
 		char nextChar, buf[] = new char[40];
 		int offset = 0, keyLength = -1, intVal;
 		boolean firstChar = true;
 
-		BufferedReader br = new BufferedReader(in);
+		BufferedReader br = new BufferedReader(reader);
 
 		while (true) {
 			intVal = br.read();
@@ -235,31 +209,6 @@ public final class PropertiesUtils {
 			}
 			properties.put(key, value);
 		}
-	}
-
-	/** Writes the key/value pairs of the specified <code>ObjectMap</code> to the output character stream in a simple line-oriented
-	 * format compatible with <code>java.util.Properties</code>. The specified {@code OutputStream} is written using ISO-8859-1
-	 * character encoding.
-	 * <p>
-	 * This method outputs the comments, properties keys and values in the same format as specified in
-	 * {@link #store(ObjectMap, Writer, String) store(ObjectMap, Writer)}, with the following differences:
-	 * <ul>
-	 * <li>The stream is written using the ISO 8859-1 character encoding.
-	 * <li>Characters not in Latin-1 in the comments are written as <code>&#92;u</code><i>xxxx</i> for their appropriate unicode
-	 * hexadecimal value <i>xxxx</i>.
-	 * <li>Characters less than <code>&#92;u0020</code> and characters greater than <code>&#92;u007E</code> in property keys or
-	 * values are written as <code>&#92;u</code><i>xxxx</i> for the appropriate hexadecimal value <i>xxxx</i>.
-	 * </ul>
-	 * <p>
-	 * After the entries have been written, the output stream is flushed. The output stream remains open after this method returns.
-	 * 
-	 * @param properties the {@code ObjectMap}.
-	 * @param out the {@code OutputStream}
-	 * @param comment an optional comment to be written, or null.
-	 * @exception IOException if writing this property list to the specified output stream throws an <tt>IOException</tt>.
-	 * @exception NullPointerException if <code>properties</code> or <code>out</code> is null. */
-	public static void store (ObjectMap<String, String> properties, OutputStream out, String comment) throws IOException {
-		storeImpl(properties, new OutputStreamWriter(out, "ISO-8859-1"), comment, true);
 	}
 
 	/** Writes the key/value pairs of the specified <code>ObjectMap</code> to the output character stream in a simple line-oriented
