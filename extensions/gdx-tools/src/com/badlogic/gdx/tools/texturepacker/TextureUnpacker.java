@@ -16,6 +16,10 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -23,23 +27,42 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-
-/** @author Nathan Sweet, Michael Bazos */
+/** @author Nathan Sweet, Michael Bazos, Manuel Valentino */
 public class TextureUnpacker {
 	/** @param output Directory where the images will be written.
 	 * @throws IOException */
 	static public void process (TextureAtlasData atlasData, String output) throws IOException {
+        File extraInfoFile = new File(output + File.separator + "extra.txt");
+        if (!extraInfoFile.exists()) {
+            extraInfoFile.createNewFile();
+        }
+        FileOutputStream extraInfo = new FileOutputStream(extraInfoFile);
+
 		for (Region region : atlasData.getRegions()) {
 			BufferedImage src = ImageIO.read(region.page.textureFile.read());
 			BufferedImage subimage = null;
 
 			System.out.println(String.format("processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
 				region.left, region.top, region.width, region.height, region.rotate));
+
+            if(region.splits != null || region.pads != null) {
+                String extraData = region.name + " / ";
+
+                if(region.splits != null) {
+                    extraData += "Split: " + region.splits[0] + ", " + region.splits[1] + ", " + region.splits[2] + ", " + region.splits[3];
+
+                }
+
+                if(region.pads != null) {
+                    if(region.splits == null) {
+                        extraData += "Split: 0, 0, 0, 0";
+                    }
+                    extraData += " / Pad: " + region.pads[0] + ", " + region.pads[1] + ", " + region.pads[2] + ", " + region.pads[3];
+                }
+
+                extraData += "\n";
+                extraInfo.write(extraData.getBytes());
+            }
 
 			if (region.rotate) {
 				BufferedImage unRotatedImage = src.getSubimage(region.left, region.top, region.height, region.width);
@@ -56,21 +79,25 @@ public class TextureUnpacker {
 
 			ImageIO.write(subimage, "PNG", new FileOutputStream(output + File.separator + region.name + ".png"));
 		}
-
+        extraInfo.flush();
+        extraInfo.close();
+        if (extraInfoFile.length() == 0) {
+            extraInfoFile.delete();
+        }
 	}
 
 	static public void main (String[] args) throws Exception {
 		String input = null, output = null;
 
 		switch (args.length) {
-		case 2:
-			output = args[1];
-		case 1:
-			input = args[0];
-			break;
-		default:
-			System.out.println("Usage: inputDir [outputDir] [packFileName]");
-			System.exit(0);
+            case 2:
+                output = args[1];
+            case 1:
+                input = args[0];
+                break;
+            default:
+                System.out.println("Usage: inputFile [outputDir]");
+                System.exit(0);
 		}
 
 		FileHandle inputFileHandle = new FileHandle(input);
