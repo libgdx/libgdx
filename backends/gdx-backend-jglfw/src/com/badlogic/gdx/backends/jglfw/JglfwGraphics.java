@@ -34,6 +34,10 @@ import java.awt.Toolkit;
 /** An implementation of the {@link Graphics} interface based on GLFW.
  * @author Nathan Sweet */
 public class JglfwGraphics implements Graphics {
+	static final boolean isMac = System.getProperty("os.name").contains("OS X");
+	static final boolean isWindows = System.getProperty("os.name").contains("Windows");
+	static final boolean isLinux = System.getProperty("os.name").contains("Linux");
+
 	static int glMajorVersion, glMinorVersion;
 
 	long window;
@@ -154,7 +158,9 @@ public class JglfwGraphics implements Graphics {
 	}
 
 	void sizeChanged (int width, int height) {
-		glfwShowWindow(window); // This is required to refresh the NSOpenGLContext on OSX!
+		if (isMac) {
+			glfwShowWindow(window); // This is required to refresh the NSOpenGLContext on OSX!
+		}
 		width = Math.max(1, width);
 		height = Math.max(1, height);
 		this.width = width;
