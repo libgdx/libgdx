@@ -1,4 +1,6 @@
 [1.0.2]
+- Added i18n localization/internationalization support, thanks davebol, see https://github.com/libgdx/libgdx/pull/1769
+- Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
 
 [1.0.1]
 - updated to RoboVM 0.12 (and so should you!)
