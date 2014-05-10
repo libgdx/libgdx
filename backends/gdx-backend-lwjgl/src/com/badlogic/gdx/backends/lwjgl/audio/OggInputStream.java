@@ -44,8 +44,10 @@ import com.jcraft.jorbis.Info;
 /** An input stream to read Ogg Vorbis.
  * @author kevin */
 public class OggInputStream extends InputStream {
+	private final static int BUFFER_SIZE = 512;
+	
 	/** The conversion buffer size */
-	private int convsize = 4096 * 4;
+	private int convsize = BUFFER_SIZE * 4;
 	/** The buffer used to read OGG file */
 	private byte[] convbuffer = new byte[convsize]; // take 8k out of the data segment, not the stack
 	/** The stream we're reading the OGG file from */
@@ -85,7 +87,7 @@ public class OggInputStream extends InputStream {
 	/** The index into the byte array we currently read from */
 	private int readIndex;
 	/** The byte array store used to hold the data read from the ogg */
-	private ByteBuffer pcmBuffer = BufferUtils.createByteBuffer(4096 * 500);
+	private ByteBuffer pcmBuffer = BufferUtils.createByteBuffer(BUFFER_SIZE * 500);
 	/** The total number of bytes */
 	private int total;
 
@@ -144,7 +146,7 @@ public class OggInputStream extends InputStream {
 		// serialno.
 
 		// submit a 4k block to libvorbis' Ogg layer
-		int index = syncState.buffer(4096);
+		int index = syncState.buffer(BUFFER_SIZE);
 		if (index == -1) return false;
 
 		buffer = syncState.data;
@@ -154,7 +156,7 @@ public class OggInputStream extends InputStream {
 		}
 
 		try {
-			bytes = input.read(buffer, index, 4096);
+			bytes = input.read(buffer, index, BUFFER_SIZE);
 		} catch (Exception e) {
 			throw new GdxRuntimeException("Failure reading Vorbis.", e);
 		}
@@ -163,7 +165,7 @@ public class OggInputStream extends InputStream {
 		// Get the first page.
 		if (syncState.pageout(page) != 1) {
 			// have we simply run out of data? If so, we're done.
-			if (bytes < 4096) return false;
+			if (bytes < BUFFER_SIZE) return false;
 
 			// error case. Must not be Vorbis data
 			throw new GdxRuntimeException("Input does not appear to be an Ogg bitstream.");
@@ -235,11 +237,11 @@ public class OggInputStream extends InputStream {
 				}
 			}
 			// no harm in not checking before adding more
-			index = syncState.buffer(4096);
+			index = syncState.buffer(BUFFER_SIZE);
 			if (index == -1) return false;
 			buffer = syncState.data;
 			try {
-				bytes = input.read(buffer, index, 4096);
+				bytes = input.read(buffer, index, BUFFER_SIZE);
 			} catch (Exception e) {
 				throw new GdxRuntimeException("Failed to read Vorbis.", e);
 			}
@@ -249,7 +251,7 @@ public class OggInputStream extends InputStream {
 			syncState.wrote(bytes);
 		}
 
-		convsize = 4096 / oggInfo.channels;
+		convsize = BUFFER_SIZE / oggInfo.channels;
 
 		// OK, got and parsed all three headers. Initialize the Vorbis
 		// packet->PCM decoder.
@@ -374,11 +376,11 @@ public class OggInputStream extends InputStream {
 
 				if (!endOfBitStream) {
 					bytes = 0;
-					int index = syncState.buffer(4096);
+					int index = syncState.buffer(BUFFER_SIZE);
 					if (index >= 0) {
 						buffer = syncState.data;
 						try {
-							bytes = input.read(buffer, index, 4096);
+							bytes = input.read(buffer, index, BUFFER_SIZE);
 						} catch (Exception e) {
 							throw new GdxRuntimeException("Error during Vorbis decoding.", e);
 						}

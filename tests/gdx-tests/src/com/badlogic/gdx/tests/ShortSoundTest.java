@@ -7,7 +7,7 @@ public class ShortSoundTest extends GdxTest {
 
 	@Override
 	public void create () {
-		Gdx.audio.newSound(Gdx.files.internal("data/chirp.ogg")).play();
+		Gdx.audio.newSound(Gdx.files.internal("data/tic.ogg")).play();
 	}
 
 }
