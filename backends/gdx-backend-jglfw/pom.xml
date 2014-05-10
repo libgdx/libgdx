@@ -21,12 +21,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>com.badlogicgames.jglfw</groupId>
 			<artifactId>jglfw</artifactId>
 			<version>${jglfw.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>${project.groupId}</groupId>
+			<groupId>com.badlogicgames.jglfw</groupId>
 			<artifactId>jglfw-platform</artifactId>
 			<version>${jglfw.version}</version>
 			<classifier>natives-desktop</classifier>
