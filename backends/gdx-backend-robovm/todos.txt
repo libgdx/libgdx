@@ -2,10 +2,7 @@ General
 	- see issue tracker, RoboVM specific issues are marked with [RoboVM]
 	- OGG is currently not supported by ObjectAL
 	- Update: Vibration is not really supported on iOS
-	
-- IOSApplication.java
-	- getClipboard() not implemented properly, should at least support strings
-	
+		
 - IOSApplicationConfiguration
 	- add compass
 	
