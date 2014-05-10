@@ -847,7 +847,93 @@ public class Matrix4 implements Serializable {
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
 		return this;
 	}
+	
+	/**
+	 * Averages the given transform with this one and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * @param other The other transform
+	 * @param w Weight of this transform; weight of the other transform is (1 - w)
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4 other, float w) {
 
+		getScale(tmpVec);
+		getRotation(quat);
+		getTranslation(tmpUp);
+		
+		//Calculate scale components
+		setToScaling(tmpVec.scl(w).add(other.getScale(tmpForward).scl(1 - w)));
+
+		//Calculate rotation components
+		final Quaternion tmpq2 = new Quaternion();
+		rotate(quat.slerp(other.getRotation(tmpq2), 1 - w));
+
+		//Calculate translation components
+		setTranslation(tmpUp.scl(w).add(other.getTranslation(tmpForward).scl(1 - w)));
+		
+		return this;
+	}
+	
+	/**
+	 * Averages the given transforms and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * Does not destroy the data contained in t.
+	 * @param t List of transforms
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4[] t) {
+		final float w = 1.0f/t.length;
+
+		//Calculate scale components
+		tmpVec.set(0,0,0);
+		for(int i=0;i<t.length;i++)
+			tmpVec.add(t[i].getScale(tmpUp).scl(w));
+		setToScaling(tmpVec);
+
+		//Calculate rotation components
+		final Quaternion tmpq2 = new Quaternion();
+		quat.set(t[0].getRotation(tmpq2).exp(w));
+		for(int i=1;i<t.length;i++)
+			quat.mul(t[i].getRotation(tmpq2).exp(w));
+		rotate(quat);
+
+		//Calculate translation components
+		setTranslation(0, 0, 0);
+		for(int i=0;i<t.length;i++)
+			trn(t[i].getTranslation(tmpVec).scl(w));
+
+		return this;
+	}
+
+	/**
+	 * Averages the given transforms with the given weights and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * Does not destroy the data contained in t or w;
+	 * Sum of w_i must be equal to 1, or unexpected results will occur.
+	 * @param t List of transforms
+	 * @param w List of weights
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4[] t, float[] w) {
+
+		//Calculate scale components
+		tmpVec.set(0,0,0);
+		for(int i=0;i<t.length;i++)
+			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
+		setToScaling(tmpVec);
+
+		//Calculate rotation components
+		final Quaternion tmpq2 = new Quaternion();
+		quat.set(t[0].getRotation(tmpq2).exp(w[0]));
+		for(int i=1;i<t.length;i++)
+			quat.mul(t[i].getRotation(tmpq2).exp(w[i]));
+		rotate(quat);
+
+		//Calculate translation components
+		setTranslation(0, 0, 0);
+		for(int i=0;i<t.length;i++)
+			trn(t[i].getTranslation(tmpVec).scl(w[i]));
+
+		return this;
+	}
+	
 	/** Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
 	 * @param mat the matrix */
 	public Matrix4 set (Matrix3 mat) {
