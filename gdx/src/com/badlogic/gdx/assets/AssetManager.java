@@ -197,7 +197,7 @@ public class AssetManager implements Disposable {
 		Array<String> dependencies = assetDependencies.get(fileName);
 		if (dependencies != null) {
 			for (String dependency : dependencies) {
-				unload(dependency);
+				if (isLoaded(dependency)) unload(dependency);
 			}
 		}
 		// remove dependencies if ref count < 0
