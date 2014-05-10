@@ -296,7 +296,7 @@ public final class Intersector {
 		float denom = direction.dot(plane.getNormal());
 		if (denom != 0) {
 			float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
-			if (t >= 0 && t <= 1 && intersection != null) intersection.set(origin).add(direction.scl(t));
+			if (intersection != null) intersection.set(origin).add(direction.scl(t));
 			return t;
 		} else if (plane.testPoint(origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(origin);
