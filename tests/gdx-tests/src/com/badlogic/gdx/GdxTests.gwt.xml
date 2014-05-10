@@ -16,6 +16,7 @@
 		<exclude name="**/FreeTypePackTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypeDisposeTest.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
+		<exclude name="**/I18NMessageTest.java"/> <!-- MessageBundle -->
 		<exclude name="**/InterpolationTest.java"/> <!-- reflection -->
 		<exclude name="**/JpegTest.java"/> <!-- native -->
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
