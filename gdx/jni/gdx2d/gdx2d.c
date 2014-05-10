@@ -220,18 +220,14 @@ static inline get_pixel_func get_pixel_func_ptr(uint32_t format) {
 	}
 }
 
-gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len, uint32_t req_format) {
+gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
 	int32_t width, height, format;
-	// TODO fix this! Add conversion to requested format
-
-	if(req_format > GDX2D_FORMAT_RGBA8888) 
-		req_format = GDX2D_FORMAT_RGBA8888;
-
-	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, req_format);
+    
+	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
 	if (pixels == NULL && stbi_unsupported_format() == 1) {
 		if (!req_format)
 			req_format = 3;
-		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, req_format);
+		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 0);
 	}
 	if (pixels == NULL)
 		return NULL;

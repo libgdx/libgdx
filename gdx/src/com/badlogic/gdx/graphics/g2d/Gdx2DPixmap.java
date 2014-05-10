@@ -40,12 +40,12 @@ public class Gdx2DPixmap implements Disposable {
 	public static final int GDX2D_BLEND_NONE = 0;
 	public static final int GDX2D_BLEND_SRC_OVER = 1;
 
-	final long basePtr;
-	final int width;
-	final int height;
-	final int format;
-	final ByteBuffer pixelPtr;
-	final long[] nativeData = new long[4];
+	long basePtr;
+	int width;
+	int height;
+	int format;
+	ByteBuffer pixelPtr;
+	long[] nativeData = new long[4];
 
 	static {
 		setBlend(GDX2D_BLEND_SRC_OVER);
@@ -53,15 +53,19 @@ public class Gdx2DPixmap implements Disposable {
 	}
 
 	public Gdx2DPixmap (byte[] encodedData, int offset, int len, int requestedFormat) throws IOException {
-		pixelPtr = load(nativeData, encodedData, offset, len, requestedFormat);
+		pixelPtr = load(nativeData, encodedData, offset, len);
 		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
+		
+		if(requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
 	}
-
+	
 	public Gdx2DPixmap (InputStream in, int requestedFormat) throws IOException {
 		ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
 		byte[] buffer = new byte[1024];
@@ -72,13 +76,17 @@ public class Gdx2DPixmap implements Disposable {
 		}
 
 		buffer = bytes.toByteArray();
-		pixelPtr = load(nativeData, buffer, 0, buffer.length, requestedFormat);
+		pixelPtr = load(nativeData, buffer, 0, buffer.length);
 		if (pixelPtr == null) throw new IOException("couldn't load pixmap " + getFailureReason());
 
 		basePtr = nativeData[0];
 		width = (int)nativeData[1];
 		height = (int)nativeData[2];
 		format = (int)nativeData[3];
+		
+		if(requestedFormat != 0 && requestedFormat != format) {
+			convert(requestedFormat);
+		}
 	}
 
 	/** @throws GdxRuntimeException if allocation failed. */
@@ -98,6 +106,18 @@ public class Gdx2DPixmap implements Disposable {
 		this.width = (int)nativeData[1];
 		this.height = (int)nativeData[2];
 		this.format = (int)nativeData[3];
+	}
+
+	private void convert (int requestedFormat) {
+		Gdx2DPixmap pixmap = new Gdx2DPixmap(width, height, requestedFormat);
+		pixmap.drawPixmap(this, 0, 0, 0, 0, width, height);
+		dispose();
+		this.basePtr = pixmap.basePtr;
+		this.format = pixmap.format;
+		this.height = pixmap.height;
+		this.nativeData = pixmap.nativeData;
+		this.pixelPtr = pixmap.pixelPtr;
+		this.width = pixmap.width;
 	}
 
 	public void dispose () {
@@ -243,9 +263,9 @@ public class Gdx2DPixmap implements Disposable {
 	#include <stdlib.h>
 	 */
 	
-	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len, int requestedFormat); /*MANUAL	
+	private static native ByteBuffer load (long[] nativeData, byte[] buffer, int offset, int len); /*MANUAL	
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, requestedFormat);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 	
 		if(pixmap==0)
