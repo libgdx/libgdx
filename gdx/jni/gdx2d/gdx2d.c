@@ -225,9 +225,7 @@ gdx2d_pixmap* gdx2d_load(const unsigned char *buffer, uint32_t len) {
     
 	const unsigned char* pixels = stbi_load_from_memory(buffer, len, &width, &height, &format, 0);
 	if (pixels == NULL && stbi_unsupported_format() == 1) {
-		if (!req_format)
-			req_format = 3;
-		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 0);
+		pixels = jpgd_decompress_jpeg_image_from_memory(buffer, len, &width, &height, &format, 3);
 	}
 	if (pixels == NULL)
 		return NULL;
