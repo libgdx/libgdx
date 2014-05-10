@@ -267,6 +267,9 @@ extern int      stbi_is_hdr_from_file(FILE *f);
 // NOT THREADSAFE
 extern const char *stbi_failure_reason  (void); 
 
+// if stb_image fails because of an unsupported format, this will return which format
+extern int stbi_unsupported_format (void);
+
 // free the loaded image -- this is just free()
 extern void     stbi_image_free      (void *retval_from_stbi_load);
 
@@ -498,6 +501,15 @@ static const char *failure_reason;
 const char *stbi_failure_reason(void)
 {
    return failure_reason;
+}
+
+#define FORMAT_PROGRESSIVE_JPEG 1
+
+static int unsupported_format;
+
+int stbi_unsupported_format(void)
+{
+	return unsupported_format;
 }
 
 static int e(const char *str)
@@ -1432,6 +1444,7 @@ static int process_marker(jpeg *z, int m)
          return e("expected marker","Corrupt JPEG");
 
       case 0xC2: // SOF - progressive
+         unsupported_format = FORMAT_PROGRESSIVE_JPEG;
          return e("progressive jpeg","JPEG format not supported (progressive)");
 
       case 0xDD: // DRI - specify restart interval
