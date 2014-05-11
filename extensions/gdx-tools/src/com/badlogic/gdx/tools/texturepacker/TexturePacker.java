@@ -25,31 +25,24 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.*;
 
-/** @author Nathan Sweet */
+/** @author Nathan Sweet, Manuel Valentino */
 public class TexturePacker {
 	private final Settings settings;
 	private final Packer packer;
 	private final ImageProcessor imageProcessor;
 	private final Array<InputImage> inputImages = new Array();
 	private File rootDir;
+    private static StringBuilder extraDataContent = new StringBuilder();
 
 	/** @param rootDir Used to strip the root directory prefix from image file names, can be null. */
 	public TexturePacker (File rootDir, Settings settings) {
@@ -320,6 +313,47 @@ public class TexturePacker {
 		writer.write("  xy: " + (page.x + rect.x) + ", " + (page.y + page.height - rect.height - rect.y) + "\n");
 
 		writer.write("  size: " + rect.regionWidth + ", " + rect.regionHeight + "\n");
+
+        for (String line : extraDataContent.toString().split("\n")) {
+            String[] extraElement = line.split(" / ");
+            if(extraElement.length >= 2){
+                if((Rect.getAtlasName(name, settings.flattenPaths)).equals(extraElement[0])) {
+                    System.out.print("Found extra data for " + extraElement[0] + ": ");
+
+                    String result = "ignored.";
+                    if(extraElement[1] != null) {
+                        String[] splits = extraElement[1].split("Split: ")[1].split(", ");
+                        if(rect.splits == null) {
+                            rect.splits = new int[]{
+                                    Integer.parseInt(splits[0]),
+                                    Integer.parseInt(splits[1]),
+                                    Integer.parseInt(splits[2]),
+                                    Integer.parseInt(splits[3])
+                            };
+                            result = "Splits loaded";
+                        }
+                    }
+
+                    if(extraElement.length > 2) {
+                        if(extraElement[2] != null) {
+                            String[] pads = extraElement[2].split("Pad: ")[1].split(", ");
+                            if(rect.pads == null) {
+                                rect.pads = new int[] {
+                                        Integer.parseInt(pads[0]),
+                                        Integer.parseInt(pads[1]),
+                                        Integer.parseInt(pads[2]),
+                                        Integer.parseInt(pads[3])
+                                };
+                                result += ", Pads loaded";
+                            }
+                        }
+                    }
+                    System.out.print(result + "\n");
+                }
+
+            }
+        }
+
 		if (rect.splits != null) {
 			writer.write("  split: " //
 				+ rect.splits[0] + ", " + rect.splits[1] + ", " + rect.splits[2] + ", " + rect.splits[3] + "\n");
@@ -679,6 +713,22 @@ public class TexturePacker {
 			output = new File(inputFile.getParentFile(), inputFile.getName() + "-packed").getAbsolutePath();
 		}
 
+        File extraFile = new File(input + File.separator + "extra.txt");
+        if(extraFile.exists()) {
+            System.out.print("Found extra data file (split/pad), loading...");
+            // Read file
+            FileInputStream extraFileStream = new FileInputStream(extraFile);
+            InputStreamReader extraFileStreamReader = new InputStreamReader(extraFileStream);
+            BufferedReader extraFileDataReader = new BufferedReader(extraFileStreamReader);
+            String line;
+            while((line = extraFileDataReader.readLine()) != null) {
+                extraDataContent.append(line + "\n");
+            }
+            System.out.print("done\n");
+            extraFileDataReader.close();
+            extraFileStreamReader.close();
+            extraFileStream.close();
+        }
 		process(input, output, packFileName);
 	}
 }
