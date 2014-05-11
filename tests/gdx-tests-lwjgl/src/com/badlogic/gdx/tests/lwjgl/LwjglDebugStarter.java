@@ -18,9 +18,15 @@ package com.badlogic.gdx.tests.lwjgl;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.tests.AlphaTest;
 import com.badlogic.gdx.tests.Box2DTestCollection;
 import com.badlogic.gdx.tests.BulletTestCollection;
+import com.badlogic.gdx.tests.GamepadTest;
 import com.badlogic.gdx.tests.MusicTest;
+import com.badlogic.gdx.tests.PixmapTest;
+import com.badlogic.gdx.tests.ShortSoundTest;
+import com.badlogic.gdx.tests.TimerTest;
+import com.badlogic.gdx.tests.g2d.ProgressiveJPEGTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LwjglDebugStarter {
@@ -32,8 +38,9 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new Box2DTestCollection();		
+		GdxTest test = new ProgressiveJPEGTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;
 //		config.height = 241;
 		config.width = 960;

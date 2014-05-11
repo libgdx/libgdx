@@ -47,6 +47,8 @@ public class LwjglApplicationConfiguration {
 	public int x = -1, y = -1;
 	/** fullscreen **/
 	public boolean fullscreen = false;
+	/** used to emulate screen densities **/
+	public int overrideDensity = -1;
 	/** whether to enable vsync, can be changed at runtime via {@link Graphics#setVSync(boolean)} **/
 	public boolean vSyncEnabled = true;
 	/** title of application **/

@@ -742,7 +742,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor.
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y coordinates
+	 * are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 

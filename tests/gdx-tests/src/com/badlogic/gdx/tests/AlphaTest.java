@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.ScreenUtils;
 
 public class AlphaTest extends GdxTest {
 	SpriteBatch batch;
@@ -32,7 +33,7 @@ public class AlphaTest extends GdxTest {
 	@Override
 	public void create () {
 		Pixmap pixmap = new Pixmap(256, 256, Format.RGBA8888);
-		pixmap.setColor(0, 1, 0, 0.7f);
+		pixmap.setColor(1, 0, 0, 1);
 		pixmap.fill();
 
 		texture = new Texture(pixmap, false);
@@ -45,8 +46,13 @@ public class AlphaTest extends GdxTest {
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		batch.draw(texture, 0, 0, 256, 256, 0, 0, 256, 256, false, false);
+		batch.draw(texture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		batch.end();
+		
+		Pixmap pixmap = ScreenUtils.getFrameBufferPixmap(0,  0,  Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		int color = pixmap.getPixel(0, pixmap.getHeight() - 1);
+		Gdx.app.log("AlphaTest", Integer.toHexString(color));
+		pixmap.dispose();
 	}
 
 	@Override

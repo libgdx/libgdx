@@ -217,7 +217,7 @@
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
-
+		
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
@@ -344,6 +344,7 @@
 		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
+		<include name="utils/I18NBundle.java"/>
 		<include name="utils/IdentityMap.java"/>
 		<include name="utils/IntArray.java"/>
 		<include name="utils/IntFloatMap.java"/>
@@ -371,6 +372,7 @@
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
+		<include name="utils/PropertiesUtils.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>
@@ -384,6 +386,7 @@
 		<include name="utils/SortedIntList.java"/>
 		<include name="utils/StreamUtils.java"/>
 		<include name="utils/StringBuilder.java"/>
+		<include name="utils/TextFormatter.java"/> <!-- Emulated: MessageFormat -->
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
 		<include name="utils/TimSort.java"/>
