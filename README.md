@@ -58,7 +58,10 @@ get (non-mandatory) credit in case you release a game or app using libgdx!
 #### Supported By
 libGDX is supported by helpful 3rd parties via code contributions, free licenses, test devices and so forth. Make our supporters happy and visit their sites!
 
-<a href="http://bit.ly/robovmgdx"><img height="100" style="margin-right:20px" src="img/robovm.png" alt="RoboVM" /></a>
-<a href="http://bit.ly/spinegdx"><img src="img/spine.png"></a>
-<a href="http://bit.ly/nextpeergdx"><img src="img/nextpeer.png"></a>
-<a href="http://bit.ly/intelgdx"><img src="img/intel.png" alt="intel Software Partner" /></a>
+<a href="http://bit.ly/robovmgdx"><img height="100" style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a>
+
+<a href="http://bit.ly/spinegdx"><img src="http://libgdx.badlogicgames.com/img/spine.png"></a>
+
+<a href="http://bit.ly/nextpeergdx"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a>
+
+<a href="http://bit.ly/intelgdx"><img src="http://libgdx.badlogicgames.com/img/intel.png" alt="intel Software Partner" /></a>
