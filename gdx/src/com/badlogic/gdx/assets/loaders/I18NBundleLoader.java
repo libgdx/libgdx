@@ -26,6 +26,21 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.I18NBundle;
 
 /** {@link AssetLoader} for {@link I18NBundle} instances. The I18NBundle is loaded asynchronously.
+ * <p>
+ * Notice that you can't load two bundles with the same base name and different locale or encoding using the same {@link AssetManager}.
+ * For example, if you try to load the 2 bundles below
+ * 
+ * <pre>
+ * manager.load(&quot;i18n/message&quot;, I18NBundle.class, new I18NBundleParameter(Locale.ITALIAN));
+ * manager.load(&quot;i18n/message&quot;, I18NBundle.class, new I18NBundleParameter(Locale.ENGLISH));
+ * </pre>
+ * 
+ * the English bundle won't be loaded because the asset manager thinks they are the same bundle since they have the same name.
+ * There are 2 use cases:
+ * <ul>
+ * <li>If you want to load the English bundle so to replace the Italian bundle you have to unload the Italian bundle first.
+ * <li>If you want to load the English bundle without replacing the Italian bundle you should use another asset manager.
+ * </ul>
  * @author davebaol */
 public class I18NBundleLoader extends AsynchronousAssetLoader<I18NBundle, I18NBundleLoader.I18NBundleParameter> {
 
@@ -49,8 +64,7 @@ public class I18NBundleLoader extends AsynchronousAssetLoader<I18NBundle, I18NBu
 		}
 		if (encoding == null) {
 			this.bundle = I18NBundle.createBundle(file, locale);
-		}
-		else {
+		} else {
 			this.bundle = I18NBundle.createBundle(file, locale, encoding);
 		}
 	}
