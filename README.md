@@ -50,10 +50,18 @@ article will give you directions.
 
 You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](http://patreon.com/libgdx)!
 
-<a href="http://patreon.com/libgdx" target="_blank"><img src="http://img.youtube.com/vi/QmtN8k7x5hw/0.jpg" 
-alt="Patreon" width="480" height="360" border="10" /></a>
-
 #### License
 Libgdx is licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0.html), meaning you
 can use it free of charge, without strings attached in commercial and non-commercial projects. We love to
 get (non-mandatory) credit in case you release a game or app using libgdx!
+
+#### Supported By
+libGDX is supported by helpful 3rd parties via code contributions, free licenses, test devices and so forth. Make our supporters happy and visit their sites!
+
+<a href="http://bit.ly/robovmgdx"><img height="100" style="margin-right:20px" src="http://libgdx.badlogicgames.com/img/robovm.png" alt="RoboVM" /></a>
+<a href="http://bit.ly/spinegdx"><img src="http://libgdx.badlogicgames.com/img/spine.png"></a>
+
+<a href="http://bit.ly/nextpeergdx"><img src="http://libgdx.badlogicgames.com/img/nextpeer.png"></a>
+<a href="http://bit.ly/intelgdx"><img src="http://libgdx.badlogicgames.com/img/intel.png" alt="intel Software Partner" /></a>
+
+Intel and the Intel logo are trademarks of Intel Corporation in the U.S. and/or other countries.
