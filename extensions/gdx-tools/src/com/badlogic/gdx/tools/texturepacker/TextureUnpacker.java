@@ -31,9 +31,24 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 
 /** @author Nathan Sweet, Michael Bazos */
 public class TextureUnpacker {
-	/** @param output Directory where the images will be written.
+	/** Will unpack the given pack file name into individual files where the output directory is specified.
+	 * @param packFileName
+	 * @param outputDir
 	 * @throws IOException */
-	static public void process (TextureAtlasData atlasData, String output) throws IOException {
+	static private void process (String packFileName, String outputDir) throws IOException {
+		FileHandle inputFileHandle = new FileHandle(packFileName);
+		File inputFile = inputFileHandle.file();
+
+		if (outputDir == null) {
+			File outputFile = new File(inputFile.getParentFile(), "output");
+			if (!outputFile.exists()) {
+				outputFile.mkdir();
+			}
+			outputDir = outputFile.getAbsolutePath();
+		}
+
+		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
+
 		for (Region region : atlasData.getRegions()) {
 			BufferedImage src = ImageIO.read(region.page.textureFile.read());
 			BufferedImage subimage = null;
@@ -54,38 +69,25 @@ public class TextureUnpacker {
 				subimage = src.getSubimage(region.left, region.top, region.width, region.height);
 			}
 
-			ImageIO.write(subimage, "PNG", new FileOutputStream(output + File.separator + region.name + ".png"));
+			ImageIO.write(subimage, "PNG", new FileOutputStream(outputDir + File.separator + region.name + ".png"));
 		}
 
 	}
 
 	static public void main (String[] args) throws Exception {
-		String input = null, output = null;
+		String packFileName = null, outputDir = null;
 
 		switch (args.length) {
 		case 2:
-			output = args[1];
+			outputDir = args[1];
 		case 1:
-			input = args[0];
+			packFileName = args[0];
 			break;
 		default:
-			System.out.println("Usage: inputDir [outputDir] [packFileName]");
+			System.out.println("Usage: [packFileName] [outputDir]");
 			System.exit(0);
 		}
 
-		FileHandle inputFileHandle = new FileHandle(input);
-		File inputFile = inputFileHandle.file();
-
-		if (output == null) {
-			File outputFile = new File(inputFile.getParentFile(), "output");
-			if (!outputFile.exists()) {
-				outputFile.mkdir();
-			}
-			output = outputFile.getAbsolutePath();
-		}
-
-		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
-
-		process(atlasData, output);
+		process(packFileName, outputDir);
 	}
 }
