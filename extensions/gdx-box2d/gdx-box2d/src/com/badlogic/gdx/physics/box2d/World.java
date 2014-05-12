@@ -315,16 +315,16 @@ b2ContactFilter defaultFilter;
 	 * @warning This automatically deletes all associated shapes and joints.
 	 * @warning This function is locked during callbacks. */
 	public void destroyBody (Body body) {
+		Array<JointEdge> jointList = body.getJointList();
+		while (jointList.size > 0)
+			destroyJoint(body.getJointList().get(0).joint);
+		jniDestroyBody(addr, body.addr);
 		body.setUserData(null);
 		this.bodies.remove(body.addr);
 		Array<Fixture> fixtureList = body.getFixtureList();
 		while(fixtureList.size > 0) {
 			this.fixtures.remove(fixtureList.removeIndex(0).addr).setUserData(null);
 		}
-		Array<JointEdge> jointList = body.getJointList();
-		while (jointList.size > 0)
-			destroyJoint(body.getJointList().get(0).joint);
-		jniDestroyBody(addr, body.addr);
 		freeBodies.free(body);
 	}
 
