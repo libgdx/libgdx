@@ -219,7 +219,7 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 		canCacheMoreS = row1 > 0;
 
 		float[] vertices = this.vertices;
-		for (int row = row1; row < row2; row++) {
+		for (int row = row2; row >= row1; row--) {
 			for (int col = col1; col < col2; col++) {
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
 				if (cell == null) continue;
@@ -235,8 +235,8 @@ public class OrthoCachedTiledMapRenderer implements TiledMapRenderer, Disposable
 				final TextureRegion region = tile.getTextureRegion();
 				final Texture texture = region.getTexture();
 
-				final float x1 = col * layerTileWidth;
-				final float y1 = row * layerTileHeight;
+				final float x1 = col * layerTileWidth + tile.getOffsetX() * unitScale;
+				final float y1 = row * layerTileHeight + tile.getOffsetY() * unitScale;
 				final float x2 = x1 + region.getRegionWidth() * unitScale;
 				final float y2 = y1 + region.getRegionHeight() * unitScale;
 

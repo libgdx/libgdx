@@ -89,10 +89,10 @@ public class StageTest extends GdxTest implements InputProcessor {
 		blend.setScaling(Scaling.none);
 		blend.addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (stage.getSpriteBatch().isBlendingEnabled())
-					stage.getSpriteBatch().disableBlending();
+				if (stage.getBatch().isBlendingEnabled())
+					stage.getBatch().disableBlending();
 				else
-					stage.getSpriteBatch().enableBlending();
+					stage.getBatch().enableBlending();
 				return true;
 			}
 		});

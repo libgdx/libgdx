@@ -1,4 +1,21 @@
+[1.0.2]
+- Added i18n localization/internationalization support, thanks davebol, see https://github.com/libgdx/libgdx/wiki/Internationalization-and-Localization
+- Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
+- Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
+- Mavenized JGLFW backend
+
 [1.0.1]
+- updated to RoboVM 0.12 (and so should you!)
+- fixed GC issues on iOS with regards to touch (thanks Niklas!), see https://github.com/libgdx/libgdx/pull/1758
+- updated gwt gradle plugin to 0.4, android build tools to 0.10, gradle version to 1.11
+- Tiled maps are now always y-up
+- Tiled maps now support drawing offsets for tiles
+- FileHandle#list is now supported in GWT!
+- FileHandle#list now supports FileFilters
+- Controllers now reinitialize on the desktop when switching between windowed/fullscreen
+- added a Texture unpacker that will extract all images from a texture atlas, see https://github.com/libgdx/libgdx/pull/1774
+- updates to gdx-setup 
+- CustomCollisionDispatcher in bullet, see https://github.com/libgdx/libgdx/commit/916fc85cecf433c3461b458e00f8afc516ad21e3
 
 [1.0.0]
 - Box2D is no longer in the core, it has been moved to an extension. See http://www.badlogicgames.com/wordpress/?p=3404

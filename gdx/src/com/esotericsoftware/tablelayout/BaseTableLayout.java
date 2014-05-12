@@ -206,7 +206,7 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 	}
 
 	/** Returns the cell for the specified widget in this table, or null. */
-	public Cell getCell (C widget) {
+	public Cell<C> getCell (C widget) {
 		for (int i = 0, n = cells.size(); i < n; i++) {
 			Cell c = cells.get(i);
 			if (c.widget == widget) return c;

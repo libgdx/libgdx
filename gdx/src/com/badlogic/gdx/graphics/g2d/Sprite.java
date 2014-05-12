@@ -201,6 +201,22 @@ public class Sprite extends TextureRegion {
 	public void setY (float y) {
 		translateY(y - this.y);
 	}
+	
+	/** Sets the x position so that it is centered on the given x parameter */
+	public void setCenterX(float x){
+		setX(x - width / 2);
+	}
+	
+	/** Sets the y position so that it is centered on the given x parameter */
+	public void setCenterY(float y){
+		setY(y - height / 2);
+	}
+	
+	/** Sets the position so that the sprite is centered on (x, y) */
+	public void setCenter(float x, float y){
+		setCenterX(x);
+		setCenterY(y);
+	}
 
 	/** Sets the x position relative to the current position where the sprite will be drawn. If origin, rotation, or scale are
 	 * changed, it is slightly more efficient to translate after those operations. */

@@ -554,7 +554,12 @@ public class Stage extends InputAdapter implements Disposable {
 		return scrollFocus;
 	}
 
+	/** @deprecated */
 	public Batch getSpriteBatch () {
+		return batch;
+	}
+
+	public Batch getBatch () {
 		return batch;
 	}
 

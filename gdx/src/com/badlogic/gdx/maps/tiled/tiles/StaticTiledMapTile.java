@@ -31,6 +31,10 @@ public class StaticTiledMapTile implements TiledMapTile {
 
 	private TextureRegion textureRegion;
 
+	private float offsetX;
+
+	private float offsetY;
+
 	@Override
 	public int getId () {
 		return id;
@@ -64,6 +68,26 @@ public class StaticTiledMapTile implements TiledMapTile {
 	@Override
 	public TextureRegion getTextureRegion () {
 		return textureRegion;
+	}
+
+	@Override
+	public float getOffsetX () {
+		return offsetX;
+	}
+
+	@Override
+	public void setOffsetX (float offsetX) {
+		this.offsetX = offsetX;
+	}
+
+	@Override
+	public float getOffsetY () {
+		return offsetY;
+	}
+
+	@Override
+	public void setOffsetY (float offsetY) {
+		this.offsetY = offsetY;
 	}
 
 	/** Creates a static tile with the given region

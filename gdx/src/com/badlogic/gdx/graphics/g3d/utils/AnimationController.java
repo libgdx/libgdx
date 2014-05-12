@@ -378,7 +378,10 @@ public class AnimationController extends BaseAnimationController {
 			animationPool.free(current);
 			current = anim;
 		} else {
-			if (previous != null) animationPool.free(previous);
+			if (previous != null) {
+				removeAnimation(previous.animation);
+				animationPool.free(previous);
+			}
 			previous = current;
 			current = anim;
 			transitionCurrentTime = 0f;

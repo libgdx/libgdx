@@ -17,14 +17,16 @@
 package com.badlogic.gdx.backends.android;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
@@ -91,6 +93,56 @@ public class AndroidFileHandle extends FileHandle {
 			}
 		}
 		return super.list();
+	}
+
+	public FileHandle[] list (FileFilter filter) {
+		if (type == FileType.Internal) {
+			try {
+				String[] relativePaths = assets.list(file.getPath());
+				FileHandle[] handles = new FileHandle[relativePaths.length];
+				int count = 0;
+				for (int i = 0, n = handles.length; i < n; i++) {
+					String path = relativePaths[i];
+					if (!filter.accept(file)) continue;
+					handles[count] = new AndroidFileHandle(assets, new File(file, path), type);
+					count++;
+				}
+				if (count < relativePaths.length) {
+					FileHandle[] newHandles = new FileHandle[count];
+					System.arraycopy(handles, 0, newHandles, 0, count);
+					handles = newHandles;
+				}
+				return handles;
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error listing children: " + file + " (" + type + ")", ex);
+			}
+		}
+		return super.list(filter);
+	}
+
+	public FileHandle[] list (FilenameFilter filter) {
+		if (type == FileType.Internal) {
+			try {
+				String[] relativePaths = assets.list(file.getPath());
+				FileHandle[] handles = new FileHandle[relativePaths.length];
+				int count = 0;
+				for (int i = 0, n = handles.length; i < n; i++) {
+					String path = relativePaths[i];
+					if (!filter.accept(file, path)) continue;
+					handles[count] = new AndroidFileHandle(assets, new File(file, path), type);
+					count++;
+				}
+				if (count < relativePaths.length) {
+					FileHandle[] newHandles = new FileHandle[count];
+					System.arraycopy(handles, 0, newHandles, 0, count);
+					handles = newHandles;
+				}
+				return handles;
+			} catch (Exception ex) {
+				throw new GdxRuntimeException("Error listing children: " + file + " (" + type + ")", ex);
+			}
+		}
+		return super.list(filter);
 	}
 
 	public FileHandle[] list (String suffix) {

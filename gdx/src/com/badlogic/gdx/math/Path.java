@@ -33,4 +33,14 @@ public interface Path<T> {
 	 *         implementation of this method might be CPU intensive, see {@link #approximate(Object)} for a faster (but less
 	 *         precise) method. */
 	float locate (T v);
+	
+	
+	/**
+	 * @param samples The amount of divisions used to approximate length. Higher values will produce more precise results,
+	 * 		but will be more CPU intensive.
+	 * @return An approximated length of the spline through sampling the curve and accumulating the euclidean distances between
+	 *       the sample points.
+	 */
+	float approxLength(int samples);
+	
 }

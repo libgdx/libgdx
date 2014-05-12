@@ -28,15 +28,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 
 public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
-	private boolean yDown = false;
-
-	public boolean isYdown () {
-		return yDown;
-	}
-
-	public void setYDown (boolean yDown) {
-		this.yDown = yDown;
-	}
 
 	public HexagonalTiledMapRenderer (TiledMap map) {
 		super(map);
@@ -82,7 +73,7 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 		for (int row = row1; row < row2; row++) {
 			for (int col = col1; col < col2; col++) {
 				float x = layerTileWidth75 * col;
-				float y = (col % 2 == (yDown ? 0 : 1) ? 0 : layerTileHeight50) + (layerTileHeight * row);
+				float y = (col % 2 == 1 ? 0 : layerTileHeight50) + (layerTileHeight * row);
 
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
 				if (cell == null) {
@@ -99,8 +90,8 @@ public class HexagonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x;
-					float y1 = y;
+					float x1 = x + tile.getOffsetX() * unitScale;
+					float y1 = y + tile.getOffsetY() * unitScale;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
 

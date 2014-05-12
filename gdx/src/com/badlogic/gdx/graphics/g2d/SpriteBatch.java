@@ -130,6 +130,7 @@ public class SpriteBatch implements Batch {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "   v_color.a = v_color.a * (256.0/255.0);\n" //
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";
