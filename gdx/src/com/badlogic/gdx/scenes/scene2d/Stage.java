@@ -72,6 +72,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	private final float alpha = 1;
 
 	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#fill}. The stage will use its own {@link Batch}. */
 	public Stage () {
@@ -106,8 +107,24 @@ public class Stage extends InputAdapter implements Disposable {
 		if (!root.isVisible()) return;
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		root.draw(batch, 1);
+		root.draw(batch, alpha);
 		batch.end();
+	}
+	
+	/**
+	 * Sets the parent alpha, so you can fade the entire stage and its children.
+	 * @param alpha 0-1 to set alpha
+	 */
+	 
+	public void setAlpha(float alpha){
+		
+		if(alpha < 0)
+			alpha = 0;
+		
+		if(alpha > 1)
+			alpha = 1;
+		
+		this.alpha = alpha;
 	}
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
