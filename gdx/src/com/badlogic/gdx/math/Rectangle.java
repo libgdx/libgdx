@@ -223,6 +223,7 @@ public class Rectangle implements Serializable {
 	}
 
 	/** Merges this rectangle with the other rectangle.
+	 * The rectangle should not have negative width or negative height.
 	 * @param rect the other rectangle
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Rectangle rect) {
@@ -238,7 +239,53 @@ public class Rectangle implements Serializable {
 
 		return this;
 	}
+	/** Merges this rectangle with a point
+	 * The rectangle should not have negative width or negative height.
+	 * @param x the x coordinate of the point
+	 * @param y the y coordinate of the point
+	 * @return this rectangle for chaining */
+	public Rectangle merge (float x, float y) {
+		float minX = Math.min(this.x, x);
+		float maxX = Math.max(this.x + width, x);
+		this.x = minX;
+		this.width = maxX - minX;
 
+		float minY = Math.min(this.y, y);
+		float maxY = Math.max(this.y + height, y);
+		this.y = minY;
+		this.height = maxY - minY;
+
+		return this;
+	}
+	/** Merges this rectangle with a point
+	 * The rectangle should not have negative width or negative height.
+	 * @param vec the vector describing the point
+	 * @return this rectangle for chaining */
+	public Rectangle merge (Vector2 vec) {
+		return merge(vec.x, vec.y);
+	}
+	/** Merges this rectangle with a list of points
+	 * The rectangle should not have negative width or negative height.
+	 * @param vecs the vectors describing the points
+	 * @return this rectangle for chaining */
+	public Rectangle merge (Vector2[] vecs) {
+		float minX = x;
+		float maxX = x+width;
+		float minY = y;
+		float maxY = y+height;
+		for(int i = 0; i < vecs.length; ++i) {
+			Vector2 v = vecs[i];
+			minX = Math.min(minX, v.x);
+			maxX = Math.max(maxX, v.x);
+			minY = Math.min(minY, v.y);
+			maxY = Math.max(maxY, v.y);
+		}
+		x = minX;
+		width = maxX - minX;
+		y = minY;
+		height = maxY - minY;
+		return this;
+	}
 	/** Calculates the aspect ratio ( width / height ) of this rectangle
 	 * @return the aspect ratio of this rectangle. Returns Float.NaN if height is 0 to avoid ArithmeticException */
 	public float getAspectRatio () {

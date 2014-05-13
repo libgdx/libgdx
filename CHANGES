@@ -3,6 +3,7 @@
 - Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
 - Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
 - Mavenized JGLFW backend
+- Api Change: createArrow function of ModelBuilder class
 
 [1.0.1]
 - updated to RoboVM 0.12 (and so should you!)
