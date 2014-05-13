@@ -230,6 +230,7 @@ public class Json {
 	public void writeFields (Object object) {
 		Class type = object.getClass();
 
+		System.out.println(type);
 		Object[] defaultValues = getDefaultValues(type);
 
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
@@ -499,7 +500,7 @@ public class Json {
 			}
 
 			if (value instanceof ObjectMap) {
-				if (knownType == null) knownType = OrderedMap.class;
+				if (knownType == null) knownType = ObjectMap.class;
 				writeObjectStart(actualType, knownType);
 				for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
 					writer.name(convertToString(entry.key));
