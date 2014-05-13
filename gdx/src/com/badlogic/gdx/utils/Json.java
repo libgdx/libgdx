@@ -230,7 +230,6 @@ public class Json {
 	public void writeFields (Object object) {
 		Class type = object.getClass();
 
-		System.out.println(type);
 		Object[] defaultValues = getDefaultValues(type);
 
 		ObjectMap<String, FieldMetadata> fields = typeToFields.get(type);
