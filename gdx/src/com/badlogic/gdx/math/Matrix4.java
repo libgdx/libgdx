@@ -261,9 +261,9 @@ public class Matrix4 implements Serializable {
 		val[M10] = yAxis.x;
 		val[M11] = yAxis.y;
 		val[M12] = yAxis.z;
-		val[M20] = -zAxis.x;
-		val[M21] = -zAxis.y;
-		val[M22] = -zAxis.z;
+		val[M20] = zAxis.x;
+		val[M21] = zAxis.y;
+		val[M22] = zAxis.z;
 		val[M03] = pos.x;
 		val[M13] = pos.y;
 		val[M23] = pos.z;
@@ -828,7 +828,7 @@ public class Matrix4 implements Serializable {
 		right.set(tmpForward).crs(up).nor();
 		tmpUp.set(right).crs(tmpForward).nor();
 
-		this.set(right, tmpUp, tmpForward, position);
+		this.set(right, tmpUp, tmpForward.scl(-1), position);
 		return this;
 	}
 
