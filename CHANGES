@@ -4,6 +4,7 @@
 - Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
 - Mavenized JGLFW backend
 - Api Change: createArrow function of ModelBuilder class
+- Updated native Box2D to latest version 2.3.1, no API changes
 
 [1.0.1]
 - updated to RoboVM 0.12 (and so should you!)
