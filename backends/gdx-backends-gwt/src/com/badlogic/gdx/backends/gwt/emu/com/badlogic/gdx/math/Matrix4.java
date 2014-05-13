@@ -886,7 +886,7 @@ public class Matrix4 implements Serializable {
 		right.set(tmpForward).crs(up).nor();
 		tmpUp.set(right).crs(tmpForward).nor();
 
-		this.set(right, tmpUp, tmpForward, position);
+		this.set(right, tmpUp, tmpForward.scl(-1), position);
 		return this;
 	}
 
