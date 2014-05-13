@@ -31,7 +31,7 @@ void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 	{
 	case b2Shape::e_circle:
 		{
-			const b2CircleShape* circle = (b2CircleShape*)shape;
+			const b2CircleShape* circle = static_cast<const b2CircleShape*>(shape);
 			m_vertices = &circle->m_p;
 			m_count = 1;
 			m_radius = circle->m_radius;
@@ -40,7 +40,7 @@ void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 
 	case b2Shape::e_polygon:
 		{
-			const b2PolygonShape* polygon = (b2PolygonShape*)shape;
+			const b2PolygonShape* polygon = static_cast<const b2PolygonShape*>(shape);
 			m_vertices = polygon->m_vertices;
 			m_count = polygon->m_count;
 			m_radius = polygon->m_radius;
@@ -49,7 +49,7 @@ void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 
 	case b2Shape::e_chain:
 		{
-			const b2ChainShape* chain = (b2ChainShape*)shape;
+			const b2ChainShape* chain = static_cast<const b2ChainShape*>(shape);
 			b2Assert(0 <= index && index < chain->m_count);
 
 			m_buffer[0] = chain->m_vertices[index];
@@ -70,7 +70,7 @@ void b2DistanceProxy::Set(const b2Shape* shape, int32 index)
 
 	case b2Shape::e_edge:
 		{
-			const b2EdgeShape* edge = (b2EdgeShape*)shape;
+			const b2EdgeShape* edge = static_cast<const b2EdgeShape*>(shape);
 			m_vertices = &edge->m_vertex1;
 			m_count = 2;
 			m_radius = edge->m_radius;

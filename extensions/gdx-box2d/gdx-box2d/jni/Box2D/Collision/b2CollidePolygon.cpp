@@ -19,123 +19,46 @@
 #include <Box2D/Collision/b2Collision.h>
 #include <Box2D/Collision/Shapes/b2PolygonShape.h>
 
-// Find the separation between poly1 and poly2 for a give edge normal on poly1.
-static float32 b2EdgeSeparation(const b2PolygonShape* poly1, const b2Transform& xf1, int32 edge1,
-							  const b2PolygonShape* poly2, const b2Transform& xf2)
-{
-	const b2Vec2* vertices1 = poly1->m_vertices;
-	const b2Vec2* normals1 = poly1->m_normals;
-
-	int32 count2 = poly2->m_count;
-	const b2Vec2* vertices2 = poly2->m_vertices;
-
-	b2Assert(0 <= edge1 && edge1 < poly1->m_count);
-
-	// Convert normal from poly1's frame into poly2's frame.
-	b2Vec2 normal1World = b2Mul(xf1.q, normals1[edge1]);
-	b2Vec2 normal1 = b2MulT(xf2.q, normal1World);
-
-	// Find support vertex on poly2 for -normal.
-	int32 index = 0;
-	float32 minDot = b2_maxFloat;
-
-	for (int32 i = 0; i < count2; ++i)
-	{
-		float32 dot = b2Dot(vertices2[i], normal1);
-		if (dot < minDot)
-		{
-			minDot = dot;
-			index = i;
-		}
-	}
-
-	b2Vec2 v1 = b2Mul(xf1, vertices1[edge1]);
-	b2Vec2 v2 = b2Mul(xf2, vertices2[index]);
-	float32 separation = b2Dot(v2 - v1, normal1World);
-	return separation;
-}
-
 // Find the max separation between poly1 and poly2 using edge normals from poly1.
 static float32 b2FindMaxSeparation(int32* edgeIndex,
 								 const b2PolygonShape* poly1, const b2Transform& xf1,
 								 const b2PolygonShape* poly2, const b2Transform& xf2)
 {
 	int32 count1 = poly1->m_count;
-	const b2Vec2* normals1 = poly1->m_normals;
+	int32 count2 = poly2->m_count;
+	const b2Vec2* n1s = poly1->m_normals;
+	const b2Vec2* v1s = poly1->m_vertices;
+	const b2Vec2* v2s = poly2->m_vertices;
+	b2Transform xf = b2MulT(xf2, xf1);
 
-	// Vector pointing from the centroid of poly1 to the centroid of poly2.
-	b2Vec2 d = b2Mul(xf2, poly2->m_centroid) - b2Mul(xf1, poly1->m_centroid);
-	b2Vec2 dLocal1 = b2MulT(xf1.q, d);
-
-	// Find edge normal on poly1 that has the largest projection onto d.
-	int32 edge = 0;
-	float32 maxDot = -b2_maxFloat;
+	int32 bestIndex = 0;
+	float32 maxSeparation = -b2_maxFloat;
 	for (int32 i = 0; i < count1; ++i)
-	{
-		float32 dot = b2Dot(normals1[i], dLocal1);
-		if (dot > maxDot)
 		{
-			maxDot = dot;
-			edge = i;
+		// Get poly1 normal in frame2.
+		b2Vec2 n = b2Mul(xf.q, n1s[i]);
+		b2Vec2 v1 = b2Mul(xf, v1s[i]);
+
+		// Find deepest point for normal i.
+		float32 si = b2_maxFloat;
+		for (int32 j = 0; j < count2; ++j)
+	{
+			float32 sij = b2Dot(n, v2s[j] - v1);
+			if (sij < si)
+	{
+				si = sij;
+	}
+	}
+
+		if (si > maxSeparation)
+		{
+			maxSeparation = si;
+			bestIndex = i;
 		}
 	}
 
-	// Get the separation for the edge normal.
-	float32 s = b2EdgeSeparation(poly1, xf1, edge, poly2, xf2);
-
-	// Check the separation for the previous edge normal.
-	int32 prevEdge = edge - 1 >= 0 ? edge - 1 : count1 - 1;
-	float32 sPrev = b2EdgeSeparation(poly1, xf1, prevEdge, poly2, xf2);
-
-	// Check the separation for the next edge normal.
-	int32 nextEdge = edge + 1 < count1 ? edge + 1 : 0;
-	float32 sNext = b2EdgeSeparation(poly1, xf1, nextEdge, poly2, xf2);
-
-	// Find the best edge and the search direction.
-	int32 bestEdge;
-	float32 bestSeparation;
-	int32 increment;
-	if (sPrev > s && sPrev > sNext)
-	{
-		increment = -1;
-		bestEdge = prevEdge;
-		bestSeparation = sPrev;
-	}
-	else if (sNext > s)
-	{
-		increment = 1;
-		bestEdge = nextEdge;
-		bestSeparation = sNext;
-	}
-	else
-	{
-		*edgeIndex = edge;
-		return s;
-	}
-
-	// Perform a local search for the best edge normal.
-	for ( ; ; )
-	{
-		if (increment == -1)
-			edge = bestEdge - 1 >= 0 ? bestEdge - 1 : count1 - 1;
-		else
-			edge = bestEdge + 1 < count1 ? bestEdge + 1 : 0;
-
-		s = b2EdgeSeparation(poly1, xf1, edge, poly2, xf2);
-
-		if (s > bestSeparation)
-		{
-			bestEdge = edge;
-			bestSeparation = s;
-		}
-		else
-		{
-			break;
-		}
-	}
-
-	*edgeIndex = bestEdge;
-	return bestSeparation;
+	*edgeIndex = bestIndex;
+	return maxSeparation;
 }
 
 static void b2FindIncidentEdge(b2ClipVertex c[2],
@@ -210,12 +133,11 @@ void b2CollidePolygons(b2Manifold* manifold,
 	const b2PolygonShape* poly1;	// reference polygon
 	const b2PolygonShape* poly2;	// incident polygon
 	b2Transform xf1, xf2;
-	int32 edge1;		// reference edge
+	int32 edge1;					// reference edge
 	uint8 flip;
-	const float32 k_relativeTol = 0.98f;
-	const float32 k_absoluteTol = 0.001f;
+	const float32 k_tol = 0.1f * b2_linearSlop;
 
-	if (separationB > k_relativeTol * separationA + k_absoluteTol)
+	if (separationB > separationA + k_tol)
 	{
 		poly1 = polyB;
 		poly2 = polyA;

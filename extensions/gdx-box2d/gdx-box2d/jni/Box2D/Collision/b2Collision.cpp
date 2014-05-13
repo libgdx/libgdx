@@ -44,6 +44,7 @@ void b2WorldManifold::Initialize(const b2Manifold* manifold,
 			b2Vec2 cA = pointA + radiusA * normal;
 			b2Vec2 cB = pointB - radiusB * normal;
 			points[0] = 0.5f * (cA + cB);
+			separations[0] = b2Dot(cB - cA, normal);
 		}
 		break;
 
@@ -58,6 +59,7 @@ void b2WorldManifold::Initialize(const b2Manifold* manifold,
 				b2Vec2 cA = clipPoint + (radiusA - b2Dot(clipPoint - planePoint, normal)) * normal;
 				b2Vec2 cB = clipPoint - radiusB * normal;
 				points[i] = 0.5f * (cA + cB);
+				separations[i] = b2Dot(cB - cA, normal);
 			}
 		}
 		break;
@@ -73,6 +75,7 @@ void b2WorldManifold::Initialize(const b2Manifold* manifold,
 				b2Vec2 cB = clipPoint + (radiusB - b2Dot(clipPoint - planePoint, normal)) * normal;
 				b2Vec2 cA = clipPoint - radiusA * normal;
 				points[i] = 0.5f * (cA + cB);
+				separations[i] = b2Dot(cA - cB, normal);
 			}
 
 			// Ensure normal points from A to B.
@@ -217,7 +220,7 @@ int32 b2ClipSegmentToLine(b2ClipVertex vOut[2], const b2ClipVertex vIn[2],
 		vOut[numOut].v = vIn[0].v + interp * (vIn[1].v - vIn[0].v);
 
 		// VertexA is hitting edgeB.
-		vOut[numOut].id.cf.indexA = vertexIndexA;
+		vOut[numOut].id.cf.indexA = static_cast<uint8>(vertexIndexA);
 		vOut[numOut].id.cf.indexB = vIn[0].id.cf.indexB;
 		vOut[numOut].id.cf.typeA = b2ContactFeature::e_vertex;
 		vOut[numOut].id.cf.typeB = b2ContactFeature::e_face;
