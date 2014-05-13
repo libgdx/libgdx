@@ -72,7 +72,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
-	private final float alpha = 1;
+	private float alpha = 1;
 
 	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#fill}. The stage will use its own {@link Batch}. */
 	public Stage () {
@@ -117,14 +117,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 */
 	 
 	public void setAlpha(float alpha){
-		
-		if(alpha < 0)
-			alpha = 0;
-		
-		if(alpha > 1)
-			alpha = 1;
-		
-		this.alpha = alpha;
+    		this.alpha = MathUtils.clamp(alpha, 0, 1);
 	}
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
