@@ -2,6 +2,7 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="tests">
+		<exclude name="**/AlphaTest.java"/> <!-- ScreenUtils -->
 		<exclude name="**/AudioDeviceTest.java"/> <!-- audio missing -->
 		<exclude name="**/AudioRecorderTest.java"/> <!-- audio missing -->
 		<exclude name="**/BobTest.java"/> <!-- GL ES 1.0 -->
