@@ -21,15 +21,36 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.utils.FloatArray;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.StringBuilder;
 
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
  * of each glyph each frame.
  * @author Nathan Sweet
  * @author Matthias Mann */
 public class BitmapFontCache {
+
+	private static final ObjectMap<String, Color> colorMap = new ObjectMap<String, Color>();
+	static {
+		colorMap.put("CLEAR", Color.CLEAR);
+		colorMap.put("WHITE", Color.WHITE);
+		colorMap.put("BLACK", Color.BLACK);
+		colorMap.put("RED", Color.RED);
+		colorMap.put("GREEN", Color.GREEN);
+		colorMap.put("BLUE", Color.BLUE);
+		colorMap.put("LIGHT_GRAY", Color.LIGHT_GRAY);
+		colorMap.put("GRAY", Color.GRAY);
+		colorMap.put("DARK_GRAY", Color.DARK_GRAY);
+		colorMap.put("PINK", Color.PINK);
+		colorMap.put("ORANGE", Color.ORANGE);
+		colorMap.put("YELLOW", Color.YELLOW);
+		colorMap.put("MAGENTA", Color.MAGENTA);
+		colorMap.put("CYAN", Color.CYAN);
+	}
+
 	private final BitmapFont font;
 
 	private float[][] vertexData;
@@ -40,7 +61,9 @@ public class BitmapFontCache {
 
 	private float x, y;
 	private float color = Color.WHITE.toFloatBits();
+	private float previousColor = color;
 	private final Color tempColor = new Color(1, 1, 1, 1);
+	private final StringBuilder colorBuffer = new StringBuilder();
 	private final TextBounds textBounds = new TextBounds();
 	private boolean integer = true;
 	private int glyphCount = 0;
@@ -187,7 +210,7 @@ public class BitmapFontCache {
 		this.color = color;
 	}
 
-	public Color getColor () {
+	Color getColor () {
 		int intBits = NumberUtils.floatToIntColor(color);
 		Color color = tempColor;
 		color.r = (intBits & 0xff) / 255f;
@@ -287,7 +310,17 @@ public class BitmapFontCache {
 
 			// determine # of glyphs in each page
 			while (start < end) {
-				Glyph g = font.data.getGlyph(seq.charAt(start++));
+				char ch = seq.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && seq.charAt(start) == '[')) { // non escaped '['
+						while (start < end && seq.charAt(start) != ']')
+							start++;
+						start++;
+						continue;
+					}
+					start++;
+				}
+				Glyph g = font.data.getGlyph(ch);
 				if (g == null) continue;
 				tmpGlyphCount[g.page]++;
 			}
@@ -314,6 +347,60 @@ public class BitmapFontCache {
 		}
 	}
 
+	private int parseAndSetColor (CharSequence str, int start, int end) {
+		if (start < end) {
+			if (str.charAt(start) == '#') {
+				// Parse hex color RRGGBBAA where AA is optional and defaults to 0xFF if less than 6 chars are used
+				int colorInt = 0;
+				for (int i = start + 1; i < end; i++) {
+					char ch = str.charAt(i);
+					if (ch == ']') {
+						if (i < start + 2 || i > start + 9)
+							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits");
+						this.previousColor = this.color;
+						if (i <= start + 7) { // RRGGBB
+							Color.rgb888ToColor(tempColor, colorInt);
+							tempColor.a = 1f;
+						} else { // RRGGBBAA
+							Color.rgba8888ToColor(tempColor, colorInt);
+						}
+						this.color = tempColor.toFloatBits();
+						return i - start;
+					}
+					if (ch >= '0' && ch <= '9')
+						colorInt = colorInt * 16 + (ch - '0');
+					else if (ch >= 'a' && ch <= 'f')
+						colorInt = colorInt * 16 + (ch - ('a' - 10));
+					else if (ch >= 'A' && ch <= 'F')
+						colorInt = colorInt * 16 + (ch - ('A' - 10));
+					else
+						throw new GdxRuntimeException("Unexpected '" + ch + "' in hex color");
+				}
+			} else {
+				// Parse named color
+				colorBuffer.setLength(0);
+				for (int i = start; i < end; i++) {
+					char ch = str.charAt(i);
+					if (ch == ']') {
+						if (colorBuffer.length() == 0) {
+							this.color = previousColor;
+						} else {
+							String colorString = colorBuffer.toString();
+							Color newColor = colorMap.get(colorString);
+							if (newColor == null) throw new GdxRuntimeException("Unknown color '" + colorString + "'");
+							this.previousColor = this.color;
+							this.color = newColor.toFloatBits();
+						}
+						return i - start;
+					} else {
+						colorBuffer.append(ch);
+					}
+				}
+			}
+		}
+		throw new GdxRuntimeException("Unclosed color tag");
+	}
+
 	private float addToCache (CharSequence str, float x, float y, int start, int end) {
 		float startX = x;
 		BitmapFont font = this.font;
@@ -321,7 +408,15 @@ public class BitmapFontCache {
 		BitmapFontData data = font.data;
 		if (data.scaleX == 1 && data.scaleY == 1) {
 			while (start < end) {
-				lastGlyph = data.getGlyph(str.charAt(start++));
+				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += parseAndSetColor(str, start, end) + 1;
+						continue;
+					}
+					start++;
+				}
+				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, x + lastGlyph.xoffset, y + lastGlyph.yoffset, lastGlyph.width, lastGlyph.height);
 					x += lastGlyph.xadvance;
@@ -330,6 +425,13 @@ public class BitmapFontCache {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += parseAndSetColor(str, start, end) + 1;
+						continue;
+					}
+					start++;
+				}
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch);
@@ -341,7 +443,15 @@ public class BitmapFontCache {
 		} else {
 			float scaleX = data.scaleX, scaleY = data.scaleY;
 			while (start < end) {
-				lastGlyph = data.getGlyph(str.charAt(start++));
+				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += parseAndSetColor(str, start, end) + 1;
+						continue;
+					}
+					start++;
+				}
+				lastGlyph = data.getGlyph(ch);
 				if (lastGlyph != null) {
 					addGlyph(lastGlyph, //
 						x + lastGlyph.xoffset * scaleX, //
@@ -354,6 +464,13 @@ public class BitmapFontCache {
 			}
 			while (start < end) {
 				char ch = str.charAt(start++);
+				if (ch == '[' && font.markupEnabled) {
+					if (!(start < end && str.charAt(start) == '[')) { // non escaped '['
+						start += parseAndSetColor(str, start, end) + 1;
+						continue;
+					}
+					start++;
+				}
 				Glyph g = data.getGlyph(ch);
 				if (g != null) {
 					x += lastGlyph.getKerning(ch) * scaleX;
