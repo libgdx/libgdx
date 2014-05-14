@@ -35,22 +35,17 @@ public class TextureUnpacker {
 	 * @param packFileName
 	 * @param outputDir
 	 * @throws IOException */
-	static private void process (String packFileName, String outputDir) throws IOException {
-		FileHandle inputFileHandle = new FileHandle(packFileName);
-		File inputFile = inputFileHandle.file();
 
-		if (outputDir == null) {
-			File outputFile = new File(inputFile.getParentFile(), "output");
-			if (!outputFile.exists()) {
-				outputFile.mkdir();
-			}
-			outputDir = outputFile.getAbsolutePath();
-		}
-
-		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
-
+	/** This method will unpack the given the {@link TextureAtlasData}. The outputDir is optional and if one isn't provided the
+	 * output directory will be the location of the pack file.
+	 * 
+	 * @param atlasData
+	 * @param outputDir
+	 * @throws IOException */
+	static public void process (TextureAtlasData atlasData, String outputDir) throws IOException {
 		for (Region region : atlasData.getRegions()) {
-			BufferedImage src = ImageIO.read(region.page.textureFile.read());
+			FileHandle textureFile = region.page.textureFile;
+			BufferedImage src = ImageIO.read(textureFile.read());
 			BufferedImage subimage = null;
 
 			System.out.println(String.format("processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
@@ -69,11 +64,29 @@ public class TextureUnpacker {
 				subimage = src.getSubimage(region.left, region.top, region.width, region.height);
 			}
 
-			ImageIO.write(subimage, "PNG", new FileOutputStream(outputDir + File.separator + region.name + ".png"));
+			String outputDirTemp = outputDir != null && !outputDir.isEmpty() ? outputDir : textureFile.parent().path();
+			ImageIO.write(subimage, "PNG", new FileOutputStream(outputDirTemp + File.separator + region.name + ".png"));
 		}
 
 	}
 
+	/** This method will take a full path to the pack file that will be processed for unpacking. The outputDir is optional and if
+	 * one isn't provided the output directory will be the location of the pack file.
+	 * @param packNameFilePath
+	 * @param outputDir
+	 * @throws IOException */
+	static public void process (String packNameFilePath, String outputDir) throws IOException {
+		FileHandle inputFileHandle = new FileHandle(packNameFilePath);
+		File inputFile = inputFileHandle.file();
+
+		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
+		process(atlasData, outputDir);
+	}
+
+	/** Main method for running the {@link TextureUnpacker}. The outputDir is optional and if one isn't provided the output
+	 * directory will be the location of the pack file.
+	 * @param args [packFileName] [outputDir]
+	 * @throws Exception */
 	static public void main (String[] args) throws Exception {
 		String packFileName = null, outputDir = null;
 
