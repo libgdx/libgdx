@@ -31,11 +31,21 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
 
 /** @author Nathan Sweet, Michael Bazos */
 public class TextureUnpacker {
-	/** @param output Directory where the images will be written.
+	/** Will unpack the given pack file name into individual files where the output directory is specified.
+	 * @param packFileName
+	 * @param outputDir
 	 * @throws IOException */
-	static public void process (TextureAtlasData atlasData, String output) throws IOException {
+
+	/** This method will unpack the given the {@link TextureAtlasData}. The outputDir is optional and if one isn't provided the
+	 * output directory will be the location of the pack file.
+	 * 
+	 * @param atlasData
+	 * @param outputDir
+	 * @throws IOException */
+	static public void process (TextureAtlasData atlasData, String outputDir) throws IOException {
 		for (Region region : atlasData.getRegions()) {
-			BufferedImage src = ImageIO.read(region.page.textureFile.read());
+			FileHandle textureFile = region.page.textureFile;
+			BufferedImage src = ImageIO.read(textureFile.read());
 			BufferedImage subimage = null;
 
 			System.out.println(String.format("processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
@@ -54,38 +64,43 @@ public class TextureUnpacker {
 				subimage = src.getSubimage(region.left, region.top, region.width, region.height);
 			}
 
-			ImageIO.write(subimage, "PNG", new FileOutputStream(output + File.separator + region.name + ".png"));
+			String outputDirTemp = outputDir != null && !outputDir.isEmpty() ? outputDir : textureFile.parent().path();
+			ImageIO.write(subimage, "PNG", new FileOutputStream(outputDirTemp + File.separator + region.name + ".png"));
 		}
 
 	}
 
+	/** This method will take a full path to the pack file that will be processed for unpacking. The outputDir is optional and if
+	 * one isn't provided the output directory will be the location of the pack file.
+	 * @param packNameFilePath
+	 * @param outputDir
+	 * @throws IOException */
+	static public void process (String packNameFilePath, String outputDir) throws IOException {
+		FileHandle inputFileHandle = new FileHandle(packNameFilePath);
+		File inputFile = inputFileHandle.file();
+
+		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
+		process(atlasData, outputDir);
+	}
+
+	/** Main method for running the {@link TextureUnpacker}. The outputDir is optional and if one isn't provided the output
+	 * directory will be the location of the pack file.
+	 * @param args [packFileName] [outputDir]
+	 * @throws Exception */
 	static public void main (String[] args) throws Exception {
-		String input = null, output = null;
+		String packFileName = null, outputDir = null;
 
 		switch (args.length) {
 		case 2:
-			output = args[1];
+			outputDir = args[1];
 		case 1:
-			input = args[0];
+			packFileName = args[0];
 			break;
 		default:
-			System.out.println("Usage: inputDir [outputDir] [packFileName]");
+			System.out.println("Usage: [packFileName] [outputDir]");
 			System.exit(0);
 		}
 
-		FileHandle inputFileHandle = new FileHandle(input);
-		File inputFile = inputFileHandle.file();
-
-		if (output == null) {
-			File outputFile = new File(inputFile.getParentFile(), "output");
-			if (!outputFile.exists()) {
-				outputFile.mkdir();
-			}
-			output = outputFile.getAbsolutePath();
-		}
-
-		TextureAtlasData atlasData = new TextureAtlasData(inputFileHandle, inputFileHandle.parent(), false);
-
-		process(atlasData, output);
+		process(packFileName, outputDir);
 	}
 }
