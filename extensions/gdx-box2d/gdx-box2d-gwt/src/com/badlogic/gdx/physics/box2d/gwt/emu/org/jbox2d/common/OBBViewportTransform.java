@@ -21,146 +21,139 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-
 package org.jbox2d.common;
 
-/** Orientated bounding box viewport transform
+/**
+ * Orientated bounding box viewport transform
  * 
- * @author Daniel Murphy */
+ * @author Daniel Murphy
+ */
 public class OBBViewportTransform implements IViewportTransform {
 
-	public static class OBB {
-		public final Mat22 R = new Mat22();
-		public final Vec2 center = new Vec2();
-		public final Vec2 extents = new Vec2();
-	}
+  public static class OBB {
+    public final Mat22 R = new Mat22();
+    public final Vec2 center = new Vec2();
+    public final Vec2 extents = new Vec2();
+  }
 
-	protected final OBB box = new OBB();
-	private boolean yFlip = false;
-	private final Mat22 yFlipMat = new Mat22(1, 0, 0, -1);
-	private final Mat22 yFlipMatInv = yFlipMat.invert();
+  protected final OBB box = new OBB();
+  private boolean yFlip = false;
+  private final Mat22 yFlipMat = new Mat22(1, 0, 0, -1);
 
-	public OBBViewportTransform () {
-		box.R.setIdentity();
-	}
+  public OBBViewportTransform() {
+    box.R.setIdentity();
+  }
 
-	public void set (OBBViewportTransform vpt) {
-		box.center.set(vpt.box.center);
-		box.extents.set(vpt.box.extents);
-		box.R.set(vpt.box.R);
-		yFlip = vpt.yFlip;
-	}
+  public void set(OBBViewportTransform vpt) {
+    box.center.set(vpt.box.center);
+    box.extents.set(vpt.box.extents);
+    box.R.set(vpt.box.R);
+    yFlip = vpt.yFlip;
+  }
 
-	/** @see IViewportTransform#setCamera(float, float, float) */
-	public void setCamera (float x, float y, float scale) {
-		box.center.set(x, y);
-		Mat22.createScaleTransform(scale, box.R);
-	}
+  public void setCamera(float x, float y, float scale) {
+    box.center.set(x, y);
+    Mat22.createScaleTransform(scale, box.R);
+  }
 
-	/** @see IViewportTransform#getExtents() */
-	public Vec2 getExtents () {
-		return box.extents;
-	}
+  public Vec2 getExtents() {
+    return box.extents;
+  }
+  
+  @Override
+  public Mat22 getMat22Representation() {
+    return box.R;
+  }
 
-	/** @see IViewportTransform#setExtents(Vec2) */
-	public void setExtents (Vec2 argExtents) {
-		box.extents.set(argExtents);
-	}
+  public void setExtents(Vec2 argExtents) {
+    box.extents.set(argExtents);
+  }
 
-	/** @see IViewportTransform#setExtents(float, float) */
-	public void setExtents (float argHalfWidth, float argHalfHeight) {
-		box.extents.set(argHalfWidth, argHalfHeight);
-	}
+  public void setExtents(float halfWidth, float halfHeight) {
+    box.extents.set(halfWidth, halfHeight);
+  }
 
-	/** @see IViewportTransform#getCenter() */
-	public Vec2 getCenter () {
-		return box.center;
-	}
+  public Vec2 getCenter() {
+    return box.center;
+  }
 
-	/** @see IViewportTransform#setCenter(Vec2) */
-	public void setCenter (Vec2 argPos) {
-		box.center.set(argPos);
-	}
+  public void setCenter(Vec2 argPos) {
+    box.center.set(argPos);
+  }
 
-	/** @see IViewportTransform#setCenter(float, float) */
-	public void setCenter (float x, float y) {
-		box.center.set(x, y);
-	}
+  public void setCenter(float x, float y) {
+    box.center.set(x, y);
+  }
 
-	/** gets the transform of the viewport, transforms around the center. Not a copy.
-	 * 
-	 * @return */
-	public Mat22 getTransform () {
-		return box.R;
-	}
+  /**
+   * Gets the transform of the viewport, transforms around the center. Not a copy.
+   */
+  public Mat22 getTransform() {
+    return box.R;
+  }
 
-	/** Sets the transform of the viewport. Transforms about the center.
-	 * 
-	 * @param transform */
-	public void setTransform (Mat22 transform) {
-		box.R.set(transform);
-	}
+  /**
+   * Sets the transform of the viewport. Transforms about the center.
+   */
+  public void setTransform(Mat22 transform) {
+    box.R.set(transform);
+  }
 
-	/** Multiplies the obb transform by the given transform
-	 * 
-	 * @param argTransform */
-	public void mulByTransform (Mat22 argTransform) {
-		box.R.mulLocal(argTransform);
-	}
+  /**
+   * Multiplies the obb transform by the given transform
+   */
+  @Override
+  public void mulByTransform(Mat22 transform) {
+    box.R.mulLocal(transform);
+  }
 
-	/** @see IViewportTransform#isYFlip() */
-	public boolean isYFlip () {
-		return yFlip;
-	}
+  public boolean isYFlip() {
+    return yFlip;
+  }
 
-	/** @see IViewportTransform#setYFlip(boolean) */
-	public void setYFlip (boolean yFlip) {
-		this.yFlip = yFlip;
-	}
+  public void setYFlip(boolean yFlip) {
+    this.yFlip = yFlip;
+  }
 
-	// djm pooling
-	private final Mat22 inv = new Mat22();
+  private final Mat22 inv = new Mat22();
 
-	/** @see IViewportTransform#getScreenVectorToWorld(Vec2, Vec2) */
-	public void getScreenVectorToWorld (Vec2 argScreen, Vec2 argWorld) {
-		inv.set(box.R);
-		inv.invertLocal();
-		inv.mulToOut(argScreen, argWorld);
-		if (yFlip) {
-			yFlipMatInv.mulToOut(argWorld, argWorld);
-		}
-	}
+  public void getScreenVectorToWorld(Vec2 screen, Vec2 world) {
+    box.R.invertToOut(inv);
+    inv.mulToOut(screen, world);
+    if (yFlip) {
+      yFlipMat.mulToOut(world, world);
+    }
+  }
 
-	/** @see IViewportTransform#getWorldVectorToScreen(Vec2, Vec2) */
-	public void getWorldVectorToScreen (Vec2 argWorld, Vec2 argScreen) {
-		box.R.mulToOut(argWorld, argScreen);
-		if (yFlip) {
-			yFlipMatInv.mulToOut(argScreen, argScreen);
-		}
-	}
+  public void getWorldVectorToScreen(Vec2 world, Vec2 screen) {
+    box.R.mulToOut(world, screen);
+    if (yFlip) {
+      yFlipMat.mulToOut(screen, screen);
+    }
+  }
 
-	public void getWorldToScreen (Vec2 argWorld, Vec2 argScreen) {
-		argScreen.x = argWorld.x - box.center.x;
-		argScreen.y = argWorld.y - box.center.y;
-		box.R.mulToOut(argScreen, argScreen);
-		if (yFlip) {
-			yFlipMat.mulToOut(argScreen, argScreen);
-		}
-		argScreen.x += box.extents.x;
-		argScreen.y += box.extents.y;
-	}
+  public void getWorldToScreen(Vec2 world, Vec2 screen) {
+    screen.x = world.x - box.center.x;
+    screen.y = world.y - box.center.y;
+    box.R.mulToOut(screen, screen);
+    if (yFlip) {
+      yFlipMat.mulToOut(screen, screen);
+    }
+    screen.x += box.extents.x;
+    screen.y += box.extents.y;
+  }
 
-	private final Mat22 inv2 = new Mat22();
+  private final Mat22 inv2 = new Mat22();
 
-	/** @see IViewportTransform#getScreenToWorld(Vec2, Vec2) */
-	public void getScreenToWorld (Vec2 argScreen, Vec2 argWorld) {
-		argWorld.set(argScreen);
-		argWorld.subLocal(box.extents);
-		box.R.invertToOut(inv2);
-		inv2.mulToOut(argWorld, argWorld);
-		if (yFlip) {
-			yFlipMatInv.mulToOut(argWorld, argWorld);
-		}
-		argWorld.addLocal(box.center);
-	}
+  public void getScreenToWorld(Vec2 screen, Vec2 world) {
+    world.x = screen.x - box.extents.x;
+    world.y = screen.y - box.extents.y;
+    if (yFlip) {
+      yFlipMat.mulToOut(world, world);
+    }
+    box.R.invertToOut(inv2);
+    inv2.mulToOut(world, world);
+    world.x += box.center.x;
+    world.y += box.center.y;
+  }
 }
