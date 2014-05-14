@@ -48,8 +48,8 @@ public class ModelBuilder {
 	/** The mesh builders created between begin and end */
 	private Array<MeshBuilder> builders = new Array<MeshBuilder>();
 
-	private 	Matrix4 tmpTransform = new Matrix4();
-	
+	private Matrix4 tmpTransform = new Matrix4();
+
 	private MeshBuilder getBuilder (final VertexAttributes attributes) {
 		for (final MeshBuilder mb : builders)
 			if (mb.getAttributes().equals(attributes) && mb.lastIndex() < Short.MAX_VALUE / 2) return mb;
@@ -421,82 +421,77 @@ public class ModelBuilder {
 		mesh.setIndices(indices);
 		return createFromMesh(mesh, 0, indices.length, primitiveType, material);
 	}
-	
-	/** Convenience method to create a model with three orthonormal vectors shapes.
-	 * The resources the Material might contain are not managed, 
-	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
-	 * @param axisLength Length of each axis. 
-	 * @param capLength is the height of the cap in percentage, must be in (0,1) 
+
+	/** Convenience method to create a model with three orthonormal vectors shapes. The resources the Material might contain are not
+	 * managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param axisLength Length of each axis.
+	 * @param capLength is the height of the cap in percentage, must be in (0,1)
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
-	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases  */
-	public Model createXYZCoordinates(float axisLength, float capLength, float stemThickness, int divisions, int primitiveType, Material material, long attributes){
+	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
+	public Model createXYZCoordinates (float axisLength, float capLength, float stemThickness, int divisions, int primitiveType,
+		Material material, long attributes) {
 		begin();
 		MeshPartBuilder partBuilder;
 		Node node = node();
 
 		partBuilder = part("xyz", primitiveType, attributes, material);
 		partBuilder.setColor(Color.RED);
-		partBuilder.arrow(0, 0, 0,  axisLength, 0, 0, capLength, stemThickness, divisions);
+		partBuilder.arrow(0, 0, 0, axisLength, 0, 0, capLength, stemThickness, divisions);
 		partBuilder.setColor(Color.GREEN);
-		partBuilder.arrow(0, 0, 0,  0, axisLength, 0, capLength, stemThickness, divisions);
+		partBuilder.arrow(0, 0, 0, 0, axisLength, 0, capLength, stemThickness, divisions);
 		partBuilder.setColor(Color.BLUE);
-		partBuilder.arrow(0, 0, 0,  0, 0, axisLength, capLength, stemThickness, divisions);
+		partBuilder.arrow(0, 0, 0, 0, 0, axisLength, capLength, stemThickness, divisions);
 
 		return end();
 	}
-	
-	public Model createXYZCoordinates(float axisLength, Material material, long attributes){
+
+	public Model createXYZCoordinates (float axisLength, Material material, long attributes) {
 		return createXYZCoordinates(axisLength, 0.1f, 0.1f, 5, GL20.GL_TRIANGLES, material, attributes);
 	}
-	
-	/** Convenience method to create a model with an arrow.
-	 * The resources the Material might contain are not managed, 
-	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
+
+	/** Convenience method to create a model with an arrow. The resources the Material might contain are not managed, use
+	 * {@link Model#manageDisposable(Disposable)} to add those to the model.
 	 * @param material
-	 * @param capLength is the height of the cap in percentage, must be in (0,1) 
+	 * @param capLength is the height of the cap in percentage, must be in (0,1)
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
 	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
-	public Model createArrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions, int primitiveType, Material material, long attributes){
+	public Model createArrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness,
+		int divisions, int primitiveType, Material material, long attributes) {
 		begin();
-		part("arrow", primitiveType, attributes, material)
-			.arrow(x1, y1, z1, x2, y2, z2, capLength, stemThickness, divisions);
+		part("arrow", primitiveType, attributes, material).arrow(x1, y1, z1, x2, y2, z2, capLength, stemThickness, divisions);
 		return end();
 	}
-	
-	/** Convenience method to create a model with an arrow.
-	 * The resources the Material might contain are not managed, 
-	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
-	 * @param length
-	 * @param material
-	 * @param attributes
-	 */
-	public Model createArrow( Vector3 from, Vector3 to, Material material, long attributes){
+
+	/** Convenience method to create a model with an arrow. The resources the Material might contain are not managed, use
+	 * {@link Model#manageDisposable(Disposable)} to add those to the model. */
+	public Model createArrow (Vector3 from, Vector3 to, Material material, long attributes) {
 		return createArrow(from.x, from.y, from.z, to.x, to.y, to.z, 0.1f, 0.1f, 5, GL20.GL_TRIANGLES, material, attributes);
 	}
-	
-	/** Convenience method to create a model which represents a grid of lines on the XZ plane.
-	 * The resources the Material might contain are not managed, 
-	 * use {@link Model#manageDisposable(Disposable)} to add those to the model.
-	 * @param xDivisions row count along x axis. 
-	 * @param zDivisions row count along z axis. 
+
+	/** Convenience method to create a model which represents a grid of lines on the XZ plane. The resources the Material might
+	 * contain are not managed, use {@link Model#manageDisposable(Disposable)} to add those to the model.
+	 * @param xDivisions row count along x axis.
+	 * @param zDivisions row count along z axis.
 	 * @param xSize Length of a single row on x.
 	 * @param zSize Length of a single row on z. */
-	public Model createLineGrid(int xDivisions, int zDivisions, float xSize, float zSize, Material material, long attributes) {
+	public Model createLineGrid (int xDivisions, int zDivisions, float xSize, float zSize, Material material, long attributes) {
 		begin();
 		MeshPartBuilder partBuilder = part("lines", GL20.GL_LINES, attributes, material);
-		float xlength = xDivisions*xSize, zlength = zDivisions*zSize,
-			hxlength = xlength/2, hzlength = zlength /2;
-		float x1 = -hxlength, y1 = 0, z1 = hzlength,
-			x2 = -hxlength, y2 = 0, z2 = -hzlength;
-		for(int i=0; i<= xDivisions; ++i){
+		float xlength = xDivisions * xSize, zlength = zDivisions * zSize, hxlength = xlength / 2, hzlength = zlength / 2;
+		float x1 = -hxlength, y1 = 0, z1 = hzlength, x2 = -hxlength, y2 = 0, z2 = -hzlength;
+		for (int i = 0; i <= xDivisions; ++i) {
 			partBuilder.line(x1, y1, z1, x2, y2, z2);
 			x1 += xSize;
 			x2 += xSize;
 		}
 
-		x1=-hxlength; y1 =0; z1=-hzlength;
-		x2=hxlength; y2=0; z2=-hzlength;
-		for(int j=0; j<= zDivisions; ++j){
+		x1 = -hxlength;
+		y1 = 0;
+		z1 = -hzlength;
+		x2 = hxlength;
+		y2 = 0;
+		z2 = -hzlength;
+		for (int j = 0; j <= zDivisions; ++j) {
 			partBuilder.line(x1, y1, z1, x2, y2, z2);
 			z1 += zSize;
 			z2 += zSize;

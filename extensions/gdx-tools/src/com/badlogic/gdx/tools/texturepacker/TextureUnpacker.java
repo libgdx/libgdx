@@ -16,6 +16,11 @@
 
 package com.badlogic.gdx.tools.texturepacker;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -26,23 +31,18 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Page;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.TextureAtlasData.Region;
-
-/** @author Geert Konijnendijk, Nathan Sweet, Michael Bazos */
+/** Unpacks a texture atlas into individual image files.
+ * @author Geert Konijnendijk
+ * @author Nathan Sweet
+ * @author Michael Bazos */
 public class TextureUnpacker {
-
 	private static final String DEFAULT_OUTPUT_PATH = "output";
 	private static final int NINEPATCH_PADDING = 1;
 	private static final String OUTPUT_TYPE = "png";
 	private static final String HELP = "Usage: atlasFile [imageDir] [outputDir]";
 	private static final String ATLAS_FILE_EXTENSION = ".atlas";
 
-	/** Checks the command line arguments for correctness
-	 * 
-	 * @param args
+	/** Checks the command line arguments for correctness.
 	 * @return 0 If arguments are invalid, Number of arguments otherwise. */
 	private int parseArguments (String[] args) {
 		int numArgs = args.length;
@@ -54,14 +54,9 @@ public class TextureUnpacker {
 		boolean directory = true;
 		if (numArgs >= 2) directory &= checkDirectoryValidity(args[1]);
 		if (numArgs == 3) directory &= checkDirectoryValidity(args[2]);
-
 		return extension && directory ? numArgs : 0;
 	}
 
-	/** Checks if a directory name is actually valid
-	 * 
-	 * @param directory
-	 * @return */
 	private boolean checkDirectoryValidity (String directory) {
 		File checkFile = new File(directory);
 		boolean path = true;
@@ -74,20 +69,16 @@ public class TextureUnpacker {
 		return path;
 	}
 
-	/** Splits an atlas into seperate image and ninepatch files
-	 * 
-	 * @param outputDir */
+	/** Splits an atlas into seperate image and ninepatch files. */
 	public void splitAtlas (TextureAtlasData atlas, String outputDir) {
-
 		// create the output directory if it did not exist yet
 		File outputDirFile = new File(outputDir);
 		if (!outputDirFile.exists()) {
 			outputDirFile.mkdirs();
-			System.out.println(String.format("Creating directory %s", outputDirFile.getPath()));
+			System.out.println(String.format("Creating directory: %s", outputDirFile.getPath()));
 		}
 
 		for (Page page : atlas.getPages()) {
-
 			// load the image file belonging to this page as a Buffered Image
 			BufferedImage img = null;
 			try {
@@ -96,13 +87,11 @@ public class TextureUnpacker {
 				printExceptionAndExit(e);
 			}
 			for (Region region : atlas.getRegions()) {
-
-				System.out.println(String.format("processing image for %s x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
+				System.out.println(String.format("Processing image for %s: x[%s] y[%s] w[%s] h[%s], rotate[%s]", region.name,
 					region.left, region.top, region.width, region.height, region.rotate));
 
 				// check if the page this region is in is currently loaded in a Buffered Image
 				if (region.page == page) {
-
 					BufferedImage splitImage = null;
 					String extension = null;
 
@@ -119,7 +108,7 @@ public class TextureUnpacker {
 					File imgOutput = new File(outputDirFile, String.format("%s.%s", region.name, extension));
 					File imgDir = imgOutput.getParentFile();
 					if (!imgDir.exists()) {
-						System.out.println(String.format("Creating directory %s", imgDir.getPath()));
+						System.out.println(String.format("Creating directory: %s", imgDir.getPath()));
 						imgDir.mkdirs();
 					}
 
@@ -134,8 +123,7 @@ public class TextureUnpacker {
 		}
 	}
 
-	/** Extract an image from a texture atlas
-	 * 
+	/** Extract an image from a texture atlas.
 	 * @param page The image file related to the page the region is in
 	 * @param region The region to extract
 	 * @param outputDirFile The output directory
@@ -172,14 +160,10 @@ public class TextureUnpacker {
 	}
 
 	/** Extract a ninepatch from a texture atlas, according to the android specification.
-	 * 
 	 * @see <a href="http://developer.android.com/guide/topics/graphics/2d-graphics.html#nine-patch">ninepatch specification</a>
 	 * @param page The image file related to the page the region is in
-	 * @param region The region to extract
-	 * @param outputDirFile The output directory
-	 * @return */
+	 * @param region The region to extract */
 	private BufferedImage extractNinePatch (BufferedImage page, Region region, File outputDirFile) {
-
 		BufferedImage splitImage = extractImage(page, region, outputDirFile, NINEPATCH_PADDING);
 		Graphics2D g2 = splitImage.createGraphics();
 		g2.setColor(Color.BLACK);
@@ -225,14 +209,11 @@ public class TextureUnpacker {
 		String atlasParentPath = atlasFileHandle.getParentFile().getAbsolutePath();
 
 		// Set the directory variables to a default when they weren't given in the variables
-		if (imageDir == null) {
-			imageDir = atlasParentPath;
-		}
+		if (imageDir == null) imageDir = atlasParentPath;
 		if (outputDir == null) outputDir = (new File(atlasParentPath, DEFAULT_OUTPUT_PATH)).getAbsolutePath();
 
 		// Opens the atlas file from the specified filename
 		TextureAtlasData atlas = new TextureAtlasData(new FileHandle(atlasFile), new FileHandle(imageDir), false);
 		unpacker.splitAtlas(atlas, outputDir);
-
 	}
 }
