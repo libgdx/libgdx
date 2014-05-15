@@ -18,6 +18,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.Gdx;
+
 /** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix. Like
  * the {@link Vector3} class it allows the chaining of methods by returning a reference to itself. For example:
  * 
@@ -660,7 +662,8 @@ public class Matrix4 implements Serializable {
 	}
 
 	static Quaternion quat = new Quaternion();
-
+	static Quaternion quat2 = new Quaternion();
+	
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
 	 * @param axis The axis
@@ -847,7 +850,128 @@ public class Matrix4 implements Serializable {
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
 		return this;
 	}
+	
+	/**
+	 * Averages the given transform with this one and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * @param other The other transform
+	 * @param w Weight of this transform; weight of the other transform is (1 - w)
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4 other, float w) {
 
+		//Get this and other matrix's scale component
+		getScale(tmpVec);
+		if(tmpVec.x < 0)
+			tmpVec.x = -tmpVec.x;
+		if(tmpVec.y < 0)
+			tmpVec.y = -tmpVec.y;
+		if(tmpVec.z < 0)
+			tmpVec.z = -tmpVec.z;
+		other.getScale(tmpForward);
+		if(tmpForward.x < 0)
+			tmpForward.x = -tmpForward.x;
+		if(tmpForward.y < 0)
+			tmpForward.y = -tmpForward.y;
+		if(tmpForward.z < 0)
+			tmpForward.z = -tmpForward.z;
+		
+		//Get this and other matrix's rotation component
+		getRotation(quat);
+		other.getRotation(quat2);
+		
+		//Get this and other matrix's translation component
+		getTranslation(tmpUp);
+		other.getTranslation(right);
+		
+		//Calculate scale components
+		setToScaling(tmpVec.scl(w).add(tmpForward.scl(1 - w)));
+
+		//Calculate rotation components
+		rotate(quat.slerp(quat2, 1 - w));
+
+		//Calculate translation components
+		setTranslation(tmpUp.scl(w).add(right.scl(1 - w)));
+		
+		return this;
+	}
+	
+	/**
+	 * Averages the given transforms and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * Does not destroy the data contained in t.
+	 * @param t List of transforms
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4[] t) {
+		final float w = 1.0f/t.length;
+
+		//Calculate scale components
+		tmpVec.set(0,0,0);
+		for(int i=0;i<t.length;i++){
+			t[i].getScale(tmpUp).scl(w);
+			if(tmpUp.x < 0)
+				tmpUp.x = -tmpUp.x;
+			if(tmpUp.y < 0)
+				tmpUp.y = -tmpUp.y;
+			if(tmpUp.z < 0)
+				tmpUp.z = -tmpUp.z;
+			tmpVec.add(tmpUp);
+		}
+		setToScaling(tmpVec);
+		
+		//Calculate rotation components
+		quat.set(t[0].getRotation(quat2).exp(w));
+		for(int i=1;i<t.length;i++)
+			quat.mul(t[i].getRotation(quat2).exp(w));
+		quat.nor();
+		rotate(quat);
+
+		//Calculate translation components
+		setTranslation(0, 0, 0);
+		for(int i=0;i<t.length;i++)
+			trn(t[i].getTranslation(tmpVec).scl(w));
+
+		return this;
+	}
+
+	/**
+	 * Averages the given transforms with the given weights and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * Does not destroy the data contained in t or w;
+	 * Sum of w_i must be equal to 1, or unexpected results will occur.
+	 * @param t List of transforms
+	 * @param w List of weights
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4[] t, float[] w) {
+
+		//Calculate scale components
+		tmpVec.set(0,0,0);
+		for(int i=0;i<t.length;i++){
+			t[i].getScale(tmpUp).scl(w[i]);
+			if(tmpUp.x < 0)
+				tmpUp.x = -tmpUp.x;
+			if(tmpUp.y < 0)
+				tmpUp.y = -tmpUp.y;
+			if(tmpUp.z < 0)
+				tmpUp.z = -tmpUp.z;
+			tmpVec.add(tmpUp);
+		}
+		setToScaling(tmpVec);
+
+		//Calculate rotation components
+		quat.set(t[0].getRotation(quat2).exp(w[0]));
+		for(int i=1;i<t.length;i++)
+			quat.mul(t[i].getRotation(quat2).exp(w[i]));
+		quat.nor();
+		rotate(quat);
+
+		//Calculate translation components
+		setTranslation(0, 0, 0);
+		for(int i=0;i<t.length;i++)
+			trn(t[i].getTranslation(tmpVec).scl(w[i]));
+
+		return this;
+	}
+	
 	/** Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
 	 * @param mat the matrix */
 	public Matrix4 set (Matrix3 mat) {
