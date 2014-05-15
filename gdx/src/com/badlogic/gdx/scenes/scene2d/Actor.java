@@ -57,10 +57,10 @@ public class Actor {
 	private String name;
 	private Touchable touchable = Touchable.enabled;
 	private boolean visible = true;
-	float x, y;
-	float width, height;
-	float originX, originY;
-	float scaleX = 1, scaleY = 1;
+	Vector2 position = new Vector();
+Vector2 dimension = new Vector2(0,0); // width & hieght
+Vector2 origin = new Vector2(0,0);
+Vector2 scale = new Vector2(0,0);
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
@@ -192,7 +192,7 @@ public class Actor {
 	 * @see Touchable */
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && this.touchable != Touchable.enabled) return null;
-		return x >= 0 && x < width && y >= 0 && y < height ? this : null;
+		return position.x >=0 && position.x < dimension.x && position.y >= 0 && position.y < dimension.y ? this : null;
 	}
 
 	/** Removes this actor from its parent, if it has a parent.
@@ -350,25 +350,24 @@ public class Actor {
 	}
 
 	public float getX () {
-		return x;
+		return position.x;
 	}
 
 	public void setX (float x) {
-		this.x = x;
+		this.position.x = x;
 	}
 
 	public float getY () {
-		return y;
+		return position.y;
 	}
 
 	public void setY (float y) {
-		this.y = y;
+		this.position.y = y;
 	}
 
 	/** Sets the x and y. */
 	public void setPosition (float x, float y) {
-		this.x = x;
-		this.y = y;
+		position.set(x,y);
 	}
 
 	public void moveBy (float x, float y) {
@@ -377,133 +376,139 @@ public class Actor {
 	}
 
 	public float getWidth () {
-		return width;
+		return dimension.x;
 	}
 
 	public void setWidth (float width) {
-		float oldWidth = this.width;
-		this.width = width;
-		if (width != oldWidth) sizeChanged();
+		float oldWidth = dimension.x;
+		dimension.x = width;
+		if (dimension.x != oldWidth) sizeChanged();
 	}
 
 	public float getHeight () {
-		return height;
+		return dimension.y;
 	}
 
 	public void setHeight (float height) {
-		float oldHeight = this.height;
-		this.height = height;
-		if (height != oldHeight) sizeChanged();
+		float oldHeight = dimension.y;
+		dimension.y = height;
+		if (dimension.y != oldHeight) sizeChanged();
 	}
 
 	/** Returns y plus height. */
 	public float getTop () {
-		return y + height;
+		return dimension.y + position.y;
 	}
 
 	/** Returns x plus width. */
 	public float getRight () {
-		return x + width;
+		return dimension.x + position.x;
 	}
 
+/** Returns the coordinate of center. */
+
+public Vector2 getCenter()
+{
+	return new Vector2(position.x + origin.x, position.y + origin.y);
+}
 	/** Called when the actor's size has been changed. */
 	protected void sizeChanged () {
 	}
 
 	/** Sets the width and height. */
 	public void setSize (float width, float height) {
-		float oldWidth = this.width;
-		float oldHeight = this.height;
+		float oldWidth = dimension.x;
+		float oldHeight = dimension.y ;
 		this.width = width;
 		this.height = height;
-		if (width != oldWidth || height != oldHeight) sizeChanged();
+		if (dimension.x != oldWidth || dimension.y  != oldHeight) sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float size) {
-		width += size;
-		height += size;
+		dimension.x += size;
+		dimension.y += size;
 		sizeChanged();
 	}
 
 	/** Adds the specified size to the current size. */
 	public void sizeBy (float width, float height) {
-		this.width += width;
-		this.height += height;
+	dimension.x += width;
+		dimension.y+= height;
 		sizeChanged();
 	}
 
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
-		float oldWidth = this.width;
-		float oldHeight = this.height;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		if (width != oldWidth || height != oldHeight) sizeChanged();
+		float oldWidth = dimension.x;
+		float oldHeight = dimension.yt;
+		position.x = x;
+		position.y = y;
+		dimension.x = width;
+		dimension.y = height;
+		if (dimension.x != oldWidth || dimension.y != oldHeight) sizeChanged();
 	}
 
 	public float getOriginX () {
-		return originX;
+		return origin.x;
 	}
 
 	public void setOriginX (float originX) {
-		this.originX = originX;
+		this.origin.x = originX;
 	}
 
 	public float getOriginY () {
-		return originY;
+		return origin.y;
 	}
 
 	public void setOriginY (float originY) {
-		this.originY = originY;
+		this.origin.y = originY;
 	}
 
 	/** Sets the originx and originy. */
 	public void setOrigin (float originX, float originY) {
-		this.originX = originX;
-		this.originY = originY;
+		this.origin.x = originX;
+		this.origin.y = originY;
 	}
 
 	public float getScaleX () {
-		return scaleX;
+		return scale.x;
 	}
 
 	public void setScaleX (float scaleX) {
-		this.scaleX = scaleX;
+		this.scale.x = scaleX;
 	}
 
 	public float getScaleY () {
-		return scaleY;
+		return scale.y;
 	}
 
 	public void setScaleY (float scaleY) {
-		this.scaleY = scaleY;
+		this.scale.y = scaleY;
 	}
 
 	/** Sets the scalex and scaley. */
 	public void setScale (float scaleXY) {
-		this.scaleX = scaleXY;
-		this.scaleY = scaleXY;
+		this.scale.x = scaleXY;
+		this.scale.y = scaleXY;
 	}
 
 	/** Sets the scalex and scaley. */
 	public void setScale (float scaleX, float scaleY) {
-		this.scaleX = scaleX;
-		this.scaleY = scaleY;
+		this.scale.x = scaleX;
+		this.scale.y = scaleY;
 	}
 
 	/** Adds the specified scale to the current scale. */
 	public void scaleBy (float scale) {
-		scaleX += scale;
-		scaleY += scale;
+		scale.x += scale;
+		scale.y += scale;
 	}
 
 	/** Adds the specified scale to the current scale. */
 	public void scaleBy (float scaleX, float scaleY) {
-		this.scaleX += scaleX;
-		this.scaleY += scaleY;
+		this.scale.x += scaleX;
+		this.scale.y += scaleY;
 	}
 
 	public float getRotation () {
@@ -578,7 +583,7 @@ public class Actor {
 
 	/** Calls {@link #clipBegin(float, float, float, float)} to clip this actor's bounds. */
 	public boolean clipBegin () {
-		return clipBegin(x, y, width, height);
+		return clipBegin(position.x, position.y,dimesion.x, dimension.y);
 	}
 
 	/** Clips the specified screen aligned rectangle, specified relative to the transform matrix of the stage's Batch. The transform
@@ -630,29 +635,29 @@ public class Actor {
 	/** Transforms the specified point in the actor's coordinates to be in the parent's coordinates. */
 	public Vector2 localToParentCoordinates (Vector2 localCoords) {
 		final float rotation = -this.rotation;
-		final float scaleX = this.scaleX;
-		final float scaleY = this.scaleY;
-		final float x = this.x;
-		final float y = this.y;
+		final float scaleX = this.scale.x;
+		final float scaleY = this.scale.y;
+		final float x = position.x;
+		final float y = position.y;
 		if (rotation == 0) {
-			if (scaleX == 1 && scaleY == 1) {
-				localCoords.x += x;
-				localCoords.y += y;
+			if (scale.x == 1 && scale.y == 1) {
+				localCoords.x += position.x;
+				localCoords.y += position.y;
 			} else {
-				final float originX = this.originX;
-				final float originY = this.originY;
+				final float originX = this.origin.x;
+				final float originY = this.origin.y;
 				localCoords.x = (localCoords.x - originX) * scaleX + originX + x;
 				localCoords.y = (localCoords.y - originY) * scaleY + originY + y;
 			}
 		} else {
 			final float cos = (float)Math.cos(rotation * MathUtils.degreesToRadians);
 			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
-			final float originX = this.originX;
-			final float originY = this.originY;
-			final float tox = (localCoords.x - originX) * scaleX;
-			final float toy = (localCoords.y - originY) * scaleY;
-			localCoords.x = (tox * cos + toy * sin) + originX + x;
-			localCoords.y = (tox * -sin + toy * cos) + originY + y;
+			final float originX = this.origin.x;
+			final float originY = this.origin.y;
+			final float tox = (localCoords.x - originX) * scaleY;
+			final float toy = (localCoords.y - originX) * scaleY;
+			localCoords.x = (tox * cos + toy * sin) + originX + positionX;
+			localCoords.y = (tox * -sin + toy * cos) + originY + positionY;
 		}
 		return localCoords;
 	}
@@ -671,25 +676,25 @@ public class Actor {
 	/** Converts the coordinates given in the parent's coordinate system to this actor's coordinate system. */
 	public Vector2 parentToLocalCoordinates (Vector2 parentCoords) {
 		final float rotation = this.rotation;
-		final float scaleX = this.scaleX;
-		final float scaleY = this.scaleY;
-		final float childX = x;
-		final float childY = y;
+		final float scaleX = this.scale.x;
+		final float scaleY = this.scale.y;
+		final float childX = position.x;
+		final float childY = position.y;
 		if (rotation == 0) {
-			if (scaleX == 1 && scaleY == 1) {
+			if (scale.x == 1 && scale.y == 1) {
 				parentCoords.x -= childX;
 				parentCoords.y -= childY;
 			} else {
-				final float originX = this.originX;
-				final float originY = this.originY;
-				parentCoords.x = (parentCoords.x - childX - originX) / scaleX + originX;
-				parentCoords.y = (parentCoords.y - childY - originY) / scaleY + originY;
+				final float originX = this.origin.x;
+				final float originY = this.origin.y;
+				parentCoords.x = (parentCoords.x - childX - originY) / scaleX + originX;
+				parentCoords.y = (parentCoords.y - childY - originX) / scaleY + originY;
 			}
 		} else {
 			final float cos = (float)Math.cos(rotation * MathUtils.degreesToRadians);
 			final float sin = (float)Math.sin(rotation * MathUtils.degreesToRadians);
-			final float originX = this.originX;
-			final float originY = this.originY;
+			final float originX = this.origin.x;
+			final float originY = this.origin.y;
 			final float tox = parentCoords.x - childX - originX;
 			final float toy = parentCoords.y - childY - originY;
 			parentCoords.x = (tox * cos + toy * sin) / scaleX + originX;
@@ -713,6 +718,10 @@ public class Actor {
 		position.set(p);
 	}
 	
+	public void setDimension(Vector d)
+	{
+		dimension.set(d)
+	}
 	public void setOrigin(Vector2 o)
 	{
 		origin.set(o);
@@ -727,6 +736,10 @@ public class Actor {
 		return position;
 	}
 	
+	public Vector2 getDimension(Vector2 d)
+	{
+		return dimension;
+	}
 	public Vector2 getOrigin()
 	{
 		return origin;
@@ -736,9 +749,5 @@ public class Actor {
 	{
 		return scale;
 	}
-	
-	public boolean isHit(int x, int y)
-	{
-		return x >= 0 && x < width && y >= 0 && y < height && touchable;
-	}
+
 }
