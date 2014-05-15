@@ -707,4 +707,38 @@ public class Actor {
 		}
 		return name;
 	}
+	
+	public void setPosition(Vector2 p)
+	{
+		position.set(p);
+	}
+	
+	public void setOrigin(Vector2 o)
+	{
+		origin.set(o);
+	}
+	
+	public void setScale(Vector2 s)
+	{
+		scale.set(s);
+	}
+	
+	public Vector2 getPosition(){
+		return position;
+	}
+	
+	public Vector2 getOrigin()
+	{
+		return origin;
+	}
+	
+	public Vector2 getScale()
+	{
+		return scale;
+	}
+	
+	public boolean isHit(int x, int y)
+	{
+		return x >= 0 && x < width && y >= 0 && y < height && touchable;
+	}
 }
