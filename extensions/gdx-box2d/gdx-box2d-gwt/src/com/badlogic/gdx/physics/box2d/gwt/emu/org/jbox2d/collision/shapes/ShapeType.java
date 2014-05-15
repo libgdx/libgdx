@@ -21,11 +21,12 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-
 package org.jbox2d.collision.shapes;
 
-/** Types of shapes
- * @author Daniel */
+/**
+ * Types of shapes
+ * @author Daniel
+ */
 public enum ShapeType {
 	CIRCLE, EDGE, POLYGON, CHAIN
 }

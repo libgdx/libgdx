@@ -425,10 +425,6 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
-			return new AlphaTest();
-		}
-	}, new Instancer() {
-		public GdxTest instance () {
 			return new AnimationTest();
 		}
 	}, new Instancer() {
