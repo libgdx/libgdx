@@ -1079,13 +1079,13 @@ public class MeshBuilder implements MeshPartBuilder {
 		Matrix4 temp = tmp();
 
 		// Stem
-		transform.setTranslation(tmp(direction).scl(stemLength / 2));
+		transform.setTranslation(tmp(direction).scl(stemLength / 2).add(x1, y1, z1));
 		setVertexTransform(temp.set(transform).mul(userTransform));
 		cylinder(stemDiameter, stemLength, stemDiameter, divisions);
 
 		// Cap
-		transform.translate(0, stemLength/2, 0);
-		setVertexTransform(transform);
+		transform.setTranslation(tmp(direction).scl(stemLength).add(x1, y1, z1));
+		setVertexTransform(temp.set(transform).mul(userTransform));
 		cone(coneDiameter, coneHeight, coneDiameter, divisions);
 
 		setVertexTransform(userTransform);
