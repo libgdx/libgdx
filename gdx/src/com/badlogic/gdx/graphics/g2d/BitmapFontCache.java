@@ -63,6 +63,7 @@ public class BitmapFontCache {
 	private float color = Color.WHITE.toFloatBits();
 	private float previousColor = color;
 	private final Color tempColor = new Color(1, 1, 1, 1);
+	private final Color hexColor = new Color();
 	private final StringBuilder colorBuffer = new StringBuilder();
 	private final TextBounds textBounds = new TextBounds();
 	private boolean integer = true;
@@ -210,7 +211,7 @@ public class BitmapFontCache {
 		this.color = color;
 	}
 
-	Color getColor () {
+	public Color getColor () {
 		int intBits = NumberUtils.floatToIntColor(color);
 		Color color = tempColor;
 		color.r = (intBits & 0xff) / 255f;
@@ -300,10 +301,31 @@ public class BitmapFontCache {
 		}
 	}
 
+	/** Counts the actual glyphs excluding characters used to markup the text. */
+	private int countGlyphs (CharSequence seq, int start, int end) {
+		int count = end - start;
+		while (start < end) {
+			char ch = seq.charAt(start++);
+			if (ch == '[') {
+				count--;
+				if (!(start < end && seq.charAt(start) == '[')) { // non escaped '['
+					while (start < end && seq.charAt(start) != ']') {
+						start++;
+						count--;
+					}
+					count--;
+				}
+				start++;
+			}
+		}
+		return count;
+	}
+
 	private void requireSequence (CharSequence seq, int start, int end) {
-		int newGlyphCount = end - start;
 		if (vertexData.length == 1) {
-			require(0, newGlyphCount); // don't scan sequence if we just have one page
+			// don't scan sequence if we just have one page and markup is disabled
+			int newGlyphCount = font.markupEnabled ? countGlyphs(seq, start, end) : end - start;
+			require(0, newGlyphCount);
 		} else {
 			for (int i = 0, n = tmpGlyphCount.length; i < n; i++)
 				tmpGlyphCount[i] = 0;
@@ -359,12 +381,12 @@ public class BitmapFontCache {
 							throw new GdxRuntimeException("Hex color cannot have " + (i - start - 1) + " digits");
 						this.previousColor = this.color;
 						if (i <= start + 7) { // RRGGBB
-							Color.rgb888ToColor(tempColor, colorInt);
-							tempColor.a = 1f;
+							Color.rgb888ToColor(hexColor, colorInt);
+							hexColor.a = 1f;
 						} else { // RRGGBBAA
-							Color.rgba8888ToColor(tempColor, colorInt);
+							Color.rgba8888ToColor(hexColor, colorInt);
 						}
-						this.color = tempColor.toFloatBits();
+						this.color = hexColor.toFloatBits();
 						return i - start;
 					}
 					if (ch >= '0' && ch <= '9')
