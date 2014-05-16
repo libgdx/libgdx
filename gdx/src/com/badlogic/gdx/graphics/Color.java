@@ -37,6 +37,11 @@ public class Color {
 	public static final Color YELLOW = new Color(1, 1, 0, 1);
 	public static final Color MAGENTA = new Color(1, 0, 1, 1);
 	public static final Color CYAN = new Color(0, 1, 1, 1);
+	public static final Color OLIVE = new Color(0.5f, 0.5f, 0, 1);
+	public static final Color PURPLE = new Color(0.5f, 0, 0.5f, 1);
+	public static final Color MAROON = new Color(0.5f, 0, 0, 1);
+	public static final Color TEAL = new Color(0, 0.5f, 0.5f, 1);
+	public static final Color NAVY = new Color(0, 0, 0.5f, 1);
 
 	@Deprecated public static Color tmp = new Color();
 
