@@ -930,22 +930,24 @@ public class Matrix4 implements Serializable {
 
 	/** @return the scale factor on the X axis (non-negative) */
 	public float getScaleX () {
-		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? val[Matrix4.M00] : (float)Math
-			.sqrt(getScaleXSquared());
+		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? Math.abs(val[Matrix4.M00])
+			: (float)Math.sqrt(getScaleXSquared());
 	}
 
 	/** @return the scale factor on the Y axis (non-negative) */
 	public float getScaleY () {
-		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? val[Matrix4.M11] : (float)Math
-			.sqrt(getScaleYSquared());
+		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? Math.abs(val[Matrix4.M11])
+			: (float)Math.sqrt(getScaleYSquared());
 	}
 
 	/** @return the scale factor on the X axis (non-negative) */
 	public float getScaleZ () {
-		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? val[Matrix4.M22] : (float)Math
-			.sqrt(getScaleZSquared());
+		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? Math.abs(val[Matrix4.M22])
+			: (float)Math.sqrt(getScaleZSquared());
 	}
 
+	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
+	 * @return The provided vector for chaining. */
 	public Vector3 getScale (Vector3 scale) {
 		return scale.set(getScaleX(), getScaleY(), getScaleZ());
 	}
