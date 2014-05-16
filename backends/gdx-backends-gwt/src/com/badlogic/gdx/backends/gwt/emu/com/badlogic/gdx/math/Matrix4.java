@@ -918,19 +918,7 @@ public class Matrix4 implements Serializable {
 
 		//Get this and other matrix's scale component
 		getScale(tmpVec);
-		if(tmpVec.x < 0)
-			tmpVec.x = -tmpVec.x;
-		if(tmpVec.y < 0)
-			tmpVec.y = -tmpVec.y;
-		if(tmpVec.z < 0)
-			tmpVec.z = -tmpVec.z;
 		other.getScale(tmpForward);
-		if(tmpForward.x < 0)
-			tmpForward.x = -tmpForward.x;
-		if(tmpForward.y < 0)
-			tmpForward.y = -tmpForward.y;
-		if(tmpForward.z < 0)
-			tmpForward.z = -tmpForward.z;
 		
 		//Get this and other matrix's rotation component
 		getRotation(quat);
@@ -961,31 +949,33 @@ public class Matrix4 implements Serializable {
 	public Matrix4 avg (Matrix4[] t) {
 		final float w = 1.0f/t.length;
 
-		//Calculate scale components
-		tmpVec.set(0,0,0);
-		for(int i=0;i<t.length;i++){
-			t[i].getScale(tmpUp).scl(w);
-			if(tmpUp.x < 0)
-				tmpUp.x = -tmpUp.x;
-			if(tmpUp.y < 0)
-				tmpUp.y = -tmpUp.y;
-			if(tmpUp.z < 0)
-				tmpUp.z = -tmpUp.z;
-			tmpVec.add(tmpUp);
-		}
-		setToScaling(tmpVec);
+		//Initialize scale components
+		tmpVec.set(t[0].getScale(tmpUp).scl(w));
 		
-		//Calculate rotation components
+		//Initialize rotation components
 		quat.set(t[0].getRotation(quat2).exp(w));
-		for(int i=1;i<t.length;i++)
+		
+		//Initialize translation components
+		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
+		
+		//Continue calculating
+		for(int i=1;i<t.length;i++){
+			
+			//Calculate scale components
+			tmpVec.add(t[i].getScale(tmpUp).scl(w));
+			
+			//Calculate rotation components
 			quat.mul(t[i].getRotation(quat2).exp(w));
+			
+			//Calculate translation components
+			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
+		}
 		quat.nor();
+		
+		//Set calculated components to this matrix
+		setToScaling(tmpVec);
 		rotate(quat);
-
-		//Calculate translation components
-		setTranslation(0, 0, 0);
-		for(int i=0;i<t.length;i++)
-			trn(t[i].getTranslation(tmpVec).scl(w));
+		setTranslation(tmpForward);
 
 		return this;
 	}
@@ -1000,31 +990,33 @@ public class Matrix4 implements Serializable {
 	 * @return This matrix for chaining */
 	public Matrix4 avg (Matrix4[] t, float[] w) {
 
-		//Calculate scale components
-		tmpVec.set(0,0,0);
-		for(int i=0;i<t.length;i++){
-			t[i].getScale(tmpUp).scl(w[i]);
-			if(tmpUp.x < 0)
-				tmpUp.x = -tmpUp.x;
-			if(tmpUp.y < 0)
-				tmpUp.y = -tmpUp.y;
-			if(tmpUp.z < 0)
-				tmpUp.z = -tmpUp.z;
-			tmpVec.add(tmpUp);
-		}
-		setToScaling(tmpVec);
-
-		//Calculate rotation components
+		//Initialize scale components
+		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
+		
+		//Initialize rotation components
 		quat.set(t[0].getRotation(quat2).exp(w[0]));
-		for(int i=1;i<t.length;i++)
+		
+		//Initialize translation components
+		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
+		
+		//Continue calculating
+		for(int i=1;i<t.length;i++){
+			
+			//Calculate scale components
+			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
+			
+			//Calculate rotation components
 			quat.mul(t[i].getRotation(quat2).exp(w[i]));
+			
+			//Calculate translation components
+			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
+		}
 		quat.nor();
+		
+		//Set calculated components to this matrix
+		setToScaling(tmpVec);
 		rotate(quat);
-
-		//Calculate translation components
-		setTranslation(0, 0, 0);
-		for(int i=0;i<t.length;i++)
-			trn(t[i].getTranslation(tmpVec).scl(w[i]));
+		setTranslation(tmpForward);
 
 		return this;
 	}
