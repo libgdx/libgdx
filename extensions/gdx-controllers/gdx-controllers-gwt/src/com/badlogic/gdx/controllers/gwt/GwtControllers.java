@@ -181,9 +181,7 @@ public class GwtControllers implements ControllerManager, GamepadSupportListener
 							controller.buttons.put(i, newButton);
 							continue;
 						}
-						if (i == 0) {
-							GamepadSupport.consoleLog("0: " + oldButton + "," + newButton);
-						}
+
 						GwtControllerEvent event = eventPool.obtain();
 						event.type = newButton >= 0.5f ? GwtControllerEvent.BUTTON_DOWN : GwtControllerEvent.BUTTON_UP;
 						event.controller = controller;
