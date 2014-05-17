@@ -11,10 +11,11 @@ public class DependencyBank {
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.0.2-SNAPSHOT";
 	static String roboVMVersion = "0.0.12";
-	static String buildToolsVersion = "19.0.3";
+	static String buildToolsVersion = "19.1.0";
 	static String androidAPILevel = "19";
 
 	//Repositories
+	static String mavenCentral = "mavenCentral()";
 	static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
