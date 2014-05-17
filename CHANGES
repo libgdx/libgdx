@@ -1,4 +1,5 @@
 [1.1.0]
+- Big improvements to setup-ui and build times in Intellij IDEA https://github.com/libgdx/libgdx/pull/1865
 - Setup now uses android build tools version: 19.1.0
 - BitmapFontCache now supports in-string colored text through a simple markup language, see https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
 - Added i18n localization/internationalization support, thanks davebol, see https://github.com/libgdx/libgdx/wiki/Internationalization-and-Localization
