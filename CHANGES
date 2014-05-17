@@ -8,6 +8,7 @@
 - Mavenized JGLFW backend
 - Updated native Box2D to latest version 2.3.1, no API changes
 - API CHANGE: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
+- API addition: Matrix4.avg(Matrix4[],float[]) that lets weighted averaging multiple matrices, Quaternion.slerp(Quaternion[],float[]) that lets weighted slerping multiple Quaternions
 
 [1.0.1]
 - updated to RoboVM 0.12 (and so should you!)
