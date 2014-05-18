@@ -26,6 +26,8 @@ import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
 import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 import com.badlogic.gdx.physics.box2d.joints.GearJoint;
 import com.badlogic.gdx.physics.box2d.joints.GearJointDef;
+import com.badlogic.gdx.physics.box2d.joints.MotorJoint;
+import com.badlogic.gdx.physics.box2d.joints.MotorJointDef;
 import com.badlogic.gdx.physics.box2d.joints.MouseJoint;
 import com.badlogic.gdx.physics.box2d.joints.MouseJointDef;
 import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
@@ -349,12 +351,13 @@ b2ContactFilter defaultFilter;
 		if (def.type == JointType.DistanceJoint) joint = new DistanceJoint(this, jointAddr);
 		if (def.type == JointType.FrictionJoint) joint = new FrictionJoint(this, jointAddr);
 		if (def.type == JointType.GearJoint) joint = new GearJoint(this, jointAddr, ((GearJointDef) def).joint1, ((GearJointDef) def).joint2);
+		if (def.type == JointType.MotorJoint) joint = new MotorJoint(this, jointAddr);
 		if (def.type == JointType.MouseJoint) joint = new MouseJoint(this, jointAddr);
 		if (def.type == JointType.PrismaticJoint) joint = new PrismaticJoint(this, jointAddr);
 		if (def.type == JointType.PulleyJoint) joint = new PulleyJoint(this, jointAddr);
 		if (def.type == JointType.RevoluteJoint) joint = new RevoluteJoint(this, jointAddr);
-		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, jointAddr);
 		if (def.type == JointType.RopeJoint) joint = new RopeJoint(this, jointAddr);
+		if (def.type == JointType.WeldJoint) joint = new WeldJoint(this, jointAddr);
 		if (def.type == JointType.WheelJoint) joint = new WheelJoint(this, jointAddr);
 		if (joint != null) joints.put(joint.addr, joint);
 		JointEdge jointEdgeA = new JointEdge(def.bodyB, joint);
@@ -381,6 +384,11 @@ b2ContactFilter defaultFilter;
 			GearJointDef d = (GearJointDef)def;
 			return jniCreateGearJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.joint1.addr, d.joint2.addr, d.ratio);
 		}
+		if (def.type == JointType.MotorJoint) {
+			MotorJointDef d = (MotorJointDef)def;
+			return jniCreateMotorJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.linearOffset.x, d.linearOffset.y,
+				d.angularOffset, d.maxForce, d.maxTorque, d.correctionFactor);
+		}
 		if (def.type == JointType.MouseJoint) {
 			MouseJointDef d = (MouseJointDef)def;
 			return jniCreateMouseJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.target.x, d.target.y, d.maxForce,
@@ -405,15 +413,15 @@ b2ContactFilter defaultFilter;
 				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle, d.enableLimit, d.lowerAngle, d.upperAngle, d.enableMotor,
 				d.motorSpeed, d.maxMotorTorque);
 		}
-		if (def.type == JointType.WeldJoint) {
-			WeldJointDef d = (WeldJointDef)def;
-			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle);
-		}
 		if (def.type == JointType.RopeJoint) {
 			RopeJointDef d = (RopeJointDef)def;
 			return jniCreateRopeJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
 				d.localAnchorB.x, d.localAnchorB.y, d.maxLength);
+		}
+		if (def.type == JointType.WeldJoint) {
+			WeldJointDef d = (WeldJointDef)def;
+			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
+				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle);
 		}
 		if (def.type == JointType.WheelJoint) {
 			WheelJointDef d = (WheelJointDef)def;
@@ -499,6 +507,21 @@ b2ContactFilter defaultFilter;
 		def.joint1 = (b2Joint*)joint1;
 		def.joint2 = (b2Joint*)joint2;
 		def.ratio = ratio;
+		return (jlong)world->CreateJoint(&def);
+	*/
+
+	private native long jniCreateMotorJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float linearOffsetX,
+		float linearOffsetY, float angularOffset, float maxForce, float maxTorque, float correctionFactor); /*
+		b2World* world = (b2World*)addr;
+		b2MotorJointDef def;
+		def.bodyA = (b2Body*)bodyA;
+		def.bodyB = (b2Body*)bodyB;
+		def.collideConnected = collideConnected;
+		def.linearOffset = b2Vec2( linearOffsetX, linearOffsetY );
+		def.angularOffset = angularOffset;
+		def.maxForce = maxForce;
+		def.maxTorque = maxTorque;
+		def.correctionFactor = correctionFactor;
 		return (jlong)world->CreateJoint(&def);
 	*/
 
