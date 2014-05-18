@@ -74,5 +74,6 @@ public class Ouya {
 		AXIS_RIGHT_X = 3;
 		AXIS_RIGHT_Y = 4;
 		AXIS_RIGHT_TRIGGER = 11;
+		BUTTON_MENU = 108; // unverified
 	}
 }
