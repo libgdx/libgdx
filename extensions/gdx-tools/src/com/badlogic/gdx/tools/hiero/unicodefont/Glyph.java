@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
-import java.awt.Rectangle;
-import java.awt.Shape;
+import java.awt.*;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 

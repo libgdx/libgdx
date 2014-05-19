@@ -16,10 +16,7 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.io.IOException;
@@ -31,7 +28,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.lwjgl.opengl.GL11;
 
@@ -59,13 +55,12 @@ public class UnicodeFont {
 	private String ttfFileRef;
 	private int ascent, descent, leading, spaceWidth;
 	private final Glyph[][] glyphs = new Glyph[PAGES][];
-	private final List glyphPages = new ArrayList();
-	private final List queuedGlyphs = new ArrayList(256);
-	private final List effects = new ArrayList();
+	private final List<GlyphPage> glyphPages = new ArrayList<GlyphPage>();
+	private final List<Glyph> queuedGlyphs = new ArrayList<Glyph>(256);
+	private final List<Effect> effects = new ArrayList<Effect>();
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
 	private Glyph missingGlyph;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
-	private final DisplayList emptyDisplayList = new DisplayList();
 	private boolean nativeRendering;
 
 	private int baseDisplayListID = -1;
@@ -229,8 +224,7 @@ public class UnicodeFont {
 		Collections.sort(queuedGlyphs, heightComparator);
 
 		// Add to existing pages.
-		for (Iterator iter = glyphPages.iterator(); iter.hasNext();) {
-			GlyphPage glyphPage = (GlyphPage)iter.next();
+		for (GlyphPage glyphPage : glyphPages) {
 			maxGlyphsToLoad -= glyphPage.loadGlyphs(queuedGlyphs, maxGlyphsToLoad);
 			if (maxGlyphsToLoad == 0 || queuedGlyphs.isEmpty()) return true;
 		}
@@ -251,8 +245,7 @@ public class UnicodeFont {
 		for (int i = 0; i < PAGES; i++)
 			glyphs[i] = null;
 
-		for (Iterator iter = glyphPages.iterator(); iter.hasNext();) {
-			GlyphPage page = (GlyphPage)iter.next();
+		for (GlyphPage page : glyphPages) {
 			page.getTexture().dispose();
 		}
 		glyphPages.clear();
@@ -283,8 +276,6 @@ public class UnicodeFont {
 		x -= paddingLeft;
 		y -= paddingTop;
 
-		String displayListKey = text.substring(startIndex, endIndex);
-
 		GL11.glColor4f(color.r, color.g, color.b, color.a);
 
 		GL11.glTranslatef(x, y, 0);
@@ -292,7 +283,7 @@ public class UnicodeFont {
 		char[] chars = text.substring(0, endIndex).toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
 
-		int maxWidth = 0, totalHeight = 0, lines = 0;
+		int maxWidth = 0, totalHeight = 0;
 		int extraX = 0, extraY = ascent;
 		boolean startNewLine = false;
 		Texture lastBind = null;
@@ -345,7 +336,6 @@ public class UnicodeFont {
 			if (codePoint == '\n') {
 				startNewLine = true; // Mac gives -1 for bounds.x of '\n', so use the bounds.x of the next glyph.
 				extraY += getLineHeight();
-				lines++;
 				totalHeight = 0;
 			} else if (nativeRendering) offsetX += bounds.width;
 		}
@@ -378,7 +368,7 @@ public class UnicodeFont {
 		}
 		int pageIndex = glyphCode / PAGE_SIZE;
 		int glyphIndex = glyphCode & (PAGE_SIZE - 1);
-		Glyph glyph = null;
+		Glyph glyph;
 		Glyph[] page = glyphs[pageIndex];
 		if (page != null) {
 			glyph = page[glyphIndex];
@@ -466,9 +456,7 @@ public class UnicodeFont {
 		if (index != -1) text = text.substring(0, index);
 		char[] chars = text.toCharArray();
 		GlyphVector vector = font.layoutGlyphVector(GlyphPage.renderContext, chars, 0, chars.length, Font.LAYOUT_LEFT_TO_RIGHT);
-		int yOffset = ascent + vector.getPixelBounds(null, 0, 0).y;
-
-		return yOffset;
+		return ascent + vector.getPixelBounds(null, 0, 0).y;
 	}
 
 	/** Returns the TrueTypeFont for this UnicodeFont. */
@@ -580,12 +568,12 @@ public class UnicodeFont {
 	}
 
 	/** Returns the GlyphPages for this UnicodeFont. */
-	public List getGlyphPages () {
+	public List<GlyphPage> getGlyphPages () {
 		return glyphPages;
 	}
 
 	/** Returns a list of {@link Effect}s that will be applied to the glyphs. */
-	public List getEffects () {
+	public List<Effect> getEffects () {
 		return effects;
 	}
 
@@ -628,16 +616,14 @@ public class UnicodeFont {
 	}
 
 	/** Sorts glyphs by height, tallest first. */
-	static private final Comparator heightComparator = new Comparator() {
-		public int compare (Object o1, Object o2) {
-			return ((Glyph)o1).getHeight() - ((Glyph)o2).getHeight();
+	static private final Comparator<Glyph> heightComparator = new Comparator<Glyph>() {
+		public int compare (Glyph o1, Glyph o2) {
+			return o1.getHeight() - o2.getHeight();
 		}
 	};
 
 	public class DisplayList {
-		boolean invalid;
 		int id;
-		Short yOffset;
 
 		public short width, height;
 		public Object userData;

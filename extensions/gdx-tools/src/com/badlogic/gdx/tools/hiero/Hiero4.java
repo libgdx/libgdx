@@ -16,17 +16,9 @@
 
 package com.badlogic.gdx.tools.hiero;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import static org.lwjgl.opengl.GL11.*;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -42,34 +34,7 @@ import java.nio.ByteOrder;
 import java.util.HashSet;
 import java.util.prefs.Preferences;
 
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.JWindow;
-import javax.swing.KeyStroke;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
@@ -102,7 +67,6 @@ import de.matthiasmann.twlthemeeditor.fontgen.FontGenerator;
 import de.matthiasmann.twlthemeeditor.fontgen.FontGenerator.ExportFormat;
 import de.matthiasmann.twlthemeeditor.fontgen.FontGenerator.GeneratorMethod;
 import de.matthiasmann.twlthemeeditor.fontgen.Padding;
-import static org.lwjgl.opengl.GL11.*;
 
 /** WIP, based on Matthias' TWL font renderer. Currently missing effects and saving hiero settings.<br>
  * <br>

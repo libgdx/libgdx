@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;

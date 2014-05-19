@@ -13,14 +13,10 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
-import java.util.Iterator;
 import java.util.List;
 
 /** @author Jerry Huxtable
@@ -41,8 +37,8 @@ public class OutlineWobbleEffect extends OutlineEffect {
 		return "Outline (Wobble)";
 	}
 
-	public List getValues () {
-		List values = super.getValues();
+	public List<Value> getValues () {
+		List<Value> values = super.getValues();
 		values.remove(2); // Remove "Join".
 		values.add(EffectUtil.floatValue("Detail", detail, 1, 50, "This setting controls how detailed the outline will be. "
 			+ "Smaller numbers cause the outline to have more detail."));
@@ -50,14 +46,13 @@ public class OutlineWobbleEffect extends OutlineEffect {
 		return values;
 	}
 
-	public void setValues (List values) {
+	public void setValues (List<Value> values) {
 		super.setValues(values);
-		for (Iterator iter = values.iterator(); iter.hasNext();) {
-			Value value = (Value)iter.next();
+		for (Value value : values) {
 			if (value.getName().equals("Detail")) {
-				detail = ((Float)value.getObject()).floatValue();
+				detail = (Float)value.getObject();
 			} else if (value.getName().equals("Amplitude")) {
-				amplitude = ((Float)value.getObject()).floatValue();
+				amplitude = (Float)value.getObject();
 			}
 		}
 	}
