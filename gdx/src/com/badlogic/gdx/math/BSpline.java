@@ -279,10 +279,11 @@ public class BSpline<T extends Vector<T>> implements Path<T> {
 			P3 = in;
 			n = n > 0 ? n - 1 : spanCount - 1;
 		}
-		float L1 = P1.dst(P2);
-		float L2 = P3.dst(P2);
-		float L3 = P3.dst(P1);
-		float s = (L2 * L2 + L1 * L1 - L3 * L3) / (2 * L1);
+		float L1Sqr = P1.dst2(P2);
+		float L2Sqr = P3.dst2(P2);
+		float L3Sqr = P3.dst2(P1);
+		float L1 = (float)Math.sqrt(L1Sqr);
+		float s = (L2Sqr + L1Sqr - L3Sqr) / (2 * L1);
 		float u = MathUtils.clamp((L1 - s) / L1, 0f, 1f);
 		return (n + u) / spanCount;
 	}
