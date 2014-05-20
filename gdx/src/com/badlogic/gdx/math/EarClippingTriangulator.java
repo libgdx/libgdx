@@ -170,9 +170,10 @@ public class EarClippingTriangulator {
 				float vy = vertices[v + 1];
 				// Because the polygon has clockwise winding order, the area sign will be positive if the point is strictly inside.
 				// It will be 0 on the edge, which we want to include as well.
-				if (computeSpannedAreaSign(p1x, p1y, p2x, p2y, vx, vy) >= 0) {
-					if (computeSpannedAreaSign(p2x, p2y, p3x, p3y, vx, vy) >= 0) {
-						if (computeSpannedAreaSign(p3x, p3y, p1x, p1y, vx, vy) >= 0) return false;
+				// note: check the edge defined by p1->p3 first since this fails _far_ more then the other 2 checks.
+				if (computeSpannedAreaSign(p3x, p3y, p1x, p1y, vx, vy) >= 0) {
+					if (computeSpannedAreaSign(p1x, p1y, p2x, p2y, vx, vy) >= 0) {
+						if (computeSpannedAreaSign(p2x, p2y, p3x, p3y, vx, vy) >= 0) return false;
 					}
 				}
 			}
