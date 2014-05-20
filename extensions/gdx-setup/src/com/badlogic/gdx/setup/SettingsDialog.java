@@ -210,6 +210,7 @@ public class SettingsDialog extends JDialog {
 
 	public List<String> getGradleArgs () {
 		List<String> list = new ArrayList<String>();
+		list.add("--no-daemon");
 		if (eclipseBox.isSelected()) {
 			list.add("eclipse");
 			list.add("afterEclipseImport");
