@@ -16,6 +16,13 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import org.lwjgl.opengl.GL11;
+
 import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
@@ -28,14 +35,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.lwjgl.opengl.GL11;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
-import com.badlogic.gdx.utils.GdxRuntimeException;
+import java.util.Map.Entry;
 
 // BOZO - Look at actual pixels to determine glyph size, current size sometimes selects blank pixels (eg Calibri, 45, 'o').
 

@@ -201,7 +201,7 @@ public class Hiero extends JFrame {
 		unicodeFont.setPaddingAdvanceY((Integer)padAdvanceYSpinner.getValue());
 		unicodeFont.setGlyphPageWidth((Integer)glyphPageWidthCombo.getSelectedItem());
 		unicodeFont.setGlyphPageHeight((Integer)glyphPageHeightCombo.getSelectedItem());
-	unicodeFont.setNativeRendering(nativeRadio.isSelected());
+		unicodeFont.setNativeRendering(nativeRadio.isSelected());
 
 		for (EffectPanel panel : effectPanels) {
 			unicodeFont.getEffects().add(panel.getEffect());
@@ -258,7 +258,7 @@ public class Hiero extends JFrame {
 			sampleTextPane.setText(settings.getGlyphText());
 		}
 
-        for (Effect effect : settings.getEffects()) {
+		for (Effect effect : settings.getEffects()) {
 			if (effect instanceof ConfigurableEffect) {
 				ConfigurableEffect settingsEffect = (ConfigurableEffect)effect;
 				for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
@@ -294,15 +294,15 @@ public class Hiero extends JFrame {
 			}
 
 			public void addSpinners (JSpinner[] spinners) {
-                for (final JSpinner spinner : spinners) {
-                    spinner.addChangeListener(this);
+				for (final JSpinner spinner : spinners) {
+					spinner.addChangeListener(this);
 					((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().addKeyListener(new KeyAdapter() {
 						String lastText;
 
 						public void keyReleased (KeyEvent evt) {
 							JFormattedTextField textField = ((JSpinner.DefaultEditor)spinner.getEditor()).getTextField();
 							String text = textField.getText();
-                            if (text.length() == 0) return;
+							if (text.length() == 0) return;
 							if (text.equals(lastText)) return;
 							lastText = text;
 							int caretPosition = textField.getCaretPosition();
@@ -400,13 +400,13 @@ public class Hiero extends JFrame {
 			public void valueChanged (ListSelectionEvent evt) {
 				ConfigurableEffect selectedEffect = (ConfigurableEffect)effectsList.getSelectedValue();
 				boolean enabled = selectedEffect != null;
-                for (EffectPanel effectPanel : effectPanels) {
-                    ConfigurableEffect effect = (effectPanel).getEffect();
-                    if (effect == selectedEffect) {
-                        enabled = false;
-                        break;
-                    }
-                }
+				for (EffectPanel effectPanel : effectPanels) {
+					ConfigurableEffect effect = (effectPanel).getEffect();
+					if (effect == selectedEffect) {
+						enabled = false;
+						break;
+					}
+				}
 				addEffectButton.setEnabled(enabled);
 			}
 		});
@@ -700,15 +700,13 @@ public class Hiero extends JFrame {
 						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 				}
 				{
-					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64,
-                            128, 256, 512, 1024, 2048}));
+					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageWidthCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageWidthCombo.setSelectedIndex(4);
 				}
 				{
-					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64,
-                            128, 256, 512, 1024, 2048}));
+					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageHeightCombo, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageHeightCombo.setSelectedIndex(4);
@@ -945,7 +943,7 @@ public class Hiero extends JFrame {
 			setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
 			appliedEffectsPanel.add(this, new GridBagConstraints(0, -1, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER,
 				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-	{
+			{
 				JPanel titlePanel = new JPanel();
 				titlePanel.setLayout(new LayoutManager() {
 					public void removeLayoutComponent (Component comp) {
@@ -1021,7 +1019,8 @@ public class Hiero extends JFrame {
 			prefs.put("foreground", EffectUtil.toString(colorEffect.getColor()));
 			valuesPanel.removeAll();
 			values = effect.getValues();
-            for (Value value : values) addValue(value);
+			for (Value value : values)
+				addValue(value);
 		}
 
 		public void addValue (final Value value) {
@@ -1068,8 +1067,8 @@ public class Hiero extends JFrame {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			final EffectPanel other = (EffectPanel)obj;
-            return effect.equals(other.effect);
-        }
+			return effect.equals(other.effect);
+		}
 	}
 
 	static private class Splash extends JWindow {
@@ -1079,7 +1078,11 @@ public class Hiero extends JFrame {
 		public Splash (Frame frame, String imageFile, int minMillis) {
 			super(frame);
 			this.minMillis = minMillis;
-			getContentPane().add(new JLabel(new ImageIcon(Splash.class.getResource(imageFile))), BorderLayout.CENTER);
+			try {
+				getContentPane().add(new JLabel(new ImageIcon(Splash.class.getResource(imageFile))), BorderLayout.CENTER);
+			} catch (NullPointerException splashFileDoesNotExist) {
+				getContentPane().add(new JLabel("Hiero"), BorderLayout.CENTER);
+			}
 			pack();
 			setLocationRelativeTo(null);
 			setVisible(true);
