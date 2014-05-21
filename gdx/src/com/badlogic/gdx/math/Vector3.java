@@ -536,14 +536,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
 	}
 	
-	/**
-	 * Calculates the Geometric Median of the given list of Vector3s and stores the result in this Vector3.
-	 * The result is the "Geometric Median" applied to Vector3s, in other words, the resulting Vector3 is the Vector3 whose 
-	 * sum of distances to the given list of Vector3s is minimum. Uses the Weiszfeld-Ostresh algorithm.
-	 * See http://en.wikipedia.org/wiki/Geometric_median
-	 * @param v List of Vector3s
-	 * @return This Vector3 for chaining
-	 */
+	@Override
 	public Vector3 median (Vector3[] v) {
 		
 		//Previous median approximation
