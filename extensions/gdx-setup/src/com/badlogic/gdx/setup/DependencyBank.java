@@ -10,7 +10,7 @@ public class DependencyBank {
 	static String libgdxVersion = "1.0.1";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
 	static String libgdxNightlyVersion = "1.0.2-SNAPSHOT";
-	static String roboVMVersion = "0.0.12";
+	static String roboVMVersion = "0.0.13";
 	static String buildToolsVersion = "19.1.0";
 	static String androidAPILevel = "19";
 
@@ -23,7 +23,7 @@ public class DependencyBank {
 	//Project plugins
 	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.4";
 	static String androidPluginImport = "com.android.tools.build:gradle:0.10+";
-	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.8";
+	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.9";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
