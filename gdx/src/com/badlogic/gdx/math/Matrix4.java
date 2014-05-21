@@ -964,6 +964,37 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 	
+	/**
+	 * Calculates the "geometric median" of the given transforms and stores the result in this matrix.
+	 * Calculates the geometric median of scales, translations and rotations separately, each with the
+	 * Weiszfeld-Ostresh algorithm, and combines them afterwards. 
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf and
+	 * http://en.wikipedia.org/wiki/Geometric_median. 
+	 * Does not destroy the data contained in t.
+	 * @param t List of transforms
+	 * @return This matrix for chaining */
+	public Matrix4 median (Matrix4[] t) {
+		
+		//Allocate space for components
+		Vector3[] scales = new Vector3[t.length];
+		Vector3[] translations = new Vector3[t.length];
+		Quaternion[] rotations = new Quaternion[t.length];
+		
+		//Get components
+		for(int i=0;i<t.length;i++){
+			scales[i] = t[i].getScale(new Vector3());
+			translations[i] = t[i].getTranslation(new Vector3());
+			rotations[i] = t[i].getRotation(new Quaternion());
+		}
+				
+		//Calculate medians
+		setToScaling(tmpVec.median(scales));
+		rotate(quat.median(rotations));
+		setTranslation(tmpVec.median(translations));
+
+		return this;
+	}
+	
 	/** Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
 	 * @param mat the matrix */
 	public Matrix4 set (Matrix3 mat) {
