@@ -29,6 +29,8 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public final static Vector2 Y = new Vector2(0, 1);
 	public final static Vector2 Zero = new Vector2(0, 0);
 
+	private final static Vector2 tmpVec1 = new Vector2();
+	
 	/** the x-component of this vector **/
 	public float x;
 	/** the y-component of this vector **/
@@ -346,6 +348,58 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		final float invAlpha = 1.0f - alpha;
 		this.x = (x * invAlpha) + (target.x * alpha);
 		this.y = (y * invAlpha) + (target.y * alpha);
+		return this;
+	}
+	
+	@Override
+	public Vector2 median (Vector2[] v) {
+		
+		//Previous median approximation
+		Vector2 prev_m = new Vector2();
+		
+		//Current median approximation is this Vector3
+		Vector2 m = this;
+		
+		//Start from the mean of the Vector2s
+		prev_m.set(0,0);
+		for(Vector2 vect : v)
+			prev_m.add(vect);
+		prev_m.scl(1.0f/v.length);
+		
+		//Iterate until convergence
+		float epsilon, denominator, dist_mk_vi;
+		do{
+			
+			//Pass all input Vector2s to calculate m_(k+1)
+			denominator = 0;
+			m.set(0, 0);
+			for(Vector2 v_i : v){
+				
+				//Calculate ||v_i - m_k||
+				dist_mk_vi = v_i.dst(prev_m);
+				
+				//If we're on top of one of the input Vector2s, it's the median, return it
+				if(dist_mk_vi < 0.0001f){
+					m.set(v_i);
+					return this;
+				}
+				
+				//Update the denominator
+				denominator += 1.0f/dist_mk_vi;
+				
+				//Update the nominator
+				m.add(tmpVec1.set(v_i).scl(1.0f/dist_mk_vi));
+			}
+			m.scl(1.0f/denominator);
+			
+			//Distance between current and previous median approximation
+			epsilon = m.dst(prev_m);
+			
+			//Update the previous median approximation
+			prev_m.set(m);
+			
+		}while(epsilon > 0.0001f);
+		
 		return this;
 	}
 	

@@ -38,6 +38,7 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	public final static Vector3 Zero = new Vector3(0, 0, 0);
 
 	private final static Matrix4 tmpMat = new Matrix4();
+	private final static Vector3 tmpVec1 = new Vector3();
 
 	/** Constructs a vector at (0,0,0) */
 	public Vector3 () {
@@ -533,6 +534,118 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	@Override
 	public Vector3 interpolate (Vector3 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
+	}
+	
+	@Override
+	public Vector3 median (Vector3[] v) {
+		
+		//Previous median approximation
+		Vector3 prev_m = new Vector3();
+		
+		//Current median approximation is this Vector3
+		Vector3 m = this;
+		
+		//Start from the mean of the Vector3s
+		prev_m.set(0,0,0);
+		for(Vector3 vect : v)
+			prev_m.add(vect);
+		prev_m.scl(1.0f/v.length);
+		
+		//Iterate until convergence
+		float epsilon, denominator, dist_mk_vi;
+		do{
+			
+			//Pass all input Vector3s to calculate m_(k+1)
+			denominator = 0;
+			m.set(0, 0, 0);
+			for(Vector3 v_i : v){
+				
+				//Calculate ||v_i - m_k||
+				dist_mk_vi = v_i.dst(prev_m);
+				
+				//If we're on top of one of the input Vector3s, it's the median, return it
+				if(dist_mk_vi < 0.0001f){
+					m.set(v_i);
+					return this;
+				}
+				
+				//Update the denominator
+				denominator += 1.0f/dist_mk_vi;
+				
+				//Update the nominator
+				m.add(tmpVec1.set(v_i).scl(1.0f/dist_mk_vi));
+			}
+			m.scl(1.0f/denominator);
+			
+			//Distance between current and previous median approximation
+			epsilon = m.dst(prev_m);
+			
+			//Update the previous median approximation
+			prev_m.set(m);
+			
+		}while(epsilon > 0.0001f);
+		
+		return this;
+	}
+	
+	/**
+	 * Calculates the weighted Geometric Median of the given list of Vector3s and stores the result in this Vector3.
+	 * The result is the "Geometric Median" applied to Vector3s, in other words, the resulting Vector3 is the Vector3 whose 
+	 * sum of distances to the given list of Vector3s is minimum. Uses the Weiszfeld-Ostresh algorithm.
+	 * See http://en.wikipedia.org/wiki/Geometric_median
+	 * @param v List of Vector3s
+	 * @param w List of weights; their sum need not necessarily be 1
+	 * @return This Vector3 for chaining
+	 */
+	public Vector3 median (Vector3[] v, float[] w) {
+		
+		//Previous median approximation
+		Vector3 prev_m = new Vector3();
+		
+		//Current median approximation is this Vector3
+		Vector3 m = this;
+		
+		//Start from the mean of the Vector3s
+		prev_m.set(0,0,0);
+		for(Vector3 vect : v)
+			prev_m.add(vect);
+		prev_m.scl(1.0f/v.length);
+		
+		//Iterate until convergence
+		float epsilon, denominator, dist_mk_vi;
+		do{
+			
+			//Pass all input Vector3s to calculate m_(k+1)
+			denominator = 0;
+			m.set(0, 0, 0);
+			for(int i=0;i<v.length;i++){
+				
+				//Calculate ||v_i - m_k||
+				dist_mk_vi = v[i].dst(prev_m);
+				
+				//If we're on top of one of the input Vector3s, it's the median, return it
+				if(dist_mk_vi < 0.0001f){
+					m.set(v[i]);
+					return this;
+				}
+				
+				//Update the denominator
+				denominator += w[i]/dist_mk_vi;
+				
+				//Update the nominator
+				m.add(tmpVec1.set(v[i]).scl(w[i]/dist_mk_vi));
+			}
+			m.scl(1.0f/denominator);
+			
+			//Distance between current and previous median approximation
+			epsilon = m.dst(prev_m);
+			
+			//Update the previous median approximation
+			prev_m.set(m);
+			
+		}while(epsilon > 0.0001f);
+		
+		return this;
 	}
 	
 	/** Spherically interpolates between this vector and the target vector by alpha which is in the range [0,1]. The result is

@@ -98,6 +98,16 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T interpolate(T target, float alpha, Interpolation interpolator);
 	
+	/**
+	 * Calculates the Geometric Median of the given list of Vectors and stores the result in this Vector.
+	 * The result is the "Geometric Median" applied to Vector3s, in other words, the resulting Vector is the Vector whose 
+	 * sum of distances to the given list of Vectors is minimum. Uses the Weiszfeld-Ostresh algorithm.
+	 * See http://en.wikipedia.org/wiki/Geometric_median
+	 * @param v List of Vectors
+	 * @return This Vector for chaining
+	 */
+	public T median (T[] v);
+	
 	/** @return Whether this vector is a unit length vector */
 	boolean isUnit ();
 

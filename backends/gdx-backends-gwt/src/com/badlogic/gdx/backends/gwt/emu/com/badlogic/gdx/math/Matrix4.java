@@ -953,7 +953,7 @@ public class Matrix4 implements Serializable {
 		tmpVec.set(t[0].getScale(tmpUp).scl(w));
 		
 		//Initialize rotation components
-		quat.set(t[0].getRotation(quat2).exp(w));
+		quat.set(t[0].getRotation(quat2).pow(w));
 		
 		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
@@ -965,7 +965,7 @@ public class Matrix4 implements Serializable {
 			tmpVec.add(t[i].getScale(tmpUp).scl(w));
 			
 			//Calculate rotation components
-			quat.mul(t[i].getRotation(quat2).exp(w));
+			quat.mul(t[i].getRotation(quat2).pow(w));
 			
 			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
@@ -994,7 +994,7 @@ public class Matrix4 implements Serializable {
 		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
 		
 		//Initialize rotation components
-		quat.set(t[0].getRotation(quat2).exp(w[0]));
+		quat.set(t[0].getRotation(quat2).pow(w[0]));
 		
 		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
@@ -1006,7 +1006,7 @@ public class Matrix4 implements Serializable {
 			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
 			
 			//Calculate rotation components
-			quat.mul(t[i].getRotation(quat2).exp(w[i]));
+			quat.mul(t[i].getRotation(quat2).pow(w[i]));
 			
 			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
@@ -1017,6 +1017,58 @@ public class Matrix4 implements Serializable {
 		setToScaling(tmpVec);
 		rotate(quat);
 		setTranslation(tmpForward);
+
+		return this;
+	}
+	
+	/**
+	 * Calculates the "geometric median" of the given transforms and stores the result in this matrix.
+	 * Calculates the geometric median of scales, translations and rotations separately, each with the
+	 * Weiszfeld-Ostresh algorithm, and combines them afterwards. 
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf and
+	 * http://en.wikipedia.org/wiki/Geometric_median. 
+	 * Does not destroy the data contained in t.
+	 * @param t List of transforms
+	 * @return This matrix for chaining */
+	public Matrix4 median (Matrix4[] t) {
+		return median(t,null);
+	}
+
+	/**
+	 * Calculates the weighted "geometric median" of the given transforms and stores the result in this matrix.
+	 * Calculates the geometric median of scales, translations and rotations separately, each with the
+	 * Weiszfeld-Ostresh algorithm, and combines them afterwards. 
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf and
+	 * http://en.wikipedia.org/wiki/Geometric_median. 
+	 * Does not destroy the data contained in t.
+	 * @param t List of transforms
+	 * @param w List of weights, their sum need not necessarily be 1
+	 * @return This matrix for chaining */
+	public Matrix4 median (Matrix4[] t, float[] w) {
+
+		//Allocate space for components
+		Vector3[] scales = new Vector3[t.length];
+		Vector3[] translations = new Vector3[t.length];
+		Quaternion[] rotations = new Quaternion[t.length];
+
+		//Get components
+		for(int i=0;i<t.length;i++){
+			scales[i] = t[i].getScale(new Vector3());
+			translations[i] = t[i].getTranslation(new Vector3());
+			rotations[i] = t[i].getRotation(new Quaternion());
+		}
+
+		//Calculate medians
+		if(w == null){
+			setToScaling(tmpVec.median(scales));
+			rotate(quat.median(rotations));
+			setTranslation(tmpVec.median(translations));
+		}
+		else{
+			setToScaling(tmpVec.median(scales,w));
+			rotate(quat.median(rotations,w));
+			setTranslation(tmpVec.median(translations,w));
+		}
 
 		return this;
 	}
