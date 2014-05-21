@@ -847,6 +847,73 @@ public class Quaternion implements Serializable {
 		return this;
 	}
 	
+	/**
+	 * Calculates the weighted Symmetrized Riemannian Geometric Median of the given list of Quaternions and stores the result in 
+	 * this Quaternion. The result is the "Geometric Median" applied to Quaternions, in other words, the resulting Quaternion is 
+	 * the Quaternion whose sum of distances to the given list of Quaternions is minimum. Uses the Weiszfeld-Ostresh algorithm 
+	 * for Riemannian manifolds. See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf
+	 * @param q List of Quaternions
+	 * @param w List of weights; their sum need not necessarily be 1
+	 * @return This Quaternion for chaining
+	 */
+	public Quaternion median (Quaternion[] q, float[] w) {
+		
+		//Previous median approximation
+		Quaternion prev_m = new Quaternion();
+		
+		//Current median approximation is this Quaternion
+		Quaternion m = this;
+		
+		//Start from the mean of the Quaternions
+		prev_m.set(0,0,0,0);
+		for(Quaternion quat : q)
+			prev_m.add(quat);
+		//Not necessary here: prev_m.mul(1.0f/q.length);
+		prev_m.nor();
+		
+		//Iterate until convergence
+		float epsilon, denominator, dist_mk_qi;
+		int k = 1;
+		do{
+			
+			//Pass all input Quaternions to calculate the argument of Exp_mk()
+			denominator = 0;
+			m.set(0, 0, 0, 0);
+			for(int i=0;i<q.length;i++){
+				
+				//Calculate Log_mk(q_i) and its norm
+				tmp3.set(q[i]).logMap(prev_m);
+				dist_mk_qi = tmp3.len();
+				
+				//If we're on top of one of the input Vector3s, it's the median, return it
+				if(dist_mk_qi < 0.0001f){
+					m.set(q[i]);
+					return this;
+				}
+				
+				//Update the denominator
+				denominator += w[i]/dist_mk_qi;
+				
+				//Update the nominator of the argument of Exp_mk()
+				m.add(tmp3.mul(w[i]/dist_mk_qi));
+			}
+			m.mul(1.0f/((k + 1)*denominator));
+			
+			//Finally, apply Exp_mk()
+			m.expMap(prev_m);
+			
+			//Distance between current and previous median approximation
+			epsilon = m.dist(prev_m);
+			
+			//Update the previous median approximation
+			prev_m.set(m);
+			k++;
+			
+		}while(epsilon > 0.0001f);
+		
+		return this;
+	}
+	
 	@Override
 	public int hashCode () {
 		final int prime = 31;
