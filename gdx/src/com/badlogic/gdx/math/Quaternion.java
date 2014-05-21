@@ -30,6 +30,7 @@ public class Quaternion implements Serializable {
 	private static final float NORMALIZATION_TOLERANCE = 0.00001f;
 	private static Quaternion tmp1 = new Quaternion(0, 0, 0, 0);
 	private static Quaternion tmp2 = new Quaternion(0, 0, 0, 0);
+	private static Quaternion tmp3 = new Quaternion(0, 0, 0, 0);
 
 	public float x;
 	public float y;
@@ -157,20 +158,20 @@ public class Quaternion implements Serializable {
 		final float t = y*x+z*w;
 		return t > 0.499f ? 1 : (t < -0.499f ? -1 : 0);
 	}
-	
+
 	/** Get the roll euler angle in radians, which is the rotation around the z axis. Requires that this quaternion is normalized. 
 	 * @return the rotation around the z axis in radians (between -PI and +PI) */
 	public float getRollRad() {
 		final int pole = getGimbalPole();
 		return pole == 0 ? MathUtils.atan2(2f*(w*z + y*x), 1f - 2f * (x*x + z*z)) : (float)pole * 2f * MathUtils.atan2(y, w);
 	}
-	
+
 	/** Get the roll euler angle in degrees, which is the rotation around the z axis. Requires that this quaternion is normalized. 
 	 * @return the rotation around the z axis in degrees (between -180 and +180) */
 	public float getRoll() {
 		return getRollRad() * MathUtils.radiansToDegrees;
 	}
-	
+
 	/** Get the pitch euler angle in radians, which is the rotation around the x axis. Requires that this quaternion is normalized. 
 	 * @return the rotation around the x axis in radians (between -(PI/2) and +(PI/2)) */
 	public float getPitchRad() {
@@ -183,13 +184,13 @@ public class Quaternion implements Serializable {
 	public float getPitch() {
 		return getPitchRad() * MathUtils.radiansToDegrees;
 	}
-	
+
 	/** Get the yaw euler angle in radians, which is the rotation around the y axis. Requires that this quaternion is normalized. 
 	 * @return the rotation around the y axis in radians (between -PI and +PI) */
 	public float getYawRad() {
 		return getGimbalPole() == 0 ? MathUtils.atan2(2f*(y*w + x*z), 1f - 2f*(y*y+x*x)) : 0f;
 	}
-	
+
 	/** Get the yaw euler angle in degrees, which is the rotation around the y axis. Requires that this quaternion is normalized. 
 	 * @return the rotation around the y axis in degrees (between -180 and +180) */
 	public float getYaw() {
@@ -313,7 +314,7 @@ public class Quaternion implements Serializable {
 		this.w = newW;
 		return this;
 	}
-	
+
 	/** Add the x,y,z,w components of the passed in quaternion to the ones of this quaternion */
 	public Quaternion add(Quaternion quaternion){
 		this.x += quaternion.x;
@@ -322,7 +323,7 @@ public class Quaternion implements Serializable {
 		this.w += quaternion.w;
 		return this;
 	}
-	
+
 	/** Add the x,y,z,w components of the passed in quaternion to the ones of this quaternion */
 	public Quaternion add(float qx, float qy, float qz, float qw){
 		this.x += qx;
@@ -331,7 +332,7 @@ public class Quaternion implements Serializable {
 		this.w += qw;
 		return this;
 	}
-	
+
 	// TODO : the matrix4 set(quaternion) doesnt set the last row+col of the matrix to 0,0,0,1 so... that's why there is this
 // method
 	/** Fills a 4x4 matrix with the rotation matrix represented by this quaternion.
@@ -617,16 +618,16 @@ public class Quaternion implements Serializable {
 	 * @param q List of quaternions
 	 * @return This quaternion for chaining */
 	public Quaternion slerp (Quaternion[] q) {
-		
+
 		//Calculate exponents and multiply everything from left to right
 		final float w = 1.0f/q.length;
-		set(q[0]).exp(w);
+		set(q[0]).pow(w);
 		for(int i=1;i<q.length;i++)
-			mul(tmp1.set(q[i]).exp(w));
+			mul(tmp1.set(q[i]).pow(w));
 		nor();
 		return this;
 	}
-	
+
 	/**
 	 * Spherical linearly interpolates multiple quaternions by the given weights and stores the result in this Quaternion.
 	 * Will not destroy the data previously inside the elements of q or w.
@@ -636,21 +637,21 @@ public class Quaternion implements Serializable {
 	 * @param w List of weights
 	 * @return This quaternion for chaining */
 	public Quaternion slerp (Quaternion[] q, float[] w) {
-		
+
 		//Calculate exponents and multiply everything from left to right
-		set(q[0]).exp(w[0]);
+		set(q[0]).pow(w[0]);
 		for(int i=1;i<q.length;i++)
-			mul(tmp1.set(q[i]).exp(w[i]));
+			mul(tmp1.set(q[i]).pow(w[i]));
 		nor();
 		return this;
 	}
-	
+
 	/**
 	 * Calculates (this quaternion)^alpha where alpha is a real number and stores the result in this quaternion.
 	 * See http://en.wikipedia.org/wiki/Quaternion#Exponential.2C_logarithm.2C_and_power
 	 * @param alpha Exponent
 	 * @return This quaternion for chaining */
-	public Quaternion exp (float alpha) {
+	public Quaternion pow (float alpha) {
 
 		//Calculate |q|^alpha
 		float norm = len();
@@ -672,9 +673,177 @@ public class Quaternion implements Serializable {
 		y *= coeff;
 		z *= coeff;
 
-		//Fix any possible discrepancies
-		nor();
+		return this;
+	}
 
+	/**
+	 * Calculates e^(this quaternion) and stores the result in this quaternion.
+	 * See http://en.wikipedia.org/wiki/Quaternion#Exponential.2C_logarithm.2C_and_power
+	 * @return This quaternion for chaining
+	 */
+	public Quaternion exp () {
+
+		//Calculate norm of the imaginary vector part, i.e ||v||
+		float v_norm = (float)Math.sqrt(x*x + y*y + z*z);
+
+		//Calculate exponential of the real scalar part, i.e e^w
+		float exp_w = (float)Math.exp(w);
+
+		//Calculate the real scalar part, i.e (e^w)*cos||v||
+		w = (float)(exp_w*Math.cos(v_norm));
+
+		//Calculate imaginary vector part, i.e (e^w)*v*sin(||v||)/||v||
+		if(!(v_norm < 0.001)) //If ||v|| is small enough, use the limit of sin(||v||)/||v|| = 1 instead of actual value
+			exp_w *= (float)(Math.sin(v_norm)/v_norm);
+		x *= exp_w;
+		y *= exp_w;
+		z *= exp_w;
+
+		return this;
+	}
+
+	/**
+	 * Calculates log(this quaternion) and stores the result in this quaternion.
+	 * See http://en.wikipedia.org/wiki/Quaternion#Exponential.2C_logarithm.2C_and_power
+	 * @return This quaternion for chaining
+	 */
+	public Quaternion log () {
+
+		//Calculate the norm of this quaternion, i.e ||q||
+		float q_norm = len();
+
+		//Calculate the norm of the imaginary vector part, i.e ||v||
+		float v_norm = (float)Math.sqrt(x*x + y*y + z*z);
+		
+		//Calculate the imaginary vector part coefficient, i.e arccos(w/||q||)/||v||
+		float im_coeff = 0;
+		if(!(v_norm < 0.001)) //If ||v|| is small enough, use the limit of v*arccos(w/||q||)/||v|| = (0,0,0) instead of actual value
+			im_coeff = (float)(Math.acos(w/q_norm)/v_norm);
+
+		//Calculate the imaginary vector part
+		x *= im_coeff;
+		y *= im_coeff;
+		z *= im_coeff;
+		
+		//Calculate the real scalar part
+		w = (float)Math.log(q_norm);
+		
+		return this;
+	}
+	
+	/**
+	 * Calculates the Symmetrized Riemannian Logarithmic Map, i.e Log_base(this quaternion) and stores the result in this quaternion.
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf
+	 * @param base The base quaternion
+	 * @return This quaternion for chaining
+	 */
+	public Quaternion logMap (Quaternion base) {
+		
+		//Calculate (base^-0.5)
+		tmp1.set(base).pow(-0.5f);
+		
+		//Calculate log's argument, i.e (base^-0.5)*(this quaternion)*(base^-0.5)
+		mulLeft(tmp1).mul(tmp1);
+		
+		//Finally, calculate log((base^-0.5)*(this quaternion)*(base^-0.5))
+		log();
+		
+		return this;
+	}
+	
+	/**
+	 * Calculates the Symmetrized Riemannian Exponential Map, i.e Exp_base(this quaternion) and stores the result in this quaternion.
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf
+	 * @param base The base quaternion
+	 * @return This quaternion for chaining
+	 */
+	public Quaternion expMap (Quaternion base) {
+		
+		//Calculate (base^0.5)
+		tmp1.set(base).pow(0.5f);
+		
+		//Calculate exp(this quaternion)
+		exp();
+		
+		//Finally, calculate (base^0.5)*exp(this quaternion)*(base^0.5)
+		mulLeft(tmp1).mul(tmp1);
+		
+		return this;
+	}
+
+	/** 
+	 * Calculates the distance between this Quaternion and the other, i.e ||Log_other(this)||
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf
+	 * @param other The other Quaternion
+	 * @return Distance between this quaternion and the other
+	 */
+	public float dist (Quaternion other){
+		return tmp2.set(this).logMap(other).len();
+	}
+	
+	/**
+	 * Calculates the Symmetrized Riemannian Geometric Median of the given list of Quaternions and stores the result in this Quaternion.
+	 * The result is the "Geometric Median" applied to Quaternions, in other words, the resulting Quaternion is the Quaternion whose 
+	 * sum of distances to the given list of Quaternions is minimum. Uses the Weiszfeld-Ostresh algorithm for Riemannian manifolds.
+	 * See http://hal.archives-ouvertes.fr/docs/00/78/91/64/PDF/LpAveragingQuaternions_angulo_AACA.pdf
+	 * @param q List of Quaternions
+	 * @return This Quaternion for chaining
+	 */
+	public Quaternion median (Quaternion[] q) {
+		
+		//Previous median approximation
+		Quaternion prev_m = new Quaternion();
+		
+		//Current median approximation is this Quaternion
+		Quaternion m = this;
+		
+		//Start from the mean of the Quaternions
+		prev_m.set(0,0,0,0);
+		for(Quaternion quat : q)
+			prev_m.add(quat);
+		//Not necessary here: prev_m.mul(1.0f/q.length);
+		prev_m.nor();
+		
+		//Iterate until convergence
+		float epsilon, denominator, dist_mk_qi;
+		int k = 1;
+		do{
+			
+			//Pass all input Quaternions to calculate the argument of Exp_mk()
+			denominator = 0;
+			m.set(0, 0, 0, 0);
+			for(Quaternion q_i : q){
+				
+				//Calculate Log_mk(q_i) and its norm
+				tmp3.set(q_i).logMap(prev_m);
+				dist_mk_qi = tmp3.len();
+				
+				//If we're on top of one of the input Vector3s, it's the median, return it
+				if(dist_mk_qi < 0.0001f){
+					m.set(q_i);
+					return this;
+				}
+				
+				//Update the denominator
+				denominator += 1.0f/dist_mk_qi;
+				
+				//Update the nominator of the argument of Exp_mk()
+				m.add(tmp3.mul(1.0f/dist_mk_qi));
+			}
+			m.mul(1.0f/((k + 1)*denominator));
+			
+			//Finally, apply Exp_mk()
+			m.expMap(prev_m);
+			
+			//Distance between current and previous median approximation
+			epsilon = m.dist(prev_m);
+			
+			//Update the previous median approximation
+			prev_m.set(m);
+			k++;
+			
+		}while(epsilon > 0.0001f);
+		
 		return this;
 	}
 	

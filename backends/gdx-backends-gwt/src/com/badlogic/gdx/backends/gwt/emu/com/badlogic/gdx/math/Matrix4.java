@@ -953,7 +953,7 @@ public class Matrix4 implements Serializable {
 		tmpVec.set(t[0].getScale(tmpUp).scl(w));
 		
 		//Initialize rotation components
-		quat.set(t[0].getRotation(quat2).exp(w));
+		quat.set(t[0].getRotation(quat2).pow(w));
 		
 		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
@@ -965,7 +965,7 @@ public class Matrix4 implements Serializable {
 			tmpVec.add(t[i].getScale(tmpUp).scl(w));
 			
 			//Calculate rotation components
-			quat.mul(t[i].getRotation(quat2).exp(w));
+			quat.mul(t[i].getRotation(quat2).pow(w));
 			
 			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
@@ -994,7 +994,7 @@ public class Matrix4 implements Serializable {
 		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
 		
 		//Initialize rotation components
-		quat.set(t[0].getRotation(quat2).exp(w[0]));
+		quat.set(t[0].getRotation(quat2).pow(w[0]));
 		
 		//Initialize translation components
 		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
@@ -1006,7 +1006,7 @@ public class Matrix4 implements Serializable {
 			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
 			
 			//Calculate rotation components
-			quat.mul(t[i].getRotation(quat2).exp(w[i]));
+			quat.mul(t[i].getRotation(quat2).pow(w[i]));
 			
 			//Calculate translation components
 			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
