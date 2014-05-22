@@ -1,4 +1,5 @@
 [1.1.0]
+- Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
 - Big improvements to setup-ui and build times in Intellij IDEA https://github.com/libgdx/libgdx/pull/1865
 - Setup now uses android build tools version: 19.1.0
 - BitmapFontCache now supports in-string colored text through a simple markup language, see https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
