@@ -37,6 +37,7 @@
 		<include name="assets/loaders/AsynchronousAssetLoader.java"/>
 		<include name="assets/loaders/BitmapFontLoader.java"/>
 		<include name="assets/loaders/FileHandleResolver.java"/>
+		<include name="assets/loaders/I18NBundleLoader.java"/>
 		<include name="assets/loaders/ModelLoader.java"/>
 		<include name="assets/loaders/MusicLoader.java"/>
 		<include name="assets/loaders/ParticleEffectLoader.java"/>
@@ -65,6 +66,7 @@
 	<!-- graphics -->		
 		<include name="graphics/Camera.java"/>
 		<include name="graphics/Color.java"/>
+		<include name="graphics/Colors.java"/>
 		<include name="graphics/Cubemap.java"/>
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL20.java"/>

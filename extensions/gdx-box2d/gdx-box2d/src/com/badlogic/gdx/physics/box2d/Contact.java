@@ -42,7 +42,7 @@ public class Contact {
 	}
 
 	/** Get the world manifold. */
-	private final float[] tmp = new float[6];
+	private final float[] tmp = new float[8];
 
 	public WorldManifold getWorldManifold () {
 		int numContactPoints = jniGetWorldManifold(addr, tmp);
@@ -54,6 +54,8 @@ public class Contact {
 			point.x = tmp[2 + i * 2];
 			point.y = tmp[2 + i * 2 + 1];
 		}
+		worldManifold.separations[0] = tmp[6];
+		worldManifold.separations[1] = tmp[7];
 
 		return worldManifold;
 	}
@@ -73,6 +75,9 @@ public class Contact {
 			tmp[2 + i*2+1] = manifold.points[i].y;
 		}
 	
+		tmp[6] = manifold.separations[0];
+		tmp[7] = manifold.separations[1];
+
 		return numPoints;
 	*/
 

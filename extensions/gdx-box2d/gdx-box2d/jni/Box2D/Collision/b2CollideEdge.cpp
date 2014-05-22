@@ -497,13 +497,13 @@ void b2EPCollider::Collide(b2Manifold* manifold, const b2EdgeShape* edgeA, const
 		
 		ie[0].v = m_polygonB.vertices[i1];
 		ie[0].id.cf.indexA = 0;
-		ie[0].id.cf.indexB = i1;
+		ie[0].id.cf.indexB = static_cast<uint8>(i1);
 		ie[0].id.cf.typeA = b2ContactFeature::e_face;
 		ie[0].id.cf.typeB = b2ContactFeature::e_vertex;
 		
 		ie[1].v = m_polygonB.vertices[i2];
 		ie[1].id.cf.indexA = 0;
-		ie[1].id.cf.indexB = i2;
+		ie[1].id.cf.indexB = static_cast<uint8>(i2);
 		ie[1].id.cf.typeA = b2ContactFeature::e_face;
 		ie[1].id.cf.typeB = b2ContactFeature::e_vertex;
 		
@@ -530,13 +530,13 @@ void b2EPCollider::Collide(b2Manifold* manifold, const b2EdgeShape* edgeA, const
 		
 		ie[0].v = m_v1;
 		ie[0].id.cf.indexA = 0;
-		ie[0].id.cf.indexB = primaryAxis.index;
+		ie[0].id.cf.indexB = static_cast<uint8>(primaryAxis.index);
 		ie[0].id.cf.typeA = b2ContactFeature::e_vertex;
 		ie[0].id.cf.typeB = b2ContactFeature::e_face;
 		
 		ie[1].v = m_v2;
 		ie[1].id.cf.indexA = 0;
-		ie[1].id.cf.indexB = primaryAxis.index;		
+		ie[1].id.cf.indexB = static_cast<uint8>(primaryAxis.index);		
 		ie[1].id.cf.typeA = b2ContactFeature::e_vertex;
 		ie[1].id.cf.typeB = b2ContactFeature::e_face;
 		

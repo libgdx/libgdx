@@ -129,6 +129,12 @@ void b2WeldJoint::InitVelocityConstraints(const b2SolverData& data)
 		invM += m_gamma;
 		m_mass.ez.z = invM != 0.0f ? 1.0f / invM : 0.0f;
 	}
+	else if (K.ez.z == 0.0f)
+	{
+		K.GetInverse22(&m_mass);
+		m_gamma = 0.0f;
+		m_bias = 0.0f;
+	}
 	else
 	{
 		K.GetSymInverse33(&m_mass);
@@ -271,7 +277,17 @@ bool b2WeldJoint::SolvePositionConstraints(const b2SolverData& data)
 
 		b2Vec3 C(C1.x, C1.y, C2);
 	
-		b2Vec3 impulse = -K.Solve33(C);
+		b2Vec3 impulse;
+		if (K.ez.z > 0.0f)
+		{
+			impulse = -K.Solve33(C);
+		}
+		else
+		{
+			b2Vec2 impulse2 = -K.Solve22(C1);
+			impulse.Set(impulse2.x, impulse2.y, 0.0f);
+		}
+
 		b2Vec2 P(impulse.x, impulse.y);
 
 		cA -= mA * P;

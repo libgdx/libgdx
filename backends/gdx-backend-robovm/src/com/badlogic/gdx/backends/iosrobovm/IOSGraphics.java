@@ -33,6 +33,7 @@ import org.robovm.apple.opengles.EAGLRenderingAPI;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIInterfaceOrientationMask;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
@@ -75,6 +76,23 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			graphics.height = (int)bounds.height();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
+		}
+
+		@Override
+		public UIInterfaceOrientationMask getSupportedInterfaceOrientations() {
+			long mask = 0;
+			if (app.config.orientationLandscape) {
+				mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
+			}
+			if (app.config.orientationPortrait) {
+				mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
+			}
+			return new UIInterfaceOrientationMask(mask);
+		}
+
+		@Override
+		public boolean shouldAutorotate() {
+			return true;
 		}
 
 		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {

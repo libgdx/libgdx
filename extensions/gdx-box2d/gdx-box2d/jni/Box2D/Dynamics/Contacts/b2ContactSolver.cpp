@@ -26,6 +26,7 @@
 
 #define B2_DEBUG_SOLVER 0
 
+bool g_blockSolve = true;
 float b2_velocityThreshold = 1.0f;
 struct b2ContactPositionConstraint
 {
@@ -214,7 +215,7 @@ void b2ContactSolver::InitializeVelocityConstraints()
 		}
 
 		// If we have two points, then prepare the block solver.
-		if (vc->pointCount == 2)
+		if (vc->pointCount == 2 && g_blockSolve)
 		{
 			b2VelocityConstraintPoint* vcp1 = vc->points + 0;
 			b2VelocityConstraintPoint* vcp2 = vc->points + 1;
@@ -342,9 +343,11 @@ void b2ContactSolver::SolveVelocityConstraints()
 		}
 
 		// Solve normal constraints
-		if (vc->pointCount == 1)
+		if (pointCount == 1 || g_blockSolve == false)
 		{
-			b2VelocityConstraintPoint* vcp = vc->points + 0;
+			for (int32 i = 0; i < pointCount; ++i)
+			{
+				b2VelocityConstraintPoint* vcp = vc->points + i;
 
 			// Relative velocity at contact
 			b2Vec2 dv = vB + b2Cross(wB, vcp->rB) - vA - b2Cross(wA, vcp->rA);
@@ -365,6 +368,7 @@ void b2ContactSolver::SolveVelocityConstraints()
 
 			vB += mB * P;
 			wB += iB * b2Cross(vcp->rB, P);
+			}
 		}
 		else
 		{

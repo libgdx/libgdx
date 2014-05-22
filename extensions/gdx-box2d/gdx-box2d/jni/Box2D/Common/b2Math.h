@@ -27,17 +27,10 @@
 #include <float.h>
 
 /// This function is used to ensure that a floating point number is
-/// not a NaN or infinity.
 inline bool b2IsValid(float32 x)
-{
-	if (x != x)
 	{
-		// NaN.
-		return false;
-	}
-
-	float32 infinity = INFINITY;
-	return -infinity < x && x < infinity;
+	int32 ix = *reinterpret_cast<int32*>(&x);
+	return (ix & 0x7f800000) != 0x7f800000;
 }
 
 /// This is a approximate yet fast inverse square-root.
@@ -714,8 +707,8 @@ inline void b2Sweep::Advance(float32 alpha)
 {
 	b2Assert(alpha0 < 1.0f);
 	float32 beta = (alpha - alpha0) / (1.0f - alpha0);
-	c0 = (1.0f - beta) * c0 + beta * c;
-	a0 = (1.0f - beta) * a0 + beta * a;
+	c0 += beta * (c - c0);
+	a0 += beta * (a - a0);
 	alpha0 = alpha;
 }
 

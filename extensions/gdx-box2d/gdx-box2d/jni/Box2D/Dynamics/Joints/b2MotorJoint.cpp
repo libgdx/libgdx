@@ -245,6 +245,17 @@ float32 b2MotorJoint::GetMaxTorque() const
 	return m_maxTorque;
 }
 
+void b2MotorJoint::SetCorrectionFactor(float32 factor)
+{
+	b2Assert(b2IsValid(factor) && 0.0f <= factor && factor <= 1.0f);
+	m_correctionFactor = factor;
+}
+
+float32 b2MotorJoint::GetCorrectionFactor() const
+{
+	return m_correctionFactor;
+}
+
 void b2MotorJoint::SetLinearOffset(const b2Vec2& linearOffset)
 {
 	if (linearOffset.x != m_linearOffset.x || linearOffset.y != m_linearOffset.y)

@@ -186,7 +186,7 @@ public class Body {
 	public void applyLinearImpulse (Vector2 impulse, Vector2 point, boolean wake) {
 		tmp.set(impulse.x, impulse.y);
 		tmp2.set(point.x, point.y);
-		body.applyLinearImpulse(tmp, tmp2);
+		body.applyLinearImpulse(tmp, tmp2, wake);
 	}
 
 	/** Apply an impulse at a point. This immediately modifies the velocity. It also modifies the angular velocity if the point of
@@ -198,7 +198,7 @@ public class Body {
 	public void applyLinearImpulse (float impulseX, float impulseY, float pointX, float pointY, boolean wake) {
 		tmp.set(impulseX, impulseY);
 		tmp2.set(pointX, pointY);
-		body.applyLinearImpulse(tmp, tmp2);
+		body.applyLinearImpulse(tmp, tmp2, wake);
 	}
 
 	/** Apply an angular impulse.

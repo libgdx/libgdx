@@ -23,7 +23,6 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
@@ -33,7 +32,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -68,6 +66,7 @@ public class BitmapFont implements Disposable {
 	private boolean flipped;
 	private boolean integer;
 	private boolean ownsTexture;
+	boolean markupEnabled;
 
 	/** Creates a BitmapFont using the default 15pt Arial font included in the libgdx JAR file. This is convenient to easily display
 	 * text without bothering with generating a bitmap font. */
@@ -143,7 +142,7 @@ public class BitmapFont implements Disposable {
 	 * Passing a single TextureRegion assumes that your font only needs a single texture page. If you need to support multiple
 	 * pages, either let the Font read the images themselves (by specifying null as the TextureRegion), or by specifying each page
 	 * manually with the TextureRegion[] constructor.
-	 *
+	 * 
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, TextureRegion region, boolean integer) {
 		this(data, region != null ? new TextureRegion[] {region} : null, integer);
@@ -152,7 +151,7 @@ public class BitmapFont implements Disposable {
 	/** Constructs a new BitmapFont from the given {@link BitmapFontData} and array of {@link TextureRegion}. If the TextureRegion
 	 * is null or empty, the image path(s) will be read from the BitmapFontData. The dispose() method will not dispose the texture
 	 * of the region(s) if the regions array is != null and not empty.
-	 *
+	 * 
 	 * @param integer If true, rendering positions will be at integer values to avoid filtering artifacts. */
 	public BitmapFont (BitmapFontData data, TextureRegion[] regions, boolean integer) {
 		if (regions == null || regions.length == 0) {
@@ -626,6 +625,16 @@ public class BitmapFont implements Disposable {
 	/** Returns true if this BitmapFont has been flipped for use with a y-down coordinate system. */
 	public boolean isFlipped () {
 		return flipped;
+	}
+
+	/** Returns true if color markup is enabled for this BitmapFont */
+	public boolean isMarkupEnabled () {
+		return markupEnabled;
+	}
+
+	/** Sets color markup on/off for this BitmapFont */
+	public void setMarkupEnabled (boolean markupEnabled) {
+		this.markupEnabled = markupEnabled;
 	}
 
 	/** Disposes the texture used by this BitmapFont's region IF this BitmapFont created the texture. */
