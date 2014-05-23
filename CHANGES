@@ -1,3 +1,5 @@
+[1.1.1]
+
 [1.1.0]
 - Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
 - Big improvements to setup-ui and build times in Intellij IDEA https://github.com/libgdx/libgdx/pull/1865
