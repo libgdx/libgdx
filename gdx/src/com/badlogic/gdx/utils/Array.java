@@ -132,6 +132,12 @@ public class Array<T> implements Iterable<T> {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
+	public void set (int index, T[] value) {
+		if (index+value.length-1 >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
+		for(int i = 0; i < value.length; ++i) {
+			items[index+i] = value[i];
+		}
+	}
 
 	public void insert (int index, T value) {
 		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
@@ -144,7 +150,18 @@ public class Array<T> implements Iterable<T> {
 		size++;
 		items[index] = value;
 	}
-
+	
+	public void insert (int index, T[] value) {
+		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
+		T[] items = this.items;
+		if ((size-1 + value.length) >= items.length) items = resize((int)((size-1+value.length) * 1.25f));
+		if (ordered)
+			System.arraycopy(items, index, items, index + value.length, size - index);
+		else
+			System.arraycopy(items, index, items, size, value.length);
+		size += value.length;
+		System.arraycopy(value, 0, items, index, value.length);
+	}
 	public void swap (int first, int second) {
 		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
 		if (second >= size) throw new IndexOutOfBoundsException("second can't be >= size: " + second + " >= " + size);
