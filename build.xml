@@ -31,6 +31,7 @@
 	<target name="gdx-setup">
 		<ant antfile="build.xml" dir="extensions/gdx-setup/"/>
 		<copy tofile="${distDir}/gdx-setup.jar" file="extensions/gdx-setup/gdx-setup.jar"/>
+		<copy tofile="${distDir}/versions.txt" file="extensions/gdx-setup/versions.txt"/>
 	</target>
 
 	<!-- gdx core -->
