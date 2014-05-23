@@ -7,6 +7,8 @@
 - Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
 - Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
 - Mavenized JGLFW backend
+- Box2D: Added MotorJoint
+- Updated GWT Box2D to latest version
 - Updated native Box2D to latest version 2.3.1, no API changes
 - API CHANGE: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
 - API addition: Matrix4.avg(Matrix4[],float[]) that lets weighted averaging multiple matrices, Quaternion.slerp(Quaternion[],float[]) that lets weighted slerping multiple Quaternions
