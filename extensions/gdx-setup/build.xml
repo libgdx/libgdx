@@ -42,6 +42,7 @@
 
         <delete file="${name}-tmp.jar"/>
     </target>
+    
 
 	<!-- ****************************************************************** -->
 	<!-- Main task -->
@@ -49,10 +50,23 @@
 
 	<target name="all" depends="bundle">
 		<antcall target="clean"/>
+		<antcall target="run"/>
 	</target>
 	
 	<target name="zip" depends="all">
 		<zip destfile="${name}-${version}.zip" basedir="." includes="${name}.jar"/>
+	</target>
+	
+	<!-- ****************************************************************** -->
+	<!-- Version task -->
+	<!-- ****************************************************************** -->
+	
+	<target name="run">
+		<java classname="com.badlogic.gdx.setup.VersionBuilder" fork="true">
+		    <classpath>
+		        <pathelement location="${name}.jar"/>
+		    </classpath>
+		</java>
 	</target>
 	
 </project>
