@@ -63,6 +63,7 @@ import java.util.List;
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
 		// @off
+		IssueTest.class,
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
@@ -112,6 +113,8 @@ public class GdxTests {
 		GroupTest.class,
 		HelloTriangle.class,
 		HexagonalTiledMapTest.class,
+		I18NMessageTest.class,
+		I18NSimpleMessageTest.class,
 		ImageScaleTest.class,
 		ImageTest.class,
 		ImmediateModeRendererTest.class,

@@ -201,6 +201,7 @@ public class JsonReader implements BaseJsonReader {
 						}
 						// if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
 						p++;
+						if (p == eof) break;
 					}
 				} else {
 					outer:
@@ -217,6 +218,7 @@ public class JsonReader implements BaseJsonReader {
 						}
 						// if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
 						p++;
+						if (p == eof) break;
 					}
 				}
 				p--;
@@ -237,6 +239,7 @@ public class JsonReader implements BaseJsonReader {
 					}
 					// if (debug) System.out.println("quotedChar: '" + data[p] + "'");
 					p++;
+					if (p == eof) break;
 				}
 				p--;
 			}

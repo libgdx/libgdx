@@ -32,6 +32,7 @@ public class Timer {
 	static Timer instance = new Timer();
 
 	static public Timer instance () {
+		checkStatics();
 		if (instance == null) {
 			instance = new Timer();
 		}
@@ -81,6 +82,7 @@ public class Timer {
 	/** Starts the timer if it was stopped. */
 	public void start () {
 		synchronized (instances) {
+			checkStatics();
 			if (instances.contains(this, true)) return;
 			instances.add(this);
 			if (thread == null) thread = new TimerThread();
@@ -197,7 +199,7 @@ public class Timer {
 	/** Manages the single timer thread. Stops thread on libgdx application pause and dispose, starts thread on resume.
 	 * @author Nathan Sweet */
 	static class TimerThread implements Runnable, LifecycleListener {
-		private Application app;
+		Application app;
 		private long pauseMillis;
 
 		public TimerThread () {
@@ -254,6 +256,19 @@ public class Timer {
 			thread = null;
 			instances.clear();
 			instance = null;
+		}
+	}
+
+	private static void checkStatics () {
+		// fix for https://github.com/libgdx/libgdx/issues/1548, in case the statics are left overs...
+		synchronized (instances) {
+			if (thread != null) {
+				if (thread.app != Gdx.app) {
+					thread = null;
+					instances.clear();
+					instance = null;
+				}
+			}
 		}
 	}
 }

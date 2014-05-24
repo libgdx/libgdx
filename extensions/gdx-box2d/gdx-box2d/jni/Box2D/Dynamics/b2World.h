@@ -104,7 +104,7 @@ public:
 	/// @see SetAutoClearForces
 	void ClearForces();
 
-	/// Call this to draw shapes and other debug draw data.
+	/// Call this to draw shapes and other debug draw data. This is intentionally non-const.
 	void DrawDebugData();
 
 	/// Query the world for all fixtures that potentially overlap the
@@ -247,7 +247,7 @@ private:
 	bool m_allowSleep;
 
 	b2DestructionListener* m_destructionListener;
-	b2Draw* m_debugDraw;
+	b2Draw* g_debugDraw;
 
 	// This is used to compute the time step ratio to
 	// support a variable time step.

@@ -17,11 +17,11 @@
 */
 
 #include <Box2D/Common/b2Settings.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
-b2Version b2_version = {2, 3, 0};
+b2Version b2_version = {2, 3, 1};
 
 // Memory allocators. Modify these to use your own allocator.
 void* b2Alloc(int32 size)

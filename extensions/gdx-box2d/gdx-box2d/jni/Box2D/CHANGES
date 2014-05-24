@@ -1,3 +1,7 @@
+13.5.2014
+- Merged latest Box2D trunk, version 2.3.1
+- KEPT: b2ChainShape methods GetVertexCount, GetVertex, GetVertices
+
 22.3.2013
 - Merged latest Box2D trunk, revision https://code.google.com/p/box2d/source/detail?r=254
 - Body#setTransform with update flag for contacts was removed, removed from jni wrapper

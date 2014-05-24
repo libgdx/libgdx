@@ -81,6 +81,14 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateGearJ
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_World
+ * Method:    jniCreateMotorJoint
+ * Signature: (JJJZFFFFFF)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_World_jniCreateMotorJoint
+  (JNIEnv *, jobject, jlong, jlong, jlong, jboolean, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_World
  * Method:    jniCreateMouseJoint
  * Signature: (JJJZFFFFF)J
  */

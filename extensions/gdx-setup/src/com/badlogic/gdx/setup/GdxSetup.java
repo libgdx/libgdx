@@ -27,7 +27,8 @@ import com.badlogic.gdx.setup.DependencyBank.ProjectType;
 import com.badlogic.gdx.setup.Executor.CharCallback;
 
 /** Command line tool to generate libgdx projects
- * @author badlogic */
+ * @author badlogic
+ * @author Tomski */
 public class GdxSetup {
 	public static boolean isSdkLocationValid (String sdkLocation) {
 		return new File(sdkLocation, "tools").exists() && new File(sdkLocation, "platforms").exists();
@@ -65,7 +66,7 @@ public class GdxSetup {
 	}
 
 	public void build (ProjectBuilder builder, String outputDir, String appName, String packageName, String mainClass,
-		String sdkLocation, CharCallback callback) {
+		String sdkLocation, CharCallback callback, List<String> gradleArgs) {
 		Project project = new Project();
 
 		String packageDir = packageName.replace('.', '/');
@@ -83,6 +84,7 @@ public class GdxSetup {
 		project.files.add(new ProjectFile("gradlew.bat", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.jar", false));
 		project.files.add(new ProjectFile("gradle/wrapper/gradle-wrapper.properties", false));
+		project.files.add(new ProjectFile("gradle.properties"));
 
 		// core project
 		project.files.add(new ProjectFile("core/build.gradle"));
@@ -157,6 +159,7 @@ public class GdxSetup {
 		values.put("%ASSET_PATH%", assetPath);
 		values.put("%BUILD_TOOLS_VERSION%", DependencyBank.buildToolsVersion);
 		values.put("%API_LEVEL%", DependencyBank.androidAPILevel);
+		values.put("%GWT_VERSION%", DependencyBank.gwtVersion);
 		if (builder.modules.contains(ProjectType.HTML)) {
 			values.put("%GWT_INHERITS%", parseGwtInherits(builder.bank.gwtInheritances, builder));
 		}
@@ -168,7 +171,7 @@ public class GdxSetup {
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
 
-		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean", callback);
+		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(gradleArgs), callback);
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
@@ -336,6 +339,15 @@ public class GdxSetup {
 		}
 		return parsed;
 	}
+	
+	private String parseGradleArgs (List<String> args) {
+		String argString = "";
+		if (args == null) return argString;
+		for (String argument : args) {
+			argString += " " + argument;
+		}
+		return argString;
+	}
 
 	private boolean containsDependency (List<Dependency> dependencyList, ProjectDependency projectDependency) {
 		for (Dependency dep : dependencyList) {
@@ -383,7 +395,7 @@ public class GdxSetup {
 					public void character (char c) {
 						System.out.print(c);
 					}
-				});
+				}, null);
 		}
 	}
 }

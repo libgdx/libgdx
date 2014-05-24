@@ -288,7 +288,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 
 	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
 	 *         (typically counter-clockwise) */
-	public float getAngleRad () {
+	public float angleRad () {
 		return (float)Math.atan2(y, x);
 	}
 

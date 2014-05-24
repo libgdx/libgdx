@@ -161,15 +161,11 @@ public class GdxSetupUI extends JFrame {
 
 		if (!GdxSetup.isEmptyDirectory(destination)) {
 			int value = JOptionPane.showConfirmDialog(this, "The destination is not empty, do you want to overwrite?", "Warning!", JOptionPane.YES_NO_OPTION);
-			if (value == 1) {
+			if (value != 0) {
 				return;
 			}
 		}
 
-		String selectedVersion = (String)ui.form.versionButton.getSelectedItem();
-		if (selectedVersion.equals("Nightlies")) {
-			DependencyBank.libgdxVersion = DependencyBank.libgdxNightlyVersion;
-		}
 		List<String> incompatList = builder.buildProject(modules, dependencies);
 		if (incompatList.size() == 0) {
 			try {
@@ -210,7 +206,7 @@ public class GdxSetupUI extends JFrame {
 
 			Object[] options = {"Yes, build it!", "No, I'll change my extensions"};
 			int value = JOptionPane.showOptionDialog(null, panel, "Extension Incompatibilities", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, null);
-			if (value == 1) {
+			if (value != 0) {
 				return;
 			} else {
 				try {
@@ -230,11 +226,16 @@ public class GdxSetupUI extends JFrame {
 					public void character (char c) {
 						log(c);
 					}
-				});
+				}, ui.settings.getGradleArgs());
 				log("Done!");
-				log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
-				log("To import to Intellij IDEA: File -> Import -> build.gradle");
-				log("To import to NetBeans: File -> Open Project...");
+				if (ui.settings.getGradleArgs().contains("eclipse") || ui.settings.getGradleArgs().contains("idea")) {
+					log("To import in Eclipse: File -> Import -> General -> Exisiting Projects into Workspace");
+					log("To import to Intellij IDEA: File -> Open -> YourProject.ipr");
+				} else {
+					log("To import in Eclipse: File -> Import -> Gradle -> Gradle Project");
+					log("To import to Intellij IDEA: File -> Import -> build.gradle");
+					log("To import to NetBeans: File -> Open Project...");
+				}
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -265,7 +266,10 @@ public class GdxSetupUI extends JFrame {
 
 	class UI extends JPanel {
 		Form form = new Form();
+		SettingsDialog settings = new SettingsDialog();
 		SetupButton generateButton = new SetupButton("Generate");
+		SetupButton advancedButton = new SetupButton("Advanced");
+		JPanel buttonPanel = new JPanel();
 		JTextArea textArea = new JTextArea();
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		JPanel title = new JPanel();
@@ -293,6 +297,7 @@ public class GdxSetupUI extends JFrame {
 					continue;
 				}
 			}
+			buttonPanel.setBackground(new Color(46, 46, 46));
 			textArea.setBackground(new Color(46, 46, 46));
 			textArea.setForeground(new Color(255, 255, 255));
 
@@ -336,6 +341,8 @@ public class GdxSetupUI extends JFrame {
 				e.printStackTrace();
 			}
 
+			buttonPanel.add(advancedButton);
+			buttonPanel.add(generateButton);
 			textArea.setEditable(false);
 			textArea.setLineWrap(true);
 			uiLayout();
@@ -354,6 +361,7 @@ public class GdxSetupUI extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					dispose();
+					System.exit(0);
 				}
 			});
 		}
@@ -371,11 +379,16 @@ public class GdxSetupUI extends JFrame {
 			add(title, new GridBagConstraints(0, 0, 0, 0, 0, 0, NORTHEAST, NORTHEAST, new Insets(0, 0, 0, 0), 0, 0));
 			add(logo, new GridBagConstraints(0, 0, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(40, 6, 12, 6), 0, 0));
 			add(form, new GridBagConstraints(0, 1, 1, 1, 1, 0, CENTER, HORIZONTAL, new Insets(6, 6, 12, 6), 0, 0));
-			add(generateButton, new GridBagConstraints(0, 2, 1, 1, 1, 0, CENTER, NONE, new Insets(0, 6, 12, 6), 0, 0));
-			add(scrollPane, new GridBagConstraints(0, 3, 1, 1, 1, 1, CENTER, BOTH, new Insets(0, 6, 6, 6), 0, 0));
+			add(buttonPanel, new GridBagConstraints(0, 2, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 0, 0, 0), 0, 0));
+			add(scrollPane, new GridBagConstraints(0, 3, 1, 1, 1, 1, CENTER, BOTH, new Insets(6, 6, 6, 6), 0, 0));
 		}
 
 		private void uiEvents () {
+			advancedButton.addActionListener(new ActionListener() {
+				public void actionPerformed (ActionEvent e) {
+					settings.showDialog();;
+				}
+			});
 			generateButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent e) {
 					generate();
@@ -400,8 +413,7 @@ public class GdxSetupUI extends JFrame {
 
 		JPanel subProjectsPanel = new JPanel(new GridLayout());
 		JLabel versionLabel = new JLabel("LibGDX Version");
-		JComboBox versionButton = new JComboBox(new String[] {"Release " + DependencyBank.libgdxVersion, "Nightlies"});
-		JLabel nightlyWarning = new JLabel("Nightlies are development builds, be aware!");
+		JComboBox versionButton = new JComboBox(new String[] {"Release " + DependencyBank.libgdxVersion});
 		JLabel projectsLabel = new JLabel("Sub Projects");
 		JLabel extensionsLabel = new JLabel("Extensions");
 		List<JPanel> extensionsPanels = new ArrayList<JPanel>();
@@ -445,8 +457,6 @@ public class GdxSetupUI extends JFrame {
 				}
 			});
 
-			nightlyWarning.setForeground(new Color(200, 20, 20));
-			nightlyWarning.setVisible(false);
 			projectsLabel.setForeground(new Color(200, 20, 20));
 			extensionsLabel.setForeground(new Color(200, 20, 20));
 
@@ -484,21 +494,6 @@ public class GdxSetupUI extends JFrame {
 
 			add(versionLabel, new GridBagConstraints(0, 5, 1, 1, 0, 0, WEST, WEST, new Insets(20, 0, 0, 0), 0, 0));
 			add(versionButton, new GridBagConstraints(1, 5, 1, 1, 0, 0, WEST, WEST, new Insets(20, 20, 0, 0), 0, 0));
-			add(nightlyWarning, new GridBagConstraints(1, 5, 1, 1, 0, 0, WEST, WEST, new Insets(20, 200, 0, 0), 0, 0));
-
-			versionButton.addItemListener(new ItemListener() {
-				@Override
-				public void itemStateChanged (ItemEvent e) {
-					JComboBox list = (JComboBox) e.getSource();
-					if (list.getSelectedItem().equals("Nightlies")) {
-						nightlyWarning.setVisible(true);
-					} else {
-						if (nightlyWarning.isVisible()) {
-							nightlyWarning.setVisible(false);
-						}
-					}
-				}
-			});
 
 			for (final ProjectType projectType : ProjectType.values()) {
 				if (projectType.equals(ProjectType.CORE)) {
@@ -635,7 +630,7 @@ public class GdxSetupUI extends JFrame {
 
 	}
 
-	class SetupButton extends JButton {
+	public class SetupButton extends JButton {
 
 		SetupButton(String buttonTag) {
 			super(buttonTag);

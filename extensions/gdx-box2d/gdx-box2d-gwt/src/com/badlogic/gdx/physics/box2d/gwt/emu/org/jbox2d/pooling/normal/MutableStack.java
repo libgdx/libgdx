@@ -21,49 +21,49 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-
 package org.jbox2d.pooling.normal;
 
 import org.jbox2d.pooling.IDynamicStack;
 
 public abstract class MutableStack<E> implements IDynamicStack<E> {
 
-	private Object[] stack;
-	private int index;
-	private int size;
+  private E[] stack;
+  private int index;
+  private int size;
 
-	public MutableStack (int argInitSize) {
-		index = 0;
-		stack = null;
-		index = 0;
-		extendStack(argInitSize);
-	}
+  public MutableStack(int argInitSize) {
+    index = 0;
+    stack = null;
+    index = 0;
+    extendStack(argInitSize);
+  }
 
-	private void extendStack (int argSize) {
-		Object[] newStack = new Object[argSize];
-		if (stack != null) {
-			System.arraycopy(stack, 0, newStack, 0, size);
-		}
-		for (int i = 0; i < newStack.length; i++) {
-			newStack[i] = newInstance();
-		}
-		stack = newStack;
-		size = newStack.length;
-	}
+  private void extendStack(int argSize) {
+    E[] newStack = newArray(argSize);
+    if (stack != null) {
+      System.arraycopy(stack, 0, newStack, 0, size);
+    }
+    for (int i = 0; i < newStack.length; i++) {
+      newStack[i] = newInstance();
+    }
+    stack = newStack;
+    size = newStack.length;
+  }
 
-	@SuppressWarnings("unchecked")
-	public final E pop () {
-		if (index >= size) {
-			extendStack(size * 2);
-		}
-		return (E)stack[index++];
-	}
+  public final E pop() {
+    if (index >= size) {
+      extendStack(size * 2);
+    }
+    return stack[index++];
+  }
 
-	public final void push (E argObject) {
-		assert (index > 0);
-		stack[--index] = argObject;
-	}
+  public final void push(E argObject) {
+    assert (index > 0);
+    stack[--index] = argObject;
+  }
 
-	/** Creates a new instance of the object contained by this stack. */
-	protected abstract E newInstance ();
+  /** Creates a new instance of the object contained by this stack. */
+  protected abstract E newInstance();
+  
+  protected abstract E[] newArray(int size);
 }

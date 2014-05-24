@@ -16,6 +16,8 @@ LOCAL_SRC_FILES := android/AndroidGL20.cpp\
 	com.badlogic.gdx.utils.BufferUtils.cpp\
 	etc1/etc1_utils.cpp\
 	gdx2d/gdx2d.c\
+	gdx2d/jpgd.cpp\
+	gdx2d/jpgd_c.cpp\
 	gdx2d/stb_image.c\
 	memcpy_wrap.c
  

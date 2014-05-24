@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -40,6 +41,9 @@ public class BitmapFontTest extends GdxTest {
 		font = new BitmapFont(Gdx.files.internal("data/verdana39.fnt"), false);
 
 		multiPageFont = new BitmapFont(Gdx.files.internal("data/multipagefont.fnt"));
+
+		// Add user defined color
+		Colors.put("PERU", Color.valueOf("CD853F"));
 
 		renderer = new ShapeRenderer();
 		renderer.setProjectionMatrix(spriteBatch.getProjectionMatrix());
@@ -99,13 +103,16 @@ public class BitmapFontTest extends GdxTest {
 		cache.clear();
 		cache.setColor(Color.BLACK);
 		float textX = 10;
-		textX += cache.setText("black ", textX, 150).width;
-		cache.setColor(Color.PINK);
-		textX += cache.addText("pink ", textX, 150).width;
-		cache.setColor(Color.ORANGE);
-		textX += cache.addText("orange ", textX, 150).width;
+		textX += cache.setText("[black] ", textX, 150).width;
+		multiPageFont.setMarkupEnabled(true);
+		textX += cache.addText("[[[PINK]pink[]] ", textX, 150).width;
+		textX += cache.addText("[PERU][[peru] ", textX, 150).width;
 		cache.setColor(Color.GREEN);
 		textX += cache.addText("green ", textX, 150).width;
+		textX += cache.addText("[#A52A2A]br[#A52A2ADF]ow[#A52A2ABF]n f[#A52A2A9F]ad[#A52A2A7F]in[#A52A2A5F]g o[#A52A2A3F]ut ",
+			textX, 150).width;
+		multiPageFont.setMarkupEnabled(false);
+
 		cache.draw(spriteBatch);
 
 		spriteBatch.end();
@@ -122,5 +129,8 @@ public class BitmapFontTest extends GdxTest {
 		spriteBatch.dispose();
 		renderer.dispose();
 		font.dispose();
+
+		// Restore predefined colors
+		Colors.reset();
 	}
 }
