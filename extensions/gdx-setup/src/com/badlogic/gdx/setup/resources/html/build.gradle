@@ -54,9 +54,15 @@ draftWar {
    from "war"
 }
 
+task addSource << {
+	sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
+}
+
+tasks.compileGwt.dependsOn(addSource)
+tasks.draftCompileGwt.dependsOn(addSource)
+
 sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = [ "src/" ]
-sourceSets.main.compileClasspath += files(project(':core').sourceSets.main.allJava.srcDirs)
 
 
 eclipse.project {
