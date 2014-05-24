@@ -27,7 +27,9 @@ task draftRun(type: JettyRunWar) {
 
 task superDev(type: de.richsource.gradle.plugins.gwt.GwtSuperDev) {
     dependsOn draftRun
-    gwt.modules = gwt.devModules
+    doFirst {
+    	gwt.modules = gwt.devModules
+    }
 }
 
 task dist(dependsOn: [clean, compileGwt]) {
