@@ -993,8 +993,6 @@ public final class Intersector {
 			// -- End check for separation on this axis --//
 		}
 		if (mtv != null) {
-			directionOfOverlapY /= count1 * count2;
-			directionOfOverlapX /= count1 * count2;
 			mtv.normal.set(directionOfOverlapY * smallestAxisX >= 0 ? -smallestAxisX : smallestAxisX,
 				directionOfOverlapX * smallestAxisY >= 0 ? -smallestAxisY : smallestAxisY);
 			mtv.depth = overlap;
