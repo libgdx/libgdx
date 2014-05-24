@@ -853,6 +853,8 @@ public final class Intersector {
 		float overlap = Float.MAX_VALUE;
 		float smallestAxisX = 0;
 		float smallestAxisY = 0;
+		float directionOfOverlapX = 0;
+		float directionOfOverlapY = 0;
 
 		int end1 = offset1 + count1;
 		int end2 = offset2 + count2;
@@ -888,7 +890,11 @@ public final class Intersector {
 			// Project polygon2 onto this axis
 			float min2 = axisX * verts2[0] + axisY * verts2[1];
 			float max2 = min2;
+			directionOfOverlapY += verts2[0] - x1;
+			directionOfOverlapX += verts1[1] - y1;
 			for (int j = offset2; j < end2; j += 2) {
+				directionOfOverlapY += verts2[j] - x1;
+				directionOfOverlapX += verts2[j + 1] - y1;
 				float p = axisX * verts2[j] + axisY * verts2[j + 1];
 				if (p < min2) {
 					min2 = p;
@@ -987,7 +993,10 @@ public final class Intersector {
 			// -- End check for separation on this axis --//
 		}
 		if (mtv != null) {
-			mtv.normal.set(smallestAxisX, smallestAxisY);
+			directionOfOverlapY /= count1 * count2;
+			directionOfOverlapX /= count1 * count2;
+			mtv.normal.set(directionOfOverlapY * smallestAxisX >= 0 ? -smallestAxisX : smallestAxisX,
+				directionOfOverlapX * smallestAxisY >= 0 ? -smallestAxisY : smallestAxisY);
 			mtv.depth = overlap;
 		}
 		return true;
