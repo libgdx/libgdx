@@ -848,13 +848,12 @@ public final class Intersector {
 	 * @param verts2 Vertices of the second polygon.
 	 * @param mtv A Minimum Translation Vector to fill in the case of a collision, or null (optional).
 	 * @return Whether polygons overlap. */
-	public static boolean overlapConvexPolygons (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
+		public static boolean overlapConvexPolygons (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2,
 		MinimumTranslationVector mtv) {
 		float overlap = Float.MAX_VALUE;
 		float smallestAxisX = 0;
 		float smallestAxisY = 0;
-		float directionOfOverlapX = 0;
-		float directionOfOverlapY = 0;
+		int numInNormalDir;
 
 		int end1 = offset1 + count1;
 		int end2 = offset2 + count2;
@@ -888,13 +887,12 @@ public final class Intersector {
 			}
 
 			// Project polygon2 onto this axis
+			numInNormalDir = 0;
 			float min2 = axisX * verts2[0] + axisY * verts2[1];
 			float max2 = min2;
-			directionOfOverlapY += verts2[0] - x1;
-			directionOfOverlapX += verts1[1] - y1;
 			for (int j = offset2; j < end2; j += 2) {
-				directionOfOverlapY += verts2[j] - x1;
-				directionOfOverlapX += verts2[j + 1] - y1;
+				// Counts the number of points that are within the projected area.
+				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts2[j], verts2[j + 1]);
 				float p = axisX * verts2[j] + axisY * verts2[j + 1];
 				if (p < min2) {
 					min2 = p;
@@ -911,8 +909,6 @@ public final class Intersector {
 					float mins = Math.abs(min1 - min2);
 					float maxs = Math.abs(max1 - max2);
 					if (mins < maxs) {
-						axisX = -axisX;
-						axisY = -axisY;
 						o += mins;
 					} else {
 						o += maxs;
@@ -920,8 +916,9 @@ public final class Intersector {
 				}
 				if (o < overlap) {
 					overlap = o;
-					smallestAxisX = axisX;
-					smallestAxisY = axisY;
+					// Adjusts the direction based on the number of points found
+					smallestAxisX = numInNormalDir >= 0 ? axisX : -axisX;
+					smallestAxisY = numInNormalDir >= 0 ? axisY : -axisY;
 				}
 			}
 			// -- End check for separation on this axis --//
@@ -942,12 +939,15 @@ public final class Intersector {
 			axisY /= length;
 
 			// -- Begin check for separation on this axis --//
+			numInNormalDir = 0;
 
 			// Project polygon1 onto this axis
 			float min1 = axisX * verts1[0] + axisY * verts1[1];
 			float max1 = min1;
 			for (int j = offset1; j < end1; j += 2) {
 				float p = axisX * verts1[j] + axisY * verts1[j + 1];
+				// Counts the number of points that are within the projected area.
+				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts1[j], verts1[j + 1]);
 				if (p < min1) {
 					min1 = p;
 				} else if (p > max1) {
@@ -976,8 +976,6 @@ public final class Intersector {
 					float mins = Math.abs(min1 - min2);
 					float maxs = Math.abs(max1 - max2);
 					if (mins < maxs) {
-						axisX = -axisX;
-						axisY = -axisY;
 						o += mins;
 					} else {
 						o += maxs;
@@ -986,15 +984,15 @@ public final class Intersector {
 
 				if (o < overlap) {
 					overlap = o;
-					smallestAxisX = axisX;
-					smallestAxisY = axisY;
+					// Adjusts the direction based on the number of points found
+					smallestAxisX = numInNormalDir < 0 ? axisX : -axisX;
+					smallestAxisY = numInNormalDir < 0 ? axisY : -axisY;
 				}
 			}
 			// -- End check for separation on this axis --//
 		}
 		if (mtv != null) {
-			mtv.normal.set(directionOfOverlapY * smallestAxisX >= 0 ? -smallestAxisX : smallestAxisX,
-				directionOfOverlapX * smallestAxisY >= 0 ? -smallestAxisY : smallestAxisY);
+			mtv.normal.set(smallestAxisX, smallestAxisY);
 			mtv.depth = overlap;
 		}
 		return true;
