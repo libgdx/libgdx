@@ -86,8 +86,8 @@ public class MotorJoint extends Joint {
     return m_correctionFactor;
   }
 
-  public void setM_correctionFactor(float m_correctionFactor) {
-    this.m_correctionFactor = m_correctionFactor;
+  public void setCorrectionFactor(float correctionFactor) {
+    this.m_correctionFactor = correctionFactor;
   }
 
   /**

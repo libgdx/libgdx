@@ -60,6 +60,32 @@ public class EdgeShape extends Shape {
 		vec.set(v2.x, v2.y);
 	}
 
+	public void getVertex0 (Vector2 vec) {
+		Vec2 v0 = shape.m_vertex0;
+		vec.set(v0.x, v0.y);
+	}
+
+	public void getVertex3 (Vector2 vec) {
+		Vec2 v3 = shape.m_vertex3;
+		vec.set(v3.x, v3.y);
+	}
+
+	public boolean hasVertex0 () {
+		return shape.m_hasVertex0;
+	}
+
+	public void setHasVertex0 (boolean hasVertex0) {
+		shape.m_hasVertex0 = hasVertex0;
+	}
+
+	public boolean hasVertex3 () {
+		return shape.m_hasVertex3;
+	}
+
+	public void setHasVertex3 (boolean hasVertex3) {
+		shape.m_hasVertex3 = hasVertex3;
+	}
+
 	@Override
 	public float getRadius () {
 		return shape.getRadius();

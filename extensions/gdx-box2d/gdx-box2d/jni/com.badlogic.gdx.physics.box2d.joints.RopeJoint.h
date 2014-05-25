@@ -9,6 +9,22 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_RopeJoint
+ * Method:    jniGetLocalAnchorA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniGetLocalAnchorA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RopeJoint
+ * Method:    jniGetLocalAnchorB
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_RopeJoint_jniGetLocalAnchorB
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_RopeJoint
  * Method:    jniGetMaxLength
  * Signature: (J)F
  */

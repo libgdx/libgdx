@@ -15,7 +15,7 @@ public class BuildScriptHelper {
 		write(wr, "buildscript {");
 		//repos
 		write(wr, "repositories {");
-		write(wr, "mavenCentral()");
+		write(wr, DependencyBank.mavenCentral);
 		write(wr, "mavenLocal()");
 		if (projects.contains(ProjectType.HTML)) {
 			write(wr, "maven { url '" + DependencyBank.gwtPluginUrl + "' }");
@@ -51,7 +51,7 @@ public class BuildScriptHelper {
 		space(wr);
 		write(wr, "repositories {");
 		write(wr, "mavenLocal()");
-		write(wr, "mavenCentral()");
+		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
 		write(wr, "}");

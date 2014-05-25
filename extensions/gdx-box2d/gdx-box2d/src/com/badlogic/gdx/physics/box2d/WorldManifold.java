@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Vector2;
 public class WorldManifold {
 	protected final Vector2 normal = new Vector2();
 	protected final Vector2[] points = {new Vector2(), new Vector2()};
+	protected final float[] separations = new float[2];
 	protected int numContactPoints;
 
 	protected WorldManifold () {
@@ -36,6 +37,12 @@ public class WorldManifold {
 	 * (0,1 or 2) */
 	public Vector2[] getPoints () {
 		return points;
+	}
+
+	/** Returns the separations of this manifold, a negative value indicates overlap, in meters. Use getNumberOfContactPoints to
+	 * determine how many separations there are (0,1 or 2) */
+	public float[] getSeparations () {
+		return separations;
 	}
 
 	/** @return the number of contact points */

@@ -1,8 +1,6 @@
 13.5.2014
 - Merged latest Box2D trunk, version 2.3.1
-- TODO: b2WorldManifold has new field separations
 - KEPT: b2ChainShape methods GetVertexCount, GetVertex, GetVertices
-- TODO: b2MotorJoint, methods SetCorrectionFactor, GetCorrectionFactor 
 
 22.3.2013
 - Merged latest Box2D trunk, revision https://code.google.com/p/box2d/source/detail?r=254

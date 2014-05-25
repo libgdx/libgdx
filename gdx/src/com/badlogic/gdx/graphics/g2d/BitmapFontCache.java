@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g2d;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.Glyph;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
@@ -24,7 +25,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.NumberUtils;
-import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.StringBuilder;
 
 /** Caches glyph geometry for a BitmapFont, providing a fast way to render static text. This saves needing to compute the location
@@ -32,24 +32,6 @@ import com.badlogic.gdx.utils.StringBuilder;
  * @author Nathan Sweet
  * @author Matthias Mann */
 public class BitmapFontCache {
-
-	private static final ObjectMap<String, Color> colorMap = new ObjectMap<String, Color>();
-	static {
-		colorMap.put("CLEAR", Color.CLEAR);
-		colorMap.put("WHITE", Color.WHITE);
-		colorMap.put("BLACK", Color.BLACK);
-		colorMap.put("RED", Color.RED);
-		colorMap.put("GREEN", Color.GREEN);
-		colorMap.put("BLUE", Color.BLUE);
-		colorMap.put("LIGHT_GRAY", Color.LIGHT_GRAY);
-		colorMap.put("GRAY", Color.GRAY);
-		colorMap.put("DARK_GRAY", Color.DARK_GRAY);
-		colorMap.put("PINK", Color.PINK);
-		colorMap.put("ORANGE", Color.ORANGE);
-		colorMap.put("YELLOW", Color.YELLOW);
-		colorMap.put("MAGENTA", Color.MAGENTA);
-		colorMap.put("CYAN", Color.CYAN);
-	}
 
 	private final BitmapFont font;
 
@@ -408,7 +390,7 @@ public class BitmapFontCache {
 							this.color = previousColor;
 						} else {
 							String colorString = colorBuffer.toString();
-							Color newColor = colorMap.get(colorString);
+							Color newColor = Colors.get(colorString);
 							if (newColor == null) throw new GdxRuntimeException("Unknown color '" + colorString + "'");
 							this.previousColor = this.color;
 							this.color = newColor.toFloatBits();

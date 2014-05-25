@@ -1,10 +1,22 @@
-[1.0.2]
-- Added i18n localization/internationalization support, thanks davebol, see https://github.com/libgdx/libgdx/wiki/Internationalization-and-Localization
+[1.1.1]
+
+[1.1.0]
+- Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
+- Big improvements to setup-ui and build times in Intellij IDEA https://github.com/libgdx/libgdx/pull/1865
+- Setup now uses android build tools version: 19.1.0
+- BitmapFontCache now supports in-string colored text through a simple markup language, see https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
+- Added i18n localization/internationalization support, thanks davebaol, see https://github.com/libgdx/libgdx/wiki/Internationalization-and-Localization
 - Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
 - Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
 - Mavenized JGLFW backend
+- Box2D: Added MotorJoint and ghost vertices on EdgeShape
+- Updated GWT Box2D to latest version
 - Updated native Box2D to latest version 2.3.1, no API changes
 - API CHANGE: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
+- API addition: Matrix4.avg(Matrix4[],float[]) that lets weighted averaging multiple matrices, Quaternion.slerp(Quaternion[],float[]) that lets weighted slerping multiple Quaternions
+- fixed the long standing issue of the alpha=1 not actually being fully opaque, thanks kalle! https://github.com/libgdx/libgdx/issues/1815
+- down to 25 issues on the tracker, 8 bugs, 17 enhancement requests :)
+
 
 [1.0.1]
 - updated to RoboVM 0.12 (and so should you!)
@@ -16,7 +28,7 @@
 - FileHandle#list now supports FileFilters
 - Controllers now reinitialize on the desktop when switching between windowed/fullscreen
 - added a Texture unpacker that will extract all images from a texture atlas, see https://github.com/libgdx/libgdx/pull/1774
-- updates to gdx-setup 
+- updates to gdx-setup
 - CustomCollisionDispatcher in bullet, see https://github.com/libgdx/libgdx/commit/916fc85cecf433c3461b458e00f8afc516ad21e3
 
 [1.0.0]
