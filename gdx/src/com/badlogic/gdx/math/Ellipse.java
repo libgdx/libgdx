@@ -16,18 +16,9 @@
 
 package com.badlogic.gdx.math;
 
-import java.io.Serializable;
-
-import com.badlogic.gdx.math.Vector2;
-
 /** A convenient 2D ellipse class, based on the circle class
  * @author tonyp7 */
-public class Ellipse implements Serializable {
-
-	public float x, y;
-	public float width, height;
-
-	private static final long serialVersionUID = 7381533206532032099L;
+public class Ellipse extends RectangleBased<Ellipse> {
 
 	/** Construct a new ellipse with all values set to zero */
 	public Ellipse () {
@@ -38,111 +29,31 @@ public class Ellipse implements Serializable {
 	 * 
 	 * @param ellipse Ellipse to construct a copy of. */
 	public Ellipse (Ellipse ellipse) {
-		this.x = ellipse.x;
-		this.y = ellipse.y;
-		this.width = ellipse.width;
-		this.height = ellipse.height;
+		super(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
-	/** Constructs a new ellipse
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
-	public Ellipse (float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-
-	/** Costructs a new ellipse
-	 * 
-	 * @param position Position vector
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
-	public Ellipse (Vector2 position, float width, float height) {
-		this.x = position.x;
-		this.y = position.y;
-		this.width = width;
-		this.height = height;
-	}
-
-	/** Checks whether or not this ellipse contains the given point.
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * 
-	 * @return true if this ellipse contains the given point; false otherwise. */
+    @Override
 	public boolean contains (float x, float y) {
 		x = x - this.x;
 		y = y - this.y;
-
 		return (x * x) / (width * 0.5f * width * 0.5f) + (y * y) / (height * 0.5f * height * 0.5f) <= 1.0f;
 	}
 
-	/** Checks whether or not this ellipse contains the given point.
-	 * 
-	 * @param point Position vector
-	 * 
-	 * @return true if this ellipse contains the given point; false otherwise. */
-	public boolean contains (Vector2 point) {
-		return contains(point.x, point.y);
-	}
-
-	/** Sets a new position and size for this ellipse.
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * @param width Width in pixels
-	 * @param height Height in pixels */
-	public void set (float x, float y, float width, float height) {
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-	}
-
 	/** Sets a new position and size for this ellipse based upon another ellipse.
-	 * 
 	 * @param ellipse The ellipse to copy the position and size of. */
-	public void set (Ellipse ellipse) {
-		x = ellipse.x;
-		y = ellipse.y;
-		width = ellipse.width;
-		height = ellipse.height;
+    @Override
+ 	public void set (Ellipse ellipse) {
+		set(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
-	/** Sets the x and y-coordinates of ellipse center from a {@link Vector2}.
-	 * @param position The position vector
-	 * @return this ellipse for chaining */
-	public Ellipse setPosition (Vector2 position) {
-		this.x = position.x;
-		this.y = position.y;
+    @Override
+    public boolean overlaps(final Ellipse shape) {
+        return false;
+    }
 
-		return this;
-	}
+    @Override
+    public boolean contains(final Ellipse shape) {
+        return false;
+    }
 
-	/** Sets the x and y-coordinates of ellipse center
-	 * @param x The x-coordinate
-	 * @param y The y-coordinate
-	 * @return this ellipse for chaining */
-	public Ellipse setPosition (float x, float y) {
-		this.x = x;
-		this.y = y;
-
-		return this;
-	}
-
-	/** Sets the width and height of this ellipse
-	 * @param width The width
-	 * @param height The height
-	 * @return this ellipse for chaining */
-	public Ellipse setSize (float width, float height) {
-		this.width = width;
-		this.height = height;
-
-		return this;
-	}
 }
