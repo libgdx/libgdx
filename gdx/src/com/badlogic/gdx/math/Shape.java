@@ -20,6 +20,7 @@ import java.io.Serializable;
  * @see com.badlogic.gdx.math.Ellipse
  * @see com.badlogic.gdx.math.Polygon
  * @see com.badlogic.gdx.math.Rectangle
+ * @author seroperson
  * */
 public abstract class Shape<T extends Shape<T>> implements Serializable {
 
@@ -93,6 +94,12 @@ public abstract class Shape<T extends Shape<T>> implements Serializable {
     public float getY() {
         return y;
     }
+
+    /** return the Vector2 with coordinates of this rectangle
+	 * @param position The Vector2 */
+	public Vector2 getPosition (Vector2 position) {
+		return position.set(x, y);
+	}
 
     @Override
     public String toString () {

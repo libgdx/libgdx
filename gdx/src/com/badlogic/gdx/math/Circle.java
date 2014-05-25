@@ -30,8 +30,7 @@ public class Circle extends Shape<Circle> {
 	 * @param y Y coordinate
 	 * @param radius The radius of the circle */
 	public Circle (float x, float y, float radius) {
-        super(x, y);
-		setRadius(radius);
+        set(x, y, radius);
 	}
 
 	/** Constructs a new circle using a given {@link Vector2} that contains the desired X and Y coordinates, and a given radius.

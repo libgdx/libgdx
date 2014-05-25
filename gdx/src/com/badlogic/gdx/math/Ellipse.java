@@ -46,13 +46,17 @@ public class Ellipse extends RectangleBased<Ellipse> {
 		set(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
+    /** NOT IMPLEMENTED YET */
     @Override
     public boolean overlaps(final Ellipse shape) {
+        // TODO implement
         return false;
     }
 
+    /** NOT IMPLEMENTED YET */
     @Override
     public boolean contains(final Ellipse shape) {
+        // TODO implement
         return false;
     }
 

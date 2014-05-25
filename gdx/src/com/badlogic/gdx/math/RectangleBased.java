@@ -14,6 +14,9 @@
 package com.badlogic.gdx.math;
 
 /** Main class for shapes that have width and height
+ * @see com.badlogic.gdx.math.Rectangle
+ * @see com.badlogic.gdx.math.Ellipse
+ * @author seroperson
  * */
 public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape<T> {
 
