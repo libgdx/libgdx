@@ -32,13 +32,13 @@ public class Ellipse extends RectangleBased<Ellipse> {
 		super(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
-    public Ellipse (float x, float y, float width, float height) {
-        super(x, y, width, height);
-    }
+	public Ellipse (float x, float y, float width, float height) {
+		super(x, y, width, height);
+	}
 
-    public Ellipse (Vector2 position, float width, float height) {
-        super(position, width, height);
-    }
+	public Ellipse (Vector2 position, float width, float height) {
+		super(position, width, height);
+	}
 
 	@Override
 	public boolean contains (float x, float y) {

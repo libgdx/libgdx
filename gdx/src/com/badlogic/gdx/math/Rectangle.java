@@ -34,13 +34,13 @@ public class Rectangle extends RectangleBased<Rectangle> {
 		super(rect.x, rect.y, rect.width, rect.height);
 	}
 
-    public Rectangle (float x, float y, float width, float height) {
-        super(x, y, width, height);
-    }
+	public Rectangle (float x, float y, float width, float height) {
+		super(x, y, width, height);
+	}
 
-    public Rectangle (Vector2 position, float width, float height) {
-        super(position, width, height);
-    }
+	public Rectangle (Vector2 position, float width, float height) {
+		super(position, width, height);
+	}
 
 	@Override
 	public boolean contains (float x, float y) {
