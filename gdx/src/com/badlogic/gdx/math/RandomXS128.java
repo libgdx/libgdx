@@ -9,27 +9,28 @@ import java.util.Random;
  * the random numbers using the methods of {@link MathUtils} class. More information and algorithms can be found <a
  * href="http://xorshift.di.unimi.it/">here</a> */
 public class RandomXS128 extends Random {
-	long[] s = new long[2];
+	long seed0, seed1;
 
 	public RandomXS128 (long seed0, long seed1) {
-		s[0] = seed0;
-		s[1] = seed1;
+		this.seed0 = seed0;
+		this.seed1 = seed1;
 	}
 
 	/** It will allocate a {@link Random} to generate the two long seeds */
 	public RandomXS128 () {
 		Random random = new Random();
-		s[0] = random.nextLong();
-		s[1] = random.nextLong();
+		seed0 = random.nextLong();
+		seed1 = random.nextLong();
 	}
 
 	@Override
 	protected int next (int bits) {
-		long s1 = s[0];
-		long s0 = s[1];
-		s[0] = s0;
+		long s1 = seed0;
+		long s0 = seed1;
+		seed0 = s0;
 		s1 ^= s1 << 23; // a
-		s[1] = (s1 ^ s0 ^ (s1 >> 17) ^ (s0 >> 26)) + s0; // b, c
-		return (int)(s[1] & ((1L << bits) - 1));
+		s1 = (s1 ^ s0 ^ (s1 >> 17) ^ (s0 >> 26)) + s0; // b, c
+		seed1 = s1;
+		return (int)(s1 & ((1L << bits) - 1));
 	}
 }
