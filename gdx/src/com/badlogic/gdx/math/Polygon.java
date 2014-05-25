@@ -16,11 +16,13 @@
 
 package com.badlogic.gdx.math;
 
-/** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
-public class Polygon {
+import java.util.Arrays;
+
+/** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0).
+ * Be careful with x / y fields because it's need to call dirty() after any changes. */
+public class Polygon extends Shape<Polygon> {
 	private float[] localVertices;
 	private float[] worldVertices;
-	private float x, y;
 	private float originX, originY;
 	private float rotation;
 	private float scaleX = 1, scaleY = 1;
@@ -32,7 +34,7 @@ public class Polygon {
 		this.localVertices = new float[0];
 	}
 
-	/** Constructs a new polygon from a float array of parts of vertex points.
+    /** Constructs a new polygon from a float array of parts of vertex points.
 	 * 
 	 * @param vertices an array where every even element represents the horizontal part of a point, and the following element
 	 *           representing the vertical part
@@ -98,15 +100,20 @@ public class Polygon {
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
-		dirty = true;
+		dirty();
 	}
 
-	/** Sets the polygon's position within the world. */
-	public void setPosition (float x, float y) {
-		this.x = x;
-		this.y = y;
-		dirty = true;
-	}
+    @Override
+    public void setY(float y) {
+        super.setY(y);
+        dirty();
+    }
+
+    @Override
+    public void setX(float x) {
+        super.setX(x);
+        dirty();
+    }
 
 	/** Sets the polygon's local vertices relative to the origin point, without any scaling, rotating or translations being applied.
 	 * 
@@ -119,37 +126,56 @@ public class Polygon {
 		dirty = true;
 	}
 
-	/** Translates the polygon's position by the specified horizontal and vertical amounts. */
-	public void translate (float x, float y) {
-		this.x += x;
-		this.y += y;
-		dirty = true;
-	}
+    /** NOT IMPLEMENTED YET */
+    @Override
+    public boolean overlaps(final Polygon shape) {
+        // TODO implement
+        return false;
+    }
 
-	/** Sets the polygon to be rotated by the supplied degrees. */
+    /** NOT IMPLEMENTED YET */
+    @Override
+    public boolean contains(final Polygon shape) {
+        // TODO implement
+        return false;
+    }
+
+    @Override
+    public void set(final Polygon shape) {
+        this.bounds.set(shape.bounds);
+        this.localVertices = Arrays.copyOf(shape.localVertices, shape.localVertices.length);
+        this.worldVertices = Arrays.copyOf(shape.worldVertices, shape.worldVertices.length);
+        this.originX = shape.originX;
+        this.originY = shape.originY;
+        this.rotation = shape.rotation;
+        this.scaleX = shape.scaleX;
+        this.scaleY = shape.scaleY;
+        this.x = shape.x;
+        this.y = shape.y;
+        this.dirty = shape.dirty;
+    }
+
+    /** Sets the polygon to be rotated by the supplied degrees. */
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
-		dirty = true;
+		dirty();
 	}
 
 	/** Applies additional rotation to the polygon by the supplied degrees. */
 	public void rotate (float degrees) {
-		rotation += degrees;
-		dirty = true;
+        setRotation(rotation + degrees);
 	}
 
 	/** Sets the amount of scaling to be applied to the polygon. */
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
-		dirty = true;
+		dirty();
 	}
 
 	/** Applies additional scaling to the polygon by the supplied amount. */
 	public void scale (float amount) {
-		this.scaleX += amount;
-		this.scaleY += amount;
-		dirty = true;
+		setScale(scaleX + amount, scaleY + amount);
 	}
 
 	/** Sets the polygon's world vertices to be recalculated when calling {@link #getTransformedVertices() getTransformedVertices}. */
@@ -209,16 +235,6 @@ public class Polygon {
 		return (intersects & 1) == 1;
 	}
 
-	/** Returns the x-coordinate of the polygon's position within the world. */
-	public float getX () {
-		return x;
-	}
-
-	/** Returns the y-coordinate of the polygon's position within the world. */
-	public float getY () {
-		return y;
-	}
-
 	/** Returns the x-coordinate of the polygon's origin point. */
 	public float getOriginX () {
 		return originX;
@@ -243,4 +259,5 @@ public class Polygon {
 	public float getScaleY () {
 		return scaleY;
 	}
+
 }
