@@ -34,15 +34,15 @@ public class Rectangle extends RectangleBased<Rectangle> {
 		super(rect.x, rect.y, rect.width, rect.height);
 	}
 
-    @Override
- 	public boolean contains (float x, float y) {
+	@Override
+	public boolean contains (float x, float y) {
 		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
 	}
 
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
-    @Override
- 	public boolean contains (Rectangle rectangle) {
+	@Override
+	public boolean contains (Rectangle rectangle) {
 		float xmin = rectangle.x;
 		float xmax = xmin + rectangle.width;
 
@@ -55,20 +55,19 @@ public class Rectangle extends RectangleBased<Rectangle> {
 
 	/** @param r the other {@link Rectangle}
 	 * @return whether this rectangle overlaps the other rectangle. */
-    @Override
- 	public boolean overlaps (Rectangle r) {
+	@Override
+	public boolean overlaps (Rectangle r) {
 		return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
 	}
 
 	/** Sets the values of the given rectangle to this rectangle.
 	 * @param rect the other rectangle */
-    @Override
- 	public void set (Rectangle rect) {
-        set(rect.x, rect.y, rect.width, rect.height);
+	@Override
+	public void set (Rectangle rect) {
+		set(rect.x, rect.y, rect.width, rect.height);
 	}
 
-	/** Merges this rectangle with the other rectangle.
-	 * The rectangle should not have negative width or negative height.
+	/** Merges this rectangle with the other rectangle. The rectangle should not have negative width or negative height.
 	 * @param rect the other rectangle
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Rectangle rect) {
@@ -78,13 +77,12 @@ public class Rectangle extends RectangleBased<Rectangle> {
 		float minY = Math.min(y, rect.y);
 		float maxY = Math.max(y + height, rect.y + rect.height);
 
-        set(minX, minY, maxX - minX, maxY - minY);
+		set(minX, minY, maxX - minX, maxY - minY);
 
 		return this;
 	}
 
-	/** Merges this rectangle with a point
-	 * The rectangle should not have negative width or negative height.
+	/** Merges this rectangle with a point The rectangle should not have negative width or negative height.
 	 * @param x the x coordinate of the point
 	 * @param y the y coordinate of the point
 	 * @return this rectangle for chaining */
@@ -95,38 +93,37 @@ public class Rectangle extends RectangleBased<Rectangle> {
 		float minY = Math.min(this.y, y);
 		float maxY = Math.max(this.y + height, y);
 
-        set(minX, minY, maxX - minX, maxY - minY);
+		set(minX, minY, maxX - minX, maxY - minY);
 
 		return this;
 	}
 
-	/** Merges this rectangle with a point
-	 * The rectangle should not have negative width or negative height.
+	/** Merges this rectangle with a point The rectangle should not have negative width or negative height.
 	 * @param vec the vector describing the point
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Vector2 vec) {
 		return merge(vec.x, vec.y);
 	}
 
-	/** Merges this rectangle with a list of points
-	 * The rectangle should not have negative width or negative height.
+	/** Merges this rectangle with a list of points The rectangle should not have negative width or negative height.
 	 * @param vecs the vectors describing the points
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Vector2[] vecs) {
 		float minX = x;
-		float maxX = x+width;
+		float maxX = x + width;
 		float minY = y;
-		float maxY = y+height;
-		for(int i = 0; i < vecs.length; ++i) {
+		float maxY = y + height;
+		for (int i = 0; i < vecs.length; ++i) {
 			Vector2 v = vecs[i];
 			minX = Math.min(minX, v.x);
 			maxX = Math.max(maxX, v.x);
 			minY = Math.min(minY, v.y);
 			maxY = Math.max(maxY, v.y);
 		}
-        set(minX, minY, maxX - minX, maxY - minY);
+		set(minX, minY, maxX - minX, maxY - minY);
 		return this;
 	}
+
 	/** Calculates the aspect ratio ( width / height ) of this rectangle
 	 * @return the aspect ratio of this rectangle. Returns Float.NaN if height is 0 to avoid ArithmeticException */
 	public float getAspectRatio () {

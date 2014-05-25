@@ -20,89 +20,88 @@ import java.io.Serializable;
  * @see com.badlogic.gdx.math.Ellipse
  * @see com.badlogic.gdx.math.Polygon
  * @see com.badlogic.gdx.math.Rectangle
- * @author seroperson
- * */
+ * @author seroperson */
 public abstract class Shape<T extends Shape<T>> implements Serializable {
 
-    public float x, y;
+	public float x, y;
 
-    public Shape() {
-        setPosition(0f, 0f);
-    }
+	public Shape () {
+		setPosition(0f, 0f);
+	}
 
-    public Shape(float x, float y) {
-        setPosition(x, y);
-    }
+	public Shape (float x, float y) {
+		setPosition(x, y);
+	}
 
-    public Shape(Vector2 position) {
-        this(position.x, position.y);
-    }
+	public Shape (Vector2 position) {
+		this(position.x, position.y);
+	}
 
-    public abstract void set(T shape);
+	public abstract void set (T shape);
 
-    /** Sets the x and y-coordinates of shape
+	/** Sets the x and y-coordinates of shape
 	 * @param x The x-coordinate
 	 * @param y The y-coordinate */
-    public void setPosition(float x, float y) {
-        setX(x);
-        setY(y);
-    }
+	public void setPosition (float x, float y) {
+		setX(x);
+		setY(y);
+	}
 
-    /** Sets the x and y-coordinates of shape from vector
+	/** Sets the x and y-coordinates of shape from vector
 	 * @param position The position vector */
-    public void setPosition(Vector2 position) {
-        setPosition(position.x, position.y);
-    }
+	public void setPosition (Vector2 position) {
+		setPosition(position.x, position.y);
+	}
 
-    public void setX(float x) {
-        this.x = x;
-    }
+	public void setX (float x) {
+		this.x = x;
+	}
 
-    public void setY(float y) {
-        this.y = y;
-    }
+	public void setY (float y) {
+		this.y = y;
+	}
 
-    public void translate(float x, float y) {
-        setPosition(this.x + x, this.y + y);
-    }
+	public void translate (float x, float y) {
+		setPosition(this.x + x, this.y + y);
+	}
 
-    public abstract boolean overlaps(T shape);
+	public abstract boolean overlaps (T shape);
 
-    public abstract boolean contains(T shape);
+	public abstract boolean contains (T shape);
 
-    /** Checks whether or not this shape contains a given point.
-	 *
+	/** Checks whether or not this shape contains a given point.
+	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate
-	 *
+	 * 
 	 * @return true if this circle contains the given point. */
-    public abstract boolean contains(float x, float y);
+	public abstract boolean contains (float x, float y);
 
-    /** Checks whether or not this shape contains a given point.
-	 *
+	/** Checks whether or not this shape contains a given point.
+	 * 
 	 * @param point The {@link Vector2} that contains the point coordinates.
-	 *
+	 * 
 	 * @return true if this circle contains this point; false otherwise. */
-    public boolean contains(Vector2 point) {
-        return contains(point.x, point.y);
-    }
+	public boolean contains (Vector2 point) {
+		return contains(point.x, point.y);
+	}
 
-    public float getX() {
-        return x;
-    }
+	public float getX () {
+		return x;
+	}
 
-    public float getY() {
-        return y;
-    }
+	public float getY () {
+		return y;
+	}
 
-    /** return the Vector2 with coordinates of this rectangle
+	/** return the Vector2 with coordinates of this rectangle
 	 * @param position The Vector2 */
 	public Vector2 getPosition (Vector2 position) {
 		return position.set(x, y);
 	}
 
-    @Override
-    public String toString () {
+	@Override
+	public String toString () {
 		return x + ", " + y;
 	}
 

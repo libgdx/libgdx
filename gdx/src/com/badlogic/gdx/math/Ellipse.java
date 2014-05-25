@@ -32,7 +32,7 @@ public class Ellipse extends RectangleBased<Ellipse> {
 		super(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
-    @Override
+	@Override
 	public boolean contains (float x, float y) {
 		x = x - this.x;
 		y = y - this.y;
@@ -41,23 +41,23 @@ public class Ellipse extends RectangleBased<Ellipse> {
 
 	/** Sets a new position and size for this ellipse based upon another ellipse.
 	 * @param ellipse The ellipse to copy the position and size of. */
-    @Override
- 	public void set (Ellipse ellipse) {
+	@Override
+	public void set (Ellipse ellipse) {
 		set(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
-    /** NOT IMPLEMENTED YET */
-    @Override
-    public boolean overlaps(final Ellipse shape) {
-        // TODO implement
-        return false;
-    }
+	/** NOT IMPLEMENTED YET */
+	@Override
+	public boolean overlaps (final Ellipse shape) {
+		// TODO implement
+		return false;
+	}
 
-    /** NOT IMPLEMENTED YET */
-    @Override
-    public boolean contains(final Ellipse shape) {
-        // TODO implement
-        return false;
-    }
+	/** NOT IMPLEMENTED YET */
+	@Override
+	public boolean contains (final Ellipse shape) {
+		// TODO implement
+		return false;
+	}
 
 }

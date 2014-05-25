@@ -16,28 +16,27 @@ package com.badlogic.gdx.math;
 /** Main class for shapes that have width and height
  * @see com.badlogic.gdx.math.Rectangle
  * @see com.badlogic.gdx.math.Ellipse
- * @author seroperson
- * */
+ * @author seroperson */
 public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape<T> {
 
-   	public float width, height;
+	public float width, height;
 
-    public RectangleBased() {
-        this(0f, 0f, 0f, 0f);
-    }
+	public RectangleBased () {
+		this(0f, 0f, 0f, 0f);
+	}
 
-    /** Constructs a new shape
-	 *
+	/** Constructs a new shape
+	 * 
 	 * @param x X coordinate
 	 * @param y Y coordinate
 	 * @param width Width
 	 * @param height Height */
-    public RectangleBased (float x, float y, float width, float height) {
+	public RectangleBased (float x, float y, float width, float height) {
 		set(x, y, width, height);
 	}
 
-    /** Constructs a new shape
-	 *
+	/** Constructs a new shape
+	 * 
 	 * @param position Position vector
 	 * @param width Width
 	 * @param height Height */
@@ -45,49 +44,47 @@ public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape<
 		this(position.x, position.y, width, height);
 	}
 
-    public void setHeight(float height) {
-        this.height = height;
-    }
-
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
-    /** Sets the width and height
-     * */
-	public void setSize (float width, float height) {
-		setWidth(width);
-        setHeight(height);
+	public void setHeight (float height) {
+		this.height = height;
 	}
 
-    /** Sets the squared size of this shape
+	public void setWidth (float width) {
+		this.width = width;
+	}
+
+	/** Sets the width and height */
+	public void setSize (float width, float height) {
+		setWidth(width);
+		setHeight(height);
+	}
+
+	/** Sets the squared size of this shape
 	 * @param sizeXY The size */
-    public void setSize(float sizeXY) {
+	public void setSize (float sizeXY) {
 		setSize(sizeXY, sizeXY);
 	}
 
-    /** Sets a new position and size for this shape
-     */
-    public void set (float x, float y, float width, float height) {
-        setPosition(x, y);
-        setSize(width, height);
+	/** Sets a new position and size for this shape */
+	public void set (float x, float y, float width, float height) {
+		setPosition(x, y);
+		setSize(width, height);
 	}
 
-    public float getHeight() {
-        return height;
-    }
+	public float getHeight () {
+		return height;
+	}
 
-    public float getWidth() {
-        return width;
-    }
+	public float getWidth () {
+		return width;
+	}
 
-    /** @return the Vector2 with size of this shape
+	/** @return the Vector2 with size of this shape
 	 * @param size The Vector2 */
 	public Vector2 getSize (Vector2 size) {
 		return size.set(width, height);
 	}
 
-    public String toString () {
+	public String toString () {
 		return super.toString() + ", " + width + ", " + height;
 	}
 

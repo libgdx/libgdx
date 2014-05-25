@@ -18,8 +18,8 @@ package com.badlogic.gdx.math;
 
 import java.util.Arrays;
 
-/** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0).
- * Be careful with x / y fields because it's need to call dirty() after any changes. */
+/** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). Be careful with x / y fields
+ * because it's need to call dirty() after any changes. */
 public class Polygon extends Shape<Polygon> {
 	private float[] localVertices;
 	private float[] worldVertices;
@@ -34,7 +34,7 @@ public class Polygon extends Shape<Polygon> {
 		this.localVertices = new float[0];
 	}
 
-    /** Constructs a new polygon from a float array of parts of vertex points.
+	/** Constructs a new polygon from a float array of parts of vertex points.
 	 * 
 	 * @param vertices an array where every even element represents the horizontal part of a point, and the following element
 	 *           representing the vertical part
@@ -103,17 +103,17 @@ public class Polygon extends Shape<Polygon> {
 		dirty();
 	}
 
-    @Override
-    public void setY(float y) {
-        super.setY(y);
-        dirty();
-    }
+	@Override
+	public void setY (float y) {
+		super.setY(y);
+		dirty();
+	}
 
-    @Override
-    public void setX(float x) {
-        super.setX(x);
-        dirty();
-    }
+	@Override
+	public void setX (float x) {
+		super.setX(x);
+		dirty();
+	}
 
 	/** Sets the polygon's local vertices relative to the origin point, without any scaling, rotating or translations being applied.
 	 * 
@@ -126,36 +126,36 @@ public class Polygon extends Shape<Polygon> {
 		dirty = true;
 	}
 
-    /** NOT IMPLEMENTED YET */
-    @Override
-    public boolean overlaps(final Polygon shape) {
-        // TODO implement
-        return false;
-    }
+	/** NOT IMPLEMENTED YET */
+	@Override
+	public boolean overlaps (final Polygon shape) {
+		// TODO implement
+		return false;
+	}
 
-    /** NOT IMPLEMENTED YET */
-    @Override
-    public boolean contains(final Polygon shape) {
-        // TODO implement
-        return false;
-    }
+	/** NOT IMPLEMENTED YET */
+	@Override
+	public boolean contains (final Polygon shape) {
+		// TODO implement
+		return false;
+	}
 
-    @Override
-    public void set(final Polygon shape) {
-        this.bounds.set(shape.bounds);
-        this.localVertices = Arrays.copyOf(shape.localVertices, shape.localVertices.length);
-        this.worldVertices = Arrays.copyOf(shape.worldVertices, shape.worldVertices.length);
-        this.originX = shape.originX;
-        this.originY = shape.originY;
-        this.rotation = shape.rotation;
-        this.scaleX = shape.scaleX;
-        this.scaleY = shape.scaleY;
-        this.x = shape.x;
-        this.y = shape.y;
-        this.dirty = shape.dirty;
-    }
+	@Override
+	public void set (final Polygon shape) {
+		this.bounds.set(shape.bounds);
+		this.localVertices = Arrays.copyOf(shape.localVertices, shape.localVertices.length);
+		this.worldVertices = Arrays.copyOf(shape.worldVertices, shape.worldVertices.length);
+		this.originX = shape.originX;
+		this.originY = shape.originY;
+		this.rotation = shape.rotation;
+		this.scaleX = shape.scaleX;
+		this.scaleY = shape.scaleY;
+		this.x = shape.x;
+		this.y = shape.y;
+		this.dirty = shape.dirty;
+	}
 
-    /** Sets the polygon to be rotated by the supplied degrees. */
+	/** Sets the polygon to be rotated by the supplied degrees. */
 	public void setRotation (float degrees) {
 		this.rotation = degrees;
 		dirty();
@@ -163,7 +163,7 @@ public class Polygon extends Shape<Polygon> {
 
 	/** Applies additional rotation to the polygon by the supplied degrees. */
 	public void rotate (float degrees) {
-        setRotation(rotation + degrees);
+		setRotation(rotation + degrees);
 	}
 
 	/** Sets the amount of scaling to be applied to the polygon. */
