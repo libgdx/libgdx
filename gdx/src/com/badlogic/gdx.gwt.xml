@@ -292,6 +292,7 @@
 		<include name="math/Polygon.java"/>
 		<include name="math/Polyline.java"/>
 		<include name="math/Quaternion.java"/>
+		<include name="math/RandomXS128.java"/>
 		<include name="math/Rectangle.java"/>
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
