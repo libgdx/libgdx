@@ -132,11 +132,63 @@ public class Array<T> implements Iterable<T> {
 		if (index >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
 		items[index] = value;
 	}
-	public void set (int index, T[] value) {
-		if (index+value.length-1 >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + index + " >= " + size);
-		for(int i = 0; i < value.length; ++i) {
-			items[index+i] = value[i];
+	public void copy (T[] from, int fromIndex, int toIndex, int count, boolean insert) {
+		if(count-fromIndex > from.length) throw new IndexOutOfBoundsException("index can't be > size: " + (count-fromIndex) + " > " + from.length);
+		if(insert) {
+			if (toIndex > size) throw new IndexOutOfBoundsException("index can't be > size: " + toIndex + " > " + size);
+			T[] items = this.items;
+			if ((size-1 + count) >= items.length) items = resize((int)((size-1+count) * 1.25f));
+			if (ordered)
+				System.arraycopy(items, toIndex, items, toIndex + count, size - toIndex);
+			else
+				System.arraycopy(items, toIndex, items, size, count);
+			size += count;
 		}
+		else
+		{
+			if (toIndex+count-1 >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + (toIndex+count) + " >= " + size);
+		}
+		System.arraycopy(from, fromIndex, items, toIndex, count);
+	}
+	public void copy (T[] from, int toIndex) {
+		if (toIndex > size) throw new IndexOutOfBoundsException("index can't be > size: " + toIndex + " > " + size);
+		T[] items = this.items;
+		if ((size-1 + from.length) >= items.length) items = resize((int)((size-1+from.length) * 1.25f));
+		if (ordered)
+			System.arraycopy(items, toIndex, items, toIndex + from.length, size - toIndex);
+		else
+			System.arraycopy(items, toIndex, items, size, from.length);
+		size += count;
+		System.arraycopy(from, 0, items, toIndex, from.length);
+	}
+	public void copy (Array<T> from, int fromIndex, int toIndex, int count, boolean insert) {
+		if(count-fromIndex > from.size) throw new IndexOutOfBoundsException("index can't be > size: " + (count-fromIndex) + " > " + from.size);
+		if(insert) {
+			if (toIndex > size) throw new IndexOutOfBoundsException("index can't be > size: " + toIndex + " > " + size);
+			T[] items = this.items;
+			if ((size-1 + count) >= items.length) items = resize((int)((size-1+count) * 1.25f));
+			if (ordered)
+				System.arraycopy(items, toIndex, items, toIndex + count, size - toIndex);
+			else
+				System.arraycopy(items, toIndex, items, size, count);
+			size += count;
+		}
+		else
+		{
+			if (toIndex+count-1 >= size) throw new IndexOutOfBoundsException("index can't be >= size: " + (toIndex+count) + " >= " + size);
+		}
+		System.arraycopy(from.items, fromIndex, items, toIndex, count);
+	}
+	public void copy (Array<T> from, int toIndex) {
+		if (toIndex > size) throw new IndexOutOfBoundsException("index can't be > size: " + toIndex + " > " + size);
+		T[] items = this.items;
+		if ((size-1 + from.size) >= items.length) items = resize((int)((size-1+from.size) * 1.25f));
+		if (ordered)
+			System.arraycopy(items, toIndex, items, toIndex + from.size, size - toIndex);
+		else
+			System.arraycopy(items, toIndex, items, size, from.size);
+		size += count;
+		System.arraycopy(from.items, 0, items, toIndex, from.size);
 	}
 
 	public void insert (int index, T value) {
@@ -149,18 +201,6 @@ public class Array<T> implements Iterable<T> {
 			items[size] = items[index];
 		size++;
 		items[index] = value;
-	}
-	
-	public void insert (int index, T[] value) {
-		if (index > size) throw new IndexOutOfBoundsException("index can't be > size: " + index + " > " + size);
-		T[] items = this.items;
-		if ((size-1 + value.length) >= items.length) items = resize((int)((size-1+value.length) * 1.25f));
-		if (ordered)
-			System.arraycopy(items, index, items, index + value.length, size - index);
-		else
-			System.arraycopy(items, index, items, size, value.length);
-		size += value.length;
-		System.arraycopy(value, 0, items, index, value.length);
 	}
 	public void swap (int first, int second) {
 		if (first >= size) throw new IndexOutOfBoundsException("first can't be >= size: " + first + " >= " + size);
