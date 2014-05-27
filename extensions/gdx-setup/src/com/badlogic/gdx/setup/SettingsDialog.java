@@ -221,7 +221,7 @@ public class SettingsDialog extends JDialog {
 		return list;
 	}
 
-	private void onOK () {
+	void onOK () {
 		if (mavenTextField.getText().isEmpty()) {
 			DependencyBank.mavenCentral = "mavenCentral()";
 		} else {
@@ -230,7 +230,7 @@ public class SettingsDialog extends JDialog {
 		setVisible(false);
 	}
 
-	private void onCancel () {
+	void onCancel () {
 		setVisible(false);
 		restore();
 	}
