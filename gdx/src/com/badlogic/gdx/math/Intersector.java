@@ -916,6 +916,44 @@ public final class Intersector {
 		}
 		return true;
 	}
+	
+	/** Check whether specified polygons overlap. 
+	 * 
+	 * @note this works with any polygons, be them convex, concave or complex, but it may be slower than #overlapConvexPolygons(Polygon, Polygon).
+	 * @see #overlapConvexPolygons(Polygon, Polygon)
+	 * @param p1 The first polygon.
+	 * @param p2 The second polygon.
+	 * @return Whether polygons overlap. */
+	public static boolean overlapPolygons (Polygon p1, Polygon p2) {
+		return overlapPolygons(p1.getTransformedVertices(), p2.getTransformedVertices());
+	}
+
+	/** @see #overlapConvexPolygons(float[], int, int, float[], int, int, MinimumTranslationVector) */
+	public static boolean overlapPolygons (float[] verts1, float[] verts2) {
+		return overlapPolygons(verts1, 0, verts1.length, verts2, 0, verts2.length);
+	}
+		/** Check whether specified polygons overlap. 
+	 * 
+	 * @note this works with any polygons, be them convex, concave or complex, but it may be slower than #overlapConvexPolygons(Polygon, Polygon).
+	 * @see #overlapConvexPolygons(Polygon, Polygon)
+	 * @param verts1 Vertices of the first polygon.
+	 * @param verts2 Vertices of the second polygon.
+	 * @return Whether polygons overlap. */
+	public static boolean overlapPolygons (float[] verts1, int offset1, int count1, float[] verts2, int offset2, int count2) {
+		int end1 = offset1+count1;
+		int end2 = offset2+count2;
+		for(int i = offset1; i < end1; i += 2) {
+			if(isPointInPolygon(verts2, offset2, count2, verts1[i], verts1[i+1])) {
+				return true;
+			}
+		}
+		for(int i = offset2; i < end2; i += 2) {
+			if(isPointInPolygon(verts1, offset1, count1, verts2[i], verts2[i+1])) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/** Splits the triangle by the plane. The result is stored in the SplitTriangle instance. Depending on where the triangle is
 	 * relative to the plane, the result can be:
