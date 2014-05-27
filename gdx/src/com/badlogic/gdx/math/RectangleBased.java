@@ -13,11 +13,11 @@
 
 package com.badlogic.gdx.math;
 
-/** Main class for shapes that have width and height
+/** Main class for 2d shapes that have width and height
  * @see com.badlogic.gdx.math.Rectangle
  * @see com.badlogic.gdx.math.Ellipse
  * @author seroperson */
-public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape<T> {
+public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape2D<T> {
 
 	public float width, height;
 
@@ -25,24 +25,17 @@ public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape<
 		this(0f, 0f, 0f, 0f);
 	}
 
-	/** Constructs a new shape
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * @param width Width
-	 * @param height Height */
 	public RectangleBased (float x, float y, float width, float height) {
 		set(x, y, width, height);
 	}
 
-	/** Constructs a new shape
-	 * 
-	 * @param position Position vector
-	 * @param width Width
-	 * @param height Height */
 	public RectangleBased (Vector2 position, float width, float height) {
 		this(position.x, position.y, width, height);
 	}
+
+    public RectangleBased(T shape) {
+        super(shape);
+    }
 
 	public void setHeight (float height) {
 		this.height = height;

@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 /** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). Be careful with x / y fields
  * because it's need to call dirty() after any changes. */
-public class Polygon extends Shape<Polygon> {
+public class Polygon extends Shape2D<Polygon> {
 	private float[] localVertices;
 	private float[] worldVertices;
 	private float originX, originY;
@@ -44,6 +44,12 @@ public class Polygon extends Shape<Polygon> {
 		if (vertices.length < 6) throw new IllegalArgumentException("polygons must contain at least 3 points.");
 		this.localVertices = vertices;
 	}
+
+    /** Constructs a new polygon from given
+     * @param polygon given polygon */
+    public Polygon(Polygon polygon) {
+        super(polygon);
+    }
 
 	/** Returns the polygon's local vertices without scaling or rotation and without being offset by the polygon position. */
 	public float[] getVertices () {
@@ -126,20 +132,6 @@ public class Polygon extends Shape<Polygon> {
 		dirty = true;
 	}
 
-	/** NOT IMPLEMENTED YET */
-	@Override
-	public boolean overlaps (final Polygon shape) {
-		// TODO implement
-		return false;
-	}
-
-	/** NOT IMPLEMENTED YET */
-	@Override
-	public boolean contains (final Polygon shape) {
-		// TODO implement
-		return false;
-	}
-
 	@Override
 	public void set (final Polygon shape) {
 		this.bounds.set(shape.bounds);
@@ -220,6 +212,7 @@ public class Polygon extends Shape<Polygon> {
 	}
 
 	/** Returns whether an x, y pair is contained within the polygon. */
+    @Override
 	public boolean contains (float x, float y) {
 		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
@@ -234,6 +227,11 @@ public class Polygon extends Shape<Polygon> {
 		}
 		return (intersects & 1) == 1;
 	}
+
+    @Override
+    public Polygon cpy() {
+        return new Polygon(this);
+    }
 
 	/** Returns the x-coordinate of the polygon's origin point. */
 	public float getOriginX () {

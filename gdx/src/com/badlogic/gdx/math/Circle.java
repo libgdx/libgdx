@@ -15,7 +15,7 @@ package com.badlogic.gdx.math;
 
 /** A convenient 2D circle class.
  * @author mzechner */
-public class Circle extends Shape<Circle> {
+public class Circle extends Shape2D<Circle> {
 
 	public float radius;
 
@@ -24,42 +24,26 @@ public class Circle extends Shape<Circle> {
 
 	}
 
-	/** Constructs a new circle with the given X and Y coordinates and the given radius.
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * @param radius The radius of the circle */
 	public Circle (float x, float y, float radius) {
 		set(x, y, radius);
 	}
 
-	/** Constructs a new circle using a given {@link Vector2} that contains the desired X and Y coordinates, and a given radius.
-	 * 
-	 * @param position The position {@link Vector2}.
-	 * @param radius The radius */
 	public Circle (Vector2 position, float radius) {
-		this(position.x, position.y, radius);
+		super(position);
+        setRadius(radius);
 	}
 
-	/** Copy constructor
-	 * 
-	 * @param circle The circle to construct a copy of. */
 	public Circle (Circle circle) {
-		this(circle.x, circle.y, circle.radius);
+		super(circle);
 	}
 
-	/** Sets a new location and radius for this circle.
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * @param radius Circle radius */
+	/** Sets a new location and radius for this circle */
 	public void set (float x, float y, float radius) {
 		setPosition(x, y);
 		setRadius(radius);
 	}
 
 	/** Sets a new location and radius for this circle.
-	 * 
 	 * @param position Position {@link Vector2} for this circle.
 	 * @param radius Circle radius */
 	public void set (Vector2 position, float radius) {
@@ -67,18 +51,19 @@ public class Circle extends Shape<Circle> {
 	}
 
 	/** Sets a new location and radius for this circle, based upon another circle.
-	 * 
 	 * @param circle The circle to copy the position and radius of. */
 	@Override
 	public void set (Circle circle) {
 		set(circle.x, circle.y, circle.radius);
 	}
 
-	/** Sets the radius of circle
-	 * @param radius The radius */
 	public void setRadius (float radius) {
 		this.radius = radius;
 	}
+
+    public float getRadius() {
+        return radius;
+    }
 
 	@Override
 	public boolean contains (float x, float y) {
@@ -89,7 +74,6 @@ public class Circle extends Shape<Circle> {
 
 	/** @param c the other {@link Circle}
 	 * @return whether this circle contains the other circle. */
-	@Override
 	public boolean contains (Circle c) {
 		float dx = x - c.x;
 		float dy = y - c.y;
@@ -102,7 +86,6 @@ public class Circle extends Shape<Circle> {
 
 	/** @param c the other {@link Circle}
 	 * @return whether this circle overlaps the other circle. */
-	@Override
 	public boolean overlaps (Circle c) {
 		float dx = x - c.x;
 		float dy = y - c.y;
@@ -110,6 +93,11 @@ public class Circle extends Shape<Circle> {
 		float radiusSum = radius + c.radius;
 		return distance < radiusSum * radiusSum;
 	}
+
+    @Override
+    public Circle cpy() {
+        return new Circle(this);
+    }
 
 	@Override
 	public String toString () {

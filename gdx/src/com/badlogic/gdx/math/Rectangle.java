@@ -17,10 +17,12 @@ package com.badlogic.gdx.math;
  * @author badlogicgames@gmail.com */
 public class Rectangle extends RectangleBased<Rectangle> {
 
-	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
+	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this.
+     * @deprecated */
 	static public final Rectangle tmp = new Rectangle();
 
-	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
+	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this.
+     * @deprecated */
 	static public final Rectangle tmp2 = new Rectangle();
 
 	/** Constructs a new rectangle with all values set to zero */
@@ -31,7 +33,7 @@ public class Rectangle extends RectangleBased<Rectangle> {
 	/** Constructs a rectangle based on the given rectangle
 	 * @param rect The rectangle */
 	public Rectangle (Rectangle rect) {
-		super(rect.x, rect.y, rect.width, rect.height);
+		super(rect);
 	}
 
 	public Rectangle (float x, float y, float width, float height) {
@@ -47,9 +49,13 @@ public class Rectangle extends RectangleBased<Rectangle> {
 		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
 	}
 
+    @Override
+    public Rectangle cpy() {
+        return new Rectangle(this);
+    }
+
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */
-	@Override
 	public boolean contains (Rectangle rectangle) {
 		float xmin = rectangle.x;
 		float xmax = xmin + rectangle.width;
@@ -63,7 +69,6 @@ public class Rectangle extends RectangleBased<Rectangle> {
 
 	/** @param r the other {@link Rectangle}
 	 * @return whether this rectangle overlaps the other rectangle. */
-	@Override
 	public boolean overlaps (Rectangle r) {
 		return x < r.x + r.width && x + width > r.x && y < r.y + r.height && y + height > r.y;
 	}
