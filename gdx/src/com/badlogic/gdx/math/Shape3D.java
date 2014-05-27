@@ -13,7 +13,7 @@
 
 package com.badlogic.gdx.math;
 
-public abstract class Shape3D<T extends Shape<Vector3, T>> extends Shape<Vector3, T> {
+public abstract class Shape3D<T extends Shape<Vector3, T>> implements Shape<Vector3, T> {
 
 	public float x, y, z;
 

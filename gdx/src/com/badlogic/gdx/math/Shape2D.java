@@ -18,7 +18,7 @@ package com.badlogic.gdx.math;
  * @see com.badlogic.gdx.math.Polygon
  * @see com.badlogic.gdx.math.RectangleBased
  * @author seroperson */
-public abstract class Shape2D<T extends Shape<Vector2, T>> extends Shape<Vector2, T> {
+public abstract class Shape2D<T extends Shape<Vector2, T>> implements Shape<Vector2, T> {
 
 	public float x, y;
 

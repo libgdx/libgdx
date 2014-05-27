@@ -13,35 +13,33 @@
 
 package com.badlogic.gdx.math;
 
-import java.io.Serializable;
-
 /** Main class for all shapes
  * @see com.badlogic.gdx.math.Shape2D
  * @see com.badlogic.gdx.math.Shape3D
  * @author seroperson */
-public abstract class Shape<V extends Vector<V>, T extends Shape<V, T>> implements Serializable {
+public interface Shape<V extends Vector<V>, T extends Shape<V, T>> {
 
 	/** Sets the fields of shape from other shape */
-	public abstract void set (T shape);
+	public void set (T shape);
 
 	/** Sets the coordinates of shape from vector
 	 * @param position The position vector */
-	public abstract void setPosition (V position);
+	public void setPosition (V position);
 
 	/** Adds to vector to current position
 	 * @param vector vector to add */
-	public abstract void translate (V vector);
+	public void translate (V vector);
 
 	/** @return a copy of this shape */
-	public abstract T cpy ();
+	public T cpy ();
 
 	/** Checks whether or not this shape contains a given point.
 	 * @param point The {@link Vector} that contains the point coordinates.
 	 * @return true if this shape contains this point; false otherwise. */
-	public abstract boolean contains (V point);
+	public boolean contains (V point);
 
 	/** return the Vector with coordinates of this rectangle
 	 * @param position The Vector */
-	public abstract V getPosition (V position);
+	public V getPosition (V position);
 
 }
