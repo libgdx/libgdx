@@ -21,24 +21,24 @@ import java.io.Serializable;
  * @author seroperson */
 public abstract class Shape<V extends Vector<V>, T extends Shape<V, T>> implements Serializable {
 
-    /** Sets the fields of shape from other shape */
+	/** Sets the fields of shape from other shape */
 	public abstract void set (T shape);
 
-    /** Sets the coordinates of shape from vector
+	/** Sets the coordinates of shape from vector
 	 * @param position The position vector */
-    public abstract void setPosition(V position);
+	public abstract void setPosition (V position);
 
-    /** Adds to vector to current position
-     * @param vector vector to add */
-    public abstract void translate(V vector);
+	/** Adds to vector to current position
+	 * @param vector vector to add */
+	public abstract void translate (V vector);
 
-    /** @return a copy of this shape */
-    public abstract T cpy();
+	/** @return a copy of this shape */
+	public abstract T cpy ();
 
-    /** Checks whether or not this shape contains a given point.
+	/** Checks whether or not this shape contains a given point.
 	 * @param point The {@link Vector} that contains the point coordinates.
 	 * @return true if this shape contains this point; false otherwise. */
-    public abstract boolean contains (V point);
+	public abstract boolean contains (V point);
 
 	/** return the Vector with coordinates of this rectangle
 	 * @param position The Vector */

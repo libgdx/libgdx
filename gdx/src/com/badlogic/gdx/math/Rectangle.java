@@ -18,11 +18,11 @@ package com.badlogic.gdx.math;
 public class Rectangle extends RectangleBased<Rectangle> {
 
 	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this.
-     * @deprecated */
+	 * @deprecated */
 	static public final Rectangle tmp = new Rectangle();
 
 	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this.
-     * @deprecated */
+	 * @deprecated */
 	static public final Rectangle tmp2 = new Rectangle();
 
 	/** Constructs a new rectangle with all values set to zero */
@@ -49,10 +49,10 @@ public class Rectangle extends RectangleBased<Rectangle> {
 		return this.x <= x && this.x + this.width >= x && this.y <= y && this.y + this.height >= y;
 	}
 
-    @Override
-    public Rectangle cpy() {
-        return new Rectangle(this);
-    }
+	@Override
+	public Rectangle cpy () {
+		return new Rectangle(this);
+	}
 
 	/** @param rectangle the other {@link Rectangle}.
 	 * @return whether the other rectangle is contained in this rectangle. */

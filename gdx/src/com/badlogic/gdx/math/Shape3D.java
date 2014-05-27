@@ -15,9 +15,9 @@ package com.badlogic.gdx.math;
 
 public abstract class Shape3D<T extends Shape<Vector3, T>> extends Shape<Vector3, T> {
 
-    public float x, y, z;
+	public float x, y, z;
 
-    public Shape3D () {
+	public Shape3D () {
 		setPosition(0f, 0f, 0f);
 	}
 
@@ -29,20 +29,20 @@ public abstract class Shape3D<T extends Shape<Vector3, T>> extends Shape<Vector3
 		this(position.x, position.y, position.z);
 	}
 
-    /** Copy constructor
+	/** Copy constructor
 	 * @param shape The shape to construct a copy of. */
-    public Shape3D (T shape) {
-        set(shape);
-    }
+	public Shape3D (T shape) {
+		set(shape);
+	}
 
-    /** Sets the x, y and z-coordinates of shape */
+	/** Sets the x, y and z-coordinates of shape */
 	public void setPosition (float x, float y, float z) {
 		setX(x);
 		setY(y);
-        setZ(z);
+		setZ(z);
 	}
 
-    @Override
+	@Override
 	public void setPosition (Vector3 position) {
 		setPosition(position.x, position.y, position.z);
 	}
@@ -55,29 +55,29 @@ public abstract class Shape3D<T extends Shape<Vector3, T>> extends Shape<Vector3
 		this.y = y;
 	}
 
-    public void setZ (float z) {
-        this.z = z;
-    }
+	public void setZ (float z) {
+		this.z = z;
+	}
 
 	public void translate (float x, float y, float z) {
 		setPosition(this.x + x, this.y + y, this.z + z);
 	}
 
-    @Override
-    public void translate(Vector3 vector) {
-        translate(vector.x, vector.y, vector.z);
-    }
+	@Override
+	public void translate (Vector3 vector) {
+		translate(vector.x, vector.y, vector.z);
+	}
 
-    /** Checks whether or not this shape contains a given point.
+	/** Checks whether or not this shape contains a given point.
 	 * @return true if this shape contains the given point. */
 	public abstract boolean contains (float x, float y, float z);
 
-    @Override
+	@Override
 	public boolean contains (Vector3 point) {
 		return contains(point.x, point.y, point.z);
 	}
 
-    public float getX () {
+	public float getX () {
 		return x;
 	}
 
@@ -85,18 +85,18 @@ public abstract class Shape3D<T extends Shape<Vector3, T>> extends Shape<Vector3
 		return y;
 	}
 
-    public float getZ() {
-        return z;
-    }
+	public float getZ () {
+		return z;
+	}
 
-    @Override
-    public Vector3 getPosition(Vector3 vector) {
-        return vector.set(x, y, z);
-    }
+	@Override
+	public Vector3 getPosition (Vector3 vector) {
+		return vector.set(x, y, z);
+	}
 
-    @Override
-    public String toString() {
-        return x+", "+y+", "+z;
-    }
+	@Override
+	public String toString () {
+		return x + ", " + y + ", " + z;
+	}
 
 }

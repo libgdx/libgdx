@@ -30,7 +30,7 @@ public class Circle extends Shape2D<Circle> {
 
 	public Circle (Vector2 position, float radius) {
 		super(position);
-        setRadius(radius);
+		setRadius(radius);
 	}
 
 	public Circle (Circle circle) {
@@ -61,9 +61,9 @@ public class Circle extends Shape2D<Circle> {
 		this.radius = radius;
 	}
 
-    public float getRadius() {
-        return radius;
-    }
+	public float getRadius () {
+		return radius;
+	}
 
 	@Override
 	public boolean contains (float x, float y) {
@@ -94,10 +94,10 @@ public class Circle extends Shape2D<Circle> {
 		return distance < radiusSum * radiusSum;
 	}
 
-    @Override
-    public Circle cpy() {
-        return new Circle(this);
-    }
+	@Override
+	public Circle cpy () {
+		return new Circle(this);
+	}
 
 	@Override
 	public String toString () {

@@ -33,9 +33,9 @@ public abstract class RectangleBased<T extends RectangleBased<T>> extends Shape2
 		this(position.x, position.y, width, height);
 	}
 
-    public RectangleBased(T shape) {
-        super(shape);
-    }
+	public RectangleBased (T shape) {
+		super(shape);
+	}
 
 	public void setHeight (float height) {
 		this.height = height;

@@ -20,7 +20,7 @@ import com.badlogic.gdx.math.Shape3D;
 import com.badlogic.gdx.math.Vector3;
 
 /** Encapsulates a 3D sphere with a center and a radius
- *
+ * 
  * @author badlogicgames@gmail.com */
 public class Sphere extends Shape3D<Sphere> {
 
@@ -37,60 +37,60 @@ public class Sphere extends Shape3D<Sphere> {
 
 	public Sphere (Vector3 position, float radius) {
 		super(position);
-        setRadius(radius);
+		setRadius(radius);
 	}
 
 	public Sphere (Sphere sphere) {
 		super(sphere);
 	}
 
-    public void set(float x, float y, float z, float radius) {
-        setPosition(x, y, z);
-        setRadius(radius);
-    }
+	public void set (float x, float y, float z, float radius) {
+		setPosition(x, y, z);
+		setRadius(radius);
+	}
 
-    /** Sets a new location and radius for this circle.
+	/** Sets a new location and radius for this circle.
 	 * @param position Position {@link Vector3} for this sphere.
 	 * @param radius sphere radius */
-    public void set(Vector3 position, float radius) {
-        set(position.x, position.y, position.z, radius);
-    }
+	public void set (Vector3 position, float radius) {
+		set(position.x, position.y, position.z, radius);
+	}
 
-    /** Sets a new location and radius for this sphere, based upon another sphere.
+	/** Sets a new location and radius for this sphere, based upon another sphere.
 	 * @param sphere The sphere to copy the position and radius of. */
-     @Override
-     public void set(Sphere sphere) {
-        set(sphere.x, sphere.y, sphere.z, sphere.radius);
-    }
+	@Override
+	public void set (Sphere sphere) {
+		set(sphere.x, sphere.y, sphere.z, sphere.radius);
+	}
 
-    @Override
-    public Sphere cpy() {
-        return new Sphere(this);
-    }
+	@Override
+	public Sphere cpy () {
+		return new Sphere(this);
+	}
 
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }
+	public void setRadius (float radius) {
+		this.radius = radius;
+	}
 
-    public float getRadius() {
-        return radius;
-    }
+	public float getRadius () {
+		return radius;
+	}
 
-    @Override
-    public boolean contains(float x, float y, float z) {
-        float a = x - this.x;
-        float b = y - this.y;
-        float c = z - this.z;
-        return a*a + b*b + c*c < radius*radius;
-    }
+	@Override
+	public boolean contains (float x, float y, float z) {
+		float a = x - this.x;
+		float b = y - this.y;
+		float c = z - this.z;
+		return a * a + b * b + c * c < radius * radius;
+	}
 
 	/** @param sphere the other sphere
 	 * @return whether this and the other sphere overlap */
 	public boolean overlaps (Sphere sphere) {
-        float a = x - this.x;
-        float b = y - this.y;
-        float c = z - this.z;
-        float radius = this.radius + sphere.radius;
-		return a*a + b*b + c*c < radius*radius;
+		float a = x - this.x;
+		float b = y - this.y;
+		float c = z - this.z;
+		float radius = this.radius + sphere.radius;
+		return a * a + b * b + c * c < radius * radius;
 	}
 }

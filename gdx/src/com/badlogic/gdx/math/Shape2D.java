@@ -20,9 +20,9 @@ package com.badlogic.gdx.math;
  * @author seroperson */
 public abstract class Shape2D<T extends Shape<Vector2, T>> extends Shape<Vector2, T> {
 
-    public float x, y;
+	public float x, y;
 
-    public Shape2D () {
+	public Shape2D () {
 		setPosition(0f, 0f);
 	}
 
@@ -34,19 +34,19 @@ public abstract class Shape2D<T extends Shape<Vector2, T>> extends Shape<Vector2
 		this(position.x, position.y);
 	}
 
-    /** Copy constructor
+	/** Copy constructor
 	 * @param shape The shape to construct a copy of. */
-    public Shape2D (T shape) {
-        set(shape);
-    }
+	public Shape2D (T shape) {
+		set(shape);
+	}
 
-    /** Sets the x and y-coordinates of shape */
+	/** Sets the x and y-coordinates of shape */
 	public void setPosition (float x, float y) {
 		setX(x);
 		setY(y);
 	}
 
-    @Override
+	@Override
 	public void setPosition (Vector2 position) {
 		setPosition(position.x, position.y);
 	}
@@ -63,21 +63,21 @@ public abstract class Shape2D<T extends Shape<Vector2, T>> extends Shape<Vector2
 		setPosition(this.x + x, this.y + y);
 	}
 
-    @Override
-    public void translate(Vector2 vector) {
-        translate(vector.x, vector.y);
-    }
+	@Override
+	public void translate (Vector2 vector) {
+		translate(vector.x, vector.y);
+	}
 
-    /** Checks whether or not this shape contains a given point.
+	/** Checks whether or not this shape contains a given point.
 	 * @return true if this shape contains the given point. */
 	public abstract boolean contains (float x, float y);
 
-    @Override
+	@Override
 	public boolean contains (Vector2 point) {
 		return contains(point.x, point.y);
 	}
 
-    public float getX () {
+	public float getX () {
 		return x;
 	}
 
@@ -85,14 +85,14 @@ public abstract class Shape2D<T extends Shape<Vector2, T>> extends Shape<Vector2
 		return y;
 	}
 
-    @Override
-    public Vector2 getPosition(Vector2 vector) {
-        return vector.set(x, y);
-    }
+	@Override
+	public Vector2 getPosition (Vector2 vector) {
+		return vector.set(x, y);
+	}
 
-    @Override
-    public String toString() {
-        return x+", "+y;
-    }
+	@Override
+	public String toString () {
+		return x + ", " + y;
+	}
 
 }

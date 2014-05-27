@@ -51,9 +51,9 @@ public class Ellipse extends RectangleBased<Ellipse> {
 		set(ellipse.x, ellipse.y, ellipse.width, ellipse.height);
 	}
 
-    @Override
-    public Ellipse cpy() {
-        return new Ellipse(this);
-    }
+	@Override
+	public Ellipse cpy () {
+		return new Ellipse(this);
+	}
 
 }

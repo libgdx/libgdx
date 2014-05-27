@@ -45,11 +45,11 @@ public class Polygon extends Shape2D<Polygon> {
 		this.localVertices = vertices;
 	}
 
-    /** Constructs a new polygon from given
-     * @param polygon given polygon */
-    public Polygon(Polygon polygon) {
-        super(polygon);
-    }
+	/** Constructs a new polygon from given
+	 * @param polygon given polygon */
+	public Polygon (Polygon polygon) {
+		super(polygon);
+	}
 
 	/** Returns the polygon's local vertices without scaling or rotation and without being offset by the polygon position. */
 	public float[] getVertices () {
@@ -212,7 +212,7 @@ public class Polygon extends Shape2D<Polygon> {
 	}
 
 	/** Returns whether an x, y pair is contained within the polygon. */
-    @Override
+	@Override
 	public boolean contains (float x, float y) {
 		final float[] vertices = getTransformedVertices();
 		final int numFloats = vertices.length;
@@ -228,10 +228,10 @@ public class Polygon extends Shape2D<Polygon> {
 		return (intersects & 1) == 1;
 	}
 
-    @Override
-    public Polygon cpy() {
-        return new Polygon(this);
-    }
+	@Override
+	public Polygon cpy () {
+		return new Polygon(this);
+	}
 
 	/** Returns the x-coordinate of the polygon's origin point. */
 	public float getOriginX () {
