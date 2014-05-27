@@ -16,93 +16,32 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 
 /** Main class for all shapes
- * @see com.badlogic.gdx.math.Circle
- * @see com.badlogic.gdx.math.Ellipse
- * @see com.badlogic.gdx.math.Polygon
- * @see com.badlogic.gdx.math.Rectangle
+ * @see com.badlogic.gdx.math.Shape2D
+ * @see com.badlogic.gdx.math.Shape3D
  * @author seroperson */
-public abstract class Shape<T extends Shape<T>> implements Serializable {
+public abstract class Shape<V extends Vector<V>, T extends Shape<V, T>> implements Serializable {
 
-	public float x, y;
-
-	public Shape () {
-		setPosition(0f, 0f);
-	}
-
-	public Shape (float x, float y) {
-		setPosition(x, y);
-	}
-
-	public Shape (Vector2 position) {
-		this(position.x, position.y);
-	}
-
+    /** Sets the fields of shape from other shape */
 	public abstract void set (T shape);
 
-	/** Sets the x and y-coordinates of shape
-	 * @param x The x-coordinate
-	 * @param y The y-coordinate */
-	public void setPosition (float x, float y) {
-		setX(x);
-		setY(y);
-	}
-
-	/** Sets the x and y-coordinates of shape from vector
+    /** Sets the coordinates of shape from vector
 	 * @param position The position vector */
-	public void setPosition (Vector2 position) {
-		setPosition(position.x, position.y);
-	}
+    public abstract void setPosition(V position);
 
-	public void setX (float x) {
-		this.x = x;
-	}
+    /** Adds to vector to current position
+     * @param vector vector to add */
+    public abstract void translate(V vector);
 
-	public void setY (float y) {
-		this.y = y;
-	}
+    /** @return a copy of this shape */
+    public abstract T cpy();
 
-	public void translate (float x, float y) {
-		setPosition(this.x + x, this.y + y);
-	}
+    /** Checks whether or not this shape contains a given point.
+	 * @param point The {@link Vector} that contains the point coordinates.
+	 * @return true if this shape contains this point; false otherwise. */
+    public abstract boolean contains (V point);
 
-	public abstract boolean overlaps (T shape);
-
-	public abstract boolean contains (T shape);
-
-	/** Checks whether or not this shape contains a given point.
-	 * 
-	 * @param x X coordinate
-	 * @param y Y coordinate
-	 * 
-	 * @return true if this circle contains the given point. */
-	public abstract boolean contains (float x, float y);
-
-	/** Checks whether or not this shape contains a given point.
-	 * 
-	 * @param point The {@link Vector2} that contains the point coordinates.
-	 * 
-	 * @return true if this circle contains this point; false otherwise. */
-	public boolean contains (Vector2 point) {
-		return contains(point.x, point.y);
-	}
-
-	public float getX () {
-		return x;
-	}
-
-	public float getY () {
-		return y;
-	}
-
-	/** return the Vector2 with coordinates of this rectangle
-	 * @param position The Vector2 */
-	public Vector2 getPosition (Vector2 position) {
-		return position.set(x, y);
-	}
-
-	@Override
-	public String toString () {
-		return x + ", " + y;
-	}
+	/** return the Vector with coordinates of this rectangle
+	 * @param position The Vector */
+	public abstract V getPosition (V position);
 
 }
