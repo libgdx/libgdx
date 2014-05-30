@@ -64,6 +64,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
+		public void viewDidAppear(boolean animated) {
+			if (app.viewControllerListener != null)
+				app.viewControllerListener.viewDidAppear(animated);
+		}
+
+		@Override
 		public void didRotate (UIInterfaceOrientation orientation) {
 			super.didRotate(orientation);
 			// get the view size and update graphics
