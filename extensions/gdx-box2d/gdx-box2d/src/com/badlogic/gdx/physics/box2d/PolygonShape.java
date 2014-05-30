@@ -125,10 +125,10 @@ public class PolygonShape extends Shape {
 		vertex.y = verts[1];
 	}
 
-	private native void jniGetVertex (long addr, int index, float[] verts); /*
+	private native void jniGetVertex (long addr, int index, float[] verts){
 		b2PolygonShape* poly = (b2PolygonShape*)addr;
 		const b2Vec2 v = poly->GetVertex( index );
 		verts[0] = v.x;
 		verts[1] = v.y;
-	*/
+	}
 }
