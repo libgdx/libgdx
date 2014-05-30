@@ -108,6 +108,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 	}
 
 	@Override
+	public Vector3 setZero () {
+		x = y = z = 0f;
+		return this;
+	}
+
+	@Override
 	public Vector3 cpy () {
 		return new Vector3(this);
 	}

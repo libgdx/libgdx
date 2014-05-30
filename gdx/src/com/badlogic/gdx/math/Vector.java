@@ -46,6 +46,10 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining */
 	T set (T v);
 
+	/** Sets the components of this vector to 0
+	 * @return This vector for chaining */
+	T setZero ();
+
 	/** Subtracts the given vector from this vector.
 	 * @param v The vector
 	 * @return This vector for chaining */

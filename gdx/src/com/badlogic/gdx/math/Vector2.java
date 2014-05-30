@@ -99,6 +99,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return this;
 	}
 
+	@Override
+	public Vector2 setZero () {
+		x = y = 0f;
+		return this;
+	}
+
 	/** Substracts the other vector from this vector.
 	 * @param x The x-component of the other vector
 	 * @param y The y-component of the other vector
