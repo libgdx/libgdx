@@ -60,7 +60,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_EdgeShape_jniGetVerte
 
 		b2EdgeShape* edge = (b2EdgeShape*)addr;
 		vertex[0] = edge->m_vertex0.x;
-		vertex[1] = edge->m_vertex0.y;		
+		vertex[1] = edge->m_vertex0.y;
 	
 	env->ReleasePrimitiveArrayCritical(obj_vertex, vertex, 0);
 
@@ -73,7 +73,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_EdgeShape_jniSetVerte
 
 		b2EdgeShape* edge = (b2EdgeShape*)addr;
 		edge->m_vertex0.x = x;
-		edge->m_vertex0.y = y;		
+		edge->m_vertex0.y = y;
 	
 
 }
@@ -86,7 +86,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_EdgeShape_jniGetVerte
 
 		b2EdgeShape* edge = (b2EdgeShape*)addr;
 		vertex[0] = edge->m_vertex3.x;
-		vertex[1] = edge->m_vertex3.y;		
+		vertex[1] = edge->m_vertex3.y;
 	
 	env->ReleasePrimitiveArrayCritical(obj_vertex, vertex, 0);
 
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_EdgeShape_jniSetVerte
 
 		b2EdgeShape* edge = (b2EdgeShape*)addr;
 		edge->m_vertex3.x = x;
-		edge->m_vertex3.y = y;		
+		edge->m_vertex3.y = y;
 	
 
 }

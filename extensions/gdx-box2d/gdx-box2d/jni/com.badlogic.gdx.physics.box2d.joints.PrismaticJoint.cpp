@@ -7,7 +7,7 @@
 	float* anchor = (float*)env->GetPrimitiveArrayCritical(obj_anchor, 0);
 
 
-//@line:46
+//@line:47
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorA().x;
@@ -21,7 +21,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 	float* anchor = (float*)env->GetPrimitiveArrayCritical(obj_anchor, 0);
 
 
-//@line:58
+//@line:59
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
@@ -31,10 +31,24 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 
 }
 
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetLocalAxisA(JNIEnv* env, jobject object, jlong addr, jfloatArray obj_anchor) {
+	float* anchor = (float*)env->GetPrimitiveArrayCritical(obj_anchor, 0);
+
+
+//@line:71
+
+		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
+		anchor[0] = joint->GetLocalAxisA().x;
+		anchor[1] = joint->GetLocalAxisA().y;
+	
+	env->ReleasePrimitiveArrayCritical(obj_anchor, anchor, 0);
+
+}
+
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetJointTranslation(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:69
+//@line:82
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetJointTranslation();
@@ -45,7 +59,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetJointSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:79
+//@line:92
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetJointSpeed();
@@ -56,7 +70,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniIsLimitEnabled(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:89
+//@line:102
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->IsLimitEnabled();
@@ -67,7 +81,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJ
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniEnableLimit(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:99
+//@line:112
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->EnableLimit(flag);
@@ -78,7 +92,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetLowerLimit(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:109
+//@line:122
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetLowerLimit();
@@ -89,7 +103,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetUpperLimit(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:119
+//@line:132
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetUpperLimit();
@@ -100,7 +114,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniSetLimits(JNIEnv* env, jobject object, jlong addr, jfloat lower, jfloat upper) {
 
 
-//@line:129
+//@line:142
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetLimits(lower, upper );
@@ -111,7 +125,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniIsMotorEnabled(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:139
+//@line:152
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->IsMotorEnabled();
@@ -122,7 +136,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJ
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniEnableMotor(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:149
+//@line:162
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->EnableMotor(flag);
@@ -133,7 +147,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniSetMotorSpeed(JNIEnv* env, jobject object, jlong addr, jfloat speed) {
 
 
-//@line:159
+//@line:172
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetMotorSpeed(speed);
@@ -144,7 +158,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetMotorSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:169
+//@line:182
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMotorSpeed();
@@ -155,7 +169,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniSetMaxMotorForce(JNIEnv* env, jobject object, jlong addr, jfloat force) {
 
 
-//@line:179
+//@line:192
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		joint->SetMaxMotorForce(force);
@@ -166,7 +180,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetMotorForce(JNIEnv* env, jobject object, jlong addr, jfloat invDt) {
 
 
-//@line:189
+//@line:202
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMotorForce(invDt);
@@ -177,7 +191,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetMaxMotorForce(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:199
+//@line:212
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetMaxMotorForce();
@@ -188,7 +202,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoi
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetReferenceAngle(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:209
+//@line:222
 
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		return joint->GetReferenceAngle();
