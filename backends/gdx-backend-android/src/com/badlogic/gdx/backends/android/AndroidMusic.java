@@ -70,7 +70,10 @@ public class AndroidMusic implements Music, MediaPlayer.OnCompletionListener {
 	@Override
 	public void pause () {
 		if (player == null) return;
-		if (player.isPlaying()) player.pause();
+		if (player.isPlaying()) {			
+			player.pause();
+		}
+		wasPlaying = false;
 	}
 
 	@Override
