@@ -80,14 +80,14 @@ public class DefaultShader extends BaseShader {
 	public static class Inputs {
 		public final static Uniform projTrans = new Uniform("u_projTrans");
 		public final static Uniform viewTrans = new Uniform("u_viewTrans");
-		public final static Uniform projViewTrans = new Uniform("u_projViewTrans");
+		public final static Uniform projViewTrans = new Uniform("u_projViewTrans");				//Camera.combined
 		public final static Uniform cameraPosition = new Uniform("u_cameraPosition");
 		public final static Uniform cameraDirection = new Uniform("u_cameraDirection");
 		public final static Uniform cameraUp = new Uniform("u_cameraUp");
 
-		public final static Uniform worldTrans = new Uniform("u_worldTrans");
-		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");
-		public final static Uniform projViewWorldTrans = new Uniform("u_projViewWorldTrans");
+		public final static Uniform worldTrans = new Uniform("u_worldTrans");						//object transform
+		public final static Uniform viewWorldTrans = new Uniform("u_viewWorldTrans");				//view * transform (viewModel)
+		public final static Uniform projViewWorldTrans = new Uniform("u_projViewWorldTrans");	//camera.combined * transform (projViewModel)
 		public final static Uniform normalMatrix = new Uniform("u_normalMatrix");
 		public final static Uniform bones = new Uniform("u_bones");
 
@@ -431,14 +431,14 @@ public class DefaultShader extends BaseShader {
 	// Global uniforms
 	public final int u_projTrans;
 	public final int u_viewTrans;
-	public final int u_projViewTrans;
+	public final int u_projViewTrans;	//camera.combined
 	public final int u_cameraPosition;
 	public final int u_cameraDirection;
 	public final int u_cameraUp;
 	public final int u_time;
 	// Object uniforms
 	public final int u_worldTrans;
-	public final int u_viewWorldTrans;
+	public final int u_viewWorldTrans;		//viewModel
 	public final int u_projViewWorldTrans;
 	public final int u_normalMatrix;
 	public final int u_bones;

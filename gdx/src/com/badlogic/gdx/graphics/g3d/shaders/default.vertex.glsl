@@ -11,7 +11,13 @@
 #endif
 
 attribute vec3 a_position;
+//Camera.combined
 uniform mat4 u_projViewTrans;
+//ViewModel matrix
+uniform mat4 u_viewWorldTrans;
+
+varying vec3 viewVec;
+varying vec3 v_eyePoint; //point to cam
 
 #if defined(colorFlag)
 varying vec4 v_color;
@@ -172,6 +178,16 @@ struct SpotLight
 	float exponent;
 };
 uniform SpotLight u_spotLights[numSpotLights];
+
+struct SpotLightInterpolated
+{
+	vec3 color;
+	vec3 position;
+	vec3 direction;
+	float dist;
+};
+varying SpotLightInterpolated v_spotLights[numSpotLights];
+
 #endif // numSpotLights
 
 #if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
@@ -240,6 +256,10 @@ void main() {
 		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	#endif
 		
+	//Eye for PointLight and SpotLight
+	v_eyePoint = -(u_viewWorldTrans * pos);
+	
+	//set the GL position
 	gl_Position = u_projViewTrans * pos;
 		
 	#ifdef shadowMapFlag
@@ -303,10 +323,11 @@ void main() {
 
 			
 		#ifdef specularFlag
-			v_lightSpecular = vec3(0.0);
-			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+	//		v_lightSpecular = vec3(0.0);
+			viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
-			
+	
+/*	
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
 				vec3 lightDir = -u_dirLights[i].direction;
@@ -334,12 +355,19 @@ void main() {
 				#endif // specularFlag
 			}
 		#endif // numPointLights
-
+*/
 		#if defined(numSpotLights) && (numSpotLights > 0) && defined(normalFlag)
             for (int i = 0; i < numSpotLights; i++) {
+			
+				//set values to be interpolated
+				v_spotLights[i].color = u_spotLights[i].color;
+				v_spotLights[i].position = u_spotLights[i].position;				
+			
                 vec3 lightDir = u_spotLights[i].position - pos.xyz;
-                float dist2 = dot(lightDir, lightDir);
-                lightDir *= inversesqrt(dist2);
+                v_spotLights[i].dist = length(lightDir);
+                v_spotLights[i].direction = normalize(lightDir);
+				
+				/*
                 float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
                 vec3 value = u_spotLights[i].color * (NdotL / (u_spotLights[i].constantAttenuation + u_spotLights[i].linearAttenuation * sqrt(dist2) + u_spotLights[i].quadraticAttenuation * dist2));
                 
@@ -355,6 +383,7 @@ void main() {
                     float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
                     v_lightSpecular += value * pow(halfDotView, u_shininess);
                 #endif // specularFlag
+				*/
             }
         #endif // numPointLights
 
