@@ -25,6 +25,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
+ * Method:    jniGetLocalAxisA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetLocalAxisA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
  * Method:    jniGetJointTranslation
  * Signature: (J)F
  */

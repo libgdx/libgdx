@@ -40,6 +40,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
@@ -60,9 +61,11 @@ public class SettingsDialog extends JDialog {
 	private JTextField mavenTextField;
 	private JCheckBox ideaBox;
 	private JCheckBox eclipseBox;
+	private JCheckBox offlineBox;
 	private String mavenSnapshot;
 	private boolean ideaSnapshot;
 	private boolean eclipseSnapshot;
+	private boolean offlineSnapshot;
 
 	public SettingsDialog () {
 		contentPane = new JPanel(new GridBagLayout());
@@ -75,7 +78,14 @@ public class SettingsDialog extends JDialog {
 
 		buttonOK.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				onOK();
+				if (offlineBox.isSelected()) {
+					int value = JOptionPane.showConfirmDialog(null, "You have selected offline mode. This requires you to have your dependencies already in your maven/gradle cache.\n\nThe setup will fail if you do not have the correct dependenices already.\n\nDo you want to continue?", "Warning!", JOptionPane.YES_NO_OPTION);
+					if (value == 0) {
+						onOK();
+					}
+				} else {
+					onOK();
+				}
 			}
 		});
 		buttonCancel.addActionListener(new ActionListener() {
@@ -155,6 +165,12 @@ public class SettingsDialog extends JDialog {
 		eclipseLabel.setForeground(new Color(170, 170, 170));
 		eclipseDesc.setForeground(new Color(170, 170, 170));
 		eclipseBox.setBackground(new Color(36, 36, 36));
+		JLabel offlineLabel = new JLabel("Offline Mode");
+		JLabel offlineDesc = new JLabel("Don't force download dependencies");
+		offlineBox = new JCheckBox();
+		offlineLabel.setForeground(new Color(170, 170, 170));
+		offlineDesc.setForeground(new Color(170, 170, 170));
+		offlineBox.setBackground(new Color(36, 36, 36));
 
 		JSeparator separator = new JSeparator();
 		separator.setForeground(new Color(85, 85, 85));
@@ -173,6 +189,11 @@ public class SettingsDialog extends JDialog {
 		content.add(eclipseLabel, new GridBagConstraints(0, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 		content.add(eclipseBox, new GridBagConstraints(1, 4, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
 		content.add(eclipseDesc, new GridBagConstraints(3, 4, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		
+		content.add(offlineLabel, new GridBagConstraints(0, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+		content.add(offlineBox, new GridBagConstraints(1, 5, 2, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+		content.add(offlineDesc, new GridBagConstraints(3, 5, 1, 1, 1, 1, NORTH, HORIZONTAL, new Insets(0, 15, 0, 0), 0, 0));
+
 
 		String text = "<p style=\"font-size:10\">Click for more info on using Gradle without IDE integration</p>";
 		linkText = new JLabel("<html>" + text + "</html>");
@@ -211,6 +232,9 @@ public class SettingsDialog extends JDialog {
 	public List<String> getGradleArgs () {
 		List<String> list = new ArrayList<String>();
 		list.add("--no-daemon");
+		if (offlineBox.isSelected()) {
+			list.add("--offline");	
+		}
 		if (eclipseBox.isSelected()) {
 			list.add("eclipse");
 			list.add("afterEclipseImport");
@@ -239,12 +263,14 @@ public class SettingsDialog extends JDialog {
 		mavenSnapshot = mavenTextField.getText();
 		ideaSnapshot = ideaBox.isSelected();
 		eclipseSnapshot = eclipseBox.isSelected();
+		offlineSnapshot = offlineBox.isSelected();
 	}
 
 	private void restore () {
 		mavenTextField.setText(mavenSnapshot);
 		ideaBox.setSelected(ideaSnapshot);
 		eclipseBox.setSelected(eclipseSnapshot);
+		offlineBox.setSelected(offlineSnapshot);
 	}
 
 }
