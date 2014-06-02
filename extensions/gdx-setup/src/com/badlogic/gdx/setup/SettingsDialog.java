@@ -61,7 +61,7 @@ public class SettingsDialog extends JDialog {
 	private JTextField mavenTextField;
 	private JCheckBox ideaBox;
 	private JCheckBox eclipseBox;
-	private JCheckBox offlineBox;
+	JCheckBox offlineBox;
 	private String mavenSnapshot;
 	private boolean ideaSnapshot;
 	private boolean eclipseSnapshot;
