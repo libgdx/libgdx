@@ -62,12 +62,11 @@ public final class GeometryUtils {
 		return interpolatedOut;
 	}
 
-	/** Returns interpolated values given the barycentric coordinates of a point in a triangle and the values at each vertex.
+	/** Returns an interpolated value given the barycentric coordinates of a point in a triangle and the values at each vertex.
 	 * @return interpolatedOut */
-	static public Vector2 fromBarycoord (Vector2 barycentric, float a, float b, float c, Vector2 interpolatedOut) {
+	static public float fromBarycoord (Vector2 barycentric, float a, float b, float c) {
 		float u = 1 - barycentric.x - barycentric.y;
-		interpolatedOut.x = u * a + barycentric.x * b + barycentric.y * c;
-		return interpolatedOut;
+		return u * a + barycentric.x * b + barycentric.y * c;
 	}
 
 	/** Returns the lowest positive root of the quadric equation given by a* x * x + b * x + c = 0. If no solution is given
