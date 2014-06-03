@@ -115,7 +115,7 @@ public class Hiero extends JFrame {
 	volatile UnicodeFont newUnicodeFont;
 	UnicodeFont unicodeFont;
 	Color renderingBackgroundColor = Color.BLACK;
-	List effectPanels = new ArrayList();
+	List<EffectPanel> effectPanels = new ArrayList<EffectPanel>();
 	Preferences prefs;
 	ColorEffect colorEffect;
 
@@ -984,9 +984,14 @@ public class Hiero extends JFrame {
 		final ConfigurableEffect effect;
 		List values;
 
+		JButton upButton;
+		JButton downButton;
 		JButton deleteButton;
 		private JPanel valuesPanel;
 		JLabel nameLabel;
+		
+		GridBagConstraints constrains = new GridBagConstraints(0, -1, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER,
+			GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
 
 		EffectPanel (final ConfigurableEffect effect) {
 			this.effect = effect;
@@ -995,8 +1000,7 @@ public class Hiero extends JFrame {
 
 			setLayout(new GridBagLayout());
 			setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, java.awt.Color.black));
-			appliedEffectsPanel.add(this, new GridBagConstraints(0, -1, 1, 1, 1.0, 0.0, GridBagConstraints.CENTER,
-				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+			appliedEffectsPanel.add(this, constrains);
 			{
 				JPanel titlePanel = new JPanel();
 				titlePanel.setLayout(new LayoutManager() {
@@ -1012,17 +1016,37 @@ public class Hiero extends JFrame {
 					}
 
 					public void layoutContainer (Container parent) {
-						Dimension buttonSize = deleteButton.getPreferredSize();
+						
+						Dimension buttonSize = upButton.getPreferredSize();
+						int upButtonX = getWidth() - buttonSize.width * 3 - 6 - 5;
+						upButton.setBounds(upButtonX, 0, buttonSize.width, buttonSize.height);
+						downButton.setBounds(getWidth() - buttonSize.width * 2 - 3 - 5, 0, buttonSize.width, buttonSize.height);
 						deleteButton.setBounds(getWidth() - buttonSize.width - 5, 0, buttonSize.width, buttonSize.height);
 
 						Dimension labelSize = nameLabel.getPreferredSize();
-						nameLabel.setBounds(5, buttonSize.height / 2 - labelSize.height / 2, getWidth() - buttonSize.width - 5 - 5,
+						nameLabel.setBounds(5, buttonSize.height / 2 - labelSize.height / 2, getWidth() - 5,
 							labelSize.height);
 					}
 
 					public void addLayoutComponent (String name, Component comp) {
 					}
 				});
+				{
+					upButton = new JButton();
+					titlePanel.add(upButton);
+					upButton.setText("▲");
+					upButton.setMargin(new Insets(0, 0, 0, 0));
+					Font font = upButton.getFont();
+					upButton.setFont(new Font(font.getName(), font.getStyle(), font.getSize() - 2));
+				}
+				{
+					downButton = new JButton();
+					titlePanel.add(downButton);
+					downButton.setText("▼");
+					downButton.setMargin(new Insets(0, 0, 0, 0));
+					Font font = downButton.getFont();
+					downButton.setFont(new Font(font.getName(), font.getStyle(), font.getSize() - 2));
+				}
 				{
 					deleteButton = new JButton();
 					titlePanel.add(deleteButton);
@@ -1051,15 +1075,41 @@ public class Hiero extends JFrame {
 					GridBagConstraints.HORIZONTAL, new Insets(0, 10, 5, 0), 0, 0));
 			}
 
+			upButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed (ActionEvent evt) {
+					int currentIndex = effectPanels.indexOf(EffectPanel.this);
+					if (currentIndex > 0) {
+						moveEffect(currentIndex - 1);
+						updateFont();
+						updateUpDownButtons();
+					}
+				}
+			});
+			
+			downButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed (ActionEvent evt) {
+					int currentIndex = effectPanels.indexOf(EffectPanel.this);
+					if (currentIndex < effectPanels.size() - 1) {
+						moveEffect(currentIndex + 1);
+						updateFont();
+						updateUpDownButtons();
+					}
+				}
+			});
+			
 			deleteButton.addActionListener(new ActionListener() {
 				public void actionPerformed (ActionEvent evt) {
 					remove();
 					updateFont();
+					updateUpDownButtons();
 				}
 			});
 
 			updateValues();
 			updateFont();
+			updateUpDownButtons();
 		}
 
 		public void remove () {
@@ -1075,6 +1125,31 @@ public class Hiero extends JFrame {
 			values = effect.getValues();
 			for (Iterator iter = values.iterator(); iter.hasNext();)
 				addValue((Value)iter.next());
+		}
+		
+		public void updateUpDownButtons() {
+
+			for(int index = 0; index < effectPanels.size(); index++){
+				EffectPanel effectPanel = effectPanels.get(index);
+				if (index == 0) {
+					effectPanel.upButton.setEnabled(false);
+				} else {
+					effectPanel.upButton.setEnabled(true);
+				}
+				
+				if (index == effectPanels.size() - 1) {
+					effectPanel.downButton.setEnabled(false);
+				} else {
+					effectPanel.downButton.setEnabled(true);
+				}
+			}
+		}
+		
+		public void moveEffect (int newIndex) {
+			appliedEffectsPanel.remove(this);
+			effectPanels.remove(this);
+			appliedEffectsPanel.add(this, constrains, newIndex);
+			effectPanels.add(newIndex, this);
 		}
 
 		public void addValue (final Value value) {
@@ -1126,6 +1201,7 @@ public class Hiero extends JFrame {
 			} else if (!effect.equals(other.effect)) return false;
 			return true;
 		}
+		
 	}
 
 	static private class Splash extends JWindow {
