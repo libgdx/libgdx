@@ -24,17 +24,17 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneListener.Edge;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneListener.ScrollPaneEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.badlogic.gdx.scenes.scene2d.utils.ScrollPaneEdgeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ScrollPaneEdgeListener.Edges;
-import com.badlogic.gdx.utils.Array;
 
 /** A group that scrolls a child widget using scrollbars and/or mouse or touch dragging.
  * <p>
@@ -84,7 +84,6 @@ public class ScrollPane extends WidgetGroup {
 	private boolean variableSizeKnobs = true;
 	int draggingPointer = -1;
 
-	private Array<ScrollPaneEdgeListener> edgeListeners = new Array<ScrollPaneEdgeListener>();
 	private boolean hitLeft = false;
 	private boolean hitRight = false;
 	private boolean hitTop = false;
@@ -108,7 +107,9 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @param widget May be null. */
 	public ScrollPane (Actor widget, ScrollPaneStyle style) {
-		if (style == null) throw new IllegalArgumentException("style cannot be null.");
+		if (style == null) {
+			throw new IllegalArgumentException("style cannot be null.");
+		}
 		this.style = style;
 		setWidget(widget);
 		setSize(150, 150);
@@ -116,14 +117,23 @@ public class ScrollPane extends WidgetGroup {
 		addCaptureListener(new InputListener() {
 			private float handlePosition;
 
+			@Override
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				if (draggingPointer != -1) return false;
-				if (pointer == 0 && button != 0) return false;
+				if (draggingPointer != -1) {
+					return false;
+				}
+				if (pointer == 0 && button != 0) {
+					return false;
+				}
 				getStage().setScrollFocus(ScrollPane.this);
 
-				if (!flickScroll) resetFade();
+				if (!flickScroll) {
+					resetFade();
+				}
 
-				if (fadeAlpha == 0) return false;
+				if (fadeAlpha == 0) {
+					return false;
+				}
 
 				if (scrollX && hScrollBounds.contains(x, y)) {
 					event.stop();
@@ -154,13 +164,19 @@ public class ScrollPane extends WidgetGroup {
 				return false;
 			}
 
+			@Override
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				if (pointer != draggingPointer) return;
+				if (pointer != draggingPointer) {
+					return;
+				}
 				cancel();
 			}
 
+			@Override
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				if (pointer != draggingPointer) return;
+				if (pointer != draggingPointer) {
+					return;
+				}
 				if (touchScrollH) {
 					float delta = x - lastPoint.x;
 					float scrollH = handlePosition + delta;
@@ -169,14 +185,18 @@ public class ScrollPane extends WidgetGroup {
 					scrollH = Math.min(hScrollBounds.x + hScrollBounds.width - hKnobBounds.width, scrollH);
 					float total = hScrollBounds.width - hKnobBounds.width;
 					float deltaAmount = amountX;
-					if (total != 0) setScrollPercentX((scrollH - hScrollBounds.x) / total);
+					if (total != 0) {
+						setScrollPercentX((scrollH - hScrollBounds.x) / total);
+					}
 					deltaAmount = amountX - deltaAmount;
 					lastPoint.set(x, y);
 
 					if (deltaAmount != 0) {
-						if (amountX == 0)
-							sendHitEdgeEvent(Edges.LEFT);
-						else if (amountX == maxX) sendHitEdgeEvent(Edges.RIGHT);
+						if (amountX == 0) {
+							sendHitEdgeEvent(Edge.LEFT);
+						} else if (amountX == maxX) {
+							sendHitEdgeEvent(Edge.RIGHT);
+						}
 					}
 
 				} else if (touchScrollV) {
@@ -187,25 +207,33 @@ public class ScrollPane extends WidgetGroup {
 					scrollV = Math.min(vScrollBounds.y + vScrollBounds.height - vKnobBounds.height, scrollV);
 					float total = vScrollBounds.height - vKnobBounds.height;
 					float deltaAmount = amountY;
-					if (total != 0) setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / total));
+					if (total != 0) {
+						setScrollPercentY(1 - ((scrollV - vScrollBounds.y) / total));
+					}
 					deltaAmount = amountY - deltaAmount;
 					lastPoint.set(x, y);
 
 					if (deltaAmount != 0) {
-						if (amountY == 0)
-							sendHitEdgeEvent(Edges.TOP);
-						else if (amountY == maxY) sendHitEdgeEvent(Edges.BOTTOM);
+						if (amountY == 0) {
+							sendHitEdgeEvent(Edge.TOP);
+						} else if (amountY == maxY) {
+							sendHitEdgeEvent(Edge.BOTTOM);
+						}
 					}
 				}
 			}
 
+			@Override
 			public boolean mouseMoved (InputEvent event, float x, float y) {
-				if (!flickScroll) resetFade();
+				if (!flickScroll) {
+					resetFade();
+				}
 				return false;
 			}
 		});
 
 		flickScrollListener = new ActorGestureListener() {
+			@Override
 			public void pan (InputEvent event, float x, float y, float deltaX, float deltaY) {
 				resetFade();
 				amountX -= deltaX;
@@ -216,6 +244,7 @@ public class ScrollPane extends WidgetGroup {
 				testHitEdge();
 			}
 
+			@Override
 			public void fling (InputEvent event, float x, float y, int button) {
 				if (Math.abs(x) > 150) {
 					flingTimer = flingTime;
@@ -231,9 +260,12 @@ public class ScrollPane extends WidgetGroup {
 				hitFlingY = false;
 			}
 
+			@Override
 			public boolean handle (Event event) {
 				if (super.handle(event)) {
-					if (((InputEvent)event).getType() == InputEvent.Type.touchDown) flingTimer = 0;
+					if (((InputEvent)event).getType() == InputEvent.Type.touchDown) {
+						flingTimer = 0;
+					}
 					return true;
 				}
 				return false;
@@ -242,6 +274,7 @@ public class ScrollPane extends WidgetGroup {
 		addListener(flickScrollListener);
 
 		addListener(new InputListener() {
+			@Override
 			public boolean scrolled (InputEvent event, float x, float y, int amount) {
 				resetFade();
 				if (scrollY) {
@@ -252,11 +285,15 @@ public class ScrollPane extends WidgetGroup {
 
 					// Top
 					if (scrolledUp) {
-						if (getScrollY() <= 0) sendHitEdgeEvent(Edges.TOP);
+						if (getScrollY() <= 0) {
+							sendHitEdgeEvent(Edge.TOP);
+						}
 					}
 					// Bottom
 					else {
-						if (getScrollY() >= maxY) sendHitEdgeEvent(Edges.BOTTOM);
+						if (getScrollY() >= maxY) {
+							sendHitEdgeEvent(Edge.BOTTOM);
+						}
 					}
 				} else if (scrollX) {
 					setScrollX(amountX + getMouseWheelX() * amount);
@@ -266,11 +303,15 @@ public class ScrollPane extends WidgetGroup {
 
 					// Left
 					if (scrolledLeft) {
-						if (getScrollX() <= 0) sendHitEdgeEvent(Edges.LEFT);
+						if (getScrollX() <= 0) {
+							sendHitEdgeEvent(Edge.LEFT);
+						}
 					}
 					// Right
 					else {
-						if (getScrollX() >= maxX) sendHitEdgeEvent(Edges.RIGHT);
+						if (getScrollX() >= maxX) {
+							sendHitEdgeEvent(Edge.RIGHT);
+						}
 					}
 				}
 				return true;
@@ -283,21 +324,25 @@ public class ScrollPane extends WidgetGroup {
 		// Left
 		if (scrollX) {
 			if (hitLeft) {
-				if (getScrollX() >= 0 && velocityX == 0 && velocityY == 0) hitLeft = false;
+				if (getScrollX() >= 0 && velocityX == 0 && velocityY == 0) {
+					hitLeft = false;
+				}
 			} else {
 				if (getScrollX() < 1) {
 					hitLeft = true;
-					sendHitEdgeEvent(Edges.LEFT);
+					sendHitEdgeEvent(Edge.LEFT);
 				}
 			}
 
 			// Right
 			if (hitRight) {
-				if (getScrollX() <= maxX + 1 && velocityX == 0 && velocityY == 0) hitRight = false;
+				if (getScrollX() <= maxX + 1 && velocityX == 0 && velocityY == 0) {
+					hitRight = false;
+				}
 			} else {
 				if (getScrollX() > maxX) {
 					hitRight = true;
-					sendHitEdgeEvent(Edges.RIGHT);
+					sendHitEdgeEvent(Edge.RIGHT);
 				}
 			}
 		}
@@ -308,21 +353,25 @@ public class ScrollPane extends WidgetGroup {
 		// Top
 		if (scrollY) {
 			if (hitTop) {
-				if (getScrollY() >= 0 && velocityX == 0 && velocityY == 0) hitTop = false;
+				if (getScrollY() >= 0 && velocityX == 0 && velocityY == 0) {
+					hitTop = false;
+				}
 			} else {
 				if (getScrollY() < 1) {
 					hitTop = true;
-					sendHitEdgeEvent(Edges.TOP);
+					sendHitEdgeEvent(Edge.TOP);
 				}
 			}
 
 			// Bottom
 			if (hitBottom) {
-				if (getScrollY() <= maxY + 1 && velocityX == 0 && velocityY == 0) hitBottom = false;
+				if (getScrollY() <= maxY + 1 && velocityX == 0 && velocityY == 0) {
+					hitBottom = false;
+				}
 			} else {
 				if (getScrollY() > maxY) {
 					hitBottom = true;
-					sendHitEdgeEvent(Edges.BOTTOM);
+					sendHitEdgeEvent(Edge.BOTTOM);
 				}
 			}
 		}
@@ -334,24 +383,10 @@ public class ScrollPane extends WidgetGroup {
 		testHitYEdge();
 	}
 
-	/** Add a ScrollPaneEdgeListener
-	 * @param listener listener to add */
-	public void addScrollPaneEdgeListener (ScrollPaneEdgeListener listener) {
-		edgeListeners.add(listener);
-	}
-
-	/** Removes an existing ScrollPaneEdgeListener from this ScrollPane
-	 * @param listener the listener to remove */
-	public void removeScrollPaneEdgeListener (ScrollPaneEdgeListener listener) {
-		edgeListeners.removeValue(listener, true);
-	}
-
 	/** Send hit edge event to all ScrollPaneEdgeListener
 	 * @param edge which edge was hit */
-	void sendHitEdgeEvent (Edges edge) {
-		for (ScrollPaneEdgeListener listener : edgeListeners) {
-			listener.hitEdge(this, edge);
-		}
+	void sendHitEdgeEvent (Edge edge) {
+		fire(new ScrollPaneEvent(edge));
 	}
 
 	void resetFade () {
@@ -360,9 +395,13 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	void cancelTouchFocusedChild (InputEvent event) {
-		if (!cancelTouchFocus) return;
+		if (!cancelTouchFocus) {
+			return;
+		}
 		Stage stage = getStage();
-		if (stage != null) stage.cancelTouchFocus(flickScrollListener, this);
+		if (stage != null) {
+			stage.cancelTouchFocus(flickScrollListener, this);
+		}
 	}
 
 	/** If currently scrolling by tracking a touch down, stop scrolling. */
@@ -374,7 +413,9 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	void clamp () {
-		if (!clamp) return;
+		if (!clamp) {
+			return;
+		}
 		scrollX(overscrollX ? MathUtils.clamp(amountX, -overscrollDistance, maxX + overscrollDistance) : MathUtils.clamp(amountX,
 			0, maxX));
 		scrollY(overscrollY ? MathUtils.clamp(amountY, -overscrollDistance, maxY + overscrollDistance) : MathUtils.clamp(amountY,
@@ -382,7 +423,9 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setStyle (ScrollPaneStyle style) {
-		if (style == null) throw new IllegalArgumentException("style cannot be null.");
+		if (style == null) {
+			throw new IllegalArgumentException("style cannot be null.");
+		}
 		this.style = style;
 		invalidateHierarchy();
 	}
@@ -393,6 +436,7 @@ public class ScrollPane extends WidgetGroup {
 		return style;
 	}
 
+	@Override
 	public void act (float delta) {
 		super.act(delta);
 
@@ -400,7 +444,9 @@ public class ScrollPane extends WidgetGroup {
 
 		if (fadeAlpha > 0 && fadeScrollBars && !panning && !touchScrollH && !touchScrollV) {
 			fadeDelay -= delta;
-			if (fadeDelay <= 0) fadeAlpha = Math.max(0, fadeAlpha - delta);
+			if (fadeDelay <= 0) {
+				fadeAlpha = Math.max(0, fadeAlpha - delta);
+			}
 		}
 
 		if (flingTimer > 0) {
@@ -412,10 +458,18 @@ public class ScrollPane extends WidgetGroup {
 			clamp();
 
 			// Stop fling if hit overscroll distance.
-			if (amountX == -overscrollDistance) velocityX = 0;
-			if (amountX >= maxX + overscrollDistance) velocityX = 0;
-			if (amountY == -overscrollDistance) velocityY = 0;
-			if (amountY >= maxY + overscrollDistance) velocityY = 0;
+			if (amountX == -overscrollDistance) {
+				velocityX = 0;
+			}
+			if (amountX >= maxX + overscrollDistance) {
+				velocityX = 0;
+			}
+			if (amountY == -overscrollDistance) {
+				velocityY = 0;
+			}
+			if (amountY >= maxY + overscrollDistance) {
+				velocityY = 0;
+			}
 
 			flingTimer -= delta;
 			if (flingTimer <= 0) {
@@ -435,20 +489,26 @@ public class ScrollPane extends WidgetGroup {
 
 		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
 			if (visualAmountX != amountX) {
-				if (visualAmountX < amountX)
+				if (visualAmountX < amountX) {
 					visualScrollX(Math.min(amountX, visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta)));
-				else
+				} else {
 					visualScrollX(Math.max(amountX, visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta)));
+				}
 			}
 			if (visualAmountY != amountY) {
-				if (visualAmountY < amountY)
+				if (visualAmountY < amountY) {
 					visualScrollY(Math.min(amountY, visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta)));
-				else
+				} else {
 					visualScrollY(Math.max(amountY, visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta)));
+				}
 			}
 		} else {
-			if (visualAmountX != amountX) visualScrollX(amountX);
-			if (visualAmountY != amountY) visualScrollY(amountY);
+			if (visualAmountX != amountX) {
+				visualScrollX(amountX);
+			}
+			if (visualAmountY != amountY) {
+				visualScrollY(amountY);
+			}
 		}
 
 		if (!panning) {
@@ -496,6 +556,7 @@ public class ScrollPane extends WidgetGroup {
 
 	}
 
+	@Override
 	public void layout () {
 		final Drawable bg = style.background;
 		final Drawable hScrollKnob = style.hScrollKnob;
@@ -513,17 +574,27 @@ public class ScrollPane extends WidgetGroup {
 		float height = getHeight();
 
 		float scrollbarHeight = 0;
-		if (hScrollKnob != null) scrollbarHeight = hScrollKnob.getMinHeight();
-		if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+		if (hScrollKnob != null) {
+			scrollbarHeight = hScrollKnob.getMinHeight();
+		}
+		if (style.hScroll != null) {
+			scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+		}
 		float scrollbarWidth = 0;
-		if (vScrollKnob != null) scrollbarWidth = vScrollKnob.getMinWidth();
-		if (style.vScroll != null) scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
+		if (vScrollKnob != null) {
+			scrollbarWidth = vScrollKnob.getMinWidth();
+		}
+		if (style.vScroll != null) {
+			scrollbarWidth = Math.max(scrollbarWidth, style.vScroll.getMinWidth());
+		}
 
 		// Get available space size by subtracting background's padded area.
 		areaWidth = width - bgLeftWidth - bgRightWidth;
 		areaHeight = height - bgTopHeight - bgBottomHeight;
 
-		if (widget == null) return;
+		if (widget == null) {
+			return;
+		}
 
 		// Get widget's desired width.
 		float widgetWidth, widgetHeight;
@@ -563,18 +634,30 @@ public class ScrollPane extends WidgetGroup {
 
 		if (fade) {
 			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX) areaHeight -= scrollbarHeight;
-			if (scrollY) areaWidth -= scrollbarWidth;
+			if (scrollX) {
+				areaHeight -= scrollbarHeight;
+			}
+			if (scrollY) {
+				areaWidth -= scrollbarWidth;
+			}
 		} else {
 			if (scrollbarsOnTop) {
 				// Make sure widget is drawn under non-fading scrollbars.
-				if (scrollX) widgetAreaBounds.height += scrollbarHeight;
-				if (scrollY) widgetAreaBounds.width += scrollbarWidth;
+				if (scrollX) {
+					widgetAreaBounds.height += scrollbarHeight;
+				}
+				if (scrollY) {
+					widgetAreaBounds.width += scrollbarWidth;
+				}
 			} else {
 				// Offset widget area y for horizontal scrollbar at bottom.
-				if (scrollX && hScrollOnBottom) widgetAreaBounds.y += scrollbarHeight;
+				if (scrollX && hScrollOnBottom) {
+					widgetAreaBounds.y += scrollbarHeight;
+				}
 				// Offset widget area x for vertical scrollbar at left.
-				if (scrollY && !vScrollOnRight) widgetAreaBounds.x += scrollbarWidth;
+				if (scrollY && !vScrollOnRight) {
+					widgetAreaBounds.x += scrollbarWidth;
+				}
 			}
 		}
 
@@ -586,8 +669,12 @@ public class ScrollPane extends WidgetGroup {
 		maxY = widgetHeight - areaHeight;
 		if (fade) {
 			// Make sure widget is drawn under fading scrollbars.
-			if (scrollX) maxY -= scrollbarHeight;
-			if (scrollY) maxX -= scrollbarWidth;
+			if (scrollX) {
+				maxY -= scrollbarHeight;
+			}
+			if (scrollY) {
+				maxX -= scrollbarWidth;
+			}
 		}
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
@@ -610,10 +697,11 @@ public class ScrollPane extends WidgetGroup {
 					boundsY = height - bgTopHeight - hScrollHeight;
 				}
 				hScrollBounds.set(boundsX, boundsY, areaWidth, hScrollHeight);
-				if (variableSizeKnobs)
+				if (variableSizeKnobs) {
 					hKnobBounds.width = Math.max(hScrollKnob.getMinWidth(), (int)(hScrollBounds.width * areaWidth / widgetWidth));
-				else
+				} else {
 					hKnobBounds.width = hScrollKnob.getMinWidth();
+				}
 
 				hKnobBounds.height = hScrollKnob.getMinHeight();
 
@@ -642,10 +730,11 @@ public class ScrollPane extends WidgetGroup {
 				}
 				vScrollBounds.set(boundsX, boundsY, vScrollWidth, areaHeight);
 				vKnobBounds.width = vScrollKnob.getMinWidth();
-				if (variableSizeKnobs)
+				if (variableSizeKnobs) {
 					vKnobBounds.height = Math.max(vScrollKnob.getMinHeight(), (int)(vScrollBounds.height * areaHeight / widgetHeight));
-				else
+				} else {
 					vKnobBounds.height = vScrollKnob.getMinHeight();
+				}
 
 				if (vScrollOnRight) {
 					vKnobBounds.x = width - bgRightWidth - vScrollKnob.getMinWidth();
@@ -660,37 +749,52 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		widget.setSize(widgetWidth, widgetHeight);
-		if (widget instanceof Layout) ((Layout)widget).validate();
+		if (widget instanceof Layout) {
+			((Layout)widget).validate();
+		}
 	}
 
+	@Override
 	public void draw (Batch batch, float parentAlpha) {
-		if (widget == null) return;
+		if (widget == null) {
+			return;
+		}
 
 		validate();
 
 		// Setup transform for this group.
 		applyTransform(batch, computeTransform());
 
-		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
-		if (scrollY)
+		if (scrollX) {
+			hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
+		}
+		if (scrollY) {
 			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
+		}
 
 		// Calculate the widget's position depending on the scroll state and available widget area.
 		float y = widgetAreaBounds.y;
-		if (!scrollY)
+		if (!scrollY) {
 			y -= (int)maxY;
-		else
+		} else {
 			y -= (int)(maxY - visualAmountY);
+		}
 
 		if (!fadeScrollBars && scrollbarsOnTop && scrollX) {
 			float scrollbarHeight = 0;
-			if (style.hScrollKnob != null) scrollbarHeight = style.hScrollKnob.getMinHeight();
-			if (style.hScroll != null) scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+			if (style.hScrollKnob != null) {
+				scrollbarHeight = style.hScrollKnob.getMinHeight();
+			}
+			if (style.hScroll != null) {
+				scrollbarHeight = Math.max(scrollbarHeight, style.hScroll.getMinHeight());
+			}
 			y += scrollbarHeight;
 		}
 
 		float x = widgetAreaBounds.x;
-		if (scrollX) x -= (int)visualAmountX;
+		if (scrollX) {
+			x -= (int)visualAmountX;
+		}
 		widget.setPosition(x, y);
 
 		if (widget instanceof Cullable) {
@@ -708,7 +812,9 @@ public class ScrollPane extends WidgetGroup {
 		// Draw the background ninepatch.
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
+		if (style.background != null) {
+			style.background.draw(batch, 0, 0, getWidth(), getHeight());
+		}
 		batch.flush();
 
 		// Enable scissors for widget area and draw the widget.
@@ -726,16 +832,20 @@ public class ScrollPane extends WidgetGroup {
 			}
 		}
 		if (scrollX) {
-			if (style.hScroll != null)
+			if (style.hScroll != null) {
 				style.hScroll.draw(batch, hScrollBounds.x, hScrollBounds.y, hScrollBounds.width, hScrollBounds.height);
-			if (style.hScrollKnob != null)
+			}
+			if (style.hScrollKnob != null) {
 				style.hScrollKnob.draw(batch, hKnobBounds.x, hKnobBounds.y, hKnobBounds.width, hKnobBounds.height);
+			}
 		}
 		if (scrollY) {
-			if (style.vScroll != null)
+			if (style.vScroll != null) {
 				style.vScroll.draw(batch, vScrollBounds.x, vScrollBounds.y, vScrollBounds.width, vScrollBounds.height);
-			if (style.vScrollKnob != null)
+			}
+			if (style.vScrollKnob != null) {
 				style.vScrollKnob.draw(batch, vKnobBounds.x, vKnobBounds.y, vKnobBounds.width, vKnobBounds.height);
+			}
 		}
 
 		resetTransform(batch);
@@ -752,28 +862,36 @@ public class ScrollPane extends WidgetGroup {
 		this.velocityY = velocityY;
 	}
 
+	@Override
 	public float getPrefWidth () {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
-			if (style.background != null) width += style.background.getLeftWidth() + style.background.getRightWidth();
+			if (style.background != null) {
+				width += style.background.getLeftWidth() + style.background.getRightWidth();
+			}
 			return width;
 		}
 		return 150;
 	}
 
+	@Override
 	public float getPrefHeight () {
 		if (widget instanceof Layout) {
 			float height = ((Layout)widget).getPrefHeight();
-			if (style.background != null) height += style.background.getTopHeight() + style.background.getBottomHeight();
+			if (style.background != null) {
+				height += style.background.getTopHeight() + style.background.getBottomHeight();
+			}
 			return height;
 		}
 		return 150;
 	}
 
+	@Override
 	public float getMinWidth () {
 		return 0;
 	}
 
+	@Override
 	public float getMinHeight () {
 		return 0;
 	}
@@ -781,10 +899,16 @@ public class ScrollPane extends WidgetGroup {
 	/** Sets the {@link Actor} embedded in this scroll pane.
 	 * @param widget May be null to remove any current actor. */
 	public void setWidget (Actor widget) {
-		if (widget == this) throw new IllegalArgumentException("widget cannot be the ScrollPane.");
-		if (this.widget != null) super.removeActor(this.widget);
+		if (widget == this) {
+			throw new IllegalArgumentException("widget cannot be the ScrollPane.");
+		}
+		if (this.widget != null) {
+			super.removeActor(this.widget);
+		}
 		this.widget = widget;
-		if (widget != null) super.addActor(widget);
+		if (widget != null) {
+			super.addActor(widget);
+		}
 	}
 
 	/** Returns the actor embedded in this scroll pane, or null. */
@@ -794,38 +918,56 @@ public class ScrollPane extends WidgetGroup {
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
+	@Override
 	public void addActor (Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
+	@Override
 	public void addActorAt (int index, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
+	@Override
 	public void addActorBefore (Actor actorBefore, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
 	/** @deprecated ScrollPane may have only a single child.
 	 * @see #setWidget(Actor) */
+	@Deprecated
+	@Override
 	public void addActorAfter (Actor actorAfter, Actor actor) {
 		throw new UnsupportedOperationException("Use ScrollPane#setWidget.");
 	}
 
+	@Override
 	public boolean removeActor (Actor actor) {
-		if (actor != widget) return false;
+		if (actor != widget) {
+			return false;
+		}
 		setWidget(null);
 		return true;
 	}
 
+	@Override
 	public Actor hit (float x, float y, boolean touchable) {
-		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
-		if (scrollX && hScrollBounds.contains(x, y)) return this;
-		if (scrollY && vScrollBounds.contains(x, y)) return this;
+		if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) {
+			return null;
+		}
+		if (scrollX && hScrollBounds.contains(x, y)) {
+			return this;
+		}
+		if (scrollY && vScrollBounds.contains(x, y)) {
+			return this;
+		}
 		return super.hit(x, y, touchable);
 	}
 
@@ -908,12 +1050,15 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	public void setFlickScroll (boolean flickScroll) {
-		if (this.flickScroll == flickScroll) return;
+		if (this.flickScroll == flickScroll) {
+			return;
+		}
 		this.flickScroll = flickScroll;
-		if (flickScroll)
+		if (flickScroll) {
 			addListener(flickScrollListener);
-		else
+		} else {
 			removeListener(flickScrollListener);
+		}
 		invalidate();
 	}
 
@@ -921,13 +1066,21 @@ public class ScrollPane extends WidgetGroup {
 	 * coordinate system. */
 	public void scrollTo (float x, float y, float width, float height) {
 		float amountX = this.amountX;
-		if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
-		if (x < amountX) amountX = x;
+		if (x + width > amountX + areaWidth) {
+			amountX = x + width - areaWidth;
+		}
+		if (x < amountX) {
+			amountX = x;
+		}
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
 		float amountY = this.amountY;
-		if (amountY > maxY - y - height + areaHeight) amountY = maxY - y - height + areaHeight;
-		if (amountY < maxY - y) amountY = maxY - y;
+		if (amountY > maxY - y - height + areaHeight) {
+			amountY = maxY - y - height + areaHeight;
+		}
+		if (amountY < maxY - y) {
+			amountY = maxY - y;
+		}
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
 
@@ -935,13 +1088,19 @@ public class ScrollPane extends WidgetGroup {
 	 * Coordinates are in the scroll pane widget's coordinate system. */
 	public void scrollToCenter (float x, float y, float width, float height) {
 		float amountX = this.amountX;
-		if (x + width > amountX + areaWidth) amountX = x + width - areaWidth;
-		if (x < amountX) amountX = x;
+		if (x + width > amountX + areaWidth) {
+			amountX = x + width - areaWidth;
+		}
+		if (x < amountX) {
+			amountX = x;
+		}
 		scrollX(MathUtils.clamp(amountX, 0, maxX));
 
 		float amountY = this.amountY;
 		float centerY = maxY - y + areaHeight / 2 - height / 2;
-		if (amountY < centerY - areaHeight / 4 || amountY > centerY + areaHeight / 4) amountY = centerY;
+		if (amountY < centerY - areaHeight / 4 || amountY > centerY + areaHeight / 4) {
+			amountY = centerY;
+		}
 		scrollY(MathUtils.clamp(amountY, 0, maxY));
 	}
 
@@ -1005,7 +1164,9 @@ public class ScrollPane extends WidgetGroup {
 
 	/** Gets the flick scroll y velocity. */
 	public float getVelocityX () {
-		if (flingTimer <= 0) return 0;
+		if (flingTimer <= 0) {
+			return 0;
+		}
 		float alpha = flingTimer / flingTime;
 		alpha = alpha * alpha * alpha;
 		return velocityX * alpha * alpha * alpha;
@@ -1070,9 +1231,13 @@ public class ScrollPane extends WidgetGroup {
 
 	/** When true the scroll bars fade out after some time of not being used. */
 	public void setFadeScrollBars (boolean fadeScrollBars) {
-		if (this.fadeScrollBars == fadeScrollBars) return;
+		if (this.fadeScrollBars == fadeScrollBars) {
+			return;
+		}
 		this.fadeScrollBars = fadeScrollBars;
-		if (!fadeScrollBars) fadeAlpha = fadeAlphaSeconds;
+		if (!fadeScrollBars) {
+			fadeAlpha = fadeAlphaSeconds;
+		}
 		invalidate();
 	}
 
@@ -1107,6 +1272,68 @@ public class ScrollPane extends WidgetGroup {
 	 * widgets inside the scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
 	public void setCancelTouchFocus (boolean cancelTouchFocus) {
 		this.cancelTouchFocus = cancelTouchFocus;
+	}
+
+	/** Listener for {@link ScrollPaneEvent} to when a scroll pane scrolls into an edge
+	 * @author Matteus Magnusson <matteus.magnusson@spiddekauga.com> */
+	abstract static public class ScrollPaneListener implements EventListener {
+		@Override
+		public boolean handle (Event event) {
+			if (event instanceof ScrollPaneEvent) {
+				if (event.getTarget() instanceof ScrollPane) {
+					hitEdge((ScrollPane)event.getTarget(), ((ScrollPaneEvent)event).getEdge());
+				}
+			}
+			return false;
+		}
+
+		/** Called when an edge of a scroll pane has been hit
+		 * @param scrollPane the scroll pane that sent the event
+		 * @param edge what edge was hit */
+		abstract public void hitEdge (ScrollPane scrollPane, Edge edge);
+
+		/** All edges the scroll pane can hit */
+		public enum Edge {
+			LEFT, RIGHT, TOP, BOTTOM
+		}
+
+		/** Fired when the scroll pane hits an edge
+		 * @author Matteus Magnusson <matteus.magnusson@spiddekauga.com> */
+		static public class ScrollPaneEvent extends Event {
+			private Edge edge = null;
+
+			@Override
+			public void reset () {
+				super.reset();
+				edge = null;
+			}
+
+			/** Creates an invalid ScrollPaneEvent. */
+			public ScrollPaneEvent () {
+			}
+
+			/** Creates a valid ScrollPaneEvent
+			 * @param edge the edge that was hit */
+			public ScrollPaneEvent (Edge edge) {
+				this.edge = edge;
+			}
+
+			/** Set the edge that was hit
+			 * @param edge the edge that was hit */
+			public void setEdge (Edge edge) {
+				this.edge = edge;
+			}
+
+			/** @return get the edge that was hit */
+			public Edge getEdge () {
+				return edge;
+			}
+
+			@Override
+			public String toString () {
+				return edge.toString();
+			}
+		}
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.
