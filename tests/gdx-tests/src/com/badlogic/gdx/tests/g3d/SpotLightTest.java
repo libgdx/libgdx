@@ -1,6 +1,7 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -30,12 +31,22 @@ public class SpotLightTest extends ModelTest{
 	float planSize = 20;
 	float planDivision = 50;
 	
+	Color spotColor = new Color(0.2f, 0.8f, 0.2f,1);
+	Vector3 spotPos = new Vector3();
+	Vector3 direction = new Vector3();//dynamically set
+	float intensity = 1;
+	float constantAtt = 1.0f;
+	float linearAtt = 0.0f;
+	float quadraticAtt = 0.0f;
+	float cutOff = 15; //Degrees
+	float exponent = 10.0f;
+	
 	@Override
 	public void create () {
 		super.create();
 		environment.clear();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.1f, 0.0f, 0.0f, 1.0f));
-		environment.add(spotLight = new SpotLight().set(0.2f, 0.8f, 0.2f, new Vector3(), 1, new Vector3(), 1,0.0f,0.0f, 20,3f));
+		environment.add(spotLight = new SpotLight().set(spotColor.r, spotColor.g, spotColor.b, spotPos, intensity, direction, constantAtt,linearAtt,quadraticAtt, cutOff,exponent));
 
 		
 		//Make my own texture plane with a lot of vertices
