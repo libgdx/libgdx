@@ -23,9 +23,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 /**
  * An unbounded priority queue based on a priority heap. The elements of the
  * priority queue are ordered according to their {@linkplain Comparable natural
- * ordering}. A priority queue does not permit {@code null} elements. It also
- * does not permit insertion of non-comparable objects (doing so may result in
- * {@code ClassCastException}).
+ * ordering}. A priority queue does not permit {@code null} elements.
  * 
  * <p>
  * The queue can be set to accept or reject the insertion of non unique elements
@@ -56,11 +54,11 @@ import com.badlogic.gdx.utils.ObjectSet;
  * time for the retrieval methods ({@code peek} and {@code size}).
  * 
  * @param <E>
- *            the type of elements held in this queue
+ *            the type of comparable elements held in this queue
  * 
  * @author davebaol
  */
-public class PriorityQueue<E> {
+public class PriorityQueue<E extends Comparable<E>> {
 
 	private static final int DEFAULT_INITIAL_CAPACITY = 11;
 
@@ -236,16 +234,15 @@ public class PriorityQueue<E> {
 	 */
 	@SuppressWarnings("unchecked")
 	private void siftUp(int k, E x) {
-		Comparable<? super E> key = (Comparable<? super E>) x;
 		while (k > 0) {
 			int parent = (k - 1) >>> 1;
-			Object e = queue[parent];
-			if (key.compareTo((E) e) >= 0)
+			E e = (E) queue[parent];
+			if (x.compareTo(e) >= 0)
 				break;
 			queue[k] = e;
 			k = parent;
 		}
-		queue[k] = key;
+		queue[k] = x;
 	}
 
 	/**
@@ -260,21 +257,19 @@ public class PriorityQueue<E> {
 	 */
 	@SuppressWarnings("unchecked")
 	private void siftDown(int k, E x) {
-		Comparable<? super E> key = (Comparable<? super E>) x;
 		int half = size >>> 1; // loop while a non-leaf
 		while (k < half) {
 			int child = (k << 1) + 1; // assume left child is least
-			Object c = queue[child];
+			E c = (E) queue[child];
 			int right = child + 1;
-			if (right < size
-					&& ((Comparable<? super E>) c).compareTo((E) queue[right]) > 0)
-				c = queue[child = right];
-			if (key.compareTo((E) c) <= 0)
+			if (right < size && c.compareTo((E) queue[right]) > 0)
+				c = (E) queue[child = right];
+			if (x.compareTo(c) <= 0)
 				break;
 			queue[k] = c;
 			k = child;
 		}
-		queue[k] = key;
+		queue[k] = x;
 	}
 
 	/**

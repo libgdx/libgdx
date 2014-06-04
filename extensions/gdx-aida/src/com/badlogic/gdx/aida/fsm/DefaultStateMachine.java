@@ -21,61 +21,88 @@ import com.badlogic.gdx.aida.msg.Telegram;
 /**
  * @author davebaol
  */
-public class DefaultStateMachine<A> implements StateMachine<A> {
+public class DefaultStateMachine<E> implements StateMachine<E> {
 
-	// The agent that owns this state machine
-	private A owner;
+	/**
+	 *  The entity that owns this state machine.
+	 */
+	private E owner;
 
-	private State<A> currentState;
-	// a record of the last state the agent was in
-	private State<A> previousState;
-	// this state logic is called every time the FSM is updated
-	private State<A> globalState;
+	/**
+	 * The current state the owner is in.
+	 */
+	private State<E> currentState;
 
-	public DefaultStateMachine(A owner) {
+	/**
+	 * The last state the owner was in.
+	 */
+	private State<E> previousState;
+
+	/**
+	 *  The global state of the owner. Its logic is called every time the FSM is updated.
+	 */
+	private State<E> globalState;
+
+	/**
+	 * Creates a DefaultStateMachine for the specified owner.
+	 * @param owner the owner of the state machine
+	 */
+	public DefaultStateMachine(E owner) {
 		this(owner, null, null);
 	}
 
-	public DefaultStateMachine(A owner, State<A> initialState) {
+	/**
+ 	 * Creates a DefaultStateMachine for the specified owner and initial state.
+	 * @param owner the owner of the state machine
+	 * @param initialState the initial state
+	 */
+	public DefaultStateMachine(E owner, State<E> initialState) {
 		this(owner, initialState, null);
 	}
 
-	public DefaultStateMachine(A owner, State<A> initialState,
-			State<A> globalState) {
+	/**
+ 	 * Creates a DefaultStateMachine for the specified owner, initial state and global state.
+	 * @param owner the owner of the state machine
+	 * @param initialState the initial state
+	 * @param globalState the global state
+	 */
+	public DefaultStateMachine(E owner, State<E> initialState,
+			State<E> globalState) {
 		this.owner = owner;
 		this.setInitialState(initialState);
 		this.setGlobalState(globalState);
 	}
 
 	@Override
-	public void setInitialState(State<A> state) {
+	public void setInitialState(State<E> state) {
 		this.previousState = null;
 		this.currentState = state;
 	}
 
 	@Override
-	public void setGlobalState(State<A> state) {
+	public void setGlobalState(State<E> state) {
 		this.globalState = state;
 	}
 
 	@Override
-	public State<A> getCurrentState() {
+	public State<E> getCurrentState() {
 		return currentState;
 	}
 
-	public State<A> getGlobalState() {
+	@Override
+	public State<E> getGlobalState() {
 		return globalState;
 	}
 
-	public State<A> getPreviousState() {
+	@Override
+	public State<E> getPreviousState() {
 		return previousState;
 	}
 
-	public void setPreviousState(State<A> state) {
-		this.previousState = state;
-	}
-
-	// call this to update the FSM
+	/**
+	 * Updates the state machine by invoking first the {@code execute} method of the
+	 * global state (if any) then the {@code execute} method of the current state.
+	 */
 	@Override
 	public void update() {
 		// Execute the global state (if any)
@@ -87,14 +114,8 @@ public class DefaultStateMachine<A> implements StateMachine<A> {
 			currentState.execute(owner);
 	}
 
-	/**
-	 * Performs a transition to the specified state.
-	 * 
-	 * @param newState
-	 *            the state to transition to
-	 */
 	@Override
-	public void changeState(State<A> newState) {
+	public void changeState(State<E> newState) {
 
 		// Keep a record of the previous state
 		previousState = currentState;
@@ -109,9 +130,6 @@ public class DefaultStateMachine<A> implements StateMachine<A> {
 		currentState.enter(owner);
 	}
 
-	/**
-	 * Change state back to the previous state.
-	 */
 	@Override
 	public void revertToPreviousState() {
 		changeState(previousState);
@@ -130,7 +148,7 @@ public class DefaultStateMachine<A> implements StateMachine<A> {
 	 *          class passed as a parameter.
 	 */
 	@Override
-	public boolean isInState(State<A> state) {
+	public boolean isInState(State<E> state) {
 		return currentState == state;
 	}
 

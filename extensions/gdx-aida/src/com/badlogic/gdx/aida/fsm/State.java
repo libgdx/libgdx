@@ -29,6 +29,7 @@ import com.badlogic.gdx.aida.msg.Telegram;
  * @author davebaol
  */
 public interface State<E> {
+
 	/**
 	 * This method will execute when the state is entered.
 	 * 

@@ -22,6 +22,8 @@ import com.badlogic.gdx.tests.aida.fsm.Bob;
 import com.badlogic.gdx.tests.aida.fsm.Elsa;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
+/** A simple test to demonstrate state machines combined with message handling.
+ * @author davebaol */
 public class StateMachineTest extends GdxTest {
 
 	Bob bob;

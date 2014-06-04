@@ -22,6 +22,9 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /**
+ * The MessageDispatcher is a singleton in charge of the creation, dispatch, and
+ * management of telegrams.
+ * 
  * @author davebaol
  */
 public class MessageDispatcher {
@@ -33,11 +36,7 @@ public class MessageDispatcher {
 
 	private static final MessageDispatcher instance = new MessageDispatcher();
 
-	public static final long START = TimeUtils.nanoTime();
-
-	public static long getCurrentTime() {
-		return TimeUtils.nanoTime() - START;
-	}
+	private static final long START = TimeUtils.nanoTime();
 
 	private PriorityQueue<Telegram> queue = new PriorityQueue<Telegram>();
 
@@ -47,6 +46,9 @@ public class MessageDispatcher {
 
 	private boolean debugEnabled;
 
+	/**
+	 * Don't let anyone else instantiate this class
+	 */
 	private MessageDispatcher() {
 		this.pool = new Pool<Telegram>(64) {
 			protected Telegram newObject() {
@@ -56,10 +58,33 @@ public class MessageDispatcher {
 		setTimeGranularity(0.25f);
 	}
 
+	/**
+	 * Returns the singleton instance of the message dispatcher.
+	 */
+	public static MessageDispatcher getInstance() {
+		return instance;
+	}
+
+	public static long getCurrentTime() {
+		return TimeUtils.nanoTime() - START;
+	}
+
+	/**
+	 * Returns the time granularity.
+	 */
 	public float getTimeGranularity() {
 		return timeGranularity / NANOS_PER_SEC;
 	}
 
+	/**
+	 * Sets the time granularity. Delayed telegrams having the same sender,
+	 * recipient and message type are considered identical when they belong to
+	 * the same time slot. If time granularity is greater than 0 identical
+	 * telegrams are not doubled into the queue. This prevents many similar
+	 * telegrams from bunching up in the queue and being delivered en masse,
+	 * thus flooding an agent with identical messages. To eliminate time
+	 * granularity just set it to 0.
+	 */
 	public void setTimeGranularity(float timeGranularity) {
 		boolean uniqueness = timeGranularity <= 0;
 		this.timeGranularity = uniqueness ? 0
@@ -68,25 +93,25 @@ public class MessageDispatcher {
 
 	}
 
-	// this class is a singleton
-	public static MessageDispatcher getInstance() {
-		return instance;
-	}
-
+	/**
+	 * Returns true if debug mode is on; false otherwise.
+	 */
 	public boolean isDebugEnabled() {
 		return debugEnabled;
 	}
 
+	/**
+	 * Sets debug mode on/off.
+	 */
 	public void setDebugEnabled(boolean debugEnabled) {
 		this.debugEnabled = debugEnabled;
 	}
 
+	/**
+	 * Remove all the telegrams from the queue and release them to the internal
+	 * pool.
+	 */
 	public void clear() {
-		// Iterator<Telegram> it = queue.iterator();
-		// while (it.hasNext()) {
-		// pool.free(it.next());
-		// it.remove();
-		// }
 		for (int i = 0; i < queue.size(); i++) {
 			pool.free(queue.get(i));
 		}
@@ -135,7 +160,7 @@ public class MessageDispatcher {
 			queue.add(telegram);
 
 			if (debugEnabled) {
-				Gdx.app.log(LOG_TAG, "\nDelayed telegram from " + sender
+				Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender
 						+ " recorded at time " + getCurrentTime() + " for "
 						+ receiver + ". Msg is " + msg);
 			}
@@ -156,12 +181,11 @@ public class MessageDispatcher {
 		// Get current time
 		long currentTime = getCurrentTime();
 
-		// now peek at the queue to see if any telegrams need dispatching.
+		// Now peek at the queue to see if any telegrams need dispatching.
 		// remove all telegrams from the front of the queue that have gone
-		// past their sell by date
+		// past their time stamp.
 		do {
-			// read the telegram from the front of the queue
-			// final Telegram telegram = queue.first();
+			// Read the telegram from the front of the queue
 			final Telegram telegram = queue.peek();
 			if (telegram.getTimestamp() < currentTime)
 				break;
@@ -177,7 +201,6 @@ public class MessageDispatcher {
 			discharge(telegram);
 
 			// Remove it from the queue
-			// queue.remove(telegram);
 			queue.poll();
 		} while (queue.size() > 0);
 
@@ -197,4 +220,5 @@ public class MessageDispatcher {
 
 		pool.free(telegram);
 	}
+
 }
