@@ -208,7 +208,7 @@ void main() {
 		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
 			
-				vec3 lightDir = normalize(v_pointLights[i].direction);				
+				vec3 lightDir = normalize(-v_pointLights[i].direction);				
 				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 				vec3 value = v_pointLights[i].color * (NdotL / (1.0 + (v_pointLights[i].dist * v_pointLights[i].dist)));
 				lightDiffuse += value;
