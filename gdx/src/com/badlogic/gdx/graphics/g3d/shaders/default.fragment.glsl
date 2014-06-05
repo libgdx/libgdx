@@ -24,6 +24,12 @@ varying vec3 v_normal;
 varying vec4 v_color;
 #endif
 
+#ifdef shininessFlag
+uniform float u_shininess;
+#else
+const float u_shininess = 20.0;
+#endif // shininessFlag
+
 #ifdef blendedFlag
 varying float v_opacity;
 #ifdef alphaTestFlag
@@ -58,6 +64,34 @@ uniform sampler2D u_normalTexture;
 
 #ifdef lightingFlag
 
+#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+struct DirectionalLight
+{
+	vec3 color;
+	vec3 direction;
+};
+varying DirectionalLight v_dirLights[numDirectionalLights];
+#endif // numDirectionalLights
+
+#if defined(numPointLights) && (numPointLights > 0)
+struct PointLight
+{
+	vec3 color;
+	vec3 position;
+};
+uniform PointLight u_pointLights[numPointLights];
+
+struct PointLightInterpolated
+{
+	vec3 color;
+	vec3 direction;
+	float dist;
+};
+varying PointLightInterpolated v_pointLights[numPointLights];
+
+#endif // numPointLights
+
+#if defined(numSpotLights) && (numSpotLights > 0)
 //here come the SpotLight
 struct SpotLight
 {
@@ -80,13 +114,14 @@ struct SpotLightInterpolated
 	float dist;
 };
 varying SpotLightInterpolated v_spotLights[numSpotLights];
+#endif // numSpotLights
+
 
 #if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
 #define ambientFlag
 #endif //ambientFlag
 
 #ifdef specularFlag
-//varying vec3 v_lightSpecular;
 varying vec3 viewVec;
 #endif //specularFlag
 
@@ -125,7 +160,7 @@ varying float v_fog;
 
 void main() {
 	#if defined(normalFlag) 
-		vec3 normal = v_normal;
+		vec3 normal = normalize(v_normal);
 	#endif // normalFlag
 		
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
@@ -150,16 +185,46 @@ void main() {
 		gl_FragColor.rgb = diffuse.rgb;
 	#else
 		//light diffuse and specular
-		vec3 v_lightDiffuse;
+		vec3 v_lightDiffuse = vec3(0.0);
 		vec3 v_lightSpecular = vec3(0.0);
 		
-		//#ifdef specularFlag
-		//	v_lightSpecular = vec3(0.0);
-		//#endif // specularFlag
+		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+			for (int i = 0; i < numDirectionalLights; i++) {
+			
+				vec3 lightDir = -v_dirLights[i].direction;
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 value = v_dirLights[i].color * NdotL;
+				v_lightDiffuse += value;
+				
+				#ifdef specularFlag
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					v_lightSpecular += value * pow(halfDotView, u_shininess);
+				#endif // specularFlag
+				
+			}
+		#endif // numDirectionalLights
+		
+		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+			for (int i = 0; i < numPointLights; i++) {
+			
+				vec3 lightDir = normalize(v_pointLights[i].direction);				
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 value = v_pointLights[i].color * (NdotL / (1.0 + (v_pointLights[i].dist * v_pointLights[i].dist)));
+				v_lightDiffuse += value;
+				
+				#ifdef specularFlag
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					v_lightSpecular += value * pow(halfDotView, u_shininess);
+				#endif // specularFlag
+				
+			}
+		#endif // numPointLights
 		
 		#if defined(numSpotLights) && (numSpotLights > 0) && defined(normalFlag)
             for (int i = 0; i < numSpotLights; i++) {
 								
+				vec3 lightDir = normalize(v_spotLights[i].direction);
+				
                 float NdotL = clamp(dot(normal, v_spotLights[i].direction), 0.0, 1.0);
                 vec3 value = v_spotLights[i].color * (NdotL / (u_spotLights[i].constantAttenuation + u_spotLights[i].linearAttenuation * sqrt(v_spotLights[i].dist) + u_spotLights[i].quadraticAttenuation * v_spotLights[i].dist));
                 
@@ -178,6 +243,9 @@ void main() {
 				
             }
         #endif // numSpotLights
+		
+		
+		//v_lightDiffuse = max(v_lightDiffuse, 1.0);
 		
 		#if (!defined(specularFlag))
 			#if defined(ambientFlag) && defined(separateAmbientFlag)

@@ -37,9 +37,9 @@ public class SpotLightTest extends ModelTest{
 	float intensity = 1;
 	float constantAtt = 1.0f;
 	float linearAtt = 0.0f;
-	float quadraticAtt = 0.0f;
+	float quadraticAtt = 0.01f;
 	float cutOff = 15; //Degrees
-	float exponent = 10.0f;
+	float exponent = 2.0f;
 	
 	@Override
 	public void create () {
