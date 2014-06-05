@@ -134,9 +134,9 @@ uniform vec3 u_ambientCubemap[6];
 uniform vec3 u_sphericalHarmonics[9];
 #endif //sphericalHarmonicsFlag
 
-#ifdef specularFlag
-varying vec3 v_lightSpecular;
-#endif // specularFlag
+//#ifdef specularFlag
+//varying vec3 v_lightSpecular;
+//#endif // specularFlag
 
 #ifdef cameraPositionFlag
 uniform vec4 u_cameraPosition;
@@ -334,8 +334,6 @@ void main() {
 
 			
 		#ifdef specularFlag
-	//		v_lightSpecular = vec3(0.0);
-	//TODO : compute viewVect into the fragment ?
 			viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
 	
@@ -372,7 +370,7 @@ void main() {
                 v_spotLights[i].dist = length(lightDir);
                 v_spotLights[i].direction = normalize(lightDir);				
             }
-        #endif // numPointLights
+        #endif // numSpotLights
 
 	#endif // lightingFlag
 }
