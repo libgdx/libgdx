@@ -19,54 +19,44 @@ package com.badlogic.gdx.aida.msg;
 import com.badlogic.gdx.aida.Agent;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
-/**
- * @author davebaol
- */
+/** A Telegram is the container of a message. The {@link MessageDispatcher} manages telegram life-cycle.
+ * @author davebaol */
 public class Telegram implements Comparable<Telegram>, Poolable {
 
-	/**
-	 * The agent that sent this telegram
-	 */
+	/** The agent that sent this telegram */
 	public Agent sender;
 
-	/**
-	 * The agent that is to receive this telegram
-	 */
+	/** The agent that is to receive this telegram */
 	public Agent receiver;
 
-	/**
-	 * The message type.
-	 */
+	/** The message type. */
 	public int message;
 
-	/**
-	 * Messages can be dispatched immediately or delayed for a specified
-	 * amount of time. If a delay is necessary, this field is stamped with the
-	 * time the message should be dispatched.
-	 */
+	/** Messages can be dispatched immediately or delayed for a specified amount of time. If a delay is necessary, this field is
+	 * stamped with the time the message should be dispatched. */
 	private long timestamp;
 	private long discreteTimestamp;
 
-	/**
-	 * Any additional information that may accompany the message
-	 */
+	/** Any additional information that may accompany the message */
 	public Object extraInfo;
 
-	Telegram() {
+	/** Package private constructor. */
+	Telegram () {
 	}
 
-	public long getTimestamp() {
+	/** Returns the time stamp of this telegram. */
+	public long getTimestamp () {
 		return timestamp;
 	}
 
-	public void setTimestamp(long timestamp, long timeGranularity) {
+	/** Sets the time stamp of this telegram. It also sets the discrete time stamp based on the specified time granularity. */
+	public void setTimestamp (long timestamp, long timeGranularity) {
 		this.timestamp = timestamp;
-		this.discreteTimestamp = timeGranularity <= 0 ? timestamp : timestamp
-				/ timeGranularity;
+		this.discreteTimestamp = timeGranularity <= 0 ? timestamp : timestamp / timeGranularity;
 	}
 
 	@Override
-	public void reset() {
+	public void reset () {
 		this.sender = null;
 		this.receiver = null;
 		this.message = 0;
@@ -76,48 +66,36 @@ public class Telegram implements Comparable<Telegram>, Poolable {
 	}
 
 	@Override
-	public int compareTo(Telegram other) {
-		if (this.equals(other))
-			return 0;
+	public int compareTo (Telegram other) {
+		if (this.equals(other)) return 0;
 		return (this.timestamp - other.timestamp < 0) ? -1 : 1;
 	}
 
 	@Override
-	public int hashCode() {
+	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + message;
-		result = prime * result
-				+ ((receiver == null) ? 0 : receiver.hashCode());
+		result = prime * result + ((receiver == null) ? 0 : receiver.hashCode());
 		result = prime * result + ((sender == null) ? 0 : sender.hashCode());
-		result = prime * result
-				+ (int) (discreteTimestamp ^ (discreteTimestamp >>> 32));
+		result = prime * result + (int)(discreteTimestamp ^ (discreteTimestamp >>> 32));
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Telegram other = (Telegram) obj;
-		if (message != other.message)
-			return false;
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Telegram other = (Telegram)obj;
+		if (message != other.message) return false;
 		if (sender == null) {
-			if (other.sender != null)
-				return false;
-		} else if (!sender.equals(other.sender))
-			return false;
+			if (other.sender != null) return false;
+		} else if (!sender.equals(other.sender)) return false;
 		if (receiver == null) {
-			if (other.receiver != null)
-				return false;
-		} else if (!receiver.equals(other.receiver))
-			return false;
-		if (discreteTimestamp != other.discreteTimestamp)
-			return false;
+			if (other.receiver != null) return false;
+		} else if (!receiver.equals(other.receiver)) return false;
+		if (discreteTimestamp != other.discreteTimestamp) return false;
 		return true;
 	}
 

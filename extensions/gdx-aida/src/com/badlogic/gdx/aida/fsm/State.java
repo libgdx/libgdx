@@ -18,46 +18,32 @@ package com.badlogic.gdx.aida.fsm;
 
 import com.badlogic.gdx.aida.msg.Telegram;
 
-/**
- * The state of a state machine defines the logic of the entities that enter,
- * exit and last this state. Additionally, a state may be delegated by an entity
- * to handle its messages.
+/** The state of a state machine defines the logic of the entities that enter, exit and last this state. Additionally, a state may
+ * be delegated by an entity to handle its messages.
  * 
- * @param E
- *            The type of the entities handled by this state
+ * @param E The type of the entities handled by this state
  * 
- * @author davebaol
- */
+ * @author davebaol */
 public interface State<E> {
 
-	/**
-	 * This method will execute when the state is entered.
+	/** This method will execute when the state is entered.
 	 * 
-	 * @param entity
-	 */
-	public void enter(E entity);
+	 * @param entity */
+	public void enter (E entity);
 
-	/**
-	 * This is the state's normal update function
+	/** This is the state's normal update function
 	 * 
-	 * @param entity
-	 */
-	public void execute(E entity);
+	 * @param entity */
+	public void execute (E entity);
 
-	/**
-	 * This method will execute when the state is exited.
+	/** This method will execute when the state is exited.
 	 * 
-	 * @param entity
-	 */
-	public void exit(E entity);
+	 * @param entity */
+	public void exit (E entity);
 
-	/**
-	 * This method executes if the entity receives a message from the message
-	 * dispatcher while it is in this state.
+	/** This method executes if the entity receives a message from the message dispatcher while it is in this state.
 	 * 
 	 * @param telegram
-	 * @return true if the message has been successfully handled; false
-	 *         otherwise.
-	 */
-	public boolean onMessage(Telegram telegram);
+	 * @return true if the message has been successfully handled; false otherwise. */
+	public boolean onMessage (Telegram telegram);
 }

@@ -18,13 +18,11 @@ package com.badlogic.gdx.aida;
 
 import com.badlogic.gdx.aida.msg.Telegram;
 
-/**
- * @author davebaol
- */
+/** @author davebaol */
 public interface Agent {
 
-	public void update(float delta);
+	public void update (float delta);
 
-	public boolean handleMessage(Telegram msg);
+	public boolean handleMessage (Telegram msg);
 
 }

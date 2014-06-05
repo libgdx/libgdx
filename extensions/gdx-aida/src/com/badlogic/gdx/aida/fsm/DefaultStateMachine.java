@@ -18,104 +18,84 @@ package com.badlogic.gdx.aida.fsm;
 
 import com.badlogic.gdx.aida.msg.Telegram;
 
-/**
- * @author davebaol
- */
+/** Default implementation of the {@link StateMachine} interface.
+ * @author davebaol */
 public class DefaultStateMachine<E> implements StateMachine<E> {
 
-	/**
-	 *  The entity that owns this state machine.
-	 */
+	/** The entity that owns this state machine. */
 	private E owner;
 
-	/**
-	 * The current state the owner is in.
-	 */
+	/** The current state the owner is in. */
 	private State<E> currentState;
 
-	/**
-	 * The last state the owner was in.
-	 */
+	/** The last state the owner was in. */
 	private State<E> previousState;
 
-	/**
-	 *  The global state of the owner. Its logic is called every time the FSM is updated.
-	 */
+	/** The global state of the owner. Its logic is called every time the FSM is updated. */
 	private State<E> globalState;
 
-	/**
-	 * Creates a DefaultStateMachine for the specified owner.
-	 * @param owner the owner of the state machine
-	 */
-	public DefaultStateMachine(E owner) {
+	/** Creates a DefaultStateMachine for the specified owner.
+	 * @param owner the owner of the state machine */
+	public DefaultStateMachine (E owner) {
 		this(owner, null, null);
 	}
 
-	/**
- 	 * Creates a DefaultStateMachine for the specified owner and initial state.
+	/** Creates a DefaultStateMachine for the specified owner and initial state.
 	 * @param owner the owner of the state machine
-	 * @param initialState the initial state
-	 */
-	public DefaultStateMachine(E owner, State<E> initialState) {
+	 * @param initialState the initial state */
+	public DefaultStateMachine (E owner, State<E> initialState) {
 		this(owner, initialState, null);
 	}
 
-	/**
- 	 * Creates a DefaultStateMachine for the specified owner, initial state and global state.
+	/** Creates a DefaultStateMachine for the specified owner, initial state and global state.
 	 * @param owner the owner of the state machine
 	 * @param initialState the initial state
-	 * @param globalState the global state
-	 */
-	public DefaultStateMachine(E owner, State<E> initialState,
-			State<E> globalState) {
+	 * @param globalState the global state */
+	public DefaultStateMachine (E owner, State<E> initialState, State<E> globalState) {
 		this.owner = owner;
 		this.setInitialState(initialState);
 		this.setGlobalState(globalState);
 	}
 
 	@Override
-	public void setInitialState(State<E> state) {
+	public void setInitialState (State<E> state) {
 		this.previousState = null;
 		this.currentState = state;
 	}
 
 	@Override
-	public void setGlobalState(State<E> state) {
+	public void setGlobalState (State<E> state) {
 		this.globalState = state;
 	}
 
 	@Override
-	public State<E> getCurrentState() {
+	public State<E> getCurrentState () {
 		return currentState;
 	}
 
 	@Override
-	public State<E> getGlobalState() {
+	public State<E> getGlobalState () {
 		return globalState;
 	}
 
 	@Override
-	public State<E> getPreviousState() {
+	public State<E> getPreviousState () {
 		return previousState;
 	}
 
-	/**
-	 * Updates the state machine by invoking first the {@code execute} method of the
-	 * global state (if any) then the {@code execute} method of the current state.
-	 */
+	/** Updates the state machine by invoking first the {@code execute} method of the global state (if any) then the {@code execute}
+	 * method of the current state. */
 	@Override
-	public void update() {
+	public void update () {
 		// Execute the global state (if any)
-		if (globalState != null)
-			globalState.execute(owner);
+		if (globalState != null) globalState.execute(owner);
 
 		// Execute the current state (if any)
-		if (currentState != null)
-			currentState.execute(owner);
+		if (currentState != null) currentState.execute(owner);
 	}
 
 	@Override
-	public void changeState(State<E> newState) {
+	public void changeState (State<E> newState) {
 
 		// Keep a record of the previous state
 		previousState = currentState;
@@ -131,41 +111,31 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 	}
 
 	@Override
-	public void revertToPreviousState() {
+	public void revertToPreviousState () {
 		changeState(previousState);
 	}
 
-	/**
-	 * Indicates whether the state machine is in the given state.
+	/** Indicates whether the state machine is in the given state.
 	 * <p>
-	 * This implementation assumes states are singletons (typically a enum) so
-	 * they are compared with the {@code ==} operator instead of the
-	 * {@code equals} method.
+	 * This implementation assumes states are singletons (typically a enum) so they are compared with the {@code ==} operator
+	 * instead of the {@code equals} method.
 	 * 
-	 * @param state
-	 *            the state to be compared with the current state
-	 * @returns true if the current state's type is equal to the type of the
-	 *          class passed as a parameter.
-	 */
+	 * @param state the state to be compared with the current state
+	 * @returns true if the current state's type is equal to the type of the class passed as a parameter. */
 	@Override
-	public boolean isInState(State<E> state) {
+	public boolean isInState (State<E> state) {
 		return currentState == state;
 	}
 
-	/**
-	 * Handles received telegrams. The telegram is first routed to the current
-	 * state. If the current state does not deal with the message, it's routed
-	 * to the global state's message handler.
+	/** Handles received telegrams. The telegram is first routed to the current state. If the current state does not deal with the
+	 * message, it's routed to the global state's message handler.
 	 * 
-	 * @param telegram
-	 *            the received telegram
-	 * @returns true if telegram has been successfully handled; false otherwise.
-	 */
+	 * @param telegram the received telegram
+	 * @returns true if telegram has been successfully handled; false otherwise. */
 	@Override
-	public boolean handleMessage(Telegram telegram) {
+	public boolean handleMessage (Telegram telegram) {
 
-		// First see if the current state is valid and that it can handle the
-		// message
+		// First see if the current state is valid and that it can handle the message
 		if (currentState != null && currentState.onMessage(telegram)) {
 			return true;
 		}
