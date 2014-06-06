@@ -7,12 +7,13 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.0.1";
+	static String libgdxVersion = "1.1.0";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.0.2-SNAPSHOT";
+	static String libgdxNightlyVersion = "1.1.1-SNAPSHOT";
 	static String roboVMVersion = "0.0.13";
 	static String buildToolsVersion = "19.1.0";
 	static String androidAPILevel = "19";
+	static String gwtVersion = "2.6.0";
 
 	//Repositories
 	static String mavenCentral = "mavenCentral()";

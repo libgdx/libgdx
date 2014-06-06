@@ -39,7 +39,7 @@
 
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
-	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static-libgcc -static-libstdc++"/>
+	<property name="linker-opts" value="-Wl,--kill-at -shared -m32 -static -static-libgcc -static-libstdc++"/>
 	<property name="libraries" value="-ldinput8 -ldxguid"/>
 	
 	<!-- cleans the build directory, removes all object files and shared libs -->

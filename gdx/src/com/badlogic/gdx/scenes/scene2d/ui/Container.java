@@ -422,7 +422,7 @@ public class Container extends WidgetGroup {
 	}
 
 	public float getMinWidth () {
-		return (minWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMinWidth() : widget.getWidth()) : minWidth)
+		return (minWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMinWidth() : (widget != null ? widget.getWidth() : 0)) : minWidth)
 			+ padLeft + padRight;
 	}
 
@@ -432,7 +432,7 @@ public class Container extends WidgetGroup {
 	}
 
 	public float getMinHeight () {
-		return (minHeight == null ? (widget instanceof Layout ? ((Layout)widget).getMinHeight() : widget.getHeight()) : minHeight)
+		return (minHeight == null ? (widget instanceof Layout ? ((Layout)widget).getMinHeight() : (widget != null ? widget.getHeight() : 0)) : minHeight)
 			+ padTop + padBottom;
 	}
 
@@ -442,7 +442,7 @@ public class Container extends WidgetGroup {
 	}
 
 	public float getPrefWidth () {
-		float v = prefWidth == null ? (widget instanceof Layout ? ((Layout)widget).getPrefWidth() : widget.getWidth()) : prefWidth;
+		float v = prefWidth == null ? (widget instanceof Layout ? ((Layout)widget).getPrefWidth() : (widget != null ? widget.getWidth() : 0)) : prefWidth;
 		if (background != null) v = Math.max(v, background.getMinWidth());
 		return v + padLeft + padRight;
 	}
@@ -453,7 +453,7 @@ public class Container extends WidgetGroup {
 	}
 
 	public float getPrefHeight () {
-		float v = prefHeight == null ? (widget instanceof Layout ? ((Layout)widget).getPrefHeight() : widget.getHeight())
+		float v = prefHeight == null ? (widget instanceof Layout ? ((Layout)widget).getPrefHeight() : (widget != null ? widget.getHeight() : 0))
 			: prefHeight;
 		if (background != null) v = Math.max(v, background.getMinHeight());
 		return v + padTop + padBottom;
@@ -465,7 +465,7 @@ public class Container extends WidgetGroup {
 	}
 
 	public float getMaxWidth () {
-		float v = maxWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMaxWidth() : widget.getWidth()) : maxWidth;
+		float v = maxWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMaxWidth() : (widget != null ? widget.getWidth() : 0)) : maxWidth;
 		if (v > 0) v += padLeft + padRight;
 		return v;
 	}
@@ -476,7 +476,7 @@ public class Container extends WidgetGroup {
 	}
 
 	public float getMaxHeight () {
-		float v = maxHeight == null ? (widget instanceof Layout ? ((Layout)widget).getMaxHeight() : widget.getHeight()) : maxHeight;
+		float v = maxHeight == null ? (widget instanceof Layout ? ((Layout)widget).getMaxHeight() : (widget != null ? widget.getHeight() : 0)) : maxHeight;
 		if (v > 0) v += padTop + padBottom;
 		return v;
 	}

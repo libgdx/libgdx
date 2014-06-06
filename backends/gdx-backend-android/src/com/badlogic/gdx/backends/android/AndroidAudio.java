@@ -64,9 +64,8 @@ public final class AndroidAudio implements Audio {
 		synchronized (musics) {
 			for (AndroidMusic music : musics) {
 				if (music.isPlaying()) {
-					music.wasPlaying = true;
 					music.pause();
-
+					music.wasPlaying = true;					
 				} else
 					music.wasPlaying = false;
 			}

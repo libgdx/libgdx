@@ -139,9 +139,9 @@ public class ParticleEffect implements Disposable {
 		loadEmitterImages(imagesDir);
 	}
 
-	public void load (FileHandle effectFile, TextureAtlas atlas) {
+	public void load (FileHandle effectFile, TextureAtlas atlas, String atlasPrefix) {
 		loadEmitters(effectFile);
-		loadEmitterImages(atlas);
+		loadEmitterImages(atlas, atlasPrefix);
 	}
 
 	public void loadEmitters (FileHandle effectFile) {
@@ -165,7 +165,7 @@ public class ParticleEffect implements Disposable {
 		}
 	}
 
-	public void loadEmitterImages (TextureAtlas atlas) {
+	public void loadEmitterImages (TextureAtlas atlas, String atlasPrefix) {
 		for (int i = 0, n = emitters.size; i < n; i++) {
 			ParticleEmitter emitter = emitters.get(i);
 			String imagePath = emitter.getImagePath();
@@ -173,6 +173,7 @@ public class ParticleEffect implements Disposable {
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
 			int lastDotIndex = imageName.lastIndexOf('.');
 			if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
+			if (atlasPrefix.length() > 0) imageName = atlasPrefix + "/" + imageName;
 			Sprite sprite = atlas.createSprite(imageName);
 			if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
 			emitter.setSprite(sprite);
