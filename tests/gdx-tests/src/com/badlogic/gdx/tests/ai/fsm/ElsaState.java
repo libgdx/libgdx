@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.aida.fsm;
+package com.badlogic.gdx.tests.ai.fsm;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.aida.fsm.State;
-import com.badlogic.gdx.aida.msg.MessageDispatcher;
-import com.badlogic.gdx.aida.msg.Telegram;
+import com.badlogic.gdx.ai.fsm.State;
+import com.badlogic.gdx.ai.msg.MessageDispatcher;
+import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.MathUtils;
 
 /** @author davebaol */

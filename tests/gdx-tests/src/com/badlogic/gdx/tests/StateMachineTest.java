@@ -17,9 +17,9 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.aida.msg.MessageDispatcher;
-import com.badlogic.gdx.tests.aida.fsm.Bob;
-import com.badlogic.gdx.tests.aida.fsm.Elsa;
+import com.badlogic.gdx.ai.msg.MessageDispatcher;
+import com.badlogic.gdx.tests.ai.fsm.Bob;
+import com.badlogic.gdx.tests.ai.fsm.Elsa;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** A simple test to demonstrate state machines combined with message handling.

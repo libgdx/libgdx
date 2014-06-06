@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.aida.fsm;
+package com.badlogic.gdx.tests.ai.fsm;
 
 /** @author davebaol */
 public enum Location {

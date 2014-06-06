@@ -14,12 +14,12 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.aida.fsm;
+package com.badlogic.gdx.tests.ai.fsm;
 
-import com.badlogic.gdx.aida.Agent;
-import com.badlogic.gdx.aida.fsm.DefaultStateMachine;
-import com.badlogic.gdx.aida.fsm.StateMachine;
-import com.badlogic.gdx.aida.msg.Telegram;
+import com.badlogic.gdx.ai.Agent;
+import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
+import com.badlogic.gdx.ai.fsm.StateMachine;
+import com.badlogic.gdx.ai.msg.Telegram;
 
 /** @author davebaol */
 public class Elsa implements Agent {

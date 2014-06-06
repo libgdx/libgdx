@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.aida.fsm;
+package com.badlogic.gdx.ai.fsm;
 
-import com.badlogic.gdx.aida.msg.Telegram;
+import com.badlogic.gdx.ai.msg.Telegram;
 
 /** A state machine manages the state transitions of its entity. Additionally, the state machine may be delegated by the entity to
  * handle its messages.

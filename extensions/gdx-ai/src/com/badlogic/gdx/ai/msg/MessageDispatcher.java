@@ -14,10 +14,10 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.aida.msg;
+package com.badlogic.gdx.ai.msg;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.aida.Agent;
+import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.TimeUtils;
 

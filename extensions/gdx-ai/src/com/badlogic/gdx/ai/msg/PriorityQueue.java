@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.aida.msg;
+package com.badlogic.gdx.ai.msg;
 
 import java.util.Arrays;
 

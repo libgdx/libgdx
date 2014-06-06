@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.aida.msg;
+package com.badlogic.gdx.ai.msg;
 
-import com.badlogic.gdx.aida.Agent;
+import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.utils.Pool.Poolable;
 
 /** A Telegram is the container of a message. The {@link MessageDispatcher} manages telegram life-cycle.
