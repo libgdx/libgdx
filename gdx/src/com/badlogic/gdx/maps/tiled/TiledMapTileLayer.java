@@ -17,6 +17,8 @@
 package com.badlogic.gdx.maps.tiled;
 
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /** @brief Layer for a TiledMap */
 public class TiledMapTileLayer extends MapLayer {
@@ -27,7 +29,8 @@ public class TiledMapTileLayer extends MapLayer {
 	private float tileWidth;
 	private float tileHeight;
 
-	private Cell[][] cells;
+	private GridPoint2 tempPoint = new GridPoint2();
+	private ObjectMap<GridPoint2, Cell> cells;
 
 	/** @return layer's width in tiles */
 	public int getWidth () {
@@ -61,16 +64,14 @@ public class TiledMapTileLayer extends MapLayer {
 		this.height = height;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		this.cells = new Cell[width][height];
+		this.cells = new ObjectMap<GridPoint2, Cell>();
 	}
 
 	/** @param x X coordinate
 	 * @param y Y coordinate
 	 * @return {@link Cell} at (x, y) */
 	public Cell getCell (int x, int y) {
-		if (x < 0 || x >= width) return null;
-		if (y < 0 || y >= height) return null;
-		return cells[x][y];
+		return this.cells.get(tempPoint.set(x, y));
 	}
 
 	/** Sets the {@link Cell} at the given coordinates.
@@ -79,9 +80,7 @@ public class TiledMapTileLayer extends MapLayer {
 	 * @param y Y coordinate
 	 * @param cell the {@link Cell} to set at the given coordinates. */
 	public void setCell (int x, int y, Cell cell) {
-		if (x < 0 || x >= width) return;
-		if (y < 0 || y >= height) return;
-		cells[x][y] = cell;
+		this.cells.put(new GridPoint2(x, y), cell);
 	}
 
 	/** @brief represents a cell in a TiledLayer: TiledMapTile, flip and rotation properties. */
