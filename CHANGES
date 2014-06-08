@@ -1,4 +1,6 @@
 [1.1.1]
+- API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
+
 
 [1.1.0]
 - Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
