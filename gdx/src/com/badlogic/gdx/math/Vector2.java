@@ -459,4 +459,11 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	public boolean hasOppositeDirection (Vector2 vector) {
 		return dot(vector) < 0;
 	}
+
+	@Override
+	public Vector2 setZero () {
+		this.x = 0;
+		this.y = 0;
+		return this;
+	}
 }

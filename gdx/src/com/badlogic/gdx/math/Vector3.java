@@ -619,4 +619,12 @@ public class Vector3 implements Serializable, Vector<Vector3> {
 		if (Math.abs(z - this.z) > epsilon) return false;
 		return true;
 	}
+
+	@Override
+	public Vector3 setZero () {
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		return this;
+	}
 }
