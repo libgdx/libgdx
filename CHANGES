@@ -1,6 +1,7 @@
 [1.1.1]
 - API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
 - API Addition: Vector#setZero
+- API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/pull/1929
 
 [1.1.0]
 - Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9

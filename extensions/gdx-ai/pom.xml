@@ -9,9 +9,9 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>gdx-freetype</artifactId>
+	<artifactId>gdx-ai</artifactId>
 	<packaging>jar</packaging>
-	<name>libGDX FreeType</name>
+	<name>libGDX AI</name>
 
 	<dependencies>
 		<dependency>
@@ -19,18 +19,16 @@
 			<artifactId>gdx</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>gdx-jnigen</artifactId>
-			<version>${project.version}</version>
-			<optional>true</optional>
-		</dependency>
 	</dependencies>
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -45,7 +43,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-
 		<resources>
 			<resource>
 				<directory>src</directory>
