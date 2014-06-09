@@ -211,7 +211,7 @@ public class SharedLibraryLoader {
 	
 	private boolean canExecute(File file) {
 		try {
-			Method m = File.class.getMethod("canWrite");
+			Method m = File.class.getMethod("canExecute");
 			return (Boolean)m.invoke(file);
 		} catch (Exception e) {
 			return false;
