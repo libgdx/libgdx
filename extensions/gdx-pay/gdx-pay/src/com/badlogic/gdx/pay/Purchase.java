@@ -19,20 +19,77 @@ package com.badlogic.gdx.pay;
 import java.util.Date;
 
 /** An item purchased via libGDX In-App payment system (IAP).
+ * <p>
+ * The item identifier/SKU matches the item id in the IAP service. Please note that Valve/Steam expects an integer value for the
+ * item identifier (which is somewhat restrictive) while other services such as Google Play, Amazon or iOS expect a textual
+ * identifier. So, to ensure cross-platform compatibility simply prefix "item_" before the number for stores that expect a textual
+ * identifier. For an item with identifier 1401 register the item identifier in the corresponding store page as follows:
+ * <ul>
+ * <li>Steam (just a number!): 1401
+ * <li>Google Play/Amazon/iOS/Mac OS X: "item_1401"
+ * </ul>
  * 
  * @author noblemaster */
-public class Purchase { 
+public final class Purchase {
 
-	/** The item identifier that matches the item id in the IAP service. Please note that Valve/Steam expects an integer value for
-	 * the item identifier (which is somewhat restrictive) while other services such as Google Play, Amazon or iOS expect a textual
-	 * identifier. So, to ensure cross-platform compatibility simply prefix "item_" before the number for stores that expect a
+	/** The prefix for string-based item identifiers. */
+	public static final String IDENTIFIER_PREFIX = "item_";
+
+	/** Item identifier number/SKU. */
+	public int identifier;
+
+	/** Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase has been refunded or has
+	 * expired, e.g. subscription. */
+	public boolean valid;
+
+	/** A unique transaction ID. */
+	public String transactionId;
+	/** The original transaction date which never changes. */
+	public Date transactionDate;
+	/** A transaction-receipt for optional postback validation on a server if available. null if not available. */
+	public String transactionReceipt;
+
+	/** Creates a new purchase.
+	 * 
+	 * @param identifierAsText The item identifier/SKU number with a "item_" as prefix, e.g. "item_1401". */
+	public Purchase (String identifierAsText, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
+		this(Integer.parseInt(identifierAsText.substring(IDENTIFIER_PREFIX.length())), valid, transactionId, transactionDate,
+			transactionReceipt);
+	}
+
+	/** Creates a new purchase.
+	 * 
+	 * @param identifier The item identifier/SKU number, e.g. 1401. */
+	public Purchase (int identifier, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
+		this.identifier = identifier;
+
+		// true for a valid purchase.
+		this.valid = valid;
+
+		// the transaction information
+		this.transactionId = transactionId;
+		this.transactionDate = transactionDate;
+		this.transactionReceipt = transactionReceipt;
+	}
+
+	/** The item identifier/SKU that matches the item id in the IAP service. Please note that Valve/Steam expects an integer value
+	 * for the item identifier (which is somewhat restrictive). */
+	public int getIdentifier () {
+		return identifier;
+	}
+
+	/** The item identifier/SKU that matches the item id in the IAP service. Services such as Google Play, Amazon or iOS expect a
+	 * textual identifier. So, to ensure cross-platform compatibility prefix "item_" before a number for stores that expect a
 	 * textual identifier. For an item with identifier 1401 register the item identifier in the corresponding store page as
 	 * follows:
 	 * <ul>
 	 * <li>Steam (just a number!): 1401
 	 * <li>Google Play/Amazon/iOS/Mac OS X: "item_1401"
-	 * </ul> */
-	public int identifier;
+	 * </ul>
+	 * @return The identifier number with a "item_" as prefix, e.g. "item_1401". */
+	public String getIdentifierAsText () {
+		return IDENTIFIER_PREFIX + identifier;
+	}
 
 	/** Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase has been refunded or has
 	 * expired, e.g. subscription.
@@ -41,16 +98,24 @@ public class Purchase {
 	 * libGDX payment API. This is the standard for payment APIs such as Google Play or iTunes. We might add a higher-level
 	 * Inventory class in the future to simplify consumable items, the raw libGDX payment API however is not responsible for
 	 * keeping track of consumable items. */
-	public boolean valid;
+	public boolean isValid () {
+		return valid;
+	}
 
 	/** The original transaction identifier which is unique for each purchase (doesn't change). It represents an unique ID for the
 	 * purchase on the corresponding IAP system. */
-	public String transactionId;
+	public String getTransactionId () {
+		return transactionId;
+	}
 
 	/** The original transaction date, i.e. when the product was first purchased (doesn't change). */
-	public Date transactionDate;
+	public Date getTransactionDate () {
+		return transactionDate;
+	}
 
 	/** A transaction receipt that can be used for postback validation if you have setup a server to make sure the purchased item is
-	 * genuine. */
-	public String transactionReceipt;
+	 * genuine. Returns null if not available. */
+	public String getTransactionReceipt () {
+		return transactionReceipt;
+	}
 }
