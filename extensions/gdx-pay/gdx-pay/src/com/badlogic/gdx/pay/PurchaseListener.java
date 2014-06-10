@@ -21,8 +21,8 @@ package com.badlogic.gdx.pay;
  * @author noblemaster */
 public interface PurchaseListener {
 
-	/** The item that was purchased. The "valid" parameter will indicate if the purchase was successful (true) or was aborted by the
-	 * user (false).
+	/** The item that was purchased. The "valid" parameter will indicate if the purchase was successful (true) or was aborted or
+	 * refunded by the user (false).
 	 * 
 	 * @param purchase The purchased item. */
 	public void handlePurchase (Purchase purchase);
@@ -30,5 +30,5 @@ public interface PurchaseListener {
 	/** Called when a purchase failed for unexpected reasons.
 	 * 
 	 * @param e The error, e.g. network outage, invalid identifier, etc. */
-	public void handleAborted (Throwable e);
+	public void handleError (Throwable e);
 }
