@@ -27,7 +27,7 @@ public enum ElsaState implements State<Elsa> {
 
 	DO_HOUSE_WORK() {
 		@Override
-		public void execute (Elsa elsa) {
+		public void update (Elsa elsa) {
 			int r = MathUtils.random(0, 2);
 			switch (r) {
 			case 0:
@@ -50,7 +50,7 @@ public enum ElsaState implements State<Elsa> {
 		}
 
 		@Override
-		public void execute (Elsa elsa) {
+		public void update (Elsa elsa) {
 			talk(elsa, "Ahhhhhh! Sweet relief!");
 			elsa.getStateMachine().revertToPreviousState();
 		}
@@ -82,7 +82,7 @@ public enum ElsaState implements State<Elsa> {
 		}
 
 		@Override
-		public void execute (Elsa elsa) {
+		public void update (Elsa elsa) {
 			talk(elsa, "Fussin' over food");
 		}
 
@@ -121,7 +121,7 @@ public enum ElsaState implements State<Elsa> {
 	GLOBAL_STATE() {
 
 		@Override
-		public void execute (Elsa elsa) {
+		public void update (Elsa elsa) {
 			// 1 in 10 chance of needing the bathroom (provided she is not already
 			// in the bathroom)
 			if (MathUtils.randomBoolean(0.1f) && !elsa.getStateMachine().isInState(VISIT_BATHROOM)) {

@@ -34,7 +34,7 @@ public interface State<E> {
 	/** This is the state's normal update function
 	 * 
 	 * @param entity */
-	public void execute (E entity);
+	public void update (E entity);
 
 	/** This method will execute when the state is exited.
 	 * 
