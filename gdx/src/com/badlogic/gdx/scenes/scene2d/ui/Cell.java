@@ -675,7 +675,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getMinWidth () {
-		return minWidth == null ? 0 : minWidth.get(actor);
+		return minWidth.get(actor);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -684,7 +684,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getMinHeight () {
-		return minHeight == null ? 0 : minHeight.get(actor);
+		return minHeight.get(actor);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -693,7 +693,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getPrefWidth () {
-		return prefWidth == null ? 0 : prefWidth.get(actor);
+		return prefWidth.get(actor);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -702,7 +702,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getPrefHeight () {
-		return prefHeight == null ? 0 : prefHeight.get(actor);
+		return prefHeight.get(actor);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -711,7 +711,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getMaxWidth () {
-		return maxWidth == null ? 0 : maxWidth.get(actor);
+		return maxWidth.get(actor);
 	}
 
 	/** @return May be null if this cell is row defaults. */
@@ -720,7 +720,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getMaxHeight () {
-		return maxHeight == null ? 0 : maxHeight.get(actor);
+		return maxHeight.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -729,7 +729,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getSpaceTop () {
-		return spaceTop == null ? 0 : spaceTop.get(actor);
+		return spaceTop.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -738,7 +738,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getSpaceLeft () {
-		return spaceLeft == null ? 0 : spaceLeft.get(actor);
+		return spaceLeft.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -747,7 +747,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getSpaceBottom () {
-		return spaceBottom == null ? 0 : spaceBottom.get(actor);
+		return spaceBottom.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -756,7 +756,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getSpaceRight () {
-		return spaceRight == null ? 0 : spaceRight.get(actor);
+		return spaceRight.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -765,7 +765,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getPadTop () {
-		return padTop == null ? 0 : padTop.get(actor);
+		return padTop.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -774,7 +774,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getPadLeft () {
-		return padLeft == null ? 0 : padLeft.get(actor);
+		return padLeft.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -783,7 +783,7 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getPadBottom () {
-		return padBottom == null ? 0 : padBottom.get(actor);
+		return padBottom.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
@@ -792,17 +792,17 @@ public class Cell<T extends Actor> implements Poolable {
 	}
 
 	public float getPadRight () {
-		return padRight == null ? 0 : padRight.get(actor);
+		return padRight.get(actor);
 	}
 
 	/** Returns {@link #getPadLeft()} plus {@link #getPadRight()}. */
 	public float getPadX () {
-		return (padLeft == null ? 0 : padLeft.get(actor)) + (padRight == null ? 0 : padRight.get(actor));
+		return padLeft.get(actor) + padRight.get(actor);
 	}
 
 	/** Returns {@link #getPadTop()} plus {@link #getPadBottom()}. */
 	public float getPadY () {
-		return (padTop == null ? 0 : padTop.get(actor)) + (padBottom == null ? 0 : padBottom.get(actor));
+		return padTop.get(actor) + padBottom.get(actor);
 	}
 
 	/** @return May be null if this value is not set. */
