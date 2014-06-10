@@ -421,6 +421,16 @@ public class Container extends WidgetGroup {
 		return this;
 	}
 
+	/** @return May be null if min width has not been set. */
+	public Float getMinWidthValue () {
+		return minWidth;
+	}
+
+	/** @param minWidth may be null */
+	public void setMinWidthValue (Float minWidth) {
+		this.minWidth = minWidth;
+	}
+
 	public float getMinWidth () {
 		return (minWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMinWidth() : (widget != null ? widget.getWidth() : 0)) : minWidth)
 			+ padLeft + padRight;
@@ -429,6 +439,11 @@ public class Container extends WidgetGroup {
 	/** @return May be null if min height has not been set. */
 	public Float getMinHeightValue () {
 		return minHeight;
+	}
+
+	/** @param minHeight may be null */
+	public void setMinHeightValue (Float minHeight) {
+		this.minHeight = minHeight;
 	}
 
 	public float getMinHeight () {
@@ -441,6 +456,11 @@ public class Container extends WidgetGroup {
 		return prefWidth;
 	}
 
+	/** @param prefWidth may be null */
+	public void setPrefWidthValue (Float prefWidth) {
+		this.prefWidth = prefWidth;
+	}
+
 	public float getPrefWidth () {
 		float v = prefWidth == null ? (widget instanceof Layout ? ((Layout)widget).getPrefWidth() : (widget != null ? widget.getWidth() : 0)) : prefWidth;
 		if (background != null) v = Math.max(v, background.getMinWidth());
@@ -450,6 +470,11 @@ public class Container extends WidgetGroup {
 	/** @return May be null if pref height has not been set. */
 	public Float getPrefHeightValue () {
 		return prefHeight;
+	}
+
+	/** @param prefHeight may be null */
+	public void setPrefHeightValue (Float prefHeight) {
+		this.prefHeight = prefHeight;
 	}
 
 	public float getPrefHeight () {
@@ -464,6 +489,11 @@ public class Container extends WidgetGroup {
 		return maxWidth;
 	}
 
+	/** @param maxWidth may be null */
+	public void setMaxWidthValue (Float maxWidth) {
+		this.maxWidth = maxWidth;
+	}
+
 	public float getMaxWidth () {
 		float v = maxWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMaxWidth() : (widget != null ? widget.getWidth() : 0)) : maxWidth;
 		if (v > 0) v += padLeft + padRight;
@@ -473,6 +503,11 @@ public class Container extends WidgetGroup {
 	/** @return May be null if max height has not been set. */
 	public Float getMaxHeightValue () {
 		return maxHeight;
+	}
+
+	/** @param maxHeight may be null */
+	public void setMaxHeightValue (Float maxHeight) {
+		this.maxHeight = maxHeight;
 	}
 
 	public float getMaxHeight () {
