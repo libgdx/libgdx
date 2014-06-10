@@ -64,7 +64,7 @@ public class Table extends WidgetGroup {
 	private float[] columnWidth, rowHeight;
 	private float[] expandWidth, expandHeight;
 
-	Value padTop, padLeft, padBottom, padRight;
+	Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
 	int align = Align.center;
 
 	Debug debug = Debug.none;
@@ -105,10 +105,10 @@ public class Table extends WidgetGroup {
 				batch.flush();
 				float x = 0, y = 0, width = getWidth(), height = getHeight();
 				if (background != null) {
-					x = getPadLeft();
-					y = getPadBottom();
-					width -= x + getPadRight();
-					height -= y + getPadTop();
+					x = padLeft.get(this);
+					y = padBottom.get(this);
+					width -= x + padRight.get(this);
+					height -= y + padTop.get(this);
 				}
 				boolean draw = clipBegin(x, y, width, height);
 				if (draw) {
@@ -324,10 +324,10 @@ public class Table extends WidgetGroup {
 	 * cell, column, and row defaults. */
 	public void reset () {
 		clear();
-		padTop = null;
-		padLeft = null;
-		padBottom = null;
-		padRight = null;
+		padTop = Value.zero;
+		padLeft = Value.zero;
+		padBottom = Value.zero;
+		padRight = Value.zero;
 		align = Align.center;
 		if (debug != Debug.none) debugRects.clear();
 		debug = Debug.none;
@@ -588,9 +588,9 @@ public class Table extends WidgetGroup {
 	/** Turns on debug lines. */
 	public Table debug (Debug debug) {
 		this.debug = debug;
-		if (debug == Debug.none)
-			debugRects.clear();
-		else
+		if (debug == Debug.none) {
+			if (debugRects != null) debugRects.clear();
+		} else
 			invalidate();
 		return this;
 	}
@@ -604,7 +604,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPadTop () {
-		return padTop == null ? 0 : padTop.get(this);
+		return padTop.get(this);
 	}
 
 	public Value getPadLeftValue () {
@@ -612,7 +612,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPadLeft () {
-		return padLeft == null ? 0 : padLeft.get(this);
+		return padLeft.get(this);
 	}
 
 	public Value getPadBottomValue () {
@@ -620,7 +620,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPadBottom () {
-		return padBottom == null ? 0 : padBottom.get(this);
+		return padBottom.get(this);
 	}
 
 	public Value getPadRightValue () {
@@ -628,7 +628,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public float getPadRight () {
-		return padRight == null ? 0 : padRight.get(this);
+		return padRight.get(this);
 	}
 
 	/** Returns {@link #getPadLeft()} plus {@link #getPadRight()}. */
@@ -754,12 +754,13 @@ public class Table extends WidgetGroup {
 			spaceRightLast = spaceRight;
 
 			// Determine minimum and preferred cell sizes.
-			float prefWidth = c.prefWidth.get(c);
-			float prefHeight = c.prefHeight.get(c);
-			float minWidth = c.minWidth.get(c);
-			float minHeight = c.minHeight.get(c);
-			float maxWidth = c.maxWidth.get(c);
-			float maxHeight = c.maxHeight.get(c);
+			Actor actor = c.actor;
+			float prefWidth = c.prefWidth.get(actor);
+			float prefHeight = c.prefHeight.get(actor);
+			float minWidth = c.minWidth.get(actor);
+			float minHeight = c.minHeight.get(actor);
+			float maxWidth = c.maxWidth.get(actor);
+			float maxHeight = c.maxHeight.get(actor);
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (prefHeight < minHeight) prefHeight = minHeight;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
@@ -796,9 +797,10 @@ public class Table extends WidgetGroup {
 			if (colspan == 1) continue;
 			int column = c.column;
 
-			float minWidth = c.minWidth.get(c);
-			float prefWidth = c.prefWidth.get(c);
-			float maxWidth = c.maxWidth.get(c);
+			Actor actor = c.actor;
+			float minWidth = c.minWidth.get(actor);
+			float prefWidth = c.prefWidth.get(actor);
+			float maxWidth = c.maxWidth.get(actor);
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
 
@@ -871,8 +873,8 @@ public class Table extends WidgetGroup {
 			tableMinHeight += rowMinHeight[i];
 			tablePrefHeight += Math.max(rowMinHeight[i], rowPrefHeight[i]);
 		}
-		float hpadding = getPadLeft() + getPadRight();
-		float vpadding = getPadTop() + getPadBottom();
+		float hpadding = padLeft.get(this) + padRight.get(this);
+		float vpadding = padTop.get(this) + padBottom.get(this);
 		tableMinWidth = tableMinWidth + hpadding;
 		tableMinHeight = tableMinHeight + vpadding;
 		tablePrefWidth = Math.max(tablePrefWidth + hpadding, tableMinWidth);
@@ -887,10 +889,10 @@ public class Table extends WidgetGroup {
 
 		if (sizeInvalid) computeSize();
 
-		float padLeft = getPadLeft();
-		float hpadding = padLeft + getPadRight();
-		float padTop = getPadTop();
-		float vpadding = padTop + getPadBottom();
+		float padLeft = this.padLeft.get(this);
+		float hpadding = padLeft + padRight.get(this);
+		float padTop = this.padTop.get(this);
+		float vpadding = padTop + padBottom.get(this);
 
 		int columns = this.columns, rows = this.rows;
 		float[] expandWidth = this.expandWidth, expandHeight = this.expandHeight;
@@ -943,12 +945,13 @@ public class Table extends WidgetGroup {
 				spannedWeightedWidth += columnWeightedWidth[ii];
 			float weightedHeight = rowWeightedHeight[row];
 
-			float prefWidth = c.prefWidth.get(c);
-			float prefHeight = c.prefHeight.get(c);
-			float minWidth = c.minWidth.get(c);
-			float minHeight = c.minHeight.get(c);
-			float maxWidth = c.maxWidth.get(c);
-			float maxHeight = c.maxHeight.get(c);
+			Actor actor = c.actor;
+			float prefWidth = c.prefWidth.get(actor);
+			float prefHeight = c.prefHeight.get(actor);
+			float minWidth = c.minWidth.get(actor);
+			float minHeight = c.minHeight.get(actor);
+			float maxWidth = c.maxWidth.get(actor);
+			float maxHeight = c.maxHeight.get(actor);
 			if (prefWidth < minWidth) prefWidth = minWidth;
 			if (prefHeight < minHeight) prefHeight = minHeight;
 			if (maxWidth > 0 && prefWidth > maxWidth) prefWidth = maxWidth;
@@ -1046,12 +1049,12 @@ public class Table extends WidgetGroup {
 
 			if (c.fillX > 0) {
 				c.actorWidth = spannedCellWidth * c.fillX;
-				float maxWidth = c.maxWidth.get(c);
+				float maxWidth = c.maxWidth.get(c.actor);
 				if (maxWidth > 0) c.actorWidth = Math.min(c.actorWidth, maxWidth);
 			}
 			if (c.fillY > 0) {
 				c.actorHeight = rowHeight[c.row] * c.fillY - c.computedPadTop - c.computedPadBottom;
-				float maxHeight = c.maxHeight.get(c);
+				float maxHeight = c.maxHeight.get(c.actor);
 				if (maxHeight > 0) c.actorHeight = Math.min(c.actorHeight, maxHeight);
 			}
 

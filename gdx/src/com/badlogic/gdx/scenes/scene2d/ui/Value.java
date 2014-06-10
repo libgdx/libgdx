@@ -19,37 +19,15 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 
-/** Value placeholder, allowing the value to be computed on request. Values are provided an Object for context, the type of which
- * depends on how the value is used. This reduces the number of value instances that need to be created and reduces verbosity in
- * code that specifies values.
+/** Value placeholder, allowing the value to be computed on request. Values are provided an actor for context which reduces the
+ * number of value instances that need to be created and reduces verbosity in code that specifies values.
  * @author Nathan Sweet */
 abstract public class Value {
-	abstract public float get (Object context);
+	/** @param context May be null. */
+	abstract public float get (Actor context);
 
 	/** A value that is always zero. */
 	static public final Fixed zero = new Fixed(0);
-
-	/** A value that is only valid for use with a cell.
-	 * @author Nathan Sweet */
-	static abstract public class CellValue extends Value {
-		public float get (Object context) {
-			if (!(context instanceof Cell)) throw new UnsupportedOperationException("This value can only be used for a cell.");
-			return get((Cell)context);
-		}
-
-		abstract public float get (Cell cell);
-	}
-
-	/** A value that is valid for use with an actor.
-	 * @author Nathan Sweet */
-	static abstract public class ActorValue extends Value {
-		public float get (Object context) {
-			if (!(context instanceof Actor)) throw new UnsupportedOperationException("This value can only be used for an actor.");
-			return get((Actor)context);
-		}
-
-		abstract public float get (Actor actor);
-	}
 
 	/** A fixed value that is not computed each time it is used.
 	 * @author Nathan Sweet */
@@ -60,99 +38,93 @@ abstract public class Value {
 			this.value = value;
 		}
 
-		public float get (Object context) {
+		public float get (Actor context) {
 			return value;
 		}
 	}
 
-	/** CellValue that is the minWidth of the actor in the cell. */
-	static public CellValue minWidth = new CellValue() {
-		public float get (Cell cell) {
-			Actor actor = cell.actor;
-			if (actor instanceof Layout) return ((Layout)actor).getMinWidth();
-			return actor == null ? 0 : actor.getWidth();
+	/** Value that is the minWidth of the actor in the cell. */
+	static public Value minWidth = new Value() {
+		public float get (Actor context) {
+			if (context instanceof Layout) return ((Layout)context).getMinWidth();
+			return context == null ? 0 : context.getWidth();
 		}
 	};
 
-	/** CellValue that is the minHeight of the actor in the cell. */
-	static public CellValue minHeight = new CellValue() {
-		public float get (Cell cell) {
-			Actor actor = cell.actor;
-			if (actor instanceof Layout) return ((Layout)actor).getMinHeight();
-			return actor == null ? 0 : actor.getHeight();
+	/** Value that is the minHeight of the actor in the cell. */
+	static public Value minHeight = new Value() {
+		public float get (Actor context) {
+			if (context instanceof Layout) return ((Layout)context).getMinHeight();
+			return context == null ? 0 : context.getHeight();
 		}
 	};
 
-	/** CellValue that is the prefWidth of the actor in the cell. */
-	static public CellValue prefWidth = new CellValue() {
-		public float get (Cell cell) {
-			Actor actor = cell.actor;
-			if (actor instanceof Layout) return ((Layout)actor).getPrefWidth();
-			return actor == null ? 0 : actor.getWidth();
+	/** Value that is the prefWidth of the actor in the cell. */
+	static public Value prefWidth = new Value() {
+		public float get (Actor context) {
+			if (context instanceof Layout) return ((Layout)context).getPrefWidth();
+			return context == null ? 0 : context.getWidth();
 
 		}
 	};
 
-	/** CellValue that is the prefHeight of the actor in the cell. */
-	static public CellValue prefHeight = new CellValue() {
-		public float get (Cell cell) {
-			Actor actor = cell.actor;
-			if (actor instanceof Layout) return ((Layout)actor).getPrefHeight();
-			return actor == null ? 0 : actor.getHeight();
+	/** Value that is the prefHeight of the actor in the cell. */
+	static public Value prefHeight = new Value() {
+		public float get (Actor context) {
+			if (context instanceof Layout) return ((Layout)context).getPrefHeight();
+			return context == null ? 0 : context.getHeight();
 		}
 	};
 
-	/** CellValue that is the maxWidth of the actor in the cell. */
-	static public CellValue maxWidth = new CellValue() {
-		public float get (Cell cell) {
-			Actor actor = cell.actor;
-			if (actor instanceof Layout) return ((Layout)actor).getMaxWidth();
-			return actor == null ? 0 : actor.getWidth();
+	/** Value that is the maxWidth of the actor in the cell. */
+	static public Value maxWidth = new Value() {
+		public float get (Actor context) {
+			if (context instanceof Layout) return ((Layout)context).getMaxWidth();
+			return context == null ? 0 : context.getWidth();
 		}
 	};
 
-	/** CellValue that is the maxHeight of the actor in the cell. */
-	static public CellValue maxHeight = new CellValue() {
-		public float get (Cell cell) {
-			Actor actor = cell.actor;
-			if (actor instanceof Layout) return ((Layout)actor).getMaxHeight();
-			return actor == null ? 0 : actor.getHeight();
+	/** Value that is the maxHeight of the actor in the cell. */
+	static public Value maxHeight = new Value() {
+		public float get (Actor context) {
+			if (context instanceof Layout) return ((Layout)context).getMaxHeight();
+			return context == null ? 0 : context.getHeight();
 		}
 	};
 
-	/** Returns an ActorValue that is a percentage of the actor's width. */
-	static public ActorValue percentWidth (final float percent) {
-		return new ActorValue() {
+	/** Returns a value that is a percentage of the actor's width. */
+	static public Value percentWidth (final float percent) {
+		return new Value() {
 			public float get (Actor actor) {
 				return actor.getWidth() * percent;
 			}
 		};
 	}
 
-	/** Returns an ActorValue that is a percentage of the actor's height. */
-	static public ActorValue percentHeight (final float percent) {
-		return new ActorValue() {
+	/** Returns a value that is a percentage of the actor's height. */
+	static public Value percentHeight (final float percent) {
+		return new Value() {
 			public float get (Actor actor) {
 				return actor.getHeight() * percent;
 			}
 		};
 	}
 
-	/** Returns a value that is a percentage of the specified actor's width. */
+	/** Returns a value that is a percentage of the specified actor's width. The context actor is ignored. */
 	static public Value percentWidth (final float percent, final Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		return new Value() {
-			public float get (Object context) {
+			public float get (Actor context) {
 				return actor.getWidth() * percent;
 			}
 		};
 	}
 
-	/** Returns a value that is a percentage of the specified actor's height. */
+	/** Returns a value that is a percentage of the specified actor's height. The context actor is ignored. */
 	static public Value percentHeight (final float percent, final Actor actor) {
 		if (actor == null) throw new IllegalArgumentException("actor cannot be null.");
 		return new Value() {
-			public float get (Object context) {
+			public float get (Actor context) {
 				return actor.getHeight() * percent;
 			}
 		};
