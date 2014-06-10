@@ -32,11 +32,8 @@ import java.util.Date;
  * @author noblemaster */
 public final class Purchase {
 
-	/** The prefix for string-based item identifiers. */
-	public static final String IDENTIFIER_PREFIX = "item_";
-
-	/** Item identifier number/SKU. */
-	public int identifier;
+	/** Item identifier/SKU number. */
+	public String identifier;
 
 	/** Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase has been refunded or has
 	 * expired, e.g. subscription. */
@@ -51,16 +48,8 @@ public final class Purchase {
 
 	/** Creates a new purchase.
 	 * 
-	 * @param identifierAsText The item identifier/SKU number with a "item_" as prefix, e.g. "item_1401". */
-	public Purchase (String identifierAsText, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
-		this(Integer.parseInt(identifierAsText.substring(IDENTIFIER_PREFIX.length())), valid, transactionId, transactionDate,
-			transactionReceipt);
-	}
-
-	/** Creates a new purchase.
-	 * 
-	 * @param identifier The item identifier/SKU number, e.g. 1401. */
-	public Purchase (int identifier, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
+	 * @param identifier The item identifier/SKU number. */
+	public Purchase (String identifier, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
 		this.identifier = identifier;
 
 		// true for a valid purchase.
@@ -74,21 +63,8 @@ public final class Purchase {
 
 	/** The item identifier/SKU that matches the item id in the IAP service. Please note that Valve/Steam expects an integer value
 	 * for the item identifier (which is somewhat restrictive). */
-	public int getIdentifier () {
+	public String getIdentifier () {
 		return identifier;
-	}
-
-	/** The item identifier/SKU that matches the item id in the IAP service. Services such as Google Play, Amazon or iOS expect a
-	 * textual identifier. So, to ensure cross-platform compatibility prefix "item_" before a number for stores that expect a
-	 * textual identifier. For an item with identifier 1401 register the item identifier in the corresponding store page as
-	 * follows:
-	 * <ul>
-	 * <li>Steam (just a number!): 1401
-	 * <li>Google Play/Amazon/iOS/Mac OS X: "item_1401"
-	 * </ul>
-	 * @return The identifier number with a "item_" as prefix, e.g. "item_1401". */
-	public String getIdentifierAsText () {
-		return IDENTIFIER_PREFIX + identifier;
 	}
 
 	/** Is set to true if the purchase is valid (non-expired/non-refunded) or false if the purchase has been refunded or has

@@ -18,7 +18,6 @@ package com.badlogic.gdx.pay.google.android;
 
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
-import com.badlogic.gdx.pay.PurchaseObserver;
 
 /** The purchase manager implementation for Google Play on Android.
  * 
@@ -30,12 +29,12 @@ public class PurchaseManagerGoogleAndroid implements PurchaseManager {
 	}
 
 	@Override
-	public void register (PurchaseObserver observer) {
+	public void register (PurchaseListener listener) {
 		// TODO: implement!
 	}
 
 	@Override
-	public void purchase (PurchaseListener listener, int identifier) {
+	public void purchase (PurchaseListener listener, String identifier) {
 		// TODO: implement!
 	}
 }

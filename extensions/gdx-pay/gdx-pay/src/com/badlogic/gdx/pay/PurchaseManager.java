@@ -36,6 +36,7 @@ package com.badlogic.gdx.pay;
  * </ul>
  * <p>
  * 2. How to Setup IAP in your Application
+ * 
  * <pre>
  * // platform-dependent code (setup the purchase manager in your code, e.g. Google Play/Android)
  * MyGame myGame = ... // for example your game class (or store the manager somewhere else)
@@ -43,9 +44,9 @@ package com.badlogic.gdx.pay;
  * 
  * // platform-independent code (register an observer e.g. in libGDX's ApplicationListener - REQUIRED!)
  * PurchaseManager manager = myGame.getPurchaseManager();
- * manager.register(new PurchaseObserver() {
- *   public void handleRestore (Purchase purchase) {
- *     if (purchase.valid) {
+ * manager.register(new PurchaseListener() {
+ *   public void handlePurchase (Purchase purchase) {
+ *     if (purchase.isValid()) {
  *       // handle an un-handled but successful purchase 
  *       ...
  *     }
@@ -54,20 +55,22 @@ package com.badlogic.gdx.pay;
  *       ...
  *     }
  *   }
- *   public void handleFailure (Throwable e) {
+ *   public void handleError (Throwable e) {
  *     // handle purchase manager problems: display error to user
+ *     ...
  *   }
  * });
  * </pre>
  * <p>
  * 3. How to Make a Purchase
+ * 
  * <pre>
  * // platform-independent code (purchase)
  * PurchaseManager manager = myGame.getPurchaseManager();
- * int identifier = ... // your product identifier that is registered in the IAP service
+ * String identifier = ... // your product identifier that is registered in the IAP service
  * manager.purchase(new PurchaseListener() {
  *   public void handlePurchase (Purchase purchase) {
- *     if (purchase.valid) {
+ *     if (purchase.isValid()) {
  *       // handle a successful purchase, i.e. deliver the purchase to the user
  *       ...
  *     }
@@ -75,7 +78,7 @@ package com.badlogic.gdx.pay;
  *       // optional handling: this part can be ignored: the user simply didn't go through with the purchase
  *     }
  *   }
- *   public void handleAborted (Throwable e) {
+ *   public void handleError (Throwable e) {
  *     // output the error to the user
  *     ...
  *   }
@@ -93,8 +96,8 @@ public interface PurchaseManager {
 	 * exception to teach you lesson to always remember to set a purchase observer. The purchase observer is needed to make sure
 	 * all purchases have been handled and served to the customer.
 	 * 
-	 * @param observer The observer which is called whenever purchases have to be handled by the application. */
-	public void register (PurchaseObserver observer); 
+	 * @param listener The listener which is called whenever purchases have to be handled by the application. */
+	public void register (PurchaseListener listener);
 
 	/** Requests to purchase an item. The listener will always be called once the purchase has either completed or failed.
 	 * <p>
@@ -104,5 +107,5 @@ public interface PurchaseManager {
 	 *           exception the purchases is considered handled by the application. If the listener is (a) never called or (b) the
 	 *           listener itself throws an exception, the purchase observer will again later report the purchase information again.
 	 * @param identifier The item to purchase. */
-	public void purchase (PurchaseListener listener, int identifier);
+	public void purchase (PurchaseListener listener, String identifier);
 }
