@@ -25,6 +25,7 @@ import com.badlogic.gdx.tests.GamepadTest;
 import com.badlogic.gdx.tests.MusicTest;
 import com.badlogic.gdx.tests.PixmapTest;
 import com.badlogic.gdx.tests.ShortSoundTest;
+import com.badlogic.gdx.tests.StateMachineTest;
 import com.badlogic.gdx.tests.TimerTest;
 import com.badlogic.gdx.tests.g2d.ProgressiveJPEGTest;
 import com.badlogic.gdx.tests.utils.GdxTest;
@@ -39,7 +40,7 @@ public class LwjglDebugStarter {
 //		new SharedLibraryLoader("../../extensions/gdx-controllers/gdx-controllers-desktop/libs/gdx-controllers-desktop-natives.jar").load("gdx-controllers-desktop");
 //		new SharedLibraryLoader("../../gdx/libs/gdx-natives.jar").load("gdx");
 
-		GdxTest test = new IssueTest();		
+		GdxTest test = new StateMachineTest();		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.r = config.g = config.b = config.a = 8;
 //		config.width = 320;
