@@ -137,7 +137,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		numVertices++;
 	}
 
-	public void end () {
+	public void flush () {
 		if (numVertices == 0) return;
 		shader.begin();
 		shader.setUniformMatrix("u_projModelView", projModelView);
@@ -150,6 +150,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		numSetTexCoords = 0;
 		vertexIdx = 0;
 		numVertices = 0;
+	}
+
+	public void end () {
+		flush();
 	}
 
 	public int getNumVertices () {
