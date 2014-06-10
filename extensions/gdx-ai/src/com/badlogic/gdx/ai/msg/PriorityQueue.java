@@ -39,8 +39,8 @@ import com.badlogic.gdx.utils.ObjectSet;
  * automatically.
  * 
  * <p>
- * Iterating the queue with the method {@link #get() get(index)} is <em>not</em> guaranteed to traverse the elements of the
- * priority queue in any particular order.
+ * Iterating the queue with the method {@link #get(int) get} is <em>not</em> guaranteed to traverse the elements of the priority
+ * queue in any particular order.
  * 
  * <p>
  * Implementation note: this implementation provides O(log(n)) time for the enqueing and dequeing methods ({@code add} and

@@ -21,7 +21,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
 /** The state of a state machine defines the logic of the entities that enter, exit and last this state. Additionally, a state may
  * be delegated by an entity to handle its messages.
  * 
- * @param E The type of the entities handled by this state
+ * E is the type of the entities handled by this state
  * 
  * @author davebaol */
 public interface State<E> {
