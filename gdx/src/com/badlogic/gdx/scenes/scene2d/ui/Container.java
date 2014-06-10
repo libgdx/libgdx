@@ -25,6 +25,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 	private boolean clip;
 	private boolean round = true;
 
+	/** Creates a container with no actor. */
 	public Container () {
 		setTouchable(Touchable.childrenOnly);
 		setTransform(false);
@@ -68,22 +69,30 @@ public class Container<T extends Actor> extends WidgetGroup {
 		background.draw(batch, x, y, getWidth(), getHeight());
 	}
 
-	/** Sets the background drawable and sets the container's padding to {@link Drawable#getBottomHeight()} ,
-	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, the background will be cleared and all padding is removed. */
+	/** Sets the background drawable and adjusts the container's padding to match the background.
+	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (Drawable background) {
+		setBackground(background, true);
+	}
+
+	/** Sets the background drawable and, if adjustPadding is true, sets the container's padding to
+	 * {@link Drawable#getBottomHeight()} , {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and
+	 * {@link Drawable#getRightWidth()}.
+	 * @param background If null, the background will be cleared and padding removed. */
+	public void setBackground (Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
 		this.background = background;
-		if (background == null)
-			pad(0);
-		else {
-			pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+		if (adjustPadding) {
+			if (background == null)
+				pad(null);
+			else
+				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
 		}
 	}
 
 	/** @see #setBackground(Drawable) */
-	public Container background (Drawable background) {
+	public Container<T> background (Drawable background) {
 		setBackground(background);
 		return this;
 	}
@@ -460,39 +469,39 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	/** Sets fillX and fillY to 1. */
-	public Container fill () {
+	public Container<T> fill () {
 		fillX = 1f;
 		fillY = 1f;
 		return this;
 	}
 
 	/** Sets fillX to 1. */
-	public Container fillX () {
+	public Container<T> fillX () {
 		fillX = 1f;
 		return this;
 	}
 
 	/** Sets fillY to 1. */
-	public Container fillY () {
+	public Container<T> fillY () {
 		fillY = 1f;
 		return this;
 	}
 
-	public Container fill (float x, float y) {
+	public Container<T> fill (float x, float y) {
 		fillX = x;
 		fillY = y;
 		return this;
 	}
 
 	/** Sets fillX and fillY to 1 if true, 0 if false. */
-	public Container fill (boolean x, boolean y) {
+	public Container<T> fill (boolean x, boolean y) {
 		fillX = x ? 1f : 0;
 		fillY = y ? 1f : 0;
 		return this;
 	}
 
 	/** Sets fillX and fillY to 1 if true, 0 if false. */
-	public Container fill (boolean fill) {
+	public Container<T> fill (boolean fill) {
 		fillX = fill ? 1f : 0;
 		fillY = fill ? 1f : 0;
 		return this;
@@ -500,40 +509,40 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the alignment of the actor within the container. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
 	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
-	public Container align (int align) {
+	public Container<T> align (int align) {
 		this.align = align;
 		return this;
 	}
 
 	/** Sets the alignment of the actor within the container to {@link Align#center}. This clears any other alignment. */
-	public Container center () {
+	public Container<T> center () {
 		align = Align.center;
 		return this;
 	}
 
 	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the actor within the container. */
-	public Container top () {
+	public Container<T> top () {
 		align |= Align.top;
 		align &= ~Align.bottom;
 		return this;
 	}
 
 	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the actor within the container. */
-	public Container left () {
+	public Container<T> left () {
 		align |= Align.left;
 		align &= ~Align.right;
 		return this;
 	}
 
 	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the actor within the container. */
-	public Container bottom () {
+	public Container<T> bottom () {
 		align |= Align.bottom;
 		align &= ~Align.top;
 		return this;
 	}
 
 	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the actor within the container. */
-	public Container right () {
+	public Container<T> right () {
 		align |= Align.right;
 		align &= ~Align.left;
 		return this;
