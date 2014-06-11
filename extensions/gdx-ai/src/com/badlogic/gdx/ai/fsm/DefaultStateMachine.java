@@ -88,10 +88,10 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 	@Override
 	public void update () {
 		// Execute the global state (if any)
-		if (globalState != null) globalState.execute(owner);
+		if (globalState != null) globalState.update(owner);
 
 		// Execute the current state (if any)
-		if (currentState != null) currentState.execute(owner);
+		if (currentState != null) currentState.update(owner);
 	}
 
 	@Override

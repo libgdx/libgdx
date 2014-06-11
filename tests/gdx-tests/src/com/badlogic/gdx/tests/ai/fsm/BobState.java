@@ -36,7 +36,7 @@ public enum BobState implements State<Bob> {
 		}
 
 		@Override
-		public void execute (Bob bob) {
+		public void update (Bob bob) {
 			// Now bob is at the goldmine he digs for gold until he
 			// is carrying in excess of MAX_NUGGETS. If he gets thirsty during
 			// his digging he packs up work for a while and changes state to
@@ -81,7 +81,7 @@ public enum BobState implements State<Bob> {
 		}
 
 		@Override
-		public void execute (Bob bob) {
+		public void update (Bob bob) {
 			// if miner is not fatigued start to dig for nuggets again.
 			if (!bob.isFatigued()) {
 				talk(bob, "All mah fatigue has drained away. Time to find more gold!");
@@ -129,7 +129,7 @@ public enum BobState implements State<Bob> {
 		}
 
 		@Override
-		public void execute (Bob bob) {
+		public void update (Bob bob) {
 			bob.buyAndDrinkAWhiskey();
 
 			talk(bob, "That's mighty fine sippin liquer");
@@ -155,7 +155,7 @@ public enum BobState implements State<Bob> {
 		}
 
 		@Override
-		public void execute (Bob bob) {
+		public void update (Bob bob) {
 			// Deposit the gold
 			bob.addToWealth(bob.getGoldCarried());
 
@@ -186,7 +186,7 @@ public enum BobState implements State<Bob> {
 		}
 
 		@Override
-		public void execute (Bob bob) {
+		public void update (Bob bob) {
 			talk(bob, "Tastes real good too!");
 			bob.getStateMachine().revertToPreviousState();
 		}
