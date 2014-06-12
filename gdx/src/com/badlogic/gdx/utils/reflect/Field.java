@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.utils.reflect;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -39,6 +40,16 @@ public final class Field {
 	/** Returns a Class object that identifies the declared type for the field. */
 	public Class getType () {
 		return field.getType();
+	}
+	
+	/** Returns all annotations that are directly present on this element. */
+	public Annotation[] getDeclaredAnnotations(){
+		return field.getDeclaredAnnotations();
+	}
+	
+	/** Returns this element's annotation for the specified type if such an annotation is present, else null. */
+	public <T extends Annotation> T getAnnotation(Class<T> annotationClass){
+		return field.getAnnotation(annotationClass);
 	}
 
 	/** Returns the Class object representing the class or interface that declares the field. */
