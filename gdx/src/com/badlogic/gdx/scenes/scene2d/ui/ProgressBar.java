@@ -128,11 +128,10 @@ public class ProgressBar extends Widget implements Disableable {
 			float knobHeightHalf = 0;
 			if (min != max) {
 				if (knob == null) {
-					knobHeightHalf = knobBefore.getMinHeight() * 0.5f;
+					knobHeightHalf = knobBefore == null ? 0 : knobBefore.getMinHeight() * 0.5f;
 					position = (value - min) / (max - min) * (positionHeight - knobHeightHalf);
 					position = Math.min(positionHeight - knobHeightHalf, position);
-				}
-				else {
+				} else {
 					knobHeightHalf = knobHeight * 0.5f;
 					position = (value - min) / (max - min) * (positionHeight - knobHeight);
 					position = Math.min(positionHeight - knobHeight, position) + bg.getBottomHeight();
@@ -144,11 +143,11 @@ public class ProgressBar extends Widget implements Disableable {
 				float offset = 0;
 				if (bg != null) offset = bg.getTopHeight();
 				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y + offset, knobBefore.getMinWidth(),
-						(int)(position + knobHeightHalf));
+					(int)(position + knobHeightHalf));
 			}
 			if (knobAfter != null) {
 				knobAfter.draw(batch, x + (int)((width - knobAfter.getMinWidth()) * 0.5f), y + (int)(position + knobHeightHalf),
-						knobAfter.getMinWidth(), height - (int)(position + knobHeightHalf));
+					knobAfter.getMinWidth(), height - (int)(position + knobHeightHalf));
 			}
 			if (knob != null) knob.draw(batch, x + (int)((width - knobWidth) * 0.5f), (int)(y + position), knobWidth, knobHeight);
 		} else {
@@ -158,11 +157,10 @@ public class ProgressBar extends Widget implements Disableable {
 			float knobWidthHalf = 0;
 			if (min != max) {
 				if (knob == null) {
-					knobWidthHalf = knobBefore.getMinWidth() * 0.5f;
+					knobWidthHalf = knobBefore == null ? 0 : knobBefore.getMinWidth() * 0.5f;
 					position = (value - min) / (max - min) * (positionWidth - knobWidthHalf);
 					position = Math.min(positionWidth - knobWidthHalf, position);
-				}
-				else {
+				} else {
 					knobWidthHalf = knobWidth * 0.5f;
 					position = (value - min) / (max - min) * (positionWidth - knobWidth);
 					position = Math.min(positionWidth - knobWidth, position) + bg.getLeftWidth();
@@ -173,12 +171,12 @@ public class ProgressBar extends Widget implements Disableable {
 			if (knobBefore != null) {
 				float offset = 0;
 				if (bg != null) offset = bg.getLeftWidth();
-				knobBefore.draw(batch, x + offset, y + (int)((height - knobBefore.getMinHeight()) * 0.5f), (int)(position + knobWidthHalf),
-						knobBefore.getMinHeight());
+				knobBefore.draw(batch, x + offset, y + (int)((height - knobBefore.getMinHeight()) * 0.5f),
+					(int)(position + knobWidthHalf), knobBefore.getMinHeight());
 			}
 			if (knobAfter != null) {
 				knobAfter.draw(batch, x + (int)(position + knobWidthHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
-						width - (int)(position + knobWidthHalf), knobAfter.getMinHeight());
+					width - (int)(position + knobWidthHalf), knobAfter.getMinHeight());
 			}
 			if (knob != null) knob.draw(batch, (int)(x + position), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
 		}
@@ -222,8 +220,8 @@ public class ProgressBar extends Widget implements Disableable {
 		return !cancelled;
 	}
 
-	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress bar
-	 * knob's range. */
+	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress
+	 * bar knob's range. */
 	protected float clamp (float value) {
 		return MathUtils.clamp(value, min, max);
 	}
@@ -331,7 +329,13 @@ public class ProgressBar extends Widget implements Disableable {
 
 		public ProgressBarStyle (ProgressBarStyle style) {
 			this.background = style.background;
+			this.disabledBackground = style.disabledBackground;
 			this.knob = style.knob;
+			this.disabledKnob = style.disabledKnob;
+			this.knobBefore = style.knobBefore;
+			this.knobAfter = style.knobAfter;
+			this.disabledKnobBefore = style.disabledKnobBefore;
+			this.disabledKnobAfter = style.disabledKnobAfter;
 		}
 	}
 }

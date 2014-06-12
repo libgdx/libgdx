@@ -38,8 +38,8 @@ public class Animation {
 	}
 
 	final TextureRegion[] keyFrames;
-	public final float frameDuration;
-	public final float animationDuration;
+	private float frameDuration;
+	private float animationDuration;
 
 	private PlayMode playMode = PlayMode.NORMAL;
 
@@ -182,5 +182,28 @@ public class Animation {
 	public boolean isAnimationFinished (float stateTime) {
 		int frameNumber = (int)(stateTime / frameDuration);
 		return keyFrames.length - 1 < frameNumber;
+	}
+	
+	/**
+	 * Sets duration a frame will be displayed.
+	 * @param frameDuration in seconds
+	 */
+	public void setFrameDuration(float frameDuration) {
+		this.frameDuration = frameDuration;
+		this.animationDuration = keyFrames.length * frameDuration;
+	}
+	
+	/**
+	 * @return the duration of a frame in seconds
+	 */
+	public float getFrameDuration() {
+		return frameDuration;
+	}
+	
+	/**
+	 * @return the duration of the entire animation, number of frames times frame duration, in seconds 
+	 */
+	public float getAnimationDuration() {
+		return animationDuration;
 	}
 }

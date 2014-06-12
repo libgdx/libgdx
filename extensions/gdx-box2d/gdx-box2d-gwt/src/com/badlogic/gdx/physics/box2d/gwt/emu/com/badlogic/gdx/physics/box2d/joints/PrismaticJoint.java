@@ -30,6 +30,7 @@ public class PrismaticJoint extends Joint {
 
 	Vector2 localAnchorA = new Vector2();
 	Vector2 localAnchorB = new Vector2();
+	Vector2 localAxisA = new Vector2();
 
 	public PrismaticJoint (World world, org.jbox2d.dynamics.joints.PrismaticJoint joint) {
 		super(world, joint);
@@ -46,6 +47,12 @@ public class PrismaticJoint extends Joint {
 		Vec2 localAnchor = joint.getLocalAnchorB();
 		localAnchorB.set(localAnchor.x, localAnchor.y);
 		return localAnchorB;
+	}
+
+	public Vector2 getLocalAxisA () {
+		Vec2 localAxis = joint.getLocalAxisA();
+		localAxisA.set(localAxis.x, localAxis.y);
+		return localAxisA;
 	}
 
 	/** Get the current joint translation, usually in meters. */

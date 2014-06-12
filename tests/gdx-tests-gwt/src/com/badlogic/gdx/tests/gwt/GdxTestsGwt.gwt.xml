@@ -4,6 +4,7 @@
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 	<inherits name='com.badlogic.gdx.GdxTests' />
 	<inherits name="com.badlogic.gdx.physics.box2d.box2d-gwt"/>
+	<inherits name="com.badlogic.gdx.ai"/>
 	<inherits name="com.badlogic.gdx.controllers.controllers-gwt"/>
 	<set-configuration-property name="gdx.assetpath" value="../gdx-tests-android/assets"/>
 	<entry-point class='com.badlogic.gdx.tests.gwt.client.GwtTestStarter' />

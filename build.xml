@@ -255,6 +255,18 @@
 			<reference refid="src"/>
 		</ant>
 	</target>
+    
+    <!-- gdx ai -->
+    <target name="gdx-ai" depends="gdx-core">
+        <path id="classpath">
+            <pathelement location="${distDir}/gdx.jar"/>
+        </path>
+        <ant antfile="../../build-template.xml" dir="extensions/gdx-ai">
+            <property name="distDir" value="${distDir}/extensions/gdx-ai"/>
+            <property name="jar" value="gdx-ai"/>
+            <reference refid="classpath"/>
+        </ant>
+    </target>
 
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
@@ -304,7 +316,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-ai"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->

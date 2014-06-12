@@ -137,8 +137,13 @@ public class ShapeRenderer implements Disposable {
 		matrixDirty = true;
 	}
 
+	/** If the matrix is modified, {@link #updateMatrices()} must be called. */
 	public Matrix4 getProjectionMatrix () {
 		return projView;
+	}
+
+	public void updateMatrices () {
+		matrixDirty = true;
 	}
 
 	public void setTransformMatrix (Matrix4 matrix) {
@@ -146,6 +151,7 @@ public class ShapeRenderer implements Disposable {
 		matrixDirty = true;
 	}
 
+	/** If the matrix is modified, {@link #updateMatrices()} must be called. */
 	public Matrix4 getTransformMatrix () {
 		return transform;
 	}

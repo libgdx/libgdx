@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.zip.CRC32;
@@ -189,7 +190,7 @@ public class SharedLibraryLoader {
 		File parent = file.getParentFile();
 		File testFile;
 		if (file.exists()) {
-			if (!file.canWrite() || !file.canExecute()) return false;
+			if (!file.canWrite() || !canExecute(file)) return false;
 			// Don't overwrite existing file just to check if we can write to directory.
 			testFile = new File(parent, UUID.randomUUID().toString());
 		} else {
@@ -199,12 +200,21 @@ public class SharedLibraryLoader {
 		}
 		try {
 			new FileOutputStream(testFile).close();
-			if (!testFile.canExecute()) return false;
+			if (!canExecute(testFile)) return false;
 			return true;
 		} catch (Throwable ex) {
 			return false;
 		} finally {
 			testFile.delete();
+		}
+	}
+	
+	private boolean canExecute(File file) {
+		try {
+			Method m = File.class.getMethod("canExecute");
+			return (Boolean)m.invoke(file);
+		} catch (Exception e) {
+			return false;
 		}
 	}
 

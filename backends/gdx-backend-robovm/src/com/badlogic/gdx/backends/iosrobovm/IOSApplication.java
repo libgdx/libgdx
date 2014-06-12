@@ -80,6 +80,7 @@ public class IOSApplication implements Application {
 	UIApplication uiApp;
 	UIWindow uiWindow;
 	ApplicationListener listener;
+	IOSViewControllerListener viewControllerListener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
 	IOSAudio audio;
@@ -426,5 +427,13 @@ public class IOSApplication implements Application {
 		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
 		}
+	}
+
+	/**
+	 * Add a listener to handle events from the libgdx root view controller
+	 * @param listener The {#link IOSViewControllerListener} to add
+	 */
+	public void addViewControllerListener(IOSViewControllerListener listener) {
+		viewControllerListener = listener;
 	}
 }
