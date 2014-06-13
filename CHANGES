@@ -3,6 +3,7 @@
 - API Addition: Vector#setZero
 - API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence
 - API change: TableLayout has been forked and integrated into libgdx more tightly, see http://www.badlogicgames.com/wordpress/?p=3458
+- API change: Removed Skin#add(String, Object) to reduce confusion about under what type the resource is added. #1957
 
 [1.1.0]
 - Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
