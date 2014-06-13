@@ -22,9 +22,14 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.lwjgl.opengl.EXTFramebufferBlit;
+import org.lwjgl.opengl.EXTFramebufferMultisample;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
+
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -81,6 +86,11 @@ public class FrameBuffer implements Disposable {
 	/** format **/
 	protected final Pixmap.Format format;
 
+	protected int multiFramebufferHandle;
+	protected int colorBufferHandle;
+	protected boolean isMsaa = true;
+	protected int maxsamples = 1;
+
 	/** Creates a new FrameBuffer having the given dimensions and potentially a depth buffer attached.
 	 * 
 	 * @param format the format of the color buffer; according to the OpenGL ES 2.0 spec, only RGB565, RGBA4444 and RGB5_A1 are
@@ -94,6 +104,10 @@ public class FrameBuffer implements Disposable {
 		this.height = height;
 		this.format = format;
 		this.hasDepth = hasDepth;
+
+		this.isMsaa = GLContext.getCapabilities().GL_EXT_framebuffer_multisample
+			& GLContext.getCapabilities().GL_EXT_framebuffer_blit;
+
 		build();
 
 		addManagedFrameBuffer(Gdx.app, this);
@@ -123,6 +137,16 @@ public class FrameBuffer implements Disposable {
 
 		setupTexture();
 
+		if (isMsaa) {
+			// maxsamples = GL11.glGetInteger(EXTFramebufferMultisample.GL_MAX_SAMPLES_EXT);
+			IntBuffer colorBuffer = BufferUtils.newIntBuffer(1);
+			gl.glGenRenderbuffers(1, colorBuffer);
+			colorBufferHandle = colorBuffer.get(0);
+			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, colorBufferHandle);
+			EXTFramebufferMultisample.glRenderbufferStorageMultisampleEXT(GL20.GL_RENDERBUFFER, maxsamples, GL11.GL_RGBA8, width,
+				height);
+		}
+
 		IntBuffer handle = BufferUtils.newIntBuffer(1);
 		gl.glGenFramebuffers(1, handle);
 		framebufferHandle = handle.get(0);
@@ -137,14 +161,32 @@ public class FrameBuffer implements Disposable {
 
 		if (hasDepth) {
 			gl.glBindRenderbuffer(GL20.GL_RENDERBUFFER, depthbufferHandle);
-			gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(),
-				colorTexture.getHeight());
+
+			if (isMsaa) {
+				EXTFramebufferMultisample.glRenderbufferStorageMultisampleEXT(GL20.GL_RENDERBUFFER, maxsamples,
+					GL20.GL_DEPTH_COMPONENT16, width, height);
+			} else {
+				gl.glRenderbufferStorage(GL20.GL_RENDERBUFFER, GL20.GL_DEPTH_COMPONENT16, colorTexture.getWidth(),
+					colorTexture.getHeight());
+			}
+		}
+
+		if (isMsaa) {
+			IntBuffer multiFrameBuffer = BufferUtils.newIntBuffer(1);
+			gl.glGenFramebuffers(1, multiFrameBuffer);
+			multiFramebufferHandle = multiFrameBuffer.get(0);
+			gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, multiFramebufferHandle);
+			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_RENDERBUFFER, colorBufferHandle);
+
+			if (hasDepth) {
+				gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
+			}
 		}
 
 		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 		gl.glFramebufferTexture2D(GL20.GL_FRAMEBUFFER, GL20.GL_COLOR_ATTACHMENT0, GL20.GL_TEXTURE_2D,
 			colorTexture.getTextureObjectHandle(), 0);
-		if (hasDepth) {
+		if (hasDepth && !isMsaa) {
 			gl.glFramebufferRenderbuffer(GL20.GL_FRAMEBUFFER, GL20.GL_DEPTH_ATTACHMENT, GL20.GL_RENDERBUFFER, depthbufferHandle);
 		}
 		int result = gl.glCheckFramebufferStatus(GL20.GL_FRAMEBUFFER);
@@ -192,6 +234,13 @@ public class FrameBuffer implements Disposable {
 			gl.glDeleteRenderbuffers(1, handle);
 		}
 
+		if (isMsaa) {
+			handle.clear();
+			handle.put(multiFramebufferHandle);
+			handle.flip();
+			gl.glDeleteRenderbuffers(1, handle);
+		}
+
 		handle.clear();
 		handle.put(framebufferHandle);
 		handle.flip();
@@ -202,12 +251,25 @@ public class FrameBuffer implements Disposable {
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void bind () {
-		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		if (isMsaa) {
+			Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, multiFramebufferHandle);
+		} else {
+			Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		}
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
-	public static void unbind () {
-		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+	public void unbind () {
+		GL20 gl = Gdx.graphics.getGL20();
+
+		if (isMsaa) {
+			gl.glBindFramebuffer(EXTFramebufferBlit.GL_READ_FRAMEBUFFER_EXT, multiFramebufferHandle);
+			gl.glBindFramebuffer(EXTFramebufferBlit.GL_DRAW_FRAMEBUFFER_EXT, framebufferHandle);
+			EXTFramebufferBlit.glBlitFramebufferEXT(0, 0, width, height, 0, 0, width, height, GL20.GL_COLOR_BUFFER_BIT,
+				GL20.GL_NEAREST);
+		}
+
+		gl.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 
 	/** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
