@@ -106,6 +106,10 @@ public class Skin implements Disposable {
 		}
 	}
 
+	public void add (String name, Object resource) {
+		add(name, resource, resource.getClass());
+	}
+
 	public void add (String name, Object resource, Class type) {
 		if (name == null) throw new IllegalArgumentException("name cannot be null.");
 		if (resource == null) throw new IllegalArgumentException("resource cannot be null.");
@@ -122,6 +126,7 @@ public class Skin implements Disposable {
 		ObjectMap<String, Object> typeResources = resources.get(type);
 		typeResources.remove(name);
 	}
+
 
 	public <T> T get (Class<T> type) {
 		return get("default", type);
