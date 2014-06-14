@@ -51,8 +51,9 @@ public class FloatAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		// FIXME use epsilon?
-		return ((FloatAttribute)other).value == value;
+	public int hashCode () {
+		int result = (int)type;
+		result = 977 * result + Float.floatToRawIntBits(value);
+		return result; 
 	}
 }

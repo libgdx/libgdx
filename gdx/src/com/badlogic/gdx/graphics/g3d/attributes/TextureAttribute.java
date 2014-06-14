@@ -86,7 +86,9 @@ public class TextureAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		return ((TextureAttribute)other).textureDescription.equals(textureDescription);
+	public int hashCode () {
+		int result = (int)type;
+		result = 991 * result + textureDescription.hashCode();
+		return result; 
 	}
 }

@@ -78,15 +78,9 @@ public class Material extends Attributes {
 	public final Material copy () {
 		return new Material(this);
 	}
-
-	/** @return True if this material equals the other material in every aspect (including the ID) */
-	public final boolean equals (final Material other) {
-		return same(other, true) && id.equals(other.id);
-	}
-
-	/** @return True if this material equals the other material in every aspect (including the ID) */
+	
 	@Override
-	public final boolean equals (final Object obj) {
-		return obj instanceof Material ? equals((Material)obj) : false;
+	public int hashCode () {
+		return super.hashCode() + 3 * id.hashCode();
 	}
 }
