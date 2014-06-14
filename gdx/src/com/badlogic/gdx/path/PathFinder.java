@@ -30,14 +30,17 @@ public class PathFinder {
 	
 	private final Node[][] nodeMap;
 	private final int width, height;
+	private final Heuristic heuristic;
 	
 	/** Sets the node map to the correct width and height and sets the array to the node's default values. 
 	 * @param width the width of the map.
-	 * @param height the height of the map.*/
-	public PathFinder(int width, int height) {
+	 * @param height the height of the map.
+	 * @param heuristic the method to get the Heuristic value for nodes. */
+	public PathFinder(int width, int height, Heuristic heuristic) {
 		this.width = width;
 		this.height = height;
 		nodeMap = new Node[width][height];
+		this.heuristic = heuristic;
 		initNodeMap();
 	}
 	
@@ -45,8 +48,8 @@ public class PathFinder {
 	 * @param walkables A multidimensional boolean array with the appropriate values set according to the individual nodes that can or can't be walked on.
 	 * @param width the width of the map.
 	 * @param height the height of the map. */
-	public PathFinder(boolean[][] walkables, int width, int height) {
-		this(width, height);
+	public PathFinder(boolean[][] walkables, int width, int height, Heuristic heuristic) {
+		this(width, height, heuristic);
 		setWalkables(walkables);
 	}
 	
@@ -54,7 +57,7 @@ public class PathFinder {
 	private void initNodeMap() {
 		for (int j = 0; j < height; j++) {
 			for (int i = 0; i < width; i++) {
-				nodeMap[i][j] = new Node(i, j);
+				nodeMap[i][j] = new Node(i, j, heuristic);
 			}
 		}
 	}

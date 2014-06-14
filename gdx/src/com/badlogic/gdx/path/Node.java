@@ -23,22 +23,26 @@ package com.badlogic.gdx.path;
 public class Node {
 
 	private final int x, y;
+	private final Heuristic heuristic;
+	
 	private int g, h;
 	private boolean walkable;
 	private Node parent;
 	
 	/** Sets the node to the x and y values.
 	 * @param x the x position.
-	 * @param y the y position.*/
-	public Node(int x, int y) {
+	 * @param y the y position.
+	 * @param heuristic the method to get the Heuristic value for nodes. */
+	public Node(int x, int y, Heuristic heuristic) {
 		this.x = x;
 		this.y = y;
+		this.heuristic = heuristic;
 	}
 	
 	/** Calculates the H value of the node given the goal. 
 	 * @param goal the ending node of the path. */
 	public void calculateH(Node goal) {
-		h = (Math.abs(x - goal.x) + Math.abs(y - goal.y));
+		h = heuristic.getCost(this, goal);
 	}
 	
 	/** Calculates the G value of the node */
