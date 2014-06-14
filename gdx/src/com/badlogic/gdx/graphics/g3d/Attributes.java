@@ -146,7 +146,7 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	 *         attribute types are specified, true if this collection has all specified attributes, i.e. attributes.has(out,
 	 *         ColorAttribute.Diffuse | ColorAttribute.Specular | TextureAttribute.Diffuse); */
 	public final boolean has (final long type) {
-		return type > 0 && (this.mask & type) == type;
+		return type != 0 && (this.mask & type) == type;
 	}
 
 	/** @return the index of the attribute with the specified type or negative if not available. */
@@ -187,5 +187,24 @@ public class Attributes implements Iterable<Attribute>, Comparator<Attribute> {
 	@Override
 	public final Iterator<Attribute> iterator () {
 		return attributes.iterator();
+	}
+	
+	@Override
+	public int hashCode () {
+		sort();
+		final int n = attributes.size;
+		int result = 71 + (int)mask;
+		int m = 1;
+		for (int i = 0; i < n; i++)
+			result += mask * attributes.get(i).hashCode() * (m = (m * 7) & 0xFFFF);
+		return result;
+	}
+	
+	@Override
+	public boolean equals (Object other) {
+		if (other == null) return false;
+		if (other == this) return true;
+		if (!(other instanceof Attributes)) return false;
+		return hashCode() == other.hashCode();
 	}
 }

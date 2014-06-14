@@ -82,9 +82,12 @@ public class DepthTestAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		DepthTestAttribute attr = (DepthTestAttribute)other;
-		return depthFunc == attr.depthFunc && depthRangeNear == attr.depthRangeNear && depthRangeFar == attr.depthRangeFar
-			&& depthMask == attr.depthMask;
+	public int hashCode () {
+		int result = (int)type;
+		result = 971 * result + depthFunc;
+		result = 971 * result + Float.floatToRawIntBits(depthRangeNear);
+		result = 971 * result + Float.floatToRawIntBits(depthRangeFar);
+		result = 971 * result + (depthMask ? 1 : 0);
+		return result; 
 	}
 }

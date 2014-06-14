@@ -59,7 +59,9 @@ public abstract class Attribute {
 	/** @return An exact copy of this attribute */
 	public abstract Attribute copy ();
 
-	protected abstract boolean equals (Attribute other);
+	protected boolean equals (Attribute other) {
+		return other.hashCode() == hashCode();
+	}
 
 	@Override
 	public boolean equals (Object obj) {

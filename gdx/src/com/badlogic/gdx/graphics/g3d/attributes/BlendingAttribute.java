@@ -75,10 +75,14 @@ public class BlendingAttribute extends Attribute {
 	public BlendingAttribute copy () {
 		return new BlendingAttribute(this);
 	}
-
+	
 	@Override
-	protected boolean equals (final Attribute other) {
-		return ((BlendingAttribute)other).sourceFunction == sourceFunction
-			&& ((BlendingAttribute)other).destFunction == destFunction;
+	public int hashCode () {
+		int result = (int)type;
+		result = 947 * result + (blended ? 1 : 0);
+		result = 947 * result + sourceFunction;
+		result = 947 * result + destFunction;
+		result = 947 * result + Float.floatToRawIntBits(opacity);
+		return result; 
 	}
 }
