@@ -1,3 +1,7 @@
+[1.1.2]
+- API Addition: Node, used when finding paths
+- API Addition: Pathfinder, used to find paths from one position to another
+
 [1.1.1]
 - API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
 - API Addition: Vector#setZero
