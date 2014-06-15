@@ -66,6 +66,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	public void create () {
 		super.create();
 
+		Gdx.gl = new GL20Benchmark(Gdx.gl);
 		Gdx.gl20 = new GL20Benchmark(Gdx.gl20);
 		Gdx.gl30 = new GL30Benchmark(Gdx.gl30);
 
@@ -84,11 +85,11 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		textureBindsLabel = new Label("Texture binds: 999", skin);
 		textureBindsLabel.setPosition(0, trisCountLabel.getTop());
 		hud.addActor(textureBindsLabel);
-		
+
 		shaderSwitchesLabel = new Label("Shader switches: 999", skin);
 		shaderSwitchesLabel.setPosition(0, textureBindsLabel.getTop());
 		hud.addActor(shaderSwitchesLabel);
-		
+
 		drawCallsLabel = new Label("Draw calls: 999", skin);
 		drawCallsLabel.setPosition(0, shaderSwitchesLabel.getTop());
 		hud.addActor(drawCallsLabel);
@@ -167,22 +168,25 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	protected void getStatus (final StringBuilder stringBuilder) {
 		stringBuilder.setLength(0);
 		stringBuilder.append("GL calls: ");
-		stringBuilder.append(((GL20Benchmark) Gdx.gl20).calls + ((GL30Benchmark) Gdx.gl30).calls);
+		stringBuilder.append(((GL20Benchmark)Gdx.gl).calls + ((GL20Benchmark)Gdx.gl20).calls + ((GL30Benchmark)Gdx.gl30).calls);
 		glCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Draw calls: ");
-		stringBuilder.append(((GL20Benchmark) Gdx.gl20).drawCalls + ((GL30Benchmark) Gdx.gl30).drawCalls);
+		stringBuilder.append(((GL20Benchmark)Gdx.gl).drawCalls + ((GL20Benchmark)Gdx.gl20).drawCalls
+			+ ((GL30Benchmark)Gdx.gl30).drawCalls);
 		drawCallsLabel.setText(stringBuilder);
-		
+
 		stringBuilder.setLength(0);
 		stringBuilder.append("Shader switches: ");
-		stringBuilder.append(((GL20Benchmark) Gdx.gl20).shaderSwitches + ((GL30Benchmark) Gdx.gl30).shaderSwitches);
+		stringBuilder.append(((GL20Benchmark)Gdx.gl).shaderSwitches + ((GL20Benchmark)Gdx.gl20).shaderSwitches
+			+ ((GL30Benchmark)Gdx.gl30).shaderSwitches);
 		shaderSwitchesLabel.setText(stringBuilder);
-		
+
 		stringBuilder.setLength(0);
 		stringBuilder.append("Texture binds: ");
-		stringBuilder.append(((GL20Benchmark) Gdx.gl20).textureBinds + ((GL30Benchmark) Gdx.gl30).textureBinds);
+		stringBuilder.append(((GL20Benchmark)Gdx.gl).textureBinds + ((GL20Benchmark)Gdx.gl20).textureBinds
+			+ ((GL30Benchmark)Gdx.gl30).textureBinds);
 		textureBindsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
@@ -198,10 +202,11 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		stringBuilder.append(", Point: ");
 		stringBuilder.append(environment.pointLights.size);
 		lightsLabel.setText(stringBuilder);
-		
+
 		((BenchmarkModelBatch)modelBatch).reset();
-		((GL20Benchmark) Gdx.gl20).reset();
-		((GL30Benchmark) Gdx.gl30).reset();
+		((GL20Benchmark)Gdx.gl).reset();
+		((GL20Benchmark)Gdx.gl20).reset();
+		((GL30Benchmark)Gdx.gl30).reset();
 
 		stringBuilder.setLength(0);
 		super.getStatus(stringBuilder);
