@@ -287,7 +287,6 @@ public class GL30Benchmark extends GLBenchmark implements GL30 {
 
 	@Override
 	public void glAttachShader (int program, int shader) {
-		shaderSwitches++;
 		calls++;
 		gl30.glAttachShader(program, shader);
 	}
@@ -828,6 +827,7 @@ public class GL30Benchmark extends GLBenchmark implements GL30 {
 
 	@Override
 	public void glUseProgram (int program) {
+		shaderSwitches++;
 		calls++;
 		gl30.glUseProgram(program);
 	}

@@ -288,7 +288,6 @@ public class GL20Benchmark extends GLBenchmark implements GL20 {
 
 	@Override
 	public void glAttachShader (int program, int shader) {
-		shaderSwitches++;
 		calls++;
 		gl20.glAttachShader(program, shader);
 	}
@@ -830,6 +829,7 @@ public class GL20Benchmark extends GLBenchmark implements GL20 {
 
 	@Override
 	public void glUseProgram (int program) {
+		shaderSwitches++;
 		calls++;
 		gl20.glUseProgram(program);
 	}
