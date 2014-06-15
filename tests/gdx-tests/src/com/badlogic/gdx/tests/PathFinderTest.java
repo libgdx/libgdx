@@ -17,33 +17,23 @@
 package com.badlogic.gdx.tests;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.tests.utils.GdxTest;
-import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.ai.pathfinding.AStarPathFinder;
-import com.badlogic.gdx.ai.pathfinding.AStarPathFinder.AStarHeuristicCalculator;
 import com.badlogic.gdx.ai.pathfinding.NavContext;
 import com.badlogic.gdx.ai.pathfinding.NavGraph;
-import com.badlogic.gdx.ai.pathfinding.NavPath;
 import com.badlogic.gdx.ai.pathfinding.PathFinder;
 import com.badlogic.gdx.ai.pathfinding.tiled.ManhattanDistance;
 import com.badlogic.gdx.ai.pathfinding.tiled.NavNodeTileBased;
 import com.badlogic.gdx.ai.pathfinding.tiled.NavPathTileBased;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** This test shows how the A* implementation of a PathFinder is used on a tiled map with no diagonal movement. It shows
  * pathfinding for a WALKING and a FLYING mover.
