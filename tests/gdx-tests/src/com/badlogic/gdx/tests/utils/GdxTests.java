@@ -140,6 +140,7 @@ public class GdxTests {
 		NetAPITest.class,
 		NinePatchTest.class,
 		OnscreenKeyboardTest.class,
+		PathFinderTest.class,
 		PathTest.class,
 		ParallaxTest.class,
 		ParticleEmitterTest.class,
