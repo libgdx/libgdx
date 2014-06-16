@@ -1,4 +1,6 @@
 [1.1.1]
+- API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
+- API Addition: A FreeTypeFontGeneratorLoader has been added to the gdx-freetype extension
 - API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
 - API Addition: Vector#setZero
 - API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence

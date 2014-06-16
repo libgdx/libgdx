@@ -20,9 +20,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.benchmark.BenchmarkModelBatch;
-import com.badlogic.gdx.graphics.benchmark.GL20Benchmark;
-import com.badlogic.gdx.graphics.benchmark.GL30Benchmark;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -37,6 +34,9 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
+import com.badlogic.gdx.graphics.profiling.ProfilingModelBatch;
+import com.badlogic.gdx.graphics.profiling.GL20Profiler;
+import com.badlogic.gdx.graphics.profiling.GL30Profiler;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -66,9 +66,9 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	public void create () {
 		super.create();
 
-		Gdx.gl = new GL20Benchmark(Gdx.gl);
-		Gdx.gl20 = new GL20Benchmark(Gdx.gl20);
-		Gdx.gl30 = new GL30Benchmark(Gdx.gl30);
+		Gdx.gl = new GL20Profiler(Gdx.gl);
+		Gdx.gl20 = new GL20Profiler(Gdx.gl20);
+		Gdx.gl30 = new GL30Profiler(Gdx.gl30);
 
 		randomizeLights();
 
@@ -139,7 +139,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		config.numSpotLights = 0;
 
 		modelBatch.dispose();
-		modelBatch = new BenchmarkModelBatch(new DefaultShaderProvider(config));
+		modelBatch = new ProfilingModelBatch(new DefaultShaderProvider(config));
 
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
@@ -168,30 +168,30 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	protected void getStatus (final StringBuilder stringBuilder) {
 		stringBuilder.setLength(0);
 		stringBuilder.append("GL calls: ");
-		stringBuilder.append(((GL20Benchmark)Gdx.gl).calls + ((GL20Benchmark)Gdx.gl20).calls + ((GL30Benchmark)Gdx.gl30).calls);
+		stringBuilder.append(((GL20Profiler)Gdx.gl).calls + ((GL20Profiler)Gdx.gl20).calls + ((GL30Profiler)Gdx.gl30).calls);
 		glCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Draw calls: ");
-		stringBuilder.append(((GL20Benchmark)Gdx.gl).drawCalls + ((GL20Benchmark)Gdx.gl20).drawCalls
-			+ ((GL30Benchmark)Gdx.gl30).drawCalls);
+		stringBuilder.append(((GL20Profiler)Gdx.gl).drawCalls + ((GL20Profiler)Gdx.gl20).drawCalls
+			+ ((GL30Profiler)Gdx.gl30).drawCalls);
 		drawCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Shader switches: ");
-		stringBuilder.append(((GL20Benchmark)Gdx.gl).shaderSwitches + ((GL20Benchmark)Gdx.gl20).shaderSwitches
-			+ ((GL30Benchmark)Gdx.gl30).shaderSwitches);
+		stringBuilder.append(((GL20Profiler)Gdx.gl).shaderSwitches + ((GL20Profiler)Gdx.gl20).shaderSwitches
+			+ ((GL30Profiler)Gdx.gl30).shaderSwitches);
 		shaderSwitchesLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Texture binds: ");
-		stringBuilder.append(((GL20Benchmark)Gdx.gl).textureBinds + ((GL20Benchmark)Gdx.gl20).textureBinds
-			+ ((GL30Benchmark)Gdx.gl30).textureBinds);
+		stringBuilder.append(((GL20Profiler)Gdx.gl).textureBinds + ((GL20Profiler)Gdx.gl20).textureBinds
+			+ ((GL30Profiler)Gdx.gl30).textureBinds);
 		textureBindsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Tris: ");
-		stringBuilder.append(((BenchmarkModelBatch)modelBatch).tris / 3);
+		stringBuilder.append(((ProfilingModelBatch)modelBatch).tris / 3);
 		trisCountLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
@@ -203,10 +203,10 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		stringBuilder.append(environment.pointLights.size);
 		lightsLabel.setText(stringBuilder);
 
-		((BenchmarkModelBatch)modelBatch).reset();
-		((GL20Benchmark)Gdx.gl).reset();
-		((GL20Benchmark)Gdx.gl20).reset();
-		((GL30Benchmark)Gdx.gl30).reset();
+		((ProfilingModelBatch)modelBatch).reset();
+		((GL20Profiler)Gdx.gl).reset();
+		((GL20Profiler)Gdx.gl20).reset();
+		((GL30Profiler)Gdx.gl30).reset();
 
 		stringBuilder.setLength(0);
 		super.getStatus(stringBuilder);

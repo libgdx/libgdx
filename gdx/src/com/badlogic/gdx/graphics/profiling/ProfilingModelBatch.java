@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.benchmark;
+package com.badlogic.gdx.graphics.profiling;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
 
 /** Keeps track of how many tris have been rendered since the last call to {@link #reset()}.
  * @author Daniel Holderbaum */
-public class BenchmarkModelBatch extends ModelBatch {
+public class ProfilingModelBatch extends ModelBatch {
 
 	/** The amount of tris that have been rendered so far. */
 	public int tris;
@@ -36,46 +36,46 @@ public class BenchmarkModelBatch extends ModelBatch {
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public BenchmarkModelBatch (final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
+	public ProfilingModelBatch (final RenderContext context, final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		super(context, shaderProvider, sorter);
 	}
 
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
-	public BenchmarkModelBatch (final RenderContext context, final ShaderProvider shaderProvider) {
+	public ProfilingModelBatch (final RenderContext context, final ShaderProvider shaderProvider) {
 		super(context, shaderProvider);
 	}
 
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
 	 * @param context The {@link RenderContext} to use.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public BenchmarkModelBatch (final RenderContext context, final RenderableSorter sorter) {
+	public ProfilingModelBatch (final RenderContext context, final RenderableSorter sorter) {
 		super(context, sorter);
 	}
 
 	/** Construct a ModelBatch, using this constructor makes you responsible for calling context.begin() and context.end() yourself.
 	 * @param context The {@link RenderContext} to use. */
-	public BenchmarkModelBatch (final RenderContext context) {
+	public ProfilingModelBatch (final RenderContext context) {
 		super(context);
 	}
 
 	/** Construct a ModelBatch
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed.
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public BenchmarkModelBatch (final ShaderProvider shaderProvider, final RenderableSorter sorter) {
+	public ProfilingModelBatch (final ShaderProvider shaderProvider, final RenderableSorter sorter) {
 		super(shaderProvider, sorter);
 	}
 
 	/** Construct a ModelBatch
 	 * @param sorter The {@link RenderableSorter} to use. */
-	public BenchmarkModelBatch (final RenderableSorter sorter) {
+	public ProfilingModelBatch (final RenderableSorter sorter) {
 		super(sorter);
 	}
 
 	/** Construct a ModelBatch
 	 * @param shaderProvider The {@link ShaderProvider} to use, will be disposed when this ModelBatch is disposed. */
-	public BenchmarkModelBatch (final ShaderProvider shaderProvider) {
+	public ProfilingModelBatch (final ShaderProvider shaderProvider) {
 		super(shaderProvider);
 	}
 
@@ -83,7 +83,7 @@ public class BenchmarkModelBatch extends ModelBatch {
 	 * information about using a custom ubershader. Requires OpenGL ES 2.0.
 	 * @param vertexShader The {@link FileHandle} of the vertex shader to use.
 	 * @param fragmentShader The {@link FileHandle} of the fragment shader to use. */
-	public BenchmarkModelBatch (final FileHandle vertexShader, final FileHandle fragmentShader) {
+	public ProfilingModelBatch (final FileHandle vertexShader, final FileHandle fragmentShader) {
 		super(new DefaultShaderProvider(vertexShader, fragmentShader));
 	}
 
@@ -91,12 +91,12 @@ public class BenchmarkModelBatch extends ModelBatch {
 	 * information about using a custom ubershader. Requires OpenGL ES 2.0.
 	 * @param vertexShader The vertex shader to use.
 	 * @param fragmentShader The fragment shader to use. */
-	public BenchmarkModelBatch (final String vertexShader, final String fragmentShader) {
+	public ProfilingModelBatch (final String vertexShader, final String fragmentShader) {
 		super(new DefaultShaderProvider(vertexShader, fragmentShader));
 	}
 
 	/** Construct a ModelBatch with the default implementation */
-	public BenchmarkModelBatch () {
+	public ProfilingModelBatch () {
 		super();
 	}
 

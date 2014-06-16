@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.benchmark;
+package com.badlogic.gdx.graphics.profiling;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -23,11 +23,11 @@ import java.nio.IntBuffer;
 import com.badlogic.gdx.graphics.GL20;
 
 /** @author Daniel Holderbaum */
-public class GL20Benchmark extends GLBenchmark implements GL20 {
+public class GL20Profiler extends GLProfiler implements GL20 {
 
 	private GL20 gl20;
 
-	public GL20Benchmark (GL20 gl20) {
+	public GL20Profiler (GL20 gl20) {
 		this.gl20 = gl20;
 	}
 

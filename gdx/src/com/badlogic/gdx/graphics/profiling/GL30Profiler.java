@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.benchmark;
+package com.badlogic.gdx.graphics.profiling;
 
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -24,11 +24,11 @@ import java.nio.LongBuffer;
 import com.badlogic.gdx.graphics.GL30;
 
 /** @author Daniel Holderbaum */
-public class GL30Benchmark extends GLBenchmark implements GL30 {
+public class GL30Profiler extends GLProfiler implements GL30 {
 
 	private GL30 gl30;
 
-	public GL30Benchmark (GL30 gl30) {
+	public GL30Profiler (GL30 gl30) {
 		this.gl30 = gl30;
 	}
 

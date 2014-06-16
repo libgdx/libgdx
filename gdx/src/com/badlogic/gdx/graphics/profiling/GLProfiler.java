@@ -14,16 +14,16 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.graphics.benchmark;
+package com.badlogic.gdx.graphics.profiling;
 
 /** This class will collect statistics about the GL calls. All calls to it will get counted and delegated to the actual GL20 or
  * GL30 instance.
  * 
- * @see GL20Benchmark
- * @see GL30Benchmark
+ * @see GL20Profiler
+ * @see GL30Profiler
  * 
  * @author Daniel Holderbaum */
-public class GLBenchmark {
+public class GLProfiler {
 
 	/** All calls to any GL function since the last reset. */
 	public int calls;
