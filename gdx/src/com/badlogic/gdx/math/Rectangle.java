@@ -360,20 +360,35 @@ public class Rectangle implements Serializable {
 		return x + "," + y + "," + width + "," + height;
 	}
 
-	/** Compares this rectangle and another object, verifying equivalence based on
-	 * size and position.
-	 * @return if the rectangle and the other object are equal */
-	public boolean equals(Object obj){
-		if (!(obj instanceof Rectangle))
-			return false;
-		if (obj == this)
-			return true;
-
-		Rectangle rhs = (Rectangle) obj;
-		return new EqualsBuilder().
-			// if deriving: appendSuper(super.equals(obj)).
-			append(name, rhs.name).
-			append(age, rhs.age).
-			isEquals();
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode () {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Float.floatToIntBits(height);
+		result = prime * result + Float.floatToIntBits(width);
+		result = prime * result + Float.floatToIntBits(x);
+		result = prime * result + Float.floatToIntBits(y);
+		return result;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals (Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		Rectangle other = (Rectangle)obj;
+		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height)) return false;
+		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width)) return false;
+		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
+		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
+		return true;
+	}
+	
+	
 }
