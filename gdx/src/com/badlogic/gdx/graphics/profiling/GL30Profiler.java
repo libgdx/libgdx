@@ -26,7 +26,7 @@ import com.badlogic.gdx.graphics.GL30;
 /** @author Daniel Holderbaum */
 public class GL30Profiler extends GLProfiler implements GL30 {
 
-	private GL30 gl30;
+	public GL30 gl30;
 
 	public GL30Profiler (GL30 gl30) {
 		this.gl30 = gl30;
@@ -40,7 +40,7 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glBindTexture (int target, int texture) {
-		textureBinds++;
+		textureBindings++;
 		calls++;
 		gl30.glBindTexture(target, texture);
 	}
@@ -145,6 +145,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawArrays (int mode, int first, int count) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawArrays(mode, first, count);
@@ -152,6 +154,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawElements(mode, count, type, indices);
@@ -324,6 +328,7 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 	@Override
 	public void glBlendEquation (int mode) {
 		calls++;
+		gl30.glBlendEquation(mode);
 	}
 
 	@Override
@@ -418,6 +423,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawElements (int mode, int count, int type, int indices) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawElements(mode, count, type, indices);
@@ -906,6 +913,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawRangeElements (int mode, int start, int end, int count, int type, Buffer indices) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawRangeElements(mode, start, end, count, type, indices);
@@ -913,6 +922,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawRangeElements (int mode, int start, int end, int count, int type, int offset) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawRangeElements(mode, start, end, count, type, offset);
@@ -1293,6 +1304,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawArraysInstanced (int mode, int first, int count, int instanceCount) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawArraysInstanced(mode, first, count, instanceCount);
@@ -1300,6 +1313,8 @@ public class GL30Profiler extends GLProfiler implements GL30 {
 
 	@Override
 	public void glDrawElementsInstanced (int mode, int count, int type, int indicesOffset, int instanceCount) {
+		vertexCount += count;
+		primitiveCount += calculatePrimitiveCount(mode, count);
 		drawCalls++;
 		calls++;
 		gl30.glDrawElementsInstanced(mode, count, type, indicesOffset, instanceCount);

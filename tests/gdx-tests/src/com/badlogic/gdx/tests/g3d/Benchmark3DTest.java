@@ -34,7 +34,7 @@ import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
 import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ShaderProvider;
-import com.badlogic.gdx.graphics.profiling.ProfilingModelBatch;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.graphics.profiling.GL20Profiler;
 import com.badlogic.gdx.graphics.profiling.GL30Profiler;
 import com.badlogic.gdx.math.MathUtils;
@@ -56,7 +56,8 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 
 	protected Environment environment;
 
-	protected Label trisCountLabel, textureBindsLabel, shaderSwitchesLabel, drawCallsLabel, glCallsLabel, lightsLabel;
+	protected Label vertexCountLabel, primitiveCountLabel, textureBindsLabel, shaderSwitchesLabel, drawCallsLabel, glCallsLabel,
+		lightsLabel;
 
 	protected CheckBox lightingCheckBox, lightsCheckBox;
 
@@ -66,9 +67,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	public void create () {
 		super.create();
 
-		Gdx.gl = new GL20Profiler(Gdx.gl);
-		Gdx.gl20 = new GL20Profiler(Gdx.gl20);
-		Gdx.gl30 = new GL30Profiler(Gdx.gl30);
+		GLProfiler.enable();
 
 		randomizeLights();
 
@@ -78,12 +77,16 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		showAxes = true;
 		lighting = true;
 
-		trisCountLabel = new Label("Tris: 999", skin);
-		trisCountLabel.setPosition(0, fpsLabel.getTop());
-		hud.addActor(trisCountLabel);
+		vertexCountLabel = new Label("Vertices: 999", skin);
+		vertexCountLabel.setPosition(0, fpsLabel.getTop());
+		hud.addActor(vertexCountLabel);
 
-		textureBindsLabel = new Label("Texture binds: 999", skin);
-		textureBindsLabel.setPosition(0, trisCountLabel.getTop());
+		primitiveCountLabel = new Label("Primitives: 999", skin);
+		primitiveCountLabel.setPosition(0, vertexCountLabel.getTop());
+		hud.addActor(primitiveCountLabel);
+
+		textureBindsLabel = new Label("Texture bindings: 999", skin);
+		textureBindsLabel.setPosition(0, primitiveCountLabel.getTop());
 		hud.addActor(textureBindsLabel);
 
 		shaderSwitchesLabel = new Label("Shader switches: 999", skin);
@@ -139,7 +142,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		config.numSpotLights = 0;
 
 		modelBatch.dispose();
-		modelBatch = new ProfilingModelBatch(new DefaultShaderProvider(config));
+		modelBatch = new ModelBatch(new DefaultShaderProvider(config));
 
 		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1.f));
@@ -168,31 +171,33 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	protected void getStatus (final StringBuilder stringBuilder) {
 		stringBuilder.setLength(0);
 		stringBuilder.append("GL calls: ");
-		stringBuilder.append(((GL20Profiler)Gdx.gl).calls + ((GL20Profiler)Gdx.gl20).calls + ((GL30Profiler)Gdx.gl30).calls);
+		stringBuilder.append(GLProfiler.getGLCalls());
 		glCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Draw calls: ");
-		stringBuilder.append(((GL20Profiler)Gdx.gl).drawCalls + ((GL20Profiler)Gdx.gl20).drawCalls
-			+ ((GL30Profiler)Gdx.gl30).drawCalls);
+		stringBuilder.append(GLProfiler.getDrawCalls());
 		drawCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Shader switches: ");
-		stringBuilder.append(((GL20Profiler)Gdx.gl).shaderSwitches + ((GL20Profiler)Gdx.gl20).shaderSwitches
-			+ ((GL30Profiler)Gdx.gl30).shaderSwitches);
+		stringBuilder.append(GLProfiler.getShaderSwitches());
 		shaderSwitchesLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
-		stringBuilder.append("Texture binds: ");
-		stringBuilder.append(((GL20Profiler)Gdx.gl).textureBinds + ((GL20Profiler)Gdx.gl20).textureBinds
-			+ ((GL30Profiler)Gdx.gl30).textureBinds);
+		stringBuilder.append("Texture bindings: ");
+		stringBuilder.append(GLProfiler.getTextureBindings());
 		textureBindsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
-		stringBuilder.append("Tris: ");
-		stringBuilder.append(((ProfilingModelBatch)modelBatch).tris / 3);
-		trisCountLabel.setText(stringBuilder);
+		stringBuilder.append("Vertices: ");
+		stringBuilder.append(GLProfiler.getVertexCount());
+		vertexCountLabel.setText(stringBuilder);
+		
+		stringBuilder.setLength(0);
+		stringBuilder.append("Primitives: ");
+		stringBuilder.append(GLProfiler.getPrimitiveCount());
+		primitiveCountLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Lights: ");
@@ -203,10 +208,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		stringBuilder.append(environment.pointLights.size);
 		lightsLabel.setText(stringBuilder);
 
-		((ProfilingModelBatch)modelBatch).reset();
-		((GL20Profiler)Gdx.gl).reset();
-		((GL20Profiler)Gdx.gl20).reset();
-		((GL30Profiler)Gdx.gl30).reset();
+		GLProfiler.reset();
 
 		stringBuilder.setLength(0);
 		super.getStatus(stringBuilder);
@@ -251,6 +253,12 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 			onLoaded();
 		}
 		return super.keyUp(keycode);
+	}
+
+	@Override
+	public void dispose () {
+		super.dispose();
+		GLProfiler.disable();
 	}
 
 }
