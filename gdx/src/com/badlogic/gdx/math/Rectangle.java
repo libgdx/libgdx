@@ -359,4 +359,17 @@ public class Rectangle implements Serializable {
 	public String toString () {
 		return x + "," + y + "," + width + "," + height;
 	}
+	
+	/** Compares this rectangle and another object, verifying equivalence based on
+	 * size and position.
+	 * @return if the rectangle and the other object are equal */
+	public boolean equals(Object other){
+			return other != null
+				&& (other == this
+				|| other instanceof Rectangle
+				&& ((Rectangle)other).width == this.width
+				&& ((Rectangle)other).height == this.height
+				&& ((Rectangle)other).x == this.x
+				&& ((Rectangle)other).y == this.y);
+	}
 }
