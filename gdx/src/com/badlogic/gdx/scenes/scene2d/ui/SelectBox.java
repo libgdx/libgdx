@@ -322,8 +322,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
 			float itemHeight = list.getItemHeight();
 			float height = itemHeight * (maxListCount <= 0 ? items.size : Math.min(maxListCount, items.size));
-			Drawable background = getStyle().background;
-			if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+			Drawable scrollPaneBackground = getStyle().background;
+			if (scrollPaneBackground != null) height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
+			Drawable listBackground = list.getStyle().background;
+			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
