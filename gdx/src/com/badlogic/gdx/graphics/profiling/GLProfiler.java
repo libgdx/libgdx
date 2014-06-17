@@ -17,7 +17,6 @@
 package com.badlogic.gdx.graphics.profiling;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.FloatCounter;
 
 /** This class will collect statistics about the GL calls. All calls to it will get counted and delegated to the actual GL20 or
@@ -43,9 +42,6 @@ public abstract class GLProfiler {
 
 	/** The amount rendered vertices since the last reset. */
 	public static FloatCounter vertexCount = new FloatCounter(0);
-
-	/** The amount rendered primitives like {@code GL_POINTS, GL_LINES, GL_TRIANGLES, GL_LINE_STRIP, ...} since the last reset. */
-	public static FloatCounter primitiveCount = new FloatCounter(0);
 
 	/** Enables profiling by replacing the {@code GL20} and {@code GL30} instances with profiling ones. */
 	public static void enable () {
@@ -74,33 +70,5 @@ public abstract class GLProfiler {
 		drawCalls = 0;
 		shaderSwitches = 0;
 		vertexCount.reset();
-		primitiveCount.reset();
-	}
-
-	protected int calculatePrimitiveCount (int mode, int count) {
-		switch (mode) {
-		case GL20.GL_POINTS:
-			return count;
-		case GL20.GL_LINES:
-			return count / 2;
-		case GL20.GL_LINE_STRIP:
-			return count - 1;
-		case GL20.GL_LINE_LOOP:
-			return count;
-		case GL20.GL_TRIANGLE_STRIP:
-			return count - 2;
-		case GL20.GL_TRIANGLE_FAN:
-			return count - 2;
-		case GL20.GL_TRIANGLES:
-			return count / 3;
-// case GL20.GL_QUAD_STRIP:
-// return count / 2;
-// case GL20.GL_QUADS:
-// return count / 4;
-// case GL20.GL_POLYGON:
-// return 1;
-		default:
-			throw new IllegalArgumentException("Unknown primitive mode '" + mode + "'.");
-		}
 	}
 }

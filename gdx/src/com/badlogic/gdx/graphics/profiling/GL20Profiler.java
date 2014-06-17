@@ -145,7 +145,6 @@ public class GL20Profiler extends GLProfiler implements GL20 {
 	@Override
 	public void glDrawArrays (int mode, int first, int count) {
 		vertexCount.put(count);
-		primitiveCount.put(calculatePrimitiveCount(mode, count));
 		drawCalls++;
 		calls++;
 		gl20.glDrawArrays(mode, first, count);
@@ -154,7 +153,6 @@ public class GL20Profiler extends GLProfiler implements GL20 {
 	@Override
 	public void glDrawElements (int mode, int count, int type, Buffer indices) {
 		vertexCount.put(count);
-		primitiveCount.put(calculatePrimitiveCount(mode, count));
 		drawCalls++;
 		calls++;
 		gl20.glDrawElements(mode, count, type, indices);
@@ -423,7 +421,6 @@ public class GL20Profiler extends GLProfiler implements GL20 {
 	@Override
 	public void glDrawElements (int mode, int count, int type, int indices) {
 		vertexCount.put(count);
-		primitiveCount.put(calculatePrimitiveCount(mode, count));
 		drawCalls++;
 		calls++;
 		gl20.glDrawElements(mode, count, type, indices);

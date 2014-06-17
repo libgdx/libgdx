@@ -56,7 +56,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 
 	protected Environment environment;
 
-	protected Label vertexCountLabel, primitiveCountLabel, textureBindsLabel, shaderSwitchesLabel, drawCallsLabel, glCallsLabel,
+	protected Label vertexCountLabel, textureBindsLabel, shaderSwitchesLabel, drawCallsLabel, glCallsLabel,
 		lightsLabel;
 
 	protected CheckBox lightingCheckBox, lightsCheckBox;
@@ -81,12 +81,8 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		vertexCountLabel.setPosition(0, fpsLabel.getTop());
 		hud.addActor(vertexCountLabel);
 
-		primitiveCountLabel = new Label("Primitives: 999", skin);
-		primitiveCountLabel.setPosition(0, vertexCountLabel.getTop());
-		hud.addActor(primitiveCountLabel);
-
 		textureBindsLabel = new Label("Texture bindings: 999", skin);
-		textureBindsLabel.setPosition(0, primitiveCountLabel.getTop());
+		textureBindsLabel.setPosition(0, vertexCountLabel.getTop());
 		hud.addActor(textureBindsLabel);
 
 		shaderSwitchesLabel = new Label("Shader switches: 999", skin);
@@ -193,11 +189,6 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		stringBuilder.append("Vertices: ");
 		stringBuilder.append(GLProfiler.vertexCount.total);
 		vertexCountLabel.setText(stringBuilder);
-		
-		stringBuilder.setLength(0);
-		stringBuilder.append("Primitives: ");
-		stringBuilder.append(GLProfiler.primitiveCount.total);
-		primitiveCountLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Lights: ");
