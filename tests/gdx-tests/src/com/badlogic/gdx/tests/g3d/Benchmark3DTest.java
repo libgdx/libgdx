@@ -171,32 +171,32 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 	protected void getStatus (final StringBuilder stringBuilder) {
 		stringBuilder.setLength(0);
 		stringBuilder.append("GL calls: ");
-		stringBuilder.append(GLProfiler.getGLCalls());
+		stringBuilder.append(GLProfiler.calls);
 		glCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Draw calls: ");
-		stringBuilder.append(GLProfiler.getDrawCalls());
+		stringBuilder.append(GLProfiler.drawCalls);
 		drawCallsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Shader switches: ");
-		stringBuilder.append(GLProfiler.getShaderSwitches());
+		stringBuilder.append(GLProfiler.shaderSwitches);
 		shaderSwitchesLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Texture bindings: ");
-		stringBuilder.append(GLProfiler.getTextureBindings());
+		stringBuilder.append(GLProfiler.textureBindings);
 		textureBindsLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);
 		stringBuilder.append("Vertices: ");
-		stringBuilder.append(GLProfiler.getVertexCount());
+		stringBuilder.append(GLProfiler.vertexCount.total);
 		vertexCountLabel.setText(stringBuilder);
 		
 		stringBuilder.setLength(0);
 		stringBuilder.append("Primitives: ");
-		stringBuilder.append(GLProfiler.getPrimitiveCount());
+		stringBuilder.append(GLProfiler.primitiveCount.total);
 		primitiveCountLabel.setText(stringBuilder);
 
 		stringBuilder.setLength(0);

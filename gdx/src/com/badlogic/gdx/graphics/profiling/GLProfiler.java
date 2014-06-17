@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.profiling;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.math.FloatCounter;
 
 /** This class will collect statistics about the GL calls. All calls to it will get counted and delegated to the actual GL20 or
  * GL30 instance.
@@ -29,22 +30,22 @@ import com.badlogic.gdx.graphics.GL20;
 public abstract class GLProfiler {
 
 	/** All calls to any GL function since the last reset. */
-	protected static int calls;
+	public static int calls;
 
 	/** The amount of times a texture binding has happened since the last reset. */
-	protected static int textureBindings;
+	public static int textureBindings;
 
 	/** The amount of draw calls that happened since the last reset. */
-	protected static int drawCalls;
+	public static int drawCalls;
 
 	/** The amount of times a shader was switched since the last reset. */
-	protected static int shaderSwitches;
+	public static int shaderSwitches;
 
 	/** The amount rendered vertices since the last reset. */
-	protected static int vertexCount;
+	public static FloatCounter vertexCount = new FloatCounter(0);
 
 	/** The amount rendered primitives like {@code GL_POINTS, GL_LINES, GL_TRIANGLES, GL_LINE_STRIP, ...} since the last reset. */
-	protected static int primitiveCount;
+	public static FloatCounter primitiveCount = new FloatCounter(0);
 
 	/** Enables profiling by replacing the {@code GL20} and {@code GL30} instances with profiling ones. */
 	public static void enable () {
@@ -67,37 +68,13 @@ public abstract class GLProfiler {
 		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) ((GLProfiler)Gdx.gl).resetVariables();
 	}
 
-	public static int getGLCalls () {
-		return calls;
-	}
-
-	public static int getShaderSwitches () {
-		return shaderSwitches;
-	}
-
-	public static int getTextureBindings () {
-		return textureBindings;
-	}
-
-	public static int getVertexCount () {
-		return vertexCount;
-	}
-
-	public static int getPrimitiveCount () {
-		return primitiveCount;
-	}
-
-	public static int getDrawCalls () {
-		return drawCalls;
-	}
-
 	protected void resetVariables () {
 		calls = 0;
 		textureBindings = 0;
 		drawCalls = 0;
 		shaderSwitches = 0;
-		vertexCount = 0;
-		primitiveCount = 0;
+		vertexCount.reset();
+		primitiveCount.reset();
 	}
 
 	protected int calculatePrimitiveCount (int mode, int count) {
