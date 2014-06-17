@@ -27,7 +27,7 @@ public class GL20Profiler extends GLProfiler implements GL20 {
 
 	public GL20 gl20;
 
-	public GL20Profiler (GL20 gl20) {
+	protected GL20Profiler (GL20 gl20) {
 		this.gl20 = gl20;
 	}
 

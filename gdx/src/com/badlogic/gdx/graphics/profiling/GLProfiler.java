@@ -29,22 +29,22 @@ import com.badlogic.gdx.graphics.GL20;
 public abstract class GLProfiler {
 
 	/** All calls to any GL function since the last reset. */
-	protected int calls;
+	protected static int calls;
 
 	/** The amount of times a texture binding has happened since the last reset. */
-	protected int textureBindings;
+	protected static int textureBindings;
 
 	/** The amount of draw calls that happened since the last reset. */
-	protected int drawCalls;
+	protected static int drawCalls;
 
 	/** The amount of times a shader was switched since the last reset. */
-	protected int shaderSwitches;
+	protected static int shaderSwitches;
 
 	/** The amount rendered vertices since the last reset. */
-	protected int vertexCount;
+	protected static int vertexCount;
 
 	/** The amount rendered primitives like {@code GL_POINTS, GL_LINES, GL_TRIANGLES, GL_LINE_STRIP, ...} since the last reset. */
-	protected int primitiveCount;
+	protected static int primitiveCount;
 
 	/** Enables profiling by replacing the {@code GL20} and {@code GL30} instances with profiling ones. */
 	public static void enable () {
@@ -68,50 +68,26 @@ public abstract class GLProfiler {
 	}
 
 	public static int getGLCalls () {
-		int calls = 0;
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) calls += ((GLProfiler)Gdx.gl).calls;
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) calls += ((GLProfiler)Gdx.gl20).calls;
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) calls += ((GLProfiler)Gdx.gl30).calls;
 		return calls;
 	}
 
 	public static int getShaderSwitches () {
-		int shaderSwitches = 0;
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) shaderSwitches += ((GLProfiler)Gdx.gl).shaderSwitches;
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) shaderSwitches += ((GLProfiler)Gdx.gl20).shaderSwitches;
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) shaderSwitches += ((GLProfiler)Gdx.gl30).shaderSwitches;
 		return shaderSwitches;
 	}
 
 	public static int getTextureBindings () {
-		int textureBindings = 0;
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) textureBindings += ((GLProfiler)Gdx.gl).textureBindings;
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) textureBindings += ((GLProfiler)Gdx.gl20).textureBindings;
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) textureBindings += ((GLProfiler)Gdx.gl30).textureBindings;
 		return textureBindings;
 	}
 
 	public static int getVertexCount () {
-		int triCount = 0;
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) triCount += ((GLProfiler)Gdx.gl).vertexCount;
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) triCount += ((GLProfiler)Gdx.gl20).vertexCount;
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) triCount += ((GLProfiler)Gdx.gl30).vertexCount;
-		return triCount;
+		return vertexCount;
 	}
 
 	public static int getPrimitiveCount () {
-		int triCount = 0;
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) triCount += ((GLProfiler)Gdx.gl).primitiveCount;
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) triCount += ((GLProfiler)Gdx.gl20).primitiveCount;
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) triCount += ((GLProfiler)Gdx.gl30).primitiveCount;
-		return triCount;
+		return primitiveCount;
 	}
 
 	public static int getDrawCalls () {
-		int drawCalls = 0;
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) drawCalls += ((GLProfiler)Gdx.gl).drawCalls;
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) drawCalls += ((GLProfiler)Gdx.gl20).drawCalls;
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) drawCalls += ((GLProfiler)Gdx.gl30).drawCalls;
 		return drawCalls;
 	}
 
