@@ -17,11 +17,9 @@
 package com.badlogic.gdx.input;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -48,15 +46,15 @@ public class GestureDetector extends InputAdapter {
 	private final VelocityTracker tracker = new VelocityTracker();
 	private float tapSquareCenterX, tapSquareCenterY;
 	private long gestureStartTime;
-	Vector2 pointer1 = new Vector2();
-	private final Vector2 pointer2 = new Vector2();
-	private final Vector2 initialPointer1 = new Vector2();
-	private final Vector2 initialPointer2 = new Vector2();
+	
+	final Pointer pointer1 = new Pointer();
+	final Pointer pointer2 = new Pointer();
+	private int pointersCount = 0;
 
 	private final Task longPressTask = new Task() {
 		@Override
 		public void run () {
-			if (!longPressFired) longPressFired = listener.longPress(pointer1.x, pointer1.y);
+			if (!longPressFired) longPressFired = listener.longPress(pointer1.pos.x, pointer1.pos.y);
 		}
 	};
 
@@ -83,41 +81,46 @@ public class GestureDetector extends InputAdapter {
 		this.listener = listener;
 	}
 
+	private Pointer getPointerById (int pointerId) {
+		if(pointer1.id == pointerId) {
+			return pointer1;
+		} else if(pointer2.id == pointerId) {
+			return pointer2;
+		} else if(pointer1.id < 0) {
+			return pointer1;
+		} else if(pointer2.id < 0) {
+			return pointer2;
+		}
+		return null;
+	}
+
 	@Override
 	public boolean touchDown (int x, int y, int pointer, int button) {
 		return touchDown((float)x, (float)y, pointer, button);
 	}
-
+	
 	public boolean touchDown (float x, float y, int pointer, int button) {
-		if (pointer > 1) return false;
+		final Pointer pt = getPointerById(pointer);
+		if (pt == null) return false;
 
-		if (pointer == 0) {
-			pointer1.set(x, y);
+		++pointersCount;
+		pt.touchDown(x, y, pointer);
+		if (pointersCount == 1) {
 			gestureStartTime = Gdx.input.getCurrentEventTime();
 			tracker.start(x, y, gestureStartTime);
-			if (Gdx.input.isTouched(1)) {
-				// Start pinch.
-				inTapSquare = false;
-				pinching = true;
-				initialPointer1.set(pointer1);
-				initialPointer2.set(pointer2);
-				longPressTask.cancel();
-			} else {
-				// Normal touch down.
-				inTapSquare = true;
-				pinching = false;
-				longPressFired = false;
-				tapSquareCenterX = x;
-				tapSquareCenterY = y;
-				if (!longPressTask.isScheduled()) Timer.schedule(longPressTask, longPressSeconds);
-			}
-		} else {
+			// Normal touch down.
+			inTapSquare = true;
+			pinching = false;
+			longPressFired = false;
+			tapSquareCenterX = x;
+			tapSquareCenterY = y;
+			if (!longPressTask.isScheduled()) Timer.schedule(longPressTask, longPressSeconds);
+		} else { // pointersCount == 2
 			// Start pinch.
-			pointer2.set(x, y);
 			inTapSquare = false;
 			pinching = true;
-			initialPointer1.set(pointer1);
-			initialPointer2.set(pointer2);
+			pointer1.startPinch();
+			pointer2.startPinch();
 			longPressTask.cancel();
 		}
 		return listener.touchDown(x, y, pointer, button);
@@ -129,19 +132,17 @@ public class GestureDetector extends InputAdapter {
 	}
 
 	public boolean touchDragged (float x, float y, int pointer) {
-		if (pointer > 1) return false;
+		final Pointer pt = getPointerById(pointer);
+		if (pt == null) return false;
 		if (longPressFired) return false;
 
-		if (pointer == 0)
-			pointer1.set(x, y);
-		else
-			pointer2.set(x, y);
+		pt.pos.set(x, y);
 
 		// handle pinch zoom
 		if (pinching) {
 			if (listener != null) {
-				boolean result = listener.pinch(initialPointer1, initialPointer2, pointer1, pointer2);
-				return listener.zoom(initialPointer1.dst(initialPointer2), pointer1.dst(pointer2)) || result;
+				boolean result = listener.pinch(pointer1.initialPos, pointer2.initialPos, pointer1.pos, pointer2.pos);
+				return listener.zoom(pointer1.initialPos.dst(pointer2.initialPos), pointer1.pos.dst(pointer2.pos)) || result;
 			}
 			return false;
 		}
@@ -170,8 +171,11 @@ public class GestureDetector extends InputAdapter {
 	}
 
 	public boolean touchUp (float x, float y, int pointer, int button) {
-		if (pointer > 1) return false;
-
+		final Pointer pt = getPointerById(pointer);
+		if (pt == null || pt.id < 0) return false;
+		--pointersCount;
+		pt.touchUp();
+		
 		// check if we are still tapping.
 		if (inTapSquare && !isWithinTapSquare(x, y, tapSquareCenterX, tapSquareCenterY)) inTapSquare = false;
 
@@ -200,12 +204,12 @@ public class GestureDetector extends InputAdapter {
 			pinching = false;
 			panning = true;
 			// we are in pan mode again, reset velocity tracker
-			if (pointer == 0) {
+			if (pointer1.id < 0) {
 				// first pointer has lifted off, set up panning to use the second pointer...
-				tracker.start(pointer2.x, pointer2.y, Gdx.input.getCurrentEventTime());
+				tracker.start(pointer2.pos.x, pointer2.pos.y, Gdx.input.getCurrentEventTime());
 			} else {
 				// second pointer has lifted off, set up panning to use the first pointer...
-				tracker.start(pointer1.x, pointer1.y, Gdx.input.getCurrentEventTime());
+				tracker.start(pointer1.pos.x, pointer1.pos.y, Gdx.input.getCurrentEventTime());
 			}
 			return false;
 		}
@@ -447,6 +451,28 @@ public class GestureDetector extends InputAdapter {
 			}
 			if (numSamples == 0) return 0;
 			return sum;
+		}
+	}
+	
+	private static class Pointer {
+		int id = -1;
+		final Vector2 pos = new Vector2();
+		final Vector2 initialPos = new Vector2();
+		
+		Pointer () {
+		}
+
+		void touchUp () {
+			id = -1;
+		}
+
+		void touchDown (float x, float y, int pointerId) {
+			id = pointerId;
+			pos.set(x, y);
+		}
+
+		void startPinch () {
+			initialPos.set(pos);
 		}
 	}
 }
