@@ -59,16 +59,11 @@ public abstract class GLProfiler {
 
 	/** Will reset the statistical information which has been collected so far. This should be called after every frame. */
 	public static void reset () {
-		if (Gdx.gl30 != null && Gdx.gl30 instanceof GLProfiler) ((GLProfiler)Gdx.gl30).resetVariables();
-		if (Gdx.gl20 != null && Gdx.gl20 instanceof GLProfiler) ((GLProfiler)Gdx.gl).resetVariables();
-		if (Gdx.gl != null && Gdx.gl instanceof GLProfiler) ((GLProfiler)Gdx.gl).resetVariables();
-	}
-
-	protected void resetVariables () {
 		calls = 0;
 		textureBindings = 0;
 		drawCalls = 0;
 		shaderSwitches = 0;
 		vertexCount.reset();
 	}
+
 }
