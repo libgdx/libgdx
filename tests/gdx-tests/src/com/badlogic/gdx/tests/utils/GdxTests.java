@@ -34,6 +34,7 @@ import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
+import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
@@ -76,6 +77,7 @@ public class GdxTests {
 		AudioRecorderTest.class,
 		Basic3DSceneTest.class,
 		Basic3DTest.class,
+		Benchmark3DTest.class,
 		BitmapFontAlignmentTest.class,
 		BitmapFontDistanceFieldTest.class,
 		BitmapFontFlipTest.class,
