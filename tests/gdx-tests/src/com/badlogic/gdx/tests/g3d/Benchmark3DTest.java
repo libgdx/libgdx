@@ -17,6 +17,7 @@
 package com.badlogic.gdx.tests.g3d;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -71,7 +72,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 
 		randomizeLights();
 
-		cam.position.set(1, 1, 1);
+		cam.position.set(10, 10, 10);
 		cam.lookAt(0, 0, 0);
 		cam.update();
 		showAxes = true;
@@ -237,7 +238,7 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		instance.transform.rotate(Vector3.Z, MathUtils.random(-180, 180));
 		instances.add(instance);
 	}
-
+	
 	@Override
 	public boolean keyUp (int keycode) {
 		if (keycode == Keys.SPACE || keycode == Keys.MENU) {
@@ -245,7 +246,13 @@ public class Benchmark3DTest extends BaseG3dHudTest {
 		}
 		return super.keyUp(keycode);
 	}
-
+	
+	@Override
+	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+		onModelClicked(models[MathUtils.random(models.length-1)]);
+		return false;
+	}
+	
 	@Override
 	public void dispose () {
 		super.dispose();
