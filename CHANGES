@@ -1,4 +1,10 @@
 [1.1.1]
+- API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
+- API Addition: A FreeTypeFontGeneratorLoader has been added to the gdx-freetype extension
+- API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
+- API Addition: Vector#setZero
+- API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence
+- API change: TableLayout has been forked and integrated into libgdx more tightly, see http://www.badlogicgames.com/wordpress/?p=3458
 
 [1.1.0]
 - Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
@@ -12,7 +18,7 @@
 - Box2D: Added MotorJoint and ghost vertices on EdgeShape
 - Updated GWT Box2D to latest version
 - Updated native Box2D to latest version 2.3.1, no API changes
-- API CHANGE: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
+- API change: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
 - API addition: Matrix4.avg(Matrix4[],float[]) that lets weighted averaging multiple matrices, Quaternion.slerp(Quaternion[],float[]) that lets weighted slerping multiple Quaternions
 - fixed the long standing issue of the alpha=1 not actually being fully opaque, thanks kalle! https://github.com/libgdx/libgdx/issues/1815
 - down to 25 issues on the tracker, 8 bugs, 17 enhancement requests :)

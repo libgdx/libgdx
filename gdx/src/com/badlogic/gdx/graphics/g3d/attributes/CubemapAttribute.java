@@ -64,7 +64,9 @@ public class CubemapAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		return ((CubemapAttribute)other).textureDescription.equals(textureDescription);
+	public int hashCode () {
+		int result = (int)type;
+		result = 967 * result + textureDescription.hashCode();
+		return result; 
 	}
 }

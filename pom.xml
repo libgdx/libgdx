@@ -66,6 +66,7 @@
     <module>extensions/gdx-controllers</module>
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>
+    <module>extensions/gdx-ai</module>
   </modules>
 
   <build>

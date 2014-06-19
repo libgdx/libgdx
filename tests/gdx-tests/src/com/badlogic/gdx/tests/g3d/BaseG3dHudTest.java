@@ -53,7 +53,7 @@ public abstract class BaseG3dHudTest extends BaseG3dTest {
 	protected float moveRadius = 2f;
 
 	protected String models[] = new String[] {"car.obj", "cube.obj", "scene.obj", "scene2.obj", "wheel.obj", "g3d/invaders.g3dj",
-		"g3d/head.g3db", "g3d/house.g3dj", "g3d/knight.g3dj", "g3d/knight.g3db", "g3d/ship.obj", "g3d/shapes/cube_1.0x1.0.g3dj",
+		"g3d/head.g3db", "g3d/knight.g3dj", "g3d/knight.g3db", "g3d/ship.obj", "g3d/shapes/cube_1.0x1.0.g3dj",
 		"g3d/shapes/cube_1.5x1.5.g3dj", "g3d/shapes/sphere.g3dj", "g3d/shapes/teapot.g3dj", "g3d/shapes/torus.g3dj"};
 
 	@Override

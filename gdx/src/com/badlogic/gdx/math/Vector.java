@@ -90,14 +90,14 @@ public interface Vector<T extends Vector<T>> {
 	 * @return This vector for chaining. */
 	T lerp (T target, float alpha);
 
-	/** Interpolates between this vector and the given target vector by alpha (within range [0,1]) using the given Interpolation method.
-	 * the result is stored in this vector.
+	/** Interpolates between this vector and the given target vector by alpha (within range [0,1]) using the given Interpolation
+	 * method. the result is stored in this vector.
 	 * @param target The target vector
 	 * @param alpha The interpolation coefficient
 	 * @param interpolator An Interpolation object describing the used interpolation method
 	 * @return This vector for chaining. */
-	T interpolate(T target, float alpha, Interpolation interpolator);
-	
+	T interpolate (T target, float alpha, Interpolation interpolator);
+
 	/** @return Whether this vector is a unit length vector */
 	boolean isUnit ();
 
@@ -160,4 +160,8 @@ public interface Vector<T extends Vector<T>> {
 	 * @param v addition vector
 	 * @param mulVec vector by whose values the addition vector will be scaled */
 	T mulAdd (T v, T mulVec);
+
+	/** Sets the components of this vector to 0
+	 * @return This vector for chaining */
+	T setZero ();
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
@@ -12,38 +13,40 @@ import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
  * {@link Table} with a single cell but is more lightweight.
  * @author Nathan Sweet */
-public class Container extends WidgetGroup {
-	private Actor widget;
-	private Float minWidth, minHeight;
-	private Float prefWidth, prefHeight;
-	private Float maxWidth, maxHeight;
-	private float padTop, padLeft, padBottom, padRight;
+public class Container<T extends Actor> extends WidgetGroup {
+	private T actor;
+	private Value minWidth = Value.minWidth, minHeight = Value.minHeight;
+	private Value prefWidth = Value.prefWidth, prefHeight = Value.prefHeight;
+	private Value maxWidth = Value.zero, maxHeight = Value.zero;
+	private Value padTop = Value.zero, padLeft = Value.zero, padBottom = Value.zero, padRight = Value.zero;
 	private float fillX, fillY;
 	private int align;
 	private Drawable background;
 	private boolean clip;
 	private boolean round = true;
 
+	/** Creates a container with no actor. */
 	public Container () {
 		setTouchable(Touchable.childrenOnly);
 		setTransform(false);
 	}
 
-	public Container (Actor widget) {
+	public Container (T actor) {
 		this();
-		setWidget(widget);
+		setActor(actor);
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		if (widget == null) return;
+		if (actor == null) return;
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			drawBackground(batch, parentAlpha, 0, 0);
 			if (clip) {
 				batch.flush();
+				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
 				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
-					getWidth() - padLeft - padRight, getHeight() - padBottom - padTop);
+					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
 				if (draw) {
 					drawChildren(batch, parentAlpha);
 					clipEnd();
@@ -66,22 +69,30 @@ public class Container extends WidgetGroup {
 		background.draw(batch, x, y, getWidth(), getHeight());
 	}
 
-	/** Sets the background drawable and sets the container's padding to {@link Drawable#getBottomHeight()} ,
-	 * {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and {@link Drawable#getRightWidth()}.
-	 * @param background If null, the background will be cleared and all padding is removed. */
+	/** Sets the background drawable and adjusts the container's padding to match the background.
+	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (Drawable background) {
+		setBackground(background, true);
+	}
+
+	/** Sets the background drawable and, if adjustPadding is true, sets the container's padding to
+	 * {@link Drawable#getBottomHeight()} , {@link Drawable#getTopHeight()}, {@link Drawable#getLeftWidth()}, and
+	 * {@link Drawable#getRightWidth()}.
+	 * @param background If null, the background will be cleared and padding removed. */
+	public void setBackground (Drawable background, boolean adjustPadding) {
 		if (this.background == background) return;
 		this.background = background;
-		if (background == null)
-			pad(0);
-		else {
-			pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+		if (adjustPadding) {
+			if (background == null)
+				pad(null);
+			else
+				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
 		}
 	}
 
 	/** @see #setBackground(Drawable) */
-	public Container background (Drawable background) {
+	public Container<T> background (Drawable background) {
 		setBackground(background);
 		return this;
 	}
@@ -91,26 +102,14 @@ public class Container extends WidgetGroup {
 	}
 
 	public void layout () {
-		if (widget == null) return;
+		if (actor == null) return;
 
-		float containerWidth = getWidth() - padLeft - padRight, containerHeight = getHeight() - padTop - padBottom;
-		float minWidth, minHeight, prefWidth, prefHeight, maxWidth, maxHeight;
-		Layout layout = widget instanceof Layout ? (Layout)widget : null;
-		if (layout != null) {
-			minWidth = this.minWidth == null ? layout.getMinWidth() : this.minWidth;
-			minHeight = this.minHeight == null ? layout.getMinHeight() : this.minHeight;
-			prefWidth = this.prefWidth == null ? layout.getPrefWidth() : this.prefWidth;
-			prefHeight = this.prefHeight == null ? layout.getPrefHeight() : this.prefHeight;
-			maxWidth = this.maxWidth == null ? layout.getMaxWidth() : this.maxWidth;
-			maxHeight = this.maxHeight == null ? layout.getMaxHeight() : this.maxHeight;
-		} else {
-			minWidth = this.minWidth == null ? widget.getWidth() : this.minWidth;
-			minHeight = this.minHeight == null ? widget.getHeight() : this.minHeight;
-			prefWidth = this.prefWidth == null ? widget.getWidth() : this.prefWidth;
-			prefHeight = this.prefHeight == null ? widget.getHeight() : this.prefHeight;
-			maxWidth = this.maxWidth == null ? widget.getWidth() : this.maxWidth;
-			maxHeight = this.maxHeight == null ? widget.getHeight() : this.maxHeight;
-		}
+		float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
+		float containerWidth = getWidth() - padLeft - padRight.get(this);
+		float containerHeight = getHeight() - padBottom - padTop.get(this);
+		float minWidth = this.minWidth.get(actor), minHeight = this.minHeight.get(actor);
+		float prefWidth = this.prefWidth.get(actor), prefHeight = this.prefHeight.get(actor);
+		float maxWidth = this.maxWidth.get(actor), maxHeight = this.maxHeight.get(actor);
 
 		float width;
 		if (fillX > 0)
@@ -147,55 +146,55 @@ public class Container extends WidgetGroup {
 			height = Math.round(height);
 		}
 
-		widget.setBounds(x, y, width, height);
-		if (widget instanceof Layout) ((Layout)widget).validate();
+		actor.setBounds(x, y, width, height);
+		if (actor instanceof Layout) ((Layout)actor).validate();
 	}
 
-	/** @param widget May be null. */
-	public void setWidget (Actor widget) {
-		if (widget == this) throw new IllegalArgumentException("widget cannot be the Container.");
-		if (this.widget != null) super.removeActor(this.widget);
-		this.widget = widget;
-		if (widget != null) super.addActor(widget);
+	/** @param actor May be null. */
+	public void setActor (T actor) {
+		if (actor == this) throw new IllegalArgumentException("actor cannot be the Container.");
+		if (this.actor != null) super.removeActor(this.actor);
+		this.actor = actor;
+		if (actor != null) super.addActor(actor);
 	}
 
 	/** @return May be null. */
-	public Actor getWidget () {
-		return widget;
+	public T getActor () {
+		return actor;
 	}
 
 	/** @deprecated Container may have only a single child.
-	 * @see #setWidget(Actor) */
+	 * @see #setActor(Actor) */
 	public void addActor (Actor actor) {
-		throw new UnsupportedOperationException("Use Container#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
-	 * @see #setWidget(Actor) */
+	 * @see #setActor(Actor) */
 	public void addActorAt (int index, Actor actor) {
-		throw new UnsupportedOperationException("Use Container#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
-	 * @see #setWidget(Actor) */
+	 * @see #setActor(Actor) */
 	public void addActorBefore (Actor actorBefore, Actor actor) {
-		throw new UnsupportedOperationException("Use Container#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	/** @deprecated Container may have only a single child.
-	 * @see #setWidget(Actor) */
+	 * @see #setActor(Actor) */
 	public void addActorAfter (Actor actorAfter, Actor actor) {
-		throw new UnsupportedOperationException("Use Container#setWidget.");
+		throw new UnsupportedOperationException("Use Container#setActor.");
 	}
 
 	public boolean removeActor (Actor actor) {
-		if (actor != widget) return false;
-		setWidget(null);
+		if (actor != this.actor) return false;
+		setActor(null);
 		return true;
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
-	public Container size (float size) {
+	public Container<T> size (Value size) {
 		minWidth = size;
 		minHeight = size;
 		prefWidth = size;
@@ -206,106 +205,196 @@ public class Container extends WidgetGroup {
 	}
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
-	public Container size (float width, float height) {
+	public Container<T> size (Value width, Value height) {
 		minWidth = width;
 		minHeight = height;
 		prefWidth = width;
 		prefHeight = height;
 		maxWidth = width;
 		maxHeight = height;
+		return this;
+	}
+
+	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
+	public Container<T> size (float size) {
+		size(new Fixed(size));
+		return this;
+	}
+
+	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
+	public Container<T> size (float width, float height) {
+		size(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
 	/** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
-	public Container width (float width) {
+	public Container<T> width (Value width) {
 		minWidth = width;
 		prefWidth = width;
 		maxWidth = width;
 		return this;
 	}
 
+	/** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
+	public Container<T> width (float width) {
+		width(new Fixed(width));
+		return this;
+	}
+
 	/** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
-	public Container height (float height) {
+	public Container<T> height (Value height) {
 		minHeight = height;
 		prefHeight = height;
 		maxHeight = height;
 		return this;
 	}
 
+	/** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
+	public Container<T> height (float height) {
+		height(new Fixed(height));
+		return this;
+	}
+
 	/** Sets the minWidth and minHeight to the specified value. */
-	public Container minSize (float size) {
+	public Container<T> minSize (Value size) {
 		minWidth = size;
 		minHeight = size;
 		return this;
 	}
 
 	/** Sets the minWidth and minHeight to the specified values. */
-	public Container minSize (float width, float height) {
+	public Container<T> minSize (Value width, Value height) {
 		minWidth = width;
 		minHeight = height;
 		return this;
 	}
 
-	public Container minWidth (float minWidth) {
+	public Container<T> minWidth (Value minWidth) {
 		this.minWidth = minWidth;
 		return this;
 	}
 
-	public Container minHeight (float minHeight) {
+	public Container<T> minHeight (Value minHeight) {
 		this.minHeight = minHeight;
 		return this;
 	}
 
+	/** Sets the minWidth and minHeight to the specified value. */
+	public Container<T> minSize (float size) {
+		minSize(new Fixed(size));
+		return this;
+	}
+
+	/** Sets the minWidth and minHeight to the specified values. */
+	public Container<T> minSize (float width, float height) {
+		minSize(new Fixed(width));
+		return this;
+	}
+
+	public Container<T> minWidth (float minWidth) {
+		this.minWidth = new Fixed(minWidth);
+		return this;
+	}
+
+	public Container<T> minHeight (float minHeight) {
+		this.minHeight = new Fixed(minHeight);
+		return this;
+	}
+
 	/** Sets the prefWidth and prefHeight to the specified value. */
-	public Container prefSize (float size) {
+	public Container<T> prefSize (Value size) {
 		prefWidth = size;
 		prefHeight = size;
 		return this;
 	}
 
 	/** Sets the prefWidth and prefHeight to the specified values. */
-	public Container prefSize (float width, float height) {
+	public Container<T> prefSize (Value width, Value height) {
 		prefWidth = width;
 		prefHeight = height;
 		return this;
 	}
 
-	public Container prefWidth (float prefWidth) {
+	public Container<T> prefWidth (Value prefWidth) {
 		this.prefWidth = prefWidth;
 		return this;
 	}
 
-	public Container prefHeight (float prefHeight) {
+	public Container<T> prefHeight (Value prefHeight) {
 		this.prefHeight = prefHeight;
 		return this;
 	}
 
+	/** Sets the prefWidth and prefHeight to the specified value. */
+	public Container<T> prefSize (float width, float height) {
+		prefSize(new Fixed(width));
+		return this;
+	}
+
+	/** Sets the prefWidth and prefHeight to the specified values. */
+	public Container<T> prefSize (float size) {
+		prefSize(new Fixed(size));
+		return this;
+	}
+
+	public Container<T> prefWidth (float prefWidth) {
+		this.prefWidth = new Fixed(prefWidth);
+		return this;
+	}
+
+	public Container<T> prefHeight (float prefHeight) {
+		this.prefHeight = new Fixed(prefHeight);
+		return this;
+	}
+
 	/** Sets the maxWidth and maxHeight to the specified value. */
-	public Container maxSize (float size) {
+	public Container<T> maxSize (Value size) {
 		maxWidth = size;
 		maxHeight = size;
 		return this;
 	}
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
-	public Container maxSize (float width, float height) {
+	public Container<T> maxSize (Value width, Value height) {
 		maxWidth = width;
 		maxHeight = height;
 		return this;
 	}
 
-	public Container maxWidth (float maxWidth) {
+	public Container<T> maxWidth (Value maxWidth) {
 		this.maxWidth = maxWidth;
 		return this;
 	}
 
-	public Container maxHeight (float maxHeight) {
+	public Container<T> maxHeight (Value maxHeight) {
 		this.maxHeight = maxHeight;
 		return this;
 	}
 
+	/** Sets the maxWidth and maxHeight to the specified value. */
+	public Container<T> maxSize (float size) {
+		maxSize(new Fixed(size));
+		return this;
+	}
+
+	/** Sets the maxWidth and maxHeight to the specified values. */
+	public Container<T> maxSize (float width, float height) {
+		maxSize(new Fixed(width));
+		return this;
+	}
+
+	public Container<T> maxWidth (float maxWidth) {
+		this.maxWidth = new Fixed(maxWidth);
+		return this;
+	}
+
+	public Container<T> maxHeight (float maxHeight) {
+		this.maxHeight = new Fixed(maxHeight);
+		return this;
+	}
+
 	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
-	public Container pad (float pad) {
+	public Container<T> pad (Value pad) {
 		padTop = pad;
 		padLeft = pad;
 		padBottom = pad;
@@ -313,7 +402,7 @@ public class Container extends WidgetGroup {
 		return this;
 	}
 
-	public Container pad (float top, float left, float bottom, float right) {
+	public Container<T> pad (Value top, Value left, Value bottom, Value right) {
 		padTop = top;
 		padLeft = left;
 		padBottom = bottom;
@@ -321,180 +410,240 @@ public class Container extends WidgetGroup {
 		return this;
 	}
 
-	public Container padTop (float padTop) {
+	public Container<T> padTop (Value padTop) {
 		this.padTop = padTop;
 		return this;
 	}
 
-	public Container padLeft (float padLeft) {
+	public Container<T> padLeft (Value padLeft) {
 		this.padLeft = padLeft;
 		return this;
 	}
 
-	public Container padBottom (float padBottom) {
+	public Container<T> padBottom (Value padBottom) {
 		this.padBottom = padBottom;
 		return this;
 	}
 
-	public Container padRight (float padRight) {
+	public Container<T> padRight (Value padRight) {
 		this.padRight = padRight;
 		return this;
 	}
 
+	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
+	public Container<T> pad (float pad) {
+		Value value = new Fixed(pad);
+		padTop = value;
+		padLeft = value;
+		padBottom = value;
+		padRight = value;
+		return this;
+	}
+
+	public Container<T> pad (float top, float left, float bottom, float right) {
+		padTop = new Fixed(top);
+		padLeft = new Fixed(left);
+		padBottom = new Fixed(bottom);
+		padRight = new Fixed(right);
+		return this;
+	}
+
+	public Container<T> padTop (float padTop) {
+		this.padTop = new Fixed(padTop);
+		return this;
+	}
+
+	public Container<T> padLeft (float padLeft) {
+		this.padLeft = new Fixed(padLeft);
+		return this;
+	}
+
+	public Container<T> padBottom (float padBottom) {
+		this.padBottom = new Fixed(padBottom);
+		return this;
+	}
+
+	public Container<T> padRight (float padRight) {
+		this.padRight = new Fixed(padRight);
+		return this;
+	}
+
 	/** Sets fillX and fillY to 1. */
-	public Container fill () {
+	public Container<T> fill () {
 		fillX = 1f;
 		fillY = 1f;
 		return this;
 	}
 
 	/** Sets fillX to 1. */
-	public Container fillX () {
+	public Container<T> fillX () {
 		fillX = 1f;
 		return this;
 	}
 
 	/** Sets fillY to 1. */
-	public Container fillY () {
+	public Container<T> fillY () {
 		fillY = 1f;
 		return this;
 	}
 
-	public Container fill (float x, float y) {
+	public Container<T> fill (float x, float y) {
 		fillX = x;
 		fillY = y;
 		return this;
 	}
 
 	/** Sets fillX and fillY to 1 if true, 0 if false. */
-	public Container fill (boolean x, boolean y) {
+	public Container<T> fill (boolean x, boolean y) {
 		fillX = x ? 1f : 0;
 		fillY = y ? 1f : 0;
 		return this;
 	}
 
 	/** Sets fillX and fillY to 1 if true, 0 if false. */
-	public Container fill (boolean fill) {
+	public Container<T> fill (boolean fill) {
 		fillX = fill ? 1f : 0;
 		fillY = fill ? 1f : 0;
 		return this;
 	}
 
-	/** Sets the alignment of the widget within the container. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
+	/** Sets the alignment of the actor within the container. Set to {@link Align#center}, {@link Align#top}, {@link Align#bottom},
 	 * {@link Align#left}, {@link Align#right}, or any combination of those. */
-	public Container align (int align) {
+	public Container<T> align (int align) {
 		this.align = align;
 		return this;
 	}
 
-	/** Sets the alignment of the widget within the container to {@link Align#center}. This clears any other alignment. */
-	public Container center () {
+	/** Sets the alignment of the actor within the container to {@link Align#center}. This clears any other alignment. */
+	public Container<T> center () {
 		align = Align.center;
 		return this;
 	}
 
-	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the widget within the container. */
-	public Container top () {
+	/** Sets {@link Align#top} and clears {@link Align#bottom} for the alignment of the actor within the container. */
+	public Container<T> top () {
 		align |= Align.top;
 		align &= ~Align.bottom;
 		return this;
 	}
 
-	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the widget within the container. */
-	public Container left () {
+	/** Sets {@link Align#left} and clears {@link Align#right} for the alignment of the actor within the container. */
+	public Container<T> left () {
 		align |= Align.left;
 		align &= ~Align.right;
 		return this;
 	}
 
-	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the widget within the container. */
-	public Container bottom () {
+	/** Sets {@link Align#bottom} and clears {@link Align#top} for the alignment of the actor within the container. */
+	public Container<T> bottom () {
 		align |= Align.bottom;
 		align &= ~Align.top;
 		return this;
 	}
 
-	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the widget within the container. */
-	public Container right () {
+	/** Sets {@link Align#right} and clears {@link Align#left} for the alignment of the actor within the container. */
+	public Container<T> right () {
 		align |= Align.right;
 		align &= ~Align.left;
 		return this;
 	}
 
 	public float getMinWidth () {
-		return (minWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMinWidth() : (widget != null ? widget.getWidth() : 0)) : minWidth)
-			+ padLeft + padRight;
+		return minWidth.get(actor) + padLeft.get(this) + padRight.get(this);
 	}
 
-	/** @return May be null if min height has not been set. */
-	public Float getMinHeightValue () {
+	public Value getMinHeightValue () {
 		return minHeight;
 	}
 
 	public float getMinHeight () {
-		return (minHeight == null ? (widget instanceof Layout ? ((Layout)widget).getMinHeight() : (widget != null ? widget.getHeight() : 0)) : minHeight)
-			+ padTop + padBottom;
+		return minHeight.get(actor) + padTop.get(this) + padBottom.get(this);
 	}
 
-	/** @return May be null if pref width has not been set. */
-	public Float getPrefWidthValue () {
+	public Value getPrefWidthValue () {
 		return prefWidth;
 	}
 
 	public float getPrefWidth () {
-		float v = prefWidth == null ? (widget instanceof Layout ? ((Layout)widget).getPrefWidth() : (widget != null ? widget.getWidth() : 0)) : prefWidth;
+		float v = prefWidth.get(actor);
 		if (background != null) v = Math.max(v, background.getMinWidth());
-		return v + padLeft + padRight;
+		return v + padLeft.get(this) + padRight.get(this);
 	}
 
-	/** @return May be null if pref height has not been set. */
-	public Float getPrefHeightValue () {
+	public Value getPrefHeightValue () {
 		return prefHeight;
 	}
 
 	public float getPrefHeight () {
-		float v = prefHeight == null ? (widget instanceof Layout ? ((Layout)widget).getPrefHeight() : (widget != null ? widget.getHeight() : 0))
-			: prefHeight;
+		float v = prefHeight.get(actor);
 		if (background != null) v = Math.max(v, background.getMinHeight());
-		return v + padTop + padBottom;
+		return v + padTop.get(this) + padBottom.get(this);
 	}
 
-	/** @return May be null if max width has not been set. */
-	public Float getMaxWidthValue () {
+	public Value getMaxWidthValue () {
 		return maxWidth;
 	}
 
 	public float getMaxWidth () {
-		float v = maxWidth == null ? (widget instanceof Layout ? ((Layout)widget).getMaxWidth() : (widget != null ? widget.getWidth() : 0)) : maxWidth;
-		if (v > 0) v += padLeft + padRight;
+		float v = maxWidth.get(actor);
+		if (v > 0) v += padLeft.get(this) + padRight.get(this);
 		return v;
 	}
 
-	/** @return May be null if max height has not been set. */
-	public Float getMaxHeightValue () {
+	public Value getMaxHeightValue () {
 		return maxHeight;
 	}
 
 	public float getMaxHeight () {
-		float v = maxHeight == null ? (widget instanceof Layout ? ((Layout)widget).getMaxHeight() : (widget != null ? widget.getHeight() : 0)) : maxHeight;
-		if (v > 0) v += padTop + padBottom;
+		float v = maxHeight.get(actor);
+		if (v > 0) v += padTop.get(this) + padBottom.get(this);
 		return v;
 	}
 
-	public float getPadTop () {
+	/** @return May be null if this value is not set. */
+	public Value getPadTopValue () {
 		return padTop;
 	}
 
-	public float getPadLeft () {
+	public float getPadTop () {
+		return padTop.get(this);
+	}
+
+	/** @return May be null if this value is not set. */
+	public Value getPadLeftValue () {
 		return padLeft;
 	}
 
-	public float getPadBottom () {
+	public float getPadLeft () {
+		return padLeft.get(this);
+	}
+
+	/** @return May be null if this value is not set. */
+	public Value getPadBottomValue () {
 		return padBottom;
 	}
 
-	public float getPadRight () {
+	public float getPadBottom () {
+		return padBottom.get(this);
+	}
+
+	/** @return May be null if this value is not set. */
+	public Value getPadRightValue () {
 		return padRight;
+	}
+
+	public float getPadRight () {
+		return padRight.get(this);
+	}
+
+	/** Returns {@link #getPadLeft()} plus {@link #getPadRight()}. */
+	public float getPadX () {
+		return padLeft.get(this) + padRight.get(this);
+	}
+
+	/** Returns {@link #getPadTop()} plus {@link #getPadBottom()}. */
+	public float getPadY () {
+		return padTop.get(this) + padBottom.get(this);
 	}
 
 	public float getFillX () {
