@@ -340,6 +340,7 @@ public class Actor {
 		this.visible = visible;
 	}
 
+	/** Retrieves application specific object for convenience. */
 	public Object getUserObject () {
 		return userObject;
 	}
@@ -365,10 +366,24 @@ public class Actor {
 		this.y = y;
 	}
 
-	/** Sets the x and y. */
+	/** Set position of Actor to x, y (using bottom left corner of Actor) */
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
+	}
+
+	/** Set position of Actor centered on x, y) */
+	public void setCenterPosition(float x, float y) {
+		this.x = x - width / 2;
+		this.y = y - height / 2;
+	}
+
+	public float getCenterX() {
+		return this.x + width / 2;
+	}
+
+	public float getCenterY() {
+		return this.y + height / 2;
 	}
 
 	public void moveBy (float x, float y) {
