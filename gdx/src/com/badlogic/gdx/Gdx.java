@@ -36,5 +36,4 @@ public class Gdx {
 	public static GL20 gl;
 	public static GL20 gl20;
 	public static GL30 gl30;
-	// new comment
 }
