@@ -219,7 +219,7 @@
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
 
-	<!-- graphics/glutils -->
+	<!-- graphics/profiling -->
 		<include name="graphics/profiling/GL20Profiler.java"/>
 		<include name="graphics/profiling/GL30Profiler.java"/>
 		<include name="graphics/profiling/GLProfiler.java"/>
