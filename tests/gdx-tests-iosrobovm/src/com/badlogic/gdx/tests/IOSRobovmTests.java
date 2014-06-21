@@ -21,6 +21,7 @@ import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
+import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
 
 public class IOSRobovmTests extends IOSApplication.Delegate {
 	
@@ -28,7 +29,7 @@ public class IOSRobovmTests extends IOSApplication.Delegate {
 	protected IOSApplication createApplication() {
 		IOSApplicationConfiguration config = new IOSApplicationConfiguration();
 		config.useAccelerometer = false;
-		return new IOSApplication(new InputTest(), config);
+		return new IOSApplication(new Benchmark3DTest(), config);
 	}
 
 	public static void main(String[] argv) {

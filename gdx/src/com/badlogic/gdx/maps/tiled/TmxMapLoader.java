@@ -488,6 +488,10 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				object = new RectangleMapObject(x, y - height, width, height);
 			}
 			object.setName(element.getAttribute("name", null));
+			String rotation = element.getAttribute("rotation", null);
+			if (rotation != null) {
+				object.getProperties().put("rotation", Float.parseFloat(rotation));
+			}
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
