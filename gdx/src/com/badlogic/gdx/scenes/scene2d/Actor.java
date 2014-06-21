@@ -350,6 +350,7 @@ public class Actor {
 		this.userObject = userObject;
 	}
 
+	/** Get the X position of the actor (left edge of actor) */
 	public float getX () {
 		return x;
 	}
@@ -358,6 +359,7 @@ public class Actor {
 		this.x = x;
 	}
 
+	/** Get the Y position of the actor (bottom edge of actor) */
 	public float getY () {
 		return y;
 	}
@@ -372,7 +374,7 @@ public class Actor {
 		this.y = y;
 	}
 
-	/** Set position of Actor centered on x, y) */
+	/** Set position of Actor centered on x, y */
 	public void setCenterPosition(float x, float y) {
 		this.x = x - width / 2;
 		this.y = y - height / 2;
@@ -386,6 +388,7 @@ public class Actor {
 		return this.y + height / 2;
 	}
 
+	/** Add x and y to current position */
 	public void moveBy (float x, float y) {
 		this.x += x;
 		this.y += y;
@@ -475,7 +478,7 @@ public class Actor {
 		this.originY = originY;
 	}
 
-	/** Sets the originx and originy. */
+	/** Sets the origin X and origin Y. */
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
@@ -497,13 +500,13 @@ public class Actor {
 		this.scaleY = scaleY;
 	}
 
-	/** Sets the scalex and scaley. */
+	/** Sets the scale X and scale X. */
 	public void setScale (float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;
 	}
 
-	/** Sets the scalex and scaley. */
+	/** Sets the scale X and scale Y. */
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
@@ -547,6 +550,8 @@ public class Actor {
 		return color;
 	}
 
+	/** Retrieve custom actor name set with {@link Actor#setName(String)},
+	 * used for easier identification */
 	public String getName () {
 		return name;
 	}
