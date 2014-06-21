@@ -457,10 +457,14 @@ public class Stage extends InputAdapter implements Disposable {
 		root.addAction(action);
 	}
 	
+	/** Adds an array of actions to the root of the stage.
+	 * @see Group#addActions(Action[]) */
 	public void addActions (Action[] actions){
 		root.addActions(actions);
 	}
 	
+	/** Adds an array of actions to the root of the stage.
+	 * @see Group#addActions(Array) */
 	public void addActions (Array<Action> actions){
 		root.addActions(actions);
 	}
