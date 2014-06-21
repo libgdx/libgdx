@@ -242,6 +242,18 @@ public class Actor {
 		actions.add(action);
 	}
 
+	public void addActions (Action[] actions) {
+		for (Action a : actions) {
+			addAction(a);
+		}
+	}
+
+	public void addActions (Array<Action> actions) {
+		for (Action a : actions) {
+			addAction(a);
+		}
+	}
+
 	public void removeAction (Action action) {
 		if (actions.removeValue(action, true)) action.setActor(null);
 	}
@@ -373,16 +385,16 @@ public class Actor {
 	}
 
 	/** Set position of Actor centered on x, y) */
-	public void setCenterPosition(float x, float y) {
+	public void setCenterPosition (float x, float y) {
 		this.x = x - width / 2;
 		this.y = y - height / 2;
 	}
 
-	public float getCenterX() {
+	public float getCenterX () {
 		return this.x + width / 2;
 	}
 
-	public float getCenterY() {
+	public float getCenterY () {
 		return this.y + height / 2;
 	}
 
