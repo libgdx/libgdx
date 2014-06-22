@@ -39,6 +39,8 @@
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<fileset id="resourcefiles" dir="gdx/src">
+			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl"/>

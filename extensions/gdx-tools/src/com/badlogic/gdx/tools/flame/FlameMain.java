@@ -56,6 +56,7 @@ import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.AbsoluteFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -954,7 +955,7 @@ public class FlameMain extends JFrame implements AssetErrorListener {
 		Writer fileWriter = null;
 		try {
 			ParticleEffectLoader loader = (ParticleEffectLoader)assetManager.getLoader(ParticleEffect.class);
-			loader.save(effect, new ParticleEffectSaveParameter(file, assetManager, particleSystem.getBatches()));
+			loader.save(effect, new ParticleEffectSaveParameter(new FileHandle(file.getAbsolutePath()), assetManager, particleSystem.getBatches()));
 		} catch (Exception ex) {
 			System.out.println("Error saving effect: " + file.getAbsolutePath());
 			ex.printStackTrace();

@@ -74,7 +74,9 @@ public class ParallelArray {
 
 		@Override
 		public void setCapacity (int requiredCapacity) {
-			super.data = data = Arrays.copyOf(data, strideSize * requiredCapacity);
+			float[] newData = new float[strideSize * requiredCapacity];
+			System.arraycopy(data, 0, newData, 0, Math.min(data.length, newData.length));
+			super.data = data = newData;
 		}
 	}
 	
@@ -106,15 +108,19 @@ public class ParallelArray {
 		
 		@Override
 		public void setCapacity (int requiredCapacity) {
-			super.data = data = Arrays.copyOf(data, strideSize * requiredCapacity);
+			int[] newData = new int[strideSize * requiredCapacity];
+			System.arraycopy(data, 0, newData, 0, Math.min(data.length, newData.length));
+			super.data = data = newData;
 		}
 	}
 	
 	@SuppressWarnings("unchecked")
 	public class ObjectChannel<T> extends Channel{
+		Class<T> componentType;
 		public T[] data;
 		public ObjectChannel (int id, int strideSize, int size, Class<T> type) {
 			super(id, ArrayReflection.newInstance(type, size*strideSize), strideSize);
+			componentType = type;
 			this.data = (T[]) super.data;
 		}
 
@@ -139,7 +145,9 @@ public class ParallelArray {
 		
 		@Override
 		public void setCapacity (int requiredCapacity) {
-			super.data = data = Arrays.copyOf(data, strideSize * requiredCapacity);
+			T[] newData = (T[]) ArrayReflection.newInstance(componentType, strideSize * requiredCapacity);
+			System.arraycopy(data, 0, newData, 0, Math.min(data.length, newData.length));
+			super.data = data = newData;
 		}
 	}
 	

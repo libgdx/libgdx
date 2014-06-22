@@ -3,10 +3,13 @@ package com.badlogic.gdx.graphics.g3d.particles;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 
 /** This class handles the assets and configurations required by a given resource when de/serialized. 
  * It's handy when a given object or one of its members requires some assets to be loaded to work properly after
@@ -98,16 +101,16 @@ public class ResourceData<T> implements Json.Serializable{
 		@Override
 		public void write (Json json) {
 			json.writeValue("filename", filename);
-			json.writeValue("type", type.getCanonicalName());
+			json.writeValue("type", type.getName());
 		}
 		@Override
 		public void read (Json json, JsonValue jsonData) {
-			try {
 			filename = json.readValue("filename", String.class, jsonData);
 			String className = json.readValue("type", String.class, jsonData);
-				type = (Class<T>)Class.forName(className);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+			try {
+				type = (Class<T>)ClassReflection.forName(className);
+			} catch (ReflectionException e) {
+				throw new GdxRuntimeException("Class not found: " + className, e);
 			}
 		}
 	}

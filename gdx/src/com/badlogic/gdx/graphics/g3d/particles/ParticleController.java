@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** Base class of all the particle controllers.
  * Encapsulate the generic structure of a controller and methods to update the particles simulation.
@@ -254,7 +255,7 @@ public class ParticleController implements Json.Serializable, ResourceData.Confi
 	private <K extends Influencer> int findIndex(Class<K> type){
 		for(int i = 0; i< influencers.size; ++i){
 			Influencer influencer = influencers.get(i);
-			if(type.isAssignableFrom(influencer.getClass())){
+			if(ClassReflection.isAssignableFrom(type, influencer.getClass())){
 				return i;
 			}
 		}

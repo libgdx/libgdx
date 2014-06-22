@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /**This class can save and load a {@link ParticleEffect}.
  * It should be added as {@link AsynchronousAssetLoader} to the {@link AssetManager} so it will be able to load the effects.
@@ -91,10 +92,8 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 		}
 		
 		//save
-		Writer fileWriter = new FileWriter(parameter.file);
 		Json json = new Json();
-		json.toJson(data, fileWriter);
-		//System.out.println(json.prettyPrint(data));
+		json.toJson(data, parameter.file);
 	}
 	
 	@Override
@@ -125,7 +124,7 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 	
 	private <T> T find(Array<?> array, Class<T> type){
 		for(Object object : array){
-			if(type.isAssignableFrom(object.getClass()))
+			if(ClassReflection.isAssignableFrom(type, object.getClass()))
 				return (T)object;
 		}
 		return null;
@@ -144,9 +143,9 @@ public class ParticleEffectLoader extends AsynchronousAssetLoader<ParticleEffect
 		Array<ParticleBatch<?>> batches;
 		
 		/** Required parameters */
-		File file;
+		FileHandle file;
 		AssetManager manager;
-		public ParticleEffectSaveParameter(File file, AssetManager manager, Array<ParticleBatch<?>> batches){
+		public ParticleEffectSaveParameter(FileHandle file, AssetManager manager, Array<ParticleBatch<?>> batches){
 			this.batches = batches;
 			this.file = file;
 			this.manager = manager;
