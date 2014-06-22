@@ -168,7 +168,10 @@
 		<include name="graphics/g3d/model/data/ModelNodeKeyframe.java"/>
 		<include name="graphics/g3d/model/data/ModelNodePart.java"/>
 		<include name="graphics/g3d/model/data/ModelTexture.java"/>
-				
+	
+	<!-- graphics/g3d/particles -->
+		<include name="graphics/g3d/particles/**/*.java"/>
+		
 	<!-- graphics/g3d/shaders -->
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
@@ -279,6 +282,7 @@
 		<include name="math/CatmullRomSpline.java"/>
 		<include name="math/Circle.java"/>
 		<include name="math/ConvexHull.java"/>
+		<include name="math/CumulativeDistribution.java"/>
 		<include name="math/DelaunayTriangulator.java"/>
 		<include name="math/EarClippingTriangulator.java"/>
 		<include name="math/Ellipse.java"/>
@@ -443,6 +447,8 @@
 	</source>
 
 	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl" />
