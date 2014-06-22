@@ -1,3 +1,6 @@
+[1.2.1]
+- API Addition: 3d particle system and accompanying editor, contributed by lordjone, see https://github.com/libgdx/libgdx/pull/2005
+
 [1.2.0]
 - API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
 - API Addition: A FreeTypeFontGeneratorLoader has been added to the gdx-freetype extension
