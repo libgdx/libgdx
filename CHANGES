@@ -5,7 +5,6 @@
 - API Addition: Vector#setZero
 - API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence
 - API change: TableLayout has been forked and integrated into libgdx more tightly, see http://www.badlogicgames.com/wordpress/?p=3458
-- API Addition: added mapping file for FireTV controller, see https://github.com/libgdx/libgdx/pull/1973
 - API Addition: added equals/hashCode methods to Rectangle, may break old code (very, very unlikely)
 - API Addition: scene2D Actors now have a setCenterPosition method, see https://github.com/libgdx/libgdx/pull/2000
 
