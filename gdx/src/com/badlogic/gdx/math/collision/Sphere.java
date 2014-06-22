@@ -19,6 +19,7 @@ package com.badlogic.gdx.math.collision;
 import java.io.Serializable;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 3D sphere with a center and a radius
  * 
@@ -42,5 +43,22 @@ public class Sphere implements Serializable {
 	 * @return whether this and the other sphere overlap */
 	public boolean overlaps (Sphere sphere) {
 		return center.dst2(sphere.center) < (radius + sphere.radius) * (radius + sphere.radius);
+	}
+
+	@Override
+	public int hashCode () {
+		final int prime = 71;
+		int result = 1;
+		result = prime * result + this.center.hashCode();
+		result = prime * result + NumberUtils.floatToRawIntBits(this.radius);
+		return result;
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (this == o) return true;
+		if (o == null || o.getClass() != this.getClass()) return false;
+		Sphere s = (Sphere)o;
+		return this.radius == s.radius && this.center.equals(s.center);
 	}
 }
