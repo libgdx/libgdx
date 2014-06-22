@@ -437,10 +437,38 @@ public class Stage extends InputAdapter implements Disposable {
 		root.addActor(actor);
 	}
 
+	/** Adds an array actors to the root of the stage.
+	 * @see Group#addActors(Actor[])
+	 * @see Actor#remove() */
+	public void addActors (Actor[] actors) {
+		root.addActors(actors);
+	}
+
+	/** Adds an Iterable of actors to the root of the stage.
+	 * @see Group#addActors(Iterable)
+	 * @see Actor#remove() */
+	public <T extends Actor> void addActors (Iterable<T> actors) {
+		root.addActors(actors);
+	}
+
 	/** Adds an action to the root of the stage.
 	 * @see Group#addAction(Action) */
 	public void addAction (Action action) {
 		root.addAction(action);
+	}
+
+	/** Adds an array actors to the root of the stage.
+	 * @see Group#addActors(Actor[])
+	 * @see Actor#remove() */
+	public void addActions (Action[] actors) {
+		root.addActions(actors);
+	}
+
+	/** Adds an Iterable of actors to the root of the stage.
+	 * @see Group#addActors(Iterable)
+	 * @see Actor#remove() */
+	public <T extends Action> void addActions (Iterable<T> actions) {
+		root.addActions(actions);
 	}
 
 	/** Returns the root's child actors.
