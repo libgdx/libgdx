@@ -1,10 +1,13 @@
-[1.1.1]
+[1.2.0]
 - API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
 - API Addition: A FreeTypeFontGeneratorLoader has been added to the gdx-freetype extension
 - API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
 - API Addition: Vector#setZero
 - API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence
 - API change: TableLayout has been forked and integrated into libgdx more tightly, see http://www.badlogicgames.com/wordpress/?p=3458
+- API Addition: added mapping file for FireTV controller, see https://github.com/libgdx/libgdx/pull/1973
+- API Addition: added equals/hashCode methods to Rectangle, may break old code (very, very unlikely)
+- API Addition: scene2D Actors now have a setCenterPosition method, see https://github.com/libgdx/libgdx/pull/2000
 
 [1.1.0]
 - Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9

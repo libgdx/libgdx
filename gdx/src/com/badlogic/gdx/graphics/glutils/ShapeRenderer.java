@@ -542,18 +542,18 @@ public class ShapeRenderer implements Disposable {
 			renderer.color(col1.r, col1.g, col1.b, col1.a);
 			renderer.vertex(x1, y1, 0);
 		} else {
-			renderer.color(color);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
 			renderer.vertex(x1, y1, 0);
-			renderer.color(color);
+			renderer.color(col2.r, col2.g, col2.b, col2.a);
 			renderer.vertex(x2, y2, 0);
-			renderer.color(color);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
 			renderer.vertex(x3, y3, 0);
 
-			renderer.color(color);
+			renderer.color(col3.r, col3.g, col3.b, col3.a);
 			renderer.vertex(x3, y3, 0);
-			renderer.color(color);
+			renderer.color(col4.r, col4.g, col4.b, col4.a);
 			renderer.vertex(x4, y4, 0);
-			renderer.color(color);
+			renderer.color(col1.r, col1.g, col1.b, col1.a);
 			renderer.vertex(x1, y1, 0);
 		}
 
