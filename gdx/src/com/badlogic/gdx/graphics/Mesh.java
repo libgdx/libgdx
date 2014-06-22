@@ -219,21 +219,23 @@ public class Mesh implements Disposable {
 
 		meshes[0].getVertices(vertices);
 		meshes[0].getIndices(indices);
-
-		int voffset = meshes[0].getNumVertices() * vertexSize;
+		int vcount = meshes[0].getNumVertices();
+		if (transformations != null)
+			transform(transformations[0], vertices, vertexSize, offset, numComponents, 0, vcount);
+		int voffset = vcount;
 		int ioffset = meshes[0].getNumIndices();
 		for (int i = 1; i < meshes.length; i++) {
 			final Mesh mesh = meshes[i];
-			final int vsize = mesh.getNumVertices() * vertexSize;
+			vcount = mesh.getNumVertices();
 			final int isize = mesh.getNumIndices();
-			mesh.getVertices(0, vsize, vertices, voffset);
+			mesh.getVertices(0, vcount * vertexSize, vertices, voffset * vertexSize);
 			if (transformations != null)
-				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset / vertexSize, vsize / vertexSize);
+				transform(transformations[i], vertices, vertexSize, offset, numComponents, voffset, vcount);
 			mesh.getIndices(indices, ioffset);
 			for (int j = 0; j < isize; j++)
 				indices[ioffset + j] = (short)(indices[ioffset + j] + voffset);
-			voffset += vsize;
 			ioffset += isize;
+			voffset += vcount;
 		}
 
 		final Mesh result = new Mesh(isStatic, vertices.length / vertexSize, indices.length, attributes);

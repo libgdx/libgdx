@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="com.badlogic.gdx">
-	<inherits name="com.esotericsoftware.TableLayout"/>
 	<source path="gdx">
 	    
 	<!--  --> 
@@ -219,7 +218,13 @@
 		<include name="graphics/glutils/VertexBufferObject.java"/> <!-- Emulated -->
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
+
+	<!-- graphics/profiling -->
+		<include name="graphics/profiling/GL20Profiler.java"/>
+		<include name="graphics/profiling/GL30Profiler.java"/>
+		<include name="graphics/profiling/GLProfiler.java"/>
 		
+						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->

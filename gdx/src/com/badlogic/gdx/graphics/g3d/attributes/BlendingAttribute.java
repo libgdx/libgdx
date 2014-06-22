@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
+import com.badlogic.gdx.utils.NumberUtils;
 
 public class BlendingAttribute extends Attribute {
 	public final static String Alias = "blended";
@@ -82,7 +83,7 @@ public class BlendingAttribute extends Attribute {
 		result = 947 * result + (blended ? 1 : 0);
 		result = 947 * result + sourceFunction;
 		result = 947 * result + destFunction;
-		result = 947 * result + Float.floatToRawIntBits(opacity);
+		result = 947 * result + NumberUtils.floatToRawIntBits(opacity);
 		return result; 
 	}
 }
