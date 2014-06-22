@@ -15,6 +15,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /** Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
  * @author badlogicgames@gmail.com */
 public class Rectangle implements Serializable {
@@ -363,10 +365,10 @@ public class Rectangle implements Serializable {
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(height);
-		result = prime * result + Float.floatToIntBits(width);
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + NumberUtils.floatToIntBits(height);
+		result = prime * result + NumberUtils.floatToIntBits(width);
+		result = prime * result + NumberUtils.floatToIntBits(x);
+		result = prime * result + NumberUtils.floatToIntBits(y);
 		return result;
 	}
 
@@ -375,10 +377,10 @@ public class Rectangle implements Serializable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Rectangle other = (Rectangle)obj;
-		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height)) return false;
-		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width)) return false;
-		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
-		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
+		if (Float.floatToIntBits(height) != NumberUtils.floatToIntBits(other.height)) return false;
+		if (Float.floatToIntBits(width) != NumberUtils.floatToIntBits(other.width)) return false;
+		if (Float.floatToIntBits(x) != NumberUtils.floatToIntBits(other.x)) return false;
+		if (Float.floatToIntBits(y) != NumberUtils.floatToIntBits(other.y)) return false;
 		return true;
 	}
 	

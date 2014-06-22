@@ -16,6 +16,7 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 
 import com.badlogic.gdx.math.collision.Sphere;
+import com.badlogic.gdx.utils.NumberUtils;
 
 /** A convenient 2D circle class.
  * @author mzechner */
@@ -58,14 +59,6 @@ public class Circle implements Serializable {
 		this.radius = circle.radius;
 	}
 
-	/** Create a new {@link Circle} with the radius and coordinates (except z) of a given sphere.
-	 * @param sphere The sphere to flatten */
-	public Circle (Sphere sphere) {
-		this.x = sphere.center.x;
-		this.y = sphere.center.y;
-		this.radius = sphere.radius;
-	}
-
 	/** Creates a new {@link Circle} in terms of its center and a point on its edge.
 	 * 
 	 * @param center The center of the new circle
@@ -104,14 +97,6 @@ public class Circle implements Serializable {
 		this.x = circle.x;
 		this.y = circle.y;
 		this.radius = circle.radius;
-	}
-
-	/** Sets this {@link Circle}'s radius and coordinates (except z) to those of the given {@link Sphere}.
-	 * @param sphere The {@link Sphere} whose values we're copying */
-	public void set (Sphere sphere) {
-		this.x = sphere.center.x;
-		this.y = sphere.center.y;
-		this.radius = sphere.radius;
 	}
 
 	/** Sets this {@link Circle}'s values in terms of its center and a point on its edge.
@@ -228,11 +213,11 @@ public class Circle implements Serializable {
 
 	@Override
 	public int hashCode () {
-		final int prime = 31;
+		final int prime = 41;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(radius);
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + NumberUtils.floatToIntBits(radius);
+		result = prime * result + NumberUtils.floatToIntBits(x);
+		result = prime * result + NumberUtils.floatToIntBits(y);
 		return result;
 	}
 }
