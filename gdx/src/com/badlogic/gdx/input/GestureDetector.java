@@ -20,6 +20,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -91,7 +92,7 @@ public class GestureDetector extends InputAdapter {
 		} else if(pointer2.id < 0) {
 			return pointer2;
 		}
-		return null;
+		return Pointer.NO_POINTER;
 	}
 
 	@Override
@@ -101,7 +102,7 @@ public class GestureDetector extends InputAdapter {
 	
 	public boolean touchDown (float x, float y, int pointer, int button) {
 		final Pointer pt = getPointerById(pointer);
-		if (pt == null) return false;
+		if (pt == Pointer.NO_POINTER) return false;
 
 		++pointersCount;
 		pt.touchDown(x, y, pointer);
@@ -133,7 +134,7 @@ public class GestureDetector extends InputAdapter {
 
 	public boolean touchDragged (float x, float y, int pointer) {
 		final Pointer pt = getPointerById(pointer);
-		if (pt == null) return false;
+		if (pt == Pointer.NO_POINTER) return false;
 		if (longPressFired) return false;
 
 		pt.pos.set(x, y);
@@ -172,7 +173,7 @@ public class GestureDetector extends InputAdapter {
 
 	public boolean touchUp (float x, float y, int pointer, int button) {
 		final Pointer pt = getPointerById(pointer);
-		if (pt == null || pt.id < 0) return false;
+		if (pt.id < 0) return false;
 		--pointersCount;
 		pt.touchUp();
 		
@@ -455,6 +456,16 @@ public class GestureDetector extends InputAdapter {
 	}
 	
 	private static class Pointer {
+		/* The null object. */
+		static final Pointer NO_POINTER = new Pointer() {
+			protected void touchUp() {
+				throw new GdxRuntimeException("Null object call.");
+			};
+			protected void touchDown(float x, float y, int pointerId) {
+				throw new GdxRuntimeException("Null object call.");
+			};
+		};
+		
 		int id = -1;
 		final Vector2 pos = new Vector2();
 		final Vector2 initialPos = new Vector2();
@@ -462,16 +473,16 @@ public class GestureDetector extends InputAdapter {
 		Pointer () {
 		}
 
-		void touchUp () {
+		protected void touchUp () {
 			id = -1;
 		}
 
-		void touchDown (float x, float y, int pointerId) {
+		protected void touchDown (float x, float y, int pointerId) {
 			id = pointerId;
 			pos.set(x, y);
 		}
 
-		void startPinch () {
+		protected void startPinch () {
 			initialPos.set(pos);
 		}
 	}
