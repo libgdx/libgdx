@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
@@ -43,6 +44,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
@@ -64,6 +66,11 @@ public class IOSApplication implements Application {
 		@Override
 		public void didBecomeActive (UIApplication application) {
 			app.didBecomeActive(application);
+		}
+
+		@Override
+		public void willEnterForeground (UIApplication application) {
+			app.willEnterForeground(application);
 		}
 
 		@Override
@@ -174,7 +181,6 @@ public class IOSApplication implements Application {
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
-// CGSize bounds = UIScreen.getMainScreen().getBounds().size();
 		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
 
 		// determine orientation and resulting width + height
@@ -220,9 +226,15 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "resumed");
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		// OALAudioSession.sharedInstance().forceEndInterrupt();
+		OALAudioSession.sharedInstance().forceEndInterruption();
 		graphics.makeCurrent();
 		graphics.resume();
+	}
+
+	final void willEnterForeground (UIApplication uiApp) {
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+		OALAudioSession.sharedInstance().forceEndInterruption();
 	}
 
 	final void willResignActive (UIApplication uiApp) {
@@ -278,14 +290,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel > LOG_NONE) {
-			System.out.println("[info] " + tag + ": " + message);
+			Foundation.NSLog("[info] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel > LOG_NONE) {
-			System.out.println("[info] " + tag + ": " + message);
+			Foundation.NSLog("[info] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -293,14 +305,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			System.out.println("[error] " + tag + ": " + message);
+			Foundation.NSLog("[error] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			System.out.println("[error] " + tag + ": " + message);
+			Foundation.NSLog("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -308,14 +320,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println("[debug] " + tag + ": " + message);
+			Foundation.NSLog("[debug] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println("[error] " + tag + ": " + message);
+			Foundation.NSLog("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -355,20 +367,14 @@ public class IOSApplication implements Application {
 		File libraryPath = new File(System.getenv("HOME"), "Library");
 		File finalPath = new File(libraryPath, name + ".plist");
 
-		Gdx.app.debug("IOSApplication", "Loading NSDictionary from file " + finalPath);
 		@SuppressWarnings("unchecked")
 		NSMutableDictionary<NSString, NSObject> nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary
 			.read(finalPath);
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {
-			Gdx.app.debug("IOSApplication", "NSDictionary not found, creating a new one");
 			nsDictionary = new NSMutableDictionary<NSString, NSObject>();
-			boolean fileWritten = nsDictionary.write(finalPath, false);
-			if (fileWritten)
-				Gdx.app.debug("IOSApplication", "NSDictionary file written");
-			else
-				Gdx.app.debug("IOSApplication", "Failed to write NSDictionary to file " + finalPath);
+			nsDictionary.write(finalPath, false);
 		}
 		return new IOSPreferences(nsDictionary, finalPath.getAbsolutePath());
 	}
