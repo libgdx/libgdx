@@ -295,4 +295,7 @@ public class PixmapIO {
 			return (s2 << 16) + s1;
 		}
 	}
+
+	private PixmapIO () {
+	}
 }

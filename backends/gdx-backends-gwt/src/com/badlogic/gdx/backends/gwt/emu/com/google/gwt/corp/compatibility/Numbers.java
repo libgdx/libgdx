@@ -107,4 +107,7 @@ public class Numbers {
 	public static long doubleToRawLongBits (double value) {
 		throw new RuntimeException("NYI: Numbers.doubleToRawLongBits");
 	}
+
+	private Numbers () {
+	}
 }

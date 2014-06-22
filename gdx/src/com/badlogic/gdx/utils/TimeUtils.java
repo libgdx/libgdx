@@ -58,4 +58,7 @@ public final class TimeUtils {
 	public static long timeSinceMillis (long prevTime) {
 		return millis() - prevTime;
 	}
+	
+	private TimeUtils() {
+	}
 }

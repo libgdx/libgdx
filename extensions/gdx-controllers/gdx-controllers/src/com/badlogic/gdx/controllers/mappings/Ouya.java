@@ -94,4 +94,7 @@ public class Ouya {
 	{
 		return runningOnOuya || simulateRunningOnOuya;
 	}
+	
+	private Ouya() {
+	}
 }

@@ -107,4 +107,7 @@ public class Lzma {
 			throw new RuntimeException("Error in data stream");
 		}
 	}
+	
+	private Lzma() {
+	}
 }

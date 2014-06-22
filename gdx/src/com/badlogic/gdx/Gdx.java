@@ -21,9 +21,11 @@ import com.badlogic.gdx.graphics.GL30;
 
 /** Environment class holding references to the {@link Application}, {@link Graphics}, {@link Audio}, {@link Files} and
  * {@link Input} instances. The references are held in public static fields which allows static access to all sub systems. Do not
- * use Graphics in a thread that is not the rendering thread.
+ * use Graphics in a thread that is not the rendering thread. Don't reference any of these fields until after you create your
+ * {@link Application} and pass in an {@link ApplicationListener} to it, or else you'll be hit with a {@link NullPointerException}
+ * .
  * <p>
- * This is normally a design faux pas but in this case is better than the alternatives.
+ * Usage of singletons like this is normally a design faux pas but in this case is better than the alternatives.
  * @author mzechner */
 public class Gdx {
 	public static Application app;
@@ -35,5 +37,10 @@ public class Gdx {
 
 	public static GL20 gl;
 	public static GL20 gl20;
+
+	/** Will be {@code null} if OpenGL ES 3.x isn't available. */
 	public static GL30 gl30;
+
+	private Gdx () {
+	}
 }

@@ -101,4 +101,8 @@ public class Utf8 {
 		System.arraycopy(data, 0, result, 0, length);
 		return result;
 	}
+
+	private Utf8 () {
+	}
+
 }

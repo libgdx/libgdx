@@ -34,6 +34,10 @@ public final class Intersector {
 	private final static Vector3 v1 = new Vector3();
 	private final static Vector3 v2 = new Vector3();
 
+	private Intersector () {
+
+	}
+
 	/** Returns whether the given point is inside the triangle. This assumes that the point is on the plane of the triangle. No
 	 * check is performed that this is the case.
 	 * 
@@ -668,25 +672,25 @@ public final class Intersector {
 	 * @param polygon The polygon
 	 * @return Whether polygon and line intersects */
 	public static boolean intersectLinePolygon (Vector2 p1, Vector2 p2, Polygon polygon) {
-		 float[] vertices = polygon.getTransformedVertices();
-		 float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-		 int n = vertices.length;
-		 float x3 = vertices[n - 2], y3 = vertices[n - 1];
-		 for (int i = 0; i < n; i += 2) {
-			  float x4 = vertices[i], y4 = vertices[i + 1];
-			  float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-			  if (d != 0) {
-					float yd = y1 - y3;
-					float xd = x1 - x3;
-					float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
-					if (ua >= 0 && ua <= 1) {
-						 return true;
-					}
-			  }
-			  x3 = x4;
-			  y3 = y4;
-		 }
-		 return false;
+		float[] vertices = polygon.getTransformedVertices();
+		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+		int n = vertices.length;
+		float x3 = vertices[n - 2], y3 = vertices[n - 1];
+		for (int i = 0; i < n; i += 2) {
+			float x4 = vertices[i], y4 = vertices[i + 1];
+			float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+			if (d != 0) {
+				float yd = y1 - y3;
+				float xd = x1 - x3;
+				float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
+				if (ua >= 0 && ua <= 1) {
+					return true;
+				}
+			}
+			x3 = x4;
+			y3 = y4;
+		}
+		return false;
 	}
 
 	/** Determines whether the given rectangles intersect and, if they do, sets the supplied {@code intersection} rectangle to the
@@ -704,34 +708,34 @@ public final class Intersector {
 		return false;
 	}
 
-	 /** Check whether the given line segment and {@link Polygon} intersect.
-	  * @param p1 The first point of the segment
-	  * @param p2 The second point of the segment
-	  * @return Whether polygon and segment intersect */
-	 public static boolean intersectSegmentPolygon (Vector2 p1, Vector2 p2, Polygon polygon) {
-		  float[] vertices = polygon.getTransformedVertices();
-		  float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
-		  int n = vertices.length;
-		  float x3 = vertices[n - 2], y3 = vertices[n - 1];
-		  for (int i = 0; i < n; i += 2) {
-				float x4 = vertices[i], y4 = vertices[i + 1];
-				float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-				if (d != 0) {
-					 float yd = y1 - y3;
-					 float xd = x1 - x3;
-					 float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
-					 if (ua >= 0 && ua <= 1) {
-						  float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
-						  if (ub >= 0 && ub <= 1) {
-								return true;
-						  }
-					 }
+	/** Check whether the given line segment and {@link Polygon} intersect.
+	 * @param p1 The first point of the segment
+	 * @param p2 The second point of the segment
+	 * @return Whether polygon and segment intersect */
+	public static boolean intersectSegmentPolygon (Vector2 p1, Vector2 p2, Polygon polygon) {
+		float[] vertices = polygon.getTransformedVertices();
+		float x1 = p1.x, y1 = p1.y, x2 = p2.x, y2 = p2.y;
+		int n = vertices.length;
+		float x3 = vertices[n - 2], y3 = vertices[n - 1];
+		for (int i = 0; i < n; i += 2) {
+			float x4 = vertices[i], y4 = vertices[i + 1];
+			float d = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+			if (d != 0) {
+				float yd = y1 - y3;
+				float xd = x1 - x3;
+				float ua = ((x4 - x3) * yd - (y4 - y3) * xd) / d;
+				if (ua >= 0 && ua <= 1) {
+					float ub = ((x2 - x1) * yd - (y2 - y1) * xd) / d;
+					if (ub >= 0 && ub <= 1) {
+						return true;
+					}
 				}
-				x3 = x4;
-				y3 = y4;
-		  }
-		  return false;
-	 }
+			}
+			x3 = x4;
+			y3 = y4;
+		}
+		return false;
+	}
 
 	/** Intersects the two line segments and returns the intersection point in intersection.
 	 * 
@@ -825,8 +829,8 @@ public final class Intersector {
 		return overlapConvexPolygons(p1, p2, null);
 	}
 
-	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum Translation Vector indicating the
-	 * minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
+	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum Translation
+	 * Vector indicating the minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
 	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
@@ -841,8 +845,9 @@ public final class Intersector {
 		return overlapConvexPolygons(verts1, 0, verts1.length, verts2, 0, verts2.length, mtv);
 	}
 
-	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a Minimum Translation
-	 * Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the collision with the polygon defined by verts2.
+	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a
+	 * Minimum Translation Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the
+	 * collision with the polygon defined by verts2.
 	 * 
 	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.

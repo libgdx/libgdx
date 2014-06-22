@@ -280,4 +280,7 @@ public final class MathUtils {
 	static public boolean isEqual (float a, float b, float tolerance) {
 		return Math.abs(a - b) <= tolerance;
 	}
+
+	private MathUtils () {
+	}
 }

@@ -184,4 +184,7 @@ public final class ClassReflection {
 		}
 	}
 
+	private ClassReflection () {
+	}
+
 }

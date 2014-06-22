@@ -24,4 +24,7 @@ public class Align {
 	static public final int bottom = 1 << 2;
 	static public final int left = 1 << 3;
 	static public final int right = 1 << 4;
+
+	private Align () {
+	}
 }

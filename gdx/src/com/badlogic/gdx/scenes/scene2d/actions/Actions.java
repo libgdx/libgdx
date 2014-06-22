@@ -477,4 +477,7 @@ public class Actions {
 		addAction.setCapture(capture);
 		return addAction;
 	}
+
+	private Actions () {
+	}
 }

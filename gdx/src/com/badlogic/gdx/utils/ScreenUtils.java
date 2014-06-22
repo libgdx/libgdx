@@ -115,4 +115,7 @@ public final class ScreenUtils {
 		return lines;
 
 	}
+	
+	private ScreenUtils() {
+	}
 }

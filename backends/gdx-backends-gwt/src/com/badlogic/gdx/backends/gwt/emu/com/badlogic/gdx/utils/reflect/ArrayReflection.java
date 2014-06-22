@@ -41,4 +41,7 @@ public final class ArrayReflection {
 	static public void set (Object array, int index, Object value) {
 		ReflectionCache.getType(array.getClass()).setArrayElement(array, index, value);
 	}
+
+	private ArrayReflection () {
+	}
 }

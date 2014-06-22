@@ -50,4 +50,7 @@ public final class NumberUtils {
 	public static double longBitsToDouble (long value) {
 		return Double.longBitsToDouble(value);
 	}
+
+	private NumberUtils () {
+	}
 }

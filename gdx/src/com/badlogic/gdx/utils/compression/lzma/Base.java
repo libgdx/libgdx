@@ -73,4 +73,7 @@ public class Base {
 	public static final int kNumMidLenSymbols = 1 << kNumMidLenBits;
 	public static final int kNumLenSymbols = kNumLowLenSymbols + kNumMidLenSymbols + (1 << kNumHighLenBits);
 	public static final int kMatchMaxLen = kMatchMinLen + kNumLenSymbols - 1;
+	
+	private Base() {
+	}
 }

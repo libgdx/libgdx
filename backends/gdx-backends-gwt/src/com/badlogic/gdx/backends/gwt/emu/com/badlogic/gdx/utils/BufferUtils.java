@@ -508,4 +508,7 @@ public final class BufferUtils {
 		// FIXME ouch :p
 		return LongBuffer.wrap(new long[numLongs]);
 	}
+	
+	private BufferUtils() {
+	}
 }

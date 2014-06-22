@@ -33,4 +33,7 @@ public class GdxNativesLoader {
 
 		new SharedLibraryLoader().load("gdx");
 	}
+
+	private GdxNativesLoader () {
+	}
 }

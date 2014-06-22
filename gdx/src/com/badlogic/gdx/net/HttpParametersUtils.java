@@ -54,4 +54,8 @@ public class HttpParametersUtils {
 			throw new IllegalArgumentException(e);
 		}
 	}
+
+	private HttpParametersUtils () {
+
+	}
 }

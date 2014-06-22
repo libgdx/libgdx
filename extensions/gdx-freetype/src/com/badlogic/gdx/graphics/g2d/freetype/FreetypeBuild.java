@@ -134,4 +134,7 @@ public class FreetypeBuild {
 // BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 // BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
+	
+	private FreetypeBuild() {
+	}
 }

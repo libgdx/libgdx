@@ -278,4 +278,6 @@ public class ETC1 {
 		etc1_encode_image((etc1_byte*)imageData + offset, width, height, pixelSize, width * pixelSize, compressed + ETC_PKM_HEADER_SIZE);
 		return env->NewDirectByteBuffer(compressed, compressedSize + ETC_PKM_HEADER_SIZE);
 	*/
+	
+	private ETC1 () {}
 }

@@ -49,4 +49,7 @@ public final class NumberUtils {
 	public static double longBitsToDouble (long value) {
 		return 0; // FIXME
 	}
+
+	private NumberUtils () {
+	}
 }

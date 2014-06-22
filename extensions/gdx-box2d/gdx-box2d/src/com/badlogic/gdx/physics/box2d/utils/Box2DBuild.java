@@ -19,4 +19,7 @@ public class Box2DBuild {
 		new NativeCodeGenerator().generate();
 		new AntScriptGenerator().generate(new BuildConfig("gdx-box2d"), win32, win64, lin32, lin64, mac32, mac64, android, ios);		
 	}
+	
+	private Box2DBuild() {
+	}
 }

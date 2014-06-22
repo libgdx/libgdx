@@ -116,4 +116,7 @@ public class Controllers {
 		});
 		Gdx.app.log(TAG, "added manager for application, " + managers.size + " managers active");
 	}
+	
+	private Controllers() {
+	}
 }

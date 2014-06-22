@@ -162,4 +162,8 @@ public final class GeometryUtils {
 		area *= 0.5f;
 		return area;
 	}
+	
+	private GeometryUtils() {
+		
+	}
 }

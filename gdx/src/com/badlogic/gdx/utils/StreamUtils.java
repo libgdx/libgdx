@@ -104,4 +104,7 @@ public final class StreamUtils {
 			return super.toByteArray();
 		}
 	}
+	
+	private StreamUtils() {
+	}
 }

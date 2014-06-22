@@ -110,4 +110,7 @@ public class FireTV
 	{
 		return runningOnFireTV || simulateRunningOnFireTV;
 	}
+	
+	private FireTV() {
+	}
 }

@@ -187,5 +187,8 @@ public final class ClassReflection {
 			throw new ReflectionException("Field not found: " + name + ", for class: " + c.getName(), e);
 		}
 	}
+	
+	private ClassReflection() {
+	}
 
 }
