@@ -214,6 +214,22 @@ public class Group extends Actor implements Cullable {
 		actor.setStage(getStage());
 		childrenChanged();
 	}
+	
+	/** Adds an array of actors as a child of this group. The actors is first removed from its parent group, if any.
+	 * @see #remove() */
+	public void addActors (Actor[] actors) {
+		for (Actor a : actors) {
+			addActor(a);
+		}
+	}
+
+	/** Adds an Iterable of actors as a child of this group. The actors is first removed from its parent group, if any.
+	 * @see #remove() */
+	public <T extends Actor> void addActors (Iterable<T> actors) {
+		for (Actor a : actors) {
+			addActor(a);
+		}
+	}
 
 	/** Adds an actor as a child of this group, at a specific index. The actor is first removed from its parent group, if any.
 	 * @param index May be greater than the number of children. */
