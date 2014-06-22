@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -34,8 +35,12 @@ public class Scene2DDebugRenderer {
 	 * as well. */
 	public boolean renderInvisibleActors = false;
 
-	/** Set to {@code true} to also render group actors. They usually act only as invisible in the scene graph. */
+	/** Set to {@code false} to not render group actors. They usually act only as invisible in the scene graph. */
 	public boolean renderGroups = true;
+
+	public Color actorColor = new Color(1, 0, 0, 1);
+
+	public Color groupColor = new Color(0, 1, 0, 1);
 
 	private Stage stage;
 
@@ -46,7 +51,6 @@ public class Scene2DDebugRenderer {
 		this.shapeRenderer = new ShapeRenderer();
 	}
 
-	/** Renders the bounding boxes of all actors of the stage. */
 	public void render () {
 		shapeRenderer.setProjectionMatrix(stage.getCamera().projection);
 		shapeRenderer.setTransformMatrix(stage.getCamera().view);
@@ -77,6 +81,12 @@ public class Scene2DDebugRenderer {
 				actor.localToStageCoordinates(topRight);
 				actor.localToStageCoordinates(bottomRight);
 				actor.localToStageCoordinates(bottomLeft);
+
+				if (actor instanceof Group) {
+					shapeRenderer.setColor(groupColor);
+				} else {
+					shapeRenderer.setColor(actorColor);
+				}
 
 				shapeRenderer.line(topLeft, topRight);
 				shapeRenderer.line(topRight, bottomRight);
