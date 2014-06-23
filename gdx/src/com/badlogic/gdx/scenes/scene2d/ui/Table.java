@@ -51,10 +51,10 @@ public class Table extends WidgetGroup {
 
 	private int columns, rows;
 
-	private final Array<Cell> cells = new Array<Cell>(4);
-	private final Cell<Actor> cellDefaults;
-	private final Array<Cell> columnDefaults = new Array<Cell>(2);
-	private Cell<Actor> rowDefaults;
+	private final Array<Cell> cells = new Array(4);
+	private final Cell cellDefaults;
+	private final Array<Cell> columnDefaults = new Array(2);
+	private Cell rowDefaults;
 
 	private boolean sizeInvalid = true;
 	private float[] columnMinWidth, rowMinHeight;
@@ -280,7 +280,7 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a cell without an actor. */
-	public Cell<Actor> add () {
+	public Cell add () {
 		return add((Actor) null);
 	}
 
@@ -367,7 +367,7 @@ public class Table extends WidgetGroup {
 
 	/** Gets the cell values that will be used as the defaults for all cells in the specified column. Columns are indexed starting
 	 * at 0. */
-	public <T extends Actor> Cell<T> columnDefaults (int column) {
+	public Cell columnDefaults (int column) {
 		Cell cell = columnDefaults.size > column ? columnDefaults.get(column) : null;
 		if (cell == null) {
 			cell = obtainCell();
