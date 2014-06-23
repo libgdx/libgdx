@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.net.HttpStatus;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
@@ -33,13 +31,11 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.http.client.Header;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
 import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.RequestTimeoutException;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 
@@ -112,19 +108,29 @@ public class GwtNet implements Net {
 			return;
 		}
 
-		final boolean is_get = (httpRequest.getMethod() == HttpMethods.GET);
+		final String method = httpRequest.getMethod();		
 		final String value = httpRequest.getContent();
-
+		final boolean valueInBody = method.equalsIgnoreCase(HttpMethods.POST) || method.equals(HttpMethods.PUT);
+		
 		RequestBuilder builder;
 		
 		String url = httpRequest.getUrl();
-		if (is_get) {
+		if (method.equalsIgnoreCase(HttpMethods.GET)) {
+			if (value != null) {
+				url += "?" + value;
+			}			
+			builder = new RequestBuilder(RequestBuilder.GET, url);
+		} else if (method.equalsIgnoreCase(HttpMethods.POST)) {
+			builder = new RequestBuilder(RequestBuilder.POST, url);
+		} else if (method.equalsIgnoreCase(HttpMethods.DELETE)) {
 			if (value != null) {
 				url += "?" + value;
 			}
-			builder = new RequestBuilder(RequestBuilder.GET, url);
+			builder = new RequestBuilder(RequestBuilder.DELETE, url);
+		} else if (method.equalsIgnoreCase(HttpMethods.PUT)) {
+			builder = new RequestBuilder(RequestBuilder.PUT, url);
 		} else {
-			builder = new RequestBuilder(RequestBuilder.POST, url);
+			throw new GdxRuntimeException("Unsupported HTTP Method");
 		}
 
 		Map<String, String> content = httpRequest.getHeaders();
@@ -136,7 +142,7 @@ public class GwtNet implements Net {
 		builder.setTimeoutMillis(httpRequest.getTimeOut());
 
 		try {
-			Request request = builder.sendRequest(is_get ? null : value, new RequestCallback() {
+			Request request = builder.sendRequest(valueInBody ? value : null, new RequestCallback() {
 
 				@Override
 				public void onResponseReceived (Request request, Response response) {					
