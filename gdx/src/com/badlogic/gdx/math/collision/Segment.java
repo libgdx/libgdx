@@ -54,6 +54,14 @@ public class Segment implements Serializable {
 		this.b.set(bX, bY, bZ);
 	}
 
+	public float len () {
+		return a.dst(b);
+	}
+
+	public float len2 () {
+		return a.dst2(b);
+	}
+
 	@Override
 	public boolean equals (Object o) {
 		if (o == this) return true;

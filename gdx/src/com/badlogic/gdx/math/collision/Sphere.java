@@ -18,6 +18,7 @@ package com.badlogic.gdx.math.collision;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.NumberUtils;
 
@@ -30,6 +31,8 @@ public class Sphere implements Serializable {
 	public float radius;
 	/** the center of the sphere **/
 	public final Vector3 center;
+
+	private static final float PI_4_3 = MathUtils.PI * 4f / 3f;
 
 	/** Constructs a sphere with the given center and radius
 	 * @param center The center
@@ -60,5 +63,13 @@ public class Sphere implements Serializable {
 		if (o == null || o.getClass() != this.getClass()) return false;
 		Sphere s = (Sphere)o;
 		return this.radius == s.radius && this.center.equals(s.center);
+	}
+
+	public float volume () {
+		return PI_4_3 * this.radius * this.radius * this.radius;
+	}
+
+	public float surfaceArea () {
+		return 4 * MathUtils.PI * this.radius * this.radius;
 	}
 }

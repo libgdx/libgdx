@@ -362,6 +362,14 @@ public class Rectangle implements Serializable {
 		return x + "," + y + "," + width + "," + height;
 	}
 
+	public float area () {
+		return this.width * this.height;
+	}
+
+	public float perimeter () {
+		return 2 * this.width * this.height;
+	}
+
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
