@@ -1,5 +1,6 @@
 [1.2.1]
 - API Addition: 3d particle system and accompanying editor, contributed by lordjone, see https://github.com/libgdx/libgdx/pull/2005
+- API Addition: class ColorDrawable added for plain color drawables
 
 [1.2.0]
 - API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
