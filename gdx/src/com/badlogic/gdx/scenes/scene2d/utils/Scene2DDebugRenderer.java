@@ -37,7 +37,7 @@ public class Scene2DDebugRenderer {
 	 * as well. */
 	public boolean renderInvisibleActors = false;
 
-	/** Set to {@code false} to not render group actors. They usually act only as invisible in the scene graph. */
+	/** Set to {@code false} to not render group actors. This will not prevent the group's children to be rendered. */
 	public boolean renderGroups = true;
 
 	/** Set to {@code false} to not render "leaf" actors. Those are the ones that are no {@link Group}s. */
