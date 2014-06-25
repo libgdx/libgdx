@@ -15,6 +15,8 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /** Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
  * @author badlogicgames@gmail.com */
 public class Rectangle implements Serializable {
@@ -222,8 +224,7 @@ public class Rectangle implements Serializable {
 		return this;
 	}
 
-	/** Merges this rectangle with the other rectangle.
-	 * The rectangle should not have negative width or negative height.
+	/** Merges this rectangle with the other rectangle. The rectangle should not have negative width or negative height.
 	 * @param rect the other rectangle
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Rectangle rect) {
@@ -239,8 +240,8 @@ public class Rectangle implements Serializable {
 
 		return this;
 	}
-	/** Merges this rectangle with a point
-	 * The rectangle should not have negative width or negative height.
+
+	/** Merges this rectangle with a point. The rectangle should not have negative width or negative height.
 	 * @param x the x coordinate of the point
 	 * @param y the y coordinate of the point
 	 * @return this rectangle for chaining */
@@ -257,23 +258,23 @@ public class Rectangle implements Serializable {
 
 		return this;
 	}
-	/** Merges this rectangle with a point
-	 * The rectangle should not have negative width or negative height.
+
+	/** Merges this rectangle with a point. The rectangle should not have negative width or negative height.
 	 * @param vec the vector describing the point
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Vector2 vec) {
 		return merge(vec.x, vec.y);
 	}
-	/** Merges this rectangle with a list of points
-	 * The rectangle should not have negative width or negative height.
+
+	/** Merges this rectangle with a list of points. The rectangle should not have negative width or negative height.
 	 * @param vecs the vectors describing the points
 	 * @return this rectangle for chaining */
 	public Rectangle merge (Vector2[] vecs) {
 		float minX = x;
-		float maxX = x+width;
+		float maxX = x + width;
 		float minY = y;
-		float maxY = y+height;
-		for(int i = 0; i < vecs.length; ++i) {
+		float maxY = y + height;
+		for (int i = 0; i < vecs.length; ++i) {
 			Vector2 v = vecs[i];
 			minX = Math.min(minX, v.x);
 			maxX = Math.max(maxX, v.x);
@@ -286,6 +287,7 @@ public class Rectangle implements Serializable {
 		height = maxY - minY;
 		return this;
 	}
+
 	/** Calculates the aspect ratio ( width / height ) of this rectangle
 	 * @return the aspect ratio of this rectangle. Returns Float.NaN if height is 0 to avoid ArithmeticException */
 	public float getAspectRatio () {
@@ -318,7 +320,7 @@ public class Rectangle implements Serializable {
 		return this;
 	}
 
-	/** Fits this rectangle around another rectangle while maintaining aspect ratio This scales and centers the rectangle to the
+	/** Fits this rectangle around another rectangle while maintaining aspect ratio. This scales and centers the rectangle to the
 	 * other rectangle (e.g. Having a camera translate and scale to show a given area)
 	 * @param rect the other rectangle to fit this rectangle around
 	 * @return this rectangle for chaining */
@@ -360,13 +362,21 @@ public class Rectangle implements Serializable {
 		return x + "," + y + "," + width + "," + height;
 	}
 
+	public float area () {
+		return this.width * this.height;
+	}
+
+	public float perimeter () {
+		return 2 * this.width * this.height;
+	}
+
 	public int hashCode () {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Float.floatToIntBits(height);
-		result = prime * result + Float.floatToIntBits(width);
-		result = prime * result + Float.floatToIntBits(x);
-		result = prime * result + Float.floatToIntBits(y);
+		result = prime * result + NumberUtils.floatToRawIntBits(height);
+		result = prime * result + NumberUtils.floatToRawIntBits(width);
+		result = prime * result + NumberUtils.floatToRawIntBits(x);
+		result = prime * result + NumberUtils.floatToRawIntBits(y);
 		return result;
 	}
 
@@ -375,12 +385,11 @@ public class Rectangle implements Serializable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Rectangle other = (Rectangle)obj;
-		if (Float.floatToIntBits(height) != Float.floatToIntBits(other.height)) return false;
-		if (Float.floatToIntBits(width) != Float.floatToIntBits(other.width)) return false;
-		if (Float.floatToIntBits(x) != Float.floatToIntBits(other.x)) return false;
-		if (Float.floatToIntBits(y) != Float.floatToIntBits(other.y)) return false;
+		if (Float.floatToRawIntBits(height) != NumberUtils.floatToRawIntBits(other.height)) return false;
+		if (Float.floatToRawIntBits(width) != NumberUtils.floatToRawIntBits(other.width)) return false;
+		if (Float.floatToRawIntBits(x) != NumberUtils.floatToRawIntBits(other.x)) return false;
+		if (Float.floatToRawIntBits(y) != NumberUtils.floatToRawIntBits(other.y)) return false;
 		return true;
 	}
-	
-	
+
 }
