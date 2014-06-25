@@ -177,11 +177,7 @@ public class VertexBufferObjectSubData implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
-						attribute.offset);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
 						attribute.offset);
 			}
 		} else {
@@ -191,11 +187,7 @@ public class VertexBufferObjectSubData implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
-						attribute.offset);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
+				shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
 						attribute.offset);
 			}
 		}
