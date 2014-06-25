@@ -181,7 +181,7 @@ public class ParticleEffect implements Disposable {
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
 			int lastDotIndex = imageName.lastIndexOf('.');
 			if (lastDotIndex != -1) imageName = imageName.substring(0, lastDotIndex);
-			if (atlasPrefix != null) imageName = atlasPrefix + "/" + imageName;
+			if (atlasPrefix != null) imageName = atlasPrefix + imageName;
 			Sprite sprite = atlas.createSprite(imageName);
 			if (sprite == null) throw new IllegalArgumentException("SpriteSheet missing image: " + imageName);
 			emitter.setSprite(sprite);
