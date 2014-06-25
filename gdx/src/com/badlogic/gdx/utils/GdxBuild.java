@@ -60,14 +60,14 @@ public class GdxBuild {
 		BuildTarget ios = BuildTarget.newDefaultTarget(TargetOs.IOS, false);
 		ios.cppExcludes = new String[] {"android/**"};
 		ios.headerDirs = new String[] {"iosgl"};
-		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, mac64, win32home, win32,
-			win64, lin32, lin64, android, ios);
+		new AntScriptGenerator().generate(new BuildConfig("gdx", "../target/native", LIBS_DIR, JNI_DIR), mac, mac64, win32home,
+			win32, win64, lin32, lin64, android, ios);
 
 		// build natives
 		// BuildExecutor.executeAnt("jni/build-windows32home.xml", "-v");
 		// BuildExecutor.executeAnt("jni/build.xml", "pack-natives -v");
 	}
-	
-	private GdxBuild() {
+
+	private GdxBuild () {
 	}
 }
