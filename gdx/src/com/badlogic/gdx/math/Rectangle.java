@@ -367,7 +367,7 @@ public class Rectangle implements Serializable {
 	}
 
 	public float perimeter () {
-		return 2 * this.width * this.height;
+		return 2 * (this.width + this.height);
 	}
 
 	public int hashCode () {
