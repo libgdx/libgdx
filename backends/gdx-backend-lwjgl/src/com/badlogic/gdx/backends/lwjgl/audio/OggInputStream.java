@@ -87,7 +87,7 @@ public class OggInputStream extends InputStream {
 	/** The index into the byte array we currently read from */
 	private int readIndex;
 	/** The byte array store used to hold the data read from the ogg */
-	private ByteBuffer pcmBuffer = BufferUtils.createByteBuffer(BUFFER_SIZE * 500);
+	private ByteBuffer pcmBuffer = BufferUtils.createByteBuffer(4096 * 500);
 	/** The total number of bytes */
 	private int total;
 
@@ -351,8 +351,8 @@ public class OggInputStream extends InputStream {
 									}
 
 									int bytesToWrite = 2 * oggInfo.channels * bout;
-									if (bytesToWrite >= pcmBuffer.remaining()) {
-										throw new GdxRuntimeException("Ogg block too big to be buffered: " + bytesToWrite);
+									if (bytesToWrite > pcmBuffer.remaining()) {
+										throw new GdxRuntimeException("Ogg block too big to be buffered: " + bytesToWrite + " :: " + pcmBuffer.remaining());
 									} else {
 										pcmBuffer.put(convbuffer, 0, bytesToWrite);
 									}
