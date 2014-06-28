@@ -33,7 +33,7 @@ public class BuildExecutor {
 	public static boolean executeAnt (String buildFile, String params) {
 		FileDescriptor build = new FileDescriptor(buildFile);
 		String ant = System.getProperty("os.name").contains("Windows") ? "ant.bat" : "ant";
-		String command = ant + " -f " + build.file().getAbsolutePath() + " " + params;
+		String command = ant + " -f \"" + build.file().getAbsolutePath() + "\" " + params;
 		System.out.println("Executing '" + command + "'");
 		return startProcess(command, build.parent().file());
 	}
