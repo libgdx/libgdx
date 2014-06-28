@@ -119,14 +119,4 @@ public class Scene2DDebugRendererTest extends GdxTest {
 		debugRenderer = new Scene2DDebugRenderer(stage);
 	}
 
-	/** A workaround for the limitations of UI elements when it comes to rotation and scaling. For most groups this is disabled by
-	 * default. */
-	private Table createWrapper (Actor actor) {
-		Table wrapper = new Table();
-		wrapper.setTransform(true);
-		wrapper.add(actor);
-		wrapper.setOrigin(wrapper.getPrefWidth() / 2f, wrapper.getPrefHeight() / 2f);
-		return wrapper;
-	}
-
 }
