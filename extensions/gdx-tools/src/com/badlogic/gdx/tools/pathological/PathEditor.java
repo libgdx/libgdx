@@ -186,8 +186,7 @@ public class PathEditor {
 		}
 
 		if (deleteSelectedNodesMenuItem != null) {
-			deleteSelectedNodesMenuItem.setEnabled((project != null && project.getNumberOfPathModels() > 0) ? project.getPathModel(
-				current).anySelected() : false);
+			deleteSelectedNodesMenuItem.setEnabled((project != null && model != null) ? model.anySelected() : false);
 		}
 
 		if (canvasPane != null) {
@@ -645,6 +644,7 @@ public class PathEditor {
 						} catch (Exception ex) {
 							JOptionPane.showMessageDialog(null, "Not a valid Pathological project file", "Invalid project",
 								JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
 						}
 					}
 				}
