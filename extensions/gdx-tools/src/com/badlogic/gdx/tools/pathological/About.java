@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.tools.pathological;
 
@@ -68,7 +83,8 @@ class About extends JFrame {
 		aboutText.setEnabled(false);
 		aboutText.setEditable(false);
 		aboutText.setBackground(UIManager.getColor("Button.background"));
-		aboutText.setText("An all-purpose 2D Path editor for LibGDX.\n\nCarve your curves.  Sculpt your splines.  Pimp your paths.  Be the envy of all game designers!  For graphics, physics, AI, bear wrestling, and anything else your heart desires!  Make your players cry tears of joy when they see just how silky smooth you can make your game with this little tool.\n\nSource code is available under the terms of the Apache License 2.0 (the license LibGDX uses).\n\nCopyright Jesse Talavera-Greenberg 2014.");
+		aboutText
+			.setText("An all-purpose 2D Path editor for LibGDX.\n\nCarve your curves.  Sculpt your splines.  Pimp your paths.  Be the envy of all game designers!  For graphics, physics, AI, bear wrestling, and anything else your heart desires!  Make your players cry tears of joy when they see just how silky smooth you can make your game with this little tool.\n\nSource code is available under the terms of the Apache License 2.0 (the license LibGDX uses).");
 		GridBagConstraints gbc_aboutText = new GridBagConstraints();
 		gbc_aboutText.gridwidth = 2;
 		gbc_aboutText.insets = new Insets(0, 0, 5, 0);
@@ -104,7 +120,7 @@ class About extends JFrame {
 		gbc_authorLink.gridx = 0;
 		gbc_authorLink.gridy = 2;
 		contentPane.add(authorLink, gbc_authorLink);
-		
+
 		btnLibgdx = new JButton("Made for LibGDX");
 		btnLibgdx.setFocusPainted(false);
 		btnLibgdx.setFocusTraversalKeysEnabled(false);
@@ -113,7 +129,7 @@ class About extends JFrame {
 		btnLibgdx.setToolTipText("See what this awesome game dev library can do for you!");
 		btnLibgdx.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnLibgdx.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed (ActionEvent e) {
 				if (Desktop.isDesktopSupported()) {
 					Desktop desktop = java.awt.Desktop.getDesktop();
 					if (desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -132,10 +148,10 @@ class About extends JFrame {
 		gbc_btnLibgdx.gridx = 1;
 		gbc_btnLibgdx.gridy = 2;
 		contentPane.add(btnLibgdx, gbc_btnLibgdx);
-		
+
 		btnNewButton = new JButton("OK");
 		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed (ActionEvent e) {
 				About.this.setVisible(false);
 			}
 		});
@@ -145,38 +161,40 @@ class About extends JFrame {
 		gbc_btnNewButton.gridy = 3;
 		contentPane.add(btnNewButton, gbc_btnNewButton);
 	}
-	
+
 	private static class LinkRunner extends SwingWorker<Void, Void> {
 
-	    private final URI uri;
+		private final URI uri;
 
-	    private LinkRunner(URI u) {
-	        if (u == null) {
-	            throw new NullPointerException();
-	        }
-	        uri = u;
-	    }
+		private LinkRunner (URI u) {
+			if (u == null) {
+				throw new NullPointerException();
+			}
+			uri = u;
+		}
 
-	    @Override
-	    protected Void doInBackground() throws Exception {
-	        Desktop desktop = java.awt.Desktop.getDesktop();
-	        desktop.browse(uri);
-	        return null;
-	    }
+		@Override
+		protected Void doInBackground () throws Exception {
+			Desktop desktop = java.awt.Desktop.getDesktop();
+			desktop.browse(uri);
+			return null;
+		}
 
-	    @Override
-	    protected void done() {
-	        try {
-	            get();
-	        } catch (ExecutionException ee) {
-	            handleException(uri, ee);
-	        } catch (InterruptedException ie) {
-	            handleException(uri, ie);
-	        }
-	    }
+		@Override
+		protected void done () {
+			try {
+				get();
+			} catch (ExecutionException ee) {
+				handleException(uri, ee);
+			} catch (InterruptedException ie) {
+				handleException(uri, ie);
+			}
+		}
 
-	    private static void handleException(URI u, Exception e) {
-	        JOptionPane.showMessageDialog(null, "Sorry, a problem occurred while trying to open this link in your system's standard browser.", "A problem occured", JOptionPane.ERROR_MESSAGE);
-	    }
+		private static void handleException (URI u, Exception e) {
+			JOptionPane.showMessageDialog(null,
+				"Sorry, a problem occurred while trying to open this link in your system's standard browser.", "A problem occured",
+				JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
