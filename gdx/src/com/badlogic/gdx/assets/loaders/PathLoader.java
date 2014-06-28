@@ -39,7 +39,7 @@ import com.badlogic.gdx.utils.reflect.ClassReflection;
 /** Use this to load {@link Path}s created with the included path editor. {@link Bezier}s, {@link BSpline}s, and
  * {@link CatmullRomSpline}s are supported. Only 2D paths (i.e. with {@code Vector2}s) are supported.
  * @author Jesse Talavera-Greenberg */
-public class PathLoader extends SynchronousAssetLoader<Path<Vector2>, PathLoader.PathParameters> {
+public class PathLoader extends SynchronousAssetLoader<Path, PathLoader.PathParameters> {
 	private Json json;
 
 	public PathLoader (FileHandleResolver resolver) {
@@ -53,7 +53,7 @@ public class PathLoader extends SynchronousAssetLoader<Path<Vector2>, PathLoader
 		this.json.setSerializer(CatmullRomSpline.class, ps);
 	}
 
-	public static class PathParameters extends AssetLoaderParameters<Path<Vector2>> {
+	public static class PathParameters extends AssetLoaderParameters<Path> {
 		public Matrix3 transform = new Matrix3();
 	}
 
