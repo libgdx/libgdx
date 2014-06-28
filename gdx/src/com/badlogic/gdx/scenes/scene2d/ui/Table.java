@@ -38,10 +38,9 @@ import com.badlogic.gdx.utils.Pool;
 public class Table extends WidgetGroup {
 
 	public static final Color tableColor = new Color(0, 0, 1, 1);
-
 	public static final Color cellColor = new Color(1, 0, 0, 1);
 
-	static Pool<Cell> cellPool = new Pool() {
+	static Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
 			return new Cell();
 		}
@@ -202,8 +201,8 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell to the table with the specified actor. */
-	public Cell add (Actor actor) {
-		Cell cell = obtainCell();
+	public <T extends Actor> Cell<T> add (T actor) {
+		Cell<T> cell = obtainCell();
 		cell.actor = actor;
 
 		Array<Cell> cells = this.cells;

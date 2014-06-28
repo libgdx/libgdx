@@ -417,21 +417,22 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// generate kerning
-		for (int i = 0; i < parameter.characters.length(); i++) {
-			for (int j = 0; j < parameter.characters.length(); j++) {
-				char firstChar = parameter.characters.charAt(i);
-				Glyph first = data.getGlyph(firstChar);
-				if (first == null) continue;
-				char secondChar = parameter.characters.charAt(j);
-				Glyph second = data.getGlyph(secondChar);
-				if (second == null) continue;
-				int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
-					FreeType.getCharIndex(face, secondChar), 0);
-				if (kerning == 0) continue;
-				first.setKerning(secondChar, FreeType.toInt(kerning));
+		if (parameter.kerning) {
+			for (int i = 0; i < parameter.characters.length(); i++) {
+				for (int j = 0; j < parameter.characters.length(); j++) {
+					char firstChar = parameter.characters.charAt(i);
+					Glyph first = data.getGlyph(firstChar);
+					if (first == null) continue;
+					char secondChar = parameter.characters.charAt(j);
+					Glyph second = data.getGlyph(secondChar);
+					if (second == null) continue;
+					int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
+						FreeType.getCharIndex(face, secondChar), 0);
+					if (kerning == 0) continue;
+					first.setKerning(secondChar, FreeType.toInt(kerning));
+				}
 			}
 		}
-
 		if (ownsAtlas) {
 			Array<Page> pages = packer.getPages();
 			data.regions = new TextureRegion[pages.size];
@@ -495,6 +496,8 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int size = 16;
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
+		/** Whether the font should include kerning */
+		public boolean kerning = true;
 		/** The optional PixmapPacker to use */
 		public PixmapPacker packer = null;
 		/** Whether to flip the font horizontally */

@@ -34,6 +34,21 @@
 		value="com.badlogic.gdx.graphics.VertexAttribute" />
 	<extend-configuration-property name="gdx.reflect.include"
 		value="com.badlogic.gdx.graphics.g3d.model" />
+
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.ParallelArray" />
+		
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.influencers" />
+	
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardControllerRenderData" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particle.renderers.ModelInstanceControllerRenderData" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particle.renderers.ParticleControllerRenderData" />
+	<extend-configuration-property name="gdx.reflect.include"
+		value="com.badlogic.gdx.graphics.g3d.particle.renderers.PointSpriteControllerRenderData" />
     <extend-configuration-property name="gdx.reflect.include"
         value="java.util.List" />
 	<extend-configuration-property name="gdx.reflect.include"
