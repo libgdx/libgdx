@@ -26,14 +26,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ScrollPane2Test extends GdxTest {
 	Stage stage;
 	Skin skin;
+	Scene2DDebugRenderer debugRenderer;
 
 	public void create () {
 		stage = new Stage();
+		debugRenderer = new Scene2DDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -82,7 +85,7 @@ public class ScrollPane2Test extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		Table.drawDebug(stage);
+		debugRenderer.render();
 	}
 
 	public void resize (int width, int height) {

@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LabelTest extends GdxTest {
@@ -38,6 +39,7 @@ public class LabelTest extends GdxTest {
 	SpriteBatch batch;
 	Actor root;
 	ShapeRenderer renderer;
+	Scene2DDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
@@ -47,6 +49,7 @@ public class LabelTest extends GdxTest {
 		skin.getAtlas().getTextures().iterator().next().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		skin.getFont("default-font").setMarkupEnabled(true);
 		stage = new Stage();
+		debugRenderer = new Scene2DDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		Table table = new Table();
@@ -89,7 +92,7 @@ public class LabelTest extends GdxTest {
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
+		debugRenderer.render();
 
 		float x = 40, y = 40;
 

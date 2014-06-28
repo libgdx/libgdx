@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Scaling;
 
@@ -32,21 +33,24 @@ public class ImageTest extends GdxTest {
 	Stage ui;
 	Table root;
 	TextureRegion image2;
+	Scene2DDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		image2 = new TextureRegion(new Texture(Gdx.files.internal("data/badlogic.jpg")));
 		ui = new Stage();
+		debugRenderer = new Scene2DDebugRenderer(ui);
 		Gdx.input.setInputProcessor(ui);
 
 		root = new Table();
+		root.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		ui.addActor(root);
 		root.debug();
 
 		Image image = new Image(image2);
 		image.setScaling(Scaling.fill);
-		root.add(image).width(160).height(100);
+		root.add(image).width(image2.getRegionWidth()).height(image2.getRegionHeight());
 	}
 
 	@Override
@@ -62,12 +66,11 @@ public class ImageTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		ui.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		ui.draw();
-		Table.drawDebug(ui);
+		debugRenderer.render();
 	}
 
 	@Override
 	public void resize (int width, int height) {
 		ui.getViewport().update(width, height, true);
-		root.setSize(width, height);
 	}
 }

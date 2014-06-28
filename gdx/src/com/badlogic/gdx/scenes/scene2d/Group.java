@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -289,12 +290,12 @@ public class Group extends Actor implements Cullable {
 	public <T extends Actor> T findActor (String name) {
 		Array<Actor> children = this.children;
 		for (int i = 0, n = children.size; i < n; i++)
-			if (name.equals(children.get(i).getName())) return (T) children.get(i);
+			if (name.equals(children.get(i).getName())) return (T)children.get(i);
 		for (int i = 0, n = children.size; i < n; i++) {
 			Actor child = children.get(i);
 			if (child instanceof Group) {
 				Actor actor = ((Group)child).findActor(name);
-				if (actor != null) return (T) actor;
+				if (actor != null) return (T)actor;
 			}
 		}
 		return null;
@@ -362,6 +363,21 @@ public class Group extends Actor implements Cullable {
 	/** Prints the actor hierarchy recursively for debugging purposes. */
 	public void print () {
 		print("");
+	}
+
+	/** Used only in combination with a {@link Scene2DDebugRenderer}.
+	 * @param recursively If {@code true} it will also recursively disable all children of this group. */
+	public void setDebuggingEnabled (boolean enabled, boolean recursively) {
+		setDebuggingEnabled(enabled);
+		if (recursively) {
+			for (Actor child : children) {
+				if (child instanceof Group) {
+					((Group)child).setDebuggingEnabled(enabled, recursively);
+				} else {
+					child.setDebuggingEnabled(enabled);
+				}
+			}
+		}
 	}
 
 	private void print (String indent) {

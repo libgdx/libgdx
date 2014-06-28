@@ -23,8 +23,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.ReflectionPool;
 
 /** This debugging utility takes a {@link Stage} and renders all {@link Actor}s bounding boxes via a {@link ShapeRenderer}. The
  * bounding boxes are not axis-aligned but rotated and scaled just like the actor. All you need to do is calling the
@@ -33,33 +35,32 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
  * @author Daniel Holderbaum */
 public class Scene2DDebugRenderer {
 
+	public static class DebugRect implements Poolable {
+		public Vector2 bottomLeft;
+		public Vector2 topRight;
+		public Color color;
+
+		public DebugRect () {
+			bottomLeft = new Vector2();
+			topRight = new Vector2();
+			color = new Color(1, 1, 1, 1);
+		}
+
+		@Override
+		public void reset () {
+			bottomLeft.setZero();
+			topRight.setZero();
+			color.set(1, 1, 1, 1);
+		}
+	}
+
+	public static Pool<DebugRect> debugRectPool = new ReflectionPool(DebugRect.class);
+
+	private Array<DebugRect> debugRects = new Array<DebugRect>();
+
 	/** Set to {@code true} if you want to render the actors that are not visible ({@code visible=false} of the actor or any parent)
 	 * as well. */
 	public boolean renderInvisibleActors = false;
-
-	/** Set to {@code false} to not render group actors. This will not prevent the group's children to be rendered. */
-	public boolean renderGroups = true;
-
-	/** Set to {@code false} to not render "leaf" actors. Those are the ones that are no {@link Group}s. */
-	public boolean renderActors = true;
-
-	/** Set to {@code false} to not render table cells. This will not prevent the cell's actor to be rendered. */
-	public boolean renderCells = true;
-
-	/** Set to {@code false} to not render the table outlines. This will not prevent the cells to be rendered. */
-	public boolean renderTable = true;
-
-	/** Used for the outline of any {@link Actor} that is not a {@link Group} of any kind. */
-	public Color actorColor = new Color(1, 1, 1, 1);
-
-	/** Used in case the actor is a {@link Group}, but not a {@link Table}. */
-	public Color groupColor = new Color(1, 0, 0, 1);
-
-	/** Used for the outline of the individual {@link Cell}s of a {@link Table}. */
-	public Color cellColor = new Color(0, 1, 0, 1);
-
-	/** Used for the outline of a {@link Table}. */
-	public Color tableColor = new Color(0, 0, 1, 1);
 
 	private Stage stage;
 
@@ -81,84 +82,33 @@ public class Scene2DDebugRenderer {
 		shapeRenderer.end();
 	}
 
-	/** Acts like a switch and delegates the real rendering call to the method with the most precise type. */
-	private void renderRecursive (Actor actor) {
-		if (renderInvisibleActors || isActorVisible(actor)) {
-			if (actor instanceof Table) {
-				Table table = (Table)actor;
-				if (renderTable) {
-					render(table);
-				}
-				for (Cell<Actor> cell : table.getCells()) {
-					if (renderCells) {
-						render(cell);
-					}
-					if (cell.hasActor()) {
-						renderRecursive(cell.getActor());
-					}
-				}
-			} else if (actor instanceof Group) {
-				Group group = (Group)actor;
-				if (renderGroups) {
-					render(group);
-				}
-				for (Actor child : group.getChildren()) {
-					renderRecursive(child);
-				}
-			} else {
-				if (renderActors) {
-					render(actor);
-				}
-			}
-		}
-	}
-
 	private Vector2 topLeft = new Vector2();
 	private Vector2 topRight = new Vector2();
 	private Vector2 bottomRight = new Vector2();
 	private Vector2 bottomLeft = new Vector2();
 
-	/** Works for both {@link Group} and {@link Actor}. */
-	private void render (Actor actor) {
-		topLeft.set(0, actor.getHeight());
-		topRight.set(actor.getWidth(), actor.getHeight());
-		bottomRight.set(actor.getWidth(), 0);
-		bottomLeft.set(0, 0);
+	private void renderRecursive (Actor actor) {
+		if (actor.isDebuggingEnabled() && (renderInvisibleActors || isActorVisible(actor))) {
 
-		Color color = getColorByType(actor);
-		renderBoundingBox(actor, topLeft, topRight, bottomRight, bottomLeft, color);
-	}
+			actor.getDebugRects(debugRects);
+			for (DebugRect debugRect : debugRects) {
+				topLeft.set(debugRect.bottomLeft.x, debugRect.topRight.y);
+				topRight.set(debugRect.topRight.x, debugRect.topRight.y);
+				bottomRight.set(debugRect.topRight.x, debugRect.bottomLeft.y);
+				bottomLeft.set(debugRect.bottomLeft.x, debugRect.bottomLeft.y);
 
-	private void render (Cell cell) {
-		Table table = cell.getTable();
+				renderBoundingBox(actor, topLeft, topRight, bottomRight, bottomLeft, debugRect.color);
+			}
+			debugRects.clear();
 
-		// render an outline of the cell
-		// it's an outline around the actor + the cell's padding
-		topLeft.set(cell.getActorX() - cell.getPadLeft(), cell.getActorY() + cell.getActorHeight() + cell.getPadTop());
-		topRight.set(cell.getActorX() + cell.getActorWidth() + cell.getPadRight(),
-			cell.getActorY() + cell.getActorHeight() + cell.getPadTop());
-		bottomRight.set(cell.getActorX() + cell.getActorWidth() + cell.getPadRight(), cell.getActorY() - cell.getPadBottom());
-		bottomLeft.set(cell.getActorX() - cell.getPadLeft(), cell.getActorY() - cell.getPadBottom());
+			if (actor instanceof Group) {
+				Group group = (Group)actor;
+				for (Actor child : group.getChildren()) {
+					renderRecursive(child);
+				}
+			}
+		}
 
-		renderBoundingBox(table, topLeft, topRight, bottomRight, bottomLeft, cellColor);
-	}
-
-	private void render (Table table) {
-		// table outline
-		topLeft.set(0, table.getHeight());
-		topRight.set(table.getWidth(), table.getHeight());
-		bottomRight.set(table.getWidth(), 0);
-		bottomLeft.set(0, 0);
-
-		renderBoundingBox(table, topLeft, topRight, bottomRight, bottomLeft, tableColor);
-
-		// table outline minus the table's padding
-		topLeft.set(table.getPadLeft(), table.getHeight() - table.getPadTop());
-		topRight.set(table.getWidth() - table.getPadRight(), table.getHeight() - table.getPadTop());
-		bottomRight.set(table.getWidth() - table.getPadRight(), table.getPadBottom());
-		bottomLeft.set(table.getPadLeft(), table.getPadBottom());
-
-		renderBoundingBox(table, topLeft, topRight, bottomRight, bottomLeft, tableColor);
 	}
 
 	private void renderBoundingBox (Actor actor, Vector2 topLeft, Vector2 topRight, Vector2 bottomRight, Vector2 bottomLeft,
@@ -189,15 +139,5 @@ public class Scene2DDebugRenderer {
 		}
 
 		return true;
-	}
-
-	private Color getColorByType (Actor actor) {
-		Color color;
-		if (actor instanceof Group) {
-			color = groupColor;
-		} else {
-			color = actorColor;
-		}
-		return color;
 	}
 }
