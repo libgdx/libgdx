@@ -21,13 +21,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 
+import com.badlogic.gdx.assets.loaders.PathLoader.PathSerializer;
 import com.badlogic.gdx.math.BSpline;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.tools.pathological.PathModel.PathNode;
-import com.badlogic.gdx.tools.pathological.util.PathSerializer;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 

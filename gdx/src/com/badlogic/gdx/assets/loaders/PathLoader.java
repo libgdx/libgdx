@@ -29,9 +29,12 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.tools.pathological.util.PathSerializer;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.Json.Serializer;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 /** Use this to load {@link Path}s created with the included path editor. {@link Bezier}s, {@link BSpline}s, and
  * {@link CatmullRomSpline}s are supported. Only 2D paths (i.e. with {@code Vector2}s) are supported.
@@ -95,5 +98,89 @@ public class PathLoader extends SynchronousAssetLoader<Path<Vector2>, PathLoader
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, PathParameters parameter) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public static class PathSerializer<T extends Path> implements Serializer<Path> {
+		@Override
+		public void write (Json json, Path object, Class knownType) {
+			json.writeObjectStart();
+			{
+				json.writeObjectStart("path");
+				{
+					json.writeValue("type", ClassReflection.getSimpleName(object.getClass()));
+
+					Array<Vector2> points;
+					Integer degree = null;
+					Boolean continuous = null;
+					if (object instanceof Bezier) {
+						points = ((Bezier<Vector2>)object).points;
+					} else if (object instanceof BSpline) {
+						BSpline<Vector2> bspline = (BSpline<Vector2>)object;
+						points = new Array<Vector2>(bspline.controlPoints);
+						continuous = bspline.continuous;
+						degree = bspline.degree;
+					} else if (object instanceof CatmullRomSpline) {
+						CatmullRomSpline<Vector2> catmullrom = (CatmullRomSpline<Vector2>)object;
+						points = new Array<Vector2>(catmullrom.controlPoints);
+						continuous = catmullrom.continuous;
+					} else {
+						throw new GdxRuntimeException("Unknown path type " + object.getClass());
+					}
+
+					if (degree != null) {
+						json.writeValue("degree", degree);
+					}
+
+					if (continuous != null) {
+						json.writeValue("continuous", continuous);
+					}
+
+					json.writeArrayStart("points");
+					{
+						for (Vector2 v : points) {
+							json.writeObjectStart();
+							{
+								json.writeValue("x", v.x);
+								json.writeValue("y", v.y);
+							}
+							json.writeObjectEnd();
+						}
+					}
+					json.writeArrayEnd();
+				}
+				json.writeObjectEnd();
+			}
+			json.writeObjectEnd();
+		}
+
+		@Override
+		public Path<Vector2> read (Json json, JsonValue jsonData, Class cls) {
+			Path<Vector2> path = null;
+			JsonValue pathjson = jsonData.get("path");
+			if (pathjson != null) {
+				String type = pathjson.getString("type", null);
+				JsonValue points = pathjson.get("points");
+				if (type != null && points.isArray()) {
+					boolean continuous = pathjson.getBoolean("continuous", false);
+					Array<Vector2> pointarray = new Array<Vector2>(points.size);
+					for (JsonValue point = points.get(0); point != null; point = point.next()) {
+						pointarray.add(new Vector2(point.getFloat("x", 0), point.getFloat("y", 0)));
+					}
+
+					if ("Bezier".equals(type)) {
+						path = new Bezier<Vector2>(pointarray, 0, pointarray.size);
+					} else if ("BSpline".equals(type)) {
+						int degree = pathjson.getInt("degree", 3);
+						path = new BSpline(pointarray.shrink(), degree, continuous);
+					} else if ("CatmullRomSpline".equals(type)) {
+						path = new CatmullRomSpline(pointarray.shrink(), continuous);
+					} else {
+						throw new GdxRuntimeException("Unknown Path type " + type);
+					}
+				}
+			}
+
+			return path;
+		}
 	}
 }
