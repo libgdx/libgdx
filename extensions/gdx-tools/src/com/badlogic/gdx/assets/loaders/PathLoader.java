@@ -1,5 +1,5 @@
 
-package com.badlogic.gdx.tools.pathological.util;
+package com.badlogic.gdx.assets.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.CatmullRomSpline;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.tools.pathological.util.PathSerializer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 
