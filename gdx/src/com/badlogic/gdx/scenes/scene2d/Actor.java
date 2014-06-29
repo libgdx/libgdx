@@ -380,16 +380,16 @@ public class Actor {
 	}
 
 	/** Set position of Actor centered on x, y */
-	public void setCenterPosition(float x, float y) {
+	public void setCenterPosition (float x, float y) {
 		this.x = x - width / 2;
 		this.y = y - height / 2;
 	}
 
-	public float getCenterX() {
+	public float getCenterX () {
 		return this.x + width / 2;
 	}
 
-	public float getCenterY() {
+	public float getCenterY () {
 		return this.y + height / 2;
 	}
 
@@ -555,8 +555,7 @@ public class Actor {
 		return color;
 	}
 
-	/** Retrieve custom actor name set with {@link Actor#setName(String)},
-	 * used for easier identification */
+	/** Retrieve custom actor name set with {@link Actor#setName(String)}, used for easier identification */
 	public String getName () {
 		return name;
 	}
@@ -578,11 +577,13 @@ public class Actor {
 		debugRects.add(debugRect);
 	}
 
-	/** Used only in combination with a {@link Scene2DDebugRenderer}. */
+	/** Used only in combination with a {@link Scene2DDebugRenderer}. It does only influence this particular actor, not its
+	 * children, in case we have a {@link Group}. */
 	public void setDebuggingEnabled (boolean enabled) {
 		debuggingEnabled = enabled;
 	}
 
+	/** Used only in combination with a {@link Scene2DDebugRenderer}. */
 	public boolean isDebuggingEnabled () {
 		return debuggingEnabled;
 	}

@@ -37,8 +37,8 @@ import com.badlogic.gdx.utils.Pool;
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 
-	public static final Color tableColor = new Color(0, 0, 1, 1);
-	public static final Color cellColor = new Color(1, 0, 0, 1);
+	public static final Color debugColor = new Color(0, 0, 1, 1);
+	public static final Color debugCellColor = new Color(1, 0, 0, 1);
 
 	static Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
@@ -1092,8 +1092,8 @@ public class Table extends WidgetGroup {
 		currentX = x;
 		currentY = y;
 		if (debug == Debug.table || debug == Debug.all) {
-			addDebugRect(layoutX, layoutY, layoutWidth, layoutHeight, tableColor);
-			addDebugRect(x, y, tableWidth - hpadding, tableHeight - vpadding, tableColor);
+			addDebugRect(layoutX, layoutY, layoutWidth, layoutHeight, debugColor);
+			addDebugRect(x, y, tableWidth - hpadding, tableHeight - vpadding, debugColor);
 		}
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
@@ -1110,7 +1110,7 @@ public class Table extends WidgetGroup {
 			currentX += c.computedPadLeft;
 			if (debug == Debug.cell || debug == Debug.all) {
 				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth, rowHeight[c.row] - c.computedPadTop
-					- c.computedPadBottom, cellColor);
+					- c.computedPadBottom, debugCellColor);
 			}
 
 			if (c.endRow) {

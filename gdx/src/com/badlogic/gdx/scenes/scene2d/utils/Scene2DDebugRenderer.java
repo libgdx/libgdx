@@ -100,12 +100,13 @@ public class Scene2DDebugRenderer {
 				renderBoundingBox(actor, topLeft, topRight, bottomRight, bottomLeft, debugRect.color);
 			}
 			debugRects.clear();
+		}
 
-			if (actor instanceof Group) {
-				Group group = (Group)actor;
-				for (Actor child : group.getChildren()) {
-					renderRecursive(child);
-				}
+		// children are still rendered, even if the group has no debugging enabled
+		if (actor instanceof Group) {
+			Group group = (Group)actor;
+			for (Actor child : group.getChildren()) {
+				renderRecursive(child);
 			}
 		}
 
