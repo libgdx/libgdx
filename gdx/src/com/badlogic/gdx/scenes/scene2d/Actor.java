@@ -68,7 +68,7 @@ public class Actor {
 	private Object userObject;
 
 	private boolean debuggingEnabled = true;
-	public static final Color debugColor = new Color(0, 1, 0, 1);
+	public static Color debugColor = new Color(0, 1, 0, 1);
 
 	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)

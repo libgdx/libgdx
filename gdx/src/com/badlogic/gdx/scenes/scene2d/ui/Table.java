@@ -37,8 +37,8 @@ import com.badlogic.gdx.utils.Pool;
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
 
-	public static final Color debugColor = new Color(0, 0, 1, 1);
-	public static final Color debugCellColor = new Color(1, 0, 0, 1);
+	public static Color debugColor = new Color(0, 0, 1, 1);
+	public static Color debugCellColor = new Color(1, 0, 0, 1);
 
 	static Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
