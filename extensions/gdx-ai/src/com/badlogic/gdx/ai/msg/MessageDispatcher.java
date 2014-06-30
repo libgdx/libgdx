@@ -157,7 +157,7 @@ public class MessageDispatcher {
 		do {
 			// Read the telegram from the front of the queue
 			final Telegram telegram = queue.peek();
-			if (telegram.getTimestamp() < currentTime) break;
+			if (telegram.getTimestamp() > currentTime) break;
 
 			if (debugEnabled) {
 				Gdx.app.log(LOG_TAG, "Queued telegram ready for dispatch: Sent to " + telegram.receiver + ". Msg is "
