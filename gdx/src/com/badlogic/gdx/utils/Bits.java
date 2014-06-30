@@ -285,10 +285,7 @@ public class Bits {
 	
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + Arrays.hashCode(bits);
-		return result;
+		return Arrays.hashCode(bits);
 	}
 
 	@Override
