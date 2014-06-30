@@ -20,11 +20,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.lang.IllegalArgumentException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import com.badlogic.gdx.Application.ApplicationType
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.HttpStatus;
@@ -190,8 +193,17 @@ public interface Net {
 			this.timeOut = timeOut;
 		}
 		
-		public void setFollowRedirects (boolean followRedirects) {
-			this.followRedirects = followRedirects;
+		/** Sets whether 301 and 302 redirects are followed. By default true.
+		 * Can't be changed in the GWT backend because this uses XmlHttpRequests which always redirect.
+		 * @param boolean whether to follow redirects.
+		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend.*/
+		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
+			if (followRedirects == true || Gdx.app.getApplicationType() != ApplicationType.WebGl) {
+				this.followRedirects = followRedirects;
+			}
+			else {
+				throw new IllegalArgumentException("Following redirects can't be disabled using the GWT/WebGL backend!");
+			}
 		}
 
 		/** Returns the timeOut of the HTTP request.
@@ -230,6 +242,8 @@ public interface Net {
 			return headers;
 		}
 		
+		/** Returns whether 301 and 302 redirects are followed. By default true.
+		 * @param boolean Whether to follow redirects. */
 		public boolean getFollowRedirects() {
 			return followRedirects;
 		}
