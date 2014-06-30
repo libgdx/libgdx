@@ -144,6 +144,8 @@ public interface Net {
 		private String content;
 		private InputStream contentStream;
 		private long contentLength;
+		
+		private boolean followRedirects = true;
 
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
 		 * @param httpMethod This is the HTTP method for the request, see {@link HttpMethods} */
@@ -187,6 +189,10 @@ public interface Net {
 		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
+		
+		public void setFollowRedirects (boolean followRedirects) {
+			this.followRedirects = followRedirects;
+		}
 
 		/** Returns the timeOut of the HTTP request.
 		 * @return the timeOut. */
@@ -222,6 +228,10 @@ public interface Net {
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
 		public Map<String, String> getHeaders () {
 			return headers;
+		}
+		
+		public boolean getFollowRedirects() {
+			return followRedirects;
 		}
 
 	}
