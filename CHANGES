@@ -1,4 +1,5 @@
 [1.2.1]
+- Fixed issue 2048 where MessageDispatcher was dispatching delayed messages immediately.
 - API Addition: 3d particle system and accompanying editor, contributed by lordjone, see https://github.com/libgdx/libgdx/pull/2005
 - API Addition: extended shape classes like Circle, Ellipse etc. with hashcode/equals and other helper methods, see https://github.com/libgdx/libgdx/pull/2018
 - minor API change (will not increase minor revision number): fixed a bug in handling of atlasPrefixes, https://github.com/libgdx/libgdx/pull/2023
