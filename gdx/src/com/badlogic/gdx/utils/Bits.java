@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.utils;
 
+import java.util.Arrays;
+
 /** A bitset, without size limitation, allows comparison via bitwise operators to other bitfields.
  * 
  * @author mzechner
@@ -279,5 +281,25 @@ public class Bits {
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(bits);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bits other = (Bits) obj;
+		return Arrays.equals(bits, other.bits);
 	}
 }
