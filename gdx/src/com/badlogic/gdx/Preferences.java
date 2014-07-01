@@ -36,17 +36,17 @@ import java.util.Map;
  * 
  * @author mzechner */
 public interface Preferences {
-	public void putBoolean (String key, boolean val);
+	public Preferences putBoolean (String key, boolean val);
 
-	public void putInteger (String key, int val);
+	public Preferences putInteger (String key, int val);
 
-	public void putLong (String key, long val);
+	public Preferences putLong (String key, long val);
 
-	public void putFloat (String key, float val);
+	public Preferences putFloat (String key, float val);
 
-	public void putString (String key, String val);
+	public Preferences putString (String key, String val);
 
-	public void put (Map<String, ?> vals);
+	public Preferences put (Map<String, ?> vals);
 
 	public boolean getBoolean (String key);
 
