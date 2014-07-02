@@ -879,11 +879,13 @@ public class TextField extends Widget implements Disableable {
 					}
 					if (add && !remove) {
 						// Character may be added to the text.
-						if (character != ENTER_DESKTOP && character != ENTER_ANDROID) {
+						boolean isEnter = character == ENTER_DESKTOP || character == ENTER_ANDROID;
+						if (!isEnter) {
 							if (filter != null && !filter.acceptChar(TextField.this, character)) return true;
 						}
 						if (!withinMaxLength(text.length())) return true;
-						text = insert(cursor++, String.valueOf(character), text);
+						String insertion = isEnter ? "\n" : String.valueOf(character);
+						text = insert(cursor++, insertion, text);
 					}
 					updateDisplayText();
 				}
