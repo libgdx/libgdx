@@ -19,9 +19,11 @@ package com.badlogic.gdx.graphics.g2d.freetype;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.SynchronousAssetLoader;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters;
 import com.badlogic.gdx.utils.Array;
 
 /** Makes {@link FreeTypeFontGenerator} managable via {@link AssetManager}.
@@ -31,22 +33,25 @@ import com.badlogic.gdx.utils.Array;
  * to register it.
  * </p>
  * @author Daniel Holderbaum */
-public class FreeTypeFontGeneratorLoader extends
-	SynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters> {
+public class FreeTypeFontGeneratorLoader extends AsynchronousAssetLoader<FreeTypeFontGenerator, FreeTypeFontGeneratorParameters> {
 
 	public FreeTypeFontGeneratorLoader (FileHandleResolver resolver) {
 		super(resolver);
 	}
 
-	@Override
-	public FreeTypeFontGenerator load (AssetManager assetManager, String fileName, FileHandle file,
-		FreeTypeFontGeneratorParameters parameter) {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(file);
-
-		return generator;
+	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
+		public FreeTypeFontGeneratorParameters() {}
+		FreeTypeFontGenerator generator;
 	}
 
-	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
+	@Override
+	public void loadAsync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter) {
+		parameter.generator = new FreeTypeFontGenerator(file);
+	}
+
+	@Override
+	public FreeTypeFontGenerator loadSync (AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter) {
+		return parameter.generator;
 	}
 
 	@Override
