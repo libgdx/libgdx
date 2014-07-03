@@ -41,17 +41,18 @@ public class FreeTypeFontGeneratorLoader extends AsynchronousAssetLoader<FreeTyp
 
 	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
 		public FreeTypeFontGeneratorParameters() {}
-		FreeTypeFontGenerator generator;
 	}
 
+	private FreeTypeFontGenerator generator;
+	
 	@Override
 	public void loadAsync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter) {
-		parameter.generator = new FreeTypeFontGenerator(file);
+		generator = new FreeTypeFontGenerator(file);
 	}
 
 	@Override
 	public FreeTypeFontGenerator loadSync (AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter) {
-		return parameter.generator;
+		return generator;
 	}
 
 	@Override

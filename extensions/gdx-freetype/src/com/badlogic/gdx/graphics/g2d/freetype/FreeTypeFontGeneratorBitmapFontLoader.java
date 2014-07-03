@@ -28,6 +28,10 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorBitmapFontLoa
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader.FreeTypeFontGeneratorParameters;
 import com.badlogic.gdx.utils.Array;
 
+/** Load {@link BitmapFont} with {@link FreeTypeFontGenerator} asynchronously via {@link AssetManager}.
+ * {@link BitmapFont} are thus managed automatically. To be loaded, the {@link FreeTypeFontGenerator} must
+ * be created through {@link FreeTypeFontGeneratorLoader} for the desired font.
+ * @author https://github.com/avianey */
 public class FreeTypeFontGeneratorBitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, FreeTypeFontGeneratorBitmapFontParameters> {
 
 	public FreeTypeFontGeneratorBitmapFontLoader(FileHandleResolver resolver) {
@@ -37,32 +41,41 @@ public class FreeTypeFontGeneratorBitmapFontLoader extends AsynchronousAssetLoad
 	static public class FreeTypeFontGeneratorBitmapFontParameters extends AssetLoaderParameters<BitmapFont> {
 		/** Allow the configuration of the {@link FreeTypeFontGeneratorParameters} through {@link FreeTypeFontGenerator#scaleForPixelHeight(int)},
 		 *  {@link FreeTypeFontGenerator#scaleToFitSquare(int, int, int)} or  {@link FreeTypeFontGenerator#scaleForPixelWidth(int, int)} */
-		public static interface Configurator {
+		public static interface FreeTypeFontParameterConfigurator {
 			void configure(FreeTypeFontParameter parameters, FreeTypeFontGenerator generator);
 		}
 		public FreeTypeFontGeneratorBitmapFontParameters() {}
+		/** Parameters for the font to be generated
+		 * @param fontFile the name of the font file
+		 * @param parameters for the {@link BitmapFont} : size, ... */
 		public FreeTypeFontGeneratorBitmapFontParameters(String fontFile, FreeTypeFontParameter parameters) {
 			this.parameters = parameters;
 			this.fontFile = fontFile;
 		}
+		/** Parameters for the font to be generated
+		 * @param fontFile the name of the font file
+		 * @param parameters for the {@link BitmapFont} : size, ...
+		 * @param configurator allow to set {@link FreeTypeFontParameter} params to values depending on the {@link FreeTypeFontGenerator} */
+		public FreeTypeFontGeneratorBitmapFontParameters(String fontFile, FreeTypeFontParameter parameters, FreeTypeFontParameterConfigurator configurator) {
+			this.parameters = parameters;
+			this.fontFile = fontFile;
+			this.configurator = configurator;
+		}
 		public String fontFile;
 		public FreeTypeFontParameter parameters;
-		public Configurator configurator;
-		BitmapFont font;
+		public FreeTypeFontParameterConfigurator configurator;
 	}
 
 	@Override
-	public void loadAsync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorBitmapFontParameters parameter) {
+	public void loadAsync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorBitmapFontParameters parameter) {}
+
+	@Override
+	public BitmapFont loadSync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorBitmapFontParameters parameter) {
 		FreeTypeFontGenerator generator = manager.get(parameter.fontFile, FreeTypeFontGenerator.class);
 		if (parameter.configurator != null) {
 			parameter.configurator.configure(parameter.parameters, generator);
 		}
-		parameter.font = generator.generateFont(parameter.parameters);
-	}
-
-	@Override
-	public BitmapFont loadSync(AssetManager manager, String fileName, FileHandle file, FreeTypeFontGeneratorBitmapFontParameters parameter) {
-		return parameter.font;
+		return generator.generateFont(parameter.parameters);
 	}
 
 	@Override
