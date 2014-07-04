@@ -46,9 +46,9 @@ public class ProxyTextureLoader extends AsynchronousAssetLoader<ProxyTexture, Pr
 		    this.loaderClass = loaderClass;
 		    this.loaderSuffix = loaderSuffix;
 		}
-		AssetLoaderParameters<? extends Texture> parameters;
-		Class<? extends Texture> loaderClass;
-		String loaderSuffix;
+		public AssetLoaderParameters<? extends Texture> parameters;
+		public Class<? extends Texture> loaderClass;
+		public String loaderSuffix;
 	}
 	
 	public ProxyTextureLoader(FileHandleResolver resolver) {

@@ -74,23 +74,23 @@ public class FreePaintTextureLoader extends AsynchronousAssetLoader<FreePaintTex
 		public int desiredWidth;
 		/** The {@link Painter} implementation. MUST be not null. */
 		public Painter render;
-		
-		FreePaintTexture texture;
-		Gdx2DPixmap pixmap2d;
 	}
 
+	private FreePaintTexture texture;
+	private Gdx2DPixmap pixmap2d;
+	
 	public FreePaintTextureLoader(final FileHandleResolver resolver) {
 		super(resolver);
 	}
 
 	public void loadAsync(AssetManager manager, String fileName, FileHandle fileHandle, FreePaintTextureParameter parameter) {
-		parameter.pixmap2d = new Gdx2DPixmap(parameter.desiredWidth, parameter.desiredHeight, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
-	   parameter.render.draw(parameter.pixmap2d);
+		pixmap2d = new Gdx2DPixmap(parameter.desiredWidth, parameter.desiredHeight, Gdx2DPixmap.GDX2D_FORMAT_RGBA8888);
+	   parameter.render.draw(pixmap2d);
 	}
 
 	public FreePaintTexture loadSync(AssetManager manager, String fileName, FileHandle fileHandle, FreePaintTextureParameter parameter) {
-		parameter.texture = new FreePaintTexture(new Pixmap(parameter.pixmap2d));
-		return parameter.texture;
+		texture = new FreePaintTexture(new Pixmap(pixmap2d));
+		return texture;
 	}
 
 	public Array<AssetDescriptor> getDependencies(String fileName, FileHandle fileHandle, FreePaintTextureParameter parameter) {
