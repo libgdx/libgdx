@@ -58,10 +58,10 @@ public class NinePatch {
 	private final Color color = new Color(Color.WHITE);
 	private int padLeft = -1, padRight = -1, padTop = -1, padBottom = -1;
 
-    private float scaleX = 1f;
-    private float scaleY = 1f;
+	private float scaleX = 1f;
+	private float scaleY = 1f;
 
-    /** Create a ninepatch by cutting up the given texture into nine patches. The subsequent parameters define the 4 lines that will
+	/** Create a ninepatch by cutting up the given texture into nine patches. The subsequent parameters define the 4 lines that will
 	 * cut the texture region into 9 pieces.
 	 * 
 	 * @param left Pixels from left edge.
@@ -346,43 +346,43 @@ public class NinePatch {
 		vertices[idx] = color;
 	}
 
-    public void draw(Batch batch, float x, float y, float width, float height)
-    {
+	public void draw(Batch batch, float x, float y, float width, float height)
+	{
 
-        final float centerColumnX = x + leftWidth;
-        final float rightColumnX = x + width - rightWidth;
-        final float middleRowY = y + bottomHeight;
-        final float topRowY = y + height - topHeight;
-        final float c = tmpDrawColor.set(color).mul(batch.getColor()).toFloatBits();
+		final float centerColumnX = x + leftWidth;
+		final float rightColumnX = x + width - rightWidth;
+		final float middleRowY = y + bottomHeight;
+		final float topRowY = y + height - topHeight;
+		final float c = tmpDrawColor.set(color).mul(batch.getColor()).toFloatBits();
 
-        final float centerColumnX2 = x + (leftWidth * scaleX);
-        final float rightColumnX2 = x + width - (rightWidth * scaleX);
-        final float middleRowY2 = y + (bottomHeight * scaleY);
-        final float topRowY2 = y + height - (topHeight * scaleY);
+		final float centerColumnX2 = x + (leftWidth * scaleX);
+		final float rightColumnX2 = x + width - (rightWidth * scaleX);
+		final float middleRowY2 = y + (bottomHeight * scaleY);
+		final float topRowY2 = y + height - (topHeight * scaleY);
 
-        if (bottomLeft != -1)
-            set(bottomLeft,  x, y, (centerColumnX - x) * scaleX, (middleRowY - y) * scaleY, c);
-        if (bottomCenter != -1)
-            set(bottomCenter, centerColumnX2, y, (rightColumnX2 - centerColumnX2), (middleRowY - y) * scaleY, c);
-        if (bottomRight != -1)
-            set(bottomRight, rightColumnX2, y, (x + width - rightColumnX) * scaleX, (middleRowY - y) * scaleY, c);
+		if (bottomLeft != -1)
+			set(bottomLeft,  x, y, (centerColumnX - x) * scaleX, (middleRowY - y) * scaleY, c);
+		if (bottomCenter != -1)
+			set(bottomCenter, centerColumnX2, y, (rightColumnX2 - centerColumnX2), (middleRowY - y) * scaleY, c);
+		if (bottomRight != -1)
+			set(bottomRight, rightColumnX2, y, (x + width - rightColumnX) * scaleX, (middleRowY - y) * scaleY, c);
 
-        if (middleLeft != -1)
-            set(middleLeft, x, middleRowY2, (centerColumnX - x) * scaleX, (topRowY2 - middleRowY2), c);
-        if (middleCenter != -1)
-            set(middleCenter, centerColumnX2, middleRowY2, (rightColumnX2 - centerColumnX2), (topRowY2 - middleRowY2), c);
-        if (middleRight != -1)
-            set(middleRight, rightColumnX2, middleRowY2, (x + width - rightColumnX) * scaleX, (topRowY2 - middleRowY2), c);
+		if (middleLeft != -1)
+			set(middleLeft, x, middleRowY2, (centerColumnX - x) * scaleX, (topRowY2 - middleRowY2), c);
+		if (middleCenter != -1)
+			set(middleCenter, centerColumnX2, middleRowY2, (rightColumnX2 - centerColumnX2), (topRowY2 - middleRowY2), c);
+		if (middleRight != -1)
+			set(middleRight, rightColumnX2, middleRowY2, (x + width - rightColumnX) * scaleX, (topRowY2 - middleRowY2), c);
 
-        if (topLeft != -1)
-            set(topLeft, x, topRowY2, (centerColumnX - x) * scaleX, (y + height - topRowY) * scaleY, c);
-        if (topCenter != -1)
-            set(topCenter, centerColumnX2, topRowY2, (rightColumnX2 - centerColumnX2), (y + height - topRowY) * scaleY, c);
-        if (topRight != -1)
-            set(topRight, rightColumnX2, topRowY2, (x + width - rightColumnX) * scaleX, (y + height - topRowY) * scaleY, c);
+		if (topLeft != -1)
+			set(topLeft, x, topRowY2, (centerColumnX - x) * scaleX, (y + height - topRowY) * scaleY, c);
+		if (topCenter != -1)
+			set(topCenter, centerColumnX2, topRowY2, (rightColumnX2 - centerColumnX2), (y + height - topRowY) * scaleY, c);
+		if (topRight != -1)
+			set(topRight, rightColumnX2, topRowY2, (x + width - rightColumnX) * scaleX, (y + height - topRowY) * scaleY, c);
 
-        batch.draw(texture, vertices, 0, idx);
-    }
+		batch.draw(texture, vertices, 0, idx);
+	}
 
 	/** Copy given color. The color will be blended with the batch color, then combined with the texture colors at
 	 * {@link NinePatch#draw(Batch, float, float, float, float) draw} time. Default is {@link Color#WHITE}. */
@@ -525,27 +525,27 @@ public class NinePatch {
 		padBottom *= scaleY;
 	}
 
-    public void setScale(float xScale, float yScale)
-    {
-        scaleX = xScale;
-        scaleY = yScale;
-    }
+	public void setScale(float xScale, float yScale)
+	{
+		scaleX = xScale;
+		scaleY = yScale;
+	}
 
-    public void setScale(float scale)
-    {
-        scaleX = scale;
-        scaleY = scale;
-    }
+	public void setScale(float scale)
+	{
+		scaleX = scale;
+		scaleY = scale;
+	}
 
-    public void setScaleX(float xScale)
-    {
-        scaleX = xScale;
-    }
+	public void setScaleX(float xScale)
+	{
+		scaleX = xScale;
+	}
 
-    public void setScaleY(float yScale)
-    {
-        scaleY = yScale;
-    }
+	public void setScaleY(float yScale)
+	{
+		scaleY = yScale;
+	}
 
 
 	public Texture getTexture () {
