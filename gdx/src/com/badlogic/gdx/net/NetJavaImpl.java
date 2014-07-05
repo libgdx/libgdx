@@ -146,7 +146,7 @@ public class NetJavaImpl {
 			connection.setDoOutput(doingOutPut);
 			connection.setDoInput(true);
 			connection.setRequestMethod(method);
-			connection.setFollowRedirects(httpRequest.getFollowRedirects());
+			HttpURLConnection.setFollowRedirects(httpRequest.getFollowRedirects());
 
 			lock.lock();
 			connections.put(httpRequest, connection);
