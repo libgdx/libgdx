@@ -346,9 +346,7 @@ public class NinePatch {
 		vertices[idx] = color;
 	}
 
-	public void draw(Batch batch, float x, float y, float width, float height)
-	{
-
+	public void draw(Batch batch, float x, float y, float width, float height){
 		final float centerColumnX = x + leftWidth;
 		final float rightColumnX = x + width - rightWidth;
 		final float middleRowY = y + bottomHeight;
