@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -41,8 +43,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.nio.ByteBuffer;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType font files.</p>
  * 
@@ -129,9 +129,9 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * @param characters the characters the font should contain
 	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
-	public BitmapFont generateFont (int size, String characters, boolean flip) {
+	public FreeTypeBitmapFont generateFont (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip, null);
-		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
+		FreeTypeBitmapFont font = new FreeTypeBitmapFont(data, data.getTextureRegions(), false);
 		font.setOwnsTexture(true);
 		return font;
 	}
@@ -141,7 +141,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size of the font in pixels
 	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
-	public BitmapFont generateFont (int size) {
+	public FreeTypeBitmapFont generateFont (int size) {
 		return generateFont(size, DEFAULT_CHARS, false);
 	}
 
@@ -149,9 +149,9 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * be generated. Using big sizes might cause such an exception. All characters need to fit onto a single texture.
 	 * 
 	 * @param parameter configures how the font is generated */
-	public BitmapFont generateFont (FreeTypeFontParameter parameter) {
+	public FreeTypeBitmapFont generateFont (FreeTypeFontParameter parameter) {
 		FreeTypeBitmapFontData data = generateData(parameter);
-		BitmapFont font = new BitmapFont(data, data.getTextureRegions(), false);
+		FreeTypeBitmapFont font = new FreeTypeBitmapFont(data, data.getTextureRegions(), false);
 		font.setOwnsTexture(true);
 		return font;
 	}
@@ -463,6 +463,15 @@ public class FreeTypeFontGenerator implements Disposable {
 		FreeType.doneFreeType(library);
 	}
 
+	/** {@link BitmapFont} used for fonts generated via the {@link FreeTypeFontGenerator}.
+	 * @author https://github.com/avianey */
+	public static class FreeTypeBitmapFont extends BitmapFont {
+
+		public FreeTypeBitmapFont (FreeTypeBitmapFontData data, TextureRegion[] regions, boolean integer) {
+			super(data, regions, integer);
+		}
+	}
+	
 	/** {@link BitmapFontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is held
 	 * in memory, thus the {@link #getImagePaths()} and {@link #getFontFile()} methods will return null.
 	 * @author mzechner */
