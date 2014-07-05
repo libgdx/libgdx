@@ -178,7 +178,7 @@ public class Ellipse implements Serializable {
 		return this;
 	}
 
-	/** @return The area of this {@link Ellipse} as {@link MathUtils#PI} * {@link rx Ellipse#width} * {@link ry Ellipse#height} */
+	/** @return The area of this {@link Ellipse} as {@link MathUtils#PI} * {@link Ellipse#width} * {@link Ellipse#height} */
 	public float area () {
 		return MathUtils.PI * (this.width * this.height) / 4;
 	}
