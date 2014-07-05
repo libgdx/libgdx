@@ -5,24 +5,38 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ProxyTextureLoader.ProxyTexture;
 import com.badlogic.gdx.assets.loaders.ProxyTextureLoader.ProxyTextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.PixmapIO;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.graphics.g2d.ProxyTexture;
 import com.badlogic.gdx.utils.Array;
 
 /** {@link AssetLoader} for {@link ProxyTexture} instances. The pixel data is loaded asynchronously from another {@link AsynchronousAssetLoader}
  * and cached as PNG on the file system to speed-up the following Texture loading. use {@link ProxyTextureParameter} to specify an 
  * {@link AsynchronousAssetLoader} and a {@link AssetLoaderParameters} to use if the cached version does not exist. 
  * Useful when used with {@link FreePaintTextureLoader}.
- * @author https://github.com/avianey
- */
+ * @author https://github.com/avianey */
 public class ProxyTextureLoader extends AsynchronousAssetLoader<ProxyTexture, ProxyTextureParameter> {
 
    private static final String SAVE_EXTENSION = ".png";
+   
+   /** A {@link Texture} derived class to use with {@link ProxyTextureLoader}.<br>
+	 * This class is only useful to register the loader with the {@link AssetManager}
+    * @author https://github.com/avianey */
+   public static final class ProxyTexture extends Texture {
+
+   	public ProxyTexture(Pixmap pixmap) {
+   		super(pixmap);
+   	}
+
+   	public ProxyTexture(TextureData data) {
+   		super(data);
+   	}
+
+   }
    
 	public static class ProxyTextureParameter extends AssetLoaderParameters<ProxyTexture> {
 		public ProxyTextureParameter() {}

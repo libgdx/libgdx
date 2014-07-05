@@ -3,21 +3,30 @@ package com.badlogic.gdx.assets.loaders;
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetLoaderParameters;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.FreePaintTextureLoader.FreePaintTexture;
 import com.badlogic.gdx.assets.loaders.FreePaintTextureLoader.FreePaintTextureParameter;
-import com.badlogic.gdx.assets.loaders.TextureLoader.TextureParameter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.FreePaintTexture;
 import com.badlogic.gdx.graphics.g2d.Gdx2DPixmap;
 import com.badlogic.gdx.utils.Array;
 
 /** {@link AssetLoader} for {@link FreePaintTexture} instances. The pixel data is loaded asynchronously. The texture is then created on the
  * rendering thread, synchronously. Passing a {@link FreePaintTextureParameter} to
  * {@link AssetManager#load(String, Class, AssetLoaderParameters)} allows one to specify a {@link Painter} to draw freely the texture data.
- * @author https://github.com/avianey
- */
+ * @author https://github.com/avianey */
 public class FreePaintTextureLoader extends AsynchronousAssetLoader<FreePaintTexture, FreePaintTextureParameter> {
+	
+	/** A {@link Texture} derived class to use with {@link FreePaintTextureLoader}.<br>
+	 * This class is only useful to register the loader with the {@link AssetManager}
+	 * @author https://github.com/avianey */
+	public static final class FreePaintTexture extends Texture {
+
+	   public FreePaintTexture(Pixmap pixmap) {
+	       super(pixmap);
+	   }
+	   
+	}
 	
 	/** This class must be passed to the {@link FreePaintTextureParameter} and will be called by the {@link AsynchronousAssetLoader}
 	 * to create the texture data in background. It provides utilities to render custom effects and/or shapes...
