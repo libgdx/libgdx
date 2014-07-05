@@ -81,35 +81,41 @@ public class GwtPreferences implements Preferences {
 	}
 
 	@Override
-	public void putBoolean (String key, boolean val) {
+	public Preferences putBoolean (String key, boolean val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putInteger (String key, int val) {
+	public Preferences putInteger (String key, int val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putLong (String key, long val) {
+	public Preferences putLong (String key, long val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putFloat (String key, float val) {
+	public Preferences putFloat (String key, float val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void putString (String key, String val) {
+	public Preferences putString (String key, String val) {
 		values.put(key, val);
+		return this;
 	}
 
 	@Override
-	public void put (Map<String, ?> vals) {
+	public Preferences put (Map<String, ?> vals) {
 		for (String key : vals.keySet()) {
 			values.put(key, vals.get(key));
 		}
+		return this;
 	}
 
 	@Override

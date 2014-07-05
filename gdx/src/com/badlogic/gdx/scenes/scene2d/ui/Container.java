@@ -38,7 +38,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		if (actor == null) return;
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			drawBackground(batch, parentAlpha, 0, 0);

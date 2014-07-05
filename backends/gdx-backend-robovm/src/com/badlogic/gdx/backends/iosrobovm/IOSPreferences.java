@@ -40,32 +40,37 @@ public class IOSPreferences implements Preferences {
 	}
 
 	@Override
-	public void putBoolean (String key, boolean val) {
+	public Preferences putBoolean (String key, boolean val) {
 		nsDictionary.put(convertKey(key), NSNumber.valueOf(val));
+		return this;
 	}
 
 	@Override
-	public void putInteger (String key, int val) {
+	public Preferences putInteger (String key, int val) {
 		nsDictionary.put(convertKey(key), NSNumber.valueOf(val));
+		return this;
 	}
 
 	@Override
-	public void putLong (String key, long val) {
+	public Preferences putLong (String key, long val) {
 		nsDictionary.put(convertKey(key), NSNumber.valueOf(val));
+		return this;
 	}
 
 	@Override
-	public void putFloat (String key, float val) {
+	public Preferences putFloat (String key, float val) {
 		nsDictionary.put(convertKey(key), NSNumber.valueOf(val));
+		return this;
 	}
 
 	@Override
-	public void putString (String key, String val) {
+	public Preferences putString (String key, String val) {
 		nsDictionary.put(convertKey(key), new NSString(val));
+		return this;
 	}
 
 	@Override
-	public void put (Map<String, ?> vals) {
+	public Preferences put (Map<String, ?> vals) {
 		Set<String> keySet = vals.keySet();
 		for (String key : keySet) {
 			Object value = vals.get(key);
@@ -81,6 +86,7 @@ public class IOSPreferences implements Preferences {
 				putFloat(key, (Float)value);
 			}
 		}
+		return this;
 	}
 
 	@Override

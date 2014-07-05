@@ -42,7 +42,7 @@ import com.badlogic.gdx.utils.Pool;
  * The preferred and minimum sizes are that of the children when laid out in columns and rows.
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
-	static Pool<Cell> cellPool = new Pool() {
+	static Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
 			return new Cell();
 		}
@@ -203,8 +203,8 @@ public class Table extends WidgetGroup {
 	}
 
 	/** Adds a new cell to the table with the specified actor. */
-	public Cell add (Actor actor) {
-		Cell cell = obtainCell();
+	public <T extends Actor> Cell<T> add (T actor) {
+		Cell<T> cell = obtainCell();
 		cell.actor = actor;
 
 		Array<Cell> cells = this.cells;
@@ -281,7 +281,7 @@ public class Table extends WidgetGroup {
 
 	/** Adds a cell without an actor. */
 	public Cell add () {
-		return add((Actor)null);
+		return add((Actor) null);
 	}
 
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
