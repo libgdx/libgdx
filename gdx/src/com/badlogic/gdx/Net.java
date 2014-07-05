@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import com.badlogic.gdx.Application.ApplicationType
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponseListener;
@@ -195,10 +195,10 @@ public interface Net {
 		
 		/** Sets whether 301 and 302 redirects are followed. By default true.
 		 * Can't be changed in the GWT backend because this uses XmlHttpRequests which always redirect.
-		 * @param boolean whether to follow redirects.
+		 * @param followRedirects whether to follow redirects.
 		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend.*/
 		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
-			if (followRedirects == true || Gdx.app.getApplicationType() != ApplicationType.WebGl) {
+			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
 				this.followRedirects = followRedirects;
 			}
 			else {
@@ -243,7 +243,7 @@ public interface Net {
 		}
 		
 		/** Returns whether 301 and 302 redirects are followed. By default true.
-		 * @param boolean Whether to follow redirects. */
+		 *  Whether to follow redirects. */
 		public boolean getFollowRedirects() {
 			return followRedirects;
 		}
