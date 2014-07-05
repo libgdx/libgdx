@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import com.badlogic.gdx.Application.ApplicationType
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponseListener;
@@ -198,7 +198,7 @@ public interface Net {
 		 * @param boolean whether to follow redirects.
 		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend.*/
 		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
-			if (followRedirects == true || Gdx.app.getApplicationType() != ApplicationType.WebGl) {
+			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
 				this.followRedirects = followRedirects;
 			}
 			else {
