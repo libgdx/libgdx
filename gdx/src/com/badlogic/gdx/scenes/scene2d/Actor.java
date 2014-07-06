@@ -504,7 +504,7 @@ public class Actor {
 		this.scaleY = scaleY;
 	}
 
-	/** Sets the scale X and scale X. */
+	/** Sets the scale for both X and Y */
 	public void setScale (float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;
