@@ -385,10 +385,10 @@ public class Rectangle implements Serializable {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		Rectangle other = (Rectangle)obj;
-		if (Float.floatToRawIntBits(height) != NumberUtils.floatToRawIntBits(other.height)) return false;
-		if (Float.floatToRawIntBits(width) != NumberUtils.floatToRawIntBits(other.width)) return false;
-		if (Float.floatToRawIntBits(x) != NumberUtils.floatToRawIntBits(other.x)) return false;
-		if (Float.floatToRawIntBits(y) != NumberUtils.floatToRawIntBits(other.y)) return false;
+		if (NumberUtils.floatToRawIntBits(height) != NumberUtils.floatToRawIntBits(other.height)) return false;
+		if (NumberUtils.floatToRawIntBits(width) != NumberUtils.floatToRawIntBits(other.width)) return false;
+		if (NumberUtils.floatToRawIntBits(x) != NumberUtils.floatToRawIntBits(other.x)) return false;
+		if (NumberUtils.floatToRawIntBits(y) != NumberUtils.floatToRawIntBits(other.y)) return false;
 		return true;
 	}
 

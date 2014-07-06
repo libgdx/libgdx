@@ -58,7 +58,8 @@ public class OpenALAudioDevice implements AudioDevice {
 
 	public void writeSamples (short[] samples, int offset, int numSamples) {
 		if (bytes == null || bytes.length < numSamples * 2) bytes = new byte[numSamples * 2];
-		for (int i = offset, ii = 0; i < numSamples; i++) {
+		int end = Math.min(offset + numSamples, samples.length);
+		for (int i = offset, ii = 0; i < end; i++) {
 			short sample = samples[i];
 			bytes[ii++] = (byte)(sample & 0xFF);
 			bytes[ii++] = (byte)((sample >> 8) & 0xFF);
@@ -68,7 +69,8 @@ public class OpenALAudioDevice implements AudioDevice {
 
 	public void writeSamples (float[] samples, int offset, int numSamples) {
 		if (bytes == null || bytes.length < numSamples * 2) bytes = new byte[numSamples * 2];
-		for (int i = offset, ii = 0; i < numSamples; i++) {
+		int end = Math.min(offset + numSamples, samples.length);
+		for (int i = offset, ii = 0; i < end; i++) {
 			float floatSample = samples[i];
 			floatSample = MathUtils.clamp(floatSample, -1f, 1f);
 			int intSample = (int)(floatSample * 32767);

@@ -459,10 +459,10 @@ public class FileWrapper {
 	}
 
 	/** @throw GdxRuntimeException if this file handle is a {@link FileType#Classpath} or {@link FileType#Internal} file. */
-	public void mkdirs () {
+	public boolean mkdirs () {
 		if (type == FileType.Classpath) throw new GdxRuntimeException("Cannot mkdirs with a classpath file: " + file);
 		if (type == FileType.Internal) throw new GdxRuntimeException("Cannot mkdirs with an internal file: " + file);
-		file().mkdirs();
+		return file().mkdirs();
 	}
 
 	/** Returns true if the file exists. On Android, a {@link FileType#Classpath} or {@link FileType#Internal} handle to a directory
