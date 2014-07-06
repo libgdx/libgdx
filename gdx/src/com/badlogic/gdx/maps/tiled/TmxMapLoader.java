@@ -17,9 +17,6 @@
 package com.badlogic.gdx.maps.tiled;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
@@ -359,7 +356,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
-			HashMap<Integer, AnimatedTiledMapTile> animatedTiles = new HashMap<Integer, AnimatedTiledMapTile>();
+			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
 
 			for (Element tileElement : tileElements) {
 				int localtid = tileElement.getIntAttribute("id", 0);
@@ -378,7 +375,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 
 						AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(interval, staticTiles);
 						animatedTile.setId(tile.getId());
-						animatedTiles.put(tile.getId(), animatedTile);
+						animatedTiles.add(animatedTile);
 						tile = animatedTile;
 					}
 
@@ -397,8 +394,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				}
 			}
 
-			for (Entry<Integer, AnimatedTiledMapTile> entry : animatedTiles.entrySet()) {
-				tileset.putTile(entry.getKey(), entry.getValue());
+			for (AnimatedTiledMapTile tile : animatedTiles) {
+				tileset.putTile(tile.getId(), tile);
 			}
 
 			Element properties = element.getChildByName("properties");
