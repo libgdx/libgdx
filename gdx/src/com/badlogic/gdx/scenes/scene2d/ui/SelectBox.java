@@ -112,28 +112,26 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return style;
 	}
 
+	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
-
 		items.clear();
 		items.addAll(newItems);
-
 		scroll.list.setItems(items);
-
 		invalidateHierarchy();
 	}
 
+	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
-
 		items.clear();
 		items.addAll(newItems);
-
 		scroll.list.setItems(items);
-
 		invalidateHierarchy();
 	}
 
+	/** Retrieve the backing Array that makes up the chocies available in the SelectBox
+	 * @see SelectBox#setItems(Array)  */
 	public Array<T> getItems () {
 		return items;
 	}
@@ -201,16 +199,19 @@ public class SelectBox<T> extends Widget implements Disableable {
 		}
 	}
 
+	/** Get the set of selected items, useful when multiple items are selected
+	 * @return a Selection object containing the selected elements
+	 * */
 	public Selection<T> getSelection () {
 		return selection;
 	}
 
-	/** Returns the first selected item, or null. */
+	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}*/
 	public T getSelected () {
 		return selection.first();
 	}
 
-	/** Sets the selection to only the item if found, else selects the first item. */
+	/** Sets the selection to only the passed item, if it is a possible choice, else selects the first item. */
 	public void setSelected (T item) {
 		if (items.contains(item, false))
 			selection.set(item);
@@ -322,8 +323,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
 			float itemHeight = list.getItemHeight();
 			float height = itemHeight * (maxListCount <= 0 ? items.size : Math.min(maxListCount, items.size));
-			Drawable background = getStyle().background;
-			if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+			Drawable scrollPaneBackground = getStyle().background;
+			if (scrollPaneBackground != null) height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
+			Drawable listBackground = list.getStyle().background;
+			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();

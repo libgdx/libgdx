@@ -152,10 +152,8 @@ public class LwjglGraphics implements Graphics {
 		Display.setInitialBackground(config.initialBackgroundColor.r, config.initialBackgroundColor.g,
 			config.initialBackgroundColor.b);
 
-		if (config.x != -1 && config.y != -1) Display.setLocation(config.x, config.y);
+		Display.setLocation(config.x, config.y);
 		createDisplayPixelFormat();
-		config.x = Display.getX();
-		config.y = Display.getY();
 		initiateGLInstances();
 	}
 

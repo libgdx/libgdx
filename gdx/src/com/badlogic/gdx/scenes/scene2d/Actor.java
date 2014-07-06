@@ -84,9 +84,13 @@ public class Actor {
 		for (int i = 0; i < actions.size; i++) {
 			Action action = actions.get(i);
 			if (action.act(delta) && i < actions.size) {
-				actions.removeIndex(i);
-				action.setActor(null);
-				i--;
+				Action current = actions.get(i);
+				int actionIndex = current == action ? i : actions.indexOf(action, true);
+				if (actionIndex != -1) {
+					actions.removeIndex(actionIndex);
+					action.setActor(null);
+					i--;
+				}
 			}
 		}
 	}
@@ -340,6 +344,7 @@ public class Actor {
 		this.visible = visible;
 	}
 
+	/** Retrieves application specific object for convenience. */
 	public Object getUserObject () {
 		return userObject;
 	}
@@ -349,6 +354,7 @@ public class Actor {
 		this.userObject = userObject;
 	}
 
+	/** Get the X position of the actor (left edge of actor) */
 	public float getX () {
 		return x;
 	}
@@ -357,6 +363,7 @@ public class Actor {
 		this.x = x;
 	}
 
+	/** Get the Y position of the actor (bottom edge of actor) */
 	public float getY () {
 		return y;
 	}
@@ -365,12 +372,27 @@ public class Actor {
 		this.y = y;
 	}
 
-	/** Sets the x and y. */
+	/** Set position of Actor to x, y (using bottom left corner of Actor) */
 	public void setPosition (float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 
+	/** Set position of Actor centered on x, y */
+	public void setCenterPosition(float x, float y) {
+		this.x = x - width / 2;
+		this.y = y - height / 2;
+	}
+
+	public float getCenterX() {
+		return this.x + width / 2;
+	}
+
+	public float getCenterY() {
+		return this.y + height / 2;
+	}
+
+	/** Add x and y to current position */
 	public void moveBy (float x, float y) {
 		this.x += x;
 		this.y += y;
@@ -460,7 +482,7 @@ public class Actor {
 		this.originY = originY;
 	}
 
-	/** Sets the originx and originy. */
+	/** Sets the origin X and origin Y. */
 	public void setOrigin (float originX, float originY) {
 		this.originX = originX;
 		this.originY = originY;
@@ -482,13 +504,13 @@ public class Actor {
 		this.scaleY = scaleY;
 	}
 
-	/** Sets the scalex and scaley. */
+	/** Sets the scale for both X and Y */
 	public void setScale (float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;
 	}
 
-	/** Sets the scalex and scaley. */
+	/** Sets the scale X and scale Y. */
 	public void setScale (float scaleX, float scaleY) {
 		this.scaleX = scaleX;
 		this.scaleY = scaleY;
@@ -532,6 +554,8 @@ public class Actor {
 		return color;
 	}
 
+	/** Retrieve custom actor name set with {@link Actor#setName(String)},
+	 * used for easier identification */
 	public String getName () {
 		return name;
 	}

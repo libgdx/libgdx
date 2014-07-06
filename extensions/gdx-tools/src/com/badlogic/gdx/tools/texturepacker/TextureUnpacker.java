@@ -169,13 +169,19 @@ public class TextureUnpacker {
 		g2.setColor(Color.BLACK);
 
 		// Draw the four lines to save the ninepatch's padding and splits
-		g2.drawLine(region.splits[0] + NINEPATCH_PADDING, 0, region.width - region.splits[1] + NINEPATCH_PADDING - 1, 0);
-		g2.drawLine(0, region.splits[2] + NINEPATCH_PADDING, 0, region.height - region.splits[3] + NINEPATCH_PADDING - 1);
+		int startX = region.splits[0] + NINEPATCH_PADDING;
+		int endX = region.width - region.splits[1] + NINEPATCH_PADDING - 1;
+		int startY = region.splits[2] + NINEPATCH_PADDING;
+		int endY = region.height - region.splits[3] + NINEPATCH_PADDING - 1;
+		if (endX >= startX) g2.drawLine(startX, 0, endX, 0);
+		if (endY >= startY) g2.drawLine(0, startY, 0, endY);
 		if (region.pads != null) {
-			g2.drawLine(region.pads[0] + NINEPATCH_PADDING, splitImage.getHeight() - 1, splitImage.getWidth() - region.pads[1]
-				+ NINEPATCH_PADDING - 1, splitImage.getHeight() - 1);
-			g2.drawLine(splitImage.getWidth() - 1, region.pads[2] + NINEPATCH_PADDING, splitImage.getWidth() - 1,
-				splitImage.getHeight() - region.pads[3] + NINEPATCH_PADDING - 1);
+			int padStartX = region.pads[0] + NINEPATCH_PADDING;
+			int padEndX = region.width - region.pads[1] + NINEPATCH_PADDING - 1;
+			int padStartY = region.pads[2] + NINEPATCH_PADDING;
+			int padEndY = region.height - region.pads[3] + NINEPATCH_PADDING - 1;
+			g2.drawLine(padStartX, splitImage.getHeight() - 1, padEndX, splitImage.getHeight() - 1);
+			g2.drawLine(splitImage.getWidth() - 1, padStartY, splitImage.getWidth() - 1, padEndY);
 		}
 		g2.dispose();
 

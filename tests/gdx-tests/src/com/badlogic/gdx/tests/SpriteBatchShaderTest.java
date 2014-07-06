@@ -47,7 +47,7 @@ public class SpriteBatchShaderTest extends GdxTest {
 
 	@Override
 	public void render () {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 		gl.glClearColor(0.7f, 0.7f, 0.7f, 1);
 		gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
