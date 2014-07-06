@@ -84,9 +84,13 @@ public class Actor {
 		for (int i = 0; i < actions.size; i++) {
 			Action action = actions.get(i);
 			if (action.act(delta) && i < actions.size) {
-				actions.removeIndex(i);
-				action.setActor(null);
-				i--;
+				Action current = actions.get(i);
+				int actionIndex = current == action ? i : actions.indexOf(action, true);
+				if (actionIndex != -1) {
+					actions.removeIndex(actionIndex);
+					action.setActor(null);
+					i--;
+				}
 			}
 		}
 	}
@@ -500,7 +504,7 @@ public class Actor {
 		this.scaleY = scaleY;
 	}
 
-	/** Sets the scale X and scale X. */
+	/** Sets the scale for both X and Y */
 	public void setScale (float scaleXY) {
 		this.scaleX = scaleXY;
 		this.scaleY = scaleXY;

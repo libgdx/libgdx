@@ -1,4 +1,5 @@
 [1.2.1]
+- API Addition: added FreeTypeFontLoader so you can transparently load BitmapFonts generated through gdx-freetype via AssetManager, see https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/FreeTypeFontLoaderTest.java
 - Preferences put methods now return "this" for chaining
 - Fixed issue 2048 where MessageDispatcher was dispatching delayed messages immediately.
 - API Addition: 3d particle system and accompanying editor, contributed by lordjone, see https://github.com/libgdx/libgdx/pull/2005
