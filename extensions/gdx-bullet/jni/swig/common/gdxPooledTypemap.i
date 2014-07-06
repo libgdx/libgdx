@@ -111,7 +111,6 @@
 	gdx_set##JTYPE##From##CTYPE(jenv, $input, $1);
 	gdxAutoCommit##CTYPE##AndRelease##JTYPE auto_commit_$1(jenv, $input, &$1, TOSTRING##JTYPE(pool##JTYPE));
 }
-
 %typemap(out, fragment="gdxBulletHelpers##JTYPE", noblock=1)		CTYPE, CTYPE &, const CTYPE &	{
 	$result = gdx_getReturn##JTYPE(jenv);
 	gdx_set##JTYPE##From##CTYPE(jenv, $result, $1);
