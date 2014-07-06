@@ -19,7 +19,10 @@ package com.badlogic.gdx.maps.tiled.tiles;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.LongArray;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.TimeUtils;
 
@@ -36,8 +39,9 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private Array<StaticTiledMapTile> frameTiles;
 
-	private float animationInterval;
+	private LongArray animationIntervals;
 	private long frameCount = 0;
+	private long loopDuration;
 	private static final long initialTimeOffset = TimeUtils.millis();
 
 	@Override
@@ -60,16 +64,26 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 		this.blendMode = blendMode;
 	}
 
+	private TiledMapTile getCurrentFrame() {
+		long currentTime = lastTiledMapRenderTime % loopDuration;
+
+		for (int i = 0; i < animationIntervals.size; ++i){
+			long animationInterval = animationIntervals.get(i);
+			if (currentTime<=animationInterval) return frameTiles.get(i);
+			currentTime -= animationInterval;
+		}
+
+        throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+	}
+
 	@Override
 	public TextureRegion getTextureRegion () {
-		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
-		return frameTiles.get((int)currentFrame).getTextureRegion();
+		return getCurrentFrame().getTextureRegion();
 	}
 
 	@Override
 	public float getOffsetX () {
-		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
-		return frameTiles.get((int)currentFrame).getOffsetX();
+		return getCurrentFrame().getOffsetX();
 	}
 
 	@Override
@@ -79,8 +93,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	@Override
 	public float getOffsetY () {
-		long currentFrame = (lastTiledMapRenderTime / (long)(animationInterval * 1000f)) % frameCount;
-		return frameTiles.get((int)currentFrame).getOffsetY();
+		return getCurrentFrame().getOffsetY();
 	}
 
 	@Override
@@ -108,8 +121,29 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
 	public AnimatedTiledMapTile (float interval, Array<StaticTiledMapTile> frameTiles) {
 		this.frameTiles = frameTiles;
-		this.animationInterval = interval;
 		this.frameCount = frameTiles.size;
+
+		this.loopDuration = (long)(frameTiles.size * interval * 1000f);
+		this.animationIntervals = new LongArray();
+		for (StaticTiledMapTile tile: frameTiles){
+			this.animationIntervals.add((long)(interval * 1000f));
+		}
+	}
+
+	/** Creates an animated tile with the given animation intervals and frame tiles.
+	 *
+	 * @param intervals The intervals between each individual frame tile in milliseconds.
+	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
+	public AnimatedTiledMapTile (LongArray intervals, Array<StaticTiledMapTile> frameTiles) {
+		this.frameTiles = frameTiles;
+		this.frameCount = frameTiles.size;
+
+		this.animationIntervals = intervals;
+		this.loopDuration = 0;
+
+		for (int i = 0; i < intervals.size; ++i){
+			this.loopDuration += intervals.get(i);
+		}
 	}
 
 }
