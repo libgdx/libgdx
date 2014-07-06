@@ -368,7 +368,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					if (animationElement != null) {
 
 						Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
-                        LongArray intervals = new LongArray();
+						LongArray intervals = new LongArray();
 						for (Element frameElement: animationElement.getChildrenByName("frame")) {
 							staticTiles.add((StaticTiledMapTile) tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));
 							intervals.add(frameElement.getIntAttribute("duration"));
