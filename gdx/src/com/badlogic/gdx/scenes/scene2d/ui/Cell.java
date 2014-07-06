@@ -17,6 +17,7 @@ public class Cell<T extends Actor> implements Poolable {
 	Float fillX, fillY;
 	Integer align;
 	Integer expandX, expandY;
+	Boolean ignore;
 	Integer colspan;
 	Boolean uniformX, uniformY;
 
@@ -54,6 +55,7 @@ public class Cell<T extends Actor> implements Poolable {
 		align = defaults.align;
 		expandX = defaults.expandX;
 		expandY = defaults.expandY;
+		ignore = defaults.ignore;
 		colspan = defaults.colspan;
 		uniformX = defaults.uniformX;
 		uniformY = defaults.uniformY;
@@ -80,6 +82,7 @@ public class Cell<T extends Actor> implements Poolable {
 		if (cell.align != null) align = cell.align;
 		if (cell.expandX != null) expandX = cell.expandX;
 		if (cell.expandY != null) expandY = cell.expandY;
+		if (cell.ignore != null) ignore = cell.ignore;
 		if (cell.colspan != null) colspan = cell.colspan;
 		if (cell.uniformX != null) uniformX = cell.uniformX;
 		if (cell.uniformY != null) uniformY = cell.uniformY;
@@ -591,6 +594,21 @@ public class Cell<T extends Actor> implements Poolable {
 		expandY = y ? 1 : 0;
 		return this;
 	}
+	
+	public Cell<T> ignore (Boolean ignore) {
+		this.ignore = ignore;
+		return this;
+	}
+
+	/** Sets ignore to true. */
+	public Cell<T> ignore () {
+		this.ignore = true;
+		return this;
+	}
+
+	public boolean getIgnore () {
+		return ignore != null && ignore == true;
+	}
 
 	public Cell<T> colspan (Integer colspan) {
 		this.colspan = colspan;
@@ -899,6 +917,7 @@ public class Cell<T extends Actor> implements Poolable {
 		align = null;
 		expandX = null;
 		expandY = null;
+		ignore = null;
 		colspan = null;
 		uniformX = null;
 		uniformY = null;
@@ -933,6 +952,7 @@ public class Cell<T extends Actor> implements Poolable {
 		align = Align.center;
 		expandX = 0;
 		expandY = 0;
+		ignore = false;
 		colspan = 1;
 		uniformX = null;
 		uniformY = null;
