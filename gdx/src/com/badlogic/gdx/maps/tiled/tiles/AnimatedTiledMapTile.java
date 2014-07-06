@@ -37,9 +37,9 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 
 	private MapProperties properties;
 
-	private Array<StaticTiledMapTile> frameTiles;
+	private StaticTiledMapTile[] frameTiles;
 
-	private LongArray animationIntervals;
+	private long[] animationIntervals;
 	private long frameCount = 0;
 	private long loopDuration;
 	private static final long initialTimeOffset = TimeUtils.millis();
@@ -67,9 +67,9 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	private TiledMapTile getCurrentFrame() {
 		long currentTime = lastTiledMapRenderTime % loopDuration;
 
-		for (int i = 0; i < animationIntervals.size; ++i){
-			long animationInterval = animationIntervals.get(i);
-			if (currentTime<=animationInterval) return frameTiles.get(i);
+		for (int i = 0; i < animationIntervals.length; ++i){
+			long animationInterval = animationIntervals[i];
+			if (currentTime<=animationInterval) return frameTiles[i];
 			currentTime -= animationInterval;
 		}
 
@@ -120,13 +120,14 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	 * @param interval The interval between each individual frame tile.
 	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
 	public AnimatedTiledMapTile (float interval, Array<StaticTiledMapTile> frameTiles) {
-		this.frameTiles = frameTiles;
+		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 
 		this.loopDuration = (long)(frameTiles.size * interval * 1000f);
-		this.animationIntervals = new LongArray();
-		for (StaticTiledMapTile tile: frameTiles){
-			this.animationIntervals.add((long)(interval * 1000f));
+		this.animationIntervals = new long[frameTiles.size];
+		for (int i = 0; i < frameTiles.size; ++i){
+			this.frameTiles[i] = frameTiles.get(i);
+			this.animationIntervals[i] = (long)(interval * 1000f);
 		}
 	}
 
@@ -135,13 +136,14 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	 * @param intervals The intervals between each individual frame tile in milliseconds.
 	 * @param frameTiles An array of {@link StaticTiledMapTile}s that make up the animation. */
 	public AnimatedTiledMapTile (LongArray intervals, Array<StaticTiledMapTile> frameTiles) {
-		this.frameTiles = frameTiles;
+		this.frameTiles = new StaticTiledMapTile[frameTiles.size];
 		this.frameCount = frameTiles.size;
 
-		this.animationIntervals = intervals;
+		this.animationIntervals = intervals.toArray();
 		this.loopDuration = 0;
 
 		for (int i = 0; i < intervals.size; ++i){
+			this.frameTiles[i] = frameTiles.get(i);
 			this.loopDuration += intervals.get(i);
 		}
 	}
