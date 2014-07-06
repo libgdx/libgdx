@@ -73,7 +73,7 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 			currentTime -= animationInterval;
 		}
 
-        throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
+		throw new GdxRuntimeException("Could not determine current animation frame in AnimatedTiledMapTile.  This should never happen.");
 	}
 
 	@Override
