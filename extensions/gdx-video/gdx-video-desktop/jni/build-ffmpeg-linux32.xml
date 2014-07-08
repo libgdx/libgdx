@@ -31,7 +31,7 @@
 			<env key="CFLAGS" value="-m32"/>
 			<env key="CXXFLAGS" value="-m32"/>
 			<env key="LDFLAGS" value="-m32"/>
-			<arg line="--prefix=${libsDir} --enable-shared --disable-static --disable-everything --enable-protocol=file --enable-filter=aresample --enable-demuxer=ogg --enable-decoder=vorbis --enable-decoder=theora"/>
+			<arg line="--enable-cross-compile --disable-htmlpages --arch=i686 --target-os=linux --prefix=${libsDir} --enable-shared --disable-static --disable-everything --enable-protocol=file --enable-filter=aresample --enable-demuxer=ogg --enable-decoder=vorbis --enable-decoder=theora"/>
 		</exec>
 		<exec executable="make" failonerror="true" dir="${buildDir}"/>
 		<exec executable="make" failonerror="true" dir="${buildDir}">

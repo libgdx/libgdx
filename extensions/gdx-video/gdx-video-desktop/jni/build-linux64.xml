@@ -40,8 +40,9 @@
 	<!-- define linker and options -->
 	<property name="linker" value="${compilerPrefix}g++${compilerSuffix}"/>
 	<property name="linker-opts" value="-shared -m64 -Wl,-wrap,memcpy"/>
-	<property name="libraries" value="-Lffmpeg/libs/linux64/lib/ -lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread"/>
-	
+	<property name="libraries" value="-L../../ffmpeg/libs/linux64/lib/ -lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread"/>
+	<property name="includes" value="-Iffmpeg/libs/linux64/include/"/>
+
 	<!-- cleans the build directory, removes all object files and shared libs -->
 	<target name="clean">
 		<delete includeemptydirs="true" quiet="true">
@@ -92,6 +93,7 @@
 			<arg line="${g++-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
+            <arg value="${includes}" />
 			<arg value="-I."/>
 			
 			<srcfile/>
@@ -107,6 +109,7 @@
 			<arg line="${gcc-opts}"/>
 			<arg value="-Ijni-headers"/>
 			<arg value="-Ijni-headers/${jniPlatform}"/>
+            <arg value="${includes}" />
 			<arg value="-I."/>
 			
 			<srcfile/>
