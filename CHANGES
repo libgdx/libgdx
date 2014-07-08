@@ -1,5 +1,5 @@
 [1.2.1]
-- Updated to Android API level 19 and build tools 19.1.0
+- Updated to Android API level 19 and build tools 19.1.0 which will require the latest Eclipse ADT 23.02, see http://stackoverflow.com/questions/24437564/update-eclipse-with-android-development-tools-23 for how things are broken this time...
 - Updated to RoboVM 0.0.14 and RoboVM Gradle plugin version 0.0.10
 - API Addition: added FreeTypeFontLoader so you can transparently load BitmapFonts generated through gdx-freetype via AssetManager, see https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/FreeTypeFontLoaderTest.java
 - Preferences put methods now return "this" for chaining
