@@ -1,4 +1,6 @@
 [1.2.1]
+- Updated to Android API level 19 and build tools 19.1.0
+- Updated to RoboVM 0.0.14 and RoboVM Gradle plugin version 0.0.10
 - API Addition: added FreeTypeFontLoader so you can transparently load BitmapFonts generated through gdx-freetype via AssetManager, see https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/FreeTypeFontLoaderTest.java
 - Preferences put methods now return "this" for chaining
 - Fixed issue 2048 where MessageDispatcher was dispatching delayed messages immediately.
