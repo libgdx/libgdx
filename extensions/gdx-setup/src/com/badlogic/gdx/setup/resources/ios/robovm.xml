@@ -18,16 +18,16 @@
     </resource>
   </resources>
   <forceLinkClasses>
-    <pattern>com.badlogic.gdx.scenes.scene2d.ui.*</pattern>
-    <pattern>org.apache.harmony.xnet.provider.jsse.OpenSSLProvider</pattern>
+    <pattern>com.android.org.conscrypt.OpenSSLProvider</pattern>
     <pattern>org.apache.harmony.security.provider.cert.DRLCertFactory</pattern>
     <pattern>com.android.org.bouncycastle.jce.provider.BouncyCastleProvider</pattern>
     <pattern>org.apache.harmony.security.provider.crypto.CryptoProvider</pattern>
-    <pattern>org.apache.harmony.xnet.provider.jsse.JSSEProvider</pattern>
-    <pattern>com.android.org.bouncycastle.jce.provider.JDKKeyStore</pattern>
+    <pattern>com.android.org.conscrypt.JSSEProvider</pattern>
     <pattern>org.apache.harmony.security.provider.cert.X509CertFactoryImpl</pattern>
     <pattern>com.android.org.bouncycastle.jce.provider.PKIXCertPathValidatorSpi</pattern>
-    <pattern>org.apache.harmony.xnet.provider.jsse.OpenSSLMessageDigestJDK$MD5</pattern>
+    <pattern>com.android.org.conscrypt.OpenSSLMessageDigestJDK$MD5</pattern>
+    <pattern>com.android.okhttp.HttpHandler</pattern>
+    <pattern>com.android.okhttp.HttpsHandler</pattern>
   </forceLinkClasses>
   <libs>      
   </libs>
