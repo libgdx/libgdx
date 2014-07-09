@@ -23,12 +23,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect;
 import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
+import com.badlogic.gdx.tools.hiero.unicodefont.effects.Effect;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** Holds the settings needed to configure a UnicodeFont.
@@ -40,8 +40,7 @@ public class HieroSettings {
 	private int paddingTop, paddingLeft, paddingBottom, paddingRight, paddingAdvanceX, paddingAdvanceY;
 	private int glyphPageWidth = 512, glyphPageHeight = 512;
 	private String glyphText = "";
-	private final List effects = new ArrayList();
-	private boolean nativeRendering;
+	private final List<Effect> effects = new ArrayList<Effect>();
 
 	public HieroSettings () {
 	}
@@ -82,13 +81,11 @@ public class HieroSettings {
 					glyphPageWidth = Integer.parseInt(value);
 				} else if (name.equals("glyph.page.height")) {
 					glyphPageHeight = Integer.parseInt(value);
-				} else if (name.equals("glyph.native.rendering")) {
-					nativeRendering = Boolean.parseBoolean(value);
 				} else if (name.equals("glyph.text")) {
 					glyphText = value;
 				} else if (name.equals("effect.class")) {
 					try {
-						effects.add(Class.forName(value).newInstance());
+						effects.add((Effect)Class.forName(value).newInstance());
 					} catch (Throwable ex) {
 						throw new GdxRuntimeException("Unable to create effect instance: " + value, ex);
 					}
@@ -96,9 +93,8 @@ public class HieroSettings {
 					// Set an effect value on the last added effect.
 					name = name.substring(7);
 					ConfigurableEffect effect = (ConfigurableEffect)effects.get(effects.size() - 1);
-					List values = effect.getValues();
-					for (Iterator iter = values.iterator(); iter.hasNext();) {
-						Value effectValue = (Value)iter.next();
+					List<Value> values = effect.getValues();
+					for (Value effectValue : values) {
 						if (effectValue.getName().equals(name)) {
 							effectValue.setString(value);
 							break;
@@ -192,16 +188,16 @@ public class HieroSettings {
 	public void setGlyphPageHeight (int glyphPageHeight) {
 		this.glyphPageHeight = glyphPageHeight;
 	}
-	
+
 	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
 	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
-	public String getFontName() {
+	public String getFontName () {
 		return fontName;
 	}
-	
+
 	/** @see UnicodeFont#UnicodeFont(String, int, boolean, boolean)
 	 * @see UnicodeFont#UnicodeFont(java.awt.Font, int, boolean, boolean) */
-	public void setFontName(String fontName) {
+	public void setFontName (String fontName) {
 		this.fontName = fontName;
 	}
 
@@ -242,16 +238,8 @@ public class HieroSettings {
 	}
 
 	/** @see UnicodeFont#getEffects() */
-	public List getEffects () {
+	public List<Effect> getEffects () {
 		return effects;
-	}
-
-	public boolean getNativeRendering () {
-		return nativeRendering;
-	}
-
-	public void setNativeRendering (boolean nativeRendering) {
-		this.nativeRendering = nativeRendering;
 	}
 
 	public String getGlyphText () {
@@ -278,19 +266,19 @@ public class HieroSettings {
 		out.println("pad.advance.x=" + paddingAdvanceX);
 		out.println("pad.advance.y=" + paddingAdvanceY);
 		out.println();
-		out.println("glyph.native.rendering=" + nativeRendering);
 		out.println("glyph.page.width=" + glyphPageWidth);
 		out.println("glyph.page.height=" + glyphPageHeight);
 		out.println("glyph.text=" + glyphText);
 		out.println();
-		for (Iterator iter = effects.iterator(); iter.hasNext();) {
-			ConfigurableEffect effect = (ConfigurableEffect)iter.next();
+		for (Effect effect : effects) {
 			out.println("effect.class=" + effect.getClass().getName());
-			for (Iterator iter2 = effect.getValues().iterator(); iter2.hasNext();) {
-				Value value = (Value)iter2.next();
-				out.println("effect." + value.getName() + "=" + value.getString());
+			// If configurable effect, save its fields
+			if (effect instanceof ConfigurableEffect) {
+				for (Value value : ((ConfigurableEffect)effect).getValues()) {
+					out.println("effect." + value.getName() + "=" + value.getString());
+				}
+				out.println();
 			}
-			out.println();
 		}
 		out.close();
 	}

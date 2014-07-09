@@ -16,9 +16,7 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -46,7 +44,7 @@ public class GlyphPage {
 	private final Texture texture;
 	private int pageX, pageY, rowHeight;
 	private boolean orderAscending;
-	private final List pageGlyphs = new ArrayList(32);
+	private final List<Glyph> pageGlyphs = new ArrayList<Glyph>(32);
 
 	/** @param pageWidth The width of the backing texture.
 	 * @param pageHeight The height of the backing texture. */
@@ -66,7 +64,7 @@ public class GlyphPage {
 	 * @param maxGlyphsToLoad This is the maximum number of glyphs to load from the list. Set to -1 to attempt to load all the
 	 *           glyphs.
 	 * @return The number of glyphs that were actually loaded. */
-	int loadGlyphs (List glyphs, int maxGlyphsToLoad) {
+	int loadGlyphs (List<Glyph> glyphs, int maxGlyphsToLoad) {
 		if (rowHeight != 0 && maxGlyphsToLoad == -1) {
 			// If this page has glyphs and we are not loading incrementally, return zero if any of the glyphs don't fit.
 			int testX = pageX;
@@ -140,8 +138,7 @@ public class GlyphPage {
 		scratchGraphics.fillRect(0, 0, MAX_GLYPH_SIZE, MAX_GLYPH_SIZE);
 		scratchGraphics.setComposite(AlphaComposite.SrcOver);
 		if (unicodeFont.getNativeRendering()) {
-			for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();) {
-				Effect effect = (Effect)iter.next();
+			for (Effect effect : unicodeFont.getEffects()) {
 				if (effect instanceof ColorEffect) scratchGraphics.setColor(((ColorEffect)effect).getColor());
 			}
 			scratchGraphics.setColor(java.awt.Color.white);
@@ -149,8 +146,8 @@ public class GlyphPage {
 			scratchGraphics.drawString("" + (char)glyph.getCodePoint(), 0, unicodeFont.getAscent());
 		} else {
 			scratchGraphics.setColor(java.awt.Color.white);
-			for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();)
-				((Effect)iter.next()).draw(scratchImage, scratchGraphics, unicodeFont, glyph);
+			for (Effect effect : unicodeFont.getEffects())
+				(effect).draw(scratchImage, scratchGraphics, unicodeFont, glyph);
 			glyph.setShape(null); // The shape will never be needed again.
 		}
 
@@ -175,15 +172,15 @@ public class GlyphPage {
 	}
 
 	/** Returns an iterator for the specified glyphs, sorted either ascending or descending. */
-	private Iterator getIterator (List glyphs) {
+	private Iterator<Glyph> getIterator (List<Glyph> glyphs) {
 		if (orderAscending) return glyphs.iterator();
-		final ListIterator iter = glyphs.listIterator(glyphs.size());
-		return new Iterator() {
+		final ListIterator<Glyph> iter = glyphs.listIterator(glyphs.size());
+		return new Iterator<Glyph>() {
 			public boolean hasNext () {
 				return iter.hasPrevious();
 			}
 
-			public Object next () {
+			public Glyph next () {
 				return iter.previous();
 			}
 
@@ -194,7 +191,7 @@ public class GlyphPage {
 	}
 
 	/** Returns the glyphs stored on this page. */
-	public List getGlyphs () {
+	public List<Glyph> getGlyphs () {
 		return pageGlyphs;
 	}
 

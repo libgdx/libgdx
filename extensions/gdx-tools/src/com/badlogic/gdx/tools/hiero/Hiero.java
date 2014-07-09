@@ -16,20 +16,27 @@
 
 package com.badlogic.gdx.tools.hiero;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.LayoutManager;
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
+import com.badlogic.gdx.tools.hiero.unicodefont.HieroSettings;
+import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
+import com.badlogic.gdx.tools.hiero.unicodefont.effects.*;
+import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
+import org.lwjgl.opengl.GL11;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -42,66 +49,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
-
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.JWindow;
-import javax.swing.KeyStroke;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.lwjgl.opengl.GL11;
-
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.lwjgl.LwjglCanvas;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.tools.hiero.unicodefont.GlyphPage;
-import com.badlogic.gdx.tools.hiero.unicodefont.HieroSettings;
-import com.badlogic.gdx.tools.hiero.unicodefont.UnicodeFont;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.ColorEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.ConfigurableEffect.Value;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.DistanceFieldEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.EffectUtil;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.GradientEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineWobbleEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.OutlineZigzagEffect;
-import com.badlogic.gdx.tools.hiero.unicodefont.effects.ShadowEffect;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -220,7 +169,7 @@ public class Hiero extends JFrame {
 	private void updateFont (boolean ignoreFileText) {
 		UnicodeFont unicodeFont;
 
-		int fontSize = ((Integer)fontSizeSpinner.getValue()).intValue();
+		int fontSize = (Integer)fontSizeSpinner.getValue();
 
 		File file = new File(fontFileText.getText());
 		if (!ignoreFileText && file.exists() && file.isFile()) {
@@ -244,18 +193,17 @@ public class Hiero extends JFrame {
 			unicodeFont = new UnicodeFont(Font.decode((String)fontList.getSelectedValue()), fontSize, boldCheckBox.isSelected(),
 				italicCheckBox.isSelected());
 		}
-		unicodeFont.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
-		unicodeFont.setPaddingRight(((Integer)padRightSpinner.getValue()).intValue());
-		unicodeFont.setPaddingBottom(((Integer)padBottomSpinner.getValue()).intValue());
-		unicodeFont.setPaddingLeft(((Integer)padLeftSpinner.getValue()).intValue());
-		unicodeFont.setPaddingAdvanceX(((Integer)padAdvanceXSpinner.getValue()).intValue());
-		unicodeFont.setPaddingAdvanceY(((Integer)padAdvanceYSpinner.getValue()).intValue());
-		unicodeFont.setGlyphPageWidth(((Integer)glyphPageWidthCombo.getSelectedItem()).intValue());
-		unicodeFont.setGlyphPageHeight(((Integer)glyphPageHeightCombo.getSelectedItem()).intValue());
+		unicodeFont.setPaddingTop((Integer)padTopSpinner.getValue());
+		unicodeFont.setPaddingRight((Integer)padRightSpinner.getValue());
+		unicodeFont.setPaddingBottom((Integer)padBottomSpinner.getValue());
+		unicodeFont.setPaddingLeft((Integer)padLeftSpinner.getValue());
+		unicodeFont.setPaddingAdvanceX((Integer)padAdvanceXSpinner.getValue());
+		unicodeFont.setPaddingAdvanceY((Integer)padAdvanceYSpinner.getValue());
+		unicodeFont.setGlyphPageWidth((Integer)glyphPageWidthCombo.getSelectedItem());
+		unicodeFont.setGlyphPageHeight((Integer)glyphPageHeightCombo.getSelectedItem());
 		unicodeFont.setNativeRendering(nativeRadio.isSelected());
 
-		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
-			EffectPanel panel = (EffectPanel)iter.next();
+		for (EffectPanel panel : effectPanels) {
 			unicodeFont.getEffects().add(panel.getEffect());
 		}
 
@@ -269,56 +217,57 @@ public class Hiero extends JFrame {
 	void save (File file) throws IOException {
 		HieroSettings settings = new HieroSettings();
 		settings.setFontName((String)fontList.getSelectedValue());
-		settings.setFontSize(((Integer)fontSizeSpinner.getValue()).intValue());
+		settings.setFontSize((Integer)fontSizeSpinner.getValue());
 		settings.setBold(boldCheckBox.isSelected());
 		settings.setItalic(italicCheckBox.isSelected());
-		settings.setPaddingTop(((Integer)padTopSpinner.getValue()).intValue());
-		settings.setPaddingRight(((Integer)padRightSpinner.getValue()).intValue());
-		settings.setPaddingBottom(((Integer)padBottomSpinner.getValue()).intValue());
-		settings.setPaddingLeft(((Integer)padLeftSpinner.getValue()).intValue());
-		settings.setPaddingAdvanceX(((Integer)padAdvanceXSpinner.getValue()).intValue());
-		settings.setPaddingAdvanceY(((Integer)padAdvanceYSpinner.getValue()).intValue());
-		settings.setGlyphPageWidth(((Integer)glyphPageWidthCombo.getSelectedItem()).intValue());
-		settings.setGlyphPageHeight(((Integer)glyphPageHeightCombo.getSelectedItem()).intValue());
+		settings.setPaddingTop((Integer)padTopSpinner.getValue());
+		settings.setPaddingRight((Integer)padRightSpinner.getValue());
+		settings.setPaddingBottom((Integer)padBottomSpinner.getValue());
+		settings.setPaddingLeft((Integer)padLeftSpinner.getValue());
+		settings.setPaddingAdvanceX((Integer)padAdvanceXSpinner.getValue());
+		settings.setPaddingAdvanceY((Integer)padAdvanceYSpinner.getValue());
+		settings.setGlyphPageWidth((Integer)glyphPageWidthCombo.getSelectedItem());
+		settings.setGlyphPageHeight((Integer)glyphPageHeightCombo.getSelectedItem());
 		settings.setGlyphText(sampleTextPane.getText());
-		for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
-			EffectPanel panel = (EffectPanel)iter.next();
+		for (EffectPanel panel : effectPanels) {
 			settings.getEffects().add(panel.getEffect());
 		}
 		settings.save(file);
 	}
 
 	void open (File file) {
-		EffectPanel[] panels = (EffectPanel[])effectPanels.toArray(new EffectPanel[effectPanels.size()]);
-		for (int i = 0; i < panels.length; i++)
-			panels[i].remove();
+		EffectPanel[] panels = effectPanels.toArray(new EffectPanel[effectPanels.size()]);
+		for (EffectPanel panel : panels)
+			panel.remove();
 
 		HieroSettings settings = new HieroSettings(file.getAbsolutePath());
 		fontList.setSelectedValue(settings.getFontName(), true);
-		fontSizeSpinner.setValue(new Integer(settings.getFontSize()));
+		fontSizeSpinner.setValue(settings.getFontSize());
 		boldCheckBox.setSelected(settings.isBold());
 		italicCheckBox.setSelected(settings.isItalic());
-		padTopSpinner.setValue(new Integer(settings.getPaddingTop()));
-		padRightSpinner.setValue(new Integer(settings.getPaddingRight()));
-		padBottomSpinner.setValue(new Integer(settings.getPaddingBottom()));
-		padLeftSpinner.setValue(new Integer(settings.getPaddingLeft()));
-		padAdvanceXSpinner.setValue(new Integer(settings.getPaddingAdvanceX()));
-		padAdvanceYSpinner.setValue(new Integer(settings.getPaddingAdvanceY()));
-		glyphPageWidthCombo.setSelectedItem(new Integer(settings.getGlyphPageWidth()));
-		glyphPageHeightCombo.setSelectedItem(new Integer(settings.getGlyphPageHeight()));
+		padTopSpinner.setValue(settings.getPaddingTop());
+		padRightSpinner.setValue(settings.getPaddingRight());
+		padBottomSpinner.setValue(settings.getPaddingBottom());
+		padLeftSpinner.setValue(settings.getPaddingLeft());
+		padAdvanceXSpinner.setValue(settings.getPaddingAdvanceX());
+		padAdvanceYSpinner.setValue(settings.getPaddingAdvanceY());
+		glyphPageWidthCombo.setSelectedItem(settings.getGlyphPageWidth());
+		glyphPageHeightCombo.setSelectedItem(settings.getGlyphPageHeight());
 		String gt = settings.getGlyphText();
 		if (gt.length() > 0) {
 			sampleTextPane.setText(settings.getGlyphText());
 		}
 
-		for (Iterator iter = settings.getEffects().iterator(); iter.hasNext();) {
-			ConfigurableEffect settingsEffect = (ConfigurableEffect)iter.next();
-			for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
-				ConfigurableEffect effect = (ConfigurableEffect)effectsListModel.getElementAt(i);
-				if (effect.getClass() == settingsEffect.getClass()) {
-					effect.setValues(settingsEffect.getValues());
-					new EffectPanel(effect);
-					break;
+		for (Effect effect : settings.getEffects()) {
+			if (effect instanceof ConfigurableEffect) {
+				ConfigurableEffect settingsEffect = (ConfigurableEffect)effect;
+				for (int i = 0, n = effectsListModel.getSize(); i < n; i++) {
+					ConfigurableEffect cEffect = (ConfigurableEffect)effectsListModel.getElementAt(i);
+					if (cEffect.getClass() == settingsEffect.getClass()) {
+						cEffect.setValues(settingsEffect.getValues());
+						new EffectPanel(cEffect);
+						break;
+					}
 				}
 			}
 		}
@@ -345,8 +294,7 @@ public class Hiero extends JFrame {
 			}
 
 			public void addSpinners (JSpinner[] spinners) {
-				for (int i = 0; i < spinners.length; i++) {
-					final JSpinner spinner = spinners[i];
+				for (final JSpinner spinner : spinners) {
 					spinner.addChangeListener(this);
 					((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().addKeyListener(new KeyAdapter() {
 						String lastText;
@@ -452,8 +400,8 @@ public class Hiero extends JFrame {
 			public void valueChanged (ListSelectionEvent evt) {
 				ConfigurableEffect selectedEffect = (ConfigurableEffect)effectsList.getSelectedValue();
 				boolean enabled = selectedEffect != null;
-				for (Iterator iter = effectPanels.iterator(); iter.hasNext();) {
-					ConfigurableEffect effect = ((EffectPanel)iter.next()).getEffect();
+				for (EffectPanel effectPanel : effectPanels) {
+					ConfigurableEffect effect = (effectPanel).getEffect();
 					if (effect == selectedEffect) {
 						enabled = false;
 						break;
@@ -752,15 +700,13 @@ public class Hiero extends JFrame {
 						GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 5, 5, 5), 0, 0));
 				}
 				{
-					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageWidthCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageWidthCombo, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageWidthCombo.setSelectedIndex(4);
 				}
 				{
-					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {new Integer(32), new Integer(64),
-						new Integer(128), new Integer(256), new Integer(512), new Integer(1024), new Integer(2048)}));
+					glyphPageHeightCombo = new JComboBox(new DefaultComboBoxModel(new Integer[] {32, 64, 128, 256, 512, 1024, 2048}));
 					glyphCachePanel.add(glyphPageHeightCombo, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST,
 						GridBagConstraints.NONE, new Insets(0, 0, 5, 5), 0, 0));
 					glyphPageHeightCombo.setSelectedIndex(4);
@@ -982,7 +928,7 @@ public class Hiero extends JFrame {
 		final java.awt.Color selectedColor = new java.awt.Color(0xb1d2e9);
 
 		final ConfigurableEffect effect;
-		List values;
+		List<Value> values;
 
 		JButton upButton;
 		JButton downButton;
@@ -1123,8 +1069,8 @@ public class Hiero extends JFrame {
 			prefs.put("foreground", EffectUtil.toString(colorEffect.getColor()));
 			valuesPanel.removeAll();
 			values = effect.getValues();
-			for (Iterator iter = values.iterator(); iter.hasNext();)
-				addValue((Value)iter.next());
+			for (Value value : values)
+				addValue(value);
 		}
 		
 		public void updateUpDownButtons() {
@@ -1196,10 +1142,7 @@ public class Hiero extends JFrame {
 			if (obj == null) return false;
 			if (getClass() != obj.getClass()) return false;
 			final EffectPanel other = (EffectPanel)obj;
-			if (effect == null) {
-				if (other.effect != null) return false;
-			} else if (!effect.equals(other.effect)) return false;
-			return true;
+			return effect.equals(other.effect);
 		}
 		
 	}
@@ -1211,7 +1154,11 @@ public class Hiero extends JFrame {
 		public Splash (Frame frame, String imageFile, int minMillis) {
 			super(frame);
 			this.minMillis = minMillis;
-			getContentPane().add(new JLabel(new ImageIcon(Splash.class.getResource(imageFile))), BorderLayout.CENTER);
+			try {
+				getContentPane().add(new JLabel(new ImageIcon(Splash.class.getResource(imageFile))), BorderLayout.CENTER);
+			} catch (NullPointerException splashFileDoesNotExist) {
+				getContentPane().add(new JLabel("Hiero"), BorderLayout.CENTER);
+			}
 			pack();
 			setLocationRelativeTo(null);
 			setVisible(true);
@@ -1276,9 +1223,6 @@ public class Hiero extends JFrame {
 		}
 
 		public void render () {
-			int viewWidth = Gdx.graphics.getWidth();
-			int viewHeight = Gdx.graphics.getHeight();
-
 			if (newUnicodeFont != null) {
 				if (unicodeFont != null) unicodeFont.destroy();
 				unicodeFont = newUnicodeFont;
@@ -1291,7 +1235,7 @@ public class Hiero extends JFrame {
 				int glyphCount = 0;
 				for (int i = 0; i < pageCount; i++) {
 					glyphPageComboModel.addElement("Page " + (i + 1));
-					glyphCount += ((GlyphPage)unicodeFont.getGlyphPages().get(i)).getGlyphs().size();
+					glyphCount += unicodeFont.getGlyphPages().get(i).getGlyphs().size();
 				}
 				glyphPagesTotalLabel.setText(String.valueOf(pageCount));
 				glyphsTotalLabel.setText(String.valueOf(glyphCount));
@@ -1313,7 +1257,7 @@ public class Hiero extends JFrame {
 
 			try {
 				sampleText = sampleTextPane.getText();
-			} catch (Exception ex) {
+			} catch (Exception ignored) {
 			}
 
 			if (sampleTextRadio.isSelected()) {

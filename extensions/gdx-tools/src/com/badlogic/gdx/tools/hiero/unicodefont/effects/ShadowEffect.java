@@ -16,16 +16,11 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Composite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
@@ -61,8 +56,7 @@ public class ShadowEffect implements ConfigurableEffect {
 		g.fill(glyph.getShape());
 
 		// Also shadow the outline, if one exists.
-		for (Iterator iter = unicodeFont.getEffects().iterator(); iter.hasNext();) {
-			Effect effect = (Effect)iter.next();
+		for (Effect effect : unicodeFont.getEffects()) {
 			if (effect instanceof OutlineEffect) {
 				Composite composite = g.getComposite();
 				g.setComposite(AlphaComposite.Src); // Prevent shadow and outline shadow alpha from combining.
@@ -149,7 +143,7 @@ public class ShadowEffect implements ConfigurableEffect {
 		return "Shadow";
 	}
 
-	public List getValues () {
+	public List<Value> getValues () {
 		List values = new ArrayList();
 		values.add(EffectUtil.colorValue("Color", color));
 		values.add(EffectUtil.floatValue("Opacity", opacity, 0, 1, "This setting sets the translucency of the shadow."));
@@ -171,21 +165,20 @@ public class ShadowEffect implements ConfigurableEffect {
 		return values;
 	}
 
-	public void setValues (List values) {
-		for (Iterator iter = values.iterator(); iter.hasNext();) {
-			Value value = (Value)iter.next();
+	public void setValues (List<Value> values) {
+		for (Value value : values) {
 			if (value.getName().equals("Color")) {
 				color = (Color)value.getObject();
 			} else if (value.getName().equals("Opacity")) {
-				opacity = ((Float)value.getObject()).floatValue();
+				opacity = (Float)value.getObject();
 			} else if (value.getName().equals("X distance")) {
-				xDistance = ((Float)value.getObject()).floatValue();
+				xDistance = (Float)value.getObject();
 			} else if (value.getName().equals("Y distance")) {
-				yDistance = ((Float)value.getObject()).floatValue();
+				yDistance = (Float)value.getObject();
 			} else if (value.getName().equals("Blur kernel size")) {
 				blurKernelSize = Integer.parseInt((String)value.getObject());
 			} else if (value.getName().equals("Blur passes")) {
-				blurPasses = ((Integer)value.getObject()).intValue();
+				blurPasses = (Integer)value.getObject();
 			}
 		}
 	}

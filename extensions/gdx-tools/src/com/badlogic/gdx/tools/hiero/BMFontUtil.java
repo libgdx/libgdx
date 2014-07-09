@@ -16,7 +16,7 @@
 
 package com.badlogic.gdx.tools.hiero;
 
-import java.awt.Font;
+import java.awt.*;
 import java.awt.font.GlyphMetrics;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
@@ -71,8 +71,8 @@ public class BMFontUtil {
 			+ pageWidth + " scaleH=" + pageHeight + " pages=" + unicodeFont.getGlyphPages().size() + " packed=0");
 
 		int pageIndex = 0, glyphCount = 0;
-		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
-			GlyphPage page = (GlyphPage)pageIter.next();
+		for (Iterator<GlyphPage> pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
+			GlyphPage page = pageIter.next();
 			String fileName;
 			if (pageIndex == 0 && !pageIter.hasNext())
 				fileName = outputName + ".png";
@@ -92,12 +92,9 @@ public class BMFontUtil {
 			+ "    xadvance=" + xAdvance + "     page=0  chnl=0 ");
 
 		pageIndex = 0;
-		List allGlyphs = new ArrayList(512);
-		for (Iterator pageIter = unicodeFont.getGlyphPages().iterator(); pageIter.hasNext();) {
-			GlyphPage page = (GlyphPage)pageIter.next();
-			for (Iterator glyphIter = page.getGlyphs().iterator(); glyphIter.hasNext();) {
-				Glyph glyph = (Glyph)glyphIter.next();
-
+		List<Glyph> allGlyphs = new ArrayList<Glyph>(512);
+		for (GlyphPage page : unicodeFont.getGlyphPages()) {
+			for (Glyph glyph : page.getGlyphs()) {
 				glyphMetrics = getGlyphMetrics(font, glyph.getCodePoint());
 				int xOffset = glyphMetrics[0];
 				xAdvance = glyphMetrics[1];
@@ -122,35 +119,32 @@ public class BMFontUtil {
 				System.out.println("Unable to read kerning information from font: " + ttfFileRef);
 			}
 
-			Map glyphCodeToCodePoint = new HashMap();
-			for (Iterator iter = allGlyphs.iterator(); iter.hasNext();) {
-				Glyph glyph = (Glyph)iter.next();
-				glyphCodeToCodePoint.put(new Integer(getGlyphCode(font, glyph.getCodePoint())), new Integer(glyph.getCodePoint()));
+			Map<Integer, Integer> glyphCodeToCodePoint = new HashMap<Integer, Integer>();
+			for (Glyph glyph : allGlyphs) {
+				glyphCodeToCodePoint.put(getGlyphCode(font, glyph.getCodePoint()), glyph.getCodePoint());
 			}
 
-			List kernings = new ArrayList(256);
 			class KerningPair {
 				public int firstCodePoint, secondCodePoint, offset;
 			}
-			for (Iterator iter1 = allGlyphs.iterator(); iter1.hasNext();) {
-				Glyph firstGlyph = (Glyph)iter1.next();
+			List<KerningPair> kernings = new ArrayList<KerningPair>(256);
+			for (Glyph firstGlyph : allGlyphs) {
 				int firstGlyphCode = getGlyphCode(font, firstGlyph.getCodePoint());
 				int[] values = kerning.getValues(firstGlyphCode);
 				if (values == null) continue;
 				for (int i = 0; i < values.length; i++) {
-					Integer secondCodePoint = (Integer)glyphCodeToCodePoint.get(new Integer(values[i] & 0xffff));
+					Integer secondCodePoint = glyphCodeToCodePoint.get(values[i] & 0xffff);
 					if (secondCodePoint == null) continue; // We may not be outputting the second character.
 					int offset = values[i] >> 16;
 					KerningPair pair = new KerningPair();
 					pair.firstCodePoint = firstGlyph.getCodePoint();
-					pair.secondCodePoint = secondCodePoint.intValue();
+					pair.secondCodePoint = secondCodePoint;
 					pair.offset = offset;
 					kernings.add(pair);
 				}
 			}
 			out.println("kernings count=" + kerning.getCount());
-			for (Iterator iter = kernings.iterator(); iter.hasNext();) {
-				KerningPair pair = (KerningPair)iter.next();
+			for (KerningPair pair : kernings) {
 				out.println("kerning first=" + pair.firstCodePoint + "  second=" + pair.secondCodePoint + "  amount=" + pair.offset);
 			}
 		}

@@ -13,14 +13,10 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
-import java.util.Iterator;
 import java.util.List;
 
 /** @author Jerry Huxtable
@@ -41,8 +37,8 @@ public class OutlineZigzagEffect extends OutlineEffect {
 		return "Outline (Zigzag)";
 	}
 
-	public List getValues () {
-		List values = super.getValues();
+	public List<Value> getValues () {
+		List<Value> values = super.getValues();
 		values.add(EffectUtil.floatValue("Wavelength", wavelength, 1, 100, "This setting controls the wavelength of the outline. "
 			+ "The smaller the value, the more segments will be used to draw the outline."));
 		values.add(EffectUtil.floatValue("Amplitude", amplitude, 0.5f, 50, "This setting controls the amplitude of the outline. "
@@ -50,14 +46,13 @@ public class OutlineZigzagEffect extends OutlineEffect {
 		return values;
 	}
 
-	public void setValues (List values) {
+	public void setValues (List<Value> values) {
 		super.setValues(values);
-		for (Iterator iter = values.iterator(); iter.hasNext();) {
-			Value value = (Value)iter.next();
+		for (Value value : values) {
 			if (value.getName().equals("Wavelength")) {
-				wavelength = ((Float)value.getObject()).floatValue();
+				wavelength = (Float)value.getObject();
 			} else if (value.getName().equals("Amplitude")) {
-				amplitude = ((Float)value.getObject()).floatValue();
+				amplitude = (Float)value.getObject();
 			}
 		}
 	}

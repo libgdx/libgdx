@@ -16,12 +16,9 @@
 
 package com.badlogic.gdx.tools.hiero.unicodefont.effects;
 
-import java.awt.Color;
-import java.awt.GradientPaint;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
@@ -99,8 +96,8 @@ public class GradientEffect implements ConfigurableEffect {
 		return "Gradient";
 	}
 
-	public List getValues () {
-		List values = new ArrayList();
+	public List<Value> getValues () {
+		List<Value> values = new ArrayList<Value>();
 		values.add(EffectUtil.colorValue("Top color", topColor));
 		values.add(EffectUtil.colorValue("Bottom color", bottomColor));
 		values.add(EffectUtil.intValue("Offset", offset,
@@ -111,19 +108,18 @@ public class GradientEffect implements ConfigurableEffect {
 		return values;
 	}
 
-	public void setValues (List values) {
-		for (Iterator iter = values.iterator(); iter.hasNext();) {
-			Value value = (Value)iter.next();
+	public void setValues (List<Value> values) {
+		for (Value value : values) {
 			if (value.getName().equals("Top color")) {
 				topColor = (Color)value.getObject();
 			} else if (value.getName().equals("Bottom color")) {
 				bottomColor = (Color)value.getObject();
 			} else if (value.getName().equals("Offset")) {
-				offset = ((Integer)value.getObject()).intValue();
+				offset = (Integer)value.getObject();
 			} else if (value.getName().equals("Scale")) {
-				scale = ((Float)value.getObject()).floatValue();
+				scale = (Float)value.getObject();
 			} else if (value.getName().equals("Cyclic")) {
-				cyclic = ((Boolean)value.getObject()).booleanValue();
+				cyclic = (Boolean)value.getObject();
 			}
 		}
 	}
