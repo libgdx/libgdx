@@ -212,7 +212,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		try {
 			final Method m = View.class.getMethod("setSystemUiVisibility", int.class);
 
-			if (getVersion() >= 11 && getVersion() <= 13)
+			if (getVersion() <= 13)
 				m.invoke(rootView, 0x0);
 
 			m.invoke(rootView, 0x1);
