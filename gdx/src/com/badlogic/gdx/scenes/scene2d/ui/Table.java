@@ -655,6 +655,7 @@ public class Table extends WidgetGroup {
 		if (n == 1) return 0;
 		while (i < n) {
 			Cell c = cells.get(i++);
+			if (c.getIgnore()) continue;
 			if (c.actorY + c.computedPadTop < y) break;
 			if (c.endRow) row++;
 		}
@@ -687,6 +688,7 @@ public class Table extends WidgetGroup {
 		if (round) {
 			for (int i = 0, n = cells.size; i < n; i++) {
 				Cell c = cells.get(i);
+				if (c.getIgnore()) continue;
 				float actorWidth = Math.round(c.actorWidth);
 				float actorHeight = Math.round(c.actorHeight);
 				float actorX = Math.round(c.actorX);
@@ -698,6 +700,7 @@ public class Table extends WidgetGroup {
 		} else {
 			for (int i = 0, n = cells.size; i < n; i++) {
 				Cell c = cells.get(i);
+				if (c.getIgnore()) continue;
 				float actorHeight = c.actorHeight;
 				float actorY = height - c.actorY - actorHeight;
 				c.setActorY(actorY);
@@ -734,6 +737,8 @@ public class Table extends WidgetGroup {
 		float spaceRightLast = 0;
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			if (c.getIgnore()) continue;
+			
 			int column = c.column, row = c.row, colspan = c.colspan;
 			Actor a = c.actor;
 
@@ -780,7 +785,7 @@ public class Table extends WidgetGroup {
 		outer:
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
-			if (c.expandX == 0) continue;
+			if (c.getIgnore() || c.expandX == 0) continue;
 			int column = c.column;
 			int nn = column + c.colspan;
 			for (int ii = column; ii < nn; ii++)
@@ -794,7 +799,7 @@ public class Table extends WidgetGroup {
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
 			int colspan = c.colspan;
-			if (colspan == 1) continue;
+			if (c.getIgnore() || colspan == 1) continue;
 			int column = c.column;
 
 			Actor a = c.actor;
@@ -829,6 +834,7 @@ public class Table extends WidgetGroup {
 		float uniformPrefWidth = 0, uniformPrefHeight = 0;
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			if(c.getIgnore()) continue;
 
 			// Collect uniform sizes.
 			if (c.uniformX == Boolean.TRUE && c.colspan == 1) {
@@ -847,6 +853,7 @@ public class Table extends WidgetGroup {
 		if (uniformPrefWidth > 0 || uniformPrefHeight > 0) {
 			for (int i = 0; i < cellCount; i++) {
 				Cell c = cells.get(i);
+				if(c.getIgnore()) continue;
 				if (uniformPrefWidth > 0 && c.uniformX == Boolean.TRUE && c.colspan == 1) {
 					float hpadding = c.computedPadLeft + c.computedPadRight;
 					columnMinWidth[c.column] = uniformMinWidth + hpadding;
@@ -938,6 +945,7 @@ public class Table extends WidgetGroup {
 		// Determine actor and cell sizes (before expand or fill).
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			if(c.getIgnore()) continue;
 			int column = c.column, row = c.row;
 			Actor a = c.actor;
 
@@ -1000,7 +1008,7 @@ public class Table extends WidgetGroup {
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
 			int colspan = c.colspan;
-			if (colspan == 1) continue;
+			if (c.getIgnore() || colspan == 1) continue;
 
 			float extraWidth = 0;
 			for (int column = c.column, nn = column + colspan; column < nn; column++)
@@ -1039,6 +1047,7 @@ public class Table extends WidgetGroup {
 		float currentX = x, currentY = y;
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			if(c.getIgnore()) continue;
 
 			float spannedCellWidth = 0;
 			for (int column = c.column, nn = column + c.colspan; column < nn; column++)
@@ -1090,6 +1099,7 @@ public class Table extends WidgetGroup {
 		}
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
+			if(c.getIgnore()) continue;
 
 			// Actor bounds.
 			if (debug == Debug.actor || debug == Debug.all)
