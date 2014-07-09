@@ -177,7 +177,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 
 		createWakeLock(config.useWakelock);
-		hideStatusBar(this.hideStatusBar);
+		hideStatusBar();
 		useImmersiveMode(this.useImmersiveMode);
 		if (this.useImmersiveMode && getVersion() >= 19) {
 			try {
@@ -204,14 +204,17 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	protected void hideStatusBar (boolean hide) {
-		if (!hide || getVersion() < 11) return;
+	protected void hideStatusBar () {
+		if (!this.hideStatusBar || getVersion() < 11) return;
 
-		View rootView = getWindow().getDecorView();
+		final View rootView = getWindow().getDecorView();
 
 		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			m.invoke(rootView, 0x0);
+			final Method m = View.class.getMethod("setSystemUiVisibility", int.class);
+
+			if (getVersion() <= 13)
+				m.invoke(rootView, 0x0);
+
 			m.invoke(rootView, 0x1);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't hide status bar", e);
@@ -222,7 +225,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 	public void onWindowFocusChanged (boolean hasFocus) {
 		super.onWindowFocusChanged(hasFocus);
 		useImmersiveMode(this.useImmersiveMode);
-		hideStatusBar(this.hideStatusBar);
+		hideStatusBar();
 		if (hasFocus) {
 			this.wasFocusChanged = 1;
 			if (this.isWaitingForAudio) {
