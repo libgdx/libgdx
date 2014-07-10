@@ -76,8 +76,8 @@ public class MessageDispatcher {
 	 * queue. This prevents many similar telegrams from bunching up in the queue and being delivered en masse, thus flooding an
 	 * agent with identical messages. To eliminate time granularity just set it to 0. */
 	public void setTimeGranularity (float timeGranularity) {
-		boolean uniqueness = timeGranularity <= 0;
-		this.timeGranularity = uniqueness ? 0 : (long)(timeGranularity * NANOS_PER_SEC);
+		boolean uniqueness = timeGranularity > 0;
+		this.timeGranularity = uniqueness ? (long)(timeGranularity * NANOS_PER_SEC) : 0;
 		this.queue.setUniqueness(uniqueness);
 
 	}
