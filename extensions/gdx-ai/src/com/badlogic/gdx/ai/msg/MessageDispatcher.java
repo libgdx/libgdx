@@ -132,8 +132,8 @@ public class MessageDispatcher {
 			long currentTime = getCurrentTime();
 			telegram.setTimestamp(currentTime + (long)(delay * NANOS_PER_SEC), timeGranularity);
 
-			// Put it in the queue
-			queue.add(telegram);
+			// Put it in the queue or put it back into the pool if it's rejected
+			if (!queue.add(telegram)) pool.free(telegram);
 
 			if (debugEnabled) {
 				Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " recorded at time " + getCurrentTime() + " for " + receiver
