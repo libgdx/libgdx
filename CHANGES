@@ -1,4 +1,5 @@
 [1.2.1]
+- Added support for Tiled's animated tiles, and varying frame duration tile animations.
 - Fixed an issue with time granularity in MessageDispatcher.
 - Updated to Android API level 19 and build tools 19.1.0 which will require the latest Eclipse ADT 23.02, see http://stackoverflow.com/questions/24437564/update-eclipse-with-android-development-tools-23 for how things are broken this time...
 - Updated to RoboVM 0.0.14 and RoboVM Gradle plugin version 0.0.10
