@@ -290,14 +290,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel > LOG_NONE) {
-			Foundation.NSLog("[info] " + tag + ": " + message);
+			System.out.println("[info] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel > LOG_NONE) {
-			Foundation.NSLog("[info] " + tag + ": " + message);
+			System.out.println("[info] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -305,14 +305,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			Foundation.NSLog("[error] " + tag + ": " + message);
+			System.out.println("[error] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			Foundation.NSLog("[error] " + tag + ": " + message);
+			System.out.println("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -320,14 +320,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			Foundation.NSLog("[debug] " + tag + ": " + message);
+			System.out.println("[debug] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			Foundation.NSLog("[error] " + tag + ": " + message);
+			System.out.println("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}

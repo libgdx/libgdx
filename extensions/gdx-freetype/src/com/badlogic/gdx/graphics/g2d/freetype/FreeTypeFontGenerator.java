@@ -127,7 +127,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * need to fit onto a single texture.
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
 	public BitmapFont generateFont (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip, null);
@@ -259,7 +259,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
 		return generateData(size, characters, flip, null);
@@ -270,7 +270,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @param packer the optional PixmapPacker to use
 	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip, PixmapPacker packer) {
@@ -417,21 +417,22 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// generate kerning
-		for (int i = 0; i < parameter.characters.length(); i++) {
-			for (int j = 0; j < parameter.characters.length(); j++) {
-				char firstChar = parameter.characters.charAt(i);
-				Glyph first = data.getGlyph(firstChar);
-				if (first == null) continue;
-				char secondChar = parameter.characters.charAt(j);
-				Glyph second = data.getGlyph(secondChar);
-				if (second == null) continue;
-				int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
-					FreeType.getCharIndex(face, secondChar), 0);
-				if (kerning == 0) continue;
-				first.setKerning(secondChar, FreeType.toInt(kerning));
+		if (parameter.kerning) {
+			for (int i = 0; i < parameter.characters.length(); i++) {
+				for (int j = 0; j < parameter.characters.length(); j++) {
+					char firstChar = parameter.characters.charAt(i);
+					Glyph first = data.getGlyph(firstChar);
+					if (first == null) continue;
+					char secondChar = parameter.characters.charAt(j);
+					Glyph second = data.getGlyph(secondChar);
+					if (second == null) continue;
+					int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
+						FreeType.getCharIndex(face, secondChar), 0);
+					if (kerning == 0) continue;
+					first.setKerning(secondChar, FreeType.toInt(kerning));
+				}
 			}
 		}
-
 		if (ownsAtlas) {
 			Array<Page> pages = packer.getPages();
 			data.regions = new TextureRegion[pages.size];
@@ -495,9 +496,11 @@ public class FreeTypeFontGenerator implements Disposable {
 		public int size = 16;
 		/** The characters the font should contain */
 		public String characters = DEFAULT_CHARS;
+		/** Whether the font should include kerning */
+		public boolean kerning = true;
 		/** The optional PixmapPacker to use */
 		public PixmapPacker packer = null;
-		/** Whether to flip the font horizontally */
+		/** Whether to flip the font vertically */
 		public boolean flip = false;
 		/** Whether or not to generate mip maps for the resulting texture */
 		public boolean genMipMaps = false;

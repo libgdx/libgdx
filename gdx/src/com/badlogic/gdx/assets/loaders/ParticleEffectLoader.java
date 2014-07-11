@@ -59,8 +59,8 @@ public class ParticleEffectLoader extends SynchronousAssetLoader<ParticleEffect,
 	public static class ParticleEffectParameter extends AssetLoaderParameters<ParticleEffect> {
 		/** Atlas file name. */
 		public String atlasFile;
-		/** Prefix to be added to the image names **/
-		public String atlasPrefix = "";
+		/** Optional prefix to image names **/
+		public String atlasPrefix;
 		/** Image directory. */
 		public FileHandle imagesDir;
 	}

@@ -76,8 +76,8 @@ public class MessageDispatcher {
 	 * queue. This prevents many similar telegrams from bunching up in the queue and being delivered en masse, thus flooding an
 	 * agent with identical messages. To eliminate time granularity just set it to 0. */
 	public void setTimeGranularity (float timeGranularity) {
-		boolean uniqueness = timeGranularity <= 0;
-		this.timeGranularity = uniqueness ? 0 : (long)(timeGranularity * NANOS_PER_SEC);
+		boolean uniqueness = timeGranularity > 0;
+		this.timeGranularity = uniqueness ? (long)(timeGranularity * NANOS_PER_SEC) : 0;
 		this.queue.setUniqueness(uniqueness);
 
 	}
@@ -132,8 +132,8 @@ public class MessageDispatcher {
 			long currentTime = getCurrentTime();
 			telegram.setTimestamp(currentTime + (long)(delay * NANOS_PER_SEC), timeGranularity);
 
-			// Put it in the queue
-			queue.add(telegram);
+			// Put it in the queue or put it back into the pool if it's rejected
+			if (!queue.add(telegram)) pool.free(telegram);
 
 			if (debugEnabled) {
 				Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " recorded at time " + getCurrentTime() + " for " + receiver
@@ -157,7 +157,7 @@ public class MessageDispatcher {
 		do {
 			// Read the telegram from the front of the queue
 			final Telegram telegram = queue.peek();
-			if (telegram.getTimestamp() < currentTime) break;
+			if (telegram.getTimestamp() > currentTime) break;
 
 			if (debugEnabled) {
 				Gdx.app.log(LOG_TAG, "Queued telegram ready for dispatch: Sent to " + telegram.receiver + ". Msg is "

@@ -3,7 +3,7 @@
 	<property environment="env" />
 
 	<!-- library version -->
-	<property name="version" value="1.0-SNAPSHOT"/>
+	<property name="version" value="1.2.1-SNAPSHOT"/>
 
 	<!-- define distribution/output directory -->
 	<property name="distDir" value="${basedir}/dist"/>
@@ -39,6 +39,8 @@
 			<pathelement location="${distDir}/extensions/gdx-jnigen/gdx-jnigen.jar"/>
 		</path>
 		<fileset id="resourcefiles" dir="gdx/src">
+			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl"/>
+			<include name="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl"/>
 			<include name="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl"/>
@@ -267,32 +269,6 @@
             <reference refid="classpath"/>
         </ant>
     </target>
-    
-    <!-- gdx pay -->
-	<target name="gdx-pay" depends="gdx-core">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
-    
-	<target name="gdx-pay-google-android" depends="gdx-core,gdx-backend-android,gdx-pay">
-		<path id="classpath">
-			<pathelement location="${distDir}/gdx.jar"/>
-			<pathelement location="${distDir}/gdx-backend-android.jar"/>
-			<pathelement location="${distDir}/extensions/gdx-pay/gdx-pay.jar"/>
-			<pathelement location="${basedir}/backends/gdx-backend-android/libs/android-4.4.jar"/>
-		</path>
-		<ant antfile="../../../build-template.xml" dir="extensions/gdx-pay/gdx-pay-google-android">
-			<property name="distDir" value="${distDir}/extensions/gdx-pay"/>
-			<property name="jar" value="gdx-pay-google-android.jar"/>
-			<reference refid="classpath"/>
-		</ant>
-	</target>
 
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
@@ -342,7 +318,7 @@
 	</target>
 
 	<target name="jars"
-depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-ai,gdx-pay,gdx-pay-google-android"/>
+depends="clean,gdx-setup,gdx-core,gdx-backend-lwjgl,gdx-backend-jglfw,gdx-backend-headless,gdx-backend-android,gdx-backend-gwt,gdx-backend-robovm,gdx-tools,gdx-box2d,gdx-box2d-gwt,gdx-controllers,gdx-controllers-desktop,gdx-controllers-android,gdx-controllers-gwt,gdx-freetype,gdx-bullet,gdx-ai"/>
 
 	<target name="all" depends="jars,docs">
 		<!-- copy distribution files (licences etc.) -->
