@@ -50,17 +50,26 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		}
 		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
 		for (int i = 0; i < data.getImagePaths().length; i++) {
-			TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
 
-			if (parameter != null) {
-				textureParams.genMipMaps = parameter.genMipMaps;
-				textureParams.minFilter = parameter.minFilter;
-				textureParams.magFilter = parameter.magFilter;
+			String path = data.getImagePath(i);
+			AssetDescriptor descriptor;
+			if (path.equals(parameter.atlasName)) {
+				descriptor = new AssetDescriptor(resolve(path), TextureAtlas.class, new TextureAtlasLoader.TextureAtlasParameter());
+			} else {
+				TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
+
+				if (parameter != null) {
+					textureParams.genMipMaps = parameter.genMipMaps;
+					textureParams.minFilter = parameter.minFilter;
+					textureParams.magFilter = parameter.magFilter;
+				}
+
+				descriptor = new AssetDescriptor(resolve(path), Texture.class, textureParams);
 			}
 
-			AssetDescriptor descriptor = new AssetDescriptor(resolve(data.getImagePath(i)), Texture.class, textureParams);
 			deps.add(descriptor);
 		}
+
 		return deps;
 	}
 
@@ -70,11 +79,33 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
-		TextureRegion[] regs = new TextureRegion[data.getImagePaths().length];
-		for (int i = 0; i < regs.length; i++) {
-			regs[i] = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));
+		if (parameter.atlasName == null) {
+			// If we want to load this font from a texture atlas...
+			if (manager.getLoader(TextureAtlas.class) == null) {
+				// If we can't actually do so...
+				throw new IllegalStateException(String.format(
+					"Tried to load a BitmapFont %s from a TextureAtlas %s, but no TextureAtlas loader was set", fileName,
+					parameter.atlasName));
+			} else {
+				TextureAtlas atlas = manager.get(parameter.atlasName, TextureAtlas.class);
+				TextureRegion region = atlas.findRegion(fileName);
+
+				if (region == null) {
+					throw new IllegalArgumentException(String.format("Could not find font region %s in atlas %s", fileName,
+						parameter.atlasName));
+				} else {
+					return new BitmapFont(file, region);
+				}
+			}
+		} else {
+			TextureRegion[] regs = new TextureRegion[data.getImagePaths().length];
+
+			for (int i = 0; i < regs.length; i++) {
+				regs[i] = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));
+			}
+
+			return new BitmapFont(data, regs, true);
 		}
-		return new BitmapFont(data, regs, true);
 	}
 
 	/** Parameter to be passed to {@link AssetManager#load(String, Class, AssetLoaderParameters)} if additional configuration is
@@ -96,7 +127,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 		/** optional {@link BitmapFontData} to be used instead of loading the {@link Texture} directly. Use this if your font is
 		 * embedded in a {@link Skin}. **/
 		public BitmapFontData bitmapFontData = null;
-		
+
 		/** The name of the {@link TextureAtlas} to load the {@link BitmapFont} itself from. Optional; if {@code null}, will look for
 		 * a separate image */
 		public String atlasName = null;
