@@ -867,7 +867,7 @@ public class SpriteCache implements Disposable {
 		drawing = true;
 	}
 
-	/** Completes rendering for this SpriteCache.f */
+	/** Completes rendering for this SpriteCache. */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
