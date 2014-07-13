@@ -25,12 +25,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 
 /** {@link AssetLoader} for {@link BitmapFont} instances. Loads the font description file (.fnt) asynchronously, loads the
  * {@link Texture} containing the glyphs as a dependency. The {@link BitmapFontParameter} allows you to set things like texture
- * filters or whether to flip the glyphs on the y-axis..
+ * filters or whether to flip the glyphs vertically.
  * @author mzechner */
 public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, BitmapFontLoader.BitmapFontParameter> {
 	public BitmapFontLoader (FileHandleResolver resolver) {
@@ -79,15 +81,24 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 	 * necessary for the {@link BitmapFont}.
 	 * @author mzechner */
 	static public class BitmapFontParameter extends AssetLoaderParameters<BitmapFont> {
-		/** whether to flipY the font or not **/
+		/** Flips the font vertically if {@code true}. Defaults to {@code false}. **/
 		public boolean flip = false;
-		/** whether to generate mipmaps **/
+
+		/** Generates mipmaps for the font if {@code true}. Defaults to {@code false}. **/
 		public boolean genMipMaps = false;
-		/** the minimum filter to be used for the backing texture */
+
+		/** The {@link TextureFilter} to use when scaling down the {@link BitmapFont}. Defaults to {@link TextureFilter#Nearest}. */
 		public TextureFilter minFilter = TextureFilter.Nearest;
-		/** the maximum filter to be used for the backing texture */
+
+		/** The {@link TextureFilter} to use when scaling up the {@link BitmapFont}. Defaults to {@link TextureFilter#Nearest}. */
 		public TextureFilter magFilter = TextureFilter.Nearest;
-		/** optional BitmapFontData to be used instead of loading the texture directly. Use this if your font is embedded in a skin. **/
+
+		/** optional {@link BitmapFontData} to be used instead of loading the {@link Texture} directly. Use this if your font is
+		 * embedded in a {@link Skin}. **/
 		public BitmapFontData bitmapFontData = null;
+		
+		/** The name of the {@link TextureAtlas} to load the {@link BitmapFont} itself from. Optional; if {@code null}, will look for
+		 * a separate image */
+		public String atlasName = null;
 	}
 }
