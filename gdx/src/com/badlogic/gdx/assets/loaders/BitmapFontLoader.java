@@ -48,25 +48,25 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 			data = parameter.bitmapFontData;
 			return deps;
 		}
+
 		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
+		if (parameter != null && parameter.atlasName != null) {
+			deps.add(new AssetDescriptor(resolve(parameter.atlasName), TextureAtlas.class));
+		}
+
 		for (int i = 0; i < data.getImagePaths().length; i++) {
-
 			String path = data.getImagePath(i);
-			AssetDescriptor descriptor;
-			if (path.equals(parameter.atlasName)) {
-				descriptor = new AssetDescriptor(resolve(path), TextureAtlas.class, new TextureAtlasLoader.TextureAtlasParameter());
-			} else {
-				TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
+			FileHandle resolved = resolve(path);
 
-				if (parameter != null) {
-					textureParams.genMipMaps = parameter.genMipMaps;
-					textureParams.minFilter = parameter.minFilter;
-					textureParams.magFilter = parameter.magFilter;
-				}
+			TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
 
-				descriptor = new AssetDescriptor(resolve(path), Texture.class, textureParams);
+			if (parameter != null) {
+				textureParams.genMipMaps = parameter.genMipMaps;
+				textureParams.minFilter = parameter.minFilter;
+				textureParams.magFilter = parameter.magFilter;
 			}
 
+			AssetDescriptor descriptor = new AssetDescriptor(resolved, Texture.class, textureParams);
 			deps.add(descriptor);
 		}
 
