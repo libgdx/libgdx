@@ -672,15 +672,14 @@ public interface Input {
 	/** Stops the vibrator */
 	public void cancelVibrate ();
 
-	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the earths
-	 * center.
+	/** The azimuth is the angle of the device's orientation around the z-axis. The positive z-axis points towards the sky.
 	 * 
 	 * @see <a
 	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
 	 * @return the azimuth in degrees */
 	public float getAzimuth ();
 
-	/** The pitch is the angle of the device's orientation around the x-axis. The positive x-axis roughly points to the west and is
+	/** The pitch is the angle of the device's orientation around the x-axis. The positive x-axis roughly points to the east and is
 	 * orthogonal to the z- and y-axis.
 	 * @see <a
 	 *      href="http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])">http://developer.android.com/reference/android/hardware/SensorManager.html#getRotationMatrix(float[], float[], float[], float[])</a>
@@ -742,8 +741,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y coordinates
-	 * are still reported as if the mouse was not catched.
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y
+	 * coordinates are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 
