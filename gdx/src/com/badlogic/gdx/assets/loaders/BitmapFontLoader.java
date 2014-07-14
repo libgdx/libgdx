@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.BitmapFontData;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
@@ -51,23 +52,23 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 		data = new BitmapFontData(file, parameter != null ? parameter.flip : false);
 		if (parameter != null && parameter.atlasName != null) {
-			deps.add(new AssetDescriptor(resolve(parameter.atlasName), TextureAtlas.class));
-		}
+			deps.add(new AssetDescriptor(parameter.atlasName, TextureAtlas.class));
+		} else {
+			for (int i = 0; i < data.getImagePaths().length; i++) {
+				String path = data.getImagePath(i);
+				FileHandle resolved = resolve(path);
 
-		for (int i = 0; i < data.getImagePaths().length; i++) {
-			String path = data.getImagePath(i);
-			FileHandle resolved = resolve(path);
+				TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
 
-			TextureLoader.TextureParameter textureParams = new TextureLoader.TextureParameter();
+				if (parameter != null) {
+					textureParams.genMipMaps = parameter.genMipMaps;
+					textureParams.minFilter = parameter.minFilter;
+					textureParams.magFilter = parameter.magFilter;
+				}
 
-			if (parameter != null) {
-				textureParams.genMipMaps = parameter.genMipMaps;
-				textureParams.minFilter = parameter.minFilter;
-				textureParams.magFilter = parameter.magFilter;
+				AssetDescriptor descriptor = new AssetDescriptor(resolved, Texture.class, textureParams);
+				deps.add(descriptor);
 			}
-
-			AssetDescriptor descriptor = new AssetDescriptor(resolved, Texture.class, textureParams);
-			deps.add(descriptor);
 		}
 
 		return deps;
@@ -79,7 +80,7 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
-		if (parameter.atlasName == null) {
+		if (parameter.atlasName != null) {
 			// If we want to load this font from a texture atlas...
 			if (manager.getLoader(TextureAtlas.class) == null) {
 				// If we can't actually do so...
@@ -88,10 +89,11 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 					parameter.atlasName));
 			} else {
 				TextureAtlas atlas = manager.get(parameter.atlasName, TextureAtlas.class);
-				TextureRegion region = atlas.findRegion(fileName);
+				String name = file.sibling(data.imagePaths[0]).nameWithoutExtension().toString();
+				AtlasRegion region = atlas.findRegion(name);
 
 				if (region == null) {
-					throw new IllegalArgumentException(String.format("Could not find font region %s in atlas %s", fileName,
+					throw new IllegalArgumentException(String.format("Could not find font region %s in atlas %s", name,
 						parameter.atlasName));
 				} else {
 					return new BitmapFont(file, region);
