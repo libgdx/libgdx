@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.tests.utils.GdxTest;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
 
 public class BitmapFontAtlasRegionTest extends GdxTest {
 	private SpriteBatch batch;
@@ -21,24 +23,29 @@ public class BitmapFontAtlasRegionTest extends GdxTest {
 	private BitmapFont[] fonts;
 	private String[] testStrings;
 
+	private static final String FONT_1 = "data/default.fnt";
+	private static final String FONT_2 = "data/font.fnt";
+	private static final String FONT_3 = "data/verdana39.fnt";
+	private static final String ATLAS = "data/atlased-fonts.txt";
+
 	@Override
 	public void create () {
 		this.batch = new SpriteBatch();
 		this.assets = new AssetManager();
 
 		BitmapFontParameter params = new BitmapFontParameter();
-		params.atlasName = "data/atlased-fonts.txt";
+		params.atlasName = ATLAS;
 
-		this.assets.load("data/default.fnt", BitmapFont.class, params);
-		this.assets.load("data/font.fnt", BitmapFont.class, params);
-		this.assets.load("data/verdana39.fnt", BitmapFont.class, params);
+		this.assets.load(FONT_1, BitmapFont.class, params);
+		this.assets.load(FONT_2, BitmapFont.class, params);
+		this.assets.load(FONT_3, BitmapFont.class, params);
 		this.assets.finishLoading();
 
 		this.fonts = new BitmapFont[3];
-		this.fonts[0] = assets.get("data/default.fnt");
-		this.fonts[1] = assets.get("data/font.fnt");
-		this.fonts[2] = assets.get("data/verdana39.fnt");
-		
+		this.fonts[0] = assets.get(FONT_1);
+		this.fonts[1] = assets.get(FONT_2);
+		this.fonts[2] = assets.get(FONT_3);
+
 		this.fonts[0].setColor(Color.RED);
 		this.fonts[1].setColor(Color.BLUE);
 		this.fonts[2].setColor(Color.GREEN);
@@ -62,7 +69,19 @@ public class BitmapFontAtlasRegionTest extends GdxTest {
 
 	@Override
 	public void dispose () {
+		Array<String> loaded = this.assets.getAssetNames();
+		
 		this.assets.dispose();
 		this.batch.dispose();
+
+		String name = ClassReflection.getSimpleName(this.getClass());
+		for (int i = 0; i < loaded.size; ++i) {
+			String asset = loaded.get(i);
+			if (this.assets.isLoaded(asset)) {
+				Gdx.app.error(name, asset + " not properly disposed of!");
+			} else {
+				Gdx.app.log(name, asset + " disposed of OK");
+			}
+		}
 	}
 }
