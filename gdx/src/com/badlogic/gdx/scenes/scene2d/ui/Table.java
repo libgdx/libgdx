@@ -1150,7 +1150,11 @@ public class Table extends WidgetGroup {
 		}
 
 		static void draw (Stage stage) {
-			if (app != Gdx.app) debugRenderer = new ImmediateModeRenderer20(128, false, true, 0);
+			// Handle cases where Android holds on to static objects
+			if (app != Gdx.app || debugRenderer == null) {
+				debugRenderer = new ImmediateModeRenderer20(128, false, true, 0);
+				app = Gdx.app;
+			}
 
 			debugRenderer.begin(stage.getBatch().getProjectionMatrix(), GL20.GL_LINES);
 			draw(stage.getActors());
