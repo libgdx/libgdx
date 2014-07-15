@@ -214,6 +214,7 @@ public class GdxTests {
 		ViewportTest1.class,
 		ViewportTest2.class,
 		ViewportTest3.class,
+		ViewportTestMultiAspectRatio.class,
 		YDownTest.class,
 		FreeTypeFontLoaderTest.class
 		// @on
