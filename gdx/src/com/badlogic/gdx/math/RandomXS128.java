@@ -58,6 +58,9 @@ public class RandomXS128 extends Random {
 		setState(seed0, seed1);
 	}
 
+	/** Returns the next pseudo-random, uniformly distributed long value from this random number generator's sequence.
+	 * <p>
+	 * Subclasses should override this, as this is used by all other methods. */
 	@Override
 	public long nextLong () {
 		long s1 = this.seed0;
@@ -67,24 +70,36 @@ public class RandomXS128 extends Random {
 		return (this.seed1 = (s1 ^ s0 ^ (s1 >>> 17) ^ (s0 >>> 26))) + s0;
 	}
 
+	/** This protected method is final because, contrary to the superclass, it's not used anymore by the other methods. */
 	@Override
-	protected int next (int bits) {
+	protected final int next (int bits) {
 		return (int)(nextLong() & ((1L << bits) - 1));
 	}
 
+	/** Returns the next pseudo-random, uniformly distributed {@code int} value from this random number generator's sequence.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally. */
 	@Override
 	public int nextInt () {
 		return (int)nextLong();
 	}
 
+	/** Returns a pseudo-random, uniformly distributed {@code int} value between 0 (inclusive) and the specified value (exclusive),
+	 * drawn from this random number generator's sequence.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally.
+	 * @param n the positive bound on the random number to be returned.
+	 * @return the next pseudo-random {@code int} value between {@code 0} (inclusive) and {@code n} (exclusive). */
 	@Override
 	public int nextInt (final int n) {
 		return (int)nextLong(n);
 	}
 
-	/** Returns a pseudo-random uniformly distributed {@code long} value between 0 (inclusive) and the specified value (exclusive),
+	/** Returns a pseudo-random, uniformly distributed {@code long} value between 0 (inclusive) and the specified value (exclusive),
 	 * drawn from this random number generator's sequence. The algorithm used to generate the value guarantees that the result is
 	 * uniform, provided that the sequence of 64-bit values produced by this generator is.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally.
 	 * @param n the positive bound on the random number to be returned.
 	 * @return the next pseudo-random {@code long} value between {@code 0} (inclusive) and {@code n} (exclusive). */
 	public long nextLong (final long n) {
@@ -96,21 +111,36 @@ public class RandomXS128 extends Random {
 		}
 	}
 
+	/** Returns a pseudo-random, uniformly distributed {@code double} value between 0.0 and 1.0from this random number generator's
+	 * sequence.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally. */
 	@Override
 	public double nextDouble () {
 		return (nextLong() >>> 11) * NORM_DOUBLE;
 	}
 
+	/** Returns a pseudo-random, uniformly distributed {@code float} value between 0.0 and 1.0 from this random number generator's
+	 * sequence.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally. */
 	@Override
 	public float nextFloat () {
 		return (float)((nextLong() >>> 40) * NORM_FLOAT);
 	}
 
+	/** Returns a pseudo-random, uniformly distributed {@code boolean } value from this random number generator's sequence.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally. */
 	@Override
 	public boolean nextBoolean () {
 		return (nextLong() & 1) != 0;
 	}
 
+	/** Generates random bytes and places them into a user-supplied byte array. The number of random bytes produced is equal to the
+	 * length of the byte array.
+	 * <p>
+	 * This implementation uses {@link #nextLong()} internally. */
 	@Override
 	public void nextBytes (final byte[] bytes) {
 		int n = 0;
