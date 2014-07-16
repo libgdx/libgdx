@@ -95,96 +95,96 @@ import com.badlogic.gdx.utils.Clipboard;
  * 
  * @author mzechner */
 public interface Application {
-	/** Enumeration of possible {@link Application} types
-	 * 
-	 * @author mzechner */
-	public enum ApplicationType {
-		Android, Desktop, HeadlessDesktop, Applet, WebGL, iOS
-	}
+    /** Enumeration of possible {@link Application} types
+     * 
+     * @author mzechner */
+    public enum ApplicationType {
+        Android, Desktop, HeadlessDesktop, Applet, WebGL, iOS
+    }
 
-	public static final int LOG_NONE = 0;
-	public static final int LOG_DEBUG = 3;
-	public static final int LOG_INFO = 2;
-	public static final int LOG_ERROR = 1;
+    public static final int LOG_NONE = 0;
+    public static final int LOG_DEBUG = 3;
+    public static final int LOG_INFO = 2;
+    public static final int LOG_ERROR = 1;
 
-	/** @return the {@link ApplicationListener} instance */
-	public ApplicationListener getApplicationListener ();
+    /** @return the {@link ApplicationListener} instance */
+    public ApplicationListener getApplicationListener ();
 
-	/** @return the {@link Graphics} instance */
-	public Graphics getGraphics ();
+    /** @return the {@link Graphics} instance */
+    public Graphics getGraphics ();
 
-	/** @return the {@link Audio} instance */
-	public Audio getAudio ();
+    /** @return the {@link Audio} instance */
+    public Audio getAudio ();
 
-	/** @return the {@link Input} instance */
-	public Input getInput ();
+    /** @return the {@link Input} instance */
+    public Input getInput ();
 
-	/** @return the {@link Files} instance */
-	public Files getFiles ();
+    /** @return the {@link Files} instance */
+    public Files getFiles ();
 
-	/** @return the {@link Net} instance */
-	public Net getNet ();
+    /** @return the {@link Net} instance */
+    public Net getNet ();
 
-	/** Logs a message to the console or logcat */
-	public void log (String tag, String message);
+    /** Logs a message to the console or logcat */
+    public void log (String tag, String message);
 
-	/** Logs a message to the console or logcat */
-	public void log (String tag, String message, Throwable exception);
+    /** Logs a message to the console or logcat */
+    public void log (String tag, String message, Throwable exception);
 
-	/** Logs an error message to the console or logcat */
-	public void error (String tag, String message);
+    /** Logs an error message to the console or logcat */
+    public void error (String tag, String message);
 
-	/** Logs an error message to the console or logcat */
-	public void error (String tag, String message, Throwable exception);
+    /** Logs an error message to the console or logcat */
+    public void error (String tag, String message, Throwable exception);
 
-	/** Logs a debug message to the console or logcat */
-	public void debug (String tag, String message);
+    /** Logs a debug message to the console or logcat */
+    public void debug (String tag, String message);
 
-	/** Logs a debug message to the console or logcat */
-	public void debug (String tag, String message, Throwable exception);
+    /** Logs a debug message to the console or logcat */
+    public void debug (String tag, String message, Throwable exception);
 
-	/** Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let error messages through.
-	 * {@link #LOG_INFO} will let all non-debug messages through, and {@link #LOG_DEBUG} will let all messages through.
-	 * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}. */
-	public void setLogLevel (int logLevel);
+    /** Sets the log level. {@link #LOG_NONE} will mute all log output. {@link #LOG_ERROR} will only let error messages through.
+     * {@link #LOG_INFO} will let all non-debug messages through, and {@link #LOG_DEBUG} will let all messages through.
+     * @param logLevel {@link #LOG_NONE}, {@link #LOG_ERROR}, {@link #LOG_INFO}, {@link #LOG_DEBUG}. */
+    public void setLogLevel (int logLevel);
 
-	/** Gets the log level. */
-	public int getLogLevel ();
+    /** Gets the log level. */
+    public int getLogLevel ();
 
-	/** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
-	public ApplicationType getType ();
+    /** @return what {@link ApplicationType} this application has, e.g. Android or Desktop */
+    public ApplicationType getType ();
 
-	/** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
-	public int getVersion ();
+    /** @return the Android API level on Android, the major OS version on iOS (5, 6, 7, ..), or 0 on the desktop. */
+    public int getVersion ();
 
-	/** @return the Java heap memory use in bytes */
-	public long getJavaHeap ();
+    /** @return the Java heap memory use in bytes */
+    public long getJavaHeap ();
 
-	/** @return the Native heap memory use in bytes */
-	public long getNativeHeap ();
+    /** @return the Native heap memory use in bytes */
+    public long getNativeHeap ();
 
-	/** Returns the {@link Preferences} instance of this Application. It can be used to store application settings across runs.
-	 * @param name the name of the preferences, must be useable as a file name.
-	 * @return the preferences. */
-	public Preferences getPreferences (String name);
+    /** Returns the {@link Preferences} instance of this Application. It can be used to store application settings across runs.
+     * @param name the name of the preferences, must be useable as a file name.
+     * @return the preferences. */
+    public Preferences getPreferences (String name);
 
-	public Clipboard getClipboard ();
+    public Clipboard getClipboard ();
 
-	/** Posts a {@link Runnable} on the main loop thread.
-	 * 
-	 * @param runnable the runnable. */
-	public void postRunnable (Runnable runnable);
+    /** Posts a {@link Runnable} on the main loop thread.
+     * 
+     * @param runnable the runnable. */
+    public void postRunnable (Runnable runnable);
 
-	/** Schedule an exit from the application. On android, this will cause a call to pause() and dispose() some time in the future,
-	 * it will not immediately finish your application. */
-	public void exit ();
+    /** Schedule an exit from the application. On android, this will cause a call to pause() and dispose() some time in the future,
+     * it will not immediately finish your application. */
+    public void exit ();
 
-	/** Adds a new {@link LifecycleListener} to the application. This can be used by extensions to hook into the lifecycle more
-	 * easily. The {@link ApplicationListener} methods are sufficient for application level development.
-	 * @param listener */
-	public void addLifecycleListener (LifecycleListener listener);
+    /** Adds a new {@link LifecycleListener} to the application. This can be used by extensions to hook into the lifecycle more
+     * easily. The {@link ApplicationListener} methods are sufficient for application level development.
+     * @param listener */
+    public void addLifecycleListener (LifecycleListener listener);
 
-	/** Removes the {@link LifecycleListener}.
-	 * @param listener */
-	public void removeLifecycleListener (LifecycleListener listener);
+    /** Removes the {@link LifecycleListener}.
+     * @param listener */
+    public void removeLifecycleListener (LifecycleListener listener);
 }
