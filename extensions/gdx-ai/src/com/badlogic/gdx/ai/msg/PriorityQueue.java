@@ -95,7 +95,8 @@ public class PriorityQueue<E extends Comparable<E>> {
 		this.uniqueness = uniqueness;
 	}
 
-	/** Inserts the specified element into this priority queue.
+	/** Inserts the specified element into this priority queue. If {@code uniqueness} is enabled and this priority queue already
+	 * contains the element, the call leaves the queue unchanged and returns false.
 	 * 
 	 * @return true if the element was added to this queue, else false
 	 * @throws ClassCastException if the specified element cannot be compared with elements currently in this priority queue
@@ -103,7 +104,7 @@ public class PriorityQueue<E extends Comparable<E>> {
 	 * @throws NullPointerException if the specified element is null */
 	public boolean add (E e) {
 		if (e == null) throw new NullPointerException();
-		if (uniqueness && set.contains(e)) return false;
+		if (uniqueness && !set.add(e)) return false;
 		int i = size;
 		if (i >= queue.length) growToSize(i + 1);
 		size = i + 1;
@@ -111,7 +112,6 @@ public class PriorityQueue<E extends Comparable<E>> {
 			queue[0] = e;
 		else
 			siftUp(i, e);
-		if (uniqueness) set.add(e);
 		return true;
 	}
 
