@@ -20,9 +20,10 @@ import java.util.Random;
 
 /** This class implements the xorshift128+ algorithm that is a very fast, top-quality 64-bit pseudo-random number generator. The
  * quality of this PRNG is much higher than {@link Random}'s, and its cycle length is 2<sup>128</sup>&nbsp;&minus;&nbsp;1, which
- * is more than enough for any single-thread application.
+ * is more than enough for any single-thread application. More details and algorithms can be found <a
+ * href="http://xorshift.di.unimi.it/">here</a>.
  * <p>
- * More details and algorithms can be found <a href="http://xorshift.di.unimi.it/">here</a>.
+ * Instances of RandomXS128 are not thread-safe.
  * 
  * @author Inferno
  * @author davebaol */
@@ -34,8 +35,11 @@ public class RandomXS128 extends Random {
 	/** Normalization constant for float. */
 	private static final double NORM_FLOAT = 1.0 / (1L << 24);
 
-	/** The internal state of pseudo-random number generator. */
-	private long seed0, seed1;
+	/** The first half of the internal state of this pseudo-random number generator. */
+	private long seed0;
+
+	/** The second half of the internal state of this pseudo-random number generator. */
+	private long seed1;
 
 	/** Creates a new random number generator. This constructor sets the seed of the random number generator to a value very likely
 	 * to be distinct from any other invocation of this constructor.
@@ -58,7 +62,7 @@ public class RandomXS128 extends Random {
 		setState(seed0, seed1);
 	}
 
-	/** Returns the next pseudo-random, uniformly distributed long value from this random number generator's sequence.
+	/** Returns the next pseudo-random, uniformly distributed {@code long} value from this random number generator's sequence.
 	 * <p>
 	 * Subclasses should override this, as this is used by all other methods. */
 	@Override
@@ -164,8 +168,8 @@ public class RandomXS128 extends Random {
 	}
 
 	/** Sets the internal state of this generator.
-	 * @param seed0 the first part of the initial state
-	 * @param seed1 the second part of the initial state */
+	 * @param seed0 the first part of the internal state
+	 * @param seed1 the second part of the internal state */
 	public void setState (final long seed0, final long seed1) {
 		this.seed0 = seed0;
 		this.seed1 = seed1;
