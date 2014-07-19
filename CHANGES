@@ -1,4 +1,5 @@
 [1.2.1]
+- Files#getLocalStoragePath now returns the actual path instead of the empty string synonym on desktop (LWJGL and JGLFW).
 - Fixed and improved xorshift128+ PRNG implementation.
 - Added support for Tiled's animated tiles, and varying frame duration tile animations.
 - Fixed an issue with time granularity in MessageDispatcher.
