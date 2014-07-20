@@ -83,7 +83,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		this.background = background;
 		if (adjustPadding) {
 			if (background == null)
-				pad(null);
+				pad(Value.zero);
 			else
 				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
