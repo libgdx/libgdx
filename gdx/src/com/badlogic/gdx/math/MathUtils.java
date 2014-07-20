@@ -280,4 +280,15 @@ public final class MathUtils {
 	static public boolean isEqual (float a, float b, float tolerance) {
 		return Math.abs(a - b) <= tolerance;
 	}
+
+	/**@return the logarithm of x with base a */
+	static public float log( float a, float x ){
+		return (float)(Math.log(x) / Math.log(a));
+	}
+
+	/**@return the logarithm of x with base 2*/
+	static public float log2( float x ){
+		return log(2, x);
+	}
+
 }

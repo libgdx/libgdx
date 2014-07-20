@@ -18,6 +18,7 @@ package com.badlogic.gdx.graphics.g3d.attributes;
 
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.NumberUtils;
 
 public class FloatAttribute extends Attribute {
 	public static final String ShininessAlias = "shininess";
@@ -51,8 +52,9 @@ public class FloatAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		// FIXME use epsilon?
-		return ((FloatAttribute)other).value == value;
+	public int hashCode () {
+		int result = (int)type;
+		result = 977 * result + NumberUtils.floatToRawIntBits(value);
+		return result; 
 	}
 }

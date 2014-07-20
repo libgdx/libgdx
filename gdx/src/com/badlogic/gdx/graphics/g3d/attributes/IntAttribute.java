@@ -43,7 +43,9 @@ public class IntAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		return ((IntAttribute)other).value == value;
+	public int hashCode () {
+		int result = (int)type;
+		result = 983 * result + value;
+		return result; 
 	}
 }

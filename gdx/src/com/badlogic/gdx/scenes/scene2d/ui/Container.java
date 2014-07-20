@@ -38,7 +38,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	public void draw (Batch batch, float parentAlpha) {
 		validate();
-		if (actor == null) return;
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
 			drawBackground(batch, parentAlpha, 0, 0);
@@ -84,7 +83,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		this.background = background;
 		if (adjustPadding) {
 			if (background == null)
-				pad(null);
+				pad(Value.zero);
 			else
 				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
@@ -287,7 +286,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth and minHeight to the specified values. */
 	public Container<T> minSize (float width, float height) {
-		minSize(new Fixed(width));
+		minSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -327,7 +326,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the prefWidth and prefHeight to the specified value. */
 	public Container<T> prefSize (float width, float height) {
-		prefSize(new Fixed(width));
+		prefSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -379,7 +378,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
 	public Container<T> maxSize (float width, float height) {
-		maxSize(new Fixed(width));
+		maxSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.iosrobovm;
 
 import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.AudioRecorder;
 import com.badlogic.gdx.audio.Music;
@@ -29,8 +30,12 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class IOSAudio implements Audio {
 
 	public IOSAudio (IOSApplicationConfiguration config) {
-		OALSimpleAudio.sharedInstance().setAllowIpod(config.allowIpod);
-		OALSimpleAudio.sharedInstance().setHonorSilentSwitch(true);
+		OALSimpleAudio audio = OALSimpleAudio.sharedInstance();
+		if (audio != null) {
+			audio.setAllowIpod(config.allowIpod);
+			audio.setHonorSilentSwitch(true);
+		} else
+			Gdx.app.error("IOSAudio", "No OALSimpleAudio instance available, audio will not be availabe");
 	}
 
 	@Override

@@ -23,8 +23,6 @@
 %include "../../swig-src/linearmath/classes.i"
 
 %ignore btManifoldPoint::getLifeTime;
-%ignore btManifoldPoint::getPositionWorldOnA;
-%ignore btManifoldPoint::getPositionWorldOnB;
 %ignore btManifoldPoint::getAppliedImpulse;
 %ignore btVoronoiSimplexSolver::setEqualVertexThreshold;
 %ignore btVoronoiSimplexSolver::getEqualVertexThreshold;

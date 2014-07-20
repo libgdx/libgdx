@@ -84,7 +84,8 @@ public class ObjectSet<T> implements Iterable<T> {
 		size = set.size;
 	}
 
-	/** Returns true if the key was not already in the set. */
+	/** Returns true if the key was not already in the set. If this set already contains the key, the call leaves the set unchanged
+	 * and returns false. */
 	public boolean add (T key) {
 		if (key == null) throw new IllegalArgumentException("key cannot be null.");
 		T[] keyTable = this.keyTable;

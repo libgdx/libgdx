@@ -101,7 +101,9 @@ public class ColorAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		return ((ColorAttribute)other).color.equals(color);
+	public int hashCode () {
+		int result = (int)type;
+		result = 953 * result + color.hashCode();
+		return result; 
 	}
 }

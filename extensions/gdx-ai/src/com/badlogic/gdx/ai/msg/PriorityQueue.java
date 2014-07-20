@@ -16,8 +16,7 @@
 
 package com.badlogic.gdx.ai.msg;
 
-import java.util.Arrays;
-
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectSet;
 
 /** An unbounded priority queue based on a priority heap. The elements of the priority queue are ordered according to their
@@ -96,7 +95,8 @@ public class PriorityQueue<E extends Comparable<E>> {
 		this.uniqueness = uniqueness;
 	}
 
-	/** Inserts the specified element into this priority queue.
+	/** Inserts the specified element into this priority queue. If {@code uniqueness} is enabled and this priority queue already
+	 * contains the element, the call leaves the queue unchanged and returns false.
 	 * 
 	 * @return true if the element was added to this queue, else false
 	 * @throws ClassCastException if the specified element cannot be compared with elements currently in this priority queue
@@ -104,7 +104,7 @@ public class PriorityQueue<E extends Comparable<E>> {
 	 * @throws NullPointerException if the specified element is null */
 	public boolean add (E e) {
 		if (e == null) throw new NullPointerException();
-		if (uniqueness && set.contains(e)) return false;
+		if (uniqueness && !set.add(e)) return false;
 		int i = size;
 		if (i >= queue.length) growToSize(i + 1);
 		size = i + 1;
@@ -112,7 +112,6 @@ public class PriorityQueue<E extends Comparable<E>> {
 			queue[0] = e;
 		else
 			siftUp(i, e);
-		if (uniqueness) set.add(e);
 		return true;
 	}
 
@@ -204,14 +203,16 @@ public class PriorityQueue<E extends Comparable<E>> {
 	 * @param minCapacity the desired minimum capacity */
 	private void growToSize (int minCapacity) {
 		if (minCapacity < 0) // overflow
-			throw new OutOfMemoryError();
+			throw new GdxRuntimeException("Capacity upper limit exceeded.");
 		int oldCapacity = queue.length;
 		// Double size if small; else grow by 50%
 		int newCapacity = (int)((oldCapacity < 64) ? ((oldCapacity + 1) * CAPACITY_RATIO_HI) : (oldCapacity * CAPACITY_RATIO_LOW));
 		if (newCapacity < 0) // overflow
 			newCapacity = Integer.MAX_VALUE;
 		if (newCapacity < minCapacity) newCapacity = minCapacity;
-		queue = Arrays.copyOf(queue, newCapacity);
+		Object[] newQueue = new Object[newCapacity];
+		System.arraycopy(queue, 0, newQueue, 0, size);
+		queue = newQueue;
 	}
 
 }

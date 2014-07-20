@@ -19,6 +19,7 @@ package com.badlogic.gdx.graphics.g3d.attributes;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.NumberUtils;
 
 public class DepthTestAttribute extends Attribute {
 	public final static String Alias = "depthStencil";
@@ -82,9 +83,12 @@ public class DepthTestAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		DepthTestAttribute attr = (DepthTestAttribute)other;
-		return depthFunc == attr.depthFunc && depthRangeNear == attr.depthRangeNear && depthRangeFar == attr.depthRangeFar
-			&& depthMask == attr.depthMask;
+	public int hashCode () {
+		int result = (int)type;
+		result = 971 * result + depthFunc;
+		result = 971 * result + NumberUtils.floatToRawIntBits(depthRangeNear);
+		result = 971 * result + NumberUtils.floatToRawIntBits(depthRangeFar);
+		result = 971 * result + (depthMask ? 1 : 0);
+		return result; 
 	}
 }
