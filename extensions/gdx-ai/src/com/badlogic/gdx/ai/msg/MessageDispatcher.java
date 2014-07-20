@@ -160,14 +160,6 @@ public class MessageDispatcher {
 	 * @param extraInfo an optional object */
 	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg, Object extraInfo) {
 
-		// Make sure the receiver is valid
-		if (receiver == null) {
-			if (debugEnabled) {
-				Gdx.app.log(LOG_TAG, "Warning! No Receiver specified");
-			}
-			return;
-		}
-
 		// Get a telegram from the pool
 		Telegram telegram = pool.obtain();
 		telegram.sender = sender;
@@ -188,12 +180,18 @@ public class MessageDispatcher {
 			long currentTime = getCurrentTime();
 			telegram.setTimestamp(currentTime + (long)(delay * NANOS_PER_SEC), timeGranularity);
 
-			// Put the telegram in the queue or return it to the pool if is rejected
-			if (!queue.add(telegram)) pool.free(telegram);
+			// Put the telegram in the queue
+			boolean added = queue.add(telegram);
+
+			// Return it to the pool if has been rejected
+			if (!added) pool.free(telegram);
 
 			if (debugEnabled) {
-				Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " recorded at time " + getCurrentTime() + " for " + receiver
-					+ ". Msg is " + msg);
+				if (added)
+					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " recorded at time "
+						+ getCurrentTime() + ". Msg is " + msg);
+				else
+					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " rejected by the queue. Msg is " + msg);
 			}
 		}
 	}

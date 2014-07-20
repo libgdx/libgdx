@@ -21,29 +21,31 @@ import com.badlogic.gdx.ai.msg.Telegram;
 /** The state of a state machine defines the logic of the entities that enter, exit and last this state. Additionally, a state may
  * be delegated by an entity to handle its messages.
  * 
- * E is the type of the entities handled by this state
+ * @param <E> is the type of the entity handled by this state machine
  * 
  * @author davebaol */
 public interface State<E> {
 
 	/** This method will execute when the state is entered.
 	 * 
-	 * @param entity */
+	 * @param entity the entity entering the state */
 	public void enter (E entity);
 
 	/** This is the state's normal update function
 	 * 
-	 * @param entity */
+	 * @param entity the entity lasting the state */
 	public void update (E entity);
 
 	/** This method will execute when the state is exited.
 	 * 
-	 * @param entity */
+	 * @param entity the entity exiting the state */
 	public void exit (E entity);
 
-	/** This method executes if the entity receives a message from the message dispatcher while it is in this state.
+	/** This method executes if the {@code entity} receives a {@code telegram} from the message dispatcher while it is in this
+	 * state.
 	 * 
-	 * @param telegram
+	 * @param entity the entity that received the message
+	 * @param telegram the message sent to the entity
 	 * @return true if the message has been successfully handled; false otherwise. */
-	public boolean onMessage (Telegram telegram);
+	public boolean onMessage (E entity, Telegram telegram);
 }
