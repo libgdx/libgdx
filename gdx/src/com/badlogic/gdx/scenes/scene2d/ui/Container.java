@@ -83,7 +83,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 		this.background = background;
 		if (adjustPadding) {
 			if (background == null)
-				pad(null);
+				pad(Value.zero);
 			else
 				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
@@ -194,6 +194,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> size (Value size) {
+		if (size == null) throw new IllegalArgumentException("size cannot be null.");
 		minWidth = size;
 		minHeight = size;
 		prefWidth = size;
@@ -205,6 +206,8 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
 	public Container<T> size (Value width, Value height) {
+		if (width == null) throw new IllegalArgumentException("width cannot be null.");
+		if (height == null) throw new IllegalArgumentException("height cannot be null.");
 		minWidth = width;
 		minHeight = height;
 		prefWidth = width;
@@ -228,6 +231,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
 	public Container<T> width (Value width) {
+		if (width == null) throw new IllegalArgumentException("width cannot be null.");
 		minWidth = width;
 		prefWidth = width;
 		maxWidth = width;
@@ -242,6 +246,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
 	public Container<T> height (Value height) {
+		if (height == null) throw new IllegalArgumentException("height cannot be null.");
 		minHeight = height;
 		prefHeight = height;
 		maxHeight = height;
@@ -256,6 +261,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth and minHeight to the specified value. */
 	public Container<T> minSize (Value size) {
+		if (size == null) throw new IllegalArgumentException("size cannot be null.");
 		minWidth = size;
 		minHeight = size;
 		return this;
@@ -263,17 +269,21 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth and minHeight to the specified values. */
 	public Container<T> minSize (Value width, Value height) {
+		if (width == null) throw new IllegalArgumentException("width cannot be null.");
+		if (height == null) throw new IllegalArgumentException("height cannot be null.");
 		minWidth = width;
 		minHeight = height;
 		return this;
 	}
 
 	public Container<T> minWidth (Value minWidth) {
+		if (minWidth == null) throw new IllegalArgumentException("minWidth cannot be null.");
 		this.minWidth = minWidth;
 		return this;
 	}
 
 	public Container<T> minHeight (Value minHeight) {
+		if (minHeight == null) throw new IllegalArgumentException("minHeight cannot be null.");
 		this.minHeight = minHeight;
 		return this;
 	}
@@ -286,7 +296,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the minWidth and minHeight to the specified values. */
 	public Container<T> minSize (float width, float height) {
-		minSize(new Fixed(width));
+		minSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -302,6 +312,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the prefWidth and prefHeight to the specified value. */
 	public Container<T> prefSize (Value size) {
+		if (size == null) throw new IllegalArgumentException("size cannot be null.");
 		prefWidth = size;
 		prefHeight = size;
 		return this;
@@ -309,24 +320,28 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the prefWidth and prefHeight to the specified values. */
 	public Container<T> prefSize (Value width, Value height) {
+		if (width == null) throw new IllegalArgumentException("width cannot be null.");
+		if (height == null) throw new IllegalArgumentException("height cannot be null.");
 		prefWidth = width;
 		prefHeight = height;
 		return this;
 	}
 
 	public Container<T> prefWidth (Value prefWidth) {
+		if (prefWidth == null) throw new IllegalArgumentException("prefWidth cannot be null.");
 		this.prefWidth = prefWidth;
 		return this;
 	}
 
 	public Container<T> prefHeight (Value prefHeight) {
+		if (prefHeight == null) throw new IllegalArgumentException("prefHeight cannot be null.");
 		this.prefHeight = prefHeight;
 		return this;
 	}
 
 	/** Sets the prefWidth and prefHeight to the specified value. */
 	public Container<T> prefSize (float width, float height) {
-		prefSize(new Fixed(width));
+		prefSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -348,6 +363,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the maxWidth and maxHeight to the specified value. */
 	public Container<T> maxSize (Value size) {
+		if (size == null) throw new IllegalArgumentException("size cannot be null.");
 		maxWidth = size;
 		maxHeight = size;
 		return this;
@@ -355,17 +371,21 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
 	public Container<T> maxSize (Value width, Value height) {
+		if (width == null) throw new IllegalArgumentException("width cannot be null.");
+		if (height == null) throw new IllegalArgumentException("height cannot be null.");
 		maxWidth = width;
 		maxHeight = height;
 		return this;
 	}
 
 	public Container<T> maxWidth (Value maxWidth) {
+		if (maxWidth == null) throw new IllegalArgumentException("maxWidth cannot be null.");
 		this.maxWidth = maxWidth;
 		return this;
 	}
 
 	public Container<T> maxHeight (Value maxHeight) {
+		if (maxHeight == null) throw new IllegalArgumentException("maxHeight cannot be null.");
 		this.maxHeight = maxHeight;
 		return this;
 	}
@@ -378,7 +398,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
 	public Container<T> maxSize (float width, float height) {
-		maxSize(new Fixed(width));
+		maxSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -394,6 +414,7 @@ public class Container<T extends Actor> extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
 	public Container<T> pad (Value pad) {
+		if (pad == null) throw new IllegalArgumentException("pad cannot be null.");
 		padTop = pad;
 		padLeft = pad;
 		padBottom = pad;
@@ -402,6 +423,10 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	public Container<T> pad (Value top, Value left, Value bottom, Value right) {
+		if (top == null) throw new IllegalArgumentException("top cannot be null.");
+		if (left == null) throw new IllegalArgumentException("left cannot be null.");
+		if (bottom == null) throw new IllegalArgumentException("bottom cannot be null.");
+		if (right == null) throw new IllegalArgumentException("right cannot be null.");
 		padTop = top;
 		padLeft = left;
 		padBottom = bottom;
@@ -410,21 +435,25 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	public Container<T> padTop (Value padTop) {
+		if (padTop == null) throw new IllegalArgumentException("padTop cannot be null.");
 		this.padTop = padTop;
 		return this;
 	}
 
 	public Container<T> padLeft (Value padLeft) {
+		if (padLeft == null) throw new IllegalArgumentException("padLeft cannot be null.");
 		this.padLeft = padLeft;
 		return this;
 	}
 
 	public Container<T> padBottom (Value padBottom) {
+		if (padBottom == null) throw new IllegalArgumentException("padBottom cannot be null.");
 		this.padBottom = padBottom;
 		return this;
 	}
 
 	public Container<T> padRight (Value padRight) {
+		if (padRight == null) throw new IllegalArgumentException("padRight cannot be null.");
 		this.padRight = padRight;
 		return this;
 	}

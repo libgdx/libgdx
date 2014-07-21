@@ -154,7 +154,7 @@ public class Table extends WidgetGroup {
 		this.background = background;
 		if (adjustPadding) {
 			if (background == null)
-				pad(null);
+				pad(Value.zero);
 			else
 				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
 			invalidate();
@@ -428,6 +428,7 @@ public class Table extends WidgetGroup {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
 	public Table pad (Value pad) {
+		if (pad == null) throw new IllegalArgumentException("pad cannot be null.");
 		padTop = pad;
 		padLeft = pad;
 		padBottom = pad;
@@ -437,6 +438,10 @@ public class Table extends WidgetGroup {
 	}
 
 	public Table pad (Value top, Value left, Value bottom, Value right) {
+		if (top == null) throw new IllegalArgumentException("top cannot be null.");
+		if (left == null) throw new IllegalArgumentException("left cannot be null.");
+		if (bottom == null) throw new IllegalArgumentException("bottom cannot be null.");
+		if (right == null) throw new IllegalArgumentException("right cannot be null.");
 		padTop = top;
 		padLeft = left;
 		padBottom = bottom;
@@ -447,6 +452,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the top edge of the table. */
 	public Table padTop (Value padTop) {
+		if (padTop == null) throw new IllegalArgumentException("padTop cannot be null.");
 		this.padTop = padTop;
 		sizeInvalid = true;
 		return this;
@@ -454,6 +460,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the left edge of the table. */
 	public Table padLeft (Value padLeft) {
+		if (padLeft == null) throw new IllegalArgumentException("padLeft cannot be null.");
 		this.padLeft = padLeft;
 		sizeInvalid = true;
 		return this;
@@ -461,6 +468,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the bottom edge of the table. */
 	public Table padBottom (Value padBottom) {
+		if (padBottom == null) throw new IllegalArgumentException("padBottom cannot be null.");
 		this.padBottom = padBottom;
 		sizeInvalid = true;
 		return this;
@@ -468,6 +476,7 @@ public class Table extends WidgetGroup {
 
 	/** Padding at the right edge of the table. */
 	public Table padRight (Value padRight) {
+		if (padRight == null) throw new IllegalArgumentException("padRight cannot be null.");
 		this.padRight = padRight;
 		sizeInvalid = true;
 		return this;
@@ -645,7 +654,8 @@ public class Table extends WidgetGroup {
 		return align;
 	}
 
-	/** Returns the row index for the y coordinate, or -1 if there are no cells. */
+	/** Returns the row index for the y coordinate, or -1 if there are no cells.
+	 * @param y The y coordinate, where 0 is the top of the table. */
 	public int getRow (float y) {
 		Array<Cell> cells = this.cells;
 		int row = 0;
@@ -668,6 +678,14 @@ public class Table extends WidgetGroup {
 	/** If true (the default), positions and sizes are rounded to integers. */
 	public void setRound (boolean round) {
 		this.round = round;
+	}
+
+	public int getRows () {
+		return rows;
+	}
+
+	public int getColumns () {
+		return columns;
 	}
 
 	private float[] ensureSize (float[] array, int size) {
