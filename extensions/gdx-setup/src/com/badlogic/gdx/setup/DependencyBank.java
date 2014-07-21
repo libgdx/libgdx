@@ -43,6 +43,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers.controllers-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
+		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -109,6 +110,13 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"}
+		),
+		ASHLEY(
+			new String[]{"com.badlogicgames.ashley:ashley:1.0.1"},
+			new String[]{},
+			new String[]{"com.badlogicgames.ashley:ashley:1.0.1"},
+			new String[]{},
+			new String[]{"com.badlogicgames.ashley:ashley:1.0.1:sources"}
 		);
 
 		private String[] coreDependencies;
