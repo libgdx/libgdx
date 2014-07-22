@@ -43,6 +43,8 @@ public class LwjglApplicationConfiguration {
 	public int samples = 0;
 	/** width & height of application window **/
 	public int width = 640, height = 480;
+	/** failsafe width & height to use if initial display creation failes, values <= 0 disable failsafe */
+	public int failsafeWidth = 0, failsafeHeight = 0;
 	/** x & y of application window, -1 for center **/
 	public int x = -1, y = -1;
 	/** fullscreen **/

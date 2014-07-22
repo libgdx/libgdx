@@ -293,6 +293,11 @@ public class JglfwGraphics implements Graphics {
 		this.title = title;
 	}
 
+	@Override
+	public boolean isUsingFailsafeDisplay() {
+		return false;
+	}
+
 	public void setVSync (boolean vsync) {
 		this.vSync = vsync;
 		glfwSwapInterval(vsync ? 1 : 0);

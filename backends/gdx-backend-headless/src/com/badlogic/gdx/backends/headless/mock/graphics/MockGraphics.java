@@ -131,6 +131,11 @@ public class MockGraphics implements Graphics {
 	}
 
 	@Override
+	public boolean isUsingFailsafeDisplay() {
+		return false;
+	}
+
+	@Override
 	public void setVSync(boolean vsync) {
 
 	}

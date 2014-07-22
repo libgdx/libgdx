@@ -179,6 +179,9 @@ public interface Graphics {
 	 * @param title the title. */
 	public void setTitle (String title);
 
+	/** For LWJGL only, returns true when initial display mode creation failed and failsafe settings were used */
+	public boolean isUsingFailsafeDisplay();
+
 	/** Enable/Disable vsynching. This is a best-effort attempt which might not work on all platforms.
 	 * 
 	 * @param vsync vsync enabled or not. */
