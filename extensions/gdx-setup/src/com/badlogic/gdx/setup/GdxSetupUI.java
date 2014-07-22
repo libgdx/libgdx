@@ -49,6 +49,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonModel;
 import javax.swing.ImageIcon;
@@ -527,7 +528,7 @@ public class GdxSetupUI extends JFrame {
 			int depCounter = 0;
 
 			for (int row = 0; row <= (ProjectDependency.values().length / 5); row++) {
-				JPanel extensionPanel = new JPanel(new GridLayout());
+				JPanel extensionPanel = new JPanel(new GridLayout(1, 5));
 				while (depCounter < ProjectDependency.values().length) {
 					if (ProjectDependency.values()[depCounter] != null) {
 						final ProjectDependency projDep = ProjectDependency.values()[depCounter];
@@ -559,6 +560,10 @@ public class GdxSetupUI extends JFrame {
 						}
 						depCounter++;
 					}
+				}
+				
+				for (int left = depCounter - 5; left > 1; left--) {
+					extensionPanel.add(Box.createHorizontalBox());
 				}
 
 				extensionsPanels.add(extensionPanel);
