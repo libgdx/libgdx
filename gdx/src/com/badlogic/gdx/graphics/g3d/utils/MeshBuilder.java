@@ -1143,13 +1143,19 @@ public class MeshBuilder implements MeshPartBuilder {
 	public void mesh (float[] vertices, short[] indices, int numVerts, int numIndices) {
 		if (this.attributes == null) throw new RuntimeException("Call begin() first");
 
+		if (numVerts < 1 || numVerts > numVerts)
+			throw new GdxRuntimeException("Invalid vertex count");
+		if (numIndices < 1 || numIndices > numIndices)
+			throw new GdxRuntimeException("Invalid index count");
+
+		int size = stride * numVerts;
 		tempVerts.clear();
-		tempVerts.ensureCapacity(numVerts * stride);
-		tempVerts.addAll(vertices);
+		tempVerts.ensureCapacity(size);
+		tempVerts.addAll(vertices, 0, size);
 
 		tempInds.clear();
 		tempInds.ensureCapacity(numIndices);
-		tempInds.addAll(indices);
+		tempInds.addAll(indices, 0, numIndices);
 
 		processMesh();
 	}
