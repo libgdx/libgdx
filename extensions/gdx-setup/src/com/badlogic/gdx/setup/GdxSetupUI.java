@@ -156,8 +156,20 @@ public class GdxSetupUI extends JFrame {
 			return;
 		}
 
-		if (!GdxSetup.isSdkUpToDate(sdkLocation) && modules.contains(ProjectType.ANDROID)) {
-			JOptionPane.showMessageDialog(this, "Please update your Android SDK, you need: \nAndroid API " + DependencyBank.androidAPILevel + "\nAndroid Build Tools " + DependencyBank.buildToolsVersion);
+		if (modules.contains(ProjectType.ANDROID)) {
+			if (!GdxSetup.isSdkUpToDate(sdkLocation)) { 
+				try {  //give them a poke in the right direction
+					if (System.getProperty("os.name").contains("Windows")) {
+						String replaced = sdkLocation.replace("\\", "\\\\");
+						Runtime.getRuntime().exec("\"" + replaced + "\\SDK Manager.exe\"");
+					} else {
+						Runtime.getRuntime().exec(sdkLocation + "tools/android sdk");
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				return;
+			}
 		}
 
 		if (!GdxSetup.isEmptyDirectory(destination)) {
