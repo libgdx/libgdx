@@ -28,6 +28,7 @@
 
 package com.badlogic.gdx.tests.utils;
 
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
@@ -214,7 +215,8 @@ public class GdxTests {
 		ViewportTest1.class,
 		ViewportTest2.class,
 		ViewportTest3.class,
-		YDownTest.class
+		YDownTest.class,
+		FreeTypeFontLoaderTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,

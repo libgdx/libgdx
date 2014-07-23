@@ -46,11 +46,11 @@ public class FreeTypeFontGeneratorLoader extends
 		return generator;
 	}
 
-	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
-	}
-
 	@Override
 	public Array<AssetDescriptor> getDependencies (String fileName, FileHandle file, FreeTypeFontGeneratorParameters parameter) {
 		return null;
+	}
+	
+	static public class FreeTypeFontGeneratorParameters extends AssetLoaderParameters<FreeTypeFontGenerator> {
 	}
 }

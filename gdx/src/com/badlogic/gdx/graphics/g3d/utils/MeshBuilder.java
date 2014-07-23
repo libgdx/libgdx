@@ -591,6 +591,9 @@ public class MeshBuilder implements MeshPartBuilder {
 	@Override
 	public void patch (VertexInfo corner00, VertexInfo corner10, VertexInfo corner11, VertexInfo corner01, int divisionsU,
 		int divisionsV) {
+		if (divisionsU < 1 || divisionsV < 1) {
+			throw new GdxRuntimeException("divisionsU and divisionV must be > 0, u,v: " + divisionsU + ", " + divisionsV);
+		}
 		ensureRectangles((divisionsV + 1) * (divisionsU + 1), divisionsV * divisionsU);
 		for (int u = 0; u <= divisionsU; u++) {
 			final float alphaU = (float)u / (float)divisionsU;

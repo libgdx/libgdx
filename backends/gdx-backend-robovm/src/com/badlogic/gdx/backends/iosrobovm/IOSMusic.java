@@ -93,7 +93,7 @@ public class IOSMusic implements Music {
 
 	@Override
 	public float getPosition () {
-		return (float)(track.getCurrentTime() * 1000.0);
+		return (float)(track.getCurrentTime());
 	}
 
 	@Override

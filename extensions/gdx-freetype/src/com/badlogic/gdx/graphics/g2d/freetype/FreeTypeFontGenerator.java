@@ -127,7 +127,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * need to fit onto a single texture.
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @deprecated use {@link #generateFont(FreeTypeFontParameter)} instead */
 	public BitmapFont generateFont (int size, String characters, boolean flip) {
 		FreeTypeBitmapFontData data = generateData(size, characters, flip, null);
@@ -259,7 +259,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip) {
 		return generateData(size, characters, flip, null);
@@ -270,7 +270,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	 * 
 	 * @param size the size in pixels
 	 * @param characters the characters the font should contain
-	 * @param flip whether to flip the font horizontally, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
+	 * @param flip whether to flip the font vertically, see {@link BitmapFont#BitmapFont(FileHandle, TextureRegion, boolean)}
 	 * @param packer the optional PixmapPacker to use
 	 * @deprecated use {@link #generateData(FreeTypeFontParameter)} instead */
 	public FreeTypeBitmapFontData generateData (int size, String characters, boolean flip, PixmapPacker packer) {
@@ -500,7 +500,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		public boolean kerning = true;
 		/** The optional PixmapPacker to use */
 		public PixmapPacker packer = null;
-		/** Whether to flip the font horizontally */
+		/** Whether to flip the font vertically */
 		public boolean flip = false;
 		/** Whether or not to generate mip maps for the resulting texture */
 		public boolean genMipMaps = false;

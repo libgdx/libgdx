@@ -598,7 +598,7 @@ public class ScrollPane extends WidgetGroup {
 		this.velocityX = velocityX;
 		this.velocityY = velocityY;
 	}
-	
+
 	public float getPrefWidth () {
 		if (widget instanceof Layout) {
 			float width = ((Layout)widget).getPrefWidth();
@@ -710,7 +710,7 @@ public class ScrollPane extends WidgetGroup {
 		scrollX(MathUtils.clamp(pixels, 0, maxX));
 	}
 
-	/** Returns the x scroll position in pixels. */
+	/** Returns the x scroll position in pixels, where 0 is the left of the scroll pane. */
 	public float getScrollX () {
 		return amountX;
 	}
@@ -719,7 +719,7 @@ public class ScrollPane extends WidgetGroup {
 		scrollY(MathUtils.clamp(pixels, 0, maxY));
 	}
 
-	/** Returns the y scroll position in pixels. */
+	/** Returns the y scroll position in pixels, where 0 is the top of the scroll pane. */
 	public float getScrollY () {
 		return amountY;
 	}

@@ -26,9 +26,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.collision.BoundingBox;
 
-// BOZO - Javadoc.
-// BOZO - Add a duplicate emitter button.
-
 public class ParticleEmitter {
 	static private final int UPDATE_SCALE = 1 << 0;
 	static private final int UPDATE_ANGLE = 1 << 1;

@@ -229,7 +229,7 @@ public class PreloaderBundleGenerator extends Generator {
 			String[] tokens = paths.split(",");
 			String path = null;
 			for(String token: tokens) {
-				if(new FileWrapper(token).exists()) {
+				if (new FileWrapper(token).exists() || new FileWrapper(token).mkdirs()) {
 					path = token;
 				}
 			}

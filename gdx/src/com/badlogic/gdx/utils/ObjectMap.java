@@ -17,7 +17,6 @@
 package com.badlogic.gdx.utils;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.ObjectMap.Entry;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -162,7 +161,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 	public void putAll (ObjectMap<K, V> map) {
 		ensureCapacity(map.size);
-		for (Entry<K, V> entry : map.entries())
+		for (Entry<K, V> entry : map)
 			put(entry.key, entry.value);
 	}
 
@@ -578,7 +577,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns an iterator for the values in the map. Remove is supported. Note that the same iterator instance is returned each
-	 * time this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	 * time this method is called. Use the {@link Values} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
 		if (values1 == null) {
 			values1 = new Values(this);
@@ -597,7 +596,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 	}
 
 	/** Returns an iterator for the keys in the map. Remove is supported. Note that the same iterator instance is returned each time
-	 * this method is called. Use the {@link Entries} constructor for nested or multithreaded iteration. */
+	 * this method is called. Use the {@link Keys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (keys1 == null) {
 			keys1 = new Keys(this);
@@ -639,10 +638,10 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		public void reset () {
 			currentIndex = -1;
 			nextIndex = -1;
-			advance();
+			findNextIndex();
 		}
 
-		void advance () {
+		void findNextIndex () {
 			hasNext = false;
 			K[] keyTable = map.keyTable;
 			for (int n = map.capacity + map.stashSize; ++nextIndex < n;) {
@@ -658,7 +657,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (currentIndex >= map.capacity) {
 				map.removeStashIndex(currentIndex);
 				nextIndex = currentIndex - 1;
-				advance();
+				findNextIndex();
 			} else {
 				map.keyTable[currentIndex] = null;
 				map.valueTable[currentIndex] = null;
@@ -683,7 +682,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			entry.key = keyTable[nextIndex];
 			entry.value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
-			advance();
+			findNextIndex();
 			return entry;
 		}
 
@@ -712,7 +711,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			V value = map.valueTable[nextIndex];
 			currentIndex = nextIndex;
-			advance();
+			findNextIndex();
 			return value;
 		}
 
@@ -722,16 +721,14 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 		/** Returns a new array containing the remaining values. */
 		public Array<V> toArray () {
-			Array array = new Array(true, map.size);
-			while (hasNext)
-				array.add(next());
-			return array;
+			return toArray(new Array(true, map.size));
 		}
 
 		/** Adds the remaining values to the specified array. */
-		public void toArray (Array<V> array) {
+		public Array<V> toArray (Array<V> array) {
 			while (hasNext)
 				array.add(next());
+			return array;
 		}
 	}
 
@@ -750,7 +747,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			if (!valid) throw new GdxRuntimeException("#iterator() cannot be used nested.");
 			K key = map.keyTable[nextIndex];
 			currentIndex = nextIndex;
-			advance();
+			findNextIndex();
 			return key;
 		}
 
@@ -760,7 +757,11 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 
 		/** Returns a new array containing the remaining keys. */
 		public Array<K> toArray () {
-			Array array = new Array(true, map.size);
+			return toArray(new Array(true, map.size));
+		}
+
+		/** Adds the remaining keys to the array. */
+		public Array<K> toArray (Array<K> array) {
 			while (hasNext)
 				array.add(next());
 			return array;
