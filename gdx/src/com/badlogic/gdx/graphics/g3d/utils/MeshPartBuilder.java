@@ -17,6 +17,7 @@
 package com.badlogic.gdx.graphics.g3d.utils;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
@@ -268,6 +269,36 @@ public interface MeshPartBuilder {
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
 	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
 	public void arrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions);
+
+	/** Add vertices from another mesh, will call begin with the supplied mesh's attributes if begin was not yet called
+	 * 
+	 * @param mesh the mesh to add, must have the same vertex attributes as the current mesh part
+	 */
+	public void mesh (Mesh mesh);
+
+	/** Add vertices from another mesh, will call begin with the supplied mesh's attributes if begin was not yet called
+	 * 
+	 * @param mesh the mesh to add, must have the same vertex attributes as the current mesh part
+	 * @param numVerts number of vertices to copy from this mesh
+	 * @param numIndices number of indices to copy from this mesh
+	 */
+	public void mesh (Mesh mesh, int numVerts, int numIndices);
+
+	/** Add vertices from a float array, assumed to represent the same vertex attributes as the current mesh part
+	 * 
+	 * @param vertices the vertices to add, must have the same vertex attributes as the current mesh part
+	 * @param indices the indices representing the mesh in the float array
+	 */
+	public void mesh (float[] vertices, short[] indices);
+
+	/** Add vertices from a float array, assumed to represent the same vertex attributes as the current mesh part
+	 * 
+	 * @param vertices the vertices to add, must have the same vertex attributes as the current mesh part
+	 * @param indices the indices representing the mesh in the float array
+	 * @param numVerts
+	 * @param numIndices
+	 */
+	public void mesh (float[] vertices, short[] indices, int numVerts, int numIndices);
 
 	/** Get the current vertex transformation matrix. */
 	public Matrix4 getVertexTransform (Matrix4 out);
