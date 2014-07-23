@@ -31,7 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TableTest extends GdxTest {
@@ -39,12 +39,12 @@ public class TableTest extends GdxTest {
 	Stage stage;
 	Texture texture;
 	Table root;
-	Scene2DDebugRenderer debugRenderer;
+	StageDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
 		stage = new Stage();
-		debugRenderer = new Scene2DDebugRenderer(stage);
+		debugRenderer = new StageDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));

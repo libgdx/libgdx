@@ -30,7 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author Daniel Holderbaum */
@@ -42,7 +42,7 @@ public class Scene2DDebugRendererTest extends GdxTest {
 	private Stage stage1;
 	private Stage stage2;
 
-	private Scene2DDebugRenderer debugRenderer;
+	private StageDebugRenderer debugRenderer;
 
 	class DebugActor extends Actor {
 
@@ -124,7 +124,7 @@ public class Scene2DDebugRendererTest extends GdxTest {
 		} else {
 			stage = stage2;
 		}
-		debugRenderer = new Scene2DDebugRenderer(stage);
+		debugRenderer = new StageDebugRenderer(stage);
 	}
 
 }

@@ -27,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Scaling;
@@ -45,12 +45,12 @@ public class ViewportTest1 extends GdxTest {
 	Array<String> names;
 	Stage stage;
 	Label label;
-	Scene2DDebugRenderer debugRenderer;
+	StageDebugRenderer debugRenderer;
 
 	public void create () {
 		stage = new Stage();
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		debugRenderer = new Scene2DDebugRenderer(stage);
+		debugRenderer = new StageDebugRenderer(stage);
 
 		label = new Label("", skin);
 

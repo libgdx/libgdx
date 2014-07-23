@@ -33,7 +33,7 @@ import com.badlogic.gdx.utils.ReflectionPool;
  * {@link #render()} method each frame.
  * 
  * @author Daniel Holderbaum */
-public class Scene2DDebugRenderer {
+public class StageDebugRenderer {
 
 	public static class DebugRect implements Poolable {
 		public Vector2 bottomLeft;
@@ -66,7 +66,7 @@ public class Scene2DDebugRenderer {
 
 	private ShapeRenderer shapeRenderer;
 
-	public Scene2DDebugRenderer (Stage stage) {
+	public StageDebugRenderer (Stage stage) {
 		this.stage = stage;
 		this.shapeRenderer = new ShapeRenderer();
 	}

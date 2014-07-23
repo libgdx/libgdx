@@ -24,8 +24,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer.DebugRect;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -570,24 +570,24 @@ public class Actor {
 		this.name = name;
 	}
 
-	/** The {@link Scene2DDebugRenderer} will ask every actor of a stage for their debugging rectangles. To fill the given array you
-	 * can obtain fresh {@link DebugRect}s via the {@link Scene2DDebugRenderer#debugRectPool}. To avoid the garbage collection you
+	/** The {@link StageDebugRenderer} will ask every actor of a stage for their debugging rectangles. To fill the given array you
+	 * can obtain fresh {@link DebugRect}s via the {@link StageDebugRenderer#debugRectPool}. To avoid the garbage collection you
 	 * should make sure to free them later, but it's not a strict requirement. */
 	public void getDebugRects (Array<DebugRect> debugRects) {
-		DebugRect debugRect = Scene2DDebugRenderer.debugRectPool.obtain();
+		DebugRect debugRect = StageDebugRenderer.debugRectPool.obtain();
 		debugRect.bottomLeft.set(0, 0);
 		debugRect.topRight.set(width, height);
 		debugRect.color.set(Actor.debugColor);
 		debugRects.add(debugRect);
 	}
 
-	/** Used only in combination with a {@link Scene2DDebugRenderer}. It does only influence this particular actor, not its
+	/** Used only in combination with a {@link StageDebugRenderer}. It does only influence this particular actor, not its
 	 * children, in case we have a {@link Group}. */
 	public void setDebuggingEnabled (boolean enabled) {
 		debuggingEnabled = enabled;
 	}
 
-	/** Used only in combination with a {@link Scene2DDebugRenderer}. */
+	/** Used only in combination with a {@link StageDebugRenderer}. */
 	public boolean isDebuggingEnabled () {
 		return debuggingEnabled;
 	}

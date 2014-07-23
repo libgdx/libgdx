@@ -22,7 +22,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -365,7 +365,7 @@ public class Group extends Actor implements Cullable {
 		print("");
 	}
 
-	/** Used only in combination with a {@link Scene2DDebugRenderer}.
+	/** Used only in combination with a {@link StageDebugRenderer}.
 	 * @param recursively If {@code true} it will also recursively disable all children of this group. */
 	public void setDebuggingEnabled (boolean enabled, boolean recursively) {
 		setDebuggingEnabled(enabled);

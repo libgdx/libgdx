@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class LabelScaleTest extends GdxTest {
@@ -32,14 +32,14 @@ public class LabelScaleTest extends GdxTest {
 	Stage stage;
 	SpriteBatch batch;
 	Actor root;
-	Scene2DDebugRenderer debugRenderer;
+	StageDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
-		debugRenderer = new Scene2DDebugRenderer(stage);
+		debugRenderer = new StageDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		Table table = new Table();

@@ -40,19 +40,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Scene2dTest extends GdxTest {
 	Stage stage;
-	Scene2DDebugRenderer debugRenderer;
+	StageDebugRenderer debugRenderer;
 	private FloatAction meow = new FloatAction(10, 5);
 	private TiledDrawable patch;
 
 	public void create () {
 		stage = new Stage();
-		debugRenderer = new Scene2DDebugRenderer(stage);
+		debugRenderer = new StageDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));

@@ -25,8 +25,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
-import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer.DebugRect;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer.DebugRect;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -328,7 +328,7 @@ public class Table extends WidgetGroup {
 		padRight = Value.zero;
 		align = Align.center;
 		if (debug != Debug.none) {
-			Scene2DDebugRenderer.debugRectPool.freeAll(debugRects);
+			StageDebugRenderer.debugRectPool.freeAll(debugRects);
 			debugRects.clear();
 		}
 		debug = Debug.none;
@@ -600,7 +600,7 @@ public class Table extends WidgetGroup {
 		this.debug = debug;
 		if (debug == Debug.none) {
 			if (debugRects != null) {
-				Scene2DDebugRenderer.debugRectPool.freeAll(debugRects);
+				StageDebugRenderer.debugRectPool.freeAll(debugRects);
 				debugRects.clear();
 			}
 		} else
@@ -1104,7 +1104,7 @@ public class Table extends WidgetGroup {
 		// Store debug rectangles.
 		if (debug == Debug.none) return;
 		if (debugRects != null) {
-			Scene2DDebugRenderer.debugRectPool.freeAll(debugRects);
+			StageDebugRenderer.debugRectPool.freeAll(debugRects);
 			debugRects.clear();
 		}
 		currentX = x;
@@ -1145,7 +1145,7 @@ public class Table extends WidgetGroup {
 	}
 
 	private void addDebugRect (float x, float y, float width, float height, Color color) {
-		DebugRect debugRect = Scene2DDebugRenderer.debugRectPool.obtain();
+		DebugRect debugRect = StageDebugRenderer.debugRectPool.obtain();
 		float yCorrected = getHeight() - y - height;
 		debugRect.bottomLeft.set(x, yCorrected);
 		debugRect.topRight.set(x + width, yCorrected + height);
