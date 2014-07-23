@@ -24,6 +24,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -64,6 +66,9 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
+
+	private boolean debuggingEnabled = true;
+	public static Color debugColor = new Color(0, 1, 0, 1);
 
 	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -379,16 +384,16 @@ public class Actor {
 	}
 
 	/** Set position of Actor centered on x, y */
-	public void setCenterPosition(float x, float y) {
+	public void setCenterPosition (float x, float y) {
 		this.x = x - width / 2;
 		this.y = y - height / 2;
 	}
 
-	public float getCenterX() {
+	public float getCenterX () {
 		return this.x + width / 2;
 	}
 
-	public float getCenterY() {
+	public float getCenterY () {
 		return this.y + height / 2;
 	}
 
@@ -554,8 +559,7 @@ public class Actor {
 		return color;
 	}
 
-	/** Retrieve custom actor name set with {@link Actor#setName(String)},
-	 * used for easier identification */
+	/** Retrieve custom actor name set with {@link Actor#setName(String)}, used for easier identification */
 	public String getName () {
 		return name;
 	}
@@ -564,6 +568,28 @@ public class Actor {
 	 * @see Group#findActor(String) */
 	public void setName (String name) {
 		this.name = name;
+	}
+
+	/** The {@link Scene2DDebugRenderer} will ask every actor of a stage for their debugging rectangles. To fill the given array you
+	 * can obtain fresh {@link DebugRect}s via the {@link Scene2DDebugRenderer#debugRectPool}. To avoid the garbage collection you
+	 * should make sure to free them later, but it's not a strict requirement. */
+	public void getDebugRects (Array<DebugRect> debugRects) {
+		DebugRect debugRect = Scene2DDebugRenderer.debugRectPool.obtain();
+		debugRect.bottomLeft.set(0, 0);
+		debugRect.topRight.set(width, height);
+		debugRect.color.set(Actor.debugColor);
+		debugRects.add(debugRect);
+	}
+
+	/** Used only in combination with a {@link Scene2DDebugRenderer}. It does only influence this particular actor, not its
+	 * children, in case we have a {@link Group}. */
+	public void setDebuggingEnabled (boolean enabled) {
+		debuggingEnabled = enabled;
+	}
+
+	/** Used only in combination with a {@link Scene2DDebugRenderer}. */
+	public boolean isDebuggingEnabled () {
+		return debuggingEnabled;
 	}
 
 	/** Changes the z-order for this actor so it is in front of all siblings. */

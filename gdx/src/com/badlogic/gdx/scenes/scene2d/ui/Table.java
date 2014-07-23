@@ -16,23 +16,17 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer20;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer;
+import com.badlogic.gdx.scenes.scene2d.utils.Scene2DDebugRenderer.DebugRect;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -42,6 +36,10 @@ import com.badlogic.gdx.utils.Pool;
  * The preferred and minimum sizes are that of the children when laid out in columns and rows.
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
+
+	public static Color debugColor = new Color(0, 0, 1, 1);
+	public static Color debugCellColor = new Color(1, 0, 0, 1);
+
 	static Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
 			return new Cell();
@@ -68,7 +66,7 @@ public class Table extends WidgetGroup {
 	int align = Align.center;
 
 	Debug debug = Debug.none;
-	Array<DebugRect> debugRects;
+	Array<DebugRect> debugRects = new Array<DebugRect>();
 
 	private Drawable background;
 	private boolean clip;
@@ -281,7 +279,7 @@ public class Table extends WidgetGroup {
 
 	/** Adds a cell without an actor. */
 	public Cell add () {
-		return add((Actor) null);
+		return add((Actor)null);
 	}
 
 	/** Adds a new cell to the table with the specified actors in a {@link Stack}.
@@ -329,7 +327,10 @@ public class Table extends WidgetGroup {
 		padBottom = Value.zero;
 		padRight = Value.zero;
 		align = Align.center;
-		if (debug != Debug.none) debugRects.clear();
+		if (debug != Debug.none) {
+			Scene2DDebugRenderer.debugRectPool.freeAll(debugRects);
+			debugRects.clear();
+		}
 		debug = Debug.none;
 		cellDefaults.defaults();
 		for (int i = 0, n = columnDefaults.size; i < n; i++) {
@@ -598,7 +599,10 @@ public class Table extends WidgetGroup {
 	public Table debug (Debug debug) {
 		this.debug = debug;
 		if (debug == Debug.none) {
-			if (debugRects != null) debugRects.clear();
+			if (debugRects != null) {
+				Scene2DDebugRenderer.debugRectPool.freeAll(debugRects);
+				debugRects.clear();
+			}
 		} else
 			invalidate();
 		return this;
@@ -1099,19 +1103,22 @@ public class Table extends WidgetGroup {
 
 		// Store debug rectangles.
 		if (debug == Debug.none) return;
-		if (debugRects != null) debugRects.clear();
+		if (debugRects != null) {
+			Scene2DDebugRenderer.debugRectPool.freeAll(debugRects);
+			debugRects.clear();
+		}
 		currentX = x;
 		currentY = y;
 		if (debug == Debug.table || debug == Debug.all) {
-			TableDebug.addRectangle(this, Debug.table, layoutX, layoutY, layoutWidth, layoutHeight);
-			TableDebug.addRectangle(this, Debug.table, x, y, tableWidth - hpadding, tableHeight - vpadding);
+			addDebugRect(layoutX, layoutY, layoutWidth, layoutHeight, debugColor);
+			addDebugRect(x, y, tableWidth - hpadding, tableHeight - vpadding, debugColor);
 		}
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
 
 			// Actor bounds.
 			if (debug == Debug.actor || debug == Debug.all)
-				TableDebug.addRectangle(this, Debug.actor, c.actorX, c.actorY, c.actorWidth, c.actorHeight);
+				addDebugRect(c.actorX, c.actorY, c.actorWidth, c.actorHeight, Actor.debugColor);
 
 			// Cell bounds.
 			float spannedCellWidth = 0;
@@ -1120,8 +1127,8 @@ public class Table extends WidgetGroup {
 			spannedCellWidth -= c.computedPadLeft + c.computedPadRight;
 			currentX += c.computedPadLeft;
 			if (debug == Debug.cell || debug == Debug.all) {
-				TableDebug.addRectangle(this, Debug.cell, currentX, currentY + c.computedPadTop, spannedCellWidth, rowHeight[c.row]
-					- c.computedPadTop - c.computedPadBottom);
+				addDebugRect(currentX, currentY + c.computedPadTop, spannedCellWidth, rowHeight[c.row] - c.computedPadTop
+					- c.computedPadBottom, debugCellColor);
 			}
 
 			if (c.endRow) {
@@ -1132,11 +1139,18 @@ public class Table extends WidgetGroup {
 		}
 	}
 
-	/** Draws the debug lines for all tables in the stage. If this method is not called each frame, no debug lines will be drawn. If
-	 * debug is never turned on for any table in the application, calling this method will have no effect. If a table has ever had
-	 * debug set, calling this method causes an expensive traversal of all actors in the stage. */
-	static public void drawDebug (Stage stage) {
-		if (TableDebug.draw) TableDebug.draw(stage);
+	@Override
+	public void getDebugRects (Array<DebugRect> debugRects) {
+		debugRects.addAll(this.debugRects);
+	}
+
+	private void addDebugRect (float x, float y, float width, float height, Color color) {
+		DebugRect debugRect = Scene2DDebugRenderer.debugRectPool.obtain();
+		float yCorrected = getHeight() - y - height;
+		debugRect.bottomLeft.set(x, yCorrected);
+		debugRect.topRight.set(x + width, yCorrected + height);
+		debugRect.color.set(color);
+		debugRects.add(debugRect);
 	}
 
 	/** @author Nathan Sweet */
@@ -1144,97 +1158,4 @@ public class Table extends WidgetGroup {
 		none, all, table, cell, actor
 	}
 
-	/** @author Nathan Sweet */
-	static class DebugRect extends Rectangle {
-		final Debug type;
-
-		public DebugRect (Debug type, float x, float y, float width, float height) {
-			super(x, y, width, height);
-			this.type = type;
-		}
-	}
-
-	/** @author Nathan Sweet */
-	static class TableDebug {
-		static boolean draw;
-
-		static private Application app;
-		static private ImmediateModeRenderer debugRenderer;
-
-		static public void addRectangle (Table table, Debug type, float x, float y, float w, float h) {
-			draw = true;
-			if (table.debugRects == null) table.debugRects = new Array();
-			table.debugRects.add(new DebugRect(type, x, table.getHeight() - y, w, h));
-		}
-
-		static void draw (Stage stage) {
-			// Handle cases where Android holds on to static objects
-			if (app != Gdx.app || debugRenderer == null) {
-				debugRenderer = new ImmediateModeRenderer20(128, false, true, 0);
-				app = Gdx.app;
-			}
-
-			debugRenderer.begin(stage.getBatch().getProjectionMatrix(), GL20.GL_LINES);
-			draw(stage.getActors());
-			debugRenderer.end();
-		}
-
-		static void draw (Array<Actor> actors) {
-			for (int i = 0, n = actors.size; i < n; i++) {
-				Actor actor = actors.get(i);
-				if (!actor.isVisible()) continue;
-				if (actor instanceof Table) draw((Table)actor);
-				if (actor instanceof Group) draw(((Group)actor).getChildren());
-			}
-		}
-
-		static public void draw (Table table) {
-			if (table.debug == Debug.none) return;
-			Array<DebugRect> debugRects = table.debugRects;
-			if (debugRects == null) return;
-
-			float x = 0, y = 0;
-			Actor parent = table;
-			while (parent != null) {
-				if (parent instanceof Group) {
-					x += parent.getX();
-					y += parent.getY();
-				}
-				parent = parent.getParent();
-			}
-
-			for (int i = 0, n = debugRects.size; i < n; i++) {
-				DebugRect rect = debugRects.get(i);
-				float x1 = x + rect.x;
-				float y1 = y + rect.y - rect.height;
-				float x2 = x1 + rect.width;
-				float y2 = y1 + rect.height;
-				float r = rect.type == Debug.cell ? 1 : 0;
-				float g = rect.type == Debug.actor ? 1 : 0;
-				float b = rect.type == Debug.table ? 1 : 0;
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y1, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y2, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y2, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y2, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y2, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y1, 0);
-
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x2, y1, 0);
-				debugRenderer.color(r, g, b, 1);
-				debugRenderer.vertex(x1, y1, 0);
-
-				if (debugRenderer.getNumVertices() == 128) debugRenderer.flush();
-			}
-		}
-	}
 }
