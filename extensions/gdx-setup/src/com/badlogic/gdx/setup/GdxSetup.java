@@ -61,8 +61,7 @@ public class GdxSetup {
 		String newestLocalTool = getLatestTools(buildTools);
 		int[] localToolVersion = convertTools(newestLocalTool);
 		int[] targetToolVersion = convertTools(DependencyBank.buildToolsVersion);
-		if (localToolVersion[0] >= targetToolVersion[0] && localToolVersion[1] >= targetToolVersion[1]
-			&& localToolVersion[2] >= targetToolVersion[2]) {
+		if (compareVersions(targetToolVersion, localToolVersion)) {
 			int value = JOptionPane.showConfirmDialog(null,
 				"You have a more recent version of android build tools than the recommended.\nDo you want to use this version?",
 				"Warning!", JOptionPane.YES_NO_OPTION);
@@ -141,7 +140,7 @@ public class GdxSetup {
 				continue;
 			}
 			testSplit = convertTools(toolsVersion.getName());
-			if (testSplit[0] >= versionSplit[0] && testSplit[1] >= versionSplit[1] && testSplit[2] >= versionSplit[2]) {
+			if (compareVersions(versionSplit, testSplit)) {
 				version = toolsVersion.getName();
 			}
 		}
@@ -150,6 +149,19 @@ public class GdxSetup {
 		} else {
 			return "0.0.0";
 		}
+	}
+	
+	private static boolean compareVersions(int[] version, int[] testVersion) {
+		if (testVersion[0] > version[0]) {
+			return true;
+		} else if (testVersion[0] == version[0]) {
+			if (testVersion[1] > version[1]) {
+				return true;
+			} else if (testVersion[1] == version[1]) {
+				return testVersion[2] > version[2];
+			}
+		}
+		return false;
 	}
 
 	private static int[] convertTools (String toolsVersion) {
