@@ -40,19 +40,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class Scene2dTest extends GdxTest {
 	Stage stage;
-	StageDebugRenderer debugRenderer;
 	private FloatAction meow = new FloatAction(10, 5);
 	private TiledDrawable patch;
 
 	public void create () {
 		stage = new Stage();
-		debugRenderer = new StageDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		final TextureRegion region = new TextureRegion(new Texture("data/badlogic.jpg"));
@@ -177,7 +174,6 @@ public class Scene2dTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		debugRenderer.render();
 
 		stage.getBatch().begin();
 		patch.draw(stage.getBatch(), 300, 100, 126, 126);

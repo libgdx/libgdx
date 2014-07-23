@@ -19,14 +19,14 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.StageDebug;
+import com.badlogic.gdx.scenes.scene2d.StageDebug.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer.DebugRect;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
@@ -36,9 +36,9 @@ import com.badlogic.gdx.utils.Pool;
  * The preferred and minimum sizes are that of the children when laid out in columns and rows.
  * @author Nathan Sweet */
 public class Table extends WidgetGroup {
-
-	public static Color debugColor = new Color(0, 0, 1, 1);
-	public static Color debugCellColor = new Color(1, 0, 0, 1);
+	static public Color debugTableColor = new Color(0, 0, 1, 1);
+	static public Color debugCellColor = new Color(1, 0, 0, 1);
+	static public Color debugActorColor = new Color(0, 1, 0, 1);
 
 	static Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
@@ -327,11 +327,7 @@ public class Table extends WidgetGroup {
 		padBottom = Value.zero;
 		padRight = Value.zero;
 		align = Align.center;
-		if (debug != Debug.none) {
-			StageDebugRenderer.debugRectPool.freeAll(debugRects);
-			debugRects.clear();
-		}
-		debug = Debug.none;
+		debug(Debug.none);
 		cellDefaults.defaults();
 		for (int i = 0, n = columnDefaults.size; i < n; i++) {
 			Cell columnCell = columnDefaults.get(i);
@@ -567,9 +563,16 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
-	/** Turns on all debug lines. */
 	public Table debug () {
 		this.debug = Debug.all;
+		setDebug(true);
+		invalidate();
+		return this;
+	}
+
+	public Table debugAll () {
+		this.debug = Debug.all;
+		setDebug(true, true);
 		invalidate();
 		return this;
 	}
@@ -577,6 +580,7 @@ public class Table extends WidgetGroup {
 	/** Turns on table debug lines. */
 	public Table debugTable () {
 		this.debug = Debug.table;
+		setDebug(true);
 		invalidate();
 		return this;
 	}
@@ -584,6 +588,7 @@ public class Table extends WidgetGroup {
 	/** Turns on cell debug lines. */
 	public Table debugCell () {
 		this.debug = Debug.cell;
+		setDebug(true);
 		invalidate();
 		return this;
 	}
@@ -591,24 +596,28 @@ public class Table extends WidgetGroup {
 	/** Turns on actor debug lines. */
 	public Table debugActor () {
 		this.debug = Debug.actor;
+		setDebug(true);
 		invalidate();
 		return this;
 	}
 
-	/** Turns on debug lines. */
+	/** Turns debug lines on or off. */
 	public Table debug (Debug debug) {
 		this.debug = debug;
 		if (debug == Debug.none) {
+			setDebug(false);
 			if (debugRects != null) {
-				StageDebugRenderer.debugRectPool.freeAll(debugRects);
+				StageDebug.debugRectPool.freeAll(debugRects);
 				debugRects.clear();
 			}
-		} else
+		} else {
+			setDebug(true);
 			invalidate();
+		}
 		return this;
 	}
 
-	public Debug getDebug () {
+	public Debug getTableDebug () {
 		return debug;
 	}
 
@@ -1104,21 +1113,21 @@ public class Table extends WidgetGroup {
 		// Store debug rectangles.
 		if (debug == Debug.none) return;
 		if (debugRects != null) {
-			StageDebugRenderer.debugRectPool.freeAll(debugRects);
+			StageDebug.debugRectPool.freeAll(debugRects);
 			debugRects.clear();
 		}
 		currentX = x;
 		currentY = y;
 		if (debug == Debug.table || debug == Debug.all) {
-			addDebugRect(layoutX, layoutY, layoutWidth, layoutHeight, debugColor);
-			addDebugRect(x, y, tableWidth - hpadding, tableHeight - vpadding, debugColor);
+			addDebugRect(layoutX, layoutY, layoutWidth, layoutHeight, debugTableColor);
+			addDebugRect(x, y, tableWidth - hpadding, tableHeight - vpadding, debugTableColor);
 		}
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
 
 			// Actor bounds.
 			if (debug == Debug.actor || debug == Debug.all)
-				addDebugRect(c.actorX, c.actorY, c.actorWidth, c.actorHeight, Actor.debugColor);
+				addDebugRect(c.actorX, c.actorY, c.actorWidth, c.actorHeight, debugActorColor);
 
 			// Cell bounds.
 			float spannedCellWidth = 0;
@@ -1145,7 +1154,7 @@ public class Table extends WidgetGroup {
 	}
 
 	private void addDebugRect (float x, float y, float width, float height, Color color) {
-		DebugRect debugRect = StageDebugRenderer.debugRectPool.obtain();
+		DebugRect debugRect = StageDebug.debugRectPool.obtain();
 		float yCorrected = getHeight() - y - height;
 		debugRect.bottomLeft.set(x, yCorrected);
 		debugRect.topRight.set(x + width, yCorrected + height);

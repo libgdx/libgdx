@@ -31,7 +31,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -73,6 +72,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	private StageDebug debugRenderer;
 
 	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#fill}. The stage will use its own {@link Batch}. */
 	public Stage () {
@@ -109,6 +109,14 @@ public class Stage extends InputAdapter implements Disposable {
 		batch.begin();
 		root.draw(batch, 1);
 		batch.end();
+
+		if (Actor.debugEnabled > 0) getDebugRenderer().draw();
+	}
+
+	/** Returns the debug renderer for the stage, allocating one if it hasn't been created yet. */
+	public StageDebug getDebugRenderer () {
+		if (debugRenderer == null) debugRenderer = new StageDebug(this);
+		return debugRenderer;
 	}
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */

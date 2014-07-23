@@ -22,10 +22,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.StageDebug.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -50,6 +49,8 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class Actor {
+	static int debugEnabled;
+
 	private Stage stage;
 	private Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
@@ -58,7 +59,7 @@ public class Actor {
 
 	private String name;
 	private Touchable touchable = Touchable.enabled;
-	private boolean visible = true;
+	private boolean visible = true, debug;
 	float x, y;
 	float width, height;
 	float originX, originY;
@@ -66,9 +67,6 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
-
-	private boolean debuggingEnabled = true;
-	public static Color debugColor = new Color(0, 1, 0, 1);
 
 	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -570,28 +568,6 @@ public class Actor {
 		this.name = name;
 	}
 
-	/** The {@link StageDebugRenderer} will ask every actor of a stage for their debugging rectangles. To fill the given array you
-	 * can obtain fresh {@link DebugRect}s via the {@link StageDebugRenderer#debugRectPool}. To avoid the garbage collection you
-	 * should make sure to free them later, but it's not a strict requirement. */
-	public void getDebugRects (Array<DebugRect> debugRects) {
-		DebugRect debugRect = StageDebugRenderer.debugRectPool.obtain();
-		debugRect.bottomLeft.set(0, 0);
-		debugRect.topRight.set(width, height);
-		debugRect.color.set(Actor.debugColor);
-		debugRects.add(debugRect);
-	}
-
-	/** Used only in combination with a {@link StageDebugRenderer}. It does only influence this particular actor, not its
-	 * children, in case we have a {@link Group}. */
-	public void setDebuggingEnabled (boolean enabled) {
-		debuggingEnabled = enabled;
-	}
-
-	/** Used only in combination with a {@link StageDebugRenderer}. */
-	public boolean isDebuggingEnabled () {
-		return debuggingEnabled;
-	}
-
 	/** Changes the z-order for this actor so it is in front of all siblings. */
 	public void toFront () {
 		setZIndex(Integer.MAX_VALUE);
@@ -710,7 +686,7 @@ public class Actor {
 	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
 	public Vector2 localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
-		while (actor.parent != null) {
+		while (actor != null) {
 			actor.localToParentCoordinates(localCoords);
 			actor = actor.parent;
 			if (actor == ascendant) break;
@@ -746,6 +722,33 @@ public class Actor {
 			parentCoords.y = (tox * -sin + toy * cos) / scaleY + originY;
 		}
 		return parentCoords;
+	}
+
+	/** Returns rectangles for debug drawing. {@link StageDebug} calls this for ever actor. The given array is typically filled
+	 * using {@link StageDebug#obtainRect()} to avoid allocation. */
+	public void getDebugRects (Array<DebugRect> debugRects) {
+		DebugRect debugRect = StageDebug.obtainRect();
+		debugRect.bottomLeft.set(0, 0);
+		debugRect.topRight.set(width, height);
+		debugRects.add(debugRect);
+	}
+
+	/** If true, debug rectangles will be drawn for this actor.
+	 * @see #getDebugRects(Array) */
+	public void setDebug (boolean enabled) {
+		if (enabled == debug) return;
+		debugEnabled += enabled ? 1 : -1;
+		debug = enabled;
+	}
+
+	public boolean getDebug () {
+		return debug;
+	}
+
+	/** Calls {@link #setDebug(boolean)} with {@code true}. */
+	public Actor debug () {
+		setDebug(true);
+		return this;
 	}
 
 	public String toString () {

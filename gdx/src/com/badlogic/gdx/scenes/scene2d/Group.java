@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -360,24 +359,29 @@ public class Group extends Actor implements Cullable {
 		return localCoords;
 	}
 
-	/** Prints the actor hierarchy recursively for debugging purposes. */
-	public void print () {
-		print("");
-	}
-
-	/** Used only in combination with a {@link StageDebugRenderer}.
-	 * @param recursively If {@code true} it will also recursively disable all children of this group. */
-	public void setDebuggingEnabled (boolean enabled, boolean recursively) {
-		setDebuggingEnabled(enabled);
+	/** If true, debug rectangles will be drawn for this actor and, optionally, all children recursively. */
+	public void setDebug (boolean enabled, boolean recursively) {
+		setDebug(enabled);
 		if (recursively) {
 			for (Actor child : children) {
 				if (child instanceof Group) {
-					((Group)child).setDebuggingEnabled(enabled, recursively);
+					((Group)child).setDebug(enabled, recursively);
 				} else {
-					child.setDebuggingEnabled(enabled);
+					child.setDebug(enabled);
 				}
 			}
 		}
+	}
+
+	/** Calls {@link #setDebug(boolean, boolean)} with {@code true, true}. */
+	public Group debugAll () {
+		setDebug(true, true);
+		return this;
+	}
+
+	/** Prints the actor hierarchy recursively for debugging purposes. */
+	public void print () {
+		print("");
 	}
 
 	private void print (String indent) {

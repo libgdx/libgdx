@@ -26,26 +26,23 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author Daniel Holderbaum */
-public class Scene2DDebugRendererTest extends GdxTest {
-
+public class StageDebugRendererTest extends GdxTest {
 	static TextureRegion textureRegion;
 
 	private Stage stage;
 	private Stage stage1;
 	private Stage stage2;
 
-	private StageDebugRenderer debugRenderer;
-
 	class DebugActor extends Actor {
-
 		@Override
 		public void draw (Batch batch, float parentAlpha) {
 			batch.draw(textureRegion, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
@@ -63,7 +60,7 @@ public class Scene2DDebugRendererTest extends GdxTest {
 		stage1.getCamera().position.set(100, 100, 0);
 
 		Group group = new Group();
-//		 group.setBounds(0, 0, 10, 10);
+		// group.setBounds(0, 0, 10, 10);
 		// group.setOrigin(25, 50);
 		group.setRotation(10);
 		group.setScale(1.2f);
@@ -74,7 +71,10 @@ public class Scene2DDebugRendererTest extends GdxTest {
 		actor.setOrigin(25, 50);
 		actor.setRotation(-45);
 		actor.setScale(2f);
+		actor.addAction(forever(rotateBy(360, 8f)));
 		group.addActor(actor);
+
+		group.debugAll();
 
 		stage2 = new Stage();
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -101,9 +101,8 @@ public class Scene2DDebugRendererTest extends GdxTest {
 	@Override
 	public void render () {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
+		stage.act();
 		stage.draw();
-		debugRenderer.render();
 	}
 
 	@Override
@@ -124,7 +123,6 @@ public class Scene2DDebugRendererTest extends GdxTest {
 		} else {
 			stage = stage2;
 		}
-		debugRenderer = new StageDebugRenderer(stage);
 	}
 
 }

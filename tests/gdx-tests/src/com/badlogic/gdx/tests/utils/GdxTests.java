@@ -160,7 +160,7 @@ public class GdxTests {
 		ReflectionTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
-		Scene2DDebugRendererTest.class,
+		StageDebugRendererTest.class,
 		Scene2dTest.class,
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,

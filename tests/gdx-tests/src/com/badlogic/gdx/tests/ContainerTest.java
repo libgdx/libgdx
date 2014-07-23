@@ -10,20 +10,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class ContainerTest extends GdxTest {
 	Skin skin;
 	Stage stage;
-	StageDebugRenderer debugRenderer;
 
 	@Override
 	public void create () {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
-		debugRenderer = new StageDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 
 		TextureRegionDrawable logo = new TextureRegionDrawable(new TextureRegion(new Texture(
@@ -84,7 +81,6 @@ public class ContainerTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		stage.draw();
-		debugRenderer.render();
 	}
 
 	@Override

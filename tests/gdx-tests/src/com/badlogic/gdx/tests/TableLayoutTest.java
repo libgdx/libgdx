@@ -30,16 +30,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.StageDebugRenderer;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 public class TableLayoutTest extends GdxTest {
 	Stage stage;
-	StageDebugRenderer debugRenderer;
 
 	public void create () {
 		stage = new Stage();
-		debugRenderer = new StageDebugRenderer(stage);
 		Gdx.input.setInputProcessor(stage);
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
@@ -94,7 +91,6 @@ public class TableLayoutTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		debugRenderer.render();
 	}
 
 	public void resize (int width, int height) {
