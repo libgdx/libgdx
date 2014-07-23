@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small stash for problematic
  * keys. Null keys are not allowed. Null values are allowed. No allocation is done except when growing the table size. <br>
@@ -694,6 +694,10 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		public Iterator<Entry<K, V>> iterator () {
 			return this;
 		}
+
+		public void remove () {
+			super.remove();
+		}
 	}
 
 	static public class Values<V> extends MapIterator<Object, V> implements Iterable<V>, Iterator<V> {
@@ -730,6 +734,10 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				array.add(next());
 			return array;
 		}
+
+		public void remove () {
+			super.remove();
+		}
 	}
 
 	static public class Keys<K> extends MapIterator<K, Object> implements Iterable<K>, Iterator<K> {
@@ -765,6 +773,10 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			while (hasNext)
 				array.add(next());
 			return array;
+		}
+
+		public void remove () {
+			super.remove();
 		}
 	}
 }

@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map where the keys are ints and values are floats. This implementation is a cuckoo hash map using 3 hashes, random
  * walking, and a small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table
@@ -720,6 +720,10 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 
 		public Iterator<Entry> iterator () {
 			return this;
+		}
+
+		public void remove () {
+			super.remove();
 		}
 	}
 
