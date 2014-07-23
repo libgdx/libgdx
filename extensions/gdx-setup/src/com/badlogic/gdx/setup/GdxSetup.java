@@ -277,7 +277,7 @@ public class GdxSetup {
 		// HACK executable flag isn't preserved for whatever reason...
 		new File(outputDir, "gradlew").setExecutable(true);
 
-		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(gradleArgs), callback);
+		Executor.execute(new File(outputDir), "gradlew.bat", "gradlew", "clean" + parseGradleArgs(builder.modules, gradleArgs), callback);
 	}
 
 	private void copyAndReplace (String outputDir, Project project, Map<String, String> values) {
@@ -446,10 +446,11 @@ public class GdxSetup {
 		return parsed;
 	}
 
-	private String parseGradleArgs (List<String> args) {
+	private String parseGradleArgs (List<ProjectType> modules, List<String> args) {
 		String argString = "";
 		if (args == null) return argString;
 		for (String argument : args) {
+			if (argument.equals("afterEclipseImport") && !modules.contains(ProjectType.DESKTOP)) continue;
 			argString += " " + argument;
 		}
 		return argString;
