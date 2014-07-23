@@ -265,14 +265,14 @@ public final class Intersector {
 	 * @param start2 Where the second ray start
 	 * @param direction2 The direction the second ray is pointing
 	 * @return scalar parameter on the first ray describing the point where the intersection happens. May be negative.
-	 * In case the rays are collinear, 0 will be returned.
+	 * In case the rays are collinear, Float.POSITIVE_INFINITY will be returned.
 	 */
 	public static float intersectRayRay(Vector2 start1, Vector2 direction1, Vector2 start2, Vector2 direction2) {
 		float difx = start2.x - start1.x;
 		float dify = start2.y - start1.y;
 		float d1xd2 = direction1.x * direction2.y - direction1.y * direction2.x;
-		if(d1xd2 == 0) {
-			return 0; //collinear
+		if(d1xd2 == 0.0f) {
+			return Float.POSITIVE_INFINITY; //collinear
 		}
 		float d2sx = direction2.x / d1xd2;
 		float d2sy = direction2.y / d1xd2;
