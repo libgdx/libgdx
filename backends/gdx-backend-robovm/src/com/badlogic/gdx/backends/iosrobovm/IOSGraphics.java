@@ -442,11 +442,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	}
 
 	@Override
-	public boolean isUsingFailsafeDisplay() {
-		return false;
-	}
-
-	@Override
 	public void setVSync (boolean vsync) {
 	}
 

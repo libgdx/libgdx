@@ -55,7 +55,6 @@ public class LwjglGraphics implements Graphics {
 	volatile boolean isContinuous = true;
 	volatile boolean requestRendering = false;
 	boolean softwareMode;
-	boolean usingFailsafeDisplay = false;
 
 	LwjglGraphics (LwjglApplicationConfiguration config) {
 		this.config = config;
@@ -132,7 +131,6 @@ public class LwjglGraphics implements Graphics {
 			if (!displayCreated) {
 				// open in windowed failsafe dimensions if first mode fails and failsafe enabled
 				if (config.failsafeWidth > 0 && config.failsafeHeight > 0) {
-					usingFailsafeDisplay = true;
 					displayCreated = setDisplayMode(config.failsafeWidth, config.failsafeHeight, false);
 				}
 			}
@@ -408,11 +406,6 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public void setTitle (String title) {
 		Display.setTitle(title);
-	}
-
-	@Override
-	public boolean isUsingFailsafeDisplay() {
-		return usingFailsafeDisplay;
 	}
 
 	@Override

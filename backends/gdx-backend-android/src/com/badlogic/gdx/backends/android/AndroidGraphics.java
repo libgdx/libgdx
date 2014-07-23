@@ -537,11 +537,6 @@ public class AndroidGraphics implements Graphics, Renderer {
 
 	}
 
-	@Override
-	public boolean isUsingFailsafeDisplay() {
-		return false;
-	}
-
 	private class AndroidDisplayMode extends DisplayMode {
 		protected AndroidDisplayMode (int width, int height, int refreshRate, int bitsPerPixel) {
 			super(width, height, refreshRate, bitsPerPixel);
