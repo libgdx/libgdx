@@ -412,7 +412,7 @@ public class LwjglGraphics implements Graphics {
 
 	@Override
 	public boolean isUsingFailsafeDisplay() {
-		return usingFailsafeDisplay
+		return usingFailsafeDisplay;
 	}
 
 	@Override
