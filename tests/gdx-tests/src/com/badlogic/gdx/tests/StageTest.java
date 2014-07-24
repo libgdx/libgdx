@@ -124,7 +124,7 @@ public class StageTest extends GdxTest implements InputProcessor {
 				public void drawDebug (ShapeRenderer shapes) {
 					shapes.set(ShapeType.Filled);
 					shapes.setColor(getColor());
-					shapes.rect(getX(), getY(), getWidth(), getHeight(), getOriginX(), getOriginY(), getScaleX(), getScaleY(),
+					shapes.rect(getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(),
 						getRotation());
 				}
 			};

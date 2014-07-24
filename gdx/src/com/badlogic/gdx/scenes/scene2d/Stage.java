@@ -189,7 +189,6 @@ public class Stage extends InputAdapter implements Disposable {
 
 		actor.x -= offsetX;
 		actor.y -= offsetY;
-
 	}
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */

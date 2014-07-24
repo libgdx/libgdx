@@ -733,7 +733,7 @@ public class Actor {
 		if (!getDebug()) return;
 		shapes.set(ShapeType.Line);
 		shapes.setColor(getStage().getDebugColor());
-		shapes.rect(getX(), getY(), getWidth(), getHeight(), getOriginX(), getOriginY(), getScaleX(), getScaleY(), getRotation());
+		shapes.rect(getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
 	}
 
 	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */

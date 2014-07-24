@@ -16,26 +16,23 @@
 
 package com.badlogic.gdx.tests;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.tests.utils.GdxTest;
 
 /** @author Daniel Holderbaum */
-public class StageDebugRendererTest extends GdxTest {
+public class StageDebugTest extends GdxTest {
 	static TextureRegion textureRegion;
 
 	private Stage stage;
@@ -67,7 +64,7 @@ public class StageDebugRendererTest extends GdxTest {
 		stage1.addActor(group);
 
 		DebugActor actor = new DebugActor();
-		actor.setBounds(400, 240, 50, 100);
+		actor.setBounds(300, 140, 50, 100);
 		actor.setOrigin(25, 50);
 		actor.setRotation(-45);
 		actor.setScale(2f);
@@ -79,21 +76,25 @@ public class StageDebugRendererTest extends GdxTest {
 		stage2 = new Stage();
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
+		TextButton shortButton = new TextButton("Button short", skin);
+		shortButton.debug();
+
+		TextButton longButton = new TextButton("Button loooooooooong", skin);
+		longButton.debug();
+
 		Table root = new Table(skin);
 		root.setFillParent(true);
 		root.setBackground(skin.getDrawable("default-pane"));
 		root.defaults().space(6);
-		root.debug();
-		TextButton shortButton = new TextButton("Button short", skin);
-		root.add(shortButton).pad(5);
-		shortButton.debug();
-		TextButton longButton = new TextButton("Button loooooooooong", skin);
-		longButton.debug();
-		root.add(longButton).row();
-		root.add("Colspan").colspan(2).row();
 		root.setTransform(true);
 		root.rotateBy(10);
+		root.setScale(1.3f, 1);
+		root.debug();
 		stage2.addActor(root);
+
+		root.add(shortButton).pad(5);
+		root.add(longButton).row();
+		root.add("Colspan").colspan(2).row();
 
 		switchStage();
 	}
@@ -118,10 +119,10 @@ public class StageDebugRendererTest extends GdxTest {
 	}
 
 	private void switchStage () {
-		if (stage != stage1) {
-			stage = stage1;
-		} else {
+		if (stage != stage2) {
 			stage = stage2;
+		} else {
+			stage = stage1;
 		}
 	}
 

@@ -1165,8 +1165,8 @@ public class Table extends WidgetGroup {
 
 	public void drawDebug (ShapeRenderer shapes) {
 		if (isTransform()) {
-			drawDebugRects(shapes);
 			applyTransform(shapes, computeTransform());
+			drawDebugRects(shapes);
 			if (clip) {
 				shapes.flush();
 				float x = 0, y = 0, width = getWidth(), height = getHeight();
@@ -1196,10 +1196,15 @@ public class Table extends WidgetGroup {
 		if (debugRects == null || !getDebug()) return;
 		shapes.set(ShapeType.Line);
 		shapes.setColor(getStage().getDebugColor());
+		float x = 0, y = 0;
+		if (!isTransform()) {
+			x = getX();
+			y = getY();
+		}
 		for (int i = 0, n = debugRects.size; i < n; i++) {
 			DebugRect debugRect = debugRects.get(i);
 			shapes.setColor(debugRect.color);
-			shapes.rect(getX() + debugRect.x, getY() + debugRect.y, debugRect.width, debugRect.height);
+			shapes.rect(x + debugRect.x, y + debugRect.y, debugRect.width, debugRect.height);
 		}
 	}
 
