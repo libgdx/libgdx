@@ -17,6 +17,7 @@
 package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
@@ -36,9 +37,9 @@ public class Group extends Actor implements Cullable {
 	private final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
 	private final Matrix3 localTransform = new Matrix3();
 	private final Matrix3 worldTransform = new Matrix3();
-	private final Matrix4 batchTransform = new Matrix4();
-	private final Matrix4 oldBatchTransform = new Matrix4();
-	private boolean transform = true;
+	private final Matrix4 computedTransform = new Matrix4();
+	private final Matrix4 oldTransform = new Matrix4();
+	boolean transform = true;
 	private Rectangle cullingArea;
 	private final Vector2 point = new Vector2();
 
@@ -133,16 +134,53 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
-	/** Set the Batch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the batch to
-	 * be flushed. {@link #resetTransform(Batch)} will restore the transform to what it was before this call. */
-	protected void applyTransform (Batch batch, Matrix4 transform) {
-		oldBatchTransform.set(batch.getTransformMatrix());
-		batch.setTransformMatrix(transform);
+	public void drawDebug (ShapeRenderer shapes) {
+		drawDebugBounds(shapes);
+		if (transform) applyTransform(shapes, computeTransform());
+		drawDebugChildren(shapes);
+		if (transform) resetTransform(shapes);
+	}
+
+	/** Draws all children. {@link #applyTransform(Batch, Matrix4)} should be called before and {@link #resetTransform(Batch)} after
+	 * this method if {@link #setTransform(boolean) transform} is true. If {@link #setTransform(boolean) transform} is false these
+	 * methods don't need to be called, children positions are temporarily offset by the group position when drawn. This method
+	 * avoids drawing children completely outside the {@link #setCullingArea(Rectangle) culling area}, if set. */
+	protected void drawDebugChildren (ShapeRenderer shapes) {
+		SnapshotArray<Actor> children = this.children;
+		Actor[] actors = children.begin();
+		// No culling, draw all children.
+		if (transform) {
+			for (int i = 0, n = children.size; i < n; i++) {
+				Actor child = actors[i];
+				if (!child.isVisible() || !child.getDebug()) continue;
+				child.drawDebug(shapes);
+			}
+			shapes.flush();
+		} else {
+			// No transform for this group, offset each child.
+			float offsetX = x, offsetY = y;
+			x = 0;
+			y = 0;
+			for (int i = 0, n = children.size; i < n; i++) {
+				Actor child = actors[i];
+				if (!child.isVisible() || !child.getDebug()) continue;
+				float cx = child.x, cy = child.y;
+				child.x = cx + offsetX;
+				child.y = cy + offsetY;
+				child.drawDebug(shapes);
+				child.x = cx;
+				child.y = cy;
+			}
+			x = offsetX;
+			y = offsetY;
+		}
+		children.end();
 	}
 
 	/** Returns the transform for this group's coordinate system. */
 	protected Matrix4 computeTransform () {
-		Matrix3 temp = worldTransform;
+		Matrix3 worldTransform = this.worldTransform;
+		Matrix3 localTransform = this.localTransform;
 
 		float originX = this.originX;
 		float originY = this.originY;
@@ -160,10 +198,10 @@ public class Group extends Actor implements Cullable {
 		localTransform.trn(x, y);
 
 		// Find the first parent that transforms.
-		Group parentGroup = getParent();
+		Group parentGroup = parent;
 		while (parentGroup != null) {
 			if (parentGroup.transform) break;
-			parentGroup = parentGroup.getParent();
+			parentGroup = parentGroup.parent;
 		}
 
 		if (parentGroup != null) {
@@ -173,26 +211,41 @@ public class Group extends Actor implements Cullable {
 			worldTransform.set(localTransform);
 		}
 
-		batchTransform.set(worldTransform);
-		return batchTransform;
+		computedTransform.set(worldTransform);
+		return computedTransform;
 	}
 
-	/** Restores the Batch transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the batch to be
+	/** Set the batch's transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the batch to
+	 * be flushed. {@link #resetTransform(Batch)} will restore the transform to what it was before this call. */
+	protected void applyTransform (Batch batch, Matrix4 transform) {
+		oldTransform.set(batch.getTransformMatrix());
+		batch.setTransformMatrix(transform);
+	}
+
+	/** Restores the batch transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the batch to be
 	 * flushed. */
 	protected void resetTransform (Batch batch) {
-		batch.setTransformMatrix(oldBatchTransform);
+		batch.setTransformMatrix(oldTransform);
+	}
+
+	/** Set the shape renderer transformation matrix, often with the result of {@link #computeTransform()}. Note this causes the
+	 * shape renderer to be flushed. {@link #resetTransform(ShapeRenderer)} will restore the transform to what it was before this
+	 * call. */
+	protected void applyTransform (ShapeRenderer shapes, Matrix4 transform) {
+		oldTransform.set(shapes.getTransformMatrix());
+		shapes.setTransformMatrix(transform);
+	}
+
+	/** Restores the shape renderer transform to what it was before {@link #applyTransform(Batch, Matrix4)}. Note this causes the
+	 * shape renderer to be flushed. */
+	protected void resetTransform (ShapeRenderer shapes) {
+		shapes.setTransformMatrix(oldTransform);
 	}
 
 	/** Children completely outside of this rectangle will not be drawn. This is only valid for use with unrotated and unscaled
 	 * actors! */
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
-	}
-
-	/** Returns the bounds this group will use to clip it's children, or null. The return value of this method is informative only,
-	 * eg it is used when drawing debug rects. The group still needs to use {@link ScissorStack} to perform clipping. */
-	public Rectangle getScissorBounds () {
-		return cullingArea;
 	}
 
 	public Actor hit (float x, float y, boolean touchable) {
@@ -357,7 +410,7 @@ public class Group extends Actor implements Cullable {
 	/** Converts coordinates for this group to those of a descendant actor. The descendant does not need to be a direct child.
 	 * @throws IllegalArgumentException if the specified actor is not a descendant of this group. */
 	public Vector2 localToDescendantCoordinates (Actor descendant, Vector2 localCoords) {
-		Group parent = descendant.getParent();
+		Group parent = descendant.parent;
 		if (parent == null) throw new IllegalArgumentException("Child is not a descendant: " + descendant);
 		// First convert to the actor's parent coordinates.
 		if (parent != this) localToDescendantCoordinates(parent, localCoords);
@@ -366,7 +419,7 @@ public class Group extends Actor implements Cullable {
 		return localCoords;
 	}
 
-	/** If true, debug rectangles will be drawn for this actor and, optionally, all children recursively. */
+	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this group and, optionally, all children recursively. */
 	public void setDebug (boolean enabled, boolean recursively) {
 		setDebug(enabled);
 		if (recursively) {

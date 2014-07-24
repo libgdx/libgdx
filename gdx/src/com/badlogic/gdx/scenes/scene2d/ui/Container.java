@@ -3,15 +3,13 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.badlogic.gdx.utils.Pools;
 
 /** A group with a single child that sizes and positions the child using constraints. This provides layout similar to a
  * {@link Table} with a single cell but is more lightweight.
@@ -27,7 +25,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 	private Drawable background;
 	private boolean clip;
 	private boolean round = true;
-	private Rectangle scissorBounds;
 
 	/** Creates a container with no actor. */
 	public Container () {
@@ -41,7 +38,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
-		boolean hasScissorBounds = false;
 		validate();
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
@@ -52,9 +48,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
 					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
 				if (draw) {
-					hasScissorBounds = true;
-					if (scissorBounds == null) scissorBounds = Pools.obtain(Rectangle.class);
-					scissorBounds.set(ScissorStack.peekScissors());
 					drawChildren(batch, parentAlpha);
 					clipEnd();
 				}
@@ -65,7 +58,6 @@ public class Container<T extends Actor> extends WidgetGroup {
 			drawBackground(batch, parentAlpha, getX(), getY());
 			super.draw(batch, parentAlpha);
 		}
-		if (!hasScissorBounds && scissorBounds != null) Pools.free(scissorBounds);
 	}
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
@@ -712,15 +704,31 @@ public class Container<T extends Actor> extends WidgetGroup {
 		return clip;
 	}
 
-	public Rectangle getScissorBounds () {
-		return scissorBounds;
-	}
-
 	public Actor hit (float x, float y, boolean touchable) {
 		if (clip) {
 			if (touchable && getTouchable() == Touchable.disabled) return null;
 			if (x < 0 || x >= getWidth() || y < 0 || y >= getHeight()) return null;
 		}
 		return super.hit(x, y, touchable);
+	}
+
+	public void drawDebug (ShapeRenderer shapes) {
+		validate();
+		if (isTransform()) {
+			applyTransform(shapes, computeTransform());
+			if (clip) {
+				shapes.flush();
+				float padLeft = this.padLeft.get(this), padBottom = this.padBottom.get(this);
+				boolean draw = background == null ? clipBegin(0, 0, getWidth(), getHeight()) : clipBegin(padLeft, padBottom,
+					getWidth() - padLeft - padRight.get(this), getHeight() - padBottom - padTop.get(this));
+				if (draw) {
+					drawDebugChildren(shapes);
+					clipEnd();
+				}
+			} else
+				drawDebugChildren(shapes);
+			resetTransform(shapes);
+		} else
+			super.drawDebug(shapes);
 	}
 }

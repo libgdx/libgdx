@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -552,7 +554,7 @@ public class ScrollPane extends WidgetGroup {
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
-		batch.flush();
+		batch.flush(); // BOZO - Why draw the background after applyTransform? Causes extra flush!
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
@@ -586,10 +588,6 @@ public class ScrollPane extends WidgetGroup {
 		}
 
 		resetTransform(batch);
-	}
-
-	public Rectangle getScissorBounds () {
-		return scissorBounds;
 	}
 
 	/** Generate fling gesture.
@@ -957,6 +955,16 @@ public class ScrollPane extends WidgetGroup {
 	 * widgets inside the scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
 	public void setCancelTouchFocus (boolean cancelTouchFocus) {
 		this.cancelTouchFocus = cancelTouchFocus;
+	}
+
+	public void drawDebug (ShapeRenderer shapes) {
+		drawDebugBounds(shapes);
+		applyTransform(shapes, computeTransform());
+		if (ScissorStack.pushScissors(scissorBounds)) {
+			drawDebugChildren(shapes);
+			ScissorStack.popScissors();
+		}
+		resetTransform(shapes);
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.

@@ -1,5 +1,6 @@
 [1.2.1]
-- API change: Added a new Scene2DDebugRenderer and removed the old Table debug rendering, see https://github.com/libgdx/libgdx/pull/2011
+- API change: ShapeRenderer: rect methods accept scale, more methods can work under both line and fill types, auto shape type changing.
+- API change: Built-in ShapeRenderer debugging for Stage, see https://github.com/libgdx/libgdx/pull/2011
 - Files#getLocalStoragePath now returns the actual path instead of the empty string synonym on desktop (LWJGL and JGLFW).
 - Fixed and improved xorshift128+ PRNG implementation.
 - Added support for Tiled's animated tiles, and varying frame duration tile animations.

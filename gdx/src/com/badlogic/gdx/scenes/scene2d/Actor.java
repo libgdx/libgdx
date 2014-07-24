@@ -18,11 +18,12 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
-import com.badlogic.gdx.scenes.scene2d.StageDebug.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
@@ -49,10 +50,8 @@ import com.badlogic.gdx.utils.Pools;
  * @author mzechner
  * @author Nathan Sweet */
 public class Actor {
-	static int debugEnabled;
-
 	private Stage stage;
-	private Group parent;
+	Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
@@ -68,15 +67,25 @@ public class Actor {
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
 
-	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
+	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
 	 * This draw method} is convenient to draw a rotated and scaled TextureRegion. {@link Batch#begin()} has already been called on
-	 * the Batch. If {@link Batch#end()} is called to draw without the Batch then {@link Batch#begin()} must be called before the
+	 * the batch. If {@link Batch#end()} is called to draw without the batch then {@link Batch#begin()} must be called before the
 	 * method returns.
 	 * <p>
 	 * The default implementation does nothing.
 	 * @param parentAlpha Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
 	public void draw (Batch batch, float parentAlpha) {
+	}
+
+	/** Draws the actor. The shape renderer is configured to draw in the parent's coordinate system. {@link ShapeRenderer#begin()}
+	 * has already been called on the shape renderer and {@link ShapeRenderer#setAutoShapeType(boolean)} is true. If
+	 * {@link ShapeRenderer#end()} is called to draw without the shape renderer then {@link ShapeRenderer#begin()} must be called
+	 * before the method returns.
+	 * <p>
+	 * The default implementation does nothing.
+	 * @param parentAlpha Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
+	public void draw (ShapeRenderer shapes, float parentAlpha) {
 	}
 
 	/** Updates the actor based on time. Typically this is called each frame by {@link Stage#act(float)}.
@@ -724,21 +733,20 @@ public class Actor {
 		return parentCoords;
 	}
 
-	/** Returns rectangles for debug drawing. {@link StageDebug} calls this for ever actor. The given array is typically filled
-	 * using {@link StageDebug#obtainRect()} to avoid allocation. */
-	public void getDebugRects (Array<DebugRect> debugRects) {
-		DebugRect debugRect = StageDebug.obtainRect();
-		debugRect.bottomLeft.set(0, 0);
-		debugRect.topRight.set(width, height);
-		debugRects.add(debugRect);
+	public void drawDebug (ShapeRenderer shapes) {
+		drawDebugBounds(shapes);
 	}
 
-	/** If true, debug rectangles will be drawn for this actor.
-	 * @see #getDebugRects(Array) */
+	protected void drawDebugBounds (ShapeRenderer shapes) {
+		shapes.set(ShapeType.Line);
+		shapes.setColor(getStage().getDebugColor());
+		shapes.rect(getX(), getY(), getWidth(), getHeight(), getOriginX(), getOriginY(), getScaleX(), getScaleY(), getRotation());
+	}
+
+	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */
 	public void setDebug (boolean enabled) {
-		if (enabled == debug) return;
-		debugEnabled += enabled ? 1 : -1;
 		debug = enabled;
+		if (enabled) Stage.debug = true;
 	}
 
 	public boolean getDebug () {

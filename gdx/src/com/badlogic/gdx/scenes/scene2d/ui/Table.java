@@ -18,17 +18,16 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.StageDebug;
-import com.badlogic.gdx.scenes.scene2d.StageDebug.DebugRect;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
@@ -69,13 +68,12 @@ public class Table extends WidgetGroup {
 	int align = Align.center;
 
 	Debug debug = Debug.none;
-	final Array<DebugRect> debugRects = new Array();
+	Array<DebugRect> debugRects;
 
 	private Drawable background;
 	private boolean clip;
 	private Skin skin;
 	boolean round = true;
-	private Rectangle scissorBounds;
 
 	public Table () {
 		this(null);
@@ -99,7 +97,6 @@ public class Table extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
-		boolean hasScissorBounds = false;
 		validate();
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
@@ -113,11 +110,7 @@ public class Table extends WidgetGroup {
 					width -= x + padRight.get(this);
 					height -= y + padTop.get(this);
 				}
-				boolean draw = clipBegin(x, y, width, height);
-				if (draw) {
-					hasScissorBounds = true;
-					if (scissorBounds == null) scissorBounds = Pools.obtain(Rectangle.class);
-					scissorBounds.set(ScissorStack.peekScissors());
+				if (clipBegin(x, y, width, height)) {
 					drawChildren(batch, parentAlpha);
 					clipEnd();
 				}
@@ -128,7 +121,6 @@ public class Table extends WidgetGroup {
 			drawBackground(batch, parentAlpha, getX(), getY());
 			super.draw(batch, parentAlpha);
 		}
-		if (!hasScissorBounds && scissorBounds != null) Pools.free(scissorBounds);
 	}
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
@@ -202,10 +194,6 @@ public class Table extends WidgetGroup {
 
 	public boolean getClip () {
 		return clip;
-	}
-
-	public Rectangle getScissorBounds () {
-		return scissorBounds;
 	}
 
 	public void invalidate () {
@@ -576,56 +564,59 @@ public class Table extends WidgetGroup {
 		return this;
 	}
 
+	public void setDebug (boolean enabled) {
+		debug(enabled ? Debug.all : Debug.none);
+	}
+
 	public Table debug () {
-		this.debug = Debug.all;
-		setDebug(true);
-		invalidate();
+		super.debug();
 		return this;
 	}
 
 	public Table debugAll () {
-		this.debug = Debug.all;
-		setDebug(true, true);
-		invalidate();
+		super.debugAll();
 		return this;
 	}
 
 	/** Turns on table debug lines. */
 	public Table debugTable () {
-		this.debug = Debug.table;
-		setDebug(true);
-		invalidate();
+		super.setDebug(true);
+		if (debug != Debug.table) {
+			this.debug = Debug.table;
+			invalidate();
+		}
 		return this;
 	}
 
 	/** Turns on cell debug lines. */
 	public Table debugCell () {
-		this.debug = Debug.cell;
-		setDebug(true);
-		invalidate();
+		super.setDebug(true);
+		if (debug != Debug.cell) {
+			this.debug = Debug.cell;
+			invalidate();
+		}
 		return this;
 	}
 
 	/** Turns on actor debug lines. */
 	public Table debugActor () {
-		this.debug = Debug.actor;
-		setDebug(true);
-		invalidate();
+		super.setDebug(true);
+		if (debug != Debug.actor) {
+			this.debug = Debug.actor;
+			invalidate();
+		}
 		return this;
 	}
 
 	/** Turns debug lines on or off. */
 	public Table debug (Debug debug) {
-		this.debug = debug;
-		if (debug == Debug.none) {
-			setDebug(false);
-			if (debugRects != null) {
-				StageDebug.debugRectPool.freeAll(debugRects);
-				debugRects.clear();
-			}
-		} else {
-			setDebug(true);
-			invalidate();
+		super.setDebug(debug != Debug.none);
+		if (this.debug != debug) {
+			this.debug = debug;
+			if (debug == Debug.none)
+				clearDebugRects();
+			else
+				invalidate();
 		}
 		return this;
 	}
@@ -1125,10 +1116,7 @@ public class Table extends WidgetGroup {
 
 		// Store debug rectangles.
 		if (debug == Debug.none) return;
-		if (debugRects != null) {
-			StageDebug.debugRectPool.freeAll(debugRects);
-			debugRects.clear();
-		}
+		clearDebugRects();
 		currentX = x;
 		currentY = y;
 		if (debug == Debug.table || debug == Debug.all) {
@@ -1161,23 +1149,68 @@ public class Table extends WidgetGroup {
 		}
 	}
 
-	@Override
-	public void getDebugRects (Array<DebugRect> debugRects) {
-		debugRects.addAll(this.debugRects);
+	private void clearDebugRects () {
+		if (debugRects == null) return;
+		DebugRect.pool.freeAll(debugRects);
+		debugRects.clear();
 	}
 
-	private void addDebugRect (float x, float y, float width, float height, Color color) {
-		DebugRect debugRect = StageDebug.debugRectPool.obtain();
-		float yCorrected = getHeight() - y - height;
-		debugRect.bottomLeft.set(x, yCorrected);
-		debugRect.topRight.set(x + width, yCorrected + height);
-		debugRect.color.set(color);
-		debugRects.add(debugRect);
+	private void addDebugRect (float x, float y, float w, float h, Color color) {
+		if (debugRects == null) debugRects = new Array();
+		DebugRect rect = DebugRect.pool.obtain();
+		rect.color = color;
+		rect.set(x, getHeight() - y - h, w, h);
+		debugRects.add(rect);
+	}
+
+	public void drawDebug (ShapeRenderer shapes) {
+		if (isTransform()) {
+			drawDebugRects(shapes);
+			applyTransform(shapes, computeTransform());
+			if (clip) {
+				shapes.flush();
+				float x = 0, y = 0, width = getWidth(), height = getHeight();
+				if (background != null) {
+					x = padLeft.get(this);
+					y = padBottom.get(this);
+					width -= x + padRight.get(this);
+					height -= y + padTop.get(this);
+				}
+				if (clipBegin(x, y, width, height)) {
+					drawDebugChildren(shapes);
+					clipEnd();
+				}
+			} else
+				drawDebugChildren(shapes);
+			resetTransform(shapes);
+		} else {
+			drawDebugRects(shapes);
+			super.drawDebug(shapes);
+		}
+	}
+	
+	protected void drawDebugBounds (ShapeRenderer shapes) {
+	}
+
+	private void drawDebugRects (ShapeRenderer shapes) {
+		if (debugRects == null) return;
+		shapes.set(ShapeType.Line);
+		shapes.setColor(getStage().getDebugColor());
+		for (int i = 0, n = debugRects.size; i < n; i++) {
+			DebugRect debugRect = debugRects.get(i);
+			shapes.setColor(debugRect.color);
+			shapes.rect(getX() + debugRect.x, getY() + debugRect.y, debugRect.width, debugRect.height);
+		}
+	}
+
+	/** @author Nathan Sweet */
+	static class DebugRect extends Rectangle {
+		static Pool<DebugRect> pool = Pools.get(DebugRect.class);
+		Color color;
 	}
 
 	/** @author Nathan Sweet */
 	static public enum Debug {
 		none, all, table, cell, actor
 	}
-
 }
