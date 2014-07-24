@@ -205,6 +205,14 @@ public class ShapeRenderer implements Disposable {
 		renderer.begin(combinedMatrix, shapeType.getGlType());
 	}
 
+	public void set (ShapeType type) {
+		if (shapeType == type) return;
+		if (shapeType == null) throw new IllegalStateException("begin must be called first.");
+		if (!autoShapeType) throw new IllegalStateException("autoShapeType must be enabled.");
+		end();
+		begin(type);
+	}
+
 	/** Draws a point using {@link ShapeType#Point}, {@link ShapeType#Line} or {@link ShapeType#Filled}. */
 	public void point (float x, float y, float z) {
 		if (shapeType == ShapeType.Line) {
@@ -455,8 +463,9 @@ public class ShapeRenderer implements Disposable {
 
 	/** Draws a rectangle in the x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. The x and y specify the lower
 	 * left corner. The originX and originY specify the point about which to rotate the rectangle. */
-	public void rect (float x, float y, float width, float height, float originX, float originY, float degrees) {
-		rect(x, y, width, height, originX, originY, degrees, color, color, color, color);
+	public void rect (float x, float y, float width, float height, float originX, float originY, float scaleX, float scaleY,
+		float degrees) {
+		rect(x, y, width, height, originX, originY, scaleX, scaleY, degrees, color, color, color, color);
 	}
 
 	/** Draws a rectangle in the x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. The x and y specify the lower
@@ -465,24 +474,35 @@ public class ShapeRenderer implements Disposable {
 	 * @param col2 The color at (x + width, y)
 	 * @param col3 The color at (x + width, y + height)
 	 * @param col4 The color at (x, y + height) */
-	public void rect (float x, float y, float width, float height, float originX, float originY, float degrees, Color col1,
-		Color col2, Color col3, Color col4) {
+	public void rect (float x, float y, float width, float height, float originX, float originY, float scaleX, float scaleY,
+		float degrees, Color col1, Color col2, Color col3, Color col4) {
 		check(ShapeType.Line, ShapeType.Filled, 8);
 
 		float cos = MathUtils.cosDeg(degrees);
 		float sin = MathUtils.sinDeg(degrees);
+		float fx = -originX;
+		float fy = -originY;
+		float fx2 = width - originX;
+		float fy2 = height - originY;
 
-		float x1 = x + cos * (0 - originX) + -sin * (0 - originY) + originX;
-		float y1 = y + sin * (0 - originX) + cos * (0 - originY) + originY;
+		if (scaleX != 1 || scaleY != 1) {
+			fx *= scaleX;
+			fy *= scaleY;
+			fx2 *= scaleX;
+			fy2 *= scaleY;
+		}
 
-		float x2 = x + cos * (width - originX) + -sin * (0 - originY) + originX;
-		float y2 = y + sin * (width - originX) + cos * (0 - originY) + originY;
+		float x1 = x + cos * fx + -sin * fy + originX;
+		float y1 = y + sin * fx + cos * fy + originY;
 
-		float x3 = x + cos * (width - originX) + -sin * (height - originY) + originX;
-		float y3 = y + sin * (width - originX) + cos * (height - originY) + originY;
+		float x2 = x + cos * fx2 + -sin * fy + originX;
+		float y2 = y + sin * fx2 + cos * fy + originY;
 
-		float x4 = x + cos * (0 - originX) + -sin * (height - originY) + originX;
-		float y4 = y + sin * (0 - originX) + cos * (height - originY) + originY;
+		float x3 = x + cos * fx2 + -sin * fy2 + originX;
+		float y3 = y + sin * fx2 + cos * fy2 + originY;
+
+		float x4 = x + cos * fx + -sin * fy2 + originX;
+		float y4 = y + sin * fx + cos * fy2 + originY;
 
 		if (shapeType == ShapeType.Line) {
 			renderer.color(col1.r, col1.g, col1.b, col1.a);
