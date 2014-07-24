@@ -1201,6 +1201,6 @@ public class PolygonSpriteBatch implements Batch {
 	}
 
 	public boolean isDrawing () {
-		return false;
+		return drawing;
 	}
 }
