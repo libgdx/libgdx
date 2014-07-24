@@ -22,6 +22,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -186,6 +187,12 @@ public class Group extends Actor implements Cullable {
 	 * actors! */
 	public void setCullingArea (Rectangle cullingArea) {
 		this.cullingArea = cullingArea;
+	}
+
+	/** Returns the bounds this group will use to clip it's children, or null. The return value of this method is informative only,
+	 * eg it is used when drawing debug rects. The group still needs to use {@link ScissorStack} to perform clipping. */
+	public Rectangle getScissorBounds () {
+		return cullingArea;
 	}
 
 	public Actor hit (float x, float y, boolean touchable) {

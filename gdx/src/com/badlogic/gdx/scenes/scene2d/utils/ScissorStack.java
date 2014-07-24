@@ -21,7 +21,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -82,6 +81,10 @@ public class ScissorStack {
 			Gdx.gl.glScissor((int)scissor.x, (int)scissor.y, (int)scissor.width, (int)scissor.height);
 		}
 		return old;
+	}
+
+	public static Rectangle peekScissors () {
+		return scissors.peek();
 	}
 
 	private static void fix (Rectangle rect) {

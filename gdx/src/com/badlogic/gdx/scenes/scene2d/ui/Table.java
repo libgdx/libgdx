@@ -18,6 +18,7 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.StageDebug;
 import com.badlogic.gdx.scenes.scene2d.StageDebug.DebugRect;
@@ -27,8 +28,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Value.Fixed;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.Layout;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Pools;
 
 /** A group that sizes and positions children using table constraints. By default, {@link #getTouchable()} is
  * {@link Touchable#childrenOnly}.
@@ -40,7 +43,7 @@ public class Table extends WidgetGroup {
 	static public Color debugCellColor = new Color(1, 0, 0, 1);
 	static public Color debugActorColor = new Color(0, 1, 0, 1);
 
-	static Pool<Cell> cellPool = new Pool<Cell>() {
+	static final Pool<Cell> cellPool = new Pool<Cell>() {
 		protected Cell newObject () {
 			return new Cell();
 		}
@@ -66,12 +69,13 @@ public class Table extends WidgetGroup {
 	int align = Align.center;
 
 	Debug debug = Debug.none;
-	Array<DebugRect> debugRects = new Array<DebugRect>();
+	final Array<DebugRect> debugRects = new Array();
 
 	private Drawable background;
 	private boolean clip;
 	private Skin skin;
 	boolean round = true;
+	private Rectangle scissorBounds;
 
 	public Table () {
 		this(null);
@@ -95,6 +99,7 @@ public class Table extends WidgetGroup {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		boolean hasScissorBounds = false;
 		validate();
 		if (isTransform()) {
 			applyTransform(batch, computeTransform());
@@ -110,6 +115,9 @@ public class Table extends WidgetGroup {
 				}
 				boolean draw = clipBegin(x, y, width, height);
 				if (draw) {
+					hasScissorBounds = true;
+					if (scissorBounds == null) scissorBounds = Pools.obtain(Rectangle.class);
+					scissorBounds.set(ScissorStack.peekScissors());
 					drawChildren(batch, parentAlpha);
 					clipEnd();
 				}
@@ -120,6 +128,7 @@ public class Table extends WidgetGroup {
 			drawBackground(batch, parentAlpha, getX(), getY());
 			super.draw(batch, parentAlpha);
 		}
+		if (!hasScissorBounds && scissorBounds != null) Pools.free(scissorBounds);
 	}
 
 	/** Called to draw the background, before clipping is applied (if enabled). Default implementation draws the background
@@ -193,6 +202,10 @@ public class Table extends WidgetGroup {
 
 	public boolean getClip () {
 		return clip;
+	}
+
+	public Rectangle getScissorBounds () {
+		return scissorBounds;
 	}
 
 	public void invalidate () {

@@ -19,7 +19,9 @@ package com.badlogic.gdx.scenes.scene2d;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -38,7 +40,7 @@ public class StageDebug {
 
 	private final Stage stage;
 	private final Array<DebugRect> debugRects = new Array();
-	private final ShapeRenderer shapeRenderer = new ShapeRenderer();
+	private final ShapeRenderer shapes = new ShapeRenderer();
 
 	private boolean invisibleActors, allActors, disabled;
 
@@ -59,17 +61,19 @@ public class StageDebug {
 	/** Draws the debug rects for the specified actor and any children, recursively. */
 	public void draw (Actor actor) {
 		if (disabled) return;
-		shapeRenderer.setProjectionMatrix(stage.getCamera().projection);
-		shapeRenderer.setTransformMatrix(stage.getCamera().view);
-		shapeRenderer.begin(ShapeType.Line);
+		shapes.setProjectionMatrix(stage.getCamera().projection);
+		shapes.setTransformMatrix(stage.getCamera().view);
+		shapes.begin(ShapeType.Line);
 		drawRecursive(actor);
-		shapeRenderer.end();
+		shapes.end();
 	}
 
 	private void drawRecursive (Actor actor) {
 		if (!invisibleActors && !actor.isVisible()) return;
 
-		if (allActors || actor.getDebug()) {
+		if (allActors) actor.debug();
+
+		if (actor.getDebug()) {
 			actor.getDebugRects(debugRects);
 			for (DebugRect debugRect : debugRects)
 				drawRect(actor, debugRect);
@@ -78,11 +82,24 @@ public class StageDebug {
 			usedRects.clear();
 		}
 
-		// Children are still rendered, even if the group has no debugging enabled.
-		if (actor instanceof Group) {
-			Group group = (Group)actor;
-			for (Actor child : group.getChildren()) {
-				drawRecursive(child);
+		boolean draw = true;
+		Rectangle scissorBounds = null;
+		if (actor instanceof Group) scissorBounds = ((Group)actor).getScissorBounds();
+		if (scissorBounds != null) {
+			shapes.flush();
+			draw = ScissorStack.pushScissors(scissorBounds);
+		}
+		if (draw) {
+			// Children are still rendered, even if the group has no debugging enabled.
+			if (actor instanceof Group) {
+				Group group = (Group)actor;
+				for (Actor child : group.getChildren())
+					drawRecursive(child);
+			}
+
+			if (scissorBounds != null) {
+				shapes.flush();
+				ScissorStack.popScissors();
 			}
 		}
 	}
@@ -99,11 +116,11 @@ public class StageDebug {
 		actor.localToStageCoordinates(bottomRight);
 		actor.localToStageCoordinates(bottomLeft);
 
-		shapeRenderer.setColor(debugRect.color);
-		shapeRenderer.line(topLeft, topRight);
-		shapeRenderer.line(topRight, bottomRight);
-		shapeRenderer.line(bottomRight, bottomLeft);
-		shapeRenderer.line(bottomLeft, topLeft);
+		shapes.setColor(debugRect.color);
+		shapes.line(topLeft, topRight);
+		shapes.line(topRight, bottomRight);
+		shapes.line(bottomRight, bottomLeft);
+		shapes.line(bottomLeft, topLeft);
 	}
 
 	/** If true, debug rects will be drawn for actors that are not visible ({@link Actor#isVisible()} is false for the actor or any
