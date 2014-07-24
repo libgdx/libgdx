@@ -42,8 +42,8 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class StageTest extends GdxTest implements InputProcessor {
-	private static final int NUM_GROUPS = 2;
-	private static final int NUM_SPRITES = (int)Math.sqrt(50 / NUM_GROUPS);
+	private static final int NUM_GROUPS = 4;
+	private static final int NUM_SPRITES = (int)Math.sqrt(150 / NUM_GROUPS);
 	private static final float SPACING = 5;
 	ShapeRenderer renderer;
 	Stage stage;
@@ -67,8 +67,6 @@ public class StageTest extends GdxTest implements InputProcessor {
 		font = new BitmapFont(Gdx.files.internal("data/arial-15.fnt"), false);
 
 		stage = new Stage(new ScreenViewport());
-		// BOZO
-		// stage.getDebugRenderer().setAllActors(true);
 
 		float loc = (NUM_SPRITES * (32 + SPACING) - SPACING) / 2;
 		for (int i = 0; i < NUM_GROUPS; i++) {
@@ -123,16 +121,16 @@ public class StageTest extends GdxTest implements InputProcessor {
 
 		{
 			Actor shapeActor = new Actor() {
-				public void draw (ShapeRenderer shapes, float parentAlpha) {
-					shapes.begin(ShapeType.Filled);
+				public void drawDebug (ShapeRenderer shapes) {
+					shapes.set(ShapeType.Filled);
 					shapes.setColor(getColor());
-					// shapes.getColor().a *= parentAlpha;
 					shapes.rect(getX(), getY(), getWidth(), getHeight(), getOriginX(), getOriginY(), getScaleX(), getScaleY(),
 						getRotation());
 				}
 			};
 			shapeActor.setBounds(0, 0, 100, 150);
 			shapeActor.setOrigin(50, 75);
+			shapeActor.debug();
 			sprites.add(shapeActor);
 
 			Group shapeGroup = new Group();

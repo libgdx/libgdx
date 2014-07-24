@@ -23,7 +23,6 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Cullable;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
 
@@ -134,6 +133,8 @@ public class Group extends Actor implements Cullable {
 		children.end();
 	}
 
+	/** Draws this actor's debug lines if {@link #getDebug()} is true and, regardless of {@link #getDebug()}, calls
+	 * {@link Actor#drawDebug(ShapeRenderer)} on each child. */
 	public void drawDebug (ShapeRenderer shapes) {
 		drawDebugBounds(shapes);
 		if (transform) applyTransform(shapes, computeTransform());
@@ -152,7 +153,7 @@ public class Group extends Actor implements Cullable {
 		if (transform) {
 			for (int i = 0, n = children.size; i < n; i++) {
 				Actor child = actors[i];
-				if (!child.isVisible() || !child.getDebug()) continue;
+				if (!child.isVisible()) continue;
 				child.drawDebug(shapes);
 			}
 			shapes.flush();
@@ -163,7 +164,7 @@ public class Group extends Actor implements Cullable {
 			y = 0;
 			for (int i = 0, n = children.size; i < n; i++) {
 				Actor child = actors[i];
-				if (!child.isVisible() || !child.getDebug()) continue;
+				if (!child.isVisible()) continue;
 				float cx = child.x, cy = child.y;
 				child.x = cx + offsetX;
 				child.y = cy + offsetY;

@@ -1188,12 +1188,12 @@ public class Table extends WidgetGroup {
 			super.drawDebug(shapes);
 		}
 	}
-	
+
 	protected void drawDebugBounds (ShapeRenderer shapes) {
 	}
 
 	private void drawDebugRects (ShapeRenderer shapes) {
-		if (debugRects == null) return;
+		if (debugRects == null || !getDebug()) return;
 		shapes.set(ShapeType.Line);
 		shapes.setColor(getStage().getDebugColor());
 		for (int i = 0, n = debugRects.size; i < n; i++) {

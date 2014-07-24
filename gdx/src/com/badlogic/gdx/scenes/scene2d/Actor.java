@@ -78,16 +78,6 @@ public class Actor {
 	public void draw (Batch batch, float parentAlpha) {
 	}
 
-	/** Draws the actor. The shape renderer is configured to draw in the parent's coordinate system. {@link ShapeRenderer#begin()}
-	 * has already been called on the shape renderer and {@link ShapeRenderer#setAutoShapeType(boolean)} is true. If
-	 * {@link ShapeRenderer#end()} is called to draw without the shape renderer then {@link ShapeRenderer#begin()} must be called
-	 * before the method returns.
-	 * <p>
-	 * The default implementation does nothing.
-	 * @param parentAlpha Should be multiplied with the actor's alpha, allowing a parent's alpha to affect all children. */
-	public void draw (ShapeRenderer shapes, float parentAlpha) {
-	}
-
 	/** Updates the actor based on time. Typically this is called each frame by {@link Stage#act(float)}.
 	 * <p>
 	 * The default implementation calls {@link Action#act(float)} on each action and removes actions that are complete.
@@ -733,11 +723,14 @@ public class Actor {
 		return parentCoords;
 	}
 
+	/** Draws this actor's debug lines if {@link #getDebug()} is true. */
 	public void drawDebug (ShapeRenderer shapes) {
 		drawDebugBounds(shapes);
 	}
 
+	/** Draws a rectange for the bounds of this actor if {@link #getDebug()} is true. */
 	protected void drawDebugBounds (ShapeRenderer shapes) {
+		if (!getDebug()) return;
 		shapes.set(ShapeType.Line);
 		shapes.setColor(getStage().getDebugColor());
 		shapes.rect(getX(), getY(), getWidth(), getHeight(), getOriginX(), getOriginY(), getScaleX(), getScaleY(), getRotation());
