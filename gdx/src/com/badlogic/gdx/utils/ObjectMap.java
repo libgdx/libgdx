@@ -623,7 +623,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 	}
 
-	static private class MapIterator<K, V> {
+	static private abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I> {
 		public boolean hasNext;
 
 		final ObjectMap<K, V> map;
@@ -667,7 +667,7 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Entries<K, V> extends MapIterator<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
+	static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>> {
 		Entry<K, V> entry = new Entry();
 
 		public Entries (ObjectMap<K, V> map) {
@@ -694,13 +694,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 		public Iterator<Entry<K, V>> iterator () {
 			return this;
 		}
-
-		public void remove () {
-			super.remove();
-		}
 	}
 
-	static public class Values<V> extends MapIterator<Object, V> implements Iterable<V>, Iterator<V> {
+	static public class Values<V> extends MapIterator<Object, V, V> {
 		public Values (ObjectMap<?, V> map) {
 			super((ObjectMap<Object, V>)map);
 		}
@@ -734,13 +730,9 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 				array.add(next());
 			return array;
 		}
-
-		public void remove () {
-			super.remove();
-		}
 	}
 
-	static public class Keys<K> extends MapIterator<K, Object> implements Iterable<K>, Iterator<K> {
+	static public class Keys<K> extends MapIterator<K, Object, K> {
 		public Keys (ObjectMap<K, ?> map) {
 			super((ObjectMap<K, Object>)map);
 		}
@@ -773,10 +765,6 @@ public class ObjectMap<K, V> implements Iterable<ObjectMap.Entry<K, V>> {
 			while (hasNext)
 				array.add(next());
 			return array;
-		}
-
-		public void remove () {
-			super.remove();
 		}
 	}
 }
