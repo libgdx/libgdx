@@ -463,9 +463,9 @@ public class ShapeRenderer implements Disposable {
 
 	/** Draws a rectangle in the x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. The x and y specify the lower
 	 * left corner. The originX and originY specify the point about which to rotate the rectangle. */
-	public void rect (float x, float y, float width, float height, float originX, float originY, float scaleX, float scaleY,
+	public void rect (float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY,
 		float degrees) {
-		rect(x, y, width, height, originX, originY, scaleX, scaleY, degrees, color, color, color, color);
+		rect(x, y, originX, originY, width, height, scaleX, scaleY, degrees, color, color, color, color);
 	}
 
 	/** Draws a rectangle in the x/y plane using {@link ShapeType#Line} or {@link ShapeType#Filled}. The x and y specify the lower
@@ -474,7 +474,7 @@ public class ShapeRenderer implements Disposable {
 	 * @param col2 The color at (x + width, y)
 	 * @param col3 The color at (x + width, y + height)
 	 * @param col4 The color at (x, y + height) */
-	public void rect (float x, float y, float width, float height, float originX, float originY, float scaleX, float scaleY,
+	public void rect (float x, float y, float originX, float originY, float width, float height, float scaleX, float scaleY,
 		float degrees, Color col1, Color col2, Color col3, Color col4) {
 		check(ShapeType.Line, ShapeType.Filled, 8);
 
@@ -492,17 +492,20 @@ public class ShapeRenderer implements Disposable {
 			fy2 *= scaleY;
 		}
 
-		float x1 = x + cos * fx + -sin * fy + originX;
-		float y1 = y + sin * fx + cos * fy + originY;
+		float worldOriginX = x + originX;
+		float worldOriginY = y + originY;
 
-		float x2 = x + cos * fx2 + -sin * fy + originX;
-		float y2 = y + sin * fx2 + cos * fy + originY;
+		float x1 = cos * fx - sin * fy + worldOriginX;
+		float y1 = sin * fx + cos * fy + worldOriginY;
 
-		float x3 = x + cos * fx2 + -sin * fy2 + originX;
-		float y3 = y + sin * fx2 + cos * fy2 + originY;
+		float x2 = cos * fx2 - sin * fy + worldOriginX;
+		float y2 = sin * fx2 + cos * fy + worldOriginY;
 
-		float x4 = x + cos * fx + -sin * fy2 + originX;
-		float y4 = y + sin * fx + cos * fy2 + originY;
+		float x3 = cos * fx2 - sin * fy2 + worldOriginX;
+		float y3 = sin * fx2 + cos * fy2 + worldOriginY;
+
+		float x4 = x1 + (x3 - x2);
+		float y4 = y3 - (y2 - y1);
 
 		if (shapeType == ShapeType.Line) {
 			renderer.color(col1.r, col1.g, col1.b, col1.a);
