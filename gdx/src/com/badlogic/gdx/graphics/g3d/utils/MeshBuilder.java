@@ -1106,15 +1106,15 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void mesh (Mesh mesh, int numVerts, int numIndices) {
-		if (this.attributes == null)
-			begin(mesh.getVertexAttributes());
-		else if (!this.attributes.equals(mesh.getVertexAttributes()))
-			throw new GdxRuntimeException("Vertex attributes must be the same for added mesh");
-
 		if (numVerts < 1 || numVerts > mesh.getNumVertices())
 			throw new GdxRuntimeException("Invalid vertex count");
 		if (numIndices < 1 || numIndices > mesh.getNumIndices())
 			throw new GdxRuntimeException("Invalid index count");
+
+		if (this.attributes == null)
+			begin(mesh.getVertexAttributes());
+		else if (!this.attributes.equals(mesh.getVertexAttributes()))
+			throw new GdxRuntimeException("Vertex attributes must be the same for added mesh");
 
 		int size = stride * numVerts;
 		tempVerts.clear();
@@ -1131,104 +1131,100 @@ public class MeshBuilder implements MeshPartBuilder {
 		iBuffer.get(tempInds.items, 0, numIndices);
 		tempInds.size = numIndices;
 
-		processMesh();
+		mesh(tempVerts, tempInds);
 	}
 
 	@Override
-	public void mesh (float[] vertices, short[] indices) {
-		mesh(vertices, indices, vertices.length, indices.length);
+	public void mesh(FloatArray srcVertices, ShortArray srcIndices) {
+		mesh(srcVertices.items, srcVertices.size / stride, srcIndices.items, srcIndices.size);
 	}
 
 	@Override
-	public void mesh (float[] vertices, short[] indices, int numVerts, int numIndices) {
+	public void mesh (float[] srcVertices, short[] srcIndices) {
+		mesh(srcVertices, srcVertices.length, srcIndices, srcIndices.length);
+	}
+
+	@Override
+	public void mesh(float[] srcVertices, int numVerts, short[] srcIndices, int numIndices) {
 		if (this.attributes == null) throw new RuntimeException("Call begin() first");
 
-		if (numVerts < 1 || numVerts > numVerts)
+		if (numVerts < 1 || numVerts > srcVertices.length / stride)
 			throw new GdxRuntimeException("Invalid vertex count");
-		if (numIndices < 1 || numIndices > numIndices)
+		if (numIndices < 1 || numIndices > srcIndices.length)
 			throw new GdxRuntimeException("Invalid index count");
 
-		int size = stride * numVerts;
-		tempVerts.clear();
-		tempVerts.ensureCapacity(size);
-		tempVerts.addAll(vertices, 0, size);
+		ensureCapacity(numVerts, numIndices);
 
-		tempInds.clear();
-		tempInds.ensureCapacity(numIndices);
-		tempInds.addAll(indices, 0, numIndices);
-
-		processMesh();
-	}
-
-	// transforms and adds the current vertices from the scratch buffers 
-	private void processMesh() {
-		ensureCapacity(tempVerts.size, tempInds.size);
-
-		int numVerts = tempVerts.size / stride;
+		short startIndex = (short)vindex;
 		boolean moveUVs = (uMin != 0 || uMax != 1 || vMin != 0 || vMax != 1);
-		if (vertexTransformationEnabled || moveUVs) {
+		int posOff = posOffset;
+		int norOff = norOffset;
+		int uvOff = uvOffset;
+		int colOff = colOffset;
+		float uDelta = uMax - uMin;
+		float vDelta = vMax - vMin;
 
-			VertexAttribute posAttr = attributes.findByUsage( Usage.Position );
-			int pOffset = -1, nOffset = -1, texOffset = -1;
-			float uDelta = uMax - uMin;
-			float vDelta = vMax - vMin;
-			if (vertexTransformationEnabled) {
-				if (posAttr != null) {
-					if (posAttr.numComponents < 2) throw new RuntimeException("Assumed at least 2 component position");
-					pOffset = posAttr.offset / 4;
-				}
-				VertexAttribute norAttr = attributes.findByUsage( Usage.Normal );
-				if (norAttr != null) {
-					if (norAttr.numComponents != 3) throw new RuntimeException("Assumed 3 component normal");
-					nOffset = norAttr.offset / 4;
-				}
-			}
-
-			if (moveUVs) {
-				VertexAttribute uvAttr = attributes.findByUsage( Usage.TextureCoordinates );
-				if (uvAttr != null) {
-					if (uvAttr.numComponents != 2) throw new RuntimeException("Assumed 2 component texture coordinate");
-					texOffset = uvAttr.offset / 4;
-				}
-			}
-
-			// transform vertices and re-normalize uv ranges
-			for (int i = 0; i < numVerts; i++) {
-				if (pOffset != -1) {
-					if (posAttr.numComponents > 2) {
-						tempVTransformed.set(tempVerts.items[pOffset], tempVerts.items[pOffset+1], tempVerts.items[pOffset+2]).mul(positionTransform);
-						tempVerts.items[pOffset  ] = tempVTransformed.x;
-						tempVerts.items[pOffset+1] = tempVTransformed.y;
-						tempVerts.items[pOffset+2] = tempVTransformed.z;
+		// transform vertices and re-normalize uv ranges
+		for (int i = 0; i < numVerts; i++) {
+			if (posOffset >= 0) {
+				if ( vertexTransformationEnabled ) {
+					if (posSize > 2) {
+						tempVTransformed.set(srcVertices[posOff], srcVertices[posOff+1], srcVertices[posOff+2]).mul(positionTransform);
+						vertex[posOffset  ] = tempVTransformed.x;
+						vertex[posOffset+1] = tempVTransformed.y;
+						vertex[posOffset+2] = tempVTransformed.z;
+					} else if (posSize > 1) {
+						tempVTransformed.set(srcVertices[posOff], srcVertices[posOff+1], 0).mul(positionTransform);
+						srcVertices[posOffset  ] = tempVTransformed.x;
+						srcVertices[posOffset+1] = tempVTransformed.y;
 					} else {
-						tempVTransformed.set(tempVerts.items[pOffset], tempVerts.items[pOffset+1], 0).mul(positionTransform);
-						tempVerts.items[pOffset  ] = tempVTransformed.x;
-						tempVerts.items[pOffset+1] = tempVTransformed.y;
+						vertex[posOffset] = srcVertices[posOff];
 					}
-					pOffset += stride;
+				} else {
+					vertex[posOffset] = srcVertices[posOff];
+					if (posSize > 1) vertex[posOffset+1] = srcVertices[posOff+1];
+					if (posSize > 2) vertex[posOffset+2] = srcVertices[posOff+2];
 				}
-				if (nOffset != -1) {
-					tempVTransformed.set(tempVerts.items[nOffset], tempVerts.items[nOffset+1], tempVerts.items[nOffset+2]).mul(normalTransform).nor();
-					tempVerts.items[nOffset  ] = tempVTransformed.x;
-					tempVerts.items[nOffset+1] = tempVTransformed.y;
-					tempVerts.items[nOffset+2] = tempVTransformed.z;
-					nOffset += stride;
-				}
-				if (texOffset != -1) {
-					tempVerts.items[texOffset  ] = uMin + tempVerts.items[texOffset  ] * uDelta;
-					tempVerts.items[texOffset+1] = vMin + tempVerts.items[texOffset+1] * vDelta;
-					texOffset += stride;
-				}
+				posOff += stride;
 			}
+			if (norOffset >= 0) {
+				if ( vertexTransformationEnabled ) {
+					tempVTransformed.set(srcVertices[norOff], srcVertices[norOff+1], srcVertices[norOff+2]).mul(normalTransform).nor();
+					vertex[norOffset  ] = tempVTransformed.x;
+					vertex[norOffset+1] = tempVTransformed.y;
+					vertex[norOffset+2] = tempVTransformed.z;
+				} else {
+					vertex[norOffset  ] = srcVertices[norOff  ];
+					vertex[norOffset+1] = srcVertices[norOff+1];
+					vertex[norOffset+2] = srcVertices[norOff+2];
+				}
+				norOff += stride;
+			}
+			if (uvOffset >= 0) {
+				if (moveUVs) {
+					vertex[uvOffset  ] = uMin + srcVertices[uvOff  ] * uDelta;
+					vertex[uvOffset+1] = vMin + srcVertices[uvOff+1] * vDelta;
+				} else {
+					vertex[uvOffset  ] = srcVertices[uvOff  ];
+					vertex[uvOffset+1] = srcVertices[uvOff+1];
+				}
+				uvOff += stride;
+			}
+			if (colOffset >= 0) {
+				vertex[colOffset  ] = srcVertices[colOff  ];
+				vertex[colOffset+1] = srcVertices[colOff+1];
+				vertex[colOffset+2] = srcVertices[colOff+2];
+				if (colSize > 2)
+					vertex[colOffset+3] = srcVertices[colOff+3];
+			}
+			addVertex(vertex, 0);
 		}
-		this.vertices.addAll(tempVerts);
 
 		// increment indices and add them
-		for (int i = 0; i < tempInds.size; i++)
-			tempInds.incr(i, vindex );
-		this.indices.addAll(tempInds);
+		for (int i = 0; i < numIndices; i++)
+			srcIndices[i] += startIndex;
+		this.indices.addAll(srcIndices);
 
-		vindex += numVerts;
 		lastIndex = (short)vindex;
 	}
 

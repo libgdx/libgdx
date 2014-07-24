@@ -24,7 +24,9 @@ import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.FloatArray;
 import com.badlogic.gdx.utils.Pool.Poolable;
+import com.badlogic.gdx.utils.ShortArray;
 
 public interface MeshPartBuilder {
 	/** @return The {@link MeshPart} currently building. */
@@ -284,21 +286,28 @@ public interface MeshPartBuilder {
 	 */
 	public void mesh (Mesh mesh, int numVerts, int numIndices);
 
-	/** Add vertices from a float array, assumed to represent the same vertex attributes as the current mesh part
+	/** Add vertices from a FloatArray, assumed to represent the same vertex attributes as the current mesh part
 	 * 
-	 * @param vertices the vertices to add, must have the same vertex attributes as the current mesh part
-	 * @param indices the indices representing the mesh in the float array
+	 * @param srcVertices
+	 * @param srcIndices
 	 */
-	public void mesh (float[] vertices, short[] indices);
+	public void mesh (FloatArray srcVertices, ShortArray srcIndices);
 
 	/** Add vertices from a float array, assumed to represent the same vertex attributes as the current mesh part
 	 * 
-	 * @param vertices the vertices to add, must have the same vertex attributes as the current mesh part
-	 * @param indices the indices representing the mesh in the float array
+	 * @param srcVertices the vertices to add, must have the same vertex attributes as the current mesh part
+	 * @param srcIndices the indices representing the mesh in the float array
+	 */
+	public void mesh (float[] srcVertices, short[] srcIndices);
+
+	/** Add vertices from a float array, assumed to represent the same vertex attributes as the current mesh part
+	 * 
+	 * @param srcVertices
 	 * @param numVerts
+	 * @param srcIndices
 	 * @param numIndices
 	 */
-	public void mesh (float[] vertices, short[] indices, int numVerts, int numIndices);
+	public void mesh(float[] srcVertices, int numVerts, short[] srcIndices, int numIndices);
 
 	/** Get the current vertex transformation matrix. */
 	public Matrix4 getVertexTransform (Matrix4 out);
