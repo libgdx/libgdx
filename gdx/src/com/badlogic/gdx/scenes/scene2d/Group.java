@@ -33,14 +33,15 @@ import com.badlogic.gdx.utils.SnapshotArray;
  * @author mzechner
  * @author Nathan Sweet */
 public class Group extends Actor implements Cullable {
-	private final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
+	static private final Vector2 tmp = new Vector2();
+
+	final SnapshotArray<Actor> children = new SnapshotArray(true, 4, Actor.class);
 	private final Matrix3 localTransform = new Matrix3();
 	private final Matrix3 worldTransform = new Matrix3();
 	private final Matrix4 computedTransform = new Matrix4();
 	private final Matrix4 oldTransform = new Matrix4();
 	boolean transform = true;
 	private Rectangle cullingArea;
-	private final Vector2 point = new Vector2();
 
 	public void act (float delta) {
 		super.act(delta);
@@ -251,9 +252,10 @@ public class Group extends Actor implements Cullable {
 
 	public Actor hit (float x, float y, boolean touchable) {
 		if (touchable && getTouchable() == Touchable.disabled) return null;
-		Array<Actor> children = this.children;
+		Vector2 point = tmp;
+		Actor[] childrenArray = children.items;
 		for (int i = children.size - 1; i >= 0; i--) {
-			Actor child = children.get(i);
+			Actor child = childrenArray[i];
 			if (!child.isVisible()) continue;
 			child.parentToLocalCoordinates(point.set(x, y));
 			Actor hit = child.hit(point.x, point.y, touchable);
@@ -363,9 +365,9 @@ public class Group extends Actor implements Cullable {
 
 	protected void setStage (Stage stage) {
 		super.setStage(stage);
-		Array<Actor> children = this.children;
+		Actor[] childrenArray = children.items;
 		for (int i = 0, n = children.size; i < n; i++)
-			children.get(i).setStage(stage);
+			childrenArray[i].setStage(stage);
 	}
 
 	/** Swaps two actors by index. Returns false if the swap did not occur because the indexes were out of bounds. */
