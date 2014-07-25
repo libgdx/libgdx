@@ -713,21 +713,33 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** If true, debug lines are shown for all actors. */
 	public void setDebugAll (boolean debugAll) {
+		if (this.debugAll == debugAll) return;
 		this.debugAll = debugAll;
-		if (debugAll) debug = true;
+		if (debugAll)
+			debug = true;
+		else
+			root.setDebug(false, true);
 	}
 
 	/** If true, debug is enabled only for the actor under the mouse. Can be combined with {@link #setDebugAll(boolean)}. */
 	public void setDebugUnderMouse (boolean debugUnderMouse) {
+		if (this.debugUnderMouse == debugUnderMouse) return;
 		this.debugUnderMouse = debugUnderMouse;
-		if (debugUnderMouse) debug = true;
+		if (debugUnderMouse)
+			debug = true;
+		else
+			root.setDebug(false, true);
 	}
 
 	/** If true, debug is enabled only for the parent of the actor under the mouse. Can be combined with
 	 * {@link #setDebugAll(boolean)}. */
 	public void setDebugParentUnderMouse (boolean debugParentUnderMouse) {
+		if (this.debugParentUnderMouse == debugParentUnderMouse) return;
 		this.debugParentUnderMouse = debugParentUnderMouse;
-		if (debugParentUnderMouse) debug = true;
+		if (debugParentUnderMouse)
+			debug = true;
+		else
+			root.setDebug(false, true);
 	}
 
 	/** If not {@link Debug#none}, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can
@@ -735,8 +747,12 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param debugTableUnderMouse May be null for {@link Debug#none}. */
 	public void setDebugTableUnderMouse (Debug debugTableUnderMouse) {
 		if (debugTableUnderMouse == null) debugTableUnderMouse = Debug.none;
+		if (this.debugTableUnderMouse == debugTableUnderMouse) return;
 		this.debugTableUnderMouse = debugTableUnderMouse;
-		if (debugTableUnderMouse != Debug.none) debug = true;
+		if (debugTableUnderMouse != Debug.none)
+			debug = true;
+		else
+			root.setDebug(false, true);
 	}
 
 	/** If true, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can be combined with
