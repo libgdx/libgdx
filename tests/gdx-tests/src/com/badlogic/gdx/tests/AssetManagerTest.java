@@ -28,6 +28,8 @@ import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver;
+import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.MatchStrategy;
+import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Metric;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -52,7 +54,11 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 
 		Resolution[] resolutions = {new Resolution(320, 480, ".320480"), new Resolution(480, 800, ".480800"),
 			new Resolution(480, 856, ".480854")};
-		ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), resolutions);
+
+// ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), resolutions);
+		ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), MatchStrategy.bestMatch,
+			Metric.DP, resolutions);
+
 		manager = new AssetManager();
 		manager.setLoader(Texture.class, new TextureLoader(resolver));
 		manager.setErrorListener(this);
@@ -96,7 +102,8 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // manager.load("data/test.etc1", Texture.class);
 // manager.load("data/tiledmap/tilemap csv.tmx", TileMapRenderer.class, new
 // TileMapRendererLoader.TileMapParameter("data/tiledmap/", 8, 8));
-		manager.load("data/i18n/message2", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
+		manager.load("data/i18n/message2", I18NBundle.class, new I18NBundleLoader.I18NBundleParameter(
+			reloads % 2 == 0 ? Locale.ITALIAN : Locale.ENGLISH));
 	}
 
 	private void unload () {
@@ -161,7 +168,8 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 // if (manager.isLoaded("data/test.etc1")) batch.draw(manager.get("data/test.etc1", Texture.class), 0, 0);
 // if (manager.isLoaded("data/tiledmap/tilemap csv.tmx")) manager.get("data/tiledmap/tilemap csv.tmx",
 // TileMapRenderer.class).render();
-		if (manager.isLoaded("data/i18n/message2")) font.draw(batch, manager.get("data/i18n/message2", I18NBundle.class).get("msg"), 100, 400);
+		if (manager.isLoaded("data/i18n/message2"))
+			font.draw(batch, manager.get("data/i18n/message2", I18NBundle.class).get("msg"), 100, 400);
 
 		font.draw(batch, "loaded: " + manager.getProgress() + ", reloads: " + reloads, 0, 30);
 		batch.end();
