@@ -1222,8 +1222,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 		// increment indices and add them
 		for (int i = 0; i < numIndices; i++)
-			srcIndices[i] += startIndex;
-		this.indices.addAll(srcIndices);
+			indices.add( srcIndices[i] + startIndex );
 
 		lastIndex = (short)vindex;
 	}
