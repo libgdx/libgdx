@@ -137,58 +137,47 @@ public class Stage extends InputAdapter implements Disposable {
 			debugShapes.setAutoShapeType(true);
 		}
 
-		Actor actor = root;
 		if (debugUnderMouse || debugParentUnderMouse || debugTableUnderMouse != Debug.none) {
 			screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
-			actor = hit(stageCoords.x, stageCoords.y, true);
+			Actor actor = hit(stageCoords.x, stageCoords.y, true);
 			if (actor == null) return;
+
 			if (debugParentUnderMouse && actor.parent != null) actor = actor.parent;
-			if (debugTableUnderMouse != Debug.none) {
+
+			if (debugTableUnderMouse == Debug.none)
+				actor.setDebug(true);
+			else {
 				while (actor != null) {
 					if (actor instanceof Table) break;
 					actor = actor.parent;
 				}
 				if (actor == null) return;
 				((Table)actor).debug(debugTableUnderMouse);
-			} else
-				actor.setDebug(true);
-			if (actor instanceof Group) {
-				for (Actor child : ((Group)actor).getChildren()) {
-					if (child instanceof Group)
-						((Group)child).setDebug(false, true);
-					else
-						child.setDebug(false);
-				}
 			}
-		}
 
-		if (debugAll && actor instanceof Group) ((Group)actor).debugAll();
+			if (debugAll && actor instanceof Group) ((Group)actor).debugAll();
 
-		// Transform to actor's parent.
-		Group group = actor.parent;
-		if (group != null) {
-			debugShapes.setTransformMatrix(group.computeTransform());
-			group = group.parent;
+			disableDebug(root, actor);
+		} else {
+			if (debugAll) root.debugAll();
 		}
-
-		// Offset for non-transformed parents.
-		float offsetX = 0, offsetY = 0;
-		while (group != null && !group.transform) {
-			offsetX += group.x;
-			offsetY += group.y;
-			group = group.parent;
-		}
-		actor.x += offsetX;
-		actor.y += offsetY;
 
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		debugShapes.setProjectionMatrix(viewport.getCamera().combined);
 		debugShapes.begin();
-		actor.drawDebug(debugShapes);
+		root.drawDebug(debugShapes);
 		debugShapes.end();
+	}
 
-		actor.x -= offsetX;
-		actor.y -= offsetY;
+	/** Disables debug on all actors recursively except the specified actor and any children. */
+	private void disableDebug (Actor actor, Actor except) {
+		if (actor == except) return;
+		actor.setDebug(false);
+		if (actor instanceof Group) {
+			SnapshotArray<Actor> children = ((Group)actor).children;
+			for (int i = 0, n = children.size; i < n; i++)
+				disableDebug(children.get(i), except);
+		}
 	}
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
@@ -527,7 +516,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Returns the root's child actors.
 	 * @see Group#getChildren() */
 	public Array<Actor> getActors () {
-		return root.getChildren();
+		return root.children;
 	}
 
 	/** Adds a listener to the root.
@@ -741,12 +730,19 @@ public class Stage extends InputAdapter implements Disposable {
 		if (debugParentUnderMouse) debug = true;
 	}
 
-	/** If true, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can be combined with
-	 * {@link #setDebugAll(boolean)}. */
+	/** If not {@link Debug#none}, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can
+	 * be combined with {@link #setDebugAll(boolean)}.
+	 * @param debugTableUnderMouse May be null for {@link Debug#none}. */
 	public void setDebugTableUnderMouse (Debug debugTableUnderMouse) {
 		if (debugTableUnderMouse == null) debugTableUnderMouse = Debug.none;
 		this.debugTableUnderMouse = debugTableUnderMouse;
 		if (debugTableUnderMouse != Debug.none) debug = true;
+	}
+
+	/** If true, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can be combined with
+	 * {@link #setDebugAll(boolean)}. */
+	public void setDebugTableUnderMouse (boolean debugTableUnderMouse) {
+		setDebugTableUnderMouse(debugTableUnderMouse ? Debug.all : Debug.none);
 	}
 
 	public void dispose () {
