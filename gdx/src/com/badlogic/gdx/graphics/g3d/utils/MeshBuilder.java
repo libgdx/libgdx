@@ -1141,7 +1141,7 @@ public class MeshBuilder implements MeshPartBuilder {
 
 	@Override
 	public void mesh (float[] srcVertices, short[] srcIndices) {
-		mesh(srcVertices, srcVertices.length, srcIndices, srcIndices.length);
+		mesh(srcVertices, srcVertices.length / stride, srcIndices, srcIndices.length);
 	}
 
 	@Override

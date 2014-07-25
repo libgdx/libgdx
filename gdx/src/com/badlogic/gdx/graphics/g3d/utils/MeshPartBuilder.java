@@ -303,7 +303,7 @@ public interface MeshPartBuilder {
 	/** Add vertices from a float array, assumed to represent the same vertex attributes as the current mesh part
 	 * 
 	 * @param srcVertices
-	 * @param numVerts
+	 * @param numVerts number of vertices to add (note this number is in vertices not floats)
 	 * @param srcIndices
 	 * @param numIndices
 	 */
