@@ -20,16 +20,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 
-/** File resolver based on screen resolution. Supported matching strategy @see {@link MatchStrategy}. Supported @link
- * {@link Resolution} {@link Metric} are Pixels and Density Pixels */
+/** File resolver based on screen resolution in pixels. Supported {@link ResolutionChooser} strategies are
+ * {@link ResolutionChooser#bestMatch}, {@link ResolutionChooser#higherMatch}, and {@link ResolutionChooser#lowerMatch} */
 public class ResolutionFileResolver implements FileHandleResolver {
-
-	/** Resolution metric, Either PX:resolution in pixels, or DP resolution in density pixels
-	 * @see <a
-	 *      href="http://stackoverflow.com/questions/7587854/is-there-a-list-of-screen-resolutions-for-all-android-based-phones-and-tablets">list-of-screen-resolutions</a> */
-	public static enum Metric {
-		PX, DP
-	};
 
 	public static class Resolution {
 		public final int portraitWidth;
@@ -41,15 +34,14 @@ public class ResolutionFileResolver implements FileHandleResolver {
 			this.portraitHeight = portraitHeight;
 			this.suffix = suffix;
 		}
-
 	}
 
 	/** defines how to choose the matching resolution */
-	public interface MatchStrategy {
+	public interface ResolutionChooser {
 		public abstract Resolution choose (int w, int h, Resolution... descriptors);
 
 		/** chooses the closest descriptor dimension to the given screen width and height */
-		public static MatchStrategy bestMatch = new MatchStrategy() {
+		public static ResolutionChooser bestMatch = new ResolutionChooser() {
 
 			@Override
 			public Resolution choose (int w, int h, Resolution... descriptors) {
@@ -83,7 +75,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 		};
 
 		/** chooses the closest descriptor that is lower than the given screen width and height */
-		public static MatchStrategy lowerMatch = new MatchStrategy() {
+		public static ResolutionChooser lowerMatch = new ResolutionChooser() {
 
 			@Override
 			public Resolution choose (int w, int h, Resolution... descriptors) {
@@ -108,7 +100,7 @@ public class ResolutionFileResolver implements FileHandleResolver {
 		};
 
 		/** chooses the closest descriptor that is higher than the given screen width and height */
-		public static MatchStrategy higherMatch = new MatchStrategy() {
+		public static ResolutionChooser higherMatch = new ResolutionChooser() {
 
 			@Override
 			public Resolution choose (int w, int h, Resolution... descriptors) {
@@ -131,70 +123,38 @@ public class ResolutionFileResolver implements FileHandleResolver {
 				return best;
 			}
 		};
-
 	}
 
 	protected final FileHandleResolver baseResolver;
 	protected final Resolution[] descriptors;
-	protected final MatchStrategy matchStrategy;
-	protected final Metric metric;
+	protected final ResolutionChooser chooserStrategy;
 
-	/** @param baseResolver
-	 * @param descriptors Chooses the matching resources size based on the given {@link MatchStrategy}. Default strategy is
-	 *           {@link MatchStrategy#bestMatch} and default {@link Metric} is PX (pixel resolution) */
+	/** Chooses the matching resources size using the default strategy {@link ResolutionChooser#bestMatch} */
 	public ResolutionFileResolver (FileHandleResolver baseResolver, Resolution... descriptors) {
-		this(baseResolver, MatchStrategy.bestMatch, Metric.PX, descriptors);
+		this(baseResolver, ResolutionChooser.bestMatch, descriptors);
 	}
 
-	/** @param baseResolver
-	 * @param matchStrategy
-	 * @param descriptors Chooses the matching resources size based on the given {@link MatchStrategy}. Default {@link Metric} is
-	 *           PX (pixel resolution) */
-	public ResolutionFileResolver (FileHandleResolver baseResolver, MatchStrategy matchStrategy, Resolution... descriptors) {
-		this(baseResolver, matchStrategy, Metric.PX, descriptors);
-	}
-
-	/** @param baseResolver
-	 * @param metric
-	 * @param descriptors
-	 * 
-	 *           Chooses the matching resources size based on the given {@link MatchStrategy}. Default {@link Metric} is PX (pixel
-	 *           resolution) */
-	public ResolutionFileResolver (FileHandleResolver baseResolver, Metric metric, Resolution... descriptors) {
-		this(baseResolver, MatchStrategy.bestMatch, Metric.PX, descriptors);
-	}
-
-	/** @param baseResolver
-	 * @param matchStragey
-	 * @param metric
-	 * @param descriptors
-	 * 
-	 *           Chooses the matching resources size based on the given {@link Metric}. Default strategy is
-	 *           {@link MatchStrategy#bestMatch}. */
-	public ResolutionFileResolver (FileHandleResolver baseResolver, MatchStrategy matchStragey, Metric metric,
-		Resolution... descriptors) {
+	/** Chooses the matching resources size based on the given {@link ResolutionChooser}. */
+	public ResolutionFileResolver (FileHandleResolver baseResolver, ResolutionChooser chooserStrategy, Resolution... descriptors) {
 		this.baseResolver = baseResolver;
-		this.matchStrategy = matchStragey;
-		this.metric = metric;
+		this.chooserStrategy = chooserStrategy;
 		this.descriptors = descriptors;
+	}
+
+	/** @return screen width in pixels */
+	protected int getScreenWidth () {
+		return Gdx.graphics.getWidth();
+	}
+
+	/** @return screen height in pixels */
+	protected int getScreenHeight () {
+		return Gdx.graphics.getHeight();
 	}
 
 	@Override
 	public FileHandle resolve (String fileName) {
-		int w, h;
-		if (metric.equals(Metric.PX)) {
-			w = Gdx.graphics.getWidth();
-			h = Gdx.graphics.getHeight();
-		} else if (metric.equals(Metric.DP)) {
-			w = (int)Gdx.graphics.getPpiX();
-			h = (int)Gdx.graphics.getPpiY();
-		} else {
-			throw new IllegalStateException("Provided metric is not supported, Supported metrics are PX and DP inch");
-		}
-
-		Resolution bestDesc = matchStrategy.choose(w, h, descriptors);
-
-// System.out.println(bestDesc.portraitWidth+" "+bestDesc.portraitHeight);
+		int w = getScreenWidth(), h = getScreenHeight();
+		Resolution bestDesc = chooserStrategy.choose(w, h, descriptors);
 
 		FileHandle originalHandle = new FileHandle(fileName);
 		FileHandle handle = baseResolver.resolve(resolve(originalHandle, bestDesc.suffix));

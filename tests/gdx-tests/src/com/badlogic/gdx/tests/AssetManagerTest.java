@@ -27,10 +27,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.MatchStrategy;
-import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Metric;
+import com.badlogic.gdx.assets.loaders.resolvers.ResolutionDPFileResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
+import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.ResolutionChooser;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -56,8 +55,8 @@ public class AssetManagerTest extends GdxTest implements AssetErrorListener {
 			new Resolution(480, 856, ".480854")};
 
 // ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), resolutions);
-		ResolutionFileResolver resolver = new ResolutionFileResolver(new InternalFileHandleResolver(), MatchStrategy.bestMatch,
-			Metric.DP, resolutions);
+		ResolutionDPFileResolver resolver = new ResolutionDPFileResolver(new InternalFileHandleResolver(),
+			ResolutionChooser.bestMatch, resolutions);
 
 		manager = new AssetManager();
 		manager.setLoader(Texture.class, new TextureLoader(resolver));
