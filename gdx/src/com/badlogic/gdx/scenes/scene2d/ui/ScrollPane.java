@@ -553,8 +553,10 @@ public class ScrollPane extends WidgetGroup {
 		// Draw the background ninepatch.
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
-		batch.flush(); // BOZO - Why draw the background after applyTransform? Causes extra flush!
+		if (style.background != null) {
+			style.background.draw(batch, 0, 0, getWidth(), getHeight());
+			batch.flush();
+		}
 
 		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
 		// project those to screen coordinates for OpenGL ES to consume.
