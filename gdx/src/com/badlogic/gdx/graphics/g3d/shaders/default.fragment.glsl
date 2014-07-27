@@ -13,6 +13,9 @@ precision mediump float;
 #define specularFlag
 #endif
 
+
+varying vec3 v_eyePoint;  //point to cam
+
 #ifdef normalFlag
 varying vec3 v_normal;
 #endif //normalFlag
@@ -20,6 +23,12 @@ varying vec3 v_normal;
 #if defined(colorFlag)
 varying vec4 v_color;
 #endif
+
+#ifdef shininessFlag
+uniform float u_shininess;
+#else
+const float u_shininess = 20.0;
+#endif // shininessFlag
 
 #ifdef blendedFlag
 varying float v_opacity;
@@ -56,12 +65,65 @@ uniform sampler2D u_normalTexture;
 #ifdef lightingFlag
 varying vec3 v_lightDiffuse;
 
+#if defined(numDirectionalLights) && (numDirectionalLights > 0)
+struct DirectionalLight
+{
+	vec3 color;
+	vec3 direction;
+};
+varying DirectionalLight v_dirLights[numDirectionalLights];
+#endif // numDirectionalLights
+
+#if defined(numPointLights) && (numPointLights > 0)
+struct PointLight
+{
+	vec3 color;
+	vec3 position;
+};
+uniform PointLight u_pointLights[numPointLights];
+
+struct PointLightInterpolated
+{
+	vec3 color;
+	vec3 direction;
+	float dist;
+};
+varying PointLightInterpolated v_pointLights[numPointLights];
+
+#endif // numPointLights
+
+#if defined(numSpotLights) && (numSpotLights > 0)
+//here come the SpotLight
+struct SpotLight
+{
+	vec3 color;
+	vec3 position;
+	vec3 direction;
+	float constantAttenuation;
+	float linearAttenuation;
+	float quadraticAttenuation;
+	float cutOff;
+	float exponent;
+};
+uniform SpotLight u_spotLights[numSpotLights];
+
+struct SpotLightInterpolated
+{
+	vec3 color;
+	vec3 position;
+	vec3 direction;
+	float dist;
+};
+varying SpotLightInterpolated v_spotLights[numSpotLights];
+#endif // numSpotLights
+
+
 #if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
 #define ambientFlag
 #endif //ambientFlag
 
 #ifdef specularFlag
-varying vec3 v_lightSpecular;
+varying vec3 viewVec;
 #endif //specularFlag
 
 #ifdef shadowMapFlag
@@ -99,7 +161,7 @@ varying float v_fog;
 
 void main() {
 	#if defined(normalFlag) 
-		vec3 normal = v_normal;
+		vec3 normal = normalize(v_normal);
 	#endif // normalFlag
 		
 	#if defined(diffuseTextureFlag) && defined(diffuseColorFlag) && defined(colorFlag)
@@ -122,46 +184,111 @@ void main() {
 
 	#if (!defined(lightingFlag))  
 		gl_FragColor.rgb = diffuse.rgb;
-	#elif (!defined(specularFlag))
-		#if defined(ambientFlag) && defined(separateAmbientFlag)
-			#ifdef shadowMapFlag
-				gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + getShadow() * v_lightDiffuse));
-				//gl_FragColor.rgb = texture2D(u_shadowTexture, v_shadowMapUv.xy);
-			#else
-				gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + v_lightDiffuse));
-			#endif //shadowMapFlag
-		#else
-			#ifdef shadowMapFlag
-				gl_FragColor.rgb = getShadow() * (diffuse.rgb * v_lightDiffuse);
-			#else
-				gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse);
-			#endif //shadowMapFlag
-		#endif
 	#else
-		#if defined(specularTextureFlag) && defined(specularColorFlag)
-			vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * u_specularColor.rgb * v_lightSpecular;
-		#elif defined(specularTextureFlag)
-			vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * v_lightSpecular;
-		#elif defined(specularColorFlag)
-			vec3 specular = u_specularColor.rgb * v_lightSpecular;
-		#else
-			vec3 specular = v_lightSpecular;
-		#endif
+		//light diffuse and specular
+		vec3 lightDiffuse = v_lightDiffuse;
+		vec3 v_lightSpecular = vec3(0.0);
+		
+		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
+			for (int i = 0; i < numDirectionalLights; i++) {
 			
-		#if defined(ambientFlag) && defined(separateAmbientFlag)
-			#ifdef shadowMapFlag
-			gl_FragColor.rgb = (diffuse.rgb * (getShadow() * v_lightDiffuse + v_ambientLight)) + specular;
-				//gl_FragColor.rgb = texture2D(u_shadowTexture, v_shadowMapUv.xy);
+				vec3 lightDir = -v_dirLights[i].direction;
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 value = v_dirLights[i].color * NdotL;
+				lightDiffuse += value;
+				
+				#ifdef specularFlag
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					v_lightSpecular += value * pow(halfDotView, u_shininess);
+				#endif // specularFlag
+				
+			}
+		#endif // numDirectionalLights
+		
+		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
+			for (int i = 0; i < numPointLights; i++) {
+			
+				vec3 lightDir = normalize(-v_pointLights[i].direction);				
+				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+				vec3 value = v_pointLights[i].color * (NdotL / (1.0 + (v_pointLights[i].dist * v_pointLights[i].dist)));
+				lightDiffuse += value;
+				
+				#ifdef specularFlag
+					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+					v_lightSpecular += value * pow(halfDotView, u_shininess);
+				#endif // specularFlag
+				
+			}
+		#endif // numPointLights
+		
+		#if defined(numSpotLights) && (numSpotLights > 0) && defined(normalFlag)
+            for (int i = 0; i < numSpotLights; i++) {
+								
+				vec3 lightDir = normalize(v_spotLights[i].direction);
+				
+                float NdotL = clamp(dot(normal, v_spotLights[i].direction), 0.0, 1.0);
+                vec3 value = v_spotLights[i].color * (NdotL / (u_spotLights[i].constantAttenuation + u_spotLights[i].linearAttenuation * sqrt(v_spotLights[i].dist) + u_spotLights[i].quadraticAttenuation * v_spotLights[i].dist));
+                
+                float spotFactor = max(dot(-v_spotLights[i].direction, u_spotLights[i].direction), 0.0);
+                if(spotFactor > cos(u_spotLights[i].cutOff)) {
+                    //is inside the cone
+                    value *= spotFactor * u_spotLights[i].exponent;
+                    
+                	lightDiffuse += value;
+                }
+
+                #ifdef specularFlag
+                    float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
+                    v_lightSpecular += value * pow(halfDotView, u_shininess);
+                #endif // specularFlag
+				
+            }
+        #endif // numSpotLights
+		
+		
+		//lightDiffuse = max(lightDiffuse, 1.0);
+		
+		#if (!defined(specularFlag))
+			#if defined(ambientFlag) && defined(separateAmbientFlag)
+				#ifdef shadowMapFlag
+					gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + getShadow() * lightDiffuse));
+					//gl_FragColor.rgb = texture2D(u_shadowTexture, v_shadowMapUv.xy);
+				#else
+					gl_FragColor.rgb = (diffuse.rgb * (v_ambientLight + lightDiffuse));
+				#endif //shadowMapFlag
 			#else
-				gl_FragColor.rgb = (diffuse.rgb * (v_lightDiffuse + v_ambientLight)) + specular;
-			#endif //shadowMapFlag
-		#else
-			#ifdef shadowMapFlag
-				gl_FragColor.rgb = getShadow() * ((diffuse.rgb * v_lightDiffuse) + specular);
+				#ifdef shadowMapFlag
+					gl_FragColor.rgb = getShadow() * (diffuse.rgb * lightDiffuse);
+				#else
+					gl_FragColor.rgb = (diffuse.rgb * lightDiffuse);
+				#endif //shadowMapFlag
+			#endif
+		#else //specular
+			#if defined(specularTextureFlag) && defined(specularColorFlag)
+				vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * u_specularColor.rgb * v_lightSpecular;
+			#elif defined(specularTextureFlag)
+				vec3 specular = texture2D(u_specularTexture, v_texCoords0).rgb * v_lightSpecular;
+			#elif defined(specularColorFlag)
+				vec3 specular = u_specularColor.rgb * v_lightSpecular;
 			#else
-				gl_FragColor.rgb = (diffuse.rgb * v_lightDiffuse) + specular;
-			#endif //shadowMapFlag
-		#endif
+				vec3 specular = v_lightSpecular;
+			#endif
+				
+			#if defined(ambientFlag) && defined(separateAmbientFlag)
+				#ifdef shadowMapFlag
+				gl_FragColor.rgb = (diffuse.rgb * (getShadow() * lightDiffuse + v_ambientLight)) + specular;
+					//gl_FragColor.rgb = texture2D(u_shadowTexture, v_shadowMapUv.xy);
+				#else
+					gl_FragColor.rgb = (diffuse.rgb * (lightDiffuse + v_ambientLight)) + specular;
+				#endif //shadowMapFlag
+			#else
+				#ifdef shadowMapFlag
+					gl_FragColor.rgb = getShadow() * ((diffuse.rgb * lightDiffuse) + specular);
+				#else
+					gl_FragColor.rgb = (diffuse.rgb * lightDiffuse) + specular;
+				#endif //shadowMapFlag
+			#endif
+		#endif //specular Flag
 	#endif //lightingFlag
 
 	#ifdef fogFlag

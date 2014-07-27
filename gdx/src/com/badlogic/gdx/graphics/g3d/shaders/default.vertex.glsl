@@ -11,7 +11,13 @@
 #endif
 
 attribute vec3 a_position;
+//Camera.combined
 uniform mat4 u_projViewTrans;
+//ViewModel matrix
+uniform mat4 u_viewWorldTrans;
+
+varying vec3 viewVec;
+varying vec3 v_eyePoint; //point to cam
 
 #if defined(colorFlag)
 varying vec4 v_color;
@@ -97,11 +103,11 @@ uniform mat4 u_bones[numBones];
 #endif //numBones
 #endif
 
-#ifdef shininessFlag
-uniform float u_shininess;
-#else
-const float u_shininess = 20.0;
-#endif // shininessFlag
+//#ifdef shininessFlag
+//uniform float u_shininess;
+//#else
+//uniform float u_shininess = 20.0;
+//#endif // shininessFlag
 
 #ifdef blendedFlag
 uniform float u_opacity;
@@ -128,9 +134,9 @@ uniform vec3 u_ambientCubemap[6];
 uniform vec3 u_sphericalHarmonics[9];
 #endif //sphericalHarmonicsFlag
 
-#ifdef specularFlag
-varying vec3 v_lightSpecular;
-#endif // specularFlag
+//#ifdef specularFlag
+//varying vec3 v_lightSpecular;
+//#endif // specularFlag
 
 #ifdef cameraPositionFlag
 uniform vec4 u_cameraPosition;
@@ -148,6 +154,8 @@ struct DirectionalLight
 	vec3 direction;
 };
 uniform DirectionalLight u_dirLights[numDirectionalLights];
+//same data
+varying DirectionalLight v_dirLights[numDirectionalLights];
 #endif // numDirectionalLights
 
 #if defined(numPointLights) && (numPointLights > 0)
@@ -157,7 +165,41 @@ struct PointLight
 	vec3 position;
 };
 uniform PointLight u_pointLights[numPointLights];
+
+struct PointLightInterpolated
+{
+	vec3 color;
+	vec3 direction;
+	float dist;
+};
+varying PointLightInterpolated v_pointLights[numPointLights];
+
 #endif // numPointLights
+
+#if defined(numSpotLights) && (numSpotLights > 0)
+struct SpotLight
+{
+	vec3 color;
+	vec3 position;
+	vec3 direction;
+	float constantAttenuation;
+	float linearAttenuation;
+	float quadraticAttenuation;
+	float cutOff;
+	float exponent;
+};
+uniform SpotLight u_spotLights[numSpotLights];
+
+struct SpotLightInterpolated
+{
+	vec3 color;
+	vec3 position;
+	vec3 direction;
+	float dist;
+};
+varying SpotLightInterpolated v_spotLights[numSpotLights];
+
+#endif // numSpotLights
 
 #if	defined(ambientLightFlag) || defined(ambientCubemapFlag) || defined(sphericalHarmonicsFlag)
 #define ambientFlag
@@ -225,6 +267,10 @@ void main() {
 		vec4 pos = u_worldTrans * vec4(a_position, 1.0);
 	#endif
 		
+	//Eye for PointLight and SpotLight
+	v_eyePoint = - vec3(u_viewWorldTrans * pos);
+	
+	//set the GL position
 	gl_Position = u_projViewTrans * pos;
 		
 	#ifdef shadowMapFlag
@@ -288,36 +334,43 @@ void main() {
 
 			
 		#ifdef specularFlag
-			v_lightSpecular = vec3(0.0);
-			vec3 viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
+			viewVec = normalize(u_cameraPosition.xyz - pos.xyz);
 		#endif // specularFlag
-			
+	
+	
 		#if defined(numDirectionalLights) && (numDirectionalLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numDirectionalLights; i++) {
-				vec3 lightDir = -u_dirLights[i].direction;
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
-				vec3 value = u_dirLights[i].color * NdotL;
-				v_lightDiffuse += value;
-				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
-					v_lightSpecular += value * pow(halfDotView, u_shininess);
-				#endif // specularFlag
+			
+				v_dirLights[i].direction = u_dirLights[i].direction;
+				v_dirLights[i].color = u_dirLights[i].color;
+				
 			}
 		#endif // numDirectionalLights
 
 		#if defined(numPointLights) && (numPointLights > 0) && defined(normalFlag)
 			for (int i = 0; i < numPointLights; i++) {
+				
+				v_pointLights[i].color = u_pointLights[i].color;
+				
 				vec3 lightDir = u_pointLights[i].position - pos.xyz;
-				float dist2 = dot(lightDir, lightDir);
-				lightDir *= inversesqrt(dist2);
-				float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
-				vec3 value = u_pointLights[i].color * (NdotL / (1.0 + dist2));
-				v_lightDiffuse += value;
-				#ifdef specularFlag
-					float halfDotView = max(0.0, dot(normal, normalize(lightDir + viewVec)));
-					v_lightSpecular += value * pow(halfDotView, u_shininess);
-				#endif // specularFlag
+                v_pointLights[i].dist = length(lightDir);
+                v_pointLights[i].direction = normalize(lightDir);
+
 			}
 		#endif // numPointLights
+
+		#if defined(numSpotLights) && (numSpotLights > 0) && defined(normalFlag)
+            for (int i = 0; i < numSpotLights; i++) {
+			
+				//set values to be interpolated
+				v_spotLights[i].color = u_spotLights[i].color;
+				v_spotLights[i].position = u_spotLights[i].position;				
+			
+                vec3 lightDir = u_spotLights[i].position - pos.xyz;
+                v_spotLights[i].dist = length(lightDir);
+                v_spotLights[i].direction = normalize(lightDir);				
+            }
+        #endif // numSpotLights
+
 	#endif // lightingFlag
 }
