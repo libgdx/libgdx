@@ -43,9 +43,10 @@ public class OrderedSet<T> extends ObjectSet<T> {
 		items = new Array(capacity);
 	}
 
-	public OrderedSet (ObjectSet set) {
+	public OrderedSet (OrderedSet set) {
 		super(set);
 		items = new Array(capacity);
+		items.addAll(set.items);
 	}
 
 	public boolean add (T key) {

@@ -81,7 +81,6 @@ public class ContainerTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act();
 		stage.draw();
-		Table.drawDebug(stage);
 	}
 
 	@Override

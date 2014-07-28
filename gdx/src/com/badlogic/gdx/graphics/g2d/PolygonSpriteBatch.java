@@ -129,10 +129,6 @@ public class PolygonSpriteBatch implements Batch {
 		projectionMatrix.setToOrtho2D(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
-	/** Sets up the PolygonSpriteBatch for drawing. This will disable depth buffer writing. It enables blending and texturing. If
-	 * you have more texture units enabled than the first one you have to disable them before calling this. Uses a screen
-	 * coordinate system by default where everything is given in pixels. You can specify your own projection and modelview matrices
-	 * via {@link #setProjectionMatrix(Matrix4)} and {@link #setTransformMatrix(Matrix4)}. */
 	public void begin () {
 		if (drawing) throw new IllegalStateException("PolygonSpriteBatch.end must be called before begin.");
 		renderCalls = 0;
@@ -147,8 +143,6 @@ public class PolygonSpriteBatch implements Batch {
 		drawing = true;
 	}
 
-	/** Finishes off rendering. Enables depth writes, disables blending and texturing. Must always be called after a call to
-	 * {@link #begin()} */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("PolygonSpriteBatch.begin must be called before end.");
 		if (vertexIndex > 0) flush();
@@ -165,24 +159,19 @@ public class PolygonSpriteBatch implements Batch {
 			shader.end();
 	}
 
-	/** Sets the color used to tint images when they are added to the PolygonSpriteBatch. Default is {@link Color#WHITE}. */
 	public void setColor (Color tint) {
 		color = tint.toFloatBits();
 	}
 
-	/** @see #setColor(Color) */
 	public void setColor (float r, float g, float b, float a) {
 		int intBits = (int)(255 * a) << 24 | (int)(255 * b) << 16 | (int)(255 * g) << 8 | (int)(255 * r);
 		color = NumberUtils.intToFloatColor(intBits);
 	}
 
-	/** @see #setColor(Color)
-	 * @see Color#toFloatBits() */
 	public void setColor (float color) {
 		this.color = color;
 	}
 
-	/** @return the rendering color of this PolygonSpriteBatch. Manipulating the returned instance has no effect. */
 	public Color getColor () {
 		int intBits = NumberUtils.floatToIntColor(color);
 		Color color = this.tempColor;
@@ -1095,7 +1084,6 @@ public class PolygonSpriteBatch implements Batch {
 		this.vertexIndex = idx;
 	}
 
-	/** Causes any pending sprites to be rendered, without ending the PolygonSpriteBatch. */
 	public void flush () {
 		if (vertexIndex == 0) return;
 
@@ -1122,22 +1110,16 @@ public class PolygonSpriteBatch implements Batch {
 		triangleIndex = 0;
 	}
 
-	/** Disables blending for drawing sprites. Calling this within {@link #begin()}/{@link #end()} will flush the batch. */
 	public void disableBlending () {
 		flush();
 		blendingDisabled = true;
 	}
 
-	/** Enables blending for sprites. Calling this within {@link #begin()}/{@link #end()} will flush the batch. */
 	public void enableBlending () {
 		flush();
 		blendingDisabled = false;
 	}
 
-	/** Sets the blending function to be used when rendering sprites.
-	 * @param srcFunc the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1, PolygonSpriteBatch won't change the blending
-	 *           function.
-	 * @param dstFunc the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA */
 	public void setBlendFunction (int srcFunc, int dstFunc) {
 		if (blendSrcFunc == srcFunc && blendDstFunc == dstFunc) return;
 		flush();
@@ -1153,32 +1135,25 @@ public class PolygonSpriteBatch implements Batch {
 		return blendDstFunc;
 	}
 
-	/** Disposes all resources associated with this PolygonSpriteBatch. */
 	public void dispose () {
 		mesh.dispose();
 		if (ownsShader && shader != null) shader.dispose();
 	}
 
-	/** Returns the current projection matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
 	public Matrix4 getProjectionMatrix () {
 		return projectionMatrix;
 	}
 
-	/** Returns the current transform matrix. Changing this within {@link #begin()}/{@link #end()} results in undefined behaviour. */
 	public Matrix4 getTransformMatrix () {
 		return transformMatrix;
 	}
 
-	/** Sets the projection matrix to be used by this PolygonSpriteBatch. If this is called inside a {@link #begin()}/{@link #end()}
-	 * block, the current batch is flushed to the gpu. */
 	public void setProjectionMatrix (Matrix4 projection) {
 		if (drawing) flush();
 		projectionMatrix.set(projection);
 		if (drawing) setupMatrices();
 	}
 
-	/** Sets the transform matrix to be used by this PolygonSpriteBatch. If this is called inside a {@link #begin()}/{@link #end()}
-	 * block, the current batch is flushed to the gpu. */
 	public void setTransformMatrix (Matrix4 transform) {
 		if (drawing) flush();
 		transformMatrix.set(transform);
@@ -1203,7 +1178,6 @@ public class PolygonSpriteBatch implements Batch {
 		invTexHeight = 1.0f / texture.getHeight();
 	}
 
-	/** @see Batch#setShader(ShaderProgram) */
 	public void setShader (ShaderProgram shader) {
 		if (drawing) {
 			flush();
@@ -1222,8 +1196,11 @@ public class PolygonSpriteBatch implements Batch {
 		}
 	}
 
-	/** @return whether blending for sprites is enabled */
 	public boolean isBlendingEnabled () {
 		return !blendingDisabled;
+	}
+
+	public boolean isDrawing () {
+		return drawing;
 	}
 }

@@ -254,7 +254,7 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets the prefWidth and prefHeight to the specified value. */
 	public Cell<T> prefSize (float width, float height) {
-		prefSize(new Fixed(width));
+		prefSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 

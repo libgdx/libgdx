@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -295,15 +297,15 @@ public class ScrollPane extends WidgetGroup {
 		if (smoothScrolling && flingTimer <= 0 && !touchScrollH && !touchScrollV && !panning) {
 			if (visualAmountX != amountX) {
 				if (visualAmountX < amountX)
-					visualScrollX(Math.min(amountX, visualAmountX + Math.max(150 * delta, (amountX - visualAmountX) * 5 * delta)));
+					visualScrollX(Math.min(amountX, visualAmountX + Math.max(200 * delta, (amountX - visualAmountX) * 7 * delta)));
 				else
-					visualScrollX(Math.max(amountX, visualAmountX - Math.max(150 * delta, (visualAmountX - amountX) * 5 * delta)));
+					visualScrollX(Math.max(amountX, visualAmountX - Math.max(200 * delta, (visualAmountX - amountX) * 7 * delta)));
 			}
 			if (visualAmountY != amountY) {
 				if (visualAmountY < amountY)
-					visualScrollY(Math.min(amountY, visualAmountY + Math.max(150 * delta, (amountY - visualAmountY) * 5 * delta)));
+					visualScrollY(Math.min(amountY, visualAmountY + Math.max(200 * delta, (amountY - visualAmountY) * 7 * delta)));
 				else
-					visualScrollY(Math.max(amountY, visualAmountY - Math.max(150 * delta, (visualAmountY - amountY) * 5 * delta)));
+					visualScrollY(Math.max(amountY, visualAmountY - Math.max(200 * delta, (visualAmountY - amountY) * 7 * delta)));
 			}
 		} else {
 			if (visualAmountX != amountX) visualScrollX(amountX);
@@ -518,9 +520,10 @@ public class ScrollPane extends WidgetGroup {
 		// Setup transform for this group.
 		applyTransform(batch, computeTransform());
 
-		if (scrollX) hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getScrollPercentX());
+		if (scrollX)
+			hKnobBounds.x = hScrollBounds.x + (int)((hScrollBounds.width - hKnobBounds.width) * getVisualScrollPercentX());
 		if (scrollY)
-			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getScrollPercentY()));
+			vKnobBounds.y = vScrollBounds.y + (int)((vScrollBounds.height - vKnobBounds.height) * (1 - getVisualScrollPercentY()));
 
 		// Calculate the widget's position depending on the scroll state and available widget area.
 		float y = widgetAreaBounds.y;
@@ -548,15 +551,17 @@ public class ScrollPane extends WidgetGroup {
 			((Cullable)widget).setCullingArea(widgetCullingArea);
 		}
 
-		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
-		// project those to screen coordinates for OpenGL ES to consume.
-		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
-
 		// Draw the background ninepatch.
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (style.background != null) style.background.draw(batch, 0, 0, getWidth(), getHeight());
-		batch.flush();
+		if (style.background != null) {
+			style.background.draw(batch, 0, 0, getWidth(), getHeight());
+			batch.flush();
+		}
+
+		// Caculate the scissor bounds based on the batch transform, the available widget area and the camera transform. We need to
+		// project those to screen coordinates for OpenGL ES to consume.
+		getStage().calculateScissors(widgetAreaBounds, scissorBounds);
 
 		// Enable scissors for widget area and draw the widget.
 		if (ScissorStack.pushScissors(scissorBounds)) {
@@ -589,7 +594,6 @@ public class ScrollPane extends WidgetGroup {
 	}
 
 	/** Generate fling gesture.
-	 * 
 	 * @param flingTime Time in seconds for which you want to fling last.
 	 * @param velocityX Velocity for horizontal direction.
 	 * @param velocityY Velocity for vertical direction. */
@@ -736,6 +740,14 @@ public class ScrollPane extends WidgetGroup {
 
 	public float getVisualScrollY () {
 		return !scrollY ? 0 : visualAmountY;
+	}
+
+	public float getVisualScrollPercentX () {
+		return MathUtils.clamp(visualAmountX / maxX, 0, 1);
+	}
+
+	public float getVisualScrollPercentY () {
+		return MathUtils.clamp(visualAmountY / maxY, 0, 1);
 	}
 
 	public float getScrollPercentX () {
@@ -954,6 +966,16 @@ public class ScrollPane extends WidgetGroup {
 	 * widgets inside the scrollpane that have received touchDown to receive touchUp when flick scrolling begins. */
 	public void setCancelTouchFocus (boolean cancelTouchFocus) {
 		this.cancelTouchFocus = cancelTouchFocus;
+	}
+
+	public void drawDebug (ShapeRenderer shapes) {
+		drawDebugBounds(shapes);
+		applyTransform(shapes, computeTransform());
+		if (ScissorStack.pushScissors(scissorBounds)) {
+			drawDebugChildren(shapes);
+			ScissorStack.popScissors();
+		}
+		resetTransform(shapes);
 	}
 
 	/** The style for a scroll pane, see {@link ScrollPane}.

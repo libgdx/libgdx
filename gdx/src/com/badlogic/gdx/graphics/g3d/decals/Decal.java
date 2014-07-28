@@ -143,6 +143,15 @@ public class Decal {
 		updated = false;
 	}
 
+	/** Sets the rotation of this decal to the given angles on all axes.
+	 * @param yaw Angle in degrees to rotate around the Y axis
+	 * @param pitch Angle in degrees to rotate around the X axis
+	 * @param roll Angle in degrees to rotate around the Z axis */
+	public void setRotation (float yaw, float pitch, float roll) {
+		rotation.setEulerAngles(yaw, pitch, roll);
+		updated = false;
+	}
+
 	/** Sets the rotation of this decal based on the (normalized) direction and up vector.
 	 * @param dir the direction vector
 	 * @param up the up vector */

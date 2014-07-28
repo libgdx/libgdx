@@ -174,7 +174,6 @@ public class Scene2dTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		Table.drawDebug(stage);
 
 		stage.getBatch().begin();
 		patch.draw(stage.getBatch(), 300, 100, 126, 126);
