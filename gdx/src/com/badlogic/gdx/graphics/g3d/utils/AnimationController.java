@@ -82,15 +82,22 @@ public class AnimationController extends BaseAnimationController {
 		/** @return the remaining time or 0 if still animating. */
 		protected float update (float delta) {
 			if (loopCount != 0 && animation != null) {
-				final float diff = speed * delta;
-				time += diff;
-				int loops = (int)Math.abs(time / duration);
-				if (time < 0f) {
-					loops++;
-					while (time < 0f)
-						time += duration;
+				int loops;
+				if(duration != 0.0f) {
+					final float diff = speed * delta;
+					time += diff;
+					loops = (int)Math.abs(time / duration);
+					if (time < 0f) {
+						loops++;
+						while (time < 0f)
+							time += duration;
+					}
+					time = Math.abs(time % duration);
 				}
-				time = Math.abs(time % duration);
+				else
+				{
+					loops = 1; //do one loop per frame, in case animation is still
+				}
 				for (int i = 0; i < loops; i++) {
 					if (loopCount > 0) loopCount--;
 					if (loopCount != 0 && listener != null) listener.onLoop(this);
