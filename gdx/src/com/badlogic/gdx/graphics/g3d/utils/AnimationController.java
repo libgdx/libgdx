@@ -83,8 +83,8 @@ public class AnimationController extends BaseAnimationController {
 		protected float update (float delta) {
 			if (loopCount != 0 && animation != null) {
 				int loops;
+				final float diff = speed * delta;
 				if(duration != 0.0f) {
-					final float diff = speed * delta;
 					time += diff;
 					loops = (int)Math.abs(time / duration);
 					if (time < 0f) {
@@ -93,11 +93,8 @@ public class AnimationController extends BaseAnimationController {
 							time += duration;
 					}
 					time = Math.abs(time % duration);
-				}
-				else
-				{
-					loops = 1; //do one loop per frame, in case animation is still
-				}
+				} else
+					loops = 0;
 				for (int i = 0; i < loops; i++) {
 					if (loopCount > 0) loopCount--;
 					if (loopCount != 0 && listener != null) listener.onLoop(this);
