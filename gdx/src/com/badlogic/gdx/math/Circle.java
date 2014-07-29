@@ -242,3 +242,4 @@ public class Circle implements Serializable, Shape {
 	public Vector3 getCenter () {
 		return new Vector3(x, y, 0);
 	}
+}
