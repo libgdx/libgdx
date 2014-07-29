@@ -84,7 +84,7 @@ public class ClosestRayResultCallback extends RayResultCallback {
 
   public btVector3 getRayFromWorld() {
     long cPtr = CollisionJNI.ClosestRayResultCallback_rayFromWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+    return btVector3.getTemp(cPtr);
   }
 
   public void setRayToWorld(btVector3 value) {
@@ -93,7 +93,7 @@ public class ClosestRayResultCallback extends RayResultCallback {
 
   public btVector3 getRayToWorld() {
     long cPtr = CollisionJNI.ClosestRayResultCallback_rayToWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+		return btVector3.getTemp(cPtr);
   }
 
   public void setHitNormalWorld(btVector3 value) {
@@ -102,7 +102,7 @@ public class ClosestRayResultCallback extends RayResultCallback {
 
   public btVector3 getHitNormalWorld() {
     long cPtr = CollisionJNI.ClosestRayResultCallback_hitNormalWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+		return btVector3.getTemp(cPtr);
   }
 
   public void setHitPointWorld(btVector3 value) {
