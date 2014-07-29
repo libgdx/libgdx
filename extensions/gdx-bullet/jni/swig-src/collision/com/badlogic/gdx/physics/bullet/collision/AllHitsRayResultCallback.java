@@ -93,6 +93,7 @@ public class AllHitsRayResultCallback extends RayResultCallback {
 
   public btVector3 getRayFromWorld() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_rayFromWorld_get(swigCPtr, this);
+		if (cPtr == 0) return null;
 		return btVector3.getTemp(cPtr);
   }
 
@@ -102,6 +103,7 @@ public class AllHitsRayResultCallback extends RayResultCallback {
 
   public btVector3 getRayToWorld() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_rayToWorld_get(swigCPtr, this);
+		if (cPtr == 0) return null;
 		return btVector3.getTemp(cPtr);
   }
 
