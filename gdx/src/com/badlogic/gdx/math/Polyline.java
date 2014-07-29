@@ -16,7 +16,10 @@
 
 package com.badlogic.gdx.math;
 
-public class Polyline {
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
+
+public class Polyline implements Shape {
 	private final float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
@@ -196,5 +199,69 @@ public class Polyline {
 		this.x += x;
 		this.y += y;
 		dirty = true;
+	}
+	
+	@Override
+	public BoundingBox getAABB () {
+		Rectangle rect;
+		float xMin = 0, yMin = 0, xMax = 0, yMax = 0;
+		for(int i=0; i<worldVertices.length; i+=2)
+		{
+			float x = worldVertices[i],
+					y = worldVertices[i+1];
+			
+			if(x >= xMax)
+				xMax = x;
+			else
+				xMin = x;
+			
+			if(y >= yMax)
+				yMax = y;
+			else
+				yMin = y;
+		}
+		rect = new Rectangle(xMin, yMin, xMax-xMin, yMax-yMin);
+		
+		return new BoundingBox(new Vector3(rect.x,rect.y,0), new Vector3(rect.x+rect.width,rect.y+rect.height,0));
+	}
+
+	@Override
+	public Sphere getBoundingSphere () {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class getShapeType () {
+		return Polyline.class;
+	}
+	
+	@Override
+	//Taken from http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
+	public Vector3 getCenter () {
+		float cx = 0, cy = 0;
+		Polygon poly = new Polygon(worldVertices);
+		float area = poly.area();
+		
+		Vector2[] polyPoints = new Vector2[worldVertices.length/2];
+		for(int i=0; i<worldVertices.length; i+=2)
+			polyPoints[i/2] = new Vector2(worldVertices[i], worldVertices[i+1]);
+		
+		int i, j, n = polyPoints.length;
+
+		float factor = 0;
+		for (i = 0; i < n; i++) {
+			j = (i + 1) % n;
+			factor = (polyPoints[i].x * polyPoints[j].y
+					- polyPoints[j].x * polyPoints[i].y);
+			cx += (polyPoints[i].x + polyPoints[j].y) * factor;
+			cy += (polyPoints[i].x + polyPoints[j].y) * factor;
+		}
+		area *= 6.0f;
+		factor = 1 / area;
+		cx *= factor;
+		cy *= factor;
+		
+		return new Vector3(cx, cy, 0);
 	}
 }
