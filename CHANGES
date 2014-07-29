@@ -15,6 +15,7 @@
 - minor API change (will not increase minor revision number): fixed a bug in handling of atlasPrefixes, https://github.com/libgdx/libgdx/pull/2023
 - Bullet: btManifoldPoint member getters/setters changed from btVector3 to Vector3, also it is no longer pooled, instead static instances are used for callback methods
 - Added Intersector#intersectRayRay to detect if two 2D rays intersect, see https://github.com/libgdx/libgdx/pull/2132
+- Bullet: ClosestRayResultCallback, AllHitsRayResultCallback, LocalConvexResult, ClosestConvexResultCallback and subclasses now use getter/setters taking a Vector3 instead of btVector3, see https://github.com/libgdx/libgdx/pull/2176
 
 [1.2.0]
 - API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
