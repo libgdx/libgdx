@@ -15,11 +15,13 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
  * @author badlogicgames@gmail.com */
-public class Rectangle implements Serializable {
+public class Rectangle implements Serializable, Shape {
 	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
 	static public final Rectangle tmp = new Rectangle();
 
@@ -390,6 +392,28 @@ public class Rectangle implements Serializable {
 		if (NumberUtils.floatToRawIntBits(x) != NumberUtils.floatToRawIntBits(other.x)) return false;
 		if (NumberUtils.floatToRawIntBits(y) != NumberUtils.floatToRawIntBits(other.y)) return false;
 		return true;
+	}
+	
+	@Override
+	public BoundingBox getAABB () {
+		return new BoundingBox(new Vector3(x,y,0), new Vector3(x+width,y+height,0));
+	}
+
+	@Override
+	public Sphere getBoundingSphere () {
+		float hWidth = width/2, hHeight = height/2;
+		float radius = (float)Math.sqrt(hWidth*hWidth + hHeight*hHeight);
+		return new Sphere(new Vector3(x+hWidth, y+hHeight, 0), radius);
+	}
+
+	@Override
+	public Class getShapeType () {
+		return Rectangle.class;
+	}
+
+	@Override
+	public Vector3 getCenter () {
+		return new Vector3(x+(width/2), y+(height/2), 0);
 	}
 
 }
