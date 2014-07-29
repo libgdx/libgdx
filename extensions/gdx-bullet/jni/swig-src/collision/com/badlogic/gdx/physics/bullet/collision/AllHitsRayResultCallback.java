@@ -93,7 +93,8 @@ public class AllHitsRayResultCallback extends RayResultCallback {
 
   public btVector3 getRayFromWorld() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_rayFromWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+		if (cPtr == 0) return null;
+		return btVector3.getTemp(cPtr);
   }
 
   public void setRayToWorld(btVector3 value) {
@@ -102,7 +103,8 @@ public class AllHitsRayResultCallback extends RayResultCallback {
 
   public btVector3 getRayToWorld() {
     long cPtr = CollisionJNI.AllHitsRayResultCallback_rayToWorld_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
+		if (cPtr == 0) return null;
+		return btVector3.getTemp(cPtr);
   }
 
   public void setHitNormalWorld(btVector3Array value) {

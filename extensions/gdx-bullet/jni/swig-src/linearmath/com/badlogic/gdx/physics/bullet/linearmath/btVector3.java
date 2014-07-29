@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Matrix4;
 
 public class btVector3 extends BulletBase {
 	private long swigCPtr;
+	private static btVector3 tmp;
 	
 	protected btVector3(final String className, long cPtr, boolean cMemoryOwn) {
 		super(className, cPtr, cMemoryOwn);
@@ -26,6 +27,24 @@ public class btVector3 extends BulletBase {
 	public btVector3(long cPtr, boolean cMemoryOwn) {
 		this("btVector3", cPtr, cMemoryOwn);
 		construct();
+	}
+
+	/** get the static instance of the temporary btVector3.  Intended for low-level usage */
+	public static btVector3 getTemp() {
+		if (tmp == null) {
+			tmp = new btVector3();
+		}
+		return tmp;
+	}
+
+	/** get the static instance of the temporary btVector3 with the desired cPtr.  Intended for low-level usage. */
+	public static btVector3 getTemp(long cPtr) {
+		if (tmp == null) {
+			tmp = new btVector3(cPtr, false);
+		} else {
+			tmp.reset(cPtr, false);
+		}
+		return tmp;
 	}
 	
 	@Override
