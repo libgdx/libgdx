@@ -18,7 +18,9 @@ package com.badlogic.gdx.ai.astar;
 
 import com.badlogic.gdx.utils.Array;
 
-/** @author Daniel Holderbaum */
+/** Used in combination with {@link AStar}. The nodes of the graph have to implement this interface in order to be searchable via
+ * {@link AStar}.
+ * @author Daniel Holderbaum */
 public interface AStarNode<T> {
 
 	/** Returns all reachable neighbours of this node. */
