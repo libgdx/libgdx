@@ -20,10 +20,12 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.NumberUtils;
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
 
 /** A convenient 2D ellipse class, based on the circle class
  * @author tonyp7 */
-public class Ellipse implements Serializable {
+public class Ellipse implements Serializable, Shape {
 
 	public float x, y;
 	public float width, height;
@@ -216,5 +218,28 @@ public class Ellipse implements Serializable {
 		result = prime * result + NumberUtils.floatToRawIntBits(this.x);
 		result = prime * result + NumberUtils.floatToRawIntBits(this.y);
 		return result;
+	}
+	
+	@Override
+	public BoundingBox getAABB () {
+		return new BoundingBox(new Vector3(x-(width/2), y-(height/2), 0), new Vector3(x+(width/2), y+(height/2), 0));
+	}
+
+	@Override
+	public Sphere getBoundingSphere () {
+		if(width>height)
+			return new Sphere(new Vector3(x,y,0), width);
+		else
+			return new Sphere(new Vector3(x,y,0), height);
+	}
+
+	@Override
+	public Class getShapeType () {
+		return Ellipse.class;
+	}
+
+	@Override
+	public Vector3 getCenter () {
+		return new Vector3(x,y,0);
 	}
 }
