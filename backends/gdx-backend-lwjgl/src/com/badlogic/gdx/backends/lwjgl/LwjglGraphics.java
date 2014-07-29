@@ -129,16 +129,17 @@ public class LwjglGraphics implements Graphics {
 		} else {
 			boolean displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
 			if (!displayCreated) {
-				// open in windowed failsafe dimensions if first mode fails and failsafe enabled
-				if (config.failsafeWidth > 0 && config.failsafeHeight > 0) {
-					displayCreated = setDisplayMode(config.failsafeWidth, config.failsafeHeight, false);
+				if (config.setDisplayModeCallback != null) {
+					config = config.setDisplayModeCallback.onFailure(config);
+					if (config != null) {
+						displayCreated = setDisplayMode(config.width, config.height, config.fullscreen);
+					}
+				}
+				if (!displayCreated) {
+					throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
+							+ config.fullscreen);
 				}
 			}
-			if (!displayCreated) {
-				throw new GdxRuntimeException("Couldn't set display mode " + config.width + "x" + config.height + ", fullscreen: "
-						+ config.fullscreen);
-			}
-
 			if (config.iconPaths.size > 0) {
 				ByteBuffer[] icons = new ByteBuffer[config.iconPaths.size];
 				for (int i = 0, n = config.iconPaths.size; i < n; i++) {
@@ -467,5 +468,15 @@ public class LwjglGraphics implements Graphics {
 	@Override
 	public GL30 getGL30 () {
 		return gl30;
+	}
+
+	/** A callback used by LwjglApplication when trying to create the display */
+	public interface SetDisplayModeCallback {
+		/** If the display creation fails, this method will be called.
+		 * Suggested usage is to modify the passed configuration to use
+		 * a common width and height, and set fullscreen to false.
+		 * @return the configuration to be used for a second attempt at creating a display.
+		 * A null value results in NOT attempting to create the display a second time */
+		public LwjglApplicationConfiguration onFailure(LwjglApplicationConfiguration initialConfig);
 	}
 }
