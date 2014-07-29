@@ -16,8 +16,11 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
+
 /** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
-public class Polygon {
+public class Polygon implements Shape {
 	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
@@ -242,5 +245,50 @@ public class Polygon {
 	/** Returns the total vertical scaling applied to the polygon. */
 	public float getScaleY () {
 		return scaleY;
+	}
+	
+	@Override
+	public BoundingBox getAABB () {
+		Rectangle rect = this.getBoundingRectangle();
+		return new BoundingBox(new Vector3(rect.x,rect.y,0), new Vector3(rect.x+rect.width,rect.y+rect.height,0));
+	}
+
+	@Override
+	public Sphere getBoundingSphere () {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Class getShapeType () {
+		return Polygon.class;
+	}
+	
+	@Override
+	//Taken from http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
+	public Vector3 getCenter () {
+		float cx = 0, cy = 0;
+		float area = area();
+		
+		Vector2[] polyPoints = new Vector2[worldVertices.length/2];
+		for(int i=0; i<worldVertices.length; i+=2)
+			polyPoints[i/2] = new Vector2(worldVertices[i], worldVertices[i+1]);
+		
+		int i, j, n = polyPoints.length;
+
+		float factor = 0;
+		for (i = 0; i < n; i++) {
+			j = (i + 1) % n;
+			factor = (polyPoints[i].x * polyPoints[j].y
+					- polyPoints[j].x * polyPoints[i].y);
+			cx += (polyPoints[i].x + polyPoints[j].y) * factor;
+			cy += (polyPoints[i].x + polyPoints[j].y) * factor;
+		}
+		area *= 6.0f;
+		factor = 1 / area;
+		cx *= factor;
+		cy *= factor;
+		
+		return new Vector3(cx, cy, 0);
 	}
 }
