@@ -17,9 +17,12 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.utils.NumberUtils;
 
+import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Sphere;
+
 /** A convenient 2D circle class.
  * @author mzechner */
-public class Circle implements Serializable {
+public class Circle implements Serializable, Shape {
 	public float x, y;
 	public float radius;
 
@@ -219,4 +222,23 @@ public class Circle implements Serializable {
 		result = prime * result + NumberUtils.floatToRawIntBits(y);
 		return result;
 	}
-}
+	
+	@Override
+	public BoundingBox getAABB () {
+		return new BoundingBox(new Vector3(x-radius, y-radius, 0), new Vector3(x+radius, y+radius, 0));
+	}
+
+	@Override
+	public Sphere getBoundingSphere () {
+		return new Sphere(new Vector3(x, y, 0), radius);
+	}
+
+	@Override
+	public Class getShapeType () {
+		return Circle.class;
+	}
+
+	@Override
+	public Vector3 getCenter () {
+		return new Vector3(x, y, 0);
+	}
