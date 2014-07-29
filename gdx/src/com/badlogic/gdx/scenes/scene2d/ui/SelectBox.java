@@ -100,6 +100,11 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return maxListCount;
 	}
 
+	protected void setStage (Stage stage) {
+		if (stage == null) hideList();
+		super.setStage(stage);
+	}
+
 	public void setStyle (SelectBoxStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
@@ -131,7 +136,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Retrieve the backing Array that makes up the chocies available in the SelectBox
-	 * @see SelectBox#setItems(Array)  */
+	 * @see SelectBox#setItems(Array) */
 	public Array<T> getItems () {
 		return items;
 	}
@@ -200,13 +205,12 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	/** Get the set of selected items, useful when multiple items are selected
-	 * @return a Selection object containing the selected elements
-	 * */
+	 * @return a Selection object containing the selected elements */
 	public Selection<T> getSelection () {
 		return selection;
 	}
 
-	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()}*/
+	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()} */
 	public T getSelected () {
 		return selection.first();
 	}
@@ -324,7 +328,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 			float itemHeight = list.getItemHeight();
 			float height = itemHeight * (maxListCount <= 0 ? items.size : Math.min(maxListCount, items.size));
 			Drawable scrollPaneBackground = getStyle().background;
-			if (scrollPaneBackground != null) height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
+			if (scrollPaneBackground != null)
+				height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
 			Drawable listBackground = list.getStyle().background;
 			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
