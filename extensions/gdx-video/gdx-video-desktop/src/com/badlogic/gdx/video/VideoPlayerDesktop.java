@@ -1,10 +1,11 @@
 package com.badlogic.gdx.video;
 
-import java.io.FileInputStream;
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -60,8 +61,8 @@ implements VideoPlayer {
 	long startTime = 0;
 	boolean showAlreadyDecodedFrame = false;
 
-	FileInputStream inputStream;
-	FileChannel fileChannel;
+	BufferedInputStream inputStream;
+	ReadableByteChannel fileChannel;
 
 	boolean paused = false;
 	long timeBeforePause = 0;
@@ -117,8 +118,8 @@ implements VideoPlayer {
 			stop();
 		}
 
-		inputStream = new FileInputStream(file.file());
-		fileChannel = inputStream.getChannel();
+		inputStream = file.read(1024*1024);
+		fileChannel = Channels.newChannel(inputStream);;
 
 		decoder = new VideoDecoder();
 		VideoDecoderBuffers buffers = null;
