@@ -44,11 +44,14 @@ public class StackStateMachine<E> extends DefaultStateMachine<E> {
 	 * @param globalState the global state */
 	public StackStateMachine (E owner, State<E> initialState, State<E> globalState) {
 		super(owner, initialState, globalState);
-		this.stateStack = new Array<State<E>>();
 	}
 
 	@Override
 	public void setInitialState (State<E> state) {
+		if (stateStack == null) {
+			stateStack = new Array<State<E>>();
+		}
+
 		this.stateStack.clear();
 		this.currentState = state;
 	}
@@ -64,7 +67,7 @@ public class StackStateMachine<E> extends DefaultStateMachine<E> {
 		if (stateStack.size == 0) {
 			return null;
 		} else {
-			return stateStack.first();
+			return stateStack.peek();
 		}
 	}
 
