@@ -27,14 +27,22 @@ public class Xbox360 {
 	private static final OperatingSystem os;
 
 	static {
-		String osName = System.getProperty("os.name").toLowerCase();
-		if (osName.contains("win")) {
-			os = OperatingSystem.WINDOWS;
-		} else if (osName.contains("mac")) {
-			os = OperatingSystem.OSX;
-		} else {
-			os = OperatingSystem.UNKNOWN;
+		String osName = System.getProperty("os.name");
+		os = getOperatingSystem(osName);
+	}
+
+	private static OperatingSystem getOperatingSystem (String name) {
+		if (name == null) {
+			return OperatingSystem.UNKNOWN;
 		}
+		name = name.toLowerCase();
+		if (name.contains("win")) {
+			return OperatingSystem.WINDOWS;
+		}
+		if (name.contains("mac")) {
+			return OperatingSystem.OSX;
+		}
+		return OperatingSystem.UNKNOWN;
 	}
 
 	/** On windows the triggers on the back work a little differently than one might expect.
