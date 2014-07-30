@@ -29,6 +29,7 @@ public class Ellipse implements Serializable, Shape {
 
 	public float x, y;
 	public float width, height;
+	private Vector2 center;
 
 	private static final long serialVersionUID = 7381533206532032099L;
 
@@ -219,27 +220,10 @@ public class Ellipse implements Serializable, Shape {
 		result = prime * result + NumberUtils.floatToRawIntBits(this.y);
 		return result;
 	}
-	
-	@Override
-	public BoundingBox getAABB () {
-		return new BoundingBox(new Vector3(x-(width/2), y-(height/2), 0), new Vector3(x+(width/2), y+(height/2), 0));
-	}
 
 	@Override
-	public Sphere getBoundingSphere () {
-		if(width>height)
-			return new Sphere(new Vector3(x,y,0), width);
-		else
-			return new Sphere(new Vector3(x,y,0), height);
-	}
-
-	@Override
-	public Class getShapeType () {
-		return Ellipse.class;
-	}
-
-	@Override
-	public Vector3 getCenter () {
-		return new Vector3(x,y,0);
+	public Vector2 getCenter () {
+		if(center == null) center = new Vector2();
+		return center.set(x,y);
 	}
 }

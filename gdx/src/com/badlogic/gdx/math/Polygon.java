@@ -29,6 +29,7 @@ public class Polygon implements Shape {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
 	private Rectangle bounds;
+	private Vector2 center;
 
 	/** Constructs a new polygon with no vertices. */
 	public Polygon () {
@@ -248,47 +249,23 @@ public class Polygon implements Shape {
 	}
 	
 	@Override
-	public BoundingBox getAABB () {
-		Rectangle rect = this.getBoundingRectangle();
-		return new BoundingBox(new Vector3(rect.x,rect.y,0), new Vector3(rect.x+rect.width,rect.y+rect.height,0));
-	}
-
-	@Override
-	public Sphere getBoundingSphere () {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class getShapeType () {
-		return Polygon.class;
-	}
-	
-	@Override
-	//Taken from http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
-	public Vector3 getCenter () {
-		float cx = 0, cy = 0;
-		float area = area();
+	//Inspired by http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
+	public Vector2 getCenter () {
+		if(dirty) getTransformedVertices();
+		if(center == null) center = new Vector2();
 		
-		Vector2[] polyPoints = new Vector2[worldVertices.length/2];
-		for(int i=0; i<worldVertices.length; i+=2)
-			polyPoints[i/2] = new Vector2(worldVertices[i], worldVertices[i+1]);
-		
-		int i, j, n = polyPoints.length;
+		int i, j, n = worldVertices.length/2;
 
 		float factor = 0;
 		for (i = 0; i < n; i++) {
 			j = (i + 1) % n;
-			factor = (polyPoints[i].x * polyPoints[j].y
-					- polyPoints[j].x * polyPoints[i].y);
-			cx += (polyPoints[i].x + polyPoints[j].y) * factor;
-			cy += (polyPoints[i].x + polyPoints[j].y) * factor;
+			factor = (worldVertices[i*2] * worldVertices[j*2+1]
+					- worldVertices[j*2] * worldVertices[i*2+1]);
+			center.x += (worldVertices[i*2] + worldVertices[j*2+1]) * factor;
+			center.y += (worldVertices[i*2] + worldVertices[j*2+1]) * factor;
 		}
-		area *= 6.0f;
-		factor = 1 / area;
-		cx *= factor;
-		cy *= factor;
+		center.scl(1 / (area() * 6.0f));
 		
-		return new Vector3(cx, cy, 0);
+		return center;
 	}
 }

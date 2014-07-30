@@ -31,6 +31,7 @@ public class Rectangle implements Serializable, Shape {
 	private static final long serialVersionUID = 5733252015138115702L;
 	public float x, y;
 	public float width, height;
+	private Vector2 center;
 
 	/** Constructs a new rectangle with all values set to zero */
 	public Rectangle () {
@@ -393,27 +394,11 @@ public class Rectangle implements Serializable, Shape {
 		if (NumberUtils.floatToRawIntBits(y) != NumberUtils.floatToRawIntBits(other.y)) return false;
 		return true;
 	}
-	
-	@Override
-	public BoundingBox getAABB () {
-		return new BoundingBox(new Vector3(x,y,0), new Vector3(x+width,y+height,0));
-	}
 
 	@Override
-	public Sphere getBoundingSphere () {
-		float hWidth = width/2, hHeight = height/2;
-		float radius = (float)Math.sqrt(hWidth*hWidth + hHeight*hHeight);
-		return new Sphere(new Vector3(x+hWidth, y+hHeight, 0), radius);
-	}
-
-	@Override
-	public Class getShapeType () {
-		return Rectangle.class;
-	}
-
-	@Override
-	public Vector3 getCenter () {
-		return new Vector3(x+(width/2), y+(height/2), 0);
+	public Vector2 getCenter () {
+		if(center == null) center = new Vector2();
+		return center.set(x+(width/2), y+(height/2));
 	}
 
 }

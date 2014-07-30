@@ -16,7 +16,6 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 
 import com.badlogic.gdx.utils.NumberUtils;
-
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Sphere;
 
@@ -25,6 +24,7 @@ import com.badlogic.gdx.math.collision.Sphere;
 public class Circle implements Serializable, Shape {
 	public float x, y;
 	public float radius;
+	private Vector2 center;
 
 	/** Constructs a new circle with all values set to zero */
 	public Circle () {
@@ -224,22 +224,8 @@ public class Circle implements Serializable, Shape {
 	}
 	
 	@Override
-	public BoundingBox getAABB () {
-		return new BoundingBox(new Vector3(x-radius, y-radius, 0), new Vector3(x+radius, y+radius, 0));
-	}
-
-	@Override
-	public Sphere getBoundingSphere () {
-		return new Sphere(new Vector3(x, y, 0), radius);
-	}
-
-	@Override
-	public Class getShapeType () {
-		return Circle.class;
-	}
-
-	@Override
-	public Vector3 getCenter () {
-		return new Vector3(x, y, 0);
+	public Vector2 getCenter () {
+		if(center == null) center = new Vector2();
+		return center.set(x,y);
 	}
 }

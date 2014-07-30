@@ -31,6 +31,7 @@ public class Polyline implements Shape {
 	private boolean calculateScaledLength = true;
 	private boolean calculateLength = true;
 	private boolean dirty = true;
+	private Vector2 center;
 
 	public Polyline () {
 		this.localVertices = new float[0];
@@ -201,67 +202,26 @@ public class Polyline implements Shape {
 		dirty = true;
 	}
 	
-	@Override
-	public BoundingBox getAABB () {
-		Rectangle rect;
-		float xMin = 0, yMin = 0, xMax = 0, yMax = 0;
-		for(int i=0; i<worldVertices.length; i+=2)
-		{
-			float x = worldVertices[i],
-					y = worldVertices[i+1];
-			
-			if(x >= xMax)
-				xMax = x;
-			else
-				xMin = x;
-			
-			if(y >= yMax)
-				yMax = y;
-			else
-				yMin = y;
-		}
-		rect = new Rectangle(xMin, yMin, xMax-xMin, yMax-yMin);
-		
-		return new BoundingBox(new Vector3(rect.x,rect.y,0), new Vector3(rect.x+rect.width,rect.y+rect.height,0));
-	}
-
-	@Override
-	public Sphere getBoundingSphere () {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Class getShapeType () {
-		return Polyline.class;
-	}
 	
 	@Override
-	//Taken from http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
-	public Vector3 getCenter () {
-		float cx = 0, cy = 0;
-		Polygon poly = new Polygon(worldVertices);
-		float area = poly.area();
-		
-		Vector2[] polyPoints = new Vector2[worldVertices.length/2];
-		for(int i=0; i<worldVertices.length; i+=2)
-			polyPoints[i/2] = new Vector2(worldVertices[i], worldVertices[i+1]);
-		
-		int i, j, n = polyPoints.length;
+	//Inspired by http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
+		public Vector2 getCenter () {
+			if(dirty) getTransformedVertices();
+			if(center == null) center = new Vector2();
+			
+			int i, j, n = worldVertices.length/2;
 
-		float factor = 0;
-		for (i = 0; i < n; i++) {
-			j = (i + 1) % n;
-			factor = (polyPoints[i].x * polyPoints[j].y
-					- polyPoints[j].x * polyPoints[i].y);
-			cx += (polyPoints[i].x + polyPoints[j].y) * factor;
-			cy += (polyPoints[i].x + polyPoints[j].y) * factor;
+			float factor = 0;
+			for (i = 0; i < n; i++) {
+				j = (i + 1) % n;
+				factor = (worldVertices[i*2] * worldVertices[j*2+1]
+						- worldVertices[j*2] * worldVertices[i*2+1]);
+				center.x += (worldVertices[i*2] + worldVertices[j*2+1]) * factor;
+				center.y += (worldVertices[i*2] + worldVertices[j*2+1]) * factor;
+			}
+
+			center.scl(1 / (GeometryUtils.polygonArea(worldVertices, 0, worldVertices.length) * 6.0f));
+			
+			return center;
 		}
-		area *= 6.0f;
-		factor = 1 / area;
-		cx *= factor;
-		cy *= factor;
-		
-		return new Vector3(cx, cy, 0);
-	}
 }
