@@ -364,7 +364,10 @@ public class Actor {
 	}
 
 	public void setX (float x) {
-		this.x = x;
+		if (this.x != x) {
+			this.x = x;
+			positionChanged();
+		}
 	}
 
 	/** Get the Y position of the actor (bottom edge of actor) */
@@ -373,19 +376,30 @@ public class Actor {
 	}
 
 	public void setY (float y) {
-		this.y = y;
+		if (this.y != y) {
+			this.y = y;
+			positionChanged();
+		}
 	}
 
 	/** Set position of Actor to x, y (using bottom left corner of Actor) */
 	public void setPosition (float x, float y) {
-		this.x = x;
-		this.y = y;
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+			positionChanged();
+		}
 	}
 
 	/** Set position of Actor centered on x, y */
 	public void setCenterPosition (float x, float y) {
-		this.x = x - width / 2;
-		this.y = y - height / 2;
+		float newX = x - width / 2;
+		float newY = y - height / 2;
+		if (this.x != newX || this.y != newY) {
+			this.x = newX;
+			this.y = newY;
+			positionChanged();
+		}
 	}
 
 	public float getCenterX () {
@@ -398,8 +412,11 @@ public class Actor {
 
 	/** Add x and y to current position */
 	public void moveBy (float x, float y) {
-		this.x += x;
-		this.y += y;
+		if (x != 0 || y != 0) {
+			this.x += x;
+			this.y += y;
+			positionChanged();
+		}
 	}
 
 	public float getWidth () {
@@ -432,6 +449,10 @@ public class Actor {
 		return x + width;
 	}
 
+	/** Called when the actor's position has been changed. */
+	protected void positionChanged () {
+	}
+
 	/** Called when the actor's size has been changed. */
 	protected void sizeChanged () {
 	}
@@ -461,13 +482,16 @@ public class Actor {
 
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
-		float oldWidth = this.width;
-		float oldHeight = this.height;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		if (width != oldWidth || height != oldHeight) sizeChanged();
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+			positionChanged();
+		}
+		if (this.width != width || this.height != height) {
+			this.width = width;
+			this.height = height;
+			sizeChanged();
+		}
 	}
 
 	public float getOriginX () {
