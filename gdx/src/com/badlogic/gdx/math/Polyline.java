@@ -202,26 +202,11 @@ public class Polyline implements Shape {
 		dirty = true;
 	}
 	
-	
 	@Override
-	//Inspired by http://paulbourke.net/geometry/polygonmesh/PolygonUtilities.java
-		public Vector2 getCenter () {
-			if(dirty) getTransformedVertices();
-			if(center == null) center = new Vector2();
-			
-			int i, j, n = worldVertices.length/2;
-
-			float factor = 0;
-			for (i = 0; i < n; i++) {
-				j = (i + 1) % n;
-				factor = (worldVertices[i*2] * worldVertices[j*2+1]
-						- worldVertices[j*2] * worldVertices[i*2+1]);
-				center.x += (worldVertices[i*2] + worldVertices[j*2+1]) * factor;
-				center.y += (worldVertices[i*2] + worldVertices[j*2+1]) * factor;
-			}
-
-			center.scl(1 / (GeometryUtils.polygonArea(worldVertices, 0, worldVertices.length) * 6.0f));
-			
-			return center;
-		}
+	public Vector2 getCenter () {
+		if(dirty) getTransformedVertices();
+		if(center == null) center = new Vector2();
+		
+		return GeometryUtils.polygonCentroid(worldVertices, 0, worldVertices.length, center);
+	}
 }
