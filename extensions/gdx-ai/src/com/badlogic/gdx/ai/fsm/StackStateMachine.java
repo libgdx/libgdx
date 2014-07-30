@@ -19,26 +19,28 @@ package com.badlogic.gdx.ai.fsm;
 import com.badlogic.gdx.utils.Array;
 
 /** A {@link StateMachine} implementation that keeps track of all previous {@link State}s via a stack. This makes sense for example
- * in case of a hierarchical menu structure where
+ * in case of a hierarchical menu structure where each menu screen is one state and one wants to navigate back to the main menu
+ * anytime, via {@link #revertToPreviousState()}.
+ * @param <E> is the type of the entity handled by this state machine before the author.
  * @author Daniel Holderbaum */
 public class StackStateMachine<E> extends DefaultStateMachine<E> {
 
 	private Array<State<E>> stateStack;
 
-	/** Creates a DefaultStateMachine for the specified owner.
+	/** Creates a StackStateMachine for the specified owner.
 	 * @param owner the owner of the state machine */
 	public StackStateMachine (E owner) {
 		this(owner, null, null);
 	}
 
-	/** Creates a DefaultStateMachine for the specified owner and initial state.
+	/** Creates a StackStateMachine for the specified owner and initial state.
 	 * @param owner the owner of the state machine
 	 * @param initialState the initial state */
 	public StackStateMachine (E owner, State<E> initialState) {
 		this(owner, initialState, null);
 	}
 
-	/** Creates a DefaultStateMachine for the specified owner, initial state and global state.
+	/** Creates a StackStateMachine for the specified owner, initial state and global state.
 	 * @param owner the owner of the state machine
 	 * @param initialState the initial state
 	 * @param globalState the global state */
