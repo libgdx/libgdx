@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map that uses identity comparison for keys. This implementation is a cuckoo hash map using 3 hashes, random
  * walking, and a small stash for problematic keys. Null keys are not allowed. Null values are allowed. No allocation is done
@@ -597,7 +597,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static private class MapIterator<K, V> {
+	static private abstract class MapIterator<K, V, I> implements Iterable<I>, Iterator<I> {
 		public boolean hasNext;
 
 		final IdentityMap<K, V> map;
@@ -641,7 +641,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Entries<K, V> extends MapIterator<K, V> implements Iterable<Entry<K, V>>, Iterator<Entry<K, V>> {
+	static public class Entries<K, V> extends MapIterator<K, V, Entry<K, V>> {
 		private Entry<K, V> entry = new Entry();
 
 		public Entries (IdentityMap<K, V> map) {
@@ -670,7 +670,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Values<V> extends MapIterator<Object, V> implements Iterable<V>, Iterator<V> {
+	static public class Values<V> extends MapIterator<Object, V, V> {
 		public Values (IdentityMap<?, V> map) {
 			super((IdentityMap<Object, V>)map);
 		}
@@ -708,7 +708,7 @@ public class IdentityMap<K, V> implements Iterable<IdentityMap.Entry<K, V>> {
 		}
 	}
 
-	static public class Keys<K> extends MapIterator<K, Object> implements Iterable<K>, Iterator<K> {
+	static public class Keys<K> extends MapIterator<K, Object, K> {
 		public Keys (IdentityMap<K, ?> map) {
 			super((IdentityMap<K, Object>)map);
 		}
