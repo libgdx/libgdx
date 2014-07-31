@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongMap;
 import com.badlogic.gdx.utils.SharedLibraryLoader;
@@ -42,15 +43,53 @@ public class FreeType {
 		}
 	}
 	
-	public static class Library extends Pointer {
+	public static class Library extends Pointer implements Disposable {
 		LongMap<ByteBuffer> fontData = new LongMap<ByteBuffer>();
 		
 		Library (long address) {
 			super(address);
 		}
+
+		@Override
+		public void dispose () {
+			doneFreeType(address);
+			for(ByteBuffer buffer: fontData.values()) {
+				BufferUtils.disposeUnsafeByteBuffer(buffer);
+			}
+		}
+
+		private static native void doneFreeType(long library); /*
+			FT_Done_FreeType((FT_Library)library);
+		*/
+
+		public Face newFace(FileHandle font, int faceIndex) {
+			byte[] data = font.readBytes();
+			return newMemoryFace(data, data.length, faceIndex);
+		}
+
+		public Face newMemoryFace(byte[] data, int dataSize, int faceIndex) {
+			ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(data.length);
+			BufferUtils.copy(data, 0, buffer, data.length);
+			long face = newMemoryFace(address, buffer, dataSize, faceIndex);
+			if(face == 0) {
+				BufferUtils.disposeUnsafeByteBuffer(buffer);
+				throw new GdxRuntimeException("Couldn't load font");
+			}
+			else {
+				fontData.put(face, buffer);
+				return new Face(face, this);
+			}
+		}
+
+		private static native long newMemoryFace(long library, ByteBuffer data, int dataSize, int faceIndex); /*
+			FT_Face face = 0;
+			FT_Error error = FT_New_Memory_Face((FT_Library)library, (const FT_Byte*)data, dataSize, faceIndex, &face);
+			if(error) return 0;
+			else return (jlong)face;
+		*/
 	}
 	
-	public static class Face extends Pointer {
+	public static class Face extends Pointer implements Disposable {
 		Library library;
 		
 		public Face (long address, Library library) {
@@ -58,6 +97,20 @@ public class FreeType {
 			this.library = library;
 		}
 		
+		@Override
+		public void dispose() {
+			doneFace(address);
+			ByteBuffer buffer = library.fontData.get(address);
+			if(buffer != null) {
+				library.fontData.remove(address);
+				BufferUtils.disposeUnsafeByteBuffer(buffer);
+			}
+		}
+
+		private static native void doneFace(long face); /*
+			FT_Done_Face((FT_Face)face);
+		*/
+
 		public int getFaceFlags() {
 			return getFaceFlags(address);
 		}
@@ -138,6 +191,46 @@ public class FreeType {
 			return ((FT_Face)face)->underline_thickness;
 		*/
 		
+		public boolean selectSize(int strikeIndex) {
+			return selectSize(address, strikeIndex);
+		}
+
+		private static native boolean selectSize(long face, int strike_index); /*
+			return !FT_Select_Size((FT_Face)face, strike_index);
+		*/
+
+		public boolean setCharSize(int charWidth, int charHeight, int horzResolution, int vertResolution) {
+			return setCharSize(address, charWidth, charHeight, horzResolution, vertResolution);
+		}
+
+		private static native boolean setCharSize(long face, int charWidth, int charHeight, int horzResolution, int vertResolution); /*
+			return !FT_Set_Char_Size((FT_Face)face, charWidth, charHeight, horzResolution, vertResolution);
+		*/
+
+		public boolean setPixelSizes(int pixelWidth, int pixelHeight) {
+			return setPixelSizes(address, pixelWidth, pixelHeight);
+		}
+
+		private static native boolean setPixelSizes(long face, int pixelWidth, int pixelHeight); /*
+			return !FT_Set_Pixel_Sizes((FT_Face)face, pixelWidth, pixelHeight);
+		*/
+
+		public boolean loadGlyph(int glyphIndex, int loadFlags) {
+			return loadGlyph(address, glyphIndex, loadFlags);
+		}
+
+		private static native boolean loadGlyph(long face, int glyphIndex, int loadFlags); /*
+			return !FT_Load_Glyph((FT_Face)face, glyphIndex, loadFlags);
+		*/
+
+		public boolean loadChar(int charCode, int loadFlags) {
+			return loadChar(address, charCode, loadFlags);
+		}
+
+		private static native boolean loadChar(long face, int charCode, int loadFlags); /*
+			return !FT_Load_Char((FT_Face)face, charCode, loadFlags);
+		*/
+
 		public GlyphSlot getGlyph() {
 			return new GlyphSlot(getGlyph(address));
 		}
@@ -153,6 +246,34 @@ public class FreeType {
 		private static native long getSize(long face); /*
 			return (jlong)((FT_Face)face)->size;
 		*/
+
+		public boolean hasKerning() {
+			return hasKerning(address);
+		}
+
+		private static native boolean hasKerning(long face); /*
+			return FT_HAS_KERNING(((FT_Face)face));
+		*/
+
+		public int getKerning(int leftGlyph, int rightGlyph, int kernMode) {
+			return getKerning(address, leftGlyph, rightGlyph, kernMode);
+		}
+
+		private static native int getKerning(long face, int leftGlyph, int rightGlyph, int kernMode); /*
+			FT_Vector kerning;
+			FT_Error error = FT_Get_Kerning((FT_Face)face, leftGlyph, rightGlyph, kernMode, &kerning);
+			if(error) return 0;
+			return kerning.x;
+		*/
+
+		public int getCharIndex(int charCode) {
+			return getCharIndex(address, charCode);
+		}
+
+		private static native int getCharIndex(long face, int charCode); /*
+			return FT_Get_Char_Index((FT_Face)face, charCode);
+		*/
+
 	}
 	
 	public static class Size extends Pointer {
@@ -315,6 +436,14 @@ public class FreeType {
 		
 		private static native int getBitmapTop(long slot); /*
 			return ((FT_GlyphSlot)slot)->bitmap_top;
+		*/
+
+		public boolean renderGlyph(int renderMode) {
+			return renderGlyph(address, renderMode);
+		}
+
+		private static native boolean renderGlyph(long slot, int renderMode); /*
+			return !FT_Render_Glyph((FT_GlyphSlot)slot, (FT_Render_Mode)renderMode);
 		*/
 	}
 	
@@ -550,132 +679,7 @@ public class FreeType {
 		if(error) return 0;
 		else return (jlong)library;
 	*/
-	
-	public static void doneFreeType(Library library) {
-		doneFreeType(library.address);
-		for(ByteBuffer buffer: library.fontData.values()) {
-			BufferUtils.disposeUnsafeByteBuffer(buffer);
-		}
-	}
-	
-	private static native void doneFreeType(long library); /*
-		FT_Done_FreeType((FT_Library)library);
-	*/
-	
-	public static Face newFace(Library library, FileHandle font, int faceIndex) {
-		byte[] data = font.readBytes();
-		return newMemoryFace(library, data, data.length, faceIndex);
-	}
-	
-	public static Face newMemoryFace(Library library, byte[] data, int dataSize, int faceIndex) {
-		ByteBuffer buffer = BufferUtils.newUnsafeByteBuffer(data.length);
-		BufferUtils.copy(data, 0, buffer, data.length);
-		long address = newMemoryFace(library.address, buffer, dataSize, faceIndex);
-		if(address == 0) {
-			BufferUtils.disposeUnsafeByteBuffer(buffer);
-			throw new GdxRuntimeException("Couldn't load font");
-		}
-		else {
-			library.fontData.put(address, buffer);
-			return new Face(address, library);
-		}
-	}
-	
-	private static native long newMemoryFace(long library, ByteBuffer data, int dataSize, int faceIndex); /*
-		FT_Face face = 0;
-		FT_Error error = FT_New_Memory_Face((FT_Library)library, (const FT_Byte*)data, dataSize, faceIndex, &face);
-		if(error) return 0;
-		else return (jlong)face; 
-	*/
-	
-	public static void doneFace(Face face) {
-		doneFace(face.address);
-		ByteBuffer buffer = face.library.fontData.get(face.address);
-		if(buffer != null) {
-			face.library.fontData.remove(face.address);
-			BufferUtils.disposeUnsafeByteBuffer(buffer);
-		}
-	}
-	
-	private static native void doneFace(long face); /*
-		FT_Done_Face((FT_Face)face);
-	*/
-	
-	public static boolean selectSize(Face face, int strikeIndex) {
-		return selectSize(face.address, strikeIndex);
-	}
-	
-	private static native boolean selectSize(long face, int strike_index); /*
-		return !FT_Select_Size((FT_Face)face, strike_index);
-	*/
-	
-	public static boolean setCharSize(Face face, int charWidth, int charHeight, int horzResolution, int vertResolution) {
-		return setCharSize(face.address, charWidth, charHeight, horzResolution, vertResolution);
-	}
-	
-	private static native boolean setCharSize(long face, int charWidth, int charHeight, int horzResolution, int vertResolution); /*
-		return !FT_Set_Char_Size((FT_Face)face, charWidth, charHeight, horzResolution, vertResolution);
-	*/
-	
-	public static boolean setPixelSizes(Face face, int pixelWidth, int pixelHeight) {
-		return setPixelSizes(face.address, pixelWidth, pixelHeight);
-	}
-	
-	private static native boolean setPixelSizes(long face, int pixelWidth, int pixelHeight); /*
-		return !FT_Set_Pixel_Sizes((FT_Face)face, pixelWidth, pixelHeight);
-	*/
-	
-	public static boolean loadGlyph(Face face, int glyphIndex, int loadFlags) {
-		return loadGlyph(face.address, glyphIndex, loadFlags);
-	}
-	
-	private static native boolean loadGlyph(long face, int glyphIndex, int loadFlags); /*
-		return !FT_Load_Glyph((FT_Face)face, glyphIndex, loadFlags);
-	*/
 
-	public static boolean loadChar(Face face, int charCode, int loadFlags) {
-		return loadChar(face.address, charCode, loadFlags);
-	}
-	
-	private static native boolean loadChar(long face, int charCode, int loadFlags); /*
-		return !FT_Load_Char((FT_Face)face, charCode, loadFlags);
-	*/
-	
-	public static boolean renderGlyph(GlyphSlot slot, int renderMode) {
-		return renderGlyph(slot.address, renderMode);
-	}
-	
-	private static native boolean renderGlyph(long slot, int renderMode); /*
-		return !FT_Render_Glyph((FT_GlyphSlot)slot, (FT_Render_Mode)renderMode);
-	*/
-   
-	public static boolean hasKerning(Face face) {
-		return hasKerning(face.address);
-	}
-	
-	private static native boolean hasKerning(long face); /*
-   	return FT_HAS_KERNING(((FT_Face)face));
-   */
-   
-	public static int getKerning(Face face, int leftGlyph, int rightGlyph, int kernMode) {
-		return getKerning(face.address, leftGlyph, rightGlyph, kernMode);
-	}
-	
-	private static native int getKerning(long face, int leftGlyph, int rightGlyph, int kernMode); /*
-   	FT_Vector kerning;
-   	FT_Error error = FT_Get_Kerning((FT_Face)face, leftGlyph, rightGlyph, kernMode, &kerning);
-   	if(error) return 0;
-   	return kerning.x;
-   */
-	
-	public static int getCharIndex(Face face, int charCode) {
-		return getCharIndex(face.address, charCode);
-	}
-	
-	private static native int getCharIndex(long face, int charCode); /*
-   	return FT_Get_Char_Index((FT_Face)face, charCode);
-   */
-	
 	public static int toInt (int value) {
 		if (value < 0) return (int)((value - 32) >> 6);
 		else return (int)((value + 32) >> 6);
@@ -687,8 +691,8 @@ public class FreeType {
 //		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890\"!`?'.,;:()[]{}<>|/@\\^$-%+=#_&~*�?�?�?�?�? ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º»¼½¾¿À�?ÂÃÄÅÆÇÈÉÊËÌ�?Î�?�?ÑÒÓÔÕÖ×ØÙÚÛÜ�?Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ";
 //		
 //		Library library = FreeType.initFreeType();
-//		Face face = FreeType.newFace(library, new FileHandle("arial.ttf"), 0);
-//		FreeType.setPixelSizes(face, 0, 15);
+//		Face face = library.newFace(new FileHandle("arial.ttf"), 0);
+//		face.setPixelSizes(0, 15);
 //		SizeMetrics faceMetrics = face.getSize().getMetrics();
 //		System.out.println(toInt(faceMetrics.getAscender()) + ", " + toInt(faceMetrics.getDescender()) + ", " + toInt(faceMetrics.getHeight()));
 //		
@@ -708,7 +712,7 @@ public class FreeType {
 //			}
 //		}
 //	
-//		FreeType.doneFace(face);
-//		FreeType.doneFreeType(library);
+//		face.dispose();
+//		library.dispose();
 //	}
 }

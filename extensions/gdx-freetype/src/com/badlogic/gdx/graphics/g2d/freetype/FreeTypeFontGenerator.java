@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.graphics.g2d.freetype;
 
+import java.nio.ByteBuffer;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -41,8 +43,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-
-import java.nio.ByteBuffer;
 
 /** Generates {@link BitmapFont} and {@link BitmapFontData} instances from TrueType font files.</p>
  * 
@@ -101,18 +101,18 @@ public class FreeTypeFontGenerator implements Disposable {
 		filePath = font.pathWithoutExtension();
 		library = FreeType.initFreeType();
 		if (library == null) throw new GdxRuntimeException("Couldn't initialize FreeType");
-		face = FreeType.newFace(library, font, 0);
+		face = library.newFace(font, 0);
 		if (face == null) throw new GdxRuntimeException("Couldn't create face for font '" + font + "'");
 		if (checkForBitmapFont()) {
 			return;
 		}
-		if (!FreeType.setPixelSizes(face, 0, 15)) throw new GdxRuntimeException("Couldn't set size for font '" + font + "'");
+		if (!face.setPixelSizes(0, 15)) throw new GdxRuntimeException("Couldn't set size for font '" + font + "'");
 	}
 
 	private boolean checkForBitmapFont () {
 		if (((face.getFaceFlags() & FreeType.FT_FACE_FLAG_FIXED_SIZES) == FreeType.FT_FACE_FLAG_FIXED_SIZES)
 			&& ((face.getFaceFlags() & FreeType.FT_FACE_FLAG_HORIZONTAL) == FreeType.FT_FACE_FLAG_HORIZONTAL)) {
-			if (FreeType.loadChar(face, 32, FreeType.FT_LOAD_DEFAULT)) {
+			if (face.loadChar(32, FreeType.FT_LOAD_DEFAULT)) {
 				GlyphSlot slot = face.getGlyph();
 				if (slot.getFormat() == 1651078259) {
 					bitmapped = true;
@@ -159,7 +159,7 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Uses ascender and descender of font to calculate real height that makes all glyphs to fit in given pixel size. Source:
 	 * http://nothings.org/stb/stb_truetype.h / stbtt_ScaleForPixelHeight */
 	public int scaleForPixelHeight (int height) {
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !face.setPixelSizes(0, height)) throw new GdxRuntimeException("Couldn't set size for font");
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int ascent = FreeType.toInt(fontMetrics.getAscender());
 		int descent = FreeType.toInt(fontMetrics.getDescender());
@@ -176,7 +176,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		int descent = FreeType.toInt(fontMetrics.getDescender());
 		int unscaledHeight = ascent - descent;
 		int height = unscaledHeight * width / (advance * numChars);
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, height)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !face.setPixelSizes(0, height)) throw new GdxRuntimeException("Couldn't set size for font");
 		return height;
 	}
 	
@@ -196,19 +196,19 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Returns null if glyph was not found. If there is nothing to render, for example with various space characters, then bitmap
 	 * is null. */
 	public GlyphAndBitmap generateGlyphAndBitmap (int c, int size, boolean flip) {
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, size)) throw new GdxRuntimeException("Couldn't set size for font");
+		if (!bitmapped && !face.setPixelSizes(0, size)) throw new GdxRuntimeException("Couldn't set size for font");
 
 		SizeMetrics fontMetrics = face.getSize().getMetrics();
 		int baseline = FreeType.toInt(fontMetrics.getAscender());
 
 		// Check if character exists in this font.
 		// 0 means 'undefined character code'
-		if (FreeType.getCharIndex(face, c) == 0) {
+		if (face.getCharIndex(c) == 0) {
 			return null;
 		}
 
 		// Try to load character
-		if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+		if (!face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
 			throw new GdxRuntimeException("Unable to load character!");
 		}
 
@@ -218,7 +218,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		Bitmap bitmap;
 		if (bitmapped) {
 			bitmap = slot.getBitmap();
-		} else if (!FreeType.renderGlyph(slot, FreeType.FT_RENDER_MODE_LIGHT)) {
+		} else if (!slot.renderGlyph(FreeType.FT_RENDER_MODE_LIGHT)) {
 			bitmap = null;
 		} else {
 			bitmap = slot.getBitmap();
@@ -290,7 +290,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		parameter = parameter == null ? new FreeTypeFontParameter() : parameter;
 
 		FreeTypeBitmapFontData data = new FreeTypeBitmapFontData();
-		if (!bitmapped && !FreeType.setPixelSizes(face, 0, parameter.size))
+		if (!bitmapped && !face.setPixelSizes(0, parameter.size))
 			throw new GdxRuntimeException("Couldn't set size for font");
 
 		// set general font data
@@ -304,7 +304,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		// if bitmapped
 		if (bitmapped && (data.lineHeight == 0)) {
 			for (int c = 32; c < (32 + face.getNumGlyphs()); c++) {
-				if (FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+				if (face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
 					int lh = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 					data.lineHeight = (lh > data.lineHeight) ? lh : data.lineHeight;
 				}
@@ -312,7 +312,7 @@ public class FreeTypeFontGenerator implements Disposable {
 		}
 
 		// determine space width and set glyph
-		if (FreeType.loadChar(face, ' ', FreeType.FT_LOAD_DEFAULT)) {
+		if (face.loadChar(' ', FreeType.FT_LOAD_DEFAULT)) {
 			data.spaceWidth = FreeType.toInt(face.getGlyph().getMetrics().getHoriAdvance());
 		} else {
 			data.spaceWidth = face.getMaxAdvanceWidth(); // FIXME possibly very wrong :)
@@ -324,13 +324,13 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		// determine x-height
 		for (char xChar : BitmapFont.xChars) {
-			if (!FreeType.loadChar(face, xChar, FreeType.FT_LOAD_DEFAULT)) continue;
+			if (!face.loadChar(xChar, FreeType.FT_LOAD_DEFAULT)) continue;
 			data.xHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
 		if (data.xHeight == 0) throw new GdxRuntimeException("No x-height character found in font");
 		for (char capChar : BitmapFont.capChars) {
-			if (!FreeType.loadChar(face, capChar, FreeType.FT_LOAD_DEFAULT)) continue;
+			if (!face.loadChar(capChar, FreeType.FT_LOAD_DEFAULT)) continue;
 			data.capHeight = FreeType.toInt(face.getGlyph().getMetrics().getHeight());
 			break;
 		}
@@ -365,11 +365,11 @@ public class FreeTypeFontGenerator implements Disposable {
 
 		for (int i = 0; i < parameter.characters.length(); i++) {
 			char c = parameter.characters.charAt(i);
-			if (!FreeType.loadChar(face, c, FreeType.FT_LOAD_DEFAULT)) {
+			if (!face.loadChar(c, FreeType.FT_LOAD_DEFAULT)) {
 				Gdx.app.log("FreeTypeFontGenerator", "Couldn't load char '" + c + "'");
 				continue;
 			}
-			if (!FreeType.renderGlyph(face.getGlyph(), FreeType.FT_RENDER_MODE_NORMAL)) {
+			if (!face.getGlyph().renderGlyph(FreeType.FT_RENDER_MODE_NORMAL)) {
 				Gdx.app.log("FreeTypeFontGenerator", "Couldn't render char '" + c + "'");
 				continue;
 			}
@@ -426,8 +426,8 @@ public class FreeTypeFontGenerator implements Disposable {
 					char secondChar = parameter.characters.charAt(j);
 					Glyph second = data.getGlyph(secondChar);
 					if (second == null) continue;
-					int kerning = FreeType.getKerning(face, FreeType.getCharIndex(face, firstChar),
-						FreeType.getCharIndex(face, secondChar), 0);
+					int kerning = face.getKerning(face.getCharIndex(firstChar),
+						face.getCharIndex(secondChar), 0);
 					if (kerning == 0) continue;
 					first.setKerning(secondChar, FreeType.toInt(kerning));
 				}
@@ -459,8 +459,8 @@ public class FreeTypeFontGenerator implements Disposable {
 	/** Cleans up all resources of the generator. Call this if you no longer use the generator. */
 	@Override
 	public void dispose () {
-		FreeType.doneFace(face);
-		FreeType.doneFreeType(library);
+		face.dispose();
+		library.dispose();
 	}
 
 	/** {@link BitmapFontData} used for fonts generated via the {@link FreeTypeFontGenerator}. The texture storing the glyphs is held
