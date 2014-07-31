@@ -17,8 +17,10 @@
 package com.badlogic.gdx.graphics.g2d.freetype;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Blending;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -26,7 +28,6 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongMap;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class FreeType {
 	// @off
@@ -596,14 +597,32 @@ public class FreeType {
 		 * @return Pixmap representing the glyph, needs to be disposed manually.
 		 */
 		public Pixmap getPixmap(Format format) {
-			Pixmap pixmap = new Pixmap(getWidth(), getRows(), Format.Alpha);
-			BufferUtils.copy(getBuffer(), pixmap.getPixels(), pixmap.getPixels().capacity());
-			Pixmap converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
-			Blending blending = Pixmap.getBlending();
-			Pixmap.setBlending(Blending.None);
-			converted.drawPixmap(pixmap, 0, 0);
-			Pixmap.setBlending(blending);
-			pixmap.dispose();
+			return getPixmap(format, Color.WHITE);
+		}
+
+		public Pixmap getPixmap(Format format, Color color) {
+			Pixmap pixmap = new Pixmap(getWidth(), getRows(), Format.RGBA8888);
+			ByteBuffer src = getBuffer();
+			int srcPitch = getPitch();
+			IntBuffer dst = pixmap.getPixels().asIntBuffer();
+			for (int y = 0; y < getRows(); y++) {
+				for (int x = 0; x < getWidth(); x++) {
+					//use the color value of the foreground color, blend alpha
+					byte alpha = src.get(y*srcPitch + x);
+					int srcRGBA = Color.rgba8888(color);
+					dst.put(y*getWidth() + x, (srcRGBA & 0xffffff00) | (int)((srcRGBA & 0xff) * (alpha & 0xff)/255f));
+				}
+			}
+
+			Pixmap converted = pixmap;
+			if (format != Format.RGBA8888) {
+				converted = new Pixmap(pixmap.getWidth(), pixmap.getHeight(), format);
+				Blending blending = Pixmap.getBlending();
+				Pixmap.setBlending(Blending.None);
+				converted.drawPixmap(pixmap, 0, 0);
+				Pixmap.setBlending(blending);
+				pixmap.dispose();
+			}
 			return converted;
 		}
 		
@@ -805,7 +824,7 @@ public class FreeType {
 	public static int FT_STROKER_LINEJOIN_MITER_FIXED    = 3;
 
    public static Library initFreeType() {
-   	new SharedLibraryLoader().load("gdx-freetype");
+   	//new SharedLibraryLoader().load("gdx-freetype");
    	long address = initFreeTypeJni();
    	if(address == 0) throw new GdxRuntimeException("Couldn't initialize FreeType library");
    	else return new Library(address);
