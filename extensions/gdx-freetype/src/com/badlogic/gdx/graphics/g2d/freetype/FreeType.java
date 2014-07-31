@@ -824,7 +824,7 @@ public class FreeType {
 	public static int FT_STROKER_LINEJOIN_MITER_FIXED    = 3;
 
    public static Library initFreeType() {
-   	//new SharedLibraryLoader().load("gdx-freetype");
+   	new SharedLibraryLoader().load("gdx-freetype");
    	long address = initFreeTypeJni();
    	if(address == 0) throw new GdxRuntimeException("Couldn't initialize FreeType library");
    	else return new Library(address);
