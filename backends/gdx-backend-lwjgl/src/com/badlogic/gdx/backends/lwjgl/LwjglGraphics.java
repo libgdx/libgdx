@@ -163,10 +163,10 @@ public class LwjglGraphics implements Graphics {
 				ContextAttribs context = new ContextAttribs(3, 2).withForwardCompatible(false).withProfileCore(true);
 				try {
 					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
-						config.samples));
+						config.samples), context);
 				} catch (Exception e) {
 					Display.create(new PixelFormat(config.r + config.g + config.b, config.a, config.depth, config.stencil,
-						config.samples));
+						config.samples), context);
 					System.out.println("LwjglGraphics: couldn't create OpenGL 3.2+ core profile context");
 				}
 				System.out.println("LwjglGraphics: created OpenGL 3.2+ core profile context. This is experimental!");
@@ -238,7 +238,12 @@ public class LwjglGraphics implements Graphics {
 		major = Integer.parseInt("" + version.charAt(0));
 		minor = Integer.parseInt("" + version.charAt(2));
 
-		gl20 = new LwjglGL20();
+		if(major >= 3) {
+			gl30 = new LwjglGL30();
+			gl20 = gl30;
+		} else {
+			gl20 = new LwjglGL20();
+		}
 
 		if (major <= 1)
 			throw new GdxRuntimeException("OpenGL 2.0 or higher with the FBO extension is required. OpenGL version: " + version);
