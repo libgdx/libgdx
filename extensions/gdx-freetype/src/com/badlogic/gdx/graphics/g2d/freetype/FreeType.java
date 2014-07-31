@@ -33,8 +33,9 @@ public class FreeType {
 	/*JNI
 	#include <ft2build.h>
 	#include FT_FREETYPE_H
-	 */	
-	
+	#include FT_STROKER_H
+	 */
+
 	private static class Pointer {
 		long address;
 		
@@ -86,6 +87,19 @@ public class FreeType {
 			FT_Error error = FT_New_Memory_Face((FT_Library)library, (const FT_Byte*)data, dataSize, faceIndex, &face);
 			if(error) return 0;
 			else return (jlong)face;
+		*/
+
+		public Stroker createStroker() {
+			long stroker = strokerNew(address);
+			if(stroker == 0) throw new GdxRuntimeException("Couldn't create FreeType stroker");
+			return new Stroker(stroker);
+		}
+
+		private static native long strokerNew(long library); /*
+			FT_Stroker stroker;
+			FT_Error error = FT_Stroker_New((FT_Library)library, &stroker);
+			if(error) return 0;
+			else return (jlong)stroker;
 		*/
 	}
 	
@@ -445,8 +459,99 @@ public class FreeType {
 		private static native boolean renderGlyph(long slot, int renderMode); /*
 			return !FT_Render_Glyph((FT_GlyphSlot)slot, (FT_Render_Mode)renderMode);
 		*/
+
+		public Glyph getGlyph() {
+			long glyph = getGlyph(address);
+			if(glyph == 0) throw new GdxRuntimeException("Couldn't get glyph");
+			return new Glyph(glyph);
+		}
+
+		private static native long getGlyph(long glyphSlot); /*
+			FT_Glyph glyph;
+			FT_Error error = FT_Get_Glyph((FT_GlyphSlot)glyphSlot, &glyph);
+			if(error) return 0;
+			else return (jlong)glyph;
+		*/
 	}
 	
+	public static class Glyph extends Pointer implements Disposable {
+		private boolean rendered;
+
+		Glyph (long address) {
+			super(address);
+		}
+
+		@Override
+		public void dispose () {
+			done(address);
+		}
+
+		private static native void done(long glyph); /*
+			FT_Done_Glyph((FT_Glyph)glyph);
+		*/
+
+		public void strokeBorder(Stroker stroker, boolean inside) {
+			address = strokeBorder(address, stroker.address, inside);
+		}
+
+		private static native long strokeBorder(long glyph, long stroker, boolean inside); /*
+			FT_Glyph border_glyph = (FT_Glyph)glyph;
+			FT_Glyph_StrokeBorder(&border_glyph, (FT_Stroker)stroker, inside, 1);
+			return (jlong)border_glyph;
+		*/
+
+		public void toBitmap(int renderMode) {
+			long bitmap = toBitmap(address, renderMode);
+			if (bitmap == 0) throw new GdxRuntimeException("Couldn't render glyph");
+			address = bitmap;
+			rendered = true;
+		}
+
+		private static native long toBitmap(long glyph, int renderMode); /*
+			FT_Glyph bitmap = (FT_Glyph)glyph;
+			FT_Error error = FT_Glyph_To_Bitmap(&bitmap, (FT_Render_Mode)renderMode, NULL, 1);
+			if(error) return 0;
+			return (jlong)bitmap;
+		*/
+
+		public Bitmap getBitmap() {
+			if (!rendered) {
+				throw new GdxRuntimeException("Glyph is not yet rendered");
+			}
+			return new Bitmap(getBitmap(address));
+		}
+
+		private static native long getBitmap(long glyph); /*
+			FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
+			return (jlong)&(glyph_bitmap->bitmap);
+		*/
+
+		public int getLeft() {
+			if (!rendered) {
+				throw new GdxRuntimeException("Glyph is not yet rendered");
+			}
+			return getLeft(address);
+		}
+
+		private static native int getLeft(long glyph); /*
+			FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
+			return glyph_bitmap->left;
+		*/
+
+		public int getTop() {
+			if (!rendered) {
+				throw new GdxRuntimeException("Glyph is not yet rendered");
+			}
+			return getTop(address);
+		}
+
+		private static native int getTop(long glyph); /*
+			FT_BitmapGlyph glyph_bitmap = ((FT_BitmapGlyph)glyph);
+			return glyph_bitmap->top;
+		*/
+
+	}
+
 	public static class Bitmap extends Pointer {
 		Bitmap (long address) {
 			super(address);
@@ -593,7 +698,30 @@ public class FreeType {
 			return ((FT_Glyph_Metrics*)metrics)->vertAdvance;
 		*/
 	}
-	
+
+	public static class Stroker extends Pointer implements Disposable {
+		Stroker(long address) {
+			super(address);
+		}
+
+		public void set(int radius, int lineCap, int lineJoin, int miterLimit) {
+			set(address, radius, lineCap, lineJoin, miterLimit);
+		}
+
+		private static native void set(long stroker, int radius, int lineCap, int lineJoin, int miterLimit); /*
+			FT_Stroker_Set((FT_Stroker)stroker, radius, (FT_Stroker_LineCap)lineCap, (FT_Stroker_LineJoin)lineJoin, miterLimit);
+		*/
+
+		@Override
+		public void dispose() {
+			done(address);
+		}
+
+		private static native void done(long stroker); /*
+			FT_Stroker_Done((FT_Stroker)stroker);
+		*/
+	}
+
    public static int FT_PIXEL_MODE_NONE = 0;
    public static int FT_PIXEL_MODE_MONO = 1;
    public static int FT_PIXEL_MODE_GRAY = 2;
@@ -666,6 +794,16 @@ public class FreeType {
    public static int FT_KERNING_UNFITTED = 1;
    public static int FT_KERNING_UNSCALED = 2;
 	
+	public static int FT_STROKER_LINECAP_BUTT = 0;
+	public static int FT_STROKER_LINECAP_ROUND = 1;
+	public static int FT_STROKER_LINECAP_SQUARE = 2;
+
+	public static int FT_STROKER_LINEJOIN_ROUND          = 0;
+	public static int FT_STROKER_LINEJOIN_BEVEL          = 1;
+	public static int FT_STROKER_LINEJOIN_MITER_VARIABLE = 2;
+	public static int FT_STROKER_LINEJOIN_MITER          = FT_STROKER_LINEJOIN_MITER_VARIABLE;
+	public static int FT_STROKER_LINEJOIN_MITER_FIXED    = 3;
+
    public static Library initFreeType() {
    	new SharedLibraryLoader().load("gdx-freetype");
    	long address = initFreeTypeJni();
