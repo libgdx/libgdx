@@ -122,6 +122,7 @@ continuous: true
 aligned: false
 additive: true
 behind: false
+premultipliedAlpha: false
 - Image Path -
 \Dev\libgdx\tests\gdx-tests-lwjgl\data/particle.png
 
@@ -259,6 +260,7 @@ continuous: true
 aligned: false
 additive: true
 behind: false
+premultipliedAlpha: false
 - Image Path -
 \Dev\libgdx\tests\gdx-tests-lwjgl\data/particle-fire.png
 
@@ -420,6 +422,7 @@ continuous: true
 aligned: false
 additive: true
 behind: false
+premultipliedAlpha: false
 - Image Path -
 \Dev\libgdx\tests\gdx-tests-lwjgl\data/particle-star.png
 
@@ -563,5 +566,6 @@ continuous: true
 aligned: false
 additive: true
 behind: false
+premultipliedAlpha: false
 - Image Path -
 \Dev\libgdx\tests\gdx-tests-lwjgl\data/particle-cloud.png
