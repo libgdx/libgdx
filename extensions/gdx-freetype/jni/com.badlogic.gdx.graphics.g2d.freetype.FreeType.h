@@ -19,81 +19,6 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_ini
 }
 #endif
 #endif
-/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics */
-
-#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
-#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getWidth
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getWidth
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getHeight
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHeight
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getHoriBearingX
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriBearingX
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getHoriBearingY
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriBearingY
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getHoriAdvance
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriAdvance
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getVertBearingX
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertBearingX
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getVertBearingY
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertBearingY
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
- * Method:    getVertAdvance
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertAdvance
-  (JNIEnv *, jclass, jlong);
-
-#ifdef __cplusplus
-}
-#endif
-#endif
 /* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Bitmap */
 
 #ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Bitmap
@@ -147,191 +72,6 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Bitmap_getPixelMode
-  (JNIEnv *, jclass, jlong);
-
-#ifdef __cplusplus
-}
-#endif
-#endif
-/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot */
-
-#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
-#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getMetrics
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getMetrics
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getLinearHoriAdvance
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getLinearHoriAdvance
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getLinearVertAdvance
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getLinearVertAdvance
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getAdvanceX
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getAdvanceX
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getAdvanceY
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getAdvanceY
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getFormat
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getFormat
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getBitmap
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getBitmap
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getBitmapLeft
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getBitmapLeft
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    getBitmapTop
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getBitmapTop
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
- * Method:    renderGlyph
- * Signature: (JI)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_renderGlyph
-  (JNIEnv *, jclass, jlong, jint);
-
-#ifdef __cplusplus
-}
-#endif
-#endif
-/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics */
-
-#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
-#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getXppem
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getXppem
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getYppem
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getYppem
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getXscale
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getXscale
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getYscale
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getYscale
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getAscender
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getAscender
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getDescender
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getDescender
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getHeight
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getHeight
-  (JNIEnv *, jclass, jlong);
-
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
- * Method:    getMaxAdvance
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getMaxAdvance
-  (JNIEnv *, jclass, jlong);
-
-#ifdef __cplusplus
-}
-#endif
-#endif
-/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size */
-
-#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
-#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
-#ifdef __cplusplus
-extern "C" {
-#endif
-/*
- * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
- * Method:    getMetrics
- * Signature: (J)J
- */
-JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Size_getMetrics
   (JNIEnv *, jclass, jlong);
 
 #ifdef __cplusplus
@@ -517,6 +257,239 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 }
 #endif
 #endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+ * Method:    done
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Glyph_done
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+ * Method:    strokeBorder
+ * Signature: (JJZ)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Glyph_strokeBorder
+  (JNIEnv *, jclass, jlong, jlong, jboolean);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+ * Method:    toBitmap
+ * Signature: (JI)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Glyph_toBitmap
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+ * Method:    getBitmap
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Glyph_getBitmap
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+ * Method:    getLeft
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Glyph_getLeft
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Glyph
+ * Method:    getTop
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Glyph_getTop
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getWidth
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getWidth
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getHeight
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHeight
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getHoriBearingX
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriBearingX
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getHoriBearingY
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriBearingY
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getHoriAdvance
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getHoriAdvance
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getVertBearingX
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertBearingX
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getVertBearingY
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertBearingY
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphMetrics
+ * Method:    getVertAdvance
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphMetrics_getVertAdvance
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getMetrics
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getMetrics
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getLinearHoriAdvance
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getLinearHoriAdvance
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getLinearVertAdvance
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getLinearVertAdvance
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getAdvanceX
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getAdvanceX
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getAdvanceY
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getAdvanceY
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getFormat
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getFormat
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getBitmap
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getBitmap
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getBitmapLeft
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getBitmapLeft
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getBitmapTop
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getBitmapTop
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    renderGlyph
+ * Signature: (JI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_renderGlyph
+  (JNIEnv *, jclass, jlong, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_GlyphSlot
+ * Method:    getGlyph
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024GlyphSlot_getGlyph
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
 /* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Library */
 
 #ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Library
@@ -540,6 +513,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_0002
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Library_newMemoryFace
   (JNIEnv *, jclass, jlong, jobject, jint, jint);
 
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Library
+ * Method:    strokerNew
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Library_strokerNew
+  (JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif
@@ -551,6 +532,127 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_000
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Size
+ * Method:    getMetrics
+ * Signature: (J)J
+ */
+JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Size_getMetrics
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getXppem
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getXppem
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getYppem
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getYppem
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getXscale
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getXscale
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getYscale
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getYscale
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getAscender
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getAscender
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getDescender
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getDescender
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getHeight
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getHeight
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_SizeMetrics
+ * Method:    getMaxAdvance
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024SizeMetrics_getMaxAdvance
+  (JNIEnv *, jclass, jlong);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
+/* Header for class com_badlogic_gdx_graphics_g2d_freetype_FreeType_Stroker */
+
+#ifndef _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Stroker
+#define _Included_com_badlogic_gdx_graphics_g2d_freetype_FreeType_Stroker
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Stroker
+ * Method:    set
+ * Signature: (JIIII)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Stroker_set
+  (JNIEnv *, jclass, jlong, jint, jint, jint, jint);
+
+/*
+ * Class:     com_badlogic_gdx_graphics_g2d_freetype_FreeType_Stroker
+ * Method:    done
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_freetype_FreeType_00024Stroker_done
+  (JNIEnv *, jclass, jlong);
+
 #ifdef __cplusplus
 }
 #endif
