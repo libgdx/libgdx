@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.Array;
 /** A {@link StateMachine} implementation that keeps track of all previous {@link State}s via a stack. This makes sense for example
  * in case of a hierarchical menu structure where each menu screen is one state and one wants to navigate back to the main menu
  * anytime, via {@link #revertToPreviousState()}.
- * @param <E> is the type of the entity handled by this state machine before the author.
+ * @param <E> is the type of the entity handled by this state machine.
  * @author Daniel Holderbaum */
 public class StackStateMachine<E> extends DefaultStateMachine<E> {
 
@@ -91,17 +91,17 @@ public class StackStateMachine<E> extends DefaultStateMachine<E> {
 	}
 
 	private void changeState (State<E> newState, boolean pushCurrentStateToStack) {
-		if (pushCurrentStateToStack) {
+		if (pushCurrentStateToStack && currentState != null) {
 			stateStack.add(currentState);
 		}
 
 		// Call the exit method of the existing state
-		currentState.exit(owner);
+		if (currentState != null) currentState.exit(owner);
 
-		// change state to the new state
+		// Change state to the new state
 		currentState = newState;
 
-		// call the entry method of the new state
+		// Call the entry method of the new state
 		currentState.enter(owner);
 	}
 
