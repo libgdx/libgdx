@@ -42,10 +42,13 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.LongArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
@@ -355,10 +358,28 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
+			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
+
 			for (Element tileElement : tileElements) {
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile != null) {
+					Element animationElement = tileElement.getChildByName("animation");
+					if (animationElement != null) {
+
+						Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+						LongArray intervals = new LongArray();
+						for (Element frameElement: animationElement.getChildrenByName("frame")) {
+							staticTiles.add((StaticTiledMapTile) tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));
+							intervals.add(frameElement.getIntAttribute("duration"));
+						}
+
+						AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
+						animatedTile.setId(tile.getId());
+						animatedTiles.add(animatedTile);
+						tile = animatedTile;
+					}
+
 					String terrain = tileElement.getAttribute("terrain", null);
 					if (terrain != null) {
 						tile.getProperties().put("terrain", terrain);
@@ -372,6 +393,10 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 						loadProperties(tile.getProperties(), properties);
 					}
 				}
+			}
+
+			for (AnimatedTiledMapTile tile : animatedTiles) {
+				tileset.putTile(tile.getId(), tile);
 			}
 
 			Element properties = element.getChildByName("properties");

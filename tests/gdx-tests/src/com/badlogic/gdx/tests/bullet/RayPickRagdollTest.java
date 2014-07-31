@@ -101,7 +101,7 @@ public class RayPickRagdollTest extends BaseBulletTest {
 					pickedBody = body;
 					body.setActivationState(Collision.DISABLE_DEACTIVATION);
 
-					tmpV.set(cb.getHitPointWorld().getFloats());
+					cb.getHitPointWorld(tmpV);
 					tmpV.mul(body.getCenterOfMassTransform().inv());
 
 					pickConstraint = new btPoint2PointConstraint(body, tmpV);

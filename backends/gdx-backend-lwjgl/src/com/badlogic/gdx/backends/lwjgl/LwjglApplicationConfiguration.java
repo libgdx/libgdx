@@ -73,6 +73,8 @@ public class LwjglApplicationConfiguration {
 	public boolean allowSoftwareMode = false;
 	/** Preferences directory on the desktop. Default is ".prefs/". */
 	public String preferencesDirectory = ".prefs/";
+	/** Callback used when trying to create a display, can handle failures, default value is null (disabled) */
+	public LwjglGraphics.SetDisplayModeCallback setDisplayModeCallback;
 
 	Array<String> iconPaths = new Array();
 	Array<FileType> iconFileTypes = new Array();	

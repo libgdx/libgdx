@@ -64,6 +64,9 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class ParticleEditor extends JFrame {
 	public static final String DEFAULT_PARTICLE = "particle.png"; 
+
+	public static final String DEFAULT_PREMULT_PARTICLE = "pre_particle.png";
+	
 	LwjglCanvas lwjglCanvas;
 	JPanel rowsPanel;
 	JPanel editRowsPanel;
@@ -435,7 +438,7 @@ public class ParticleEditor extends JFrame {
 			String imageName = new File(imagePath.replace('\\', '/')).getName();
 			try {
 				FileHandle file;
-				if (imagePath.equals(ParticleEditor.DEFAULT_PARTICLE))
+				if (imagePath.equals(ParticleEditor.DEFAULT_PARTICLE) || imagePath.equals(ParticleEditor.DEFAULT_PREMULT_PARTICLE))
 					file = Gdx.files.classpath(imagePath);
 				else
 					file = Gdx.files.absolute(imagePath);

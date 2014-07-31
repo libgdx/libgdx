@@ -212,19 +212,25 @@ public class Window extends Table {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		Stage stage = getStage();
+		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+
 		keepWithinStage();
 
 		if (style.stageBackground != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			Stage stage = getStage();
-			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
-			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground
-				.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+			stageToLocalCoordinates(tmpPosition.set(0, 0));
+			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
+			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY()
+				+ tmpSize.y);
 		}
 
 		super.draw(batch, parentAlpha);
+	}
+
+	protected void drawStageBackground (Batch batch, float parentAlpha, float x, float y, float width, float height) {
+		Color color = getColor();
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		style.stageBackground.draw(batch, x, y, width, height);
 	}
 
 	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {

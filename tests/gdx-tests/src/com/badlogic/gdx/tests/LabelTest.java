@@ -89,7 +89,6 @@ public class LabelTest extends GdxTest {
 
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 		stage.draw();
-		Table.drawDebug(stage);
 
 		float x = 40, y = 40;
 

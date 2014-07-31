@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodeAnimation;
 import com.badlogic.gdx.graphics.g3d.model.NodeKeyframe;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -82,15 +83,19 @@ public class AnimationController extends BaseAnimationController {
 		/** @return the remaining time or 0 if still animating. */
 		protected float update (float delta) {
 			if (loopCount != 0 && animation != null) {
+				int loops;
 				final float diff = speed * delta;
-				time += diff;
-				int loops = (int)Math.abs(time / duration);
-				if (time < 0f) {
-					loops++;
-					while (time < 0f)
-						time += duration;
-				}
-				time = Math.abs(time % duration);
+				if(!MathUtils.isZero(duration)) {
+					time += diff;
+					loops = (int)Math.abs(time / duration);
+					if (time < 0f) {
+						loops++;
+						while (time < 0f)
+							time += duration;
+					}
+					time = Math.abs(time % duration);
+				} else
+					loops = 1;
 				for (int i = 0; i < loops; i++) {
 					if (loopCount > 0) loopCount--;
 					if (loopCount != 0 && listener != null) listener.onLoop(this);

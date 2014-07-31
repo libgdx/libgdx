@@ -98,7 +98,7 @@ public class DefaultShader extends BaseShader {
 		public final static Uniform emissiveColor = new Uniform("u_emissiveColor", ColorAttribute.Emissive);
 		public final static Uniform reflectionColor = new Uniform("u_reflectionColor", ColorAttribute.Reflection);
 		public final static Uniform normalTexture = new Uniform("u_normalTexture", TextureAttribute.Normal);
-		public final static Uniform alphaTest = new Uniform("u_alphaTest", FloatAttribute.AlphaTest);
+		public final static Uniform alphaTest = new Uniform("u_alphaTest");
 
 		public final static Uniform ambientCube = new Uniform("u_ambientCubemap");
 		public final static Uniform dirLights = new Uniform("u_dirLights");
@@ -486,7 +486,8 @@ public class DefaultShader extends BaseShader {
 
 	/** The renderable used to create this shader, invalid after the call to init */
 	private Renderable renderable;
-	private long materialMask;
+	/** The material attributes that this shader supports */
+	protected final long materialMask;
 	private long vertexMask;
 	protected final Config config;
 	/** Material attributes which are not required but always supported. */
@@ -628,6 +629,10 @@ public class DefaultShader extends BaseShader {
 		if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse) {
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Flag\n";
 			prefix += "#define " + TextureAttribute.DiffuseAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
+		}
+		if ((mask & TextureAttribute.Specular) == TextureAttribute.Specular) {
+			prefix += "#define " + TextureAttribute.SpecularAlias + "Flag\n";
+			prefix += "#define " + TextureAttribute.SpecularAlias + "Coord texCoord0\n"; // FIXME implement UV mapping
 		}
 		if ((mask & TextureAttribute.Normal) == TextureAttribute.Normal) {
 			prefix += "#define " + TextureAttribute.NormalAlias + "Flag\n";

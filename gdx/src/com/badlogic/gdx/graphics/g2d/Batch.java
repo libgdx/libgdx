@@ -208,6 +208,9 @@ public interface Batch extends Disposable {
 	/** @return true if blending for sprites is enabled */
 	public boolean isBlendingEnabled ();
 
+	/** @return true if currently between begin and end. */
+	public boolean isDrawing ();
+
 	static public final int X1 = 0;
 	static public final int Y1 = 1;
 	static public final int C1 = 2;

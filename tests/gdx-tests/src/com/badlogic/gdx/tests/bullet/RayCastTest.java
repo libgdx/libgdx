@@ -78,8 +78,8 @@ public class RayCastTest extends BaseBulletTest {
 		// Because we reuse the ClosestRayResultCallback, we need reset it's values
 		rayTestCB.setCollisionObject(null);
 		rayTestCB.setClosestHitFraction(1f);
-		rayTestCB.getRayFromWorld().setValue(rayFrom.x, rayFrom.y, rayFrom.z);
-		rayTestCB.getRayToWorld().setValue(rayTo.x, rayTo.y, rayTo.z);
+		rayTestCB.setRayFromWorld(rayFrom);
+		rayTestCB.setRayToWorld(rayTo);
 
 		world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 

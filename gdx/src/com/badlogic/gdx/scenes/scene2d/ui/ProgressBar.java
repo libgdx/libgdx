@@ -72,7 +72,7 @@ public class ProgressBar extends Widget implements Disableable {
 	 * @param stepSize the step size between values
 	 * @param style the {@link ProgressBarStyle} */
 	public ProgressBar (float min, float max, float stepSize, boolean vertical, ProgressBarStyle style) {
-		if (min > max) throw new IllegalArgumentException("min must be > max: " + min + " > " + max);
+		if (min > max) throw new IllegalArgumentException("max must be > min. min,max: " + min + ", " + max);
 		if (stepSize <= 0) throw new IllegalArgumentException("stepSize must be > 0: " + stepSize);
 		setStyle(style);
 		this.min = min;

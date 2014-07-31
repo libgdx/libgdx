@@ -27,7 +27,6 @@ import com.badlogic.gdx.utils.NumberUtils;
  * @author xoppa */
 public class Quaternion implements Serializable {
 	private static final long serialVersionUID = -7661875440774897168L;
-	private static final float NORMALIZATION_TOLERANCE = 0.00001f;
 	private static Quaternion tmp1 = new Quaternion(0, 0, 0, 0);
 	private static Quaternion tmp2 = new Quaternion(0, 0, 0, 0);
 
@@ -175,7 +174,7 @@ public class Quaternion implements Serializable {
 	 * @return the rotation around the x axis in radians (between -(PI/2) and +(PI/2)) */
 	public float getPitchRad() {
 		final int pole = getGimbalPole();
-		return pole == 0 ? (float)Math.asin(2f*(w*x-z*y)) : (float)pole * MathUtils.PI * 0.5f;
+		return pole == 0 ? (float)Math.asin(MathUtils.clamp(2f*(w*x-z*y), -1f, 1f)) : (float)pole * MathUtils.PI * 0.5f;
 	}
 
 	/** Get the pitch euler angle in degrees, which is the rotation around the x axis. Requires that this quaternion is normalized. 
@@ -209,7 +208,7 @@ public class Quaternion implements Serializable {
 	 * @return the quaternion for chaining */
 	public Quaternion nor () {
 		float len = len2();
-		if (len != 0.f && (Math.abs(len - 1.0f) > NORMALIZATION_TOLERANCE)) {
+		if (len != 0.f && !MathUtils.isEqual(len, 1f)) {
 			len = (float)Math.sqrt(len);
 			w /= len;
 			x /= len;
@@ -778,7 +777,7 @@ public class Quaternion implements Serializable {
 		if (this.w > 1) this.nor(); // if w>1 acos and sqrt will produce errors, this cant happen if quaternion is normalised
 		float angle = (float)(2.0 * Math.acos(this.w));
 		double s = Math.sqrt(1 - this.w * this.w); // assuming quaternion normalised then w is less than 1, so term always positive.
-		if (s < NORMALIZATION_TOLERANCE) { // test to avoid divide by zero, s is always positive due to sqrt
+		if (s < MathUtils.FLOAT_ROUNDING_ERROR) { // test to avoid divide by zero, s is always positive due to sqrt
 			// if s close to zero then direction of axis not important
 			axis.x = this.x; // if it is important that axis is normalised then replace with x=1; y=z=0;
 			axis.y = this.y;

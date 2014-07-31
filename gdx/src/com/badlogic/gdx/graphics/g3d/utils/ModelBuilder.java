@@ -165,7 +165,7 @@ public class ModelBuilder {
 	 * Therefore you can only build one part at a time. The resources the Material might contain are not managed, use
 	 * {@link #manage(Disposable)} to add those to the model.
 	 * @return The {@link MeshPartBuilder} you can use to build the MeshPart. */
-	private MeshPartBuilder part (final String id, int primitiveType, final VertexAttributes attributes, final Material material) {
+	public MeshPartBuilder part (final String id, int primitiveType, final VertexAttributes attributes, final Material material) {
 		final MeshBuilder builder = getBuilder(attributes);
 		part(builder.part(id, primitiveType), material);
 		return builder;
