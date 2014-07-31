@@ -96,17 +96,16 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 
 	@Override
 	public void changeState (State<E> newState) {
-
 		// Keep a record of the previous state
 		previousState = currentState;
 
 		// Call the exit method of the existing state
-		currentState.exit(owner);
+		if (currentState != null) currentState.exit(owner);
 
-		// change state to the new state
+		// Change state to the new state
 		currentState = newState;
 
-		// call the entry method of the new state
+		// Call the entry method of the new state
 		currentState.enter(owner);
 	}
 
