@@ -18,8 +18,9 @@ package com.badlogic.gdx.ai.msg;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.Agent;
+import com.badlogic.gdx.ai.RealTimeProvider;
+import com.badlogic.gdx.ai.TimeProvider;
 import com.badlogic.gdx.utils.Pool;
-import com.badlogic.gdx.utils.TimeUtils;
 
 /** The MessageDispatcher is a singleton in charge of the creation, dispatch, and management of telegrams.
  * 
@@ -31,8 +32,8 @@ public class MessageDispatcher {
 	private static final float NANOS_PER_SEC = 1000000000f;
 
 	private static final MessageDispatcher instance = new MessageDispatcher();
-
-	private static final long START = TimeUtils.nanoTime();
+	
+	private static TimeProvider timeProvider = new RealTimeProvider();
 
 	private PriorityQueue<Telegram> queue = new PriorityQueue<Telegram>();
 
@@ -57,13 +58,9 @@ public class MessageDispatcher {
 		return instance;
 	}
 
-	/** Returns the current time in nanoseconds.
-	 * <p>
-	 * This implementation returns the value of the system timer minus a constant value determined when this class was loaded the
-	 * first time in order to ensure it takes increasing values (for 2 ^ 63 nanoseconds, i.e. 292 years) since the time stamp is
-	 * used to order the telegrams in the queue. */
+	/** Returns current time acquired from the time provider. */
 	public static long getCurrentTime () {
-		return TimeUtils.nanoTime() - START;
+		return timeProvider.getCurrentTime();
 	}
 
 	/** Returns the time granularity. */
@@ -182,6 +179,11 @@ public class MessageDispatcher {
 		}
 
 		pool.free(telegram);
+	}
+	
+	/** Sets the custom time provider. */
+	public static void setTimeProvider(TimeProvider provider) {
+		timeProvider = provider;
 	}
 
 }
