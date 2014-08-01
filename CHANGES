@@ -1,4 +1,5 @@
 [1.2.1]
+- API Addition: added StackStateMachine to the gdx-ai extension.
 - API change: ShapeRenderer: rect methods accept scale, more methods can work under both line and fill types, auto shape type changing.
 - API change: Built-in ShapeRenderer debugging for Stage, see https://github.com/libgdx/libgdx/pull/2011
 - Files#getLocalStoragePath now returns the actual path instead of the empty string synonym on desktop (LWJGL and JGLFW).

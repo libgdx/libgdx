@@ -23,16 +23,16 @@ import com.badlogic.gdx.ai.msg.Telegram;
 public class DefaultStateMachine<E> implements StateMachine<E> {
 
 	/** The entity that owns this state machine. */
-	private E owner;
+	protected E owner;
 
 	/** The current state the owner is in. */
-	private State<E> currentState;
+	protected State<E> currentState;
 
 	/** The last state the owner was in. */
 	private State<E> previousState;
 
 	/** The global state of the owner. Its logic is called every time the FSM is updated. */
-	private State<E> globalState;
+	protected State<E> globalState;
 
 	/** Creates a DefaultStateMachine for the specified owner.
 	 * @param owner the owner of the state machine */
@@ -97,23 +97,27 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 
 	@Override
 	public void changeState (State<E> newState) {
-
 		// Keep a record of the previous state
 		previousState = currentState;
 
 		// Call the exit method of the existing state
-		currentState.exit(owner);
+		if (currentState != null) currentState.exit(owner);
 
-		// change state to the new state
+		// Change state to the new state
 		currentState = newState;
 
-		// call the entry method of the new state
+		// Call the entry method of the new state
 		currentState.enter(owner);
 	}
 
 	@Override
-	public void revertToPreviousState () {
+	public boolean revertToPreviousState () {
+		if (previousState == null) {
+			return false;
+		}
+
 		changeState(previousState);
+		return true;
 	}
 
 	/** Indicates whether the state machine is in the given state.
