@@ -60,7 +60,7 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 	@Override
 	public void setInitialState (State<E> state) {
 		this.previousState = null;
-		this.currentState = state;
+		changeState(state);
 	}
 
 	@Override

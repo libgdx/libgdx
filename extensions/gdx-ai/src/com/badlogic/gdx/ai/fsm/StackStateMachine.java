@@ -55,7 +55,7 @@ public class StackStateMachine<E> extends DefaultStateMachine<E> {
 		}
 
 		this.stateStack.clear();
-		this.currentState = state;
+		changeState(state, false);
 	}
 
 	@Override
