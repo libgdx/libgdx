@@ -47,14 +47,10 @@ static  int btInfinityMask = 0x7F800000;
 %}
 %include "LinearMath/btAabbUtil2.h"
 
-DISABLE_POOLED_TYPEMAP(btTransform);
-DISABLE_POOLED_TYPEMAP(btVector3);
 %{
 #include <LinearMath/btIDebugDraw.h>
 %}
 %include "LinearMath/btIDebugDraw.h"
-ENABLE_POOLED_TYPEMAP(btVector3, Vector3, "Lcom/badlogic/gdx/math/Vector3;");
-ENABLE_POOLED_TYPEMAP(btTransform, Matrix4, "Lcom/badlogic/gdx/math/Matrix4;");
 
 %{
 #include <LinearMath/btGeometryUtil.h>
