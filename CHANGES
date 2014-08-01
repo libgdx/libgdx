@@ -18,6 +18,7 @@
 - Added Intersector#intersectRayRay to detect if two 2D rays intersect, see https://github.com/libgdx/libgdx/pull/2132
 - Bullet: ClosestRayResultCallback, AllHitsRayResultCallback, LocalConvexResult, ClosestConvexResultCallback and subclasses now use getter/setters taking a Vector3 instead of btVector3, see https://github.com/libgdx/libgdx/pull/2176
 - 2d particle system supports pre-multiplied alpha.
+- Bullet: btIDebugDrawer/DebugDrawer now use pooled Vector3 instances instead of btVector3, see https://github.com/libgdx/libgdx/issues/2174
 
 [1.2.0]
 - API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
