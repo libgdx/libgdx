@@ -1241,7 +1241,7 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 
 
 	/* Gets a global ref to the temp class.  Do not release this. */
-	SWIGINTERN inline jclass gdx_getTempClass(JNIEnv * jenv) {
+	SWIGINTERN inline jclass gdx_getTempClassVector3(JNIEnv * jenv) {
 	  static jclass cls = NULL;
 	  if (cls == NULL) {
 		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
@@ -1249,8 +1249,8 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 	  return cls;
 	}
 	
-	SWIGINTERN inline jobject gdx_takePoolObject(JNIEnv * jenv, const char * poolName) {
-	  jclass tempClass = gdx_getTempClass(jenv);
+	SWIGINTERN inline jobject gdx_takePoolObjectVector3(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassVector3(jenv);
 	  
 	  static jfieldID poolField = NULL;
 	  if (poolField == NULL) {
@@ -1273,8 +1273,8 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 	  return ret;
 	}
 	
-	SWIGINTERN inline void gdx_releasePoolObject(JNIEnv * jenv, const char * poolName, jobject obj) {
-	  jclass tempClass = gdx_getTempClass(jenv);
+	SWIGINTERN inline void gdx_releasePoolObjectVector3(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassVector3(jenv);
 	  
 	  static jfieldID poolField = NULL;
 	  if (poolField == NULL) {
@@ -1301,19 +1301,18 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 	 * directorin typemaps.  SWIG doesn't have hooks to release them after
 	 * they're used. 
 	 */
-	class gdxPoolAutoRelease {
+	class gdxPoolAutoReleaseVector3 {
 	private:
 	  JNIEnv * jenv;
 	  const char * poolName;
 	  jobject obj;
 	public:
-	  gdxPoolAutoRelease(JNIEnv * jenv, const char * poolName, jobject obj) : 
+	  gdxPoolAutoReleaseVector3(JNIEnv * jenv, const char * poolName, jobject obj) : 
 		jenv(jenv), poolName(poolName), obj(obj) { };
-	  virtual ~gdxPoolAutoRelease() {
-		gdx_releasePoolObject(this->jenv, this->poolName, this->obj);
+	  virtual ~gdxPoolAutoReleaseVector3() {
+		gdx_releasePoolObjectVector3(this->jenv, this->poolName, this->obj);
 	  };
 	};
-
 
 
 	
@@ -1324,7 +1323,7 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 	SWIGINTERN inline jobject gdx_getReturnVector3(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassVector3(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticVector3", "Lcom/badlogic/gdx/math/Vector3;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1380,7 +1379,7 @@ static jdoubleArray SWIG_JavaArrayOutDouble (JNIEnv *jenv, double *result, jsize
 	    jenv(jenv), jVector3(jVector3), cbtVector3(*cbtVector3), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtVector3AndReleaseVector3() {
 	    gdx_setbtVector3FromVector3(this->jenv, this->cbtVector3, this->jVector3);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jVector3);
+	    gdx_releasePoolObjectVector3(this->jenv, this->poolName, this->jVector3);
 	  };
 	};
 
@@ -1493,6 +1492,82 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 
 
+
+	/* Gets a global ref to the temp class.  Do not release this. */
+	SWIGINTERN inline jclass gdx_getTempClassMatrix4(JNIEnv * jenv) {
+	  static jclass cls = NULL;
+	  if (cls == NULL) {
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
+	  }
+	  return cls;
+	}
+	
+	SWIGINTERN inline jobject gdx_takePoolObjectMatrix4(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassMatrix4(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID obtainMethod = NULL;
+	  if (obtainMethod == NULL) {
+		obtainMethod = (jmethodID) jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
+	  }
+	  
+	  jobject ret = jenv->CallObjectMethod(poolObject, obtainMethod);
+	
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	
+	  return ret;
+	}
+	
+	SWIGINTERN inline void gdx_releasePoolObjectMatrix4(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassMatrix4(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID freeMethod = NULL;
+	  if (freeMethod == NULL) {
+		freeMethod = (jmethodID) jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+	  }
+	  
+	  jenv->CallVoidMethod(poolObject, freeMethod, obj);
+	  
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	  jenv->DeleteLocalRef(obj);
+	}
+	
+	/*
+	 * A simple RAII wrapper to release jobjects we obtain from pools in 
+	 * directorin typemaps.  SWIG doesn't have hooks to release them after
+	 * they're used. 
+	 */
+	class gdxPoolAutoReleaseMatrix4 {
+	private:
+	  JNIEnv * jenv;
+	  const char * poolName;
+	  jobject obj;
+	public:
+	  gdxPoolAutoReleaseMatrix4(JNIEnv * jenv, const char * poolName, jobject obj) : 
+		jenv(jenv), poolName(poolName), obj(obj) { };
+	  virtual ~gdxPoolAutoReleaseMatrix4() {
+		gdx_releasePoolObjectMatrix4(this->jenv, this->poolName, this->obj);
+	  };
+	};
+
+
 	
 // Workaround for some strange swig behaviour
 
@@ -1501,7 +1576,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 	SWIGINTERN inline jobject gdx_getReturnMatrix4(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassMatrix4(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticMatrix4", "Lcom/badlogic/gdx/math/Matrix4;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1557,7 +1632,7 @@ void btMultiSapBroadphase::quicksort(btBroadphasePairArray& a, int lo, int hi)
 	    jenv(jenv), jMatrix4(jMatrix4), cbtTransform(*cbtTransform), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtTransformAndReleaseMatrix4() {
 	    gdx_setbtTransformFromMatrix4(this->jenv, this->cbtTransform, this->jMatrix4);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jMatrix4);
+	    gdx_releasePoolObjectMatrix4(this->jenv, this->poolName, this->jMatrix4);
 	  };
 	};
 
@@ -1755,6 +1830,82 @@ SWIGINTERN void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(btColl
 #include <BulletCollision/CollisionDispatch/btConvexPlaneCollisionAlgorithm.h>
 
 
+
+	/* Gets a global ref to the temp class.  Do not release this. */
+	SWIGINTERN inline jclass gdx_getTempClassQuaternion(JNIEnv * jenv) {
+	  static jclass cls = NULL;
+	  if (cls == NULL) {
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
+	  }
+	  return cls;
+	}
+	
+	SWIGINTERN inline jobject gdx_takePoolObjectQuaternion(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassQuaternion(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID obtainMethod = NULL;
+	  if (obtainMethod == NULL) {
+		obtainMethod = (jmethodID) jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
+	  }
+	  
+	  jobject ret = jenv->CallObjectMethod(poolObject, obtainMethod);
+	
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	
+	  return ret;
+	}
+	
+	SWIGINTERN inline void gdx_releasePoolObjectQuaternion(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassQuaternion(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID freeMethod = NULL;
+	  if (freeMethod == NULL) {
+		freeMethod = (jmethodID) jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+	  }
+	  
+	  jenv->CallVoidMethod(poolObject, freeMethod, obj);
+	  
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	  jenv->DeleteLocalRef(obj);
+	}
+	
+	/*
+	 * A simple RAII wrapper to release jobjects we obtain from pools in 
+	 * directorin typemaps.  SWIG doesn't have hooks to release them after
+	 * they're used. 
+	 */
+	class gdxPoolAutoReleaseQuaternion {
+	private:
+	  JNIEnv * jenv;
+	  const char * poolName;
+	  jobject obj;
+	public:
+	  gdxPoolAutoReleaseQuaternion(JNIEnv * jenv, const char * poolName, jobject obj) : 
+		jenv(jenv), poolName(poolName), obj(obj) { };
+	  virtual ~gdxPoolAutoReleaseQuaternion() {
+		gdx_releasePoolObjectQuaternion(this->jenv, this->poolName, this->obj);
+	  };
+	};
+
+
 	
 // Workaround for some strange swig behaviour
 
@@ -1763,7 +1914,7 @@ SWIGINTERN void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(btColl
 	SWIGINTERN inline jobject gdx_getReturnQuaternion(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassQuaternion(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticQuaternion", "Lcom/badlogic/gdx/math/Quaternion;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1819,7 +1970,7 @@ SWIGINTERN void btCollisionObject_getInterpolationAngularVelocity__SWIG_1(btColl
 	    jenv(jenv), jQuaternion(jQuaternion), cbtQuaternion(*cbtQuaternion), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtQuaternionAndReleaseQuaternion() {
 	    gdx_setbtQuaternionFromQuaternion(this->jenv, this->cbtQuaternion, this->jQuaternion);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jQuaternion);
+	    gdx_releasePoolObjectQuaternion(this->jenv, this->poolName, this->jQuaternion);
 	  };
 	};
 
@@ -3852,9 +4003,9 @@ btScalar SwigDirector_btTriangleRaycastCallback::reportHit(btVector3 const &hitN
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jhitNormalLocal = gdx_takePoolObject(jenv, "poolVector3");
+    jhitNormalLocal = gdx_takePoolObjectVector3(jenv, "poolVector3");
     gdx_setVector3FrombtVector3(jenv, jhitNormalLocal, hitNormalLocal);
-    gdxPoolAutoRelease autoRelease_jhitNormalLocal(jenv, "poolVector3", jhitNormalLocal);
+    gdxPoolAutoReleaseVector3 autoRelease_jhitNormalLocal(jenv, "poolVector3", jhitNormalLocal);
     jhitFraction = (jfloat) hitFraction;
     jpartId = (jint) partId;
     jtriangleIndex = (jint) triangleIndex;
@@ -3968,12 +4119,12 @@ btScalar SwigDirector_btTriangleConvexcastCallback::reportHit(btVector3 const &h
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    jhitNormalLocal = gdx_takePoolObject(jenv, "poolVector3");
+    jhitNormalLocal = gdx_takePoolObjectVector3(jenv, "poolVector3");
     gdx_setVector3FrombtVector3(jenv, jhitNormalLocal, hitNormalLocal);
-    gdxPoolAutoRelease autoRelease_jhitNormalLocal(jenv, "poolVector3", jhitNormalLocal);
-    jhitPointLocal = gdx_takePoolObject(jenv, "poolVector3");
+    gdxPoolAutoReleaseVector3 autoRelease_jhitNormalLocal(jenv, "poolVector3", jhitNormalLocal);
+    jhitPointLocal = gdx_takePoolObjectVector3(jenv, "poolVector3");
     gdx_setVector3FrombtVector3(jenv, jhitPointLocal, hitPointLocal);
-    gdxPoolAutoRelease autoRelease_jhitPointLocal(jenv, "poolVector3", jhitPointLocal);
+    gdxPoolAutoReleaseVector3 autoRelease_jhitPointLocal(jenv, "poolVector3", jhitPointLocal);
     jhitFraction = (jfloat) hitFraction;
     jpartId = (jint) partId;
     jtriangleIndex = (jint) triangleIndex;
