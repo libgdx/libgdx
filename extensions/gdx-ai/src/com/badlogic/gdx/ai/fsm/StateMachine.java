@@ -26,7 +26,7 @@ public interface StateMachine<E> {
 
 	/** Updates the state machine.
 	 * <p>
-	 * Implementation classes should invoke first the {@code execute} method of the global state (if any) then the {@code execute}
+	 * Implementation classes should invoke first the {@code update} method of the global state (if any) then the {@code update}
 	 * method of the current state.
 	 * </p> */
 	public void update ();
@@ -53,7 +53,7 @@ public interface StateMachine<E> {
 
 	/** Returns the global state of this state machine.
 	 * <p>
-	 * Implementation classes should invoke the {@code execute} method of the global state every time the FSM is updated. Also, they
+	 * Implementation classes should invoke the {@code update} method of the global state every time the FSM is updated. Also, they
 	 * should never invoke its {@code enter} and {@code exit} method.
 	 * </p> */
 	public State<E> getGlobalState ();
