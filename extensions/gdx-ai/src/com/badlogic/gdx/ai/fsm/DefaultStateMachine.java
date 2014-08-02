@@ -19,6 +19,9 @@ package com.badlogic.gdx.ai.fsm;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /** Default implementation of the {@link StateMachine} interface.
+ * 
+ * @param <E> is the type of the entity handled by this state machine
+ * 
  * @author davebaol */
 public class DefaultStateMachine<E> implements StateMachine<E> {
 
@@ -121,11 +124,11 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 
 	/** Indicates whether the state machine is in the given state.
 	 * <p>
-	 * This implementation assumes states are singletons (typically a enum) so they are compared with the {@code ==} operator
+	 * This implementation assumes states are singletons (typically an enum) so they are compared with the {@code ==} operator
 	 * instead of the {@code equals} method.
 	 * 
 	 * @param state the state to be compared with the current state
-	 * @returns true if the current state's type is equal to the type of the class passed as a parameter. */
+	 * @returns true if the current state and the given state are the same object. */
 	@Override
 	public boolean isInState (State<E> state) {
 		return currentState == state;
@@ -140,13 +143,13 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 	public boolean handleMessage (Telegram telegram) {
 
 		// First see if the current state is valid and that it can handle the message
-		if (currentState != null && currentState.onMessage(telegram)) {
+		if (currentState != null && currentState.onMessage(owner, telegram)) {
 			return true;
 		}
 
 		// If not, and if a global state has been implemented, send
 		// the message to the global state
-		if (globalState != null && globalState.onMessage(telegram)) {
+		if (globalState != null && globalState.onMessage(owner, telegram)) {
 			return true;
 		}
 
