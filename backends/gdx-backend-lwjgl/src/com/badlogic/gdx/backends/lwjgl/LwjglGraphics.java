@@ -263,6 +263,7 @@ public class LwjglGraphics implements Graphics {
 
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
+		Gdx.gl30 = gl30;
 	}
 
 	private String glInfo () {
