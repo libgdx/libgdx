@@ -70,6 +70,8 @@ final public class LwjglInput implements Input {
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
+	float deltaTime;
+	long lastTime;
 
 	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
@@ -745,6 +747,7 @@ final public class LwjglInput implements Input {
 	}
 
 	public void update () {
+		updateTime();
 		updateMouse();
 		updateKeyboard();
 	}
@@ -755,6 +758,12 @@ final public class LwjglInput implements Input {
 		if (button == 2) return Buttons.MIDDLE;
 		return Buttons.LEFT;
 
+	}
+
+	void updateTime () {
+		long thisTime = System.nanoTime();
+		deltaTime = (thisTime - lastTime) / 1000000000.0f;
+		lastTime = thisTime;
 	}
 
 	void updateMouse () {
@@ -814,7 +823,7 @@ final public class LwjglInput implements Input {
 
 	void updateKeyboard () {
 		if (lastKeyCharPressed != 0) {
-			keyRepeatTimer -= Gdx.graphics.getDeltaTime();
+			keyRepeatTimer -= deltaTime;
 			if (keyRepeatTimer < 0) {
 				keyRepeatTimer = keyRepeatTime;
 
