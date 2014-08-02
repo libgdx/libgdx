@@ -1245,7 +1245,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 
 
 	/* Gets a global ref to the temp class.  Do not release this. */
-	SWIGINTERN inline jclass gdx_getTempClass(JNIEnv * jenv) {
+	SWIGINTERN inline jclass gdx_getTempClassVector3(JNIEnv * jenv) {
 	  static jclass cls = NULL;
 	  if (cls == NULL) {
 		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
@@ -1253,8 +1253,8 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	  return cls;
 	}
 	
-	SWIGINTERN inline jobject gdx_takePoolObject(JNIEnv * jenv, const char * poolName) {
-	  jclass tempClass = gdx_getTempClass(jenv);
+	SWIGINTERN inline jobject gdx_takePoolObjectVector3(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassVector3(jenv);
 	  
 	  static jfieldID poolField = NULL;
 	  if (poolField == NULL) {
@@ -1277,8 +1277,8 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	  return ret;
 	}
 	
-	SWIGINTERN inline void gdx_releasePoolObject(JNIEnv * jenv, const char * poolName, jobject obj) {
-	  jclass tempClass = gdx_getTempClass(jenv);
+	SWIGINTERN inline void gdx_releasePoolObjectVector3(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassVector3(jenv);
 	  
 	  static jfieldID poolField = NULL;
 	  if (poolField == NULL) {
@@ -1305,19 +1305,18 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	 * directorin typemaps.  SWIG doesn't have hooks to release them after
 	 * they're used. 
 	 */
-	class gdxPoolAutoRelease {
+	class gdxPoolAutoReleaseVector3 {
 	private:
 	  JNIEnv * jenv;
 	  const char * poolName;
 	  jobject obj;
 	public:
-	  gdxPoolAutoRelease(JNIEnv * jenv, const char * poolName, jobject obj) : 
+	  gdxPoolAutoReleaseVector3(JNIEnv * jenv, const char * poolName, jobject obj) : 
 		jenv(jenv), poolName(poolName), obj(obj) { };
-	  virtual ~gdxPoolAutoRelease() {
-		gdx_releasePoolObject(this->jenv, this->poolName, this->obj);
+	  virtual ~gdxPoolAutoReleaseVector3() {
+		gdx_releasePoolObjectVector3(this->jenv, this->poolName, this->obj);
 	  };
 	};
-
 
 
 	
@@ -1328,7 +1327,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	SWIGINTERN inline jobject gdx_getReturnVector3(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassVector3(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticVector3", "Lcom/badlogic/gdx/math/Vector3;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1384,12 +1383,88 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	    jenv(jenv), jVector3(jVector3), cbtVector3(*cbtVector3), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtVector3AndReleaseVector3() {
 	    gdx_setbtVector3FromVector3(this->jenv, this->cbtVector3, this->jVector3);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jVector3);
+	    gdx_releasePoolObjectVector3(this->jenv, this->poolName, this->jVector3);
 	  };
 	};
 
 
 #include <BulletSoftBody/btSoftBody.h>
+
+
+
+	/* Gets a global ref to the temp class.  Do not release this. */
+	SWIGINTERN inline jclass gdx_getTempClassMatrix3(JNIEnv * jenv) {
+	  static jclass cls = NULL;
+	  if (cls == NULL) {
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
+	  }
+	  return cls;
+	}
+	
+	SWIGINTERN inline jobject gdx_takePoolObjectMatrix3(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassMatrix3(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID obtainMethod = NULL;
+	  if (obtainMethod == NULL) {
+		obtainMethod = (jmethodID) jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
+	  }
+	  
+	  jobject ret = jenv->CallObjectMethod(poolObject, obtainMethod);
+	
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	
+	  return ret;
+	}
+	
+	SWIGINTERN inline void gdx_releasePoolObjectMatrix3(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassMatrix3(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID freeMethod = NULL;
+	  if (freeMethod == NULL) {
+		freeMethod = (jmethodID) jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+	  }
+	  
+	  jenv->CallVoidMethod(poolObject, freeMethod, obj);
+	  
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	  jenv->DeleteLocalRef(obj);
+	}
+	
+	/*
+	 * A simple RAII wrapper to release jobjects we obtain from pools in 
+	 * directorin typemaps.  SWIG doesn't have hooks to release them after
+	 * they're used. 
+	 */
+	class gdxPoolAutoReleaseMatrix3 {
+	private:
+	  JNIEnv * jenv;
+	  const char * poolName;
+	  jobject obj;
+	public:
+	  gdxPoolAutoReleaseMatrix3(JNIEnv * jenv, const char * poolName, jobject obj) : 
+		jenv(jenv), poolName(poolName), obj(obj) { };
+	  virtual ~gdxPoolAutoReleaseMatrix3() {
+		gdx_releasePoolObjectMatrix3(this->jenv, this->poolName, this->obj);
+	  };
+	};
 
 
 	
@@ -1400,7 +1475,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	SWIGINTERN inline jobject gdx_getReturnMatrix3(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassMatrix3(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticMatrix3", "Lcom/badlogic/gdx/math/Matrix3;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1456,7 +1531,83 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	    jenv(jenv), jMatrix3(jMatrix3), cbtMatrix3x3(*cbtMatrix3x3), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtMatrix3x3AndReleaseMatrix3() {
 	    gdx_setbtMatrix3x3FromMatrix3(this->jenv, this->cbtMatrix3x3, this->jMatrix3);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jMatrix3);
+	    gdx_releasePoolObjectMatrix3(this->jenv, this->poolName, this->jMatrix3);
+	  };
+	};
+
+
+
+	/* Gets a global ref to the temp class.  Do not release this. */
+	SWIGINTERN inline jclass gdx_getTempClassMatrix4(JNIEnv * jenv) {
+	  static jclass cls = NULL;
+	  if (cls == NULL) {
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
+	  }
+	  return cls;
+	}
+	
+	SWIGINTERN inline jobject gdx_takePoolObjectMatrix4(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassMatrix4(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID obtainMethod = NULL;
+	  if (obtainMethod == NULL) {
+		obtainMethod = (jmethodID) jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
+	  }
+	  
+	  jobject ret = jenv->CallObjectMethod(poolObject, obtainMethod);
+	
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	
+	  return ret;
+	}
+	
+	SWIGINTERN inline void gdx_releasePoolObjectMatrix4(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassMatrix4(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID freeMethod = NULL;
+	  if (freeMethod == NULL) {
+		freeMethod = (jmethodID) jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+	  }
+	  
+	  jenv->CallVoidMethod(poolObject, freeMethod, obj);
+	  
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	  jenv->DeleteLocalRef(obj);
+	}
+	
+	/*
+	 * A simple RAII wrapper to release jobjects we obtain from pools in 
+	 * directorin typemaps.  SWIG doesn't have hooks to release them after
+	 * they're used. 
+	 */
+	class gdxPoolAutoReleaseMatrix4 {
+	private:
+	  JNIEnv * jenv;
+	  const char * poolName;
+	  jobject obj;
+	public:
+	  gdxPoolAutoReleaseMatrix4(JNIEnv * jenv, const char * poolName, jobject obj) : 
+		jenv(jenv), poolName(poolName), obj(obj) { };
+	  virtual ~gdxPoolAutoReleaseMatrix4() {
+		gdx_releasePoolObjectMatrix4(this->jenv, this->poolName, this->obj);
 	  };
 	};
 
@@ -1469,7 +1620,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	SWIGINTERN inline jobject gdx_getReturnMatrix4(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassMatrix4(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticMatrix4", "Lcom/badlogic/gdx/math/Matrix4;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1525,7 +1676,83 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	    jenv(jenv), jMatrix4(jMatrix4), cbtTransform(*cbtTransform), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtTransformAndReleaseMatrix4() {
 	    gdx_setbtTransformFromMatrix4(this->jenv, this->cbtTransform, this->jMatrix4);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jMatrix4);
+	    gdx_releasePoolObjectMatrix4(this->jenv, this->poolName, this->jMatrix4);
+	  };
+	};
+
+
+
+	/* Gets a global ref to the temp class.  Do not release this. */
+	SWIGINTERN inline jclass gdx_getTempClassQuaternion(JNIEnv * jenv) {
+	  static jclass cls = NULL;
+	  if (cls == NULL) {
+		cls = (jclass) jenv->NewGlobalRef(jenv->FindClass("com/badlogic/gdx/physics/bullet/linearmath/LinearMath"));
+	  }
+	  return cls;
+	}
+	
+	SWIGINTERN inline jobject gdx_takePoolObjectQuaternion(JNIEnv * jenv, const char * poolName) {
+	  jclass tempClass = gdx_getTempClassQuaternion(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID obtainMethod = NULL;
+	  if (obtainMethod == NULL) {
+		obtainMethod = (jmethodID) jenv->GetMethodID(poolClass, "obtain", "()Ljava/lang/Object;");
+	  }
+	  
+	  jobject ret = jenv->CallObjectMethod(poolObject, obtainMethod);
+	
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	
+	  return ret;
+	}
+	
+	SWIGINTERN inline void gdx_releasePoolObjectQuaternion(JNIEnv * jenv, const char * poolName, jobject obj) {
+	  jclass tempClass = gdx_getTempClassQuaternion(jenv);
+	  
+	  static jfieldID poolField = NULL;
+	  if (poolField == NULL) {
+		poolField = jenv->GetStaticFieldID(tempClass, poolName, "Lcom/badlogic/gdx/utils/Pool;");
+	  }
+	  
+	  jobject poolObject = jenv->GetStaticObjectField(tempClass, poolField);
+	  jclass poolClass = jenv->GetObjectClass(poolObject);
+	  
+	  static jmethodID freeMethod = NULL;
+	  if (freeMethod == NULL) {
+		freeMethod = (jmethodID) jenv->GetMethodID(poolClass, "free", "(Ljava/lang/Object;)V");
+	  }
+	  
+	  jenv->CallVoidMethod(poolObject, freeMethod, obj);
+	  
+	  jenv->DeleteLocalRef(poolObject);
+	  jenv->DeleteLocalRef(poolClass);
+	  jenv->DeleteLocalRef(obj);
+	}
+	
+	/*
+	 * A simple RAII wrapper to release jobjects we obtain from pools in 
+	 * directorin typemaps.  SWIG doesn't have hooks to release them after
+	 * they're used. 
+	 */
+	class gdxPoolAutoReleaseQuaternion {
+	private:
+	  JNIEnv * jenv;
+	  const char * poolName;
+	  jobject obj;
+	public:
+	  gdxPoolAutoReleaseQuaternion(JNIEnv * jenv, const char * poolName, jobject obj) : 
+		jenv(jenv), poolName(poolName), obj(obj) { };
+	  virtual ~gdxPoolAutoReleaseQuaternion() {
+		gdx_releasePoolObjectQuaternion(this->jenv, this->poolName, this->obj);
 	  };
 	};
 
@@ -1538,7 +1765,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	SWIGINTERN inline jobject gdx_getReturnQuaternion(JNIEnv * jenv) {
 	  static jobject ret = NULL;
 	  if (ret == NULL) {
-	    jclass tempClass = gdx_getTempClass(jenv);
+	    jclass tempClass = gdx_getTempClassQuaternion(jenv);
 	    jfieldID field = jenv->GetStaticFieldID(tempClass, "staticQuaternion", "Lcom/badlogic/gdx/math/Quaternion;");
 	    ret = jenv->NewGlobalRef(jenv->GetStaticObjectField(tempClass, field));
 	  }
@@ -1594,7 +1821,7 @@ typedef btCollisionWorld::RayResultCallback RayResultCallback;
 	    jenv(jenv), jQuaternion(jQuaternion), cbtQuaternion(*cbtQuaternion), poolName(poolName) { };
 	  virtual ~gdxAutoCommitbtQuaternionAndReleaseQuaternion() {
 	    gdx_setbtQuaternionFromQuaternion(this->jenv, this->cbtQuaternion, this->jQuaternion);
-	    gdx_releasePoolObject(this->jenv, this->poolName, this->jQuaternion);
+	    gdx_releasePoolObjectQuaternion(this->jenv, this->poolName, this->jQuaternion);
 	  };
 	};
 

@@ -884,6 +884,8 @@ public class ParticleEmitter {
 		output.write("additive: " + additive + "\n");
 		output.write("behind: " + behind + "\n");
 		output.write("premultipliedAlpha: " + premultipliedAlpha + "\n");
+		output.write("- Image Path -\n");
+		output.write(imagePath + "\n");		
 	}
 
 	public void load (BufferedReader reader) throws IOException {
@@ -934,17 +936,32 @@ public class ParticleEmitter {
 			aligned = readBoolean(reader, "aligned");
 			additive = readBoolean(reader, "additive");
 			behind = readBoolean(reader, "behind");
-			premultipliedAlpha = readBoolean(reader, "premultipliedAlpha");
+			
+			// Backwards compatibility
+			String line = reader.readLine();
+			if (line.startsWith("premultipliedAlpha")) {
+				premultipliedAlpha = readBoolean(line);
+				reader.readLine();
+			}
+			setImagePath(reader.readLine());		
 		} catch (RuntimeException ex) {
 			if (name == null) throw ex;
 			throw new RuntimeException("Error parsing emitter: " + name, ex);
 		}
 	}
+	
+	static String readString (String line) throws IOException {
+		return line.substring(line.indexOf(":") + 1).trim();
+	}
 
 	static String readString (BufferedReader reader, String name) throws IOException {
 		String line = reader.readLine();
 		if (line == null) throw new IOException("Missing value: " + name);
-		return line.substring(line.indexOf(":") + 1).trim();
+		return readString(line);
+	}
+
+	static boolean readBoolean (String line) throws IOException {
+		return Boolean.parseBoolean(readString(line));
 	}
 
 	static boolean readBoolean (BufferedReader reader, String name) throws IOException {
