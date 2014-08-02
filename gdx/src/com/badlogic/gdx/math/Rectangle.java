@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
  * @author badlogicgames@gmail.com */
-public class Rectangle implements Serializable, Shape {
+public class Rectangle implements Serializable, Shape2D {
 	/** Static temporary rectangle. Use with care! Use only when sure other code will not also use this. */
 	static public final Rectangle tmp = new Rectangle();
 
