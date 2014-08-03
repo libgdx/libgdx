@@ -123,7 +123,6 @@ public class Animation {
 	}
 
 	/** Returns the current frame number.
-	 * 
 	 * @param stateTime
 	 * @return current frame number */
 	public int getKeyFrameIndex (float stateTime) {
@@ -142,8 +141,8 @@ public class Animation {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			int calculatedLastFrameNumber = (int)((stateTime - Gdx.graphics.getDeltaTime()) / frameDuration);
-			if (calculatedLastFrameNumber != frameNumber) {
+			int lastFrameNumber = (int)((stateTime - Gdx.graphics.getDeltaTime()) / frameDuration);
+			if (lastFrameNumber != frameNumber) {
 				frameNumber = MathUtils.random(keyFrames.length - 1);
 			} else {
 				frameNumber = this.lastFrameNumber;
@@ -164,7 +163,6 @@ public class Animation {
 	}
 
 	/** Returns the keyFrames[] array where all the TextureRegions of the animation are stored.
-	 * 
 	 * @return keyFrames[] field */
 	public TextureRegion[] getKeyFrames () {
 		return keyFrames;
@@ -183,7 +181,6 @@ public class Animation {
 	}
 
 	/** Whether the animation would be finished if played without looping (PlayMode#NORMAL), given the state time.
-	 * 
 	 * @param stateTime
 	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
@@ -192,7 +189,6 @@ public class Animation {
 	}
 
 	/** Sets duration a frame will be displayed.
-	 * 
 	 * @param frameDuration in seconds */
 	public void setFrameDuration (float frameDuration) {
 		this.frameDuration = frameDuration;
