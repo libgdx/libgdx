@@ -30,7 +30,12 @@ public class Animation {
 
 	/** Defines possible playback modes for an {@link Animation}. */
 	public enum PlayMode {
-		NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM,
+		NORMAL,
+		REVERSED,
+		LOOP,
+		LOOP_REVERSED,
+		LOOP_PINGPONG,
+		LOOP_RANDOM,
 	}
 
 	final TextureRegion[] keyFrames;
