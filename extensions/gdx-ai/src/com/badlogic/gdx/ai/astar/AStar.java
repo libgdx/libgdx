@@ -101,7 +101,7 @@ public class AStar<T> implements Poolable {
 	}
 
 	private float h (AStarNode<T> node) {
-		return node.distanceTo(target);
+		return node.distanceTo(target.cast());
 	}
 
 	private float g (AStarNode<T> node) {
@@ -113,7 +113,7 @@ public class AStar<T> implements Poolable {
 	}
 
 	private float cost (AStarNode<T> node, AStarNode<T> node2) {
-		return node.distanceTo(node2);
+		return node.distanceTo(node2.cast());
 	}
 
 	private void enqueue (AStarNode<T> node, float f) {
