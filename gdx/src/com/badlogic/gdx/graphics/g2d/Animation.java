@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -42,6 +41,7 @@ public class Animation {
 	private float frameDuration;
 	private float animationDuration;
 	private int lastFrameNumber;
+	private float lastStateTime;
 
 	private PlayMode playMode = PlayMode.NORMAL;
 
@@ -146,7 +146,7 @@ public class Animation {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			int lastFrameNumber = (int)((stateTime - Gdx.graphics.getDeltaTime()) / frameDuration);
+			int lastFrameNumber = (int) ((stateTime - (stateTime - lastStateTime)) / frameDuration);
 			if (lastFrameNumber != frameNumber) {
 				frameNumber = MathUtils.random(keyFrames.length - 1);
 			} else {
@@ -163,6 +163,7 @@ public class Animation {
 		}
 
 		lastFrameNumber = frameNumber;
+		lastStateTime = stateTime;
 
 		return frameNumber;
 	}
