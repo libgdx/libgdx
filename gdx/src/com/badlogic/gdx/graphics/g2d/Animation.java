@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.graphics.g2d;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 
@@ -29,17 +30,13 @@ public class Animation {
 
 	/** Defines possible playback modes for an {@link Animation}. */
 	public enum PlayMode {
-		NORMAL,
-		REVERSED,
-		LOOP,
-		LOOP_REVERSED,
-		LOOP_PINGPONG,
-		LOOP_RANDOM,
+		NORMAL, REVERSED, LOOP, LOOP_REVERSED, LOOP_PINGPONG, LOOP_RANDOM,
 	}
 
 	final TextureRegion[] keyFrames;
 	private float frameDuration;
 	private float animationDuration;
+	private int lastFrameNumber;
 
 	private PlayMode playMode = PlayMode.NORMAL;
 
@@ -126,6 +123,7 @@ public class Animation {
 	}
 
 	/** Returns the current frame number.
+	 * 
 	 * @param stateTime
 	 * @return current frame number */
 	public int getKeyFrameIndex (float stateTime) {
@@ -144,7 +142,12 @@ public class Animation {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			frameNumber = MathUtils.random(keyFrames.length - 1);
+			int calculatedLastFrameNumber = (int)((stateTime - Gdx.graphics.getDeltaTime()) / frameDuration);
+			if (calculatedLastFrameNumber != frameNumber) {
+				frameNumber = MathUtils.random(keyFrames.length - 1);
+			} else {
+				frameNumber = this.lastFrameNumber;
+			}
 			break;
 		case REVERSED:
 			frameNumber = Math.max(keyFrames.length - frameNumber - 1, 0);
@@ -155,10 +158,13 @@ public class Animation {
 			break;
 		}
 
+		lastFrameNumber = frameNumber;
+
 		return frameNumber;
 	}
 
 	/** Returns the keyFrames[] array where all the TextureRegions of the animation are stored.
+	 * 
 	 * @return keyFrames[] field */
 	public TextureRegion[] getKeyFrames () {
 		return keyFrames;
@@ -177,33 +183,29 @@ public class Animation {
 	}
 
 	/** Whether the animation would be finished if played without looping (PlayMode#NORMAL), given the state time.
+	 * 
 	 * @param stateTime
 	 * @return whether the animation is finished. */
 	public boolean isAnimationFinished (float stateTime) {
 		int frameNumber = (int)(stateTime / frameDuration);
 		return keyFrames.length - 1 < frameNumber;
 	}
-	
-	/**
-	 * Sets duration a frame will be displayed.
-	 * @param frameDuration in seconds
-	 */
-	public void setFrameDuration(float frameDuration) {
+
+	/** Sets duration a frame will be displayed.
+	 * 
+	 * @param frameDuration in seconds */
+	public void setFrameDuration (float frameDuration) {
 		this.frameDuration = frameDuration;
 		this.animationDuration = keyFrames.length * frameDuration;
 	}
-	
-	/**
-	 * @return the duration of a frame in seconds
-	 */
-	public float getFrameDuration() {
+
+	/** @return the duration of a frame in seconds */
+	public float getFrameDuration () {
 		return frameDuration;
 	}
-	
-	/**
-	 * @return the duration of the entire animation, number of frames times frame duration, in seconds 
-	 */
-	public float getAnimationDuration() {
+
+	/** @return the duration of the entire animation, number of frames times frame duration, in seconds */
+	public float getAnimationDuration () {
 		return animationDuration;
 	}
 }
