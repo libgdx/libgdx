@@ -146,7 +146,7 @@ public class Animation {
 			if (frameNumber >= keyFrames.length) frameNumber = keyFrames.length - 2 - (frameNumber - keyFrames.length);
 			break;
 		case LOOP_RANDOM:
-			int lastFrameNumber = (int) ((stateTime - (stateTime - lastStateTime)) / frameDuration);
+			int lastFrameNumber = (int) ((lastStateTime) / frameDuration);
 			if (lastFrameNumber != frameNumber) {
 				frameNumber = MathUtils.random(keyFrames.length - 1);
 			} else {
