@@ -266,6 +266,8 @@ public class Window extends Table {
 	}
 
 	public Actor hit (float x, float y, boolean touchable) {
+		float height = getHeight();
+		if (y <= height && y >= height - getPadTop() && x >= 0 && x <= getWidth()) return this;
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
 		return hit;
