@@ -187,6 +187,7 @@ public class GdxTests {
 		StagePerformanceTest.class,
 		StageTest.class,
 		StateMachineTest.class,
+		SteeringBehaviorTest.class,
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
