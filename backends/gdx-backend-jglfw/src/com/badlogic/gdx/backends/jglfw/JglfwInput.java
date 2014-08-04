@@ -22,6 +22,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -48,6 +50,7 @@ public class JglfwInput implements Input {
 	final InputProcessorQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
+	Set<Integer> justPressedKeys = new HashSet<Integer>();
 	boolean justTouched;
 	int deltaX, deltaY;
 	long currentEventTime;
@@ -60,6 +63,7 @@ public class JglfwInput implements Input {
 
 			public boolean keyDown (int keycode) {
 				pressedKeys++;
+				justPressedKeys.add(keycode);
 				app.graphics.requestRendering();
 				return processor != null ? processor.keyDown(keycode) : false;
 			}
@@ -120,6 +124,7 @@ public class JglfwInput implements Input {
 
 	public void update () {
 		justTouched = false;
+		justPressedKeys.clear();
 		if (processorQueue != null)
 			processorQueue.drain(); // Main loop is handled elsewhere and events are queued.
 		else {
@@ -194,6 +199,15 @@ public class JglfwInput implements Input {
 		if (key == Input.Keys.SYM)
 			return glfwGetKey(app.graphics.window, GLFW_KEY_LEFT_SUPER) || glfwGetKey(app.graphics.window, GLFW_KEY_RIGHT_SUPER);
 		return glfwGetKey(app.graphics.window, getJglfwKeyCode(key));
+	}
+	
+	@Override
+	public boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return justPressedKeys.size() > 0;
+		} else {
+			return justPressedKeys.contains(key);
+		}
 	}
 
 	public void setOnscreenKeyboardVisible (boolean visible) {

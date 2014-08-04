@@ -89,6 +89,8 @@ public class RemoteInput implements Runnable, Input {
 		@Override
 		public void run () {
 			justTouched = false;
+			justPressedKeys.clear();
+
 			if (processor != null) {
 				if (touchEvent != null) {
 					touchX[touchEvent.pointer] = touchEvent.x;
@@ -113,6 +115,7 @@ public class RemoteInput implements Runnable, Input {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(keyEvent.keyCode);
 						keys.add(keyEvent.keyCode);
+						justPressedKeys.add(keyEvent.keyCode);
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(keyEvent.keyCode);
@@ -136,8 +139,13 @@ public class RemoteInput implements Runnable, Input {
 					}
 				}
 				if (keyEvent != null) {
-					if (keyEvent.type == KeyEvent.KEY_DOWN) keys.add(keyEvent.keyCode);
-					if (keyEvent.type == KeyEvent.KEY_UP) keys.remove(keyEvent.keyCode);
+					if (keyEvent.type == KeyEvent.KEY_DOWN) {
+						keys.add(keyEvent.keyCode);
+						justPressedKeys.add(keyEvent.keyCode);
+					}
+					if (keyEvent.type == KeyEvent.KEY_UP) {
+						keys.remove(keyEvent.keyCode);
+					}
 				}
 			}
 		}
@@ -153,6 +161,7 @@ public class RemoteInput implements Runnable, Input {
 	private boolean connected = false;
 	private RemoteInputListener listener;
 	Set<Integer> keys = new HashSet<Integer>();
+	Set<Integer> justPressedKeys = new HashSet<Integer>();
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
 	boolean isTouched[] = new boolean[20];
@@ -339,6 +348,11 @@ public class RemoteInput implements Runnable, Input {
 	@Override
 	public boolean isKeyPressed (int key) {
 		return keys.contains(key);
+	}
+
+	@Override
+	public boolean isKeyJustPressed (int key) {
+		return justPressedKeys.contains(key);
 	}
 
 	@Override

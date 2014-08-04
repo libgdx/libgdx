@@ -47,6 +47,7 @@ public class GwtInput implements Input {
 	private int[] deltaY = new int[20];
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	Set<Integer> pressedKeys = new HashSet<Integer>();
+	Set<Integer> justPressedKeys = new HashSet<Integer>();
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
@@ -57,6 +58,11 @@ public class GwtInput implements Input {
 	public GwtInput (CanvasElement canvas) {
 		this.canvas = canvas;
 		hookEvents();
+	}
+
+	void reset () {
+		justTouched = false;
+		justPressedKeys.clear();
 	}
 
 	@Override
@@ -138,6 +144,15 @@ public class GwtInput implements Input {
 	public boolean isKeyPressed (int key) {
 		if (key == Keys.ANY_KEY) return pressedKeys.size() > 0;
 		return pressedKeys.contains(key);
+	}
+
+	@Override
+	public boolean isKeyJustPressed (int key) {
+		if (key == Keys.ANY_KEY) {
+			return justPressedKeys.size() > 0;
+		} else {
+			return justPressedKeys.contains(key);
+		}
 	}
 
 	@Override
@@ -533,8 +548,11 @@ public class GwtInput implements Input {
 					processor.keyTyped('\b');
 				}
 			} else {
-				if (this.pressedKeys.add(code) && processor != null) {
-					processor.keyDown(code);
+				if (this.pressedKeys.add(code)) {
+					justPressedKeys.add(code);
+					if (processor != null) {
+						processor.keyDown(code);
+					}
 				}
 			}
 		}

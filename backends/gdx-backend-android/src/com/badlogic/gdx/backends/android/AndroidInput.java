@@ -102,6 +102,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
 	private IntMap<Object> keys = new IntMap<Object>();
+	private IntMap<Object> justPressedKeys = new IntMap<Object>();
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	private final float[] accelerometerValues = new float[3];
@@ -309,6 +310,15 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
+	public synchronized boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return justPressedKeys.size > 0;
+		} else {
+			return justPressedKeys.containsKey(key);
+		}
+	}
+
+	@Override
 	public boolean isTouched () {
 		synchronized (this) {
 			return touched[0];
@@ -324,6 +334,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
+			justPressedKeys.clear();
 
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
@@ -335,6 +346,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
+						justPressedKeys.put(e.keyCode, null);
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);

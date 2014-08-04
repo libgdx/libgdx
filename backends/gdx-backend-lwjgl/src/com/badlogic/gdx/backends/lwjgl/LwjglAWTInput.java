@@ -111,6 +111,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	boolean touchDown = false;
 	boolean justTouched = false;
 	Set<Integer> keys = new HashSet<Integer>();
+	Set<Integer> justPressedKeys = new HashSet<Integer>();
 	Set<Integer> pressedButtons = new HashSet<Integer>();
 	InputProcessor processor;
 	Canvas canvas;
@@ -298,6 +299,15 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
+	public synchronized boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return justPressedKeys.size() > 0;
+		} else {
+			return justPressedKeys.contains(key);
+		}
+	}
+
+	@Override
 	public boolean isTouched () {
 		return touchDown;
 	}
@@ -313,6 +323,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
+			justPressedKeys.clear();
 
 			if (processor != null) {
 				InputProcessor processor = this.processor;
@@ -324,6 +335,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
+						justPressedKeys.add(e.keyCode);
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);
