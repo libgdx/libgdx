@@ -154,15 +154,12 @@ public class HeadlessModel implements Disposable {
 					}
 				}
 
-				if (meshPart == null || meshMaterial == null) throw new GdxRuntimeException("Invalid node: " + node.id);
-
-				if (meshPart != null && meshMaterial != null) {
-					NodePart nodePart = new NodePart();
-					nodePart.meshPart = meshPart;
-					nodePart.material = meshMaterial;
-					node.parts.add(nodePart);
-					if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
-				}
+				if (meshPart == null) throw new GdxRuntimeException("Invalid node: " + node.id);
+				NodePart nodePart = new NodePart();
+				nodePart.meshPart = meshPart;
+				// nodePart.material = meshMaterial;
+				node.parts.add(nodePart);
+				if (modelNodePart.bones != null) nodePartBones.put(nodePart, modelNodePart.bones);
 			}
 		}
 
