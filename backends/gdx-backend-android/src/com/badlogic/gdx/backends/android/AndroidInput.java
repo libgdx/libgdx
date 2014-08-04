@@ -46,7 +46,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface for Android.
@@ -101,8 +101,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	boolean[] touched = new boolean[NUM_TOUCHES];
 	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
-	private IntMap<Object> keys = new IntMap<Object>();
-	private IntMap<Object> justPressedKeys = new IntMap<Object>();
+	private IntSet keys = new IntSet();
+	private IntSet justPressedKeys = new IntSet();
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	private final float[] accelerometerValues = new float[3];
@@ -305,7 +305,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 			if (key == Input.Keys.ANY_KEY)
 				return keys.size > 0;
 			else
-				return keys.containsKey(key);
+				return keys.contains(key);
 		}
 	}
 
@@ -314,7 +314,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		if (key == Input.Keys.ANY_KEY) {
 			return justPressedKeys.size > 0;
 		} else {
-			return justPressedKeys.containsKey(key);
+			return justPressedKeys.contains(key);
 		}
 	}
 
@@ -346,7 +346,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
-						justPressedKeys.put(e.keyCode, null);
+						justPressedKeys.add(e.keyCode);
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);
@@ -497,7 +497,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				}
 
 				keyEvents.add(event);
-				keys.put(event.keyCode, null);
+				keys.add(event.keyCode);
 				break;
 			case android.view.KeyEvent.ACTION_UP:
 				long timeStamp = System.nanoTime();
