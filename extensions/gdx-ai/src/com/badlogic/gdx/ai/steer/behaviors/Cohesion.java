@@ -18,15 +18,15 @@ package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.GroupBehavior;
 import com.badlogic.gdx.ai.steer.Proximity;
+import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
-import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.math.Vector;
 
-/** {@code Cohesion} is a group behavior producing a linear acceleration that attempts to move the agent towards the center of mass of
- * the agents in its immediate area defined by the given {@link Proximity}. The acceleration is calculated by first iterating
- * through all the neighbors and averaging their position vectors. This gives us the center of mass of the neighbors — the place
- * the agents wants to get to — so it seeks to that position.
+/** {@code Cohesion} is a group behavior producing a linear acceleration that attempts to move the agent towards the center of mass
+ * of the agents in its immediate area defined by the given {@link Proximity}. The acceleration is calculated by first iterating
+ * through all the neighbors and averaging their position vectors. This gives us the center of mass of the neighbors, the place
+ * the agents wants to get to, so it seeks to that position.
  * <p>
  * A sheep running after its flock is demonstrating cohesive behavior. Use this behavior to keep a group of agents together.
  * <p>

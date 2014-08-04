@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ai.AIUtils;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -38,10 +39,8 @@ import com.badlogic.gdx.tests.ai.steer.tests.CollisionAvoidanceTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FaceTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FlockingTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FollowPathTest;
-import com.badlogic.gdx.tests.ai.steer.tests.HideTest;
 import com.badlogic.gdx.tests.ai.steer.tests.InterposeTest;
 import com.badlogic.gdx.tests.ai.steer.tests.LookWhereYouAreGoingTest;
-import com.badlogic.gdx.tests.ai.steer.tests.OptimizedFlockingTest;
 import com.badlogic.gdx.tests.ai.steer.tests.PursueTest;
 import com.badlogic.gdx.tests.ai.steer.tests.RaycastObstacleAvoidanceTest;
 import com.badlogic.gdx.tests.ai.steer.tests.SeekTest;
@@ -49,8 +48,11 @@ import com.badlogic.gdx.tests.ai.steer.tests.WanderTest;
 import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class SteeringBehaviorTest extends GdxTest {
+	
+	private static final boolean DEBUG_STAGE = false;
 	
 	public CollapsableWindow behaviorsWindow;
 	Label fpsLabel;
@@ -84,9 +86,15 @@ public class SteeringBehaviorTest extends GdxTest {
 	public TextureRegion badlogicSmall;
 	public TextureRegion target;
 
+	private int previousFrameId;
+	private long lastConflictTime;
+
 	@Override
 	public void create () {
 		Gdx.gl.glClearColor(.3f, .3f, .3f, 1);
+
+		previousFrameId = AIUtils.getFrameId();
+		lastConflictTime = TimeUtils.nanoTime();
 
 		fpsStringBuilder = new StringBuilder();
 
@@ -98,6 +106,7 @@ public class SteeringBehaviorTest extends GdxTest {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		stage = new Stage();
+		stage.setDebugAll(DEBUG_STAGE);
 		stageWidth = stage.getWidth();
 		stageHeight = stage.getHeight();
 
@@ -134,9 +143,19 @@ public class SteeringBehaviorTest extends GdxTest {
 		fpsLabel = new Label("FPS: 999", skin);
 		stage.addActor(fpsLabel);
 	}
-
+	
 	@Override
 	public void render () {
+		if (AIUtils.getFrameId() == previousFrameId) {
+			long now = TimeUtils.nanoTime();
+			float elapsed = (now - lastConflictTime) / 1000000000f;
+			Gdx.app.log("SteeringBehaviorTest", "FrameId conflict after " + elapsed + " seconds.");
+			lastConflictTime = now;
+		}
+		else {
+			previousFrameId = AIUtils.getFrameId();
+		}
+		
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		fpsStringBuilder.setLength(0);

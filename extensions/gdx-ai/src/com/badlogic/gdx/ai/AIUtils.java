@@ -40,13 +40,13 @@ public final class AIUtils {
 		return frameId;
 	}
 
-	/** Returns a binomially distributed random number between -1.0 (inclusive) and 1.0 (exclusive), where values around zero are
+	/** Returns a binomially distributed random number between -1.0 (exclusive) and 1.0 (exclusive), where values around zero are
 	 * more likely. */
 	public static float randomBinomial () {
 		return MathUtils.random() - MathUtils.random();
 	}
 
-	/** Returns a binomially distributed random number between {@code -max} (inclusive) and {@code max} (exclusive), where values
+	/** Returns a binomially distributed random number between {@code -max} (exclusive) and {@code max} (exclusive), where values
 	 * around zero are more likely. */
 	public static float randomBinomial (float max) {
 		return (MathUtils.random() - MathUtils.random()) * max;

@@ -1,22 +1,19 @@
 
 package com.badlogic.gdx.ai.steer.paths;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPathBase.Path;
 import com.badlogic.gdx.ai.steer.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * A path for path following behaviors that is made up of a series of waypoints. Each waypoint is connected to the successor with a segment.
- *
+/** A path for path following behaviors that is made up of a series of waypoints. Each waypoint is connected to the successor with
+ * a segment.
+ * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
- * @author davebaol
- */
+ * @author davebaol */
 public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
-	private T[] waypoints;
 	private Array<Segment<T>> segments;
 	private float pathLength;
 	private T nearestPointOnCurrentSegment;
@@ -24,7 +21,6 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 
 	public LinePath (T[] waypoints) {
 		if (waypoints == null || waypoints.length == 0) throw new IllegalArgumentException();
-		this.waypoints = waypoints;
 		createPath(waypoints);
 		nearestPointOnCurrentSegment = waypoints[0].cpy();
 		nearestPointOnPath = waypoints[0].cpy();
@@ -43,12 +39,13 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		return new LinePathParam();
 	}
 
-	// Sending the last parameter value to the path in order to calculate the current
+	// We pass the last parameter value to the path in order to calculate the current
 	// parameter value. This is essential to avoid nasty problems when lines are close together.
-	// We limit the getParam algorithm to only considering areas of the path close to the previous
+	// We should limit the algorithm to only considering areas of the path close to the previous
 	// parameter value. The character is unlikely to have moved far, after all.
 	// This technique, assuming the new value is close to the old one, is called coherence, and it is a
 	// feature of many geometric algorithms.
+	// TODO: Currently coherence is not implemented.
 	@Override
 	public float calculateDistance (T agentCurrPos, LinePathParam parameter) {
 		// Find the nearest segment
@@ -56,7 +53,8 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		Segment<T> nearestSegment = null;
 		for (int i = 0; i < segments.size; i++) {
 			Segment<T> segment = segments.get(i);
-			float distance2 = calculatePointSegmentSquareDistance(nearestPointOnCurrentSegment, segment.begin, segment.end, agentCurrPos);
+			float distance2 = calculatePointSegmentSquareDistance(nearestPointOnCurrentSegment, segment.begin, segment.end,
+				agentCurrPos);
 
 			// first point
 			if (distance2 < smallestDistance2) {
@@ -64,7 +62,6 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 				smallestDistance2 = distance2;
 				nearestSegment = segment;
 				parameter.segmentIndex = i;
-//				System.out.println("segmentIndex = " + i);
 			}
 		}
 
@@ -76,15 +73,14 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		return lengthOnPath;
 	}
 
-	/** @param pathDistance the distance in meters on path.
-	 * @return position in the world that corresponds to the distance on the path. */
+	/** @param pathDistance the distance along the path.
+	 * @return position in the world that corresponds to the distance along the path. */
 	@Override
 	public void calculateTargetPosition (T out, LinePathParam param, float targetDistance) {
 		// Cycling path support
 		if (targetDistance < 0) { // Backwards
 			targetDistance += pathLength;
-		}
-		else if (targetDistance > pathLength) { // Forward
+		} else if (targetDistance > pathLength) { // Forward
 			targetDistance -= pathLength;
 		}
 
@@ -98,8 +94,7 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 			}
 		}
 
-		// begin-------targetPos---end
-		// targetPos to end == distance
+		// begin-------targetPos-------end
 		float distance = desiredSegment.cumulativeLength - targetDistance;
 
 		out.set(desiredSegment.begin).sub(desiredSegment.end).scl(distance / desiredSegment.length).add(desiredSegment.end);
@@ -117,7 +112,6 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 			pathLength += segment.length;
 			segment.cumulativeLength = pathLength;
 			segments.add(segment);
-//			System.out.println("begin="+segment.begin +", end="+segment.begin+",len="+segment.length+",cumLen="+segment.cumulativeLength);
 		}
 	}
 
@@ -142,7 +136,7 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		public void setDistance (float distance) {
 			this.distance = distance;
 		}
-		
+
 	}
 
 	public static class Segment<T extends Vector<T>> {

@@ -39,7 +39,7 @@ public class Flee<T extends Vector<T>> extends Seek<T> {
 	@Override
 	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Calculate the desired velocity using a vector pointing in the opposite direction of seek,
-		// i.e. (owner.getPosition() – targetPosition) instead of (targetPosition - owner.getPosition())
+		// i.e. (owner.getPosition() - targetPosition) instead of (targetPosition - owner.getPosition())
 		steering.linear.set(owner.getPosition()).sub(target.getPosition()).nor().scl(maxLinearAcceleration);
 
 		// No angular acceleration
