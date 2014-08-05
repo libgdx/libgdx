@@ -26,15 +26,16 @@ public class MapLayers implements Iterable<MapLayer> {
 	private Array<MapLayer> layers = new Array<MapLayer>();
 
 	/** @param index
-	 * @return layer at index */
+	 * @return the MapLayer at the specified index */
 	public MapLayer get (int index) {
 		return layers.get(index);
 	}
 
 	/** @param name
-	 * @return first layer matching the name, null otherwise */
+	 * @return the first layer having the specified name, if one exists, otherwise null */
 	public MapLayer get (String name) {
-		for (MapLayer layer : layers) {
+		for (int i = 0, n = layers.size; i < n; i++) {
+			MapLayer layer = layers.get(i);
 			if (name.equals(layer.getName())) {
 				return layer;
 			}
@@ -73,7 +74,8 @@ public class MapLayers implements Iterable<MapLayer> {
 	 * @return array with all the layers matching type */
 	public <T extends MapLayer> Array<T> getByType (Class<T> type, Array<T> fill) {
 		fill.clear();
-		for (MapLayer layer : layers) {
+		for (int i = 0, n = layers.size; i < n; i++) {
+			MapLayer layer = layers.get(i);
 			if (ClassReflection.isInstance(type, layer)) {
 				fill.add((T)layer);
 			}
