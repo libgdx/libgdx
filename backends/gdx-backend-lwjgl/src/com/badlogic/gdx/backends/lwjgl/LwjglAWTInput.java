@@ -109,8 +109,10 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	int deltaY = 0;
 	boolean touchDown = false;
 	boolean justTouched = false;
-	IntSet keys = new IntSet();
-	IntSet justPressedKeys = new IntSet();
+	int keyCount = 0;
+	boolean[] keys = new boolean[256];
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
 	Canvas canvas;
@@ -288,22 +290,25 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	}
 
 	@Override
-	public boolean isKeyPressed (int key) {
-		synchronized (this) {
-			if (key == Input.Keys.ANY_KEY)
-				return keys.size > 0;
-			else
-				return keys.contains(key);
+	public synchronized boolean isKeyPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyCount > 0;
 		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return keys[key];
 	}
 
 	@Override
 	public synchronized boolean isKeyJustPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
-			return justPressedKeys.size > 0;
-		} else {
-			return justPressedKeys.contains(key);
+			return keyJustPressed;
 		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	@Override
@@ -322,7 +327,12 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
-			justPressedKeys.clear();
+			if (keyJustPressed) {
+				keyJustPressed = false;
+				for (int i = 0; i < justPressedKeys.length; i++) {
+					justPressedKeys[i] = false;
+				}
+			}
 
 			if (processor != null) {
 				InputProcessor processor = this.processor;
@@ -334,7 +344,8 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
-						justPressedKeys.add(e.keyCode);
+						keyJustPressed = true;
+						justPressedKeys[e.keyCode] = true;
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);
@@ -544,7 +555,10 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			event.type = KeyEvent.KEY_DOWN;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
-			keys.add(event.keyCode);
+			if (!keys[event.keyCode]) {
+				keyCount++;
+				keys[event.keyCode] = true;
+			}
 			Gdx.graphics.requestRendering();
 		}
 	}
@@ -558,7 +572,10 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			event.type = KeyEvent.KEY_UP;
 			event.timeStamp = System.nanoTime();
 			keyEvents.add(event);
-			keys.remove(event.keyCode);
+			if (keys[event.keyCode]) {
+				keyCount--;
+				keys[event.keyCode] = false;
+			}
 			Gdx.graphics.requestRendering();
 		}
 	}

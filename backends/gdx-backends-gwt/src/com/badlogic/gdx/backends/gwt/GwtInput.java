@@ -44,8 +44,10 @@ public class GwtInput implements Input {
 	private int[] deltaX = new int[20];
 	private int[] deltaY = new int[20];
 	IntSet pressedButtons = new IntSet();
-	IntSet pressedKeys = new IntSet();
-	IntSet justPressedKeys = new IntSet();
+	int pressedKeyCount = 0;
+	boolean[] pressedKeys = new boolean[256];
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
@@ -60,7 +62,12 @@ public class GwtInput implements Input {
 
 	void reset () {
 		justTouched = false;
-		justPressedKeys.clear();
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 	}
 
 	@Override
@@ -140,17 +147,24 @@ public class GwtInput implements Input {
 
 	@Override
 	public boolean isKeyPressed (int key) {
-		if (key == Keys.ANY_KEY) return pressedKeys.size > 0;
-		return pressedKeys.contains(key);
+		if (key == Keys.ANY_KEY) {
+			return pressedKeyCount > 0;
+		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return pressedKeys[key];
 	}
 
 	@Override
 	public boolean isKeyJustPressed (int key) {
 		if (key == Keys.ANY_KEY) {
-			return justPressedKeys.size > 0;
-		} else {
-			return justPressedKeys.contains(key);
+			return keyJustPressed;
 		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	@Override
@@ -544,8 +558,11 @@ public class GwtInput implements Input {
 					processor.keyTyped('\b');
 				}
 			} else {
-				if (this.pressedKeys.add(code)) {
-					justPressedKeys.add(code);
+				if (!pressedKeys[code]) {
+					pressedKeyCount++;
+					pressedKeys[code] = true;
+					keyJustPressed = true;
+					justPressedKeys[code] = true;
 					if (processor != null) {
 						processor.keyDown(code);
 					}
@@ -562,7 +579,10 @@ public class GwtInput implements Input {
 		if (e.getType().equals("keyup") && hasFocus) {
 			//System.out.println("keyup");
 			int code = keyForCode(e.getKeyCode());
-			this.pressedKeys.remove(code);
+			if (pressedKeys[code]) {
+				pressedKeyCount--;
+				pressedKeys[code] = false;
+			}
 			if (processor != null) {
 				processor.keyUp(code);
 			}

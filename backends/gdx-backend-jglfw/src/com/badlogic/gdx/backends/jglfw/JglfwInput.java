@@ -49,7 +49,8 @@ public class JglfwInput implements Input {
 	final InputProcessorQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
-	IntSet justPressedKeys = new IntSet();
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	boolean justTouched;
 	int deltaX, deltaY;
 	long currentEventTime;
@@ -62,7 +63,8 @@ public class JglfwInput implements Input {
 
 			public boolean keyDown (int keycode) {
 				pressedKeys++;
-				justPressedKeys.add(keycode);
+				keyJustPressed = true;
+				justPressedKeys[keycode] = true;
 				app.graphics.requestRendering();
 				return processor != null ? processor.keyDown(keycode) : false;
 			}
@@ -123,7 +125,12 @@ public class JglfwInput implements Input {
 
 	public void update () {
 		justTouched = false;
-		justPressedKeys.clear();
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 		if (processorQueue != null)
 			processorQueue.drain(); // Main loop is handled elsewhere and events are queued.
 		else {
@@ -203,10 +210,12 @@ public class JglfwInput implements Input {
 	@Override
 	public boolean isKeyJustPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
-			return justPressedKeys.size > 0;
-		} else {
-			return justPressedKeys.contains(key);
+			return keyJustPressed;
 		}
+		if (key < 0 || key > 256) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	public void setOnscreenKeyboardVisible (boolean visible) {

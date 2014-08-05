@@ -64,7 +64,8 @@ final public class LwjglInput implements Input {
 	int mouseX, mouseY;
 	int deltaX, deltaY;
 	int pressedKeys = 0;
-	IntSet justPressedKeys = new IntSet();
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	boolean justTouched = false;
 	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
@@ -238,10 +239,12 @@ final public class LwjglInput implements Input {
 	@Override
 	public boolean isKeyJustPressed (int key) {
 		if(key == Input.Keys.ANY_KEY){
-			return justPressedKeys.size > 0;
-		}else{
-			return justPressedKeys.contains(key);
+			return keyJustPressed;
 		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	public boolean isTouched () {
@@ -832,7 +835,12 @@ final public class LwjglInput implements Input {
 	}
 
 	void updateKeyboard () {
-		justPressedKeys.clear();
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 		if (lastKeyCharPressed != 0) {
 			keyRepeatTimer -= deltaTime;
 			if (keyRepeatTimer < 0) {
@@ -879,7 +887,8 @@ final public class LwjglInput implements Input {
 					keyEvents.add(event);
 
 					pressedKeys++;
-					justPressedKeys.add(keyCode);
+					keyJustPressed = true;
+					justPressedKeys[keyCode] = true;
 					lastKeyCharPressed = keyChar;
 					keyRepeatTimer = keyRepeatInitialTime;
 				} else {
