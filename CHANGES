@@ -1,4 +1,6 @@
 [1.2.1]
+- API Addition: multiple recipients are now supported by MessageDispatcher, see https://github.com/libgdx/libgdx/wiki/Message-Handling#multiple-recipients
+- API Change: State#onMessage now takes the message receiver as argument.
 - API Addition: added StackStateMachine to the gdx-ai extension.
 - API change: ShapeRenderer: rect methods accept scale, more methods can work under both line and fill types, auto shape type changing.
 - API change: Built-in ShapeRenderer debugging for Stage, see https://github.com/libgdx/libgdx/pull/2011

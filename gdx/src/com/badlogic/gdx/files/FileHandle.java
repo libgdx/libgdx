@@ -412,8 +412,9 @@ public class FileHandle {
 		int count = 0;
 		for (int i = 0, n = relativePaths.length; i < n; i++) {
 			String path = relativePaths[i];
-			if (!filter.accept(file)) continue;
-			handles[count] = child(path);
+			FileHandle child = child(path);
+			if (!filter.accept(child.file())) continue;
+			handles[count] = child;
 			count++;
 		}
 		if (count < relativePaths.length) {
