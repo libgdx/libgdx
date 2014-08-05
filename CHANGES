@@ -1,4 +1,5 @@
 [1.2.1]
+- Added Input.isKeyJustPressed.
 - API Addition: multiple recipients are now supported by MessageDispatcher, see https://github.com/libgdx/libgdx/wiki/Message-Handling#multiple-recipients
 - API Change: State#onMessage now takes the message receiver as argument.
 - API Addition: added StackStateMachine to the gdx-ai extension.

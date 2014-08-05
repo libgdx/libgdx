@@ -81,8 +81,8 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	 * time this method is called. Use the {@link OrderedMapEntries} constructor for nested or multithreaded iteration. */
 	public Entries<K, V> entries () {
 		if (entries1 == null) {
-			entries1 = new Entries(this);
-			entries2 = new Entries(this);
+			entries1 = new OrderedMapEntries(this);
+			entries2 = new OrderedMapEntries(this);
 		}
 		if (!entries1.valid) {
 			entries1.reset();
@@ -100,8 +100,8 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	 * time this method is called. Use the {@link OrderedMapValues} constructor for nested or multithreaded iteration. */
 	public Values<V> values () {
 		if (values1 == null) {
-			values1 = new Values(this);
-			values2 = new Values(this);
+			values1 = new OrderedMapValues(this);
+			values2 = new OrderedMapValues(this);
 		}
 		if (!values1.valid) {
 			values1.reset();
@@ -119,8 +119,8 @@ public class OrderedMap<K, V> extends ObjectMap<K, V> {
 	 * this method is called. Use the {@link OrderedMapKeys} constructor for nested or multithreaded iteration. */
 	public Keys<K> keys () {
 		if (keys1 == null) {
-			keys1 = new Keys(this);
-			keys2 = new Keys(this);
+			keys1 = new OrderedMapKeys(this);
+			keys2 = new OrderedMapKeys(this);
 		}
 		if (!keys1.valid) {
 			keys1.reset();

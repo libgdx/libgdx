@@ -144,7 +144,7 @@ public class MessageDispatcher {
 		clearListeners();
 	}
 
-	/** Shortcut method for {@link #dispatchMessage(float, Agent, Agent, int, Object, boolean) dispatchMessage(delay, sender,
+	/** Shortcut method for {@link #dispatchMessage(float, Agent, Agent, int, Object) dispatchMessage(delay, sender,
 	 * receiver, msg, extraInfo)} where {@code extraInfo} is {@code null}. */
 	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg) {
 		dispatchMessage(delay, sender, receiver, msg, null);
