@@ -23,9 +23,7 @@ import java.awt.event.WindowFocusListener;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -41,6 +39,8 @@ import javax.swing.event.DocumentListener;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntSet;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
@@ -64,9 +64,9 @@ final public class LwjglInput implements Input {
 	int mouseX, mouseY;
 	int deltaX, deltaY;
 	int pressedKeys = 0;
-	Set<Integer> justPressedKeys = new HashSet<Integer>();
+	IntSet justPressedKeys = new IntSet();
 	boolean justTouched = false;
-	Set<Integer> pressedButtons = new HashSet<Integer>();
+	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
@@ -238,7 +238,7 @@ final public class LwjglInput implements Input {
 	@Override
 	public boolean isKeyJustPressed (int key) {
 		if(key == Input.Keys.ANY_KEY){
-			return justPressedKeys.size() > 0;
+			return justPressedKeys.size > 0;
 		}else{
 			return justPressedKeys.contains(key);
 		}
@@ -798,7 +798,7 @@ final public class LwjglInput implements Input {
 					if (Mouse.getEventDWheel() != 0) {
 						event.type = TouchEvent.TOUCH_SCROLLED;
 						event.scrollAmount = (int)-Math.signum(Mouse.getEventDWheel());
-					} else if (pressedButtons.size() > 0) {
+					} else if (pressedButtons.size > 0) {
 						event.type = TouchEvent.TOUCH_DRAGGED;
 					} else {
 						event.type = TouchEvent.TOUCH_MOVED;

@@ -21,14 +21,13 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntSet;
 
 /** <p>
  * An {@link Input} implementation that receives touch, key, accelerometer and compass events from a remote Android device. Just
@@ -160,8 +159,8 @@ public class RemoteInput implements Runnable, Input {
 	private float remoteHeight = 0;
 	private boolean connected = false;
 	private RemoteInputListener listener;
-	Set<Integer> keys = new HashSet<Integer>();
-	Set<Integer> justPressedKeys = new HashSet<Integer>();
+	IntSet keys = new IntSet();
+	IntSet justPressedKeys = new IntSet();
 	int[] touchX = new int[20];
 	int[] touchY = new int[20];
 	boolean isTouched[] = new boolean[20];

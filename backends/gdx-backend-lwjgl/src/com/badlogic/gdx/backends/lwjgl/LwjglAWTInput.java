@@ -39,9 +39,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -60,6 +58,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener, MouseWheelListener, KeyListener {
@@ -110,9 +109,9 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	int deltaY = 0;
 	boolean touchDown = false;
 	boolean justTouched = false;
-	Set<Integer> keys = new HashSet<Integer>();
-	Set<Integer> justPressedKeys = new HashSet<Integer>();
-	Set<Integer> pressedButtons = new HashSet<Integer>();
+	IntSet keys = new IntSet();
+	IntSet justPressedKeys = new IntSet();
+	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
 	Canvas canvas;
 	boolean catched = false;
@@ -292,7 +291,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	public boolean isKeyPressed (int key) {
 		synchronized (this) {
 			if (key == Input.Keys.ANY_KEY)
-				return keys.size() > 0;
+				return keys.size > 0;
 			else
 				return keys.contains(key);
 		}
@@ -301,7 +300,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 	@Override
 	public synchronized boolean isKeyJustPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
-			return justPressedKeys.size() > 0;
+			return justPressedKeys.size > 0;
 		} else {
 			return justPressedKeys.contains(key);
 		}
@@ -518,7 +517,7 @@ public class LwjglAWTInput implements Input, MouseMotionListener, MouseListener,
 			touchX = event.x;
 			touchY = event.y;
 			pressedButtons.remove(event.button);
-			if (pressedButtons.size() == 0) touchDown = false;
+			if (pressedButtons.size == 0) touchDown = false;
 			Gdx.graphics.requestRendering();
 		}
 	}

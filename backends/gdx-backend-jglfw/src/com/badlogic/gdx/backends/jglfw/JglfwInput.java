@@ -22,8 +22,6 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -40,6 +38,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.InputProcessorQueue;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.jglfw.GlfwCallbackAdapter;
 
 /** An implementation of the {@link Input} interface hooking GLFW panel for input.
@@ -50,7 +49,7 @@ public class JglfwInput implements Input {
 	final InputProcessorQueue processorQueue;
 	InputProcessor processor;
 	int pressedKeys = 0;
-	Set<Integer> justPressedKeys = new HashSet<Integer>();
+	IntSet justPressedKeys = new IntSet();
 	boolean justTouched;
 	int deltaX, deltaY;
 	long currentEventTime;
@@ -204,7 +203,7 @@ public class JglfwInput implements Input {
 	@Override
 	public boolean isKeyJustPressed (int key) {
 		if (key == Input.Keys.ANY_KEY) {
-			return justPressedKeys.size() > 0;
+			return justPressedKeys.size > 0;
 		} else {
 			return justPressedKeys.contains(key);
 		}
