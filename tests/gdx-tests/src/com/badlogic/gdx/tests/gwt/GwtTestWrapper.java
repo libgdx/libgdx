@@ -295,6 +295,11 @@ public class GwtTestWrapper extends GdxTest {
 		public boolean isKeyPressed (int key) {
 			return input.isKeyPressed(key);
 		}
+		
+		@Override
+		public boolean isKeyJustPressed (int key) {
+			return input.isKeyJustPressed(key);
+		}
 
 		@Override
 		public void getTextInput (TextInputListener listener, String title, String text) {
