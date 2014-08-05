@@ -160,6 +160,11 @@ public abstract class OpenALMusic implements Music {
 	/** Resets the stream to the beginning. */
 	abstract public void reset ();
 
+	/** By default, does just the same as reset(). Used to add special behaviour in Ogg.Music. */
+	protected void loop () {
+		reset();
+	}
+
 	public int getChannels () {
 		return format == AL_FORMAT_STEREO16 ? 2 : 1;
 	}
@@ -198,7 +203,7 @@ public abstract class OpenALMusic implements Music {
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
-				reset();
+				loop();
 				renderedSeconds = 0;
 				length = read(tempBytes);
 				if (length <= 0) return false;

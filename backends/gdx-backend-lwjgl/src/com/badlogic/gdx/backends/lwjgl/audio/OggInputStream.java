@@ -49,7 +49,7 @@ public class OggInputStream extends InputStream {
 	/** The conversion buffer size */
 	private int convsize = BUFFER_SIZE * 4;
 	/** The buffer used to read OGG file */
-	private byte[] convbuffer = new byte[convsize]; // take 8k out of the data segment, not the stack
+	private byte[] convbuffer; // take 8k out of the data segment, not the stack
 	/** The stream we're reading the OGG file from */
 	private InputStream input;
 	/** The audio information from the OGG header */
@@ -87,7 +87,7 @@ public class OggInputStream extends InputStream {
 	/** The index into the byte array we currently read from */
 	private int readIndex;
 	/** The byte array store used to hold the data read from the ogg */
-	private ByteBuffer pcmBuffer = BufferUtils.createByteBuffer(4096 * 500);
+	private ByteBuffer pcmBuffer;
 	/** The total number of bytes */
 	private int total;
 
@@ -95,6 +95,24 @@ public class OggInputStream extends InputStream {
 	 * 
 	 * @param input The input stream from which to read the OGG file */
 	public OggInputStream (InputStream input) {
+		this(input, null);
+	}
+
+	/** Create a new stream to decode OGG data, reusing buffers from another stream.
+	 *
+	 * It's not a good idea to use the old stream instance afterwards.
+	 *
+	 * @param input The input stream from which to read the OGG file
+	 * @param previousStream The stream instance to reuse buffers from */
+	OggInputStream (InputStream input, OggInputStream previousStream) {
+		if (previousStream == null) {
+			convbuffer = new byte[convsize];
+			pcmBuffer = BufferUtils.createByteBuffer(4096 * 500);
+		} else {
+			convbuffer = previousStream.convbuffer;
+			pcmBuffer = previousStream.pcmBuffer;
+		}
+
 		this.input = input;
 		try {
 			total = input.available();
