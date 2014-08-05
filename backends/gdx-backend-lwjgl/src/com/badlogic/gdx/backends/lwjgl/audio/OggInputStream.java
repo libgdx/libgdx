@@ -49,7 +49,7 @@ public class OggInputStream extends InputStream {
 	/** The conversion buffer size */
 	private int convsize = BUFFER_SIZE * 4;
 	/** The buffer used to read OGG file */
-	private byte[] convbuffer; // take 8k out of the data segment, not the stack
+	private byte[] convbuffer;
 	/** The stream we're reading the OGG file from */
 	private InputStream input;
 	/** The audio information from the OGG header */
@@ -103,7 +103,7 @@ public class OggInputStream extends InputStream {
 	 * It's not a good idea to use the old stream instance afterwards.
 	 *
 	 * @param input The input stream from which to read the OGG file
-	 * @param previousStream The stream instance to reuse buffers from */
+	 * @param previousStream The stream instance to reuse buffers from, may be null */
 	OggInputStream (InputStream input, OggInputStream previousStream) {
 		if (previousStream == null) {
 			convbuffer = new byte[convsize];
