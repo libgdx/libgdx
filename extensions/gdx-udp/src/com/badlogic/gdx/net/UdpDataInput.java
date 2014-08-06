@@ -43,7 +43,6 @@ public class UdpDataInput extends DataInput implements Disposable{
 		this.in = new ByteArrayInputStream(datagram.getData());
 	}
 	
-	/** {@inheritDoc} */
 	public void dispose() {
 		try {
 			this.in.close();

@@ -65,8 +65,7 @@ public class UdpClient implements Disposable {
 	public Datagram receiveDatagram () throws IOException {
 		return this.socket.receiveData();
 	}
-
-	/** {@inheritDoc} */
+	
 	@Override
 	public void dispose () {
 		this.socket.dispose();
