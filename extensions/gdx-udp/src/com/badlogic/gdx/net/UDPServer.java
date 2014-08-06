@@ -21,21 +21,19 @@ import java.net.SocketException;
 
 import com.badlogic.gdx.utils.Disposable;
 
-public class UDPServer implements Disposable {
+public class UdpServer implements Disposable {
 
-	private UDPSocket socket;
+	private UdpSocket socket;
 	private int port;
-	private Packet packet;
 
 	/** Creates a UDP server with the specified configuration using the default UDP socket implementation
 	 * 
 	 * @param port The port to listen on
 	 * @param hints The UDPSocketHints for configuring the server 
 	 * @throws SocketException If there is an issue creating the socket*/
-	public UDPServer (int port, UDPSocketHints hints) throws SocketException {
-		this.socket = new UDPManager().createNewUDPSocket(hints, port);
+	public UdpServer (int port, UdpSocketHints hints) throws SocketException {
+		this.socket = new UdpManager().createNewUDPSocket(hints, port);
 		this.port = port;
-		this.packet = new Packet();
 	}
 
 	/** Creates a UDP server with the specified configuration using the specific UDP socket implementation
@@ -43,10 +41,9 @@ public class UDPServer implements Disposable {
 	 * @param port The port to listen on
 	 * @param hints The UDPSocketHints for configuring the server
 	 * @param socket The UDP socket implementation to use */
-	public UDPServer (int port, UDPSocketHints hints, UDPSocket socket) {
+	public UdpServer (int port, UdpSocketHints hints, UdpSocket socket) {
 		this.socket = socket;
 		this.port = port;
-		this.packet = new Packet();
 	}
 
 	/** Sends a datagram to the specified host with the specified data
@@ -69,6 +66,5 @@ public class UDPServer implements Disposable {
 	@Override
 	public void dispose () {
 		this.socket.dispose();
-		this.packet.dispose();
 	}
 }

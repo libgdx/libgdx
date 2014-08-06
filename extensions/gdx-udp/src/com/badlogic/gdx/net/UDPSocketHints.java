@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 package com.badlogic.gdx.net;
 
 /** Contains parameters for the UDP socket implementation We try to provide you with a low-latency, but reliable connection.
  * @author Unkn0wn0ne */
-public class UDPSocketHints {
+public class UdpSocketHints {
 
 	/** Sets the SO_TIMEOUT to the specified timeout. (in miliseconds)  Default: 25 */
 	public int SO_TIMEOUT = 25;

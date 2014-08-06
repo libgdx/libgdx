@@ -24,23 +24,21 @@ import com.badlogic.gdx.utils.Disposable;
 /** UDPClient - A UDP client implementation using the gdx-udp extension
  * 
  * @author Unkn0wn0ne */
-public class UDPClient implements Disposable {
+public class UdpClient implements Disposable {
 
-	private UDPSocket socket;
+	private UdpSocket socket;
 	private String address;
 	private int port;
-	private Packet packet;
 
 	/** Creates a client instance with the assigned configuration using the default UDP socket implementation
 	 * @param address The address of the server you want to connect to
 	 * @param port The port of the server you want to connect to
 	 * @param hints The UDPSocketHints containing most of the configuration, set to null to use defaults 
 	 * @throws SocketException If there is an issue creating the socket*/
-	public UDPClient (String address, int port, UDPSocketHints hints) throws SocketException {
-		this.socket = new UDPManager().createNewUDPSocket(hints, port);
+	public UdpClient (String address, int port, UdpSocketHints hints) throws SocketException {
+		this.socket = new UdpManager().createNewUDPSocket(hints, port);
 		this.address = address;
 		this.port = port;
-		this.packet = new Packet();
 	}
 
 	/** Creates a client instance with the assigned configuration
@@ -48,11 +46,10 @@ public class UDPClient implements Disposable {
 	 * @param port The port of the server you want to connect to
 	 * @param hints The UDPSocketHints containing most of the configuration, set to null to use defaults
 	 * @param impl The UDP socket implementation you wish to use */
-	public UDPClient (String address, int port, UDPSocketHints hints, UDPSocket impl) {
+	public UdpClient (String address, int port, UdpSocketHints hints, UdpSocket impl) {
 		this.socket = impl;
 		this.address = address;
 		this.port = port;
-		this.packet = new Packet();
 	}
 
 	/** Sends a datagram to the server the client is connected to
@@ -75,6 +72,5 @@ public class UDPClient implements Disposable {
 		this.socket.dispose();
 		this.socket = null;
 		this.address = null;
-		this.packet.dispose();
 	}
 }

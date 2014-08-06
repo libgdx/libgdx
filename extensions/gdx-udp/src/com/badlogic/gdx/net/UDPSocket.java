@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 package com.badlogic.gdx.net;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ import com.badlogic.gdx.utils.Disposable;
  * to write your own implementation if you are not happy with it
  * 
  * @author Unkn0wn0ne */
-public abstract class UDPSocket implements Disposable {
+public abstract class UdpSocket implements Disposable {
 
 	protected DatagramSocket socket = null;
 	protected DatagramPacket packet = null;
@@ -37,7 +36,7 @@ public abstract class UDPSocket implements Disposable {
 	 * @param port The port to connect to or listen on
 	 * @param hints The configuration hints
 	 * @return A UDPSocket that is configured and ready to use. */
-	public UDPSocket(int port,  UDPSocketHints hints) throws SocketException {
+	public UdpSocket(int port,  UdpSocketHints hints) throws SocketException {
 		this.socket = new DatagramSocket(port);
 		this.packet = new DatagramPacket(new byte[hints.RECEIVE_LENGTH], hints.RECEIVE_LENGTH);
 		this.datagram = new Datagram();
@@ -53,7 +52,7 @@ public abstract class UDPSocket implements Disposable {
 	 * @throws IOException If there is an IO error receiving the data */
 	public abstract Datagram receiveData () throws IOException;
 	
-	private void applySocketHints (UDPSocketHints hints) throws SocketException {
+	private void applySocketHints (UdpSocketHints hints) throws SocketException {
 			this.socket.setSoTimeout(hints.SO_TIMEOUT);
 			this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
 			this.socket.setReuseAddress(hints.SO_REUSEADDR);

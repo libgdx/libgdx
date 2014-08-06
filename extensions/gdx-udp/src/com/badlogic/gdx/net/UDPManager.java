@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
+ 
 package com.badlogic.gdx.net;
 
 import java.net.SocketException;
 
 /** Sets the udp implementation for the platform, or allows you to create a custom implementation.
  * @author Unkn0wn0ne */
-public class UDPManager {
+public class UdpManager {
 
 	/** Creates a UDP socket from the default implementation used
 	 * @return A UDPSocket configured and hopefully ready to go! 
 	 * @throws SocketException  If there is a isssue creating the socket*/
-	public UDPSocket createNewUDPSocket(UDPSocketHints hints, int port) throws SocketException {
-		return new UDPSocketImpl(port, hints);
+	public UdpSocket createNewUDPSocket(UdpSocketHints hints, int port) throws SocketException {
+		return new UdpSocketImpl(port, hints);
 	}
 }
+

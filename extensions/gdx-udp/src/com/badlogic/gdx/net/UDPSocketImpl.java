@@ -24,20 +24,20 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import com.badlogic.gdx.net.Datagram;
-import com.badlogic.gdx.net.UDPSocket;
-import com.badlogic.gdx.net.UDPSocketHints;
+import com.badlogic.gdx.net.UdpSocket;
+import com.badlogic.gdx.net.UdpSocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
-/** The Java-based implementation of {@link UDPSocket} This works on Desktop (lwjgl, jglfw), iOS (via RoboVM), and Android. Future
- * backends with out java.net support will NOT work with this. Developers: please do not use this directly, use {@link UDPSocket}
+/** The Java-based implementation of {@link UdpSocket} This works on Desktop (lwjgl, jglfw), iOS (via RoboVM), and Android. Future
+ * backends with out java.net support will NOT work with this. Developers: please do not use this directly, use {@link UdpSocket}
  * instead for compatibility reasons.
  * 
  * @author Unkn0wn0ne */
-class UDPSocketImpl extends UDPSocket {
+class UdpSocketImpl extends UdpSocket {
 	
 	private InetAddress address = null;
 
-	public UDPSocketImpl(int port, UDPSocketHints hints) throws SocketException {
+	public UdpSocketImpl(int port, UdpSocketHints hints) throws SocketException {
 		super(port, hints);
 	}
 	
@@ -73,7 +73,7 @@ class UDPSocketImpl extends UDPSocket {
 		try {
 			this.socket.receive(packet);
 		} catch (SocketTimeoutException e) {
-			// Simply isn't data  data available, return null
+			// Simply isn't data available, return null
 			return null;
 		}
 		datagram.setAddress(packet.getAddress().getHostAddress());
