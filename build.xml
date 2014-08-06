@@ -270,6 +270,18 @@
         </ant>
     </target>
 
+	<!-- gdx udp -->
+    <target name="gdx-udp" depends="gdx-core">
+        <path id="classpath">
+            <pathelement location="${distDir}/gdx.jar"/>
+        </path>
+        <ant antfile="../../build-template.xml" dir="extensions/gdx-udp">
+            <property name="distDir" value="${distDir}/extensions/gdx-udp"/>
+            <property name="jar" value="gdx-udp"/>
+            <reference refid="classpath"/>
+        </ant>
+    </target>
+	
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">
 		<javadoc destdir="${distDir}/docs/api" author="true" version="true" use="true"
