@@ -66,7 +66,7 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 	private Body wall1;
 	private Body wall2;
 	private Body wall3;
-	
+
 	public RaycastObstacleAvoidanceTest (SteeringBehaviorTest container) {
 		super(container, "Raycast Obstacle Avoidance");
 	}
@@ -93,12 +93,12 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 		// next we create the body for the ground platform. It's
 		// simply a static body.
 		BodyDef groundBodyDef = new BodyDef();
-		groundBodyDef.position.set(200,350);
+		groundBodyDef.position.set(200, 350);
 		groundBodyDef.type = BodyType.StaticBody;
 		wall1 = world.createBody(groundBodyDef);
-		groundBodyDef.position.set(500,100);
+		groundBodyDef.position.set(500, 100);
 		wall2 = world.createBody(groundBodyDef);
-		groundBodyDef.position.set(350,200);
+		groundBodyDef.position.set(350, 200);
 		wall3 = world.createBody(groundBodyDef);
 
 		// finally we add a fixture to the body using the polygon
@@ -115,77 +115,78 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 		wall3.createFixture(fixtureDef);
 		groundPoly.dispose();
 
-		
 		SteeringActor character = new SteeringActor(container.greenFish, false);
 		character.setMaxSpeed(500);
 
-		rayConfigurations = new RayConfigurationBase[] {
-			new SingleRayConfiguration(character, 100),
+		rayConfigurations = new RayConfigurationBase[] {new SingleRayConfiguration(character, 100),
 			new ParallelSideRayConfiguration<Vector2>(character, 100, character.getBoundingRadius()),
-			new CentralRayWithWhiskersConfiguration<Vector2>(character, 100, 40, 35 * MathUtils.degreesToRadians)
-		};
+			new CentralRayWithWhiskersConfiguration<Vector2>(character, 100, 40, 35 * MathUtils.degreesToRadians)};
 		rayConfigurationIndex = 0;
 		RaycastCollisionDetector<Vector2> raycastCollisionDetector = new Box2dRaycastCollisionDetector(world);
 		raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(character, rayConfigurations[rayConfigurationIndex],
 			raycastCollisionDetector, 40, 100);
 
-		Wander<Vector2> wanderSB = new Wander<Vector2>(character, 30, 0);
-		wanderSB.setAlignTolerance(0.001f); // from Face
-		wanderSB.setDecelerationRadius(5); // from Face
-		wanderSB.setMaxRotation(5); // from Face
-		wanderSB.setTimeToTarget(0.1f); // from Face
-		wanderSB.setWanderOffset(60);
-		wanderSB.setWanderOrientation(10);
-		wanderSB.setWanderRadius(40);
-		wanderSB.setWanderRate(MathUtils.PI / 5);
-		
-		PrioritySteering<Vector2> prioritySteeringSB = new PrioritySteering<Vector2>(character, 0.0001f);
-		prioritySteeringSB.add(raycastObstacleAvoidanceSB);
-		prioritySteeringSB.add(wanderSB);
+		Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
+			.setMaxLinearAcceleration(30) //
+			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(5) //
+			.setMaxRotation(5) //
+			.setTimeToTarget(0.1f) //
+			.setWanderOffset(60) //
+			.setWanderOrientation(10) //
+			.setWanderRadius(40) //
+			.setWanderRate(MathUtils.PI / 5);
+
+		PrioritySteering<Vector2> prioritySteeringSB = new PrioritySteering<Vector2>(character, 0.0001f) //
+			.add(raycastObstacleAvoidanceSB) //
+			.add(wanderSB);
 
 		character.setSteeringBehavior(prioritySteeringSB);
-		
+
 		character.setCenterPosition(50, 50);
 		character.setMaxSpeed(50);
 
-		table.addActor(character);		
+		table.addActor(character);
 
 		inputProcessor = null;
 
 		Table detailTable = new Table(container.skin);
-		
+
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.["+raycastObstacleAvoidanceSB.getMaxLinearAcceleration()+"]", container.skin);
+		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + raycastObstacleAvoidanceSB.getMaxLinearAcceleration() + "]",
+			container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
 		Slider maxLinAcc = new Slider(0, 1500, 1, false, container.skin);
 		maxLinAcc.setValue(raycastObstacleAvoidanceSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				raycastObstacleAvoidanceSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.["+slider.getValue()+"]");
+				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxLinAcc);
-		
+
 		detailTable.row();
-		final Label labelDistFromBoundary = new Label("Distance from Boundary ["+raycastObstacleAvoidanceSB.getDistanceFromBoundary()+"]", container.skin);
+		final Label labelDistFromBoundary = new Label("Distance from Boundary ["
+			+ raycastObstacleAvoidanceSB.getDistanceFromBoundary() + "]", container.skin);
 		detailTable.add(labelDistFromBoundary);
 		detailTable.row();
 		Slider distFromBoundary = new Slider(0, 150, 1, false, container.skin);
 		distFromBoundary.setValue(raycastObstacleAvoidanceSB.getDistanceFromBoundary());
 		distFromBoundary.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				raycastObstacleAvoidanceSB.setDistanceFromBoundary(slider.getValue());
-				labelDistFromBoundary.setText("Distance from Boundary ["+slider.getValue()+"]");
+				labelDistFromBoundary.setText("Distance from Boundary [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(distFromBoundary);
-		
+
 		detailTable.row();
 		final Label labelRayConfig = new Label("Ray Configuration", container.skin);
 		detailTable.add(labelRayConfig);
@@ -195,7 +196,7 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 		rayConfig.setSelectedIndex(0);
 		rayConfig.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				SelectBox<String> selectBox = (SelectBox<String>)actor;
 				rayConfigurationIndex = selectBox.getSelectedIndex();
 				raycastObstacleAvoidanceSB.setRayConfiguration(rayConfigurations[rayConfigurationIndex]);
@@ -206,13 +207,12 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 		detailTable.row();
 		addSeparator(detailTable);
 
-
 		detailTable.row();
 		CheckBox debug = new CheckBox("Draw Rays", container.skin);
 		debug.setChecked(drawDebug);
 		debug.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				CheckBox checkBox = (CheckBox)event.getListenerActor();
 				drawDebug = checkBox.isChecked();
 			}

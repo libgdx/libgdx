@@ -35,27 +35,23 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 
 	private T targetPosition;
 
-	/** Creates an {@code Interpose} behavior for the specified owner and agents using the given deceleration and the midpoint
-	 * between agents as the target.
+	/** Creates an {@code Interpose} behavior for the specified owner and agents using the midpoint between agents as the target.
 	 * @param owner the owner of this behavior
 	 * @param agentA the first agent
-	 * @param agentB the other agent
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to arrive at the target. */
-	public Interpose (Steerable<T> owner, Steerable<T> agentA, Steerable<T> agentB, float maxLinearAcceleration) {
-		this(owner, agentA, agentB, 0.5f, maxLinearAcceleration);
+	 * @param agentB the other agent */
+	public Interpose (Steerable<T> owner, Steerable<T> agentA, Steerable<T> agentB) {
+		this(owner, agentA, agentB, 0.5f);
 	}
 
-	/** Creates an {@code Interpose} behavior for the specified owner and agents using the the given deceleration and interposing
-	 * ratio.
+	/** Creates an {@code Interpose} behavior for the specified owner and agents using the the given interposing ratio.
 	 * @param owner the owner of this behavior
 	 * @param agentA the first agent
 	 * @param agentB the other agent
 	 * @param interpositionRatio a number between 0 and 1 indicating the percentage of the distance between the 2 agents that the
-	 *           owner should reach.
+	 *           owner should reach, where 0 is agentA position and 1 is agentB position.
 	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to arrive at the target. */
-	public Interpose (Steerable<T> owner, Steerable<T> agentA, Steerable<T> agentB, float interposingRatio,
-		float maxLinearAcceleration) {
-		super(owner, null, maxLinearAcceleration);
+	public Interpose (Steerable<T> owner, Steerable<T> agentA, Steerable<T> agentB, float interposingRatio) {
+		super(owner);
 		this.agentA = agentA;
 		this.agentB = agentB;
 		this.interpositionRatio = interposingRatio;
@@ -68,9 +64,11 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 		return agentA;
 	}
 
-	/** Sets the first agent. */
-	public void setAgentA (Steerable<T> agentA) {
+	/** Sets the first agent.
+	 * @return this behavior for chaining. */
+	public Interpose<T> setAgentA (Steerable<T> agentA) {
 		this.agentA = agentA;
+		return this;
 	}
 
 	/** Returns the second agent. */
@@ -78,9 +76,11 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 		return agentB;
 	}
 
-	/** Sets the second agent. */
-	public void setAgentB (Steerable<T> agentB) {
+	/** Sets the second agent.
+	 * @return this behavior for chaining. */
+	public Interpose<T> setAgentB (Steerable<T> agentB) {
 		this.agentB = agentB;
+		return this;
 	}
 
 	/** Returns the interposition ratio. */
@@ -90,9 +90,11 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 
 	/** Sets the interposition ratio.
 	 * @param interpositionRatio a number between 0 and 1 indicating the percentage of the distance between the 2 agents that the
-	 *           owner should reach. Especially, 0 is the position of agentA and 1 is the position of agentB. */
-	public void setInterpositionRatio (float interpositionRatio) {
+	 *           owner should reach. Especially, 0 is the position of agentA and 1 is the position of agentB.
+	 * @return this behavior for chaining. */
+	public Interpose<T> setInterpositionRatio (float interpositionRatio) {
 		this.interpositionRatio = interpositionRatio;
+		return this;
 	}
 
 	@Override
@@ -123,6 +125,46 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 	/** Returns the target position. This is intended for debug purpose. */
 	public T getTargetPosition () {
 		return targetPosition;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Interpose<T> setTarget (Steerable<T> target) {
+		this.target = target;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setMaxSpeed (float maxSpeed) {
+		this.maxSpeed = maxSpeed;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setArrivalTolerance (float arrivalTolerance) {
+		this.arrivalTolerance = arrivalTolerance;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setDecelerationRadius (float decelerationRadius) {
+		this.decelerationRadius = decelerationRadius;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setTimeToTarget (float timeToTarget) {
+		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

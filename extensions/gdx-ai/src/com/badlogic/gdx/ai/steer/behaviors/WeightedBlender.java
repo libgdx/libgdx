@@ -25,7 +25,8 @@ import com.badlogic.gdx.utils.Array;
 /** This combination behavior simply sums up all the active behaviors, applies their weights, and truncates the result before
  * returning.
  * <p>
- * With {@code WeightedBlender} you can combine multiple behaviors to get a more complex behavior. It can work fine, but the trade-off is that it comes with a few problems:
+ * With {@code WeightedBlender} you can combine multiple behaviors to get a more complex behavior. It can work fine, but the
+ * trade-off is that it comes with a few problems:
  * <ul>
  * <li>Since every active behavior is calculated every time step, it can be a costly method to process.</li>
  * <li>Behavior weights can be difficult to tweak.</li>
@@ -66,13 +67,15 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 		this.steering = new SteeringAcceleration<T>(owner.newVector());
 	}
 
-	public void add (SteeringBehavior<T> behavior, float weight) {
+	public WeightedBlender<T> add (SteeringBehavior<T> behavior, float weight) {
 		add(new BehaviorAndWeight<T>(behavior, weight));
+		return this;
 	}
 
-	public void add (BehaviorAndWeight<T> weight) {
+	public WeightedBlender<T> add (BehaviorAndWeight<T> weight) {
 		weight.behavior.setOwner(owner);
 		weights.add(weight);
+		return this;
 	}
 
 	public BehaviorAndWeight<T> getBehaviorAndWeight (int i) {
@@ -107,9 +110,11 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxLinearAcceleration;
 	}
 
-	/** Sets the maximum linear acceleration that can be used. */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** Sets the maximum linear acceleration that can be used.
+	 * @return this behavior for chaining. */
+	public WeightedBlender<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 	/** Returns the maximum angular acceleration that can be used. */
@@ -117,9 +122,11 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxAngularAcceleration;
 	}
 
-	/** Sets the maximum angular acceleration that can be used. */
-	public void setMaxAngularAcceleration (float maxAngularAcceleration) {
+	/** Sets the maximum angular acceleration that can be used.
+	 * @return this behavior for chaining. */
+	public WeightedBlender<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
 		this.maxAngularAcceleration = maxAngularAcceleration;
+		return this;
 	}
 
 	public static class BehaviorAndWeight<T extends Vector<T>> {

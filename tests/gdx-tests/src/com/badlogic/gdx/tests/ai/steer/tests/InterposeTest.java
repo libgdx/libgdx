@@ -31,7 +31,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
@@ -48,7 +47,7 @@ public class InterposeTest extends SteeringTest {
 	SteeringActor c2;
 
 	Interpose<Vector2> interposeSB;
-	
+
 	public InterposeTest (SteeringBehaviorTest container) {
 		super(container, "Interpose");
 	}
@@ -63,47 +62,49 @@ public class InterposeTest extends SteeringTest {
 		c1 = new SteeringActor(container.greenFish, false);
 		c2 = new SteeringActor(container.badlogicSmall, false);
 
-		interposeSB = new Interpose<Vector2>(character, c1, c2, 900);
-		interposeSB.setMaxSpeed(300);
-		interposeSB.setTimeToTarget(0.1f);
-		interposeSB.setArrivalTolerance(0.001f);
-		interposeSB.setDecelerationRadius(20);
-		interposeSB.setInterpositionRatio(.5f);
+		interposeSB = new Interpose<Vector2>(character, c1, c2, .5f) //
+			.setMaxLinearAcceleration(700) //
+			.setMaxSpeed(300) //
+			.setTimeToTarget(0.1f) //
+			.setArrivalTolerance(0.001f) //
+			.setDecelerationRadius(20);
 		character.setSteeringBehavior(interposeSB);
-		
-		Wander<Vector2> wanderSB1 = new Wander<Vector2>(c1, 250, 0);
-		wanderSB1.setAlignTolerance(0.001f); // from Face
-		wanderSB1.setDecelerationRadius(5); // from Face
-		wanderSB1.setMaxRotation(5); // from Face
-		wanderSB1.setTimeToTarget(0.1f); // from Face
-		wanderSB1.setWanderOffset(110);
-		wanderSB1.setWanderOrientation(MathUtils.random(MathUtils.PI2));
-		wanderSB1.setWanderRadius(64);
-		wanderSB1.setWanderRate(MathUtils.PI / 6);
+
+		Wander<Vector2> wanderSB1 = new Wander<Vector2>(c1) //
+			.setMaxLinearAcceleration(250) //
+			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(5) //
+			.setMaxRotation(5) //
+			.setTimeToTarget(0.1f) //
+			.setWanderOffset(110) //
+			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
+			.setWanderRadius(64) //
+			.setWanderRate(MathUtils.PI / 6);
 		c1.setSteeringBehavior(wanderSB1);
 
-		Wander<Vector2> wanderSB2 = new Wander<Vector2>(c1, 450, 0);
-		wanderSB2.setAlignTolerance(0.001f); // from Face
-		wanderSB2.setDecelerationRadius(5); // from Face
-		wanderSB2.setMaxRotation(5); // from Face
-		wanderSB2.setTimeToTarget(0.1f); // from Face
-		wanderSB2.setWanderOffset(70);
-		wanderSB2.setWanderOrientation(MathUtils.random(MathUtils.PI2));
-		wanderSB2.setWanderRadius(94);
-		wanderSB2.setWanderRate(MathUtils.PI / 4);
+		Wander<Vector2> wanderSB2 = new Wander<Vector2>(c1) //
+			.setMaxLinearAcceleration(450) //
+			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(5) //
+			.setMaxRotation(5) //
+			.setTimeToTarget(0.1f) //
+			.setWanderOffset(70) //
+			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
+			.setWanderRadius(94).setWanderRate(MathUtils.PI / 4);
 		c2.setSteeringBehavior(wanderSB2);
 
 		table.addActor(character);
 		table.addActor(c1);
 		table.addActor(c2);
-		
+
 		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 		character.setMaxSpeed(200);
 		c1.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 		c1.setMaxSpeed(100);
 		c2.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 		c2.setMaxSpeed(100);
-
 
 		Table detailTable = new Table(container.skin);
 
@@ -124,7 +125,8 @@ public class InterposeTest extends SteeringTest {
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelInterpositionRatio = new Label("Interposition Ratio [" + interposeSB.getInterpositionRatio() + "]", container.skin);
+		final Label labelInterpositionRatio = new Label("Interposition Ratio [" + interposeSB.getInterpositionRatio() + "]",
+			container.skin);
 		detailTable.add(labelInterpositionRatio);
 		detailTable.row();
 		Slider interpositionRatio = new Slider(0, 1, 0.1f, false, container.skin);
@@ -147,7 +149,7 @@ public class InterposeTest extends SteeringTest {
 		debug.setChecked(drawDebug);
 		debug.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				CheckBox checkBox = (CheckBox)event.getListenerActor();
 				drawDebug = checkBox.isChecked();
 			}
@@ -163,8 +165,8 @@ public class InterposeTest extends SteeringTest {
 		detailWindow = createDetailWindow(detailTable);
 	}
 
-
 	Vector2 point = new Vector2();
+
 	@Override
 	public void render () {
 		if (drawDebug) {

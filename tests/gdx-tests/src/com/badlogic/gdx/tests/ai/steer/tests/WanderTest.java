@@ -47,7 +47,6 @@ public class WanderTest extends SteeringTest {
 		super(container, "Wander");
 	}
 
-
 	@Override
 	public void create (Table table) {
 		drawDebug = true;
@@ -57,100 +56,102 @@ public class WanderTest extends SteeringTest {
 		character = new SteeringActor(container.badlogicSmall, true);
 		character.setMaxSpeed(80);
 
-		this.wanderSB = new Wander<Vector2>(character, 50, 10);
-		wanderSB.setAlignTolerance(0.001f); // from Face
-		wanderSB.setDecelerationRadius(5); // from Face
-		wanderSB.setMaxRotation(5); // from Face
-		wanderSB.setTimeToTarget(0.1f); // from Face
-		wanderSB.setWanderOffset(90);
-		wanderSB.setWanderOrientation(10);
-		wanderSB.setWanderRadius(40);
-		wanderSB.setWanderRate(MathUtils.PI / 5);
+		this.wanderSB = new Wander<Vector2>(character) //
+			.setMaxLinearAcceleration(50) //
+			.setMaxAngularAcceleration(10) // greater than 0 because independent facing is enabled
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(5) //
+			.setMaxRotation(5) //
+			.setTimeToTarget(0.1f) //
+			.setWanderOffset(90) //
+			.setWanderOrientation(10) //
+			.setWanderRadius(40) //
+			.setWanderRate(MathUtils.PI / 5);
 		character.setSteeringBehavior(wanderSB);
-		
+
 		table.addActor(character);
-		
+
 		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
 
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.["+wanderSB.getMaxLinearAcceleration()+"]", container.skin);
+		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + wanderSB.getMaxLinearAcceleration() + "]", container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
 		Slider maxLinAcc = new Slider(0, 10000, 1, false, container.skin);
 		maxLinAcc.setValue(wanderSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				wanderSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.["+slider.getValue()+"]");
+				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelMaxAngAcc = new Label("Max ang.acc.["+wanderSB.getMaxAngularAcceleration()+"]", container.skin);
+		final Label labelMaxAngAcc = new Label("Max ang.acc.[" + wanderSB.getMaxAngularAcceleration() + "]", container.skin);
 		detailTable.add(labelMaxAngAcc);
 		detailTable.row();
 		Slider maxAngAcc = new Slider(0, 500, 1, false, container.skin);
 		maxAngAcc.setValue(wanderSB.getMaxAngularAcceleration());
 		maxAngAcc.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				wanderSB.setMaxAngularAcceleration(slider.getValue());
-				labelMaxAngAcc.setText("Max ang.acc.["+slider.getValue()+"]");
+				labelMaxAngAcc.setText("Max ang.acc.[" + slider.getValue() + "]");
 				character.setIndependentFacing(slider.getValue() > 0);
 			}
 		});
 		detailTable.add(maxAngAcc);
 
 		detailTable.row();
-		final Label labelWanderOffset = new Label("Wander Offset ["+wanderSB.getWanderOffset()+"]", container.skin);
+		final Label labelWanderOffset = new Label("Wander Offset [" + wanderSB.getWanderOffset() + "]", container.skin);
 		detailTable.add(labelWanderOffset);
 		detailTable.row();
 		Slider wanderOffset = new Slider(0, 300, 1, false, container.skin);
 		wanderOffset.setValue(wanderSB.getWanderOffset());
 		wanderOffset.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				wanderSB.setWanderOffset(slider.getValue());
-				labelWanderOffset.setText("Wander Offset ["+slider.getValue()+"]");
+				labelWanderOffset.setText("Wander Offset [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(wanderOffset);
 
 		detailTable.row();
-		final Label labelWanderRadius = new Label("Wander Radius ["+wanderSB.getWanderRadius()+"]", container.skin);
+		final Label labelWanderRadius = new Label("Wander Radius [" + wanderSB.getWanderRadius() + "]", container.skin);
 		detailTable.add(labelWanderRadius);
 		detailTable.row();
 		Slider wanderRadius = new Slider(0, 200, 1, false, container.skin);
 		wanderRadius.setValue(wanderSB.getWanderRadius());
 		wanderRadius.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				wanderSB.setWanderRadius(slider.getValue());
-				labelWanderRadius.setText("Wander Radius ["+slider.getValue()+"]");
+				labelWanderRadius.setText("Wander Radius [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(wanderRadius);
 
 		detailTable.row();
-		final Label labelWanderRate = new Label("Wander Rate ["+wanderSB.getWanderRate()+"]", container.skin);
+		final Label labelWanderRate = new Label("Wander Rate [" + wanderSB.getWanderRate() + "]", container.skin);
 		detailTable.add(labelWanderRate);
 		detailTable.row();
 		Slider wanderRate = new Slider(0, MathUtils.PI2, MathUtils.degreesToRadians, false, container.skin);
 		wanderRate.setValue(wanderSB.getWanderRate());
 		wanderRate.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				wanderSB.setWanderRate(slider.getValue());
-				labelWanderRate.setText("Wander Rate ["+slider.getValue()+"]");
+				labelWanderRate.setText("Wander Rate [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(wanderRate);
@@ -163,7 +164,7 @@ public class WanderTest extends SteeringTest {
 		debug.setChecked(drawDebug);
 		debug.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				CheckBox checkBox = (CheckBox)event.getListenerActor();
 				drawDebug = checkBox.isChecked();
 			}
@@ -172,7 +173,7 @@ public class WanderTest extends SteeringTest {
 
 		detailTable.row();
 		addSeparator(detailTable);
-		
+
 		detailTable.row();
 		addMaxSpeedController(detailTable, character);
 

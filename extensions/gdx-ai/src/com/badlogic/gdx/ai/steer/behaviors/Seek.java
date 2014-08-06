@@ -35,7 +35,20 @@ public class Seek<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The maximum acceleration that can be used to reach the target. */
 	protected float maxLinearAcceleration;
 
-	/** Creates a {@code Seek} behavior for the specified owner and target position.
+	/** Creates a {@code Seek} behavior for the specified owner.
+	 * @param owner the owner of this behavior. */
+	public Seek (Steerable<T> owner) {
+		this(owner, null);
+	}
+
+	/** Creates a {@code Seek} behavior for the specified owner and target.
+	 * @param owner the owner of this behavior
+	 * @param target the target agent of this behavior. */
+	public Seek (Steerable<T> owner, Steerable<T> target) {
+		this(owner, target, 0);
+	}
+
+	/** Creates a {@code Seek} behavior for the specified owner, target position and maximum linear acceleration.
 	 * @param owner the owner of this behavior
 	 * @param target the target agent of this behavior
 	 * @param maxLinearAcceleration the maximum acceleration that can be used to reach the target. */
@@ -65,9 +78,11 @@ public class Seek<T extends Vector<T>> extends SteeringBehavior<T> {
 		return target;
 	}
 
-	/** Sets the target to seek. */
-	public void setTarget (Steerable<T> target) {
+	/** Sets the target to seek.
+	 * @return this behavior for chaining. */
+	public Seek<T> setTarget (Steerable<T> target) {
 		this.target = target;
+		return this;
 	}
 
 	/** Returns the maximum linear acceleration that can be used. */
@@ -75,9 +90,11 @@ public class Seek<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxLinearAcceleration;
 	}
 
-	/** Sets the maximum linear acceleration that can be used. */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** Sets the maximum linear acceleration that can be used.
+	 * @return this behavior for chaining. */
+	public Seek<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 }

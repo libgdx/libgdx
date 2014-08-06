@@ -17,21 +17,16 @@
 package com.badlogic.gdx.tests.ai.steer;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.utils.Array;
@@ -73,48 +68,40 @@ public abstract class SteeringTest {
 	protected CollapsableWindow createDetailWindow (Table table) {
 		CollapsableWindow window = new CollapsableWindow(this.name, container.skin);
 		window.row();
-		ScrollPane pane = new ScrollPane(table, container.skin);
-		pane.setFadeScrollBars(false);
-		window.add(pane);
+		window.add(table);
 		window.pack();
-//		window.pack();
-//		if (window.getHeight() > stage.getHeight()) {
-//			window.setHeight(stage.getHeight());
-//		}
-//		window.setX(x < 0 ? stage.getWidth() - (window.getWidth() - (x + 1)) : x);
-//		window.setY(y < 0 ? stage.getHeight() - (window.getHeight() - (y + 1)) : y);
 		window.layout();
 		window.collapse();
 		return window;
 	}
 
-	protected void addMaxSpeedController(Table table, final SteeringActor character) {
+	protected void addMaxSpeedController (Table table, final SteeringActor character) {
 		addMaxSpeedController(table, character, 0, 500);
 	}
 
-	protected void addMaxSpeedController(Table table, final SteeringActor character, float minValue, float maxValue) {
-		final Label labelMaxSpeed = new Label("Max Speed ["+character.getMaxSpeed()+"]", container.skin);
+	protected void addMaxSpeedController (Table table, final SteeringActor character, float minValue, float maxValue) {
+		final Label labelMaxSpeed = new Label("Max Speed [" + character.getMaxSpeed() + "]", container.skin);
 		table.add(labelMaxSpeed);
 		table.row();
 		Slider maxSpeed = new Slider(0, 500, 1, false, container.skin);
 		maxSpeed.setValue(character.getMaxSpeed());
 		maxSpeed.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				character.setMaxSpeed(slider.getValue());
-				labelMaxSpeed.setText("Max Speed ["+character.getMaxSpeed()+"]");
+				labelMaxSpeed.setText("Max Speed [" + character.getMaxSpeed() + "]");
 			}
 		});
 		table.add(maxSpeed);
 	}
 
-	protected void addAlignOrientationToLinearVelocityController(Table table, final SteeringActor character) {
+	protected void addAlignOrientationToLinearVelocityController (Table table, final SteeringActor character) {
 		CheckBox alignOrient = new CheckBox("Align orient.to velocity", container.skin);
 		alignOrient.setChecked(character.isIndependentFacing());
 		alignOrient.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				CheckBox checkBox = (CheckBox)event.getListenerActor();
 				character.setIndependentFacing(checkBox.isChecked());
 			}
@@ -122,23 +109,24 @@ public abstract class SteeringTest {
 		table.add(alignOrient);
 	}
 
-	protected void addSeparator(Table table) {
+	protected void addSeparator (Table table) {
 		Label lbl = new Label("", container.skin);
 		lbl.setColor(0.75f, 0.75f, 0.75f, 1);
 		lbl.setStyle(new LabelStyle(lbl.getStyle()));
 		lbl.getStyle().background = container.skin.newDrawable("white");
 		table.add(lbl).colspan(2).height(1).width(220).pad(5, 1, 5, 1);
 	}
-	
-	protected void setRandomNonOverlappingPosition(SteeringActor character, Array<SteeringActor> others) {
+
+	protected void setRandomNonOverlappingPosition (SteeringActor character, Array<SteeringActor> others,
+		float minDistanceFromBoundary) {
 		SET_NEW_POS:
 		while (true) {
 			character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 			character.getPosition().set(character.getCenterX(), character.getCenterY());
 			for (int i = 0; i < others.size; i++) {
 				SteeringActor other = (SteeringActor)others.get(i);
-				if (character.getPosition().dst(other.getPosition()) <= character.getBoundingRadius() + other.getBoundingRadius())
-					continue SET_NEW_POS;
+				if (character.getPosition().dst(other.getPosition()) <= character.getBoundingRadius() + other.getBoundingRadius()
+					+ minDistanceFromBoundary) continue SET_NEW_POS;
 			}
 			return;
 		}

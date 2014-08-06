@@ -54,14 +54,18 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The time over which to achieve target speed */
 	protected float timeToTarget = 0.1f;
 
-	/** Creates an {@code Arrive} behavior for the specified owner, target and acceleration.
+	/** Creates an {@code Arrive} behavior for the specified owner.
+	 * @param owner the owner of this behavior */
+	public Arrive (Steerable<T> owner) {
+		this(owner, null);
+	}
+
+	/** Creates an {@code Arrive} behavior for the specified owner and target.
 	 * @param owner the owner of this behavior
-	 * @param target the target of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to arrive at the target. */
-	public Arrive (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
+	 * @param target the target of this behavior */
+	public Arrive (Steerable<T> owner, Steerable<T> target) {
 		super(owner);
 		this.target = target;
-		this.maxLinearAcceleration = maxLinearAcceleration;
 	}
 
 	@Override
@@ -102,9 +106,11 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		return target;
 	}
 
-	/** Sets the target to arrive to. */
-	public void setTarget (Steerable<T> target) {
+	/** Sets the target to arrive to.
+	 * @return this behavior for chaining. */
+	public Arrive<T> setTarget (Steerable<T> target) {
 		this.target = target;
+		return this;
 	}
 
 	/** Returns the maximum linear acceleration the owner can use. */
@@ -112,9 +118,11 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxLinearAcceleration;
 	}
 
-	/** Sets the maximum linear acceleration the owner can use. */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** Sets the maximum linear acceleration the owner can use.
+	 * @return this behavior for chaining. */
+	public Arrive<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 	/** Returns the maximum speed of the owner. */
@@ -122,9 +130,11 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxSpeed;
 	}
 
-	/** Sets the maximum speed of the owner. */
-	public void setMaxSpeed (float maxSpeed) {
+	/** Sets the maximum speed of the owner.
+	 * @return this behavior for chaining. */
+	public Arrive<T> setMaxSpeed (float maxSpeed) {
 		this.maxSpeed = maxSpeed;
+		return this;
 	}
 
 	/** Returns the tolerance for arriving at the target. It lets the owner get near enough to the target without letting small
@@ -134,9 +144,11 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	/** Sets the tolerance for arriving at the target. It lets the owner get near enough to the target without letting small errors
-	 * keep it in motion. */
-	public void setArrivalTolerance (float arrivalTolerance) {
+	 * keep it in motion.
+	 * @return this behavior for chaining. */
+	public Arrive<T> setArrivalTolerance (float arrivalTolerance) {
 		this.arrivalTolerance = arrivalTolerance;
+		return this;
 	}
 
 	/** Returns the radius for beginning to slow down. */
@@ -144,9 +156,11 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		return decelerationRadius;
 	}
 
-	/** Sets the radius for beginning to slow down. */
-	public void setDecelerationRadius (float decelerationRadius) {
+	/** Sets the radius for beginning to slow down.
+	 * @return this behavior for chaining. */
+	public Arrive<T> setDecelerationRadius (float decelerationRadius) {
 		this.decelerationRadius = decelerationRadius;
+		return this;
 	}
 
 	/** Returns the time over which to achieve target speed. */
@@ -154,9 +168,11 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		return timeToTarget;
 	}
 
-	/** Sets the time over which to achieve target speed. */
-	public void setTimeToTarget (float timeToTarget) {
+	/** Sets the time over which to achieve target speed.
+	 * @return this behavior for chaining. */
+	public Arrive<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

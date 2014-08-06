@@ -47,21 +47,23 @@ public class PursueTest extends SteeringTest {
 
 		final Pursue<Vector2> pursueSB = new Pursue<Vector2>(character, prey, 600, 0.3f);
 		character.setSteeringBehavior(pursueSB);
-		
-		Wander<Vector2> wanderSB = new Wander<Vector2>(prey, 250, 0);
-		wanderSB.setAlignTolerance(0.001f); // from Face
-		wanderSB.setDecelerationRadius(5); // from Face
-		wanderSB.setMaxRotation(5); // from Face
-		wanderSB.setTimeToTarget(0.1f); // from Face
-		wanderSB.setWanderOffset(110);
-		wanderSB.setWanderOrientation(10);
-		wanderSB.setWanderRadius(64);
-		wanderSB.setWanderRate(MathUtils.PI / 6);
+
+		Wander<Vector2> wanderSB = new Wander<Vector2>(prey) //
+			.setMaxLinearAcceleration(250) //
+			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(5) //
+			.setMaxRotation(5) //
+			.setTimeToTarget(0.1f) //
+			.setWanderOffset(110) //
+			.setWanderOrientation(10) //
+			.setWanderRadius(64) //
+			.setWanderRate(MathUtils.PI / 6);
 		prey.setSteeringBehavior(wanderSB);
 
 		table.addActor(character);
 		table.addActor(prey);
-		
+
 		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 		character.setMaxSpeed(100);
 		prey.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
@@ -86,7 +88,8 @@ public class PursueTest extends SteeringTest {
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelMaxPredictionTime = new Label("Max.Prediction Time[" + pursueSB.getMaxPredictionTime() + "] sec.", container.skin);
+		final Label labelMaxPredictionTime = new Label("Max.Prediction Time[" + pursueSB.getMaxPredictionTime() + "] sec.",
+			container.skin);
 		detailTable.add(labelMaxPredictionTime);
 		detailTable.row();
 		Slider maxPredictionTime = new Slider(0, 5, .1f, false, container.skin);

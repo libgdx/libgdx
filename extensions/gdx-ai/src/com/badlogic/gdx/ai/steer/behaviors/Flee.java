@@ -28,6 +28,19 @@ import com.badlogic.gdx.math.Vector;
  * @autor davebaol */
 public class Flee<T extends Vector<T>> extends Seek<T> {
 
+	/** Creates a {@code Flee} behavior for the specified owner.
+	 * @param owner the owner of this behavior. */
+	public Flee (Steerable<T> owner) {
+		this(owner, null);
+	}
+
+	/** Creates a {@code Flee} behavior for the specified owner and target.
+	 * @param owner the owner of this behavior
+	 * @param target the target agent of this behavior. */
+	public Flee (Steerable<T> owner, Steerable<T> target) {
+		this(owner, target, 0);
+	}
+
 	/** Creates a {@code Flee} behavior for the specified owner, target and maximum linear acceleration.
 	 * @param owner the owner of this behavior
 	 * @param target the target of this behavior
@@ -47,6 +60,22 @@ public class Flee<T extends Vector<T>> extends Seek<T> {
 
 		// Output steering acceleration
 		return steering;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Flee<T> setTarget (Steerable<T> target) {
+		this.target = target;
+		return this;
+	}
+
+	@Override
+	public Flee<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 }

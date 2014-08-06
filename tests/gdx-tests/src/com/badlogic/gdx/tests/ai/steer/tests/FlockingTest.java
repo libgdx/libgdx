@@ -70,32 +70,35 @@ public class FlockingTest extends SteeringTest {
 		for (int i = 0; i < 60; i++) {
 			SteeringActor character = new SteeringActor(container.greenFish, false);
 
-			FieldOfViewProximity<Vector2> proximity = new FieldOfViewProximity<Vector2>(character, characters, 150, 270 * MathUtils.degreesToRadians);
+			FieldOfViewProximity<Vector2> proximity = new FieldOfViewProximity<Vector2>(character, characters, 150,
+				270 * MathUtils.degreesToRadians);
 			proximities.add(proximity);
 			if (i == 0) char0Proximity = proximity;
 			Alignment<Vector2> groupAlignmentSB = new Alignment<Vector2>(character, proximity);
 			Separation<Vector2> groupSeparationSB = new Separation<Vector2>(character, proximity);
 			Cohesion<Vector2> groupCohesionSB = new Cohesion<Vector2>(character, proximity);
 
-			WeightedBlender<Vector2> weightedBlender = new WeightedBlender<Vector2>(character, 500, 500);
-			weightedBlender.add(groupAlignmentSB, 2f);
-			weightedBlender.add(groupCohesionSB, 45f);
-			weightedBlender.add(groupSeparationSB, 350f);
+			WeightedBlender<Vector2> weightedBlender = new WeightedBlender<Vector2>(character, 500, 500) //
+				.add(groupAlignmentSB, 2f) //
+				.add(groupCohesionSB, 45f) //
+				.add(groupSeparationSB, 350f);
 			weightedBlenders.add(weightedBlender);
 
-			Wander<Vector2> wanderSB = new Wander<Vector2>(character, 30, 0);
-			wanderSB.setAlignTolerance(0.001f); // from Face
-			wanderSB.setDecelerationRadius(5); // from Face
-			wanderSB.setMaxRotation(5); // from Face
-			wanderSB.setTimeToTarget(0.1f); // from Face
-			wanderSB.setWanderOffset(60);
-			wanderSB.setWanderOrientation(10);
-			wanderSB.setWanderRadius(40);
-			wanderSB.setWanderRate(MathUtils.PI / 5);
+			Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
+				.setMaxLinearAcceleration(30) //
+				.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+				.setAlignTolerance(0.001f) //
+				.setDecelerationRadius(5) //
+				.setMaxRotation(5) //
+				.setTimeToTarget(0.1f) //
+				.setWanderOffset(60) //
+				.setWanderOrientation(10) //
+				.setWanderRadius(40) //
+				.setWanderRate(MathUtils.PI / 5);
 
-			PrioritySteering<Vector2> prioritySteeringSB = new PrioritySteering<Vector2>(character, 0.0001f);
-			prioritySteeringSB.add(weightedBlender);
-			prioritySteeringSB.add(wanderSB);
+			PrioritySteering<Vector2> prioritySteeringSB = new PrioritySteering<Vector2>(character, 0.0001f) //
+				.add(weightedBlender) //
+				.add(wanderSB);
 
 			character.setSteeringBehavior(prioritySteeringSB);
 
@@ -188,18 +191,18 @@ public class FlockingTest extends SteeringTest {
 		detailTable.add(proximityRadius);
 
 		detailTable.row();
-		final Label labelProximityAngle = new Label("Proximity Angle ["+proximities.get(0).getAngle()+"]", container.skin);
+		final Label labelProximityAngle = new Label("Proximity Angle [" + proximities.get(0).getAngle() + "]", container.skin);
 		detailTable.add(labelProximityAngle);
 		detailTable.row();
 		Slider proximityAngle = new Slider(0, 360, 1, false, container.skin);
-		proximityAngle.setValue(proximities.get(0).getAngle()*MathUtils.degreesToRadians);
+		proximityAngle.setValue(proximities.get(0).getAngle() * MathUtils.degreesToRadians);
 		proximityAngle.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < proximities.size; i++)
-					proximities.get(i).setAngle(slider.getValue()*MathUtils.degreesToRadians);
-				labelProximityAngle.setText("Proximity Angle ["+slider.getValue()+"]");
+					proximities.get(i).setAngle(slider.getValue() * MathUtils.degreesToRadians);
+				labelProximityAngle.setText("Proximity Angle [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(proximityAngle);
@@ -261,17 +264,18 @@ public class FlockingTest extends SteeringTest {
 	@Override
 	public void render () {
 		if (drawDebug) {
-//			SteeringActor character = characters.get(0);
-//			shapeRenderer.begin(ShapeType.Line);
-//			shapeRenderer.setColor(0, 1, 0, 1);
-//			shapeRenderer.circle(character.getPosition().x, character.getPosition().y, char0Proximity.getRadius());
-//			shapeRenderer.end();
+// SteeringActor character = characters.get(0);
+// shapeRenderer.begin(ShapeType.Line);
+// shapeRenderer.setColor(0, 1, 0, 1);
+// shapeRenderer.circle(character.getPosition().x, character.getPosition().y, char0Proximity.getRadius());
+// shapeRenderer.end();
 			Steerable<Vector2> steerable = characters.get(0);
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(0, 1, 0, 1);
-//			shapeRenderer.circle(steerable.getPosition().x, steerable.getPosition().y, char0Proximity.getRadius());
+// shapeRenderer.circle(steerable.getPosition().x, steerable.getPosition().y, char0Proximity.getRadius());
 			float angle = char0Proximity.getAngle() * MathUtils.radiansToDegrees;
-			shapeRenderer.arc(steerable.getPosition().x, steerable.getPosition().y, char0Proximity.getRadius(), steerable.getOrientation() * MathUtils.radiansToDegrees - angle / 2f + 90f, angle);
+			shapeRenderer.arc(steerable.getPosition().x, steerable.getPosition().y, char0Proximity.getRadius(),
+				steerable.getOrientation() * MathUtils.radiansToDegrees - angle / 2f + 90f, angle);
 			shapeRenderer.end();
 		}
 	}

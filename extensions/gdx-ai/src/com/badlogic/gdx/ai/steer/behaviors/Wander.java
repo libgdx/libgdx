@@ -70,12 +70,10 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	private T wanderCenter;
 
 	/** Creates a {@code Wander} behavior for the specified owner.
-	 * @param owner the owner of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used.
-	 * @param maxAngularAcceleration the maximum angular acceleration that can be used. */
-	public Wander (Steerable<T> owner, float maxLinearAcceleration, float maxAngularAcceleration) {
-		super(owner, null, maxAngularAcceleration);
-		this.maxLinearAcceleration = maxLinearAcceleration;
+	 * @param owner the owner of this behavior. */
+	public Wander (Steerable<T> owner) {
+		super(owner);
+
 		this.internalTargetPosition = owner.newVector();
 		this.wanderCenter = owner.newVector();
 	}
@@ -119,9 +117,11 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return wanderOffset;
 	}
 
-	/** Sets the forward offset of the wander circle. */
-	public void setWanderOffset (float wanderOffset) {
+	/** Sets the forward offset of the wander circle.
+	 * @return this behavior for chaining. */
+	public Wander<T> setWanderOffset (float wanderOffset) {
 		this.wanderOffset = wanderOffset;
+		return this;
 	}
 
 	/** Returns the radius of the wander circle. */
@@ -129,9 +129,11 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return wanderRadius;
 	}
 
-	/** Sets the radius of the wander circle. */
-	public void setWanderRadius (float wanderRadius) {
+	/** Sets the radius of the wander circle.
+	 * @return this behavior for chaining. */
+	public Wander<T> setWanderRadius (float wanderRadius) {
 		this.wanderRadius = wanderRadius;
+		return this;
 	}
 
 	/** Returns the maximum rate at which the wander orientation can change. */
@@ -139,9 +141,11 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return wanderRate;
 	}
 
-	/** Sets the maximum rate at which the wander orientation can change. */
-	public void setWanderRate (float wanderRate) {
+	/** Sets the maximum rate at which the wander orientation can change.
+	 * @return this behavior for chaining. */
+	public Wander<T> setWanderRate (float wanderRate) {
 		this.wanderRate = wanderRate;
+		return this;
 	}
 
 	/** Returns the current orientation of the wander target. */
@@ -149,9 +153,11 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return wanderOrientation;
 	}
 
-	/** Sets the current orientation of the wander target. */
-	public void setWanderOrientation (float wanderOrientation) {
+	/** Sets the current orientation of the wander target.
+	 * @return this behavior for chaining. */
+	public Wander<T> setWanderOrientation (float wanderOrientation) {
 		this.wanderOrientation = wanderOrientation;
+		return this;
 	}
 
 	/** Returns maximum linear acceleration of the owner. */
@@ -159,9 +165,11 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return maxLinearAcceleration;
 	}
 
-	/** Sets maximum linear acceleration of the owner. */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** Sets maximum linear acceleration of the owner.
+	 * @return this behavior for chaining. */
+	public Wander<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 	/** Returns the current position of the wander target. This method is useful for debug purpose. */
@@ -172,6 +180,46 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	/** Returns the current center of the wander circle. This method is useful for debug purpose. */
 	public T getWanderCenter () {
 		return wanderCenter;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Wander<T> setTarget (Steerable<T> target) {
+		this.target = target;
+		return this;
+	}
+
+	@Override
+	public Wander<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
+		this.maxAngularAcceleration = maxAngularAcceleration;
+		return this;
+	}
+
+	@Override
+	public Wander<T> setMaxRotation (float maxRotation) {
+		this.maxRotation = maxRotation;
+		return this;
+	}
+
+	@Override
+	public Wander<T> setAlignTolerance (float alignTolerance) {
+		this.alignTolerance = alignTolerance;
+		return this;
+	}
+
+	@Override
+	public Wander<T> setDecelerationRadius (float decelerationRadius) {
+		this.decelerationRadius = decelerationRadius;
+		return this;
+	}
+
+	@Override
+	public Wander<T> setTimeToTarget (float timeToTarget) {
+		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

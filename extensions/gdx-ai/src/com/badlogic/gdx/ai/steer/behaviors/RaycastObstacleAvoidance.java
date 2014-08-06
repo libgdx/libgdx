@@ -39,14 +39,14 @@ import com.badlogic.gdx.math.Vector;
  * grazes convex obstacles. The parallel configuration works well in areas where corners are highly obtuse but is very susceptible
  * to the corner trap.
  * <p>
- * <a name="cornerTrap"><h2>The corner trap</h2></a>
- * All the basic configurations for multi-ray obstacle avoidance can suffer from a crippling problem with acute angled corners
- * (any convex corner, in fact, but it is more prevalent with acute angles). Consider a character with two parallel rays that is
- * going towards a corner. As soon as its left ray is colliding with the wall near the corner, the steering behavior will turn it
- * to the left to avoid the collision. Immediately, the right ray will then be colliding the other side of the corner, and the
- * steering behavior will turn the character to the right. The character will repeatedly collide both sides of the corner in rapid
- * succession. It will appear to home into the corner directly, until it slams into the wall. It will be unable to free itself
- * from the trap.
+ * <a name="cornerTrap">
+ * <h2>The corner trap</h2></a> All the basic configurations for multi-ray obstacle avoidance can suffer from a crippling problem
+ * with acute angled corners (any convex corner, in fact, but it is more prevalent with acute angles). Consider a character with
+ * two parallel rays that is going towards a corner. As soon as its left ray is colliding with the wall near the corner, the
+ * steering behavior will turn it to the left to avoid the collision. Immediately, the right ray will then be colliding the other
+ * side of the corner, and the steering behavior will turn the character to the right. The character will repeatedly collide both
+ * sides of the corner in rapid succession. It will appear to home into the corner directly, until it slams into the wall. It will
+ * be unable to free itself from the trap.
  * <p>
  * The fan structure, with a wide enough fan angle, alleviates this problem. Often, there is a trade-off, however, between
  * avoiding the corner trap with a large fan angle and keeping the angle small to allow the character to access small passages. At
@@ -83,6 +83,38 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	private Ray<T> minOutputRay;
 
 	/** Creates a {@code RaycastObstacleAvoidance} behavior.
+	 * @param owner the owner of this behavior */
+	public RaycastObstacleAvoidance (Steerable<T> owner) {
+		this(owner, null);
+	}
+
+	/** Creates a {@code RaycastObstacleAvoidance} behavior.
+	 * @param owner the owner of this behavior
+	 * @param rayConfiguration the ray configuration */
+	public RaycastObstacleAvoidance (Steerable<T> owner, RayConfiguration<T> rayConfiguration) {
+		this(owner, rayConfiguration, null);
+	}
+
+	/** Creates a {@code RaycastObstacleAvoidance} behavior.
+	 * @param owner the owner of this behavior
+	 * @param rayConfiguration the ray configuration
+	 * @param raycastCollisionDetector the collision detector */
+	public RaycastObstacleAvoidance (Steerable<T> owner, RayConfiguration<T> rayConfiguration,
+		RaycastCollisionDetector<T> raycastCollisionDetector) {
+		this(owner, rayConfiguration, raycastCollisionDetector, 0);
+	}
+
+	/** Creates a {@code RaycastObstacleAvoidance} behavior.
+	 * @param owner the owner of this behavior
+	 * @param rayConfiguration the ray configuration
+	 * @param raycastCollisionDetector the collision detector
+	 * @param distanceFromBoundary the minimum distance to a wall (i.e., how far to avoid collision) */
+	public RaycastObstacleAvoidance (Steerable<T> owner, RayConfiguration<T> rayConfiguration,
+		RaycastCollisionDetector<T> raycastCollisionDetector, float distanceFromBoundary) {
+		this(owner, rayConfiguration, raycastCollisionDetector, distanceFromBoundary, 0);
+	}
+
+	/** Creates a {@code RaycastObstacleAvoidance} behavior.
 	 * @param owner the owner of this behavior
 	 * @param rayConfiguration the ray configuration
 	 * @param raycastCollisionDetector the collision detector
@@ -102,7 +134,7 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 
 	@Override
 	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
-		T ownerPosition = getOwner().getPosition();
+		T ownerPosition = owner.getPosition();
 		float minDistanceSquare = Float.POSITIVE_INFINITY;
 
 		// Get the updated rays
@@ -145,9 +177,11 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	}
 
 	/** Sets the maximum linear acceleration.
-	 * @param maxLinearAcceleration the maximum linear acceleration to set */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	 * @param maxLinearAcceleration the maximum linear acceleration to set
+	 * @return this behavior for chaining. */
+	public RaycastObstacleAvoidance<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 	/** Returns the ray configuration of this behavior. */
@@ -156,20 +190,22 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	}
 
 	/** Sets the ray configuration of this behavior.
-	 * @param rayConfiguration the ray configuration to set */
-	public void setRayConfiguration (RayConfiguration<T> rayConfiguration) {
+	 * @param rayConfiguration the ray configuration to set
+	 * @return this behavior for chaining. */
+	public RaycastObstacleAvoidance<T> setRayConfiguration (RayConfiguration<T> rayConfiguration) {
 		this.rayConfiguration = rayConfiguration;
+		return this;
 	}
 
-	/** Returns the raycast collision detector of this behavior. */
-	public RaycastCollisionDetector<T> getRaycastCollisionDetector () {
-		return raycastCollisionDetector;
-	}
-
-	/** Sets the raycast collision detector of this behavior.
-	 * @param raycastCollisionDetector the raycast collision detector to set */
-	public void setRaycastCollisionDetector (RaycastCollisionDetector<T> raycastCollisionDetector) {
+	/** Returns the raycast collision detector of this behavior. public RaycastCollisionDetector<T> getRaycastCollisionDetector () {
+	 * return raycastCollisionDetector; }
+	 * 
+	 * /** Sets the raycast collision detector of this behavior.
+	 * @param raycastCollisionDetector the raycast collision detector to set
+	 * @return this behavior for chaining. */
+	public RaycastObstacleAvoidance<T> setRaycastCollisionDetector (RaycastCollisionDetector<T> raycastCollisionDetector) {
 		this.raycastCollisionDetector = raycastCollisionDetector;
+		return this;
 	}
 
 	/** Returns the distance from boundary, i.e. the minimum distance to an obstacle. */
@@ -178,9 +214,11 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	}
 
 	/** Sets the distance from boundary, i.e. the minimum distance to an obstacle.
-	 * @param distanceFromBoundary the distanceFromBoundary to set */
-	public void setDistanceFromBoundary (float distanceFromBoundary) {
+	 * @param distanceFromBoundary the distanceFromBoundary to set
+	 * @return this behavior for chaining. */
+	public RaycastObstacleAvoidance<T> setDistanceFromBoundary (float distanceFromBoundary) {
 		this.distanceFromBoundary = distanceFromBoundary;
+		return this;
 	}
 
 	public interface RayConfiguration<T extends Vector<T>> {

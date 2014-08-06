@@ -17,8 +17,8 @@
 package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
+import com.badlogic.gdx.ai.steer.paths.LinePath;
 import com.badlogic.gdx.ai.steer.paths.LinePath.LinePathParam;
-import com.badlogic.gdx.ai.steer.paths.LinePath2D;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -44,7 +44,7 @@ public class FollowPathTest extends SteeringTest {
 	boolean drawDebug;
 
 	SteeringActor character;
-	
+
 	Vector2[] wayPoints;
 
 	FollowPath<Vector2, LinePathParam> followPathSB;
@@ -60,48 +60,48 @@ public class FollowPathTest extends SteeringTest {
 
 		character = new SteeringActor(container.badlogicSmall, false);
 		character.setMaxSpeed(100);
-		
+
 		wayPoints = createRandomPath(MathUtils.random(4, 12), 50, 50, container.stageWidth - 50, container.stageHeight - 50);
 
-		LinePath2D linePath2D = new LinePath2D(wayPoints);
-		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath2D, 30, 300);
+		LinePath<Vector2> linePath = new LinePath<Vector2>(wayPoints);
+		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30, 300);
 
 		character.setSteeringBehavior(followPathSB);
 
 		table.addActor(character);
 
 		character.setPosition(wayPoints[0].x, wayPoints[0].y);
-		
+
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelPathOffset= new Label("Path Offset ["+followPathSB.getPathOffset()+"]", container.skin);
+		final Label labelPathOffset = new Label("Path Offset [" + followPathSB.getPathOffset() + "]", container.skin);
 		detailTable.add(labelPathOffset);
 		detailTable.row();
 		Slider pathOffset = new Slider(-150, +150, 5, false, container.skin);
 		pathOffset.setValue(followPathSB.getPathOffset());
 		pathOffset.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				followPathSB.setPathOffset(slider.getValue());
-				labelPathOffset.setText("Path Offset ["+slider.getValue()+"]");
+				labelPathOffset.setText("Path Offset [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(pathOffset);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.["+followPathSB.getMaxLinearAcceleration()+"]", container.skin);
+		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + followPathSB.getMaxLinearAcceleration() + "]", container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
 		Slider maxLinAcc = new Slider(0, 5000, 10, false, container.skin);
 		maxLinAcc.setValue(followPathSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				followPathSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.["+slider.getValue()+"]");
+				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxLinAcc);
@@ -114,7 +114,7 @@ public class FollowPathTest extends SteeringTest {
 		debug.setChecked(drawDebug);
 		debug.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				CheckBox checkBox = (CheckBox)event.getListenerActor();
 				drawDebug = checkBox.isChecked();
 			}
@@ -123,12 +123,12 @@ public class FollowPathTest extends SteeringTest {
 
 		detailTable.row();
 		addSeparator(detailTable);
-		
+
 		detailTable.row();
 		addMaxSpeedController(detailTable, character);
 
-//		detailWindow.row();
-//		addAlignOrientationToLinearVelocityController(detailWindow, character);
+// detailWindow.row();
+// addAlignOrientationToLinearVelocityController(detailWindow, character);
 
 		detailWindow = createDetailWindow(detailTable);
 	}
@@ -141,14 +141,14 @@ public class FollowPathTest extends SteeringTest {
 		for (int i = 0; i < wayPoints.length; i++) {
 			int next = (i + 1) % wayPoints.length;
 			shapeRenderer.line(wayPoints[i], wayPoints[next]);
-		}		
+		}
 		shapeRenderer.end();
 
 		if (drawDebug) {
 			// Draw target
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(1, 1, 0, 1);
-			shapeRenderer.circle(followPathSB.targetPos.x, followPathSB.targetPos.y, 5);
+			shapeRenderer.circle(followPathSB.getInternalTargetPosition().x, followPathSB.getInternalTargetPosition().y, 5);
 			shapeRenderer.end();
 		}
 	}

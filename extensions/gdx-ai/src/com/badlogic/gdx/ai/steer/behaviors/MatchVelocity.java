@@ -29,7 +29,7 @@ import com.badlogic.gdx.math.Vector;
  * @author davebaol */
 public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 
-	/** The kinematic data for the target */
+	/** The target of this behavior */
 	protected Steerable<T> target;
 
 	/** The maximum acceleration of the character */
@@ -38,16 +38,31 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The time over which to achieve target speed */
 	protected float timeToTarget;
 
-	/** Creates a MatchVelocity behavior for the given owner, target and maxLinearAcceleration. The timeToTarget is set to 0.1
-	 * seconds.
+	/** Creates a {@code MatchVelocity} behavior for the given owner. No target is set. The maxLinearAcceleration is set to 100. The
+	 * timeToTarget is set to 0.1 seconds.
+	 * @param owner the owner of this behavior. */
+	public MatchVelocity (Steerable<T> owner) {
+		this(owner, null);
+	}
+
+	/** Creates a {@code MatchVelocity} behavior for the given owner and target. The maxLinearAcceleration is set to 100. The
+	 * timeToTarget is set to 0.1 seconds.
+	 * @param owner the owner of this behavior
+	 * @param target the target of this behavior */
+	public MatchVelocity (Steerable<T> owner, Steerable<T> target) {
+		this(owner, target, 100);
+	}
+
+	/** Creates a {@code MatchVelocity} behavior for the given owner, target and maxLinearAcceleration. The timeToTarget is set to
+	 * 0.1 seconds.
 	 * @param owner the owner of this behavior
 	 * @param target the target of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to arrive at the target. */
+	 * @param maxLinearAcceleration the maximum linear acceleration that can be used. */
 	public MatchVelocity (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
 		this(owner, target, maxLinearAcceleration, 0.1f);
 	}
 
-	/** Creates a MatchVelocity behavior for the given owner, target, maxLinearAcceleration and timeToTarget.
+	/** Creates a {@code MatchVelocity} behavior for the given owner, target, maxLinearAcceleration and timeToTarget.
 	 * @param owner the owner of this behavior
 	 * @param target the target of this behavior
 	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to arrive at the target.
@@ -62,7 +77,8 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 	@Override
 	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Acceleration tries to get to the target velocity without exceeding max acceleration
-		steering.linear.set(target.getLinearVelocity()).sub(owner.getLinearVelocity()).scl(1f / timeToTarget).limit(maxLinearAcceleration);
+		steering.linear.set(target.getLinearVelocity()).sub(owner.getLinearVelocity()).scl(1f / timeToTarget)
+			.limit(maxLinearAcceleration);
 
 		// No angular acceleration
 		steering.angular = 0;
@@ -76,9 +92,11 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 		return target;
 	}
 
-	/** @param target the target to set */
-	public void setTarget (Steerable<T> target) {
+	/** @param target the target to set
+	 * @return this behavior for chaining. */
+	public MatchVelocity<T> setTarget (Steerable<T> target) {
 		this.target = target;
+		return this;
 	}
 
 	/** @return the maxLinearAcceleration */
@@ -86,9 +104,11 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxLinearAcceleration;
 	}
 
-	/** @param maxLinearAcceleration the maxLinearAcceleration to set */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** @param maxLinearAcceleration the maxLinearAcceleration to set
+	 * @return this behavior for chaining. */
+	public MatchVelocity<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 	/** @return the timeToTarget */
@@ -96,9 +116,11 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 		return timeToTarget;
 	}
 
-	/** @param timeToTarget the timeToTarget to set */
-	public void setTimeToTarget (float timeToTarget) {
+	/** @param timeToTarget the timeToTarget to set
+	 * @return this behavior for chaining. */
+	public MatchVelocity<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

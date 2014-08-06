@@ -20,9 +20,9 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPathBase.Path.Param;
 import com.badlogic.gdx.math.Vector;
 
-/** {@code PredictiveFollowPath} behavior produces a linear acceleration that moves the agent along the given path. It calculates the
- * position of a target based on the predicted future location of the agent and the shape of the path. It then hands its target
- * off to seek.
+/** {@code PredictiveFollowPath} behavior produces a linear acceleration that moves the agent along the given path. It calculates
+ * the position of a target based on the predicted future location of the agent and the shape of the path. It then hands its
+ * target off to seek.
  * <p>
  * For complex paths with sudden changes of direction this implementation can appear smoother than the non-predictive path
  * following, but has the downside of cutting corners when some sections of the path come close together. This cutting-corner
@@ -39,7 +39,24 @@ public class PredictiveFollowPath<T extends Vector<T>, P extends Param> extends 
 
 	private T futurePosition;
 
-	/** Create a PredictiveFollowPath behavior. The prediction time is set to 0.1 seconds.
+	/** Create a {@code PredictiveFollowPath} behavior for the specified owner and path. The prediction time is set to 0.1 seconds.
+	 * @param owner the owner of this behavior
+	 * @param path the path to be followed by the owner. */
+	public PredictiveFollowPath (Steerable<T> owner, Path<T, P> path) {
+		this(owner, path, 0);
+	}
+
+	/** Create a {@code PredictiveFollowPath} behavior for the specified owner, path and path offset.
+	 * @param owner the owner of this behavior
+	 * @param path the path to be followed by the owner
+	 * @param pathOffset the distance along the path to generate the target. Can be negative if the owner is to move along the
+	 *           reverse direction. */
+	public PredictiveFollowPath (Steerable<T> owner, Path<T, P> path, float pathOffset) {
+		this(owner, path, pathOffset, 0);
+	}
+
+	/** Create a {@code PredictiveFollowPath} behavior for the specified owner, path, path offset and maximum linear acceleration.
+	 * The prediction time is set to 0.1 seconds.
 	 * @param owner the owner of this behavior
 	 * @param path the path to be followed by the owner
 	 * @param pathOffset the distance along the path to generate the target. Can be negative if the owner is to move along the
@@ -49,7 +66,8 @@ public class PredictiveFollowPath<T extends Vector<T>, P extends Param> extends 
 		this(owner, path, pathOffset, maxLinearAcceleration, 0.1f);
 	}
 
-	/** Create a PredictiveFollowPath behavior.
+	/** Create a {@code PredictiveFollowPath} behavior for the specified owner, path, path offset, maximum linear acceleration and
+	 * prediction time.
 	 * @param owner the owner of this behavior
 	 * @param path the path to be followed by the owner
 	 * @param pathOffset the distance along the path to generate the target. Can be negative if the owner is to move along the
@@ -75,8 +93,38 @@ public class PredictiveFollowPath<T extends Vector<T>, P extends Param> extends 
 	}
 
 	/** Sets the prediction time
-	 * @param predictionTime the predictionTime to set */
-	public void setPredictionTime (float predictionTime) {
+	 * @param predictionTime the predictionTime to set
+	 * @return this behavior for chaining. */
+	public PredictiveFollowPath<T, P> setPredictionTime (float predictionTime) {
 		this.predictionTime = predictionTime;
+		return this;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public PredictiveFollowPath<T, P> setMaxLinearAcceleration (float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
+	}
+
+	@Override
+	public PredictiveFollowPath<T, P> setPath (Path<T, P> path) {
+		this.path = path;
+		return this;
+	}
+
+	@Override
+	public PredictiveFollowPath<T, P> setPathOffset (float pathOffset) {
+		this.pathOffset = pathOffset;
+		return this;
+	}
+
+	@Override
+	public PredictiveFollowPath<T, P> setPathParam (P pathParam) {
+		this.pathParam = pathParam;
+		return this;
 	}
 }

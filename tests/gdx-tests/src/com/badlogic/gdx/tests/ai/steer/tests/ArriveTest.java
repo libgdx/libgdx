@@ -46,11 +46,12 @@ public class ArriveTest extends SteeringTest {
 		target = new SteeringActor(container.target);
 		inputProcessor = new TargetInputProcessor(target);
 
-		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target, 100);
-		arriveSB.setMaxSpeed(100);
-		arriveSB.setTimeToTarget(0.1f);
-		arriveSB.setArrivalTolerance(0.001f);
-		arriveSB.setDecelerationRadius(80);
+		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) //
+			.setMaxLinearAcceleration(100) //
+			.setMaxSpeed(100) //
+			.setTimeToTarget(0.1f) //
+			.setArrivalTolerance(0.001f) //
+			.setDecelerationRadius(80);
 		character.setSteeringBehavior(arriveSB);
 
 		table.addActor(character);
@@ -96,7 +97,8 @@ public class ArriveTest extends SteeringTest {
 		detailTable.add(maxSpeed);
 
 		detailTable.row();
-		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + arriveSB.getDecelerationRadius() + "]", container.skin);
+		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + arriveSB.getDecelerationRadius() + "]",
+			container.skin);
 		detailTable.add(labelDecelerationRadius);
 		detailTable.row();
 		Slider decelerationRadius = new Slider(0, 150, 1, false, container.skin);

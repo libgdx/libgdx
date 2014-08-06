@@ -18,9 +18,9 @@ package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.GroupBehavior;
 import com.badlogic.gdx.ai.steer.Proximity;
+import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
-import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.math.Vector;
 
 /** {@code CollisionAvoidance} behavior steers the owner to avoid obstacles lying in its path. An obstacle is any object that can be
@@ -51,6 +51,13 @@ public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> im
 	private T firstRelativeVelocity;
 	private T relativePosition;
 	private T relativeVelocity;
+
+	/** Creates a {@code CollisionAvoidance} behavior for the specified owner, proximity and maximum linear acceleration.
+	 * @param owner the owner of this behavior.
+	 * @param proximity the proximity of this behavior. */
+	public CollisionAvoidance (Steerable<T> owner, Proximity<T> proximity) {
+		this(owner, proximity, 0);
+	}
 
 	/** Creates a {@code CollisionAvoidance} behavior for the specified owner, proximity and maximum linear acceleration.
 	 * @param owner the owner of this behavior
@@ -133,9 +140,11 @@ public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> im
 		return maxLinearAcceleration;
 	}
 
-	/** Sets the maximum linear acceleration that can be used to avoid collisions. */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** Sets the maximum linear acceleration that can be used to avoid collisions.
+	 * @return this behavior for chaining. */
+	public CollisionAvoidance<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 }

@@ -17,14 +17,9 @@
 package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.Steerable;
-import com.badlogic.gdx.ai.steer.behaviors.Alignment;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
-import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.behaviors.WeightedBlender;
-import com.badlogic.gdx.ai.steer.proximities.FieldOfViewProximity;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -34,19 +29,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
-import com.badlogic.gdx.tests.ai.steer.TargetInputProcessor;
-import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.utils.Array;
 
 /** A class to test and experiment with the {@link CollisionAvoidance} behavior.
@@ -73,58 +62,61 @@ public class CollisionAvoidanceTest extends SteeringTest {
 		characters = new Array<SteeringActor>();
 		proximities = new Array<RadiusProximity<Vector2>>();
 		collisionAvoidances = new Array<CollisionAvoidance<Vector2>>();
-		
+
 		for (int i = 0; i < 60; i++) {
 			SteeringActor character = new SteeringActor(container.greenFish, false);
 
-			RadiusProximity<Vector2> proximity = new RadiusProximity<Vector2>(character, characters, character.getBoundingRadius() * 4);
+			RadiusProximity<Vector2> proximity = new RadiusProximity<Vector2>(character, characters,
+				character.getBoundingRadius() * 4);
 			proximities.add(proximity);
-			if (i == 0)
-				char0Proximity = proximity;
+			if (i == 0) char0Proximity = proximity;
 			CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, proximity, 100f);
 			collisionAvoidances.add(collisionAvoidanceSB);
 
-			Wander<Vector2> wanderSB = new Wander<Vector2>(character, 30, 0);
-			wanderSB.setAlignTolerance(0.001f); // from Face
-			wanderSB.setDecelerationRadius(5); // from Face
-			wanderSB.setMaxRotation(5); // from Face
-			wanderSB.setTimeToTarget(0.1f); // from Face
-			wanderSB.setWanderOffset(60);
-			wanderSB.setWanderOrientation(10);
-			wanderSB.setWanderRadius(40);
-			wanderSB.setWanderRate(MathUtils.PI / 5);
-			
+			Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
+				.setMaxLinearAcceleration(30) //
+				.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+				.setAlignTolerance(0.001f) //
+				.setDecelerationRadius(5) //
+				.setMaxRotation(5) //
+				.setTimeToTarget(0.1f) //
+				.setWanderOffset(60) //
+				.setWanderOrientation(10) //
+				.setWanderRadius(40) //
+				.setWanderRate(MathUtils.PI / 5);
+
 			PrioritySteering<Vector2> prioritySteeringSB = new PrioritySteering<Vector2>(character, 0.0001f);
 			prioritySteeringSB.add(collisionAvoidanceSB);
 			prioritySteeringSB.add(wanderSB);
 
 			character.setSteeringBehavior(prioritySteeringSB);
-			
-			setRandomNonOverlappingPosition(character, characters);
+
+			setRandomNonOverlappingPosition(character, characters, 5);
 			character.setMaxSpeed(50);
 
 			table.addActor(character);
-			
+
 			characters.add(character);
 		}
 
 		inputProcessor = null;
 
 		Table detailTable = new Table(container.skin);
-		
+
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.["+collisionAvoidances.get(0).getMaxLinearAcceleration()+"]", container.skin);
+		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + collisionAvoidances.get(0).getMaxLinearAcceleration() + "]",
+			container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
 		Slider maxLinAcc = new Slider(0, 1500, 1, false, container.skin);
 		maxLinAcc.setValue(collisionAvoidances.get(0).getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < collisionAvoidances.size; i++)
 					collisionAvoidances.get(i).setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.["+slider.getValue()+"]");
+				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxLinAcc);
@@ -133,18 +125,18 @@ public class CollisionAvoidanceTest extends SteeringTest {
 		addSeparator(detailTable);
 
 		detailTable.row();
-		final Label labelProximityRadius = new Label("Proximity Radius ["+proximities.get(0).getRadius()+"]", container.skin);
+		final Label labelProximityRadius = new Label("Proximity Radius [" + proximities.get(0).getRadius() + "]", container.skin);
 		detailTable.add(labelProximityRadius);
 		detailTable.row();
 		Slider proximityRadius = new Slider(0, 500, 1, false, container.skin);
 		proximityRadius.setValue(proximities.get(0).getRadius());
 		proximityRadius.addListener(new ChangeListener() {
 			@Override
-			public void changed(ChangeEvent event, Actor actor) {
+			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < proximities.size; i++)
 					proximities.get(i).setRadius(slider.getValue());
-				labelProximityRadius.setText("Proximity Radius ["+slider.getValue()+"]");
+				labelProximityRadius.setText("Proximity Radius [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(proximityRadius);
@@ -154,7 +146,7 @@ public class CollisionAvoidanceTest extends SteeringTest {
 		debug.setChecked(drawDebug);
 		debug.addListener(new ClickListener() {
 			@Override
-			public void clicked(InputEvent event, float x, float y) {
+			public void clicked (InputEvent event, float x, float y) {
 				CheckBox checkBox = (CheckBox)event.getListenerActor();
 				drawDebug = checkBox.isChecked();
 			}

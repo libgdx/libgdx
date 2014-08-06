@@ -46,19 +46,20 @@ public class FaceTest extends SteeringTest {
 		target = new SteeringActor(container.target);
 		inputProcessor = new TargetInputProcessor(target);
 
-		final Face<Vector2> faceSB = new Face<Vector2>(character, target, 100);
-		faceSB.setMaxRotation(5);
-		faceSB.setTimeToTarget(0.1f);
-		faceSB.setAlignTolerance(0.001f);
-		faceSB.setDecelerationRadius(MathUtils.degreesToRadians * 7);
+		final Face<Vector2> faceSB = new Face<Vector2>(character, target) //
+			.setMaxAngularAcceleration(100) //
+			.setMaxRotation(5) //
+			.setTimeToTarget(0.1f) //
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(MathUtils.degreesToRadians * 7);
 		character.setSteeringBehavior(faceSB);
 
 		table.addActor(character);
 		table.addActor(target);
-		
+
 		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
 		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		
+
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
@@ -72,14 +73,15 @@ public class FaceTest extends SteeringTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				faceSB.setMaxRotation(slider.getValue());
-//				character.setMaxSpeed(slider.getValue());
+// character.setMaxSpeed(slider.getValue());
 				labelMaxRotation.setText("Max.Rotation [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxRotation);
 
 		detailTable.row();
-		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + faceSB.getDecelerationRadius() + "]", container.skin);
+		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + faceSB.getDecelerationRadius() + "]",
+			container.skin);
 		detailTable.add(labelDecelerationRadius);
 		detailTable.row();
 		Slider decelerationRadius = new Slider(0, MathUtils.PI2, MathUtils.degreesToRadians, false, container.skin);
