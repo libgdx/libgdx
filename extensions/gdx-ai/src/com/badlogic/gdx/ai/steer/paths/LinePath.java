@@ -1,19 +1,17 @@
 
 package com.badlogic.gdx.ai.steer.paths;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPathBase.Path;
 import com.badlogic.gdx.ai.steer.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * A path for path following behaviors that is made up of a series of waypoints. Each waypoint is connected to the successor with a segment.
+/** A path for path following behaviors that is made up of a series of waypoints. Each waypoint is connected to the successor with
+ * a segment.
  *
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
- * @author davebaol
- */
+ * @author davebaol */
 public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
 	private T[] waypoints;
@@ -56,7 +54,8 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		Segment<T> nearestSegment = null;
 		for (int i = 0; i < segments.size; i++) {
 			Segment<T> segment = segments.get(i);
-			float distance2 = calculatePointSegmentSquareDistance(nearestPointOnCurrentSegment, segment.begin, segment.end, agentCurrPos);
+			float distance2 = calculatePointSegmentSquareDistance(nearestPointOnCurrentSegment, segment.begin, segment.end,
+				agentCurrPos);
 
 			// first point
 			if (distance2 < smallestDistance2) {
@@ -64,7 +63,7 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 				smallestDistance2 = distance2;
 				nearestSegment = segment;
 				parameter.segmentIndex = i;
-//				System.out.println("segmentIndex = " + i);
+// System.out.println("segmentIndex = " + i);
 			}
 		}
 
@@ -83,8 +82,7 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		// Cycling path support
 		if (targetDistance < 0) { // Backwards
 			targetDistance += pathLength;
-		}
-		else if (targetDistance > pathLength) { // Forward
+		} else if (targetDistance > pathLength) { // Forward
 			targetDistance -= pathLength;
 		}
 
@@ -117,7 +115,7 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 			pathLength += segment.length;
 			segment.cumulativeLength = pathLength;
 			segments.add(segment);
-//			System.out.println("begin="+segment.begin +", end="+segment.begin+",len="+segment.length+",cumLen="+segment.cumulativeLength);
+// System.out.println("begin="+segment.begin +", end="+segment.begin+",len="+segment.length+",cumLen="+segment.cumulativeLength);
 		}
 	}
 
@@ -142,7 +140,7 @@ public abstract class LinePath<T extends Vector<T>> implements Path<T, LinePathP
 		public void setDistance (float distance) {
 			this.distance = distance;
 		}
-		
+
 	}
 
 	public static class Segment<T extends Vector<T>> {
