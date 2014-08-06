@@ -391,7 +391,7 @@ public class FreeTypeFontGenerator implements Disposable {
 			Bitmap mainBitmap = mainGlyph.getBitmap();
 			Pixmap mainPixmap = mainBitmap.getPixmap(Format.RGBA8888, parameter.color);
 
-			if (parameter.borderWidth > 0 || parameter.shadowOffset > 0) {
+			if (parameter.borderWidth > 0 || parameter.shadowOffsetX != 0 || parameter.shadowOffsetY != 0) {
 				com.badlogic.gdx.graphics.g2d.freetype.FreeType.Glyph borderGlyph = mainGlyph;
 				Bitmap borderBitmap = mainBitmap;
 
@@ -412,18 +412,18 @@ public class FreeTypeFontGenerator implements Disposable {
 					mainPixmap = borderPixmap;
 					mainGlyph = borderGlyph;
 				}
-				if (parameter.shadowOffset > 0) {
+				if (parameter.shadowOffsetX != 0 || parameter.shadowOffsetY != 0) {
 					//render the shadow
 					Pixmap shadowPixmapSrc = borderBitmap.getPixmap(Format.RGBA8888, parameter.shadowColor);
 					//create a new bigger Pixmap with shadowOffset applied, and draw shadow glyph
-					Pixmap shadowPixmap = new Pixmap(shadowPixmapSrc.getWidth() + parameter.shadowOffset,
-						shadowPixmapSrc.getHeight() + parameter.shadowOffset, Format.RGBA8888);
+					Pixmap shadowPixmap = new Pixmap(shadowPixmapSrc.getWidth() + Math.abs(parameter.shadowOffsetX),
+						shadowPixmapSrc.getHeight() + Math.abs(parameter.shadowOffsetY), Format.RGBA8888);
 					Blending blending = Pixmap.getBlending();
 					Pixmap.setBlending(Blending.None);
-					shadowPixmap.drawPixmap(shadowPixmapSrc, parameter.shadowOffset, parameter.shadowOffset);
+					shadowPixmap.drawPixmap(shadowPixmapSrc, Math.max(parameter.shadowOffsetX, 0), Math.max(parameter.shadowOffsetY, 0));
 					Pixmap.setBlending(blending);
 					//draw main glyph (with border) on top of shadow
-					shadowPixmap.drawPixmap(mainPixmap, 0, 0);
+					shadowPixmap.drawPixmap(mainPixmap, Math.max(-parameter.shadowOffsetX, 0), Math.max(-parameter.shadowOffsetY, 0));
 					mainPixmap.dispose();
 					mainPixmap = shadowPixmap;
 				}
@@ -560,8 +560,10 @@ public class FreeTypeFontGenerator implements Disposable {
 		public Color borderColor = Color.BLACK;
 		/** true for straight (mitered), false for rounded borders */
 		public boolean borderStraight = false;
-		/** Offset of text shadow in pixels, 0 to disable */
-		public int shadowOffset = 0;
+		/** Offset of text shadow on X axis in pixels, 0 to disable */
+		public int shadowOffsetX = 0;
+		/** Offset of text shadow on Y axis in pixels, 0 to disable */
+		public int shadowOffsetY = 0;
 		/** Shadow color; only used if shadowOffset > 0 */
 		public Color shadowColor = new Color(0, 0, 0, 0.75f);
 		/** The characters the font should contain */

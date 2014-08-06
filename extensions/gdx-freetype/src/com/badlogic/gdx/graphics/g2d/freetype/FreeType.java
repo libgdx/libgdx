@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.LongMap;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 
 public class FreeType {
 	// @off
