@@ -25,21 +25,17 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 /** Generic path finding A* implementation. It works on any graph structure as long as the nodes implement the {@link AStarNode}
  * interface. Can be pooled or manually reset by calling {@link #reset()}.
  * @author Daniel Holderbaum */
-public class AStar<T> implements Poolable {
+public class AStar<T extends AStarNode<T>> implements Poolable {
 
-	private ObjectMap<AStarNode<T>, Float> fValues = new ObjectMap<AStarNode<T>, Float>();
-	private ObjectMap<AStarNode<T>, AStarNode<T>> predecessors = new ObjectMap<AStarNode<T>, AStarNode<T>>();
-	private Array<AStarNode<T>> open = new Array<AStarNode<T>>();
-	private Array<AStarNode<T>> closed = new Array<AStarNode<T>>();
-	private Comparator<AStarNode<T>> nodeComparator = new AStarNodeFValueComparator<T>(fValues);
-	private AStarNode<T> start;
-	private AStarNode<T> target;
+	private ObjectMap<T, Float> fValues = new ObjectMap<T, Float>();
+	private ObjectMap<T, T> predecessors = new ObjectMap<T, T>();
+	private Array<T> open = new Array<T>();
+	private Array<T> closed = new Array<T>();
+	private Comparator<T> cellComparator = new AStarNodeFValueComparator<T>(fValues);
+	private T start;
+	private T target;
 
-	/** Tries to find a path from the given start node to the target node.
-	 * @param start The start node.
-	 * @param target The target node.
-	 * @return The path if one could be found, {@code null} otherwise. */
-	public Array<T> findPath (AStarNode<T> start, AStarNode<T> target) {
+	public Array<T> findPath (T start, T target) {
 		if (start.equals(target)) {
 			return null;
 		}
@@ -53,7 +49,7 @@ public class AStar<T> implements Poolable {
 		// - it's clear that no solution exists
 		do {
 			// find the node with the lowest F value
-			AStarNode<T> currentNode = next();
+			T currentNode = next();
 			// in case we reached the target, we can calculate the path
 			if (currentNode.equals(target)) {
 				return calculatePath();
@@ -73,8 +69,8 @@ public class AStar<T> implements Poolable {
 	}
 
 	/** Adds all neighbours of the given node to the open list if they are not yet in the closed list. */
-	private void expandNode (AStarNode<T> currentNode) {
-		for (AStarNode<T> neighbour : currentNode.getNeighbours()) {
+	private void expandNode (T currentNode) {
+		for (T neighbour : currentNode.getNeighbours()) {
 			// if the neighbour is already on the closed list, we skip it
 			if (isClosed(neighbour)) {
 				continue;
@@ -100,11 +96,11 @@ public class AStar<T> implements Poolable {
 		}
 	}
 
-	private float h (AStarNode<T> node) {
-		return node.distanceTo(target.cast());
+	private float h (T node) {
+		return node.distanceTo(target);
 	}
 
-	private float g (AStarNode<T> node) {
+	private float g (T node) {
 		if (node.equals(start)) {
 			return 0;
 		}
@@ -112,35 +108,35 @@ public class AStar<T> implements Poolable {
 		return g(predecessors.get(node)) + cost(predecessors.get(node), node);
 	}
 
-	private float cost (AStarNode<T> node, AStarNode<T> node2) {
-		return node.distanceTo(node2.cast());
+	private float cost (T node, T node2) {
+		return node.distanceTo(node2);
 	}
 
-	private void enqueue (AStarNode<T> node, float f) {
+	private void enqueue (T node, float f) {
 		open.add(node);
 		fValues.put(node, f);
-		open.sort(nodeComparator);
+		open.sort(cellComparator);
 	}
 
-	private AStarNode<T> next () {
-		AStarNode<T> firstNode = open.get(0);
+	private T next () {
+		T firstNode = open.get(0);
 		open.removeIndex(0);
 		return firstNode;
 	}
 
-	private boolean isClosed (AStarNode<T> node) {
+	private boolean isClosed (T node) {
 		return closed.contains(node, false);
 	}
 
 	/** Runs through the predecessors from target to start. Then reverses this path. */
 	private Array<T> calculatePath () {
 		Array<T> path = new Array<T>();
-		AStarNode<T> current = target;
+		T current = target;
 		while (!predecessors.get(current).equals(start)) {
-			path.add(current.cast());
+			path.add(current);
 			current = predecessors.get(current);
 		}
-		path.add(start.cast());
+		path.add(start);
 		path.reverse();
 
 		return path;
@@ -156,18 +152,16 @@ public class AStar<T> implements Poolable {
 		target = null;
 	}
 
-	/** Compares the given nodes via their F values.
-	 * @author Daniel Holderbaum */
-	private static class AStarNodeFValueComparator<T> implements Comparator<AStarNode<T>> {
+	private static class AStarNodeFValueComparator<T extends AStarNode<T>> implements Comparator<T> {
 
-		ObjectMap<AStarNode<T>, Float> fValues;
+		ObjectMap<T, Float> fValues;
 
-		public AStarNodeFValueComparator (ObjectMap<AStarNode<T>, Float> fValues) {
+		public AStarNodeFValueComparator (ObjectMap<T, Float> fValues) {
 			this.fValues = fValues;
 		}
 
 		@Override
-		public int compare (AStarNode<T> o1, AStarNode<T> o2) {
+		public int compare (T o1, T o2) {
 			if (fValues.get(o1) < fValues.get(o2)) {
 				return -1;
 			} else if (fValues.get(o1) > fValues.get(o2)) {

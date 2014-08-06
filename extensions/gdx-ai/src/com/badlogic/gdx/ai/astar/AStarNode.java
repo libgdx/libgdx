@@ -24,15 +24,11 @@ import com.badlogic.gdx.utils.Array;
 public interface AStarNode<T> {
 
 	/** Returns all reachable neighbours of this node. */
-	Array<? extends AStarNode<T>> getNeighbours ();
+	Array<T> getNeighbours ();
 
 	/** If the given node is a direct neighbour, this has to return the exact cost of this node to its neighbour. If it is not a
 	 * neighbour, it should return the heuristical value of the expected cost to get to the given node from this node. This
 	 * heuristical value must not over-estimate those costs. */
 	float distanceTo (T node);
-
-	/** Returns the correctly typed object of this node. Usually this will be implemented via {@code return this} in the class which
-	 * implements the {@link AStarNode} interface. */
-	T cast ();
 
 }
