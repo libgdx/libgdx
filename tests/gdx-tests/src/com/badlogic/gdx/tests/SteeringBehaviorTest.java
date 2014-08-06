@@ -39,6 +39,7 @@ import com.badlogic.gdx.tests.ai.steer.tests.CollisionAvoidanceTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FaceTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FlockingTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FollowPathTest;
+import com.badlogic.gdx.tests.ai.steer.tests.HideTest;
 import com.badlogic.gdx.tests.ai.steer.tests.InterposeTest;
 import com.badlogic.gdx.tests.ai.steer.tests.LookWhereYouAreGoingTest;
 import com.badlogic.gdx.tests.ai.steer.tests.PursueTest;
@@ -64,6 +65,7 @@ public class SteeringBehaviorTest extends GdxTest {
 		new FaceTest(this),
 		new FlockingTest(this),
 		new FollowPathTest(this),
+		new HideTest(this),
 		new InterposeTest(this),
 		new LookWhereYouAreGoingTest(this),
 		new PursueTest(this),
