@@ -41,7 +41,7 @@ public class Packet implements Disposable {
 		this.dos = new DataOutputStream(this.baos);
 	}
 
-	/** Creates a datagram using the data written for sending
+	/** Returns a datagram using the data written for sending
 	 * 
 	 * @param address The address to send the datagram to
 	 * @param port The port to send the datagram to

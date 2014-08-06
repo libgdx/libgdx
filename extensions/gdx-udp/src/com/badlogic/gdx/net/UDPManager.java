@@ -16,37 +16,16 @@
 
 package com.badlogic.gdx.net;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Application.ApplicationType;
+import java.net.SocketException;
 
 /** Sets the udp implementation for the platform, or allows you to create a custom implementation.
  * @author Unkn0wn0ne */
 public class UDPManager {
 
-	private UDPSocket impl;
-
-	/** Creates the UDP manager using the default implementation */
-	public UDPManager () {
-		if (Gdx.app.getType() == ApplicationType.WebGL) {
-			throw new UnsupportedOperationException("Not implemented.");
-		}
-		this.impl = new UDPSocketImpl();
-	}
-
-	/** Creates the UDP manager using the specified alternate implementation
-	 * @param socket */
-	public UDPManager (UDPSocket socket) {
-		this.impl = socket;
-	}
-
-	/** Creates and configures a UDP socket from the implementation used
-	 * @param port The port to listen and/or send on
-	 * @param hints The UDPSocketHints to configure the socket. Set to null to use defaults
-	 * @return A UDPSocket configured and hopefully ready to go! */
-	public UDPSocket createNewUDPSocket (int port, UDPSocketHints hints) {
-		if (hints == null) {
-			hints = new UDPSocketHints(); // Use defaults.
-		}
-		return this.impl.create(port, hints);
+	/** Creates a UDP socket from the default implementation used
+	 * @return A UDPSocket configured and hopefully ready to go! 
+	 * @throws SocketException  If there is a isssue creating the socket*/
+	public UDPSocket createNewUDPSocket(UDPSocketHints hints, int port) throws SocketException {
+		return new UDPSocketImpl(port, hints);
 	}
 }

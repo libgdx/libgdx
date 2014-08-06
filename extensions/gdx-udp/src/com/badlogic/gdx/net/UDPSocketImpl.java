@@ -21,6 +21,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 import com.badlogic.gdx.net.Datagram;
 import com.badlogic.gdx.net.UDPSocket;
@@ -33,21 +34,13 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
  * 
  * @author Unkn0wn0ne */
 class UDPSocketImpl extends UDPSocket {
-
-	private DatagramSocket socket = null;
-	private DatagramPacket packet = null;
-	private Datagram datagram = null;
+	
 	private InetAddress address = null;
 
-	private void applySocketHints (UDPSocketHints hints) throws SocketException {
-		this.socket.setSoTimeout(hints.SO_TIMEOUT);
-		this.socket.setTrafficClass(hints.TRAFFIC_CLASS);
-		this.socket.setReuseAddress(hints.SO_REUSEADDR);
-		this.socket.setBroadcast(hints.SO_BROADCAST);
-		this.socket.setReceiveBufferSize(hints.RECEIVE_LENGTH);
-		this.socket.setSendBufferSize(hints.SEND_LENGTH);
+	public UDPSocketImpl(int port, UDPSocketHints hints) throws SocketException {
+		super(port, hints);
 	}
-
+	
 	@Override
 	public void dispose () {
 		try {
@@ -77,24 +70,16 @@ class UDPSocketImpl extends UDPSocket {
 
 	@Override
 	public Datagram receiveData () throws IOException {
-		this.socket.receive(packet);
+		try {
+			this.socket.receive(packet);
+		} catch (SocketTimeoutException e) {
+			// Simply isn't data  data available, return null
+			return null;
+		}
 		datagram.setAddress(packet.getAddress().getHostAddress());
 		datagram.setData(packet.getData());
 		datagram.setLength(packet.getLength());
 		datagram.setPort(packet.getPort());
 		return datagram;
-	}
-
-	@Override
-	public UDPSocket create (int port, UDPSocketHints hints) {
-		try {
-			this.socket = new DatagramSocket(port);
-			this.packet = new DatagramPacket(new byte[hints.RECEIVE_LENGTH], hints.RECEIVE_LENGTH);
-			this.datagram = new Datagram();
-			applySocketHints(hints);
-		} catch (Exception e) {
-			throw new GdxRuntimeException(e);
-		}
-		return this;
 	}
 }

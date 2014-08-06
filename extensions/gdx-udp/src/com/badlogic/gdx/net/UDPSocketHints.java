@@ -20,8 +20,8 @@ package com.badlogic.gdx.net;
  * @author Unkn0wn0ne */
 public class UDPSocketHints {
 
-	/** Sets the SO_TIMEOUT to the specified timeout. (in miliseconds) Note: Set timeout to zero for infinite timeouts Default: 0 */
-	public int SO_TIMEOUT = 0;
+	/** Sets the SO_TIMEOUT to the specified timeout. (in miliseconds)  Default: 25 */
+	public int SO_TIMEOUT = 25;
 
 	/** Sets the traffic class for the datagram. Note: traffic class's minimum is zero and maximum is 255. Failing to meet those
 	 * requirements will cause an IllegalArgumentException Default: 0x04 (IPTOS_RELIABILITY) */

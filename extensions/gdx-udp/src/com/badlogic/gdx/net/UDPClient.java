@@ -17,13 +17,14 @@
 package com.badlogic.gdx.net;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 import com.badlogic.gdx.utils.Disposable;
 
-/** Client - A UDP client implementation using the gdx-udp extension
+/** UDPClient - A UDP client implementation using the gdx-udp extension
  * 
  * @author Unkn0wn0ne */
-public class Client implements Disposable {
+public class UDPClient implements Disposable {
 
 	private UDPSocket socket;
 	private String address;
@@ -33,9 +34,10 @@ public class Client implements Disposable {
 	/** Creates a client instance with the assigned configuration using the default UDP socket implementation
 	 * @param address The address of the server you want to connect to
 	 * @param port The port of the server you want to connect to
-	 * @param hints The UDPSocketHints containing most of the configuration, set to null to use defaults */
-	public Client (String address, int port, UDPSocketHints hints) {
-		this.socket = new UDPManager().createNewUDPSocket(port, hints);
+	 * @param hints The UDPSocketHints containing most of the configuration, set to null to use defaults 
+	 * @throws SocketException If there is an issue creating the socket*/
+	public UDPClient (String address, int port, UDPSocketHints hints) throws SocketException {
+		this.socket = new UDPManager().createNewUDPSocket(hints, port);
 		this.address = address;
 		this.port = port;
 		this.packet = new Packet();
@@ -46,8 +48,8 @@ public class Client implements Disposable {
 	 * @param port The port of the server you want to connect to
 	 * @param hints The UDPSocketHints containing most of the configuration, set to null to use defaults
 	 * @param impl The UDP socket implementation you wish to use */
-	public Client (String address, int port, UDPSocketHints hints, UDPSocket impl) {
-		this.socket = new UDPManager(impl).createNewUDPSocket(port, hints);
+	public UDPClient (String address, int port, UDPSocketHints hints, UDPSocket impl) {
+		this.socket = impl;
 		this.address = address;
 		this.port = port;
 		this.packet = new Packet();
@@ -60,27 +62,11 @@ public class Client implements Disposable {
 		this.socket.sendData(d);
 	}
 
-	/** Sends a packet to the server the client is connected to
-	 * @param p The packet containing the data to be sent
-	 * @throws IOException If the packet cannot be sent due to IO error */
-	public void sendPacket (Packet p) throws IOException {
-		this.sendDatagram(p.createDatagram(this.address, this.port));
-	}
-
 	/** Receives a datagram from the udp socket
-	 * @return A datagram containing the connection information and data
-	 * @throws IOException If the datagram cannot be received due to IO erro */
+	 * @return A datagram containing the connection information and data, or null if a datagram is not yet available
+	 * @throws IOException If the datagram cannot be received due to IO error */
 	public Datagram receiveDatagram () throws IOException {
 		return this.socket.receiveData();
-	}
-
-	/** Creates a packet from the received data
-	 * @return A packet containing the received data
-	 * @throws IOException If the packet cannot be received or created due to IO error */
-	public Packet receivePacket () throws IOException {
-		this.packet.flushStreams();
-		this.packet.readDatagram(this.receiveDatagram());
-		return this.packet;
 	}
 
 	/** {@inheritDoc} */
