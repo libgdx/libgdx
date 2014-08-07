@@ -17,7 +17,6 @@
 package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.behaviors.Interpose;
-import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -35,7 +34,7 @@ import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
 
-/** A class to test and experiment with the {@link Pursue} behavior.
+/** A class to test and experiment with the {@link Interpose} behavior.
  * 
  * @autor davebaol */
 public class InterposeTest extends SteeringTest {

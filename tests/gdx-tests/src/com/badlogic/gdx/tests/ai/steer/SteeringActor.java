@@ -140,7 +140,7 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 	@Override
 	public void act (float delta) {
 		position.set(getCenterX(), getCenterY());
-		if (steeringBehavior != null) {
+		if (steeringBehavior != null && steeringBehavior.isEnabled()) {
 			steeringBehavior.calculateSteering(steeringOutput);
 			update(steeringOutput, delta);
 			wrapAround(position, getParent().getWidth(), getParent().getHeight());
