@@ -17,6 +17,9 @@
 package com.badlogic.gwtref.gen;
 
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,21 +33,7 @@ import com.google.gwt.core.ext.ConfigurationProperty;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.TreeLogger.Type;
-import com.google.gwt.core.ext.typeinfo.JAbstractMethod;
-import com.google.gwt.core.ext.typeinfo.JArrayType;
-import com.google.gwt.core.ext.typeinfo.JClassType;
-import com.google.gwt.core.ext.typeinfo.JConstructor;
-import com.google.gwt.core.ext.typeinfo.JEnumConstant;
-import com.google.gwt.core.ext.typeinfo.JEnumType;
-import com.google.gwt.core.ext.typeinfo.JField;
-import com.google.gwt.core.ext.typeinfo.JMethod;
-import com.google.gwt.core.ext.typeinfo.JPackage;
-import com.google.gwt.core.ext.typeinfo.JParameter;
-import com.google.gwt.core.ext.typeinfo.JParameterizedType;
-import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
-import com.google.gwt.core.ext.typeinfo.JType;
-import com.google.gwt.core.ext.typeinfo.NotFoundException;
-import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.core.ext.typeinfo.*;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
@@ -526,11 +515,12 @@ public class ReflectionCacheSourceCreator {
 					String fieldType = getType(f.getType());
 					int setterGetter = nextSetterGetterId++;
 					String elementType = getElementTypes(f);
+					String annotations = getAnnotations(f.getDeclaredAnnotations());
 
 					pb("    new Field(\"" + f.getName() + "\", " + enclosingType + ", " + fieldType + ", " + f.isFinal() + ", "
 						+ f.isDefaultAccess() + ", " + f.isPrivate() + ", " + f.isProtected() + ", " + f.isPublic() + ", "
 						+ f.isStatic() + ", " + f.isTransient() + ", " + f.isVolatile() + ", " + setterGetter + ", " + setterGetter
-						+ ", " + elementType + "), ");
+						+ ", " + elementType + ", " + annotations + "), ");
 
 					SetterGetterStub stub = new SetterGetterStub();
 					stub.name = f.getName();
@@ -567,6 +557,13 @@ public class ReflectionCacheSourceCreator {
 					}
 				}
 			}
+
+			Annotation[] annotations = c.getDeclaredAnnotations();
+			if (annotations != null && annotations.length > 0) {
+				pb(varName + ".annotations = " + getAnnotations(annotations) + ";");
+			}
+		} else if (t.isAnnotation() != null) {
+			pb(varName + ".isAnnotation = true;");
 		} else {
 			pb(varName + ".isPrimitive = true;");
 		}
@@ -666,6 +663,63 @@ public class ReflectionCacheSourceCreator {
 				else
 					b.append("null");
 				b.append(", ");
+			}
+			b.append("}");
+			return b.toString();
+		}
+		return "null";
+	}
+
+	private String getAnnotations (Annotation[] annotations) {
+		if (annotations != null && annotations.length > 0) {
+			StringBuilder b = new StringBuilder();
+			b.append("new java.lang.annotation.Annotation[] {");
+			for (Annotation annotation : annotations) {
+				// anonymous class
+				Class<?> type = annotation.annotationType();
+				b.append(" new ").append(type.getCanonicalName()).append("() {");
+				// override all methods
+				Method[] methods = type.getDeclaredMethods();
+				for (Method method : methods) {
+					Class<?> returnType = method.getReturnType();
+					b.append(" @Override public");
+					b.append(" ").append(returnType.getSimpleName());
+					b.append(" ").append(method.getName()).append("() { return");
+					if (returnType.isArray()) {
+						b.append(" new ").append(returnType.getSimpleName()).append(" {");
+					}
+					// invoke the annotation method
+					Object invokeResult = null;
+					try {
+						invokeResult = method.invoke(annotation);
+					} catch (IllegalAccessException e) {
+						logger.log(Type.ERROR, "Error invoking annotation method.");
+					} catch (InvocationTargetException e) {
+						logger.log(Type.ERROR, "Error invoking annotation method.");
+					}
+					// write result as return value
+					if (invokeResult != null) {
+						if (returnType.equals(String[].class)) {
+							for (String s : (String[]) invokeResult) {
+								b.append(" \"").append(s).append("\",");
+							}
+						} else if (returnType.equals(String.class)) {
+							b.append(" \"").append((String) invokeResult).append("\"");
+						} else {
+							logger.log(Type.ERROR, "Return type not supported (or not yet implemented).");
+						}
+					}
+					if (returnType.isArray()) {
+						b.append(" }");
+					}
+					b.append("; ");
+					b.append("}");
+				}
+				// must override annotationType()
+				b.append(" @Override public Class<? extends java.lang.annotation.Annotation> annotationType() { return ");
+				b.append(type.getCanonicalName());
+				b.append(".class; }");
+				b.append("}, ");
 			}
 			b.append("}");
 			return b.toString();
