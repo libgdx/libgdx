@@ -188,4 +188,22 @@ public final class ClassReflection {
 		}
 	}
 
+	/** Returns true if the supplied class includes an annotation of the given class type. */
+	static public boolean isAnnotationPresent (Class c, Class<? extends java.lang.annotation.Annotation> annotationType) {
+		return c.isAnnotationPresent(annotationType);
+	}
+
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by the supplied class,
+	 * or null if there are none. Does not include inherited annotations. */
+	static public Annotation[] getDeclaredAnnotations (Class c) {
+		java.lang.annotation.Annotation[] annotations = c.getDeclaredAnnotations();
+		if (annotations == null) {
+			return null;
+		}
+		Annotation[] result = new Annotation[annotations.length];
+		for (int i = 0; i < annotations.length; i++) {
+			result[i] = new Annotation(annotations[i]);
+		}
+		return result;
+	}
 }

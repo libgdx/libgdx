@@ -120,6 +120,41 @@ public final class Field {
 		return null;
 	}
 
+	/** Returns true if the field includes an annotation of the provided class type. */
+	public boolean isAnnotationPresent (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		return field.isAnnotationPresent(annotationType);
+	}
+
+	/** Returns an array of {@link Annotation} objects reflecting all annotations declared by this field,
+	 * or null if there are none. Does not include inherited annotations. */
+	public Annotation[] getDeclaredAnnotations () {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		if (annotations == null) {
+			return null;
+		}
+		Annotation[] result = new Annotation[annotations.length];
+		for (int i = 0; i < annotations.length; i++) {
+			result[i] = new Annotation(annotations[i]);
+		}
+		return result;
+	}
+
+	/** Returns an {@link Annotation} object reflecting the annotation provided, or null of this field doesn't
+	 * have such an annotation. This is a convenience function if the caller knows already which annotation
+	 * type he's looking for. */
+	public Annotation getDeclaredAnnotation (Class<? extends java.lang.annotation.Annotation> annotationType) {
+		java.lang.annotation.Annotation[] annotations = field.getDeclaredAnnotations();
+		if (annotations == null) {
+			return null;
+		}
+		for (java.lang.annotation.Annotation annotation : annotations) {
+			if (annotation.annotationType().equals(annotationType)) {
+				return new Annotation(annotation);
+			}
+		}
+		return null;
+	}
+
 	/** Returns the value of the field on the supplied object. */
 	public Object get (Object obj) throws ReflectionException {
 		try {
