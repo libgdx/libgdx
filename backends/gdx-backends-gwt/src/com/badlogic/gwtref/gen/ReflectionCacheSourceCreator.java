@@ -18,6 +18,7 @@ package com.badlogic.gwtref.gen;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -683,10 +684,10 @@ public class ReflectionCacheSourceCreator {
 				for (Method method : methods) {
 					Class<?> returnType = method.getReturnType();
 					b.append(" @Override public");
-					b.append(" ").append(returnType.getSimpleName());
+					b.append(" ").append(returnType.getCanonicalName());
 					b.append(" ").append(method.getName()).append("() { return");
 					if (returnType.isArray()) {
-						b.append(" new ").append(returnType.getSimpleName()).append(" {");
+						b.append(" new ").append(returnType.getCanonicalName()).append(" {");
 					}
 					// invoke the annotation method
 					Object invokeResult = null;
@@ -700,11 +701,50 @@ public class ReflectionCacheSourceCreator {
 					// write result as return value
 					if (invokeResult != null) {
 						if (returnType.equals(String[].class)) {
+							// String[]
 							for (String s : (String[]) invokeResult) {
 								b.append(" \"").append(s).append("\",");
 							}
 						} else if (returnType.equals(String.class)) {
+							// String
 							b.append(" \"").append((String) invokeResult).append("\"");
+						} else if (returnType.equals(Class[].class)) {
+							// Class[]
+							for (Class c : (Class[]) invokeResult) {
+								b.append(" ").append(c.getCanonicalName()).append(".class,");
+							}
+						} else if (returnType.equals(Class.class)) {
+							// Class
+							b.append(" ").append(((Class) invokeResult).getCanonicalName()).append(".class");
+						} else if (returnType.isArray() && returnType.getComponentType().isEnum()) {
+							// enum[]
+							String enumTypeName = returnType.getComponentType().getCanonicalName();
+							int length = Array.getLength(invokeResult);
+							for (int i = 0; i < length; i++) {
+								Object e = Array.get(invokeResult, i);
+								b.append(" ").append(enumTypeName).append(".").append(e.toString()).append(",");
+							}
+						} else if (returnType.isEnum()) {
+							// enum
+							b.append(" ").append(returnType.getCanonicalName()).append(".").append(invokeResult.toString());
+						} else if (returnType.isArray() && returnType.getComponentType().isPrimitive()) {
+							// primitive []
+							Class<?> primitiveType = returnType.getComponentType();
+							int length = Array.getLength(invokeResult);
+							for (int i = 0; i < length; i++) {
+								Object n = Array.get(invokeResult, i);
+								b.append(" ").append(n.toString());
+								if (primitiveType.equals(float.class)) {
+									b.append("f");
+								}
+								b.append(",");
+							}
+						} else if (returnType.isPrimitive()) {
+							// primitive
+							b.append(" ").append(invokeResult.toString());
+							if (returnType.equals(float.class)) {
+								b.append("f");
+							}
 						} else {
 							logger.log(Type.ERROR, "Return type not supported (or not yet implemented).");
 						}
