@@ -39,8 +39,8 @@ import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 public class ReflectionCacheSourceCreator {
-	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList(new String[] {"char", "int",
-		"long", "byte", "short", "float", "double", "boolean"}));
+	private static final List<String> PRIMITIVE_TYPES = Collections.unmodifiableList(Arrays.asList("char", "int",
+			"long", "byte", "short", "float", "double", "boolean"));
 	final TreeLogger logger;
 	final GeneratorContext context;
 	final JClassType type;
@@ -51,8 +51,8 @@ public class ReflectionCacheSourceCreator {
 	final List<JType> types = new ArrayList<JType>();
 	final List<SetterGetterStub> setterGetterStubs = new ArrayList<SetterGetterStub>();
 	final List<MethodStub> methodStubs = new ArrayList<MethodStub>();
-	final Map<String, String> parameterName2ParameterInstantiation = new HashMap();
-	final Map<String, Integer> typeNames2typeIds = new HashMap();
+	final Map<String, String> parameterName2ParameterInstantiation = new HashMap<String, String>();
+	final Map<String, Integer> typeNames2typeIds = new HashMap<String, Integer>();
 	int nextTypeId;
 	int nextSetterGetterId;
 	int nextInvokableId;
@@ -501,13 +501,21 @@ public class ReflectionCacheSourceCreator {
 		pb("if(" + varName + "!=null) return " + varName + ";");
 		pb(varName + " = new Type(\"" + name + "\", " + id + ", " + name + ".class, " + superClass + ", " + assignables + ");");
 
+		if (c == null) {
+			// if it's not a class, it may be an interface instead
+			c = t.isInterface();
+		}
+
 		if (c != null) {
-			if (c.isInterface() != null) pb(varName + ".isInterface = true;");
 			if (c.isEnum() != null) pb(varName + ".isEnum = true;");
 			if (c.isArray() != null) pb(varName + ".isArray = true;");
 			if (c.isMemberType()) pb(varName + ".isMemberClass = true;");
-			pb(varName + ".isStatic = " + c.isStatic() + ";");
-			pb(varName + ".isAbstract = " + c.isAbstract() + ";");
+			if (c.isInterface() != null) {
+				pb(varName + ".isInterface = true;");
+			} else {
+				pb(varName + ".isStatic = " + c.isStatic() + ";");
+				pb(varName + ".isAbstract = " + c.isAbstract() + ";");
+			}
 
 			if (c.getFields() != null && c.getFields().length > 0) {
 				pb(varName + ".fields = new Field[] {");
@@ -984,7 +992,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	class SwitchedCodeBlock {
-		private List<KeyedCodeBlock> blocks = new ArrayList();
+		private List<KeyedCodeBlock> blocks = new ArrayList<KeyedCodeBlock>();
 		private final String switchStatement;
 
 		SwitchedCodeBlock (String switchStatement) {
@@ -1015,7 +1023,7 @@ public class ReflectionCacheSourceCreator {
 	}
 
 	class SwitchedCodeBlockByString {
-		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap();
+		private Map<String, List<KeyedCodeBlock>> blocks = new HashMap<String, List<KeyedCodeBlock>>();
 		private final String switchStatement;
 		private final String expectedValue;
 
@@ -1030,7 +1038,7 @@ public class ReflectionCacheSourceCreator {
 			b.codeBlock = codeBlock;
 			List<KeyedCodeBlock> blockList = blocks.get(key);
 			if (blockList == null) {
-				blockList = new ArrayList();
+				blockList = new ArrayList<KeyedCodeBlock>();
 				blocks.put(key, blockList);
 			}
 			blockList.add(b);
