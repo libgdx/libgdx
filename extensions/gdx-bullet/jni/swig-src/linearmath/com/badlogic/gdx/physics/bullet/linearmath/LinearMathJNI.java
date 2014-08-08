@@ -217,48 +217,48 @@ public class LinearMathJNI {
   public final static native void btTransformAabb__SWIG_1(Vector3 jarg1, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5, Vector3 jarg6);
   public final static native long testQuantizedAabbAgainstQuantizedAabb(java.nio.IntBuffer jarg1, java.nio.IntBuffer jarg2, java.nio.IntBuffer jarg3, java.nio.IntBuffer jarg4);
   public final static native void delete_btIDebugDraw(long jarg1);
-  public final static native void btIDebugDraw_drawLine__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawLine__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_);
-  public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_);
-  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, long jarg3, btTransform jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, long jarg3, btTransform jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawSphere__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawTriangle__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, long jarg6, btVector3 jarg6_, long jarg7, btVector3 jarg7_, long jarg8, btVector3 jarg8_, float jarg9);
-  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, long jarg6, btVector3 jarg6_, long jarg7, btVector3 jarg7_, long jarg8, btVector3 jarg8_, float jarg9);
-  public final static native void btIDebugDraw_drawTriangle__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, float jarg6);
-  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, long jarg5, btVector3 jarg5_, float jarg6);
-  public final static native void btIDebugDraw_drawContactPoint(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, float jarg4, int jarg5, long jarg6, btVector3 jarg6_);
+  public final static native void btIDebugDraw_drawLine__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawLine__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawLineSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawSphere__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, float jarg2, Matrix4 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawSphere__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawSphereSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawTriangle__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
+  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, Vector3 jarg6, Vector3 jarg7, Vector3 jarg8, float jarg9);
+  public final static native void btIDebugDraw_drawTriangle__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
+  public final static native void btIDebugDraw_drawTriangleSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, Vector3 jarg5, float jarg6);
+  public final static native void btIDebugDraw_drawContactPoint(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, float jarg4, int jarg5, Vector3 jarg6);
   public final static native void btIDebugDraw_reportErrorWarning(long jarg1, btIDebugDraw jarg1_, String jarg2);
-  public final static native void btIDebugDraw_draw3dText(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, String jarg3);
+  public final static native void btIDebugDraw_draw3dText(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, String jarg3);
   public final static native void btIDebugDraw_setDebugMode(long jarg1, btIDebugDraw jarg1_, int jarg2);
   public final static native int btIDebugDraw_getDebugMode(long jarg1, btIDebugDraw jarg1_);
-  public final static native void btIDebugDraw_drawAabb(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, long jarg2, btTransform jarg2_, float jarg3);
-  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btTransform jarg2_, float jarg3);
-  public final static native void btIDebugDraw_drawArc__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10, float jarg11);
-  public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10);
-  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, long jarg9, btVector3 jarg9_, boolean jarg10);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11, boolean jarg12);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11, boolean jarg12);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_, float jarg11);
-  public final static native void btIDebugDraw_drawSpherePatch__SWIG_2(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
-  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_2(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, long jarg10, btVector3 jarg10_);
-  public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btVector3 jarg4_);
-  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
-  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, long jarg3, btVector3 jarg3_, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
-  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
-  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
-  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
-  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
-  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
-  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, long jarg5, btTransform jarg5_, long jarg6, btVector3 jarg6_);
-  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
-  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, long jarg2, btVector3 jarg2_, float jarg3, long jarg4, btTransform jarg4_, long jarg5, btVector3 jarg5_);
+  public final static native void btIDebugDraw_drawAabb(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawAabbSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawTransform(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
+  public final static native void btIDebugDraw_drawTransformSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Matrix4 jarg2, float jarg3);
+  public final static native void btIDebugDraw_drawArc__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
+  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10, float jarg11);
+  public final static native void btIDebugDraw_drawArc__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
+  public final static native void btIDebugDraw_drawArcSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, Vector3 jarg9, boolean jarg10);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11, boolean jarg12);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11, boolean jarg12);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10, float jarg11);
+  public final static native void btIDebugDraw_drawSpherePatch__SWIG_2(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
+  public final static native void btIDebugDraw_drawSpherePatchSwigExplicitbtIDebugDraw__SWIG_2(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, Vector3 jarg10);
+  public final static native void btIDebugDraw_drawBox__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_0(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Vector3 jarg4);
+  public final static native void btIDebugDraw_drawBox__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawBoxSwigExplicitbtIDebugDraw__SWIG_1(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, Vector3 jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawCapsule(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCapsuleSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCylinder(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCylinderSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawCone(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawConeSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, float jarg2, float jarg3, int jarg4, Matrix4 jarg5, Vector3 jarg6);
+  public final static native void btIDebugDraw_drawPlane(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
+  public final static native void btIDebugDraw_drawPlaneSwigExplicitbtIDebugDraw(long jarg1, btIDebugDraw jarg1_, Vector3 jarg2, float jarg3, Matrix4 jarg4, Vector3 jarg5);
   public final static native long new_btIDebugDraw();
   public final static native void btIDebugDraw_director_connect(btIDebugDraw obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void btIDebugDraw_change_ownership(btIDebugDraw obj, long cptr, boolean take_or_release);
@@ -538,32 +538,32 @@ public class LinearMathJNI {
   public final static native long GrahamVector3_SWIGUpcast(long jarg1);
   public final static native long btDefaultMotionState_SWIGUpcast(long jarg1);
 
-  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0(btIDebugDraw self, long from, long to, long color) {
-    self.drawLine(new btVector3(from, false), new btVector3(to, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_0(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 color) {
+    self.drawLine(from, to, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1(btIDebugDraw self, long from, long to, long fromColor, long toColor) {
-    self.drawLine(new btVector3(from, false), new btVector3(to, false), new btVector3(fromColor, false), new btVector3(toColor, false));
+  public static void SwigDirector_btIDebugDraw_drawLine__SWIG_1(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 fromColor, Vector3 toColor) {
+    self.drawLine(from, to, fromColor, toColor);
   }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw self, float radius, long transform, long color) {
-    self.drawSphere(radius, new btTransform(transform, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_0(btIDebugDraw self, float radius, Matrix4 transform, Vector3 color) {
+    self.drawSphere(radius, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1(btIDebugDraw self, long p, float radius, long color) {
-    self.drawSphere(new btVector3(p, false), radius, new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawSphere__SWIG_1(btIDebugDraw self, Vector3 p, float radius, Vector3 color) {
+    self.drawSphere(p, radius, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_0(btIDebugDraw self, long v0, long v1, long v2, long arg3, long arg4, long arg5, long color, float alpha) {
-    self.drawTriangle(new btVector3(v0, false), new btVector3(v1, false), new btVector3(v2, false), new btVector3(arg3, false), new btVector3(arg4, false), new btVector3(arg5, false), new btVector3(color, false), alpha);
+  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_0(btIDebugDraw self, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 arg3, Vector3 arg4, Vector3 arg5, Vector3 color, float alpha) {
+    self.drawTriangle(v0, v1, v2, arg3, arg4, arg5, color, alpha);
   }
-  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_1(btIDebugDraw self, long v0, long v1, long v2, long color, float arg4) {
-    self.drawTriangle(new btVector3(v0, false), new btVector3(v1, false), new btVector3(v2, false), new btVector3(color, false), arg4);
+  public static void SwigDirector_btIDebugDraw_drawTriangle__SWIG_1(btIDebugDraw self, Vector3 v0, Vector3 v1, Vector3 v2, Vector3 color, float arg4) {
+    self.drawTriangle(v0, v1, v2, color, arg4);
   }
-  public static void SwigDirector_btIDebugDraw_drawContactPoint(btIDebugDraw self, long PointOnB, long normalOnB, float distance, int lifeTime, long color) {
-    self.drawContactPoint(new btVector3(PointOnB, false), new btVector3(normalOnB, false), distance, lifeTime, new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawContactPoint(btIDebugDraw self, Vector3 PointOnB, Vector3 normalOnB, float distance, int lifeTime, Vector3 color) {
+    self.drawContactPoint(PointOnB, normalOnB, distance, lifeTime, color);
   }
   public static void SwigDirector_btIDebugDraw_reportErrorWarning(btIDebugDraw self, String warningString) {
     self.reportErrorWarning(warningString);
   }
-  public static void SwigDirector_btIDebugDraw_draw3dText(btIDebugDraw self, long location, String textString) {
-    self.draw3dText(new btVector3(location, false), textString);
+  public static void SwigDirector_btIDebugDraw_draw3dText(btIDebugDraw self, Vector3 location, String textString) {
+    self.draw3dText(location, textString);
   }
   public static void SwigDirector_btIDebugDraw_setDebugMode(btIDebugDraw self, int debugMode) {
     self.setDebugMode(debugMode);
@@ -571,44 +571,44 @@ public class LinearMathJNI {
   public static int SwigDirector_btIDebugDraw_getDebugMode(btIDebugDraw self) {
     return self.getDebugMode();
   }
-  public static void SwigDirector_btIDebugDraw_drawAabb(btIDebugDraw self, long from, long to, long color) {
-    self.drawAabb(new btVector3(from, false), new btVector3(to, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawAabb(btIDebugDraw self, Vector3 from, Vector3 to, Vector3 color) {
+    self.drawAabb(from, to, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw self, long transform, float orthoLen) {
-    self.drawTransform(new btTransform(transform, false), orthoLen);
+  public static void SwigDirector_btIDebugDraw_drawTransform(btIDebugDraw self, Matrix4 transform, float orthoLen) {
+    self.drawTransform(transform, orthoLen);
   }
-  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0(btIDebugDraw self, long center, long normal, long axis, float radiusA, float radiusB, float minAngle, float maxAngle, long color, boolean drawSect, float stepDegrees) {
-    self.drawArc(new btVector3(center, false), new btVector3(normal, false), new btVector3(axis, false), radiusA, radiusB, minAngle, maxAngle, new btVector3(color, false), drawSect, stepDegrees);
+  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_0(btIDebugDraw self, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect, float stepDegrees) {
+    self.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect, stepDegrees);
   }
-  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1(btIDebugDraw self, long center, long normal, long axis, float radiusA, float radiusB, float minAngle, float maxAngle, long color, boolean drawSect) {
-    self.drawArc(new btVector3(center, false), new btVector3(normal, false), new btVector3(axis, false), radiusA, radiusB, minAngle, maxAngle, new btVector3(color, false), drawSect);
+  public static void SwigDirector_btIDebugDraw_drawArc__SWIG_1(btIDebugDraw self, Vector3 center, Vector3 normal, Vector3 axis, float radiusA, float radiusB, float minAngle, float maxAngle, Vector3 color, boolean drawSect) {
+    self.drawArc(center, normal, axis, radiusA, radiusB, minAngle, maxAngle, color, drawSect);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color, float stepDegrees, boolean drawCenter) {
-    self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false), stepDegrees, drawCenter);
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_0(btIDebugDraw self, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees, boolean drawCenter) {
+    self.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees, drawCenter);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color, float stepDegrees) {
-    self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false), stepDegrees);
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_1(btIDebugDraw self, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color, float stepDegrees) {
+    self.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color, stepDegrees);
   }
-  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_2(btIDebugDraw self, long center, long up, long axis, float radius, float minTh, float maxTh, float minPs, float maxPs, long color) {
-    self.drawSpherePatch(new btVector3(center, false), new btVector3(up, false), new btVector3(axis, false), radius, minTh, maxTh, minPs, maxPs, new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawSpherePatch__SWIG_2(btIDebugDraw self, Vector3 center, Vector3 up, Vector3 axis, float radius, float minTh, float maxTh, float minPs, float maxPs, Vector3 color) {
+    self.drawSpherePatch(center, up, axis, radius, minTh, maxTh, minPs, maxPs, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw self, long bbMin, long bbMax, long color) {
-    self.drawBox(new btVector3(bbMin, false), new btVector3(bbMax, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_0(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, Vector3 color) {
+    self.drawBox(bbMin, bbMax, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw self, long bbMin, long bbMax, long trans, long color) {
-    self.drawBox(new btVector3(bbMin, false), new btVector3(bbMax, false), new btTransform(trans, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawBox__SWIG_1(btIDebugDraw self, Vector3 bbMin, Vector3 bbMax, Matrix4 trans, Vector3 color) {
+    self.drawBox(bbMin, bbMax, trans, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw self, float radius, float halfHeight, int upAxis, long transform, long color) {
-    self.drawCapsule(radius, halfHeight, upAxis, new btTransform(transform, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawCapsule(btIDebugDraw self, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
+    self.drawCapsule(radius, halfHeight, upAxis, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw self, float radius, float halfHeight, int upAxis, long transform, long color) {
-    self.drawCylinder(radius, halfHeight, upAxis, new btTransform(transform, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawCylinder(btIDebugDraw self, float radius, float halfHeight, int upAxis, Matrix4 transform, Vector3 color) {
+    self.drawCylinder(radius, halfHeight, upAxis, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw self, float radius, float height, int upAxis, long transform, long color) {
-    self.drawCone(radius, height, upAxis, new btTransform(transform, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawCone(btIDebugDraw self, float radius, float height, int upAxis, Matrix4 transform, Vector3 color) {
+    self.drawCone(radius, height, upAxis, transform, color);
   }
-  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, long planeNormal, float planeConst, long transform, long color) {
-    self.drawPlane(new btVector3(planeNormal, false), planeConst, new btTransform(transform, false), new btVector3(color, false));
+  public static void SwigDirector_btIDebugDraw_drawPlane(btIDebugDraw self, Vector3 planeNormal, float planeConst, Matrix4 transform, Vector3 color) {
+    self.drawPlane(planeNormal, planeConst, transform, color);
   }
   public static void SwigDirector_btMotionState_getWorldTransform(btMotionState self, Matrix4 worldTrans) {
     self.getWorldTransform(worldTrans);

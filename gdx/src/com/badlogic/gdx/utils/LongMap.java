@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.utils;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import com.badlogic.gdx.math.MathUtils;
 
 /** An unordered map that uses long keys. This implementation is a cuckoo hash map using 3 hashes, random walking, and a small
  * stash for problematic keys. Null values are allowed. No allocation is done except when growing the table size. <br>
@@ -726,6 +726,10 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 		public Iterator<Entry<V>> iterator () {
 			return this;
 		}
+
+		public void remove () {
+			super.remove();
+		}
 	}
 
 	static public class Values<V> extends MapIterator<V> implements Iterable<V>, Iterator<V> {
@@ -761,6 +765,10 @@ public class LongMap<V> implements Iterable<LongMap.Entry<V>> {
 			while (hasNext)
 				array.add(next());
 			return array;
+		}
+
+		public void remove () {
+			super.remove();
 		}
 	}
 

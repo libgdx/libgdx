@@ -99,9 +99,8 @@ public enum BobState implements State<Bob> {
 		}
 
 		@Override
-		public boolean onMessage (Telegram telegram) {
+		public boolean onMessage (Bob bob, Telegram telegram) {
 			if (telegram.message == MessageType.STEW_READY) {
-				Bob bob = (Bob)(telegram.receiver);
 
 				System.out.println("Message handled by " + bob.getClass().getSimpleName() + " at time: "
 					+ MessageDispatcher.getCurrentTime());
@@ -111,7 +110,6 @@ public enum BobState implements State<Bob> {
 				bob.getStateMachine().changeState(EAT_STEW);
 
 				return true;
-
 			}
 
 			return false; // send message to global message handler
@@ -198,7 +196,7 @@ public enum BobState implements State<Bob> {
 	};
 
 	@Override
-	public boolean onMessage (Telegram telegram) {
+	public boolean onMessage (Bob bob, Telegram telegram) {
 		return false;
 	}
 

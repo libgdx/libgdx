@@ -377,6 +377,7 @@
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
+		<include name="utils/OrderedSet.java"/>
 		<include name="utils/PausableThread.java"/>
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>

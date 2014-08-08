@@ -19,20 +19,23 @@ package com.badlogic.gdx.ai.fsm;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /** Default implementation of the {@link StateMachine} interface.
+ * 
+ * @param <E> is the type of the entity handled by this state machine
+ * 
  * @author davebaol */
 public class DefaultStateMachine<E> implements StateMachine<E> {
 
 	/** The entity that owns this state machine. */
-	private E owner;
+	protected E owner;
 
 	/** The current state the owner is in. */
-	private State<E> currentState;
+	protected State<E> currentState;
 
 	/** The last state the owner was in. */
 	private State<E> previousState;
 
 	/** The global state of the owner. Its logic is called every time the FSM is updated. */
-	private State<E> globalState;
+	protected State<E> globalState;
 
 	/** Creates a DefaultStateMachine for the specified owner.
 	 * @param owner the owner of the state machine */
@@ -96,32 +99,36 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 
 	@Override
 	public void changeState (State<E> newState) {
-
 		// Keep a record of the previous state
 		previousState = currentState;
 
 		// Call the exit method of the existing state
-		currentState.exit(owner);
+		if (currentState != null) currentState.exit(owner);
 
-		// change state to the new state
+		// Change state to the new state
 		currentState = newState;
 
-		// call the entry method of the new state
+		// Call the entry method of the new state
 		currentState.enter(owner);
 	}
 
 	@Override
-	public void revertToPreviousState () {
+	public boolean revertToPreviousState () {
+		if (previousState == null) {
+			return false;
+		}
+
 		changeState(previousState);
+		return true;
 	}
 
 	/** Indicates whether the state machine is in the given state.
 	 * <p>
-	 * This implementation assumes states are singletons (typically a enum) so they are compared with the {@code ==} operator
+	 * This implementation assumes states are singletons (typically an enum) so they are compared with the {@code ==} operator
 	 * instead of the {@code equals} method.
 	 * 
 	 * @param state the state to be compared with the current state
-	 * @returns true if the current state's type is equal to the type of the class passed as a parameter. */
+	 * @returns true if the current state and the given state are the same object. */
 	@Override
 	public boolean isInState (State<E> state) {
 		return currentState == state;
@@ -136,13 +143,13 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 	public boolean handleMessage (Telegram telegram) {
 
 		// First see if the current state is valid and that it can handle the message
-		if (currentState != null && currentState.onMessage(telegram)) {
+		if (currentState != null && currentState.onMessage(owner, telegram)) {
 			return true;
 		}
 
 		// If not, and if a global state has been implemented, send
 		// the message to the global state
-		if (globalState != null && globalState.onMessage(telegram)) {
+		if (globalState != null && globalState.onMessage(owner, telegram)) {
 			return true;
 		}
 

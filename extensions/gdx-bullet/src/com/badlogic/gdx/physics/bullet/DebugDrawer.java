@@ -31,13 +31,13 @@ public class DebugDrawer extends btIDebugDraw {
 	public ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 	@Override
-	public void drawLine (btVector3 from, btVector3 to, btVector3 color) {
-		shapeRenderer.setColor(color.getX(), color.getY(), color.getZ(), 1f);
-		shapeRenderer.line(from.getX(), from.getY(), from.getZ(), to.getX(), to.getY(), to.getZ());
+	public void drawLine (Vector3 from, Vector3 to, Vector3 color) {
+		shapeRenderer.setColor(color.x, color.y, color.z, 1f);
+		shapeRenderer.line(from, to);
 	}
 
 	@Override
-	public void drawContactPoint (btVector3 PointOnB, btVector3 normalOnB, float distance, int lifeTime, btVector3 color) {
+	public void drawContactPoint (Vector3 PointOnB, Vector3 normalOnB, float distance, int lifeTime, Vector3 color) {
 	}
 
 	@Override
@@ -45,9 +45,9 @@ public class DebugDrawer extends btIDebugDraw {
 	}
 
 	@Override
-	public void draw3dText (btVector3 location, String textString) {
+	public void draw3dText (Vector3 location, String textString) {
 	}
-
+	
 	@Override
 	public void setDebugMode (int debugMode) {
 		this.debugMode = debugMode;

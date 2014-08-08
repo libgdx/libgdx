@@ -129,7 +129,7 @@ public class ImageTextButton extends Button {
 		return getCell(label);
 	}
 
-	public void setText (String text) {
+	public void setText (CharSequence text) {
 		label.setText(text);
 	}
 

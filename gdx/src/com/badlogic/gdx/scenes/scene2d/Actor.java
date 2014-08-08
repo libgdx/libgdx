@@ -18,6 +18,8 @@ package com.badlogic.gdx.scenes.scene2d;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -49,14 +51,14 @@ import com.badlogic.gdx.utils.Pools;
  * @author Nathan Sweet */
 public class Actor {
 	private Stage stage;
-	private Group parent;
+	Group parent;
 	private final DelayedRemovalArray<EventListener> listeners = new DelayedRemovalArray(0);
 	private final DelayedRemovalArray<EventListener> captureListeners = new DelayedRemovalArray(0);
 	private final Array<Action> actions = new Array(0);
 
 	private String name;
 	private Touchable touchable = Touchable.enabled;
-	private boolean visible = true;
+	private boolean visible = true, debug;
 	float x, y;
 	float width, height;
 	float originX, originY;
@@ -65,10 +67,10 @@ public class Actor {
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
 
-	/** Draws the actor. The Batch is configured to draw in the parent's coordinate system.
+	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
 	 * This draw method} is convenient to draw a rotated and scaled TextureRegion. {@link Batch#begin()} has already been called on
-	 * the Batch. If {@link Batch#end()} is called to draw without the Batch then {@link Batch#begin()} must be called before the
+	 * the batch. If {@link Batch#end()} is called to draw without the batch then {@link Batch#begin()} must be called before the
 	 * method returns.
 	 * <p>
 	 * The default implementation does nothing.
@@ -81,6 +83,7 @@ public class Actor {
 	 * The default implementation calls {@link Action#act(float)} on each action and removes actions that are complete.
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
+		Array<Action> actions = this.actions;
 		for (int i = 0; i < actions.size; i++) {
 			Action action = actions.get(i);
 			if (action.act(delta) && i < actions.size) {
@@ -113,16 +116,17 @@ public class Actor {
 
 		// Collect ancestors so event propagation is unaffected by hierarchy changes.
 		Array<Group> ancestors = Pools.obtain(Array.class);
-		Group parent = getParent();
+		Group parent = this.parent;
 		while (parent != null) {
 			ancestors.add(parent);
-			parent = parent.getParent();
+			parent = parent.parent;
 		}
 
 		try {
 			// Notify all parent capture listeners, starting at the root. Ancestors may stop an event before children receive it.
+			Object[] ancestorsArray = ancestors.items;
 			for (int i = ancestors.size - 1; i >= 0; i--) {
-				Group currentTarget = ancestors.get(i);
+				Group currentTarget = (Group)ancestorsArray[i];
 				currentTarget.notify(event, true);
 				if (event.isStopped()) return event.isCancelled();
 			}
@@ -138,7 +142,7 @@ public class Actor {
 
 			// Notify all parent listeners, starting at the target. Children may stop an event before ancestors receive it.
 			for (int i = 0, n = ancestors.size; i < n; i++) {
-				ancestors.get(i).notify(event, false);
+				((Group)ancestorsArray[i]).notify(event, false);
 				if (event.isStopped()) return event.isCancelled();
 			}
 
@@ -360,7 +364,10 @@ public class Actor {
 	}
 
 	public void setX (float x) {
-		this.x = x;
+		if (this.x != x) {
+			this.x = x;
+			positionChanged();
+		}
 	}
 
 	/** Get the Y position of the actor (bottom edge of actor) */
@@ -369,33 +376,47 @@ public class Actor {
 	}
 
 	public void setY (float y) {
-		this.y = y;
+		if (this.y != y) {
+			this.y = y;
+			positionChanged();
+		}
 	}
 
 	/** Set position of Actor to x, y (using bottom left corner of Actor) */
 	public void setPosition (float x, float y) {
-		this.x = x;
-		this.y = y;
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+			positionChanged();
+		}
 	}
 
 	/** Set position of Actor centered on x, y */
-	public void setCenterPosition(float x, float y) {
-		this.x = x - width / 2;
-		this.y = y - height / 2;
+	public void setCenterPosition (float x, float y) {
+		float newX = x - width / 2;
+		float newY = y - height / 2;
+		if (this.x != newX || this.y != newY) {
+			this.x = newX;
+			this.y = newY;
+			positionChanged();
+		}
 	}
 
-	public float getCenterX() {
+	public float getCenterX () {
 		return this.x + width / 2;
 	}
 
-	public float getCenterY() {
+	public float getCenterY () {
 		return this.y + height / 2;
 	}
 
 	/** Add x and y to current position */
 	public void moveBy (float x, float y) {
-		this.x += x;
-		this.y += y;
+		if (x != 0 || y != 0) {
+			this.x += x;
+			this.y += y;
+			positionChanged();
+		}
 	}
 
 	public float getWidth () {
@@ -428,6 +449,10 @@ public class Actor {
 		return x + width;
 	}
 
+	/** Called when the actor's position has been changed. */
+	protected void positionChanged () {
+	}
+
 	/** Called when the actor's size has been changed. */
 	protected void sizeChanged () {
 	}
@@ -457,13 +482,16 @@ public class Actor {
 
 	/** Set bounds the x, y, width, and height. */
 	public void setBounds (float x, float y, float width, float height) {
-		float oldWidth = this.width;
-		float oldHeight = this.height;
-		this.x = x;
-		this.y = y;
-		this.width = width;
-		this.height = height;
-		if (width != oldWidth || height != oldHeight) sizeChanged();
+		if (this.x != x || this.y != y) {
+			this.x = x;
+			this.y = y;
+			positionChanged();
+		}
+		if (this.width != width || this.height != height) {
+			this.width = width;
+			this.height = height;
+			sizeChanged();
+		}
 	}
 
 	public float getOriginX () {
@@ -554,8 +582,7 @@ public class Actor {
 		return color;
 	}
 
-	/** Retrieve custom actor name set with {@link Actor#setName(String)},
-	 * used for easier identification */
+	/** Retrieve custom actor name set with {@link Actor#setName(String)}, used for easier identification */
 	public String getName () {
 		return name;
 	}
@@ -583,7 +610,7 @@ public class Actor {
 		if (index < 0) throw new IllegalArgumentException("ZIndex cannot be < 0.");
 		Group parent = this.parent;
 		if (parent == null) return;
-		Array<Actor> children = parent.getChildren();
+		Array<Actor> children = parent.children;
 		if (children.size == 1) return;
 		if (!children.removeValue(this, true)) return;
 		if (index >= children.size)
@@ -597,7 +624,7 @@ public class Actor {
 	public int getZIndex () {
 		Group parent = this.parent;
 		if (parent == null) return -1;
-		return parent.getChildren().indexOf(this, true);
+		return parent.children.indexOf(this, true);
 	}
 
 	/** Calls {@link #clipBegin(float, float, float, float)} to clip this actor's bounds. */
@@ -684,7 +711,7 @@ public class Actor {
 	/** Converts coordinates for this actor to those of a parent actor. The ascendant does not need to be a direct parent. */
 	public Vector2 localToAscendantCoordinates (Actor ascendant, Vector2 localCoords) {
 		Actor actor = this;
-		while (actor.parent != null) {
+		while (actor != null) {
 			actor.localToParentCoordinates(localCoords);
 			actor = actor.parent;
 			if (actor == ascendant) break;
@@ -720,6 +747,35 @@ public class Actor {
 			parentCoords.y = (tox * -sin + toy * cos) / scaleY + originY;
 		}
 		return parentCoords;
+	}
+
+	/** Draws this actor's debug lines if {@link #getDebug()} is true. */
+	public void drawDebug (ShapeRenderer shapes) {
+		drawDebugBounds(shapes);
+	}
+
+	/** Draws a rectange for the bounds of this actor if {@link #getDebug()} is true. */
+	protected void drawDebugBounds (ShapeRenderer shapes) {
+		if (!getDebug()) return;
+		shapes.set(ShapeType.Line);
+		shapes.setColor(getStage().getDebugColor());
+		shapes.rect(getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+	}
+
+	/** If true, {@link #drawDebug(ShapeRenderer)} will be called for this actor. */
+	public void setDebug (boolean enabled) {
+		debug = enabled;
+		if (enabled) Stage.debug = true;
+	}
+
+	public boolean getDebug () {
+		return debug;
+	}
+
+	/** Calls {@link #setDebug(boolean)} with {@code true}. */
+	public Actor debug () {
+		setDebug(true);
+		return this;
 	}
 
 	public String toString () {

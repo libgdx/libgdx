@@ -79,30 +79,28 @@ public class LocalConvexResult extends BulletBase {
     return (cPtr == 0) ? null : new LocalShapeInfo(cPtr, false);
   }
 
-  public void setHitNormalLocal(btVector3 value) {
-    CollisionJNI.LocalConvexResult_hitNormalLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getHitNormalLocal() {
-    long cPtr = CollisionJNI.LocalConvexResult_hitNormalLocal_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
-
-  public void setHitPointLocal(btVector3 value) {
-    CollisionJNI.LocalConvexResult_hitPointLocal_set(swigCPtr, this, btVector3.getCPtr(value), value);
-  }
-
-  public btVector3 getHitPointLocal() {
-    long cPtr = CollisionJNI.LocalConvexResult_hitPointLocal_get(swigCPtr, this);
-    return (cPtr == 0) ? null : new btVector3(cPtr, false);
-  }
-
   public void setHitFraction(float value) {
     CollisionJNI.LocalConvexResult_hitFraction_set(swigCPtr, this, value);
   }
 
   public float getHitFraction() {
     return CollisionJNI.LocalConvexResult_hitFraction_get(swigCPtr, this);
+  }
+
+  public void getHitNormalLocal(Vector3 out) {
+    CollisionJNI.LocalConvexResult_getHitNormalLocal(swigCPtr, this, out);
+  }
+
+  public void setHitNormalLocal(Vector3 value) {
+    CollisionJNI.LocalConvexResult_setHitNormalLocal(swigCPtr, this, value);
+  }
+
+  public void getHitPointLocal(Vector3 out) {
+    CollisionJNI.LocalConvexResult_getHitPointLocal(swigCPtr, this, out);
+  }
+
+  public void setHitPointLocal(Vector3 value) {
+    CollisionJNI.LocalConvexResult_setHitPointLocal(swigCPtr, this, value);
   }
 
 }

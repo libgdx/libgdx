@@ -212,19 +212,25 @@ public class Window extends Table {
 	}
 
 	public void draw (Batch batch, float parentAlpha) {
+		Stage stage = getStage();
+		if (stage.getKeyboardFocus() == null) stage.setKeyboardFocus(this);
+
 		keepWithinStage();
 
 		if (style.stageBackground != null) {
-			Color color = getColor();
-			batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-			Stage stage = getStage();
-			stageToLocalCoordinates(/* in/out */tmpPosition.set(0, 0));
-			stageToLocalCoordinates(/* in/out */tmpSize.set(stage.getWidth(), stage.getHeight()));
-			style.stageBackground
-				.draw(batch, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY() + tmpSize.y);
+			stageToLocalCoordinates(tmpPosition.set(0, 0));
+			stageToLocalCoordinates(tmpSize.set(stage.getWidth(), stage.getHeight()));
+			drawStageBackground(batch, parentAlpha, getX() + tmpPosition.x, getY() + tmpPosition.y, getX() + tmpSize.x, getY()
+				+ tmpSize.y);
 		}
 
 		super.draw(batch, parentAlpha);
+	}
+
+	protected void drawStageBackground (Batch batch, float parentAlpha, float x, float y, float width, float height) {
+		Color color = getColor();
+		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
+		style.stageBackground.draw(batch, x, y, width, height);
 	}
 
 	protected void drawBackground (Batch batch, float parentAlpha, float x, float y) {
@@ -262,6 +268,15 @@ public class Window extends Table {
 	public Actor hit (float x, float y, boolean touchable) {
 		Actor hit = super.hit(x, y, touchable);
 		if (hit == null && isModal && (!touchable || getTouchable() == Touchable.enabled)) return this;
+		float height = getHeight();
+		if (hit == null || hit == this) return hit;
+		if (y <= height && y >= height - getPadTop() && x >= 0 && x <= getWidth()) {
+			// Hit the title bar, don't use the hit child if it is in the Window's table.
+			Actor current = hit;
+			while (current.getParent() != this)
+				current = current.getParent();
+			if (getCell(current) != null) return this;
+		}
 		return hit;
 	}
 

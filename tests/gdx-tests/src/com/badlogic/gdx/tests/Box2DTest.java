@@ -143,7 +143,7 @@ public class Box2DTest extends GdxTest implements InputProcessor {
 		// finally we add a fixture to the body using the polygon
 		// defined above. Note that we have to dispose PolygonShapes
 		// and CircleShapes once they are no longer used. This is the
-		// only time you have to care explicitely for memomry managment.
+		// only time you have to care explicitly for memory management.
 		FixtureDef fixtureDef = new FixtureDef();
 		fixtureDef.shape = groundPoly;
 		fixtureDef.filter.groupIndex = 0;

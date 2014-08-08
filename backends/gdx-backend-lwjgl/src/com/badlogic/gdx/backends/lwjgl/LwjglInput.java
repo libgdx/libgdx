@@ -23,9 +23,7 @@ import java.awt.event.WindowFocusListener;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -41,6 +39,8 @@ import javax.swing.event.DocumentListener;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.IntSet;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Keyboard;
@@ -64,12 +64,16 @@ final public class LwjglInput implements Input {
 	int mouseX, mouseY;
 	int deltaX, deltaY;
 	int pressedKeys = 0;
+	boolean keyJustPressed = false;
+	boolean[] justPressedKeys = new boolean[256];
 	boolean justTouched = false;
-	Set<Integer> pressedButtons = new HashSet<Integer>();
+	IntSet pressedButtons = new IntSet();
 	InputProcessor processor;
 	char lastKeyCharPressed;
 	float keyRepeatTimer;
 	long currentEventTimeStamp;
+	float deltaTime;
+	long lastTime;
 
 	Pool<KeyEvent> usedKeyEvents = new Pool<KeyEvent>(16, 1000) {
 		protected KeyEvent newObject () {
@@ -230,6 +234,17 @@ final public class LwjglInput implements Input {
 			return pressedKeys > 0;
 		else
 			return Keyboard.isKeyDown(getLwjglKeyCode(key));
+	}
+	
+	@Override
+	public boolean isKeyJustPressed (int key) {
+		if(key == Input.Keys.ANY_KEY){
+			return keyJustPressed;
+		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	public boolean isTouched () {
@@ -745,6 +760,7 @@ final public class LwjglInput implements Input {
 	}
 
 	public void update () {
+		updateTime();
 		updateMouse();
 		updateKeyboard();
 	}
@@ -755,6 +771,12 @@ final public class LwjglInput implements Input {
 		if (button == 2) return Buttons.MIDDLE;
 		return Buttons.LEFT;
 
+	}
+
+	void updateTime () {
+		long thisTime = System.nanoTime();
+		deltaTime = (thisTime - lastTime) / 1000000000.0f;
+		lastTime = thisTime;
 	}
 
 	void updateMouse () {
@@ -779,7 +801,7 @@ final public class LwjglInput implements Input {
 					if (Mouse.getEventDWheel() != 0) {
 						event.type = TouchEvent.TOUCH_SCROLLED;
 						event.scrollAmount = (int)-Math.signum(Mouse.getEventDWheel());
-					} else if (pressedButtons.size() > 0) {
+					} else if (pressedButtons.size > 0) {
 						event.type = TouchEvent.TOUCH_DRAGGED;
 					} else {
 						event.type = TouchEvent.TOUCH_MOVED;
@@ -813,8 +835,14 @@ final public class LwjglInput implements Input {
 	}
 
 	void updateKeyboard () {
+		if (keyJustPressed) {
+			keyJustPressed = false;
+			for (int i = 0; i < justPressedKeys.length; i++) {
+				justPressedKeys[i] = false;
+			}
+		}
 		if (lastKeyCharPressed != 0) {
-			keyRepeatTimer -= Gdx.graphics.getDeltaTime();
+			keyRepeatTimer -= deltaTime;
 			if (keyRepeatTimer < 0) {
 				keyRepeatTimer = keyRepeatTime;
 
@@ -859,6 +887,8 @@ final public class LwjglInput implements Input {
 					keyEvents.add(event);
 
 					pressedKeys++;
+					keyJustPressed = true;
+					justPressedKeys[keyCode] = true;
 					lastKeyCharPressed = keyChar;
 					keyRepeatTimer = keyRepeatInitialTime;
 				} else {

@@ -21,10 +21,10 @@
 #define ContactListener_H
 
 #include "GdxCollisionObjectBridge.h"
-#include "../../bullet/BulletCollision/CollisionDispatch/btCollisionObject.h"
-#include "../../bullet/BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
-#include "../../bullet/BulletCollision/CollisionDispatch/btManifoldResult.h"
-#include "../../bullet/BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
+#include "../../../bullet/BulletCollision/CollisionDispatch/btCollisionObject.h"
+#include "../../../bullet/BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h"
+#include "../../../bullet/BulletCollision/CollisionDispatch/btManifoldResult.h"
+#include "../../../bullet/BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 
 enum ContactCallbackEvent {
 	TYPE_MASK = 0x0F,
