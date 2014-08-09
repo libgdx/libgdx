@@ -149,7 +149,7 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 				float distanceSquare = ownerPosition.dst2(outputCollision.point);
 				if (distanceSquare < minDistanceSquare) {
 					minDistanceSquare = distanceSquare;
-					// Swap output rays
+					// Swap collisions
 					Collision<T> tmpCollision = outputCollision;
 					outputCollision = minOutputCollision;
 					minOutputCollision = tmpCollision;

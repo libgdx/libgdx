@@ -127,7 +127,6 @@ public class SteeringBehaviorTest extends GdxTest {
 		for (int i = 0; i < behaviors.length; i++) {
 			behaviorNames[i] = behaviors[i].name;
 		}
-		Arrays.sort(behaviorNames);
 		
 		final List<String> behaviorsList = new List(skin);
 		behaviorsList.setItems(behaviorNames);
@@ -177,8 +176,8 @@ public class SteeringBehaviorTest extends GdxTest {
 	public void resize (int width, int height) {
 		super.resize(width, height);
 		stage.getViewport().update(width, height, true);
-		stageWidth = stage.getWidth();
-		stageHeight = stage.getHeight();
+		stageWidth = width;
+		stageHeight = height;
 	}
 
 	@Override

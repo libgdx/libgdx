@@ -1,7 +1,7 @@
 
 package com.badlogic.gdx.ai.steer.paths;
 
-import com.badlogic.gdx.ai.steer.behaviors.FollowPathBase.Path;
+import com.badlogic.gdx.ai.steer.behaviors.FollowPath.Path;
 import com.badlogic.gdx.ai.steer.paths.LinePath.LinePathParam;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector;
@@ -99,10 +99,12 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 	@Override
 	public void calculateTargetPosition (T out, LinePathParam param, float targetDistance) {
 		// Cycling path support
-		if (targetDistance < 0) { // Backwards
-			targetDistance += pathLength;
-		} else if (targetDistance > pathLength) { // Forward
-			targetDistance -= pathLength;
+		if (targetDistance < 0) {
+			// Backwards
+			targetDistance = pathLength + (targetDistance % pathLength);
+		} else if (targetDistance > pathLength) {
+			// Forward
+			targetDistance = targetDistance % pathLength;
 		}
 
 		// Walk through lines to see on which line we are

@@ -23,17 +23,20 @@ import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
 /** This combination behavior simply sums up all the active behaviors, applies their weights, and truncates the result before
- * returning.
+ * returning. There are no constraints on the blending weights; they don't have to sum to one, for example, and rarely do. Don't
+ * think of it as a weighted mean.
  * <p>
  * With {@code WeightedBlender} you can combine multiple behaviors to get a more complex behavior. It can work fine, but the
  * trade-off is that it comes with a few problems:
  * <ul>
  * <li>Since every active behavior is calculated every time step, it can be a costly method to process.</li>
- * <li>Behavior weights can be difficult to tweak.</li>
- * <li>It's problematic with conflicting forces. For instance, A common scenario is where a vehicle is backed up against a wall by
- * several other vehicles. In this example, the separating forces from the neighboring vehicles can be greater than the repulsive
- * force from the wall and the vehicle can end up being pushed through the wall boundary. This is almost certainly not going to be
- * favorable. Sure you can make the weights for the wall avoidance huge, but then your vehicle may behave strangely next time it
+ * <li>Behavior weights can be difficult to tweak. There have been research projects that have tried to evolve the steering
+ * weights using genetic algorithms or neural networks. Results have not been encouraging, however, and manual experimentation
+ * still seems to be the most sensible approach.</li>
+ * <li>It's problematic with conflicting forces. For instance, A common scenario is where an agent is backed up against a wall by
+ * several other agents. In this example, the separating forces from the neighboring agents can be greater than the repulsive
+ * force from the wall and the agent can end up being pushed through the wall boundary. This is almost certainly not going to be
+ * favorable. Sure you can make the weights for the wall avoidance huge, but then your agent may behave strangely next time it
  * finds itself alone and next to a wall.</li>
  * </ul>
  * 
@@ -49,7 +52,7 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 	protected float maxAngularAcceleration;
 
 	/** The list of behaviors and their corresponding blending weights. */
-	protected Array<BehaviorAndWeight<T>> weights;
+	protected Array<BehaviorAndWeight<T>> list;
 
 	private SteeringAcceleration<T> steering;
 
@@ -63,23 +66,31 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 		this.maxLinearAcceleration = maxLinearAcceleration;
 		this.maxAngularAcceleration = maxAngularAcceleration;
 
-		this.weights = new Array<BehaviorAndWeight<T>>();
+		this.list = new Array<BehaviorAndWeight<T>>();
 		this.steering = new SteeringAcceleration<T>(owner.newVector());
 	}
 
+	/** Adds a steering behavior and its weight to the list.
+	 * @param behavior the steering behavior to add
+	 * @param weight the weight of the behavior
+	 * @return this behavior for chaining. */
 	public WeightedBlender<T> add (SteeringBehavior<T> behavior, float weight) {
-		add(new BehaviorAndWeight<T>(behavior, weight));
+		return add(new BehaviorAndWeight<T>(behavior, weight));
+	}
+
+	/** Adds a steering behavior and its weight to the list.
+	 * @param item the steering behavior and its weight
+	 * @return this behavior for chaining. */
+	public WeightedBlender<T> add (BehaviorAndWeight<T> item) {
+		item.behavior.setOwner(owner);
+		list.add(item);
 		return this;
 	}
 
-	public WeightedBlender<T> add (BehaviorAndWeight<T> weight) {
-		weight.behavior.setOwner(owner);
-		weights.add(weight);
-		return this;
-	}
-
-	public BehaviorAndWeight<T> getBehaviorAndWeight (int i) {
-		return weights.get(i);
+	/** Returns the weighted behavior at the specified index.
+	 * @param index the index of the weighted behavior to return */
+	public BehaviorAndWeight<T> get (int index) {
+		return list.get(index);
 	}
 
 	@Override
@@ -88,12 +99,14 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 		blendedSteering.setZero();
 
 		// Go through all the enabled behaviors
-		int len = weights.size;
+		int len = list.size;
 		for (int i = 0; i < len; i++) {
-			BehaviorAndWeight<T> bw = weights.get(i);
+			BehaviorAndWeight<T> bw = list.get(i);
 			if (bw.behavior.isEnabled()) {
-				// Calculate the behavior's steering of and add it to the accumulator
+				// Calculate the behavior's steering
 				bw.behavior.calculateSteering(steering);
+
+				// Scale and add the steering to the accumulator
 				blendedSteering.mulAdd(steering, bw.weight);
 			}
 		}

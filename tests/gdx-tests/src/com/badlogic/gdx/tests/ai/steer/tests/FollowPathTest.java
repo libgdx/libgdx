@@ -61,7 +61,7 @@ public class FollowPathTest extends SteeringTest {
 		character = new SteeringActor(container.badlogicSmall, false);
 		character.setMaxSpeed(100);
 
-		wayPoints = createRandomPath(MathUtils.random(4, 12), 50, 50, container.stageWidth - 50, container.stageHeight - 50);
+		wayPoints = createRandomPath(MathUtils.random(4, 16), 50, 50, container.stageWidth - 50, container.stageHeight - 50);
 
 		LinePath<Vector2> linePath = new LinePath<Vector2>(wayPoints);
 		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30, 300);
@@ -107,6 +107,22 @@ public class FollowPathTest extends SteeringTest {
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
+		final Label labelPredictionTime = new Label("Prediction Time [" + followPathSB.getPredictionTime() + " sec.]", container.skin);
+		detailTable.add(labelPredictionTime);
+		detailTable.row();
+		Slider predictionTime = new Slider(0, 3, .1f, false, container.skin);
+		predictionTime.setValue(followPathSB.getPredictionTime());
+		predictionTime.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				followPathSB.setPredictionTime(slider.getValue());
+				labelPredictionTime.setText("Prediction Time [" + slider.getValue() + " sec.]");
+			}
+		});
+		detailTable.add(predictionTime);
+
+		detailTable.row();
 		addSeparator(detailTable);
 
 		detailTable.row();
@@ -141,6 +157,7 @@ public class FollowPathTest extends SteeringTest {
 		for (int i = 0; i < wayPoints.length; i++) {
 			int next = (i + 1) % wayPoints.length;
 			shapeRenderer.line(wayPoints[i], wayPoints[next]);
+			shapeRenderer.circle(wayPoints[i].x, wayPoints[i].y, 2f);
 		}
 		shapeRenderer.end();
 
@@ -180,7 +197,6 @@ public class FollowPathTest extends SteeringTest {
 			temp.y += midY;
 
 			wayPoints[i] = temp;
-
 		}
 
 		return wayPoints;
