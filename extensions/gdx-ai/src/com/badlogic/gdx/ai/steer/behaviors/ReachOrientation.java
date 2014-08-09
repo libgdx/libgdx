@@ -35,7 +35,7 @@ import com.badlogic.gdx.math.Vector;
  * @autor davebaol */
 public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 
-	/** The target to align to.*/
+	/** The target to align to. */
 	protected Steerable<T> target;
 
 	/** The maximum angular acceleration of the owner. */
@@ -53,14 +53,18 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The time over which to achieve target rotation speed */
 	protected float timeToTarget = 0.1f;
 
+	/** Creates a {@code ReachOrientation} behavior for the specified owner.
+	 * @param owner the owner of this behavior. */
+	public ReachOrientation (Steerable<T> owner) {
+		this(owner, null);
+	}
+
 	/** Creates a {@code ReachOrientation} behavior for the specified owner and target.
 	 * @param owner the owner of this behavior
-	 * @param targetPosition the target position
-	 * @param maxAngularAcceleration the maximum angular acceleration that can be used to align to the target. */
-	public ReachOrientation (Steerable<T> owner, Steerable<T> target, float maxAngularAcceleration) {
+	 * @param target the target. */
+	public ReachOrientation (Steerable<T> owner, Steerable<T> target) {
 		super(owner);
 		this.target = target;
-		this.maxAngularAcceleration = maxAngularAcceleration;
 	}
 
 	@Override
@@ -113,9 +117,11 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return target;
 	}
 
-	/** Sets the target to align to. */
-	public void setTarget (Steerable<T> target) {
+	/** Sets the target to align to.
+	 * @return this behavior for chaining. */
+	public ReachOrientation<T> setTarget (Steerable<T> target) {
 		this.target = target;
+		return this;
 	}
 
 	/** Returns the maximum angular acceleration of the owner. */
@@ -123,9 +129,11 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxAngularAcceleration;
 	}
 
-	/** Sets the maximum angular acceleration of the owner. */
-	public void setMaxAngularAcceleration (float maxAngularAcceleration) {
+	/** Sets the maximum angular acceleration of the owner.
+	 * @return this behavior for chaining. */
+	public ReachOrientation<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
 		this.maxAngularAcceleration = maxAngularAcceleration;
+		return this;
 	}
 
 	/** Returns the maximum rotation of the owner. */
@@ -133,9 +141,11 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxRotation;
 	}
 
-	/** Sets the maximum rotation of the owner. */
-	public void setMaxRotation (float maxRotation) {
+	/** Sets the maximum rotation of the owner.
+	 * @return this behavior for chaining. */
+	public ReachOrientation<T> setMaxRotation (float maxRotation) {
 		this.maxRotation = maxRotation;
+		return this;
 	}
 
 	/** Returns the tolerance for aligning to the target without letting small errors keep the owner swinging. */
@@ -143,9 +153,11 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return alignTolerance;
 	}
 
-	/** Sets the tolerance for aligning to the target without letting small errors keep the owner swinging. */
-	public void setAlignTolerance (float alignTolerance) {
+	/** Sets the tolerance for aligning to the target without letting small errors keep the owner swinging.
+	 * @return this behavior for chaining. */
+	public ReachOrientation<T> setAlignTolerance (float alignTolerance) {
 		this.alignTolerance = alignTolerance;
+		return this;
 	}
 
 	/** Returns the radius for beginning to slow down */
@@ -153,9 +165,11 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return decelerationRadius;
 	}
 
-	/** Sets the radius for beginning to slow down */
-	public void setDecelerationRadius (float decelerationRadius) {
+	/** Sets the radius for beginning to slow down
+	 * @return this behavior for chaining. */
+	public ReachOrientation<T> setDecelerationRadius (float decelerationRadius) {
 		this.decelerationRadius = decelerationRadius;
+		return this;
 	}
 
 	/** Returns the time over which to achieve target rotation speed */
@@ -163,9 +177,11 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return timeToTarget;
 	}
 
-	/** Sets the time over which to achieve target rotation speed */
-	public void setTimeToTarget (float timeToTarget) {
+	/** Sets the time over which to achieve target rotation speed
+	 * @return this behavior for chaining. */
+	public ReachOrientation<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

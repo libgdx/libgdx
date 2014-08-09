@@ -22,8 +22,8 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPathBase.Path.Param;
 import com.badlogic.gdx.math.Vector;
 
-/** FollowPathBase is the base class for path following behaviors creating a linear acceleration that moves an agent along the
- * given path.
+/** {@code FollowPathBase} is the base class for path following behaviors creating a linear acceleration that moves an agent along
+ * the given path.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
@@ -42,24 +42,38 @@ public abstract class FollowPathBase<T extends Vector<T>, P extends Param> exten
 	/** The maximum acceleration that can be used to reach the target. */
 	protected float maxLinearAcceleration;
 
-	// DEBUG
-	public T targetPos;
+	private T internalTargetPosition;
 
-	/** Create a FollowPathBase behavior.
+	/** Create a {@code FollowPathBase} behavior for the specified owner and path.
+	 * @param owner the owner of this behavior
+	 * @param path the path to be followed by the owner. */
+	public FollowPathBase (Steerable<T> owner, Path<T, P> path) {
+		this(owner, path, 0);
+	}
+
+	/** Create a {@code FollowPathBase} behavior for the specified owner, path and path offset.
+	 * @param owner the owner of this behavior
+	 * @param path the path to be followed by the owner
+	 * @param pathOffset the distance along the path to generate the target. Can be negative if the owner is to move along the
+	 *           reverse direction. */
+	public FollowPathBase (Steerable<T> owner, Path<T, P> path, float pathOffset) {
+		this(owner, path, pathOffset, 0);
+	}
+
+	/** Create a {@code FollowPathBase} behavior for the specified owner, path, path offset and maximum linear acceleration.
 	 * @param owner the owner of this behavior
 	 * @param path the path to be followed by the owner
 	 * @param pathOffset the distance along the path to generate the target. Can be negative if the owner is to move along the
 	 *           reverse direction.
-	 * @param maxLinearAcceleration the maximum acceleration that can be used to reach the target. */
+	 * @param maxLinearAcceleration the maximum acceleration that can be used to reach the internal target. */
 	public FollowPathBase (Steerable<T> owner, Path<T, P> path, float pathOffset, float maxLinearAcceleration) {
 		super(owner);
 		this.path = path;
 		this.pathParam = path.createParam();
 		this.pathOffset = pathOffset;
 		this.maxLinearAcceleration = maxLinearAcceleration;
-		
-		// DEBUG
-		targetPos = owner.newVector();
+
+		this.internalTargetPosition = owner.newVector();
 	}
 
 	/** Returns the owner position to be used as a source for farther calculations */
@@ -74,14 +88,10 @@ public abstract class FollowPathBase<T extends Vector<T>, P extends Param> exten
 		float targetDistance = distance + pathOffset;
 
 		// Calculate the target position
-		// Notice that we're reusing the vector steering.linear
-		path.calculateTargetPosition(steering.linear, pathParam, targetDistance);
-
-		// DEBUG
-		targetPos.set(steering.linear);
+		path.calculateTargetPosition(internalTargetPosition, pathParam, targetDistance);
 
 		// Seek the target position
-		steering.linear.sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
+		steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
 
 		// No angular acceleration
 		steering.angular = 0;
@@ -96,51 +106,52 @@ public abstract class FollowPathBase<T extends Vector<T>, P extends Param> exten
 	}
 
 	/** Sets the maximum linear acceleration
-	 * @param maxLinearAcceleration the maximum linear acceleration to set */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	 * @param maxLinearAcceleration the maximum linear acceleration to set
+	 * @return this behavior for chaining. */
+	public FollowPathBase<T, P> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
-	/**
-	 * Returns the path to follow
-	 */
+	/** Returns the path to follow */
 	public Path<T, P> getPath () {
 		return path;
 	}
 
-	/**
-	 * @param path the path to set
-	 */
-	public void setPath (Path<T, P> path) {
+	/** @param path the path to set
+	 * @return this behavior for chaining. */
+	public FollowPathBase<T, P> setPath (Path<T, P> path) {
 		this.path = path;
+		return this;
 	}
 
-	/**
-	 * Returns the pathOffset
-	 */
+	/** Returns the pathOffset */
 	public float getPathOffset () {
 		return pathOffset;
 	}
 
-	/**
-	 * @param pathOffset the pathOffset to set
-	 */
-	public void setPathOffset (float pathOffset) {
+	/** @param pathOffset the pathOffset to set
+	 * @return this behavior for chaining. */
+	public FollowPathBase<T, P> setPathOffset (float pathOffset) {
 		this.pathOffset = pathOffset;
+		return this;
 	}
 
-	/**
-	 * @return the pathParam
-	 */
+	/** @return the pathParam */
 	public P getPathParam () {
 		return pathParam;
 	}
 
-	/**
-	 * @param pathParam the pathParam to set
-	 */
-	public void setPathParam (P pathParam) {
+	/** @param pathParam the pathParam to set
+	 * @return this behavior for chaining. */
+	public FollowPathBase<T, P> setPathParam (P pathParam) {
 		this.pathParam = pathParam;
+		return this;
+	}
+
+	/** Returns the current position of the internal target. This method is useful for debug purpose. */
+	public T getInternalTargetPosition () {
+		return internalTargetPosition;
 	}
 
 	/** The path for an agent having path following behavior.

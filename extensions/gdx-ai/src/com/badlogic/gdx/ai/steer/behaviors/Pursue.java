@@ -49,10 +49,27 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The maximum prediction time */
 	protected float maxPredictionTime;
 
+	/** Creates a {@code Pursue} behavior for the specified owner and target. Maximum linear acceleration defaults to 100 and
+	 * maximum prediction time defaults to 1 second.
+	 * @param owner the owner of this behavior.
+	 * @param target the target. */
+	public Pursue (Steerable<T> owner, Steerable<T> target) {
+		this(owner, target, 100);
+	}
+
+	/** Creates a {@code Pursue} behavior for the specified owner, target and maximum linear acceleration. Maximum prediction time
+	 * defaults to 1 second.
+	 * @param owner the owner of this behavior
+	 * @param target the target
+	 * @param maxLinearAcceleration the maximum linear acceleration that can be used. */
+	public Pursue (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
+		this(owner, target, maxLinearAcceleration, 1);
+	}
+
 	/** Creates a {@code Pursue} behavior for the specified owner and target.
 	 * @param owner the owner of this behavior
 	 * @param target the target
-	 * @param maxLinearAcceleration the maximum linear acceleration of the owner
+	 * @param maxLinearAcceleration the maximum linear acceleration that can be used
 	 * @param maxPredictionTime the max time used to predict the target's position assuming it continues to move with its current
 	 *           velocity. */
 	public Pursue (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration, float maxPredictionTime) {
@@ -103,9 +120,11 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 		return target;
 	}
 
-	/** Sets the target. */
-	public void setTarget (Steerable<T> target) {
+	/** Sets the target.
+	 * @return this behavior for chaining. */
+	public Pursue<T> setTarget (Steerable<T> target) {
 		this.target = target;
+		return this;
 	}
 
 	/** Returns the maximum linear acceleration that can be used. */
@@ -113,9 +132,11 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxLinearAcceleration;
 	}
 
-	/** Sets the maximum linear acceleration that can be used. */
-	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+	/** Sets the maximum linear acceleration that can be used.
+	 * @return this behavior for chaining. */
+	public Pursue<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
 	}
 
 	/** Returns the maximum prediction time. */
@@ -123,9 +144,11 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 		return maxPredictionTime;
 	}
 
-	/** Sets the maximum prediction time. */
-	public void setMaxPredictionTime (float maxPredictionTime) {
+	/** Sets the maximum prediction time.
+	 * @return this behavior for chaining. */
+	public Pursue<T> setMaxPredictionTime (float maxPredictionTime) {
 		this.maxPredictionTime = maxPredictionTime;
+		return this;
 	}
 
 }

@@ -14,29 +14,32 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.tests.ai.steer.tests;
+package com.badlogic.gdx.tests.ai.steer.bullet;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.Ray;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.RaycastCollisionDetector;
-import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.ai.steer.rays.CentralRayWithWhiskersConfiguration;
 import com.badlogic.gdx.ai.steer.rays.ParallelSideRayConfiguration;
 import com.badlogic.gdx.ai.steer.rays.RayConfigurationBase;
 import com.badlogic.gdx.ai.steer.rays.SingleRayConfiguration;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw.DebugDrawModes;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
@@ -46,110 +49,90 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
-import com.badlogic.gdx.tests.ai.steer.SteeringTest;
 import com.badlogic.gdx.tests.ai.steer.box2d.Box2dRaycastCollisionDetector;
+import com.badlogic.gdx.tests.bullet.BulletEntity;
 
-/** A class to test and experiment with the {@link RaycastObstacleAvoidance} behavior.
- * 
- * @autor davebaol */
-public class RaycastObstacleAvoidanceTest extends SteeringTest {
-	SteeringActor character;
+/** @author Daniel Holderbaum */
+public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
+
+	SteeringBulletEntity character;
 	int rayConfigurationIndex;
-	RayConfigurationBase<Vector2>[] rayConfigurations;
-	RaycastObstacleAvoidance<Vector2> raycastObstacleAvoidanceSB;
+	RayConfigurationBase<Vector3>[] rayConfigurations;
+	RaycastObstacleAvoidance<Vector3> raycastObstacleAvoidanceSB;
+
 	boolean drawDebug;
 	ShapeRenderer shapeRenderer;
 
-	private World world;
-	private Body wall1;
-	private Body wall2;
-	private Body wall3;
+	private Vector3 tmp = new Vector3();
 
-	public RaycastObstacleAvoidanceTest (SteeringBehaviorTest container) {
-		super(container, "Raycast Obstacle Avoidance");
+	public BulletRaycastObstacleAvoidanceTest (SteeringBehaviorTest container) {
+		super(container, "Bullet Raycast Obstacle Avoidance");
 	}
 
 	@Override
 	public void create (Table table) {
+		super.create(table);
 		drawDebug = true;
 
 		shapeRenderer = new ShapeRenderer();
 
-		// Instantiate a new World with no gravity
-		// and tell it to sleep when possible.
-		world = new World(new Vector2(0, 0), true);
+		world.add("ground", 0f, 0f, 0f).setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 1f);
 
-		// next we create a static ground platform. This platform
-		// is not movable and will not react to any influences from
-		// outside. It will however influence other bodies. First we
-		// create a PolygonShape that holds the form of the platform.
-		// it will be 100 meters wide and 2 meters high, centered
-		// around the origin
-		PolygonShape groundPoly = new PolygonShape();
-		groundPoly.setAsBox(150, 20);
+		BulletEntity wall1 = world.add("staticwall", -10f, 0f, 0f);
+		wall1.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 1f);
+		wall1.transform.rotate(Vector3.Y, 90);
+		wall1.body.setWorldTransform(wall1.transform);
 
-		// next we create the body for the ground platform. It's
-		// simply a static body.
-		BodyDef groundBodyDef = new BodyDef();
-		groundBodyDef.position.set(200, 350);
-		groundBodyDef.type = BodyType.StaticBody;
-		wall1 = world.createBody(groundBodyDef);
-		groundBodyDef.position.set(500, 100);
-		wall2 = world.createBody(groundBodyDef);
-		groundBodyDef.position.set(350, 200);
-		wall3 = world.createBody(groundBodyDef);
+		BulletEntity wall2 = world.add("staticwall", 0f, 0f, -10f);
+		wall2.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 1f);
 
-		// finally we add a fixture to the body using the polygon
-		// defined above. Note that we have to dispose PolygonShapes
-		// and CircleShapes once they are no longer used. This is the
-		// only time you have to care explicitly for memory management.
-		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.shape = groundPoly;
-		fixtureDef.filter.groupIndex = 0;
-		wall1.createFixture(fixtureDef);
-		groundPoly.setAsBox(20, 80);
-		wall2.createFixture(fixtureDef);
-		groundPoly.setAsBox(50, 30);
-		wall3.createFixture(fixtureDef);
-		groundPoly.dispose();
+		BulletEntity wall3 = world.add("staticwall", 10f, 0f, 0f);
+		wall3.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 1f);
+		wall3.transform.rotate(Vector3.Y, 90);
+		wall3.body.setWorldTransform(wall3.transform);
 
-		SteeringActor character = new SteeringActor(container.greenFish, false);
-		character.setMaxSpeed(500);
+		BulletEntity wall4 = world.add("staticwall", 0f, 0f, 10f);
+		wall4.setColor(0.25f + 0.5f * (float)Math.random(), 0.25f + 0.5f * (float)Math.random(),
+			0.25f + 0.5f * (float)Math.random(), 1f);
 
-		rayConfigurations = new RayConfigurationBase[] {new SingleRayConfiguration(character, 100),
-			new ParallelSideRayConfiguration<Vector2>(character, 100, character.getBoundingRadius()),
-			new CentralRayWithWhiskersConfiguration<Vector2>(character, 100, 40, 35 * MathUtils.degreesToRadians)};
+		BulletEntity characterBase = world.add("capsule", new Matrix4());
+
+		character = new SteeringBulletEntity(characterBase);
+		character.setMaxSpeed(250);
+
+		rayConfigurations = new RayConfigurationBase[] {new SingleRayConfiguration(character, 2),
+			new ParallelSideRayConfiguration<Vector3>(character, 2, character.getBoundingRadius()),
+			new CentralRayWithWhiskersConfiguration<Vector3>(character, 2, 1, 35 * MathUtils.degreesToRadians)};
 		rayConfigurationIndex = 0;
-		RaycastCollisionDetector<Vector2> raycastCollisionDetector = new Box2dRaycastCollisionDetector(world);
-		raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector2>(character, rayConfigurations[rayConfigurationIndex],
-			raycastCollisionDetector, 40, 100);
+		RaycastCollisionDetector<Vector3> raycastCollisionDetector = new BulletRaycastCollisionDetector(world.collisionWorld,
+			character.body);
+		raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector3>(character, rayConfigurations[rayConfigurationIndex],
+			raycastCollisionDetector, 2, 10f);
 
-		Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
-			.setMaxLinearAcceleration(30) //
-			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+		Wander<Vector3> wanderSB = new Wander<Vector3>(character) //
+			.setMaxLinearAcceleration(10) //
+			.setMaxAngularAcceleration(5) // 
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
 			.setMaxRotation(5) //
 			.setTimeToTarget(0.1f) //
-			.setWanderOffset(60) //
+			.setWanderOffset(6) //
 			.setWanderOrientation(10) //
-			.setWanderRadius(40) //
+			.setWanderRadius(5) //
 			.setWanderRate(MathUtils.PI / 5);
 
-		PrioritySteering<Vector2> prioritySteeringSB = new PrioritySteering<Vector2>(character, 0.0001f) //
+		PrioritySteering<Vector3> prioritySteeringSB = new PrioritySteering<Vector3>(character, 0.0001f) //
 			.add(raycastObstacleAvoidanceSB) //
 			.add(wanderSB);
 
-		character.setSteeringBehavior(prioritySteeringSB);
-
-		character.setCenterPosition(50, 50);
-		character.setMaxSpeed(50);
-
-		table.addActor(character);
-
-		inputProcessor = null;
+		character.setSteeringBehavior(wanderSB);
 
 		Table detailTable = new Table(container.skin);
 
@@ -158,7 +141,7 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 			container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 1500, 1, false, container.skin);
+		Slider maxLinAcc = new Slider(0, 50, 1, false, container.skin);
 		maxLinAcc.setValue(raycastObstacleAvoidanceSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
@@ -175,7 +158,7 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 			+ raycastObstacleAvoidanceSB.getDistanceFromBoundary() + "]", container.skin);
 		detailTable.add(labelDistFromBoundary);
 		detailTable.row();
-		Slider distFromBoundary = new Slider(0, 150, 1, false, container.skin);
+		Slider distFromBoundary = new Slider(0, 10, 1, false, container.skin);
 		distFromBoundary.setValue(raycastObstacleAvoidanceSB.getDistanceFromBoundary());
 		distFromBoundary.addListener(new ChangeListener() {
 			@Override
@@ -223,59 +206,36 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 		addSeparator(detailTable);
 
 		detailTable.row();
-		addMaxSpeedController(detailTable, character, 80, 160);
+		addMaxSpeedController(detailTable, character);
 
 		detailWindow = createDetailWindow(detailTable);
 	}
 
-	private Vector2 tmp = new Vector2();
-
 	@Override
 	public void render () {
-		world.step(Gdx.graphics.getDeltaTime(), 8, 3);
+		character.update();
 
-		// next we render the ground body
-		renderBox(wall1, 150, 20);
-		renderBox(wall2, 20, 80);
-		renderBox(wall3, 50, 30);
+		super.render(true);
 
 		if (drawDebug) {
-			Ray<Vector2>[] rays = rayConfigurations[rayConfigurationIndex].getRays();
+			Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+			Ray<Vector3>[] rays = rayConfigurations[rayConfigurationIndex].getRays();
 			shapeRenderer.begin(ShapeType.Line);
-			shapeRenderer.setColor(1, 0, 0, 1);
-			transform.idt();
-			shapeRenderer.setTransformMatrix(transform);
+			shapeRenderer.setColor(1, 1, 0, 1);
+			shapeRenderer.setProjectionMatrix(camera.combined);
 			for (int i = 0; i < rays.length; i++) {
-				Ray<Vector2> ray = rays[i];
+				Ray<Vector3> ray = rays[i];
 				shapeRenderer.line(ray.origin, tmp.set(ray.origin).add(ray.direction));
 			}
 			shapeRenderer.end();
+			Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 		}
 	}
 
 	@Override
 	public void dispose () {
+		super.dispose();
 		shapeRenderer.dispose();
-		world.dispose();
-	}
-
-	Matrix4 transform = new Matrix4();
-
-	private void renderBox (Body body, float halfWidth, float halfHeight) {
-		// get the bodies center and angle in world coordinates
-		Vector2 pos = body.getWorldCenter();
-		float angle = body.getAngle();
-
-		// set the translation and rotation matrix
-		transform.setToTranslation(pos.x, pos.y, 0);
-		transform.rotate(0, 0, 1, (float)Math.toDegrees(angle));
-
-		// render the box
-		shapeRenderer.begin(ShapeType.Line);
-		shapeRenderer.setTransformMatrix(transform);
-		shapeRenderer.setColor(1, 1, 1, 1);
-		shapeRenderer.rect(-halfWidth, -halfHeight, halfWidth * 2, halfHeight * 2);
-		shapeRenderer.end();
 	}
 
 }

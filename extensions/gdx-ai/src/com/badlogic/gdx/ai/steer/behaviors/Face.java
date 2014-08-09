@@ -21,20 +21,25 @@ import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector;
 
-/** Face behavior makes the owner look at its target. It delegates to the {@link ReachOrientation} behavior to perform the rotation but calculates the
- * target orientation first based on target and owner position.
+/** Face behavior makes the owner look at its target. It delegates to the {@link ReachOrientation} behavior to perform the rotation
+ * but calculates the target orientation first based on target and owner position.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
  * @autor davebaol */
 public class Face<T extends Vector<T>> extends ReachOrientation<T> {
 
+	/** Creates a {@code Face} behavior for the specified owner.
+	 * @param owner the owner of this behavior. */
+	public Face (Steerable<T> owner) {
+		this(owner, null);
+	}
+
 	/** Creates a {@code Face} behavior for the specified owner and target.
 	 * @param owner the owner of this behavior
-	 * @param targetPosition the target position
-	 * @param maxAngularAcceleration the maximum angular acceleration that can be used to face the target. */
-	public Face (Steerable<T> owner, Steerable<T> target, float maxAngularAcceleration) {
-		super(owner, target, maxAngularAcceleration);
+	 * @param target the target of this behavior. */
+	public Face (Steerable<T> owner, Steerable<T> target) {
+		super(owner, target);
 	}
 
 	@Override
@@ -54,6 +59,46 @@ public class Face<T extends Vector<T>> extends ReachOrientation<T> {
 
 		// Delegate to ReachOrientation
 		return reachOrientation(steering, orientation);
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Face<T> setTarget (Steerable<T> target) {
+		this.target = target;
+		return this;
+	}
+
+	@Override
+	public Face<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
+		this.maxAngularAcceleration = maxAngularAcceleration;
+		return this;
+	}
+
+	@Override
+	public Face<T> setMaxRotation (float maxRotation) {
+		this.maxRotation = maxRotation;
+		return this;
+	}
+
+	@Override
+	public Face<T> setAlignTolerance (float alignTolerance) {
+		this.alignTolerance = alignTolerance;
+		return this;
+	}
+
+	@Override
+	public Face<T> setDecelerationRadius (float decelerationRadius) {
+		this.decelerationRadius = decelerationRadius;
+		return this;
+	}
+
+	@Override
+	public Face<T> setTimeToTarget (float timeToTarget) {
+		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

@@ -49,22 +49,24 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 		character.setMaxSpeed(100);
 		target = new SteeringActor(container.target);
 		inputProcessor = new TargetInputProcessor(target);
-		
-		final LookWhereYouAreGoing<Vector2> lookWhereYouAreGoingSB = new LookWhereYouAreGoing<Vector2>(character, 500); 
-		lookWhereYouAreGoingSB.setMaxRotation(20);
-		lookWhereYouAreGoingSB.setTimeToTarget(0.1f);
-		lookWhereYouAreGoingSB.setAlignTolerance(0.001f);
-		lookWhereYouAreGoingSB.setDecelerationRadius(MathUtils.PI);
 
-		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target, 100);
-		arriveSB.setMaxSpeed(100);
-		arriveSB.setTimeToTarget(0.1f);
-		arriveSB.setArrivalTolerance(0.001f);
-		arriveSB.setDecelerationRadius(80);
+		final LookWhereYouAreGoing<Vector2> lookWhereYouAreGoingSB = new LookWhereYouAreGoing<Vector2>(character) //
+			.setMaxAngularAcceleration(100) //
+			.setMaxRotation(20) //
+			.setTimeToTarget(0.1f) //
+			.setAlignTolerance(0.001f) //
+			.setDecelerationRadius(MathUtils.PI);
 
-		WeightedBlender<Vector2> weightedBlender = new WeightedBlender<Vector2>(character, 500, 500);
-		weightedBlender.add(arriveSB, 1f);
-		weightedBlender.add(lookWhereYouAreGoingSB, 1f);
+		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) //
+			.setMaxLinearAcceleration(100) //
+			.setMaxSpeed(100) //
+			.setTimeToTarget(0.1f) //
+			.setArrivalTolerance(0.001f) //
+			.setDecelerationRadius(80);
+
+		WeightedBlender<Vector2> weightedBlender = new WeightedBlender<Vector2>(character, 500, 500) //
+			.add(arriveSB, 1f) //
+			.add(lookWhereYouAreGoingSB, 1f);
 		character.setSteeringBehavior(weightedBlender);
 
 		table.addActor(character);
@@ -72,7 +74,7 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 
 		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
 		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		
+
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
@@ -86,14 +88,15 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				lookWhereYouAreGoingSB.setMaxRotation(slider.getValue());
-//				character.setMaxSpeed(slider.getValue());
+// character.setMaxSpeed(slider.getValue());
 				labelMaxRotation.setText("Max.Rotation [" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxRotation);
 
 		detailTable.row();
-		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + lookWhereYouAreGoingSB.getDecelerationRadius() + "]", container.skin);
+		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + lookWhereYouAreGoingSB.getDecelerationRadius()
+			+ "]", container.skin);
 		detailTable.add(labelDecelerationRadius);
 		detailTable.row();
 		Slider decelerationRadius = new Slider(0, MathUtils.PI2, MathUtils.degreesToRadians, false, container.skin);
@@ -109,7 +112,8 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 		detailTable.add(decelerationRadius);
 
 		detailTable.row();
-		final Label labelAlignTolerance = new Label("Align tolerance [" + lookWhereYouAreGoingSB.getAlignTolerance() + "]", container.skin);
+		final Label labelAlignTolerance = new Label("Align tolerance [" + lookWhereYouAreGoingSB.getAlignTolerance() + "]",
+			container.skin);
 		detailTable.add(labelAlignTolerance);
 		detailTable.row();
 		Slider alignTolerance = new Slider(0, 1, 0.0001f, false, container.skin);
@@ -125,7 +129,8 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 		detailTable.add(alignTolerance);
 
 		detailTable.row();
-		final Label labelTimeToTarget = new Label("Time to Target [" + lookWhereYouAreGoingSB.getTimeToTarget() + " sec.]", container.skin);
+		final Label labelTimeToTarget = new Label("Time to Target [" + lookWhereYouAreGoingSB.getTimeToTarget() + " sec.]",
+			container.skin);
 		detailTable.add(labelTimeToTarget);
 		detailTable.row();
 		Slider timeToTarget = new Slider(0, 3, 0.1f, false, container.skin);
@@ -142,7 +147,7 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 
 		detailTable.row();
 		addSeparator(detailTable);
-		
+
 		detailTable.row();
 		addMaxSpeedController(detailTable, character);
 

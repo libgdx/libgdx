@@ -39,11 +39,10 @@ import com.badlogic.gdx.math.Vector;
  * @autor davebaol */
 public class LookWhereYouAreGoing<T extends Vector<T>> extends ReachOrientation<T> {
 
-	/** Creates a {@code LookWhereYouAreGoing} behavior for the specified owner and maxAngularAcceleration.
-	 * @param owner the owner of this behavior
-	 * @param maxAngularAcceleration the maximum angular acceleration that can be used. */
-	public LookWhereYouAreGoing (Steerable<T> owner, float maxAngularAcceleration) {
-		super(owner, null, maxAngularAcceleration);
+	/** Creates a {@code LookWhereYouAreGoing} behavior for the specified owner.
+	 * @param owner the owner of this behavior. */
+	public LookWhereYouAreGoing (Steerable<T> owner) {
+		super(owner);
 	}
 
 	@Override
@@ -56,6 +55,46 @@ public class LookWhereYouAreGoing<T extends Vector<T>> extends ReachOrientation<
 
 		// Delegate to ReachOrientation
 		return reachOrientation(steering, orientation);
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public LookWhereYouAreGoing<T> setTarget (Steerable<T> target) {
+		this.target = target;
+		return this;
+	}
+
+	@Override
+	public LookWhereYouAreGoing<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
+		this.maxAngularAcceleration = maxAngularAcceleration;
+		return this;
+	}
+
+	@Override
+	public LookWhereYouAreGoing<T> setMaxRotation (float maxRotation) {
+		this.maxRotation = maxRotation;
+		return this;
+	}
+
+	@Override
+	public LookWhereYouAreGoing<T> setAlignTolerance (float alignTolerance) {
+		this.alignTolerance = alignTolerance;
+		return this;
+	}
+
+	@Override
+	public LookWhereYouAreGoing<T> setDecelerationRadius (float decelerationRadius) {
+		this.decelerationRadius = decelerationRadius;
+		return this;
+	}
+
+	@Override
+	public LookWhereYouAreGoing<T> setTimeToTarget (float timeToTarget) {
+		this.timeToTarget = timeToTarget;
+		return this;
 	}
 
 }

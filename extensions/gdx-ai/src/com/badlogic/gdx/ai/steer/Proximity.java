@@ -27,10 +27,10 @@ import com.badlogic.gdx.math.Vector;
 /** A {@code Proximity} defines an area that is used by group behaviors to find and process the owner's neighbors.
  * <p>
  * Typically (but not necessarily) different group behaviors share the same {@code Proximity} for a given owner. This allows you to
- * combine group behaviors so to get a more complex behavior also known as emergent behavior. Emergent behavior is behavior that
- * looks complex and/or purposeful to the observer but is actually derived spontaneously from fairly simple rules. The lower-level
- * agents following the rules have no idea of the bigger picture; they are only aware of themselves and maybe a few of their
- * neighbors. A typical example of emergence is flocking behavior which is a combination of three group behaviors:
+ * combine group behaviors so as to get a more complex behavior also known as emergent behavior. Emergent behavior is behavior
+ * that looks complex and/or purposeful to the observer but is actually derived spontaneously from fairly simple rules. The
+ * lower-level agents following the rules have no idea of the bigger picture; they are only aware of themselves and maybe a few of
+ * their neighbors. A typical example of emergence is flocking behavior which is a combination of three group behaviors:
  * {@link Separation separation}, {@link Alignment alignment}, and {@link Cohesion cohesion}. The three behaviors are typically
  * combined through a {@link WeightedBlender weighted blender} This works okay but, because of the limited view distance of a
  * character, it's possible for an agent to become isolated from its flock. If this happens, it will just sit still and do

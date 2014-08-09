@@ -22,20 +22,20 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
-/** The PrioritySteering behavior iterates through the active behaviors and returns the first non zero steering. It makes sense
- * since certain steering behaviors only request an acceleration in particular conditions. Unlike {@link Seek} or {@link Evade},
- * which always produce an acceleration, {@link RaycastObstacleAvoidance}, {@link CollisionAvoidance}, {@link Separation},
- * {@link Hide} and {@link Arrive} will suggest no acceleration in many cases. But when these behaviors do suggest an
- * acceleration, it is unwise to ignore it. An obstacle avoidance behavior, for example, should be honored immediately to avoid
- * the crash.
+/** The {@code PrioritySteering} behavior iterates through the active behaviors and returns the first non zero steering. It makes
+ * sense since certain steering behaviors only request an acceleration in particular conditions. Unlike {@link Seek} or
+ * {@link Evade}, which always produce an acceleration, {@link RaycastObstacleAvoidance}, {@link CollisionAvoidance},
+ * {@link Separation}, {@link Hide} and {@link Arrive} will suggest no acceleration in many cases. But when these behaviors do
+ * suggest an acceleration, it is unwise to ignore it. An obstacle avoidance behavior, for example, should be honored immediately
+ * to avoid the crash.
  * <p>
- * Typically the behaviors of a PrioritySteering are arranged in groups with regular blending weights (WeightedBlender). These
- * groups are then placed in priority order to let the steering system consider each group in turn. It blends the steering
- * behaviors in the current group together. If the total result is very small (less than some small, but adjustable, parameter),
- * then it is ignored and the next group is considered. It is best not to check against zero directly, because numerical
- * instability in calculations can mean that a zero value is never reached for some steering behaviors. Using a small constant
- * value (conventionally called epsilon) avoids this problem. When a group is found with a result that isn't small, its result is
- * used to steer the agent.
+ * Typically the behaviors of a {@code PrioritySteering} are arranged in groups with regular blending weights (see
+ * {@link WeightedBlender} ). These groups are then placed in priority order to let the steering system consider each group in
+ * turn. It blends the steering behaviors in the current group together. If the total result is very small (less than some small,
+ * but adjustable, parameter), then it is ignored and the next group is considered. It is best not to check against zero directly,
+ * because numerical instability in calculations can mean that a zero value is never reached for some steering behaviors. Using a
+ * small constant value (conventionally called {@code epsilon}) avoids this problem. When a group is found with a result that isn't
+ * small, its result is used to steer the agent.
  * <p>
  * For instance, a pursuing agent working in a team may have three priorities:
  * <ul>
@@ -51,9 +51,9 @@ import com.badlogic.gdx.utils.Array;
  * <p>
  * In a different scenario, if the character is about to crash into a wall, the first group will return an acceleration that will
  * help avoid the crash. The character will carry out this acceleration immediately, and the steering behaviors in the other
- * groups will never be considered.
+ * groups won't be considered.
  * <p>
- * Usually this method gives you a good compromise between speed and accuracy.
+ * Usually {@code PrioritySteering} gives you a good compromise between speed and accuracy.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
@@ -67,7 +67,13 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * considered if the first one does not return a result. */
 	protected Array<SteeringBehavior<T>> behaviors = new Array<SteeringBehavior<T>>();
 
-	/** Creates a PrioritySteering behavior for the specified owner and threshold.
+	/** Creates a {@code PrioritySteering} behavior for the specified owner. The threshold is set to 0.001.
+	 * @param owner the owner of this behavior */
+	public PrioritySteering (Steerable<T> owner) {
+		this(owner, 0.001f);
+	}
+
+	/** Creates a {@code PrioritySteering} behavior for the specified owner and threshold.
 	 * @param owner the owner of this behavior
 	 * @param epsilon the threshold of the steering acceleration magnitude below which a steering behavior is considered to have
 	 *           given no output */
@@ -77,9 +83,11 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	/** Adds the specified behavior to the priority list.
-	 * @param behavior the behavior to add */
-	public void add (SteeringBehavior<T> behavior) {
+	 * @param behavior the behavior to add
+	 * @return this behavior for chaining. */
+	public PrioritySteering<T> add (SteeringBehavior<T> behavior) {
 		behaviors.add(behavior);
+		return this;
 	}
 
 	@Override
@@ -88,10 +96,12 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 		float epsilonSquared = epsilon * epsilon;
 
 		// Go through all the enabled behaviors
+		boolean validSteering = false;
 		int n = behaviors.size;
 		for (int i = 0; i < n; i++) {
 			SteeringBehavior<T> behavior = behaviors.get(i);
 			if (behavior.isEnabled()) {
+				validSteering = true;
 				behavior.calculateSteering(steering);
 				// If we're above the threshold return the current steering
 				if (steering.calculateSquareMagnitude() > epsilonSquared) return steering;
@@ -100,8 +110,8 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 
 		// If we get here, it means that no behavior had a large enough acceleration,
 		// so return the small acceleration from the final behavior or zero if there are
-		// no behaviors in the list.
-		return n > 0 ? steering : steering.setZero();
+		// no active behaviors in the list.
+		return validSteering ? steering : steering.setZero();
 	}
 
 	/** Returns the threshold of the steering acceleration magnitude below which a steering behavior is considered to have given no
@@ -112,8 +122,10 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** Sets the threshold of the steering acceleration magnitude below which a steering behavior is considered to have given no
 	 * output.
-	 * @param epsilon the epsilon to set */
-	public void setEpsilon (float epsilon) {
+	 * @param epsilon the epsilon to set
+	 * @return this behavior for chaining. */
+	public PrioritySteering<T> setEpsilon (float epsilon) {
 		this.epsilon = epsilon;
+		return this;
 	}
 }

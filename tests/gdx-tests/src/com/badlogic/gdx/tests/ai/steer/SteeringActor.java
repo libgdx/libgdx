@@ -36,7 +36,7 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 
 	TextureRegion region;
 
-	Vector2 position;  // like scene2d x and y, but we need a vector to implement Steerable
+	Vector2 position;  // like scene2d centerX and centerY, but we need a vector to implement Steerable
 	Vector2 linearVelocity;
 	float angularVelocity;
 	float boundingRadius;
@@ -140,7 +140,7 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 	@Override
 	public void act (float delta) {
 		position.set(getCenterX(), getCenterY());
-		if (steeringBehavior != null) {
+		if (steeringBehavior != null && steeringBehavior.isEnabled()) {
 			steeringBehavior.calculateSteering(steeringOutput);
 			update(steeringOutput, delta);
 			wrapAround(position, getParent().getWidth(), getParent().getHeight());
