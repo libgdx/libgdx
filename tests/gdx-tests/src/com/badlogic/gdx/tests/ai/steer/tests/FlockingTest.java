@@ -116,55 +116,55 @@ public class FlockingTest extends SteeringTest {
 
 		detailTable.row();
 		final Label alignmentWeightLabel = new Label("Alignment Weight ["
-			+ weightedBlenders.get(0).getBehaviorAndWeight(0).getWeight() + "]", container.skin);
+			+ weightedBlenders.get(0).get(0).getWeight() + "]", container.skin);
 		detailTable.add(alignmentWeightLabel);
 		detailTable.row();
 		Slider alignmentWeight = new Slider(0, 500, 1, false, container.skin);
-		alignmentWeight.setValue(weightedBlenders.get(0).getBehaviorAndWeight(0).getWeight());
+		alignmentWeight.setValue(weightedBlenders.get(0).get(0).getWeight());
 		alignmentWeight.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < weightedBlenders.size; i++)
-					weightedBlenders.get(i).getBehaviorAndWeight(0).setWeight(slider.getValue());
+					weightedBlenders.get(i).get(0).setWeight(slider.getValue());
 				alignmentWeightLabel
-					.setText("Alignment Weight [" + weightedBlenders.get(0).getBehaviorAndWeight(0).getWeight() + "]");
+					.setText("Alignment Weight [" + weightedBlenders.get(0).get(0).getWeight() + "]");
 			}
 		});
 		detailTable.add(alignmentWeight);
 
 		detailTable.row();
 		final Label cohesionWeightLabel = new Label("Cohesion Weight ["
-			+ weightedBlenders.get(0).getBehaviorAndWeight(1).getWeight() + "]", container.skin);
+			+ weightedBlenders.get(0).get(1).getWeight() + "]", container.skin);
 		detailTable.add(cohesionWeightLabel);
 		detailTable.row();
 		Slider cohesionWeight = new Slider(0, 500, 1, false, container.skin);
-		cohesionWeight.setValue(weightedBlenders.get(0).getBehaviorAndWeight(1).getWeight());
+		cohesionWeight.setValue(weightedBlenders.get(0).get(1).getWeight());
 		cohesionWeight.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < weightedBlenders.size; i++)
-					weightedBlenders.get(i).getBehaviorAndWeight(1).setWeight(slider.getValue());
-				cohesionWeightLabel.setText("Cohesion Weight [" + weightedBlenders.get(0).getBehaviorAndWeight(1).getWeight() + "]");
+					weightedBlenders.get(i).get(1).setWeight(slider.getValue());
+				cohesionWeightLabel.setText("Cohesion Weight [" + weightedBlenders.get(0).get(1).getWeight() + "]");
 			}
 		});
 		detailTable.add(cohesionWeight);
 
 		detailTable.row();
 		final Label separationWeightLabel = new Label("Separation Weight ["
-			+ weightedBlenders.get(0).getBehaviorAndWeight(2).getWeight() + "]", container.skin);
+			+ weightedBlenders.get(0).get(2).getWeight() + "]", container.skin);
 		detailTable.add(separationWeightLabel);
 		detailTable.row();
 		Slider separationWeight = new Slider(0, 500, 1, false, container.skin);
-		separationWeight.setValue(weightedBlenders.get(0).getBehaviorAndWeight(2).getWeight());
+		separationWeight.setValue(weightedBlenders.get(0).get(2).getWeight());
 		separationWeight.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < weightedBlenders.size; i++)
-					weightedBlenders.get(i).getBehaviorAndWeight(2).setWeight(slider.getValue());
-				separationWeightLabel.setText("Separation Weight [" + weightedBlenders.get(0).getBehaviorAndWeight(2).getWeight()
+					weightedBlenders.get(i).get(2).setWeight(slider.getValue());
+				separationWeightLabel.setText("Separation Weight [" + weightedBlenders.get(0).get(2).getWeight()
 					+ "]");
 			}
 		});

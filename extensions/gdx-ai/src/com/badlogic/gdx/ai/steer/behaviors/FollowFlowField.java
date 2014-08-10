@@ -41,38 +41,64 @@ public class FollowFlowField<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The the maximum speed that can be used. */
 	protected float maxSpeed;
 
-	/** Creates a {@code FollowFlowField} for the specified owner.
+	/** The time in the future to predict the owner's position. Set it to 0 for non-predictive flow field following. */
+	protected float predictionTime;
+
+	/** Creates a non-predictive {@code FollowFlowField} for the specified owner.
 	 * @param owner the owner of this behavior */
 	public FollowFlowField (Steerable<T> owner) {
 		this(owner, null);
 	}
 
-	/** Creates a {@code FollowFlowField} for the specified owner and flow field.
+	/** Creates a non-predictive {@code FollowFlowField} for the specified owner and flow field.
 	 * @param owner the owner of this behavior
 	 * @param flowField the flow field to follow */
 	public FollowFlowField (Steerable<T> owner, FlowField<T> flowField) {
 		this(owner, flowField, 0, 0);
 	}
 
-	/** Creates a {@code FollowFlowField} with the specified owner, flow field, maximum linear acceleration and maximum speed.
+	/** Creates a non-predictive {@code FollowFlowField} with the specified owner, flow field, maximum linear acceleration and
+	 * maximum speed.
 	 * @param owner the owner of this behavior
 	 * @param flowField the flow field to follow
 	 * @param maxLinearAcceleration the maximum acceleration that can be used
 	 * @param maxSpeed the maximum speed that can be used */
 	public FollowFlowField (Steerable<T> owner, FlowField<T> flowField, float maxLinearAcceleration, float maxSpeed) {
+		this(owner, flowField, maxLinearAcceleration, maxSpeed, 0);
+	}
+
+	/** Creates a {@code FollowFlowField} with the specified owner, flow field, maximum linear acceleration, maximum speed and
+	 * prediction time.
+	 * @param owner the owner of this behavior
+	 * @param flowField the flow field to follow
+	 * @param maxLinearAcceleration the maximum acceleration that can be used
+	 * @param maxSpeed the maximum speed that can be used
+	 * @param predictionTime the time in the future to predict the owner's position. Can be 0 for non-predictive flow field
+	 *           following. */
+	public FollowFlowField (Steerable<T> owner, FlowField<T> flowField, float maxLinearAcceleration, float maxSpeed,
+		float predictionTime) {
 		super(owner);
 		this.flowField = flowField;
 		this.maxLinearAcceleration = maxLinearAcceleration;
 		this.maxSpeed = maxSpeed;
+		this.predictionTime = predictionTime;
 	}
 
 	@Override
 	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+		// Predictive or non-predictive behavior?
+		T location = (predictionTime == 0) ?
+		// Use the current position of the owner
+		owner.getPosition()
+			:
+			// Calculate the predicted future position of the owner. We're reusing steering.linear here.
+			steering.linear.set(owner.getPosition()).mulAdd(owner.getLinearVelocity(), predictionTime);
+
+		// Retrieve the flow vector at the specified location
+		T flowVector = flowField.lookup(location);
+
 		// Clear both linear and angular components
 		steering.setZero();
-
-		// Retrieve the flow vector at the owner's position
-		T flowVector = flowField.lookup(owner.getPosition());
 
 		// Calculate linear acceleration
 		steering.linear.mulAdd(flowVector, maxSpeed).sub(owner.getLinearVelocity()).limit(maxLinearAcceleration);
@@ -117,6 +143,19 @@ public class FollowFlowField<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining */
 	public FollowFlowField<T> setMaxSpeed (float maxSpeed) {
 		this.maxSpeed = maxSpeed;
+		return this;
+	}
+
+	/** Returns the prediction time. */
+	public float getPredictionTime () {
+		return predictionTime;
+	}
+
+	/** Sets the prediction time. Set it to 0 for non-predictive flow field following.
+	 * @param predictionTime the predictionTime to set
+	 * @return this behavior for chaining. */
+	public FollowFlowField<T> setPredictionTime (float predictionTime) {
+		this.predictionTime = predictionTime;
 		return this;
 	}
 

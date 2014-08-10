@@ -31,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
@@ -59,7 +60,7 @@ public class FollowFlowFieldTest extends SteeringTest {
 		character = new SteeringActor(container.badlogicSmall, false);
 		character.setMaxSpeed(250);
 
-		flowField = new RandomFlowField2D(container.stageWidth, container.stageHeight, 20);
+		flowField = new RandomFlowField2D(container.stageWidth, container.stageHeight, container.badlogicSmall.getRegionWidth());
 		final FollowFlowField<Vector2> followFlowFieldSB = new FollowFlowField<Vector2>(character, flowField, 300, 400);
 		character.setSteeringBehavior(followFlowFieldSB);
 
@@ -85,6 +86,22 @@ public class FollowFlowFieldTest extends SteeringTest {
 			}
 		});
 		detailTable.add(maxLinAcc);
+
+		detailTable.row();
+		final Label labelPredictionTime = new Label("Prediction Time [" + followFlowFieldSB.getPredictionTime() + " sec.]", container.skin);
+		detailTable.add(labelPredictionTime);
+		detailTable.row();
+		Slider predictionTime = new Slider(0, 3, .1f, false, container.skin);
+		predictionTime.setValue(followFlowFieldSB.getPredictionTime());
+		predictionTime.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				followFlowFieldSB.setPredictionTime(slider.getValue());
+				labelPredictionTime.setText("Prediction Time [" + slider.getValue() + " sec.]");
+			}
+		});
+		detailTable.add(predictionTime);
 
 		detailTable.row();
 		addSeparator(detailTable);

@@ -223,7 +223,7 @@ public class RaycastObstacleAvoidanceTest extends SteeringTest {
 		addSeparator(detailTable);
 
 		detailTable.row();
-		addMaxSpeedController(detailTable, character, 80, 160);
+		addMaxSpeedController(detailTable, character, 80, 160, 1);
 
 		detailWindow = createDetailWindow(detailTable);
 	}

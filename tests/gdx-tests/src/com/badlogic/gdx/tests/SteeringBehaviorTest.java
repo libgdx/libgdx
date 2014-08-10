@@ -73,7 +73,8 @@ public class SteeringBehaviorTest extends GdxTest {
 		new FaceTest(this),
 		new FlockingTest(this),
 		new FollowFlowFieldTest(this),
-		new FollowPathTest(this),
+		new FollowPathTest(this, false),
+		new FollowPathTest(this, true),
 		new HideTest(this),
 		new InterposeTest(this),
 		new LookWhereYouAreGoingTest(this),
@@ -134,7 +135,6 @@ public class SteeringBehaviorTest extends GdxTest {
 		for (int i = 0; i < behaviors.length; i++) {
 			behaviorNames[i] = behaviors[i].name;
 		}
-		Arrays.sort(behaviorNames);
 		
 		final List<String> behaviorsList = new List(skin);
 		behaviorsList.setItems(behaviorNames);
@@ -184,8 +184,8 @@ public class SteeringBehaviorTest extends GdxTest {
 	public void resize (int width, int height) {
 		super.resize(width, height);
 		stage.getViewport().update(width, height, true);
-		stageWidth = stage.getWidth();
-		stageHeight = stage.getHeight();
+		stageWidth = width;
+		stageHeight = height;
 	}
 
 	@Override

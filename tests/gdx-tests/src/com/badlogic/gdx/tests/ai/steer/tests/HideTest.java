@@ -97,7 +97,8 @@ public class HideTest extends SteeringTest {
 			+ DISTANCE_FROM_BOUNDARY * .5f);
 		CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, radiusProximity, 500f);
 		InfiniteProximity<Vector2> infProximity = new InfiniteProximity<Vector2>(character, obstacles);
-		this.hideSB = new Hide<Vector2>(character, target, infProximity, DISTANCE_FROM_BOUNDARY) //
+		this.hideSB = new Hide<Vector2>(character, target, infProximity) //
+			.setDistanceFromBoundary(DISTANCE_FROM_BOUNDARY) //
 			.setMaxLinearAcceleration(200) //
 			.setMaxSpeed(150) //
 			.setTimeToTarget(0.1f) //

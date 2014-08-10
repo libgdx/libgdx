@@ -52,7 +52,8 @@ import com.badlogic.gdx.math.Vector;
  * <li>If there is some efficient way of pruning potential neighbors before they are processed, the overall performance in time
  * will improve. Spatial data structures such as multi-resolution maps, quad-trees, oct-trees, and binary space partition (BSP)
  * trees can be used to get potential neighbors more efficiently. Spatial partitioning techniques are crucial when you have to
- * deal with lots of agents.</li>
+ * deal with lots of agents. Especially, if you're using Bullet or Box2d in your game, it's recommended to implement proximities
+ * that exploit their methods to query the world. Both Bullet and Box2d internally use some kind of spatial partitioning.</li>
  * </ul>
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
