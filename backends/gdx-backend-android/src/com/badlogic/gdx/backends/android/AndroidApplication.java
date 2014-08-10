@@ -235,25 +235,15 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		}
 	}
 
-	@TargetApi(19)
-	@Override
-	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < 19) return;
-
-		View view = getWindow().getDecorView();
-		try {
-			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-			m.invoke(view, code);
-		} catch (Exception e) {
-			log("AndroidApplication", "Can't set immersive mode", e);
-		}
-	}
+    	@TargetApi(Build.VERSION_CODES.KITKAT)
+    	@Override
+    	public void useImmersiveMode (boolean use) {
+        	if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
+        	View view = getWindow().getDecorView(); // findViewById is preferable
+		view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN |
+                	View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY |
+                	View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    	}
 
 	@Override
 	protected void onPause () {
