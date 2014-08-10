@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
 	private Array<Segment<T>> segments;
+	private boolean isOpen;
 	private float pathLength;
 	private T nearestPointOnCurrentSegment;
 	private T nearestPointOnPath;
@@ -26,14 +27,35 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
 	/** Creates a {@code LinePath} for the specified {@code waypoints}.
 	 * @param waypoints the points making up the path */
-	public LinePath (T[] waypoints) {
+	public LinePath (T[] waypoints, boolean isOpen) {
 		if (waypoints == null || waypoints.length == 0) throw new IllegalArgumentException();
+		this.isOpen = isOpen;
 		createPath(waypoints);
 		nearestPointOnCurrentSegment = waypoints[0].cpy();
 		nearestPointOnPath = waypoints[0].cpy();
 		tmp1 = waypoints[0].cpy();
 		tmp2 = waypoints[0].cpy();
 		tmp3 = waypoints[0].cpy();
+	}
+
+	@Override
+	public boolean isOpen () {
+		return isOpen;
+	}
+
+	@Override
+	public float getLength () {
+		return pathLength;
+	}
+
+	@Override
+	public T getStartPoint () {
+		return segments.first().begin;
+	}
+
+	@Override
+	public T getEndPoint () {
+		return segments.peek().end;
 	}
 
 	/** Returns the square distance of the nearest point on line segment {@code a-b}, from point {@code c}. Also, the {@code out}
@@ -98,13 +120,24 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
 	@Override
 	public void calculateTargetPosition (T out, LinePathParam param, float targetDistance) {
-		// Cycling path support
-		if (targetDistance < 0) {
-			// Backwards
-			targetDistance = pathLength + (targetDistance % pathLength);
-		} else if (targetDistance > pathLength) {
-			// Forward
-			targetDistance = targetDistance % pathLength;
+		if (isOpen) {
+			// Open path support
+			if (targetDistance < 0) {
+				// Clamp target distance to the min
+				targetDistance = 0;
+			} else if (targetDistance > pathLength) {
+				// Clamp target distance to the max
+				targetDistance = pathLength;
+			}
+		} else {
+			// Closed path support
+			if (targetDistance < 0) {
+				// Backwards
+				targetDistance = pathLength + (targetDistance % pathLength);
+			} else if (targetDistance > pathLength) {
+				// Forward
+				targetDistance = targetDistance % pathLength;
+			}
 		}
 
 		// Walk through lines to see on which line we are
@@ -130,7 +163,12 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 		T prev = null;
 		for (int i = 1; i <= waypoints.length; i++) {
 			prev = curr;
-			curr = i < waypoints.length ? waypoints[i] : waypoints[0];
+			if (i < waypoints.length)
+				curr = waypoints[i];
+			else if (isOpen)
+				break; // keep the path open
+			else
+				curr = waypoints[0]; // close the path
 			Segment<T> segment = new Segment<T>(prev, curr);
 			pathLength += segment.length;
 			segment.cumulativeLength = pathLength;
@@ -140,10 +178,6 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
 	public Array<Segment<T>> getSegments () {
 		return segments;
-	}
-
-	public float getLength () {
-		return pathLength;
 	}
 
 	public static class LinePathParam implements Param {

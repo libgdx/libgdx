@@ -18,7 +18,6 @@ package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
-import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath.Path.Param;
 import com.badlogic.gdx.math.Vector;
 
@@ -36,7 +35,7 @@ import com.badlogic.gdx.math.Vector;
  * @param <P> Type of path parameter implementing the {@link Path.Param} interface
  * 
  * @autor davebaol */
-public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBehavior<T> {
+public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> {
 
 	/** The path to follow */
 	protected Path<T, P> path;
@@ -46,9 +45,6 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBe
 
 	/** The current position on the path */
 	protected P pathParam;
-
-	/** The maximum acceleration that can be used to reach the target. */
-	protected float maxLinearAcceleration;
 
 	/** The time in the future to predict the owner's position. Set it to 0 for non-predictive path following. */
 	protected float predictionTime;
@@ -103,6 +99,7 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBe
 
 	@Override
 	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+
 		// Predictive or non-predictive behavior?
 		T location = (predictionTime == 0) ?
 		// Use the current position of the owner
@@ -120,6 +117,16 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBe
 		// Calculate the target position
 		path.calculateTargetPosition(internalTargetPosition, pathParam, targetDistance);
 
+		if (path.isOpen()) {
+			if (pathOffset >= 0) {
+				// Use Arrive to approach the last point of the path
+				if (targetDistance > path.getLength() - decelerationRadius) return arrive(steering, internalTargetPosition);
+			} else {
+				// Use Arrive to approach the first point of the path
+				if (targetDistance < decelerationRadius) return arrive(steering, internalTargetPosition);
+			}
+		}
+
 		// Seek the target position
 		steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
 
@@ -128,19 +135,6 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBe
 
 		// Output steering acceleration
 		return steering;
-	}
-
-	/** Returns the maximum linear acceleration */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
-
-	/** Sets the maximum linear acceleration
-	 * @param maxLinearAcceleration the maximum linear acceleration to set
-	 * @return this behavior for chaining. */
-	public FollowPath<T, P> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
 	}
 
 	/** Returns the path to follow */
@@ -187,6 +181,46 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBe
 		return internalTargetPosition;
 	}
 
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public FollowPath<T, P> setTarget (Steerable<T> target) {
+		this.target = target;
+		return this;
+	}
+
+	@Override
+	public FollowPath<T, P> setMaxLinearAcceleration (float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+		return this;
+	}
+
+	@Override
+	public FollowPath<T, P> setMaxSpeed (float maxSpeed) {
+		this.maxSpeed = maxSpeed;
+		return this;
+	}
+
+	@Override
+	public FollowPath<T, P> setArrivalTolerance (float arrivalTolerance) {
+		this.arrivalTolerance = arrivalTolerance;
+		return this;
+	}
+
+	@Override
+	public FollowPath<T, P> setDecelerationRadius (float decelerationRadius) {
+		this.decelerationRadius = decelerationRadius;
+		return this;
+	}
+
+	@Override
+	public FollowPath<T, P> setTimeToTarget (float timeToTarget) {
+		this.timeToTarget = timeToTarget;
+		return this;
+	}
+
 	/** The path for an agent having path following behavior. A path can be shared by multiple path following behaviors because its
 	 * status is maintained in a {@link Path.Param} local to each behavior.
 	 * <p>
@@ -201,6 +235,18 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends SteeringBe
 
 		/** Returns a new instance of the path parameter. */
 		public P createParam ();
+
+		/** Returns {@code true} if this path is open; {@code false} otherwise. */
+		public boolean isOpen ();
+
+		/** Returns the length of this path. */
+		public float getLength ();
+
+		/** Returns the first point of this path. */
+		public T getStartPoint ();
+
+		/** Returns the last point of this path. */
+		public T getEndPoint ();
 
 		/** Maps the given position to the nearest point along the path using the path parameter to ensure coherence and returns the
 		 * distance of that nearest point from the start of the path.

@@ -46,11 +46,16 @@ public class FollowPathTest extends SteeringTest {
 	SteeringActor character;
 
 	Vector2[] wayPoints;
+	LinePath<Vector2> linePath;
 
 	FollowPath<Vector2, LinePathParam> followPathSB;
 
-	public FollowPathTest (SteeringBehaviorTest container) {
-		super(container, "Follow Path");
+	final boolean openPath;
+	Slider pathOffset;
+
+	public FollowPathTest (SteeringBehaviorTest container, boolean openPath) {
+		super(container, "Follow " + (openPath ? "Open" : "Closed") + " Path");
+		this.openPath = openPath;
 	}
 
 	@Override
@@ -58,19 +63,39 @@ public class FollowPathTest extends SteeringTest {
 		drawDebug = true;
 		shapeRenderer = new ShapeRenderer();
 
-		character = new SteeringActor(container.badlogicSmall, false);
+		character = new SteeringActor(container.badlogicSmall, false) {
+			@Override
+			public void act (float delta) {
+				super.act(delta);
+				if (openPath) {
+					// Once arrived at an extremity of the path we want to go the other way around
+					Vector2 extremity = followPathSB.getPathOffset() >= 0 ? linePath.getEndPoint() : linePath.getStartPoint();
+					float tolerance = followPathSB.getArrivalTolerance();
+					if (getPosition().dst2(extremity) < tolerance * tolerance) {
+						followPathSB.setPathOffset(-followPathSB.getPathOffset());
+						pathOffset.setValue(followPathSB.getPathOffset());
+					}
+				}
+			}
+		};
 		character.setMaxSpeed(100);
 
 		wayPoints = createRandomPath(MathUtils.random(4, 16), 50, 50, container.stageWidth - 50, container.stageHeight - 50);
 
-		LinePath<Vector2> linePath = new LinePath<Vector2>(wayPoints);
-		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30, 300);
+		linePath = new LinePath<Vector2>(wayPoints, openPath);
+		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30) //
+			.setMaxLinearAcceleration(300) //
+			.setMaxSpeed(150) //
+			// Setters below are only useful to arrive at the end of an open path
+			.setTimeToTarget(0.1f) //
+			.setArrivalTolerance(0.001f) //
+			.setDecelerationRadius(80);
 
 		character.setSteeringBehavior(followPathSB);
 
 		table.addActor(character);
 
-		character.setPosition(wayPoints[0].x, wayPoints[0].y);
+		character.setCenterPosition(wayPoints[0].x, wayPoints[0].y);
 
 		Table detailTable = new Table(container.skin);
 
@@ -78,7 +103,7 @@ public class FollowPathTest extends SteeringTest {
 		final Label labelPathOffset = new Label("Path Offset [" + followPathSB.getPathOffset() + "]", container.skin);
 		detailTable.add(labelPathOffset);
 		detailTable.row();
-		Slider pathOffset = new Slider(-150, +150, 5, false, container.skin);
+		pathOffset = new Slider(-150, +150, 5, false, container.skin);
 		pathOffset.setValue(followPathSB.getPathOffset());
 		pathOffset.addListener(new ChangeListener() {
 			@Override
@@ -107,7 +132,8 @@ public class FollowPathTest extends SteeringTest {
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelPredictionTime = new Label("Prediction Time [" + followPathSB.getPredictionTime() + " sec.]", container.skin);
+		final Label labelPredictionTime = new Label("Prediction Time [" + followPathSB.getPredictionTime() + " sec.]",
+			container.skin);
 		detailTable.add(labelPredictionTime);
 		detailTable.row();
 		Slider predictionTime = new Slider(0, 3, .1f, false, container.skin);
@@ -121,6 +147,44 @@ public class FollowPathTest extends SteeringTest {
 			}
 		});
 		detailTable.add(predictionTime);
+
+		// Add controls to arrive at the end of an open path
+		if (openPath) {
+
+			detailTable.row();
+			final Label labelDecelerationRadius = new Label("Deceleration Radius [" + followPathSB.getDecelerationRadius() + "]",
+				container.skin);
+			detailTable.add(labelDecelerationRadius);
+			detailTable.row();
+			Slider decelerationRadius = new Slider(0, 150, 1, false, container.skin);
+			decelerationRadius.setValue(followPathSB.getDecelerationRadius());
+			decelerationRadius.addListener(new ChangeListener() {
+				@Override
+				public void changed (ChangeEvent event, Actor actor) {
+					Slider slider = (Slider)actor;
+					followPathSB.setDecelerationRadius(slider.getValue());
+					labelDecelerationRadius.setText("Deceleration Radius [" + slider.getValue() + "]");
+				}
+			});
+			detailTable.add(decelerationRadius);
+
+			detailTable.row();
+			final Label labelArrivalTolerance = new Label("Arrival tolerance [" + followPathSB.getArrivalTolerance() + "]",
+				container.skin);
+			detailTable.add(labelArrivalTolerance);
+			detailTable.row();
+			Slider arrivalTolerance = new Slider(0, 1, 0.0001f, false, container.skin);
+			arrivalTolerance.setValue(followPathSB.getArrivalTolerance());
+			arrivalTolerance.addListener(new ChangeListener() {
+				@Override
+				public void changed (ChangeEvent event, Actor actor) {
+					Slider slider = (Slider)actor;
+					followPathSB.setArrivalTolerance(slider.getValue());
+					labelArrivalTolerance.setText("Arrival tolerance [" + slider.getValue() + "]");
+				}
+			});
+			detailTable.add(arrivalTolerance);
+		}
 
 		detailTable.row();
 		addSeparator(detailTable);
@@ -156,7 +220,7 @@ public class FollowPathTest extends SteeringTest {
 		shapeRenderer.setColor(0, 1, 0, 1);
 		for (int i = 0; i < wayPoints.length; i++) {
 			int next = (i + 1) % wayPoints.length;
-			shapeRenderer.line(wayPoints[i], wayPoints[next]);
+			if (next != 0 || !linePath.isOpen()) shapeRenderer.line(wayPoints[i], wayPoints[next]);
 			shapeRenderer.circle(wayPoints[i].x, wayPoints[i].y, 2f);
 		}
 		shapeRenderer.end();
