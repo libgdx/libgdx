@@ -133,9 +133,23 @@ public class SplitViewport extends Viewport {
 		calculateSubViewportArea(row, column, subViewportArea);
 		viewport.update((int)subViewportArea.width, (int)subViewportArea.height, centerCamera);
 
+		// store the current world size so we can restore it in case it gets changed now
+		float originalWorldWidth = viewport.worldWidth;
+		float originalWorldHeight = viewport.worldHeight;
+
 		// some scaling strategies will scale the viewport bigger than the allowed sub view, so we need to limit it
-		// viewport.viewportWidth = (int)Math.min(viewport.viewportWidth, subViewportArea.width);
-		// viewport.viewportHeight = (int)Math.min(viewport.viewportHeight, subViewportArea.height);
+		if (viewport.viewportWidth > subViewportArea.width) {
+			float offcutWidth = viewport.viewportWidth - subViewportArea.width;
+			viewport.viewportWidth = (int)subViewportArea.width;
+			viewport.worldWidth -= offcutWidth;
+			viewport.viewportX += offcutWidth / 2;
+		}
+		if (viewport.viewportHeight > subViewportArea.height) {
+			float offcutHeight = viewport.viewportHeight - subViewportArea.height;
+			viewport.viewportHeight = (int)subViewportArea.height;
+			viewport.worldHeight -= offcutHeight;
+			viewport.viewportY += offcutHeight / 2;
+		}
 
 		// now shift it to the correct place
 		viewport.viewportX += subViewportArea.x;
@@ -143,6 +157,11 @@ public class SplitViewport extends Viewport {
 
 		// we changed the viewport parameters, now we need to update once more to correct the glViewport
 		viewport.update();
+
+		// restore the original world width after the glViewport has been set
+		viewport.worldWidth = originalWorldWidth;
+		viewport.worldHeight = originalWorldHeight;
+
 		activeViewport = viewport;
 	}
 
