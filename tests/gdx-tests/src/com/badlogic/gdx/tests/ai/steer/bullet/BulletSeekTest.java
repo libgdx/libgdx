@@ -76,7 +76,7 @@ public class BulletSeekTest extends BulletSteeringTest {
 		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + seekSB.getMaxLinearAcceleration() + "]", container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 10000, 20, false, container.skin);
+		Slider maxLinAcc = new Slider(0, 20000, 100, false, container.skin);
 		maxLinAcc.setValue(seekSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override

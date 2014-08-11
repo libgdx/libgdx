@@ -114,18 +114,18 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 		RaycastCollisionDetector<Vector3> raycastCollisionDetector = new BulletRaycastCollisionDetector(world.collisionWorld,
 			character.body);
 		raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector3>(character, rayConfigurations[rayConfigurationIndex],
-			raycastCollisionDetector, 2, 10f);
+			raycastCollisionDetector, 2, 1500f);
 
 		Wander<Vector3> wanderSB = new Wander<Vector3>(character) //
-			.setMaxLinearAcceleration(10) //
+			.setMaxLinearAcceleration(1500) //
 			.setMaxAngularAcceleration(5) // 
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
 			.setMaxRotation(5) //
 			.setTimeToTarget(0.1f) //
-			.setWanderOffset(6) //
-			.setWanderOrientation(10) //
-			.setWanderRadius(5) //
+			.setWanderOffset(2) //
+			.setWanderOrientation(0) //
+			.setWanderRadius(1) //
 			.setWanderRate(MathUtils.PI / 5);
 
 		PrioritySteering<Vector3> prioritySteeringSB = new PrioritySteering<Vector3>(character, 0.0001f) //
@@ -141,7 +141,7 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 			container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 50, 1, false, container.skin);
+		Slider maxLinAcc = new Slider(0, 20000, 100, false, container.skin);
 		maxLinAcc.setValue(raycastObstacleAvoidanceSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
@@ -158,7 +158,7 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 			+ raycastObstacleAvoidanceSB.getDistanceFromBoundary() + "]", container.skin);
 		detailTable.add(labelDistFromBoundary);
 		detailTable.row();
-		Slider distFromBoundary = new Slider(0, 10, 1, false, container.skin);
+		Slider distFromBoundary = new Slider(0, 10, 0.1f, false, container.skin);
 		distFromBoundary.setValue(raycastObstacleAvoidanceSB.getDistanceFromBoundary());
 		distFromBoundary.addListener(new ChangeListener() {
 			@Override

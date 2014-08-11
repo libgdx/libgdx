@@ -79,7 +79,8 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 		if (steeringBehavior != null) {
 			steeringBehavior.calculateSteering(steeringOutput);
 			body.applyCentralForce(steeringOutput.linear.scl(Gdx.graphics.getDeltaTime()));
-			body.applyTorque(new Vector3(0, steeringOutput.angular * Gdx.graphics.getDeltaTime(), 0));
+			body.applyTorque(tmpVector3.set(0, steeringOutput.angular * Gdx.graphics.getDeltaTime(), 0));
+			body.activate();
 
 			// cap the speed
 			Vector3 velocity = body.getLinearVelocity();
@@ -142,7 +143,7 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 	@Override
 	public Vector3 getPosition () {
 		body.getMotionState().getWorldTransform(tmpMatrix4);
-		return new Vector3(tmpMatrix4.getTranslation(tmpVector3));
+		return tmpMatrix4.getTranslation(tmpVector3);
 	}
 
 }

@@ -98,14 +98,14 @@ public abstract class SteeringTest {
 	}
 	
 	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character) {
-		addMaxSpeedController(table, character, 0, 500);
+		addMaxSpeedController(table, character, 0, 50, 0.1f);
 	}
 	
-	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character, float minValue, float maxValue) {
+	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character, float minValue, float maxValue, float step) {
 		final Label labelMaxSpeed = new Label("Max Speed [" + character.getMaxSpeed() + "]", container.skin);
 		table.add(labelMaxSpeed);
 		table.row();
-		Slider maxSpeed = new Slider(0, 500, 1, false, container.skin);
+		Slider maxSpeed = new Slider(minValue, maxValue, step, false, container.skin);
 		maxSpeed.setValue(character.getMaxSpeed());
 		maxSpeed.addListener(new ChangeListener() {
 			@Override

@@ -79,12 +79,12 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 		BulletEntity characterBase = world.add("capsule", new Matrix4());
 
 		character = new SteeringBulletEntity(characterBase);
-		character.setMaxSpeed(250);
+		character.setMaxSpeed(15);
 
 		wayPoints = createRandomPath(MathUtils.random(4, 12), 10, 10, 20, 20, 1.5f);
 
-		LinePath<Vector3> linePath = new LinePath<Vector3>(wayPoints);
-		followPathSB = new FollowPath<Vector3, LinePathParam>(character, linePath, 1, 500);
+		LinePath<Vector3> linePath = new LinePath<Vector3>(wayPoints, false);
+		followPathSB = new FollowPath<Vector3, LinePathParam>(character, linePath, 3, 1500);
 
 		character.setSteeringBehavior(followPathSB);
 
@@ -97,7 +97,7 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 		final Label labelPathOffset = new Label("Path Offset [" + followPathSB.getPathOffset() + "]", container.skin);
 		detailTable.add(labelPathOffset);
 		detailTable.row();
-		Slider pathOffset = new Slider(-50, +50, 1, false, container.skin);
+		Slider pathOffset = new Slider(-15, +15, 0.5f, false, container.skin);
 		pathOffset.setValue(followPathSB.getPathOffset());
 		pathOffset.addListener(new ChangeListener() {
 			@Override
@@ -113,7 +113,7 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + followPathSB.getMaxLinearAcceleration() + "]", container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 2000, 10, false, container.skin);
+		Slider maxLinAcc = new Slider(0, 20000, 100, false, container.skin);
 		maxLinAcc.setValue(followPathSB.getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
