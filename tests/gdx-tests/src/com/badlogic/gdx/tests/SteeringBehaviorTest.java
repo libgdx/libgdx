@@ -34,6 +34,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
+import com.badlogic.gdx.tests.ai.steer.bullet.BulletFollowPathTest;
+import com.badlogic.gdx.tests.ai.steer.bullet.BulletRaycastObstacleAvoidanceTest;
+import com.badlogic.gdx.tests.ai.steer.bullet.BulletSeekTest;
 import com.badlogic.gdx.tests.ai.steer.tests.ArriveTest;
 import com.badlogic.gdx.tests.ai.steer.tests.CollisionAvoidanceTest;
 import com.badlogic.gdx.tests.ai.steer.tests.FaceTest;
@@ -60,8 +63,12 @@ public class SteeringBehaviorTest extends GdxTest {
 	Label fpsLabel;
 	StringBuilder fpsStringBuilder;
 	
+	// sorted!
 	SteeringTest[] behaviors = {
 		new ArriveTest(this),
+		new BulletFollowPathTest(this),
+		new BulletRaycastObstacleAvoidanceTest(this),
+		new BulletSeekTest(this),
 		new CollisionAvoidanceTest(this),
 		new FaceTest(this),
 		new FlockingTest(this),

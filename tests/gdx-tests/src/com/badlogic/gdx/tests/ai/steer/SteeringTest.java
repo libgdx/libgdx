@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
+import com.badlogic.gdx.tests.ai.steer.bullet.SteeringBulletEntity;
 import com.badlogic.gdx.tests.g3d.BaseG3dHudTest.CollapsableWindow;
 import com.badlogic.gdx.utils.Array;
 
@@ -80,6 +81,27 @@ public abstract class SteeringTest {
 	}
 
 	protected void addMaxSpeedController (Table table, final SteeringActor character, float minValue, float maxValue, float step) {
+		final Label labelMaxSpeed = new Label("Max Speed [" + character.getMaxSpeed() + "]", container.skin);
+		table.add(labelMaxSpeed);
+		table.row();
+		Slider maxSpeed = new Slider(minValue, maxValue, step, false, container.skin);
+		maxSpeed.setValue(character.getMaxSpeed());
+		maxSpeed.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				character.setMaxSpeed(slider.getValue());
+				labelMaxSpeed.setText("Max Speed [" + character.getMaxSpeed() + "]");
+			}
+		});
+		table.add(maxSpeed);
+	}
+	
+	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character) {
+		addMaxSpeedController(table, character, 0, 50, 0.1f);
+	}
+	
+	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character, float minValue, float maxValue, float step) {
 		final Label labelMaxSpeed = new Label("Max Speed [" + character.getMaxSpeed() + "]", container.skin);
 		table.add(labelMaxSpeed);
 		table.row();
