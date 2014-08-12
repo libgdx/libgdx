@@ -86,7 +86,7 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		T targetPosition = target.getPosition();
 
 		// Get the square distance to the evader (the target)

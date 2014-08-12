@@ -49,7 +49,7 @@ public class Alignment<T extends Vector<T>> extends GroupBehavior<T> implements 
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		steering.setZero();
 
 		linear = steering.linear;

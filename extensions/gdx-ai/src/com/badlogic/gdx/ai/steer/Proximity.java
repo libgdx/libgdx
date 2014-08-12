@@ -32,7 +32,7 @@ import com.badlogic.gdx.math.Vector;
  * lower-level agents following the rules have no idea of the bigger picture; they are only aware of themselves and maybe a few of
  * their neighbors. A typical example of emergence is flocking behavior which is a combination of three group behaviors:
  * {@link Separation separation}, {@link Alignment alignment}, and {@link Cohesion cohesion}. The three behaviors are typically
- * combined through a {@link BlendedSteering weighted blender} This works okay but, because of the limited view distance of a
+ * combined through a {@link BlendedSteering blended steering}. This works okay but, because of the limited view distance of a
  * character, it's possible for an agent to become isolated from its flock. If this happens, it will just sit still and do
  * nothing. To prevent this from happening, you usually add in the {@link Wander wander} behavior too. This way, all the agents
  * keep moving all the time. Tweaking the magnitudes of each of the contributing behaviors will give you different effects such as

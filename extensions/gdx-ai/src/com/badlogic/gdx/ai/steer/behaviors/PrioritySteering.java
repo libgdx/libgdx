@@ -22,12 +22,12 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
-/** The {@code PrioritySteering} behavior iterates through the active behaviors and returns the first non zero steering. It makes
- * sense since certain steering behaviors only request an acceleration in particular conditions. Unlike {@link Seek} or
- * {@link Evade}, which always produce an acceleration, {@link RaycastObstacleAvoidance}, {@link CollisionAvoidance},
- * {@link Separation}, {@link Hide} and {@link Arrive} will suggest no acceleration in many cases. But when these behaviors do
- * suggest an acceleration, it is unwise to ignore it. An obstacle avoidance behavior, for example, should be honored immediately
- * to avoid the crash.
+/** The {@code PrioritySteering} behavior iterates through the behaviors and returns the first non zero steering. It makes sense
+ * since certain steering behaviors only request an acceleration in particular conditions. Unlike {@link Seek} or {@link Evade},
+ * which always produce an acceleration, {@link RaycastObstacleAvoidance}, {@link CollisionAvoidance}, {@link Separation},
+ * {@link Hide} and {@link Arrive} will suggest no acceleration in many cases. But when these behaviors do suggest an
+ * acceleration, it is unwise to ignore it. An obstacle avoidance behavior, for example, should be honored immediately to avoid
+ * the crash.
  * <p>
  * Typically the behaviors of a {@code PrioritySteering} are arranged in groups with regular blending weights, see
  * {@link BlendedSteering}. These groups are then placed in priority order to let the steering system consider each group in turn.
@@ -91,27 +91,26 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// We'll need epsilon squared later.
 		float epsilonSquared = epsilon * epsilon;
 
-		// Go through all the enabled behaviors
-		boolean validSteering = false;
+		// Go through the behaviors until one has a large enough acceleration
 		int n = behaviors.size;
 		for (int i = 0; i < n; i++) {
 			SteeringBehavior<T> behavior = behaviors.get(i);
-			if (behavior.isEnabled()) {
-				validSteering = true;
-				behavior.calculateSteering(steering);
-				// If we're above the threshold return the current steering
-				if (steering.calculateSquareMagnitude() > epsilonSquared) return steering;
-			}
+
+			// Calculate the behavior's steering
+			behavior.steer(steering);
+
+			// If we're above the threshold return the current steering
+			if (steering.calculateSquareMagnitude() > epsilonSquared) return steering;
 		}
 
 		// If we get here, it means that no behavior had a large enough acceleration,
 		// so return the small acceleration from the final behavior or zero if there are
-		// no active behaviors in the list.
-		return validSteering ? steering : steering.setZero();
+		// no behaviors in the list.
+		return n > 0 ? steering : steering.setZero();
 	}
 
 	/** Returns the threshold of the steering acceleration magnitude below which a steering behavior is considered to have given no

@@ -117,13 +117,13 @@ public class HideTest extends SteeringTest {
 			.setWanderRadius(40) //
 			.setWanderRate(MathUtils.PI / 5);
 
-		BlendedSteering<Vector2> prioritySteeringSB = new BlendedSteering<Vector2>(character, Float.POSITIVE_INFINITY,
+		BlendedSteering<Vector2> blendedSteeringSB = new BlendedSteering<Vector2>(character, Float.POSITIVE_INFINITY,
 			Float.POSITIVE_INFINITY) //
 			.add(collisionAvoidanceSB, 1) //
 			.add(hideSB, 1) //
 			.add(wanderSB, 1);
 
-		character.setSteeringBehavior(prioritySteeringSB);
+		character.setSteeringBehavior(blendedSteeringSB);
 
 		table.addActor(character);
 

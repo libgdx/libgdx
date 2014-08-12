@@ -50,9 +50,9 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 		if (!(copyEntity.body instanceof btRigidBody)) {
 			throw new IllegalArgumentException("Body must be a rigid body.");
 		}
-//		if (copyEntity.body.isStaticOrKinematicObject()) {
-//		throw new IllegalArgumentException("Body must be a dynamic body.");
-//	}
+// if (copyEntity.body.isStaticOrKinematicObject()) {
+// throw new IllegalArgumentException("Body must be a dynamic body.");
+// }
 
 		this.body = (btRigidBody)copyEntity.body;
 		body.setAngularFactor(ANGULAR_LOCK);
@@ -71,9 +71,9 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 	}
 
 	public void update () {
-		if (steeringBehavior != null && steeringBehavior.isEnabled()) {
+		if (steeringBehavior != null) {
 			// Calculate steering acceleration
-			steeringBehavior.calculateSteering(steeringOutput);
+			steeringBehavior.steer(steeringOutput);
 
 			// Apply steering accelerations (if any)
 			boolean anyAccelerations = false;

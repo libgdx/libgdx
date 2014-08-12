@@ -59,7 +59,7 @@ public class Seek<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Try to match the position of the character with the position of the target by calculating
 		// the direction to the target and by moving toward it as fast as possible.
 		steering.linear.set(target.getPosition()).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);

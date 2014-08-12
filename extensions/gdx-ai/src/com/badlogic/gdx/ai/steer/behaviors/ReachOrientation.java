@@ -70,7 +70,7 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		return reachOrientation(steering, target.getOrientation());
 	}
 

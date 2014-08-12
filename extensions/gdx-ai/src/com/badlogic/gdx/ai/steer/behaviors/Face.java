@@ -43,7 +43,7 @@ public class Face<T extends Vector<T>> extends ReachOrientation<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		return face(steering, target.getPosition());
 	}
 

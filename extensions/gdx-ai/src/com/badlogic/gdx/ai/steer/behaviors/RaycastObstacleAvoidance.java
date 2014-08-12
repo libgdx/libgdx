@@ -133,7 +133,7 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		T ownerPosition = owner.getPosition();
 		float minDistanceSquare = Float.POSITIVE_INFINITY;
 

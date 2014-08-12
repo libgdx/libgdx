@@ -100,7 +100,7 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 
 		// Predictive or non-predictive behavior?
 		T location = (predictionTime == 0) ?

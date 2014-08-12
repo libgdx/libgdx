@@ -22,9 +22,9 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
-/** This combination behavior simply sums up all the active behaviors, applies their weights, and truncates the result before
- * returning. There are no constraints on the blending weights; they don't have to sum to one, for example, and rarely do. Don't
- * think of {@code BlendedSteering} as a weighted mean, because it's not.
+/** This combination behavior simply sums up all the behaviors, applies their weights, and truncates the result before returning.
+ * There are no constraints on the blending weights; they don't have to sum to one, for example, and rarely do. Don't think of
+ * {@code BlendedSteering} as a weighted mean, because it's not.
  * <p>
  * With {@code BlendedSteering} you can combine multiple behaviors to get a more complex behavior. It can work fine, but the
  * trade-off is that it comes with a few problems:
@@ -94,21 +94,20 @@ public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> blendedSteering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> blendedSteering) {
 		// Clear the output to start with
 		blendedSteering.setZero();
 
-		// Go through all the enabled behaviors
+		// Go through all the behaviors
 		int len = list.size;
 		for (int i = 0; i < len; i++) {
 			BehaviorAndWeight<T> bw = list.get(i);
-			if (bw.behavior.isEnabled()) {
-				// Calculate the behavior's steering
-				bw.behavior.calculateSteering(steering);
 
-				// Scale and add the steering to the accumulator
-				blendedSteering.mulAdd(steering, bw.weight);
-			}
+			// Calculate the behavior's steering
+			bw.behavior.steer(steering);
+
+			// Scale and add the steering to the accumulator
+			blendedSteering.mulAdd(steering, bw.weight);
 		}
 
 		// Crop the result

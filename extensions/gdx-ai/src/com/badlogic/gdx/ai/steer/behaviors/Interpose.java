@@ -111,7 +111,7 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// First we need to figure out where the two agents are going to be at
 		// time T in the future. This is approximated by determining the time
 		// taken by the owner to reach the desired point between the 2 agents

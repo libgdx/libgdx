@@ -79,7 +79,7 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	}
 
 	@Override
-	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
+	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Update the wander orientation
 		wanderOrientation += AIUtils.randomBinomial(wanderRate);
 

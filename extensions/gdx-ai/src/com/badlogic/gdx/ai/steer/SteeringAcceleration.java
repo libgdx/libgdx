@@ -48,6 +48,11 @@ public class SteeringAcceleration<T extends Vector<T>> {
 		this.angular = angular;
 	}
 
+	/** Returns {@code true} if both linear and angular components of this steering acceleration are zero; {@code false} otherwise. */
+	public boolean isZero () {
+		return angular == 0 && linear.isZero();
+	}
+
 	/** Zeros the linear and angular components of this steering acceleration.
 	 * @return this steering acceleration for chaining */
 	public SteeringAcceleration<T> setZero () {
