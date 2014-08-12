@@ -261,14 +261,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		graphics.setContinuousRendering(true);
 		graphics.pause();
 
-		input.unregisterSensorListeners();
-
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
+		input.onPause();
 
 		if (isFinishing()) {
 			graphics.clearManagedCaches();
@@ -290,7 +283,7 @@ public class AndroidApplication extends Activity implements AndroidApplicationBa
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		getInput().registerSensorListeners();
+		input.onResume();
 
 		if (graphics != null) {
 			graphics.onResumeGLSurfaceView();

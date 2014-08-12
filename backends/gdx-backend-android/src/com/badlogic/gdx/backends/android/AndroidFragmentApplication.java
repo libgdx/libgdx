@@ -203,14 +203,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		graphics.setContinuousRendering(true);
 		graphics.pause();
 
-		input.unregisterSensorListeners();
-
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
+		input.onPause();
 
 		// davebaol & mobidevelop:
 		// This fragment is currently being removed from its activity or the activity is in the process of finishing
@@ -235,7 +228,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.graphics = this.getGraphics();
 		Gdx.net = this.getNet();
 
-		getInput().registerSensorListeners();
+		input.onResume();
 
 		if (graphics != null) {
 			graphics.onResumeGLSurfaceView();

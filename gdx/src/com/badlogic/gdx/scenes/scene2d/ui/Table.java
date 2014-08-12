@@ -1209,7 +1209,7 @@ public class Table extends WidgetGroup {
 	}
 
 	/** @author Nathan Sweet */
-	static class DebugRect extends Rectangle {
+	static public class DebugRect extends Rectangle {
 		static Pool<DebugRect> pool = Pools.get(DebugRect.class);
 		Color color;
 	}
