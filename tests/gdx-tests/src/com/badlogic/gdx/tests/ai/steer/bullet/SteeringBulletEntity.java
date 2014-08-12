@@ -20,15 +20,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.badlogic.gdx.tests.DeltaTimeTest;
 import com.badlogic.gdx.tests.bullet.BulletEntity;
 
 /** @author Daniel Holderbaum */
@@ -43,7 +39,6 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 	private static final SteeringAcceleration<Vector3> steeringOutput = new SteeringAcceleration<Vector3>(new Vector3());
 
 	private static final Quaternion tmpQuaternion = new Quaternion();
-	private static final Vector2 tmpVector2 = new Vector2();
 	private static final Matrix4 tmpMatrix4 = new Matrix4();
 	private static final Vector3 tmpVector3 = new Vector3();
 
@@ -56,8 +51,8 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 			throw new IllegalArgumentException("Body must be a rigid body.");
 		}
 //		if (copyEntity.body.isStaticOrKinematicObject()) {
-//			throw new IllegalArgumentException("Body must be a dynamic body.");
-//		}
+//		throw new IllegalArgumentException("Body must be a dynamic body.");
+//	}
 
 		this.body = (btRigidBody)copyEntity.body;
 		body.setAngularFactor(ANGULAR_LOCK);
@@ -76,17 +71,29 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 	}
 
 	public void update () {
-		if (steeringBehavior != null) {
+		if (steeringBehavior != null && steeringBehavior.isEnabled()) {
+			// Calculate steering acceleration
 			steeringBehavior.calculateSteering(steeringOutput);
-			body.applyCentralForce(steeringOutput.linear.scl(Gdx.graphics.getDeltaTime()));
-			body.applyTorque(tmpVector3.set(0, steeringOutput.angular * Gdx.graphics.getDeltaTime(), 0));
-			body.activate();
 
-			// cap the speed
-			Vector3 velocity = body.getLinearVelocity();
-			float currentSpeed = body.getLinearVelocity().len();
-			if (currentSpeed > maxSpeed) {
-				body.setLinearVelocity(velocity.scl(maxSpeed / currentSpeed));
+			// Apply steering accelerations (if any)
+			boolean anyAccelerations = false;
+			if (!steeringOutput.linear.isZero()) {
+				body.applyCentralForce(steeringOutput.linear.scl(Gdx.graphics.getDeltaTime()));
+				anyAccelerations = true;
+			}
+			if (steeringOutput.angular != 0) {
+				body.applyTorque(tmpVector3.set(0, steeringOutput.angular * Gdx.graphics.getDeltaTime(), 0));
+				anyAccelerations = true;
+			}
+			if (anyAccelerations) {
+				body.activate();
+
+				// Cap the speed
+				Vector3 velocity = body.getLinearVelocity();
+				float currentSpeed = velocity.len();
+				if (currentSpeed > maxSpeed) {
+					body.setLinearVelocity(velocity.scl(maxSpeed / currentSpeed));
+				}
 			}
 		}
 	}
@@ -131,7 +138,7 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 
 	@Override
 	public float vectorToAngle (Vector3 vector) {
-		return tmpVector2.set(vector.x, vector.z).angleRad();
+		return (float)Math.atan2(vector.z, vector.x);
 	}
 
 	@Override

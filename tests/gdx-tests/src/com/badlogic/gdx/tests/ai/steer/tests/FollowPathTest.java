@@ -47,7 +47,6 @@ public class FollowPathTest extends SteeringTest {
 
 	Vector2[] wayPoints;
 	LinePath<Vector2> linePath;
-
 	FollowPath<Vector2, LinePathParam> followPathSB;
 
 	final boolean openPath;
@@ -266,15 +265,15 @@ public class FollowPathTest extends SteeringTest {
 		return wayPoints;
 	}
 
-	private static final Matrix3 matrix = new Matrix3();
+	private static final Matrix3 tmpMatrix3 = new Matrix3();
 
 	/** Rotates the specified vector angle rads around the origin */
 	private static Vector2 rotateVectorAroundOrigin (Vector2 vector, float radians) {
 		// Init and rotate the transformation matrix
-		matrix.idt().rotateRad(radians);
+		tmpMatrix3.idt().rotateRad(radians);
 
 		// Now transform the object's vertices
-		return vector.mul(matrix);
+		return vector.mul(tmpMatrix3);
 	}
 
 }

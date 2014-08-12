@@ -25,6 +25,12 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 	private T tmp2;
 	private T tmp3;
 
+	/** Creates a closed {@code LinePath} for the specified {@code waypoints}.
+	 * @param waypoints the points making up the path */
+	public LinePath (T[] waypoints) {
+		this(waypoints, false);
+	}
+
 	/** Creates a {@code LinePath} for the specified {@code waypoints}.
 	 * @param waypoints the points making up the path */
 	public LinePath (T[] waypoints, boolean isOpen) {

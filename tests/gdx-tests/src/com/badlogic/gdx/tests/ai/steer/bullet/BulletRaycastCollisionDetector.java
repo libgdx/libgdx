@@ -19,17 +19,11 @@ package com.badlogic.gdx.tests.ai.steer.bullet;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.Collision;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.Ray;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.RaycastCollisionDetector;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.RayCastCallback;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.bullet.collision.ClosestNotMeRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.collision.RayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.badlogic.gdx.tests.ai.steer.box2d.Box2dRaycastCollisionDetector.B2SteerRaycastCallback;
 
 /** A 3D {@link RaycastCollisionDetector} to be used with bullet physics. It reports the closest collision which is not the
  * supplied "me" collision object.

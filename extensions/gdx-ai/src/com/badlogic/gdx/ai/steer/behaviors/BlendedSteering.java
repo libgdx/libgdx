@@ -24,16 +24,16 @@ import com.badlogic.gdx.utils.Array;
 
 /** This combination behavior simply sums up all the active behaviors, applies their weights, and truncates the result before
  * returning. There are no constraints on the blending weights; they don't have to sum to one, for example, and rarely do. Don't
- * think of it as a weighted mean.
+ * think of {@code BlendedSteering} as a weighted mean, because it's not.
  * <p>
- * With {@code WeightedBlender} you can combine multiple behaviors to get a more complex behavior. It can work fine, but the
+ * With {@code BlendedSteering} you can combine multiple behaviors to get a more complex behavior. It can work fine, but the
  * trade-off is that it comes with a few problems:
  * <ul>
  * <li>Since every active behavior is calculated every time step, it can be a costly method to process.</li>
  * <li>Behavior weights can be difficult to tweak. There have been research projects that have tried to evolve the steering
  * weights using genetic algorithms or neural networks. Results have not been encouraging, however, and manual experimentation
  * still seems to be the most sensible approach.</li>
- * <li>It's problematic with conflicting forces. For instance, A common scenario is where an agent is backed up against a wall by
+ * <li>It's problematic with conflicting forces. For instance, a common scenario is where an agent is backed up against a wall by
  * several other agents. In this example, the separating forces from the neighboring agents can be greater than the repulsive
  * force from the wall and the agent can end up being pushed through the wall boundary. This is almost certainly not going to be
  * favorable. Sure you can make the weights for the wall avoidance huge, but then your agent may behave strangely next time it
@@ -43,7 +43,7 @@ import com.badlogic.gdx.utils.Array;
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
  * @author davebaol */
-public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
+public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** The maximum linear acceleration that can be used. */
 	protected float maxLinearAcceleration;
@@ -56,12 +56,12 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	private SteeringAcceleration<T> steering;
 
-	/** Creates a {@code WeightedBlender} for the specified {@code owner}, {@code maxLinearAcceleration} and
+	/** Creates a {@code BlendedSteering} for the specified {@code owner}, {@code maxLinearAcceleration} and
 	 * {@code maxAngularAcceleration}.
 	 * @param owner the owner of this behavior.
 	 * @param maxLinearAcceleration the maximum linear acceleration that can be used.
 	 * @param maxAngularAcceleration the maximum angular acceleration that can be used. */
-	public WeightedBlender (Steerable<T> owner, float maxLinearAcceleration, float maxAngularAcceleration) {
+	public BlendedSteering (Steerable<T> owner, float maxLinearAcceleration, float maxAngularAcceleration) {
 		super(owner);
 		this.maxLinearAcceleration = maxLinearAcceleration;
 		this.maxAngularAcceleration = maxAngularAcceleration;
@@ -74,14 +74,14 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @param behavior the steering behavior to add
 	 * @param weight the weight of the behavior
 	 * @return this behavior for chaining. */
-	public WeightedBlender<T> add (SteeringBehavior<T> behavior, float weight) {
+	public BlendedSteering<T> add (SteeringBehavior<T> behavior, float weight) {
 		return add(new BehaviorAndWeight<T>(behavior, weight));
 	}
 
 	/** Adds a steering behavior and its weight to the list.
 	 * @param item the steering behavior and its weight
 	 * @return this behavior for chaining. */
-	public WeightedBlender<T> add (BehaviorAndWeight<T> item) {
+	public BlendedSteering<T> add (BehaviorAndWeight<T> item) {
 		item.behavior.setOwner(owner);
 		list.add(item);
 		return this;
@@ -125,7 +125,7 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** Sets the maximum linear acceleration that can be used.
 	 * @return this behavior for chaining. */
-	public WeightedBlender<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
+	public BlendedSteering<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
 		this.maxLinearAcceleration = maxLinearAcceleration;
 		return this;
 	}
@@ -137,7 +137,7 @@ public class WeightedBlender<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** Sets the maximum angular acceleration that can be used.
 	 * @return this behavior for chaining. */
-	public WeightedBlender<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
+	public BlendedSteering<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
 		this.maxAngularAcceleration = maxAngularAcceleration;
 		return this;
 	}

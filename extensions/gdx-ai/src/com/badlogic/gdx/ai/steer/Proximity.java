@@ -21,7 +21,7 @@ import com.badlogic.gdx.ai.steer.behaviors.Alignment;
 import com.badlogic.gdx.ai.steer.behaviors.Cohesion;
 import com.badlogic.gdx.ai.steer.behaviors.Separation;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.behaviors.WeightedBlender;
+import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.math.Vector;
 
 /** A {@code Proximity} defines an area that is used by group behaviors to find and process the owner's neighbors.
@@ -32,7 +32,7 @@ import com.badlogic.gdx.math.Vector;
  * lower-level agents following the rules have no idea of the bigger picture; they are only aware of themselves and maybe a few of
  * their neighbors. A typical example of emergence is flocking behavior which is a combination of three group behaviors:
  * {@link Separation separation}, {@link Alignment alignment}, and {@link Cohesion cohesion}. The three behaviors are typically
- * combined through a {@link WeightedBlender weighted blender} This works okay but, because of the limited view distance of a
+ * combined through a {@link BlendedSteering weighted blender} This works okay but, because of the limited view distance of a
  * character, it's possible for an agent to become isolated from its flock. If this happens, it will just sit still and do
  * nothing. To prevent this from happening, you usually add in the {@link Wander wander} behavior too. This way, all the agents
  * keep moving all the time. Tweaking the magnitudes of each of the contributing behaviors will give you different effects such as
@@ -67,8 +67,9 @@ public interface Proximity<T extends Vector<T>> {
 	/** Sets the owner of this proximity. */
 	public void setOwner (Steerable<T> owner);
 
-	/** Tags the agents that are within the field of view of the owner.
-	 * @return the number of tagged neighbors. */
+	/** Finds the agents that are within the immediate area of the owner. Each of those agents is passed to the
+	 * {@link ProximityCallback#reportNeighbor(Steerable) reportNeighbor} method of the specified callback.
+	 * @return the number of neighbors found. */
 	public int findNeighbors (ProximityCallback<T> callback);
 
 	/** The callback object used by a proximity to report the owner's neighbor.

@@ -21,8 +21,8 @@ import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector;
 
-/** Face behavior makes the owner look at its target. It delegates to the {@link ReachOrientation} behavior to perform the rotation
- * but calculates the target orientation first based on target and owner position.
+/** {@code Face} behavior makes the owner look at its target. It delegates to the {@link ReachOrientation} behavior to perform the
+ * rotation but calculates the target orientation first based on target and owner position.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 

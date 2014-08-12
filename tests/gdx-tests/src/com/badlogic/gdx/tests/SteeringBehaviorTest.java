@@ -66,7 +66,8 @@ public class SteeringBehaviorTest extends GdxTest {
 	// sorted!
 	SteeringTest[] behaviors = {
 		new ArriveTest(this),
-		new BulletFollowPathTest(this),
+		new BulletFollowPathTest(this, false),
+		new BulletFollowPathTest(this, true),
 		new BulletRaycastObstacleAvoidanceTest(this),
 		new BulletSeekTest(this),
 		new CollisionAvoidanceTest(this),

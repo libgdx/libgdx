@@ -22,8 +22,10 @@ import com.badlogic.gdx.ai.steer.behaviors.FollowPath.Path.Param;
 import com.badlogic.gdx.math.Vector;
 
 /** {@code FollowPath} behavior produces a linear acceleration that moves the agent along the given path. First it calculates the
- * agent location based on the specified prediction time. Then it calculates the position of the internal target based on that
- * agent location and the shape of the path. It finally seeks the internal target position.
+ * agent location based on the specified prediction time. Then it works out the position of the internal target based on the
+ * location just calculated and the shape of the path. It finally uses {@link Seek seek} behavior to move the owner towards the
+ * internal target position. However, if the path is open {@link Arrive arrive} behavior is used to approach path's extremities
+ * when they are far less than the {@link FollowPath#decelerationRadius deceleration radius} from the internal target position.
  * <p>
  * For complex paths with sudden changes of direction the predictive behavior (i.e., with prediction time greater than 0) can
  * appear smoother than the non-predictive one (i.e., with no prediction time). However, predictive path following has the

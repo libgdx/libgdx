@@ -142,7 +142,7 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 		position.set(getCenterX(), getCenterY());
 		if (steeringBehavior != null && steeringBehavior.isEnabled()) {
 			steeringBehavior.calculateSteering(steeringOutput);
-			update(steeringOutput, delta);
+			applySteering(steeringOutput, delta);
 			wrapAround(position, getParent().getWidth(), getParent().getHeight());
 			setCenterPosition(position.x, position.y);
 		}
@@ -161,7 +161,7 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 		if (pos.y > maxY) pos.y = 0.0f;
 	}
 
-	private void update (SteeringAcceleration<Vector2> steering, float time) {
+	private void applySteering (SteeringAcceleration<Vector2> steering, float time) {
 		// Update position and linear velocity. Velocity is trimmed to maximum speed
 		position.mulAdd(linearVelocity, time);
 		linearVelocity.mulAdd(steering.linear, time).limit(getMaxSpeed());

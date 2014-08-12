@@ -18,10 +18,7 @@ package com.badlogic.gdx.tests.ai.steer.bullet;
 
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -29,10 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
-import com.badlogic.gdx.tests.ai.steer.SteeringActor;
-import com.badlogic.gdx.tests.ai.steer.TargetInputProcessor;
 import com.badlogic.gdx.tests.bullet.BulletEntity;
 
 /** @author Daniel Holderbaum */

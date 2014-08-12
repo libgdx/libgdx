@@ -18,7 +18,7 @@ package com.badlogic.gdx.ai.steer;
 
 import com.badlogic.gdx.math.Vector;
 
-/** A steering behavior calculates the linear and/or angular accelerations to be applied to its owner.
+/** A {@code SteeringBehavior} calculates the linear and/or angular accelerations to be applied to its owner.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
@@ -31,14 +31,14 @@ public abstract class SteeringBehavior<T extends Vector<T>> {
 	/** A flag indicating whether this steering behavior is enabled or not. */
 	protected boolean enabled;
 
-	/** Creates a steering behavior for the specified agent. The behavior is enabled.
+	/** Creates a {@code SteeringBehavior} for the specified agent. The behavior is enabled.
 	 * 
 	 * @param owner the owner of this steering behavior */
 	public SteeringBehavior (Steerable<T> owner) {
 		this(owner, true);
 	}
 
-	/** Creates a steering behavior for the specified agent.
+	/** Creates a {@code SteeringBehavior} for the specified agent.
 	 * 
 	 * @param owner the owner of this steering behavior
 	 * @param enabled a flag indicating whether this steering behavior is enabled or not */

@@ -20,7 +20,7 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.math.Vector;
 
 /** {@code Evade} behavior is almost the same as {@link Pursue} except that the agent flees from the estimated future position of
- * the pursuer.
+ * the pursuer. Indeed, reversing the acceleration is all we have to do.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 

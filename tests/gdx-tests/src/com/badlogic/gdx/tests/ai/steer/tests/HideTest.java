@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests.ai.steer.tests;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.behaviors.WeightedBlender;
+import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.ai.steer.proximities.InfiniteProximity;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -117,7 +117,7 @@ public class HideTest extends SteeringTest {
 			.setWanderRadius(40) //
 			.setWanderRate(MathUtils.PI / 5);
 
-		WeightedBlender<Vector2> prioritySteeringSB = new WeightedBlender<Vector2>(character, Float.POSITIVE_INFINITY,
+		BlendedSteering<Vector2> prioritySteeringSB = new BlendedSteering<Vector2>(character, Float.POSITIVE_INFINITY,
 			Float.POSITIVE_INFINITY) //
 			.add(collisionAvoidanceSB, 1) //
 			.add(hideSB, 1) //

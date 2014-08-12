@@ -32,7 +32,7 @@ import com.badlogic.gdx.math.Vector;
  * <p>
  * Notice that this implementation always returns a normalized linear acceleration (or zero). This is not a problem since usually
  * you blend it with other group behaviors like {@link Separation} and {@link Alignment} so you can give it a proper weight, see
- * {@link WeightedBlender}.
+ * {@link BlendedSteering}.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 

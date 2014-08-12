@@ -20,13 +20,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.Collision;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionWorld;
-import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** An {@link InputProcessor} that allows you to manually move a {@link SteeringBulletEntity}.

@@ -20,9 +20,22 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.Vector;
 
-/** Interpose behavior produces a steering force that moves the owner to a point along the imaginary line connecting two other
- * agents. A bodyguard taking a bullet for his employer or a soccer player intercepting a pass are examples of this type of
- * behavior. Like pursuit, the owner must estimate where the two agents are going to be located at a time {@code t} in the future.
+/** {@code Interpose} behavior produces a steering force that moves the owner to a point along the imaginary line connecting two
+ * other agents. A bodyguard taking a bullet for his employer or a soccer player intercepting a pass are examples of this type of
+ * behavior. Like {@code Pursue}, the owner must estimate where the two agents are going to be located at a time {@code t} in the
+ * future. It can then steer toward that position using the {@link Arrive} behavior. But how do we know what the best value of
+ * {@code t} is to use? The answer is, we don't, so we make a calculated guess instead.
+ * <p>
+ * The first step is to determine a point along the imaginary line connecting the positions of the agents at the current time
+ * step. This point is found taking into account the {@code interpositionRatio}, a number between 0 and 1 where 0 is the position
+ * of the first agent (agentA) and 1 is the position of the second agent (agentB). Values in between are interpolated intermediate
+ * locations.
+ * <p>
+ * Then the distance from this point is computed and the value divided by the owner's maximum speed to give the time {@code t}
+ * required to travel the distance.
+ * <p>
+ * Using the time {@code t}, the agents' positions are extrapolated into the future. The target position in between of these
+ * predicted positions is determined and finally the owner uses the Arrive behavior to steer toward that point.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 

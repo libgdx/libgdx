@@ -22,7 +22,7 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.math.Vector;
 
 /** {@code Seek} behavior moves the owner towards the target position. Given a target, this behavior calculates the linear steering
- * acceleration which will direct the agent towards the target.
+ * acceleration which will direct the agent towards the target as fast as possible.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
@@ -60,10 +60,8 @@ public class Seek<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	@Override
 	public SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
-		// Calculate the desired velocity which is the velocity the agent would need
-		// to reach the target position in an ideal world. It represents the vector
-		// from the agent to the target, scaled to be the length of the maximum
-		// possible speed of the agent.
+		// Try to match the position of the character with the position of the target by calculating
+		// the direction to the target and by moving toward it as fast as possible.
 		steering.linear.set(target.getPosition()).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
 
 		// No angular acceleration
