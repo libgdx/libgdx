@@ -319,7 +319,7 @@ public class IOSInput implements Input {
 
 		@Override
 		public boolean shouldReturn(UITextField textField) {
-			app.input.inputProcessor.keyTyped((char)32);
+			app.input.inputProcessor.keyTyped((char)13);
 			return false;
 		}
 	};
