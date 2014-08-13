@@ -232,7 +232,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return multiple;
 	}
 
-	/** If true, prevents {@link #choose(Object)} from selecting multiple. Default is false. */
+	/** If true, allows {@link #choose(Object)} to select multiple items. Default is false. */
 	public void setMultiple (boolean multiple) {
 		this.multiple = multiple;
 	}
