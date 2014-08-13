@@ -66,6 +66,8 @@ public class Actor {
 	float rotation;
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
+	
+	static int runningActionCount;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -84,15 +86,18 @@ public class Actor {
 	 * @param delta Time in seconds since the last frame. */
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
-		for (int i = 0; i < actions.size; i++) {
-			Action action = actions.get(i);
-			if (action.act(delta) && i < actions.size) {
-				Action current = actions.get(i);
-				int actionIndex = current == action ? i : actions.indexOf(action, true);
-				if (actionIndex != -1) {
-					actions.removeIndex(actionIndex);
-					action.setActor(null);
-					i--;
+		if (actions.size > 0) {
+			runningActionCount += actions.size;
+			for (int i = 0; i < actions.size; i++) {
+				Action action = actions.get(i);
+				if (action.act(delta) && i < actions.size) {
+					Action current = actions.get(i);
+					int actionIndex = current == action ? i : actions.indexOf(action, true);
+					if (actionIndex != -1) {
+						actions.removeIndex(actionIndex);
+						action.setActor(null);
+						i--;
+					}
 				}
 			}
 		}
@@ -248,6 +253,7 @@ public class Actor {
 	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
+		runningActionCount++;
 	}
 
 	public void removeAction (Action action) {
