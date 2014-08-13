@@ -67,6 +67,7 @@
     <module>extensions/gdx-freetype</module>
     <module>extensions/gdx-freetype/jni/maven</module>
     <module>extensions/gdx-ai</module>
+	<module>extensions/gdx-udp</module>
   </modules>
 
   <build>
