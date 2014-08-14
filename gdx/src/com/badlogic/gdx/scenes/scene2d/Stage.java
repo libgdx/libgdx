@@ -78,6 +78,7 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
+	private boolean actionsRequestRendering;
 
 	private ShapeRenderer debugShapes;
 	private boolean debugInvisible, debugAll, debugUnderMouse, debugParentUnderMouse;
@@ -221,7 +222,7 @@ public class Stage extends InputAdapter implements Disposable {
 		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
 		int previousActionCount = Actor.runningActionCount;
 		root.act(delta);
-		if (previousActionCount != Actor.runningActionCount) Gdx.graphics.requestRendering();
+		if (actionsRequestRendering && previousActionCount != Actor.runningActionCount) Gdx.graphics.requestRendering();
 	}
 
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
@@ -762,6 +763,11 @@ public class Stage extends InputAdapter implements Disposable {
 	 * {@link #setDebugAll(boolean)}. */
 	public void setDebugTableUnderMouse (boolean debugTableUnderMouse) {
 		setDebugTableUnderMouse(debugTableUnderMouse ? Debug.all : Debug.none);
+	}
+	
+	/** If true, any actions executed during a call to Stage.act() will result in a call to Gdx.graphics.requestRendering(). */
+	public void setActionsRequestRendering (boolean actionsRequestRendering) {
+		this.actionsRequestRendering = actionsRequestRendering;
 	}
 
 	public void dispose () {
