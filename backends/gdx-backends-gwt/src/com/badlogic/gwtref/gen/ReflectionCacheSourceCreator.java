@@ -18,6 +18,8 @@ package com.badlogic.gwtref.gen;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -684,8 +686,13 @@ public class ReflectionCacheSourceCreator {
 			StringBuilder b = new StringBuilder();
 			b.append("new java.lang.annotation.Annotation[] {");
 			for (Annotation annotation : annotations) {
-				// anonymous class
+				// skip if not annotated with RetentionPolicy.RUNTIME
 				Class<?> type = annotation.annotationType();
+				Retention retention = type.getAnnotation(Retention.class);
+				if (retention == null || retention.value() != RetentionPolicy.RUNTIME) {
+					continue;
+				}
+				// anonymous class
 				b.append(" new ").append(type.getCanonicalName()).append("() {");
 				// override all methods
 				Method[] methods = type.getDeclaredMethods();
