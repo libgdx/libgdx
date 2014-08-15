@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -834,6 +835,20 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	public void addKeyListener (OnKeyListener listener) {
 		keyListeners.add(listener);
+	}
+
+	public void onPause () {
+		unregisterSensorListeners();
+
+		// erase pointer ids. this sucks donkeyballs...
+		Arrays.fill(realId, -1);
+
+		// erase touched state. this also sucks donkeyballs...
+		Arrays.fill(touched, false);
+	}
+
+	public void onResume () {
+		registerSensorListeners();
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single

@@ -18,8 +18,6 @@ package com.badlogic.gdx.math;
 
 import java.io.Serializable;
 
-import com.badlogic.gdx.Gdx;
-
 /** Encapsulates a <a href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> 4 by 4 matrix. Like
  * the {@link Vector3} class it allows the chaining of methods by returning a reference to itself. For example:
  * 
@@ -92,8 +90,7 @@ public class Matrix4 implements Serializable {
 
 	/** Constructs a matrix from the given float array. The array must have at least 16 elements; the first 16 will be copied.
 	 * @param values The float array to copy. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
-	 *           not modified.) */
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not modified) */
 	public Matrix4 (float[] values) {
 		this.set(values);
 	}
@@ -124,7 +121,7 @@ public class Matrix4 implements Serializable {
 	 * copied.
 	 * 
 	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
@@ -663,7 +660,7 @@ public class Matrix4 implements Serializable {
 
 	static Quaternion quat = new Quaternion();
 	static Quaternion quat2 = new Quaternion();
-	
+
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
 	 * @param axis The axis
@@ -850,7 +847,7 @@ public class Matrix4 implements Serializable {
 			this.val[i] = this.val[i] * (1 - alpha) + matrix.val[i] * alpha;
 		return this;
 	}
-	
+
 	/**
 	 * Averages the given transform with this one and stores the result in this matrix.
 	 * Translations and scales are lerped while rotations are slerped. 
@@ -1168,7 +1165,7 @@ public class Matrix4 implements Serializable {
 			* val[M12] * val[M31] + val[M01] * val[M10] * val[M32] - val[M00] * val[M11] * val[M32];
 		tmp[M33] = val[M01] * val[M12] * val[M20] - val[M02] * val[M11] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] + val[M00] * val[M11] * val[M22];
-	
+
 		float inv_det = 1.0f / l_det;
 		val[M00] = tmp[M00] * inv_det;
 		val[M01] = tmp[M01] * inv_det;
@@ -1188,7 +1185,7 @@ public class Matrix4 implements Serializable {
 		val[M33] = tmp[M33] * inv_det;
 		return true;
 	}
-	
+
 	static inline void matrix4_mulVec(float* mat, float* vec) {
 		float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03];
 		float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13];
