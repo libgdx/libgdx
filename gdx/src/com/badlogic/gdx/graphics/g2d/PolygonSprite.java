@@ -338,4 +338,8 @@ public class PolygonSprite {
 
 		dirty = true;
 	}
+
+	public PolygonRegion getRegion() {
+		return region;
+	}
 }
