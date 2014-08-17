@@ -22,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectMap.Entry;
@@ -44,6 +45,7 @@ public class DragAndDrop {
 	long dragStartTime;
 	int dragTime = 250;
 	int activePointer = -1;
+	boolean cancelTouchFocusOnDrag;
 
 	public void addSource (final Source source) {
 		DragListener listener = new DragListener() {
@@ -58,6 +60,10 @@ public class DragAndDrop {
 				dragStartTime = System.currentTimeMillis();
 				payload = source.dragStart(event, getTouchDownX(), getTouchDownY(), pointer);
 				event.stop();
+
+				if (cancelTouchFocusOnDrag && payload != null) {
+					source.getActor().getStage().cancelTouchFocus(this, source.getActor());
+				}
 			}
 
 			public void drag (InputEvent event, float x, float y, int pointer) {
@@ -197,7 +203,13 @@ public class DragAndDrop {
 		this.dragTime = dragMillis;
 	}
 
-	/** A target where a payload can be dragged from.
+	/** If set to {@code true}, this will cause the touch focus to be cancelled for all listeners except the currently used
+	 * {@link DragListener}. This is particularly useful when {@link DragAndDrop} is used in a {@link ScrollPane} for example. */
+	public void setCancelTouchFocusOnDrag (boolean cancelTouchFocusOnDrag) {
+		this.cancelTouchFocusOnDrag = cancelTouchFocusOnDrag;
+	}
+
+	/** A source where a payload can be dragged from.
 	 * @author Nathan Sweet */
 	static abstract public class Source {
 		final Actor actor;
