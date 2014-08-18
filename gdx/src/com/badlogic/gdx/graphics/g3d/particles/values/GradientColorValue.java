@@ -1,5 +1,7 @@
+
 package com.badlogic.gdx.graphics.g3d.particles.values;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -8,6 +10,7 @@ import com.badlogic.gdx.utils.JsonValue;
 public class GradientColorValue extends ParticleValue {
 		static private float[] temp = new float[3];
 
+		private float[] originalColors = {1, 1, 1};
 		private float[] colors = {1, 1, 1};
 		public float[] timeline = {0};
 
@@ -21,6 +24,26 @@ public class GradientColorValue extends ParticleValue {
 
 		public float[] getColors () {
 			return colors;
+		}
+
+		public float[] getOriginalColors () {
+			return originalColors;
+		}
+
+		public void multiplyColors (Color color) {
+			for (int i = 0; i < colors.length; i++) {
+				switch (i % 3) {
+				case 0:
+					colors[i] = originalColors[i] * color.r;
+					break;
+				case 1:
+					colors[i] = originalColors[i] * color.g;
+					break;
+				case 2:
+					colors[i] = originalColors[i] * color.b;
+					break;
+				}
+			}
 		}
 
 		public void setColors (float[] colors) {
@@ -51,15 +74,15 @@ public class GradientColorValue extends ParticleValue {
 			float b1 = colors[startIndex + 2];
 			if (endIndex == -1) {
 				out[index] = r1;
-				out[index+1] = g1;
-				out[index+2] = b1;
+				out[index + 1] = g1;
+				out[index + 2] = b1;
 				return;
 			}
 			float factor = (percent - startTime) / (timeline[endIndex] - startTime);
 			endIndex *= 3;
 			out[index] = r1 + (colors[endIndex] - r1) * factor;
-			out[index+1] = g1 + (colors[endIndex + 1] - g1) * factor;
-			out[index+2] = b1 + (colors[endIndex + 2] - b1) * factor;
+			out[index + 1] = g1 + (colors[endIndex + 1] - g1) * factor;
+			out[index + 2] = b1 + (colors[endIndex + 2] - b1) * factor;
 		}
 		
 		@Override
@@ -73,6 +96,8 @@ public class GradientColorValue extends ParticleValue {
 		public void read (Json json, JsonValue jsonData) {
 			super.read(json, jsonData);
 			colors = json.readValue("colors", float[].class, jsonData);
+			originalColors = new float[colors.length];
+			System.arraycopy(colors, 0, originalColors, 0, colors.length);
 			timeline = json.readValue("timeline", float[].class, jsonData);
 		}
 		
@@ -80,6 +105,8 @@ public class GradientColorValue extends ParticleValue {
 			super.load(value);
 			colors = new float[value.colors.length];
 			System.arraycopy(value.colors, 0, colors, 0, colors.length);
+			originalColors = new float[colors.length];
+			System.arraycopy(colors, 0, originalColors, 0, colors.length);
 			timeline = new float[value.timeline.length];
 			System.arraycopy(value.timeline, 0, timeline, 0, timeline.length);
 		}
