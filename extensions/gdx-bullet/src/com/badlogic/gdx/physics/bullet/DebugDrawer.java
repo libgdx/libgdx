@@ -25,16 +25,17 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** @author xoppa */
-public class DebugDrawer extends btIDebugDraw {
+public class DebugDrawer extends btIDebugDraw implements Disposable {
 
-	public ShapeRenderer shapeRenderer = new ShapeRenderer();
-	public SpriteBatch spriteBatch = new SpriteBatch();
+	private ShapeRenderer shapeRenderer = new ShapeRenderer();
+	private SpriteBatch spriteBatch = new SpriteBatch();
+	private BitmapFont font = new BitmapFont();
 
-	/** Used by {@link #draw3dText(Vector3, String)}. May be adjusted (e.g. scaled). */
-	public BitmapFont font = new BitmapFont();
+	private boolean ownsShapeRenderer = true, ownsSpriteBatch = true, ownsFont = true;
 
 	private Camera camera;
 	private Viewport viewport;
@@ -127,4 +128,58 @@ public class DebugDrawer extends btIDebugDraw {
 	public void end () {
 		shapeRenderer.end();
 	}
+
+	public ShapeRenderer getShapeRenderer () {
+		return shapeRenderer;
+	}
+
+	/** Switches the {@link ShapeRenderer}. The given shape renderer won't be disposed when {@link #dispose()} is called. */
+	public void setShapeRenderer (ShapeRenderer shapeRenderer) {
+		if (ownsShapeRenderer) {
+			this.shapeRenderer.dispose();
+		}
+		this.shapeRenderer = shapeRenderer;
+		ownsShapeRenderer = false;
+	}
+
+	public SpriteBatch getSpriteBatch () {
+		return spriteBatch;
+	}
+
+	/** Switches the {@link SpriteBatch}. The given sprite batch won't be disposed when {@link #dispose()} is called. */
+	public void setSpriteBatch (SpriteBatch spriteBatch) {
+		if (ownsSpriteBatch) {
+			this.spriteBatch.dispose();
+		}
+		this.spriteBatch = spriteBatch;
+		ownsSpriteBatch = false;
+	}
+
+	public BitmapFont getFont () {
+		return font;
+	}
+
+	/** Switches the {@link BitmapFont}. The given font won't be disposed when {@link #dispose()} is called. */
+	public void setFont (BitmapFont font) {
+		if (ownsFont) {
+			this.font.dispose();
+		}
+		this.font = font;
+		ownsFont = false;
+	}
+
+	@Override
+	public void dispose () {
+		super.dispose();
+		if (ownsShapeRenderer) {
+			shapeRenderer.dispose();
+		}
+		if (ownsSpriteBatch) {
+			spriteBatch.dispose();
+		}
+		if (ownsFont) {
+			font.dispose();
+		}
+	}
+
 }
