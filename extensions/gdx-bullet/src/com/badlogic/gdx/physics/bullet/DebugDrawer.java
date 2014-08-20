@@ -32,8 +32,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class DebugDrawer extends btIDebugDraw implements Disposable {
 
 	private ShapeRenderer shapeRenderer = new ShapeRenderer();
-	private SpriteBatch spriteBatch = new SpriteBatch();
-	private BitmapFont font = new BitmapFont();
+	private SpriteBatch spriteBatch;
+	private BitmapFont font;
 
 	private boolean ownsShapeRenderer = true, ownsSpriteBatch = true, ownsFont = true;
 
@@ -47,16 +47,12 @@ public class DebugDrawer extends btIDebugDraw implements Disposable {
 		shapeRenderer.line(from, to);
 	}
 
-	private static final Vector3 to = new Vector3();
-
 	@Override
 	public void drawContactPoint (Vector3 pointOnB, Vector3 normalOnB, float distance, int lifeTime, Vector3 color) {
 		shapeRenderer.setColor(color.x, color.y, color.z, 1f);
 		shapeRenderer.point(pointOnB.x, pointOnB.y, pointOnB.z);
 
-		to.set(pointOnB.x, pointOnB.y, pointOnB.z);
-		to.add(normalOnB.scl(distance));
-		shapeRenderer.line(pointOnB, to);
+		shapeRenderer.line(pointOnB, normalOnB.scl(distance).add(pointOnB));
 	}
 
 	@Override
@@ -72,10 +68,15 @@ public class DebugDrawer extends btIDebugDraw implements Disposable {
 		Gdx.app.error("Bullet", warningString);
 	}
 
-	private static final Vector3 tmp = new Vector3();
-
 	@Override
 	public void draw3dText (Vector3 location, String textString) {
+		if (spriteBatch == null) {
+			spriteBatch = new SpriteBatch();
+		}
+		if (font == null) {
+			font = new BitmapFont();
+		}
+
 		// this check is necessary to avoid "mirrored" instances of the text
 		if (camera.frustum.pointInFrustum(location)) {
 			if (viewport != null) {
@@ -174,10 +175,10 @@ public class DebugDrawer extends btIDebugDraw implements Disposable {
 		if (ownsShapeRenderer) {
 			shapeRenderer.dispose();
 		}
-		if (ownsSpriteBatch) {
+		if (ownsSpriteBatch && spriteBatch != null) {
 			spriteBatch.dispose();
 		}
-		if (ownsFont) {
+		if (ownsFont && font != null) {
 			font.dispose();
 		}
 	}
