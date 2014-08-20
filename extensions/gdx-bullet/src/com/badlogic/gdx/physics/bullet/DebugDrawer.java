@@ -149,7 +149,7 @@ public class DebugDrawer extends btIDebugDraw implements Disposable {
 
 	/** Switches the {@link SpriteBatch}. The given sprite batch won't be disposed when {@link #dispose()} is called. */
 	public void setSpriteBatch (SpriteBatch spriteBatch) {
-		if (ownsSpriteBatch) {
+		if (ownsSpriteBatch && this.spriteBatch != null) {
 			this.spriteBatch.dispose();
 		}
 		this.spriteBatch = spriteBatch;
@@ -162,7 +162,7 @@ public class DebugDrawer extends btIDebugDraw implements Disposable {
 
 	/** Switches the {@link BitmapFont}. The given font won't be disposed when {@link #dispose()} is called. */
 	public void setFont (BitmapFont font) {
-		if (ownsFont) {
+		if (ownsFont && this.font != null) {
 			this.font.dispose();
 		}
 		this.font = font;
