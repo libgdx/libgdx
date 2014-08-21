@@ -18,6 +18,8 @@ package com.badlogic.gdx.utils;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.regex.Pattern;
 
 /** Builder style API for emitting JSON.
@@ -86,11 +88,6 @@ public class JsonWriter extends Writer {
 	}
 
 	public JsonWriter value (Object value) throws IOException {
-		if (value instanceof Number) {
-			Number number = (Number)value;
-			long longValue = number.longValue();
-			if (number.doubleValue() == longValue) value = longValue;
-		}
 		if (current != null) {
 			if (current.array) {
 				if (!current.needsComma)
@@ -156,6 +153,8 @@ public class JsonWriter extends Writer {
 	static public enum OutputType {
 		/** Normal JSON, with all its quotes. */
 		json,
+		/** Like JSON, but quotes Long, BigDecimal and BigInteger types to prevent truncation in languages like JavaScript and PHP. */
+		jsonQuoteLong,
 		/** Like JSON, but names are only quoted if necessary. */
 		javascript,
 		/** Like JSON, but names and values are only quoted if they don't contain <code>\r\n\t</code> or <code>space</code> and don't
@@ -168,6 +167,14 @@ public class JsonWriter extends Writer {
 		static private Pattern minimalValuePattern = Pattern.compile("[^/{}\\[\\],\":\\r\\n\\t ][^}\\],\\r\\n\\t ]*");
 
 		public String quoteValue (Object value) {
+			if (this == OutputType.jsonQuoteLong
+				&& (value instanceof Long || value instanceof BigDecimal || value instanceof BigInteger)) {
+				return '"' + String.valueOf(value) + '"';
+			} else if (value instanceof Number) {
+				Number number = (Number)value;
+				long longValue = number.longValue();
+				if (number.doubleValue() == longValue) value = longValue;
+			}
 			if (value == null || value instanceof Number || value instanceof Boolean) return String.valueOf(value);
 			String string = String.valueOf(value).replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n")
 				.replace("\t", "\\t");
