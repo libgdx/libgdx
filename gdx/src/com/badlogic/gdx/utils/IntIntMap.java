@@ -317,13 +317,15 @@ public class IntIntMap implements Iterable<IntIntMap.Entry> {
 	public int getAndIncrement (int key, int defaultValue, int increment) {
 		if (key == 0) {
 			if (hasZeroValue) {
+				int value = zeroValue;
 				zeroValue += increment;
+				return value;
 			} else {
 				hasZeroValue = true;
 				zeroValue = defaultValue + increment;
 				++size;
+				return defaultValue;
 			}
-			return zeroValue;
 		}
 		int index = key & mask;
 		if (key != keyTable[index]) {
