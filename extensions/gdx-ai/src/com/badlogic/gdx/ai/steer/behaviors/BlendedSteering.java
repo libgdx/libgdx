@@ -56,6 +56,13 @@ public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	private SteeringAcceleration<T> steering;
 
+	/** Creates a {@code BlendedSteering} for the specified {@code owner}. Both {@code maxLinearAcceleration} and
+	 * {@code maxAngularAcceleration} are set to {@link Float#POSITIVE_INFINITY} meaning that no truncation will occur.
+	 * @param owner the owner of this behavior. */
+	public BlendedSteering (Steerable<T> owner) {
+		this(owner, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+	}
+
 	/** Creates a {@code BlendedSteering} for the specified {@code owner}, {@code maxLinearAcceleration} and
 	 * {@code maxAngularAcceleration}.
 	 * @param owner the owner of this behavior.
@@ -111,8 +118,8 @@ public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 		}
 
 		// Crop the result
-		blendedSteering.linear.limit(maxLinearAcceleration);
-		if (blendedSteering.angular > maxAngularAcceleration) blendedSteering.angular = maxAngularAcceleration;
+		blendedSteering.linear.limit(getMaxLinearAcceleration());
+		if (blendedSteering.angular > getMaxAngularAcceleration()) blendedSteering.angular = getMaxAngularAcceleration();
 
 		return blendedSteering;
 	}

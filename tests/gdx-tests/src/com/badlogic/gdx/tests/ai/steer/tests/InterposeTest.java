@@ -61,9 +61,12 @@ public class InterposeTest extends SteeringTest {
 		c1 = new SteeringActor(container.greenFish, false);
 		c2 = new SteeringActor(container.badlogicSmall, false);
 
-		interposeSB = new Interpose<Vector2>(character, c1, c2, .5f) //
-			.setMaxLinearAcceleration(700) //
-			.setMaxSpeed(300) //
+		interposeSB = new Interpose<Vector2>(character, c1, c2, .5f) {
+			@Override
+			public float getMaxLinearSpeed () {
+				return character.getMaxSpeed();
+			}
+		}.setMaxLinearAcceleration(700) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(20);
@@ -74,7 +77,7 @@ public class InterposeTest extends SteeringTest {
 			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxRotation(5) //
+			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(110) //
 			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
@@ -87,7 +90,7 @@ public class InterposeTest extends SteeringTest {
 			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxRotation(5) //
+			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(70) //
 			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
@@ -99,7 +102,7 @@ public class InterposeTest extends SteeringTest {
 		table.addActor(c2);
 
 		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		character.setMaxSpeed(200);
+		character.setMaxSpeed(250);
 		c1.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 		c1.setMaxSpeed(100);
 		c2.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));

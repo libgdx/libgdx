@@ -78,7 +78,7 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Acceleration tries to get to the target velocity without exceeding max acceleration
 		steering.linear.set(target.getLinearVelocity()).sub(owner.getLinearVelocity()).scl(1f / timeToTarget)
-			.limit(maxLinearAcceleration);
+			.limit(getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;

@@ -82,9 +82,13 @@ public class FollowPathTest extends SteeringTest {
 		wayPoints = createRandomPath(MathUtils.random(4, 16), 50, 50, container.stageWidth - 50, container.stageHeight - 50);
 
 		linePath = new LinePath<Vector2>(wayPoints, openPath);
-		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30) //
-			.setMaxLinearAcceleration(300) //
-			.setMaxSpeed(150) //
+		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30) {
+			// This is used only to arrive at the end of an open path
+			@Override
+			public float getMaxLinearSpeed () {
+				return character.getMaxSpeed();
+			}
+		}.setMaxLinearAcceleration(300) //
 			// Setters below are only useful to arrive at the end of an open path
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //

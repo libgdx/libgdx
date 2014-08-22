@@ -98,7 +98,7 @@ public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> im
 
 		// Avoid the target
 		// Notice that steerling.linear and relativePosition are the same vector
-		relativePosition.nor().scl(-maxLinearAcceleration);
+		relativePosition.nor().scl(-getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0f;

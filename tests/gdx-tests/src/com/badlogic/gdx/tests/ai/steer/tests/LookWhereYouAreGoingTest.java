@@ -52,14 +52,14 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 
 		final LookWhereYouAreGoing<Vector2> lookWhereYouAreGoingSB = new LookWhereYouAreGoing<Vector2>(character) //
 			.setMaxAngularAcceleration(100) //
-			.setMaxRotation(20) //
+			.setMaxAngularSpeed(20) //
 			.setTimeToTarget(0.1f) //
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(MathUtils.PI);
 
 		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) //
 			.setMaxLinearAcceleration(100) //
-			.setMaxSpeed(100) //
+			.setMaxLinearSpeed(100) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(80);
@@ -78,17 +78,17 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxRotation = new Label("Max.Rotation [" + lookWhereYouAreGoingSB.getMaxRotation() + "]", container.skin);
+		final Label labelMaxRotation = new Label("Max.Rotation [" + lookWhereYouAreGoingSB.getMaxAngularSpeed() + "]",
+			container.skin);
 		detailTable.add(labelMaxRotation);
 		detailTable.row();
 		Slider maxRotation = new Slider(0, 20, 1, false, container.skin);
-		maxRotation.setValue(lookWhereYouAreGoingSB.getMaxRotation());
+		maxRotation.setValue(lookWhereYouAreGoingSB.getMaxAngularSpeed());
 		maxRotation.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				lookWhereYouAreGoingSB.setMaxRotation(slider.getValue());
-// character.setMaxSpeed(slider.getValue());
+				lookWhereYouAreGoingSB.setMaxAngularSpeed(slider.getValue());
 				labelMaxRotation.setText("Max.Rotation [" + slider.getValue() + "]");
 			}
 		});
@@ -144,12 +144,6 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 			}
 		});
 		detailTable.add(timeToTarget);
-
-		detailTable.row();
-		addSeparator(detailTable);
-
-		detailTable.row();
-		addMaxSpeedController(detailTable, character);
 
 		detailWindow = createDetailWindow(detailTable);
 	}

@@ -61,7 +61,7 @@ public class WanderTest extends SteeringTest {
 			.setMaxAngularAcceleration(10) // greater than 0 because independent facing is enabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxRotation(5) //
+			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(90) //
 			.setWanderOrientation(10) //

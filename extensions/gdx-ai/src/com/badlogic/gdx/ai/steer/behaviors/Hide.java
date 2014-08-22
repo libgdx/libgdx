@@ -186,8 +186,8 @@ public class Hide<T extends Vector<T>> extends Arrive<T> implements ProximityCal
 	}
 
 	@Override
-	public Hide<T> setMaxSpeed (float maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public Hide<T> setMaxLinearSpeed (float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

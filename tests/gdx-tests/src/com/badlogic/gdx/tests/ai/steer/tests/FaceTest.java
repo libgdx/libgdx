@@ -48,7 +48,7 @@ public class FaceTest extends SteeringTest {
 
 		final Face<Vector2> faceSB = new Face<Vector2>(character, target) //
 			.setMaxAngularAcceleration(100) //
-			.setMaxRotation(5) //
+			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(MathUtils.degreesToRadians * 7);
@@ -63,16 +63,16 @@ public class FaceTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxRotation = new Label("Max.Rotation [" + faceSB.getMaxRotation() + "]", container.skin);
+		final Label labelMaxRotation = new Label("Max.Rotation [" + faceSB.getMaxAngularSpeed() + "]", container.skin);
 		detailTable.add(labelMaxRotation);
 		detailTable.row();
 		Slider maxRotation = new Slider(0, 20, 1, false, container.skin);
-		maxRotation.setValue(faceSB.getMaxRotation());
+		maxRotation.setValue(faceSB.getMaxAngularSpeed());
 		maxRotation.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				faceSB.setMaxRotation(slider.getValue());
+				faceSB.setMaxAngularSpeed(slider.getValue());
 // character.setMaxSpeed(slider.getValue());
 				labelMaxRotation.setText("Max.Rotation [" + slider.getValue() + "]");
 			}

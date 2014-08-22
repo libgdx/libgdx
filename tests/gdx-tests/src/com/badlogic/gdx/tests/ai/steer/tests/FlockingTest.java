@@ -89,7 +89,7 @@ public class FlockingTest extends SteeringTest {
 				.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 				.setAlignTolerance(0.001f) //
 				.setDecelerationRadius(5) //
-				.setMaxRotation(5) //
+				.setMaxAngularSpeed(5) //
 				.setTimeToTarget(0.1f) //
 				.setWanderOffset(60) //
 				.setWanderOrientation(10) //

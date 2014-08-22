@@ -45,8 +45,6 @@ public class HideTest extends SteeringTest {
 	private static final float DISTANCE_FROM_BOUNDARY = 35;
 	private static final float THREAT_RADIUS = 200;
 
-	Array<SteeringActor> obstacles;
-
 	SteeringActor character;
 	SteeringActor target;
 	boolean drawDebug;
@@ -67,7 +65,7 @@ public class HideTest extends SteeringTest {
 		shapeRenderer = new ShapeRenderer();
 
 		// Create obstacles
-		obstacles = new Array<SteeringActor>();
+		Array<SteeringActor> obstacles = new Array<SteeringActor>();
 		for (int i = 0; i < 6; i++) {
 			SteeringActor obstacle = new SteeringActor(MathUtils.randomBoolean() ? container.badlogicSmall : container.cloud, false);
 			setRandomNonOverlappingPosition(obstacle, obstacles, 100);
@@ -97,10 +95,13 @@ public class HideTest extends SteeringTest {
 			+ DISTANCE_FROM_BOUNDARY * .5f);
 		CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, radiusProximity, 500f);
 		InfiniteProximity<Vector2> infProximity = new InfiniteProximity<Vector2>(character, obstacles);
-		this.hideSB = new Hide<Vector2>(character, target, infProximity) //
-			.setDistanceFromBoundary(DISTANCE_FROM_BOUNDARY) //
+		this.hideSB = new Hide<Vector2>(character, target, infProximity) {
+			@Override
+			public float getMaxLinearSpeed () {
+				return character.getMaxSpeed();
+			}
+		}.setDistanceFromBoundary(DISTANCE_FROM_BOUNDARY) //
 			.setMaxLinearAcceleration(200) //
-			.setMaxSpeed(150) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(80);
@@ -110,15 +111,15 @@ public class HideTest extends SteeringTest {
 			.setMaxAngularAcceleration(0) // set to 0 because independent facing is off
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxRotation(5) //
+			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(60) //
 			.setWanderOrientation(10) //
 			.setWanderRadius(40) //
 			.setWanderRate(MathUtils.PI / 5);
 
-		BlendedSteering<Vector2> blendedSteeringSB = new BlendedSteering<Vector2>(character, Float.POSITIVE_INFINITY,
-			Float.POSITIVE_INFINITY) //
+		// Sum up behaviors without truncating the result
+		BlendedSteering<Vector2> blendedSteeringSB = new BlendedSteering<Vector2>(character) //
 			.add(collisionAvoidanceSB, 1) //
 			.add(hideSB, 1) //
 			.add(wanderSB, 1);
@@ -148,21 +149,7 @@ public class HideTest extends SteeringTest {
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelMaxSpeed = new Label("Max.Speed [" + hideSB.getMaxSpeed() + "]", container.skin);
-		detailTable.add(labelMaxSpeed);
-		detailTable.row();
-		Slider maxSpeed = new Slider(0, 300, 10, false, container.skin);
-		maxSpeed.setValue(hideSB.getMaxSpeed());
-		maxSpeed.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				hideSB.setMaxSpeed(slider.getValue());
-				character.setMaxSpeed(slider.getValue());
-				labelMaxSpeed.setText("Max.Speed [" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxSpeed);
+		addMaxSpeedController(detailTable, character, 0, 300, 10);
 
 		detailTable.row();
 		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + hideSB.getDecelerationRadius() + "]",

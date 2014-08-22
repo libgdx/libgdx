@@ -46,9 +46,12 @@ public class ArriveTest extends SteeringTest {
 		target = new SteeringActor(container.target);
 		inputProcessor = new TargetInputProcessor(target);
 
-		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) //
-			.setMaxLinearAcceleration(100) //
-			.setMaxSpeed(100) //
+		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) {
+			@Override
+			public float getMaxLinearSpeed () {
+				return character.getMaxSpeed();
+			}
+		}.setMaxLinearAcceleration(100) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(80);
@@ -58,7 +61,7 @@ public class ArriveTest extends SteeringTest {
 		table.addActor(target);
 
 		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
-		character.setMaxSpeed(arriveSB.getMaxSpeed());
+		character.setMaxSpeed(100);
 		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 
 		Table detailTable = new Table(container.skin);
@@ -80,21 +83,7 @@ public class ArriveTest extends SteeringTest {
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelMaxSpeed = new Label("Max.Speed [" + arriveSB.getMaxSpeed() + "]", container.skin);
-		detailTable.add(labelMaxSpeed);
-		detailTable.row();
-		Slider maxSpeed = new Slider(0, 300, 10, false, container.skin);
-		maxSpeed.setValue(arriveSB.getMaxSpeed());
-		maxSpeed.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				arriveSB.setMaxSpeed(slider.getValue());
-				character.setMaxSpeed(slider.getValue());
-				labelMaxSpeed.setText("Max.Speed [" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxSpeed);
+		addMaxSpeedController(detailTable, character, 0, 300, 10);
 
 		detailTable.row();
 		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + arriveSB.getDecelerationRadius() + "]",

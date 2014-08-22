@@ -93,16 +93,16 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		// Notice that we're using steering.linear as temporary vector
 		internalTargetPosition.set(wanderCenter).mulAdd(owner.angleToVector(steering.linear, targetOrientation), wanderRadius);
 
-		if (maxAngularAcceleration > 0f) {
+		if (getMaxAngularAcceleration() > 0f) {
 			// Delegate to face
 			face(steering, internalTargetPosition);
 
 			// Set the linear acceleration to be at full
 			// acceleration in the direction of the orientation
-			owner.angleToVector(steering.linear, owner.getOrientation()).scl(maxLinearAcceleration);
+			owner.angleToVector(steering.linear, owner.getOrientation()).scl(getMaxLinearAcceleration());
 		} else {
 			// Seek the internal target position
-			steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
+			steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(getMaxLinearAcceleration());
 
 			// No angular acceleration
 			steering.angular = 0;
@@ -199,8 +199,8 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	}
 
 	@Override
-	public Wander<T> setMaxRotation (float maxRotation) {
-		this.maxRotation = maxRotation;
+	public Wander<T> setMaxAngularSpeed (float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 

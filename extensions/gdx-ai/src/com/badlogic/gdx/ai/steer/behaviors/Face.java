@@ -78,8 +78,8 @@ public class Face<T extends Vector<T>> extends ReachOrientation<T> {
 	}
 
 	@Override
-	public Face<T> setMaxRotation (float maxRotation) {
-		this.maxRotation = maxRotation;
+	public Face<T> setMaxAngularSpeed (float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 

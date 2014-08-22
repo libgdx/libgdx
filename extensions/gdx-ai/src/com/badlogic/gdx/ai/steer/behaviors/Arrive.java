@@ -27,8 +27,8 @@ import com.badlogic.gdx.math.Vector;
  * {@code Arrive} behavior uses two radii. The {@code arrivalTolerance} lets the owner get near enough to the target without
  * letting small errors keep it in motion. The {@code decelerationRadius}, usually much larger than the previous one, specifies
  * when the incoming character will begin to slow down. The algorithm calculates an ideal speed for the owner. At the slowing-down
- * radius, this is equal to its maximum speed. At the target point, it is zero (we want to have zero speed when we arrive). In
- * between, the desired speed is an interpolated intermediate value, controlled by the distance from the target.
+ * radius, this is equal to its maximum linear speed. At the target point, it is zero (we want to have zero speed when we arrive).
+ * In between, the desired speed is an interpolated intermediate value, controlled by the distance from the target.
  * <p>
  * The direction toward the target is calculated and combined with the desired speed to give a target velocity. The algorithm
  * looks at the current velocity of the character and works out the acceleration needed to turn it into the target velocity. We
@@ -47,8 +47,8 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The maximum linear acceleration of the owner. */
 	protected float maxLinearAcceleration;
 
-	/** The maximum speed of the owner. */
-	protected float maxSpeed;
+	/** The maximum linear speed of the owner. */
+	protected float maxLinearSpeed;
 
 	/** The tolerance for arriving at the target. It lets the owner get near enough to the target without letting small errors keep
 	 * it in motion. */
@@ -88,7 +88,7 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		if (distance <= arrivalTolerance) return steering.setZero();
 
 		// Go max speed
-		float targetSpeed = maxSpeed;
+		float targetSpeed = getMaxLinearSpeed();
 
 		// If we are inside the slow down radius calculate a scaled speed
 		if (distance <= decelerationRadius) targetSpeed *= distance / decelerationRadius;
@@ -98,7 +98,7 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 
 		// Acceleration tries to get to the target velocity without exceeding max acceleration
 		// Notice that steering.linear and targetVelocity are the same vector
-		targetVelocity.sub(owner.getLinearVelocity()).scl(1f / timeToTarget).limit(maxLinearAcceleration);
+		targetVelocity.sub(owner.getLinearVelocity()).scl(1f / timeToTarget).limit(getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0f;
@@ -131,15 +131,15 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		return this;
 	}
 
-	/** Returns the maximum speed of the owner. */
-	public float getMaxSpeed () {
-		return maxSpeed;
+	/** Returns the maximum linear speed of the owner. */
+	public float getMaxLinearSpeed () {
+		return maxLinearSpeed;
 	}
 
-	/** Sets the maximum speed of the owner.
+	/** Sets the maximum linear speed of the owner.
 	 * @return this behavior for chaining. */
-	public Arrive<T> setMaxSpeed (float maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public Arrive<T> setMaxLinearSpeed (float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

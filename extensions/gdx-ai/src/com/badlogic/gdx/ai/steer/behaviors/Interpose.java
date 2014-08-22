@@ -119,7 +119,7 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 		// P = posA + interpositionRatio * (posB - posA)
 		targetPosition.set(agentB.getPosition()).sub(agentA.getPosition()).scl(interpositionRatio).add(agentA.getPosition());
 
-		float timeToTargetPosition = owner.getPosition().dst(targetPosition) / maxSpeed;
+		float timeToTargetPosition = owner.getPosition().dst(targetPosition) / getMaxLinearSpeed();
 
 		// Now we have the time, we assume that agent A and agent B will continue on a
 		// straight trajectory and extrapolate to get their future positions.
@@ -157,8 +157,8 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 	}
 
 	@Override
-	public Interpose<T> setMaxSpeed (float maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public Interpose<T> setMaxLinearSpeed (float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

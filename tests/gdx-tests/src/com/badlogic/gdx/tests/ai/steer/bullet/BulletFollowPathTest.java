@@ -92,13 +92,17 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 		wayPoints = createRandomPath(MathUtils.random(4, 16), 20, 20, 30, 30, 1.5f);
 
 		linePath = new LinePath<Vector3>(wayPoints, openPath);
-		followPathSB = new FollowPath<Vector3, LinePathParam>(character, linePath, 3) //
-			.setMaxLinearAcceleration(2000) //
-			.setMaxSpeed(15) //
+		followPathSB = new FollowPath<Vector3, LinePathParam>(character, linePath, 3) {
+			// This is used only to arrive at the end of an open path
+			@Override
+			public float getMaxLinearSpeed () {
+				return character.getMaxSpeed();
+			}
+		}.setMaxLinearAcceleration(2000) //
 			// Setters below are only useful to arrive at the end of an open path
 			.setTimeToTarget(0.1f) //
-			.setArrivalTolerance(0.001f) //
-			.setDecelerationRadius(5);
+			.setArrivalTolerance(0.5f) //
+			.setDecelerationRadius(3);
 
 		character.setSteeringBehavior(followPathSB);
 
@@ -138,6 +142,61 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 			}
 		});
 		detailTable.add(maxLinAcc);
+
+		detailTable.row();
+		final Label labelPredictionTime = new Label("Prediction Time [" + followPathSB.getPredictionTime() + " sec.]",
+			container.skin);
+		detailTable.add(labelPredictionTime);
+		detailTable.row();
+		Slider predictionTime = new Slider(0, 3, .1f, false, container.skin);
+		predictionTime.setValue(followPathSB.getPredictionTime());
+		predictionTime.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				followPathSB.setPredictionTime(slider.getValue());
+				labelPredictionTime.setText("Prediction Time [" + slider.getValue() + " sec.]");
+			}
+		});
+		detailTable.add(predictionTime);
+
+		// Add controls to arrive at the end of an open path
+		if (openPath) {
+
+			detailTable.row();
+			final Label labelDecelerationRadius = new Label("Deceleration Radius [" + followPathSB.getDecelerationRadius() + "]",
+				container.skin);
+			detailTable.add(labelDecelerationRadius);
+			detailTable.row();
+			Slider decelerationRadius = new Slider(0, 15, .5f, false, container.skin);
+			decelerationRadius.setValue(followPathSB.getDecelerationRadius());
+			decelerationRadius.addListener(new ChangeListener() {
+				@Override
+				public void changed (ChangeEvent event, Actor actor) {
+					Slider slider = (Slider)actor;
+					followPathSB.setDecelerationRadius(slider.getValue());
+					labelDecelerationRadius.setText("Deceleration Radius [" + slider.getValue() + "]");
+				}
+			});
+			detailTable.add(decelerationRadius);
+
+			detailTable.row();
+			final Label labelArrivalTolerance = new Label("Arrival tolerance [" + followPathSB.getArrivalTolerance() + "]",
+				container.skin);
+			detailTable.add(labelArrivalTolerance);
+			detailTable.row();
+			Slider arrivalTolerance = new Slider(0, 1, 0.01f, false, container.skin);
+			arrivalTolerance.setValue(followPathSB.getArrivalTolerance());
+			arrivalTolerance.addListener(new ChangeListener() {
+				@Override
+				public void changed (ChangeEvent event, Actor actor) {
+					Slider slider = (Slider)actor;
+					followPathSB.setArrivalTolerance(slider.getValue());
+					labelArrivalTolerance.setText("Arrival tolerance [" + slider.getValue() + "]");
+				}
+			});
+			detailTable.add(arrivalTolerance);
+		}
 
 		detailTable.row();
 		addSeparator(detailTable);

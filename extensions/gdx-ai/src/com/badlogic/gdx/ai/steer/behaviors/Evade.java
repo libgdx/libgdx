@@ -56,9 +56,9 @@ public class Evade<T extends Vector<T>> extends Pursue<T> {
 	}
 
 	@Override
-	protected float getActualLinearAcceleration () {
+	protected float getActualMaxLinearAcceleration () {
 		// Simply return the opposite of the max linear acceleration so to evade the target
-		return -maxLinearAcceleration;
+		return -getMaxLinearAcceleration();
 	}
 
 	//

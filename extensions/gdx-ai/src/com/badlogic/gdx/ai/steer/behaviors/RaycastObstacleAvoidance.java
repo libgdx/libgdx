@@ -163,7 +163,7 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 		// Calculate and seek the target position
 		steering.linear.set(minOutputCollision.point)
 			.mulAdd(minOutputCollision.normal, owner.getBoundingRadius() + distanceFromBoundary).sub(owner.getPosition()).nor()
-			.scl(maxLinearAcceleration);
+			.scl(getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;

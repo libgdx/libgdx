@@ -110,7 +110,7 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 			.setMaxAngularAcceleration(5) // 
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxRotation(5) //
+			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(2) //
 			.setWanderOrientation(0) //

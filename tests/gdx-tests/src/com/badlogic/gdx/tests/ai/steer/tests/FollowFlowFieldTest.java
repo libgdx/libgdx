@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
+import com.badlogic.gdx.utils.Array;
 
 /** A class to test and experiment with the {@link FollowFlowField} behavior.
  * 
@@ -45,7 +46,7 @@ public class FollowFlowFieldTest extends SteeringTest {
 
 	SteeringActor character;
 
-	RandomFlowField2D flowField;
+	RandomFlowField2DWithRepulsors flowField;
 
 	public FollowFlowFieldTest (SteeringBehaviorTest container) {
 		super(container, "Follow Flow Field");
@@ -57,10 +58,19 @@ public class FollowFlowFieldTest extends SteeringTest {
 
 		shapeRenderer = new ShapeRenderer();
 
+		// Create obstacles
+		Array<SteeringActor> obstacles = new Array<SteeringActor>();
+		for (int i = 0; i < 4; i++) {
+			SteeringActor obstacle = new SteeringActor(container.cloud, false);
+			setRandomNonOverlappingPosition(obstacle, obstacles, 100);
+			obstacles.add(obstacle);
+			table.addActor(obstacle);
+		}
+
 		character = new SteeringActor(container.badlogicSmall, false);
 		character.setMaxSpeed(250);
 
-		flowField = new RandomFlowField2D(container.stageWidth, container.stageHeight, container.badlogicSmall.getRegionWidth());
+		flowField = new RandomFlowField2DWithRepulsors(container.stageWidth, container.stageHeight, container.badlogicSmall.getRegionWidth(), obstacles);
 		final FollowFlowField<Vector2> followFlowFieldSB = new FollowFlowField<Vector2>(character, flowField, 300, 400);
 		character.setSteeringBehavior(followFlowFieldSB);
 
@@ -157,20 +167,28 @@ public class FollowFlowFieldTest extends SteeringTest {
 		shapeRenderer.dispose();
 	}
 
-	static class RandomFlowField2D implements FlowField<Vector2> {
+	static class RandomFlowField2DWithRepulsors implements FlowField<Vector2> {
 
 		Vector2[][] field;
 		int rows, columns;
 		int resolution;
 
-		public RandomFlowField2D (float width, float height, int resolution) {
+		public RandomFlowField2DWithRepulsors (float width, float height, int resolution, Array<SteeringActor> obstacles) {
 			this.resolution = resolution;
 			this.columns = MathUtils.ceil(width / resolution);
 			this.rows = MathUtils.ceil(height / resolution);
 			this.field = new Vector2[columns][rows];
 
 			for (int i = 0; i < columns; i++) {
+				ROWS:
 				for (int j = 0; j < rows; j++) {
+					for (int k = 0; k < obstacles.size; k++) {
+						SteeringActor obstacle = obstacles.get(k); 
+						if (obstacle.getPosition().dst(resolution * (i + .5f), resolution * (j + .5f)) < obstacle.getBoundingRadius() + 40) {
+							field[i][j] = new Vector2(resolution * (i + .5f), resolution * (j + .5f)).sub(obstacle.getPosition()).nor();
+							continue ROWS;
+						}
+					}
 					field[i][j] = new Vector2(MathUtils.random(-1f, 1f), MathUtils.random(-1f, 1f)).nor();
 				}
 			}

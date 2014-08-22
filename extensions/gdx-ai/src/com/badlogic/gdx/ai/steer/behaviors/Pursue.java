@@ -81,8 +81,8 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** Returns the actual linear acceleration to be applied. This method is overridden by the {@link Evade} behavior to invert the
 	 * maximum linear acceleration in order to evade the target. */
-	protected float getActualLinearAcceleration () {
-		return maxLinearAcceleration;
+	protected float getActualMaxLinearAcceleration () {
+		return getMaxLinearAcceleration();
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 
 		// Calculate and seek/flee the predicted position of the target
 		steering.linear.set(targetPosition).mulAdd(target.getLinearVelocity(), predictionTime).sub(owner.getPosition()).nor()
-			.scl(getActualLinearAcceleration());
+			.scl(getActualMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;

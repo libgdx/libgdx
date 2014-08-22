@@ -74,8 +74,8 @@ public class LookWhereYouAreGoing<T extends Vector<T>> extends ReachOrientation<
 	}
 
 	@Override
-	public LookWhereYouAreGoing<T> setMaxRotation (float maxRotation) {
-		this.maxRotation = maxRotation;
+	public LookWhereYouAreGoing<T> setMaxAngularSpeed (float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 

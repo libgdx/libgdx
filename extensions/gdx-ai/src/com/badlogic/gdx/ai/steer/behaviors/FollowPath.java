@@ -130,7 +130,7 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		}
 
 		// Seek the target position
-		steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
+		steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;
@@ -200,8 +200,8 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 	}
 
 	@Override
-	public FollowPath<T, P> setMaxSpeed (float maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public FollowPath<T, P> setMaxLinearSpeed (float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

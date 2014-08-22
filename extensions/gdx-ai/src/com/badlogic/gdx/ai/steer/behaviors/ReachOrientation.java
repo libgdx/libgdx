@@ -43,8 +43,8 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The maximum angular acceleration of the owner. */
 	protected float maxAngularAcceleration;
 
-	/** The maximum rotation of the owner. */
-	protected float maxRotation;
+	/** The maximum angular speed of the owner. */
+	protected float maxAngularSpeed;
 
 	/** The tolerance for aligning to the target without letting small errors keep the owner swinging. */
 	protected float alignTolerance;
@@ -91,7 +91,7 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		if (rotationSize < alignTolerance) return steering.setZero();
 
 		// Use maximum rotation
-		float targetRotation = maxRotation;
+		float targetRotation = getMaxAngularSpeed();
 
 		// If we are inside the slow down radius, then calculate a scaled rotation
 		if (rotationSize <= decelerationRadius) targetRotation *= rotationSize / decelerationRadius;
@@ -105,7 +105,7 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 
 		// Check if the absolute acceleration is too great
 		float angularAcceleration = steering.angular < 0f ? -steering.angular : steering.angular;
-		if (angularAcceleration > maxAngularAcceleration) steering.angular *= maxAngularAcceleration / angularAcceleration;
+		if (angularAcceleration > getMaxAngularAcceleration()) steering.angular *= getMaxAngularAcceleration() / angularAcceleration;
 
 		// No linear acceleration
 		steering.linear.setZero();
@@ -138,15 +138,15 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		return this;
 	}
 
-	/** Returns the maximum rotation of the owner. */
-	public float getMaxRotation () {
-		return maxRotation;
+	/** Returns the maximum angular speed of the owner. */
+	public float getMaxAngularSpeed () {
+		return maxAngularSpeed;
 	}
 
-	/** Sets the maximum rotation of the owner.
+	/** Sets the maximum angular speed of the owner.
 	 * @return this behavior for chaining. */
-	public ReachOrientation<T> setMaxRotation (float maxRotation) {
-		this.maxRotation = maxRotation;
+	public ReachOrientation<T> setMaxAngularSpeed (float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 

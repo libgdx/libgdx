@@ -61,6 +61,14 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 		this.setOrigin(region.getRegionWidth() * .5f, region.getRegionHeight() * .5f);
 	}
 
+	public TextureRegion getRegion () {
+		return region;
+	}
+
+	public void setRegion (TextureRegion region) {
+		this.region = region;
+	}
+
 	@Override
 	public Vector2 getPosition () {
 		return position;
