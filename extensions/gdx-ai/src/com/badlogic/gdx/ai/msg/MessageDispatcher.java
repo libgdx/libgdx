@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.TimeUtils;
 
 /** The MessageDispatcher is a singleton in charge of the creation, dispatch, and management of telegrams.
- *
+ * 
  * @author davebaol */
 public class MessageDispatcher {
 
@@ -62,7 +62,7 @@ public class MessageDispatcher {
 	}
 
 	/** Returns the current time in nanoseconds.
-	 * <p/>
+	 * <p>
 	 * This implementation returns the value of the system timer minus a constant value determined when this class was loaded the
 	 * first time in order to ensure it takes increasing values (for 2 ^ 63 nanoseconds, i.e. 292 years) since the time stamp is
 	 * used to order the telegrams in the queue. */
@@ -97,7 +97,6 @@ public class MessageDispatcher {
 
 	/** Registers a listener for the specified message code. Messages without an explicit receiver are broadcasted to all its
 	 * registered listeners.
-	 *
 	 * @param msg the message code
 	 * @param listener the listener to add */
 	public void addListener (int msg, Agent listener) {
@@ -177,7 +176,7 @@ public class MessageDispatcher {
 		clearListeners();
 	}
 
-	/** Well send a message to all message type listeners, with no delay or extrainfo
+	/** Will send a message to all message type listeners, with no delay or extrainfo
 	 *
 	 * @param sender the sender of this telegram
 	 * @param msg the message code */
@@ -185,7 +184,7 @@ public class MessageDispatcher {
 		dispatchMessage(0F, sender, msg);
 	}
 
-	/** Well send a message to all message type listeners, with delay but no extra info
+	/** Will send a message to all message type listeners, with delay but no extra info
 	 *
 	 * @param delay the delay in seconds
 	 * @param sender the sender of this telegram
@@ -194,7 +193,7 @@ public class MessageDispatcher {
 		dispatchMessage(delay, sender, msg, null);
 	}
 
-	/** Well send a message to all message type listeners
+	/** Will send a message to all message type listeners
 	 *
 	 * @param sender the sender of this telegram
 	 * @param msg the message code
@@ -203,7 +202,7 @@ public class MessageDispatcher {
 		dispatchMessage(0F, sender, msg, extraInfo);
 	}
 
-	/** Well send a message to all message type listeners, with delay
+	/** Will send a message to all message type listeners, with delay
 	 *
 	 * @param delay the delay in seconds
 	 * @param sender the sender of this telegram
@@ -221,7 +220,6 @@ public class MessageDispatcher {
 
 	/** Given a message, a receiver, a sender and any time delay, this method routes the message to the correct agents (if no delay)
 	 * or stores in the message queue to be dispatched at the correct time.
-	 *
 	 * @param delay the delay in seconds
 	 * @param sender the sender of this telegram
 	 * @param receiver the receiver of this telegram; if it's null the telegram is broadcasted to all the receivers registered for
@@ -239,10 +237,9 @@ public class MessageDispatcher {
 
 		// If there is no delay, route telegram immediately
 		if (delay <= 0.0f) {
-			if (debugEnabled) {
+			if (debugEnabled)
 				Gdx.app.log(LOG_TAG, "Instant telegram dispatched at time: " + getCurrentTime() + " by " + sender + " for "
 					+ receiver + ". Msg is " + msg);
-			}
 
 			// Send the telegram to the recipient
 			discharge(telegram);
@@ -255,29 +252,23 @@ public class MessageDispatcher {
 			boolean added = queue.add(telegram);
 
 			// Return it to the pool if has been rejected
-			if (!added) {
-				pool.free(telegram);
-			}
+			if (!added) pool.free(telegram);
 
 			if (debugEnabled) {
-				if (added) {
+				if (added)
 					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " recorded at time "
 						+ getCurrentTime() + ". Msg is " + msg);
-				} else {
-					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " rejected by the queue. Msg is "
-						+ msg);
-				}
+				else
+					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " rejected by the queue. Msg is " + msg);
 			}
 		}
 	}
 
 	/** Dispatches any telegrams with a timestamp that has expired. Any dispatched telegrams are removed from the queue.
-	 * <p/>
+	 * <p>
 	 * This method must be called each time through the main game loop. */
 	public void dispatchDelayedMessages () {
-		if (queue.size() == 0) {
-			return;
-		}
+		if (queue.size() == 0) return;
 
 		// Get current time
 		long currentTime = getCurrentTime();
@@ -288,9 +279,7 @@ public class MessageDispatcher {
 		do {
 			// Read the telegram from the front of the queue
 			final Telegram telegram = queue.peek();
-			if (telegram.getTimestamp() > currentTime) {
-				break;
-			}
+			if (telegram.getTimestamp() > currentTime) break;
 
 			if (debugEnabled) {
 				Gdx.app.log(LOG_TAG, "Queued telegram ready for dispatch: Sent to " + telegram.receiver + ". Msg is "
@@ -308,16 +297,13 @@ public class MessageDispatcher {
 
 	/** This method is used by {@link #dispatchMessage} or {@link #dispatchDelayedMessages}. It first calls the message handling
 	 * method of the receiving agents with the specified telegram then returns the telegram to the pool.
-	 *
 	 * @param telegram the telegram to discharge */
 	private void discharge (Telegram telegram) {
 		if (telegram.receiver != null) {
 			// Dispatch the telegram to the receiver specified by the telegram itself
 			if (!telegram.receiver.handleMessage(telegram)) {
 				// Telegram could not be handled
-				if (debugEnabled) {
-					Gdx.app.log(LOG_TAG, "Message " + telegram.message + " not handled");
-				}
+				if (debugEnabled) Gdx.app.log(LOG_TAG, "Message " + telegram.message + " not handled");
 			}
 		} else {
 			// Dispatch the telegram to all the registered receivers
@@ -331,9 +317,7 @@ public class MessageDispatcher {
 				}
 			}
 			// Telegram could not be handled
-			if (debugEnabled && handledCount == 0) {
-				Gdx.app.log(LOG_TAG, "Message " + telegram.message + " not handled");
-			}
+			if (debugEnabled && handledCount == 0) Gdx.app.log(LOG_TAG, "Message " + telegram.message + " not handled");
 		}
 
 		// Release the telegram to the pool
