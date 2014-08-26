@@ -28,12 +28,12 @@ public class IOSFiles implements Files {
 	static final String externalPath = appDir + "/Documents";
 	static final String localPath = appDir + "/Library/local";
 	static final String internalPath = NSBundle.getMainBundle().getBundlePath();
-	
-	public IOSFiles() {
+
+	public IOSFiles () {
 		new FileHandle(externalPath).mkdirs();
 		new FileHandle(localPath).mkdirs();
 	}
-	
+
 	@Override
 	public FileHandle getFileHandle (String fileName, FileType type) {
 		return new IOSFileHandle(fileName, type);
@@ -65,22 +65,22 @@ public class IOSFiles implements Files {
 	}
 
 	@Override
-	public String getExternalStoragePath() {
+	public String getExternalStoragePath () {
 		return externalPath;
 	}
 
 	@Override
-	public boolean isExternalStorageAvailable() {
+	public boolean isExternalStorageAvailable () {
 		return true;
 	}
 
 	@Override
-	public String getLocalStoragePath() {
+	public String getLocalStoragePath () {
 		return localPath;
 	}
 
 	@Override
-	public boolean isLocalStorageAvailable() {
+	public boolean isLocalStorageAvailable () {
 		return true;
 	}
 }

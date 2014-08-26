@@ -867,7 +867,7 @@ public class SpriteCache implements Disposable {
 		drawing = true;
 	}
 
-	/** Completes rendering for this SpriteCache.f */
+	/** Completes rendering for this SpriteCache. */
 	public void end () {
 		if (!drawing) throw new IllegalStateException("begin must be called before end.");
 		drawing = false;
@@ -983,6 +983,7 @@ public class SpriteCache implements Disposable {
 			+ "void main()\n" //
 			+ "{\n" //
 			+ "   v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";\n" //
+			+ "   v_color.a = v_color.a * (256.0/255.0);\n" //
 			+ "   v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;\n" //
 			+ "   gl_Position =  u_projectionViewMatrix * " + ShaderProgram.POSITION_ATTRIBUTE + ";\n" //
 			+ "}\n";

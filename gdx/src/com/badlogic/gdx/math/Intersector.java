@@ -256,6 +256,28 @@ public final class Intersector {
 		} else
 			return Float.POSITIVE_INFINITY;
 	}
+	
+	/** Intersect two 2D Rays and return the scalar parameter of the first ray at the intersection point.
+	 * You can get the intersection point by: Vector2 point(direction1).scl(scalar).add(start1);
+	 * For more information, check: http://stackoverflow.com/a/565282/1091440
+	 * @param start1 Where the first ray start
+	 * @param direction1 The direction the first ray is pointing
+	 * @param start2 Where the second ray start
+	 * @param direction2 The direction the second ray is pointing
+	 * @return scalar parameter on the first ray describing the point where the intersection happens. May be negative.
+	 * In case the rays are collinear, Float.POSITIVE_INFINITY will be returned.
+	 */
+	public static float intersectRayRay(Vector2 start1, Vector2 direction1, Vector2 start2, Vector2 direction2) {
+		float difx = start2.x - start1.x;
+		float dify = start2.y - start1.y;
+		float d1xd2 = direction1.x * direction2.y - direction1.y * direction2.x;
+		if(d1xd2 == 0.0f) {
+			return Float.POSITIVE_INFINITY; //collinear
+		}
+		float d2sx = direction2.x / d1xd2;
+		float d2sy = direction2.y / d1xd2;
+		return difx * d2sy - dify * d2sx;
+	}
 
 	/** Intersects a {@link Ray} and a {@link Plane}. The intersection point is stored in intersection in case an intersection is
 	 * present.
@@ -296,7 +318,7 @@ public final class Intersector {
 		float denom = direction.dot(plane.getNormal());
 		if (denom != 0) {
 			float t = -(origin.dot(plane.getNormal()) + plane.getD()) / denom;
-			if (t >= 0 && t <= 1 && intersection != null) intersection.set(origin).add(direction.scl(t));
+			if (intersection != null) intersection.set(origin).add(direction.scl(t));
 			return t;
 		} else if (plane.testPoint(origin) == Plane.PlaneSide.OnPlane) {
 			if (intersection != null) intersection.set(origin);
@@ -816,7 +838,7 @@ public final class Intersector {
 		return closestX + closestY < c.radius * c.radius;
 	}
 
-	/** Check whether specified convex polygons overlap.
+	/** Check whether specified counter-clockwise wound convex polygons overlap.
 	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
@@ -825,8 +847,8 @@ public final class Intersector {
 		return overlapConvexPolygons(p1, p2, null);
 	}
 
-	/** Check whether specified convex polygons overlap. If they do, optionally obtain a Minimum Translation Vector indicating the
-	 * minimum magnitude vector required to push the polygons out of the collision.
+	/** Check whether specified counter-clockwise wound convex polygons overlap. If they do, optionally obtain a Minimum Translation Vector indicating the
+	 * minimum magnitude vector required to push the polygon p1 out of collision with polygon p2.
 	 * 
 	 * @param p1 The first polygon.
 	 * @param p2 The second polygon.
@@ -841,8 +863,8 @@ public final class Intersector {
 		return overlapConvexPolygons(verts1, 0, verts1.length, verts2, 0, verts2.length, mtv);
 	}
 
-	/** Check whether polygons defined by the given vertex arrays overlap. If they do, optionally obtain a Minimum Translation
-	 * Vector indicating the minimum magnitude vector required to push the polygons out of the collision.
+	/** Check whether polygons defined by the given counter-clockwise wound vertex arrays overlap. If they do, optionally obtain a Minimum Translation
+	 * Vector indicating the minimum magnitude vector required to push the polygon defined by verts1 out of the collision with the polygon defined by verts2.
 	 * 
 	 * @param verts1 Vertices of the first polygon.
 	 * @param verts2 Vertices of the second polygon.
@@ -853,6 +875,7 @@ public final class Intersector {
 		float overlap = Float.MAX_VALUE;
 		float smallestAxisX = 0;
 		float smallestAxisY = 0;
+		int numInNormalDir;
 
 		int end1 = offset1 + count1;
 		int end2 = offset2 + count2;
@@ -886,9 +909,12 @@ public final class Intersector {
 			}
 
 			// Project polygon2 onto this axis
+			numInNormalDir = 0;
 			float min2 = axisX * verts2[0] + axisY * verts2[1];
 			float max2 = min2;
 			for (int j = offset2; j < end2; j += 2) {
+				// Counts the number of points that are within the projected area.
+				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts2[j], verts2[j + 1]);
 				float p = axisX * verts2[j] + axisY * verts2[j + 1];
 				if (p < min2) {
 					min2 = p;
@@ -905,8 +931,6 @@ public final class Intersector {
 					float mins = Math.abs(min1 - min2);
 					float maxs = Math.abs(max1 - max2);
 					if (mins < maxs) {
-						axisX = -axisX;
-						axisY = -axisY;
 						o += mins;
 					} else {
 						o += maxs;
@@ -914,8 +938,9 @@ public final class Intersector {
 				}
 				if (o < overlap) {
 					overlap = o;
-					smallestAxisX = axisX;
-					smallestAxisY = axisY;
+					// Adjusts the direction based on the number of points found
+					smallestAxisX = numInNormalDir >= 0 ? axisX : -axisX;
+					smallestAxisY = numInNormalDir >= 0 ? axisY : -axisY;
 				}
 			}
 			// -- End check for separation on this axis --//
@@ -936,12 +961,15 @@ public final class Intersector {
 			axisY /= length;
 
 			// -- Begin check for separation on this axis --//
+			numInNormalDir = 0;
 
 			// Project polygon1 onto this axis
 			float min1 = axisX * verts1[0] + axisY * verts1[1];
 			float max1 = min1;
 			for (int j = offset1; j < end1; j += 2) {
 				float p = axisX * verts1[j] + axisY * verts1[j + 1];
+				// Counts the number of points that are within the projected area.
+				numInNormalDir -= pointLineSide(x1, y1, x2, y2, verts1[j], verts1[j + 1]);
 				if (p < min1) {
 					min1 = p;
 				} else if (p > max1) {
@@ -970,8 +998,6 @@ public final class Intersector {
 					float mins = Math.abs(min1 - min2);
 					float maxs = Math.abs(max1 - max2);
 					if (mins < maxs) {
-						axisX = -axisX;
-						axisY = -axisY;
 						o += mins;
 					} else {
 						o += maxs;
@@ -980,8 +1006,9 @@ public final class Intersector {
 
 				if (o < overlap) {
 					overlap = o;
-					smallestAxisX = axisX;
-					smallestAxisY = axisY;
+					// Adjusts the direction based on the number of points found
+					smallestAxisX = numInNormalDir < 0 ? axisX : -axisX;
+					smallestAxisY = numInNormalDir < 0 ? axisY : -axisY;
 				}
 			}
 			// -- End check for separation on this axis --//

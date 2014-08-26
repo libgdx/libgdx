@@ -1,15 +1,15 @@
 #include <com.badlogic.gdx.graphics.g2d.Gdx2DPixmap.h>
 
-//@line:241
+//@line:261
 
 	#include <gdx2d/gdx2d.h>
 	#include <stdlib.h>
-	 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load(JNIEnv* env, jclass clazz, jlongArray nativeData, jbyteArray buffer, jint offset, jint len, jint requestedFormat) {
+	 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_load(JNIEnv* env, jclass clazz, jlongArray nativeData, jbyteArray buffer, jint offset, jint len) {
 
-//@line:246
+//@line:266
 	
 		const unsigned char* p_buffer = (const unsigned char*)env->GetPrimitiveArrayCritical(buffer, 0);
-		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len, requestedFormat);
+		gdx2d_pixmap* pixmap = gdx2d_load(p_buffer + offset, len);
 		env->ReleasePrimitiveArrayCritical(buffer, (char*)p_buffer, 0);
 	
 		if(pixmap==0)
@@ -29,7 +29,7 @@
 
 JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixmap(JNIEnv* env, jclass clazz, jlongArray nativeData, jint width, jint height, jint format) {
 
-//@line:265
+//@line:285
 
 		gdx2d_pixmap* pixmap = gdx2d_new(width, height, format);
 		if(pixmap==0)
@@ -50,7 +50,7 @@ JNIEXPORT jobject JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_newPixm
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_free(JNIEnv* env, jclass clazz, jlong pixmap) {
 
 
-//@line:281
+//@line:301
 
 		gdx2d_free((gdx2d_pixmap*)pixmap);
 	
@@ -60,7 +60,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_free(JNIEn
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_clear(JNIEnv* env, jclass clazz, jlong pixmap, jint color) {
 
 
-//@line:285
+//@line:305
 
 		gdx2d_clear((gdx2d_pixmap*)pixmap, color);
 	
@@ -70,7 +70,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_clear(JNIE
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setPixel(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y, jint color) {
 
 
-//@line:289
+//@line:309
 
 		gdx2d_set_pixel((gdx2d_pixmap*)pixmap, x, y, color);
 	
@@ -80,7 +80,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setPixel(J
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getPixel(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y) {
 
 
-//@line:293
+//@line:313
 
 		return gdx2d_get_pixel((gdx2d_pixmap*)pixmap, x, y);
 	
@@ -90,7 +90,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getPixel(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawLine(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y, jint x2, jint y2, jint color) {
 
 
-//@line:297
+//@line:317
 
 		gdx2d_draw_line((gdx2d_pixmap*)pixmap, x, y, x2, y2, color);
 	
@@ -100,7 +100,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawLine(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawRect(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y, jint width, jint height, jint color) {
 
 
-//@line:301
+//@line:321
 
 		gdx2d_draw_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
 	
@@ -110,7 +110,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawRect(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawCircle(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y, jint radius, jint color) {
 
 
-//@line:305
+//@line:325
 
 		gdx2d_draw_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);	
 	
@@ -120,7 +120,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawCircle
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillRect(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y, jint width, jint height, jint color) {
 
 
-//@line:309
+//@line:329
 
 		gdx2d_fill_rect((gdx2d_pixmap*)pixmap, x, y, width, height, color);
 	
@@ -130,7 +130,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillRect(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillCircle(JNIEnv* env, jclass clazz, jlong pixmap, jint x, jint y, jint radius, jint color) {
 
 
-//@line:313
+//@line:333
 
 		gdx2d_fill_circle((gdx2d_pixmap*)pixmap, x, y, radius, color);
 	
@@ -140,7 +140,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillCircle
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillTriangle(JNIEnv* env, jclass clazz, jlong pixmap, jint x1, jint y1, jint x2, jint y2, jint x3, jint y3, jint color) {
 
 
-//@line:317
+//@line:337
 
 		gdx2d_fill_triangle((gdx2d_pixmap*)pixmap, x1, y1, x2, y2, x3, y3, color);
 	
@@ -150,7 +150,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_fillTriang
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawPixmap(JNIEnv* env, jclass clazz, jlong src, jlong dst, jint srcX, jint srcY, jint srcWidth, jint srcHeight, jint dstX, jint dstY, jint dstWidth, jint dstHeight) {
 
 
-//@line:322
+//@line:342
 
 		gdx2d_draw_pixmap((gdx2d_pixmap*)src, (gdx2d_pixmap*)dst, srcX, srcY, srcWidth, srcHeight, dstX, dstY, dstWidth, dstHeight);
 	
@@ -160,7 +160,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_drawPixmap
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setBlend(JNIEnv* env, jclass clazz, jint blend) {
 
 
-//@line:326
+//@line:346
 
 		gdx2d_set_blend(blend);
 	
@@ -170,7 +170,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setBlend(J
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setScale(JNIEnv* env, jclass clazz, jint scale) {
 
 
-//@line:330
+//@line:350
 
 		gdx2d_set_scale(scale);
 	
@@ -180,7 +180,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_setScale(J
 JNIEXPORT jstring JNICALL Java_com_badlogic_gdx_graphics_g2d_Gdx2DPixmap_getFailureReason(JNIEnv* env, jclass clazz) {
 
 
-//@line:334
+//@line:354
 
      return env->NewStringUTF(gdx2d_get_failure_reason());
    

@@ -1,4 +1,75 @@
+[1.3.2]
+- API Addition: now I18NBundle can be set so that no exception is thrown when the key can not be found.
+
+[1.3.1]
+- API change: Viewport refactoring. https://github.com/libgdx/libgdx/pull/2220
+- Fixed GWT issues
+
+[1.3.0]
+- Added Input.isKeyJustPressed.
+- API Addition: multiple recipients are now supported by MessageDispatcher, see https://github.com/libgdx/libgdx/wiki/Message-Handling#multiple-recipients
+- API Change: State#onMessage now takes the message receiver as argument.
+- API Addition: added StackStateMachine to the gdx-ai extension.
+- API change: ShapeRenderer: rect methods accept scale, more methods can work under both line and fill types, auto shape type changing.
+- API change: Built-in ShapeRenderer debugging for Stage, see https://github.com/libgdx/libgdx/pull/2011
+- Files#getLocalStoragePath now returns the actual path instead of the empty string synonym on desktop (LWJGL and JGLFW).
+- Fixed and improved xorshift128+ PRNG implementation.
+- Added support for Tiled's animated tiles, and varying frame duration tile animations.
+- Fixed an issue with time granularity in MessageDispatcher.
+- Updated to Android API level 19 and build tools 19.1.0 which will require the latest Eclipse ADT 23.02, see http://stackoverflow.com/questions/24437564/update-eclipse-with-android-development-tools-23 for how things are broken this time...
+- Updated to RoboVM 0.0.14 and RoboVM Gradle plugin version 0.0.10
+- API Addition: added FreeTypeFontLoader so you can transparently load BitmapFonts generated through gdx-freetype via AssetManager, see https://github.com/libgdx/libgdx/blob/master/tests/gdx-tests/src/com/badlogic/gdx/tests/FreeTypeFontLoaderTest.java
+- Preferences put methods now return "this" for chaining
+- Fixed issue 2048 where MessageDispatcher was dispatching delayed messages immediately.
+- API Addition: 3d particle system and accompanying editor, contributed by lordjone, see https://github.com/libgdx/libgdx/pull/2005
+- API Addition: extended shape classes like Circle, Ellipse etc. with hashcode/equals and other helper methods, see https://github.com/libgdx/libgdx/pull/2018
+- minor API change (will not increase minor revision number): fixed a bug in handling of atlasPrefixes, https://github.com/libgdx/libgdx/pull/2023
+- Bullet: btManifoldPoint member getters/setters changed from btVector3 to Vector3, also it is no longer pooled, instead static instances are used for callback methods
+- Added Intersector#intersectRayRay to detect if two 2D rays intersect, see https://github.com/libgdx/libgdx/pull/2132
+- Bullet: ClosestRayResultCallback, AllHitsRayResultCallback, LocalConvexResult, ClosestConvexResultCallback and subclasses now use getter/setters taking a Vector3 instead of btVector3, see https://github.com/libgdx/libgdx/pull/2176
+- 2d particle system supports pre-multiplied alpha.
+- Bullet: btIDebugDrawer/DebugDrawer now use pooled Vector3 instances instead of btVector3, see https://github.com/libgdx/libgdx/issues/2174
+
+[1.2.0]
+- API Addition: Some OpenGL profiling utilities have been added, see https://github.com/libgdx/libgdx/wiki/Profiling
+- API Addition: A FreeTypeFontGeneratorLoader has been added to the gdx-freetype extension
+- API change: Animation#frameDuration and #animationDuration are now hidden behind a getter/setter and dynamic
+- API Addition: Vector#setZero
+- API Addition: gdx-ai, extension for AI algorithms. Currently supports FSMs, see https://github.com/libgdx/libgdx/wiki/Artificial-Intelligence
+- API change: TableLayout has been forked and integrated into libgdx more tightly, see http://www.badlogicgames.com/wordpress/?p=3458
+- API Addition: added equals/hashCode methods to Rectangle, may break old code (very, very unlikely)
+- API Addition: scene2D Actors now have a setCenterPosition method, see https://github.com/libgdx/libgdx/pull/2000
+
+[1.1.0]
+- Updated to RoboVM 0.0.13 and RoboVM Gradle plugin 0.0.9
+- Big improvements to setup-ui and build times in Intellij IDEA https://github.com/libgdx/libgdx/pull/1865
+- Setup now uses android build tools version: 19.1.0
+- BitmapFontCache now supports in-string colored text through a simple markup language, see https://github.com/libgdx/libgdx/wiki/Color-Markup-Language
+- Added i18n localization/internationalization support, thanks davebaol, see https://github.com/libgdx/libgdx/wiki/Internationalization-and-Localization
+- Possibility to override density on desktop to simulate mobile devices, see https://github.com/libgdx/libgdx/pull/1825
+- Progressive JPEG support through JPGD (https://code.google.com/p/jpeg-compressor/).
+- Mavenized JGLFW backend
+- Box2D: Added MotorJoint and ghost vertices on EdgeShape
+- Updated GWT Box2D to latest version
+- Updated native Box2D to latest version 2.3.1, no API changes
+- API change: Matrix4.set(x,y,z, translation) changed, z axis is no more flipped
+- API addition: Matrix4.avg(Matrix4[],float[]) that lets weighted averaging multiple matrices, Quaternion.slerp(Quaternion[],float[]) that lets weighted slerping multiple Quaternions
+- fixed the long standing issue of the alpha=1 not actually being fully opaque, thanks kalle! https://github.com/libgdx/libgdx/issues/1815
+- down to 25 issues on the tracker, 8 bugs, 17 enhancement requests :)
+
+
 [1.0.1]
+- updated to RoboVM 0.12 (and so should you!)
+- fixed GC issues on iOS with regards to touch (thanks Niklas!), see https://github.com/libgdx/libgdx/pull/1758
+- updated gwt gradle plugin to 0.4, android build tools to 0.10, gradle version to 1.11
+- Tiled maps are now always y-up
+- Tiled maps now support drawing offsets for tiles
+- FileHandle#list is now supported in GWT!
+- FileHandle#list now supports FileFilters
+- Controllers now reinitialize on the desktop when switching between windowed/fullscreen
+- added a Texture unpacker that will extract all images from a texture atlas, see https://github.com/libgdx/libgdx/pull/1774
+- updates to gdx-setup
+- CustomCollisionDispatcher in bullet, see https://github.com/libgdx/libgdx/commit/916fc85cecf433c3461b458e00f8afc516ad21e3
 
 [1.0.0]
 - Box2D is no longer in the core, it has been moved to an extension. See http://www.badlogicgames.com/wordpress/?p=3404

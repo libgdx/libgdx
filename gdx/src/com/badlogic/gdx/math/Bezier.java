@@ -116,6 +116,8 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 
 	public Array<T> points = new Array<T>();
 	private T tmp;
+	private T tmp2;
+	private T tmp3;
 
 	public Bezier () {
 	}
@@ -140,6 +142,8 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		if (length < 2 || length > 4)
 			throw new GdxRuntimeException("Only first, second and third degree Bezier curves are supported.");
 		if (tmp == null) tmp = points[0].cpy();
+		if (tmp2 == null) tmp2 = points[0].cpy();
+		if (tmp3 == null) tmp3 = points[0].cpy();
 		this.points.clear();
 		this.points.addAll(points, offset, length);
 		return this;
@@ -182,10 +186,11 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 		T p1 = points.get(0);
 		T p2 = points.get(points.size - 1);
 		T p3 = v;
-		float l1 = p1.dst(p2);
-		float l2 = p3.dst(p2);
-		float l3 = p3.dst(p1);
-		float s = (l2 * l2 + l1 * l1 - l3 * l3) / (2 * l1);
+		float l1Sqr = p1.dst2(p2);
+		float l2Sqr = p3.dst2(p2);
+		float l3Sqr = p3.dst2(p1);
+		float l1 = (float)Math.sqrt(l1Sqr);
+		float s = (l2Sqr + l1Sqr - l3Sqr) / (2 * l1);
 		return MathUtils.clamp((l1 - s) / l1, 0f, 1f);
 	}
 
@@ -193,5 +198,16 @@ public class Bezier<T extends Vector<T>> implements Path<T> {
 	public float locate (T v) {
 		// TODO implement a precise method
 		return approximate(v);
+	}
+
+	@Override
+	public float approxLength (int samples) {
+		float tempLength = 0;
+		for (int i = 0; i < samples; ++i) {
+			tmp2.set(tmp3);
+			valueAt(tmp3, (i) / ((float)samples - 1));
+			if (i > 0) tempLength += tmp2.dst(tmp3);
+		}
+		return tempLength;
 	}
 }

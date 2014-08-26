@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.ObjectIntMap.Entry;
 
 /** An unordered map where the values are ints. This implementation is a cuckoo hash map using 3 hashes, random walking, and a
  * small stash for problematic keys. Null keys are not allowed. No allocation is done except when growing the table size. <br>
@@ -654,6 +653,10 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 		public Iterator<Entry<K>> iterator () {
 			return this;
 		}
+
+		public void remove () {
+			super.remove();
+		}
 	}
 
 	static public class Values extends MapIterator<Object> {
@@ -713,6 +716,10 @@ public class ObjectIntMap<K> implements Iterable<ObjectIntMap.Entry<K>> {
 			while (hasNext)
 				array.add(next());
 			return array;
+		}
+
+		public void remove () {
+			super.remove();
 		}
 	}
 }

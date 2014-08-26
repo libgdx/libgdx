@@ -50,6 +50,14 @@ public class TextureAttribute extends Attribute {
 		return new TextureAttribute(Specular, texture);
 	}
 
+	public static TextureAttribute createNormal (final Texture texture) {
+		return new TextureAttribute(Normal, texture);
+	}
+	
+	public static TextureAttribute createBump (final Texture texture) {
+		return new TextureAttribute(Bump, texture);
+	}
+
 	public final TextureDescriptor<Texture> textureDescription;
 
 	public TextureAttribute (final long type) {
@@ -78,7 +86,9 @@ public class TextureAttribute extends Attribute {
 	}
 
 	@Override
-	protected boolean equals (Attribute other) {
-		return ((TextureAttribute)other).textureDescription.equals(textureDescription);
+	public int hashCode () {
+		int result = (int)type;
+		result = 991 * result + textureDescription.hashCode();
+		return result; 
 	}
 }

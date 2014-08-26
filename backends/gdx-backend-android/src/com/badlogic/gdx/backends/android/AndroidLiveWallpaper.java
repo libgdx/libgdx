@@ -53,7 +53,7 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 	static {
 		GdxNativesLoader.load();
 	}
-	
+
 	protected AndroidLiveWallpaperService service;
 
 	protected AndroidGraphicsLiveWallpaper graphics;
@@ -112,8 +112,8 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// near mEglHelper.swap() in GLSurfaceView while processing next onPause event.
 		// See related issue:
 		// http://code.google.com/p/libgdx/issues/detail?id=541
-		// the problem with graphics.pause occurs while using OpenGL 2.0 and original GLSurfaceView while rotating device in lwp
-// preview
+		// the problem with graphics.pause occurs while using OpenGL 2.0 and original GLSurfaceView while rotating device
+		// in lwp preview
 		// in my opinion it is a bug of android not libgdx, even example Cubic live wallpaper from
 		// Android SDK crashes on affected devices.......... and on some configurations of android emulator too.
 		//
@@ -121,18 +121,11 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		// also I moved audio lifecycle methods from AndroidGraphicsLiveWallpaper into this class
 
 		// graphics.pause();
-		// if (AndroidLiveWallpaperService.DEBUG) Log.d(AndroidLiveWallpaperService.TAG,
-// " > AndroidLiveWallpaper - onPause() application paused!");
+		// if (AndroidLiveWallpaperService.DEBUG)
+		// Log.d(AndroidLiveWallpaperService.TAG, " > AndroidLiveWallpaper - onPause() application paused!");
 		audio.pause();
 
-		input.unregisterSensorListeners();
-
-		int[] realId = input.realId;
-		// erase pointer ids. this sucks donkeyballs...
-		Arrays.fill(realId, -1);
-		boolean[] touched = input.touched;
-		// erase touched state. this also sucks donkeyballs...
-		Arrays.fill(touched, false);
+		input.onPause();
 
 		if (graphics != null) {
 			graphics.onPauseGLSurfaceView();
@@ -147,13 +140,10 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 		Gdx.audio = audio;
 		Gdx.files = files;
 		Gdx.graphics = graphics;
+		Gdx.net = net;
 
-		input.registerSensorListeners();
+		input.onResume();
 
-		// FIXME restore conditional execution if lifecycle errors will occur when GLSurfaceView used.
-		// GLSurfaceView is guaranteed to work with this condition on, but GLSurfaceViewCupcake requires it off,
-		// so I disabled it.
-		// if (!firstResume) // mentioned condition
 		if (graphics != null) {
 			graphics.onResumeGLSurfaceView();
 		}
@@ -196,11 +186,6 @@ public class AndroidLiveWallpaper implements AndroidApplicationBase {
 
 	public AndroidLiveWallpaperService getService () {
 		return service;
-	}
-
-	@Deprecated
-	public ApplicationListener getListener () {
-		return listener;
 	}
 
 	@Override

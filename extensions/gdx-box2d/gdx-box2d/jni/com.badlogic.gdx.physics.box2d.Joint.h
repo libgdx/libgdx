@@ -49,6 +49,14 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetAnchorB
 
 /*
  * Class:     com_badlogic_gdx_physics_box2d_Joint
+ * Method:    jniGetCollideConnected
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Joint_jniGetCollideConnected
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_Joint
  * Method:    jniGetReactionForce
  * Signature: (JF[F)V
  */

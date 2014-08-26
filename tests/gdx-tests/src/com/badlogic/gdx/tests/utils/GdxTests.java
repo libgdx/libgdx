@@ -28,16 +28,19 @@
 
 package com.badlogic.gdx.tests.utils;
 
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.tests.*;
 import com.badlogic.gdx.tests.bench.TiledMapBench;
 import com.badlogic.gdx.tests.examples.MoveSpriteExample;
 import com.badlogic.gdx.tests.g3d.Animation3DTest;
 import com.badlogic.gdx.tests.g3d.Basic3DSceneTest;
 import com.badlogic.gdx.tests.g3d.Basic3DTest;
+import com.badlogic.gdx.tests.g3d.Benchmark3DTest;
 import com.badlogic.gdx.tests.g3d.FogTest;
 import com.badlogic.gdx.tests.g3d.LightsTest;
 import com.badlogic.gdx.tests.g3d.MaterialTest;
 import com.badlogic.gdx.tests.g3d.ModelTest;
+import com.badlogic.gdx.tests.g3d.ParticleControllerTest;
 import com.badlogic.gdx.tests.g3d.ShaderCollectionTest;
 import com.badlogic.gdx.tests.g3d.ShaderTest;
 import com.badlogic.gdx.tests.g3d.ShadowMappingTest;
@@ -63,6 +66,7 @@ import java.util.List;
 public class GdxTests {
 	public static final List<Class<? extends GdxTest>> tests = new ArrayList<Class<? extends GdxTest>>(Arrays.asList(
 		// @off
+		IssueTest.class,
 		AccelerometerTest.class,
 		ActionSequenceTest.class,
 		ActionTest.class,
@@ -75,6 +79,7 @@ public class GdxTests {
 		AudioRecorderTest.class,
 		Basic3DSceneTest.class,
 		Basic3DTest.class,
+		Benchmark3DTest.class,
 		BitmapFontAlignmentTest.class,
 		BitmapFontDistanceFieldTest.class,
 		BitmapFontFlipTest.class,
@@ -112,6 +117,8 @@ public class GdxTests {
 		GroupTest.class,
 		HelloTriangle.class,
 		HexagonalTiledMapTest.class,
+		I18NMessageTest.class,
+		I18NSimpleMessageTest.class,
 		ImageScaleTest.class,
 		ImageTest.class,
 		ImmediateModeRendererTest.class,
@@ -139,6 +146,7 @@ public class GdxTests {
 		OnscreenKeyboardTest.class,
 		PathTest.class,
 		ParallaxTest.class,
+		ParticleControllerTest.class,
 		ParticleEmitterTest.class,
 		PixelsPerInchTest.class,
 		PixmapBlendingTest.class,
@@ -152,6 +160,7 @@ public class GdxTests {
 		ReflectionTest.class,
 		RotationTest.class,
 		RunnablePostTest.class,
+		StageDebugTest.class,
 		Scene2dTest.class,
 		ScrollPane2Test.class,
 		ScrollPaneScrollBarsTest.class,
@@ -177,6 +186,7 @@ public class GdxTests {
 		SpriteCacheTest.class,
 		StagePerformanceTest.class,
 		StageTest.class,
+		StateMachineTest.class,
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
@@ -205,7 +215,8 @@ public class GdxTests {
 		ViewportTest1.class,
 		ViewportTest2.class,
 		ViewportTest3.class,
-		YDownTest.class
+		YDownTest.class,
+		FreeTypeFontLoaderTest.class
 		// @on
 
 		// SoundTouchTest.class, Mpg123Test.class, WavTest.class, FreeTypeTest.class,

@@ -19,13 +19,13 @@
 
 package com.badlogic.gdx.utils;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.JsonValue.ValueType;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 /** Lightweight JSON parser.<br>
  * <br>
@@ -329,6 +329,7 @@ public class JsonReader implements BaseJsonReader {
 											}
 											// if (debug) System.out.println("unquotedChar (name): '" + data[p] + "'");
 											p++;
+											if (p == eof) break;
 										}
 									} else {
 										outer:
@@ -345,13 +346,14 @@ public class JsonReader implements BaseJsonReader {
 											}
 											// if (debug) System.out.println("unquotedChar (value): '" + data[p] + "'");
 											p++;
+											if (p == eof) break;
 										}
 									}
 									p--;
 								}
 									break;
 								case 8:
-								// line 224 "JsonReader.rl"
+								// line 226 "JsonReader.rl"
 								{
 									if (debug) System.out.println("quotedChars");
 									s = ++p;
@@ -368,11 +370,12 @@ public class JsonReader implements BaseJsonReader {
 										}
 										// if (debug) System.out.println("quotedChar: '" + data[p] + "'");
 										p++;
+										if (p == eof) break;
 									}
 									p--;
 								}
 									break;
-								// line 262 "JsonReader.java"
+								// line 265 "JsonReader.java"
 								}
 							}
 						}
@@ -439,7 +442,7 @@ public class JsonReader implements BaseJsonReader {
 									stringIsUnquoted = false;
 								}
 									break;
-								// line 328 "JsonReader.java"
+								// line 331 "JsonReader.java"
 								}
 							}
 						}
@@ -450,7 +453,7 @@ public class JsonReader implements BaseJsonReader {
 				}
 			}
 
-			// line 254 "JsonReader.rl"
+			// line 257 "JsonReader.rl"
 
 		} catch (RuntimeException ex) {
 			parseRuntimeEx = ex;
@@ -480,7 +483,7 @@ public class JsonReader implements BaseJsonReader {
 		return root;
 	}
 
-	// line 338 "JsonReader.java"
+	// line 341 "JsonReader.java"
 	private static byte[] init__json_actions_0 () {
 		return new byte[] {0, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 2, 0, 7, 2, 0, 8, 2, 1, 3, 2, 1, 5, 2, 6, 1, 2, 7, 6,
 			3, 0, 7, 6};
@@ -575,7 +578,7 @@ public class JsonReader implements BaseJsonReader {
 	static final int json_en_array = 22;
 	static final int json_en_main = 1;
 
-	// line 284 "JsonReader.rl"
+	// line 287 "JsonReader.rl"
 
 	private final Array<JsonValue> elements = new Array(8);
 	private final Array<JsonValue> lastChild = new Array(8);

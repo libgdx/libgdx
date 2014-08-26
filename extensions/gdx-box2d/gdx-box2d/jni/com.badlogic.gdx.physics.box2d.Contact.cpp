@@ -6,7 +6,7 @@
 	 static inline jint wrapped_Java_com_badlogic_gdx_physics_box2d_Contact_jniGetWorldManifold
 (JNIEnv* env, jobject object, jlong addr, jfloatArray obj_tmp, float* tmp) {
 
-//@line:61
+//@line:63
 
 		b2Contact* contact = (b2Contact*)addr;
 		b2WorldManifold manifold;
@@ -22,6 +22,9 @@
 			tmp[2 + i*2+1] = manifold.points[i].y;
 		}
 	
+		tmp[6] = manifold.separations[0];
+		tmp[7] = manifold.separations[1];
+
 		return numPoints;
 	
 }
@@ -39,7 +42,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetWorldMa
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniIsTouching(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:83
+//@line:88
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->IsTouching();
@@ -50,7 +53,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniIsTouc
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetEnabled(JNIEnv* env, jobject object, jlong addr, jboolean flag) {
 
 
-//@line:94
+//@line:99
 
 		b2Contact* contact = (b2Contact*)addr;
 		contact->SetEnabled(flag);
@@ -61,7 +64,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetEnabled
 JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniIsEnabled(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:104
+//@line:109
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->IsEnabled();
@@ -72,7 +75,7 @@ JNIEXPORT jboolean JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniIsEnab
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtureA(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:114
+//@line:119
 
 		b2Contact* contact = (b2Contact*)addr;
 		return (jlong)contact->GetFixtureA();
@@ -83,7 +86,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtur
 JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtureB(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:124
+//@line:129
 
 		b2Contact* contact = (b2Contact*)addr;
 		return (jlong)contact->GetFixtureB();
@@ -94,7 +97,7 @@ JNIEXPORT jlong JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFixtur
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIndexA(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:134
+//@line:139
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetChildIndexA();
@@ -105,7 +108,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIn
 JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIndexB(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:144
+//@line:149
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetChildIndexB();
@@ -116,7 +119,7 @@ JNIEXPORT jint JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetChildIn
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetFriction(JNIEnv* env, jobject object, jlong addr, jfloat friction) {
 
 
-//@line:155
+//@line:160
 
 		b2Contact* contact = (b2Contact*)addr;
 		contact->SetFriction(friction);
@@ -127,7 +130,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetFrictio
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFriction(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:165
+//@line:170
 
 		b2Contact* contact = (b2Contact*)addr;
 		return contact->GetFriction();
@@ -138,7 +141,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetFrict
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetFriction(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:175
+//@line:180
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetFriction();
@@ -149,7 +152,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetFrict
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetRestitution(JNIEnv* env, jobject object, jlong addr, jfloat restitution) {
 
 
-//@line:186
+//@line:191
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->SetRestitution(restitution);
@@ -160,7 +163,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetRestitu
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetRestitution(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:196
+//@line:201
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		return contact->GetRestitution();
@@ -171,7 +174,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetResti
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetRestitution(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:206
+//@line:211
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->ResetRestitution();
@@ -182,7 +185,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniResetResti
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetTangentSpeed(JNIEnv* env, jobject object, jlong addr) {
 
 
-//@line:216
+//@line:221
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		return contact->GetTangentSpeed();
@@ -193,7 +196,7 @@ JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniGetTange
 JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_Contact_jniSetTangentSpeed(JNIEnv* env, jobject object, jlong addr, jfloat speed) {
 
 
-//@line:226
+//@line:231
 
 	  	b2Contact* contact = (b2Contact*)addr;
 		contact->SetTangentSpeed(speed);

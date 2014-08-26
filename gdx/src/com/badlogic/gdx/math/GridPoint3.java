@@ -16,6 +16,8 @@
 
 package com.badlogic.gdx.math;
 
+import com.badlogic.gdx.utils.NumberUtils;
+
 /** A point in a 3D grid, with integer x and y coordinates
  * 
  * @author badlogic */
@@ -72,5 +74,23 @@ public class GridPoint3 {
 		this.y = y;
 		this.z = z;
 		return this;
+	}
+
+	@Override
+	public boolean equals (Object o) {
+		if (this == o) return true;
+		if (o == null || o.getClass() != this.getClass()) return false;
+		GridPoint3 g = (GridPoint3)o;
+		return this.x == g.x && this.y == g.y && this.z == g.z;
+	}
+
+	@Override
+	public int hashCode () {
+		final int prime = 17;
+		int result = 1;
+		result = prime * result + this.x;
+		result = prime * result + this.y;
+		result = prime * result + this.z;
+		return result;
 	}
 }

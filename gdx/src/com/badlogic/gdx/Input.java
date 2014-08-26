@@ -633,6 +633,12 @@ public interface Input {
 	 * @return true or false. */
 	public boolean isKeyPressed (int key);
 
+	/** Returns whether the key has just been pressed.
+	 * 
+	 * @param key The key code as found in {@link Input.Keys}.
+	 * @return true or false. */
+	public boolean isKeyJustPressed (int key);
+
 	/** System dependent method to input a string of text. A dialog box will be created with the given title and the given text as a
 	 * message for the user. Once the dialog has been closed the provided {@link TextInputListener} will be called on the rendering
 	 * thread.
@@ -742,7 +748,8 @@ public interface Input {
 		Landscape, Portrait
 	}
 
-	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor.
+	/** Only viable on the desktop. Will confine the mouse cursor location to the window and hide the mouse cursor. X and y coordinates
+	 * are still reported as if the mouse was not catched.
 	 * @param catched whether to catch or not to catch the mouse cursor */
 	public void setCursorCatched (boolean catched);
 

@@ -7,21 +7,24 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.0.0";
+	static String libgdxVersion = "1.3.1";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.0.1-SNAPSHOT";
-	static String roboVMVersion = "0.0.11";
-	static String buildToolsVersion = "19.0.3";
+	static String libgdxNightlyVersion = "1.3.2-SNAPSHOT";
+	static String roboVMVersion = "0.0.14";
+	static String buildToolsVersion = "19.1.0";
 	static String androidAPILevel = "19";
+	static String gwtVersion = "2.6.0";
 
 	//Repositories
+	static String mavenCentral = "mavenCentral()";
 	static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
+	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.3";
-	static String androidPluginImport = "com.android.tools.build:gradle:0.9+";
-	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.7";
+	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.4";
+	static String androidPluginImport = "com.android.tools.build:gradle:0.10+";
+	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.10";
 
 	HashMap<ProjectDependency, Dependency> gdxDependencies = new HashMap<ProjectDependency, Dependency>();
 	LinkedHashMap<ProjectDependency, String[]> gwtInheritances = new LinkedHashMap<ProjectDependency, String[]>();
@@ -40,6 +43,7 @@ public class DependencyBank {
 		gwtInheritances.put(ProjectDependency.CONTROLLERS, new String[]{"com.badlogic.gdx.controllers.controllers-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2D, new String[]{"com.badlogic.gdx.physics.box2d.box2d-gwt"});
 		gwtInheritances.put(ProjectDependency.BOX2DLIGHTS, new String[]{"Box2DLights"});
+		gwtInheritances.put(ProjectDependency.ASHLEY, new String[]{"com.badlogic.ashley_gwt"});
 	}
 
 	public Dependency getDependency(ProjectDependency gdx) {
@@ -80,17 +84,17 @@ public class DependencyBank {
 			null
 		),
 		TOOLS(
-			null,
+			new String[]{},
 			new String[]{"com.badlogicgames.gdx:gdx-tools:$gdxVersion"},
-			null,
-			null,
-			null
+			new String[]{},
+			new String[]{},
+			new String[]{}
 		),
 		CONTROLLERS(
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"},
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"},
-			new String[] { }, // works on iOS but never reports any controllers :)
+			new String[] {}, // works on iOS but never reports any controllers :)
 			new String[]{"com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion", "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"}
 		),
 		BOX2D(
@@ -106,6 +110,13 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2"},
 			new String[]{},
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"}
+		),
+		ASHLEY(
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{},
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
+			new String[]{},
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"}
 		);
 
 		private String[] coreDependencies;

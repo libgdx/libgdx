@@ -86,11 +86,11 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 		final int row1 = Math.max(0, (int)(viewBounds.y / layerTileHeight));
 		final int row2 = Math.min(layerHeight, (int)((viewBounds.y + viewBounds.height + layerTileHeight) / layerTileHeight));
 
-		float y = row1 * layerTileHeight;
+		float y = row2 * layerTileHeight;
 		float xStart = col1 * layerTileWidth;
 		final float[] vertices = this.vertices;
 
-		for (int row = row1; row < row2; row++) {
+		for (int row = row2; row >= row1; row--) {
 			float x = xStart;
 			for (int col = col1; col < col2; col++) {
 				final TiledMapTileLayer.Cell cell = layer.getCell(col, row);
@@ -107,8 +107,8 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 
 					TextureRegion region = tile.getTextureRegion();
 
-					float x1 = x;
-					float y1 = y;
+					float x1 = x + tile.getOffsetX() * unitScale;
+					float y1 = y + tile.getOffsetY() * unitScale;
 					float x2 = x1 + region.getRegionWidth() * unitScale;
 					float y2 = y1 + region.getRegionHeight() * unitScale;
 
@@ -208,7 +208,7 @@ public class OrthogonalTiledMapRenderer extends BatchTiledMapRenderer {
 				}
 				x += layerTileWidth;
 			}
-			y += layerTileHeight;
+			y -= layerTileHeight;
 		}
 	}
 }

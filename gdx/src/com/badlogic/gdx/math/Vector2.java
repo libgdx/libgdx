@@ -286,10 +286,22 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		return angle;
 	}
 
+	/** @return the angle in degrees of this vector (point) relative to the given vector. Angles are towards the positive y-axis
+	 *         (typically counter-clockwise.) between -180 and +180 */
+	public float angle (Vector2 reference) {
+		return (float)Math.atan2(crs(reference), dot(reference)) * MathUtils.radiansToDegrees;
+	}
+
 	/** @return the angle in radians of this vector (point) relative to the x-axis. Angles are towards the positive y-axis.
 	 *         (typically counter-clockwise) */
-	public float getAngleRad () {
+	public float angleRad () {
 		return (float)Math.atan2(y, x);
+	}
+
+	/** @return the angle in radians of this vector (point) relative to the given vector. Angles are towards the positive y-axis.
+	 *         (typically counter-clockwise.) */
+	public float angleRad (Vector2 reference) {
+		return (float)Math.atan2(crs(reference), dot(reference));
 	}
 
 	/** Sets the angle of the vector in degrees relative to the x-axis, towards the positive y-axis (typically counter-clockwise).
@@ -348,7 +360,7 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 		this.y = (y * invAlpha) + (target.y * alpha);
 		return this;
 	}
-	
+
 	@Override
 	public Vector2 interpolate (Vector2 target, float alpha, Interpolation interpolator) {
 		return lerp(target, interpolator.apply(0f, 1f, alpha));
@@ -458,5 +470,12 @@ public class Vector2 implements Serializable, Vector<Vector2> {
 	@Override
 	public boolean hasOppositeDirection (Vector2 vector) {
 		return dot(vector) < 0;
+	}
+
+	@Override
+	public Vector2 setZero () {
+		this.x = 0;
+		this.y = 0;
+		return this;
 	}
 }

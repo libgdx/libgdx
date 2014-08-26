@@ -19,6 +19,7 @@ package com.badlogic.gdx.backends.iosrobovm;
 import java.io.File;
 
 import org.robovm.apple.coregraphics.CGSize;
+import org.robovm.apple.foundation.Foundation;
 import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
@@ -27,6 +28,7 @@ import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIPasteboard;
 import org.robovm.apple.uikit.UIScreen;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.apple.uikit.UIViewController;
@@ -42,16 +44,17 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.backends.iosrobovm.objectal.OALAudioSession;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 
 public class IOSApplication implements Application {
-	
+
 	public static abstract class Delegate extends UIApplicationDelegateAdapter {
 		private IOSApplication app;
-		
-		protected abstract IOSApplication createApplication();
+
+		protected abstract IOSApplication createApplication ();
 
 		@Override
 		public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
@@ -64,7 +67,12 @@ public class IOSApplication implements Application {
 		public void didBecomeActive (UIApplication application) {
 			app.didBecomeActive(application);
 		}
-		
+
+		@Override
+		public void willEnterForeground (UIApplication application) {
+			app.willEnterForeground(application);
+		}
+
 		@Override
 		public void willResignActive (UIApplication application) {
 			app.willResignActive(application);
@@ -75,10 +83,11 @@ public class IOSApplication implements Application {
 			app.willTerminate(application);
 		}
 	}
-	
+
 	UIApplication uiApp;
 	UIWindow uiWindow;
 	ApplicationListener listener;
+	IOSViewControllerListener viewControllerListener;
 	IOSApplicationConfiguration config;
 	IOSGraphics graphics;
 	IOSAudio audio;
@@ -98,7 +107,7 @@ public class IOSApplication implements Application {
 		this.listener = listener;
 		this.config = config;
 	}
-	
+
 	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> options) {
 		Gdx.app = this;
 		this.uiApp = uiApp;
@@ -116,8 +125,7 @@ public class IOSApplication implements Application {
 				// it's an iPod or iPhone
 				displayScaleFactor = config.displayScaleSmallScreenIfRetina * 2.0f;
 			}
-		} 
-		else {
+		} else {
 			// no retina screen: no scaling!
 			if (UIDevice.getCurrentDevice().getUserInterfaceIdiom() == UIUserInterfaceIdiom.Pad) {
 				// it's an iPad!
@@ -129,10 +137,10 @@ public class IOSApplication implements Application {
 		}
 
 		GL20 gl20 = new IOSGLES20();
-		
+
 		Gdx.gl = gl20;
 		Gdx.gl20 = gl20;
-		
+
 		// setup libgdx
 		this.input = new IOSInput(this);
 		this.graphics = new IOSGraphics(getBounds(null), this, config, input, gl20);
@@ -154,20 +162,16 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "created");
 		return true;
 	}
-	
-	/**
-	 * Return the UI view controller of IOSApplication
-	 * @return the view controller of IOSApplication
-	 */
-	public UIViewController getUIViewController(){
+
+	/** Return the UI view controller of IOSApplication
+	 * @return the view controller of IOSApplication */
+	public UIViewController getUIViewController () {
 		return graphics.viewController;
 	}
 
-	/**
-	 * Return the UI Window of IOSApplication
-	 * @return the window
-	 */
-	public UIWindow getUIWindow() {
+	/** Return the UI Window of IOSApplication
+	 * @return the window */
+	public UIWindow getUIWindow () {
 		return uiWindow;
 	}
 
@@ -177,7 +181,6 @@ public class IOSApplication implements Application {
 	 * @return Or real display dimension. */
 	CGSize getBounds (UIViewController viewController) {
 		// or screen size (always portrait)
-//		CGSize bounds = UIScreen.getMainScreen().getBounds().size();
 		CGSize bounds = UIScreen.getMainScreen().getApplicationFrame().size();
 
 		// determine orientation and resulting width + height
@@ -186,11 +189,10 @@ public class IOSApplication implements Application {
 			orientation = viewController.getInterfaceOrientation();
 		} else if (config.orientationLandscape == config.orientationPortrait) {
 			/*
-			 * if the app has orientation in any side then we can only check
-			 * status bar orientation
+			 * if the app has orientation in any side then we can only check status bar orientation
 			 */
 			orientation = uiApp.getStatusBarOrientation();
-		} else if (config.orientationLandscape) {// is landscape true and portrait false 
+		} else if (config.orientationLandscape) {// is landscape true and portrait false
 			orientation = UIInterfaceOrientation.LandscapeRight;
 		} else {// is portrait true and landscape false
 			orientation = UIInterfaceOrientation.Portrait;
@@ -209,7 +211,7 @@ public class IOSApplication implements Application {
 			height = (int)bounds.height();
 		}
 
-		// update width/height depending on display scaling selected 
+		// update width/height depending on display scaling selected
 		width *= displayScaleFactor;
 		height *= displayScaleFactor;
 
@@ -224,9 +226,15 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "resumed");
 		// workaround for ObjectAL crash problem
 		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
-		//	OALAudioSession.sharedInstance().forceEndInterrupt();
+		OALAudioSession.sharedInstance().forceEndInterruption();
 		graphics.makeCurrent();
 		graphics.resume();
+	}
+
+	final void willEnterForeground (UIApplication uiApp) {
+		// workaround for ObjectAL crash problem
+		// see: https://groups.google.com/forum/?fromgroups=#!topic/objectal-for-iphone/ubRWltp_i1Q
+		OALAudioSession.sharedInstance().forceEndInterruption();
 	}
 
 	final void willResignActive (UIApplication uiApp) {
@@ -240,8 +248,8 @@ public class IOSApplication implements Application {
 		Gdx.app.debug("IOSApplication", "disposed");
 		graphics.makeCurrent();
 		Array<LifecycleListener> listeners = lifecycleListeners;
-		synchronized(listeners) {
-			for(LifecycleListener listener: listeners) {
+		synchronized (listeners) {
+			for (LifecycleListener listener : listeners) {
 				listener.pause();
 			}
 		}
@@ -253,7 +261,7 @@ public class IOSApplication implements Application {
 	public ApplicationListener getApplicationListener () {
 		return listener;
 	}
-	
+
 	@Override
 	public Graphics getGraphics () {
 		return graphics;
@@ -282,14 +290,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void log (String tag, String message) {
 		if (logLevel > LOG_NONE) {
-			System.out.println("[info] " + tag + ": " + message);
+			Foundation.log("[info] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void log (String tag, String message, Throwable exception) {
 		if (logLevel > LOG_NONE) {
-			System.out.println("[info] " + tag + ": " + message);
+			Foundation.log("[info] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -297,14 +305,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void error (String tag, String message) {
 		if (logLevel >= LOG_ERROR) {
-			System.out.println("[error] " + tag + ": " + message);
+			Foundation.log("[error] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void error (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_ERROR) {
-			System.out.println("[error] " + tag + ": " + message);
+			Foundation.log("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -312,14 +320,14 @@ public class IOSApplication implements Application {
 	@Override
 	public void debug (String tag, String message) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println("[debug] " + tag + ": " + message);
+			Foundation.log("[debug] " + tag + ": " + message);
 		}
 	}
 
 	@Override
 	public void debug (String tag, String message, Throwable exception) {
 		if (logLevel >= LOG_DEBUG) {
-			System.out.println("[error] " + tag + ": " + message);
+			Foundation.log("[error] " + tag + ": " + message);
 			exception.printStackTrace();
 		}
 	}
@@ -330,7 +338,7 @@ public class IOSApplication implements Application {
 	}
 
 	@Override
-	public int getLogLevel() {
+	public int getLogLevel () {
 		return logLevel;
 	}
 
@@ -358,21 +366,15 @@ public class IOSApplication implements Application {
 	public Preferences getPreferences (String name) {
 		File libraryPath = new File(System.getenv("HOME"), "Library");
 		File finalPath = new File(libraryPath, name + ".plist");
-		
-		Gdx.app.debug("IOSApplication", "Loading NSDictionary from file " + finalPath);
+
 		@SuppressWarnings("unchecked")
-		NSMutableDictionary<NSString, NSObject> nsDictionary = 
-			(NSMutableDictionary<NSString, NSObject>) NSMutableDictionary.read(finalPath);
+		NSMutableDictionary<NSString, NSObject> nsDictionary = (NSMutableDictionary<NSString, NSObject>)NSMutableDictionary
+			.read(finalPath);
 
 		// if it fails to get an existing dictionary, create a new one.
 		if (nsDictionary == null) {
-			Gdx.app.debug("IOSApplication", "NSDictionary not found, creating a new one");
 			nsDictionary = new NSMutableDictionary<NSString, NSObject>();
-			boolean fileWritten = nsDictionary.write(finalPath, false);
-			if (fileWritten)
-				Gdx.app.debug("IOSApplication", "NSDictionary file written");
-			else 
-				Gdx.app.debug("IOSApplication", "Failed to write NSDictionary to file " + finalPath);
+			nsDictionary.write(finalPath, false);
 		}
 		return new IOSPreferences(nsDictionary, finalPath.getAbsolutePath());
 	}
@@ -406,30 +408,38 @@ public class IOSApplication implements Application {
 
 	@Override
 	public Clipboard getClipboard () {
-		// FIXME implement clipboard
 		return new Clipboard() {
 			@Override
 			public void setContents (String content) {
+				UIPasteboard.getGeneral().setString(content);
 			}
 
 			@Override
 			public String getContents () {
-				return null;
+				return UIPasteboard.getGeneral().getString();
 			}
 		};
 	}
-	
+
 	@Override
 	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.add(listener);
 		}
 	}
 
 	@Override
 	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
+		synchronized (lifecycleListeners) {
 			lifecycleListeners.removeValue(listener, true);
-		}		
+		}
+	}
+
+	/**
+	 * Add a listener to handle events from the libgdx root view controller
+	 * @param listener The {#link IOSViewControllerListener} to add
+	 */
+	public void addViewControllerListener(IOSViewControllerListener listener) {
+		viewControllerListener = listener;
 	}
 }

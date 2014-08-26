@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to="com.badlogic.gdx">
-	<inherits name="com.esotericsoftware.TableLayout"/>
 	<source path="gdx">
 	    
 	<!--  --> 
@@ -37,6 +36,7 @@
 		<include name="assets/loaders/AsynchronousAssetLoader.java"/>
 		<include name="assets/loaders/BitmapFontLoader.java"/>
 		<include name="assets/loaders/FileHandleResolver.java"/>
+		<include name="assets/loaders/I18NBundleLoader.java"/>
 		<include name="assets/loaders/ModelLoader.java"/>
 		<include name="assets/loaders/MusicLoader.java"/>
 		<include name="assets/loaders/ParticleEffectLoader.java"/>
@@ -65,6 +65,7 @@
 	<!-- graphics -->		
 		<include name="graphics/Camera.java"/>
 		<include name="graphics/Color.java"/>
+		<include name="graphics/Colors.java"/>
 		<include name="graphics/Cubemap.java"/>
 		<include name="graphics/FPSLogger.java"/>
 		<include name="graphics/GL20.java"/>
@@ -167,7 +168,10 @@
 		<include name="graphics/g3d/model/data/ModelNodeKeyframe.java"/>
 		<include name="graphics/g3d/model/data/ModelNodePart.java"/>
 		<include name="graphics/g3d/model/data/ModelTexture.java"/>
-				
+	
+	<!-- graphics/g3d/particles -->
+		<include name="graphics/g3d/particles/**/*.java"/>
+		
 	<!-- graphics/g3d/shaders -->
 		<include name="graphics/g3d/shaders/BaseShader.java"/>
 		<include name="graphics/g3d/shaders/DefaultShader.java"/>
@@ -218,6 +222,12 @@
 		<include name="graphics/glutils/VertexBufferObjectSubData.java"/>
 		<include name="graphics/glutils/VertexData.java"/>
 
+	<!-- graphics/profiling -->
+		<include name="graphics/profiling/GL20Profiler.java"/>
+		<include name="graphics/profiling/GL30Profiler.java"/>
+		<include name="graphics/profiling/GLProfiler.java"/>
+		
+						
 	<!-- input -->
 		<include name="input/GestureDetector.java"/>
 		<exclude name="input/RemoteInput.java"/> <!-- Reason: Networking -->
@@ -258,6 +268,7 @@
 		<include name="maps/tiled/renderers/HexagonalTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricStaggeredTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/IsometricTiledMapRenderer.java"/>
+		<include name="maps/tiled/renderers/OrthoCachedTiledMapRenderer.java"/>
 		<include name="maps/tiled/renderers/OrthogonalTiledMapRenderer.java"/>
 
 	<!-- maps/tiles/tiles -->
@@ -271,6 +282,7 @@
 		<include name="math/CatmullRomSpline.java"/>
 		<include name="math/Circle.java"/>
 		<include name="math/ConvexHull.java"/>
+		<include name="math/CumulativeDistribution.java"/>
 		<include name="math/DelaunayTriangulator.java"/>
 		<include name="math/EarClippingTriangulator.java"/>
 		<include name="math/Ellipse.java"/>
@@ -289,6 +301,7 @@
 		<include name="math/Polygon.java"/>
 		<include name="math/Polyline.java"/>
 		<include name="math/Quaternion.java"/>
+		<include name="math/RandomXS128.java"/>
 		<include name="math/Rectangle.java"/>
 		<include name="math/Vector.java"/>
 		<include name="math/Vector2.java"/>
@@ -343,6 +356,7 @@
 		<exclude name="utils/GdxBuild.java"/> <!-- Reason: Natives -->
 		<exclude name="utils/GdxNativesLoader.java"/> <!-- Reason: Natives -->
 		<include name="utils/GdxRuntimeException.java"/>
+		<include name="utils/I18NBundle.java"/>
 		<include name="utils/IdentityMap.java"/>
 		<include name="utils/IntArray.java"/>
 		<include name="utils/IntFloatMap.java"/>
@@ -363,6 +377,7 @@
 		<include name="utils/ObjectMap.java"/>
 		<include name="utils/ObjectSet.java"/>
 		<include name="utils/OrderedMap.java"/>
+		<include name="utils/OrderedSet.java"/>
 		<include name="utils/PausableThread.java"/>
 		<include name="utils/PerformanceCounter.java"/>
 		<include name="utils/PerformanceCounters.java"/>
@@ -370,6 +385,7 @@
 		<include name="utils/PooledLinkedList.java"/>
 		<include name="utils/Pools.java"/>
 		<include name="utils/Predicate.java"/>
+		<include name="utils/PropertiesUtils.java"/>
 		<include name="utils/QuickSelect.java"/>
 		<include name="utils/ReflectionPool.java"/>
 		<include name="utils/Scaling.java"/>
@@ -383,6 +399,7 @@
 		<include name="utils/SortedIntList.java"/>
 		<include name="utils/StreamUtils.java"/>
 		<include name="utils/StringBuilder.java"/>
+		<include name="utils/TextFormatter.java"/> <!-- Emulated: MessageFormat -->
 		<include name="utils/Timer.java"/> <!-- Emulated: Threading -->
 		<include name="utils/TimeUtils.java"/> <!-- Emulated: nanoTime() -->
 		<include name="utils/TimSort.java"/>
@@ -431,6 +448,8 @@
 	</source>
 
 	<define-configuration-property name="gdx.files.classpath" is-multi-valued="true" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/particles/particles.fragment.glsl" />
+	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/particles/particles.vertex.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.fragment.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/default.vertex.glsl" />
 	<extend-configuration-property name="gdx.files.classpath" value="com/badlogic/gdx/graphics/g3d/shaders/depth.fragment.glsl" />

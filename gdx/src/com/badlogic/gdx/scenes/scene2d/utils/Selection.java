@@ -1,12 +1,10 @@
 
 package com.badlogic.gdx.scenes.scene2d.utils;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectSet;
+import com.badlogic.gdx.utils.OrderedSet;
 import com.badlogic.gdx.utils.Pools;
 
 import java.util.Iterator;
@@ -16,8 +14,8 @@ import java.util.Iterator;
  * @author Nathan Sweet */
 public class Selection<T> implements Disableable, Iterable<T> {
 	private Actor actor;
-	final ObjectSet<T> selected = new ObjectSet();
-	private final ObjectSet<T> old = new ObjectSet();
+	final OrderedSet<T> selected = new OrderedSet();
+	private final OrderedSet<T> old = new OrderedSet();
 	boolean isDisabled;
 	private boolean toggle;
 	boolean multiple;
@@ -65,7 +63,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return selected.size;
 	}
 
-	public ObjectSet<T> items () {
+	public OrderedSet<T> items () {
 		return selected;
 	}
 
@@ -234,7 +232,7 @@ public class Selection<T> implements Disableable, Iterable<T> {
 		return multiple;
 	}
 
-	/** If true, prevents {@link #choose(Object)} from selecting multiple. Default is false. */
+	/** If true, allows {@link #choose(Object)} to select multiple items. Default is false. */
 	public void setMultiple (boolean multiple) {
 		this.multiple = multiple;
 	}

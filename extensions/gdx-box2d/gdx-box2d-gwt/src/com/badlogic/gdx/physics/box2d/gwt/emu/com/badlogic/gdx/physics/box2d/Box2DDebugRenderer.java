@@ -157,7 +157,7 @@ public class Box2DDebugRenderer {
 			CircleShape shape = (CircleShape)fixture.getShape();
 			float radius = shape.getRadius();
 			vertices[0].set(shape.getPosition());
-			vertices[0].rotate(transform.getRotation()).add(transform.getPosition());
+			transform.mul(vertices[0]);
 			lower.set(vertices[0].x - radius, vertices[0].y - radius);
 			upper.set(vertices[0].x + radius, vertices[0].y + radius);
 

@@ -22,12 +22,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class DepthShader extends DefaultShader {
 	public static class Config extends DefaultShader.Config {
 		public boolean depthBufferOnly = false;
+		public float defaultAlphaTest = 0.5f;
 
 		public Config () {
 			super();
@@ -56,28 +60,14 @@ public class DepthShader extends DefaultShader {
 	}
 
 	public static String createPrefix (final Renderable renderable, final Config config) {
-		String prefix = "";
-		final long mask = renderable.material.getMask();
-		final long attributes = renderable.mesh.getVertexAttributes().getMask();
-		if ((attributes & Usage.BoneWeight) == Usage.BoneWeight) {
-			final int n = renderable.mesh.getVertexAttributes().size();
-			for (int i = 0; i < n; i++) {
-				final VertexAttribute attr = renderable.mesh.getVertexAttributes().get(i);
-				if (attr.usage == Usage.BoneWeight) prefix += "#define boneWeight" + attr.unit + "Flag\n";
-			}
-		}
-		// FIXME Add transparent texture support
-// if ((mask & BlendingAttribute.Type) == BlendingAttribute.Type)
-// prefix += "#define "+BlendingAttribute.Alias+"Flag\n";
-// if ((mask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse)
-// prefix += "#define "+TextureAttribute.DiffuseAlias+"Flag\n";
-		if (renderable.bones != null && config.numBones > 0) prefix += "#define numBones " + config.numBones + "\n";
+		String prefix = DefaultShader.createPrefix(renderable, config);
 		if (!config.depthBufferOnly) prefix += "#define PackedDepthFlag\n";
 		return prefix;
 	}
 
 	public final int numBones;
 	public final int weights;
+	private final FloatAttribute alphaTestAttribute;
 
 	public DepthShader (final Renderable renderable) {
 		this(renderable, new Config());
@@ -107,6 +97,7 @@ public class DepthShader extends DefaultShader {
 			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
 		}
 		weights = w;
+		alphaTestAttribute = new FloatAttribute(FloatAttribute.AlphaTest, config.defaultAlphaTest);
 	}
 
 	@Override
@@ -124,6 +115,12 @@ public class DepthShader extends DefaultShader {
 
 	@Override
 	public boolean canRender (Renderable renderable) {
+		if (renderable.material.has(BlendingAttribute.Type)) {
+			if ((materialMask & BlendingAttribute.Type) != BlendingAttribute.Type)
+				return false;
+			if (renderable.material.has(TextureAttribute.Diffuse) != ((materialMask & TextureAttribute.Diffuse) == TextureAttribute.Diffuse))
+				return false;
+		}
 		final boolean skinned = ((renderable.mesh.getVertexAttributes().getMask() & Usage.BoneWeight) == Usage.BoneWeight);
 		if (skinned != (numBones > 0)) return false;
 		if (!skinned) return true;
@@ -134,5 +131,22 @@ public class DepthShader extends DefaultShader {
 			if (attr.usage == Usage.BoneWeight) w |= (1 << attr.unit);
 		}
 		return w == weights;
+	}
+	
+	@Override
+	public void render (final Renderable renderable) {
+		if (renderable.material.has(BlendingAttribute.Type)) {
+			final BlendingAttribute blending = (BlendingAttribute)renderable.material.get(BlendingAttribute.Type);
+			renderable.material.remove(BlendingAttribute.Type);
+			final boolean hasAlphaTest = renderable.material.has(FloatAttribute.AlphaTest);
+			if (!hasAlphaTest)
+				renderable.material.set(alphaTestAttribute);
+			if (blending.opacity >= ((FloatAttribute)renderable.material.get(FloatAttribute.AlphaTest)).value)
+				super.render(renderable);
+			if (!hasAlphaTest)
+				renderable.material.remove(FloatAttribute.AlphaTest);
+			renderable.material.set(blending);
+		} else
+			super.render(renderable);
 	}
 }

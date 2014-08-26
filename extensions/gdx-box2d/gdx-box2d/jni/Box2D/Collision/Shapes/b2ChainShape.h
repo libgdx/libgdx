@@ -37,6 +37,9 @@ public:
 	/// The destructor frees the vertices using b2Free.
 	~b2ChainShape();
 
+	/// Clear all data.
+	void Clear();
+
 	/// Create a loop. This automatically adjusts connectivity.
 	/// @param vertices an array of vertices, these are copied
 	/// @param count the vertex count
@@ -108,8 +111,8 @@ inline b2ChainShape::b2ChainShape()
 	m_radius = b2_polygonRadius;
 	m_vertices = NULL;
 	m_count = 0;
-	m_hasPrevVertex = NULL;
-	m_hasNextVertex = NULL;
+	m_hasPrevVertex = false;
+	m_hasNextVertex = false;
 }
 
 #endif

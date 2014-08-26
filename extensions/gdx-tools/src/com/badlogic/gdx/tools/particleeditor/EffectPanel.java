@@ -199,6 +199,15 @@ class EffectPanel extends JPanel {
 			StreamUtils.closeQuietly(fileWriter);
 		}
 	}
+	
+	void duplicateEmitter() {
+		int row = emitterTable.getSelectedRow();
+		if (row == -1) return;
+		
+		String name = (String)emitterTableModel.getValueAt(row, 0);
+		
+		addEmitter(name, true, new ParticleEmitter(editor.effect.getEmitters().get(row)));
+	}
 
 	void deleteEmitter () {
 		if (editor.effect.getEmitters().size == 1) return;
@@ -246,6 +255,16 @@ class EffectPanel extends JPanel {
 				newButton.addActionListener(new ActionListener() {
 					public void actionPerformed (ActionEvent event) {
 						newEmitter("Untitled", true);
+					}
+				});
+			}
+			{
+				JButton newButton = new JButton("Duplicate");
+				sideButtons.add(newButton, new GridBagConstraints(0, -1, 1, 1, 0, 0, GridBagConstraints.CENTER,
+					GridBagConstraints.HORIZONTAL, new Insets(0, 0, 6, 0), 0, 0));
+				newButton.addActionListener(new ActionListener() {
+					public void actionPerformed (ActionEvent event) {
+						duplicateEmitter();
 					}
 				});
 			}

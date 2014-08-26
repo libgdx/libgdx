@@ -20,11 +20,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.lang.IllegalArgumentException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net.HttpRequest;
 import com.badlogic.gdx.Net.HttpResponseListener;
 import com.badlogic.gdx.net.HttpStatus;
@@ -59,11 +62,13 @@ public interface Net {
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public static interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
+		 * <p><b>Note</b>: This method may only be called once per response.</p>
 		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		byte[] getResult ();
 
 		/** Returns the data of the HTTP response as a {@link String}.
+		 * <p><b>Note</b>: This method may only be called once per response.</p>
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		String getResultAsString ();
@@ -144,6 +149,8 @@ public interface Net {
 		private String content;
 		private InputStream contentStream;
 		private long contentLength;
+		
+		private boolean followRedirects = true;
 
 		/** Creates a new HTTP request with the specified HTTP method, see {@link HttpMethods}.
 		 * @param httpMethod This is the HTTP method for the request, see {@link HttpMethods} */
@@ -187,6 +194,19 @@ public interface Net {
 		public void setTimeOut (int timeOut) {
 			this.timeOut = timeOut;
 		}
+		
+		/** Sets whether 301 and 302 redirects are followed. By default true.
+		 * Can't be changed in the GWT backend because this uses XmlHttpRequests which always redirect.
+		 * @param followRedirects whether to follow redirects.
+		 * @exception IllegalArgumentException if redirection is disabled on the GWT backend.*/
+		public void setFollowRedirects (boolean followRedirects) throws IllegalArgumentException {
+			if (followRedirects == true || Gdx.app.getType() != ApplicationType.WebGL) {
+				this.followRedirects = followRedirects;
+			}
+			else {
+				throw new IllegalArgumentException("Following redirects can't be disabled using the GWT/WebGL backend!");
+			}
+		}
 
 		/** Returns the timeOut of the HTTP request.
 		 * @return the timeOut. */
@@ -222,6 +242,12 @@ public interface Net {
 		/** Returns a Map<String, String> with the headers of the HTTP request. */
 		public Map<String, String> getHeaders () {
 			return headers;
+		}
+		
+		/** Returns whether 301 and 302 redirects are followed. By default true.
+		 *  Whether to follow redirects. */
+		public boolean getFollowRedirects() {
+			return followRedirects;
 		}
 
 	}

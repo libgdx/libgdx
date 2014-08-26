@@ -77,11 +77,17 @@ public abstract class OpenALMusic implements Music {
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
+			int filled = 0; // check if there's anything to play actually, see #1770
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				if (!fill(bufferID)) break;
+				filled++;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
+			if(filled == 0) {
+				if(onCompletionListener != null) onCompletionListener.onCompletion(this);
+			}
+			
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
 				return;
@@ -154,6 +160,11 @@ public abstract class OpenALMusic implements Music {
 	/** Resets the stream to the beginning. */
 	abstract public void reset ();
 
+	/** By default, does just the same as reset(). Used to add special behaviour in Ogg.Music. */
+	protected void loop () {
+		reset();
+	}
+
 	public int getChannels () {
 		return format == AL_FORMAT_STEREO16 ? 2 : 1;
 	}
@@ -192,7 +203,7 @@ public abstract class OpenALMusic implements Music {
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
-				reset();
+				loop();
 				renderedSeconds = 0;
 				length = read(tempBytes);
 				if (length <= 0) return false;

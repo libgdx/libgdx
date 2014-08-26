@@ -113,13 +113,15 @@ public class VertexArray implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				byteBuffer.position(attribute.offset);
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+				if (attribute.type == GL20.GL_FLOAT) {
+					buffer.position(attribute.offset / 4);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+							buffer);
+				} else {
+					byteBuffer.position(attribute.offset);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
 						byteBuffer);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
-						byteBuffer);
+				}
 			}
 		} else {
 			for (int i = 0; i < numAttributes; i++) {
@@ -128,13 +130,15 @@ public class VertexArray implements VertexData {
 				if (location < 0) continue;
 				shader.enableVertexAttribute(location);
 
-				byteBuffer.position(attribute.offset);
-				if (attribute.usage == Usage.ColorPacked)
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_UNSIGNED_BYTE, true, attributes.vertexSize,
+				if (attribute.type == GL20.GL_FLOAT) {
+					buffer.position(attribute.offset / 4);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
+							buffer);
+				} else {
+					byteBuffer.position(attribute.offset);
+					shader.setVertexAttribute(location, attribute.numComponents, attribute.type, attribute.normalized, attributes.vertexSize,
 						byteBuffer);
-				else
-					shader.setVertexAttribute(location, attribute.numComponents, GL20.GL_FLOAT, false, attributes.vertexSize,
-						byteBuffer);
+				}
 			}
 		}
 		isBound = true;

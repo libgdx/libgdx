@@ -90,8 +90,7 @@ public class Matrix4 implements Serializable {
 
 	/** Constructs a matrix from the given float array. The array must have at least 16 elements; the first 16 will be copied.
 	 * @param values The float array to copy. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order. (The float array is
-	 *           not modified.) */
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order. (The float array is not modified) */
 	public Matrix4 (float[] values) {
 		this.set(values);
 	}
@@ -122,7 +121,7 @@ public class Matrix4 implements Serializable {
 	 * copied.
 	 * 
 	 * @param values The matrix, in float form, that is to be copied. Remember that this matrix is in <a
-	 *           href="http://en.wikipedia.org/wiki/Row-major_order#Column-major_order">column major</a> order.
+	 *           href="http://en.wikipedia.org/wiki/Row-major_order">column major</a> order.
 	 * @return This matrix for the purpose of chaining methods together. */
 	public Matrix4 set (float[] values) {
 		System.arraycopy(values, 0, val, 0, val.length);
@@ -261,9 +260,9 @@ public class Matrix4 implements Serializable {
 		val[M10] = yAxis.x;
 		val[M11] = yAxis.y;
 		val[M12] = yAxis.z;
-		val[M20] = -zAxis.x;
-		val[M21] = -zAxis.y;
-		val[M22] = -zAxis.z;
+		val[M20] = zAxis.x;
+		val[M21] = zAxis.y;
+		val[M22] = zAxis.z;
 		val[M03] = pos.x;
 		val[M13] = pos.y;
 		val[M23] = pos.z;
@@ -660,6 +659,7 @@ public class Matrix4 implements Serializable {
 	}
 
 	static Quaternion quat = new Quaternion();
+	static Quaternion quat2 = new Quaternion();
 
 	/** Sets the matrix to a rotation matrix around the given axis.
 	 * 
@@ -828,7 +828,7 @@ public class Matrix4 implements Serializable {
 		right.set(tmpForward).crs(up).nor();
 		tmpUp.set(right).crs(tmpForward).nor();
 
-		this.set(right, tmpUp, tmpForward, position);
+		this.set(right, tmpUp, tmpForward.scl(-1), position);
 		return this;
 	}
 
@@ -848,6 +848,119 @@ public class Matrix4 implements Serializable {
 		return this;
 	}
 
+	/**
+	 * Averages the given transform with this one and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * @param other The other transform
+	 * @param w Weight of this transform; weight of the other transform is (1 - w)
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4 other, float w) {
+
+		//Get this and other matrix's scale component
+		getScale(tmpVec);
+		other.getScale(tmpForward);
+		
+		//Get this and other matrix's rotation component
+		getRotation(quat);
+		other.getRotation(quat2);
+		
+		//Get this and other matrix's translation component
+		getTranslation(tmpUp);
+		other.getTranslation(right);
+		
+		//Calculate scale components
+		setToScaling(tmpVec.scl(w).add(tmpForward.scl(1 - w)));
+
+		//Calculate rotation components
+		rotate(quat.slerp(quat2, 1 - w));
+
+		//Calculate translation components
+		setTranslation(tmpUp.scl(w).add(right.scl(1 - w)));
+		
+		return this;
+	}
+	
+	/**
+	 * Averages the given transforms and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * Does not destroy the data contained in t.
+	 * @param t List of transforms
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4[] t) {
+		final float w = 1.0f/t.length;
+
+		//Initialize scale components
+		tmpVec.set(t[0].getScale(tmpUp).scl(w));
+		
+		//Initialize rotation components
+		quat.set(t[0].getRotation(quat2).exp(w));
+		
+		//Initialize translation components
+		tmpForward.set(t[0].getTranslation(tmpUp).scl(w));
+		
+		//Continue calculating
+		for(int i=1;i<t.length;i++){
+			
+			//Calculate scale components
+			tmpVec.add(t[i].getScale(tmpUp).scl(w));
+			
+			//Calculate rotation components
+			quat.mul(t[i].getRotation(quat2).exp(w));
+			
+			//Calculate translation components
+			tmpForward.add(t[i].getTranslation(tmpUp).scl(w));
+		}
+		quat.nor();
+		
+		//Set calculated components to this matrix
+		setToScaling(tmpVec);
+		rotate(quat);
+		setTranslation(tmpForward);
+
+		return this;
+	}
+
+	/**
+	 * Averages the given transforms with the given weights and stores the result in this matrix.
+	 * Translations and scales are lerped while rotations are slerped. 
+	 * Does not destroy the data contained in t or w;
+	 * Sum of w_i must be equal to 1, or unexpected results will occur.
+	 * @param t List of transforms
+	 * @param w List of weights
+	 * @return This matrix for chaining */
+	public Matrix4 avg (Matrix4[] t, float[] w) {
+
+		//Initialize scale components
+		tmpVec.set(t[0].getScale(tmpUp).scl(w[0]));
+		
+		//Initialize rotation components
+		quat.set(t[0].getRotation(quat2).exp(w[0]));
+		
+		//Initialize translation components
+		tmpForward.set(t[0].getTranslation(tmpUp).scl(w[0]));
+		
+		//Continue calculating
+		for(int i=1;i<t.length;i++){
+			
+			//Calculate scale components
+			tmpVec.add(t[i].getScale(tmpUp).scl(w[i]));
+			
+			//Calculate rotation components
+			quat.mul(t[i].getRotation(quat2).exp(w[i]));
+			
+			//Calculate translation components
+			tmpForward.add(t[i].getTranslation(tmpUp).scl(w[i]));
+		}
+		quat.nor();
+		
+		//Set calculated components to this matrix
+		setToScaling(tmpVec);
+		rotate(quat);
+		setTranslation(tmpForward);
+
+		return this;
+	}
+	
 	/** Sets this matrix to the given 3x3 matrix. The third column of this matrix is set to (0,0,1,0).
 	 * @param mat the matrix */
 	public Matrix4 set (Matrix3 mat) {
@@ -930,22 +1043,24 @@ public class Matrix4 implements Serializable {
 
 	/** @return the scale factor on the X axis (non-negative) */
 	public float getScaleX () {
-		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? val[Matrix4.M00] : (float)Math
-			.sqrt(getScaleXSquared());
+		return (MathUtils.isZero(val[Matrix4.M01]) && MathUtils.isZero(val[Matrix4.M02])) ? Math.abs(val[Matrix4.M00])
+			: (float)Math.sqrt(getScaleXSquared());
 	}
 
 	/** @return the scale factor on the Y axis (non-negative) */
 	public float getScaleY () {
-		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? val[Matrix4.M11] : (float)Math
-			.sqrt(getScaleYSquared());
+		return (MathUtils.isZero(val[Matrix4.M10]) && MathUtils.isZero(val[Matrix4.M12])) ? Math.abs(val[Matrix4.M11])
+			: (float)Math.sqrt(getScaleYSquared());
 	}
 
 	/** @return the scale factor on the X axis (non-negative) */
 	public float getScaleZ () {
-		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? val[Matrix4.M22] : (float)Math
-			.sqrt(getScaleZSquared());
+		return (MathUtils.isZero(val[Matrix4.M20]) && MathUtils.isZero(val[Matrix4.M21])) ? Math.abs(val[Matrix4.M22])
+			: (float)Math.sqrt(getScaleZSquared());
 	}
 
+	/** @param scale The vector which will receive the (non-negative) scale components on each axis.
+	 * @return The provided vector for chaining. */
 	public Vector3 getScale (Vector3 scale) {
 		return scale.set(getScaleX(), getScaleY(), getScaleZ());
 	}
@@ -1050,7 +1165,7 @@ public class Matrix4 implements Serializable {
 			* val[M12] * val[M31] + val[M01] * val[M10] * val[M32] - val[M00] * val[M11] * val[M32];
 		tmp[M33] = val[M01] * val[M12] * val[M20] - val[M02] * val[M11] * val[M20] + val[M02] * val[M10] * val[M21] - val[M00]
 			* val[M12] * val[M21] - val[M01] * val[M10] * val[M22] + val[M00] * val[M11] * val[M22];
-	
+
 		float inv_det = 1.0f / l_det;
 		val[M00] = tmp[M00] * inv_det;
 		val[M01] = tmp[M01] * inv_det;
@@ -1070,7 +1185,7 @@ public class Matrix4 implements Serializable {
 		val[M33] = tmp[M33] * inv_det;
 		return true;
 	}
-	
+
 	static inline void matrix4_mulVec(float* mat, float* vec) {
 		float x = vec[0] * mat[M00] + vec[1] * mat[M01] + vec[2] * mat[M02] + mat[M03];
 		float y = vec[0] * mat[M10] + vec[1] * mat[M11] + vec[2] * mat[M12] + mat[M13];

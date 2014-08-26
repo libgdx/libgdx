@@ -100,6 +100,11 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return maxListCount;
 	}
 
+	protected void setStage (Stage stage) {
+		if (stage == null) hideList();
+		super.setStage(stage);
+	}
+
 	public void setStyle (SelectBoxStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
@@ -112,52 +117,56 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return style;
 	}
 
+	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (T... newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
-
 		items.clear();
 		items.addAll(newItems);
-
 		scroll.list.setItems(items);
-
 		invalidateHierarchy();
 	}
 
+	/** Set the backing Array that makes up the choices available in the SelectBox */
 	public void setItems (Array<T> newItems) {
 		if (newItems == null) throw new IllegalArgumentException("newItems cannot be null.");
-
 		items.clear();
 		items.addAll(newItems);
-
 		scroll.list.setItems(items);
-
 		invalidateHierarchy();
 	}
 
+	/** Retrieve the backing Array that makes up the chocies available in the SelectBox
+	 * @see SelectBox#setItems(Array) */
 	public Array<T> getItems () {
 		return items;
 	}
 
+	@Override
 	public void layout () {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
 
-		prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
-			bg.getMinHeight());
+		if(bg != null)
+			prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
+				bg.getMinHeight());
+		else
+			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
 		float maxItemWidth = 0;
 		for (int i = 0; i < items.size; i++)
 			maxItemWidth = Math.max(font.getBounds(items.get(i).toString()).width, maxItemWidth);
 
-		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + maxItemWidth;
+		prefWidth = maxItemWidth;
+		if (bg != null)
+			prefWidth += bg.getLeftWidth() + bg.getRightWidth();
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
 		prefWidth = Math.max(
 			prefWidth,
 			maxItemWidth
-				+ scrollStyle.background.getLeftWidth()
-				+ scrollStyle.background.getRightWidth()
+				+ (scrollStyle.background == null ? 0 : scrollStyle.background.getLeftWidth()
+					+ scrollStyle.background.getRightWidth())
 				+ listStyle.selection.getLeftWidth()
 				+ listStyle.selection.getRightWidth()
 				+ Math.max(style.scrollStyle.vScroll != null ? style.scrollStyle.vScroll.getMinWidth() : 0,
@@ -175,8 +184,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			background = style.backgroundOpen;
 		else if (clickListener.isOver() && style.backgroundOver != null)
 			background = style.backgroundOver;
-		else
+		else if (style.background != null)
 			background = style.background;
+		else
+			background = null;
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : style.fontColor;
 
@@ -187,30 +198,39 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		background.draw(batch, x, y, width, height);
+		if (background != null)
+			background.draw(batch, x, y, width, height);
+
 		T selected = this.selected != null ? this.selected : selection.first();
 		if (selected != null) {
-			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
 			String string = selected.toString();
-			int numGlyphs = font.computeVisibleGlyphs(string, 0, string.length(), availableWidth);
 			bounds.set(font.getBounds(string));
-			height -= background.getBottomHeight() + background.getTopHeight();
-			float textY = (int)(height / 2 + background.getBottomHeight() + bounds.height / 2);
+			if (background != null) {
+				width -= background.getLeftWidth() + background.getRightWidth();
+				height -= background.getBottomHeight() + background.getTopHeight();
+				x += background.getLeftWidth();
+				y += (int)(height / 2 + background.getBottomHeight() + bounds.height / 2);
+			} else {
+				y += (int)(height / 2 + bounds.height / 2);
+			}
+			int numGlyphs = font.computeVisibleGlyphs(string, 0, string.length(), width);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, string, x + background.getLeftWidth(), y + textY, 0, numGlyphs);
+			font.draw(batch, string, x, y, 0, numGlyphs);
 		}
 	}
 
+	/** Get the set of selected items, useful when multiple items are selected
+	 * @return a Selection object containing the selected elements */
 	public Selection<T> getSelection () {
 		return selection;
 	}
 
-	/** Returns the first selected item, or null. */
+	/** Returns the first selected item, or null. For multiple selections use {@link SelectBox#getSelection()} */
 	public T getSelected () {
 		return selection.first();
 	}
 
-	/** Sets the selection to only the item if found, else selects the first item. */
+	/** Sets the selection to only the passed item, if it is a possible choice, else selects the first item. */
 	public void setSelected (T item) {
 		if (items.contains(item, false))
 			selection.set(item);
@@ -322,8 +342,11 @@ public class SelectBox<T> extends Widget implements Disableable {
 			// Show the list above or below the select box, limited to a number of items and the available height in the stage.
 			float itemHeight = list.getItemHeight();
 			float height = itemHeight * (maxListCount <= 0 ? items.size : Math.min(maxListCount, items.size));
-			Drawable background = getStyle().background;
-			if (background != null) height += background.getTopHeight() + background.getBottomHeight();
+			Drawable scrollPaneBackground = getStyle().background;
+			if (scrollPaneBackground != null)
+				height += scrollPaneBackground.getTopHeight() + scrollPaneBackground.getBottomHeight();
+			Drawable listBackground = list.getStyle().background;
+			if (listBackground != null) height += listBackground.getTopHeight() + listBackground.getBottomHeight();
 
 			float heightBelow = tmpCoords.y;
 			float heightAbove = stage.getCamera().viewportHeight - tmpCoords.y - SelectBox.this.getHeight();
@@ -380,6 +403,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
 		public Color disabledFontColor;
+		/** Optional. */
 		public Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;

@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -107,7 +107,7 @@ public class FrameBuffer implements Disposable {
 	}
 
 	private void build () {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 
 		// iOS uses a different framebuffer handle! (not necessarily 0)
 		if (!defaultFramebufferHandleInitialized) {
@@ -181,7 +181,7 @@ public class FrameBuffer implements Disposable {
 
 	/** Releases all resources associated with the FrameBuffer. */
 	public void dispose () {
-		GL20 gl = Gdx.graphics.getGL20();
+		GL20 gl = Gdx.gl20;
 
 		IntBuffer handle = BufferUtils.newIntBuffer(1);
 
@@ -202,12 +202,12 @@ public class FrameBuffer implements Disposable {
 
 	/** Makes the frame buffer current so everything gets drawn to it. */
 	public void bind () {
-		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
+		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, framebufferHandle);
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
 	public static void unbind () {
-		Gdx.graphics.getGL20().glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
+		Gdx.gl20.glBindFramebuffer(GL20.GL_FRAMEBUFFER, defaultFramebufferHandle);
 	}
 
 	/** Binds the frame buffer and sets the viewport accordingly, so everything gets drawn to it. */
@@ -218,7 +218,7 @@ public class FrameBuffer implements Disposable {
 
 	/** Sets viewport to the dimensions of framebuffer. Called by {@link #begin()}. */
 	protected void setFrameBufferViewport () {
-		Gdx.graphics.getGL20().glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
+		Gdx.gl20.glViewport(0, 0, colorTexture.getWidth(), colorTexture.getHeight());
 	}
 
 	/** Unbinds the framebuffer, all drawing will be performed to the normal framebuffer from here on. */
@@ -229,7 +229,7 @@ public class FrameBuffer implements Disposable {
 
 	/** Sets viewport to the dimensions of default framebuffer (window). Called by {@link #end()}. */
 	protected void setDefaultFrameBufferViewport () {
-		Gdx.graphics.getGL20().glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	/** Unbinds the framebuffer and sets viewport sizes, all drawing will be performed to the normal framebuffer from here on.
@@ -240,7 +240,7 @@ public class FrameBuffer implements Disposable {
 	 * @param height the height of the viewport in pixels */
 	public void end (int x, int y, int width, int height) {
 		unbind();
-		Gdx.graphics.getGL20().glViewport(x, y, width, height);
+		Gdx.gl20.glViewport(x, y, width, height);
 	}
 
 	/** @return the color buffer texture */
@@ -268,7 +268,7 @@ public class FrameBuffer implements Disposable {
 	/** Invalidates all frame buffers. This can be used when the OpenGL context is lost to rebuild all managed frame buffers. This
 	 * assumes that the texture attached to this buffer has already been rebuild! Use with care. */
 	public static void invalidateAllFrameBuffers (Application app) {
-		if (Gdx.graphics.getGL20() == null) return;
+		if (Gdx.gl20 == null) return;
 
 		Array<FrameBuffer> bufferArray = buffers.get(app);
 		if (bufferArray == null) return;

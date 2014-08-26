@@ -174,11 +174,10 @@ public class Scene2dTest extends GdxTest {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-		Table.drawDebug(stage);
 
-		stage.getSpriteBatch().begin();
-		patch.draw(stage.getSpriteBatch(), 300, 100, 126, 126);
-		stage.getSpriteBatch().end();
+		stage.getBatch().begin();
+		patch.draw(stage.getBatch(), 300, 100, 126, 126);
+		stage.getBatch().end();
 	}
 
 	public void resize (int width, int height) {

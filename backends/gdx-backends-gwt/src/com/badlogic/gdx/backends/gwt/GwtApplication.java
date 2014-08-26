@@ -217,7 +217,7 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 		runnablesHelper.clear();					
 		listener.render();
-		input.justTouched = false;
+		input.reset();
 	}
 	
 	public Panel getRootPanel () {

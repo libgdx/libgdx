@@ -23,14 +23,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent.Type;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Table.Debug;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener.FocusEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool.Poolable;
@@ -53,15 +59,15 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * The Stage and its constituents (like Actors and Listeners) are not thread-safe and should only be updated and queried from a
  * single thread (presumably the main render thread). Methods should be reentrant, so you can update Actors and Stages from within
  * callbacks and handlers.
- * 
  * @author mzechner
  * @author Nathan Sweet */
 public class Stage extends InputAdapter implements Disposable {
 	static private final Vector2 actorCoords = new Vector2();
+	static boolean debug;
 
 	private Viewport viewport;
 	private final Batch batch;
-	private final boolean ownsBatch;
+	private boolean ownsBatch;
 	private final Group root;
 	private final Vector2 stageCoords = new Vector2();
 	private final Actor[] pointerOverActors = new Actor[20];
@@ -73,26 +79,34 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
 
-	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#fill}. The stage will use its own {@link Batch}. */
+	private ShapeRenderer debugShapes;
+	private boolean debugInvisible, debugAll, debugUnderMouse, debugParentUnderMouse;
+	private Debug debugTableUnderMouse = Debug.none;
+	private final Color debugColor = new Color(0, 1, 0, 0.85f);
+
+	/** Creates a stage with a {@link ScalingViewport} set to {@link Scaling#fill}. The stage will use its own {@link Batch} which
+	 * will be disposed when the stage is disposed. */
 	public Stage () {
 		this(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new OrthographicCamera()),
-			null);
+			new SpriteBatch());
+		ownsBatch = true;
 	}
 
-	/** Creates a stage with the specified viewport. The stage will use its own {@link Batch}, which will be disposed when the stage
+	/** Creates a stage with the specified viewport. The stage will use its own {@link Batch} which will be disposed when the stage
 	 * is disposed. */
 	public Stage (Viewport viewport) {
-		this(viewport, null);
+		this(viewport, new SpriteBatch());
+		ownsBatch = true;
 	}
 
-	/** Creates a stage with the specified {@link Viewport} and {@link Batch}. This can be used to avoid creating a new Batch (which
-	 * can be somewhat slow) if multiple stages are used during an application's life time.
-	 * @param batch Will not be disposed if {@link #dispose()} is called. Handle disposal yourself. */
+	/** Creates a stage with the specified viewport and batch. This can be used to avoid creating a new batch (which can be somewhat
+	 * slow) if multiple stages are used during an application's life time.
+	 * @param batch Will not be disposed if {@link #dispose()} is called, handle disposal yourself. */
 	public Stage (Viewport viewport, Batch batch) {
+		if (viewport == null) throw new IllegalArgumentException("viewport cannot be null.");
+		if (batch == null) throw new IllegalArgumentException("batch cannot be null.");
 		this.viewport = viewport;
-
-		ownsBatch = batch == null;
-		this.batch = ownsBatch ? new SpriteBatch() : batch;
+		this.batch = batch;
 
 		root = new Group();
 		root.setStage(this);
@@ -103,11 +117,67 @@ public class Stage extends InputAdapter implements Disposable {
 	public void draw () {
 		Camera camera = viewport.getCamera();
 		camera.update();
+
 		if (!root.isVisible()) return;
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		root.draw(batch, 1);
-		batch.end();
+
+		Batch batch = this.batch;
+		if (batch != null) {
+			batch.setProjectionMatrix(camera.combined);
+			batch.begin();
+			root.draw(batch, 1);
+			batch.end();
+		}
+
+		if (debug) drawDebug();
+	}
+
+	private void drawDebug () {
+		if (debugShapes == null) {
+			debugShapes = new ShapeRenderer();
+			debugShapes.setAutoShapeType(true);
+		}
+
+		if (debugUnderMouse || debugParentUnderMouse || debugTableUnderMouse != Debug.none) {
+			screenToStageCoordinates(stageCoords.set(Gdx.input.getX(), Gdx.input.getY()));
+			Actor actor = hit(stageCoords.x, stageCoords.y, true);
+			if (actor == null) return;
+
+			if (debugParentUnderMouse && actor.parent != null) actor = actor.parent;
+
+			if (debugTableUnderMouse == Debug.none)
+				actor.setDebug(true);
+			else {
+				while (actor != null) {
+					if (actor instanceof Table) break;
+					actor = actor.parent;
+				}
+				if (actor == null) return;
+				((Table)actor).debug(debugTableUnderMouse);
+			}
+
+			if (debugAll && actor instanceof Group) ((Group)actor).debugAll();
+
+			disableDebug(root, actor);
+		} else {
+			if (debugAll) root.debugAll();
+		}
+
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		debugShapes.setProjectionMatrix(viewport.getCamera().combined);
+		debugShapes.begin();
+		root.drawDebug(debugShapes);
+		debugShapes.end();
+	}
+
+	/** Disables debug on all actors recursively except the specified actor and any children. */
+	private void disableDebug (Actor actor, Actor except) {
+		if (actor == except) return;
+		actor.setDebug(false);
+		if (actor instanceof Group) {
+			SnapshotArray<Actor> children = ((Group)actor).children;
+			for (int i = 0, n = children.size; i < n; i++)
+				disableDebug(children.get(i), except);
+		}
 	}
 
 	/** Calls {@link #act(float)} with {@link Graphics#getDeltaTime()}. */
@@ -180,9 +250,9 @@ public class Stage extends InputAdapter implements Disposable {
 
 	/** Applies a touch down event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event. */
 	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		if (screenX < viewport.getViewportX() || screenX >= viewport.getViewportX() + viewport.getViewportWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewport.getViewportY()
-			|| Gdx.graphics.getHeight() - screenY >= viewport.getViewportY() + viewport.getViewportHeight()) return false;
+		if (screenX < viewport.getScreenX() || screenX >= viewport.getScreenX() + viewport.getScreenWidth()) return false;
+		if (Gdx.graphics.getHeight() - screenY < viewport.getScreenY()
+			|| Gdx.graphics.getHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
 
 		pointerTouched[pointer] = true;
 		pointerScreenX[pointer] = screenX;
@@ -282,9 +352,9 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Applies a mouse moved event to the stage and returns true if an actor in the scene {@link Event#handle() handled} the event.
 	 * This event only occurs on the desktop. */
 	public boolean mouseMoved (int screenX, int screenY) {
-		if (screenX < viewport.getViewportX() || screenX >= viewport.getViewportX() + viewport.getViewportWidth()) return false;
-		if (Gdx.graphics.getHeight() - screenY < viewport.getViewportY()
-			|| Gdx.graphics.getHeight() - screenY >= viewport.getViewportY() + viewport.getViewportHeight()) return false;
+		if (screenX < viewport.getScreenX() || screenX >= viewport.getScreenX() + viewport.getScreenWidth()) return false;
+		if (Gdx.graphics.getHeight() - screenY < viewport.getScreenY()
+			|| Gdx.graphics.getHeight() - screenY >= viewport.getScreenY() + viewport.getScreenHeight()) return false;
 
 		mouseScreenX = screenX;
 		mouseScreenY = screenY;
@@ -446,7 +516,7 @@ public class Stage extends InputAdapter implements Disposable {
 	/** Returns the root's child actors.
 	 * @see Group#getChildren() */
 	public Array<Actor> getActors () {
-		return root.getChildren();
+		return root.children;
 	}
 
 	/** Adds a listener to the root.
@@ -554,7 +624,7 @@ public class Stage extends InputAdapter implements Disposable {
 		return scrollFocus;
 	}
 
-	public Batch getSpriteBatch () {
+	public Batch getBatch () {
 		return batch;
 	}
 
@@ -607,7 +677,7 @@ public class Stage extends InputAdapter implements Disposable {
 	 * @param stageCoords Input stage coordinates and output for resulting screen coordinates. */
 	public Vector2 stageToScreenCoordinates (Vector2 stageCoords) {
 		viewport.project(stageCoords);
-		stageCoords.y = viewport.getViewportHeight() - stageCoords.y;
+		stageCoords.y = viewport.getScreenHeight() - stageCoords.y;
 		return stageCoords;
 	}
 
@@ -619,8 +689,76 @@ public class Stage extends InputAdapter implements Disposable {
 		return viewport.toScreenCoordinates(coords, transformMatrix);
 	}
 
-	public void calculateScissors (Rectangle area, Rectangle scissor) {
-		viewport.calculateScissors(batch.getTransformMatrix(), area, scissor);
+	/** Calculates window scissor coordinates from local coordinates using the batch's current transformation matrix.
+	 * @see ScissorStack#calculateScissors(Camera, float, float, float, float, Matrix4, Rectangle, Rectangle) */
+	public void calculateScissors (Rectangle localRect, Rectangle scissorRect) {
+		viewport.calculateScissors(batch.getTransformMatrix(), localRect, scissorRect);
+		Matrix4 transformMatrix;
+		if (debugShapes != null && debugShapes.isDrawing())
+			transformMatrix = debugShapes.getTransformMatrix();
+		else
+			transformMatrix = batch.getTransformMatrix();
+		viewport.calculateScissors(transformMatrix, localRect, scissorRect);
+	}
+
+	/** The default color that can be used by actors to draw debug lines. */
+	public Color getDebugColor () {
+		return debugColor;
+	}
+
+	/** If true, debug lines are shown for actors even when {@link Actor#isVisible()} is false. */
+	public void setDebugInvisible (boolean debugInvisible) {
+		this.debugInvisible = debugInvisible;
+	}
+
+	/** If true, debug lines are shown for all actors. */
+	public void setDebugAll (boolean debugAll) {
+		if (this.debugAll == debugAll) return;
+		this.debugAll = debugAll;
+		if (debugAll)
+			debug = true;
+		else
+			root.setDebug(false, true);
+	}
+
+	/** If true, debug is enabled only for the actor under the mouse. Can be combined with {@link #setDebugAll(boolean)}. */
+	public void setDebugUnderMouse (boolean debugUnderMouse) {
+		if (this.debugUnderMouse == debugUnderMouse) return;
+		this.debugUnderMouse = debugUnderMouse;
+		if (debugUnderMouse)
+			debug = true;
+		else
+			root.setDebug(false, true);
+	}
+
+	/** If true, debug is enabled only for the parent of the actor under the mouse. Can be combined with
+	 * {@link #setDebugAll(boolean)}. */
+	public void setDebugParentUnderMouse (boolean debugParentUnderMouse) {
+		if (this.debugParentUnderMouse == debugParentUnderMouse) return;
+		this.debugParentUnderMouse = debugParentUnderMouse;
+		if (debugParentUnderMouse)
+			debug = true;
+		else
+			root.setDebug(false, true);
+	}
+
+	/** If not {@link Debug#none}, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can
+	 * be combined with {@link #setDebugAll(boolean)}.
+	 * @param debugTableUnderMouse May be null for {@link Debug#none}. */
+	public void setDebugTableUnderMouse (Debug debugTableUnderMouse) {
+		if (debugTableUnderMouse == null) debugTableUnderMouse = Debug.none;
+		if (this.debugTableUnderMouse == debugTableUnderMouse) return;
+		this.debugTableUnderMouse = debugTableUnderMouse;
+		if (debugTableUnderMouse != Debug.none)
+			debug = true;
+		else
+			root.setDebug(false, true);
+	}
+
+	/** If true, debug is enabled only for the first ascendant of the actor under the mouse that is a table. Can be combined with
+	 * {@link #setDebugAll(boolean)}. */
+	public void setDebugTableUnderMouse (boolean debugTableUnderMouse) {
+		setDebugTableUnderMouse(debugTableUnderMouse ? Debug.all : Debug.none);
 	}
 
 	public void dispose () {

@@ -42,10 +42,13 @@ import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.objects.PolylineMapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Polyline;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.LongArray;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.XmlReader;
@@ -55,8 +58,6 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader.Parameters> {
 
 	public static class Parameters extends AssetLoaderParameters<TiledMap> {
-		/** Whether to load the map for a y-up coordinate system */
-		public boolean yUp = true;
 		/** generate mipmaps? **/
 		public boolean generateMipMaps = false;
 		/** The TextureFilter to use for minification **/
@@ -74,7 +75,6 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
-	protected boolean yUp;
 	protected boolean convertObjectToTileSpace;
 
 	protected int mapTileWidth;
@@ -111,7 +111,6 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 	 * @return the TiledMap */
 	public TiledMap load (String fileName, TmxMapLoader.Parameters parameters) {
 		try {
-			this.yUp = parameters.yUp;
 			this.convertObjectToTileSpace = parameters.convertObjectToTileSpace;
 			FileHandle tmxFile = resolve(fileName);
 			root = xml.parse(tmxFile);
@@ -135,10 +134,8 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		map = null;
 
 		if (parameter != null) {
-			yUp = parameter.yUp;
 			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 		} else {
-			yUp = true;
 			convertObjectToTileSpace = false;
 		}
 		try {
@@ -289,6 +286,9 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			int margin = element.getIntAttribute("margin", 0);
 			String source = element.getAttribute("source", null);
 
+			int offsetX = 0;
+			int offsetY = 0;
+
 			String imageSource = "";
 			int imageWidth = 0, imageHeight = 0;
 
@@ -302,6 +302,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
+					Element offset = element.getChildByName("tileoffset");
+					if (offset != null) {
+						offsetX = offset.getIntAttribute("x", 0);
+						offsetY = offset.getIntAttribute("y", 0);
+					}
 					imageSource = element.getChildByName("image").getAttribute("source");
 					imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
 					imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
@@ -310,6 +315,11 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
+				Element offset = element.getChildByName("tileoffset");
+				if (offset != null) {
+					offsetX = offset.getIntAttribute("x", 0);
+					offsetY = offset.getIntAttribute("y", 0);
+				}
 				imageSource = element.getChildByName("image").getAttribute("source");
 				imageWidth = element.getChildByName("image").getIntAttribute("width", 0);
 				imageHeight = element.getChildByName("image").getIntAttribute("height", 0);
@@ -338,21 +348,38 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			for (int y = margin; y <= stopHeight; y += tileheight + spacing) {
 				for (int x = margin; x <= stopWidth; x += tilewidth + spacing) {
 					TextureRegion tileRegion = new TextureRegion(texture, x, y, tilewidth, tileheight);
-					if (!yUp) {
-						tileRegion.flip(false, true);
-					}
 					TiledMapTile tile = new StaticTiledMapTile(tileRegion);
 					tile.setId(id);
+					tile.setOffsetX(offsetX);
+					tile.setOffsetY(-offsetY);
 					tileset.putTile(id++, tile);
 				}
 			}
 
 			Array<Element> tileElements = element.getChildrenByName("tile");
 
+			Array<AnimatedTiledMapTile> animatedTiles = new Array<AnimatedTiledMapTile>();
+
 			for (Element tileElement : tileElements) {
 				int localtid = tileElement.getIntAttribute("id", 0);
 				TiledMapTile tile = tileset.getTile(firstgid + localtid);
 				if (tile != null) {
+					Element animationElement = tileElement.getChildByName("animation");
+					if (animationElement != null) {
+
+						Array<StaticTiledMapTile> staticTiles = new Array<StaticTiledMapTile>();
+						LongArray intervals = new LongArray();
+						for (Element frameElement: animationElement.getChildrenByName("frame")) {
+							staticTiles.add((StaticTiledMapTile) tileset.getTile(firstgid + frameElement.getIntAttribute("tileid")));
+							intervals.add(frameElement.getIntAttribute("duration"));
+						}
+
+						AnimatedTiledMapTile animatedTile = new AnimatedTiledMapTile(intervals, staticTiles);
+						animatedTile.setId(tile.getId());
+						animatedTiles.add(animatedTile);
+						tile = animatedTile;
+					}
+
 					String terrain = tileElement.getAttribute("terrain", null);
 					if (terrain != null) {
 						tile.getProperties().put("terrain", terrain);
@@ -366,6 +393,10 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 						loadProperties(tile.getProperties(), properties);
 					}
 				}
+			}
+
+			for (AnimatedTiledMapTile tile : animatedTiles) {
+				tileset.putTile(tile.getId(), tile);
 			}
 
 			Element properties = element.getChildByName("properties");
@@ -406,7 +437,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					if (tile != null) {
 						Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 						cell.setTile(tile);
-						layer.setCell(x, yUp ? height - 1 - y : y, cell);
+						layer.setCell(x, height - 1 - y, cell);
 					}
 				}
 			}
@@ -445,7 +476,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
 			float x = element.getFloatAttribute("x", 0) * scaleX;
-			float y = (yUp ? mapHeightInPixels - element.getFloatAttribute("y", 0) : element.getFloatAttribute("y", 0)) * scaleY;
+			float y = (mapHeightInPixels - element.getFloatAttribute("y", 0)) * scaleY;
 
 			float width = element.getFloatAttribute("width", 0) * scaleX;
 			float height = element.getFloatAttribute("height", 0) * scaleY;
@@ -458,10 +489,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
 						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY;
-						if (yUp) {
-							vertices[i * 2 + 1] *= -1;
-						}
+						vertices[i * 2 + 1] = -Float.parseFloat(point[1]) * scaleY;
 					}
 					Polygon polygon = new Polygon(vertices);
 					polygon.setPosition(x, y);
@@ -472,22 +500,23 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
 						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY;
-						if (yUp) {
-							vertices[i * 2 + 1] *= -1;
-						}
+						vertices[i * 2 + 1] = -Float.parseFloat(point[1]) * scaleY;
 					}
 					Polyline polyline = new Polyline(vertices);
 					polyline.setPosition(x, y);
 					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
-					object = new EllipseMapObject(x, yUp ? y - height : y, width, height);
+					object = new EllipseMapObject(x, y - height, width, height);
 				}
 			}
 			if (object == null) {
-				object = new RectangleMapObject(x, yUp ? y - height : y, width, height);
+				object = new RectangleMapObject(x, y - height, width, height);
 			}
 			object.setName(element.getAttribute("name", null));
+			String rotation = element.getAttribute("rotation", null);
+			if (rotation != null) {
+				object.getProperties().put("rotation", Float.parseFloat(rotation));
+			}
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
@@ -497,7 +526,7 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 				object.getProperties().put("gid", gid);
 			}
 			object.getProperties().put("x", x * scaleX);
-			object.getProperties().put("y", (yUp ? y - height : y) * scaleY);
+			object.getProperties().put("y", (y - height) * scaleY);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
@@ -525,14 +554,14 @@ public class TmxMapLoader extends AsynchronousAssetLoader<TiledMap, TmxMapLoader
 		if (flipDiagonally) {
 			if (flipHorizontally && flipVertically) {
 				cell.setFlipHorizontally(true);
-				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+				cell.setRotation(Cell.ROTATE_270);
 			} else if (flipHorizontally) {
-				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+				cell.setRotation(Cell.ROTATE_270);
 			} else if (flipVertically) {
-				cell.setRotation(yUp ? Cell.ROTATE_90 : Cell.ROTATE_270);
+				cell.setRotation(Cell.ROTATE_90);
 			} else {
 				cell.setFlipVertically(true);
-				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+				cell.setRotation(Cell.ROTATE_270);
 			}
 		} else {
 			cell.setFlipHorizontally(flipHorizontally);

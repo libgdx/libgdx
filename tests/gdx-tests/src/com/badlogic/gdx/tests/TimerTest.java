@@ -29,6 +29,6 @@ public class TimerTest extends GdxTest {
 			public void run () {
 				Gdx.app.log("TimerTest", "ping");
 			}
-		}, 0, 1);
+		}, 1, 1);
 	}
 }

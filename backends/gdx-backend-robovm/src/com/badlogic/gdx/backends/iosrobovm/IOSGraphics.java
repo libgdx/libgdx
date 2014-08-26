@@ -20,7 +20,6 @@ import org.robovm.apple.coregraphics.CGPoint;
 import org.robovm.apple.coregraphics.CGRect;
 import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.NSObject;
-import org.robovm.apple.foundation.NSSet;
 import org.robovm.apple.glkit.GLKView;
 import org.robovm.apple.glkit.GLKViewController;
 import org.robovm.apple.glkit.GLKViewControllerDelegate;
@@ -34,12 +33,14 @@ import org.robovm.apple.opengles.EAGLRenderingAPI;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIEvent;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
+import org.robovm.apple.uikit.UIInterfaceOrientationMask;
 import org.robovm.apple.uikit.UIScreen;
-import org.robovm.apple.uikit.UITouch;
 import org.robovm.apple.uikit.UIUserInterfaceIdiom;
 import org.robovm.objc.Selector;
 import org.robovm.objc.annotation.BindSelector;
+import org.robovm.objc.annotation.Method;
 import org.robovm.rt.bro.annotation.Callback;
+import org.robovm.rt.bro.annotation.Pointer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
@@ -63,6 +64,12 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		@Override
+		public void viewDidAppear(boolean animated) {
+			if (app.viewControllerListener != null)
+				app.viewControllerListener.viewDidAppear(animated);
+		}
+
+		@Override
 		public void didRotate (UIInterfaceOrientation orientation) {
 			super.didRotate(orientation);
 			// get the view size and update graphics
@@ -75,6 +82,23 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 			graphics.height = (int)bounds.height();
 			graphics.makeCurrent();
 			app.listener.resize(graphics.width, graphics.height);
+		}
+
+		@Override
+		public UIInterfaceOrientationMask getSupportedInterfaceOrientations() {
+			long mask = 0;
+			if (app.config.orientationLandscape) {
+				mask |= ((1 << UIInterfaceOrientation.LandscapeLeft.value()) | (1 << UIInterfaceOrientation.LandscapeRight.value()));
+			}
+			if (app.config.orientationPortrait) {
+				mask |= ((1 << UIInterfaceOrientation.Portrait.value()) | (1 << UIInterfaceOrientation.PortraitUpsideDown.value()));
+			}
+			return new UIInterfaceOrientationMask(mask);
+		}
+
+		@Override
+		public boolean shouldAutorotate() {
+			return true;
 		}
 
 		public boolean shouldAutorotateToInterfaceOrientation (UIInterfaceOrientation orientation) {
@@ -141,27 +165,23 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
 
 		view = new GLKView(new CGRect(new CGPoint(0, 0), bounds), context) {
-			@Override
-			public void touchesBegan (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesBegan(touches, event);
+			@Method(selector = "touchesBegan:withEvent:")
+			public void touchesBegan (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchDown(touches, event);
 			}
 
-			@Override
-			public void touchesCancelled (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesCancelled(touches, event);
+			@Method(selector = "touchesCancelled:withEvent:")
+			public void touchesCancelled (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
-			@Override
-			public void touchesEnded (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesEnded(touches, event);
+			@Method(selector = "touchesEnded:withEvent:")
+			public void touchesEnded (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchUp(touches, event);
 			}
 
-			@Override
-			public void touchesMoved (NSSet<UITouch> touches, UIEvent event) {
-				super.touchesMoved(touches, event);
+			@Method(selector = "touchesMoved:withEvent:")
+			public void touchesMoved (@Pointer long touches, UIEvent event) {
 				IOSGraphics.this.input.touchMoved(touches, event);
 			}
 
@@ -186,8 +206,6 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		this.app = app;
 		this.input = input;
 
-		// FIXME fix this if we add rgba/depth/stencil flags to
-		// IOSApplicationConfiguration
 		int r = 0, g = 0, b = 0, a = 0, depth = 0, stencil = 0, samples = 0;
 		if (config.colorFormat == GLKViewDrawableColorFormat.RGB565) {
 			r = 5;
@@ -259,7 +277,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	public void pause () {
 		if (paused) return;
 		paused = true;
-		
+
 		Array<LifecycleListener> listeners = app.lifecycleListeners;
 		synchronized (listeners) {
 			for (LifecycleListener listener : listeners) {
@@ -277,7 +295,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		// massive hack, GLKView resets the viewport on each draw call, so IOSGLES20
 		// stores the last known viewport and we reset it here...
 		gl20.glViewport(IOSGLES20.x, IOSGLES20.y, IOSGLES20.width, IOSGLES20.height);
-		
+
 		if (!created) {
 			gl20.glViewport(0, 0, width, height);
 			app.listener.create();

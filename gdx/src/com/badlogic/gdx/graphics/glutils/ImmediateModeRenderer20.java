@@ -45,6 +45,7 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 	private final int texCoordOffset;
 	private final Matrix4 projModelView = new Matrix4();
 	private final float[] vertices;
+	private final String[] shaderUniformNames;
 
 	public ImmediateModeRenderer20 (boolean hasNormals, boolean hasColors, int numTexCoords) {
 		this(5000, hasNormals, hasColors, numTexCoords, createDefaultShader(hasNormals, hasColors, numTexCoords));
@@ -71,6 +72,11 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 			: 0;
 		texCoordOffset = mesh.getVertexAttribute(Usage.TextureCoordinates) != null ? mesh
 			.getVertexAttribute(Usage.TextureCoordinates).offset / 4 : 0;
+			
+		shaderUniformNames = new String[numTexCoords];
+		for (int i = 0; i < numTexCoords; i++) {
+			shaderUniformNames[i] = "u_sampler" + i;
+		}
 	}
 
 	private VertexAttribute[] buildVertexAttributes (boolean hasNormals, boolean hasColor, int numTexCoords) {
@@ -131,12 +137,12 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		numVertices++;
 	}
 
-	public void end () {
+	public void flush () {
 		if (numVertices == 0) return;
 		shader.begin();
 		shader.setUniformMatrix("u_projModelView", projModelView);
 		for (int i = 0; i < numTexCoords; i++)
-			shader.setUniformi("u_sampler" + i, i);
+			shader.setUniformi(shaderUniformNames[i], i);
 		mesh.setVertices(vertices, 0, vertexIdx);
 		mesh.render(shader, primitiveType);
 		shader.end();
@@ -144,6 +150,10 @@ public class ImmediateModeRenderer20 implements ImmediateModeRenderer {
 		numSetTexCoords = 0;
 		vertexIdx = 0;
 		numVertices = 0;
+	}
+
+	public void end () {
+		flush();
 	}
 
 	public int getNumVertices () {

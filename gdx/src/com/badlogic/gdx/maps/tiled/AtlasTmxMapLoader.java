@@ -58,8 +58,6 @@ import com.badlogic.gdx.utils.XmlReader.Element;
 public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTmxMapLoader.AtlasTiledMapLoaderParameters> {
 
 	public static class AtlasTiledMapLoaderParameters extends AssetLoaderParameters<TiledMap> {
-		/** Whether to load the map for a y-up coordinate system */
-		public boolean yUp = true;
 		/** force texture filters? **/
 		public boolean forceTextureFilters = false;
 		/** The TextureFilter to use for minification, if forceTextureFilter is enabled **/
@@ -77,7 +75,6 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 
 	protected XmlReader xml = new XmlReader();
 	protected Element root;
-	protected boolean yUp;
 	protected boolean convertObjectToTileSpace;
 
 	protected int mapTileWidth;
@@ -159,10 +156,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 	public TiledMap load (String fileName, AtlasTiledMapLoaderParameters parameter) {
 		try {
 			if (parameter != null) {
-				yUp = parameter.yUp;
 				convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 			} else {
-				yUp = true;
 				convertObjectToTileSpace = false;
 			}
 
@@ -228,10 +223,8 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		map = null;
 
 		if (parameter != null) {
-			yUp = parameter.yUp;
 			convertObjectToTileSpace = parameter.convertObjectToTileSpace;
 		} else {
-			yUp = true;
 			convertObjectToTileSpace = false;
 		}
 
@@ -305,6 +298,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			int margin = element.getIntAttribute("margin", 0);
 			String source = element.getAttribute("source", null);
 
+			int offsetX = 0;
+			int offsetY = 0;
+
 			String imageSource = "";
 			int imageWidth = 0, imageHeight = 0;
 
@@ -318,6 +314,11 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					tileheight = element.getIntAttribute("tileheight", 0);
 					spacing = element.getIntAttribute("spacing", 0);
 					margin = element.getIntAttribute("margin", 0);
+					Element offset = element.getChildByName("tileoffset");
+					if (offset != null) {
+						offsetX = offset.getIntAttribute("x", 0);
+						offsetY = offset.getIntAttribute("y", 0);
+					}
 					Element imageElement = element.getChildByName("image");
 					imageSource = imageElement.getAttribute("source");
 					imageWidth = imageElement.getIntAttribute("width", 0);
@@ -326,6 +327,11 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					throw new GdxRuntimeException("Error parsing external tileset.");
 				}
 			} else {
+				Element offset = element.getChildByName("tileoffset");
+				if (offset != null) {
+					offsetX = offset.getIntAttribute("x", 0);
+					offsetY = offset.getIntAttribute("y", 0);
+				}
 				Element imageElement = element.getChildByName("image");
 				if (imageElement != null) {
 					imageSource = imageElement.getAttribute("source");
@@ -371,13 +377,10 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				// handle unused tile ids
 				if (region != null) {
 					StaticTiledMapTile tile = new StaticTiledMapTile(region);
-
-					if (!yUp) {
-						region.flip(false, true);
-					}
-
 					int tileid = firstgid + region.index;
 					tile.setId(tileid);
+					tile.setOffsetX(offsetX);
+					tile.setOffsetY(-offsetY);
 					tileset.putTile(tileid, tile);
 				}
 			}
@@ -394,8 +397,9 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 						AtlasRegion region = atlas.findRegion(regionName);
 						if (region == null) throw new GdxRuntimeException("Tileset region not found: " + regionName);
 						tile = new StaticTiledMapTile(region);
-						if (!yUp) region.flip(false, true);
 						tile.setId(tileid);
+						tile.setOffsetX(offsetX);
+						tile.setOffsetY(-offsetY);
 						tileset.putTile(tileid, tile);
 					}
 				}
@@ -450,7 +454,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					if (tile != null) {
 						Cell cell = createTileLayerCell(flipHorizontally, flipVertically, flipDiagonally);
 						cell.setTile(tile);
-						layer.setCell(x, yUp ? height - 1 - y : y, cell);
+						layer.setCell(x, height - 1 - y, cell);
 					}
 				}
 			}
@@ -489,7 +493,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 			float scaleY = convertObjectToTileSpace ? 1.0f / mapTileHeight : 1.0f;
 
 			float x = element.getFloatAttribute("x", 0) * scaleX;
-			float y = (yUp ? mapHeightInPixels - element.getFloatAttribute("y", 0) : element.getFloatAttribute("y", 0)) * scaleY;
+			float y = (mapHeightInPixels - element.getFloatAttribute("y", 0)) * scaleY;
 
 			float width = element.getFloatAttribute("width", 0) * scaleX;
 			float height = element.getFloatAttribute("height", 0) * scaleY;
@@ -502,10 +506,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
 						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY;
-						if (yUp) {
-							vertices[i * 2 + 1] *= -1;
-						}
+						vertices[i * 2 + 1] = -Float.parseFloat(point[1]) * scaleY;
 					}
 					Polygon polygon = new Polygon(vertices);
 					polygon.setPosition(x, y);
@@ -516,22 +517,23 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 					for (int i = 0; i < points.length; i++) {
 						String[] point = points[i].split(",");
 						vertices[i * 2] = Float.parseFloat(point[0]) * scaleX;
-						vertices[i * 2 + 1] = Float.parseFloat(point[1]) * scaleY;
-						if (yUp) {
-							vertices[i * 2 + 1] *= -1;
-						}
+						vertices[i * 2 + 1] = -Float.parseFloat(point[1]) * scaleY;
 					}
 					Polyline polyline = new Polyline(vertices);
 					polyline.setPosition(x, y);
 					object = new PolylineMapObject(polyline);
 				} else if ((child = element.getChildByName("ellipse")) != null) {
-					object = new EllipseMapObject(x, yUp ? y - height : y, width, height);
+					object = new EllipseMapObject(x, y - height, width, height);
 				}
 			}
 			if (object == null) {
-				object = new RectangleMapObject(x, yUp ? y - height : y, width, height);
+				object = new RectangleMapObject(x, y - height, width, height);
 			}
 			object.setName(element.getAttribute("name", null));
+			String rotation = element.getAttribute("rotation", null);
+			if (rotation != null) {
+				object.getProperties().put("rotation", Float.parseFloat(rotation));
+			}
 			String type = element.getAttribute("type", null);
 			if (type != null) {
 				object.getProperties().put("type", type);
@@ -541,7 +543,7 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 				object.getProperties().put("gid", gid);
 			}
 			object.getProperties().put("x", x * scaleX);
-			object.getProperties().put("y", (yUp ? y - height : y) * scaleY);
+			object.getProperties().put("y", (y - height) * scaleY);
 			object.setVisible(element.getIntAttribute("visible", 1) == 1);
 			Element properties = element.getChildByName("properties");
 			if (properties != null) {
@@ -569,14 +571,14 @@ public class AtlasTmxMapLoader extends AsynchronousAssetLoader<TiledMap, AtlasTm
 		if (flipDiagonally) {
 			if (flipHorizontally && flipVertically) {
 				cell.setFlipHorizontally(true);
-				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+				cell.setRotation(Cell.ROTATE_270);
 			} else if (flipHorizontally) {
-				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+				cell.setRotation(Cell.ROTATE_270);
 			} else if (flipVertically) {
-				cell.setRotation(yUp ? Cell.ROTATE_90 : Cell.ROTATE_270);
+				cell.setRotation(Cell.ROTATE_90);
 			} else {
 				cell.setFlipVertically(true);
-				cell.setRotation(yUp ? Cell.ROTATE_270 : Cell.ROTATE_90);
+				cell.setRotation(Cell.ROTATE_270);
 			}
 		} else {
 			cell.setFlipHorizontally(flipHorizontally);

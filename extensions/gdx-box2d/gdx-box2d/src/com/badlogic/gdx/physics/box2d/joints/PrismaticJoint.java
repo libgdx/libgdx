@@ -32,6 +32,7 @@ public class PrismaticJoint extends Joint {
 	private final float[] tmp = new float[2];
 	private final Vector2 localAnchorA = new Vector2();
 	private final Vector2 localAnchorB = new Vector2();
+	private final Vector2 localAxisA = new Vector2();
 
 	public PrismaticJoint (World world, long addr) {
 		super(world, addr);
@@ -59,6 +60,18 @@ public class PrismaticJoint extends Joint {
 		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
 		anchor[0] = joint->GetLocalAnchorB().x;
 		anchor[1] = joint->GetLocalAnchorB().y;
+	*/
+
+	public Vector2 getLocalAxisA () {
+		jniGetLocalAxisA(addr, tmp);
+		localAxisA.set(tmp[0], tmp[1]);
+		return localAxisA;
+	}
+
+	private native void jniGetLocalAxisA (long addr, float[] anchor); /*
+		b2PrismaticJoint* joint = (b2PrismaticJoint*)addr;
+		anchor[0] = joint->GetLocalAxisA().x;
+		anchor[1] = joint->GetLocalAxisA().y;
 	*/
 
 	/** Get the current joint translation, usually in meters. */

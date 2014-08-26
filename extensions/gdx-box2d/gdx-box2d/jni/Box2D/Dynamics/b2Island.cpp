@@ -211,10 +211,10 @@ void b2Island::Solve(b2Profile* profile, const b2TimeStep& step, const b2Vec2& g
 			// Solution: v(t) = v0 * exp(-c * t)
 			// Time step: v(t + dt) = v0 * exp(-c * (t + dt)) = v0 * exp(-c * t) * exp(-c * dt) = v * exp(-c * dt)
 			// v2 = exp(-c * dt) * v1
-			// Taylor expansion:
-			// v2 = (1.0f - c * dt) * v1
-			v *= b2Clamp(1.0f - h * b->m_linearDamping, 0.0f, 1.0f);
-			w *= b2Clamp(1.0f - h * b->m_angularDamping, 0.0f, 1.0f);
+			// Pade approximation:
+			// v2 = v1 * 1 / (1 + c * dt)
+			v *= 1.0f / (1.0f + h * b->m_linearDamping);
+			w *= 1.0f / (1.0f + h * b->m_angularDamping);
 		}
 
 		m_positions[i].c = c;

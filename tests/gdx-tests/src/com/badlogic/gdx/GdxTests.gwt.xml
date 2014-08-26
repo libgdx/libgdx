@@ -2,6 +2,7 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit trunk//EN" "http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd">
 <module>
 	<source path="tests">
+		<exclude name="**/AlphaTest.java"/> <!-- ScreenUtils -->
 		<exclude name="**/AudioDeviceTest.java"/> <!-- audio missing -->
 		<exclude name="**/AudioRecorderTest.java"/> <!-- audio missing -->
 		<exclude name="**/BobTest.java"/> <!-- GL ES 1.0 -->
@@ -12,15 +13,18 @@
 		<exclude name="**/ETC1Test.java"/> <!-- native -->
 		<exclude name="**/FFTTest.java"/> <!-- native -->
 		<exclude name="**/FramebufferToTextureTest.java"/> <!-- ScreenUtils missing -->
+		<exclude name="**/FreeTypeFontLoaderTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypeTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypePackTest.java"/> <!-- native  -->
 		<exclude name="**/FreeTypeDisposeTest.java"/> <!-- native  -->
 		<exclude name="**/Gdx2DTest.java"/> <!-- native -->
+		<exclude name="**/I18NMessageTest.java"/> <!-- MessageBundle -->
 		<exclude name="**/InterpolationTest.java"/> <!-- reflection -->
 		<exclude name="**/JpegTest.java"/> <!-- native -->
 		<exclude name="**/Mpg123Test.java"/> <!-- native -->
 		<exclude name="**/RemoteTest.java"/> <!-- networking -->
 		<exclude name="**/ScreenCaptureTest.java"/> <!-- ScreenUtils -->
+		<exclude name="**/ScreenshotTest.java"/> <!-- ScreenUtils -->
 		<exclude name="**/SelectTest.java"/> <!-- String.format -->
 		<exclude name="**/SoundTouchTest.java"/> <!-- native -->
 		<exclude name="**/StbTrueTypeTest.java"/> <!-- native -->

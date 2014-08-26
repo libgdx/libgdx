@@ -499,7 +499,7 @@ public class Json {
 			}
 
 			if (value instanceof ObjectMap) {
-				if (knownType == null) knownType = OrderedMap.class;
+				if (knownType == null) knownType = ObjectMap.class;
 				writeObjectStart(actualType, knownType);
 				for (Entry entry : ((ObjectMap<?, ?>)value).entries()) {
 					writer.name(convertToString(entry.key));

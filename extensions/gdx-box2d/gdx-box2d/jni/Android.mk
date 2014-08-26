@@ -66,6 +66,7 @@ LOCAL_SRC_FILES := Box2D/Collision/b2BroadPhase.cpp\
 	com.badlogic.gdx.physics.box2d.joints.DistanceJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.FrictionJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.GearJoint.cpp\
+	com.badlogic.gdx.physics.box2d.joints.MotorJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.MouseJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.PrismaticJoint.cpp\
 	com.badlogic.gdx.physics.box2d.joints.PulleyJoint.cpp\

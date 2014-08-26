@@ -9,6 +9,30 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
+ * Method:    jniGetLocalAnchorA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetLocalAnchorA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
+ * Method:    jniGetLocalAnchorB
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetLocalAnchorB
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
+ * Method:    jniGetLocalAxisA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetLocalAxisA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
  * Method:    jniGetJointTranslation
  * Signature: (J)F
  */
@@ -110,6 +134,22 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
  */
 JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetMotorForce
   (JNIEnv *, jobject, jlong, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
+ * Method:    jniGetMaxMotorForce
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetMaxMotorForce
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_PrismaticJoint
+ * Method:    jniGetReferenceAngle
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_PrismaticJoint_jniGetReferenceAngle
+  (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus
 }

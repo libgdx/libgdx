@@ -20,6 +20,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -38,9 +39,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
  * {@link #result(Object)} is called and the dialog is removed from the stage.
  * @author Nathan Sweet */
 public class Dialog extends Window {
-	/** The time in seconds that dialogs will fade in and out. Set to zero to disable fading. */
-	static public float fadeDuration = 0.4f;
-
 	Table contentTable, buttonTable;
 	private Skin skin;
 	ObjectMap<Actor, Object> values = new ObjectMap();
@@ -173,8 +171,8 @@ public class Dialog extends Window {
 		return this;
 	}
 
-	/** {@link #pack() Packs} the dialog and adds it to the stage, centered. */
-	public Dialog show (Stage stage) {
+	/** {@link #pack() Packs} the dialog and adds it to the stage with custom action which can be null for instant show */
+	public Dialog show (Stage stage, Action action) {
 		clearActions();
 		removeCaptureListener(ignoreTouchDown);
 
@@ -187,20 +185,24 @@ public class Dialog extends Window {
 		if (actor != null && !actor.isDescendantOf(this)) previousScrollFocus = actor;
 
 		pack();
-		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
 		stage.addActor(this);
 		stage.setKeyboardFocus(this);
 		stage.setScrollFocus(this);
-		if (fadeDuration > 0) {
-			getColor().a = 0;
-			addAction(Actions.fadeIn(fadeDuration, Interpolation.fade));
-		}
+		if (action != null) 
+			addAction(action);
+		
 		return this;
 	}
 
-	/** Hides the dialog. Called automatically when a button is clicked. The default implementation fades out the dialog over
-	 * {@link #fadeDuration} seconds and then removes it from the stage. */
-	public void hide () {
+	/** {@link #pack() Packs} the dialog and adds it to the stage, centered with default fadeIn action */
+	public Dialog show (Stage stage) {
+		show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)));
+		setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
+		return this;
+	}
+
+	/** Hides the dialog with the given action and then removes it from the stage. */
+	public void hide (Action action) {
 		Stage stage = getStage();
 		if (stage != null) {
 			if (previousKeyboardFocus != null && previousKeyboardFocus.getStage() == null) previousKeyboardFocus = null;
@@ -211,12 +213,17 @@ public class Dialog extends Window {
 			actor = stage.getScrollFocus();
 			if (actor == null || actor.isDescendantOf(this)) stage.setScrollFocus(previousScrollFocus);
 		}
-		if (fadeDuration > 0) {
+		if (action != null) {
 			addCaptureListener(ignoreTouchDown);
-			addAction(sequence(fadeOut(fadeDuration, Interpolation.fade), Actions.removeListener(ignoreTouchDown, true),
-				Actions.removeActor()));
+			addAction(sequence(action, Actions.removeListener(ignoreTouchDown, true), Actions.removeActor()));
 		} else
 			remove();
+	}
+
+	/** Hides the dialog. Called automatically when a button is clicked. The default implementation fades out the dialog over 400
+	 * milliseconds and then removes it from the stage. */
+	public void hide () {
+		hide(sequence(fadeOut(0.4f, Interpolation.fade), Actions.removeListener(ignoreTouchDown, true), Actions.removeActor()));
 	}
 
 	public void setObject (Actor actor, Object object) {

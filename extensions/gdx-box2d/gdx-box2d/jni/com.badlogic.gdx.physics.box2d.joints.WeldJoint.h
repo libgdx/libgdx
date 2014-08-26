@@ -9,11 +9,51 @@ extern "C" {
 #endif
 /*
  * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
- * Method:    jniGetReferenceAngle
+ * Method:    jniGetLocalAnchorA
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetLocalAnchorA
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
+ * Method:    jniGetLocalAnchorB
+ * Signature: (J[F)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetLocalAnchorB
+  (JNIEnv *, jobject, jlong, jfloatArray);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
+ * Method:    jniGetFrequency
  * Signature: (J)F
  */
-JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetReferenceAngle
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetFrequency
   (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
+ * Method:    jniSetFrequency
+ * Signature: (JF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniSetFrequency
+  (JNIEnv *, jobject, jlong, jfloat);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
+ * Method:    jniGetDampingRatio
+ * Signature: (J)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniGetDampingRatio
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_badlogic_gdx_physics_box2d_joints_WeldJoint
+ * Method:    jniSetDampingRatio
+ * Signature: (JF)V
+ */
+JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_joints_WeldJoint_jniSetDampingRatio
+  (JNIEnv *, jobject, jlong, jfloat);
 
 #ifdef __cplusplus
 }

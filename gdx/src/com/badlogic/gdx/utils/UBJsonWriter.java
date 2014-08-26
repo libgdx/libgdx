@@ -324,7 +324,18 @@ public class UBJsonWriter implements Closeable {
 		out.writeByte('#');
 		value(values.length);
 		for (int i = 0, n = values.length; i < n; i++) {
-			value(values[i]);
+			byte[] bytes = values[i].getBytes("UTF-8");
+			if (bytes.length <= Byte.MAX_VALUE) {
+				out.writeByte('i');
+				out.writeByte(bytes.length);
+			} else if (bytes.length <= Short.MAX_VALUE) {
+				out.writeByte('I');
+				out.writeShort(bytes.length);
+			} else {
+				out.writeByte('l');
+				out.writeInt(bytes.length);
+			}
+			out.write(bytes);
 		}
 		pop(true);
 		return this;

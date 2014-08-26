@@ -79,28 +79,97 @@ public class EdgeShape extends Shape {
 		vertex[1] = edge->m_vertex2.y;
 	*/
 
-// /// @see b2Shape::TestPoint
-// bool TestPoint(const b2Transform& transform, const b2Vec2& p) const;
-//
-// /// Implement b2Shape.
-// bool RayCast(b2RayCastOutput* output, const b2RayCastInput& input,
-// const b2Transform& transform, int32 childIndex) const;
-//
-// /// @see b2Shape::ComputeAABB
-// void ComputeAABB(b2AABB* aabb, const b2Transform& transform, int32 childIndex) const;
-//
-// /// @see b2Shape::ComputeMass
-// void ComputeMass(b2MassData* massData, float32 density) const;
-//
-// /// These are the edge vertices
-// b2Vec2 m_vertex1, m_vertex2;
-//
-// /// Optional adjacent vertices. These are used for smooth collision.
-// b2Vec2 m_vertex0, m_vertex3;
-// bool m_hasVertex0, m_hasVertex3;
+	public void getVertex0 (Vector2 vec) {
+		jniGetVertex0(addr, vertex);
+		vec.x = vertex[0];
+		vec.y = vertex[1];
+	}
+
+	private native void jniGetVertex0 (long addr, float[] vertex); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		vertex[0] = edge->m_vertex0.x;
+		vertex[1] = edge->m_vertex0.y;
+	*/
+
+	public void setVertex0 (Vector2 vec) {
+		jniSetVertex0(addr, vec.x, vec.y);
+	}
+
+	public void setVertex0 (float x, float y) {
+		jniSetVertex0(addr, x, y);
+	}
+
+	private native void jniSetVertex0 (long addr, float x, float y); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		edge->m_vertex0.x = x;
+		edge->m_vertex0.y = y;
+	*/
+
+	public void getVertex3 (Vector2 vec) {
+		jniGetVertex3(addr, vertex);
+		vec.x = vertex[0];
+		vec.y = vertex[1];
+	}
+
+	private native void jniGetVertex3 (long addr, float[] vertex); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		vertex[0] = edge->m_vertex3.x;
+		vertex[1] = edge->m_vertex3.y;
+	*/
+
+	public void setVertex3 (Vector2 vec) {
+		jniSetVertex3(addr, vec.x, vec.y);
+	}
+
+	public void setVertex3 (float x, float y) {
+		jniSetVertex3(addr, x, y);
+	}
+
+	private native void jniSetVertex3 (long addr, float x, float y); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		edge->m_vertex3.x = x;
+		edge->m_vertex3.y = y;
+	*/
+
+	public boolean hasVertex0() {
+		return jniHasVertex0(addr);
+	}
+
+	private native boolean jniHasVertex0 (long addr); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		return edge->m_hasVertex0;
+	*/
+
+	public void setHasVertex0 (boolean hasVertex0) {
+		jniSetHasVertex0(addr, hasVertex0);
+	}
+
+	private native void jniSetHasVertex0 (long addr, boolean hasVertex0); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		edge->m_hasVertex0 = hasVertex0;
+	*/
+
+	public boolean hasVertex3 () {
+		return jniHasVertex3(addr);
+	}
+
+	private native boolean jniHasVertex3 (long addr); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		return edge->m_hasVertex3;
+	*/
+
+	public void setHasVertex3 (boolean hasVertex3) {
+		jniSetHasVertex3(addr, hasVertex3);
+	}
+
+	private native void jniSetHasVertex3 (long addr, boolean hasVertex3); /*
+		b2EdgeShape* edge = (b2EdgeShape*)addr;
+		edge->m_hasVertex3 = hasVertex3;
+	*/
 
 	@Override
 	public Type getType () {
 		return Type.Edge;
 	}
+
 }

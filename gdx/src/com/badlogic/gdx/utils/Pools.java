@@ -21,15 +21,21 @@ package com.badlogic.gdx.utils;
 public class Pools {
 	static private final ObjectMap<Class, ReflectionPool> typePools = new ObjectMap();
 
-	/** Returns a new or existing pool for the specified type, stored in a a Class to {@link ReflectionPool} map. The max size of
-	 * the pool used is 100. */
-	static public <T> Pool<T> get (Class<T> type) {
+	/** Returns a new or existing pool for the specified type, stored in a a Class to {@link ReflectionPool} map. Note the max size
+	 * is ignored if this is not the first time this pool has been requested. */
+	static public <T> Pool<T> get (Class<T> type, int max) {
 		ReflectionPool pool = typePools.get(type);
 		if (pool == null) {
-			pool = new ReflectionPool(type, 4, 100);
+			pool = new ReflectionPool(type, 4, max);
 			typePools.put(type, pool);
 		}
 		return pool;
+	}
+
+	/** Returns a new or existing pool for the specified type, stored in a a Class to {@link ReflectionPool} map. The max size of
+	 * the pool used is 100. */
+	static public <T> Pool<T> get (Class<T> type) {
+		return get(type, 100);
 	}
 
 	/** Obtains an object from the {@link #get(Class) pool}. */

@@ -27,7 +27,7 @@ JNIEXPORT void JNICALL Java_com_badlogic_gdx_physics_box2d_PolygonShape_jniSet(J
 			verticesOut[i] = b2Vec2(verts[(i<<1) + offset], verts[(i<<1) + offset + 1]);
 		}
 		poly->Set(verticesOut, numVertices);
-		delete verticesOut;
+		delete[] verticesOut;
 	 
 	env->ReleasePrimitiveArrayCritical(obj_verts, verts, 0);
 

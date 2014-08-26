@@ -110,7 +110,7 @@ public class Label extends Widget {
 		return true;
 	}
 
-	public CharSequence getText () {
+	public StringBuilder getText () {
 		return text;
 	}
 

@@ -17,6 +17,7 @@
 package com.badlogic.gdx.backends.android;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -46,7 +47,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.android.AndroidLiveWallpaperService.AndroidWallpaperEngine;
 import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.utils.IntMap;
+import com.badlogic.gdx.utils.IntSet;
 import com.badlogic.gdx.utils.Pool;
 
 /** An implementation of the {@link Input} interface for Android.
@@ -101,7 +102,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	boolean[] touched = new boolean[NUM_TOUCHES];
 	int[] realId = new int[NUM_TOUCHES];
 	final boolean hasMultitouch;
-	private IntMap<Object> keys = new IntMap<Object>();
+	private int keyCount = 0;
+	private boolean[] keys = new boolean[256];
+	private boolean keyJustPressed = false;
+	private boolean[] justPressedKeys = new boolean[256];
 	private SensorManager manager;
 	public boolean accelerometerAvailable = false;
 	private final float[] accelerometerValues = new float[3];
@@ -193,7 +197,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				input.setText(text);
 				input.setSingleLine();
 				alert.setView(input);
-				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
@@ -203,7 +207,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 						});
 					}
 				});
-				alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				alert.setNegativeButton(context.getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
@@ -238,7 +242,7 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				input.setHint(placeholder);
 				input.setSingleLine();
 				alert.setView(input);
-				alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+				alert.setPositiveButton(context.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick (DialogInterface dialog, int whichButton) {
 						Gdx.app.postRunnable(new Runnable() {
 							@Override
@@ -299,13 +303,25 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	}
 
 	@Override
-	public boolean isKeyPressed (int key) {
-		synchronized (this) {
-			if (key == Input.Keys.ANY_KEY)
-				return keys.size > 0;
-			else
-				return keys.containsKey(key);
+	public synchronized boolean isKeyPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyCount > 0;
 		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return keys[key];
+	}
+
+	@Override
+	public synchronized boolean isKeyJustPressed (int key) {
+		if (key == Input.Keys.ANY_KEY) {
+			return keyJustPressed;
+		}
+		if (key < 0 || key > 255) {
+			return false;
+		}
+		return justPressedKeys[key];
 	}
 
 	@Override
@@ -324,6 +340,12 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	void processEvents () {
 		synchronized (this) {
 			justTouched = false;
+			if (keyJustPressed) {
+				keyJustPressed = false;
+				for (int i = 0; i < justPressedKeys.length; i++) {
+					justPressedKeys[i] = false;
+				}
+			}
 
 			if (processor != null) {
 				final InputProcessor processor = this.processor;
@@ -335,6 +357,8 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 					switch (e.type) {
 					case KeyEvent.KEY_DOWN:
 						processor.keyDown(e.keyCode);
+						keyJustPressed = true;
+						justPressedKeys[e.keyCode] = true;
 						break;
 					case KeyEvent.KEY_UP:
 						processor.keyUp(e.keyCode);
@@ -485,7 +509,10 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				}
 
 				keyEvents.add(event);
-				keys.put(event.keyCode, null);
+				if (!keys[event.keyCode]) {
+					keyCount++;
+					keys[event.keyCode] = true;
+				}
 				break;
 			case android.view.KeyEvent.ACTION_UP:
 				long timeStamp = System.nanoTime();
@@ -508,10 +535,17 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 				event.type = KeyEvent.KEY_TYPED;
 				keyEvents.add(event);
 
-				if (keyCode == Keys.BUTTON_CIRCLE)
-					keys.remove(Keys.BUTTON_CIRCLE);
-				else
-					keys.remove(e.getKeyCode());
+				if (keyCode == Keys.BUTTON_CIRCLE) {
+					if (keys[Keys.BUTTON_CIRCLE]) {
+						keyCount--;
+						keys[Keys.BUTTON_CIRCLE] = false;
+					}
+				} else {
+					if (keys[e.getKeyCode()]) {
+						keyCount--;
+						keys[e.getKeyCode()] = false;
+					}
+				}
 			}
 			app.getGraphics().requestRendering();
 		}
@@ -698,17 +732,17 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 		deltaX = resize(deltaX);
 		deltaY = resize(deltaY);
 		touched = resize(touched);
-		
+
 		return len;
 	}
-	
-	private int[] resize(int[] orig) {
+
+	private int[] resize (int[] orig) {
 		int[] tmp = new int[orig.length + 2];
 		System.arraycopy(orig, 0, tmp, 0, orig.length);
 		return tmp;
 	}
-	
-	private boolean[] resize(boolean[] orig) {
+
+	private boolean[] resize (boolean[] orig) {
 		boolean[] tmp = new boolean[orig.length + 2];
 		System.arraycopy(orig, 0, tmp, 0, orig.length);
 		return tmp;
@@ -801,6 +835,20 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 
 	public void addKeyListener (OnKeyListener listener) {
 		keyListeners.add(listener);
+	}
+
+	public void onPause () {
+		unregisterSensorListeners();
+
+		// erase pointer ids. this sucks donkeyballs...
+		Arrays.fill(realId, -1);
+
+		// erase touched state. this also sucks donkeyballs...
+		Arrays.fill(touched, false);
+	}
+
+	public void onResume () {
+		registerSensorListeners();
 	}
 
 	/** Our implementation of SensorEventListener. Because Android doesn't like it when we register more than one Sensor to a single

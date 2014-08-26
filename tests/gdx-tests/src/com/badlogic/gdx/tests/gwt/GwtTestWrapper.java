@@ -59,6 +59,7 @@ import com.badlogic.gdx.tests.FrameBufferTest;
 import com.badlogic.gdx.tests.GestureDetectorTest;
 import com.badlogic.gdx.tests.GroupCullingTest;
 import com.badlogic.gdx.tests.GroupFadeTest;
+import com.badlogic.gdx.tests.I18NSimpleMessageTest;
 import com.badlogic.gdx.tests.ImageScaleTest;
 import com.badlogic.gdx.tests.ImageTest;
 import com.badlogic.gdx.tests.IndexBufferObjectShaderTest;
@@ -89,6 +90,7 @@ import com.badlogic.gdx.tests.SpriteBatchShaderTest;
 import com.badlogic.gdx.tests.SpriteCacheOffsetTest;
 import com.badlogic.gdx.tests.SpriteCacheTest;
 import com.badlogic.gdx.tests.StageTest;
+import com.badlogic.gdx.tests.StateMachineTest;
 import com.badlogic.gdx.tests.TableTest;
 import com.badlogic.gdx.tests.TextButtonTest;
 import com.badlogic.gdx.tests.TextureAtlasTest;
@@ -293,6 +295,11 @@ public class GwtTestWrapper extends GdxTest {
 		public boolean isKeyPressed (int key) {
 			return input.isKeyPressed(key);
 		}
+		
+		@Override
+		public boolean isKeyJustPressed (int key) {
+			return input.isKeyJustPressed(key);
+		}
 
 		@Override
 		public void getTextInput (TextInputListener listener, String title, String text) {
@@ -424,10 +431,6 @@ public class GwtTestWrapper extends GdxTest {
 		}
 	}, new Instancer() {
 		public GdxTest instance () {
-			return new AlphaTest();
-		}
-	}, new Instancer() {
-		public GdxTest instance () {
 			return new AnimationTest();
 		}
 	}, new Instancer() {
@@ -511,6 +514,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new GroupFadeTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new I18NSimpleMessageTest();
 			}
 		}, new Instancer() {
 			public GdxTest instance () {
@@ -681,6 +688,10 @@ public class GwtTestWrapper extends GdxTest {
 		}, new Instancer() {
 			public GdxTest instance () {
 				return new TimeUtilsTest();
+			}
+		}, new Instancer() {
+			public GdxTest instance () {
+				return new StateMachineTest();
 			}
 		}};
 }

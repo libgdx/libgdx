@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.esotericsoftware.tablelayout.Cell;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -131,7 +129,7 @@ public class ImageTextButton extends Button {
 		return getCell(label);
 	}
 
-	public void setText (String text) {
+	public void setText (CharSequence text) {
 		label.setText(text);
 	}
 
