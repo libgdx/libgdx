@@ -40,8 +40,8 @@ public class Telegram implements Comparable<Telegram>, Poolable {
 	/** Any additional information that may accompany the message */
 	public Object extraInfo;
 
-	/** Package private constructor. */
-	Telegram () {
+	/** Creates an empty {@code Telegram}. */
+	public Telegram () {
 	}
 
 	/** Returns the time stamp of this telegram. */
