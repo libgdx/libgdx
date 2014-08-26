@@ -112,11 +112,11 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"}
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.0.1"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.0.1"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.0.1:sources"}
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"}
 		);
 
 		private String[] coreDependencies;
