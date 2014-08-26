@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -125,6 +126,31 @@ public class PrioritySteering<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public PrioritySteering<T> setEpsilon (float epsilon) {
 		this.epsilon = epsilon;
+		return this;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public PrioritySteering<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public PrioritySteering<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. However, {@code PrioritySteering} needs no limiter at all as it simply returns
+	 * the first non zero steering acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public PrioritySteering<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
 		return this;
 	}
 }

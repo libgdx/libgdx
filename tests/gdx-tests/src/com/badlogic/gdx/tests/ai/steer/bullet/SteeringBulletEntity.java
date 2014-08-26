@@ -32,7 +32,10 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 
 	public btRigidBody body;
 
-	float maxSpeed;
+	float maxLinearSpeed;
+	float maxLinearAcceleration;
+	float maxAngularSpeed;
+	float maxAngularAcceleration;
 	float boundingRadius;
 	boolean tagged;
 	protected SteeringBehavior<Vector3> steeringBehavior;
@@ -62,14 +65,6 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 		this.steeringBehavior = steeringBehavior;
 	}
 
-	public void setMaxSpeed (float maxSpeed) {
-		this.maxSpeed = maxSpeed;
-	}
-
-	public float getMaxSpeed () {
-		return maxSpeed;
-	}
-
 	public void update () {
 		if (steeringBehavior != null) {
 			// Calculate steering acceleration
@@ -91,8 +86,8 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 				// Cap the speed
 				Vector3 velocity = body.getLinearVelocity();
 				float currentSpeed = velocity.len();
-				if (currentSpeed > maxSpeed) {
-					body.setLinearVelocity(velocity.scl(maxSpeed / currentSpeed));
+				if (currentSpeed > getMaxLinearSpeed()) {
+					body.setLinearVelocity(velocity.scl(getMaxLinearSpeed() / currentSpeed));
 				}
 			}
 		}
@@ -151,6 +146,46 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 	public Vector3 getPosition () {
 		body.getMotionState().getWorldTransform(tmpMatrix4);
 		return tmpMatrix4.getTranslation(tmpVector3);
+	}
+
+	@Override
+	public float getMaxLinearSpeed () {
+		return maxLinearSpeed;
+	}
+
+	@Override
+	public void setMaxLinearSpeed (float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
+	}
+
+	@Override
+	public float getMaxLinearAcceleration () {
+		return maxLinearAcceleration;
+	}
+
+	@Override
+	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+	}
+
+	@Override
+	public float getMaxAngularSpeed () {
+		return maxAngularSpeed;
+	}
+
+	@Override
+	public void setMaxAngularSpeed (float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
+	}
+
+	@Override
+	public float getMaxAngularAcceleration () {
+		return maxAngularAcceleration;
+	}
+
+	@Override
+	public void setMaxAngularAcceleration (float maxAngularAcceleration) {
+		this.maxAngularAcceleration = maxAngularAcceleration;
 	}
 
 }

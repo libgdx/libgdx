@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -39,12 +40,6 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** The target to align to. */
 	protected Steerable<T> target;
-
-	/** The maximum angular acceleration of the owner. */
-	protected float maxAngularAcceleration;
-
-	/** The maximum angular speed of the owner. */
-	protected float maxAngularSpeed;
 
 	/** The tolerance for aligning to the target without letting small errors keep the owner swinging. */
 	protected float alignTolerance;
@@ -90,8 +85,10 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 		// Check if we are there, return no steering
 		if (rotationSize < alignTolerance) return steering.setZero();
 
+		Limiter actualLimiter = getActualLimiter();
+
 		// Use maximum rotation
-		float targetRotation = getMaxAngularSpeed();
+		float targetRotation = actualLimiter.getMaxAngularSpeed();
 
 		// If we are inside the slow down radius, then calculate a scaled rotation
 		if (rotationSize <= decelerationRadius) targetRotation *= rotationSize / decelerationRadius;
@@ -105,7 +102,8 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 
 		// Check if the absolute acceleration is too great
 		float angularAcceleration = steering.angular < 0f ? -steering.angular : steering.angular;
-		if (angularAcceleration > getMaxAngularAcceleration()) steering.angular *= getMaxAngularAcceleration() / angularAcceleration;
+		if (angularAcceleration > actualLimiter.getMaxAngularAcceleration())
+			steering.angular *= actualLimiter.getMaxAngularAcceleration() / angularAcceleration;
 
 		// No linear acceleration
 		steering.linear.setZero();
@@ -123,30 +121,6 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public ReachOrientation<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	/** Returns the maximum angular acceleration of the owner. */
-	public float getMaxAngularAcceleration () {
-		return maxAngularAcceleration;
-	}
-
-	/** Sets the maximum angular acceleration of the owner.
-	 * @return this behavior for chaining. */
-	public ReachOrientation<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
-		this.maxAngularAcceleration = maxAngularAcceleration;
-		return this;
-	}
-
-	/** Returns the maximum angular speed of the owner. */
-	public float getMaxAngularSpeed () {
-		return maxAngularSpeed;
-	}
-
-	/** Sets the maximum angular speed of the owner.
-	 * @return this behavior for chaining. */
-	public ReachOrientation<T> setMaxAngularSpeed (float maxAngularSpeed) {
-		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 
@@ -183,6 +157,31 @@ public class ReachOrientation<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public ReachOrientation<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;
+		return this;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public ReachOrientation<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public ReachOrientation<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum angular speed and
+	 * acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public ReachOrientation<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
 		return this;
 	}
 

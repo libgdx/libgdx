@@ -23,7 +23,7 @@ import com.badlogic.gdx.math.Vector;
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
  * @author davebaol */
-public interface Steerable<T extends Vector<T>> {
+public interface Steerable<T extends Vector<T>> extends Limiter {
 
 	/** Returns the vector indicating the position of this Steerable. */
 	public T getPosition ();

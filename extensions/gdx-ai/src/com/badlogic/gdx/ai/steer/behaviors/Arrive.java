@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -43,12 +44,6 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 
 	/** The target to arrive to. */
 	protected Steerable<T> target;
-
-	/** The maximum linear acceleration of the owner. */
-	protected float maxLinearAcceleration;
-
-	/** The maximum linear speed of the owner. */
-	protected float maxLinearSpeed;
 
 	/** The tolerance for arriving at the target. It lets the owner get near enough to the target without letting small errors keep
 	 * it in motion. */
@@ -87,8 +82,9 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 		// Check if we are there, return no steering
 		if (distance <= arrivalTolerance) return steering.setZero();
 
+		Limiter actualLimiter = getActualLimiter();
 		// Go max speed
-		float targetSpeed = getMaxLinearSpeed();
+		float targetSpeed = actualLimiter.getMaxLinearSpeed();
 
 		// If we are inside the slow down radius calculate a scaled speed
 		if (distance <= decelerationRadius) targetSpeed *= distance / decelerationRadius;
@@ -98,7 +94,7 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 
 		// Acceleration tries to get to the target velocity without exceeding max acceleration
 		// Notice that steering.linear and targetVelocity are the same vector
-		targetVelocity.sub(owner.getLinearVelocity()).scl(1f / timeToTarget).limit(getMaxLinearAcceleration());
+		targetVelocity.sub(owner.getLinearVelocity()).scl(1f / timeToTarget).limit(actualLimiter.getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0f;
@@ -116,30 +112,6 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public Arrive<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	/** Returns the maximum linear acceleration the owner can use. */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
-
-	/** Sets the maximum linear acceleration the owner can use.
-	 * @return this behavior for chaining. */
-	public Arrive<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
-	/** Returns the maximum linear speed of the owner. */
-	public float getMaxLinearSpeed () {
-		return maxLinearSpeed;
-	}
-
-	/** Sets the maximum linear speed of the owner.
-	 * @return this behavior for chaining. */
-	public Arrive<T> setMaxLinearSpeed (float maxLinearSpeed) {
-		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 
@@ -178,6 +150,31 @@ public class Arrive<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public Arrive<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;
+		return this;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Arrive<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Arrive<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear speed and
+	 * acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public Arrive<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
 		return this;
 	}
 

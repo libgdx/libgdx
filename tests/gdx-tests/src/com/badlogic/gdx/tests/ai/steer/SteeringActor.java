@@ -19,7 +19,6 @@ package com.badlogic.gdx.tests.ai.steer;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
-import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -42,7 +41,11 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 	float boundingRadius;
 	boolean tagged;
 
-	float maxSpeed = 200;
+	float maxLinearSpeed = 100;
+	float maxLinearAcceleration = 200;
+	float maxAngularSpeed = 5;
+	float maxAngularAcceleration = 10;
+
 	boolean independentFacing;
 
 	SteeringBehavior<Vector2> steeringBehavior;
@@ -121,12 +124,44 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 		return outVector;
 	}
 
-	public float getMaxSpeed () {
-		return maxSpeed;
+	@Override
+	public float getMaxLinearSpeed () {
+		return maxLinearSpeed;
 	}
 
-	public void setMaxSpeed (float maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	@Override
+	public void setMaxLinearSpeed (float maxLinearSpeed) {
+		this.maxLinearSpeed = maxLinearSpeed;
+	}
+
+	@Override
+	public float getMaxLinearAcceleration () {
+		return maxLinearAcceleration;
+	}
+
+	@Override
+	public void setMaxLinearAcceleration (float maxLinearAcceleration) {
+		this.maxLinearAcceleration = maxLinearAcceleration;
+	}
+
+	@Override
+	public float getMaxAngularSpeed () {
+		return maxAngularSpeed;
+	}
+
+	@Override
+	public void setMaxAngularSpeed (float maxAngularSpeed) {
+		this.maxAngularSpeed = maxAngularSpeed;
+	}
+
+	@Override
+	public float getMaxAngularAcceleration () {
+		return maxAngularAcceleration;
+	}
+
+	@Override
+	public void setMaxAngularAcceleration (float maxAngularAcceleration) {
+		this.maxAngularAcceleration = maxAngularAcceleration;
 	}
 
 	public boolean isIndependentFacing () {
@@ -172,7 +207,7 @@ public class SteeringActor extends Actor implements Steerable<Vector2> {
 	private void applySteering (SteeringAcceleration<Vector2> steering, float time) {
 		// Update position and linear velocity. Velocity is trimmed to maximum speed
 		position.mulAdd(linearVelocity, time);
-		linearVelocity.mulAdd(steering.linear, time).limit(getMaxSpeed());
+		linearVelocity.mulAdd(steering.linear, time).limit(getMaxLinearSpeed());
 
 		// Update orientation and angular velocity
 		if (independentFacing) {

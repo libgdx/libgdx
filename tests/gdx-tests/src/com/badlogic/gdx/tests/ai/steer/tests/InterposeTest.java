@@ -41,10 +41,6 @@ public class InterposeTest extends SteeringTest {
 	boolean drawDebug;
 	ShapeRenderer shapeRenderer;
 
-	SteeringActor character;
-	SteeringActor c1;
-	SteeringActor c2;
-
 	Interpose<Vector2> interposeSB;
 
 	public InterposeTest (SteeringBehaviorTest container) {
@@ -57,27 +53,37 @@ public class InterposeTest extends SteeringTest {
 
 		shapeRenderer = new ShapeRenderer();
 
-		character = new SteeringActor(container.target, false);
-		c1 = new SteeringActor(container.greenFish, false);
-		c2 = new SteeringActor(container.badlogicSmall, false);
+		// Set character
+		SteeringActor character = new SteeringActor(container.target, false);
+		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+		character.setMaxLinearSpeed(250);
+		character.setMaxLinearAcceleration(700);
 
-		interposeSB = new Interpose<Vector2>(character, c1, c2, .5f) {
-			@Override
-			public float getMaxLinearSpeed () {
-				return character.getMaxSpeed();
-			}
-		}.setMaxLinearAcceleration(700) //
+		// Set agentA
+		SteeringActor c1 = new SteeringActor(container.greenFish, false);
+		c1.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+		c1.setMaxLinearSpeed(80);
+		c1.setMaxLinearAcceleration(250);
+		c1.setMaxAngularAcceleration(0); // set to 0 because independent facing is disabled
+		c1.setMaxAngularSpeed(5);
+
+		// Set agentB
+		SteeringActor c2 = new SteeringActor(container.badlogicSmall, false);
+		c2.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+		c2.setMaxLinearSpeed(150);
+		c2.setMaxLinearAcceleration(450);
+		c2.setMaxAngularAcceleration(0); // set to 0 because independent facing is disabled
+		c2.setMaxAngularSpeed(5);
+
+		interposeSB = new Interpose<Vector2>(character, c1, c2, .5f) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(20);
 		character.setSteeringBehavior(interposeSB);
 
 		Wander<Vector2> wanderSB1 = new Wander<Vector2>(c1) //
-			.setMaxLinearAcceleration(250) //
-			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(110) //
 			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
@@ -86,11 +92,8 @@ public class InterposeTest extends SteeringTest {
 		c1.setSteeringBehavior(wanderSB1);
 
 		Wander<Vector2> wanderSB2 = new Wander<Vector2>(c1) //
-			.setMaxLinearAcceleration(450) //
-			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(70) //
 			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
@@ -101,30 +104,13 @@ public class InterposeTest extends SteeringTest {
 		table.addActor(c1);
 		table.addActor(c2);
 
-		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		character.setMaxSpeed(250);
-		c1.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		c1.setMaxSpeed(100);
-		c2.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		c2.setMaxSpeed(100);
-
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + interposeSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 10000, 20);
+
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 10000, 20, false, container.skin);
-		maxLinAcc.setValue(interposeSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				interposeSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxSpeedController(detailTable, character);
 
 		detailTable.row();
 		final Label labelInterpositionRatio = new Label("Interposition Ratio [" + interposeSB.getInterpositionRatio() + "]",
@@ -158,12 +144,6 @@ public class InterposeTest extends SteeringTest {
 		});
 		detailTable.add(debug);
 
-		detailTable.row();
-		addSeparator(detailTable);
-
-		detailTable.row();
-		addMaxSpeedController(detailTable, character);
-
 		detailWindow = createDetailWindow(detailTable);
 	}
 
@@ -191,7 +171,7 @@ public class InterposeTest extends SteeringTest {
 			// Draw estimated target
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(1, 0, 0, 1);
-			shapeRenderer.circle(interposeSB.getTargetPosition().x, interposeSB.getTargetPosition().y, 4);
+			shapeRenderer.circle(interposeSB.getInternalTargetPosition().x, interposeSB.getInternalTargetPosition().y, 4);
 			shapeRenderer.end();
 		}
 	}

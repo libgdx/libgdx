@@ -43,12 +43,16 @@ public class FaceTest extends SteeringTest {
 	@Override
 	public void create (Table table) {
 		character = new SteeringActor(container.badlogicSmall, true);
+		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
+		character.setMaxAngularAcceleration(100);
+		character.setMaxAngularSpeed(5);
+
 		target = new SteeringActor(container.target);
+		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+
 		inputProcessor = new TargetInputProcessor(target);
 
 		final Face<Vector2> faceSB = new Face<Vector2>(character, target) //
-			.setMaxAngularAcceleration(100) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(MathUtils.degreesToRadians * 7);
@@ -57,27 +61,13 @@ public class FaceTest extends SteeringTest {
 		table.addActor(character);
 		table.addActor(target);
 
-		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
-		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxRotation = new Label("Max.Rotation [" + faceSB.getMaxAngularSpeed() + "]", container.skin);
-		detailTable.add(labelMaxRotation);
+		addMaxAngularAccelerationController(detailTable, character, 0, 50, 1);
+
 		detailTable.row();
-		Slider maxRotation = new Slider(0, 20, 1, false, container.skin);
-		maxRotation.setValue(faceSB.getMaxAngularSpeed());
-		maxRotation.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				faceSB.setMaxAngularSpeed(slider.getValue());
-// character.setMaxSpeed(slider.getValue());
-				labelMaxRotation.setText("Max.Rotation [" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxRotation);
+		addMaxAngularSpeedController(detailTable, character, 0, 20, 1);
 
 		detailTable.row();
 		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + faceSB.getDecelerationRadius() + "]",

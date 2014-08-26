@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Proximity;
 import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
@@ -174,20 +175,26 @@ public class Hide<T extends Vector<T>> extends Arrive<T> implements ProximityCal
 	//
 
 	@Override
+	public Hide<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Hide<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	@Override
+	public Hide<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
 	public Hide<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	@Override
-	public Hide<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
-	@Override
-	public Hide<T> setMaxLinearSpeed (float maxLinearSpeed) {
-		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

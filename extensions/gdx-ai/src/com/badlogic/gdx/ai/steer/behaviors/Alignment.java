@@ -17,10 +17,11 @@
 package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.GroupBehavior;
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Proximity;
+import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
-import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.math.Vector;
 
 /** {@code Alignment} is a group behavior producing a linear acceleration that attempts to keep the owner aligned with the agents in
@@ -69,6 +70,30 @@ public class Alignment<T extends Vector<T>> extends GroupBehavior<T> implements 
 		direction.set(neighbor.getLinearVelocity()).nor();
 		linear.add(direction);
 		return true;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Alignment<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Alignment<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. However, {@code Alignment} needs no limiter at all.
+	 * @return this behavior for chaining. */
+	@Override
+	public Alignment<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
 	}
 
 }

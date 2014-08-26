@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -76,9 +77,6 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	/** The minimum distance to a wall, i.e. how far to avoid collision. */
 	protected float distanceFromBoundary;
 
-	/** The maximum acceleration that can be used to avoid an obstacle. */
-	protected float maxLinearAcceleration;
-
 	private Collision<T> outputCollision;
 	private Collision<T> minOutputCollision;
 
@@ -108,25 +106,13 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 	 * @param owner the owner of this behavior
 	 * @param rayConfiguration the ray configuration
 	 * @param raycastCollisionDetector the collision detector
-	 * @param distanceFromBoundary the minimum distance to a wall (i.e., how far to avoid collision) */
+	 * @param distanceFromBoundary the minimum distance to a wall (i.e., how far to avoid collision). */
 	public RaycastObstacleAvoidance (Steerable<T> owner, RayConfiguration<T> rayConfiguration,
 		RaycastCollisionDetector<T> raycastCollisionDetector, float distanceFromBoundary) {
-		this(owner, rayConfiguration, raycastCollisionDetector, distanceFromBoundary, 0);
-	}
-
-	/** Creates a {@code RaycastObstacleAvoidance} behavior.
-	 * @param owner the owner of this behavior
-	 * @param rayConfiguration the ray configuration
-	 * @param raycastCollisionDetector the collision detector
-	 * @param distanceFromBoundary the minimum distance to a wall (i.e., how far to avoid collision)
-	 * @param maxLinearAcceleration the maximum acceleration that can be used to avoid an obstacle. */
-	public RaycastObstacleAvoidance (Steerable<T> owner, RayConfiguration<T> rayConfiguration,
-		RaycastCollisionDetector<T> raycastCollisionDetector, float distanceFromBoundary, float maxLinearAcceleration) {
 		super(owner);
 		this.rayConfiguration = rayConfiguration;
 		this.raycastCollisionDetector = raycastCollisionDetector;
 		this.distanceFromBoundary = distanceFromBoundary;
-		this.maxLinearAcceleration = maxLinearAcceleration;
 
 		this.outputCollision = new Collision<T>(owner.newVector(), owner.newVector());
 		this.minOutputCollision = new Collision<T>(owner.newVector(), owner.newVector());
@@ -163,26 +149,13 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 		// Calculate and seek the target position
 		steering.linear.set(minOutputCollision.point)
 			.mulAdd(minOutputCollision.normal, owner.getBoundingRadius() + distanceFromBoundary).sub(owner.getPosition()).nor()
-			.scl(getMaxLinearAcceleration());
+			.scl(getActualLimiter().getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;
 
 		// Output steering acceleration
 		return steering;
-	}
-
-	/** Returns the maximum linear acceleration */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
-
-	/** Sets the maximum linear acceleration.
-	 * @param maxLinearAcceleration the maximum linear acceleration to set
-	 * @return this behavior for chaining. */
-	public RaycastObstacleAvoidance<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
 	}
 
 	/** Returns the ray configuration of this behavior. */
@@ -223,6 +196,34 @@ public class RaycastObstacleAvoidance<T extends Vector<T>> extends SteeringBehav
 		this.distanceFromBoundary = distanceFromBoundary;
 		return this;
 	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public RaycastObstacleAvoidance<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public RaycastObstacleAvoidance<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public RaycastObstacleAvoidance<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	//
+	// Nested interfaces and classes
+	//
 
 	public interface RayConfiguration<T extends Vector<T>> {
 		Ray<T>[] updateRays ();

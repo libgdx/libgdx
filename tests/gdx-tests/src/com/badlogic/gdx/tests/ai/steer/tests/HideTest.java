@@ -16,10 +16,14 @@
 
 package com.badlogic.gdx.tests.ai.steer.tests;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
 import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
+import com.badlogic.gdx.ai.steer.limiters.FullLimiter;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
+import com.badlogic.gdx.ai.steer.limiters.NeutralConstantLimiter;
 import com.badlogic.gdx.ai.steer.proximities.InfiniteProximity;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -88,30 +92,34 @@ public class HideTest extends SteeringTest {
 				super.act(delta);
 			}
 		};
-		character.setMaxSpeed(150);
+		character.setMaxLinearSpeed(150);
+		character.setMaxLinearAcceleration(250);
 
 		// Add collision avoidance, hide and wander behaviors to character
 		RadiusProximity<Vector2> radiusProximity = new RadiusProximity<Vector2>(character, obstacles, character.getBoundingRadius()
 			+ DISTANCE_FROM_BOUNDARY * .5f);
-		CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, radiusProximity, 500f);
+		CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, radiusProximity)
+			.setLimiter(new LinearAccelerationLimiter(500));
+
 		InfiniteProximity<Vector2> infProximity = new InfiniteProximity<Vector2>(character, obstacles);
-		this.hideSB = new Hide<Vector2>(character, target, infProximity) {
-			@Override
-			public float getMaxLinearSpeed () {
-				return character.getMaxSpeed();
-			}
-		}.setDistanceFromBoundary(DISTANCE_FROM_BOUNDARY) //
-			.setMaxLinearAcceleration(200) //
+		this.hideSB = new Hide<Vector2>(character, target, infProximity) //
+			.setDistanceFromBoundary(DISTANCE_FROM_BOUNDARY) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(80);
 
 		this.wanderSB = new Wander<Vector2>(character) //
-			.setMaxLinearAcceleration(30) //
-			.setMaxAngularAcceleration(0) // set to 0 because independent facing is off
+			// Notice that:
+			// 1. setting maxLinearSpeed to -1 has no effect; we actually take it from the character, see the overridden getter
+			// 2. maxAngularAcceleration is set to 0 because independent facing is disabled
+			.setLimiter(new FullLimiter(30, -1, 0, 5) {
+				@Override
+				public float getMaxLinearSpeed () {
+					return character.getMaxLinearSpeed();
+				}
+			}) //
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(60) //
 			.setWanderOrientation(10) //
@@ -120,6 +128,7 @@ public class HideTest extends SteeringTest {
 
 		// Sum up behaviors without truncating the result
 		BlendedSteering<Vector2> blendedSteeringSB = new BlendedSteering<Vector2>(character) //
+			.setLimiter(NeutralConstantLimiter.LIMITER) //
 			.add(collisionAvoidanceSB, 1) //
 			.add(hideSB, 1) //
 			.add(wanderSB, 1);
@@ -133,20 +142,7 @@ public class HideTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + hideSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 2000, 20, false, container.skin);
-		maxLinAcc.setValue(hideSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				hideSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxAngularAccelerationController(detailTable, character, 0, 2000, 20);
 
 		detailTable.row();
 		addMaxSpeedController(detailTable, character, 0, 300, 10);

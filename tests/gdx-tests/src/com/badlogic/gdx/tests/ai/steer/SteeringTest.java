@@ -76,46 +76,138 @@ public abstract class SteeringTest {
 		return window;
 	}
 
+	//
+	// Scene2d limiter controllers
+	//
+
+	protected void addMaxLinearAccelerationController (Table table, final SteeringActor character) {
+		addMaxLinearAccelerationController(table, character, 0, 500, 10);
+	}
+
+	protected void addMaxLinearAccelerationController (Table table, final SteeringActor character, float minValue, float maxValue, float step) {
+		final Label labelMaxLinAcc = new Label("Max.Linear Acc.[" + character.getMaxLinearAcceleration() + "]", container.skin);
+		table.add(labelMaxLinAcc);
+		table.row();
+		Slider maxLinAcc = new Slider(minValue, maxValue, step, false, container.skin);
+		maxLinAcc.setValue(character.getMaxLinearAcceleration());
+		maxLinAcc.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				character.setMaxLinearAcceleration(slider.getValue());
+				labelMaxLinAcc.setText("Max.Linear Acc.[" + character.getMaxLinearAcceleration() + "]");
+			}
+		});
+		table.add(maxLinAcc);
+	}
+
 	protected void addMaxSpeedController (Table table, final SteeringActor character) {
 		addMaxSpeedController(table, character, 0, 500, 10);
 	}
 
 	protected void addMaxSpeedController (Table table, final SteeringActor character, float minValue, float maxValue, float step) {
-		final Label labelMaxSpeed = new Label("Max Speed [" + character.getMaxSpeed() + "]", container.skin);
+		final Label labelMaxSpeed = new Label("Max.Lin.Speed [" + character.getMaxLinearSpeed() + "]", container.skin);
 		table.add(labelMaxSpeed);
 		table.row();
 		Slider maxSpeed = new Slider(minValue, maxValue, step, false, container.skin);
-		maxSpeed.setValue(character.getMaxSpeed());
+		maxSpeed.setValue(character.getMaxLinearSpeed());
 		maxSpeed.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				character.setMaxSpeed(slider.getValue());
-				labelMaxSpeed.setText("Max Speed [" + character.getMaxSpeed() + "]");
+				character.setMaxLinearSpeed(slider.getValue());
+				labelMaxSpeed.setText("Max.Lin.Speed [" + character.getMaxLinearSpeed() + "]");
 			}
 		});
 		table.add(maxSpeed);
 	}
+
+	protected void addMaxAngularAccelerationController (Table table, final SteeringActor character) {
+		addMaxAngularAccelerationController(table, character, 0, 50, 1);
+	}
+
+	protected void addMaxAngularAccelerationController (Table table, final SteeringActor character, float minValue, float maxValue, float step) {
+		final Label labelMaxAngAcc = new Label("Max.Ang.Acc.[" + character.getMaxAngularAcceleration() + "]", container.skin);
+		table.add(labelMaxAngAcc);
+		table.row();
+		Slider maxAngAcc = new Slider(minValue, maxValue, step, false, container.skin);
+		maxAngAcc.setValue(character.getMaxAngularAcceleration());
+		maxAngAcc.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				character.setMaxAngularAcceleration(slider.getValue());
+				labelMaxAngAcc.setText("Max.Ang.Acc.[" + character.getMaxAngularAcceleration() + "]");
+			}
+		});
+		table.add(maxAngAcc);
+	}
+
+	protected void addMaxAngularSpeedController (Table table, final SteeringActor character) {
+		addMaxAngularSpeedController(table, character, 0, 20, 1);
+	}
+
+	protected void addMaxAngularSpeedController (Table table, final SteeringActor character, float minValue, float maxValue, float step) {
+		final Label labelMaxAngSpeed = new Label("Max.Ang.Speed [" + character.getMaxAngularSpeed() + "]", container.skin);
+		table.add(labelMaxAngSpeed);
+		table.row();
+		Slider maxAngSpeed = new Slider(minValue, maxValue, step, false, container.skin);
+		maxAngSpeed.setValue(character.getMaxAngularSpeed());
+		maxAngSpeed.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				character.setMaxAngularSpeed(slider.getValue());
+				labelMaxAngSpeed.setText("Max.Ang.Speed [" + character.getMaxAngularSpeed() + "]");
+			}
+		});
+		table.add(maxAngSpeed);
+	}
+
+	//
+	// Bullet limiter controllers
+	//
 	
 	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character) {
 		addMaxSpeedController(table, character, 0, 50, 0.1f);
 	}
 	
 	protected void addMaxSpeedController (Table table, final SteeringBulletEntity character, float minValue, float maxValue, float step) {
-		final Label labelMaxSpeed = new Label("Max Speed [" + character.getMaxSpeed() + "]", container.skin);
+		final Label labelMaxSpeed = new Label("Max.Lin.Speed [" + character.getMaxLinearSpeed() + "]", container.skin);
 		table.add(labelMaxSpeed);
 		table.row();
 		Slider maxSpeed = new Slider(minValue, maxValue, step, false, container.skin);
-		maxSpeed.setValue(character.getMaxSpeed());
+		maxSpeed.setValue(character.getMaxLinearSpeed());
 		maxSpeed.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				character.setMaxSpeed(slider.getValue());
-				labelMaxSpeed.setText("Max Speed [" + character.getMaxSpeed() + "]");
+				character.setMaxLinearSpeed(slider.getValue());
+				labelMaxSpeed.setText("Max.Lin.Speed [" + character.getMaxLinearSpeed() + "]");
 			}
 		});
 		table.add(maxSpeed);
+	}
+	
+	protected void addMaxLinearAccelerationController (Table table, final SteeringBulletEntity character) {
+		addMaxLinearAccelerationController(table, character, 0, 50, 0.1f);
+	}
+	
+	protected void addMaxLinearAccelerationController (Table table, final SteeringBulletEntity character, float minValue, float maxValue, float step) {
+		final Label labelMaxLinAcc = new Label("Max.Linear Acc. [" + character.getMaxLinearAcceleration() + "]", container.skin);
+		table.add(labelMaxLinAcc);
+		table.row();
+		Slider maxLinAcc = new Slider(minValue, maxValue, step, false, container.skin);
+		maxLinAcc.setValue(character.getMaxLinearAcceleration());
+		maxLinAcc.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				character.setMaxLinearAcceleration(slider.getValue());
+				labelMaxLinAcc.setText("Max.Linear Acc. [" + character.getMaxLinearAcceleration() + "]");
+			}
+		});
+		table.add(maxLinAcc);
 	}
 
 	protected void addAlignOrientationToLinearVelocityController (Table table, final SteeringActor character) {

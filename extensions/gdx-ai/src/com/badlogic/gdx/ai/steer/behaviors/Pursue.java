@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -43,46 +44,31 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The target */
 	protected Steerable<T> target;
 
-	/** The maximum acceleration that can be used. */
-	protected float maxLinearAcceleration;
-
 	/** The maximum prediction time */
 	protected float maxPredictionTime;
 
-	/** Creates a {@code Pursue} behavior for the specified owner and target. Maximum linear acceleration defaults to 100 and
-	 * maximum prediction time defaults to 1 second.
+	/** Creates a {@code Pursue} behavior for the specified owner and target. Maximum prediction time defaults to 1 second.
 	 * @param owner the owner of this behavior.
-	 * @param target the target. */
+	 * @param target the target of this behavior. */
 	public Pursue (Steerable<T> owner, Steerable<T> target) {
-		this(owner, target, 100);
-	}
-
-	/** Creates a {@code Pursue} behavior for the specified owner, target and maximum linear acceleration. Maximum prediction time
-	 * defaults to 1 second.
-	 * @param owner the owner of this behavior
-	 * @param target the target
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used. */
-	public Pursue (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
-		this(owner, target, maxLinearAcceleration, 1);
+		this(owner, target, 1);
 	}
 
 	/** Creates a {@code Pursue} behavior for the specified owner and target.
 	 * @param owner the owner of this behavior
-	 * @param target the target
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used
+	 * @param target the target of this behavior
 	 * @param maxPredictionTime the max time used to predict the target's position assuming it continues to move with its current
 	 *           velocity. */
-	public Pursue (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration, float maxPredictionTime) {
+	public Pursue (Steerable<T> owner, Steerable<T> target, float maxPredictionTime) {
 		super(owner);
 		this.target = target;
-		this.maxLinearAcceleration = maxLinearAcceleration;
 		this.maxPredictionTime = maxPredictionTime;
 	}
 
 	/** Returns the actual linear acceleration to be applied. This method is overridden by the {@link Evade} behavior to invert the
 	 * maximum linear acceleration in order to evade the target. */
 	protected float getActualMaxLinearAcceleration () {
-		return getMaxLinearAcceleration();
+		return getActualLimiter().getMaxLinearAcceleration();
 	}
 
 	@Override
@@ -127,18 +113,6 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 		return this;
 	}
 
-	/** Returns the maximum linear acceleration that can be used. */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
-
-	/** Sets the maximum linear acceleration that can be used.
-	 * @return this behavior for chaining. */
-	public Pursue<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
 	/** Returns the maximum prediction time. */
 	public float getMaxPredictionTime () {
 		return maxPredictionTime;
@@ -148,6 +122,30 @@ public class Pursue<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public Pursue<T> setMaxPredictionTime (float maxPredictionTime) {
 		this.maxPredictionTime = maxPredictionTime;
+		return this;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Pursue<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Pursue<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public Pursue<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
 		return this;
 	}
 

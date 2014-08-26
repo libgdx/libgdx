@@ -17,6 +17,7 @@
 package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.GroupBehavior;
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Proximity;
 import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
@@ -40,9 +41,6 @@ import com.badlogic.gdx.math.Vector;
  * @autor davebaol */
 public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> implements ProximityCallback<T> {
 
-	/** The maximum acceleration that can be used to avoid collisions. */
-	protected float maxLinearAcceleration;
-
 	private float shortestTime;
 	private Steerable<T> firstNeighbor;
 	private float firstMinSeparation;
@@ -52,20 +50,11 @@ public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> im
 	private T relativePosition;
 	private T relativeVelocity;
 
-	/** Creates a {@code CollisionAvoidance} behavior for the specified owner, proximity and maximum linear acceleration.
-	 * @param owner the owner of this behavior.
+	/** Creates a {@code CollisionAvoidance} behavior for the specified owner and proximity.
+	 * @param owner the owner of this behavior
 	 * @param proximity the proximity of this behavior. */
 	public CollisionAvoidance (Steerable<T> owner, Proximity<T> proximity) {
-		this(owner, proximity, 0);
-	}
-
-	/** Creates a {@code CollisionAvoidance} behavior for the specified owner, proximity and maximum linear acceleration.
-	 * @param owner the owner of this behavior
-	 * @param proximity the proximity of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to avoid collisions. */
-	public CollisionAvoidance (Steerable<T> owner, Proximity<T> proximity, float maxLinearAcceleration) {
 		super(owner, proximity);
-		this.maxLinearAcceleration = maxLinearAcceleration;
 
 		this.firstRelativePosition = owner.newVector();
 		this.firstRelativeVelocity = owner.newVector();
@@ -98,7 +87,7 @@ public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> im
 
 		// Avoid the target
 		// Notice that steerling.linear and relativePosition are the same vector
-		relativePosition.nor().scl(-getMaxLinearAcceleration());
+		relativePosition.nor().scl(-getActualLimiter().getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0f;
@@ -135,15 +124,27 @@ public class CollisionAvoidance<T extends Vector<T>> extends GroupBehavior<T> im
 		return true;
 	}
 
-	/** Returns the maximum linear acceleration that can be used to avoid collisions. */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public CollisionAvoidance<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
 	}
 
-	/** Sets the maximum linear acceleration that can be used to avoid collisions.
+	@Override
+	public CollisionAvoidance<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
 	 * @return this behavior for chaining. */
-	public CollisionAvoidance<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
+	@Override
+	public CollisionAvoidance<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
 		return this;
 	}
 

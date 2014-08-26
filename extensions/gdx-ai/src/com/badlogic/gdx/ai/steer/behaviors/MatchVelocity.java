@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
@@ -32,9 +33,6 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 	/** The target of this behavior */
 	protected Steerable<T> target;
 
-	/** The maximum acceleration of the character */
-	protected float maxLinearAcceleration;
-
 	/** The time over which to achieve target speed */
 	protected float timeToTarget;
 
@@ -45,32 +43,20 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 		this(owner, null);
 	}
 
-	/** Creates a {@code MatchVelocity} behavior for the given owner and target. The maxLinearAcceleration is set to 100. The
-	 * timeToTarget is set to 0.1 seconds.
+	/** Creates a {@code MatchVelocity} behavior for the given owner and target. The timeToTarget is set to 0.1 seconds.
 	 * @param owner the owner of this behavior
-	 * @param target the target of this behavior */
+	 * @param target the target of this behavior. */
 	public MatchVelocity (Steerable<T> owner, Steerable<T> target) {
-		this(owner, target, 100);
+		this(owner, target, 0.1f);
 	}
 
-	/** Creates a {@code MatchVelocity} behavior for the given owner, target and maxLinearAcceleration. The timeToTarget is set to
-	 * 0.1 seconds.
+	/** Creates a {@code MatchVelocity} behavior for the given owner, target and timeToTarget.
 	 * @param owner the owner of this behavior
 	 * @param target the target of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used. */
-	public MatchVelocity (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
-		this(owner, target, maxLinearAcceleration, 0.1f);
-	}
-
-	/** Creates a {@code MatchVelocity} behavior for the given owner, target, maxLinearAcceleration and timeToTarget.
-	 * @param owner the owner of this behavior
-	 * @param target the target of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to arrive at the target.
 	 * @param timeToTarget the time over which to achieve target speed. */
-	public MatchVelocity (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration, float timeToTarget) {
+	public MatchVelocity (Steerable<T> owner, Steerable<T> target, float timeToTarget) {
 		super(owner);
 		this.target = target;
-		this.maxLinearAcceleration = maxLinearAcceleration;
 		this.timeToTarget = timeToTarget;
 	}
 
@@ -78,7 +64,7 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Acceleration tries to get to the target velocity without exceeding max acceleration
 		steering.linear.set(target.getLinearVelocity()).sub(owner.getLinearVelocity()).scl(1f / timeToTarget)
-			.limit(getMaxLinearAcceleration());
+			.limit(getActualLimiter().getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;
@@ -99,18 +85,6 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 		return this;
 	}
 
-	/** @return the maxLinearAcceleration */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
-
-	/** @param maxLinearAcceleration the maxLinearAcceleration to set
-	 * @return this behavior for chaining. */
-	public MatchVelocity<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
 	/** @return the timeToTarget */
 	public float getTimeToTarget () {
 		return timeToTarget;
@@ -120,6 +94,30 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 	 * @return this behavior for chaining. */
 	public MatchVelocity<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;
+		return this;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public MatchVelocity<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public MatchVelocity<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public MatchVelocity<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
 		return this;
 	}
 

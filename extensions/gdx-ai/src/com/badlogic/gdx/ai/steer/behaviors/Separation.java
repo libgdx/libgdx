@@ -17,10 +17,11 @@
 package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.GroupBehavior;
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Proximity;
+import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
-import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector;
 
@@ -70,5 +71,29 @@ public class Separation<T extends Vector<T>> extends GroupBehavior<T> implements
 			linear.add(toAgent.scl(1f / toAgentLength2));
 		}
 		return true;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Separation<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Separation<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. However, {@code Separation} needs no limiter at all.
+	 * @return this behavior for chaining. */
+	@Override
+	public Separation<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
 	}
 }

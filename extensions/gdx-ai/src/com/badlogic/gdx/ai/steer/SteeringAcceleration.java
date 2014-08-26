@@ -25,10 +25,10 @@ import com.badlogic.gdx.math.Vector;
  * 
  * @author davebaol */
 public class SteeringAcceleration<T extends Vector<T>> {
-	/** The linear component of the steering acceleration. */
+	/** The linear component of this steering acceleration. */
 	public T linear;
 
-	/** The angular component of the steering acceleration. */
+	/** The angular component of this steering acceleration. */
 	public float angular;
 
 	/** Creates a {@code SteeringAcceleration} with the given linear acceleration and zero angular acceleration.

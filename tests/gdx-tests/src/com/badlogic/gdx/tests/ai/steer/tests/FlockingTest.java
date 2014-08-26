@@ -18,11 +18,11 @@ package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.Alignment;
+import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.ai.steer.behaviors.Cohesion;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Separation;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.ai.steer.proximities.FieldOfViewProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -69,8 +69,13 @@ public class FlockingTest extends SteeringTest {
 
 		for (int i = 0; i < 60; i++) {
 			SteeringActor character = new SteeringActor(container.greenFish, false);
+			character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+			character.setMaxLinearSpeed(70);
+			character.setMaxLinearAcceleration(100); //
+			character.setMaxAngularAcceleration(0); // only used by wander; set to 0 because independent facing is disabled
+			character.setMaxAngularSpeed(5); // only used by wander 
 
-			FieldOfViewProximity<Vector2> proximity = new FieldOfViewProximity<Vector2>(character, characters, 150,
+			FieldOfViewProximity<Vector2> proximity = new FieldOfViewProximity<Vector2>(character, characters, 180,
 				270 * MathUtils.degreesToRadians);
 			proximities.add(proximity);
 			if (i == 0) char0Proximity = proximity;
@@ -78,18 +83,16 @@ public class FlockingTest extends SteeringTest {
 			Separation<Vector2> groupSeparationSB = new Separation<Vector2>(character, proximity);
 			Cohesion<Vector2> groupCohesionSB = new Cohesion<Vector2>(character, proximity);
 
-			BlendedSteering<Vector2> blendedSteering = new BlendedSteering<Vector2>(character, 500, 500) //
+			BlendedSteering<Vector2> blendedSteering = new BlendedSteering<Vector2>(character) //
 				.add(groupAlignmentSB, 2f) //
-				.add(groupCohesionSB, 45f) //
-				.add(groupSeparationSB, 350f);
+				.add(groupCohesionSB, 60f) //
+				.add(groupSeparationSB, 230f);
 			blendedSteerings.add(blendedSteering);
 
+			//TODO set more proper values
 			Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
-				.setMaxLinearAcceleration(30) //
-				.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 				.setAlignTolerance(0.001f) //
 				.setDecelerationRadius(5) //
-				.setMaxAngularSpeed(5) //
 				.setTimeToTarget(0.1f) //
 				.setWanderOffset(60) //
 				.setWanderOrientation(10) //
@@ -102,9 +105,6 @@ public class FlockingTest extends SteeringTest {
 
 			character.setSteeringBehavior(prioritySteeringSB);
 
-			character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-			character.setMaxSpeed(50);
-
 			table.addActor(character);
 
 			characters.add(character);
@@ -115,8 +115,8 @@ public class FlockingTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label alignmentWeightLabel = new Label("Alignment Weight ["
-			+ blendedSteerings.get(0).get(0).getWeight() + "]", container.skin);
+		final Label alignmentWeightLabel = new Label("Alignment Weight [" + blendedSteerings.get(0).get(0).getWeight() + "]",
+			container.skin);
 		detailTable.add(alignmentWeightLabel);
 		detailTable.row();
 		Slider alignmentWeight = new Slider(0, 500, 1, false, container.skin);
@@ -127,15 +127,14 @@ public class FlockingTest extends SteeringTest {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < blendedSteerings.size; i++)
 					blendedSteerings.get(i).get(0).setWeight(slider.getValue());
-				alignmentWeightLabel
-					.setText("Alignment Weight [" + blendedSteerings.get(0).get(0).getWeight() + "]");
+				alignmentWeightLabel.setText("Alignment Weight [" + blendedSteerings.get(0).get(0).getWeight() + "]");
 			}
 		});
 		detailTable.add(alignmentWeight);
 
 		detailTable.row();
-		final Label cohesionWeightLabel = new Label("Cohesion Weight ["
-			+ blendedSteerings.get(0).get(1).getWeight() + "]", container.skin);
+		final Label cohesionWeightLabel = new Label("Cohesion Weight [" + blendedSteerings.get(0).get(1).getWeight() + "]",
+			container.skin);
 		detailTable.add(cohesionWeightLabel);
 		detailTable.row();
 		Slider cohesionWeight = new Slider(0, 500, 1, false, container.skin);
@@ -152,8 +151,8 @@ public class FlockingTest extends SteeringTest {
 		detailTable.add(cohesionWeight);
 
 		detailTable.row();
-		final Label separationWeightLabel = new Label("Separation Weight ["
-			+ blendedSteerings.get(0).get(2).getWeight() + "]", container.skin);
+		final Label separationWeightLabel = new Label("Separation Weight [" + blendedSteerings.get(0).get(2).getWeight() + "]",
+			container.skin);
 		detailTable.add(separationWeightLabel);
 		detailTable.row();
 		Slider separationWeight = new Slider(0, 500, 1, false, container.skin);
@@ -164,8 +163,7 @@ public class FlockingTest extends SteeringTest {
 				Slider slider = (Slider)actor;
 				for (int i = 0; i < blendedSteerings.size; i++)
 					blendedSteerings.get(i).get(2).setWeight(slider.getValue());
-				separationWeightLabel.setText("Separation Weight [" + blendedSteerings.get(0).get(2).getWeight()
-					+ "]");
+				separationWeightLabel.setText("Separation Weight [" + blendedSteerings.get(0).get(2).getWeight() + "]");
 			}
 		});
 		detailTable.add(separationWeight);
@@ -208,40 +206,40 @@ public class FlockingTest extends SteeringTest {
 		detailTable.add(proximityAngle);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + blendedSteerings.get(0).getMaxLinearAcceleration() + "]",
+		final Label labelMaxLinAcc = new Label("Max.Linear Acc.[" + characters.get(0).getMaxLinearAcceleration() + "]",
 			container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
 		Slider maxLinAcc = new Slider(0, 500, 1, false, container.skin);
-		maxLinAcc.setValue(blendedSteerings.get(0).getMaxLinearAcceleration());
+		maxLinAcc.setValue(characters.get(0).getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				for (int i = 0; i < blendedSteerings.size; i++)
-					blendedSteerings.get(i).setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
+				for (int i = 0; i < characters.size; i++)
+					characters.get(i).setMaxLinearAcceleration(slider.getValue());
+				labelMaxLinAcc.setText("Max.Linear Acc.[" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxLinAcc);
 
 		detailTable.row();
-		final Label labelMaxAngAcc = new Label("Max ang.acc.[" + blendedSteerings.get(0).getMaxAngularAcceleration() + "]",
+		final Label labelMaxLinSpeed = new Label("Max.Lin.Speed [" + characters.get(0).getMaxLinearSpeed() + "]",
 			container.skin);
-		detailTable.add(labelMaxAngAcc);
+		detailTable.add(labelMaxLinSpeed);
 		detailTable.row();
-		Slider maxAngAcc = new Slider(0, 500, 1, false, container.skin);
-		maxAngAcc.setValue(blendedSteerings.get(0).getMaxAngularAcceleration());
-		maxAngAcc.addListener(new ChangeListener() {
+		Slider maxLinSpeed = new Slider(0, 500, 1, false, container.skin);
+		maxLinSpeed.setValue(characters.get(0).getMaxLinearSpeed());
+		maxLinSpeed.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				for (int i = 0; i < blendedSteerings.size; i++)
-					blendedSteerings.get(i).setMaxAngularAcceleration(slider.getValue());
-				labelMaxAngAcc.setText("Max ang.acc.[" + slider.getValue() + "]");
+				for (int i = 0; i < characters.size; i++)
+					characters.get(i).setMaxLinearSpeed(slider.getValue());
+				labelMaxLinSpeed.setText("Max.Lin.Speed [" + slider.getValue() + "]");
 			}
 		});
-		detailTable.add(maxAngAcc);
+		detailTable.add(maxLinSpeed);
 
 		detailTable.row();
 		addSeparator(detailTable);

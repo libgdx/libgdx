@@ -68,10 +68,11 @@ public class FollowFlowFieldTest extends SteeringTest {
 		}
 
 		character = new SteeringActor(container.badlogicSmall, false);
-		character.setMaxSpeed(250);
+		character.setMaxLinearSpeed(300);
+		character.setMaxLinearAcceleration(400);
 
 		flowField = new RandomFlowField2DWithRepulsors(container.stageWidth, container.stageHeight, container.badlogicSmall.getRegionWidth(), obstacles);
-		final FollowFlowField<Vector2> followFlowFieldSB = new FollowFlowField<Vector2>(character, flowField, 300, 400);
+		final FollowFlowField<Vector2> followFlowFieldSB = new FollowFlowField<Vector2>(character, flowField);
 		character.setSteeringBehavior(followFlowFieldSB);
 
 		table.addActor(character);
@@ -81,21 +82,10 @@ public class FollowFlowFieldTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + followFlowFieldSB.getMaxLinearAcceleration() + "]",
-			container.skin);
-		detailTable.add(labelMaxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 10000, 20);
+
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 10000, 20, false, container.skin);
-		maxLinAcc.setValue(followFlowFieldSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				followFlowFieldSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxSpeedController(detailTable, character);
 
 		detailTable.row();
 		final Label labelPredictionTime = new Label("Prediction Time [" + followFlowFieldSB.getPredictionTime() + " sec.]", container.skin);
@@ -115,9 +105,6 @@ public class FollowFlowFieldTest extends SteeringTest {
 
 		detailTable.row();
 		addSeparator(detailTable);
-
-		detailTable.row();
-		addMaxSpeedController(detailTable, character);
 
 		detailTable.row();
 		CheckBox debug = new CheckBox("Draw Flow Field", container.skin);

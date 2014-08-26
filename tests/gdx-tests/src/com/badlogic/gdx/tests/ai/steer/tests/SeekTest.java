@@ -44,11 +44,13 @@ public class SeekTest extends SteeringTest {
 	@Override
 	public void create (Table table) {
 		character = new SteeringActor(container.badlogicSmall, false);
-		character.setMaxSpeed(250);
 		target = new SteeringActor(container.target);
 		inputProcessor = new TargetInputProcessor(target);
 
-		final Seek<Vector2> seekSB = new Seek<Vector2>(character, target, 2500);
+		character.setMaxLinearSpeed(250);
+		character.setMaxLinearAcceleration(2000);
+
+		final Seek<Vector2> seekSB = new Seek<Vector2>(character, target);
 		character.setSteeringBehavior(seekSB);
 
 		table.addActor(character);
@@ -60,20 +62,7 @@ public class SeekTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + seekSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 10000, 20, false, container.skin);
-		maxLinAcc.setValue(seekSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				seekSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 10000, 20);
 
 		detailTable.row();
 		addSeparator(detailTable);

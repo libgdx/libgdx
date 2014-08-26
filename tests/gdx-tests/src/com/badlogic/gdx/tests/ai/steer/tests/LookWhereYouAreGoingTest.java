@@ -17,8 +17,9 @@
 package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
-import com.badlogic.gdx.ai.steer.behaviors.LookWhereYouAreGoing;
 import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
+import com.badlogic.gdx.ai.steer.behaviors.LookWhereYouAreGoing;
+import com.badlogic.gdx.ai.steer.limiters.NeutralConstantLimiter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -46,25 +47,29 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 	@Override
 	public void create (Table table) {
 		character = new SteeringActor(container.badlogicSmall, true);
-		character.setMaxSpeed(100);
+		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
+		character.setMaxLinearAcceleration(100);
+		character.setMaxLinearSpeed(100);
+		character.setMaxAngularAcceleration(40);
+		character.setMaxAngularSpeed(15);
+
 		target = new SteeringActor(container.target);
+		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+
 		inputProcessor = new TargetInputProcessor(target);
 
 		final LookWhereYouAreGoing<Vector2> lookWhereYouAreGoingSB = new LookWhereYouAreGoing<Vector2>(character) //
-			.setMaxAngularAcceleration(100) //
-			.setMaxAngularSpeed(20) //
 			.setTimeToTarget(0.1f) //
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(MathUtils.PI);
 
 		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) //
-			.setMaxLinearAcceleration(100) //
-			.setMaxLinearSpeed(100) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(80);
 
-		BlendedSteering<Vector2> blendedSteering = new BlendedSteering<Vector2>(character, 500, 500) //
+		BlendedSteering<Vector2> blendedSteering = new BlendedSteering<Vector2>(character) //
+			.setLimiter(NeutralConstantLimiter.LIMITER) //
 			.add(arriveSB, 1f) //
 			.add(lookWhereYouAreGoingSB, 1f);
 		character.setSteeringBehavior(blendedSteering);
@@ -72,27 +77,13 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 		table.addActor(character);
 		table.addActor(target);
 
-		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
-		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxRotation = new Label("Max.Rotation [" + lookWhereYouAreGoingSB.getMaxAngularSpeed() + "]",
-			container.skin);
-		detailTable.add(labelMaxRotation);
+		addMaxAngularAccelerationController(detailTable, character, 0, 50, 1);
+
 		detailTable.row();
-		Slider maxRotation = new Slider(0, 20, 1, false, container.skin);
-		maxRotation.setValue(lookWhereYouAreGoingSB.getMaxAngularSpeed());
-		maxRotation.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				lookWhereYouAreGoingSB.setMaxAngularSpeed(slider.getValue());
-				labelMaxRotation.setText("Max.Rotation [" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxRotation);
+		addMaxAngularSpeedController(detailTable, character, 0, 20, 1);
 
 		detailTable.row();
 		final Label labelDecelerationRadius = new Label("Deceleration Radius [" + lookWhereYouAreGoingSB.getDecelerationRadius()

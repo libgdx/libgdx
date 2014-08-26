@@ -20,6 +20,7 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.FullLimiter;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -45,7 +46,6 @@ public class CollisionAvoidanceTest extends SteeringTest {
 	Array<SteeringActor> characters;
 	RadiusProximity<Vector2> char0Proximity;
 	Array<RadiusProximity<Vector2>> proximities;
-	Array<CollisionAvoidance<Vector2>> collisionAvoidances;
 	boolean drawDebug;
 	ShapeRenderer shapeRenderer;
 
@@ -61,24 +61,30 @@ public class CollisionAvoidanceTest extends SteeringTest {
 
 		characters = new Array<SteeringActor>();
 		proximities = new Array<RadiusProximity<Vector2>>();
-		collisionAvoidances = new Array<CollisionAvoidance<Vector2>>();
 
 		for (int i = 0; i < 60; i++) {
-			SteeringActor character = new SteeringActor(container.greenFish, false);
+			final SteeringActor character = new SteeringActor(container.greenFish, false);
+			character.setMaxLinearSpeed(50);
+			character.setMaxLinearAcceleration(100);
 
 			RadiusProximity<Vector2> proximity = new RadiusProximity<Vector2>(character, characters,
 				character.getBoundingRadius() * 4);
 			proximities.add(proximity);
 			if (i == 0) char0Proximity = proximity;
-			CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, proximity, 100f);
-			collisionAvoidances.add(collisionAvoidanceSB);
+			CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, proximity);
 
 			Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
-				.setMaxLinearAcceleration(30) //
-				.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
+				// Notice that:
+				// 1. setting maxLinearSpeed to -1 has no effect; we actually take it from the character, see the overridden getter
+				// 2. maxAngularAcceleration is set to 0 because independent facing is disabled
+				.setLimiter(new FullLimiter(30, -1, 0, 5) {
+					@Override
+					public float getMaxLinearSpeed () {
+						return character.getMaxLinearSpeed();
+					}
+				}) //
 				.setAlignTolerance(0.001f) //
 				.setDecelerationRadius(5) //
-				.setMaxAngularSpeed(5) //
 				.setTimeToTarget(0.1f) //
 				.setWanderOffset(60) //
 				.setWanderOrientation(10) //
@@ -92,7 +98,6 @@ public class CollisionAvoidanceTest extends SteeringTest {
 			character.setSteeringBehavior(prioritySteeringSB);
 
 			setRandomNonOverlappingPosition(character, characters, 5);
-			character.setMaxSpeed(50);
 
 			table.addActor(character);
 
@@ -104,25 +109,22 @@ public class CollisionAvoidanceTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + collisionAvoidances.get(0).getMaxLinearAcceleration() + "]",
+		final Label labelMaxLinAcc = new Label("Max.Linear Acc.[" + characters.get(0).getMaxLinearAcceleration() + "]",
 			container.skin);
 		detailTable.add(labelMaxLinAcc);
 		detailTable.row();
 		Slider maxLinAcc = new Slider(0, 1500, 1, false, container.skin);
-		maxLinAcc.setValue(collisionAvoidances.get(0).getMaxLinearAcceleration());
+		maxLinAcc.setValue(characters.get(0).getMaxLinearAcceleration());
 		maxLinAcc.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
 				Slider slider = (Slider)actor;
-				for (int i = 0; i < collisionAvoidances.size; i++)
-					collisionAvoidances.get(i).setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
+				for (int i = 0; i < characters.size; i++)
+					characters.get(i).setMaxLinearAcceleration(slider.getValue());
+				labelMaxLinAcc.setText("Max.Linear Acc.[" + slider.getValue() + "]");
 			}
 		});
 		detailTable.add(maxLinAcc);
-
-		detailTable.row();
-		addSeparator(detailTable);
 
 		detailTable.row();
 		final Label labelProximityRadius = new Label("Proximity Radius [" + proximities.get(0).getRadius() + "]", container.skin);
@@ -140,6 +142,27 @@ public class CollisionAvoidanceTest extends SteeringTest {
 			}
 		});
 		detailTable.add(proximityRadius);
+
+		detailTable.row();
+		addSeparator(detailTable);
+
+		detailTable.row();
+		final Label labelMaxLinSpeed = new Label("Max.Linear Speed.[" + characters.get(0).getMaxLinearSpeed() + "]",
+			container.skin);
+		detailTable.add(labelMaxLinSpeed);
+		detailTable.row();
+		Slider maxLinSpeed = new Slider(0, 300, 10, false, container.skin);
+		maxLinSpeed.setValue(characters.get(0).getMaxLinearSpeed());
+		maxLinSpeed.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				for (int i = 0; i < characters.size; i++)
+					characters.get(i).setMaxLinearSpeed(slider.getValue());
+				labelMaxLinSpeed.setText("Max.Linear Speed.[" + slider.getValue() + "]");
+			}
+		});
+		detailTable.add(maxLinSpeed);
 
 		detailTable.row();
 		CheckBox debug = new CheckBox("Draw Proximity", container.skin);

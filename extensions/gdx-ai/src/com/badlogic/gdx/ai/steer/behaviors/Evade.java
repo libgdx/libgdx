@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.math.Vector;
 
@@ -27,38 +28,26 @@ import com.badlogic.gdx.math.Vector;
  * @autor davebaol */
 public class Evade<T extends Vector<T>> extends Pursue<T> {
 
-	/** Creates a {@code Evade} behavior for the specified owner, target and maximum linear acceleration. Maximum linear
-	 * acceleration defaults to 100 and maximum prediction time defaults to 1 second.
+	/** Creates a {@code Evade} behavior for the specified owner and target. Maximum prediction time defaults to 1 second.
 	 * @param owner the owner of this behavior
-	 * @param target the target
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used. */
+	 * @param target the target of this behavior, typically a pursuer. */
 	public Evade (Steerable<T> owner, Steerable<T> target) {
-		this(owner, target, 100);
-	}
-
-	/** Creates a {@code Evade} behavior for the specified owner, target and maximum linear acceleration. Maximum prediction time
-	 * defaults to 1 second.
-	 * @param owner the owner of this behavior
-	 * @param target the target
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used. */
-	public Evade (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
-		this(owner, target, maxLinearAcceleration, 1);
+		this(owner, target, 1);
 	}
 
 	/** Creates a {@code Evade} behavior for the specified owner and pursuer.
 	 * @param owner the owner of this behavior
-	 * @param target the pursuer
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used
+	 * @param target the target of this behavior, typically a pursuer
 	 * @param maxPredictionTime the max time used to predict the pursuer's position assuming it continues to move with its current
 	 *           velocity. */
-	public Evade (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration, float maxPredictionTime) {
-		super(owner, target, maxLinearAcceleration, maxPredictionTime);
+	public Evade (Steerable<T> owner, Steerable<T> target, float maxPredictionTime) {
+		super(owner, target, maxPredictionTime);
 	}
 
 	@Override
 	protected float getActualMaxLinearAcceleration () {
 		// Simply return the opposite of the max linear acceleration so to evade the target
-		return -getMaxLinearAcceleration();
+		return -getActualLimiter().getMaxLinearAcceleration();
 	}
 
 	//
@@ -66,20 +55,28 @@ public class Evade<T extends Vector<T>> extends Pursue<T> {
 	//
 
 	@Override
+	public Evade<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Evade<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public Evade<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
 	public Evade<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	@Override
-	public Evade<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
-	@Override
-	public Evade<T> setMaxPredictionTime (float maxPredictionTime) {
-		this.maxPredictionTime = maxPredictionTime;
 		return this;
 	}
 

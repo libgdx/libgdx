@@ -16,9 +16,11 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
+import com.badlogic.gdx.ai.steer.limiters.NeutralConstantLimiter;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
@@ -45,33 +47,18 @@ import com.badlogic.gdx.utils.Array;
  * @author davebaol */
 public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 
-	/** The maximum linear acceleration that can be used. */
-	protected float maxLinearAcceleration;
-
-	/** The maximum angular acceleration that can be used. */
-	protected float maxAngularAcceleration;
-
 	/** The list of behaviors and their corresponding blending weights. */
 	protected Array<BehaviorAndWeight<T>> list;
 
 	private SteeringAcceleration<T> steering;
-
-	/** Creates a {@code BlendedSteering} for the specified {@code owner}. Both {@code maxLinearAcceleration} and
-	 * {@code maxAngularAcceleration} are set to {@link Float#POSITIVE_INFINITY} meaning that no truncation will occur.
-	 * @param owner the owner of this behavior. */
-	public BlendedSteering (Steerable<T> owner) {
-		this(owner, Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-	}
 
 	/** Creates a {@code BlendedSteering} for the specified {@code owner}, {@code maxLinearAcceleration} and
 	 * {@code maxAngularAcceleration}.
 	 * @param owner the owner of this behavior.
 	 * @param maxLinearAcceleration the maximum linear acceleration that can be used.
 	 * @param maxAngularAcceleration the maximum angular acceleration that can be used. */
-	public BlendedSteering (Steerable<T> owner, float maxLinearAcceleration, float maxAngularAcceleration) {
+	public BlendedSteering (Steerable<T> owner) {
 		super(owner);
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		this.maxAngularAcceleration = maxAngularAcceleration;
 
 		this.list = new Array<BehaviorAndWeight<T>>();
 		this.steering = new SteeringAcceleration<T>(owner.newVector());
@@ -117,36 +104,44 @@ public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 			blendedSteering.mulAdd(steering, bw.weight);
 		}
 
+		Limiter actualLimiter = getActualLimiter();
+
 		// Crop the result
-		blendedSteering.linear.limit(getMaxLinearAcceleration());
-		if (blendedSteering.angular > getMaxAngularAcceleration()) blendedSteering.angular = getMaxAngularAcceleration();
+		blendedSteering.linear.limit(actualLimiter.getMaxLinearAcceleration());
+		if (blendedSteering.angular > actualLimiter.getMaxAngularAcceleration())
+			blendedSteering.angular = actualLimiter.getMaxAngularAcceleration();
 
 		return blendedSteering;
 	}
 
-	/** Returns the maximum linear acceleration that can be used. */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
 
-	/** Sets the maximum linear acceleration that can be used.
-	 * @return this behavior for chaining. */
-	public BlendedSteering<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
+	@Override
+	public BlendedSteering<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
 		return this;
 	}
 
-	/** Returns the maximum angular acceleration that can be used. */
-	public float getMaxAngularAcceleration () {
-		return maxAngularAcceleration;
-	}
-
-	/** Sets the maximum angular acceleration that can be used.
-	 * @return this behavior for chaining. */
-	public BlendedSteering<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
-		this.maxAngularAcceleration = maxAngularAcceleration;
+	@Override
+	public BlendedSteering<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
 		return this;
 	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear and angular
+	 * accelerations. You can use {@link NeutralConstantLimiter#LIMITER} to permanently avoid all truncations.
+	 * @return this behavior for chaining. */
+	@Override
+	public BlendedSteering<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	//
+	// Nested classes
+	//
 
 	public static class BehaviorAndWeight<T extends Vector<T>> {
 

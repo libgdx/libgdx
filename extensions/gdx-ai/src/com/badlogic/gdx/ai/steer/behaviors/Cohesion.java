@@ -17,6 +17,7 @@
 package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.steer.GroupBehavior;
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Proximity;
 import com.badlogic.gdx.ai.steer.Proximity.ProximityCallback;
 import com.badlogic.gdx.ai.steer.Steerable;
@@ -75,5 +76,29 @@ public class Cohesion<T extends Vector<T>> extends GroupBehavior<T> implements P
 	public boolean reportNeighbor (Steerable<T> neighbor) {
 		centerOfMass.add(neighbor.getPosition());
 		return true;
+	}
+
+	//
+	// Setters overridden in order to fix the correct return type for chaining
+	//
+
+	@Override
+	public Cohesion<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Cohesion<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. However, {@code Cohesion} needs no limiter at all.
+	 * @return this behavior for chaining. */
+	@Override
+	public Cohesion<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
 	}
 }

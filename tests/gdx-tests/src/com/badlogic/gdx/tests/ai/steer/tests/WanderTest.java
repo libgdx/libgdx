@@ -54,14 +54,14 @@ public class WanderTest extends SteeringTest {
 		shapeRenderer = new ShapeRenderer();
 
 		character = new SteeringActor(container.badlogicSmall, true);
-		character.setMaxSpeed(80);
+		character.setMaxLinearAcceleration(50);
+		character.setMaxLinearSpeed(80);
+		character.setMaxAngularAcceleration(10); // greater than 0 because independent facing is enabled
+		character.setMaxAngularSpeed(5);
 
 		this.wanderSB = new Wander<Vector2>(character) //
-			.setMaxLinearAcceleration(50) //
-			.setMaxAngularAcceleration(10) // greater than 0 because independent facing is enabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(90) //
 			.setWanderOrientation(10) //
@@ -76,37 +76,13 @@ public class WanderTest extends SteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + wanderSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 10000, 1, false, container.skin);
-		maxLinAcc.setValue(wanderSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				wanderSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 10000, 1);
 
 		detailTable.row();
-		final Label labelMaxAngAcc = new Label("Max ang.acc.[" + wanderSB.getMaxAngularAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxAngAcc);
+		addMaxAngularAccelerationController(detailTable, character, 0, 50, 1);
+
 		detailTable.row();
-		Slider maxAngAcc = new Slider(0, 500, 1, false, container.skin);
-		maxAngAcc.setValue(wanderSB.getMaxAngularAcceleration());
-		maxAngAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				wanderSB.setMaxAngularAcceleration(slider.getValue());
-				labelMaxAngAcc.setText("Max ang.acc.[" + slider.getValue() + "]");
-				character.setIndependentFacing(slider.getValue() > 0);
-			}
-		});
-		detailTable.add(maxAngAcc);
+		addMaxAngularSpeedController(detailTable, character, 0, 20, 1);
 
 		detailTable.row();
 		final Label labelWanderOffset = new Label("Wander Offset [" + wanderSB.getWanderOffset() + "]", container.skin);

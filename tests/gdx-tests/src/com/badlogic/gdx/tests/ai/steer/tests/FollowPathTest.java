@@ -77,18 +77,15 @@ public class FollowPathTest extends SteeringTest {
 				}
 			}
 		};
-		character.setMaxSpeed(100);
+		
+		// Set character's limiter
+		character.setMaxLinearSpeed(100);
+		character.setMaxLinearAcceleration(300);
 
 		wayPoints = createRandomPath(MathUtils.random(4, 16), 50, 50, container.stageWidth - 50, container.stageHeight - 50);
 
 		linePath = new LinePath<Vector2>(wayPoints, openPath);
-		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30) {
-			// This is used only to arrive at the end of an open path
-			@Override
-			public float getMaxLinearSpeed () {
-				return character.getMaxSpeed();
-			}
-		}.setMaxLinearAcceleration(300) //
+		followPathSB = new FollowPath<Vector2, LinePathParam>(character, linePath, 30) //
 			// Setters below are only useful to arrive at the end of an open path
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
@@ -119,20 +116,10 @@ public class FollowPathTest extends SteeringTest {
 		detailTable.add(pathOffset);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + followPathSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
+		addMaxSpeedController(detailTable, character);
+
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 5000, 10, false, container.skin);
-		maxLinAcc.setValue(followPathSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				followPathSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 5000, 10);
 
 		detailTable.row();
 		final Label labelPredictionTime = new Label("Prediction Time [" + followPathSB.getPredictionTime() + " sec.]",
@@ -203,15 +190,6 @@ public class FollowPathTest extends SteeringTest {
 			}
 		});
 		detailTable.add(debug);
-
-		detailTable.row();
-		addSeparator(detailTable);
-
-		detailTable.row();
-		addMaxSpeedController(detailTable, character);
-
-// detailWindow.row();
-// addAlignOrientationToLinearVelocityController(detailWindow, character);
 
 		detailWindow = createDetailWindow(detailTable);
 	}

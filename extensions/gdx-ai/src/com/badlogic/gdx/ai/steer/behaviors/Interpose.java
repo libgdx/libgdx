@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.Vector;
@@ -46,7 +47,7 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 	protected Steerable<T> agentB;
 	protected float interpositionRatio;
 
-	private T targetPosition;
+	private T internalTargetPosition;
 
 	/** Creates an {@code Interpose} behavior for the specified owner and agents using the midpoint between agents as the target.
 	 * @param owner the owner of this behavior
@@ -69,7 +70,7 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 		this.agentB = agentB;
 		this.interpositionRatio = interposingRatio;
 
-		this.targetPosition = owner.newVector();
+		this.internalTargetPosition = owner.newVector();
 	}
 
 	/** Returns the first agent. */
@@ -117,27 +118,28 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 		// taken by the owner to reach the desired point between the 2 agents
 		// at the current time at the max speed. This desired point P is given by
 		// P = posA + interpositionRatio * (posB - posA)
-		targetPosition.set(agentB.getPosition()).sub(agentA.getPosition()).scl(interpositionRatio).add(agentA.getPosition());
+		internalTargetPosition.set(agentB.getPosition()).sub(agentA.getPosition()).scl(interpositionRatio)
+			.add(agentA.getPosition());
 
-		float timeToTargetPosition = owner.getPosition().dst(targetPosition) / getMaxLinearSpeed();
+		float timeToTargetPosition = owner.getPosition().dst(internalTargetPosition) / getActualLimiter().getMaxLinearSpeed();
 
 		// Now we have the time, we assume that agent A and agent B will continue on a
 		// straight trajectory and extrapolate to get their future positions.
 		// Note that here we are reusing steering.linear vector as agentA future position
 		// and targetPosition as agentB future position.
 		steering.linear.set(agentA.getPosition()).mulAdd(agentA.getLinearVelocity(), timeToTargetPosition);
-		targetPosition.set(agentB.getPosition()).mulAdd(agentB.getLinearVelocity(), timeToTargetPosition);
+		internalTargetPosition.set(agentB.getPosition()).mulAdd(agentB.getLinearVelocity(), timeToTargetPosition);
 
 		// Calculate the target position between these predicted positions
-		targetPosition.sub(steering.linear).scl(interpositionRatio).add(steering.linear);
+		internalTargetPosition.sub(steering.linear).scl(interpositionRatio).add(steering.linear);
 
 		// Finally delegate to Arrive
-		return arrive(steering, targetPosition);
+		return arrive(steering, internalTargetPosition);
 	}
 
-	/** Returns the target position. This is intended for debug purpose. */
-	public T getTargetPosition () {
-		return targetPosition;
+	/** Returns the current position of the internal target. This method is useful for debug purpose. */
+	public T getInternalTargetPosition () {
+		return internalTargetPosition;
 	}
 
 	//
@@ -145,20 +147,26 @@ public class Interpose<T extends Vector<T>> extends Arrive<T> {
 	//
 
 	@Override
+	public Interpose<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	@Override
+	public Interpose<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
 	public Interpose<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	@Override
-	public Interpose<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
-	@Override
-	public Interpose<T> setMaxLinearSpeed (float maxLinearSpeed) {
-		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

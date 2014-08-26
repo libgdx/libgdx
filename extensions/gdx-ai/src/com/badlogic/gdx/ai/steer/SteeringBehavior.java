@@ -28,22 +28,45 @@ public abstract class SteeringBehavior<T extends Vector<T>> {
 	/** The owner of this steering behavior */
 	protected Steerable<T> owner;
 
+	/** The limiter of this steering behavior */
+	protected Limiter limiter;
+
 	/** A flag indicating whether this steering behavior is enabled or not. */
 	protected boolean enabled;
 
-	/** Creates a {@code SteeringBehavior} for the specified agent. The behavior is enabled.
+	/** Creates a {@code SteeringBehavior} for the specified owner. The behavior is enabled and has no explicit limiter, meaning
+	 * that the owner is used instead.
 	 * 
 	 * @param owner the owner of this steering behavior */
 	public SteeringBehavior (Steerable<T> owner) {
-		this(owner, true);
+		this(owner, null, true);
 	}
 
-	/** Creates a {@code SteeringBehavior} for the specified agent.
+	/** Creates a {@code SteeringBehavior} for the specified owner and limiter. The behavior is enabled.
+	 * 
+	 * @param owner the owner of this steering behavior
+	 * @param enabled a flag indicating whether this steering behavior is enabled or not */
+	public SteeringBehavior (Steerable<T> owner, Limiter limiter) {
+		this(owner, limiter, true);
+	}
+
+	/** Creates a {@code SteeringBehavior} for the specified owner and activation flag. The behavior has no explicit limiter,
+	 * meaning that the owner is used instead.
 	 * 
 	 * @param owner the owner of this steering behavior
 	 * @param enabled a flag indicating whether this steering behavior is enabled or not */
 	public SteeringBehavior (Steerable<T> owner, boolean enabled) {
+		this(owner, null, enabled);
+	}
+
+	/** Creates a {@code SteeringBehavior} for the specified owner, limiter and activation flag.
+	 * 
+	 * @param owner the owner of this steering behavior
+	 * @param limiter the limiter of this steering behavior
+	 * @param enabled a flag indicating whether this steering behavior is enabled or not */
+	public SteeringBehavior (Steerable<T> owner, Limiter limiter, boolean enabled) {
 		this.owner = owner;
+		this.limiter = limiter;
 		this.enabled = enabled;
 	}
 
@@ -65,9 +88,23 @@ public abstract class SteeringBehavior<T extends Vector<T>> {
 		return owner;
 	}
 
-	/** Sets the owner of this steering behavior. */
-	public void setOwner (Steerable<T> owner) {
+	/** Sets the owner of this steering behavior.
+	 * @return this behavior for chaining. */
+	public SteeringBehavior<T> setOwner (Steerable<T> owner) {
 		this.owner = owner;
+		return this;
+	}
+
+	/** Returns the limiter of this steering behavior. */
+	public Limiter getLimiter () {
+		return limiter;
+	}
+
+	/** Sets the limiter of this steering behavior.
+	 * @return this behavior for chaining. */
+	public SteeringBehavior<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
 	}
 
 	/** Returns true if this steering behavior is enabled; false otherwise. */
@@ -75,9 +112,15 @@ public abstract class SteeringBehavior<T extends Vector<T>> {
 		return enabled;
 	}
 
-	/** Sets this steering behavior on/off. */
-	public void setEnabled (boolean enabled) {
+	/** Sets this steering behavior on/off.
+	 * @return this behavior for chaining. */
+	public SteeringBehavior<T> setEnabled (boolean enabled) {
 		this.enabled = enabled;
+		return this;
 	}
 
+	/** Returns the actual limiter of this steering behavior. */
+	protected Limiter getActualLimiter () {
+		return limiter == null ? owner : limiter;
+	}
 }

@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.Vector;
@@ -38,22 +39,14 @@ public class Flee<T extends Vector<T>> extends Seek<T> {
 	 * @param owner the owner of this behavior
 	 * @param target the target agent of this behavior. */
 	public Flee (Steerable<T> owner, Steerable<T> target) {
-		this(owner, target, 0);
-	}
-
-	/** Creates a {@code Flee} behavior for the specified owner, target and maximum linear acceleration.
-	 * @param owner the owner of this behavior
-	 * @param target the target of this behavior
-	 * @param maxLinearAcceleration the maximum linear acceleration that can be used to flee from the target. */
-	public Flee (Steerable<T> owner, Steerable<T> target, float maxLinearAcceleration) {
-		super(owner, target, maxLinearAcceleration);
+		super(owner, target);
 	}
 
 	@Override
 	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// We just do the opposite of seek, i.e. (owner.getPosition() - target.getPosition())
 		// instead of (target.getPosition() - owner.getPosition())
-		steering.linear.set(owner.getPosition()).sub(target.getPosition()).nor().scl(getMaxLinearAcceleration());
+		steering.linear.set(owner.getPosition()).sub(target.getPosition()).nor().scl(getActualLimiter().getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;
@@ -67,14 +60,28 @@ public class Flee<T extends Vector<T>> extends Seek<T> {
 	//
 
 	@Override
-	public Flee<T> setTarget (Steerable<T> target) {
-		this.target = target;
+	public Flee<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
 		return this;
 	}
 
 	@Override
-	public Flee<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
+	public Flee<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public Flee<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
+	public Flee<T> setTarget (Steerable<T> target) {
+		this.target = target;
 		return this;
 	}
 

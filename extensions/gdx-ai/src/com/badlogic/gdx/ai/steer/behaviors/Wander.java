@@ -17,6 +17,7 @@
 package com.badlogic.gdx.ai.steer.behaviors;
 
 import com.badlogic.gdx.ai.AIUtils;
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.Vector;
@@ -63,9 +64,6 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	/** The current orientation of the wander target */
 	protected float wanderOrientation;
 
-	/** The maximum linear acceleration of the owner */
-	protected float maxLinearAcceleration;
-
 	private T internalTargetPosition;
 	private T wanderCenter;
 
@@ -93,16 +91,21 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		// Notice that we're using steering.linear as temporary vector
 		internalTargetPosition.set(wanderCenter).mulAdd(owner.angleToVector(steering.linear, targetOrientation), wanderRadius);
 
-		if (getMaxAngularAcceleration() > 0f) {
+		Limiter actualLimiter = getActualLimiter();
+
+		// TODO
+		// The check below doesn't make sense. We should likely promote isIndependentFacing() to the steerable level
+		// and check it.
+		if (actualLimiter.getMaxAngularAcceleration() > 0f) {
 			// Delegate to face
 			face(steering, internalTargetPosition);
 
 			// Set the linear acceleration to be at full
 			// acceleration in the direction of the orientation
-			owner.angleToVector(steering.linear, owner.getOrientation()).scl(getMaxLinearAcceleration());
+			owner.angleToVector(steering.linear, owner.getOrientation()).scl(actualLimiter.getMaxLinearAcceleration());
 		} else {
 			// Seek the internal target position
-			steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(getMaxLinearAcceleration());
+			steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(actualLimiter.getMaxLinearAcceleration());
 
 			// No angular acceleration
 			steering.angular = 0;
@@ -160,18 +163,6 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return this;
 	}
 
-	/** Returns maximum linear acceleration of the owner. */
-	public float getMaxLinearAcceleration () {
-		return maxLinearAcceleration;
-	}
-
-	/** Sets maximum linear acceleration of the owner.
-	 * @return this behavior for chaining. */
-	public Wander<T> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
 	/** Returns the current position of the wander target. This method is useful for debug purpose. */
 	public T getInternalTargetPosition () {
 		return internalTargetPosition;
@@ -187,20 +178,29 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	//
 
 	@Override
+	public Wander<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public Wander<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration;
+	 * additionally, if independent facing is used, it must take care of the maximum angular speed and acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public Wander<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
 	public Wander<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	@Override
-	public Wander<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
-		this.maxAngularAcceleration = maxAngularAcceleration;
-		return this;
-	}
-
-	@Override
-	public Wander<T> setMaxAngularSpeed (float maxAngularSpeed) {
-		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 

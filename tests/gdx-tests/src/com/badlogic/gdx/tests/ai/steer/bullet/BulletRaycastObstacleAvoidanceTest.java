@@ -22,6 +22,7 @@ import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.Ray;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.RaycastCollisionDetector;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.FullLimiter;
 import com.badlogic.gdx.ai.steer.rays.CentralRayWithWhiskersConfiguration;
 import com.badlogic.gdx.ai.steer.rays.ParallelSideRayConfiguration;
 import com.badlogic.gdx.ai.steer.rays.RayConfigurationBase;
@@ -94,7 +95,8 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 		BulletEntity characterBase = world.add("capsule", new Matrix4());
 
 		character = new SteeringBulletEntity(characterBase);
-		character.setMaxSpeed(250);
+		character.setMaxLinearAcceleration(1500);
+		character.setMaxLinearSpeed(250);
 
 		rayConfigurations = new RayConfigurationBase[] {new SingleRayConfiguration(character, 2),
 			new ParallelSideRayConfiguration<Vector3>(character, 2, character.getBoundingRadius()),
@@ -103,14 +105,20 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 		RaycastCollisionDetector<Vector3> raycastCollisionDetector = new BulletRaycastCollisionDetector(world.collisionWorld,
 			character.body);
 		raycastObstacleAvoidanceSB = new RaycastObstacleAvoidance<Vector3>(character, rayConfigurations[rayConfigurationIndex],
-			raycastCollisionDetector, 2, 1500f);
+			raycastCollisionDetector, 2);
 
 		Wander<Vector3> wanderSB = new Wander<Vector3>(character) //
-			.setMaxLinearAcceleration(1500) //
-			.setMaxAngularAcceleration(5) // 
+			// Notice that:
+			// 1. setting maxLinearSpeed to -1 has no effect; we actually take it from the character, see the overridden getter
+			// 2. maxAngularAcceleration is set to 0 because independent facing is disabled
+			.setLimiter(new FullLimiter(1500, -1, 0, 5) {
+				@Override
+				public float getMaxLinearSpeed () {
+					return character.getMaxLinearSpeed();
+				}
+			}) //
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(2) //
 			.setWanderOrientation(0) //
@@ -126,21 +134,7 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max linear.acc.[" + raycastObstacleAvoidanceSB.getMaxLinearAcceleration() + "]",
-			container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 20000, 100, false, container.skin);
-		maxLinAcc.setValue(raycastObstacleAvoidanceSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				raycastObstacleAvoidanceSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 20000, 100);
 
 		detailTable.row();
 		final Label labelDistFromBoundary = new Label("Distance from Boundary ["

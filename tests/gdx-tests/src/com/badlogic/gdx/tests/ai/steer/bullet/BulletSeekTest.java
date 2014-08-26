@@ -51,7 +51,8 @@ public class BulletSeekTest extends BulletSteeringTest {
 		BulletEntity characterBase = world.add("capsule", new Matrix4());
 
 		character = new SteeringBulletEntity(characterBase);
-		character.setMaxSpeed(250);
+		character.setMaxLinearSpeed(250);
+		character.setMaxLinearAcceleration(2500);
 
 		BulletEntity targetBase = world.add("staticbox", new Matrix4().setToTranslation(new Vector3(5f, 1.5f, 5f)));
 		targetBase.body.setCollisionFlags(targetBase.body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_NO_CONTACT_RESPONSE);
@@ -61,26 +62,13 @@ public class BulletSeekTest extends BulletSteeringTest {
 		InputMultiplexer multiplexer = new InputMultiplexer(bulletTargetInputProcessor, cameraController);
 		inputProcessor = multiplexer;
 
-		final Seek<Vector3> seekSB = new Seek<Vector3>(character, target, 2500);
+		final Seek<Vector3> seekSB = new Seek<Vector3>(character, target);
 		character.setSteeringBehavior(seekSB);
 
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + seekSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 20000, 100, false, container.skin);
-		maxLinAcc.setValue(seekSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				seekSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 20000, 100);
 
 		detailTable.row();
 		addSeparator(detailTable);

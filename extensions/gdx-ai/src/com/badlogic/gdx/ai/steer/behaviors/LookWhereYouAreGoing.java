@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.math.MathUtils;
@@ -62,20 +63,29 @@ public class LookWhereYouAreGoing<T extends Vector<T>> extends ReachOrientation<
 	//
 
 	@Override
+	public LookWhereYouAreGoing<T> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public LookWhereYouAreGoing<T> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum angular speed and
+	 * acceleration.
+	 * @return this behavior for chaining. */
+	@Override
+	public LookWhereYouAreGoing<T> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
 	public LookWhereYouAreGoing<T> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	@Override
-	public LookWhereYouAreGoing<T> setMaxAngularAcceleration (float maxAngularAcceleration) {
-		this.maxAngularAcceleration = maxAngularAcceleration;
-		return this;
-	}
-
-	@Override
-	public LookWhereYouAreGoing<T> setMaxAngularSpeed (float maxAngularSpeed) {
-		this.maxAngularSpeed = maxAngularSpeed;
 		return this;
 	}
 

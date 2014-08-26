@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
+import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath.Path.Param;
@@ -69,17 +70,6 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		this(owner, path, pathOffset, 0);
 	}
 
-	/** Creates a non-predictive {@code FollowPath} behavior for the specified owner, path, path offset and maximum linear
-	 * acceleration.
-	 * @param owner the owner of this behavior
-	 * @param path the path to be followed by the owner
-	 * @param pathOffset the distance along the path to generate the target. Can be negative if the owner is to move along the
-	 *           reverse direction.
-	 * @param maxLinearAcceleration the maximum acceleration that can be used to reach the internal target. */
-	public FollowPath (Steerable<T> owner, Path<T, P> path, float pathOffset, float maxLinearAcceleration) {
-		this(owner, path, pathOffset, maxLinearAcceleration, 0);
-	}
-
 	/** Creates a {@code FollowPath} behavior for the specified owner, path, path offset, maximum linear acceleration and prediction
 	 * time.
 	 * @param owner the owner of this behavior
@@ -88,12 +78,11 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 	 *           reverse direction.
 	 * @param maxLinearAcceleration the maximum acceleration that can be used to reach the internal target.
 	 * @param predictionTime the time in the future to predict the owner's position. Can be 0 for non-predictive path following. */
-	public FollowPath (Steerable<T> owner, Path<T, P> path, float pathOffset, float maxLinearAcceleration, float predictionTime) {
+	public FollowPath (Steerable<T> owner, Path<T, P> path, float pathOffset, float predictionTime) {
 		super(owner);
 		this.path = path;
 		this.pathParam = path.createParam();
 		this.pathOffset = pathOffset;
-		this.maxLinearAcceleration = maxLinearAcceleration;
 		this.predictionTime = predictionTime;
 
 		this.internalTargetPosition = owner.newVector();
@@ -130,7 +119,8 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		}
 
 		// Seek the target position
-		steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(getMaxLinearAcceleration());
+		steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor()
+			.scl(getActualLimiter().getMaxLinearAcceleration());
 
 		// No angular acceleration
 		steering.angular = 0;
@@ -188,20 +178,29 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 	//
 
 	@Override
+	public FollowPath<T, P> setOwner (Steerable<T> owner) {
+		this.owner = owner;
+		return this;
+	}
+
+	@Override
+	public FollowPath<T, P> setEnabled (boolean enabled) {
+		this.enabled = enabled;
+		return this;
+	}
+
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear speed and
+	 * acceleration. However the maximum linear speed is not required for a closed path.
+	 * @return this behavior for chaining. */
+	@Override
+	public FollowPath<T, P> setLimiter (Limiter limiter) {
+		this.limiter = limiter;
+		return this;
+	}
+
+	@Override
 	public FollowPath<T, P> setTarget (Steerable<T> target) {
 		this.target = target;
-		return this;
-	}
-
-	@Override
-	public FollowPath<T, P> setMaxLinearAcceleration (float maxLinearAcceleration) {
-		this.maxLinearAcceleration = maxLinearAcceleration;
-		return this;
-	}
-
-	@Override
-	public FollowPath<T, P> setMaxLinearSpeed (float maxLinearSpeed) {
-		this.maxLinearSpeed = maxLinearSpeed;
 		return this;
 	}
 

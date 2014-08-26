@@ -46,12 +46,11 @@ public class ArriveTest extends SteeringTest {
 		target = new SteeringActor(container.target);
 		inputProcessor = new TargetInputProcessor(target);
 
-		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) {
-			@Override
-			public float getMaxLinearSpeed () {
-				return character.getMaxSpeed();
-			}
-		}.setMaxLinearAcceleration(100) //
+		// Set character's limiter
+		character.setMaxLinearSpeed(100);
+		character.setMaxLinearAcceleration(300);
+
+		final Arrive<Vector2> arriveSB = new Arrive<Vector2>(character, target) //
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.001f) //
 			.setDecelerationRadius(80);
@@ -61,26 +60,12 @@ public class ArriveTest extends SteeringTest {
 		table.addActor(target);
 
 		character.setCenterPosition(container.stageWidth / 2, container.stageHeight / 2);
-		character.setMaxSpeed(100);
 		target.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + arriveSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 2000, 20, false, container.skin);
-		maxLinAcc.setValue(arriveSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				arriveSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 2000, 20);
 
 		detailTable.row();
 		addMaxSpeedController(detailTable, character, 0, 300, 10);

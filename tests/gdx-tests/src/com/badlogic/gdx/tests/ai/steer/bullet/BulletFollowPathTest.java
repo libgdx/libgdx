@@ -43,13 +43,12 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 	boolean drawDebug;
 	ShapeRenderer shapeRenderer;
 
-
 	SteeringBulletEntity character;
 
 	Vector3[] wayPoints;
 	LinePath<Vector3> linePath;
 	FollowPath<Vector3, LinePathParam> followPathSB;
-	
+
 	final boolean openPath;
 	Slider pathOffset;
 
@@ -87,18 +86,13 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 				}
 			}
 		};
-		character.setMaxSpeed(15);
+		character.setMaxLinearAcceleration(2000);
+		character.setMaxLinearSpeed(15);
 
 		wayPoints = createRandomPath(MathUtils.random(4, 16), 20, 20, 30, 30, 1.5f);
 
 		linePath = new LinePath<Vector3>(wayPoints, openPath);
-		followPathSB = new FollowPath<Vector3, LinePathParam>(character, linePath, 3) {
-			// This is used only to arrive at the end of an open path
-			@Override
-			public float getMaxLinearSpeed () {
-				return character.getMaxSpeed();
-			}
-		}.setMaxLinearAcceleration(2000) //
+		followPathSB = new FollowPath<Vector3, LinePathParam>(character, linePath, 3) //
 			// Setters below are only useful to arrive at the end of an open path
 			.setTimeToTarget(0.1f) //
 			.setArrivalTolerance(0.5f) //
@@ -128,20 +122,10 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 		detailTable.add(pathOffset);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + followPathSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
+		addMaxSpeedController(detailTable, character);
+
 		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 20000, 100, false, container.skin);
-		maxLinAcc.setValue(followPathSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				followPathSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 20000, 100);
 
 		detailTable.row();
 		final Label labelPredictionTime = new Label("Prediction Time [" + followPathSB.getPredictionTime() + " sec.]",
@@ -212,12 +196,6 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 			}
 		});
 		detailTable.add(debug);
-
-		detailTable.row();
-		addSeparator(detailTable);
-
-		detailTable.row();
-		addMaxSpeedController(detailTable, character);
 
 		detailWindow = createDetailWindow(detailTable);
 	}

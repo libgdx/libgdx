@@ -43,17 +43,23 @@ public class PursueTest extends SteeringTest {
 	@Override
 	public void create (Table table) {
 		character = new SteeringActor(container.badlogicSmall, false);
-		prey = new SteeringActor(container.target, false);
+		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+		character.setMaxLinearSpeed(100);
+		character.setMaxLinearAcceleration(600);
 
-		final Pursue<Vector2> pursueSB = new Pursue<Vector2>(character, prey, 600, 0.3f);
+		prey = new SteeringActor(container.target, false);
+		prey.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
+		prey.setMaxLinearSpeed(100);
+		prey.setMaxLinearAcceleration(250);
+		prey.setMaxAngularAcceleration(0); // used by Wander; set to 0 because independent facing is disabled
+		prey.setMaxAngularSpeed(5);
+
+		final Pursue<Vector2> pursueSB = new Pursue<Vector2>(character, prey, 0.3f);
 		character.setSteeringBehavior(pursueSB);
 
 		Wander<Vector2> wanderSB = new Wander<Vector2>(prey) //
-			.setMaxLinearAcceleration(250) //
-			.setMaxAngularAcceleration(0) // set to 0 because independent facing is disabled
 			.setAlignTolerance(0.001f) //
 			.setDecelerationRadius(5) //
-			.setMaxAngularSpeed(5) //
 			.setTimeToTarget(0.1f) //
 			.setWanderOffset(110) //
 			.setWanderOrientation(10) //
@@ -64,28 +70,10 @@ public class PursueTest extends SteeringTest {
 		table.addActor(character);
 		table.addActor(prey);
 
-		character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		character.setMaxSpeed(100);
-		prey.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
-		prey.setMaxSpeed(100);
-
 		Table detailTable = new Table(container.skin);
 
 		detailTable.row();
-		final Label labelMaxLinAcc = new Label("Max.linear.acc.[" + pursueSB.getMaxLinearAcceleration() + "]", container.skin);
-		detailTable.add(labelMaxLinAcc);
-		detailTable.row();
-		Slider maxLinAcc = new Slider(0, 2000, 20, false, container.skin);
-		maxLinAcc.setValue(pursueSB.getMaxLinearAcceleration());
-		maxLinAcc.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				pursueSB.setMaxLinearAcceleration(slider.getValue());
-				labelMaxLinAcc.setText("Max.linear.acc.[" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxLinAcc);
+		addMaxLinearAccelerationController(detailTable, character, 0, 2000, 20);
 
 		detailTable.row();
 		final Label labelMaxPredictionTime = new Label("Max.Prediction Time[" + pursueSB.getMaxPredictionTime() + "] sec.",
@@ -108,20 +96,7 @@ public class PursueTest extends SteeringTest {
 		addSeparator(detailTable);
 
 		detailTable.row();
-		final Label labelMaxSpeed = new Label("Max.Speed [" + character.getMaxSpeed() + "]", container.skin);
-		detailTable.add(labelMaxSpeed);
-		detailTable.row();
-		Slider maxSpeed = new Slider(0, 300, 10, false, container.skin);
-		maxSpeed.setValue(character.getMaxSpeed());
-		maxSpeed.addListener(new ChangeListener() {
-			@Override
-			public void changed (ChangeEvent event, Actor actor) {
-				Slider slider = (Slider)actor;
-				character.setMaxSpeed(slider.getValue());
-				labelMaxSpeed.setText("Max.Speed [" + slider.getValue() + "]");
-			}
-		});
-		detailTable.add(maxSpeed);
+		addMaxSpeedController(detailTable, character, 0, 300, 10);
 
 		detailWindow = createDetailWindow(detailTable);
 	}
