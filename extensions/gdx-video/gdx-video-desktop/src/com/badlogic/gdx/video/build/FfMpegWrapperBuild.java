@@ -26,18 +26,20 @@ public class FfMpegWrapperBuild {
 		// Setup the build target
 		BuildTarget targetLinux32 = BuildTarget.newDefaultTarget(TargetOs.Linux, false);
 		targetLinux32.libraries = "-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread";
+		targetLinux32.cppFlags = "-Iffmpeg/libs/linux32/include/";
 
 		BuildTarget targetLinux64 = BuildTarget.newDefaultTarget(TargetOs.Linux, true);
 		targetLinux64.libraries = "-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread";
+		targetLinux32.cppFlags = "-Iffmpeg/libs/linux64/include/";
 
 		BuildTarget targetWindows32 = BuildTarget.newDefaultTarget(TargetOs.Windows, false);
 		targetWindows32.libraries = "-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread";
-		targetWindows32.cppFlags += " -DWIN32";
+		targetWindows32.cppFlags += " -DWIN32 -Iffmpeg/libs/windows32/include/";
 		targetWindows32.compilerPrefix = "i686-w64-mingw32-";
 
 		BuildTarget targetWindows64 = BuildTarget.newDefaultTarget(TargetOs.Windows, true);
 		targetWindows64.libraries = "-lavcodec -lavformat -lavutil -lswscale -lswresample -lpthread";
-		targetWindows64.cppFlags += " -DWIN32";
+		targetWindows32.cppFlags += " -DWIN32 -Iffmpeg/libs/windows64/include/";
 		targetWindows64.compilerPrefix = "x86_64-w64-mingw32-";
 
 		BuildTarget mac = BuildTarget.newDefaultTarget(TargetOs.MacOsX, false);
