@@ -62,11 +62,13 @@ public interface Net {
 	/** HTTP response interface with methods to get the response data as a byte[], a {@link String} or an {@link InputStream}. */
 	public static interface HttpResponse {
 		/** Returns the data of the HTTP response as a byte[].
+		 * <p><b>Note</b>: This method may only be called once per response.</p>
 		 * @return the result as a byte[] or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		byte[] getResult ();
 
 		/** Returns the data of the HTTP response as a {@link String}.
+		 * <p><b>Note</b>: This method may only be called once per response.</p>
 		 * @return the result as a string or null in case of a timeout or if the operation was canceled/terminated abnormally. The
 		 *         timeout is specified when creating the HTTP request, with {@link HttpRequest#setTimeOut(int)} */
 		String getResultAsString ();
