@@ -168,8 +168,8 @@ public final class MathUtils {
 	}
 	
 	/** Returns a random sign (-1 or 1). */
-	static public float randomSign (float start, float end) {
-		return  random.nextBoolean()?-1:1;
+	static public float randomSign ) {
+		return  random.nextBoolean()? -1 : 1;
 	}
 
 	// ---
