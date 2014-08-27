@@ -192,8 +192,8 @@ public abstract class OpenALMusic implements Music {
 				end = true;
 		}
 		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 			stop();
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 		}
 
 		// A buffer underflow will cause the source to stop.
