@@ -166,6 +166,11 @@ public final class MathUtils {
 	static public float random (float start, float end) {
 		return start + random.nextFloat() * (end - start);
 	}
+	
+	/** Returns a random sign (-1 or 1). */
+	static public float randomSign (float start, float end) {
+		return  random.nextBoolean()?-1:1;
+	}
 
 	// ---
 
