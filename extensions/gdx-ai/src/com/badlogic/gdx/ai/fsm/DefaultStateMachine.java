@@ -109,7 +109,7 @@ public class DefaultStateMachine<E> implements StateMachine<E> {
 		currentState = newState;
 
 		// Call the entry method of the new state
-		currentState.enter(owner);
+		if (currentState != null) currentState.enter(owner);
 	}
 
 	@Override
