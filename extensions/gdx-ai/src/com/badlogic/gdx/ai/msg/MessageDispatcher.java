@@ -100,26 +100,58 @@ public class MessageDispatcher {
 	 * @param msg the message code
 	 * @param listener the listener to add */
 	public void addListener (int msg, Agent listener) {
-		Array<Agent> listeners = msgListeners.get(msg);
-		if (listeners == null) {
-			// Associate an empty unordered array with the message code
-			listeners = new Array<Agent>(false, 16);
-			msgListeners.put(msg, listeners);
+		addListeners(listener, msg);
+	}
+
+	/** Registers a listener for a selection of message types. Messages without an explicit receiver are broadcasted to all its
+	 * registered listeners.
+	 *
+	 * @param listener the listener to add
+	 * @param msgs the message codes */
+	public void addListeners (Agent listener, int... msgs) {
+		for (int msg : msgs) {
+			Array<Agent> listeners = msgListeners.get(msg);
+			if (listeners == null) {
+				// Associate an empty unordered array with the message code
+				listeners = new Array<Agent>(false, 16);
+				msgListeners.put(msg, listeners);
+			}
+			listeners.add(listener);
 		}
-		listeners.add(listener);
 	}
 
 	/** Unregister the specified listener for the specified message code.
+	 *
 	 * @param msg the message code
 	 * @param listener the listener to remove */
 	public void removeListener (int msg, Agent listener) {
-		Array<Agent> listeners = msgListeners.get(msg);
-		if (listeners != null) {
-			listeners.removeValue(listener, true);
+		removeListener(listener, msg);
+	}
+
+	/** Unregister the specified listener for the selection of message codes.
+	 *
+	 * @param listener the listener to remove
+	 * @param msgs the message codes */
+	public void removeListener (Agent listener, int... msgs) {
+		for (int msg : msgs) {
+			Array<Agent> listeners = msgListeners.get(msg);
+			if (listeners != null) {
+				listeners.removeValue(listener, true);
+			}
+		}
+	}
+
+	/** Unregisters all the listeners for the given message codes.
+	 *
+	 * @param msgs the message codes */
+	public void clearListeners (int... msgs) {
+		for (int msg : msgs) {
+			msgListeners.remove(msg);
 		}
 	}
 
 	/** Unregisters all the listeners for the specified message code.
+	 *
 	 * @param msg the message code */
 	public void clearListeners (int msg) {
 		msgListeners.remove(msg);
@@ -144,8 +176,44 @@ public class MessageDispatcher {
 		clearListeners();
 	}
 
-	/** Shortcut method for {@link #dispatchMessage(float, Agent, Agent, int, Object) dispatchMessage(delay, sender,
-	 * receiver, msg, extraInfo)} where {@code extraInfo} is {@code null}. */
+	/** Will send a message to all message type listeners, with no delay or extrainfo
+	 *
+	 * @param sender the sender of this telegram
+	 * @param msg the message code */
+	public void dispatchMessage (Agent sender, int msg) {
+		dispatchMessage(0F, sender, msg);
+	}
+
+	/** Will send a message to all message type listeners, with delay but no extra info
+	 *
+	 * @param delay the delay in seconds
+	 * @param sender the sender of this telegram
+	 * @param msg the message code */
+	public void dispatchMessage (float delay, Agent sender, int msg) {
+		dispatchMessage(delay, sender, msg, null);
+	}
+
+	/** Will send a message to all message type listeners
+	 *
+	 * @param sender the sender of this telegram
+	 * @param msg the message code
+	 * @param extraInfo an optional object */
+	public void dispatchMessage (Agent sender, int msg, Object extraInfo) {
+		dispatchMessage(0F, sender, msg, extraInfo);
+	}
+
+	/** Will send a message to all message type listeners, with delay
+	 *
+	 * @param delay the delay in seconds
+	 * @param sender the sender of this telegram
+	 * @param msg the message code
+	 * @param extraInfo an optional object */
+	public void dispatchMessage (float delay, Agent sender, int msg, Object extraInfo) {
+		dispatchMessage(delay, sender, null, msg, extraInfo);
+	}
+
+	/** Shortcut method for {@link #dispatchMessage(float, Agent, Agent, int, Object) dispatchMessage(delay, sender, receiver, msg,
+	 * extraInfo)} where {@code extraInfo} is {@code null}. */
 	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg) {
 		dispatchMessage(delay, sender, receiver, msg, null);
 	}
