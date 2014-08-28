@@ -327,7 +327,16 @@ public class AndroidInput implements Input, OnKeyListener, OnTouchListener {
 	@Override
 	public boolean isTouched () {
 		synchronized (this) {
-			return touched[0];
+            if(hasMultitouch) {
+                for (int pointer = 0; pointer < NUM_TOUCHES; pointer++) {
+                    if (touched[pointer]) {
+                        return true;
+                    }
+                }
+            } else if(touched[0]) {
+                return true;
+            }
+            return false;
 		}
 	}
 
