@@ -21,8 +21,6 @@ import com.badlogic.gdx.ai.msg.Telegram;
 /** @author davebaol */
 public interface Agent {
 
-	public void update (float delta);
-
 	public boolean handleMessage (Telegram msg);
 
 }

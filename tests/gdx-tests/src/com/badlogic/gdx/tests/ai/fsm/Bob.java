@@ -64,7 +64,6 @@ public class Bob implements Agent {
 		return stateMachine.handleMessage(msg);
 	}
 
-	@Override
 	public void update (float delta) {
 		thirst += 1;
 		stateMachine.update();

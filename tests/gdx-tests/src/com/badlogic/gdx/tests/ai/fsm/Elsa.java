@@ -46,7 +46,6 @@ public class Elsa implements Agent {
 		return stateMachine.handleMessage(msg);
 	}
 
-	@Override
 	public void update (float delta) {
 		stateMachine.update();
 	}
