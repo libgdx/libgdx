@@ -16,13 +16,13 @@
 
 package com.badlogic.gdx.tests.ai.fsm;
 
-import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /** @author davebaol */
-public class Bob implements Agent {
+public class Bob implements Telegraph {
 	// the amount of gold a miner must have before he feels comfortable
 	final public static int COMFORT_LEVEL = 5;
 	// the amount of nuggets a miner can carry
