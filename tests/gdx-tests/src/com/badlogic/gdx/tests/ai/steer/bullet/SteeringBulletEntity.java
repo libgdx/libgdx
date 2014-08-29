@@ -61,6 +61,10 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 		body.setAngularFactor(ANGULAR_LOCK);
 	}
 
+	public SteeringBehavior<Vector3> getSteeringBehavior () {
+		return steeringBehavior;
+	}
+
 	public void setSteeringBehavior (SteeringBehavior<Vector3> steeringBehavior) {
 		this.steeringBehavior = steeringBehavior;
 	}
@@ -83,11 +87,23 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 			if (anyAccelerations) {
 				body.activate();
 
-				// Cap the speed
+				// TODO:
+				// Looks like truncating speeds here after applying forces doesn't work as expected.
+				// We should likely cap speeds form inside an InternalTickCallback, see
+				// http://www.bulletphysics.org/mediawiki-1.5.8/index.php/Simulation_Tick_Callbacks
+
+				// Cap the linear speed
 				Vector3 velocity = body.getLinearVelocity();
 				float currentSpeed = velocity.len();
 				if (currentSpeed > getMaxLinearSpeed()) {
 					body.setLinearVelocity(velocity.scl(getMaxLinearSpeed() / currentSpeed));
+				}
+
+				// Cap the angular speed
+				Vector3 angVelocity = body.getAngularVelocity();
+				if (angVelocity.y > getMaxAngularSpeed()) {
+					angVelocity.y = getMaxAngularSpeed();
+					body.setAngularVelocity(angVelocity);
 				}
 			}
 		}
