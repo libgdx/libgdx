@@ -319,13 +319,15 @@ public class IntFloatMap implements Iterable<IntFloatMap.Entry> {
 	public float getAndIncrement (int key, float defaultValue, float increment) {
 		if (key == 0) {
 			if (hasZeroValue) {
+				float value = zeroValue;
 				zeroValue += increment;
+				return value;
 			} else {
 				hasZeroValue = true;
 				zeroValue = defaultValue + increment;
 				++size;
+				return defaultValue;
 			}
-			return zeroValue;
 		}
 		int index = key & mask;
 		if (key != keyTable[index]) {

@@ -7,9 +7,9 @@ import java.util.LinkedHashMap;
 public class DependencyBank {
 
 	//Versions
-	static String libgdxVersion = "1.2.0";
+	static String libgdxVersion = "1.3.1";
 	//Temporary snapshot version, we need a more dynamic solution for pointing to the latest nightly
-	static String libgdxNightlyVersion = "1.2.1-SNAPSHOT";
+	static String libgdxNightlyVersion = "1.3.2-SNAPSHOT";
 	static String roboVMVersion = "0.0.14";
 	static String buildToolsVersion = "19.1.0";
 	static String androidAPILevel = "19";
@@ -112,11 +112,11 @@ public class DependencyBank {
 			new String[]{"com.badlogicgames.box2dlights:box2dlights:1.2:sources"}
 		),
 		ASHLEY(
-			new String[]{"com.badlogicgames.ashley:ashley:1.0.1"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.0.1"},
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0"},
 			new String[]{},
-			new String[]{"com.badlogicgames.ashley:ashley:1.0.1:sources"}
+			new String[]{"com.badlogicgames.ashley:ashley:1.1.0:sources"}
 		);
 
 		private String[] coreDependencies;

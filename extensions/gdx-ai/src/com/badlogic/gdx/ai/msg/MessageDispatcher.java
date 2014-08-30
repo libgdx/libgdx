@@ -17,7 +17,6 @@
 package com.badlogic.gdx.ai.msg;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
@@ -40,7 +39,7 @@ public class MessageDispatcher {
 
 	private final Pool<Telegram> pool;
 
-	private IntMap<Array<Agent>> msgListeners = new IntMap<Array<Agent>>();
+	private IntMap<Array<Telegraph>> msgListeners = new IntMap<Array<Telegraph>>();
 
 	private long timeGranularity;
 
@@ -99,11 +98,11 @@ public class MessageDispatcher {
 	 * registered listeners.
 	 * @param msg the message code
 	 * @param listener the listener to add */
-	public void addListener (int msg, Agent listener) {
-		Array<Agent> listeners = msgListeners.get(msg);
+	public void addListener (int msg, Telegraph listener) {
+		Array<Telegraph> listeners = msgListeners.get(msg);
 		if (listeners == null) {
 			// Associate an empty unordered array with the message code
-			listeners = new Array<Agent>(false, 16);
+			listeners = new Array<Telegraph>(false, 16);
 			msgListeners.put(msg, listeners);
 		}
 		listeners.add(listener);
@@ -112,8 +111,8 @@ public class MessageDispatcher {
 	/** Unregister the specified listener for the specified message code.
 	 * @param msg the message code
 	 * @param listener the listener to remove */
-	public void removeListener (int msg, Agent listener) {
-		Array<Agent> listeners = msgListeners.get(msg);
+	public void removeListener (int msg, Telegraph listener) {
+		Array<Telegraph> listeners = msgListeners.get(msg);
 		if (listeners != null) {
 			listeners.removeValue(listener, true);
 		}
@@ -144,9 +143,9 @@ public class MessageDispatcher {
 		clearListeners();
 	}
 
-	/** Shortcut method for {@link #dispatchMessage(float, Agent, Agent, int, Object) dispatchMessage(delay, sender,
+	/** Shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(delay, sender,
 	 * receiver, msg, extraInfo)} where {@code extraInfo} is {@code null}. */
-	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg) {
+	public void dispatchMessage (float delay, Telegraph sender, Telegraph receiver, int msg) {
 		dispatchMessage(delay, sender, receiver, msg, null);
 	}
 
@@ -158,7 +157,7 @@ public class MessageDispatcher {
 	 *           the specified message code
 	 * @param msg the message code
 	 * @param extraInfo an optional object */
-	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg, Object extraInfo) {
+	public void dispatchMessage (float delay, Telegraph sender, Telegraph receiver, int msg, Object extraInfo) {
 
 		// Get a telegram from the pool
 		Telegram telegram = pool.obtain();
@@ -240,7 +239,7 @@ public class MessageDispatcher {
 		} else {
 			// Dispatch the telegram to all the registered receivers
 			int handledCount = 0;
-			Array<Agent> listeners = msgListeners.get(telegram.message);
+			Array<Telegraph> listeners = msgListeners.get(telegram.message);
 			if (listeners != null) {
 				for (int i = 0; i < listeners.size; i++) {
 					if (listeners.get(i).handleMessage(telegram)) {

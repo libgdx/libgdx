@@ -46,20 +46,20 @@ public class ScalingViewport extends Viewport {
 
 	public ScalingViewport (Scaling scaling, float worldWidth, float worldHeight, Camera camera) {
 		this.scaling = scaling;
-		this.worldWidth = worldWidth;
-		this.worldHeight = worldHeight;
-		this.camera = camera;
+		setWorldSize(worldWidth, worldHeight);
+		setCamera(camera);
 	}
 
 	@Override
 	public void update (int screenWidth, int screenHeight, boolean centerCamera) {
-		Vector2 scaled = scaling.apply(worldWidth, worldHeight, screenWidth, screenHeight);
-		viewportWidth = Math.round(scaled.x);
-		viewportHeight = Math.round(scaled.y);
-		// center the viewport in the middle of the screen
-		viewportX = (screenWidth - viewportWidth) / 2;
-		viewportY = (screenHeight - viewportHeight) / 2;
-		super.update(screenWidth, screenHeight, centerCamera);
+		Vector2 scaled = scaling.apply(getWorldWidth(), getWorldHeight(), screenWidth, screenHeight);
+		int viewportWidth = Math.round(scaled.x);
+		int viewportHeight = Math.round(scaled.y);
+
+		// Center.
+		setScreenBounds((screenWidth - viewportWidth) / 2, (screenHeight - viewportHeight) / 2, viewportWidth, viewportHeight);
+
+		apply(centerCamera);
 	}
 
 	public Scaling getScaling () {

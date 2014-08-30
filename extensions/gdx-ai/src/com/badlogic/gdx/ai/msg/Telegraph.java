@@ -14,14 +14,11 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.ai;
+package com.badlogic.gdx.ai.msg;
 
-import com.badlogic.gdx.ai.msg.Telegram;
 
 /** @author davebaol */
-public interface Agent {
-
-	public void update (float delta);
+public interface Telegraph {
 
 	public boolean handleMessage (Telegram msg);
 

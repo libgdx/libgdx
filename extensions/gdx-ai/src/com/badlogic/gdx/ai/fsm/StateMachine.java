@@ -16,6 +16,7 @@
 
 package com.badlogic.gdx.ai.fsm;
 
+import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.msg.Telegram;
 
 /** A state machine manages the state transitions of its entity. Additionally, the state machine may be delegated by the entity to
@@ -24,7 +25,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
  * @param <E> is the type of the entity
  * 
  * @author davebaol */
-public interface StateMachine<E> {
+public interface StateMachine<E> extends Telegraph {
 
 	/** Updates the state machine.
 	 * <p>

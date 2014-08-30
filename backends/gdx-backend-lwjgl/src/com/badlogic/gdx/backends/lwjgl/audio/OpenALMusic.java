@@ -53,9 +53,6 @@ public abstract class OpenALMusic implements Music {
 	public OpenALMusic (OpenALAudio audio, FileHandle file) {
 		this.audio = audio;
 		this.file = file;
-		if (audio != null) {
-			if (!audio.noDevice) audio.music.add(this);
-		}
 		this.onCompletionListener = null;
 	}
 
@@ -70,36 +67,41 @@ public abstract class OpenALMusic implements Music {
 		if (sourceID == -1) {
 			sourceID = audio.obtainSource(true);
 			if (sourceID == -1) return;
+
+			audio.music.add(this);
+
 			if (buffers == null) {
 				buffers = BufferUtils.createIntBuffer(bufferCount);
 				alGenBuffers(buffers);
-				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unabe to allocate audio buffers.");
+				if (alGetError() != AL_NO_ERROR) throw new GdxRuntimeException("Unable to allocate audio buffers.");
 			}
 			alSourcei(sourceID, AL_LOOPING, AL_FALSE);
 			setPan(pan, volume);
-			int filled = 0; // check if there's anything to play actually, see #1770
+
+			boolean filled = false; // Check if there's anything to actually play.
 			for (int i = 0; i < bufferCount; i++) {
 				int bufferID = buffers.get(i);
 				if (!fill(bufferID)) break;
-				filled++;
+				filled = true;
 				alSourceQueueBuffers(sourceID, bufferID);
 			}
-			if(filled == 0) {
-				if(onCompletionListener != null) onCompletionListener.onCompletion(this);
-			}
-			
+			if (!filled && onCompletionListener != null) onCompletionListener.onCompletion(this);
+
 			if (alGetError() != AL_NO_ERROR) {
 				stop();
 				return;
 			}
 		}
-		alSourcePlay(sourceID);
-		isPlaying = true;
+		if (!isPlaying) {
+			alSourcePlay(sourceID);
+			isPlaying = true;
+		}
 	}
 
 	public void stop () {
 		if (audio.noDevice) return;
 		if (sourceID == -1) return;
+		audio.music.removeValue(this, true);
 		reset();
 		audio.freeSource(sourceID);
 		sourceID = -1;
@@ -160,6 +162,11 @@ public abstract class OpenALMusic implements Music {
 	/** Resets the stream to the beginning. */
 	abstract public void reset ();
 
+	/** By default, does just the same as reset(). Used to add special behaviour in Ogg.Music. */
+	protected void loop () {
+		reset();
+	}
+
 	public int getChannels () {
 		return format == AL_FORMAT_STEREO16 ? 2 : 1;
 	}
@@ -185,8 +192,8 @@ public abstract class OpenALMusic implements Music {
 				end = true;
 		}
 		if (end && alGetSourcei(sourceID, AL_BUFFERS_QUEUED) == 0) {
-			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 			stop();
+			if (onCompletionListener != null) onCompletionListener.onCompletion(this);
 		}
 
 		// A buffer underflow will cause the source to stop.
@@ -198,7 +205,7 @@ public abstract class OpenALMusic implements Music {
 		int length = read(tempBytes);
 		if (length <= 0) {
 			if (isLooping) {
-				reset();
+				loop();
 				renderedSeconds = 0;
 				length = read(tempBytes);
 				if (length <= 0) return false;
@@ -211,14 +218,9 @@ public abstract class OpenALMusic implements Music {
 	}
 
 	public void dispose () {
+		stop();
 		if (audio.noDevice) return;
 		if (buffers == null) return;
-		if (sourceID != -1) {
-			reset();
-			audio.music.removeValue(this, true);
-			audio.freeSource(sourceID);
-			sourceID = -1;
-		}
 		alDeleteBuffers(buffers);
 		buffers = null;
 		onCompletionListener = null;
