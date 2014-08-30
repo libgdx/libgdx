@@ -97,7 +97,8 @@ public class MessageDispatcher {
 	/** Registers a listener for the specified message code. Messages without an explicit receiver are broadcasted to all its
 	 * registered listeners.
 	 * @param msg the message code
-	 * @param listener the listener to add */
+	 * @param listener the listener to add
+	 * @deprecated Use {@link #addListener(Telegraph, int)} instead. */
 	@Deprecated
 	public void addListener (int msg, Telegraph listener) {
 		addListener(listener, msg);
