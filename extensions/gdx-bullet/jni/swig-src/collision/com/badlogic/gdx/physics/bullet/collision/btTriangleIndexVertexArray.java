@@ -66,17 +66,17 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
 
 	protected final static Array<btTriangleIndexVertexArray> instances = new Array<btTriangleIndexVertexArray>();
 	
-	/** @return Whether the supplied array is contains all specified mesh parts. */
-	public static <T extends MeshPart> boolean compare(final btTriangleIndexVertexArray array, final Array<T> meshParts) {
-		if (array.meshes.size != meshParts.size)
+	/** @return Whether the supplied array contains all specified tags. */
+	public static <T extends Object> boolean compare(final btTriangleIndexVertexArray array, final Array<T> tags) {
+		if (array.meshes.size != tags.size)
 			return false;
 		for (final btIndexedMesh mesh : array.meshes) {
 			boolean found = false;
-			final MeshPart mp = mesh.getMeshPart();
-			if (mp == null) 
+			final Object tag = mesh.tag;
+			if (tag == null) 
 				return false;
-			for (final MeshPart part : meshParts) {
-				if (mp.equals(part)) {
+			for (final T t : tags) {
+				if (t.equals(tag)) {
 					found = true;
 					break;
 				}
@@ -87,9 +87,9 @@ public class btTriangleIndexVertexArray extends btStridingMeshInterface {
 		return true;
 	}
 
-	protected static <T extends MeshPart> btTriangleIndexVertexArray getInstance(final Array<T> meshParts) {
+	protected static <T extends Object> btTriangleIndexVertexArray getInstance(final Array<T> tags) {
 		for (final btTriangleIndexVertexArray instance : instances) {
-			if (compare(instance, meshParts))
+			if (compare(instance, tags))
 				return instance;
 		}
 		return null;
