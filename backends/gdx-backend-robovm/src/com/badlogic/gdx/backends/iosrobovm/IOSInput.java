@@ -230,12 +230,12 @@ public class IOSInput implements Input {
 
 	@Override
 	public boolean isTouched() {
-        for(int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
-            if(touchDown[pointer] != 0) {
-                return true;
-            }
-        }
-        return false;
+		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
+			if (touchDown[pointer] != 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

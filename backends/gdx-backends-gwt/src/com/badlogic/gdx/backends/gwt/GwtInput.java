@@ -37,7 +37,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.logging.client.ConsoleLogHandler;
 
 public class GwtInput implements Input {
-    static final int MAX_TOUCHES = 20;
+	static final int MAX_TOUCHES = 20;
 	boolean justTouched = false;
 	private boolean[] touched = new boolean[MAX_TOUCHES];
 	private int[] touchX = new int[MAX_TOUCHES];
@@ -127,12 +127,12 @@ public class GwtInput implements Input {
 	}
 
 	@Override
-	public boolean isTouched () {
-        for(int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
-            if(touched[pointer]) {
-                return true;
-            }
-        }
+	public boolean isTouched() {
+		for (int pointer = 0; pointer < MAX_TOUCHES; pointer++) {
+			if (touched[pointer]) {
+				return true;
+			}
+		}
 		return false;
 	}
 
