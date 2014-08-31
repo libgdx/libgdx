@@ -71,7 +71,7 @@ public class ImageButton extends Button {
 
 	private void updateImage () {
 		boolean isPressed = isPressed();
-		if (isDisabled && style.imageDisabled != null)
+		if (isDisabled() && style.imageDisabled != null)
 			image.setDrawable(style.imageDisabled);
 		else if (isPressed && style.imageDown != null)
 			image.setDrawable(style.imageDown);

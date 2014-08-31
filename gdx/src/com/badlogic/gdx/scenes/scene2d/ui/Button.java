@@ -82,7 +82,7 @@ public class Button extends Table implements Disableable {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public void clicked (InputEvent event, float x, float y) {
-				if (isDisabled) return;
+				if (isDisabled()) return;
 				setChecked(!isChecked);
 			}
 		});
@@ -173,12 +173,12 @@ public class Button extends Table implements Disableable {
 
 		Drawable background = null;
 		float offsetX = 0, offsetY = 0;
-		if (isPressed() && !isDisabled) {
+		if (isPressed() && !isDisabled()) {
 			background = style.down == null ? style.up : style.down;
 			offsetX = style.pressedOffsetX;
 			offsetY = style.pressedOffsetY;
 		} else {
-			if (isDisabled && style.disabled != null)
+			if (isDisabled() && style.disabled != null)
 				background = style.disabled;
 			else if (isChecked && style.checked != null)
 				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
