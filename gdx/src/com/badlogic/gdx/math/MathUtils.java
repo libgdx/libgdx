@@ -167,6 +167,11 @@ public final class MathUtils {
 		return start + random.nextFloat() * (end - start);
 	}
 
+	/** Returns -1 or 1, randomly. */
+	static public int randomSign () {
+		return 1 | (random.nextInt() >> 31);
+	}
+
 	// ---
 
 	/** Returns the next power of two. Returns the specified value if the value is already a power of two. */
@@ -281,14 +286,13 @@ public final class MathUtils {
 		return Math.abs(a - b) <= tolerance;
 	}
 
-	/**@return the logarithm of x with base a */
-	static public float log( float a, float x ){
+	/** @return the logarithm of x with base a */
+	static public float log (float a, float x) {
 		return (float)(Math.log(x) / Math.log(a));
 	}
 
-	/**@return the logarithm of x with base 2*/
-	static public float log2( float x ){
+	/** @return the logarithm of x with base 2 */
+	static public float log2 (float x) {
 		return log(2, x);
 	}
-
 }

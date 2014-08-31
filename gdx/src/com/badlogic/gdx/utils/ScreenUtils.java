@@ -61,6 +61,7 @@ public final class ScreenUtils {
 		potPixmap.drawPixmap(pixmap, 0, 0);
 		Texture texture = new Texture(potPixmap);
 		TextureRegion textureRegion = new TextureRegion(texture, 0, h, w, -h);
+		potPixmap.dispose();
 		pixmap.dispose();
 
 		return textureRegion;

@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Files;
@@ -28,6 +30,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Clipboard;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -100,18 +103,18 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 	@TargetApi(19)
 	@Override
 	public void useImmersiveMode (boolean use) {
-		if (!use || getVersion() < 19) return;
+		if (!use || getVersion() < Build.VERSION_CODES.KITKAT) return;
 
 		View view = getApplicationWindow().getDecorView();
 
 		try {
 			Method m = View.class.getMethod("setSystemUiVisibility", int.class);
-			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-			code ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-			code ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+			int code = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+						| View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+						| View.SYSTEM_UI_FLAG_FULLSCREEN
+						| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 			m.invoke(view, code);
 		} catch (Exception e) {
 			log("AndroidApplication", "Can't set immersive mode", e);
@@ -184,7 +187,7 @@ public class AndroidFragmentApplication extends Fragment implements AndroidAppli
 		Gdx.net = this.getNet();
 		createWakeLock(config.useWakelock);
 		useImmersiveMode(config.useImmersiveMode);
-		if (config.useImmersiveMode && getVersion() >= 19) {
+		if (config.useImmersiveMode && getVersion() >= Build.VERSION_CODES.KITKAT) {
 			try {
 				Class<?> vlistener = Class.forName("com.badlogic.gdx.backends.android.AndroidVisibilityListener");
 				Object o = vlistener.newInstance();

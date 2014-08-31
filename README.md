@@ -44,7 +44,7 @@ get any and all help we can. The [Contributing](https://github.com/libgdx/libgdx
 article describes the process of helping libGDX to become even better.
 
 To contribute, you need to work with libGDX' sources directly, something normal users do not
-have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Working-from-source)
+have to go through. The [Working with the Source](https://github.com/libgdx/libgdx/wiki/Running-demos-%26-tests)
 article will give you directions.
 
 You can also contribute financially to our infrastructure (build server, web server, test devices) via our [Patreon](http://patreon.com/libgdx)!

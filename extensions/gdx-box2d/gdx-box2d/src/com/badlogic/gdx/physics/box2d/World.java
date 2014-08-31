@@ -421,7 +421,7 @@ b2ContactFilter defaultFilter;
 		if (def.type == JointType.WeldJoint) {
 			WeldJointDef d = (WeldJointDef)def;
 			return jniCreateWeldJoint(addr, d.bodyA.addr, d.bodyB.addr, d.collideConnected, d.localAnchorA.x, d.localAnchorA.y,
-				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle);
+				d.localAnchorB.x, d.localAnchorB.y, d.referenceAngle, d.frequencyHz, d.dampingRatio);
 		}
 		if (def.type == JointType.WheelJoint) {
 			WheelJointDef d = (WheelJointDef)def;
@@ -601,7 +601,7 @@ b2ContactFilter defaultFilter;
 	*/
 
 	private native long jniCreateWeldJoint (long addr, long bodyA, long bodyB, boolean collideConnected, float localAnchorAX,
-		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle); /*
+		float localAnchorAY, float localAnchorBX, float localAnchorBY, float referenceAngle, float frequencyHz, float dampingRatio); /*
 		b2World* world = (b2World*)addr;
 		b2WeldJointDef def;
 		def.bodyA = (b2Body*)bodyA;
@@ -610,6 +610,8 @@ b2ContactFilter defaultFilter;
 		def.localAnchorA = b2Vec2(localAnchorAX, localAnchorAY);
 		def.localAnchorB = b2Vec2(localAnchorBX, localAnchorBY);
 		def.referenceAngle = referenceAngle;
+		def.frequencyHz = frequencyHz;
+		def.dampingRatio = dampingRatio;
 	
 		return (jlong)world->CreateJoint(&def);
 	*/

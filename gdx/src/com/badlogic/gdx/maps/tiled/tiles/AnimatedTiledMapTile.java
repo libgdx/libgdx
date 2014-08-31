@@ -82,6 +82,11 @@ public class AnimatedTiledMapTile implements TiledMapTile {
 	}
 
 	@Override
+	public void setTextureRegion(TextureRegion textureRegion) {
+		throw new GdxRuntimeException("Cannot set the texture region of AnimatedTiledMapTile.");
+	}
+	
+	@Override
 	public float getOffsetX () {
 		return getCurrentFrame().getOffsetX();
 	}
