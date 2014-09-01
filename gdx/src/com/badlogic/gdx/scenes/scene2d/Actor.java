@@ -67,7 +67,7 @@ public class Actor {
 	final Color color = new Color(1, 1, 1, 1);
 	private Object userObject;
 	
-	static int runningActionCount;
+	static boolean actionsChanged;
 
 	/** Draws the actor. The batch is configured to draw in the parent's coordinate system.
 	 * {@link Batch#draw(com.badlogic.gdx.graphics.g2d.TextureRegion, float, float, float, float, float, float, float, float, float)
@@ -87,7 +87,7 @@ public class Actor {
 	public void act (float delta) {
 		Array<Action> actions = this.actions;
 		if (actions.size > 0) {
-			runningActionCount += actions.size;
+			actionsChanged = true;
 			for (int i = 0; i < actions.size; i++) {
 				Action action = actions.get(i);
 				if (action.act(delta) && i < actions.size) {
@@ -253,7 +253,7 @@ public class Actor {
 	public void addAction (Action action) {
 		action.setActor(this);
 		actions.add(action);
-		runningActionCount++;
+		actionsChanged = true;
 	}
 
 	public void removeAction (Action action) {

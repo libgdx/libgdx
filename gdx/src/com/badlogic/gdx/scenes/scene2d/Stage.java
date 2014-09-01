@@ -64,6 +64,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public class Stage extends InputAdapter implements Disposable {
 	static private final Vector2 actorCoords = new Vector2();
 	static boolean debug;
+	static boolean actionsRequestRendering;
 
 	private Viewport viewport;
 	private final Batch batch;
@@ -78,7 +79,6 @@ public class Stage extends InputAdapter implements Disposable {
 	private Actor mouseOverActor;
 	private Actor keyboardFocus, scrollFocus;
 	private final SnapshotArray<TouchFocus> touchFocuses = new SnapshotArray(true, 4, TouchFocus.class);
-	private boolean actionsRequestRendering;
 
 	private ShapeRenderer debugShapes;
 	private boolean debugInvisible, debugAll, debugUnderMouse, debugParentUnderMouse;
@@ -220,9 +220,9 @@ public class Stage extends InputAdapter implements Disposable {
 			mouseOverActor = fireEnterAndExit(mouseOverActor, mouseScreenX, mouseScreenY, -1);
 
 		// Run actions and determine whether to request rendering (for when setContinuousRendering is off)
-		int previousActionCount = Actor.runningActionCount;
 		root.act(delta);
-		if (actionsRequestRendering && previousActionCount != Actor.runningActionCount) Gdx.graphics.requestRendering();
+		if (actionsRequestRendering && Actor.actionsChanged) Gdx.graphics.requestRendering();
+		Actor.actionsChanged = false;
 	}
 
 	private Actor fireEnterAndExit (Actor overLast, int screenX, int screenY, int pointer) {
@@ -766,8 +766,8 @@ public class Stage extends InputAdapter implements Disposable {
 	}
 	
 	/** If true, any actions executed during a call to Stage.act() will result in a call to Gdx.graphics.requestRendering(). */
-	public void setActionsRequestRendering (boolean actionsRequestRendering) {
-		this.actionsRequestRendering = actionsRequestRendering;
+	public static void setActionsRequestRendering (boolean actionsRequestRendering) {
+		Stage.actionsRequestRendering = actionsRequestRendering;
 	}
 
 	public void dispose () {
