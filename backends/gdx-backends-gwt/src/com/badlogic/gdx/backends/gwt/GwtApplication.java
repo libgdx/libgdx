@@ -42,7 +42,6 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -53,6 +52,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.animation.client.AnimationScheduler;
 
 /** Implementation of an {@link Application} based on GWT. Clients have to override {@link #getConfig()} and
  * {@link #getApplicationListener()}. Clients can override the default loading screen via
@@ -189,17 +189,17 @@ public abstract class GwtApplication implements EntryPoint, Application {
 		}
 
 		// setup rendering timer
-		new Timer() {
-			@Override
-			public void run () {
-				try {
-					mainLoop();
-				} catch (Throwable t) {
-					error("GwtApplication", "exception: " + t.getMessage(), t);
-					throw new RuntimeException(t);
-				}
-			}
-		}.scheduleRepeating((int)((1f / config.fps) * 1000));
+        AnimationScheduler.get().requestAnimationFrame(new AnimationScheduler.AnimationCallback() {
+            @Override
+            public void execute(double timestamp) {
+                try {
+                    mainLoop();
+                } catch (Throwable t) {
+                    error("GwtApplication", "exception: " + t.getMessage(), t);
+                    throw new RuntimeException(t);
+                }
+            }
+        });
 	}
 
 	void mainLoop() {
