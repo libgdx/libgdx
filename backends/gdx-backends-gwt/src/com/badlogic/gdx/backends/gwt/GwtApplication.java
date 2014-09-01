@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,6 +42,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
@@ -59,376 +60,392 @@ import com.google.gwt.animation.client.AnimationScheduler;
  * {@link #getPreloaderCallback()} and implement any loading screen drawing via GWT widgets.
  * @author mzechner */
 public abstract class GwtApplication implements EntryPoint, Application {
-	private ApplicationListener listener;
-	private GwtApplicationConfiguration config;
-	private GwtGraphics graphics;
-	private GwtInput input;
-	private GwtNet net;
-	private Panel root = null;
-	private TextArea log = null;
-	private int logLevel = LOG_ERROR;
-	private Array<Runnable> runnables = new Array<Runnable>();
-	private Array<Runnable> runnablesHelper = new Array<Runnable>();
-	private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
-	private int lastWidth;
-	private int lastHeight;
-	Preloader preloader;
-	private static AgentInfo agentInfo;
-	private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
-	private Clipboard clipboard;
-	LoadingListener loadingListener;
+    private ApplicationListener listener;
+    private GwtApplicationConfiguration config;
+    private GwtGraphics graphics;
+    private GwtInput input;
+    private GwtNet net;
+    private Panel root = null;
+    private TextArea log = null;
+    private int logLevel = LOG_ERROR;
+    private Array<Runnable> runnables = new Array<Runnable>();
+    private Array<Runnable> runnablesHelper = new Array<Runnable>();
+    private Array<LifecycleListener> lifecycleListeners = new Array<LifecycleListener>();
+    private int lastWidth;
+    private int lastHeight;
+    Preloader preloader;
+    private static AgentInfo agentInfo;
+    private ObjectMap<String, Preferences> prefs = new ObjectMap<String, Preferences>();
+    private Clipboard clipboard;
+    LoadingListener loadingListener;
 
-	/** @return the configuration for the {@link GwtApplication}. */
-	public abstract GwtApplicationConfiguration getConfig ();
+    /** @return the configuration for the {@link GwtApplication}. */
+    public abstract GwtApplicationConfiguration getConfig ();
 
-	
-	public String getPreloaderBaseURL()
-	{
-		return GWT.getHostPageBaseURL() + "assets/";
-	}
-	
-	@Override
-	public void onModuleLoad () {
-		GwtApplication.agentInfo = computeAgentInfo();
-		this.listener = getApplicationListener();
-		this.config = getConfig();
-		this.log = config.log;
 
-		if (config.rootPanel != null) {
-			this.root = config.rootPanel;
-		} else {
-			Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
-			if (element == null) {
-				VerticalPanel panel = new VerticalPanel();
-				panel.setWidth("" + config.width + "px");
-				panel.setHeight("" + config.height + "px");
-				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-				RootPanel.get().add(panel);
-				RootPanel.get().setWidth("" + config.width + "px");
-				RootPanel.get().setHeight("" + config.height + "px");
-				this.root = panel;
-			} else {
-				VerticalPanel panel = new VerticalPanel();
-				panel.setWidth("" + config.width + "px");
-				panel.setHeight("" + config.height + "px");
-				panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-				panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
-				element.appendChild(panel.getElement());
-				root = panel;
-			}
-		}
+    public String getPreloaderBaseURL()
+    {
+        return GWT.getHostPageBaseURL() + "assets/";
+    }
 
-		// initialize SoundManager2
-		SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback(){
+    @Override
+    public void onModuleLoad () {
+        GwtApplication.agentInfo = computeAgentInfo();
+        this.listener = getApplicationListener();
+        this.config = getConfig();
+        this.log = config.log;
 
-			@Override
-			public void onready () {
-				final PreloaderCallback callback = getPreloaderCallback();
-				preloader = createPreloader();
-				preloader.preload("assets.txt", new PreloaderCallback() {
-					@Override
-					public void error (String file) {
-						callback.error(file);
-					}
-
-					@Override
-					public void update (PreloaderState state) {
-						callback.update(state);
-						if (state.hasEnded()) {
-							getRootPanel().clear();
-							if(loadingListener != null)
-								loadingListener.beforeSetup();
-							setupLoop();
-							if(loadingListener != null)
-								loadingListener.afterSetup();
-						}
-					}
-				});
-			}
-
-			@Override
-			public void ontimeout (String status, String errorType) {
-				error("SoundManager", status + " " + errorType);
-			}
-			
-		});
-	}
-
-	void setupLoop () {
-		// setup modules
-		try {			
-			graphics = new GwtGraphics(root, config);			
-		} catch (Throwable e) {
-			root.clear();
-			root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
-			return;
-		}
-		lastWidth = graphics.getWidth();
-		lastHeight = graphics.getHeight();
-		Gdx.app = this;
-		Gdx.audio = new GwtAudio();
-		Gdx.graphics = graphics;
-		Gdx.gl20 = graphics.getGL20();
-		Gdx.gl = Gdx.gl20;
-		Gdx.files = new GwtFiles(preloader);
-		this.input = new GwtInput(graphics.canvas);
-		Gdx.input = this.input;
-		this.net = new GwtNet();
-		Gdx.net = this.net;
-		this.clipboard = new GwtClipboard();
-
-		// tell listener about app creation
-		try {
-			listener.create();
-			listener.resize(graphics.getWidth(), graphics.getHeight());
-		} catch (Throwable t) {
-			error("GwtApplication", "exception: " + t.getMessage(), t);
-			t.printStackTrace();
-			throw new RuntimeException(t);
-		}
-
-		// setup rendering timer
-        AnimationScheduler.get().requestAnimationFrame(new AnimationScheduler.AnimationCallback() {
-            @Override
-            public void execute(double timestamp) {
-                try {
-                    mainLoop();
-
-                    AnimationScheduler.get().requestAnimationFrame(this);
-                } catch (Throwable t) {
-                    error("GwtApplication", "exception: " + t.getMessage(), t);
-                    throw new RuntimeException(t);
-                }
+        if (config.rootPanel != null) {
+            this.root = config.rootPanel;
+        } else {
+            Element element = Document.get().getElementById("embed-" + GWT.getModuleName());
+            if (element == null) {
+                VerticalPanel panel = new VerticalPanel();
+                panel.setWidth("" + config.width + "px");
+                panel.setHeight("" + config.height + "px");
+                panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+                RootPanel.get().add(panel);
+                RootPanel.get().setWidth("" + config.width + "px");
+                RootPanel.get().setHeight("" + config.height + "px");
+                this.root = panel;
+            } else {
+                VerticalPanel panel = new VerticalPanel();
+                panel.setWidth("" + config.width + "px");
+                panel.setHeight("" + config.height + "px");
+                panel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+                panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+                element.appendChild(panel.getElement());
+                root = panel;
             }
+        }
+
+        // initialize SoundManager2
+        SoundManager.init(GWT.getModuleBaseURL(), 9, config.preferFlash, new SoundManager.SoundManagerCallback(){
+
+            @Override
+            public void onready () {
+                final PreloaderCallback callback = getPreloaderCallback();
+                preloader = createPreloader();
+                preloader.preload("assets.txt", new PreloaderCallback() {
+                    @Override
+                    public void error (String file) {
+                        callback.error(file);
+                    }
+
+                    @Override
+                    public void update (PreloaderState state) {
+                        callback.update(state);
+                        if (state.hasEnded()) {
+                            getRootPanel().clear();
+                            if(loadingListener != null)
+                                loadingListener.beforeSetup();
+                            setupLoop();
+                            if(loadingListener != null)
+                                loadingListener.afterSetup();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void ontimeout (String status, String errorType) {
+                error("SoundManager", status + " " + errorType);
+            }
+
         });
-	}
+    }
 
-	void mainLoop() {
-		graphics.update();
-		if (Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
-			GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-			lastWidth = graphics.getWidth();
-			lastHeight = graphics.getHeight();
-			Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
-		}
-		runnablesHelper.addAll(runnables);
-		runnables.clear();
-		for (int i = 0; i < runnablesHelper.size; i++) {
-			runnablesHelper.get(i).run();
-		}
-		runnablesHelper.clear();					
-		listener.render();
-		input.reset();
-	}
-	
-	public Panel getRootPanel () {
-		return root;
-	}
+    void setupLoop () {
+        // setup modules
+        try {
+            graphics = new GwtGraphics(root, config);
+        } catch (Throwable e) {
+            root.clear();
+            root.add(new Label("Sorry, your browser doesn't seem to support WebGL"));
+            return;
+        }
+        lastWidth = graphics.getWidth();
+        lastHeight = graphics.getHeight();
+        Gdx.app = this;
+        Gdx.audio = new GwtAudio();
+        Gdx.graphics = graphics;
+        Gdx.gl20 = graphics.getGL20();
+        Gdx.gl = Gdx.gl20;
+        Gdx.files = new GwtFiles(preloader);
+        this.input = new GwtInput(graphics.canvas);
+        Gdx.input = this.input;
+        this.net = new GwtNet();
+        Gdx.net = this.net;
+        this.clipboard = new GwtClipboard();
 
-	long loadStart = TimeUtils.nanoTime();
+        // tell listener about app creation
+        try {
+            listener.create();
+            listener.resize(graphics.getWidth(), graphics.getHeight());
+        } catch (Throwable t) {
+            error("GwtApplication", "exception: " + t.getMessage(), t);
+            t.printStackTrace();
+            throw new RuntimeException(t);
+        }
 
-	public Preloader createPreloader() {
-		return new Preloader(getPreloaderBaseURL());
-	}
+        // setup rendering timer
+        if (config.useVsync) {
+            AnimationScheduler.get().requestAnimationFrame(new AnimationScheduler.AnimationCallback() {
+                @Override
+                public void execute(double timestamp) {
+                    try {
+                        mainLoop();
 
-	public PreloaderCallback getPreloaderCallback () {
-		final Panel preloaderPanel = new VerticalPanel();
-		preloaderPanel.setStyleName("gdx-preloader");
-		final Image logo = new Image(GWT.getModuleBaseURL() + "logo.png");
-		logo.setStyleName("logo");		
-		preloaderPanel.add(logo);
-		final Panel meterPanel = new SimplePanel();
-		meterPanel.setStyleName("gdx-meter");
-		meterPanel.addStyleName("red");
-		final InlineHTML meter = new InlineHTML();
-		final Style meterStyle = meter.getElement().getStyle();
-		meterStyle.setWidth(0, Unit.PCT);
-		meterPanel.add(meter);
-		preloaderPanel.add(meterPanel);
-		getRootPanel().add(preloaderPanel);
-		return new PreloaderCallback() {
+                        AnimationScheduler.get().requestAnimationFrame(this);
+                    } catch (Throwable t) {
+                        error("GwtApplication", "exception: " + t.getMessage(), t);
+                        throw new RuntimeException(t);
+                    }
+                }
+            });
+        } else {
+            new Timer() {
+                @Override
+                public void run () {
+                    try {
+                        mainLoop();
 
-			@Override
-			public void error (String file) {
-				System.out.println("error: " + file);
-			}
-			
-			@Override
-			public void update (PreloaderState state) {
-				meterStyle.setWidth(100f * state.getProgress(), Unit.PCT);
-			}			
-			
-		};
-	}
+                        this.schedule((int)((1f / config.fps) * 1000));
+                    } catch (Throwable t) {
+                        error("GwtApplication", "exception: " + t.getMessage(), t);
+                        throw new RuntimeException(t);
+                    }
+                }
+            }.schedule((int)((1f / config.fps) * 1000));
+        }
+    }
 
-	@Override
-	public Graphics getGraphics () {
-		return graphics;
-	}
+    void mainLoop() {
+        graphics.update();
+        if (Gdx.graphics.getWidth() != lastWidth || Gdx.graphics.getHeight() != lastHeight) {
+            GwtApplication.this.listener.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            lastWidth = graphics.getWidth();
+            lastHeight = graphics.getHeight();
+            Gdx.gl.glViewport(0, 0, lastWidth, lastHeight);
+        }
+        runnablesHelper.addAll(runnables);
+        runnables.clear();
+        for (int i = 0; i < runnablesHelper.size; i++) {
+            runnablesHelper.get(i).run();
+        }
+        runnablesHelper.clear();
+        listener.render();
+        input.reset();
+    }
 
-	@Override
-	public Audio getAudio () {
-		return Gdx.audio;
-	}
+    public Panel getRootPanel () {
+        return root;
+    }
 
-	@Override
-	public Input getInput () {
-		return Gdx.input;
-	}
+    long loadStart = TimeUtils.nanoTime();
 
-	@Override
-	public Files getFiles () {
-		return Gdx.files;
-	}
-	
-	@Override
-	public Net getNet() {
-		return Gdx.net;
-	}
+    public Preloader createPreloader() {
+        return new Preloader(getPreloaderBaseURL());
+    }
 
-	private void checkLogLabel () {
-		if (log == null) {
-			log = new TextArea();
-			log.setSize(graphics.getWidth() + "px", "200px");
-			log.setReadOnly(true);
-			root.add(log);
-		}
-	}
+    public PreloaderCallback getPreloaderCallback () {
+        final Panel preloaderPanel = new VerticalPanel();
+        preloaderPanel.setStyleName("gdx-preloader");
+        final Image logo = new Image(GWT.getModuleBaseURL() + "logo.png");
+        logo.setStyleName("logo");
+        preloaderPanel.add(logo);
+        final Panel meterPanel = new SimplePanel();
+        meterPanel.setStyleName("gdx-meter");
+        meterPanel.addStyleName("red");
+        final InlineHTML meter = new InlineHTML();
+        final Style meterStyle = meter.getElement().getStyle();
+        meterStyle.setWidth(0, Unit.PCT);
+        meterPanel.add(meter);
+        preloaderPanel.add(meterPanel);
+        getRootPanel().add(preloaderPanel);
+        return new PreloaderCallback() {
 
-	@Override
-	public void log (String tag, String message) {
-		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message);
-		}
-	}
+            @Override
+            public void error (String file) {
+                System.out.println("error: " + file);
+            }
 
-	@Override
-	public void log (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_INFO) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
-		}
-	}
+            @Override
+            public void update (PreloaderState state) {
+                meterStyle.setWidth(100f * state.getProgress(), Unit.PCT);
+            }
 
-	@Override
-	public void error (String tag, String message) {
-		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message);
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message);
-		}
-	}
+        };
+    }
 
-	@Override
-	public void error (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_ERROR) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
-			log.setCursorPos(log.getText().length() - 1);
-			System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
-			System.out.println(getStackTrace(exception));
-		}
-	}
+    @Override
+    public Graphics getGraphics () {
+        return graphics;
+    }
 
-	@Override
-	public void debug (String tag, String message) {
-		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n");
-		}
-	}
+    @Override
+    public Audio getAudio () {
+        return Gdx.audio;
+    }
 
-	@Override
-	public void debug (String tag, String message, Throwable exception) {
-		if (logLevel >= LOG_DEBUG) {
-			checkLogLabel();
-			log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
-			log.setCursorPos(log.getText().length() - 1);
-			System.out.println(tag + ": " + message + "\n" + exception.getMessage());
-			System.out.println(getStackTrace(exception));
-		}
-	}
+    @Override
+    public Input getInput () {
+        return Gdx.input;
+    }
 
-	private String getStackTrace (Throwable e) {
-		StringBuffer buffer = new StringBuffer();
-		for (StackTraceElement trace : e.getStackTrace()) {
-			buffer.append(trace.toString() + "\n");
-		}
-		return buffer.toString();
-	}
+    @Override
+    public Files getFiles () {
+        return Gdx.files;
+    }
 
-	@Override
-	public void setLogLevel (int logLevel) {
-		this.logLevel = logLevel;
-	}
+    @Override
+    public Net getNet() {
+        return Gdx.net;
+    }
 
-	@Override
-	public int getLogLevel() {
-		return logLevel;
-	}
+    private void checkLogLabel () {
+        if (log == null) {
+            log = new TextArea();
+            log.setSize(graphics.getWidth() + "px", "200px");
+            log.setReadOnly(true);
+            root.add(log);
+        }
+    }
 
-	@Override
-	public ApplicationType getType () {
-		return ApplicationType.WebGL;
-	}
+    @Override
+    public void log (String tag, String message) {
+        if (logLevel >= LOG_INFO) {
+            checkLogLabel();
+            log.setText(log.getText() + "\n" + tag + ": " + message);
+            log.setCursorPos(log.getText().length() - 1);
+            System.out.println(tag + ": " + message);
+        }
+    }
 
-	@Override
-	public int getVersion () {
-		return 0;
-	}
+    @Override
+    public void log (String tag, String message, Throwable exception) {
+        if (logLevel >= LOG_INFO) {
+            checkLogLabel();
+            log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
+            log.setCursorPos(log.getText().length() - 1);
+            System.out.println(tag + ": " + message + "\n" + exception.getMessage());
+            System.out.println(getStackTrace(exception));
+        }
+    }
 
-	@Override
-	public long getJavaHeap () {
-		return 0;
-	}
+    @Override
+    public void error (String tag, String message) {
+        if (logLevel >= LOG_ERROR) {
+            checkLogLabel();
+            log.setText(log.getText() + "\n" + tag + ": " + message);
+            log.setCursorPos(log.getText().length() - 1);
+            System.err.println(tag + ": " + message);
+        }
+    }
 
-	@Override
-	public long getNativeHeap () {
-		return 0;
-	}
+    @Override
+    public void error (String tag, String message, Throwable exception) {
+        if (logLevel >= LOG_ERROR) {
+            checkLogLabel();
+            log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage());
+            log.setCursorPos(log.getText().length() - 1);
+            System.err.println(tag + ": " + message + "\n" + exception.getMessage() + "\n");
+            System.out.println(getStackTrace(exception));
+        }
+    }
 
-	@Override
-	public Preferences getPreferences (String name) {
-		Preferences pref = prefs.get(name);
-		if (pref == null) {
-			pref = new GwtPreferences(name);
-			prefs.put(name, pref);
-		}
-		return pref;
-	}
+    @Override
+    public void debug (String tag, String message) {
+        if (logLevel >= LOG_DEBUG) {
+            checkLogLabel();
+            log.setText(log.getText() + "\n" + tag + ": " + message + "\n");
+            log.setCursorPos(log.getText().length() - 1);
+            System.out.println(tag + ": " + message + "\n");
+        }
+    }
 
-	@Override
-	public Clipboard getClipboard () {
-		return clipboard;
-	}
-	
-	@Override
-	public void postRunnable (Runnable runnable) {
-		runnables.add(runnable);
-	}
+    @Override
+    public void debug (String tag, String message, Throwable exception) {
+        if (logLevel >= LOG_DEBUG) {
+            checkLogLabel();
+            log.setText(log.getText() + "\n" + tag + ": " + message + "\n" + exception.getMessage() + "\n");
+            log.setCursorPos(log.getText().length() - 1);
+            System.out.println(tag + ": " + message + "\n" + exception.getMessage());
+            System.out.println(getStackTrace(exception));
+        }
+    }
 
-	@Override
-	public void exit () {
-	}
+    private String getStackTrace (Throwable e) {
+        StringBuffer buffer = new StringBuffer();
+        for (StackTraceElement trace : e.getStackTrace()) {
+            buffer.append(trace.toString() + "\n");
+        }
+        return buffer.toString();
+    }
 
-	/** Contains precomputed information on the user-agent. Useful for dealing with browser and OS behavioral differences. Kindly
-	 * borrowed from PlayN */
-	public static AgentInfo agentInfo () {
-		return agentInfo;
-	}
+    @Override
+    public void setLogLevel (int logLevel) {
+        this.logLevel = logLevel;
+    }
 
-	/** kindly borrowed from PlayN **/
-	private static native AgentInfo computeAgentInfo () /*-{
+    @Override
+    public int getLogLevel() {
+        return logLevel;
+    }
+
+    @Override
+    public ApplicationType getType () {
+        return ApplicationType.WebGL;
+    }
+
+    @Override
+    public int getVersion () {
+        return 0;
+    }
+
+    @Override
+    public long getJavaHeap () {
+        return 0;
+    }
+
+    @Override
+    public long getNativeHeap () {
+        return 0;
+    }
+
+    @Override
+    public Preferences getPreferences (String name) {
+        Preferences pref = prefs.get(name);
+        if (pref == null) {
+            pref = new GwtPreferences(name);
+            prefs.put(name, pref);
+        }
+        return pref;
+    }
+
+    @Override
+    public Clipboard getClipboard () {
+        return clipboard;
+    }
+
+    @Override
+    public void postRunnable (Runnable runnable) {
+        runnables.add(runnable);
+    }
+
+    @Override
+    public void exit () {
+    }
+
+    /** Contains precomputed information on the user-agent. Useful for dealing with browser and OS behavioral differences. Kindly
+     * borrowed from PlayN */
+    public static AgentInfo agentInfo () {
+        return agentInfo;
+    }
+
+    /** kindly borrowed from PlayN **/
+    private static native AgentInfo computeAgentInfo () /*-{
 																			var userAgent = navigator.userAgent.toLowerCase();
 																			return {
 																			// browser type flags
@@ -444,94 +461,94 @@ public abstract class GwtApplication implements EntryPoint, Application {
 																			};
 																			}-*/;
 
-	/** Returned by {@link #agentInfo}. Kindly borrowed from PlayN. */
-	public static class AgentInfo extends JavaScriptObject {
-		public final native boolean isFirefox () /*-{
+    /** Returned by {@link #agentInfo}. Kindly borrowed from PlayN. */
+    public static class AgentInfo extends JavaScriptObject {
+        public final native boolean isFirefox () /*-{
 																return this.isFirefox;
 																}-*/;
 
-		public final native boolean isChrome () /*-{
+        public final native boolean isChrome () /*-{
 																return this.isChrome;
 																}-*/;
 
-		public final native boolean isSafari () /*-{
+        public final native boolean isSafari () /*-{
 																return this.isSafari;
 																}-*/;
 
-		public final native boolean isOpera () /*-{
+        public final native boolean isOpera () /*-{
 															return this.isOpera;
 															}-*/;
 
-		public final native boolean isIE () /*-{
+        public final native boolean isIE () /*-{
 														return this.isIE;
 														}-*/;
 
-		public final native boolean isMacOS () /*-{
+        public final native boolean isMacOS () /*-{
 															return this.isMacOS;
 															}-*/;
 
-		public final native boolean isLinux () /*-{
+        public final native boolean isLinux () /*-{
 															return this.isLinux;
 															}-*/;
 
-		public final native boolean isWindows () /*-{
+        public final native boolean isWindows () /*-{
 																return this.isWindows;
 																}-*/;
 
-		protected AgentInfo () {
-		}
-	}
+        protected AgentInfo () {
+        }
+    }
 
-	public String getBaseUrl () {
-		return preloader.baseUrl;
-	}
+    public String getBaseUrl () {
+        return preloader.baseUrl;
+    }
 
-	public Preloader getPreloader () {
-		return preloader;
-	}
-	
-	public CanvasElement getCanvasElement(){
-		return graphics.canvas;
-	}
+    public Preloader getPreloader () {
+        return preloader;
+    }
 
-	public LoadingListener getLoadingListener () {
-		return loadingListener;
-	}
+    public CanvasElement getCanvasElement(){
+        return graphics.canvas;
+    }
 
-	public void setLoadingListener (LoadingListener loadingListener) {
-		this.loadingListener = loadingListener;
-	}
+    public LoadingListener getLoadingListener () {
+        return loadingListener;
+    }
 
-	@Override
-	public void addLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.add(listener);
-		}
-	}
+    public void setLoadingListener (LoadingListener loadingListener) {
+        this.loadingListener = loadingListener;
+    }
 
-	@Override
-	public void removeLifecycleListener (LifecycleListener listener) {
-		synchronized(lifecycleListeners) {
-			lifecycleListeners.removeValue(listener, true);
-		}		
-	}
-	
-	native static public void consoleLog(String message) /*-{
+    @Override
+    public void addLifecycleListener (LifecycleListener listener) {
+        synchronized(lifecycleListeners) {
+            lifecycleListeners.add(listener);
+        }
+    }
+
+    @Override
+    public void removeLifecycleListener (LifecycleListener listener) {
+        synchronized(lifecycleListeners) {
+            lifecycleListeners.removeValue(listener, true);
+        }
+    }
+
+    native static public void consoleLog(String message) /*-{
 		console.log( "GWT: " + message );
 	}-*/;
-	
-	/**
-	 * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}
-	 */
-	public interface LoadingListener{
-		/**
-		 * Method called before the setup
-		 */
-		public void beforeSetup();
-		
-		/**
-		 * Method called after the setup
-		 */
-		public void afterSetup();
-	}
+
+    /**
+     * LoadingListener interface main purpose is to do some things before or after {@link GwtApplication#setupLoop()}
+     */
+    public interface LoadingListener{
+        /**
+         * Method called before the setup
+         */
+        public void beforeSetup();
+
+        /**
+         * Method called after the setup
+         */
+        public void afterSetup();
+    }
 }
