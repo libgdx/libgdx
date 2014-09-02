@@ -683,15 +683,26 @@ public class ReflectionCacheSourceCreator {
 
 	private String getAnnotations (Annotation[] annotations) {
 		if (annotations != null && annotations.length > 0) {
+			int numValidAnnotations = 0;
+			final Class<?>[] ignoredAnnotations = {Deprecated.class, Retention.class};
 			StringBuilder b = new StringBuilder();
 			b.append("new java.lang.annotation.Annotation[] {");
 			for (Annotation annotation : annotations) {
-				// skip if not annotated with RetentionPolicy.RUNTIME
 				Class<?> type = annotation.annotationType();
+				// skip ignored types, assuming we are not interested in those at runtime
+				boolean ignoredType = false;
+				for (int i = 0; !ignoredType && i < ignoredAnnotations.length; i++) {
+					ignoredType = ignoredAnnotations[i].equals(type);
+				}
+				if (ignoredType) {
+					continue;
+				}
+				// skip if not annotated with RetentionPolicy.RUNTIME
 				Retention retention = type.getAnnotation(Retention.class);
 				if (retention == null || retention.value() != RetentionPolicy.RUNTIME) {
 					continue;
 				}
+				numValidAnnotations++;
 				// anonymous class
 				b.append(" new ").append(type.getCanonicalName()).append("() {");
 				// override all methods
@@ -717,20 +728,20 @@ public class ReflectionCacheSourceCreator {
 					if (invokeResult != null) {
 						if (returnType.equals(String[].class)) {
 							// String[]
-							for (String s : (String[]) invokeResult) {
+							for (String s : (String[])invokeResult) {
 								b.append(" \"").append(s).append("\",");
 							}
 						} else if (returnType.equals(String.class)) {
 							// String
-							b.append(" \"").append((String) invokeResult).append("\"");
+							b.append(" \"").append((String)invokeResult).append("\"");
 						} else if (returnType.equals(Class[].class)) {
 							// Class[]
-							for (Class c : (Class[]) invokeResult) {
+							for (Class c : (Class[])invokeResult) {
 								b.append(" ").append(c.getCanonicalName()).append(".class,");
 							}
 						} else if (returnType.equals(Class.class)) {
 							// Class
-							b.append(" ").append(((Class) invokeResult).getCanonicalName()).append(".class");
+							b.append(" ").append(((Class)invokeResult).getCanonicalName()).append(".class");
 						} else if (returnType.isArray() && returnType.getComponentType().isEnum()) {
 							// enum[]
 							String enumTypeName = returnType.getComponentType().getCanonicalName();
@@ -777,7 +788,7 @@ public class ReflectionCacheSourceCreator {
 				b.append("}, ");
 			}
 			b.append("}");
-			return b.toString();
+			return (numValidAnnotations > 0) ? b.toString() : "null";
 		}
 		return "null";
 	}
