@@ -20,8 +20,6 @@ import java.io.Serializable;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.NumberUtils;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
 
 /** A convenient 2D ellipse class, based on the circle class
  * @author tonyp7 */

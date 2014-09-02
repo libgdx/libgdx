@@ -16,9 +16,6 @@
 
 package com.badlogic.gdx.math;
 
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
-
 public class Polyline implements Shape2D {
 	private final float[] localVertices;
 	private float[] worldVertices;

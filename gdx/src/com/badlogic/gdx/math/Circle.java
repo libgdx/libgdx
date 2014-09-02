@@ -16,8 +16,6 @@ package com.badlogic.gdx.math;
 import java.io.Serializable;
 
 import com.badlogic.gdx.utils.NumberUtils;
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
 
 /** A convenient 2D circle class.
  * @author mzechner */

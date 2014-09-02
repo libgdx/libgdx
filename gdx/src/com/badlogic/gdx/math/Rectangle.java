@@ -14,9 +14,6 @@
 package com.badlogic.gdx.math;
 
 import java.io.Serializable;
-
-import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Sphere;
 import com.badlogic.gdx.utils.NumberUtils;
 
 /** Encapsulates a 2D rectangle defined by it's bottom corner point and its extends in x (width) and y (height).
