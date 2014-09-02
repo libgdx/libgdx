@@ -141,18 +141,24 @@ public class SelectBox<T> extends Widget implements Disableable {
 		return items;
 	}
 
+	@Override
 	public void layout () {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
 
-		prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
-			bg.getMinHeight());
+		if(bg != null)
+			prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
+				bg.getMinHeight());
+		else
+			prefHeight = font.getCapHeight() - font.getDescent() * 2;
 
 		float maxItemWidth = 0;
 		for (int i = 0; i < items.size; i++)
 			maxItemWidth = Math.max(font.getBounds(items.get(i).toString()).width, maxItemWidth);
 
-		prefWidth = bg.getLeftWidth() + bg.getRightWidth() + maxItemWidth;
+		prefWidth = maxItemWidth;
+		if (bg != null)
+			prefWidth += bg.getLeftWidth() + bg.getRightWidth();
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
@@ -178,8 +184,10 @@ public class SelectBox<T> extends Widget implements Disableable {
 			background = style.backgroundOpen;
 		else if (clickListener.isOver() && style.backgroundOver != null)
 			background = style.backgroundOver;
-		else
+		else if (style.background != null)
 			background = style.background;
+		else
+			background = null;
 		final BitmapFont font = style.font;
 		final Color fontColor = (disabled && style.disabledFontColor != null) ? style.disabledFontColor : style.fontColor;
 
@@ -190,17 +198,24 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		background.draw(batch, x, y, width, height);
+		if (background != null)
+			background.draw(batch, x, y, width, height);
+
 		T selected = this.selected != null ? this.selected : selection.first();
 		if (selected != null) {
-			float availableWidth = width - background.getLeftWidth() - background.getRightWidth();
 			String string = selected.toString();
-			int numGlyphs = font.computeVisibleGlyphs(string, 0, string.length(), availableWidth);
 			bounds.set(font.getBounds(string));
-			height -= background.getBottomHeight() + background.getTopHeight();
-			float textY = (int)(height / 2 + background.getBottomHeight() + bounds.height / 2);
+			if (background != null) {
+				width -= background.getLeftWidth() + background.getRightWidth();
+				height -= background.getBottomHeight() + background.getTopHeight();
+				x += background.getLeftWidth();
+				y += (int)(height / 2 + background.getBottomHeight() + bounds.height / 2);
+			} else {
+				y += (int)(height / 2 + bounds.height / 2);
+			}
+			int numGlyphs = font.computeVisibleGlyphs(string, 0, string.length(), width);
 			font.setColor(fontColor.r, fontColor.g, fontColor.b, fontColor.a * parentAlpha);
-			font.draw(batch, string, x + background.getLeftWidth(), y + textY, 0, numGlyphs);
+			font.draw(batch, string, x, y, 0, numGlyphs);
 		}
 	}
 
@@ -388,6 +403,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		public Color fontColor = new Color(1, 1, 1, 1);
 		/** Optional. */
 		public Color disabledFontColor;
+		/** Optional. */
 		public Drawable background;
 		public ScrollPaneStyle scrollStyle;
 		public ListStyle listStyle;

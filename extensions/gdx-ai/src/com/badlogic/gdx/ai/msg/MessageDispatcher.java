@@ -17,7 +17,6 @@
 package com.badlogic.gdx.ai.msg;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.Agent;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.IntMap;
 import com.badlogic.gdx.utils.Pool;
@@ -40,7 +39,7 @@ public class MessageDispatcher {
 
 	private final Pool<Telegram> pool;
 
-	private IntMap<Array<Agent>> msgListeners = new IntMap<Array<Agent>>();
+	private IntMap<Array<Telegraph>> msgListeners = new IntMap<Array<Telegraph>>();
 
 	private long timeGranularity;
 
@@ -98,31 +97,77 @@ public class MessageDispatcher {
 	/** Registers a listener for the specified message code. Messages without an explicit receiver are broadcasted to all its
 	 * registered listeners.
 	 * @param msg the message code
+	 * @param listener the listener to add
+	 * @deprecated Use {@link #addListener(Telegraph, int)} instead. */
+	@Deprecated
+	public void addListener (int msg, Telegraph listener) {
+		addListener(listener, msg);
+	}
+
+	/** Registers a listener for the specified message code. Messages without an explicit receiver are broadcasted to all its
+	 * registered listeners.
+	 * @param msg the message code
 	 * @param listener the listener to add */
-	public void addListener (int msg, Agent listener) {
-		Array<Agent> listeners = msgListeners.get(msg);
+	public void addListener (Telegraph listener, int msg) {
+		Array<Telegraph> listeners = msgListeners.get(msg);
 		if (listeners == null) {
 			// Associate an empty unordered array with the message code
-			listeners = new Array<Agent>(false, 16);
+			listeners = new Array<Telegraph>(false, 16);
 			msgListeners.put(msg, listeners);
 		}
 		listeners.add(listener);
 	}
 
+	/** Registers a listener for a selection of message types. Messages without an explicit receiver are broadcasted to all its
+	 * registered listeners.
+	 * 
+	 * @param listener the listener to add
+	 * @param msgs the message codes */
+	public void addListeners (Telegraph listener, int... msgs) {
+		for (int msg : msgs)
+			addListener(listener, msg);
+	}
+
+	/** Unregister the specified listener for the specified message code.
+	 * @param msg the message code
+	 * @param listener the listener to remove
+	 * @deprecated Use {@link #removeListener(Telegraph, int)} instead. */
+	@Deprecated
+	public void removeListener (int msg, Telegraph listener) {
+		removeListener(listener, msg);
+	}
+
 	/** Unregister the specified listener for the specified message code.
 	 * @param msg the message code
 	 * @param listener the listener to remove */
-	public void removeListener (int msg, Agent listener) {
-		Array<Agent> listeners = msgListeners.get(msg);
+	public void removeListener (Telegraph listener, int msg) {
+		Array<Telegraph> listeners = msgListeners.get(msg);
 		if (listeners != null) {
 			listeners.removeValue(listener, true);
 		}
+	}
+
+	/** Unregister the specified listener for the selection of message codes.
+	 * 
+	 * @param listener the listener to remove
+	 * @param msgs the message codes */
+	public void removeListener (Telegraph listener, int... msgs) {
+		for (int msg : msgs)
+			removeListener(listener, msg);
 	}
 
 	/** Unregisters all the listeners for the specified message code.
 	 * @param msg the message code */
 	public void clearListeners (int msg) {
 		msgListeners.remove(msg);
+	}
+
+	/** Unregisters all the listeners for the given message codes.
+	 * 
+	 * @param msgs the message codes */
+	public void clearListeners (int... msgs) {
+		for (int msg : msgs)
+			clearListeners(msg);
 	}
 
 	/** Removes all the registered listeners for all the message codes. */
@@ -144,21 +189,107 @@ public class MessageDispatcher {
 		clearListeners();
 	}
 
-	/** Shortcut method for {@link #dispatchMessage(float, Agent, Agent, int, Object) dispatchMessage(delay, sender,
-	 * receiver, msg, extraInfo)} where {@code extraInfo} is {@code null}. */
-	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg) {
+	/** Sends an immediate message to all registered listeners, with no extra info.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(0, sender,
+	 * null, msg, null)}
+	 * 
+	 * @param sender the sender of the telegram
+	 * @param msg the message code */
+	public void dispatchMessage (Telegraph sender, int msg) {
+		dispatchMessage(0f, sender, null, msg, null);
+	}
+
+	/** Sends an immediate message to all registered listeners, with extra info.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(0, sender,
+	 * null, msg, extraInfo)}
+	 * 
+	 * @param sender the sender of the telegram
+	 * @param msg the message code
+	 * @param extraInfo an optional object */
+	public void dispatchMessage (Telegraph sender, int msg, Object extraInfo) {
+		dispatchMessage(0f, sender, null, msg, extraInfo);
+	}
+
+	/** Sends an immediate message to the specified receiver with no extra info. The receiver doesn't need to be a register listener
+	 * for the specified message code.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(0, sender,
+	 * receiver, msg, null)}
+	 * 
+	 * @param sender the sender of the telegram
+	 * @param receiver the receiver of the telegram; if it's {@code null} the telegram is broadcasted to all the receivers
+	 *           registered for the specified message code
+	 * @param msg the message code */
+	public void dispatchMessage (Telegraph sender, Telegraph receiver, int msg) {
+		dispatchMessage(0f, sender, receiver, msg, null);
+	}
+
+	/** Sends an immediate message to the specified receiver with extra info. The receiver doesn't need to be a register listener
+	 * for the specified message code.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(0, sender,
+	 * receiver, msg, extraInfo)}
+	 * 
+	 * @param sender the sender of the telegram
+	 * @param receiver the receiver of the telegram; if it's {@code null} the telegram is broadcasted to all the receivers
+	 *           registered for the specified message code
+	 * @param msg the message code
+	 * @param extraInfo an optional object */
+	public void dispatchMessage (Telegraph sender, Telegraph receiver, int msg, Object extraInfo) {
+		dispatchMessage(0f, sender, receiver, msg, extraInfo);
+	}
+
+	/** Sends a message to all registered listeners, with the specified delay but no extra info.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(delay,
+	 * sender, null, msg, null)}
+	 * 
+	 * @param delay the delay in seconds
+	 * @param sender the sender of the telegram
+	 * @param msg the message code */
+	public void dispatchMessage (float delay, Telegraph sender, int msg) {
+		dispatchMessage(delay, sender, null, msg, null);
+	}
+
+	/** Sends a message to all registered listeners, with the specified delay and extra info.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(delay,
+	 * sender, null, msg, extraInfo)}
+	 * 
+	 * @param delay the delay in seconds
+	 * @param sender the sender of the telegram
+	 * @param msg the message code
+	 * @param extraInfo an optional object */
+	public void dispatchMessage (float delay, Telegraph sender, int msg, Object extraInfo) {
+		dispatchMessage(delay, sender, null, msg, extraInfo);
+	}
+
+	/** Sends a message to the specified receiver, with the specified delay but no extra info. The receiver doesn't need to be a
+	 * register listener for the specified message code.
+	 * <p>
+	 * This is a shortcut method for {@link #dispatchMessage(float, Telegraph, Telegraph, int, Object) dispatchMessage(delay,
+	 * sender, receiver, msg, null)}
+	 * 
+	 * @param delay the delay in seconds
+	 * @param sender the sender of the telegram
+	 * @param receiver the receiver of the telegram; if it's {@code null} the telegram is broadcasted to all the receivers
+	 *           registered for the specified message code
+	 * @param msg the message code */
+	public void dispatchMessage (float delay, Telegraph sender, Telegraph receiver, int msg) {
 		dispatchMessage(delay, sender, receiver, msg, null);
 	}
 
 	/** Given a message, a receiver, a sender and any time delay, this method routes the message to the correct agents (if no delay)
 	 * or stores in the message queue to be dispatched at the correct time.
 	 * @param delay the delay in seconds
-	 * @param sender the sender of this telegram
-	 * @param receiver the receiver of this telegram; if it's null the telegram is broadcasted to all the receivers registered for
-	 *           the specified message code
+	 * @param sender the sender of the telegram
+	 * @param receiver the receiver of the telegram; if it's {@code null} the telegram is broadcasted to all the receivers
+	 *           registered for the specified message code
 	 * @param msg the message code
 	 * @param extraInfo an optional object */
-	public void dispatchMessage (float delay, Agent sender, Agent receiver, int msg, Object extraInfo) {
+	public void dispatchMessage (float delay, Telegraph sender, Telegraph receiver, int msg, Object extraInfo) {
 
 		// Get a telegram from the pool
 		Telegram telegram = pool.obtain();
@@ -191,7 +322,8 @@ public class MessageDispatcher {
 					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " recorded at time "
 						+ getCurrentTime() + ". Msg is " + msg);
 				else
-					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " rejected by the queue. Msg is " + msg);
+					Gdx.app.log(LOG_TAG, "Delayed telegram from " + sender + " for " + receiver + " rejected by the queue. Msg is "
+						+ msg);
 			}
 		}
 	}
@@ -240,7 +372,7 @@ public class MessageDispatcher {
 		} else {
 			// Dispatch the telegram to all the registered receivers
 			int handledCount = 0;
-			Array<Agent> listeners = msgListeners.get(telegram.message);
+			Array<Telegraph> listeners = msgListeners.get(telegram.message);
 			if (listeners != null) {
 				for (int i = 0; i < listeners.size; i++) {
 					if (listeners.get(i).handleMessage(telegram)) {

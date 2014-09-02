@@ -71,7 +71,7 @@ public class TextButton extends Button {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Color fontColor;
-		if (isDisabled && style.disabledFontColor != null)
+		if (isDisabled() && style.disabledFontColor != null)
 			fontColor = style.disabledFontColor;
 		else if (isPressed() && style.downFontColor != null)
 			fontColor = style.downFontColor;
