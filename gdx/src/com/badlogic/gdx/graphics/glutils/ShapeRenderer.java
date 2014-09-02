@@ -759,14 +759,14 @@ public class ShapeRenderer implements Disposable {
 	}
 
 	/** Draws two crossed lines using {@link ShapeType#Line} or {@link ShapeType#Filled}. */
-	public void x (float x, float y, float radius) {
-		line(x - radius, y - radius, x + radius, y + radius);
-		line(x - radius, y + radius, x + radius, y - radius);
+	public void x (float x, float y, float size) {
+		line(x - size, y - size, x + size, y + size);
+		line(x - size, y + size, x + size, y - size);
 	}
 
 	/** @see #x(float, float, float) */
-	public void x (Vector2 p, float radius) {
-		x(p.x, p.y, radius);
+	public void x (Vector2 p, float size) {
+		x(p.x, p.y, size);
 	}
 
 	/** Calls {@link #arc(float, float, float, float, float, int)} by estimating the number of segments needed for a smooth arc. */
