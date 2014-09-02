@@ -201,12 +201,4 @@ public class Polyline implements Shape2D {
 		this.y += y;
 		dirty = true;
 	}
-	
-	@Override
-	public Vector2 getCenter () {
-		if(dirty) getTransformedVertices();
-		if(center == null) center = new Vector2();
-		
-		return GeometryUtils.polygonCentroid(worldVertices, 0, worldVertices.length, center);
-	}
 }

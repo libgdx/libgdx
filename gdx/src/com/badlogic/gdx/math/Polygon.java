@@ -247,12 +247,4 @@ public class Polygon implements Shape2D {
 	public float getScaleY () {
 		return scaleY;
 	}
-	
-	@Override
-	public Vector2 getCenter() {
-		if(dirty) getTransformedVertices();
-		if(center == null) center = new Vector2();
-		
-		return GeometryUtils.polygonCentroid(worldVertices, 0, worldVertices.length, center);
-	}
 }

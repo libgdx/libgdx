@@ -220,10 +220,4 @@ public class Ellipse implements Serializable, Shape2D {
 		result = prime * result + NumberUtils.floatToRawIntBits(this.y);
 		return result;
 	}
-
-	@Override
-	public Vector2 getCenter () {
-		if(center == null) center = new Vector2();
-		return center.set(x,y);
-	}
 }

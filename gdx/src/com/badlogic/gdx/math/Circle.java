@@ -222,10 +222,4 @@ public class Circle implements Serializable, Shape2D {
 		result = prime * result + NumberUtils.floatToRawIntBits(y);
 		return result;
 	}
-	
-	@Override
-	public Vector2 getCenter () {
-		if(center == null) center = new Vector2();
-		return center.set(x,y);
-	}
 }

@@ -395,10 +395,4 @@ public class Rectangle implements Serializable, Shape2D {
 		return true;
 	}
 
-	@Override
-	public Vector2 getCenter () {
-		if(center == null) center = new Vector2();
-		return center.set(x+(width/2), y+(height/2));
-	}
-
 }
