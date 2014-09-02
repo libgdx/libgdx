@@ -29,7 +29,6 @@ public class Ellipse implements Serializable, Shape2D {
 
 	public float x, y;
 	public float width, height;
-	private Vector2 center;
 
 	private static final long serialVersionUID = 7381533206532032099L;
 

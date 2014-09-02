@@ -24,7 +24,6 @@ import com.badlogic.gdx.math.collision.Sphere;
 public class Circle implements Serializable, Shape2D {
 	public float x, y;
 	public float radius;
-	private Vector2 center;
 
 	/** Constructs a new circle with all values set to zero */
 	public Circle () {

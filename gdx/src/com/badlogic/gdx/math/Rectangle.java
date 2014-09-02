@@ -31,7 +31,6 @@ public class Rectangle implements Serializable, Shape2D {
 	private static final long serialVersionUID = 5733252015138115702L;
 	public float x, y;
 	public float width, height;
-	private Vector2 center;
 
 	/** Constructs a new rectangle with all values set to zero */
 	public Rectangle () {

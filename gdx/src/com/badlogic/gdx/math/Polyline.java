@@ -31,7 +31,6 @@ public class Polyline implements Shape2D {
 	private boolean calculateScaledLength = true;
 	private boolean calculateLength = true;
 	private boolean dirty = true;
-	private Vector2 center;
 
 	public Polyline () {
 		this.localVertices = new float[0];

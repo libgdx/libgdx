@@ -29,7 +29,6 @@ public class Polygon implements Shape2D {
 	private float scaleX = 1, scaleY = 1;
 	private boolean dirty = true;
 	private Rectangle bounds;
-	private Vector2 center;
 
 	/** Constructs a new polygon with no vertices. */
 	public Polygon () {
