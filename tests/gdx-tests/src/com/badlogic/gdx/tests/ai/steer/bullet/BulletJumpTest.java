@@ -95,9 +95,8 @@ public class BulletJumpTest extends BulletSteeringTest {
 			@Override
 			public void update () {
 				super.update();
-				// Once arrived at an extremity of the path we want to go the other way around
+				// Should the character switch to Jump behavior?
 				if (character.getSteeringBehavior() == followPathSB) {
-					float tolerance = 0.5f;
 					float d1 = followPathSB.getPathParam().getDistance();
 					float d2 = linePath.getSegments().get(linePath.getSegments().size - 2).getCumulativeLength();
 					float distFromTakeoffPoint = Math.abs(d1 - d2);

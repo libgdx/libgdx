@@ -41,7 +41,8 @@ import com.badlogic.gdx.math.Vector;
  * <p>
  * This implementation uses the second approach. However, if you manually align owner's orientation to its linear velocity on each
  * time step, {@link Face} behavior should not be used (which is the default case). On the other hand, if the owner has
- * independent facing you should explicitly call {@link #setUseFace(boolean) setUseFace(true)} before using Wander behavior.
+ * independent facing you should explicitly call {@link #setFaceEnabled(boolean) setFaceEnabled(true)} before using Wander
+ * behavior.
  * <p>
  * This steering behavior can be used to produce a whole range of random motion, from very smooth undulating turns to wild
  * Strictly Ballroom type whirls and pirouettes depending on the size of the circle, its distance from the agent, and the amount
@@ -205,7 +206,7 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	}
 
 	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration;
-	 * additionally, if the flag {@code useFace} is true, it must take care of the maximum angular speed and acceleration.
+	 * additionally, if the flag {@code faceEnabled} is true, it must take care of the maximum angular speed and acceleration.
 	 * @return this behavior for chaining. */
 	@Override
 	public Wander<T> setLimiter (Limiter limiter) {
