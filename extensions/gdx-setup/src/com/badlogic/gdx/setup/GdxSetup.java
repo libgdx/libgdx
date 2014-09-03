@@ -108,23 +108,8 @@ public class GdxSetup {
 	private static int getLatestApi (File apis) {
 		int apiLevel = 0;
 		for (File api : apis.listFiles()) {
-			if (apiLevel != 0) {
-				try {
-					apiLevel = Integer.parseInt(api.getName().split("android-")[1]);
-				} catch (NumberFormatException nfe) {
-					continue;
-				} catch (ArrayIndexOutOfBoundsException ioobe) {
-					continue;
-				}
-			}
-			try {
-				int testLevel = Integer.parseInt(api.getName().split("android-")[1]);
-				if (testLevel > apiLevel) apiLevel = testLevel;
-			} catch (NumberFormatException nfe) {
-				continue;
-			} catch (ArrayIndexOutOfBoundsException ioobe) {
-				continue;
-			}
+			int level = readAPIVersion(api);
+			if (level > apiLevel) apiLevel = level;
 		}
 		return apiLevel;
 	}
@@ -135,13 +120,13 @@ public class GdxSetup {
 		int[] testSplit = new int[3];
 		for (File toolsVersion : buildTools.listFiles()) {
 			if (version == null) {
-				version = toolsVersion.getName();
+				version = readBuildToolsVersion(toolsVersion);
 				versionSplit = convertTools(version);
 				continue;
 			}
-			testSplit = convertTools(toolsVersion.getName());
+			testSplit = convertTools(readBuildToolsVersion(toolsVersion));
 			if (compareVersions(versionSplit, testSplit)) {
-				version = toolsVersion.getName();
+				version = readBuildToolsVersion(toolsVersion);
 			}
 		}
 		if (version != null) {
@@ -149,6 +134,71 @@ public class GdxSetup {
 		} else {
 			return "0.0.0";
 		}
+	}
+
+	private static int readAPIVersion (File parentFile) {
+		File properties = new File(parentFile, "source.properties");
+		FileReader reader;
+		BufferedReader buffer;
+		try {
+			reader = new FileReader(properties);
+			buffer = new BufferedReader(reader);
+
+			String line = null;
+
+			while ((line = buffer.readLine()) != null) {
+				if (line.contains("AndroidVersion.ApiLevel")) {
+
+					String versionString = line.split("\\=")[1];
+					int apiLevel = Integer.parseInt(versionString);
+
+					buffer.close();
+					reader.close();
+
+					return apiLevel;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}
+
+	private static String readBuildToolsVersion (File parentFile) {
+		File properties = new File(parentFile, "source.properties");
+		FileReader reader;
+		BufferedReader buffer;
+		try {
+			reader = new FileReader(properties);
+			buffer = new BufferedReader(reader);
+
+			String line = null;
+
+			while ((line = buffer.readLine()) != null) {
+				if (line.contains("Pkg.Revision")) {
+
+					String versionString = line.split("\\=")[1];
+					int count = versionString.split("\\.").length;
+					for (int i = 0; i < 3 - count; i++) {
+						versionString += ".0";
+					}
+
+					buffer.close();
+					reader.close();
+
+					return versionString;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "0.0.0";
 	}
 	
 	private static boolean compareVersions(int[] version, int[] testVersion) {
