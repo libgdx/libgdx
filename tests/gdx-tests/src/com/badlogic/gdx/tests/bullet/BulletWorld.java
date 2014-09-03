@@ -110,12 +110,13 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
 
 	@Override
 	public void render (ModelBatch batch, Environment lights, Iterable<BulletEntity> entities) {
+		if (renderMeshes) super.render(batch, lights, entities);
 		if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
+			batch.flush();
 			debugDrawer.begin(batch.getCamera());
 			collisionWorld.debugDrawWorld();
 			debugDrawer.end();
 		}
-		if (renderMeshes) super.render(batch, lights, entities);
 	}
 
 	@Override

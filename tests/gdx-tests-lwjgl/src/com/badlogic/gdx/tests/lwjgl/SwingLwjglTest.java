@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011 See AUTHORS file.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,14 +36,16 @@ import com.badlogic.gdx.tests.UITest;
  * @author mzechner */
 public class SwingLwjglTest extends JFrame {
 	LwjglAWTCanvas canvas1;
+	LwjglAWTCanvas canvas2;
+	LwjglAWTCanvas canvas3;
 
 	public SwingLwjglTest () {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		Container container = getContentPane();
 		canvas1 = new LwjglAWTCanvas(new MusicTest());
-		LwjglAWTCanvas canvas2 = new LwjglAWTCanvas(new UITest(), canvas1);
-		LwjglAWTCanvas canvas3 = new LwjglAWTCanvas(new WindowCreator(), canvas1);
+		canvas2 = new LwjglAWTCanvas(new UITest(), canvas1);
+		canvas3 = new LwjglAWTCanvas(new WindowCreator(), canvas1);
 
 		canvas1.getCanvas().setSize(200, 480);
 		canvas2.getCanvas().setSize(200, 480);
@@ -66,6 +68,12 @@ public class SwingLwjglTest extends JFrame {
 		public void create () {
 			batch = new SpriteBatch();
 			font = new BitmapFont();
+		}
+
+		@Override
+		public void dispose () {
+			font.dispose();
+			batch.dispose();
 		}
 
 		@Override
@@ -97,5 +105,14 @@ public class SwingLwjglTest extends JFrame {
 				new SwingLwjglTest();
 			}
 		});
+	}
+
+	@Override
+	public void dispose() {
+		canvas3.stop();
+		canvas2.stop();
+		canvas1.stop();
+
+		super.dispose();
 	}
 }

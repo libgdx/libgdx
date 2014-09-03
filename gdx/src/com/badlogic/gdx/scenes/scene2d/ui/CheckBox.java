@@ -61,7 +61,7 @@ public class CheckBox extends TextButton {
 
 	public void draw (Batch batch, float parentAlpha) {
 		Drawable checkbox = null;
-		if (isDisabled) {
+		if (isDisabled()) {
 			if (isChecked && style.checkboxOnDisabled != null)
 				checkbox = style.checkboxOnDisabled;
 			else
@@ -70,7 +70,7 @@ public class CheckBox extends TextButton {
 		if (checkbox == null) {
 			if (isChecked && style.checkboxOn != null)
 				checkbox = style.checkboxOn;
-			else if (isOver() && style.checkboxOver != null && !isDisabled)
+			else if (isOver() && style.checkboxOver != null && !isDisabled())
 				checkbox = style.checkboxOver;
 			else
 				checkbox = style.checkboxOff;
