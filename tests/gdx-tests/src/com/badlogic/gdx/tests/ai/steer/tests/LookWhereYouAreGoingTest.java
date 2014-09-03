@@ -19,7 +19,7 @@ package com.badlogic.gdx.tests.ai.steer.tests;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.ai.steer.behaviors.LookWhereYouAreGoing;
-import com.badlogic.gdx.ai.steer.limiters.NeutralConstantLimiter;
+import com.badlogic.gdx.ai.steer.limiters.NullLimiter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -69,7 +69,7 @@ public class LookWhereYouAreGoingTest extends SteeringTest {
 			.setDecelerationRadius(80);
 
 		BlendedSteering<Vector2> blendedSteering = new BlendedSteering<Vector2>(character) //
-			.setLimiter(NeutralConstantLimiter.LIMITER) //
+			.setLimiter(NullLimiter.NEUTRAL_LIMITER) //
 			.add(arriveSB, 1f) //
 			.add(lookWhereYouAreGoingSB, 1f);
 		character.setSteeringBehavior(blendedSteering);

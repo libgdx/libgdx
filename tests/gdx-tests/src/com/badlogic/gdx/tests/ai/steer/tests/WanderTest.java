@@ -60,9 +60,10 @@ public class WanderTest extends SteeringTest {
 		character.setMaxAngularSpeed(5);
 
 		this.wanderSB = new Wander<Vector2>(character) //
-			.setAlignTolerance(0.001f) //
-			.setDecelerationRadius(5) //
-			.setTimeToTarget(0.1f) //
+			.setFaceEnabled(true) // We want to use Face internally (independent facing is on)
+			.setAlignTolerance(0.001f) // Used by Face
+			.setDecelerationRadius(5) // Used by Face
+			.setTimeToTarget(0.1f) // Used by Face
 			.setWanderOffset(90) //
 			.setWanderOrientation(10) //
 			.setWanderRadius(40) //

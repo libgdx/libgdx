@@ -35,6 +35,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.ai.steer.SteeringActor;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
+import com.badlogic.gdx.utils.Array;
 
 /** A class to test and experiment with the {@link FollowPath} behavior.
  * 
@@ -45,7 +46,7 @@ public class FollowPathTest extends SteeringTest {
 
 	SteeringActor character;
 
-	Vector2[] wayPoints;
+	Array<Vector2> wayPoints;
 	LinePath<Vector2> linePath;
 	FollowPath<Vector2, LinePathParam> followPathSB;
 
@@ -95,7 +96,7 @@ public class FollowPathTest extends SteeringTest {
 
 		table.addActor(character);
 
-		character.setCenterPosition(wayPoints[0].x, wayPoints[0].y);
+		character.setCenterPosition(wayPoints.first().x, wayPoints.first().y);
 
 		Table detailTable = new Table(container.skin);
 
@@ -199,10 +200,10 @@ public class FollowPathTest extends SteeringTest {
 		// Draw path
 		shapeRenderer.begin(ShapeType.Line);
 		shapeRenderer.setColor(0, 1, 0, 1);
-		for (int i = 0; i < wayPoints.length; i++) {
-			int next = (i + 1) % wayPoints.length;
-			if (next != 0 || !linePath.isOpen()) shapeRenderer.line(wayPoints[i], wayPoints[next]);
-			shapeRenderer.circle(wayPoints[i].x, wayPoints[i].y, 2f);
+		for (int i = 0; i < wayPoints.size; i++) {
+			int next = (i + 1) % wayPoints.size;
+			if (next != 0 || !linePath.isOpen()) shapeRenderer.line(wayPoints.get(i), wayPoints.get(next));
+			shapeRenderer.circle(wayPoints.get(i).x, wayPoints.get(i).y, 2f);
 		}
 		shapeRenderer.end();
 
@@ -221,8 +222,8 @@ public class FollowPathTest extends SteeringTest {
 	}
 
 	/** Creates a random path which is bound by rectangle described by the min/max values */
-	private Vector2[] createRandomPath (int numWaypoints, float minX, float minY, float maxX, float maxY) {
-		Vector2[] wayPoints = new Vector2[numWaypoints];
+	private Array<Vector2> createRandomPath (int numWaypoints, float minX, float minY, float maxX, float maxY) {
+		Array<Vector2> wayPoints = new Array<Vector2>(numWaypoints);
 
 		float midX = (maxX + minX) / 2f;
 		float midY = (maxY + minY) / 2f;
@@ -241,7 +242,7 @@ public class FollowPathTest extends SteeringTest {
 			temp.x += midX;
 			temp.y += midY;
 
-			wayPoints[i] = temp;
+			wayPoints.add(temp);
 		}
 
 		return wayPoints;

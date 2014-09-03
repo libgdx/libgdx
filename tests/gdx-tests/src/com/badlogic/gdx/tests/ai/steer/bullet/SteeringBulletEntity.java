@@ -94,9 +94,10 @@ public class SteeringBulletEntity extends BulletEntity implements Steerable<Vect
 
 				// Cap the linear speed
 				Vector3 velocity = body.getLinearVelocity();
-				float currentSpeed = velocity.len();
-				if (currentSpeed > getMaxLinearSpeed()) {
-					body.setLinearVelocity(velocity.scl(getMaxLinearSpeed() / currentSpeed));
+				float currentSpeedSquare = velocity.len2();
+				float maxLinearSpeed = getMaxLinearSpeed();
+				if (currentSpeedSquare > maxLinearSpeed * maxLinearSpeed) {
+					body.setLinearVelocity(velocity.scl(maxLinearSpeed / (float)Math.sqrt(currentSpeedSquare)));
 				}
 
 				// Cap the angular speed

@@ -49,6 +49,9 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 	/** The current position on the path */
 	protected P pathParam;
 
+	/** The flag indicating whether to use {@link Arrive} behavior to approach the end of an open path. It defaults to {@code true}. */
+	protected boolean arriveEnabled;
+
 	/** The time in the future to predict the owner's position. Set it to 0 for non-predictive path following. */
 	protected float predictionTime;
 
@@ -85,6 +88,8 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		this.pathOffset = pathOffset;
 		this.predictionTime = predictionTime;
 
+		this.arriveEnabled = true;
+
 		this.internalTargetPosition = owner.newVector();
 	}
 
@@ -108,7 +113,7 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		// Calculate the target position
 		path.calculateTargetPosition(internalTargetPosition, pathParam, targetDistance);
 
-		if (path.isOpen()) {
+		if (arriveEnabled && path.isOpen()) {
 			if (pathOffset >= 0) {
 				// Use Arrive to approach the last point of the path
 				if (targetDistance > path.getLength() - decelerationRadius) return arrive(steering, internalTargetPosition);
@@ -147,12 +152,9 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		return pathOffset;
 	}
 
-	/** Sets the path offset to generate the target. Can be negative if the owner has to move along the reverse direction.
-	 * @param pathOffset the pathOffset to set
-	 * @return this behavior for chaining. */
-	public FollowPath<T, P> setPathOffset (float pathOffset) {
-		this.pathOffset = pathOffset;
-		return this;
+	/** Returns the flag indicating whether to use {@link Arrive} behavior to approach the end of an open path. */
+	public boolean isArriveEnabled () {
+		return arriveEnabled;
 	}
 
 	/** Returns the prediction time. */
@@ -166,6 +168,28 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 	public FollowPath<T, P> setPredictionTime (float predictionTime) {
 		this.predictionTime = predictionTime;
 		return this;
+	}
+
+	/** Sets the flag indicating whether to use {@link Arrive} behavior to approach the end of an open path. It defaults to
+	 * {@code true}.
+	 * @param arriveEnabled the flag value to set
+	 * @return this behavior for chaining. */
+	public FollowPath<T, P> setArriveEnabled (boolean arriveEnabled) {
+		this.arriveEnabled = arriveEnabled;
+		return this;
+	}
+
+	/** Sets the path offset to generate the target. Can be negative if the owner has to move along the reverse direction.
+	 * @param pathOffset the pathOffset to set
+	 * @return this behavior for chaining. */
+	public FollowPath<T, P> setPathOffset (float pathOffset) {
+		this.pathOffset = pathOffset;
+		return this;
+	}
+
+	/** Returns the current path parameter. */
+	public P getPathParam () {
+		return pathParam;
 	}
 
 	/** Returns the current position of the internal target. This method is useful for debug purpose. */
@@ -221,6 +245,10 @@ public class FollowPath<T extends Vector<T>, P extends Param> extends Arrive<T> 
 		this.timeToTarget = timeToTarget;
 		return this;
 	}
+
+	//
+	// Nested interfaces
+	//
 
 	/** The path for an agent having path following behavior. A path can be shared by multiple path following behaviors because its
 	 * status is maintained in a {@link Path.Param} local to each behavior.

@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.behaviors.Interpose;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -82,9 +83,8 @@ public class InterposeTest extends SteeringTest {
 		character.setSteeringBehavior(interposeSB);
 
 		Wander<Vector2> wanderSB1 = new Wander<Vector2>(c1) //
-			.setAlignTolerance(0.001f) //
-			.setDecelerationRadius(5) //
-			.setTimeToTarget(0.1f) //
+			.setFaceEnabled(false) // because independent facing is off
+			// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
 			.setWanderOffset(110) //
 			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
 			.setWanderRadius(64) //
@@ -92,9 +92,8 @@ public class InterposeTest extends SteeringTest {
 		c1.setSteeringBehavior(wanderSB1);
 
 		Wander<Vector2> wanderSB2 = new Wander<Vector2>(c1) //
-			.setAlignTolerance(0.001f) //
-			.setDecelerationRadius(5) //
-			.setTimeToTarget(0.1f) //
+			.setFaceEnabled(false) // because independent facing is off
+			// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
 			.setWanderOffset(70) //
 			.setWanderOrientation(MathUtils.random(MathUtils.PI2)) //
 			.setWanderRadius(94).setWanderRate(MathUtils.PI / 4);

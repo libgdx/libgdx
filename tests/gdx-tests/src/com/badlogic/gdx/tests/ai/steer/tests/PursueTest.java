@@ -18,6 +18,7 @@ package com.badlogic.gdx.tests.ai.steer.tests;
 
 import com.badlogic.gdx.ai.steer.behaviors.Pursue;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -58,9 +59,9 @@ public class PursueTest extends SteeringTest {
 		character.setSteeringBehavior(pursueSB);
 
 		Wander<Vector2> wanderSB = new Wander<Vector2>(prey) //
-			.setAlignTolerance(0.001f) //
-			.setDecelerationRadius(5) //
-			.setTimeToTarget(0.1f) //
+			// Don't use Face internally because independent facing is off
+			.setFaceEnabled(false) //
+			// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
 			.setWanderOffset(110) //
 			.setWanderOrientation(10) //
 			.setWanderRadius(64) //

@@ -36,6 +36,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.bullet.BulletEntity;
+import com.badlogic.gdx.utils.Array;
 
 /** A class to test and experiment with the {@link FollowPath} behavior.
  * @author Daniel Holderbaum */
@@ -45,7 +46,7 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 
 	SteeringBulletEntity character;
 
-	Vector3[] wayPoints;
+	Array<Vector3> wayPoints;
 	LinePath<Vector3> linePath;
 	FollowPath<Vector3, LinePathParam> followPathSB;
 
@@ -100,7 +101,7 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 
 		character.setSteeringBehavior(followPathSB);
 
-		character.transform.setToTranslation(wayPoints[0]);
+		character.transform.setToTranslation(wayPoints.first());
 		character.body.setWorldTransform(character.transform);
 
 		Table detailTable = new Table(container.skin);
@@ -211,9 +212,9 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(0, 1, 0, 1);
 			shapeRenderer.setProjectionMatrix(camera.combined);
-			for (int i = 0; i < wayPoints.length; i++) {
-				int next = (i + 1) % wayPoints.length;
-				if (next != 0 || !linePath.isOpen()) shapeRenderer.line(wayPoints[i], wayPoints[next]);
+			for (int i = 0; i < wayPoints.size; i++) {
+				int next = (i + 1) % wayPoints.size;
+				if (next != 0 || !linePath.isOpen()) shapeRenderer.line(wayPoints.get(i), wayPoints.get(next));
 			}
 			shapeRenderer.end();
 		}
@@ -229,8 +230,8 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 	private static final Vector2 tmpVector2 = new Vector2();
 
 	/** Creates a random path which is bound by rectangle described by the min/max values */
-	private static Vector3[] createRandomPath (int numWaypoints, float minX, float minY, float maxX, float maxY, float height) {
-		Vector3[] wayPoints = new Vector3[numWaypoints];
+	private static Array<Vector3> createRandomPath (int numWaypoints, float minX, float minY, float maxX, float maxY, float height) {
+		Array<Vector3> wayPoints = new Array<Vector3>();
 
 		float midX = (maxX + minX) / 2f;
 		float midY = (maxY + minY) / 2f;
@@ -249,7 +250,7 @@ public class BulletFollowPathTest extends BulletSteeringTest {
 			// now transform the object's vertices
 			tmpVector2.mul(tmpMatrix3);
 
-			wayPoints[i] = new Vector3(tmpVector2.x, height, tmpVector2.y);
+			wayPoints.add(new Vector3(tmpVector2.x, height, tmpVector2.y));
 		}
 
 		return wayPoints;

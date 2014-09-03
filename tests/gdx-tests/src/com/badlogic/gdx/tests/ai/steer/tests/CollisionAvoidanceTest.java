@@ -20,7 +20,7 @@ import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.limiters.FullLimiter;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -74,18 +74,11 @@ public class CollisionAvoidanceTest extends SteeringTest {
 			CollisionAvoidance<Vector2> collisionAvoidanceSB = new CollisionAvoidance<Vector2>(character, proximity);
 
 			Wander<Vector2> wanderSB = new Wander<Vector2>(character) //
-				// Notice that:
-				// 1. setting maxLinearSpeed to -1 has no effect; we actually take it from the character, see the overridden getter
-				// 2. maxAngularAcceleration is set to 0 because independent facing is disabled
-				.setLimiter(new FullLimiter(30, -1, 0, 5) {
-					@Override
-					public float getMaxLinearSpeed () {
-						return character.getMaxLinearSpeed();
-					}
-				}) //
-				.setAlignTolerance(0.001f) //
-				.setDecelerationRadius(5) //
-				.setTimeToTarget(0.1f) //
+				// Don't use Face internally because independent facing is off
+				.setFaceEnabled(false) //
+				// We don't need a limiter supporting angular components because Face is not used
+				// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
+				.setLimiter(new LinearAccelerationLimiter(30)) //
 				.setWanderOffset(60) //
 				.setWanderOrientation(10) //
 				.setWanderRadius(40) //
@@ -147,8 +140,7 @@ public class CollisionAvoidanceTest extends SteeringTest {
 		addSeparator(detailTable);
 
 		detailTable.row();
-		final Label labelMaxLinSpeed = new Label("Max.Linear Speed.[" + characters.get(0).getMaxLinearSpeed() + "]",
-			container.skin);
+		final Label labelMaxLinSpeed = new Label("Max.Linear Speed.[" + characters.get(0).getMaxLinearSpeed() + "]", container.skin);
 		detailTable.add(labelMaxLinSpeed);
 		detailTable.row();
 		Slider maxLinSpeed = new Slider(0, 300, 10, false, container.skin);

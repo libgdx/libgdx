@@ -20,7 +20,7 @@ import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
 import com.badlogic.gdx.ai.steer.SteeringBehavior;
-import com.badlogic.gdx.ai.steer.limiters.NeutralConstantLimiter;
+import com.badlogic.gdx.ai.steer.limiters.NullLimiter;
 import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.Array;
 
@@ -131,7 +131,7 @@ public class BlendedSteering<T extends Vector<T>> extends SteeringBehavior<T> {
 	}
 
 	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear and angular
-	 * accelerations. You can use {@link NeutralConstantLimiter#LIMITER} to permanently avoid all truncations.
+	 * accelerations. You can use {@link NullLimiter#NEUTRAL_LIMITER} to avoid all truncations.
 	 * @return this behavior for chaining. */
 	@Override
 	public BlendedSteering<T> setLimiter (Limiter limiter) {

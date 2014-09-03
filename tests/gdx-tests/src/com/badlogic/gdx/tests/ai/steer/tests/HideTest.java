@@ -16,14 +16,12 @@
 
 package com.badlogic.gdx.tests.ai.steer.tests;
 
-import com.badlogic.gdx.ai.steer.Limiter;
+import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
 import com.badlogic.gdx.ai.steer.behaviors.CollisionAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Hide;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.behaviors.BlendedSteering;
-import com.badlogic.gdx.ai.steer.limiters.FullLimiter;
 import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
-import com.badlogic.gdx.ai.steer.limiters.NeutralConstantLimiter;
+import com.badlogic.gdx.ai.steer.limiters.NullLimiter;
 import com.badlogic.gdx.ai.steer.proximities.InfiniteProximity;
 import com.badlogic.gdx.ai.steer.proximities.RadiusProximity;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -109,18 +107,11 @@ public class HideTest extends SteeringTest {
 			.setDecelerationRadius(80);
 
 		this.wanderSB = new Wander<Vector2>(character) //
-			// Notice that:
-			// 1. setting maxLinearSpeed to -1 has no effect; we actually take it from the character, see the overridden getter
-			// 2. maxAngularAcceleration is set to 0 because independent facing is disabled
-			.setLimiter(new FullLimiter(30, -1, 0, 5) {
-				@Override
-				public float getMaxLinearSpeed () {
-					return character.getMaxLinearSpeed();
-				}
-			}) //
-			.setAlignTolerance(0.001f) //
-			.setDecelerationRadius(5) //
-			.setTimeToTarget(0.1f) //
+			// Don't use Face internally because independent facing is off
+			.setFaceEnabled(false) //
+			// We don't need a limiter supporting angular components because Face is not used
+			// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
+			.setLimiter(new LinearAccelerationLimiter(30)) //
 			.setWanderOffset(60) //
 			.setWanderOrientation(10) //
 			.setWanderRadius(40) //
@@ -128,7 +119,7 @@ public class HideTest extends SteeringTest {
 
 		// Sum up behaviors without truncating the result
 		BlendedSteering<Vector2> blendedSteeringSB = new BlendedSteering<Vector2>(character) //
-			.setLimiter(NeutralConstantLimiter.LIMITER) //
+			.setLimiter(NullLimiter.NEUTRAL_LIMITER) //
 			.add(collisionAvoidanceSB, 1) //
 			.add(hideSB, 1) //
 			.add(wanderSB, 1);

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2011 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.badlogic.gdx.ai.steer.paths;
 
@@ -26,22 +41,24 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 	private T tmp3;
 
 	/** Creates a closed {@code LinePath} for the specified {@code waypoints}.
-	 * @param waypoints the points making up the path */
-	public LinePath (T[] waypoints) {
+	 * @param waypoints the points making up the path
+	 * @throws IllegalArgumentException if {@code waypoints} is {@code null} or empty. */
+	public LinePath (Array<T> waypoints) {
 		this(waypoints, false);
 	}
 
 	/** Creates a {@code LinePath} for the specified {@code waypoints}.
-	 * @param waypoints the points making up the path */
-	public LinePath (T[] waypoints, boolean isOpen) {
-		if (waypoints == null || waypoints.length == 0) throw new IllegalArgumentException();
+	 * @param waypoints the points making up the path
+	 * @param isOpen a flag indicating whether the path is open or not
+	 * @throws IllegalArgumentException if {@code waypoints} is {@code null} or empty. */
+	public LinePath (Array<T> waypoints, boolean isOpen) {
 		this.isOpen = isOpen;
 		createPath(waypoints);
-		nearestPointOnCurrentSegment = waypoints[0].cpy();
-		nearestPointOnPath = waypoints[0].cpy();
-		tmp1 = waypoints[0].cpy();
-		tmp2 = waypoints[0].cpy();
-		tmp3 = waypoints[0].cpy();
+		nearestPointOnCurrentSegment = waypoints.first().cpy();
+		nearestPointOnPath = waypoints.first().cpy();
+		tmp1 = waypoints.first().cpy();
+		tmp2 = waypoints.first().cpy();
+		tmp3 = waypoints.first().cpy();
 	}
 
 	@Override
@@ -162,19 +179,24 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 		out.set(desiredSegment.begin).sub(desiredSegment.end).scl(distance / desiredSegment.length).add(desiredSegment.end);
 	}
 
-	private void createPath (T[] waypoints) {
-		segments = new Array<Segment<T>>(waypoints.length);
+	/** Sets up this {@link Path} using the given way points.
+	 * @param waypoints The way points of this path. 
+	 * @throws IllegalArgumentException if {@code waypoints} is {@code null} or empty. */
+	public void createPath (Array<T> waypoints) {
+		if (waypoints == null || waypoints.size == 0) throw new IllegalArgumentException("waypoints cannot be null or empty");
+
+		segments = new Array<Segment<T>>(waypoints.size);
 		pathLength = 0;
-		T curr = waypoints[0];
+		T curr = waypoints.first();
 		T prev = null;
-		for (int i = 1; i <= waypoints.length; i++) {
+		for (int i = 1; i <= waypoints.size; i++) {
 			prev = curr;
-			if (i < waypoints.length)
-				curr = waypoints[i];
+			if (i < waypoints.size)
+				curr = waypoints.get(i);
 			else if (isOpen)
 				break; // keep the path open
 			else
-				curr = waypoints[0]; // close the path
+				curr = waypoints.first(); // close the path
 			Segment<T> segment = new Segment<T>(prev, curr);
 			pathLength += segment.length;
 			segment.cumulativeLength = pathLength;
@@ -220,6 +242,14 @@ public class LinePath<T extends Vector<T>> implements Path<T, LinePathParam> {
 
 		public T getEnd () {
 			return end;
+		}
+
+		public float getLength () {
+			return length;
+		}
+
+		public float getCumulativeLength () {
+			return cumulativeLength;
 		}
 	}
 }

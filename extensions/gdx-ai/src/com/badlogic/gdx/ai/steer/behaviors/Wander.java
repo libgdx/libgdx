@@ -16,10 +16,10 @@
 
 package com.badlogic.gdx.ai.steer.behaviors;
 
-import com.badlogic.gdx.ai.AIUtils;
 import com.badlogic.gdx.ai.steer.Limiter;
 import com.badlogic.gdx.ai.steer.Steerable;
 import com.badlogic.gdx.ai.steer.SteeringAcceleration;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector;
 
 /** {@code Wander} behavior is designed to produce a steering acceleration that will give the impression of a random walk through
@@ -40,8 +40,8 @@ import com.badlogic.gdx.math.Vector;
  * change smoothly.
  * <p>
  * This implementation uses the second approach. However, if you manually align owner's orientation to its linear velocity on each
- * time step, {@link Face} behavior is redundant. To prevent it from being executed just set {@code maxAngularAcceleration} to
- * zero.
+ * time step, {@link Face} behavior should not be used (which is the default case). On the other hand, if the owner has
+ * independent facing you should explicitly call {@link #setUseFace(boolean) setUseFace(true)} before using Wander behavior.
  * <p>
  * This steering behavior can be used to produce a whole range of random motion, from very smooth undulating turns to wild
  * Strictly Ballroom type whirls and pirouettes depending on the size of the circle, its distance from the agent, and the amount
@@ -64,6 +64,10 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	/** The current orientation of the wander target */
 	protected float wanderOrientation;
 
+	/** The flag indicating whether to use {@link Face} behavior or not. This should be set to {@code true} when independent facing
+	 * is used. */
+	protected boolean faceEnabled;
+
 	private T internalTargetPosition;
 	private T wanderCenter;
 
@@ -79,7 +83,8 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	@Override
 	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		// Update the wander orientation
-		wanderOrientation += AIUtils.randomBinomial(wanderRate);
+		// TODO it should be frame rate independent by interpreting wanderRate as a max distance per second.
+		wanderOrientation += MathUtils.randomTriangular(wanderRate);
 
 		// Calculate the combined target orientation
 		float targetOrientation = wanderOrientation + owner.getOrientation();
@@ -91,21 +96,18 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		// Notice that we're using steering.linear as temporary vector
 		internalTargetPosition.set(wanderCenter).mulAdd(owner.angleToVector(steering.linear, targetOrientation), wanderRadius);
 
-		Limiter actualLimiter = getActualLimiter();
+		float maxLinearAcceleration = getActualLimiter().getMaxLinearAcceleration();
 
-		// TODO
-		// The check below doesn't make sense. We should likely promote isIndependentFacing() to the steerable level
-		// and check it.
-		if (actualLimiter.getMaxAngularAcceleration() > 0f) {
+		if (faceEnabled) {
 			// Delegate to face
 			face(steering, internalTargetPosition);
 
 			// Set the linear acceleration to be at full
 			// acceleration in the direction of the orientation
-			owner.angleToVector(steering.linear, owner.getOrientation()).scl(actualLimiter.getMaxLinearAcceleration());
+			owner.angleToVector(steering.linear, owner.getOrientation()).scl(maxLinearAcceleration);
 		} else {
 			// Seek the internal target position
-			steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(actualLimiter.getMaxLinearAcceleration());
+			steering.linear.set(internalTargetPosition).sub(owner.getPosition()).nor().scl(maxLinearAcceleration);
 
 			// No angular acceleration
 			steering.angular = 0;
@@ -163,6 +165,19 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return this;
 	}
 
+	/** Returns the flag indicating whether to use {@link Face} behavior or not. */
+	public boolean isFaceEnabled () {
+		return faceEnabled;
+	}
+
+	/** Sets the flag indicating whether to use {@link Face} behavior or not. This should be set to {@code true} when independent
+	 * facing is used.
+	 * @return this behavior for chaining. */
+	public Wander<T> setFaceEnabled (boolean faceEnabled) {
+		this.faceEnabled = faceEnabled;
+		return this;
+	}
+
 	/** Returns the current position of the wander target. This method is useful for debug purpose. */
 	public T getInternalTargetPosition () {
 		return internalTargetPosition;
@@ -190,7 +205,7 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 	}
 
 	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration;
-	 * additionally, if independent facing is used, it must take care of the maximum angular speed and acceleration.
+	 * additionally, if the flag {@code useFace} is true, it must take care of the maximum angular speed and acceleration.
 	 * @return this behavior for chaining. */
 	@Override
 	public Wander<T> setLimiter (Limiter limiter) {
@@ -198,6 +213,9 @@ public class Wander<T extends Vector<T>> extends Face<T> {
 		return this;
 	}
 
+	/** Sets the target to align to. Notice that this method is inherited from {@link ReachOrientation}, but is completely useless
+	 * for {@code Wander} because owner's orientation is determined by the internal target, which is moving on the wander circle.
+	 * @return this behavior for chaining. */
 	@Override
 	public Wander<T> setTarget (Steerable<T> target) {
 		this.target = target;

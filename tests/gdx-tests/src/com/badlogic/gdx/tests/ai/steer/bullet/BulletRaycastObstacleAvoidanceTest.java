@@ -22,7 +22,7 @@ import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.Ray;
 import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance.RaycastCollisionDetector;
 import com.badlogic.gdx.ai.steer.behaviors.Wander;
-import com.badlogic.gdx.ai.steer.limiters.FullLimiter;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
 import com.badlogic.gdx.ai.steer.rays.CentralRayWithWhiskersConfiguration;
 import com.badlogic.gdx.ai.steer.rays.ParallelSideRayConfiguration;
 import com.badlogic.gdx.ai.steer.rays.RayConfigurationBase;
@@ -45,7 +45,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.SteeringBehaviorTest;
 import com.badlogic.gdx.tests.bullet.BulletEntity;
 
-/** @author Daniel Holderbaum */
+/** A class to test and experiment with the {@link RaycastObstacleAvoidance} behavior. 
+ * @author Daniel Holderbaum */
 public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 
 	SteeringBulletEntity character;
@@ -108,18 +109,11 @@ public class BulletRaycastObstacleAvoidanceTest extends BulletSteeringTest {
 			raycastCollisionDetector, 2);
 
 		Wander<Vector3> wanderSB = new Wander<Vector3>(character) //
-			// Notice that:
-			// 1. setting maxLinearSpeed to -1 has no effect; we actually take it from the character, see the overridden getter
-			// 2. maxAngularAcceleration is set to 0 because independent facing is disabled
-			.setLimiter(new FullLimiter(1500, -1, 0, 5) {
-				@Override
-				public float getMaxLinearSpeed () {
-					return character.getMaxLinearSpeed();
-				}
-			}) //
-			.setAlignTolerance(0.001f) //
-			.setDecelerationRadius(5) //
-			.setTimeToTarget(0.1f) //
+			// Don't use Face internally because independent facing is off
+			.setFaceEnabled(false) //
+			// We don't need a limiter supporting angular components because Face is disabled
+			// No need to call setAlignTolerance, setDecelerationRadius and setTimeToTarget for the same reason
+			.setLimiter(new LinearAccelerationLimiter(1500)) //
 			.setWanderOffset(2) //
 			.setWanderOrientation(0) //
 			.setWanderRadius(1) //

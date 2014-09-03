@@ -16,8 +16,6 @@
 
 package com.badlogic.gdx.tests;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ai.AIUtils;
@@ -35,6 +33,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.tests.ai.steer.SteeringTest;
 import com.badlogic.gdx.tests.ai.steer.bullet.BulletFollowPathTest;
+import com.badlogic.gdx.tests.ai.steer.bullet.BulletJumpTest;
 import com.badlogic.gdx.tests.ai.steer.bullet.BulletRaycastObstacleAvoidanceTest;
 import com.badlogic.gdx.tests.ai.steer.bullet.BulletSeekTest;
 import com.badlogic.gdx.tests.ai.steer.tests.ArriveTest;
@@ -56,18 +55,19 @@ import com.badlogic.gdx.utils.StringBuilder;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class SteeringBehaviorTest extends GdxTest {
-	
+
 	private static final boolean DEBUG_STAGE = false;
-	
+
 	public CollapsableWindow behaviorsWindow;
 	Label fpsLabel;
 	StringBuilder fpsStringBuilder;
-	
+
 	// sorted!
 	SteeringTest[] behaviors = {
 		new ArriveTest(this),
 		new BulletFollowPathTest(this, false),
 		new BulletFollowPathTest(this, true),
+		new BulletJumpTest(this),
 		new BulletRaycastObstacleAvoidanceTest(this),
 		new BulletSeekTest(this),
 		new CollisionAvoidanceTest(this),
@@ -84,7 +84,7 @@ public class SteeringBehaviorTest extends GdxTest {
 		new SeekTest(this),
 		new WanderTest(this)
 	};
-	
+
 	Table behaviorTable;
 	SteeringTest currentBehavior;
 
@@ -130,13 +130,13 @@ public class SteeringBehaviorTest extends GdxTest {
 		stack.setSize(stageWidth, stageHeight);
 		behaviorTable = new Table();
 		stack.add(behaviorTable);
-		
+
 		// Create behavior names
 		behaviorNames = new String[behaviors.length];
 		for (int i = 0; i < behaviors.length; i++) {
 			behaviorNames[i] = behaviors[i].name;
 		}
-		
+
 		final List<String> behaviorsList = new List(skin);
 		behaviorsList.setItems(behaviorNames);
 		behaviorsList.addListener(new ClickListener() {
@@ -149,13 +149,13 @@ public class SteeringBehaviorTest extends GdxTest {
 			}
 		});
 		behaviorsWindow = addListWindow("Behaviors", behaviorsList, 0, -1);
-		
+
 		changeBehavior(0);
-		
+
 		fpsLabel = new Label("FPS: 999", skin);
 		stage.addActor(fpsLabel);
 	}
-	
+
 	@Override
 	public void render () {
 		if (AIUtils.getFrameId() == previousFrameId) {
@@ -163,20 +163,18 @@ public class SteeringBehaviorTest extends GdxTest {
 			float elapsed = (now - lastConflictTime) / 1000000000f;
 			Gdx.app.log("SteeringBehaviorTest", "FrameId conflict after " + elapsed + " seconds.");
 			lastConflictTime = now;
-		}
-		else {
+		} else {
 			previousFrameId = AIUtils.getFrameId();
 		}
-		
+
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		fpsStringBuilder.setLength(0);
 		getStatus(fpsStringBuilder);
 		fpsLabel.setText(fpsStringBuilder);
 
-		if (currentBehavior != null)
-			currentBehavior.render();
-		
+		if (currentBehavior != null) currentBehavior.render();
+
 		stage.act();
 		stage.draw();
 	}
@@ -191,9 +189,8 @@ public class SteeringBehaviorTest extends GdxTest {
 
 	@Override
 	public void dispose () {
-		if (currentBehavior != null)
-			currentBehavior.dispose();
-		
+		if (currentBehavior != null) currentBehavior.dispose();
+
 		stage.dispose();
 		skin.dispose();
 
@@ -228,13 +225,12 @@ public class SteeringBehaviorTest extends GdxTest {
 		pane.setScrollY(0);
 		return window;
 	}
-	
+
 	void changeBehavior (int selectedIndex) {
 		// Remove the old behavior and its window
 		behaviorTable.clear();
 		if (currentBehavior != null) {
-			if (currentBehavior.getDetailWindow() != null)
-				currentBehavior.getDetailWindow().remove();
+			if (currentBehavior.getDetailWindow() != null) currentBehavior.getDetailWindow().remove();
 			currentBehavior.dispose();
 		}
 
@@ -244,8 +240,7 @@ public class SteeringBehaviorTest extends GdxTest {
 		InputMultiplexer im = (InputMultiplexer)Gdx.input.getInputProcessor();
 		if (im.size() > 1) im.removeProcessor(1);
 		if (currentBehavior.getInputProcessor() != null) im.addProcessor(currentBehavior.getInputProcessor());
-		if (currentBehavior.getDetailWindow() != null)
-			stage.addActor(currentBehavior.getDetailWindow());
+		if (currentBehavior.getDetailWindow() != null) stage.addActor(currentBehavior.getDetailWindow());
 	}
 
 }

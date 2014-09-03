@@ -73,24 +73,26 @@ public class MatchVelocity<T extends Vector<T>> extends SteeringBehavior<T> {
 		return steering;
 	}
 
-	/** @return the target */
+	/** Returns the target whose velocity should be matched. */
 	public Steerable<T> getTarget () {
 		return target;
 	}
 
-	/** @param target the target to set
+	/** Sets the target whose velocity should be matched.
+	 * @param target the target to set
 	 * @return this behavior for chaining. */
 	public MatchVelocity<T> setTarget (Steerable<T> target) {
 		this.target = target;
 		return this;
 	}
 
-	/** @return the timeToTarget */
+	/** Returns the time over which to achieve target speed. */
 	public float getTimeToTarget () {
 		return timeToTarget;
 	}
 
-	/** @param timeToTarget the timeToTarget to set
+	/** Sets the time over which to achieve target speed.
+	 * @param timeToTarget the time to set
 	 * @return this behavior for chaining. */
 	public MatchVelocity<T> setTimeToTarget (float timeToTarget) {
 		this.timeToTarget = timeToTarget;

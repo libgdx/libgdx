@@ -83,6 +83,9 @@ public class LookWhereYouAreGoing<T extends Vector<T>> extends ReachOrientation<
 		return this;
 	}
 
+	/** Sets the target to align to. Notice that this method is inherited from {@link ReachOrientation}, but is completely useless
+	 * for {@code LookWhereYouAreGoing} because the target orientation is determined by the velocity of the owner itself.
+	 * @return this behavior for chaining. */
 	@Override
 	public LookWhereYouAreGoing<T> setTarget (Steerable<T> target) {
 		this.target = target;

@@ -85,8 +85,8 @@ public abstract class BulletSteeringTest extends SteeringTest {
 	public ModelBuilder modelBuilder = new ModelBuilder();
 	public ModelBatch modelBatch;
 	public Array<Disposable> disposables = new Array<Disposable>();
-// private int debugMode = DebugDrawModes.DBG_NoDebug;
-	private int debugMode = DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE;
+ private int debugMode = DebugDrawModes.DBG_NoDebug;
+//	private int debugMode = DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE;
 
 	protected final static Vector3 tmpV1 = new Vector3(), tmpV2 = new Vector3();
 
