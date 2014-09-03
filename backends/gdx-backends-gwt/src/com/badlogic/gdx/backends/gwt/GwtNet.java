@@ -39,7 +39,6 @@ import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.xhr.client.ReadyStateChangeHandler;
 import com.google.gwt.xhr.client.XMLHttpRequest;
-import com.toet.TinyVoxel.Debug.ErrorHandler;
 
 public class GwtNet implements Net {
 
@@ -185,7 +184,6 @@ public class GwtNet implements Net {
                         listeners.remove(httpRequest);
                     } else {
                         Map<String, String> headers = new HashMap<String, String>();
-                        ErrorHandler.log(xhr.getAllResponseHeaders());
                         Int8Array data = TypedArrays.createInt8Array(xhr.getResponseArrayBuffer());
                         httpResultListener.handleHttpResponse(new HttpClientResponse(xhr.getStatus(), data, xhr));
                         requests.remove(httpRequest);
