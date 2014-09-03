@@ -60,7 +60,7 @@ public class GwtNet implements Net {
 		public byte[] getResult () {
             byte[] array = new byte[response.length()];
             for (int i = 0; i < array.length; i++) {
-                array[i] = (byte)(response.get(i) & 0x000000ff);
+                array[i] = response.get(i);
             }
 			return array;
 		}
