@@ -38,12 +38,12 @@ public class IOSSound implements Sound {
 
 	@Override
 	public long play () {
-		return play(1, 1, 1, false);
+		return play(1, 1, 0, false);
 	}
 
 	@Override
 	public long play (float volume) {
-		return play(volume, 1, 1, false);
+		return play(volume, 1, 0, false);
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class IOSSound implements Sound {
 
 	@Override
 	public long loop () {
-		return play(1, 1, 1, true);
+		return play(1, 1, 0, true);
 	}
 
 	@Override
 	public long loop (float volume) {
-		return play(volume, 1, 1, true);
+		return play(volume, 1, 0, true);
 	}
 
 	@Override
