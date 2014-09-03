@@ -33,7 +33,6 @@ import com.badlogic.gdx.net.SocketHints;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.google.gwt.http.client.Header;
-import com.google.gwt.http.client.Response;
 import com.google.gwt.typedarrays.shared.Int8Array;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.user.client.Window;
@@ -61,7 +60,7 @@ public class GwtNet implements Net {
 		public byte[] getResult () {
             byte[] array = new byte[response.length()];
             for (int i = 0; i < array.length; i++) {
-                array[i] = response.get(i);
+                array[i] = (byte)(response.get(i) & 0x000000ff);
             }
 			return array;
 		}
@@ -112,11 +111,7 @@ public class GwtNet implements Net {
 
 		@Override
 		public InputStream getResultAsStream () {
-            byte[] array = new byte[response.length()];
-            for (int i = 0; i < array.length; i++) {
-                array[i] = response.get(i);
-            }
-			return new ByteArrayInputStream(array);
+			return new ByteArrayInputStream(getResult());
 		}
 
 		@Override
@@ -183,7 +178,6 @@ public class GwtNet implements Net {
                         requests.remove(httpRequest);
                         listeners.remove(httpRequest);
                     } else {
-                        Map<String, String> headers = new HashMap<String, String>();
                         Int8Array data = TypedArrays.createInt8Array(xhr.getResponseArrayBuffer());
                         httpResultListener.handleHttpResponse(new HttpClientResponse(xhr.getStatus(), data, xhr));
                         requests.remove(httpRequest);
@@ -200,7 +194,12 @@ public class GwtNet implements Net {
             request.setRequestHeader(name, content.get(name));
         }
         request.setResponseType(XMLHttpRequest.ResponseType.ArrayBuffer);
-        request.send();
+
+        if (valueInBody)
+            request.send(value);
+        else
+            request.send();
+
 
         requests.put(httpRequest, request);
         listeners.put(httpRequest, httpResultListener);
