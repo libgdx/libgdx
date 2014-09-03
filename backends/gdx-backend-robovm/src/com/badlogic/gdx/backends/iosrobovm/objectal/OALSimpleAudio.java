@@ -58,9 +58,9 @@ public final class OALSimpleAudio extends NSObject {
 	@Property
 	public native void setHonorSilentSwitch (boolean honorSilentSwitch);
 
-	@Property(selector = "useHardwareIfAvailable")
+	@Property
 	public native boolean isUseHardwareIfAvailable();
 
-	@Property(selector = "setUseHardwareIfAvailable:")
+	@Property
 	public native void setUseHardwareIfAvailable(boolean b);
 }
