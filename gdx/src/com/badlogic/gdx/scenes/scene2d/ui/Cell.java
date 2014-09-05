@@ -209,7 +209,7 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets the minWidth and minHeight to the specified values. */
 	public Cell<T> minSize (float width, float height) {
-		minSize(new Fixed(width));
+		minSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -311,7 +311,7 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets the maxWidth and maxHeight to the specified values. */
 	public Cell<T> maxSize (float width, float height) {
-		maxSize(new Fixed(width));
+		maxSize(new Fixed(width), new Fixed(height));
 		return this;
 	}
 
@@ -374,11 +374,7 @@ public class Cell<T extends Actor> implements Poolable {
 	/** Sets the spaceTop, spaceLeft, spaceBottom, and spaceRight to the specified value. */
 	public Cell<T> space (float space) {
 		if (space < 0) throw new IllegalArgumentException("space cannot be < 0.");
-		Value value = new Fixed(space);
-		spaceTop = value;
-		spaceLeft = value;
-		spaceBottom = value;
-		spaceRight = value;
+		space(new Fixed(space));
 		return this;
 	}
 
@@ -387,10 +383,7 @@ public class Cell<T extends Actor> implements Poolable {
 		if (left < 0) throw new IllegalArgumentException("left cannot be < 0.");
 		if (bottom < 0) throw new IllegalArgumentException("bottom cannot be < 0.");
 		if (right < 0) throw new IllegalArgumentException("right cannot be < 0.");
-		spaceTop = new Fixed(top);
-		spaceLeft = new Fixed(left);
-		spaceBottom = new Fixed(bottom);
-		spaceRight = new Fixed(right);
+		space(new Fixed(top), new Fixed(left), new Fixed(bottom), new Fixed(right));
 		return this;
 	}
 
@@ -466,19 +459,12 @@ public class Cell<T extends Actor> implements Poolable {
 
 	/** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
 	public Cell<T> pad (float pad) {
-		Value value = new Fixed(pad);
-		padTop = value;
-		padLeft = value;
-		padBottom = value;
-		padRight = value;
+		pad(new Fixed(pad));
 		return this;
 	}
 
 	public Cell<T> pad (float top, float left, float bottom, float right) {
-		padTop = new Fixed(top);
-		padLeft = new Fixed(left);
-		padBottom = new Fixed(bottom);
-		padRight = new Fixed(right);
+		pad(new Fixed(top), new Fixed(left), new Fixed(bottom), new Fixed(right));
 		return this;
 	}
 
