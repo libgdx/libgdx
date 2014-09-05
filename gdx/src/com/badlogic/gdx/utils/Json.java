@@ -902,7 +902,7 @@ public class Json {
 				if (type == int.class || type == Integer.class) return (T)(Integer)jsonData.asInt();
 				if (type == long.class || type == Long.class) return (T)(Long)jsonData.asLong();
 				if (type == double.class || type == Double.class) return (T)(Double)jsonData.asDouble();
-				if (type == String.class) return (T)Float.toString(jsonData.asFloat());
+				if (type == String.class) return (T)jsonData.asString();
 				if (type == short.class || type == Short.class) return (T)(Short)jsonData.asShort();
 				if (type == byte.class || type == Byte.class) return (T)(Byte)jsonData.asByte();
 			} catch (NumberFormatException ignored) {
@@ -1034,5 +1034,27 @@ public class Json {
 		public void write (Json json);
 
 		public void read (Json json, JsonValue jsonData);
+	}
+
+	public static class X {
+		public float n;
+		public String s;
+		public double d;
+
+		public String toString () {
+			return "l: " + d + ",\nn: " + n + ",\ns: " + s;
+		}
+	}
+
+	public static void main (String[] args) throws Exception {
+		X x1 = new X();
+		x1.s = "123.0.0";
+		x1.n = 123;
+		x1.d = 1234567890123456789012d;
+		System.out.println(x1);
+		String jsonString = new Json().toJson(x1); // {s:123}
+		System.out.println(new Json().prettyPrint(jsonString));
+		X x2 = new Json().fromJson(X.class, jsonString); // x2.s has value "123.0"
+		System.out.println(x2);
 	}
 }
