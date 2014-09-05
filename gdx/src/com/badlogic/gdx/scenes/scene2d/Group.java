@@ -342,7 +342,18 @@ public class Group extends Actor implements Cullable {
 		childrenChanged();
 	}
 
-	/** Removes all children, actions, and listeners from this group. */
+	/** Clears all actions from the actors from this group. */
+	public void clearChildrenActions () {
+		Actor[] actors = children.begin();
+		for (int i = 0, n = children.size; i < n; i++) {
+			Actor child = actors[i];
+			child.clearActions();
+		}
+	}
+
+	/** Removes all children, actions, and listeners from this group. If the children actors will not be used again and they have
+	 * actions, they should be {@link Group#clearChildrenActions() cleared} so the actions will be returned to their
+	 * {@link Action#setPool(com.badlogic.gdx.utils.Pool) pool}, if any. This is not done automatically. */
 	public void clear () {
 		super.clear();
 		clearChildren();
