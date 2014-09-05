@@ -1,4 +1,5 @@
 [1.3.2]
+- API Addition: Added randomTriangular methods to MathUtils.
 - API Addition: Decal has now a getter for the Color.
 - API Change: renamed Agent to Telegraph and moved it to msg package. Also, removed the update method and made StateMachine a Telegraph.
 - API Addition: now I18NBundle can be set so that no exception is thrown when the key can not be found.

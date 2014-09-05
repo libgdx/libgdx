@@ -172,6 +172,45 @@ public final class MathUtils {
 		return 1 | (random.nextInt() >> 31);
 	}
 
+	/** Returns a triangularly distributed random number between -1.0 (exclusive) and 1.0 (exclusive), where values around zero are
+	 * more likely.
+	 * <p>
+	 * This is an optimized version of {@link #randomTriangular(float, float, float) randomTriangular(-1, 1, 0)} */
+	public static float randomTriangular () {
+		return random.nextFloat() - random.nextFloat();
+	}
+
+	/** Returns a triangularly distributed random number between {@code -max} (exclusive) and {@code max} (exclusive), where values
+	 * around zero are more likely.
+	 * <p>
+	 * This is an optimized version of {@link #randomTriangular(float, float, float) randomTriangular(-max, max, 0)}
+	 * @param max the upper limit */
+	public static float randomTriangular (float max) {
+		return (random.nextFloat() - random.nextFloat()) * max;
+	}
+
+	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where the
+	 * {@code mode} argument defaults to the midpoint between the bounds, giving a symmetric distribution.
+	 * <p>
+	 * This method is equivalent of {@link #randomTriangular(float, float, float) randomTriangular(min, max, (max - min) * .5f)}
+	 * @param min the lower limit
+	 * @param max the upper limit */
+	public static float randomTriangular (float min, float max) {
+		return randomTriangular(min, max, (max - min) * .5f);
+	}
+
+	/** Returns a triangularly distributed random number between {@code min} (inclusive) and {@code max} (exclusive), where values
+	 * around {@code mode} are more likely.
+	 * @param min the lower limit
+	 * @param max the upper limit
+	 * @param mode the point around which the values are more likely */
+	public static float randomTriangular (float min, float max, float mode) {
+		float u = random.nextFloat();
+		float d = max - min;
+		if (u <= (mode - min) / d) return min + (float)Math.sqrt(u * d * (mode - min));
+		return max - (float)Math.sqrt((1 - u) * d * (max - mode));
+	}
+
 	// ---
 
 	/** Returns the next power of two. Returns the specified value if the value is already a power of two. */
