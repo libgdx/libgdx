@@ -65,6 +65,7 @@ public class Stage extends InputAdapter implements Disposable {
 	static private final Vector2 actorCoords = new Vector2();
 	static boolean debug;
 
+	private String name;
 	private Viewport viewport;
 	private final Batch batch;
 	private boolean ownsBatch;
@@ -655,6 +656,16 @@ public class Stage extends InputAdapter implements Disposable {
 	public Group getRoot () {
 		return root;
 	}
+	
+	/** Retrieve custom stage name set with {@link Stage#setName(String)}, used for easier identification */
+	public String getName () {
+		return name;
+	}
+	
+	/** Sets a name for easier identification of the stage in application code. */
+	public void setName (String name) {
+		this.name = name;
+	}
 
 	/** Returns the {@link Actor} at the specified location in stage coordinates. Hit testing is performed in the order the actors
 	 * were inserted into the stage, last inserted actors being tested first. To get stage coordinates from screen coordinates, use
@@ -764,6 +775,16 @@ public class Stage extends InputAdapter implements Disposable {
 	public void dispose () {
 		clear();
 		if (ownsBatch) batch.dispose();
+	}
+	
+	public String toString () {
+		String name = this.name;
+		if (name == null) {
+			name = getClass().getName();
+			int dotIndex = name.lastIndexOf('.');
+			if (dotIndex != -1) name = name.substring(dotIndex + 1);
+		}
+		return name;
 	}
 
 	/** Internal class for managing touch focus. Public only for GWT.
