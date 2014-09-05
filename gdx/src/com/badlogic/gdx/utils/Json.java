@@ -1035,26 +1035,4 @@ public class Json {
 
 		public void read (Json json, JsonValue jsonData);
 	}
-
-	public static class X {
-		public float n;
-		public String s;
-		public double d;
-
-		public String toString () {
-			return "l: " + d + ",\nn: " + n + ",\ns: " + s;
-		}
-	}
-
-	public static void main (String[] args) throws Exception {
-		X x1 = new X();
-		x1.s = "123.0.0";
-		x1.n = 123;
-		x1.d = 1234567890123456789012d;
-		System.out.println(x1);
-		String jsonString = new Json().toJson(x1); // {s:123}
-		System.out.println(new Json().prettyPrint(jsonString));
-		X x2 = new Json().fromJson(X.class, jsonString); // x2.s has value "123.0"
-		System.out.println(x2);
-	}
 }
