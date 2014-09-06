@@ -20,6 +20,7 @@ import android.content.Context;
 import android.view.MotionEvent;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.backends.android.AndroidInput.TouchEvent;
 
 /** Multitouch handler for devices running Android >= 2.0. If device is capable of (fake) multitouch this will report additional
@@ -34,6 +35,7 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 
 		int x = 0, y = 0;
 		int realPointerIndex = 0;
+		int button = Buttons.LEFT;
 
 		long timeStamp = System.nanoTime();
 		synchronized (input) {
@@ -45,12 +47,16 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.realId[realPointerIndex] = pointerId;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, timeStamp);
+				if (android.os.Build.VERSION.SDK_INT >= 14) {
+					button = toGdxButton(event.getButtonState());
+				}
+				postTouchEvent(input, TouchEvent.TOUCH_DOWN, x, y, realPointerIndex, button, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
 				input.deltaX[realPointerIndex] = 0;
 				input.deltaY[realPointerIndex] = 0;
 				input.touched[realPointerIndex] = true;
+				input.button[realPointerIndex] = button;
 				break;
 
 			case MotionEvent.ACTION_UP:
@@ -63,7 +69,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 				input.realId[realPointerIndex] = -1;
 				x = (int)event.getX(pointerIndex);
 				y = (int)event.getY(pointerIndex);
-				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, timeStamp);
+				button = input.button[realPointerIndex];
+				postTouchEvent(input, TouchEvent.TOUCH_UP, x, y, realPointerIndex, button, timeStamp);
 				input.touchX[realPointerIndex] = x;
 				input.touchY[realPointerIndex] = y;
 				input.deltaX[realPointerIndex] = 0;
@@ -81,7 +88,8 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 					realPointerIndex = input.lookUpPointerIndex(pointerId);
 					if (realPointerIndex == -1) continue;
 					if (realPointerIndex >= AndroidInput.NUM_TOUCHES) break;
-					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, timeStamp);
+					button = input.button[realPointerIndex];
+					postTouchEvent(input, TouchEvent.TOUCH_DRAGGED, x, y, realPointerIndex, button, timeStamp);
 					input.deltaX[realPointerIndex] = x - input.touchX[realPointerIndex];
 					input.deltaY[realPointerIndex] = y - input.touchY[realPointerIndex];
 					input.touchX[realPointerIndex] = x;
@@ -114,13 +122,21 @@ public class AndroidMultiTouchHandler implements AndroidTouchHandler {
 		Gdx.app.log("AndroidMultiTouchHandler", "action " + actionStr + ", Android pointer id: " + pointer);
 	}
 
-	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, long timeStamp) {
+	private int toGdxButton (int button) {
+		if (button == 1) return Buttons.LEFT;
+		if (button == 2) return Buttons.RIGHT;
+		if (button == 4) return Buttons.MIDDLE;
+		return Buttons.LEFT;
+	}
+
+	private void postTouchEvent (AndroidInput input, int type, int x, int y, int pointer, int button, long timeStamp) {
 		TouchEvent event = input.usedTouchEvents.obtain();
 		event.timeStamp = timeStamp;
 		event.pointer = pointer;
 		event.x = x;
 		event.y = y;
 		event.type = type;
+		event.button = button;
 		input.touchEvents.add(event);
 	}
 
