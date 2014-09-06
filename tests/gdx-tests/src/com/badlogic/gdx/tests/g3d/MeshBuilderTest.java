@@ -41,11 +41,12 @@ import com.badlogic.gdx.utils.StringBuilder;
 public class MeshBuilderTest extends BaseG3dHudTest {
 	protected Environment environment;
 
-	private static final int SCENE_LINE_PRIMITIVES = 0;
-	private static final int SCENE_SURFACE_PRIMITIVES = 1;
-	private static final int SCENE_EXTRUDES = 2;
-	private static final int SCENE_MESH_INSERTS = 3;
-	private static final int NUM_SCENES = 4;
+	private static final int SCENE_LINE_PRIMITIVES		= 0;
+	private static final int SCENE_SURFACE_PRIMITIVES	= 1;
+	private static final int SCENE_SWEEP					= 2;
+	private static final int SCENE_SWEEP_MOTION			= 3;
+	private static final int SCENE_MESH_INSERTS			= 4;
+	private static final int NUM_SCENES						= 5;
 
 	int sceneIndex = 0;
 	int currentPrimitiveType = GL20.GL_TRIANGLES;
@@ -57,6 +58,16 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 	Model baseModel;
 	Model model;
 	Mesh currentMesh;
+
+	CatmullRomSpline<Vector3> sweepPath;
+	Polygon sweepShape;
+	boolean shapeDirty;
+	int sweepSides = 10;
+	float sweepRadius = 1;
+	float sweepStarRadius = 1.5f * sweepRadius;
+	boolean profileContinuous = true;
+	boolean profileSmooth = false;
+	boolean pathSmooth = true;
 
 	CatmullRomSpline<Vector3> wormPath;
 	Polygon wormShape;
@@ -81,14 +92,26 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		mdlBuilder = new ModelBuilder();
 		mshBuilder = new MeshBuilder();
 
+		shapeDirty = true;
+		Vector3[] pathPoints = new Vector3[]{
+			new Vector3(-20, 0, -10),
+			new Vector3(-10, 0, -10),
+			new Vector3(0, 5, -10),
+			new Vector3(10, 0, -10),
+			new Vector3(10, 0, 10),
+			new Vector3(20, 0, 10),
+			};
+		sweepPath = new CatmullRomSpline<Vector3>(pathPoints, false);
+
 		wormShape = new Polygon(new float[]{ 0, 0, 0.5f, 0, 0, 0.5f });
-		Vector3[] pathPoints = new Vector3[]{	new Vector3(-10, 0, -10),
-																new Vector3(0, 0, -10),
-																new Vector3(10, 0, -10),
-																new Vector3(10, 0, 10),
-																new Vector3(0, 0, 10),
-																new Vector3(10, 0, 0),
-																};
+		pathPoints = new Vector3[]{
+			new Vector3(-10, 0, -10),
+			new Vector3(0, 0, -10),
+			new Vector3(10, 0, -10),
+			new Vector3(10, 0, 10),
+			new Vector3(0, 0, 10),
+			new Vector3(10, 0, 0),
+			};
 		wormPath = new CatmullRomSpline<Vector3>(pathPoints, true);
 
 		onModelClicked("g3d/ship.obj");
@@ -99,7 +122,8 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 	@Override
 	public void render () {
 		super.render();
-		fpsLabel.setY(fpsLabel.getHeight());
+		// move label as some scenes have extra commands
+		fpsLabel.setY(fpsLabel.getPrefHeight()/2);
 	}
 
 	@Override
@@ -133,13 +157,13 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 
 		baseModel = assets.get(currentlyLoading, Model.class);
 		currentlyLoading = null;
-		setScene();
+		setScene(true);
 	}
 
 	@Override
 	public void render (Array<ModelInstance> instances) {
 
-		if (sceneIndex == SCENE_EXTRUDES) {
+		if (sceneIndex == SCENE_SWEEP_MOTION) {
 			time += 0.01f;
 			wormOffset = (wormOffset + 0.007f) % 1f;
 			rebuildWorm();
@@ -156,19 +180,48 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		return colors;
 	}
 
+	private Polygon buildPoly (int sides, float radius, float starRadius) {
+
+		float[] vertices = new float[2 * sides];
+		float seg = MathUtils.PI2 / (float)sides;
+		float turn = 0;
+		for (int i = 0; i < vertices.length; i += 2) {
+			turn += seg;
+			float r = ((i % 4) == 0 ? radius : starRadius);
+			vertices[i  ] = r * MathUtils.cos(turn);
+			vertices[i+1] = r * MathUtils.sin(turn);
+		}
+		return new Polygon(vertices);
+	}
+
+	private void rebuildSweep() {
+
+		if (shapeDirty) {
+			shapeDirty = false;
+			sweepShape = buildPoly(sweepSides, sweepRadius, sweepStarRadius);
+		}
+
+		mshBuilder.begin(Usage.Position | Usage.Normal | Usage.Color, GL20.GL_TRIANGLES);
+		mshBuilder.setProfileShape(sweepShape.getTransformedVertices(), profileContinuous, profileSmooth);
+		mshBuilder.sweep(sweepPath, pathSmooth, 32, 1f, 1f);
+		if (currentMesh != null)
+			mshBuilder.end(currentMesh);
+	}
+
 	private void rebuildWorm () {
 
 		mshBuilder.begin(Usage.Position | Usage.Normal | Usage.Color, GL20.GL_TRIANGLES);
 		mshBuilder.setGradientColor(wormColors, true);
 		mshBuilder.setScaleInterpolation(Interpolation.sine, 1f, 4f, true);
 		mshBuilder.setProfileShape(wormShape.getTransformedVertices(), true, false);
+		// choose an interval that gives a creeping motion
 		float end = wormOffset + wormSize*(0.6f+0.4f*MathUtils.sin(time*MathUtils.PI2));
 		mshBuilder.sweep(wormPath, true, wormOffset, end, 32, 1f, 1f);
 		if (currentMesh != null)
 			mshBuilder.end(currentMesh);
 	}
 
-	protected void setScene () {
+	protected void setScene (boolean resetCamera) {
 		if (baseModel == null) return;
 
 		if (model != null)
@@ -233,9 +286,20 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 			mshBuilder.arrow(0, (size+1), 0, 0, (size+1) + size, 0, size/32, size/16, div);
 			break;
 
-		case SCENE_EXTRUDES:
+		case SCENE_SWEEP:
 			modelsWindow.setVisible(false);
-			sceneDescription = " - Triangle profile swept along a path";
+			sceneDescription = " - Polygon profile swept along a path\n press +/- to change polygon side count: "+sweepSides+
+				"\n press 1 to toggle path smoothing "+(pathSmooth ? "off" : "on")+
+				"\n press 2 to toggle profile smoothing "+(profileSmooth ? "off" : "on")+
+				"\n press 3 to toggle profile continuity "+(profileContinuous ? "off" : "on")+
+				"\n press 4 to toggle profile shape to "+(sweepRadius == sweepStarRadius ? "star" : "polygon");
+			currentMesh = null;
+			rebuildSweep();
+			break;
+
+		case SCENE_SWEEP_MOTION:
+			modelsWindow.setVisible(false);
+			sceneDescription = " - Triangle profile swept along a path with varying interval";
 			currentMesh = null;
 			wormColors = getRandomColors(MathUtils.random(3, 32));
 			rebuildWorm();
@@ -268,6 +332,9 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		instance.transform = transform;
 		instances.add(instance);
 
+		if (!resetCamera)
+			return;
+
 		instance.calculateBoundingBox(bounds);
 		cam.position.set(1, 1, 1).nor().scl(bounds.getDimensions().len() * 0.75f + bounds.getCenter().len());
 		cam.up.set(0, 1, 0);
@@ -280,7 +347,7 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 	public boolean keyUp (int keycode) {
 		if (keycode == Keys.SPACE || keycode == Keys.MENU) {
 			sceneIndex = (sceneIndex+1) % NUM_SCENES;
-			setScene();
+			setScene(true);
 		}
 		if (sceneIndex == SCENE_SURFACE_PRIMITIVES) {
 			if (keycode == Keys.P) {
@@ -295,15 +362,43 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 					currentPrimitiveType = GL20.GL_POINTS;
 					break;
 				}
-				setScene();
+				setScene(false);
 			}
 			if (keycode == Keys.PLUS) {
 				currentDivisionCount = Math.min(Math.max(currentDivisionCount+1, 1), 32);
-				setScene();
+				setScene(false);
 			}
 			if (keycode == Keys.MINUS) {
 				currentDivisionCount = Math.min(Math.max(currentDivisionCount-1, 1), 32);
-				setScene();
+				setScene(false);
+			}
+		} else if (sceneIndex == SCENE_SWEEP) {
+			if (keycode == Keys.NUM_1) {
+				pathSmooth = !pathSmooth;
+				setScene(false);
+			}
+			if (keycode == Keys.NUM_2) {
+				profileSmooth = !profileSmooth;
+				setScene(false);
+			}
+			if (keycode == Keys.NUM_3) {
+				profileContinuous = !profileContinuous;
+				setScene(false);
+			}
+			if (keycode == Keys.NUM_4) {
+				sweepStarRadius = (sweepStarRadius == sweepRadius ? 1.5f * sweepRadius : sweepRadius);
+				shapeDirty = true;
+				setScene(false);
+			}
+			if (keycode == Keys.PLUS) {
+				sweepSides = Math.min(Math.max(sweepSides+1, 3), 32);
+				shapeDirty = true;
+				setScene(false);
+			}
+			if (keycode == Keys.MINUS) {
+				sweepSides = Math.min(Math.max(sweepSides-1, 3), 32);
+				shapeDirty = true;
+				setScene(false);
 			}
 		}
 		return super.keyUp(keycode);
