@@ -21,7 +21,10 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Path;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.FloatArray;
@@ -29,6 +32,13 @@ import com.badlogic.gdx.utils.Pool.Poolable;
 import com.badlogic.gdx.utils.ShortArray;
 
 public interface MeshPartBuilder {
+
+	/** These flags determine which faces are built and which are ignored on shapes where applicable. */
+	public static final class IgnoreFaces {
+		public static final int Top = 1;
+		public static final int Bottom = 2;
+	}
+
 	/** @return The {@link MeshPart} currently building. */
 	public MeshPart getMeshPart ();
 
@@ -41,11 +51,69 @@ public interface MeshPartBuilder {
 	/** Set the color used if no vertex color is provided. */
 	public void setColor (float r, float g, float b, float a);
 
+	/** Set the color gradient specifying vertex color changes along the axis of a sweep or extrude
+	 * 
+	 * @param colors array of float triples each describing an rgb color
+	 * @param followOffset whether the color is determined along the path offset or absolute across the entire path
+	 */
+	public void setGradientColor (float[] colors, boolean followOffset);
+
+	/** Set the profile shape for extrudes and sweeps. The shape should be defined counter-clockwise, unless an inside-out geometry is desired.
+	 * 
+	 * @param shape the profile to extrude, an array of float doubles each describing a shape vertex, assumed counter-clockwise
+	 * @param continuous whether the profile shape should be treated as continuous, with the last vertex connected to the first by an edge
+	 * @param smooth whether to break at each profile vertex such that the resulting sides are facetted rather than smooth across each profile edge face
+	 */
+	public void setProfileShape (float[] shape, boolean continuous, boolean smooth);
+
+	/** Set the profile shape for extrudes and sweeps. The shape should be defined counter-clockwise, unless an inside-out geometry is desired.
+	 * 
+	 * @param shape the profile to extrude, an array of float doubles each describing a shape vertex, assumed counter-clockwise
+	 * @param continuous whether the profile shape should be treated as continuous, with the last vertex connected to the first by faces
+	 * @param smooth whether to break at each profile vertex such that the resulting sides are facetted rather than smooth across each profile edge face
+	 */
+	public void setProfileShape (FloatArray shape, boolean continuous, boolean smooth);
+
+	/** Set the profile shape for extrudes and sweeps. The shape should be defined counter-clockwise, unless an inside-out geometry is desired.
+	 * 
+	 * @param shape the profile to extrude, an array of float doubles each describing a shape vertex, assumed counter-clockwise
+	 * @param offset offset into profile array
+	 * @param size number of floats to use from profile array
+	 * @param continuous whether the profile shape should be treated as continuous, with the last vertex connected to the first by faces
+	 * @param smooth whether to break at each profile vertex such that the resulting sides are facetted rather than smooth across each profile edge face
+	 */
+	public void setProfileShape (float[] shape, int offset, int size, boolean continuous, boolean smooth);
+
+	/** Set the scale interpolation function which scales a shape's profile along the axis of a sweep (Note use startScale = 0, endScale = 1 to have the interpolation
+	 * entirely decide the scale)
+	 * 
+	 * @param func the interpolation function, see {@link Interpolation}
+	 * @param startScale the scale to apply at the start of the path
+	 * @param endScale the scale to apply at the end of the path
+	 * @param followOffset whether the scale interpolation is determined along the path offset or absolute across the entire path
+	 */
+	public void setScaleInterpolation(Interpolation func, float startScale, float endScale, boolean followOffset);
+
+	/** Set which faces are built and which are ignored on successive shapes, where semantics of shape apply
+	 * 
+	 * @param faces bit flags (see {@link IgnoreFaces}) determining set of faces to ignore when building, or 0 to reset to all faces
+	 */
+	public void setIgnoreFaces(int faces);
+
 	/** Set range of texture coordinates used (default is 0,0,1,1). */
 	public void setUVRange (float u1, float v1, float u2, float v2);
 
 	/** Set range of texture coordinates from the specified TextureRegion. */
 	public void setUVRange (TextureRegion r);
+
+	/** Set range of texture coordinates used (default is 0,0,1,1). */
+	public void setUVRange2 (float u1, float v1, float u2, float v2);
+
+	/** Set range of texture coordinates from the specified TextureRegion. */
+	public void setUVRange2 (TextureRegion r);
+
+	/** Resets builder state to defaults */
+	public void resetDefaults ();
 
 	/** Add one or more vertices, returns the index of the last vertex added. The length of values must a power of the vertex size. */
 	public short vertex (final float... values);
@@ -270,7 +338,7 @@ public interface MeshPartBuilder {
 	 * @param capLength is the height of the cap in percentage, must be in (0,1) 
 	 * @param stemThickness is the percentage of stem diameter compared to cap diameter, must be in (0,1]
 	 * @param divisions the amount of vertices used to generate the cap and stem ellipsoidal bases */
-	public void arrow(float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions);
+	public void arrow (float x1, float y1, float z1, float x2, float y2, float z2, float capLength, float stemThickness, int divisions);
 
 	/** Add vertices from another mesh, will call begin with the supplied mesh's attributes if begin was not yet called
 	 * 
@@ -307,7 +375,57 @@ public interface MeshPartBuilder {
 	 * @param srcIndices
 	 * @param numIndices
 	 */
-	public void mesh(float[] srcVertices, int numVerts, short[] srcIndices, int numIndices);
+	public void mesh (float[] srcVertices, int numVerts, short[] srcIndices, int numIndices);
+
+	/** Add an extrude of the currently set profile shape
+	 * 
+	 * @param distance the distance along the z-axis to extrude
+	 * @param tileU texture tiling perpendicular to path (set to zero for flat mapping)
+	 * @param tileV texture tiling perpendicular to path (set to zero for flat mapping)
+	 */
+	public void extrude (float distance, float tileU, float tileV);
+
+	/** Add an extrude of the currently set profile shape
+	 * 
+	 * @param distance the distance along the z-axis to extrude
+	 * @param steps the number of segments to create along the extrude (generally 1 for simple extrudes, but more may be desired for color or scale transitions)
+	 * @param tileU texture tiling perpendicular to path (set to zero for flat mapping)
+	 * @param tileV texture tiling perpendicular to path (set to zero for flat mapping)
+	 */
+	public void extrude (float distance, int steps, float tileU, float tileV);
+
+	/** Add a sweep of the currently set profile shape
+	 * 
+	 * @param path the path to sweep the profile along, an array of float triples each describing a path vertex
+	 * @param smooth if false, the normals of each segment along the curve are broken resulting in a facetted look (this also doubles the vertex count along the path)
+	 * @param continuous whether the path should be treated as continuous. Note that unlike the profile shape, the first point should also be
+	 *  duplicated at the end of the path array as this parameter only affects evaluation of the tangent to smooth the meeting ends
+	 * @param tileU texture tiling perpendicular to path (set to zero for flat mapping)
+	 * @param tileV texture tiling perpendicular to path (set to zero for flat mapping)
+	 */
+	public void sweep (Vector3[] path, boolean smooth, boolean continuous, float tileU, float tileV);
+
+	/** Add a sweep of the currently set profile shape
+	 * 
+	 * @param path the path to sweep the profile along
+	 * @param smooth if false, the normals of each segment along the curve are broken resulting in a facetted look (this also doubles the vertex count along the path)
+	 * @param steps the number of steps to create along the path
+	 * @param tileU texture tiling perpendicular to path (set to zero for flat mapping)
+	 * @param tileV texture tiling perpendicular to path (set to zero for flat mapping)
+	 */
+	public void sweep (Path path, boolean smooth, int steps, float tileU, float tileV);
+
+	/** Add a sweep of the currently set profile shape
+	 * 
+	 * @param path the path to sweep the profile along
+	 * @param smooth if false, the normals of each segment along the curve are broken resulting in a facetted look (this also doubles the vertex count along the path)
+	 * @param startT position along path to end sampling
+	 * @param endT position along path to end sampling
+	 * @param steps the number of steps to create along the path
+	 * @param tileU texture tiling perpendicular to path (set to zero for flat mapping)
+	 * @param tileV texture tiling perpendicular to path (set to zero for flat mapping)
+	 */
+	public void sweep (Path path, boolean smooth, float startT, float endT, int steps, float tileU, float tileV);
 
 	/** Get the current vertex transformation matrix. */
 	public Matrix4 getVertexTransform (Matrix4 out);

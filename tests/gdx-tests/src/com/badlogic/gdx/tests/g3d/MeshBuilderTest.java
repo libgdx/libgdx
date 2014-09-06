@@ -29,6 +29,10 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.CatmullRomSpline;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
@@ -37,7 +41,12 @@ import com.badlogic.gdx.utils.StringBuilder;
 public class MeshBuilderTest extends BaseG3dHudTest {
 	protected Environment environment;
 
-	private static final int NUM_SCENES = 3;
+	private static final int SCENE_LINE_PRIMITIVES = 0;
+	private static final int SCENE_SURFACE_PRIMITIVES = 1;
+	private static final int SCENE_EXTRUDES = 2;
+	private static final int SCENE_MESH_INSERTS = 3;
+	private static final int NUM_SCENES = 4;
+
 	int sceneIndex = 0;
 	int currentPrimitiveType = GL20.GL_TRIANGLES;
 	int currentDivisionCount = 16;
@@ -47,6 +56,15 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 	MeshBuilder mshBuilder;
 	Model baseModel;
 	Model model;
+	Mesh currentMesh;
+
+	CatmullRomSpline<Vector3> wormPath;
+	Polygon wormShape;
+	Mesh wormMesh = null;
+	float wormSize = 0.3f;
+	float wormOffset = 0.09f;
+	float[] wormColors;
+	float time = 0;
 
 	@Override
 	public void create () {
@@ -62,6 +80,16 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 
 		mdlBuilder = new ModelBuilder();
 		mshBuilder = new MeshBuilder();
+
+		wormShape = new Polygon(new float[]{ 0, 0, 0.5f, 0, 0, 0.5f });
+		Vector3[] pathPoints = new Vector3[]{	new Vector3(-10, 0, -10),
+																new Vector3(0, 0, -10),
+																new Vector3(10, 0, -10),
+																new Vector3(10, 0, 10),
+																new Vector3(0, 0, 10),
+																new Vector3(10, 0, 0),
+																};
+		wormPath = new CatmullRomSpline<Vector3>(pathPoints, true);
 
 		onModelClicked("g3d/ship.obj");
 	}
@@ -108,6 +136,38 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 		setScene();
 	}
 
+	@Override
+	public void render (Array<ModelInstance> instances) {
+
+		if (sceneIndex == SCENE_EXTRUDES) {
+			time += 0.01f;
+			wormOffset = (wormOffset + 0.007f) % 1f;
+			rebuildWorm();
+		}
+
+		super.render(instances);
+	}
+
+	private float[] getRandomColors(int numColors) {
+
+		float[] colors = new float[3*numColors];
+		for (int i = 0; i < colors.length; i++)
+			colors[i] = MathUtils.random();
+		return colors;
+	}
+
+	private void rebuildWorm () {
+
+		mshBuilder.begin(Usage.Position | Usage.Normal | Usage.Color, GL20.GL_TRIANGLES);
+		mshBuilder.setGradientColor(wormColors, true);
+		mshBuilder.setScaleInterpolation(Interpolation.sine, 1f, 4f, true);
+		mshBuilder.setProfileShape(wormShape.getTransformedVertices(), true, false);
+		float end = wormOffset + wormSize*(0.6f+0.4f*MathUtils.sin(time*MathUtils.PI2));
+		mshBuilder.sweep(wormPath, true, wormOffset, end, 32, 1f, 1f);
+		if (currentMesh != null)
+			mshBuilder.end(currentMesh);
+	}
+
 	protected void setScene () {
 		if (baseModel == null) return;
 
@@ -120,8 +180,13 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 
 		mdlBuilder.begin();
 
+		// reset mesh building params
+		mshBuilder.setVertexTransform(null);
+		mshBuilder.setScaleInterpolation(null, 0, 0, false);
+		mshBuilder.setGradientColor(null, false);
+
 		switch (sceneIndex) {
-		case 0:
+		case SCENE_LINE_PRIMITIVES:
 			modelsWindow.setVisible(false);
 			sceneDescription = " - Simple line primitives";
 			primType = GL20.GL_LINES;
@@ -145,7 +210,7 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 			mshBuilder.triangle(new Vector3(-size / 2, -size / 2, 0), new Vector3(size / 2, -size / 2, 0), new Vector3(0, size / 2, 0));
 			break;
 
-		case 1:
+		case SCENE_SURFACE_PRIMITIVES:
 			modelsWindow.setVisible(false);
 			sceneDescription = " - Simple surface primitives\n press P to change primitive type\n press +/- to change division count: "+currentDivisionCount;
 			mshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, primType);
@@ -168,7 +233,15 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 			mshBuilder.arrow(0, (size+1), 0, 0, (size+1) + size, 0, size/32, size/16, div);
 			break;
 
-		case 2:
+		case SCENE_EXTRUDES:
+			modelsWindow.setVisible(false);
+			sceneDescription = " - Triangle profile swept along a path";
+			currentMesh = null;
+			wormColors = getRandomColors(MathUtils.random(3, 32));
+			rebuildWorm();
+			break;
+
+		case SCENE_MESH_INSERTS:
 			modelsWindow.setVisible(true);
 			sceneDescription = " - Mesh repeated with offsets, (only first mesh of model is used)";
 			Mesh mesh = baseModel.meshParts.get(0).mesh;
@@ -184,10 +257,10 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 			mshBuilder.setVertexTransform(transform.setToTranslation(0, 0, v.z));
 			mshBuilder.mesh(mesh);
 			break;
-
 		}
 
-		mdlBuilder.part("model", mshBuilder.end(), primType, material);
+		currentMesh = mshBuilder.end();
+		mdlBuilder.part("model", currentMesh, primType, material);
 		model = mdlBuilder.end();
 
 		instances.clear();
@@ -209,7 +282,7 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 			sceneIndex = (sceneIndex+1) % NUM_SCENES;
 			setScene();
 		}
-		if (sceneIndex == 1) {
+		if (sceneIndex == SCENE_SURFACE_PRIMITIVES) {
 			if (keycode == Keys.P) {
 				switch(currentPrimitiveType) {
 				case GL20.GL_POINTS:
@@ -225,11 +298,11 @@ public class MeshBuilderTest extends BaseG3dHudTest {
 				setScene();
 			}
 			if (keycode == Keys.PLUS) {
-				currentDivisionCount = Math.min(Math.max(currentDivisionCount+1, 1), 32 );
+				currentDivisionCount = Math.min(Math.max(currentDivisionCount+1, 1), 32);
 				setScene();
 			}
 			if (keycode == Keys.MINUS) {
-				currentDivisionCount = Math.min(Math.max(currentDivisionCount-1, 1), 32 );
+				currentDivisionCount = Math.min(Math.max(currentDivisionCount-1, 1), 32);
 				setScene();
 			}
 		}
