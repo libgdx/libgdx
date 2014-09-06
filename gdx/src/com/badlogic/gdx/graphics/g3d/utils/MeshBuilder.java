@@ -1444,7 +1444,7 @@ public class MeshBuilder implements MeshPartBuilder {
 			indexCount += doTop ? profileIndices.size : 0;
 		}
 		int vertexCount = profileSize/2 * ((doBottom ? 1 : 0) + (doTop ? 1 : 0) + (profileSmooth ? 1 : 2) * (steps * (smooth ? 1 : 2) - (smooth ? 0 : 2)));
-System.out.println("guesses:        " + vertexCount + ", " + indexCount);
+
 		ensureCapacity(vertexCount, indexCount);
 
 		// include base transform if set, otherwise matTmp2 used directly
@@ -1765,8 +1765,6 @@ System.out.println("guesses:        " + vertexCount + ", " + indexCount);
 		if (doTop)
 			for (int i = profileIndices.size-1; i >= 0; i--)
 				indices.add(profileIndices.get(i) + offset);
-
-System.out.println("final:          " + vindex + ", " + indices.size);
 	}
 
 	@Override
