@@ -5,6 +5,7 @@
 - API Addition: now I18NBundle can be set so that no exception is thrown when the key can not be found.
 - API Addition: added annotation support in reflection layer, thanks code-disaster! https://github.com/libgdx/libgdx/pull/2215
 - API Addition: shapes like Rect, Circle etc. now implement Shape2D interface so you can put them all into a single collection https://github.com/libgdx/libgdx/pull/2178 
+- API Addition: bitmap fonts can now be loaded from an atlas via AssetManager/BitmapFontLoader, see https://github.com/libgdx/libgdx/pull/2110
 
 [1.3.1]
 - API change: Viewport refactoring. https://github.com/libgdx/libgdx/pull/2220
