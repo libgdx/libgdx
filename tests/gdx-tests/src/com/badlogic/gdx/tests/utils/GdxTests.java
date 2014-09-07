@@ -87,6 +87,7 @@ public class GdxTests {
 		BitmapFontFlipTest.class,
 		BitmapFontMetricsTest.class,
 		BitmapFontTest.class,
+		BitmapFontAtlasRegionTest.class,
 		BlitTest.class,
 		Box2DTest.class,
 		Box2DTestCollection.class,
