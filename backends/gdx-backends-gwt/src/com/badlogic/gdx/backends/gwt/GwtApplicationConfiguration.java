@@ -28,8 +28,10 @@ public class GwtApplicationConfiguration {
 	public boolean stencil = false;
 	/** whether to enable antialiasing **/
 	public boolean antialiasing = false;
-	/** the framerate to run the game at **/
+	/** fixed fps step using old method **/
 	public int fps = 60;
+	/** don't use old method, try to use requestAnimFrame with possible fallback **/
+	public boolean useVsync = true;
 	/** the Panel to add the WebGL canvas to, can be null in which case a Panel is added automatically to the body element of the
 	 * DOM **/
 	public Panel rootPanel;
