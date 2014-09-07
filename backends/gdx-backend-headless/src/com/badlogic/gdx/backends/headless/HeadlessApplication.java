@@ -120,6 +120,7 @@ public class HeadlessApplication implements Application {
 					t = n + renderInterval;
 				
 				executeRunnables();
+				graphics.incrementFrameId();
 				listener.render();
 				graphics.updateTime();
 	

@@ -41,6 +41,7 @@ public class LwjglGraphics implements Graphics {
 
 	GL20 gl20;
 	GL30 gl30;
+	long frameId = -1;
 	float deltaTime = 0;
 	long frameStart = 0;
 	int frames = 0;
@@ -92,6 +93,10 @@ public class LwjglGraphics implements Graphics {
 
 	public boolean isGL20Available () {
 		return gl20 != null;
+	}
+
+	public long getFrameId () {
+		return frameId;
 	}
 
 	public float getDeltaTime () {

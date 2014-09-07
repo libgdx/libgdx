@@ -34,6 +34,7 @@ public class GwtGraphics implements Graphics {
 	String extensions;
 	float fps = 0;
 	long lastTimeStamp = System.currentTimeMillis();
+	long frameId = -1;
 	float deltaTime = 0;
 	float time = 0;
 	int frames;
@@ -78,6 +79,11 @@ public class GwtGraphics implements Graphics {
 	@Override
 	public int getHeight () {
 		return canvas.getHeight();
+	}
+
+	@Override
+	public long getFrameId () {
+		return frameId;
 	}
 
 	@Override

@@ -203,6 +203,7 @@ public class LwjglApplication implements Application {
 			int frameRate = isActive ? graphics.config.foregroundFPS : graphics.config.backgroundFPS;
 			if (shouldRender) {
 				graphics.updateTime();
+				graphics.frameId++;
 				listener.render();
 				Display.update(false);
 			} else {
