@@ -108,4 +108,7 @@ public interface PurchaseManager {
 	 *           listener itself throws an exception, the purchase observer will again later report the purchase information again.
 	 * @param identifier The item to purchase. */
 	public void purchase (PurchaseListener listener, String identifier);
+	
+	@Override
+	public String toString();
 }

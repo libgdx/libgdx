@@ -32,6 +32,15 @@ import java.util.Date;
  * @author noblemaster */
 public final class Purchase {
 
+	/** For testing ONLY: reserved string to indicate purchase was a success. */
+	public static final String IDENTIFIER_TEST_SUCCESS = "gdx-pay-purchase-identifier-test-success";
+	/** For testing ONLY: reserved string to indicate purchase failed (canceled). */
+	public static final String IDENTIFIER_TEST_FAILURE_CANCELED = "gdx-pay-purchase-identifier-test-failure-canceled";
+	/** For testing ONLY: reserved string to indicate purchase failed (refunded). */
+	public static final String IDENTIFIER_TEST_FAILURE_REFUNDED = "gdx-pay-purchase-identifier-test-failure-refunded";
+	/** For testing ONLY: reserved string to indicate purchase failed (item unavailable). */
+	public static final String IDENTIFIER_TEST_FAILURE_INVALIDIDENTIFIER = "gdx-pay-purchase-identifier-test-failure-invalididentifier";
+
 	/** Item identifier/SKU number. */
 	public String identifier;
 

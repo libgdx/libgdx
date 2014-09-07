@@ -16,10 +16,15 @@
 
 package com.badlogic.gdx.tests.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.google.android.PurchaseManagerGoogleAndroid;
+import com.badlogic.gdx.tests.PayTest;
+import com.badlogic.gdx.tests.PayTest.IAP;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -28,12 +33,42 @@ public class GdxTestActivity extends AndroidApplication {
 	public void onCreate (Bundle bundle) {
 		super.onCreate(bundle);
 
+		// obtain the test info
 		Bundle extras = getIntent().getExtras();
 		String testName = (String)extras.get("test");
-
 		GdxTest test = GdxTests.newTest(testName);
+		
+		// InApp: instantiate payment systems
+		if (PayTest.class.equals(test.getClass())) {
+			IAP.init(new PurchaseManagerGoogleAndroid(this));
+		}
+		
+		// and run the application...
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useImmersiveMode = true;
 		initialize(test, config);
+	}
+
+	@Override
+	protected void onDestroy () {
+		super.onDestroy();
+		
+		//  InApp: dispose payment system(s)
+		IAP.dispose();
+	}
+
+	@Override
+	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		// InApp: forward activity results
+		if (requestCode == PurchaseManagerGoogleAndroid.GDX_PAY_GOOGLE_ANDROID_REQUEST_CODE) {
+			for (int i = 0; i < IAP.getManagerCount(); i++) {
+				PurchaseManager manager = IAP.getManager(i);
+				if (manager instanceof PurchaseManagerGoogleAndroid) {
+					((PurchaseManagerGoogleAndroid)manager).onActivityResult(requestCode, resultCode, data);
+				}
+			}
+		}
 	}
 }
