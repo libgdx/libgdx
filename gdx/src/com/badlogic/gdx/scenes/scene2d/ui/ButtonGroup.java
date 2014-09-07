@@ -66,6 +66,11 @@ public class ButtonGroup {
 			remove(buttons[i]);
 	}
 
+	public void clear () {
+		buttons.clear();
+		checkedButtons.clear();
+	}
+
 	/** Sets the first {@link TextButton} with the specified text to checked. */
 	public void setChecked (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
