@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 /** {@link AssetLoader} for {@link BitmapFont} instances. Loads the font description file (.fnt) asynchronously, loads the
  * {@link Texture} containing the glyphs as a dependency. The {@link BitmapFontParameter} allows you to set things like texture
@@ -80,32 +81,18 @@ public class BitmapFontLoader extends AsynchronousAssetLoader<BitmapFont, Bitmap
 
 	@Override
 	public BitmapFont loadSync (AssetManager manager, String fileName, FileHandle file, BitmapFontParameter parameter) {
-		if (parameter.atlasName != null) {
-			// If we want to load this font from a texture atlas...
-			if (manager.getLoader(TextureAtlas.class) == null) {
-				// If we can't actually do so...
-				throw new IllegalStateException(String.format(
-					"Tried to load a BitmapFont %s from a TextureAtlas %s, but no TextureAtlas loader was set", fileName,
-					parameter.atlasName));
-			} else {
-				TextureAtlas atlas = manager.get(parameter.atlasName, TextureAtlas.class);
-				String name = file.sibling(data.imagePaths[0]).nameWithoutExtension().toString();
-				AtlasRegion region = atlas.findRegion(name);
+		if (parameter != null && parameter.atlasName != null) {
+			TextureAtlas atlas = manager.get(parameter.atlasName, TextureAtlas.class);
+			String name = file.sibling(data.imagePaths[0]).nameWithoutExtension().toString();
+			AtlasRegion region = atlas.findRegion(name);
 
-				if (region == null) {
-					throw new IllegalArgumentException(String.format("Could not find font region %s in atlas %s", name,
-						parameter.atlasName));
-				} else {
-					return new BitmapFont(file, region);
-				}
-			}
+			if (region == null) throw new GdxRuntimeException(String.format("Could not find font region " + name + " in atlas "+ parameter.atlasName));
+			return new BitmapFont(file, region);
 		} else {
 			TextureRegion[] regs = new TextureRegion[data.getImagePaths().length];
-
 			for (int i = 0; i < regs.length; i++) {
 				regs[i] = new TextureRegion(manager.get(data.getImagePath(i), Texture.class));
 			}
-
 			return new BitmapFont(data, regs, true);
 		}
 	}
