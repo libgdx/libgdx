@@ -1,0 +1,50 @@
+<project name="gdx-video-desktop-natives" basedir="." default="all">
+	<target name="clean">
+		<ant antfile="build-linux32.xml" target="clean"/>
+		<ant antfile="build-linux64.xml" target="clean"/>
+		<ant antfile="build-windows32.xml" target="clean"/>
+		<ant antfile="build-windows64.xml" target="clean"/>
+
+	</target>
+	
+	<target name="compile-natives">
+		<ant antfile="build-ffmpeg.xml"/>
+		<ant antfile="build-linux32.xml"/>
+		<ant antfile="build-linux64.xml"/>
+		<ant antfile="build-windows32.xml"/>
+		<ant antfile="build-windows64.xml"/>
+
+	</target>
+	
+	<target name="pack-natives">
+		<jar destfile="../libs/gdx-video-desktop-natives.jar">
+			<fileset dir="../libs/linux32" includes="libgdx-video-desktop.so"/>
+			<fileset dir="../libs/linux64" includes="libgdx-video-desktop64.so"/>
+			<fileset dir="../libs/windows32" includes="gdx-video-desktop.dll"/>
+			<fileset dir="../libs/windows64" includes="gdx-video-desktop64.dll"/>
+
+			<zipfileset dir="ffmpeg/libs/windows32/bin" includes="avcodec-55.dll" fullpath="windows32/avcodec-55.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows32/bin" includes="avcodec-55.dll" fullpath="windows32/avformat-55.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows32/bin" includes="avcodec-55.dll" fullpath="windows32/avutil-52.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows32/bin" includes="avcodec-55.dll" fullpath="windows32/swresample-0.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows32/bin" includes="avcodec-55.dll" fullpath="windows32/swscale-2.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows64/bin" includes="avcodec-55.dll" fullpath="windows64/avcodec-55.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows64/bin" includes="avcodec-55.dll" fullpath="windows64/avformat-55.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows64/bin" includes="avcodec-55.dll" fullpath="windows64/avutil-52.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows64/bin" includes="avcodec-55.dll" fullpath="windows64/swresample-0.dll"/>
+			<zipfileset dir="ffmpeg/libs/windows64/bin" includes="avcodec-55.dll" fullpath="windows64/swscale-2.dll"/>
+			<zipfileset dir="ffmpeg/libs/linux32/lib" includes="libavcodec.so.55.52.102" fullpath="linux32/libavcodec.so.55.52.102"/>
+			<zipfileset dir="ffmpeg/libs/linux32/lib" includes="libavformat.so.55.33.100" fullpath="linux32/libavformat.so.55.33.100"/>
+			<zipfileset dir="ffmpeg/libs/linux32/lib" includes="libavutil.so.52.66.100" fullpath="linux32/libavutil.so.52.66.100"/>
+			<zipfileset dir="ffmpeg/libs/linux32/lib" includes="libswresample.so.0.18.100" fullpath="linux32/libswresample.so.0.18.100"/>
+			<zipfileset dir="ffmpeg/libs/linux32/lib" includes="libswscale.so.2.5.102" fullpath="linux32/libswscale.so.2.5.102"/>
+			<zipfileset dir="ffmpeg/libs/linux64/lib" includes="libavcodec.so.55.52.102" fullpath="linux64/libavcodec.so.55.52.102"/>
+			<zipfileset dir="ffmpeg/libs/linux64/lib" includes="libavformat.so.55.33.100" fullpath="linux64/libavformat.so.55.33.100"/>
+			<zipfileset dir="ffmpeg/libs/linux64/lib" includes="libavutil.so.52.66.100" fullpath="linux64/libavutil.so.52.66.100"/>
+			<zipfileset dir="ffmpeg/libs/linux64/lib" includes="libswresample.so.0.18.100" fullpath="linux64/libswresample.so.0.18.100"/>
+			<zipfileset dir="ffmpeg/libs/linux64/lib" includes="libswscale.so.2.5.102" fullpath="linux64/libswscale.so.2.5.102"/>
+		</jar>
+	</target>
+
+	<target name="all" depends="compile-natives,pack-natives"/>
+</project>

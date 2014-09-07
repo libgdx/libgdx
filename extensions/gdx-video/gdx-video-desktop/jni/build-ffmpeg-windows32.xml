@@ -1,0 +1,38 @@
+<project name="cd gdx-video-desktop-ffmpeg-windows32" basedir="." default="compile">
+	<!-- include the environment -->
+	<property environment="env"/>	
+	<!-- output directory for temporary object files -->
+	<property name="buildDir" value="ffmpeg/target/windows32" />
+	<!-- output directory for the shared library -->
+	<property name="libsDir" value="../../libs/windows32" />
+	
+	<!-- cleans the build directory, removes all object files and shared libs -->
+	<target name="clean">
+		<delete includeemptydirs="true" quiet="true">
+			<fileset dir="${buildDir}"/>
+			<fileset dir="${libsDir}" includes="**/*" excludes="**/.svn"/>
+		</delete>
+	</target>
+	
+	<target name="precompile">
+		<condition property="make-found">
+			<or>
+				<available file="make" filepath="${env.PATH}"/>
+				<available file="make" filepath="${env.Path}"/>
+			</or>
+		</condition>
+		<mkdir dir="${buildDir}"/>
+	</target>
+
+	<target name="compile" depends="precompile" if="make-found">
+		<chmod file="ffmpeg/ffmpeg-2.2.2/configure" perm="+x"/>
+		<chmod file="ffmpeg/ffmpeg-2.2.2/version.sh" perm="+x"/>
+		<exec executable="../../ffmpeg-2.2.2/configure" failonerror="true" dir="${buildDir}">
+			<arg line="--prefix=${libsDir} --disable-htmlpages --enable-memalign-hack --arch=x86 --target-os=mingw32 --cross-prefix=i686-w64-mingw32- --pkg-config=pkg-config --enable-shared --disable-static --disable-everything --enable-filter=deshake --enable-protocol=file --enable-filter=aresample --enable-demuxer=ogg --enable-decoder=vorbis --enable-decoder=theora"/>
+		</exec>
+		<exec executable="make" failonerror="true" dir="${buildDir}"/>
+		<exec executable="make" failonerror="true" dir="${buildDir}">
+			<arg value="install"/>
+		</exec>
+	</target>
+</project>
