@@ -53,6 +53,8 @@ public class FlockingTest extends SteeringTest {
 	Array<BlendedSteering<Vector2>> blendedSteerings;
 	FieldOfViewProximity<Vector2> char0Proximity;
 	Array<FieldOfViewProximity<Vector2>> proximities;
+	
+	float separationDecayCoefficient;
 
 	public FlockingTest (SteeringBehaviorTest container) {
 		super(container, "Flocking");
@@ -64,6 +66,8 @@ public class FlockingTest extends SteeringTest {
 
 		shapeRenderer = new ShapeRenderer();
 
+		separationDecayCoefficient = 500;
+		
 		characters = new Array<SteeringActor>();
 		blendedSteerings = new Array<BlendedSteering<Vector2>>();
 		proximities = new Array<FieldOfViewProximity<Vector2>>();
@@ -72,22 +76,35 @@ public class FlockingTest extends SteeringTest {
 			SteeringActor character = new SteeringActor(container.greenFish, false);
 			character.setCenterPosition(MathUtils.random(container.stageWidth), MathUtils.random(container.stageHeight));
 			character.setMaxLinearSpeed(70);
-			character.setMaxLinearAcceleration(100); //
-			character.setMaxAngularAcceleration(0); // only used by wander; set to 0 because independent facing is disabled
-			character.setMaxAngularSpeed(5); // only used by wander
+			character.setMaxLinearAcceleration(400); //
+			character.setMaxAngularAcceleration(0);
+			character.setMaxAngularSpeed(5);
 
-			FieldOfViewProximity<Vector2> proximity = new FieldOfViewProximity<Vector2>(character, characters, 180,
+			FieldOfViewProximity<Vector2> proximity = new FieldOfViewProximity<Vector2>(character, characters, 140,
 				270 * MathUtils.degreesToRadians);
 			proximities.add(proximity);
 			if (i == 0) char0Proximity = proximity;
 			Alignment<Vector2> groupAlignmentSB = new Alignment<Vector2>(character, proximity);
-			Separation<Vector2> groupSeparationSB = new Separation<Vector2>(character, proximity);
 			Cohesion<Vector2> groupCohesionSB = new Cohesion<Vector2>(character, proximity);
+			Separation<Vector2> groupSeparationSB = new Separation<Vector2>(character, proximity) {
+				@Override
+				public float getDecayCoefficient () {
+					// We want all the agents to use the same decay coefficient
+					return separationDecayCoefficient;
+				}
+
+				@Override
+				public Separation<Vector2> setDecayCoefficient (float decayCoefficient) {
+					separationDecayCoefficient = decayCoefficient;
+					return this;
+				}
+				
+			};
 
 			BlendedSteering<Vector2> blendedSteering = new BlendedSteering<Vector2>(character) //
-				.add(groupAlignmentSB, 2f) //
-				.add(groupCohesionSB, 60f) //
-				.add(groupSeparationSB, 230f);
+				.add(groupAlignmentSB, .2f) //
+				.add(groupCohesionSB, .06f) //
+				.add(groupSeparationSB, 1.7f);
 			blendedSteerings.add(blendedSteering);
 
 			// TODO set more proper values
@@ -120,7 +137,7 @@ public class FlockingTest extends SteeringTest {
 			container.skin);
 		detailTable.add(alignmentWeightLabel);
 		detailTable.row();
-		Slider alignmentWeight = new Slider(0, 500, 1, false, container.skin);
+		Slider alignmentWeight = new Slider(0, 2, .01f, false, container.skin);
 		alignmentWeight.setValue(blendedSteerings.get(0).get(0).getWeight());
 		alignmentWeight.addListener(new ChangeListener() {
 			@Override
@@ -138,7 +155,7 @@ public class FlockingTest extends SteeringTest {
 			container.skin);
 		detailTable.add(cohesionWeightLabel);
 		detailTable.row();
-		Slider cohesionWeight = new Slider(0, 500, 1, false, container.skin);
+		Slider cohesionWeight = new Slider(0, 2, .01f, false, container.skin);
 		cohesionWeight.setValue(blendedSteerings.get(0).get(1).getWeight());
 		cohesionWeight.addListener(new ChangeListener() {
 			@Override
@@ -156,7 +173,7 @@ public class FlockingTest extends SteeringTest {
 			container.skin);
 		detailTable.add(separationWeightLabel);
 		detailTable.row();
-		Slider separationWeight = new Slider(0, 500, 1, false, container.skin);
+		Slider separationWeight = new Slider(0, 2, .01f, false, container.skin);
 		separationWeight.setValue(blendedSteerings.get(0).get(2).getWeight());
 		separationWeight.addListener(new ChangeListener() {
 			@Override
@@ -168,6 +185,23 @@ public class FlockingTest extends SteeringTest {
 			}
 		});
 		detailTable.add(separationWeight);
+
+		detailTable.row();
+		final Label separationDecayCoeffLabel = new Label("Separation Decay Coeff.[" + separationDecayCoefficient + "]",
+			container.skin);
+		detailTable.add(separationDecayCoeffLabel);
+		detailTable.row();
+		Slider separationDecayCoeff = new Slider(1, 5000, 1, false, container.skin);
+		separationDecayCoeff.setValue(separationDecayCoefficient);
+		separationDecayCoeff.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				Slider slider = (Slider)actor;
+				separationDecayCoefficient = slider.getValue();
+				separationDecayCoeffLabel.setText("Separation Decay Coeff.[" + separationDecayCoefficient + "]");
+			}
+		});
+		detailTable.add(separationDecayCoeff);
 
 		detailTable.row();
 		addSeparator(detailTable);
@@ -190,11 +224,11 @@ public class FlockingTest extends SteeringTest {
 		detailTable.add(proximityRadius);
 
 		detailTable.row();
-		final Label labelProximityAngle = new Label("Proximity Angle [" + proximities.get(0).getAngle() + "]", container.skin);
+		final Label labelProximityAngle = new Label("Proximity Angle [" + proximities.get(0).getAngle() * MathUtils.radiansToDegrees + "]", container.skin);
 		detailTable.add(labelProximityAngle);
 		detailTable.row();
 		Slider proximityAngle = new Slider(0, 360, 1, false, container.skin);
-		proximityAngle.setValue(proximities.get(0).getAngle() * MathUtils.degreesToRadians);
+		proximityAngle.setValue(proximities.get(0).getAngle() * MathUtils.radiansToDegrees);
 		proximityAngle.addListener(new ChangeListener() {
 			@Override
 			public void changed (ChangeEvent event, Actor actor) {
@@ -245,7 +279,7 @@ public class FlockingTest extends SteeringTest {
 		addSeparator(detailTable);
 
 		detailTable.row();
-		CheckBox debug = new CheckBox("Draw circle", container.skin);
+		CheckBox debug = new CheckBox("Draw Proximity", container.skin);
 		debug.setChecked(drawDebug);
 		debug.addListener(new ClickListener() {
 			@Override
@@ -262,15 +296,9 @@ public class FlockingTest extends SteeringTest {
 	@Override
 	public void render () {
 		if (drawDebug) {
-// SteeringActor character = characters.get(0);
-// shapeRenderer.begin(ShapeType.Line);
-// shapeRenderer.setColor(0, 1, 0, 1);
-// shapeRenderer.circle(character.getPosition().x, character.getPosition().y, char0Proximity.getRadius());
-// shapeRenderer.end();
 			Steerable<Vector2> steerable = characters.get(0);
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(0, 1, 0, 1);
-// shapeRenderer.circle(steerable.getPosition().x, steerable.getPosition().y, char0Proximity.getRadius());
 			float angle = char0Proximity.getAngle() * MathUtils.radiansToDegrees;
 			shapeRenderer.arc(steerable.getPosition().x, steerable.getPosition().y, char0Proximity.getRadius(),
 				steerable.getOrientation() * MathUtils.radiansToDegrees - angle / 2f + 90f, angle);

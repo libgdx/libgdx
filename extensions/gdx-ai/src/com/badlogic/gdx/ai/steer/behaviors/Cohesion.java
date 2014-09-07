@@ -30,10 +30,6 @@ import com.badlogic.gdx.math.Vector;
  * the agents wants to get to, so it seeks to that position.
  * <p>
  * A sheep running after its flock is demonstrating cohesive behavior. Use this behavior to keep a group of agents together.
- * <p>
- * Notice that this implementation always returns a normalized linear acceleration (or zero). This is not a problem since usually
- * you blend it with other group behaviors like {@link Separation} and {@link Alignment} so you can give it a proper weight, see
- * {@link BlendedSteering}.
  * 
  * @param <T> Type of vector, either 2D or 3D, implementing the {@link Vector} interface
  * 
@@ -42,7 +38,7 @@ public class Cohesion<T extends Vector<T>> extends GroupBehavior<T> implements P
 
 	private T centerOfMass;
 
-	/** Creates a Cohesion for the specified owner and proximity.
+	/** Creates a {@code Cohesion} for the specified owner and proximity.
 	 * @param owner the owner of this behavior.
 	 * @param proximity the proximity to detect the owner's neighbors */
 	public Cohesion (Steerable<T> owner, Proximity<T> proximity) {
@@ -64,9 +60,7 @@ public class Cohesion<T extends Vector<T>> extends GroupBehavior<T> implements P
 			centerOfMass.scl(1f / neighborCount);
 
 			// Now seek towards that position.
-			// Note that the magnitude of cohesion is usually much larger than
-			// separation or alignment so it usually helps to normalize it.
-			centerOfMass.sub(owner.getPosition()).nor();
+			centerOfMass.sub(owner.getPosition()).nor().scl(getActualLimiter().getMaxLinearAcceleration());
 		}
 
 		return steering;
@@ -74,6 +68,7 @@ public class Cohesion<T extends Vector<T>> extends GroupBehavior<T> implements P
 
 	@Override
 	public boolean reportNeighbor (Steerable<T> neighbor) {
+		// Accumulate neighbor position
 		centerOfMass.add(neighbor.getPosition());
 		return true;
 	}
@@ -94,7 +89,7 @@ public class Cohesion<T extends Vector<T>> extends GroupBehavior<T> implements P
 		return this;
 	}
 
-	/** Sets the limiter of this steering behavior. However, {@code Cohesion} needs no limiter at all.
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
 	 * @return this behavior for chaining. */
 	@Override
 	public Cohesion<T> setLimiter (Limiter limiter) {

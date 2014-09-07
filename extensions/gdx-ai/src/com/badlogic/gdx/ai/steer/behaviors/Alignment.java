@@ -26,8 +26,8 @@ import com.badlogic.gdx.math.Vector;
 
 /** {@code Alignment} is a group behavior producing a linear acceleration that attempts to keep the owner aligned with the agents in
  * its immediate area defined by the given {@link Proximity}. The acceleration is calculated by first iterating through all the
- * neighbors and averaging their normalized linear velocity vectors. This value is the desired direction, so we just subtract the
- * owner's normalized linear velocity to get the steering output.
+ * neighbors and averaging their linear velocity vectors. This value is the desired direction, so we just subtract the owner's
+ * linear velocity to get the steering output.
  * <p>
  * Cars moving along roads demonstrate {@code Alignment} type behavior. They also demonstrate {@link Separation} as they try to
  * keep a minimum distance from each other.
@@ -37,29 +37,30 @@ import com.badlogic.gdx.math.Vector;
  * @autor davebaol */
 public class Alignment<T extends Vector<T>> extends GroupBehavior<T> implements ProximityCallback<T> {
 
-	private T direction;
-	private T linear;
+	private T averageVelocity;
 
 	/** Creates an {@code Alignment} behavior for the specified owner and proximity.
 	 * @param owner the owner of this behavior
 	 * @param proximity the proximity */
 	public Alignment (Steerable<T> owner, Proximity<T> proximity) {
 		super(owner, proximity);
-
-		this.direction = owner.newVector();
 	}
 
 	@Override
 	protected SteeringAcceleration<T> calculateSteering (SteeringAcceleration<T> steering) {
 		steering.setZero();
 
-		linear = steering.linear;
+		averageVelocity = steering.linear;
 
 		int neighborCount = proximity.findNeighbors(this);
 
 		if (neighborCount > 0) {
-			direction.set(owner.getLinearVelocity()).nor();
-			linear.scl(1f / neighborCount).sub(direction);
+			// Average the accumulated velocities
+			averageVelocity.scl(1f / neighborCount);
+
+			// Match the average velocity.
+			// Notice that steering.linear and averageVelocity are the same vector here.
+			averageVelocity.sub(owner.getLinearVelocity()).limit(getActualLimiter().getMaxLinearAcceleration());
 		}
 
 		return steering;
@@ -67,8 +68,8 @@ public class Alignment<T extends Vector<T>> extends GroupBehavior<T> implements 
 
 	@Override
 	public boolean reportNeighbor (Steerable<T> neighbor) {
-		direction.set(neighbor.getLinearVelocity()).nor();
-		linear.add(direction);
+		// Accumulate neighbor velocity
+		averageVelocity.add(neighbor.getLinearVelocity());
 		return true;
 	}
 
@@ -88,7 +89,7 @@ public class Alignment<T extends Vector<T>> extends GroupBehavior<T> implements 
 		return this;
 	}
 
-	/** Sets the limiter of this steering behavior. However, {@code Alignment} needs no limiter at all.
+	/** Sets the limiter of this steering behavior. The given limiter must at least take care of the maximum linear acceleration.
 	 * @return this behavior for chaining. */
 	@Override
 	public Alignment<T> setLimiter (Limiter limiter) {
