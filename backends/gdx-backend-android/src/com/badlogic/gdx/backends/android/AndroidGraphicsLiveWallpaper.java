@@ -217,6 +217,7 @@ public final class AndroidGraphicsLiveWallpaper extends AndroidGraphics {
 			 */
 
 			app.getInput().processEvents();
+			frameId++;
 			app.getApplicationListener().render();
 		}
 

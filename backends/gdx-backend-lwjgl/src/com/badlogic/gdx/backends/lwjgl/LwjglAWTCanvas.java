@@ -256,6 +256,7 @@ public class LwjglAWTCanvas implements Application {
 
 		input.processEvents();
 		if (running) {
+			graphics.frameId++;
 			listener.render();
 			if (audio != null) {
 				audio.update();

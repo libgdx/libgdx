@@ -352,6 +352,14 @@ public class Box2DDebugRenderer {
 	public void setDrawVelocities (boolean drawVelocities) {
 		this.drawVelocities = drawVelocities;
 	}
+	
+	public boolean isDrawContacts () {
+		return drawContacts;
+	}
+	
+	public void setDrawContacts (boolean drawContacts) {
+		this.drawContacts = drawContacts;
+	}
 
 	public static Vector2 getAxis () {
 		return axis;
