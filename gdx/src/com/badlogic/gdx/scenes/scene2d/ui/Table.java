@@ -815,12 +815,11 @@ public class Table extends WidgetGroup {
 		outer:
 		for (int i = 0; i < cellCount; i++) {
 			Cell c = cells.get(i);
-			if (c.expandX == 0) continue;
-			int column = c.column;
-			int nn = column + c.colspan;
+			int expandX = c.expandX;
+			if (expandX == 0) continue;
+			int column = c.column, nn = column + c.colspan;
 			for (int ii = column; ii < nn; ii++)
 				if (expandWidth[ii] != 0) continue outer;
-			int expandX = c.expandX;
 			for (int ii = column; ii < nn; ii++)
 				expandWidth[ii] = expandX;
 		}
@@ -977,7 +976,8 @@ public class Table extends WidgetGroup {
 			Actor a = c.actor;
 
 			float spannedWeightedWidth = 0;
-			for (int ii = column, nn = ii + c.colspan; ii < nn; ii++)
+			int colspan = c.colspan;
+			for (int ii = column, nn = ii + colspan; ii < nn; ii++)
 				spannedWeightedWidth += columnWeightedWidth[ii];
 			float weightedHeight = rowWeightedHeight[row];
 
@@ -995,7 +995,7 @@ public class Table extends WidgetGroup {
 			c.actorWidth = Math.min(spannedWeightedWidth - c.computedPadLeft - c.computedPadRight, prefWidth);
 			c.actorHeight = Math.min(weightedHeight - c.computedPadTop - c.computedPadBottom, prefHeight);
 
-			if (c.colspan == 1) columnWidth[column] = Math.max(columnWidth[column], spannedWeightedWidth);
+			if (colspan == 1) columnWidth[column] = Math.max(columnWidth[column], spannedWeightedWidth);
 			rowHeight[row] = Math.max(rowHeight[row], weightedHeight);
 		}
 
@@ -1082,27 +1082,29 @@ public class Table extends WidgetGroup {
 
 			currentX += c.computedPadLeft;
 
-			if (c.fillX > 0) {
-				c.actorWidth = spannedCellWidth * c.fillX;
+			float fillX = c.fillX, fillY = c.fillY;
+			if (fillX > 0) {
+				c.actorWidth = spannedCellWidth * fillX;
 				float maxWidth = c.maxWidth.get(c.actor);
 				if (maxWidth > 0) c.actorWidth = Math.min(c.actorWidth, maxWidth);
 			}
-			if (c.fillY > 0) {
-				c.actorHeight = rowHeight[c.row] * c.fillY - c.computedPadTop - c.computedPadBottom;
+			if (fillY > 0) {
+				c.actorHeight = rowHeight[c.row] * fillY - c.computedPadTop - c.computedPadBottom;
 				float maxHeight = c.maxHeight.get(c.actor);
 				if (maxHeight > 0) c.actorHeight = Math.min(c.actorHeight, maxHeight);
 			}
 
-			if ((c.align & Align.left) != 0)
+			align = c.align;
+			if ((align & Align.left) != 0)
 				c.actorX = currentX;
-			else if ((c.align & Align.right) != 0)
+			else if ((align & Align.right) != 0)
 				c.actorX = currentX + spannedCellWidth - c.actorWidth;
 			else
 				c.actorX = currentX + (spannedCellWidth - c.actorWidth) / 2;
 
-			if ((c.align & Align.top) != 0)
+			if ((align & Align.top) != 0)
 				c.actorY = currentY + c.computedPadTop;
-			else if ((c.align & Align.bottom) != 0)
+			else if ((align & Align.bottom) != 0)
 				c.actorY = currentY + rowHeight[c.row] - c.actorHeight - c.computedPadBottom;
 			else
 				c.actorY = currentY + (rowHeight[c.row] - c.actorHeight + c.computedPadTop - c.computedPadBottom) / 2;
