@@ -52,7 +52,7 @@ import com.badlogic.gdx.utils.Array;
 public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, GLKViewControllerDelegate {
 
 	private static final String tag = "IOSGraphics";
-
+	
 	static class IOSUIViewController extends GLKViewController {
 		final IOSApplication app;
 		final IOSGraphics graphics;
@@ -148,6 +148,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	private float density = 1;
 
 	volatile boolean paused;
+	private long frameId = -1;
 
 	IOSApplicationConfiguration config;
 	EAGLContext context;
@@ -318,6 +319,7 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 		}
 
 		input.processEvents();
+		frameId++;
 		app.listener.render();
 	}
 
@@ -485,5 +487,10 @@ public class IOSGraphics extends NSObject implements Graphics, GLKViewDelegate, 
 	@Override
 	public GL30 getGL30 () {
 		return null;
+	}
+
+	@Override
+	public long getFrameId() {
+		return frameId;
 	}
 }

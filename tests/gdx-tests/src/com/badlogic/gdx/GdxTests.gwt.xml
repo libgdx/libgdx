@@ -42,4 +42,5 @@
 		<exclude name="**/PingPongSocketExample.java"/> <!-- networking -->
 		<exclude name="**/voxel/*.java"/> <!-- PerlinNoiseGenerator uses a method not in the emulated version of Buffer -->
 	</source>
+	<extend-configuration-property name="gdx.reflect.include" value="com.badlogic.gdx.tests.AnnotationTest" />
 </module>

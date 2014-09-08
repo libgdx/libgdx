@@ -53,6 +53,7 @@ public class JglfwGraphics implements Graphics {
 	private volatile boolean isContinuous = true, renderRequested;
 	volatile boolean foreground, minimized;
 
+	private long frameId = -1;
 	private float deltaTime;
 	private long frameStart, lastTime = -1;
 	private int frames, fps;
@@ -155,6 +156,7 @@ public class JglfwGraphics implements Graphics {
 			frameStart = time;
 		}
 		frames++;
+		frameId++;
 	}
 
 	void sizeChanged (int width, int height) {
@@ -190,6 +192,10 @@ public class JglfwGraphics implements Graphics {
 
 	public int getHeight () {
 		return height;
+	}
+
+	public long getFrameId () {
+		return frameId;
 	}
 
 	public float getDeltaTime () {

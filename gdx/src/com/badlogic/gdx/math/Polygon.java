@@ -17,7 +17,7 @@
 package com.badlogic.gdx.math;
 
 /** Encapsulates a 2D polygon defined by it's vertices relative to an origin point (default of 0, 0). */
-public class Polygon {
+public class Polygon implements Shape2D {
 	private float[] localVertices;
 	private float[] worldVertices;
 	private float x, y;
