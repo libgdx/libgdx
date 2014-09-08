@@ -258,17 +258,6 @@
 		</ant>
 	</target>
     
-    <!-- gdx ai -->
-    <target name="gdx-ai" depends="gdx-core">
-        <path id="classpath">
-            <pathelement location="${distDir}/gdx.jar"/>
-        </path>
-        <ant antfile="../../build-template.xml" dir="extensions/gdx-ai">
-            <property name="distDir" value="${distDir}/extensions/gdx-ai"/>
-            <property name="jar" value="gdx-ai"/>
-            <reference refid="classpath"/>
-        </ant>
-    </target>
 
 	<!-- generates the javadoc for the core api and the application implementations -->
 	<target name="docs" depends="clean">

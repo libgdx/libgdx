@@ -189,7 +189,6 @@ public class GdxTests {
 		SpriteCacheTest.class,
 		StagePerformanceTest.class,
 		StageTest.class,
-		StateMachineTest.class,
 		SuperKoalio.class,
 		TableLayoutTest.class,
 		TableTest.class,
