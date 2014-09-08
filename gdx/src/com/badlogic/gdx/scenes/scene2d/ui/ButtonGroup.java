@@ -84,7 +84,7 @@ public class ButtonGroup {
 	}
 
 	/** Called when a button is checked or unchecked.
-	 * @return true if the new state should be allowed. */
+	 * @return True if the new state should be allowed. */
 	protected boolean canCheck (Button button, boolean newState) {
 		if (button.isChecked == newState) return false;
 
@@ -121,7 +121,7 @@ public class ButtonGroup {
 		minCheckCount = old;
 	}
 
-	/** @return the first checked button, or null. */
+	/** @return The first checked button, or null. */
 	public Button getChecked () {
 		if (checkedButtons.size > 0) return checkedButtons.get(0);
 		return null;
