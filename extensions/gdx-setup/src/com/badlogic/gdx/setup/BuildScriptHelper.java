@@ -49,7 +49,6 @@ public class BuildScriptHelper {
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
-		write(wr, "mavenLocal()");
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
 		write(wr, "maven { url \"" + DependencyBank.libGDXReleaseUrl + "\" }");
