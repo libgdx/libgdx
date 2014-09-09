@@ -20,12 +20,12 @@ import java.io.File;
 
 import org.robovm.apple.coregraphics.CGSize;
 import org.robovm.apple.foundation.Foundation;
-import org.robovm.apple.foundation.NSDictionary;
 import org.robovm.apple.foundation.NSMutableDictionary;
 import org.robovm.apple.foundation.NSObject;
 import org.robovm.apple.foundation.NSString;
 import org.robovm.apple.uikit.UIApplication;
 import org.robovm.apple.uikit.UIApplicationDelegateAdapter;
+import org.robovm.apple.uikit.UIApplicationLaunchOptions;
 import org.robovm.apple.uikit.UIDevice;
 import org.robovm.apple.uikit.UIInterfaceOrientation;
 import org.robovm.apple.uikit.UIPasteboard;
@@ -58,7 +58,7 @@ public class IOSApplication implements Application {
 		protected abstract IOSApplication createApplication ();
 
 		@Override
-		public boolean didFinishLaunching (UIApplication application, NSDictionary<NSString, ?> launchOptions) {
+		public boolean didFinishLaunching (UIApplication application, UIApplicationLaunchOptions launchOptions) {
 			application.addStrongRef(this); // Prevent this from being GCed until the ObjC UIApplication is deallocated
 			this.app = createApplication();
 			return app.didFinishLaunching(application, launchOptions);
@@ -109,7 +109,7 @@ public class IOSApplication implements Application {
 		this.config = config;
 	}
 
-	final boolean didFinishLaunching (UIApplication uiApp, NSDictionary<?, ?> options) {
+	final boolean didFinishLaunching (UIApplication uiApp, UIApplicationLaunchOptions options) {
 		Gdx.app = this;
 		this.uiApp = uiApp;
 

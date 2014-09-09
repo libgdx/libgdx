@@ -145,6 +145,8 @@ public class TexturePacker {
 			}
 			width = Math.max(settings.minWidth, width);
 			height = Math.max(settings.minHeight, height);
+			page.imageWidth = width;
+			page.imageHeight = height;
 
 			File outputFile;
 			while (true) {
@@ -296,7 +298,7 @@ public class TexturePacker {
 		FileWriter writer = new FileWriter(packFile, true);
 		for (Page page : pages) {
 			writer.write("\n" + page.imageName + "\n");
-			writer.write("size: " + page.width + "," + page.height + "\n");
+			writer.write("size: " + page.imageWidth + "," + page.imageHeight + "\n");
 			writer.write("format: " + settings.format + "\n");
 			writer.write("filter: " + settings.filterMin + "," + settings.filterMag + "\n");
 			writer.write("repeat: " + getRepeatValue() + "\n");
@@ -360,7 +362,7 @@ public class TexturePacker {
 		public String imageName;
 		public Array<Rect> outputRects, remainingRects;
 		public float occupancy;
-		public int x, y, width, height;
+		public int x, y, width, height, imageWidth, imageHeight;
 	}
 
 	/** @author Regnarock

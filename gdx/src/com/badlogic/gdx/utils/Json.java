@@ -819,11 +819,13 @@ public class Json {
 			String className = typeName == null ? null : jsonData.getString(typeName, null);
 			if (className != null) {
 				jsonData.remove(typeName);
-				try {
-					type = (Class<T>)ClassReflection.forName(className);
-				} catch (ReflectionException ex) {
-					type = tagToClass.get(className);
-					if (type == null) throw new SerializationException(ex);
+				type = tagToClass.get(className);
+				if (type == null) {
+					try {
+						type = (Class<T>)ClassReflection.forName(className);
+					} catch (ReflectionException ex) {
+						throw new SerializationException(ex);
+					}
 				}
 			}
 

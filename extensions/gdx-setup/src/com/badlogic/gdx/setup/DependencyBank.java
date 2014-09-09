@@ -17,12 +17,12 @@ public class DependencyBank {
 
 	//Repositories
 	static String mavenCentral = "mavenCentral()";
-	static String gwtPluginUrl = "https://github.com/steffenschaefer/gwt-gradle-plugin/raw/maven-repo/";
+	static String jCenter = "jcenter()";
 	static String libGDXSnapshotsUrl = "https://oss.sonatype.org/content/repositories/snapshots/";
 	static String libGDXReleaseUrl = "https://oss.sonatype.org/content/repositories/releases/";
 
 	//Project plugins
-	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.4";
+	static String gwtPluginImport = "de.richsource.gradle.plugins:gwt-gradle-plugin:0.5";
 	static String androidPluginImport = "com.android.tools.build:gradle:0.10+";
 	static String roboVMPluginImport = "com.github.jtakakura:gradle-robovm-plugin:0.0.10";
 
