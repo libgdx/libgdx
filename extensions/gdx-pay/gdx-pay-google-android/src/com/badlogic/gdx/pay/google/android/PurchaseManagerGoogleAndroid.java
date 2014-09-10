@@ -50,6 +50,7 @@ import com.badlogic.gdx.utils.Disposable;
  * <p>
  * To use InApp on Google Play do the following:
  * <ul>
+ * <li>AndroidManifest.xml: add &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
  * <li>AndroidManifest.xml: add &lt;uses-permission android:name="com.android.vending.BILLING" /&gt;
  * <li>AndroidApplication/member variables: add "PurchaseManager manager;"
  * <li>AndroidApplication.onCreate(...): add "manager = new PurchaseManagerGoogleAndroid(this);"
