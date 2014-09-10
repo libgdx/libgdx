@@ -66,6 +66,11 @@ public class ButtonGroup {
 			remove(buttons[i]);
 	}
 
+	public void clear () {
+		buttons.clear();
+		checkedButtons.clear();
+	}
+
 	/** Sets the first {@link TextButton} with the specified text to checked. */
 	public void setChecked (String text) {
 		if (text == null) throw new IllegalArgumentException("text cannot be null.");
@@ -79,7 +84,7 @@ public class ButtonGroup {
 	}
 
 	/** Called when a button is checked or unchecked.
-	 * @return true if the new state should be allowed. */
+	 * @return True if the new state should be allowed. */
 	protected boolean canCheck (Button button, boolean newState) {
 		if (button.isChecked == newState) return false;
 
@@ -116,7 +121,7 @@ public class ButtonGroup {
 		minCheckCount = old;
 	}
 
-	/** @return the first checked button, or null. */
+	/** @return The first checked button, or null. */
 	public Button getChecked () {
 		if (checkedButtons.size > 0) return checkedButtons.get(0);
 		return null;
