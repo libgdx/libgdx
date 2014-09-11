@@ -136,6 +136,7 @@ public class Table extends WidgetGroup {
 	 * if {@link Table#Table(Skin)} or {@link #setSkin(Skin)} was used.
 	 * @see #setBackground(Drawable, boolean) */
 	public void setBackground (String drawableName) {
+		if (skin == null) throw new IllegalStateException("Table must have a skin set to use this method.");
 		setBackground(skin.getDrawable(drawableName), true);
 	}
 
@@ -152,11 +153,28 @@ public class Table extends WidgetGroup {
 		if (this.background == background) return;
 		this.background = background;
 		if (adjustPadding) {
-			if (background == null)
-				pad(Value.zero);
-			else
-				pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
-			invalidate();
+			// Set padding only if different and avoid invalidateHierarchy if the total x and y padding did not change.
+			float padTop = getPadTop(), padLeft = getPadLeft(), padBottom = getPadBottom(), padRight = getPadRight();
+			if (background == null) {
+				if (padTop != 0 || padLeft != 0 || padBottom != 0 || padRight != 0) {
+					float padX = getPadX(), padY = getPadY();
+					pad(Value.zero);
+					if (padX != getPadX() || padY != getPadY())
+						invalidate();
+					else
+						invalidateHierarchy();
+				}
+			} else {
+				if (padTop != background.getTopHeight() || padLeft != background.getLeftWidth()
+					|| padBottom != background.getBottomHeight() || padRight != background.getRightWidth()) {
+					float padX = getPadX(), padY = getPadY();
+					pad(background.getTopHeight(), background.getLeftWidth(), background.getBottomHeight(), background.getRightWidth());
+					if (padX != getPadX() || padY != getPadY())
+						invalidate();
+					else
+						invalidateHierarchy();
+				}
+			}
 		}
 	}
 

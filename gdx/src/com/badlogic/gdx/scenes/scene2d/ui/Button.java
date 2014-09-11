@@ -16,7 +16,6 @@
 
 package com.badlogic.gdx.scenes.scene2d.ui;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -189,7 +188,7 @@ public class Button extends Table implements Disableable {
 			offsetX = style.unpressedOffsetX;
 			offsetY = style.unpressedOffsetY;
 		}
-		setBackground(background, false);
+		setBackground(background, background != null); // Keep padding from last background if new background is null.
 
 		Array<Actor> children = getChildren();
 		for (int i = 0; i < children.size; i++)
@@ -229,9 +228,7 @@ public class Button extends Table implements Disableable {
 		/** Optional. */
 		public Drawable up, down, over, checked, checkedOver, disabled;
 		/** Optional. */
-		public float pressedOffsetX, pressedOffsetY;
-		/** Optional. */
-		public float unpressedOffsetX, unpressedOffsetY;
+		public float pressedOffsetX, pressedOffsetY, unpressedOffsetX, unpressedOffsetY;
 
 		public ButtonStyle () {
 		}
