@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -146,7 +147,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		Drawable bg = style.background;
 		BitmapFont font = style.font;
 
-		if(bg != null)
+		if (bg != null)
 			prefHeight = Math.max(bg.getTopHeight() + bg.getBottomHeight() + font.getCapHeight() - font.getDescent() * 2,
 				bg.getMinHeight());
 		else
@@ -157,8 +158,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 			maxItemWidth = Math.max(font.getBounds(items.get(i).toString()).width, maxItemWidth);
 
 		prefWidth = maxItemWidth;
-		if (bg != null)
-			prefWidth += bg.getLeftWidth() + bg.getRightWidth();
+		if (bg != null) prefWidth += bg.getLeftWidth() + bg.getRightWidth();
 
 		ListStyle listStyle = style.listStyle;
 		ScrollPaneStyle scrollStyle = style.scrollStyle;
@@ -198,8 +198,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		float height = getHeight();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		if (background != null)
-			background.draw(batch, x, y, width, height);
+		if (background != null) background.draw(batch, x, y, width, height);
 
 		T selected = this.selected != null ? this.selected : selection.first();
 		if (selected != null) {
@@ -273,7 +272,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 	}
 
 	public void hideList () {
-		if (!scroll.hasParent()) return;
+		if (scroll.list.selection.isDisabled() || !scroll.hasParent()) return;
+		scroll.list.selection.setDisabled(true);
 		selected = null;
 		scroll.list.setTouchable(Touchable.disabled);
 		Stage stage = scroll.getStage();
@@ -282,7 +282,8 @@ public class SelectBox<T> extends Widget implements Disableable {
 			Actor actor = stage.getScrollFocus();
 			if (actor == null || actor.isDescendantOf(scroll)) stage.setScrollFocus(previousScrollFocus);
 		}
-		scroll.addAction(sequence(fadeOut(0.15f, Interpolation.fade), removeActor()));
+		scroll.clearActions();
+		scroll.addAction(getHideAction(scroll));
 	}
 
 	/** Returns the list shown when the select box is open. */
@@ -293,6 +294,16 @@ public class SelectBox<T> extends Widget implements Disableable {
 	/** Returns the scroll pane containing the list that is shown when the select box is open. */
 	public ScrollPane getScrollPane () {
 		return scroll;
+	}
+
+	protected Action getShowAction (Actor list, boolean below) {
+		list.getColor().a = 0;
+		return fadeIn(0.3f, Interpolation.fade);
+	}
+
+	protected Action getHideAction (Actor list) {
+		list.getColor().a = 1;
+		return sequence(fadeOut(0.15f, Interpolation.fade), removeActor());
 	}
 
 	class ListScroll extends ScrollPane {
@@ -371,9 +382,9 @@ public class SelectBox<T> extends Widget implements Disableable {
 			scrollToCenter(0, list.getHeight() - getSelectedIndex() * itemHeight - itemHeight / 2, 0, 0);
 			updateVisualScroll();
 
+			list.selection.setDisabled(false);
 			clearActions();
-			getColor().a = 0;
-			addAction(fadeIn(0.3f, Interpolation.fade));
+			addAction(getShowAction(this, below));
 
 			previousScrollFocus = null;
 			Actor actor = stage.getScrollFocus();
@@ -385,7 +396,7 @@ public class SelectBox<T> extends Widget implements Disableable {
 		@Override
 		public Actor hit (float x, float y, boolean touchable) {
 			Actor actor = super.hit(x, y, touchable);
-			return actor != null ? actor : this;
+			return actor != null ? actor : (list.selection.isDisabled() ? null : this);
 		}
 
 		public void act (float delta) {
