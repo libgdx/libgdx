@@ -147,18 +147,20 @@ public class Button extends Table implements Disableable {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 
-		Drawable background = style.up;
-		if (background == null) {
-			background = style.down;
-			if (background == null) background = style.checked;
+		Drawable background = null;
+		if (isPressed() && !isDisabled()) {
+			background = style.down == null ? style.up : style.down;
+		} else {
+			if (isDisabled() && style.disabled != null)
+				background = style.disabled;
+			else if (isChecked && style.checked != null)
+				background = (isOver() && style.checkedOver != null) ? style.checkedOver : style.checked;
+			else if (isOver() && style.over != null)
+				background = style.over;
+			else
+				background = style.up;
 		}
-		if (background != null) {
-			padBottom(background.getBottomHeight());
-			padTop(background.getTopHeight());
-			padLeft(background.getLeftWidth());
-			padRight(background.getRightWidth());
-		}
-		invalidateHierarchy();
+		setBackground(background);
 	}
 
 	/** Returns the button's style. Modifying the returned style may not have an effect until {@link #setStyle(ButtonStyle)} is
