@@ -55,15 +55,17 @@ public class PayTest extends GdxTest {
 		batch = new SpriteBatch();
 
 		try {
-			message = "Testing InApp System...\n";
+			message = "Testing InApp System:\n";
 
 			// test the purchase manager if there is one
 			if (PurchaseSystem.hasManager()) {
+				message += " - purchase manager: " + PurchaseSystem.storeName() + ".\n";
+
 				// 0. build our purchase configuration
 				PurchaseManagerConfig config = new PurchaseManagerConfig();
 				config.addOffer(new Offer().setType(OfferType.ENTITLEMENT)
 					                        .setIdentifier("com.badlogic.gdx.tests.pay.entitlement01")
-				                           .putIdentifierForStore(storeName, identifierForStore));
+				                           .putIdentifierForStore(PurchaseManagerConfig.STORE_NAME_GOOGLE, "android.test.purchased"));
 				
 				// 1. install the observer
 				PurchaseSystem.install(new PurchaseObserver() {					
@@ -79,15 +81,19 @@ public class PayTest extends GdxTest {
 					}				
 					@Override
 					public void handleInstall () {
+						message += " - purchase manager successfully installed.\n";
+
 						// TODO Auto-generated method stub
 						
 					}
 					@Override
 					public void handleInstallError (Throwable e) {
+						message += " - error installing purchase manager: " + e + "\n";
+
 						// TODO Auto-generated method stub
 						
 					}				
-				}, configuration);
+				}, config);
 				xxx();
 				
 				// 2. query the inventory (this should only be called for (a) new installs and (b) broken inventory data)
@@ -102,7 +108,7 @@ public class PayTest extends GdxTest {
 				xxx();
 			}
 			else {
-				message += " - no purchase manager found.";
+				message += " - no purchase manager found.\n";
 			}			
 		} catch (Throwable e) {
 			throw new RuntimeException(e);

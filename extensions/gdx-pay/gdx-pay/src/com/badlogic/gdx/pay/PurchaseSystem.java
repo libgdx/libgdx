@@ -31,6 +31,16 @@ public final class PurchaseSystem {
 		return manager;
 	}
 
+	/** Returns the store name or null for none. */
+	public static String storeName() {
+		if (manager != null) {
+			return manager.storeName();
+		}
+		else {
+			return null;
+		}
+	}
+	
 	/** Installs a purchase observer. */
 	public static void install (PurchaseObserver observer, PurchaseManagerConfig config) {
 		if (manager != null) {
