@@ -29,65 +29,20 @@ package com.badlogic.gdx.pay;
  * 1. Copy the Needed JAR Files into your Application
  * <ul>
  * <li>Required: gdx-pay.jar (into your libs/ folder in "core")
- * <li>Optional: gdx-pay-google-android.jar (into your libs/ folder in your Android project if you are deploying to Google Play)
- * <li>Optional: gdx-pay-amazon-android.jar (into your libs/ folder in your Android project if you are deploying to Amazon)
- * <li>Optional: gdx-pay-steam-desktop.jar (into your libs/ folder in your Desktop project if you are deploying to Valve/Steam)
+ * <li>Optional: gdx-pay-android-openiab.jar (into your libs/ folder in your Android project if you are deploying to Google Play)
  * <li>Optional: etc.
  * </ul>
  * <p>
- * 2. How to Setup IAP in your Application
- * 
- * <pre>
- * // platform-dependent code (setup the purchase manager in your code, e.g. Google Play/Android)
- * MyGame myGame = ... // for example your game class (or store the manager somewhere else)
- * myGame.setPurchaseManager(new PurchaseManagerGoogleAndroid(...));
- * 
- * // platform-independent code (register an observer e.g. in libGDX's ApplicationListener - REQUIRED!)
- * PurchaseManager manager = myGame.getPurchaseManager();
- * manager.register(new PurchaseListener() {
- *   public void handlePurchase (Purchase purchase) {
- *     if (purchase.isValid()) {
- *       // handle an un-handled but successful purchase 
- *       ...
- *     }
- *     else {
- *       // handle a refund or purchased that was not completed by a user after all
- *       ...
- *     }
- *   }
- *   public void handleError (Throwable e) {
- *     // handle purchase manager problems: display error to user
- *     ...
- *   }
- * });
- * </pre>
+ * 2. How to setup IAP in your application have a look at the corresponding PurchaseManager implementation.
  * <p>
- * 3. How to Make a Purchase
- * 
- * <pre>
- * // platform-independent code (purchase)
- * PurchaseManager manager = myGame.getPurchaseManager();
- * String identifier = ... // your product identifier that is registered in the IAP service
- * manager.purchase(new PurchaseListener() {
- *   public void handlePurchase (Purchase purchase) {
- *     if (purchase.isValid()) {
- *       // handle a successful purchase, i.e. deliver the purchase to the user
- *       ...
- *     }
- *     else {
- *       // optional handling: this part can be ignored: the user simply didn't go through with the purchase
- *     }
- *   }
- *   public void handleError (Throwable e) {
- *     // output the error to the user
- *     ...
- *   }
- * }, identifier);
- * </pre>
+ * 3. How to use IAP in your application have a look at PayTest.java.
  * 
  * @author noblemaster */
 public interface PurchaseManager {
 
+	/** Returns the store name. */
+	public String storeName();
+	
 	/** Registers a purchase observer which handles installs of apps on a new device or aborted purchases from a previous session
 	 * that were not yet handled by the application. The observer is called for all unfinished transactions. The observer is also
 	 * called for refunds of previous purchased items.
@@ -96,8 +51,15 @@ public interface PurchaseManager {
 	 * exception to teach you lesson to always remember to set a purchase observer. The purchase observer is needed to make sure
 	 * all purchases have been handled and served to the customer.
 	 * 
-	 * @param listener The listener which is called whenever purchases have to be handled by the application. */
-	public void register (PurchaseListener listener);
+	 * @param observer The observer which is called whenever purchases have to be handled by the application as well as when the
+	 *           store has been installed. */
+	public void install (PurchaseObserver observer, PurchaseManagerConfig config);
+
+	/** Returns true if the purchase manager is installed (non-disposed) and ready to go. */
+	public boolean installed();
+	
+	/** Disposes the purchase manager. */
+	public void dispose ();
 
 	/** Requests to purchase an item. The listener will always be called once the purchase has either completed or failed.
 	 * <p>
@@ -108,7 +70,10 @@ public interface PurchaseManager {
 	 *           listener itself throws an exception, the purchase observer will again later report the purchase information again.
 	 * @param identifier The item to purchase. */
 	public void purchase (PurchaseListener listener, String identifier);
-	
+
+	/** Restores existing purchases. */
+	public void purchaseRestore ();
+
 	@Override
-	public String toString();
+	public String toString ();
 }

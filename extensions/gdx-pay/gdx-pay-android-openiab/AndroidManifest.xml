@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.badlogic.gdx.pay.android.openiab">   
+          
+  <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19"/>
+  
+	<!--all-->
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<!--Google Play-->
+	<uses-permission android:name="com.android.vending.BILLING" />
+	<!--Open Store-->
+	<uses-permission android:name="org.onepf.openiab.permission.BILLING" />
+	<!--Amazon requires no permissions -->
+	<!--Samsung Apps-->
+	<uses-permission android:name="com.sec.android.iap.permission.BILLING" />
+	<!--Nokia-->
+	<uses-permission android:name="com.nokia.payment.BILLING"/>
+  <!--SlideME-->
+  <uses-permission android:name="com.slideme.sam.manager.inapp.permission.BILLING" />
+  
+</manifest> 

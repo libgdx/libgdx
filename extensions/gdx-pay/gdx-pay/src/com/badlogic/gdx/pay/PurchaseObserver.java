@@ -16,19 +16,27 @@
 
 package com.badlogic.gdx.pay;
 
-/** Purchases successful or not will be reported to this listener.
+/** Observer to wait for the purchase manager to initialize as well as to handle restored/refunded transactions.
  * 
  * @author noblemaster */
-public interface PurchaseListener {
+public interface PurchaseObserver {
 
-	/** The item that was purchased. The "valid" parameter will indicate if the purchase was successful (true) or was aborted or
+	/** Called when the purchase manager has successfully initialized. */
+	public void handleInstall ();
+	
+	/** Called when the installation of the purchase manager failed. 
+	 * 
+	 * @param e The error, e.g. network outage, invalid keys, etc. */
+	public void handleInstallError (Throwable e);
+	
+	/** Called when purchases have been restored. The "valid" parameter will indicate if the purchase was successful (true) or was aborted or
 	 * refunded by the user (false).
 	 * 
-	 * @param transaction The purchased item information. */
-	public void handlePurchase (Transaction transaction);
+	 * @param transactions The restored purchases. */
+	public void handleRestore (Transaction[] transactions);
 
-	/** Called when a purchase failed for unexpected reasons.
+	/** Called when a restore failed for unexpected reasons.
 	 * 
 	 * @param e The error, e.g. network outage, invalid identifier, etc. */
-	public void handlePurchaseError (Throwable e);
+	public void handleRestoreError (Throwable e);
 }

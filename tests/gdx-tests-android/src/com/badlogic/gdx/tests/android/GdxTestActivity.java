@@ -22,9 +22,10 @@ import android.os.Bundle;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.PurchaseSystem;
+import com.badlogic.gdx.pay.android.openiab.PurchaseManagerAndroidOpenIAB;
 import com.badlogic.gdx.pay.google.android.PurchaseManagerGoogleAndroid;
 import com.badlogic.gdx.tests.PayTest;
-import com.badlogic.gdx.tests.PayTest.IAP;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.tests.utils.GdxTests;
 
@@ -40,7 +41,7 @@ public class GdxTestActivity extends AndroidApplication {
 		
 		// InApp: instantiate payment systems
 		if (PayTest.class.equals(test.getClass())) {
-			IAP.init(new PurchaseManagerGoogleAndroid(this));
+			PurchaseSystem.setManager(new PurchaseManagerAndroidOpenIAB(this));
 		}
 		
 		// and run the application...
@@ -54,21 +55,14 @@ public class GdxTestActivity extends AndroidApplication {
 		super.onDestroy();
 		
 		//  InApp: dispose payment system(s)
-		IAP.dispose();
+		PurchaseSystem.dispose();
 	}
 
 	@Override
 	protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		// InApp: forward activity results
-		if (requestCode == PurchaseManagerGoogleAndroid.GDX_PAY_GOOGLE_ANDROID_REQUEST_CODE) {
-			for (int i = 0; i < IAP.getManagerCount(); i++) {
-				PurchaseManager manager = IAP.getManager(i);
-				if (manager instanceof PurchaseManagerGoogleAndroid) {
-					((PurchaseManagerGoogleAndroid)manager).onActivityResult(requestCode, resultCode, data);
-				}
-			}
+		// InApp: forward activities to our purchase manager
+		if (PurchaseSystem.hasManager()) {
+			((PurchaseManagerAndroidOpenIAB)PurchaseSystem.getManager()).onActivityResult(requestCode, resultCode, data);
 		}
 	}
 }

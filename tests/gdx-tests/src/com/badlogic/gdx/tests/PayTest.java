@@ -28,9 +28,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.pay.Purchase;
+import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
+import com.badlogic.gdx.pay.PurchaseObserver;
+import com.badlogic.gdx.pay.PurchaseSystem;
 import com.badlogic.gdx.tests.utils.GdxTest;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.I18NBundle;
@@ -50,25 +52,53 @@ public class PayTest extends GdxTest {
 		batch = new SpriteBatch();
 
 		try {
-			message = "Testing InApp Managers... (" + IAP.getManagerCount() + " total)\n";
+			message = "Testing InApp System...\n";
 
-			// test all managers
-			for (int i = 0; i < IAP.getManagerCount(); i++) {
-				// testing the managers
-				final PurchaseManager manager = IAP.getManager(i);
-				manager.purchase(new PurchaseListener() {					
+			// test the purchase manager if there is one
+			if (PurchaseSystem.hasManager()) {
+				// 0. build our purchase configuration
+				PurchaseSystemConfiguration configuration = new PurchaseSystemConfiguration();
+				configuration.
+				
+				// 1. install the observer
+				PurchaseSystem.install(new PurchaseObserver() {					
 					@Override
-					public void handlePurchase (Purchase purchase) {
-						// output success message
-						message += "Manager \"" + manager.toString() + "\": Purchase sucessful for " + purchase.identifier; 
-					}					
-					@Override
-					public void handleError (Throwable e) {
-						// we should never receive an error for this type of purchase
-						throw new RuntimeException(e);
+					public void handleRestore (Transaction[] purchases) {
+						// TODO Auto-generated method stub
+						
 					}
-				}, Purchase.IDENTIFIER_TEST_SUCCESS);
+					@Override
+					public void handleRestoreError (Throwable e) {
+						// TODO Auto-generated method stub
+						
+					}				
+					@Override
+					public void handleInstall () {
+						// TODO Auto-generated method stub
+						
+					}
+					@Override
+					public void handleInstallError (Throwable e) {
+						// TODO Auto-generated method stub
+						
+					}				
+				}, configuration);
+				xxx();
+				
+				// 2. query the inventory (this should only be called for (a) new installs and (b) broken inventory data)
+				PurchaseSystem.purchaseRestore();
+				xxx();
+				
+				// 3. try to make a purchase
+				xxx();
+
+				// 4. dispose the purchase system
+				PurchaseSystem.dispose();
+				xxx();
 			}
+			else {
+				message += " - no purchase manager found.";
+			}			
 		} catch (Throwable e) {
 			throw new RuntimeException(e);
 		}
@@ -86,48 +116,5 @@ public class PayTest extends GdxTest {
 	public void dispose () {
 		batch.dispose();
 		font.dispose();
-	}
-
-	public static final class IAP {
-
-		private static List<PurchaseManager> managers;
-
-		private IAP () {
-			// private constructor to prevent instantiation
-		}
-
-		public static void init(PurchaseManager... managers) {
-			IAP.managers = Arrays.asList(managers);
-		}
-		
-		public static void dispose() {
-			if (managers != null) {
-				// dispose all managers
-				for (int i = 0; i < managers.size(); i++) {
-					PurchaseManager manager = managers.get(i);
-					if (manager instanceof Disposable) {
-						((Disposable)manager).dispose();
-					}
-				}
-				
-				// clear the list
-				IAP.managers = null;
-			}
-		}
-
-		/** Returns the purchase manager for the given index. */
-		public static PurchaseManager getManager (int index) {
-			return managers.get(index);
-		}
-
-		/** Returns the number of purchase managers available. */
-		public static int getManagerCount () {
-			if (managers == null) {
-				return 0;
-			}
-			else {
-				return managers.size();
-			}
-		}
 	}
 }

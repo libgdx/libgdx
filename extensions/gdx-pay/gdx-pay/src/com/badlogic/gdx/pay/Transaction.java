@@ -30,16 +30,7 @@ import java.util.Date;
  * </ul>
  * 
  * @author noblemaster */
-public final class Purchase {
-
-	/** For testing ONLY: reserved string to indicate purchase was a success. */
-	public static final String IDENTIFIER_TEST_SUCCESS = "gdx-pay-purchase-identifier-test-success";
-	/** For testing ONLY: reserved string to indicate purchase failed (canceled). */
-	public static final String IDENTIFIER_TEST_FAILURE_CANCELED = "gdx-pay-purchase-identifier-test-failure-canceled";
-	/** For testing ONLY: reserved string to indicate purchase failed (refunded). */
-	public static final String IDENTIFIER_TEST_FAILURE_REFUNDED = "gdx-pay-purchase-identifier-test-failure-refunded";
-	/** For testing ONLY: reserved string to indicate purchase failed (item unavailable). */
-	public static final String IDENTIFIER_TEST_FAILURE_INVALIDIDENTIFIER = "gdx-pay-purchase-identifier-test-failure-invalididentifier";
+public final class Transaction {
 
 	/** Item identifier/SKU number. */
 	public String identifier;
@@ -58,7 +49,7 @@ public final class Purchase {
 	/** Creates a new purchase.
 	 * 
 	 * @param identifier The item identifier/SKU number. */
-	public Purchase (String identifier, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
+	public Transaction (String identifier, boolean valid, String transactionId, Date transactionDate, String transactionReceipt) {
 		this.identifier = identifier;
 
 		// true for a valid purchase.
