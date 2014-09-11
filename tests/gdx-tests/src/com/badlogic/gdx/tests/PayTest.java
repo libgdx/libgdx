@@ -28,6 +28,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.pay.Offer;
+import com.badlogic.gdx.pay.OfferType;
+import com.badlogic.gdx.pay.PurchaseManagerConfig;
 import com.badlogic.gdx.pay.Transaction;
 import com.badlogic.gdx.pay.PurchaseListener;
 import com.badlogic.gdx.pay.PurchaseManager;
@@ -57,8 +60,10 @@ public class PayTest extends GdxTest {
 			// test the purchase manager if there is one
 			if (PurchaseSystem.hasManager()) {
 				// 0. build our purchase configuration
-				PurchaseSystemConfiguration configuration = new PurchaseSystemConfiguration();
-				configuration.
+				PurchaseManagerConfig config = new PurchaseManagerConfig();
+				config.addOffer(new Offer().setType(OfferType.ENTITLEMENT)
+					                        .setIdentifier("com.badlogic.gdx.tests.pay.entitlement01")
+				                           .putIdentifierForStore(storeName, identifierForStore));
 				
 				// 1. install the observer
 				PurchaseSystem.install(new PurchaseObserver() {					
